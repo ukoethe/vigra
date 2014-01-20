@@ -294,6 +294,9 @@ struct GraphItemHelper<GRAPH,typename GRAPH::Edge>{
     static index_type itemNum(const GRAPH & g){
         return g.edgeNum();
     }
+    static Item itemFromId(const GRAPH & g,const index_type id){
+        return g.edgeFromId(id);
+    }
 
 };
 
@@ -310,6 +313,9 @@ struct GraphItemHelper<GRAPH,typename GRAPH::Node>{
     static index_type itemNum(const GRAPH & g){
         return g.nodeNum();
     }
+    static Item itemFromId(const GRAPH & g,const index_type id){
+        return g.nodeFromId(id);
+    }
 };
 
 
@@ -325,6 +331,9 @@ struct GraphItemHelper<GRAPH,typename GRAPH::Arc>{
     }
     static index_type itemNum(const GRAPH & g){
         return g.arcNum();
+    }
+    static Item itemFromId(const GRAPH & g,const index_type id){
+        return g.arcFromId(id);
     }
 };
 

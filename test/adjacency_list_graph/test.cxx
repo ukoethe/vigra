@@ -45,26 +45,27 @@ using namespace vigra;
 
 
 
-template<class IN_LABEL_TYPE>
-struct AdjacencyListGraphOffset1Test{
+
+struct AdjacencyListGraphOffTest{
 
 
-    typedef vigra::AdjacencyListGraph<1>                  GraphType;
-    typedef typename GraphType::Node                      Node;
-    typedef typename GraphType::Edge                      Edge;
-    typedef typename GraphType::Arc                       Arc;
-    typedef typename GraphType::EdgeIt                    EdgeIt;
-    typedef typename GraphType::NodeIt                    NodeIt;
-    typedef typename GraphType::ArcIt                     ArcIt;
-    typedef typename GraphType::IncEdgeIt                 IncEdgeIt;
-    typedef typename GraphType::InArcIt                   InArcIt;
-    typedef typename GraphType::OutArcIt                  OutArcIt;
-    typedef typename GraphType::NeighborNodeIt            NeighborNodeIt;
-    AdjacencyListGraphOffset1Test(){       
+    typedef vigra::AdjacencyListGraph                     GraphType;
+    typedef GraphType::Node                      Node;
+    typedef GraphType::Edge                      Edge;
+    typedef GraphType::Arc                       Arc;
+    typedef GraphType::EdgeIt                    EdgeIt;
+    typedef GraphType::NodeIt                    NodeIt;
+    typedef GraphType::ArcIt                     ArcIt;
+    typedef GraphType::IncEdgeIt                 IncEdgeIt;
+    typedef GraphType::InArcIt                   InArcIt;
+    typedef GraphType::OutArcIt                  OutArcIt;
+    typedef GraphType::NeighborNodeIt            NeighborNodeIt;
+    AdjacencyListGraphOffTest(){       
 
     }
-    void adjGraphSimpleTest(){
-        GraphType g;
+
+    void adjGraphSimpleTestStart0(){
+        GraphType g(0,0,true);
 
         // add nodes
         shouldEqual(g.nodeNum(),0);
@@ -79,6 +80,165 @@ struct AdjacencyListGraphOffset1Test{
         Node n1 = g.addNode();
         shouldEqual(g.nodeNum(),1);
         shouldEqual(g.edgeNum(),0);
+        shouldEqual(g.maxNodeId(),0);
+        should(g.nodeFromId(0)!=lemon::INVALID);
+        should(g.nodeFromId(1)==lemon::INVALID);
+        should(g.nodeFromId(2)==lemon::INVALID);
+        should(g.nodeFromId(3)==lemon::INVALID);
+        should(g.nodeFromId(4)==lemon::INVALID);
+        should(g.nodeFromId(5)==lemon::INVALID);
+
+        Node n2 = g.addNode();
+        shouldEqual(g.nodeNum(),2);
+        shouldEqual(g.edgeNum(),0);
+        shouldEqual(g.maxNodeId(),1);
+        should(g.nodeFromId(0)!=lemon::INVALID);
+        should(g.nodeFromId(1)!=lemon::INVALID);
+        should(g.nodeFromId(2)==lemon::INVALID);
+        should(g.nodeFromId(3)==lemon::INVALID);
+        should(g.nodeFromId(4)==lemon::INVALID);
+        should(g.nodeFromId(5)==lemon::INVALID);
+
+        Node n3 = g.addNode();
+        shouldEqual(g.nodeNum(),3);
+        shouldEqual(g.edgeNum(),0);
+        shouldEqual(g.maxNodeId(),2);
+        should(g.nodeFromId(0)!=lemon::INVALID);
+        should(g.nodeFromId(1)!=lemon::INVALID);
+        should(g.nodeFromId(2)!=lemon::INVALID);
+        should(g.nodeFromId(3)==lemon::INVALID);
+        should(g.nodeFromId(4)==lemon::INVALID);
+        should(g.nodeFromId(5)==lemon::INVALID);
+
+
+        Node n4 = g.addNode();
+        shouldEqual(g.nodeNum(),4);
+        shouldEqual(g.edgeNum(),0);
+        shouldEqual(g.maxNodeId(),3);
+        should(g.nodeFromId(0)!=lemon::INVALID);
+        should(g.nodeFromId(1)!=lemon::INVALID);
+        should(g.nodeFromId(2)!=lemon::INVALID);
+        should(g.nodeFromId(3)!=lemon::INVALID);
+        should(g.nodeFromId(4)==lemon::INVALID);
+        should(g.nodeFromId(5)==lemon::INVALID);
+
+        shouldEqual(g.edgeNum(),0);
+
+        should(  g.findEdge(n1,n2) == lemon::INVALID  );
+        should(  g.findEdge(n1,n3) == lemon::INVALID  );
+        should(  g.findEdge(n1,n4) == lemon::INVALID  );
+        should(  g.findEdge(n2,n3) == lemon::INVALID  );
+        should(  g.findEdge(n2,n4) == lemon::INVALID  );
+        should(  g.findEdge(n3,n4) == lemon::INVALID  );
+
+        // add edges
+        // SET UP THIS GRAPH 
+        // 1 |3
+        // __ __
+        // 2 |4
+
+        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(1)==lemon::INVALID);
+        should(g.edgeFromId(2)==lemon::INVALID);
+        should(g.edgeFromId(3)==lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
+
+
+        Edge e12  = g.addEdge(n1,n2);
+        shouldEqual(g.edgeNum(),1);
+        shouldEqual(g.maxEdgeId(),0);
+        should(g.u(e12)==n1);
+        should(g.v(e12)==n2);
+        should(g.edgeFromId(0)!=lemon::INVALID);
+        should(g.edgeFromId(1)==lemon::INVALID);
+        should(g.edgeFromId(2)==lemon::INVALID);
+        should(g.edgeFromId(3)==lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
+        should(  g.findEdge(n1,n2) != lemon::INVALID  );
+        should(  g.findEdge(n1,n3) == lemon::INVALID  );
+        should(  g.findEdge(n1,n4) == lemon::INVALID  );
+        should(  g.findEdge(n2,n3) == lemon::INVALID  );
+        should(  g.findEdge(n2,n4) == lemon::INVALID  );
+        should(  g.findEdge(n3,n4) == lemon::INVALID  );
+
+        Edge e13  = g.addEdge(n1,n3);
+        shouldEqual(g.edgeNum(),2);
+        shouldEqual(g.maxEdgeId(),1);
+        should(g.u(e13)==n1);
+        should(g.v(e13)==n3);
+        should(g.edgeFromId(0)!=lemon::INVALID);
+        should(g.edgeFromId(1)!=lemon::INVALID);
+        should(g.edgeFromId(2)==lemon::INVALID);
+        should(g.edgeFromId(3)==lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
+        should(  g.findEdge(n1,n2) != lemon::INVALID  );
+        should(  g.findEdge(n1,n3) != lemon::INVALID  );
+        should(  g.findEdge(n1,n4) == lemon::INVALID  );
+        should(  g.findEdge(n2,n3) == lemon::INVALID  );
+        should(  g.findEdge(n2,n4) == lemon::INVALID  );
+        should(  g.findEdge(n3,n4) == lemon::INVALID  );
+
+        Edge e24  = g.addEdge(n2,n4);
+        shouldEqual(g.edgeNum(),3);  
+        shouldEqual(g.maxEdgeId(),2);
+        should(g.u(e24)==n2);
+        should(g.v(e24)==n4);
+        should(g.edgeFromId(0)!=lemon::INVALID);
+        should(g.edgeFromId(1)!=lemon::INVALID);
+        should(g.edgeFromId(2)!=lemon::INVALID);
+        should(g.edgeFromId(3)==lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
+        should(  g.findEdge(n1,n2) != lemon::INVALID  );
+        should(  g.findEdge(n1,n3) != lemon::INVALID  );
+        should(  g.findEdge(n1,n4) == lemon::INVALID  );
+        should(  g.findEdge(n2,n3) == lemon::INVALID  );
+        should(  g.findEdge(n2,n4) != lemon::INVALID  );
+        should(  g.findEdge(n3,n4) == lemon::INVALID  );
+
+        Edge e34  = g.addEdge(n3,n4);
+        shouldEqual(g.edgeNum(),4);
+        shouldEqual(g.maxEdgeId(),3);
+        should(g.u(e34)==n3);
+        should(g.v(e34)==n4);
+        should(g.edgeFromId(0)!=lemon::INVALID);
+        should(g.edgeFromId(1)!=lemon::INVALID);
+        should(g.edgeFromId(2)!=lemon::INVALID);
+        should(g.edgeFromId(3)!=lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
+        should(  g.findEdge(n1,n2) != lemon::INVALID  );
+        should(  g.findEdge(n1,n3) != lemon::INVALID  );
+        should(  g.findEdge(n1,n4) == lemon::INVALID  );
+        should(  g.findEdge(n2,n3) == lemon::INVALID  );
+        should(  g.findEdge(n2,n4) != lemon::INVALID  );
+        should(  g.findEdge(n3,n4) != lemon::INVALID  );
+
+        // WE HAVE THIS THIS GRAPH 
+        // 1 |3
+        // __ __
+        // 2 |4
+    }
+    void adjGraphSimpleTestStart1(){
+        GraphType g(0,0,false);
+
+        // add nodes
+        shouldEqual(g.nodeNum(),0);
+        shouldEqual(g.edgeNum(),0);
+        should(g.nodeFromId(0)==lemon::INVALID);
+        should(g.nodeFromId(1)==lemon::INVALID);
+        should(g.nodeFromId(2)==lemon::INVALID);
+        should(g.nodeFromId(3)==lemon::INVALID);
+        should(g.nodeFromId(4)==lemon::INVALID);
+        should(g.nodeFromId(5)==lemon::INVALID);
+
+        Node n1 = g.addNode();
+        shouldEqual(g.nodeNum(),1);
+        shouldEqual(g.edgeNum(),0);
+        shouldEqual(g.maxNodeId(),1);
         should(g.nodeFromId(0)==lemon::INVALID);
         should(g.nodeFromId(1)!=lemon::INVALID);
         should(g.nodeFromId(2)==lemon::INVALID);
@@ -89,6 +249,7 @@ struct AdjacencyListGraphOffset1Test{
         Node n2 = g.addNode();
         shouldEqual(g.nodeNum(),2);
         shouldEqual(g.edgeNum(),0);
+        shouldEqual(g.maxNodeId(),2);
         should(g.nodeFromId(0)==lemon::INVALID);
         should(g.nodeFromId(1)!=lemon::INVALID);
         should(g.nodeFromId(2)!=lemon::INVALID);
@@ -99,6 +260,7 @@ struct AdjacencyListGraphOffset1Test{
         Node n3 = g.addNode();
         shouldEqual(g.nodeNum(),3);
         shouldEqual(g.edgeNum(),0);
+        shouldEqual(g.maxNodeId(),3);
         should(g.nodeFromId(0)==lemon::INVALID);
         should(g.nodeFromId(1)!=lemon::INVALID);
         should(g.nodeFromId(2)!=lemon::INVALID);
@@ -110,6 +272,7 @@ struct AdjacencyListGraphOffset1Test{
         Node n4 = g.addNode();
         shouldEqual(g.nodeNum(),4);
         shouldEqual(g.edgeNum(),0);
+        shouldEqual(g.maxNodeId(),4);
         should(g.nodeFromId(0)==lemon::INVALID);
         should(g.nodeFromId(1)!=lemon::INVALID);
         should(g.nodeFromId(2)!=lemon::INVALID);
@@ -132,8 +295,25 @@ struct AdjacencyListGraphOffset1Test{
         // __ __
         // 2 |4
 
+        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(1)==lemon::INVALID);
+        should(g.edgeFromId(2)==lemon::INVALID);
+        should(g.edgeFromId(3)==lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
+
+
         Edge e12  = g.addEdge(n1,n2);
         shouldEqual(g.edgeNum(),1);
+        shouldEqual(g.maxEdgeId(),1);
+        should(g.u(e12)==n1);
+        should(g.v(e12)==n2);
+        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(1)!=lemon::INVALID);
+        should(g.edgeFromId(2)==lemon::INVALID);
+        should(g.edgeFromId(3)==lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
         should(  g.findEdge(n1,n2) != lemon::INVALID  );
         should(  g.findEdge(n1,n3) == lemon::INVALID  );
         should(  g.findEdge(n1,n4) == lemon::INVALID  );
@@ -143,6 +323,15 @@ struct AdjacencyListGraphOffset1Test{
 
         Edge e13  = g.addEdge(n1,n3);
         shouldEqual(g.edgeNum(),2);
+        shouldEqual(g.maxEdgeId(),2);
+        should(g.u(e13)==n1);
+        should(g.v(e13)==n3);
+        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(1)!=lemon::INVALID);
+        should(g.edgeFromId(2)!=lemon::INVALID);
+        should(g.edgeFromId(3)==lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
         should(  g.findEdge(n1,n2) != lemon::INVALID  );
         should(  g.findEdge(n1,n3) != lemon::INVALID  );
         should(  g.findEdge(n1,n4) == lemon::INVALID  );
@@ -152,6 +341,15 @@ struct AdjacencyListGraphOffset1Test{
 
         Edge e24  = g.addEdge(n2,n4);
         shouldEqual(g.edgeNum(),3);  
+        shouldEqual(g.maxEdgeId(),3);
+        should(g.u(e24)==n2);
+        should(g.v(e24)==n4);
+        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(1)!=lemon::INVALID);
+        should(g.edgeFromId(2)!=lemon::INVALID);
+        should(g.edgeFromId(3)!=lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
         should(  g.findEdge(n1,n2) != lemon::INVALID  );
         should(  g.findEdge(n1,n3) != lemon::INVALID  );
         should(  g.findEdge(n1,n4) == lemon::INVALID  );
@@ -161,6 +359,15 @@ struct AdjacencyListGraphOffset1Test{
 
         Edge e34  = g.addEdge(n3,n4);
         shouldEqual(g.edgeNum(),4);
+        shouldEqual(g.maxEdgeId(),4);
+        should(g.u(e34)==n3);
+        should(g.v(e34)==n4);
+        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(1)!=lemon::INVALID);
+        should(g.edgeFromId(2)!=lemon::INVALID);
+        should(g.edgeFromId(3)!=lemon::INVALID);
+        should(g.edgeFromId(4)!=lemon::INVALID);
+        should(g.edgeFromId(5)==lemon::INVALID);
         should(  g.findEdge(n1,n2) != lemon::INVALID  );
         should(  g.findEdge(n1,n3) != lemon::INVALID  );
         should(  g.findEdge(n1,n4) == lemon::INVALID  );
@@ -172,14 +379,99 @@ struct AdjacencyListGraphOffset1Test{
         // 1 |3
         // __ __
         // 2 |4
-
     }
-    void adjGraphEdgeItTest()
+
+    void adjGraphEdgeItTestStart0()
     {
         // 1 |3
         // __ __
         // 2 |4
-        // create adjGraph
+        // create g
+        GraphType g(0,0,true);
+
+        Node n1=g.addNode();
+        Node n2=g.addNode();
+        Node n3=g.addNode();
+        Node n4=g.addNode();
+
+        g.addEdge(n1,n2);
+        g.addEdge(n1,n3);
+        g.addEdge(n2,n4);
+        g.addEdge(n3,n4);
+
+
+        
+
+        {
+            EdgeIt begin(g);
+            EdgeIt invalid(lemon::INVALID);
+
+            should(begin!=lemon::INVALID);
+
+            
+            std::vector<Edge> edgeVec(begin,invalid);
+            shouldEqual(4,edgeVec.size());
+            shouldEqual(0,g.id(edgeVec[0]));
+            shouldEqual(1,g.id(edgeVec[1]));
+            shouldEqual(2,g.id(edgeVec[2]));
+            shouldEqual(3,g.id(edgeVec[3]));
+        }
+        {
+            EdgeIt begin(g);
+            should(begin!=lemon::INVALID);
+
+            EdgeIt empty;
+            std::vector<Edge> edgeVec(begin,empty);
+            shouldEqual(4,edgeVec.size());
+            shouldEqual(0,g.id(edgeVec[0]));
+            shouldEqual(1,g.id(edgeVec[1]));
+            shouldEqual(2,g.id(edgeVec[2]));
+            shouldEqual(3,g.id(edgeVec[3]));
+        }
+        {
+            EdgeIt begin(g,g.edgeFromId(1));
+            should(begin!=lemon::INVALID);
+
+            EdgeIt empty;
+            std::vector<Edge> edgeVec(begin,empty);
+            shouldEqual(3,edgeVec.size());
+            shouldEqual(1,g.id(edgeVec[0]));
+            shouldEqual(2,g.id(edgeVec[1]));
+            shouldEqual(3,g.id(edgeVec[2]));
+        }
+        {
+            EdgeIt begin(g,g.edgeFromId(1));
+            EdgeIt end(g,g.edgeFromId(2));
+
+            should(begin!=lemon::INVALID);
+            should(end!=lemon::INVALID);    
+            should(begin!=end);
+
+            shouldEqual(std::distance(begin,end),1);
+            std::vector<Edge> edgeVec(begin,end);
+            shouldEqual(1,edgeVec.size());
+            shouldEqual(1,g.id(edgeVec[0]));
+        }
+
+        {
+            EdgeIt begin(g,g.edgeFromId(1));
+            EdgeIt end(g,g.edgeFromId(3));
+
+            should(begin!=lemon::INVALID);
+            should(end!=lemon::INVALID);
+
+            std::vector<Edge> edgeVec(begin,end);
+            shouldEqual(2,edgeVec.size());
+            shouldEqual(1,g.id(edgeVec[0]));
+            shouldEqual(2,g.id(edgeVec[1]));
+        }
+    }
+    void adjGraphEdgeItTestStart1()
+    {
+        // 1 |3
+        // __ __
+        // 2 |4
+        // create g
         GraphType g;
 
         Node n1=g.addNode();
@@ -187,10 +479,10 @@ struct AdjacencyListGraphOffset1Test{
         Node n3=g.addNode();
         Node n4=g.addNode();
 
-        Edge e12 = g.addEdge(n1,n2);
-        Edge e13 = g.addEdge(n1,n3);
-        Edge e24 = g.addEdge(n2,n4);
-        Edge e34 = g.addEdge(n3,n4);
+        g.addEdge(n1,n2);
+        g.addEdge(n1,n3);
+        g.addEdge(n2,n4);
+        g.addEdge(n3,n4);
 
 
         
@@ -259,12 +551,94 @@ struct AdjacencyListGraphOffset1Test{
             shouldEqual(3,g.id(edgeVec[1]));
         }
     }
-    void adjGraphNodeItTest()
+
+
+    void adjGraphNodeItTestStart0()
     {
         // 1 |3
         // __ __
         // 2 |4
-        // create adjGraph
+        // create g
+        GraphType g(0,0,true);
+
+        Node n1=g.addNode();
+        Node n2=g.addNode();
+        Node n3=g.addNode();
+        Node n4=g.addNode();
+
+        g.addEdge(n1,n2);
+        g.addEdge(n1,n3);
+        g.addEdge(n2,n4);
+        g.addEdge(n3,n4);
+
+        {
+            NodeIt begin(g);
+            NodeIt invalid(lemon::INVALID);
+
+            should(begin!=lemon::INVALID);            
+            std::vector<Node> nodeVec(begin,invalid);
+            shouldEqual(4,nodeVec.size());
+            shouldEqual(0,g.id(nodeVec[0]));
+            shouldEqual(1,g.id(nodeVec[1]));
+            shouldEqual(2,g.id(nodeVec[2]));
+            shouldEqual(3,g.id(nodeVec[3]));
+        }
+        {
+            NodeIt begin(g);
+            should(begin!=lemon::INVALID);
+
+            NodeIt empty;
+            std::vector<Node> nodeVec(begin,empty);
+            shouldEqual(4,nodeVec.size());
+            shouldEqual(0,g.id(nodeVec[0]));
+            shouldEqual(1,g.id(nodeVec[1]));
+            shouldEqual(2,g.id(nodeVec[2]));
+            shouldEqual(3,g.id(nodeVec[3]));
+        }
+        {
+            NodeIt begin(g,g.nodeFromId(1));
+            should(begin!=lemon::INVALID);
+
+            NodeIt empty;
+            std::vector<Node> nodeVec(begin,empty);
+            shouldEqual(3,nodeVec.size());
+            shouldEqual(1,g.id(nodeVec[0]));
+            shouldEqual(2,g.id(nodeVec[1]));
+            shouldEqual(3,g.id(nodeVec[2]));
+        }
+        {
+            NodeIt begin(g,g.nodeFromId(1));
+            NodeIt end(g,g.nodeFromId(2));
+
+            should(begin!=lemon::INVALID);
+            should(end!=lemon::INVALID);    
+            should(begin!=end);
+
+            shouldEqual(std::distance(begin,end),1);
+            std::vector<Node> nodeVec(begin,end);
+            shouldEqual(1,nodeVec.size());
+            shouldEqual(1,g.id(nodeVec[0]));
+        }
+
+        {
+            NodeIt begin(g,g.nodeFromId(1));
+            NodeIt end(g,g.nodeFromId(3));
+
+            should(begin!=lemon::INVALID);
+            should(end!=lemon::INVALID);
+
+            std::vector<Node> nodeVec(begin,end);
+            shouldEqual(2,nodeVec.size());
+            shouldEqual(1,g.id(nodeVec[0]));
+            shouldEqual(2,g.id(nodeVec[1]));
+        }
+    }
+    void adjGraphNodeItTestStart1()
+    {
+        // 1 |3
+        // __ __
+        // 2 |4
+        // create g
         GraphType g;
 
         Node n1=g.addNode();
@@ -272,10 +646,10 @@ struct AdjacencyListGraphOffset1Test{
         Node n3=g.addNode();
         Node n4=g.addNode();
 
-        Edge e12 = g.addEdge(n1,n2);
-        Edge e13 = g.addEdge(n1,n3);
-        Edge e24 = g.addEdge(n2,n4);
-        Edge e34 = g.addEdge(n3,n4);
+        g.addEdge(n1,n2);
+        g.addEdge(n1,n3);
+        g.addEdge(n2,n4);
+        g.addEdge(n3,n4);
 
         {
             NodeIt begin(g);
@@ -339,52 +713,43 @@ struct AdjacencyListGraphOffset1Test{
             shouldEqual(3,g.id(nodeVec[1]));
         }
     }
-
-    void adjGraphTest()
+    void adjGraphTestStart0()
     {
-        // 1 |3
-        // __ __
-        // 2 |4
-        // create adjGraph
-        GraphType adjGraph;
 
-        Node n1=adjGraph.addNode();
-        Node n2=adjGraph.addNode();
-        Node n3=adjGraph.addNode();
-        Node n4=adjGraph.addNode();
+        GraphType g(0,0,true);
 
-        Edge e12 = adjGraph.addEdge(n1,n2);
-        Edge e13 = adjGraph.addEdge(n1,n3);
-        Edge e24 = adjGraph.addEdge(n2,n4);
-        Edge e34 = adjGraph.addEdge(n3,n4);
+        Node n1=g.addNode();
+        Node n2=g.addNode();
+        Node n3=g.addNode();
+        Node n4=g.addNode();
+
+        g.addEdge(n1,n2);
+        g.addEdge(n1,n3);
+        g.addEdge(n2,n4);
+        g.addEdge(n3,n4);
 
 
 
 
         
         // assert basic sizes
-        should(adjGraph.edgeNum()==4);
-        should(adjGraph.nodeNum()==4);
-        should(adjGraph.arcNum()==8);
-        should(adjGraph.maxEdgeId()==4);
-        should(adjGraph.maxNodeId()==4);
-        should(adjGraph.maxArcId()==8);
+        should(g.edgeNum()==4);
+        should(g.nodeNum()==4);
+        should(g.arcNum()==8);
+        should(g.maxEdgeId()==3);
+        should(g.maxNodeId()==3);
+        should(g.maxArcId()==7);
 
-        should( adjGraph.findEdge(adjGraph.nodeFromId(1),adjGraph.nodeFromId(3) )!=lemon::INVALID);
-        should( adjGraph.findEdge(adjGraph.nodeFromId(1),adjGraph.nodeFromId(2) )!=lemon::INVALID);
-        should( adjGraph.findEdge(adjGraph.nodeFromId(2),adjGraph.nodeFromId(4) )!=lemon::INVALID);
-        should( adjGraph.findEdge(adjGraph.nodeFromId(3),adjGraph.nodeFromId(4) )!=lemon::INVALID);
-        should( adjGraph.findEdge(adjGraph.nodeFromId(1),adjGraph.nodeFromId(4) )==lemon::INVALID);
-        should( adjGraph.findEdge(adjGraph.nodeFromId(2),adjGraph.nodeFromId(3) )==lemon::INVALID);
 
-        NodeIt nbegin(adjGraph);
+
+        NodeIt nbegin(g);
         NodeIt nend(lemon::INVALID);
 
-        EdgeIt ebegin(adjGraph);
+        EdgeIt ebegin(g);
         EdgeIt eend(lemon::INVALID);
 
 
-        ArcIt abegin(adjGraph);
+        ArcIt abegin(g);
         ArcIt aend(lemon::INVALID);
 
         std::vector<Node> allNodes(nbegin,nend);
@@ -394,58 +759,78 @@ struct AdjacencyListGraphOffset1Test{
         should(allEdges.size()==4);
 
 
-        should(1==adjGraph.id( allEdges[0] ) );
-        should(2==adjGraph.id( allEdges[1] ) );
-        should(3==adjGraph.id( allEdges[2] ) );
-        should(4==adjGraph.id( allEdges[3] ) );
+        should(0==g.id( allEdges[0] ) );
+        should(1==g.id( allEdges[1] ) );
+        should(2==g.id( allEdges[2] ) );
+        should(3==g.id( allEdges[3] ) );
         
 
         std::vector<Arc>  allArcs( abegin,aend);
+
         should(allArcs.size() ==8);
-        for(size_t a=0;a<allArcs.size();++a){
-            should(a+1==adjGraph.id( allArcs[a] ) );
-        }
+
+
+        shouldEqual(g.id(allArcs[0]),0);
+        shouldEqual(g.id(allArcs[1]),1);
+        shouldEqual(g.id(allArcs[2]),2);
+        shouldEqual(g.id(allArcs[3]),3);
+        shouldEqual(g.id(allArcs[4]),4);
+        shouldEqual(g.id(allArcs[5]),5);
+        shouldEqual(g.id(allArcs[6]),6);
+        shouldEqual(g.id(allArcs[7]),7);
+
+        shouldEqual(allArcs[0].edgeId(),0);
+        shouldEqual(allArcs[1].edgeId(),1);
+        shouldEqual(allArcs[2].edgeId(),2);
+        shouldEqual(allArcs[3].edgeId(),3);
+        shouldEqual(allArcs[4].edgeId(),0);
+        shouldEqual(allArcs[5].edgeId(),1);
+        shouldEqual(allArcs[6].edgeId(),2);
+        shouldEqual(allArcs[7].edgeId(),3);
         
-
-        should( adjGraph.id(adjGraph.source(allArcs[0]))==adjGraph.id(adjGraph.u(allEdges[0])));
-        should( adjGraph.id(adjGraph.source(allArcs[1]))==adjGraph.id(adjGraph.u(allEdges[1])));
-        should( adjGraph.id(adjGraph.source(allArcs[2]))==adjGraph.id(adjGraph.u(allEdges[2])));
-        should( adjGraph.id(adjGraph.source(allArcs[3]))==adjGraph.id(adjGraph.u(allEdges[3])));
-
-        should( adjGraph.id(adjGraph.target(allArcs[0]))==adjGraph.id(adjGraph.v(allEdges[0])));
-        should( adjGraph.id(adjGraph.target(allArcs[1]))==adjGraph.id(adjGraph.v(allEdges[1])));
-        should( adjGraph.id(adjGraph.target(allArcs[2]))==adjGraph.id(adjGraph.v(allEdges[2])));
-        should( adjGraph.id(adjGraph.target(allArcs[3]))==adjGraph.id(adjGraph.v(allEdges[3])));
+        shouldEqual(allArcs[0].id(),0);
+        shouldEqual(allArcs[1].id(),1);
+        shouldEqual(allArcs[2].id(),2);
+        shouldEqual(allArcs[3].id(),3);
+        shouldEqual(allArcs[4].id(),4);
+        shouldEqual(allArcs[5].id(),5);
+        shouldEqual(allArcs[6].id(),6);
+        shouldEqual(allArcs[7].id(),7);
 
 
-        should( adjGraph.id(adjGraph.source(allArcs[0]))==adjGraph.id(adjGraph.target(allArcs[0+4])));
-        should( adjGraph.id(adjGraph.source(allArcs[1]))==adjGraph.id(adjGraph.target(allArcs[1+4])));
-        should( adjGraph.id(adjGraph.source(allArcs[2]))==adjGraph.id(adjGraph.target(allArcs[2+4])));
-        should( adjGraph.id(adjGraph.source(allArcs[3]))==adjGraph.id(adjGraph.target(allArcs[3+4])));
+        shouldEqual( g.id(g.source(allArcs[0])),g.id(g.u(allEdges[0])));
+        shouldEqual( g.id(g.source(allArcs[1])),g.id(g.u(allEdges[1])));
+        shouldEqual( g.id(g.source(allArcs[2])),g.id(g.u(allEdges[2])));
+        shouldEqual( g.id(g.source(allArcs[3])),g.id(g.u(allEdges[3])));
+        shouldEqual( g.id(g.target(allArcs[0])),g.id(g.v(allEdges[0])));
+        shouldEqual( g.id(g.target(allArcs[1])),g.id(g.v(allEdges[1])));
+        shouldEqual( g.id(g.target(allArcs[2])),g.id(g.v(allEdges[2])));
+        shouldEqual( g.id(g.target(allArcs[3])),g.id(g.v(allEdges[3])));
 
-        should( adjGraph.id(adjGraph.target(allArcs[0]))==adjGraph.id(adjGraph.source(allArcs[0+4])));
-        should( adjGraph.id(adjGraph.target(allArcs[1]))==adjGraph.id(adjGraph.source(allArcs[1+4])));
-        should( adjGraph.id(adjGraph.target(allArcs[2]))==adjGraph.id(adjGraph.source(allArcs[2+4])));
-        should( adjGraph.id(adjGraph.target(allArcs[3]))==adjGraph.id(adjGraph.source(allArcs[3+4])));
+        shouldEqual( g.id(g.source(allArcs[0])),g.id(g.target(allArcs[0+4])));
+        shouldEqual( g.id(g.source(allArcs[1])),g.id(g.target(allArcs[1+4])));
+        shouldEqual( g.id(g.source(allArcs[2])),g.id(g.target(allArcs[2+4])));
+        shouldEqual( g.id(g.source(allArcs[3])),g.id(g.target(allArcs[3+4])));
+        shouldEqual( g.id(g.target(allArcs[0])),g.id(g.source(allArcs[0+4])));
+        shouldEqual( g.id(g.target(allArcs[1])),g.id(g.source(allArcs[1+4])));
+        shouldEqual( g.id(g.target(allArcs[2])),g.id(g.source(allArcs[2+4])));
+        shouldEqual( g.id(g.target(allArcs[3])),g.id(g.source(allArcs[3+4])));
 
-
-        should( adjGraph.id(adjGraph.source(allArcs[4]))==adjGraph.id(adjGraph.v(allEdges[0])));
-        should( adjGraph.id(adjGraph.source(allArcs[5]))==adjGraph.id(adjGraph.v(allEdges[1])));
-        should( adjGraph.id(adjGraph.source(allArcs[6]))==adjGraph.id(adjGraph.v(allEdges[2])));
-        should( adjGraph.id(adjGraph.source(allArcs[7]))==adjGraph.id(adjGraph.v(allEdges[3])));
-
-        should( adjGraph.id(adjGraph.target(allArcs[4]))==adjGraph.id(adjGraph.u(allEdges[0])));
-        should( adjGraph.id(adjGraph.target(allArcs[5]))==adjGraph.id(adjGraph.u(allEdges[1])));
-        should( adjGraph.id(adjGraph.target(allArcs[6]))==adjGraph.id(adjGraph.u(allEdges[2])));
-        should( adjGraph.id(adjGraph.target(allArcs[7]))==adjGraph.id(adjGraph.u(allEdges[3])));
+        shouldEqual( g.id(g.source(allArcs[4])),g.id(g.v(allEdges[0])));
+        shouldEqual( g.id(g.source(allArcs[5])),g.id(g.v(allEdges[1])));
+        shouldEqual( g.id(g.source(allArcs[6])),g.id(g.v(allEdges[2])));
+        shouldEqual( g.id(g.source(allArcs[7])),g.id(g.v(allEdges[3])));
+        shouldEqual( g.id(g.target(allArcs[4])),g.id(g.u(allEdges[0])));
+        shouldEqual( g.id(g.target(allArcs[5])),g.id(g.u(allEdges[1])));
+        shouldEqual( g.id(g.target(allArcs[6])),g.id(g.u(allEdges[2])));
+        shouldEqual( g.id(g.target(allArcs[7])),g.id(g.u(allEdges[3])));
     }
-
-    void adjGraphArcTest()
+    void adjGraphTestStart1()
     {
         // 1 |3
         // __ __
         // 2 |4
-        // create adjGraph
+        // create g
         GraphType g;
 
         Node n1=g.addNode();
@@ -453,10 +838,134 @@ struct AdjacencyListGraphOffset1Test{
         Node n3=g.addNode();
         Node n4=g.addNode();
 
-        Edge e12 = g.addEdge(n1,n2);
-        Edge e13 = g.addEdge(n1,n3);
-        Edge e24 = g.addEdge(n2,n4);
-        Edge e34 = g.addEdge(n3,n4);
+       g.addEdge(n1,n2);
+       g.addEdge(n1,n3);
+       g.addEdge(n2,n4);
+       g.addEdge(n3,n4);
+
+
+
+
+        
+        // assert basic sizes
+        should(g.edgeNum()==4);
+        should(g.nodeNum()==4);
+        should(g.arcNum()==8);
+        should(g.maxEdgeId()==4);
+        should(g.maxNodeId()==4);
+        should(g.maxArcId()==9);
+
+        should( g.findEdge(g.nodeFromId(1),g.nodeFromId(3) )!=lemon::INVALID);
+        should( g.findEdge(g.nodeFromId(1),g.nodeFromId(2) )!=lemon::INVALID);
+        should( g.findEdge(g.nodeFromId(2),g.nodeFromId(4) )!=lemon::INVALID);
+        should( g.findEdge(g.nodeFromId(3),g.nodeFromId(4) )!=lemon::INVALID);
+        should( g.findEdge(g.nodeFromId(1),g.nodeFromId(4) )==lemon::INVALID);
+        should( g.findEdge(g.nodeFromId(2),g.nodeFromId(3) )==lemon::INVALID);
+
+        NodeIt nbegin(g);
+        NodeIt nend(lemon::INVALID);
+
+        EdgeIt ebegin(g);
+        EdgeIt eend(lemon::INVALID);
+
+
+        ArcIt abegin(g);
+        ArcIt aend(lemon::INVALID);
+
+        std::vector<Node> allNodes(nbegin,nend);
+        should(allNodes.size()==4);
+
+        std::vector<Edge> allEdges(ebegin,eend);
+        should(allEdges.size()==4);
+
+
+        should(1==g.id( allEdges[0] ) );
+        should(2==g.id( allEdges[1] ) );
+        should(3==g.id( allEdges[2] ) );
+        should(4==g.id( allEdges[3] ) );
+        
+
+        std::vector<Arc>  allArcs( abegin,aend);
+        should(allArcs.size() ==8);
+
+        shouldEqual(g.id(allArcs[0]),1);
+        shouldEqual(g.id(allArcs[1]),2);
+        shouldEqual(g.id(allArcs[2]),3);
+        shouldEqual(g.id(allArcs[3]),4);
+        shouldEqual(g.id(allArcs[4]),6);
+        shouldEqual(g.id(allArcs[5]),7);
+        shouldEqual(g.id(allArcs[6]),8);
+        shouldEqual(g.id(allArcs[7]),9);
+
+        shouldEqual(allArcs[0].edgeId(),1);
+        shouldEqual(allArcs[1].edgeId(),2);
+        shouldEqual(allArcs[2].edgeId(),3);
+        shouldEqual(allArcs[3].edgeId(),4);
+        shouldEqual(allArcs[4].edgeId(),1);
+        shouldEqual(allArcs[5].edgeId(),2);
+        shouldEqual(allArcs[6].edgeId(),3);
+        shouldEqual(allArcs[7].edgeId(),4);
+        
+        shouldEqual(allArcs[0].id(),1);
+        shouldEqual(allArcs[1].id(),2);
+        shouldEqual(allArcs[2].id(),3);
+        shouldEqual(allArcs[3].id(),4);
+        shouldEqual(allArcs[4].id(),6);
+        shouldEqual(allArcs[5].id(),7);
+        shouldEqual(allArcs[6].id(),8);
+        shouldEqual(allArcs[7].id(),9);
+        
+
+        should( g.id(g.source(allArcs[0]))==g.id(g.u(allEdges[0])));
+        should( g.id(g.source(allArcs[1]))==g.id(g.u(allEdges[1])));
+        should( g.id(g.source(allArcs[2]))==g.id(g.u(allEdges[2])));
+        should( g.id(g.source(allArcs[3]))==g.id(g.u(allEdges[3])));
+
+        should( g.id(g.target(allArcs[0]))==g.id(g.v(allEdges[0])));
+        should( g.id(g.target(allArcs[1]))==g.id(g.v(allEdges[1])));
+        should( g.id(g.target(allArcs[2]))==g.id(g.v(allEdges[2])));
+        should( g.id(g.target(allArcs[3]))==g.id(g.v(allEdges[3])));
+
+
+        should( g.id(g.source(allArcs[0]))==g.id(g.target(allArcs[0+4])));
+        should( g.id(g.source(allArcs[1]))==g.id(g.target(allArcs[1+4])));
+        should( g.id(g.source(allArcs[2]))==g.id(g.target(allArcs[2+4])));
+        should( g.id(g.source(allArcs[3]))==g.id(g.target(allArcs[3+4])));
+
+        should( g.id(g.target(allArcs[0]))==g.id(g.source(allArcs[0+4])));
+        should( g.id(g.target(allArcs[1]))==g.id(g.source(allArcs[1+4])));
+        should( g.id(g.target(allArcs[2]))==g.id(g.source(allArcs[2+4])));
+        should( g.id(g.target(allArcs[3]))==g.id(g.source(allArcs[3+4])));
+
+
+        should( g.id(g.source(allArcs[4]))==g.id(g.v(allEdges[0])));
+        should( g.id(g.source(allArcs[5]))==g.id(g.v(allEdges[1])));
+        should( g.id(g.source(allArcs[6]))==g.id(g.v(allEdges[2])));
+        should( g.id(g.source(allArcs[7]))==g.id(g.v(allEdges[3])));
+
+        should( g.id(g.target(allArcs[4]))==g.id(g.u(allEdges[0])));
+        should( g.id(g.target(allArcs[5]))==g.id(g.u(allEdges[1])));
+        should( g.id(g.target(allArcs[6]))==g.id(g.u(allEdges[2])));
+        should( g.id(g.target(allArcs[7]))==g.id(g.u(allEdges[3])));
+    }
+
+    void adjGraphArcTest()
+    {
+        // 1 |3
+        // __ __
+        // 2 |4
+        // create g
+        GraphType g;
+
+        Node n1=g.addNode();
+        Node n2=g.addNode();
+        Node n3=g.addNode();
+        Node n4=g.addNode();
+
+        g.addEdge(n1,n2);
+        g.addEdge(n1,n3);
+        g.addEdge(n2,n4);
+        g.addEdge(n3,n4);
         
         // check sources and targets of arcs which are just the "natural edges"
         should(  g.source(g.arcFromId(1)) == g.u(g.edgeFromId(1)) );
@@ -473,25 +982,25 @@ struct AdjacencyListGraphOffset1Test{
 
 
         // check sources and targets of arcs which are flipped "natural edges"
-        should(  g.source(g.arcFromId(5)) == g.v(g.edgeFromId(1)) );
-        should(  g.source(g.arcFromId(6)) == g.v(g.edgeFromId(2)) );
-        should(  g.source(g.arcFromId(7)) == g.v(g.edgeFromId(3)) );
-        should(  g.source(g.arcFromId(8)) == g.v(g.edgeFromId(4)) );
-
-        should(  g.target(g.arcFromId(5)) == g.u(g.edgeFromId(1)) );
-        should(  g.target(g.arcFromId(6)) == g.u(g.edgeFromId(2)) );
-        should(  g.target(g.arcFromId(7)) == g.u(g.edgeFromId(3)) );
-        should(  g.target(g.arcFromId(8)) == g.u(g.edgeFromId(4)) );
+        should(  g.source(g.arcFromId(6)) == g.v(g.edgeFromId(1)) );
+        should(  g.source(g.arcFromId(7)) == g.v(g.edgeFromId(2)) );
+        should(  g.source(g.arcFromId(8)) == g.v(g.edgeFromId(3)) );
+        should(  g.source(g.arcFromId(9)) == g.v(g.edgeFromId(4)) );
+        should(  g.target(g.arcFromId(6)) == g.u(g.edgeFromId(1)) );
+        should(  g.target(g.arcFromId(7)) == g.u(g.edgeFromId(2)) );
+        should(  g.target(g.arcFromId(8)) == g.u(g.edgeFromId(3)) );
+        should(  g.target(g.arcFromId(9)) == g.u(g.edgeFromId(4)) );
 
         // check that arcs are convertible to edges
         should(Edge(g.arcFromId(1))==g.edgeFromId(1));
         should(Edge(g.arcFromId(2))==g.edgeFromId(2));
         should(Edge(g.arcFromId(3))==g.edgeFromId(3));
         should(Edge(g.arcFromId(4))==g.edgeFromId(4));
-        should(Edge(g.arcFromId(5))==g.edgeFromId(1));
-        should(Edge(g.arcFromId(6))==g.edgeFromId(2));
-        should(Edge(g.arcFromId(7))==g.edgeFromId(3));
-        should(Edge(g.arcFromId(8))==g.edgeFromId(4));
+
+        should(Edge(g.arcFromId(6))==g.edgeFromId(1));
+        should(Edge(g.arcFromId(7))==g.edgeFromId(2));
+        should(Edge(g.arcFromId(8))==g.edgeFromId(3));
+        should(Edge(g.arcFromId(9))==g.edgeFromId(4));
 
     }
 
@@ -500,7 +1009,7 @@ struct AdjacencyListGraphOffset1Test{
         // 1 |3
         // __ __
         // 2 |4
-        // create adjGraph
+        // create g
         GraphType g;
 
         Node n1=g.addNode();
@@ -508,10 +1017,10 @@ struct AdjacencyListGraphOffset1Test{
         Node n3=g.addNode();
         Node n4=g.addNode();
 
-        Edge e12 = g.addEdge(n1,n2);
-        Edge e13 = g.addEdge(n1,n3);
-        Edge e24 = g.addEdge(n2,n4);
-        Edge e34 = g.addEdge(n3,n4);
+        g.addEdge(n1,n2);
+        g.addEdge(n1,n3);
+        g.addEdge(n2,n4);
+        g.addEdge(n3,n4);
         {
             ArcIt begin(g);
             ArcIt invalid(lemon::INVALID);
@@ -523,10 +1032,10 @@ struct AdjacencyListGraphOffset1Test{
             shouldEqual(2,g.id(arcVec[1]));
             shouldEqual(3,g.id(arcVec[2]));
             shouldEqual(4,g.id(arcVec[3]));
-            shouldEqual(5,g.id(arcVec[4]));
-            shouldEqual(6,g.id(arcVec[5]));
-            shouldEqual(7,g.id(arcVec[6]));
-            shouldEqual(8,g.id(arcVec[7]));
+            shouldEqual(6,g.id(arcVec[4]));
+            shouldEqual(7,g.id(arcVec[5]));
+            shouldEqual(8,g.id(arcVec[6]));
+            shouldEqual(9,g.id(arcVec[7]));
         }
         {
             ArcIt begin(g);
@@ -539,10 +1048,10 @@ struct AdjacencyListGraphOffset1Test{
             shouldEqual(2,g.id(arcVec[1]));
             shouldEqual(3,g.id(arcVec[2]));
             shouldEqual(4,g.id(arcVec[3]));
-            shouldEqual(5,g.id(arcVec[4]));
-            shouldEqual(6,g.id(arcVec[5]));
-            shouldEqual(7,g.id(arcVec[6]));
-            shouldEqual(8,g.id(arcVec[7]));
+            shouldEqual(6,g.id(arcVec[4]));
+            shouldEqual(7,g.id(arcVec[5]));
+            shouldEqual(8,g.id(arcVec[6]));
+            shouldEqual(9,g.id(arcVec[7]));
         }
         {
             ArcIt begin(g,g.arcFromId(2));
@@ -554,10 +1063,10 @@ struct AdjacencyListGraphOffset1Test{
             shouldEqual(2,g.id(arcVec[0]));
             shouldEqual(3,g.id(arcVec[1]));
             shouldEqual(4,g.id(arcVec[2]));
-            shouldEqual(5,g.id(arcVec[3]));
-            shouldEqual(6,g.id(arcVec[4]));
-            shouldEqual(7,g.id(arcVec[5]));
-            shouldEqual(8,g.id(arcVec[6]));
+            shouldEqual(6,g.id(arcVec[3]));
+            shouldEqual(7,g.id(arcVec[4]));
+            shouldEqual(8,g.id(arcVec[5]));
+            shouldEqual(9,g.id(arcVec[6]));
         }
         {
             ArcIt begin(g,g.arcFromId(2));
@@ -588,11 +1097,11 @@ struct AdjacencyListGraphOffset1Test{
     }
 
     void adjGraphFindEdgeTest(){
-        // 1 |3
-        // __ __
-        // 2 |4
-        // create adjGraph
-        GraphType g;
+
+
+        {
+
+        GraphType g(0,0,false);
 
         Node n1=g.addNode();
         Node n2=g.addNode();
@@ -623,20 +1132,131 @@ struct AdjacencyListGraphOffset1Test{
         should(g.findEdge(n1,n4)==lemon::INVALID);
         should(g.findEdge(n4,n1)==lemon::INVALID);
 
+        }
+
+        {
+        GraphType g(0,0,true);
+
+        Node n1=g.addNode();
+        Node n2=g.addNode();
+        Node n3=g.addNode();
+        Node n4=g.addNode();
+
+        Edge e12 = g.addEdge(n1,n2);
+        Edge e13 = g.addEdge(n1,n3);
+        Edge e24 = g.addEdge(n2,n4);
+        Edge e34 = g.addEdge(n3,n4);
+
+
+        e12 = g.findEdge(n1,n2);
+        e13 = g.findEdge(n1,n3);
+        e24 = g.findEdge(n2,n4);
+        e34 = g.findEdge(n3,n4);
+
+
+
+        should(e12!=lemon::INVALID);
+        should(e13!=lemon::INVALID);
+        should(e24!=lemon::INVALID);
+        should(e34!=lemon::INVALID);
+
+
+        should(g.findEdge(n2,n3)==lemon::INVALID);
+        should(g.findEdge(n3,n2)==lemon::INVALID);
+        should(g.findEdge(n1,n4)==lemon::INVALID);
+        should(g.findEdge(n4,n1)==lemon::INVALID);
+        }
     }
 
 
-    
-    
-
-
-
-    void adjGraphIncEdgeItTest()
+    void adjGraphIncEdgeItTestStart0()
     {
         // 1 |3
         // __ __
         // 2 |4
-        // create adjGraph
+        // create g
+        GraphType g(0,0,true);
+
+        Node n1=g.addNode();
+        Node n2=g.addNode();
+        Node n3=g.addNode();
+        Node n4=g.addNode();
+
+        Edge e12 = g.addEdge(n1,n2);
+        Edge e13 = g.addEdge(n1,n3);
+        Edge e24 = g.addEdge(n2,n4);
+        Edge e34 = g.addEdge(n3,n4);
+
+        // get edges
+
+
+        {
+            IncEdgeIt a(g,n1);
+            IncEdgeIt b(lemon::INVALID);
+            should(a!=b);
+            should(b==lemon::INVALID);
+            should(a!=lemon::INVALID);
+            shouldEqual(std::distance(a,b),2);
+
+            std::set<Edge> eSet(a,b);
+            shouldEqual(eSet.size(),2);
+            should(eSet.find(e13)!=eSet.end());
+            should(eSet.find(e12)!=eSet.end());
+            should(eSet.find(e34)==eSet.end());
+            should(eSet.find(e24)==eSet.end());
+        }
+        {
+            IncEdgeIt a(g,n2);
+            IncEdgeIt b(lemon::INVALID);
+            should(a!=b);
+            should(b==lemon::INVALID);
+            should(a!=lemon::INVALID);
+            shouldEqual(std::distance(a,b),2);
+
+            std::set<Edge> eSet(a,b);
+            shouldEqual(eSet.size(),2);
+            should(eSet.find(e12)!=eSet.end());
+            should(eSet.find(e24)!=eSet.end());
+            should(eSet.find(e34)==eSet.end());
+            should(eSet.find(e13)==eSet.end());
+        }
+        {
+            IncEdgeIt a(g,n3);
+            IncEdgeIt b(lemon::INVALID);
+            should(a!=b);
+            should(b==lemon::INVALID);
+            should(a!=lemon::INVALID);
+            shouldEqual(std::distance(a,b),2);
+
+            std::set<Edge> eSet(a,b);
+            shouldEqual(eSet.size(),2);
+            should(eSet.find(e13)!=eSet.end());
+            should(eSet.find(e34)!=eSet.end());
+            should(eSet.find(e12)==eSet.end());
+            should(eSet.find(e24)==eSet.end());
+        }
+        {
+            IncEdgeIt a(g,n4);
+            IncEdgeIt b(lemon::INVALID);
+            should(a!=b);
+            should(b==lemon::INVALID);
+            should(a!=lemon::INVALID);
+            shouldEqual(std::distance(a,b),2);
+
+            std::set<Edge> eSet(a,b);
+            shouldEqual(eSet.size(),2);
+            should(eSet.find(e24)!=eSet.end());
+            should(eSet.find(e34)!=eSet.end());
+            should(eSet.find(e12)==eSet.end());
+            should(eSet.find(e13)==eSet.end());
+        }
+    }
+    void adjGraphIncEdgeItTestStart1()
+    {
+        // 1 |3
+        // __ __
+        // 2 |4
+        // create g
         GraphType g;
 
         Node n1=g.addNode();
@@ -712,17 +1332,14 @@ struct AdjacencyListGraphOffset1Test{
             should(eSet.find(e12)==eSet.end());
             should(eSet.find(e13)==eSet.end());
         }
-
-    
     }
-
 
     void adjGraphInArcItTest()
     {
         // 1 |3
         // __ __
         // 2 |4
-        // create adjGraph
+        // create g
         GraphType g;
 
         Node n1=g.addNode();
@@ -806,7 +1423,7 @@ struct AdjacencyListGraphOffset1Test{
         // 1 |3
         // __ __
         // 2 |4
-        // create adjGraph
+        // create g
         GraphType g;
 
         Node n1=g.addNode();
@@ -895,17 +1512,22 @@ struct AdjacencyListGraphTestSuite
         
 
 
-        
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphSimpleTest));
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphTest));
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphArcTest));
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphFindEdgeTest));
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphEdgeItTest));
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphNodeItTest));
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphArcItTest));
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphIncEdgeItTest));
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphInArcItTest));
-        add( testCase( &AdjacencyListGraphOffset1Test<vigra::UInt32>::adjGraphOutArcItTest));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphSimpleTestStart0));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphSimpleTestStart1));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphNodeItTestStart0));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphNodeItTestStart1));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphEdgeItTestStart0));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphEdgeItTestStart1));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphFindEdgeTest));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphIncEdgeItTestStart0));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphIncEdgeItTestStart1));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphTestStart0));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphTestStart1));
+
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphArcTest));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphArcItTest));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphInArcItTest));
+        add( testCase( &AdjacencyListGraphOffTest::adjGraphOutArcItTest));
 
 
     }

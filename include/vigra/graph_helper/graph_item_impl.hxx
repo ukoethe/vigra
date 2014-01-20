@@ -235,9 +235,11 @@ namespace vigra{
                 //GenericNodeImpl( const GenericNodeImpl& other );      // non construction-copyable
                 //GenericNodeImpl & operator=( const GenericNodeImpl& ); // non assignable
             public:
-                GenericNodeImpl(){
 
+                GenericNodeImpl(const lemon::Invalid iv=lemon::INVALID)
+                :  id_(-1){
                 }
+
                 GenericNodeImpl(const index_type id)
                 :   id_(id){
                  }
@@ -307,16 +309,12 @@ namespace vigra{
             public:
                 typedef INDEX_TYPE index_type;
 
-                GenericEdgeImpl(){}
+                GenericEdgeImpl(const lemon::Invalid iv=lemon::INVALID)
+                :    vigra::TinyVector<INDEX_TYPE,3>(-1){
+                }
 
-                GenericEdgeImpl(
-                    const index_type u,
-                    const index_type v,
-                    const index_type id
-                ):
-                vigra::TinyVector<INDEX_TYPE,3>(u,v,id)
-                {
-
+                GenericEdgeImpl(const index_type u,const index_type v, const index_type id)   
+                :    vigra::TinyVector<INDEX_TYPE,3>(u,v,id){
                 }
             // public methods
             public:
