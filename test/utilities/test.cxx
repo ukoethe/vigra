@@ -498,12 +498,12 @@ struct BucketQueueTest
 };
 
 
-struct DynamicPriorityQueueTest
+struct ChangeablePriorityQueueTest
 {
-    typedef DynamicPriorityQueue<float, std::less<float>    > MinQueueType;
-    typedef DynamicPriorityQueue<float, std::greater<float> > MaxQueueType;
+    typedef ChangeablePriorityQueue<float, std::less<float>    > MinQueueType;
+    typedef ChangeablePriorityQueue<float, std::greater<float> > MaxQueueType;
 
-    DynamicPriorityQueueTest()
+    ChangeablePriorityQueueTest()
     {
 
     }
@@ -1114,7 +1114,7 @@ struct DynamicPriorityQueueTest
             shouldEqualTolerance(q.topPriority(),4.0,tol);
 
 
-            q.deletePriority(2);
+            q.deleteItem(2);
             // CURRENT VALUES
             //-----------------
             // 0 => 2.0
@@ -1135,7 +1135,7 @@ struct DynamicPriorityQueueTest
             shouldEqualTolerance(q.topPriority(),4.0,tol);
 
 
-            q.deletePriority(1);
+            q.deleteItem(1);
             // CURRENT VALUES
             //-----------------
             // 0 => 2.0
@@ -1280,8 +1280,8 @@ struct UtilitiesTestSuite
         add( testCase( &BucketQueueTest::testAscending));
         add( testCase( &BucketQueueTest::testDescendingMapped));
         add( testCase( &BucketQueueTest::testAscendingMapped));
-        add( testCase( &DynamicPriorityQueueTest::testMinQueue));
-        add( testCase( &DynamicPriorityQueueTest::testMaxQueue));
+        add( testCase( &ChangeablePriorityQueueTest::testMinQueue));
+        add( testCase( &ChangeablePriorityQueueTest::testMaxQueue));
         add( testCase( &SizedIntTest::testSizedInt));
         add( testCase( &MetaprogrammingTest::testInt));
         add( testCase( &MetaprogrammingTest::testLogic));

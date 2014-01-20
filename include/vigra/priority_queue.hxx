@@ -223,7 +223,7 @@ class BucketQueue<ValueType, true> // ascending queue
     Thus functor is called within <tt>push</tt> so that it does not need an
     extra argument.
 
-    <b>\#include</b> \<vigra/bucket_queue.hxx\><br>
+    <b>\#include</b> \<vigra/priority_queue.hxx\><br>
     Namespace: vigra
 */
 template <class ValueType,
@@ -281,7 +281,7 @@ class MappedBucketQueue
     types. Internally, it uses a <tt>std::priority_queue</tt>, but implements an 
     API where priorities and payload data are separate, like in \ref vigra::BucketQueue.
 
-    <b>\#include</b> \<vigra/bucket_queue.hxx\><br>
+    <b>\#include</b> \<vigra/priority_queue.hxx\><br>
     Namespace: vigra
 */
 template <class ValueType,
@@ -401,7 +401,7 @@ class PriorityQueue<ValueType, unsigned short, Ascending>
 
 
 template<class T,class COMPARE = std::less<T> >
-class DynamicPriorityQueue {
+class ChangeablePriorityQueue {
 
 
 public:
@@ -413,8 +413,8 @@ public:
 
 
 
-    // Create an empty DynamicPriorityQueue which can contain atmost maxSize_ elements
-    DynamicPriorityQueue(const size_t maxSize)  
+    // Create an empty ChangeablePriorityQueue which can contain atmost maxSize_ elements
+    ChangeablePriorityQueue(const size_t maxSize)  
     : maxSize_(maxSize),
       currentSize_(0),
       heap_(maxSize_+1),
@@ -487,15 +487,13 @@ public:
     }
   
     // deleqte the priority associated with index i
-    void deletePriority(const value_type i)   {
+    void deleteItem(const value_type i)   {
         int ind = indices_[i];
         swapItems(ind, currentSize_--);
         bubbleUp(ind);
         bubbleDown(ind);
         indices_[i] = -1;
     }
-
-private:
     void changePriority(const value_type i,const priority_type p)  {
         if(_gt(p,priorities_[i])){
             priorities_[i] = p;
@@ -506,6 +504,8 @@ private:
             bubbleUp(indices_[i]);
         }
     }
+private:
+    
 
     void swapItems(const int i,const  int j) {
         std::swap(heap_[i],heap_[j]);

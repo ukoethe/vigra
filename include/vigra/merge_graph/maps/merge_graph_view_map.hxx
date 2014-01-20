@@ -190,7 +190,7 @@ private:
     }
     const MergeGraphType & mergeGraph_;
     EDGE_MAP & edgeMap_;
-    vigra::DynamicPriorityQueue<typename EDGE_MAP::Value> pq_;
+    vigra::ChangeablePriorityQueue<typename EDGE_MAP::Value> pq_;
 };
 
 
