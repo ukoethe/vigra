@@ -47,14 +47,12 @@ from vigra.cgp      import *
 
 
 
-def test_cgp():
-    labeling=numpy.zeros([2,2],dtype=np.uint32)
-    labeling[0,0]=1;
-    labeling[0,1]=2;
-    labeling[1,0]=3;
-    labeling[1,1]=4;
+def testGridGraph():
+	pass
 
-    grid  = TopologicalGrid(labeling)
-    graph = Cgp(grid)
-    
-    
+
+
+
+
+
+

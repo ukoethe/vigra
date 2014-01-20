@@ -113,6 +113,7 @@ import optimization
 #import clustering
 import cgp
 import rag
+import graphs
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 

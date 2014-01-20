@@ -88,3 +88,8 @@ VIGRA_ADD_NUMPY_MODULE(rag SOURCES
     rag.cxx
     rag_rag.cxx
   VIGRANUMPY)
+
+VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
+    graphs.cxx
+    gridGraph.cxx
+  VIGRANUMPY)
