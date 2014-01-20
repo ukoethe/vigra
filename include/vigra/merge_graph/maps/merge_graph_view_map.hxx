@@ -142,11 +142,11 @@ public:
 
     void mergeEdges(const Edge & a,const Edge & b){
         edgeMap_.merge(a,b);
-        pq_.deletePriority(b.id());
+        pq_.deleteItem(b.id());
         changePqWeight(a.id(),edgeMap_[a]);
     }
     void eraseEdge(const Edge & edge){
-        pq_.deletePriority(edge.id());
+        pq_.deleteItem(edge.id());
     }
 
     template<class CB>
@@ -173,7 +173,7 @@ public:
     Edge minWeightEdge(){
         index_type minLabel = pq_.top();
         while(mergeGraph_.hasEdgeId(minLabel)==false){
-            pq_.deletePriority(minLabel);
+            pq_.deleteItem(minLabel);
             index_type minLabel = pq_.top();
         }
         return Edge(minLabel);
