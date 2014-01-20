@@ -238,9 +238,9 @@ namespace vigra{
                 GenericNodeImpl(){
 
                 }
-                //GenericNodeImpl(const index_type id)
-                //:   id_(id){
-                // }
+                GenericNodeImpl(const index_type id)
+                :   id_(id){
+                 }
                 // query
                 size_t numberOfEdges()const{return edges_.size();}
                 size_t edgeNum()const{return edges_.size();}
@@ -308,6 +308,16 @@ namespace vigra{
                 typedef INDEX_TYPE index_type;
 
                 GenericEdgeImpl(){}
+
+                GenericEdgeImpl(
+                    const index_type u,
+                    const index_type v,
+                    const index_type id
+                ):
+                vigra::TinyVector<INDEX_TYPE,3>(u,v,id)
+                {
+
+                }
             // public methods
             public:
                 index_type u()const{return this->operator[](0);}

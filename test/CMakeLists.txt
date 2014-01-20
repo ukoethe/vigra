@@ -38,4 +38,5 @@ ADD_SUBDIRECTORY(gridgraph)
 ADD_SUBDIRECTORY(integral_image)
 ADD_SUBDIRECTORY(merge_graph)
 ADD_SUBDIRECTORY(rag)
+ADD_SUBDIRECTORY(adjacency_list_graph)
 

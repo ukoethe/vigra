@@ -9,7 +9,7 @@
 
 namespace vigra{
 	namespace detail{
-		    template<class GRAPH,class ITEM>
+    template<class GRAPH,class ITEM>
     struct RagItemIt 
     :   public EnumerationIterator< ITEM > {
     private:
