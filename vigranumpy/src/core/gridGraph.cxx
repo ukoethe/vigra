@@ -34,7 +34,7 @@
 /************************************************************************/
 
 //#define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-#define NO_IMPORT_ARRAY
+//#define NO_IMPORT_ARRAY
 
 #include "export_graph_visitor.hxx"
 
@@ -48,15 +48,10 @@ namespace vigra{
     template<unsigned int DIM>
     void defineGridGraphT(const std::string & clsName){
         
-        typedef GridGraph<DIM,boost::undirected_tag> GridGraph;
+        typedef GridGraph<DIM,boost::undirected_tag> Graph;
 
-        python::class_<GridGraph>(clsName.c_str(),python::init< TinyVector<Int64,DIM> >())
-        .def(LemonDirectedGraphCoreVisitor<
-                GridGraph,
-                python::return_value_policy<python::return_by_value>,
-                python::return_value_policy<python::return_by_value>
-            >(clsName)
-        )
+        python::class_<Graph>(clsName.c_str(),python::init< TinyVector<Int64,DIM> >())
+        .def(LemonDirectedGraphCoreVisitor<Graph>(clsName))
         ;
 
         

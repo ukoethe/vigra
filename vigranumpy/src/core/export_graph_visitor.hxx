@@ -139,36 +139,36 @@ struct ArcIteratorHolder{
 };
 
 
-template<class GRAPH,class NODE_RET_POLICY,class EDGE_RET_POLICY>
+template<class GRAPH>
 class LemonDirectedGraphCoreVisitor 
-:   public boost::python::def_visitor<LemonDirectedGraphCoreVisitor<GRAPH,NODE_RET_POLICY,EDGE_RET_POLICY> >
+:   public boost::python::def_visitor<LemonDirectedGraphCoreVisitor<GRAPH> >
 {
 public:
 
     friend class def_visitor_access;
 
-    typedef GRAPH GraphType;
+    typedef GRAPH Graph;
 
-    typedef LemonDirectedGraphCoreVisitor<GRAPH,NODE_RET_POLICY,EDGE_RET_POLICY> VisitorType;
+    typedef LemonDirectedGraphCoreVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
     
-    typedef typename GraphType::index_type       index_type;
-    typedef typename GraphType::Edge             Edge;
-    typedef typename GraphType::Node             Node;
-    typedef typename GraphType::Arc              Arc;
+    typedef typename Graph::index_type       index_type;
+    typedef typename Graph::Edge             Edge;
+    typedef typename Graph::Node             Node;
+    typedef typename Graph::Arc              Arc;
 
-    typedef typename GraphType::NodeIt              NodeIt;
-    typedef typename GraphType::EdgeIt              EdgeIt;
-    typedef typename GraphType::ArcIt               ArcIt;
-    //typedef typename GraphType::NeighborNodeIt      NeighborNodeIt;
-    typedef EdgeIteratorHolder<GraphType> EdgeIteratorHolderType;
-    typedef NodeIteratorHolder<GraphType> NodeIteratorHolderType;
-    typedef ArcIteratorHolder<GraphType>  ArcIteratorHolderType;
+    typedef typename Graph::NodeIt              NodeIt;
+    typedef typename Graph::EdgeIt              EdgeIt;
+    typedef typename Graph::ArcIt               ArcIt;
+    //typedef typename Graph::NeighborNodeIt      NeighborNodeIt;
+    typedef EdgeIteratorHolder<Graph> EdgeIteratorHolderType;
+    typedef NodeIteratorHolder<Graph> NodeIteratorHolderType;
+    typedef ArcIteratorHolder<Graph>  ArcIteratorHolderType;
 
 
-    typedef EdgeHolder<GraphType> PyEdge;
-    typedef NodeHolder<GraphType> PyNode;
-    typedef  ArcHolder<GraphType> PyArc;
+    typedef EdgeHolder<Graph> PyEdge;
+    typedef NodeHolder<Graph> PyNode;
+    typedef  ArcHolder<Graph> PyArc;
 
     LemonDirectedGraphCoreVisitor(const std::string clsName)
     :clsName_(clsName){
@@ -219,12 +219,12 @@ public:
 
         c
             // basic properties
-            .add_property("nodeNum",  &GraphType::nodeNum )
-            .add_property("edgeNum",  &GraphType::edgeNum )
-            .add_property("arcNum",   &GraphType::arcNum  )
-            .add_property("maxNodeId",&GraphType::maxNodeId )
-            .add_property("maxEdgeId",&GraphType::maxEdgeId )
-            .add_property("maxArcId" ,&GraphType::maxNodeId )
+            .add_property("nodeNum",  &Graph::nodeNum )
+            .add_property("edgeNum",  &Graph::edgeNum )
+            .add_property("arcNum",   &Graph::arcNum  )
+            .add_property("maxNodeId",&Graph::maxNodeId )
+            .add_property("maxEdgeId",&Graph::maxEdgeId )
+            .add_property("maxArcId" ,&Graph::maxNodeId )
 
             // id functions
             .def("nodeId",&nodeId)
@@ -261,31 +261,31 @@ public:
         ;
     }
 
-    static void edgeIds(
-    //static NumpyAnyArray edgeIds(
-        const GraphType & g//,
-        //NumpyArray<1,index_type> out = NumpyArray<1,index_type>()
+
+    static NumpyAnyArray edgeIds(
+        const Graph & g,
+        NumpyArray<1,index_type> out = NumpyArray<1,index_type>()
     ){
-        //out.reshapeIfEmpty(typename NumpyArray<1,index_type>::difference_type(g.edgeNum()));
+        out.reshapeIfEmpty(typename NumpyArray<1,index_type>::difference_type(g.edgeNum()));
         size_t  counter=0;
         for(EdgeIt e(g);e!=lemon::INVALID;++e){
             const Edge edge(*e);
-            //out(counter)=g.id(edge);
+            out(counter)=g.id(edge);
             ++counter;
         }
-        //return out;
+        return out;
     }
 
-    static  PyNode u(const GraphType & self,const PyEdge & e){
+    static  PyNode u(const Graph & self,const PyEdge & e){
         return PyNode(self,self.u(e.item_));
     }
-    static  PyNode v(const GraphType & self,const PyEdge & e){
+    static  PyNode v(const Graph & self,const PyEdge & e){
         return PyNode(self,self.v(e.item_));
     }
-    static  PyNode source(const GraphType & self,const PyArc & a){
+    static  PyNode source(const Graph & self,const PyArc & a){
         return PyNode(self,self.source(a.item_));
     }
-    static  PyNode target(const GraphType & self,const PyArc & a){
+    static  PyNode target(const Graph & self,const PyArc & a){
         return PyNode(self,self.target(a.item_));
     }
 
@@ -299,71 +299,145 @@ public:
         return item.graph_!=NULL && item.item_!=lemon::INVALID;
     }
     
-    static PyNode nodeFromId(const GraphType & self,const index_type id){
+    static PyNode nodeFromId(const Graph & self,const index_type id){
         return PyNode(self,self.nodeFromId(id));
     }
-    static PyEdge edgeFromId(const GraphType & self,const index_type id){
+    static PyEdge edgeFromId(const Graph & self,const index_type id){
         return PyEdge(self,self.edgeFromId(id));
     }
-    static PyArc   arcFromId(const GraphType & self,const index_type id){
+    static PyArc   arcFromId(const Graph & self,const index_type id){
         return PyArc(self,self.arcFromId(id));
     }
 
 
-    static PyEdge findEdge( const GraphType & self ,const PyNode & u , const PyNode & v){
+    static PyEdge findEdge( const Graph & self ,const PyNode & u , const PyNode & v){
         return PyEdge(self,self.findEdge(u.item_,v.item_));
     }
-    static index_type nodeId( const GraphType & self,const PyNode & node ){return  self.id(node.item_);}
-    static index_type edgeId( const GraphType & self,const PyEdge & edge ){return  self.id(edge.item_);}
-    static index_type arcId(  const GraphType & self,const PyNode & node ){return  self.id(node.item_);}
-    //static EdgeIteratorHolderType edgeHolder(const GraphType & self){return EdgeIteratorHolderType(self);}
-    //static NodeIteratorHolderType nodeHolder(const GraphType & self){return NodeIteratorHolderType(self);}
+    static index_type nodeId( const Graph & self,const PyNode & node ){return  self.id(node.item_);}
+    static index_type edgeId( const Graph & self,const PyEdge & edge ){return  self.id(edge.item_);}
+    static index_type arcId(  const Graph & self,const PyNode & node ){return  self.id(node.item_);}
+    //static EdgeIteratorHolderType edgeHolder(const Graph & self){return EdgeIteratorHolderType(self);}
+    //static NodeIteratorHolderType nodeHolder(const Graph & self){return NodeIteratorHolderType(self);}
 
 };
 
+
 template<class GRAPH>
-class MergeGraphAddOnVisitor 
-:   public boost::python::def_visitor<MergeGraphAddOnVisitor<GRAPH> >
+class LemonDirectedGraphAddItemsVisitor 
+:   public boost::python::def_visitor<LemonDirectedGraphAddItemsVisitor<GRAPH> >
 {
 public:
 
     friend class def_visitor_access;
 
-    typedef GRAPH GraphType;
+    typedef GRAPH Graph;
+
+    typedef LemonDirectedGraphAddItemsVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
     
-    typedef typename GraphType::index_type       index_type;
-    typedef typename GraphType::Edge             Edge;
-    typedef typename GraphType::Node             Node;
-    //typedef typename GraphType::Arc              Arc;
+    typedef typename Graph::index_type       index_type;
+    typedef typename Graph::Edge             Edge;
+    typedef typename Graph::Node             Node;
+    typedef typename Graph::Arc              Arc;
+
+    typedef typename Graph::NodeIt              NodeIt;
+    typedef typename Graph::EdgeIt              EdgeIt;
+    typedef typename Graph::ArcIt               ArcIt;
+    //typedef typename Graph::NeighborNodeIt      NeighborNodeIt;
+    typedef EdgeIteratorHolder<Graph> EdgeIteratorHolderType;
+    typedef NodeIteratorHolder<Graph> NodeIteratorHolderType;
+    typedef ArcIteratorHolder<Graph>  ArcIteratorHolderType;
 
 
+    typedef EdgeHolder<Graph> PyEdge;
+    typedef NodeHolder<Graph> PyNode;
+    typedef  ArcHolder<Graph> PyArc;
 
+    LemonDirectedGraphAddItemsVisitor(const std::string clsName)
+    :clsName_(clsName){
+
+    }
+    std::string clsName_;
     template <class classT>
     void visit(classT& c) const
     {
-        c
-            // basic properties
-            .add_property("initNodeNum",    &GraphType::initNumberOfNodes,"get the initial number of nodes" )
-            .add_property("initEdgeNum",    &GraphType::initNumberOfEdges,"get the initial number of edges" )
+        
+        //import_vigranumpy();
 
-            // special iterators
-            .def("nodeIdIterator", python::range(
-                    &GraphType::nodeIdsBegin  , 
-                    &GraphType::nodeIdsEnd
-                )
-            )
-            .def("edgeIdIterator", python::range(
-                    &GraphType::nodeIdsBegin  , 
-                    &GraphType::nodeIdsEnd
-                )
-            )
+
+        c
+            // add node
+            .def("addNode",&addNode)
+            .def("addEdge",&addEdge)
         ;
     }
 
-   //static void foo(X& self);
-   // static void bar(X& self);
+    static PyNode addNode(Graph & self){
+        return PyNode(self,self.addNode());
+    }
+
+    static PyEdge addEdge(Graph & self ,const PyNode & u , const PyNode & v){
+        return PyEdge(self,self.addEdge(u.item_,v.item_));
+    }
 };
+
+
+
+
+template<class GRAPH,class MAP,class ITEM>
+
+
+
+template<class GRAPH>
+class LemonGraphMapVisitor 
+:   public boost::python::def_visitor<LemonGraphMapVisitor<GRAPH> >
+{
+public:
+
+    friend class def_visitor_access;
+
+    typedef GRAPH Graph;
+
+    typedef LemonGraphMapVisitor<GRAPH> VisitorType;
+    // Lemon Graph Typedefs
+    
+    typedef typename Graph::index_type       index_type;
+    typedef typename Graph::Edge             Edge;
+    typedef typename Graph::Node             Node;
+    typedef typename Graph::Arc              Arc;
+
+    typedef typename Graph::NodeIt              NodeIt;
+    typedef typename Graph::EdgeIt              EdgeIt;
+    typedef typename Graph::ArcIt               ArcIt;
+
+
+    typedef EdgeHolder<Graph> PyEdge;
+    typedef NodeHolder<Graph> PyNode;
+    typedef  ArcHolder<Graph> PyArc;
+
+    LemonGraphMapVisitor(const std::string clsName)
+    :clsName_(clsName){
+
+    }
+    std::string clsName_;
+    template <class classT>
+    void visit(classT& c) const
+    {
+        
+        
+
+
+        //c
+        //    // add node
+        //    .def("addNode",&addNode)
+        //    .def("addEdge",&addEdge)
+        //;
+    }
+
+
+};
+
+
 
 
 } // end namespace vigra

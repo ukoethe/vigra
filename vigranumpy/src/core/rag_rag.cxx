@@ -72,12 +72,7 @@ void defineRagClass(const std::string & clsName ){
     // rag class itself
     python::class_<RagType>(clsName.c_str(),python::init<>())
     //python::class_<RagType>("Rag",python::init<const NumpyLabelArray & >()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()] )
-    .def(LemonDirectedGraphCoreVisitor<
-            RagType,
-            python::return_value_policy<python::return_by_value>,
-            python::return_value_policy<python::return_by_value>
-        >(clsName)
-    )
+    .def(LemonDirectedGraphCoreVisitor<RagType>(clsName))
     .def("__init__",python::make_constructor(registerConverters(&makeRag<RagType,NumpyLabelArray>) /*,python::with_custodian_and_ward<1,2>()*/ ) )
     .add_property("shape",&RagType::shape)
     .add_property("topolocgialShape",&RagType::topolocgialShape)
