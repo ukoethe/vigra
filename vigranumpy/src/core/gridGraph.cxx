@@ -33,8 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-//#define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
+#define NO_IMPORT_ARRAY
 
 #include "export_graph_visitor.hxx"
 

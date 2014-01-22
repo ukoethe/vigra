@@ -148,7 +148,6 @@ public:
     friend class def_visitor_access;
 
     typedef GRAPH Graph;
-
     typedef LemonDirectedGraphCoreVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
     
@@ -253,28 +252,44 @@ public:
 
 
             //numpy batch interface
-            .def("edgeIds",&edgeIds//,
-                //(
-                //    python::arg("out")=python::object()
-                //)
-            )
+            .def("edgeIds",registerConverters(&itemIds<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
+            .def("nodeIds",registerConverters(&itemIds<Node,NodeIt>),( python::arg("out")=python::object() ) )
+            .def("arcIds" ,registerConverters(&itemIds<Arc ,ArcIt >),( python::arg("out")=python::object() ) )
+
+
+            
+            // map functions
+            .def("maptest",&maptest)
         ;
     }
 
 
-    static NumpyAnyArray edgeIds(
+    static NumpyAnyArray maptest(
         const Graph & g,
-        NumpyArray<1,index_type> out = NumpyArray<1,index_type>()
+        NumpyArray<1,float> map
     ){
-        out.reshapeIfEmpty(typename NumpyArray<1,index_type>::difference_type(g.edgeNum()));
         size_t  counter=0;
         for(EdgeIt e(g);e!=lemon::INVALID;++e){
-            const Edge edge(*e);
-            out(counter)=g.id(edge);
+            std::cout<<"mapval "<<map(counter)<<"\n";
+            ++counter;
+        }    
+        return map;
+    }
+
+
+    template<class ITEM,class ITEM_IT>
+    static NumpyAnyArray itemIds(const Graph & g, NumpyArray<1,index_type> out =NumpyArray<1,index_type>() ){
+        typedef GraphItemHelper<Graph,ITEM> ItemHelper;
+        out.reshapeIfEmpty(typename NumpyArray<1,index_type>::difference_type(  ItemHelper::maxItemId(g)  ));
+        size_t  counter=0;
+        for(ITEM_IT i(g);i!=lemon::INVALID;++i){
+            out(counter)=g.id(*i);
             ++counter;
         }
         return out;
     }
+
+
 
     static  PyNode u(const Graph & self,const PyEdge & e){
         return PyNode(self,self.u(e.item_));
@@ -383,8 +398,6 @@ public:
 
 
 
-
-template<class GRAPH,class MAP,class ITEM>
 
 
 
