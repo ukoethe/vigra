@@ -82,6 +82,118 @@ namespace vigra{
     };
 
 
+
+    template<class GRAPH>
+    class IntrinsicGraphShape{
+    private:
+        typedef GRAPH Graph;
+    typedef typename Graph::index_type  index_type;
+    public:
+        typedef typename Graph::Node Node ;
+        typedef typename Graph::Edge Edge ;
+        typedef typename  Graph::Arc  Arc ;
+
+        typedef TinyVector<index_type,1> IntrinsicNodeMapShape;
+        typedef TinyVector<index_type,1> IntrinsicEdgeMapShape;
+        typedef TinyVector<index_type,1>  IntrinsicArcMapShape;
+
+        IntrinsicNodeMapShape intrinsicNodeMapShape(const Graph & g)const{
+            return IntrinsicNodeMapShape(g.maxNodeId());
+        }
+        IntrinsicEdgeMapShape intrinsicEdgeMapShape(const Graph & g)const{
+            return IntrinsicEdgeMapShape(g.maxEdgeId());
+        }
+        IntrinsicArcMapShape intrinsicArcMapShape(const Graph & g)const{
+            return  IntrinsicArcMapShape(g.maxArcId());
+        }
+
+    };
+
+    template<unsigned int DIM,class DIRECTED_TAG>
+    class IntrinsicGraphShape<GridGraph<DIM,DIRECTED_TAG> >{
+    private:
+        typedef GridGraph<DIM,DIRECTED_TAG> Graph;
+    typedef typename Graph::index_type  index_type;
+    public:
+        typedef typename Graph::Node Node ;
+        typedef typename Graph::Edge Edge ;
+        typedef typename  Graph::Arc  Arc ;
+
+        typedef typename Graph::shape_type              IntrinsicNodeMapShape;
+        typedef typename Graph::edge_propmap_shape_type IntrinsicEdgeMapShape;
+        typedef typename Graph::edge_propmap_shape_type IntrinsicArcMapShape;
+
+        IntrinsicNodeMapShape intrinsicNodeMapShape(const Graph & g)const{
+            return  g.shape();
+        }
+        IntrinsicEdgeMapShape intrinsicEdgeMapShape(const Graph & g)const{
+            return  g.edge_propmap_shape();
+        }
+        IntrinsicArcMapShape intrinsicArcMapShape(const Graph & g)const{
+            return  g.arc_propmap_shape();
+        }
+
+    };
+
+
+
+
+    template<class GRAPH>
+    class GraphDescriptorToMultiArrayIndex{
+    private:
+        typedef GRAPH Graph;
+    typedef typename Graph::index_type  index_type;
+    public:
+        typedef typename Graph::Node Node ;
+        typedef typename Graph::Edge Edge ;
+        typedef typename  Graph::Arc  Arc ;
+
+        typedef typename IntrinsicGraphShape<Graph>::IntrinsicNodeMapShape IntrinsicNodeMapShape;
+        typedef typename IntrinsicGraphShape<Graph>::IntrinsicEdgeMapShape IntrinsicEdgeMapShape;
+        typedef typename IntrinsicGraphShape<Graph>::IntrinsicArcMapShape  IntrinsicArcMapShape;
+
+        static IntrinsicNodeMapShape intrinsicNodeCoordinate(const Graph & g,const Node & node){
+            return IntrinsicNodeMapShape(g.id(node));
+        }
+        static IntrinsicEdgeMapShape intrinsicEdgeCoordinate(const Graph & g,const Edge & edge){
+            return IntrinsicEdgeMapShape(g.id(edge));
+        }
+        static IntrinsicArcMapShape intrinsicArcCoordinate(const Graph & g,const Arc & arc){
+            return  IntrinsicArcMapShape(g.id(arc));
+        }
+
+    };
+
+
+
+    template<unsigned int DIM,class DIRECTED_TAG>
+    class GraphDescriptorToMultiArrayIndex<GridGraph<DIM,DIRECTED_TAG> >{
+    private:
+        typedef GridGraph<DIM,DIRECTED_TAG> Graph;
+        typedef typename Graph::index_type  index_type;
+    public:
+        typedef typename Graph::Node Node ;
+        typedef typename Graph::Edge Edge ;
+        typedef typename  Graph::Arc  Arc ;
+
+        typedef typename IntrinsicGraphShape<Graph>::IntrinsicNodeMapShape IntrinsicNodeMapShape;
+        typedef typename IntrinsicGraphShape<Graph>::IntrinsicEdgeMapShape IntrinsicEdgeMapShape;
+        typedef typename IntrinsicGraphShape<Graph>::IntrinsicArcMapShape  IntrinsicArcMapShape;
+
+
+        static Node intrinsicNodeCoordinate(const Graph & g,const Node & node){
+            return node;
+        }
+        static Edge intrinsicEdgeCoordinate(const Graph & g,const Edge & edge){
+            return edge;
+        }
+        static Arc  intrinsicArcCoordinate (const Graph & g,const Arc & arc){
+            return arc;
+        }
+
+    };
+
+
 } // namespace vigra
 
 #endif // VIGRA_GRAPH_GENERALIZATION_HXX

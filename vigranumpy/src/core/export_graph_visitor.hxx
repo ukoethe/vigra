@@ -13,81 +13,70 @@ namespace vigra{
 
 
 template<class GRAPH>
-struct NodeHolder{
+struct NodeHolder :  GRAPH::Node
+{
     typedef typename GRAPH::Node Node;
     NodeHolder(const lemon::Invalid & iv = lemon::INVALID)
-    : item_(lemon::INVALID),
+    : Node(lemon::INVALID),
       graph_(NULL)
     {}
     NodeHolder(const GRAPH & g , const Node & item)
-    : item_(item),
+    : Node(item),
       graph_(&g)
     {}
 
-    operator Node ()const{
-        return item_;
-    }
     typename GRAPH::index_type id()const{
-        return graph_->id(item_);
+        return graph_->id(*this);
     }
-    Node item_;
     const GRAPH * graph_;
 };
 
 
 
 template<class GRAPH>
-struct EdgeHolder{
+struct EdgeHolder : GRAPH::Edge
+{
 
     typedef typename GRAPH::Edge Edge;
     EdgeHolder(const lemon::Invalid & iv = lemon::INVALID)
-    : item_(lemon::INVALID),
+    : Edge(lemon::INVALID),
       graph_(NULL)
     {}
     EdgeHolder(const GRAPH & g , const Edge & item)
-    : item_(item),
+    : Edge(item),
       graph_(&g)
     {}
 
-    operator Edge ()const{
-        return item_;
-    }
     typename GRAPH::index_type id()const{
-        return graph_->id(item_);
+        return graph_->id(*this);
     }
 
     NodeHolder<GRAPH> u()const{
-        return NodeHolder<GRAPH>(*graph_,graph_->u(item_));
+        return NodeHolder<GRAPH>(*graph_,graph_->u(*this));
     }
     NodeHolder<GRAPH> v()const{
-        return NodeHolder<GRAPH>(*graph_,graph_->v(item_));
+        return NodeHolder<GRAPH>(*graph_,graph_->v(*this));
     }
-
-    Edge item_;
     const GRAPH * graph_; 
 };
 
 
 
 template<class GRAPH>
-struct ArcHolder{
+struct ArcHolder: GRAPH::Arc {
     typedef typename GRAPH::Arc Arc;
     ArcHolder(const lemon::Invalid & iv = lemon::INVALID)
-    : item_(lemon::INVALID),
+    : Arc(lemon::INVALID),
       graph_(NULL)
     {}
     ArcHolder(const GRAPH & g , const Arc & item)
-    : item_(item),
+    : Arc(item),
       graph_(&g)
     {}
 
-    operator Arc ()const{
-        return item_;
-    }
     typename GRAPH::index_type id()const{
-        return graph_->id(item_);
+        return graph_->id(*this);
     }
-    Arc item_;
     const GRAPH * graph_;
 };
 
@@ -251,7 +240,18 @@ public:
             //.def("nodeIter",&nodeHolder,python::with_custodian_and_ward_postcall<0,1>() )  // graph may not be deleted bevore holder is deleted
 
 
-            //numpy batch interface
+            // intrinsic shape of maps
+            .add_property("intrinsicNodeMapShape",&IntrinsicGraphShape<Graph>::intrinsicNodeMapShape)
+            .add_property("intrinsicEdgeMapShape",&IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape)
+            .add_property("intrinsicArcMapShape" , &IntrinsicGraphShape<Graph>::intrinsicArcMapShape)
+            // intrinsic coordinate of node/edge/arc
+            .def("intrinsicNodeCoordinate",& GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate)
+            .def("intrinsicEdgeCoordinate",&GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate)
+            .def("intrinsicArcCoordinate",& GraphDescriptorToMultiArrayIndex<Graph>::intrinsicArcCoordinate )
+
+
+
+            //numpy batch interface (this should be free functions??!?)
             .def("edgeIds",registerConverters(&itemIds<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
             .def("nodeIds",registerConverters(&itemIds<Node,NodeIt>),( python::arg("out")=python::object() ) )
             .def("arcIds" ,registerConverters(&itemIds<Arc ,ArcIt >),( python::arg("out")=python::object() ) )
@@ -291,27 +291,28 @@ public:
 
 
 
+
     static  PyNode u(const Graph & self,const PyEdge & e){
-        return PyNode(self,self.u(e.item_));
+        return PyNode(self,self.u(e));
     }
     static  PyNode v(const Graph & self,const PyEdge & e){
-        return PyNode(self,self.v(e.item_));
+        return PyNode(self,self.v(e));
     }
     static  PyNode source(const Graph & self,const PyArc & a){
-        return PyNode(self,self.source(a.item_));
+        return PyNode(self,self.source(a));
     }
     static  PyNode target(const Graph & self,const PyArc & a){
-        return PyNode(self,self.target(a.item_));
+        return PyNode(self,self.target(a));
     }
 
     template<class ITEM>
     static bool eqToInvalid(const ITEM &  item,const lemon::Invalid iv){
-        return item.graph_==NULL || item.item_==lemon::INVALID;
+        return item.graph_==NULL || item==lemon::INVALID;
     }
 
     template<class ITEM>
     static bool neqToInvalid(const ITEM &  item,const lemon::Invalid iv){
-        return item.graph_!=NULL && item.item_!=lemon::INVALID;
+        return item.graph_!=NULL && item!=lemon::INVALID;
     }
     
     static PyNode nodeFromId(const Graph & self,const index_type id){
@@ -326,11 +327,11 @@ public:
 
 
     static PyEdge findEdge( const Graph & self ,const PyNode & u , const PyNode & v){
-        return PyEdge(self,self.findEdge(u.item_,v.item_));
+        return PyEdge(self,self.findEdge(u,v));
     }
-    static index_type nodeId( const Graph & self,const PyNode & node ){return  self.id(node.item_);}
-    static index_type edgeId( const Graph & self,const PyEdge & edge ){return  self.id(edge.item_);}
-    static index_type arcId(  const Graph & self,const PyNode & node ){return  self.id(node.item_);}
+    static index_type nodeId( const Graph & self,const PyNode & node ){return  self.id(node);}
+    static index_type edgeId( const Graph & self,const PyEdge & edge ){return  self.id(edge);}
+    static index_type arcId(  const Graph & self,const PyArc & arc ){return  self.id(arc);}
     //static EdgeIteratorHolderType edgeHolder(const Graph & self){return EdgeIteratorHolderType(self);}
     //static NodeIteratorHolderType nodeHolder(const Graph & self){return NodeIteratorHolderType(self);}
 
@@ -392,7 +393,7 @@ public:
     }
 
     static PyEdge addEdge(Graph & self ,const PyNode & u , const PyNode & v){
-        return PyEdge(self,self.addEdge(u.item_,v.item_));
+        return PyEdge(self,self.addEdge(u,v));
     }
 };
 
