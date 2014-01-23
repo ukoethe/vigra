@@ -48,6 +48,23 @@
 namespace vigra{
 
 
+
+    template<class MAP>
+    struct GraphMapTypeTraits{
+        typedef typename MAP::Value          Value;
+        typedef typename MAP::Reference      Reference;
+        typedef typename MAP::ConstReference ConstReference;
+    };
+
+
+    template< unsigned int DIM,class T>
+    struct GraphMapTypeTraits<NumpyArray<DIM,T> >{
+        typedef typename NumpyArray<DIM,T>::value_type Value;
+        typedef Value &                                Reference;
+        typedef const Value  &                         ConstReference;
+    };
+
+
     template<class GRAPH>
     struct GraphIteratorAccessor{
         typedef GRAPH Graph;
@@ -76,9 +93,9 @@ namespace vigra{
         static EdgeIt edgesBegin(const Graph & g){ return g.get_edge_iterator();}
         static ArcIt  arcsBegin( const Graph & g){ return ArcIt( g);}
 
-        static NodeIt nodesEnd(const Graph & g){ return NodeIt(lemon::INVALID);}
+        static NodeIt nodesEnd(const Graph & g){ return g.get_vertex_end_iterator();}
         static EdgeIt edgesEnd(const Graph & g){ return g.get_edge_end_iterator();}
-        static ArcIt  arcsEnd( const Graph & g){ return ArcIt( lemon::INVALID);}
+        static ArcIt  arcsEnd( const Graph & g){ return g.get_arc_end_iterator(); }
     };
 
 

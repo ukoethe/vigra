@@ -43,7 +43,7 @@ from vigra import *
 from vigra import arraytypes as at
 from vigra.filters import *
 from vigra.analysis import *
-from vigra.cgp      import *
+
 
 
 

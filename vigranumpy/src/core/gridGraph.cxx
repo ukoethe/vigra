@@ -41,9 +41,31 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/multi_gridgraph.hxx>
+#include <vigra/adjacency_list_graph.hxx>
+#include <vigra/rag/new_rag.hxx>
+
 namespace python = boost::python;
 
 namespace vigra{
+
+
+    template<unsigned int DIM,class DTAG,class LABEL_TYPE>
+    void getRag(
+        const GridGraph<DIM,DTAG> & graph,
+        NumpyArray<DIM,LABEL_TYPE>  labelMap,
+        AdjacencyListGraph        & rag,
+        const Int64                 ignoreLabel=-1
+    ){
+        typedef AdjacencyListGraph:: template EdgeMap< std::vector<typename GridGraph<DIM,DTAG>::Edge> > HyperEdges;
+        typedef AdjacencyListGraph:: template NodeMap< std::vector<typename GridGraph<DIM,DTAG>::Node> > HyperNodes;
+
+        HyperEdges hyperEdges;
+        HyperNodes hyperNodes;
+
+        makeRegionAdjacencyGraph(graph,labelMap,hyperEdges,hyperNodes,ignoreLabel);
+    }
+
+
 
     template<unsigned int DIM>
     void defineGridGraphT(const std::string & clsName){
@@ -52,6 +74,7 @@ namespace vigra{
 
         python::class_<Graph>(clsName.c_str(),python::init< TinyVector<Int64,DIM> >())
         .def(LemonDirectedGraphCoreVisitor<Graph>(clsName))
+        .def("getRegionAdjacencyGraph",&getRag<DIM,boost::undirected_tag,UInt32> )
         ;
 
         

@@ -20,12 +20,18 @@ public:
 
 	typedef typename MultiArray<1,T>::difference_type Shape1Type;
 
+	DenseReferenceMap()
+	: MultiArray<1,T>(){
+	}
 	DenseReferenceMap(const size_t maxKey)
 	: MultiArray<1,T>(Shape1Type(maxKey+1)){
 	}
 	DenseReferenceMap(const size_t maxKey,ConstReference  value)
 	: MultiArray<1,T>(Shape1Type(maxKey+1),value){
 	}
+
+
+
 
 	ConstReference operator[](const KEY & key)const{
 		//return this->operator[](key.id());
@@ -37,6 +43,10 @@ public:
 
 	size_t size()const{
 		return this->shape(0);
+	}
+protected:
+	void assign(const size_t maxKey){
+		this->reshape(Shape1Type(maxKey+1));
 	}
 private:
 	// NONE
@@ -54,6 +64,10 @@ class DenseGraphItemReferenceMap
 	typedef typename ItemHelper::ItemIt ItemIt;
 
 public:
+	DenseGraphItemReferenceMap()
+	:	DenseReferenceMapType(){
+
+	}
 	DenseGraphItemReferenceMap(const Graph & g)
 	:	DenseReferenceMapType(ItemHelper::maxItemId(g)){
 
@@ -61,6 +75,9 @@ public:
 	DenseGraphItemReferenceMap(const Graph & g,typename DenseReferenceMapType::ConstReference value)
 	:	DenseReferenceMapType(ItemHelper::maxItemId(g),value){
 
+	}
+	void assign(const Graph & g){
+		DenseReferenceMapType::assign(ItemHelper::maxItemId(g));
 	}
 };
 
@@ -72,6 +89,9 @@ class DenseNodeReferenceMap
 	typedef typename GRAPH::Node Node;
 	typedef DenseGraphItemReferenceMap<GRAPH,Node,T,REF,CREF> DenseGraphItemReferenceMapType;
 	public:
+		DenseNodeReferenceMap()
+		: DenseGraphItemReferenceMapType(){
+		}
 		DenseNodeReferenceMap(const GRAPH & g)
 		: DenseGraphItemReferenceMapType(g){
 		}
@@ -87,6 +107,9 @@ class DenseEdgeReferenceMap
 	typedef typename GRAPH::Edge Edge;
 	typedef DenseGraphItemReferenceMap<GRAPH,Edge,T,REF,CREF> DenseGraphItemReferenceMapType;
 	public:
+		DenseEdgeReferenceMap()
+		: DenseGraphItemReferenceMapType(){
+		}
 		DenseEdgeReferenceMap(const GRAPH & g)
 		: DenseGraphItemReferenceMapType(g){
 		}
@@ -102,6 +125,9 @@ class DenseArcReferenceMap
 	typedef typename GRAPH::Arc Arc;
 	typedef DenseGraphItemReferenceMap<GRAPH,Arc,T,REF,CREF> DenseGraphItemReferenceMapType;
 	public:
+		DenseArcReferenceMap()
+		: DenseGraphItemReferenceMapType(){
+		}
 		DenseArcReferenceMap(const GRAPH & g)
 		: DenseGraphItemReferenceMapType(g){
 		}

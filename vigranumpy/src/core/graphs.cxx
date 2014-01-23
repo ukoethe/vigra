@@ -54,8 +54,9 @@ namespace vigra{
 	//python::class_<Fo>("Invalid");
 
 	void defineInvalid();
-	void defineGridGraph();
 	void defineAdjacencyListGraph();
+	void defineGridGraph();
+	
 	
 
 } // namespace vigra
@@ -70,7 +71,8 @@ BOOST_PYTHON_MODULE_INIT(graphs)
 {
     import_vigranumpy();
     defineInvalid();
-    defineGridGraph();
     defineAdjacencyListGraph();
+    defineGridGraph();
+    
     
 }

@@ -1,17 +1,5 @@
-#ifndef VIGRA_RAG_HXX
-#define VIGRA_RAG_HXX
-
-
-
-// WHY RAG SHOULD TAKE VIEW AND NOT(!) GRAPH WITH LABLED NODE MAP
-// - WHO SHOULD EXTRACT EDGE FEATURES 
-//    - if rag TAKES graph then we do not know anything about edge coordinates ?
-//      we could use a edgeMap or nodeMap of features, but who is going to
-//      extract the inital features....anyone who should do does
-//      need to know about the RAG and the labeling and also
-//      which edge correspondes to which pixels.....and well..this
-//      whould need another data structure
-//      
+#ifndef VIGRA_ADJACENCY_LIST_GRAPH_HXX
+#define VIGRA_ADJACENCY_LIST_GRAPH_HXX
 
 
 
@@ -239,6 +227,38 @@ namespace vigra{
         typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,InFlter   >  InArcIt;
         typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,OutFilter >  OutArcIt;
 
+        template<class T>
+        struct EdgeMap : DenseEdgeReferenceMap<GraphType,T> {
+            EdgeMap()
+            : DenseEdgeReferenceMap<GraphType,T>(){
+            }
+            EdgeMap(const GraphType & g)
+            : DenseEdgeReferenceMap<GraphType,T>(g){
+            }
+        };
+
+
+        template<class T>
+        struct NodeMap : DenseNodeReferenceMap<GraphType,T> {
+            NodeMap()
+            : DenseNodeReferenceMap<GraphType,T>(){
+            }
+            NodeMap(const GraphType & g)
+            : DenseNodeReferenceMap<GraphType,T>(g){
+            }
+        };
+
+
+        template<class T>
+        struct ArcMap : DenseArcReferenceMap<GraphType,T> {
+            ArcMap()
+            : DenseArcReferenceMap<GraphType,T>(){
+            }
+            ArcMap(const GraphType & g)
+            : DenseArcReferenceMap<GraphType,T>(g){
+            }
+        };
+
 
 
     // public member functions
@@ -359,7 +379,7 @@ namespace vigra{
 
 
     
-    AdjacencyListGraph::AdjacencyListGraph(
+    inline AdjacencyListGraph::AdjacencyListGraph(
         const size_t reserveNodes,
         const size_t reserveEdges,
         const bool   zeroStart
@@ -496,7 +516,7 @@ namespace vigra{
 
 
     
-    AdjacencyListGraph::Node 
+    inline AdjacencyListGraph::Node 
     AdjacencyListGraph::baseNode(
         const AdjacencyListGraph::IncEdgeIt & iter
     )const{
@@ -504,7 +524,7 @@ namespace vigra{
     }
 
     
-    AdjacencyListGraph::Node 
+    inline AdjacencyListGraph::Node 
     AdjacencyListGraph::baseNode(
         const AdjacencyListGraph::OutArcIt & iter 
     )const{
@@ -513,7 +533,7 @@ namespace vigra{
 
 
     
-    AdjacencyListGraph::Node 
+    inline AdjacencyListGraph::Node 
     AdjacencyListGraph::runningNode(
         const AdjacencyListGraph::IncEdgeIt & iter
     )const{
@@ -521,7 +541,7 @@ namespace vigra{
     }
 
     
-    AdjacencyListGraph::Node 
+    inline AdjacencyListGraph::Node 
     AdjacencyListGraph::runningNode(
         const AdjacencyListGraph::OutArcIt & iter 
     )const{
@@ -697,4 +717,4 @@ namespace vigra{
 
 }
 
-#endif /*VIGRA_RAG_HXX*/
+#endif /*VIGRA_ADJACENCY_LIST_GRAPH_HXX*/

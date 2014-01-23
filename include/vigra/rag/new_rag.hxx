@@ -1,6 +1,10 @@
 #ifndef VIGRA_NEW_RAG_HXX
 #define VIGRA_NEW_RAG_HXX
 
+#include <vigra/graph_generalization.hxx>
+#include <vigra/graph_map_algorithms.hxx>
+#include <vigra/numpy_array.hxx>
+
 namespace vigra{
 
 
@@ -9,21 +13,24 @@ namespace vigra{
 
 template<
     class GRAPH_IN,
-    class GRAPH_IN_NODE_LABEL_MAP,
+    class GRAPH_IN_NODE_LABEL_MAP
 >
 void makeRegionAdjacencyGraph(
     GRAPH_IN                   graphIn,
-    GRAPH_IN_NODE_LABEL_MAP    labels
+    GRAPH_IN_NODE_LABEL_MAP    labels,
+    typename AdjacencyListGraph:: template EdgeMap< std::vector<typename GRAPH_IN::Edge> > & hyperEdges,
+    typename AdjacencyListGraph:: template NodeMap< std::vector<typename GRAPH_IN::Node> > & hyperNodes,
+    const Int64   ignoreLabel=-1
 ){
-
-    typedef typename GRAPH_IN_NODE_LABEL_MAP::Value LabelType;
+    typedef GRAPH_IN_NODE_LABEL_MAP LabelMap;
+    typedef typename GraphMapTypeTraits<GRAPH_IN_NODE_LABEL_MAP>::Value LabelType;
     typedef GRAPH_IN GraphIn;
     typedef typename GraphIn::Edge EdgeGraphIn;
     typedef typename GraphIn::Node NodeGraphIn;
     typedef typename GraphIn::EdgeIt EdgeItInGraph;
     typedef typename GraphIn::NodeIt NodeItInGraph;
     
-    typedef AdjacencyListGraph<1> GraphOut;
+    typedef AdjacencyListGraph      GraphOut;
     typedef typename GraphOut::Edge EdgeGraphOut;
     typedef typename GraphOut::Node NodeGraphOut;
     typedef typename GraphOut::EdgeIt EdgeItOutGraph;
@@ -32,17 +39,23 @@ void makeRegionAdjacencyGraph(
     typedef typename GraphOut:: template NodeMap< std::vector<NodeGraphIn> > HyperNodeMap;
 
     
+
+
+
     // iterate over all labels in the node map to find min max
-    std::pair<LabelType,LabelType> minMaxLabel  = nodeMapMinMap(graphIn,labels);
+    typedef NodeMapIteratorHelper<GraphIn,LabelMap> NodeIterHelper;
+    const LabelType  minLabel = *std::min_element(NodeIterHelper::begin(graphIn,labels),NodeIterHelper::end(graphIn,labels));
+    //const LabelType  maxLabel = *std::max_element(NodeIterHelper::begin(graphIn,labels),NodeIterHelper::end(graphIn,labels));
+
 
     size_t numberOfNodes = 0; // TODO
     size_t reserveEdges  = 0;
 
     // SET UP RAG GAPPH
-    AdjacencyListGraph<1> ragGraph(numberOfNodes,reserveEdges);
+    AdjacencyListGraph ragGraph(numberOfNodes,reserveEdges);
     // add nodes
     for(size_t n=0;n<numberOfNodes;++n){
-        ragGraph.addNdoe();
+        ragGraph.addNode();
     }
     // add al edges
     for(EdgeItInGraph e(graphIn);e!=lemon::INVALID;++e){
@@ -58,8 +71,8 @@ void makeRegionAdjacencyGraph(
     // SET UP HYPEREDGES
 
 
-    HyperEdgeMap hyperEdges(ragGraph);
-    HyperNodeMap hyperNodes(ragGraph);
+    hyperEdges.assign(ragGraph);
+    hyperNodes.assign(ragGraph);
 
     // add edges
     for(EdgeItInGraph e(graphIn);e!=lemon::INVALID;++e){
@@ -80,7 +93,8 @@ void makeRegionAdjacencyGraph(
         hyperNodes[ragNode].push_back(node);
     }
 
-
 }
+
+} // end namespace vigra
 
 #endif // VIGRA_NEW_RAG_HXX
