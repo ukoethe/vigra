@@ -447,3 +447,54 @@ del _genFeaturConvenienceFunctions
 
 
 
+
+def _genGraphConvenienceFunctions():
+
+    def gridGraph(shape,directed=False):
+        if directed :
+             raise RuntimeError("directed GridGraph is not yet wrapped to python")
+
+        if(len(shape)==2):
+            return graphs.GridGraphUndirected2d(shape)
+        elif(len(shape)==3):
+            return graphs.GridGraphUndirected3d(shape)
+        else:
+            raise RuntimeError("GridGraph is only implemented for 2d and 3d grids")
+
+    gridGraph.__module__ = 'vigra.graphs'
+    graphs.gridGraph = gridGraph
+
+    def graph(nodes=0,edges=0,zeroStart=False,directed=False):
+        if directed :
+             raise RuntimeError("directed Graph is not yet implemented")
+        return graphs.AdjacencyListGraph(nodes,edges,zeroStart)
+        
+    graph.__module__ = 'vigra.graphs'
+    graphs.graph = graph
+
+
+    def regionAdjacencyGraph(graph,labels,ignoreLabel=0,reserveEdges=0):
+        print "get region adjacency graph"
+        rag       = graphs.graph(long(labels.max()+1),reserveEdges)
+        # this will be refactored to a simpler function
+        hyperEdges  = graphs.GridGraphUndirected2dHyperEdgeMap()
+        hyperNodes  = graphs.GridGraphUndirected2dHyperNodeMap()
+
+        graph.getRegionAdjacencyGraph(
+            labels=labels,
+            rag=rag,
+            hyperEdges=hyperEdges,
+            hyperNodes=hyperNodes,
+            ignoreLabel=0
+        )
+
+        return rag,hyperNodes,hyperEdges
+
+    regionAdjacencyGraph.__module__ = 'vigra.graphs'
+    graphs.regionAdjacencyGraph = regionAdjacencyGraph
+
+
+
+_genGraphConvenienceFunctions()
+del _genGraphConvenienceFunctions
+

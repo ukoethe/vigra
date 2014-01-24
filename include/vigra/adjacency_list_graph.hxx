@@ -334,6 +334,10 @@ namespace vigra{
                 return Edge(id);
             }   
         }
+        
+        bool zeroStart()const{
+            return zeroStart_;
+        }
 
     private:
         // private typedefs
@@ -358,10 +362,6 @@ namespace vigra{
             return nodes_[node.id()];
         }
 
-
-        bool zeroStart()const{
-            return zeroStart_;
-        }
 
 
 

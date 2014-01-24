@@ -51,30 +51,55 @@ namespace vigra{
 
     template<unsigned int DIM,class DTAG,class LABEL_TYPE>
     void getRag(
-        const GridGraph<DIM,DTAG> & graph,
-        NumpyArray<DIM,LABEL_TYPE>  labelMap,
-        AdjacencyListGraph        & rag,
-        const Int64                 ignoreLabel=-1
+        const GridGraph<DIM,DTAG>                                                                & graph,
+        NumpyArray<DIM,LABEL_TYPE>                                                                labelMap,
+        AdjacencyListGraph                                                                       & rag,
+        AdjacencyListGraph:: template EdgeMap< std::vector<typename GridGraph<DIM,DTAG>::Edge> > & hyperEdges,
+        AdjacencyListGraph:: template NodeMap< std::vector<typename GridGraph<DIM,DTAG>::Node> > & hyperNodes,
+        const Int64                                                                                ignoreLabel=-1
     ){
         typedef AdjacencyListGraph:: template EdgeMap< std::vector<typename GridGraph<DIM,DTAG>::Edge> > HyperEdges;
         typedef AdjacencyListGraph:: template NodeMap< std::vector<typename GridGraph<DIM,DTAG>::Node> > HyperNodes;
-
-        HyperEdges hyperEdges;
-        HyperNodes hyperNodes;
-
-        makeRegionAdjacencyGraph(graph,labelMap,hyperEdges,hyperNodes,ignoreLabel);
+        makeRegionAdjacencyGraph(graph,labelMap,rag,hyperEdges,hyperNodes,ignoreLabel);
     }
 
 
 
     template<unsigned int DIM>
     void defineGridGraphT(const std::string & clsName){
-        
-        typedef GridGraph<DIM,boost::undirected_tag> Graph;
 
+        typedef GridGraph<DIM,boost::undirected_tag> Graph;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::Node Node;
+
+        typedef typename AdjacencyListGraph:: template EdgeMap< std::vector<Edge> > HyperEdgeMap;
+        typedef typename AdjacencyListGraph:: template NodeMap< std::vector<Node> > HyperNodeMap;
+
+
+        const std::string hyperEdgeMapNamClsName = clsName + std::string("HyperEdgeMap");
+        const std::string hyperNodeMapNamClsName = clsName + std::string("HyperNodeMap");
+
+        python::class_<HyperEdgeMap>(hyperEdgeMapNamClsName.c_str(),python::init<>())
+        ;
+
+        python::class_<HyperNodeMap>(hyperNodeMapNamClsName.c_str(),python::init<>())
+        ;
+
+
+
+
+        
         python::class_<Graph>(clsName.c_str(),python::init< TinyVector<Int64,DIM> >())
         .def(LemonDirectedGraphCoreVisitor<Graph>(clsName))
-        .def("getRegionAdjacencyGraph",&getRag<DIM,boost::undirected_tag,UInt32> )
+        .def("getRegionAdjacencyGraph",registerConverters(&getRag<DIM,boost::undirected_tag,UInt32> ),
+           (
+               python::arg("labels"),
+               python::arg("rag"),
+               python::arg("hyperEdges"),
+               python::arg("hyperNodes"),
+               python::arg("ignoreLabel")=-1
+           )
+        )
         ;
 
         

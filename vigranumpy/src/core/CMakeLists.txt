@@ -91,6 +91,7 @@ VIGRA_ADD_NUMPY_MODULE(optimization SOURCES
 
 VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     graphs.cxx
-    gridGraph.cxx
     adjacencyListGraph.cxx
+    gridGraph.cxx
+    
   VIGRANUMPY)
