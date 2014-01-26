@@ -44,7 +44,7 @@
 #  define VIGRA_NO_STD_THREADING
 #endif
 
-#if _MSC_VER <= 1600
+#if defined(_MSC_VER) && _MSC_VER <= 1600
 #  define VIGRA_NO_STD_THREADING
 #endif
 
