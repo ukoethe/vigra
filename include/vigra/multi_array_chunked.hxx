@@ -36,30 +36,44 @@
 /* benchmark results for a simple loop 'if(iter.get<1>() != count++)'
 
     ********************
-    win64/vs2012:
     image size: 200^3, chunk size: 64^3, i.e. chunk count: 4^3
-    numbers in msec, excluding time to store file on disk
+    times in msec, excluding time to store file on disk
     
-                                             uint8     float    double
-    plain array                                18        18        18
-    chunked array (all in cache)               25        26        26
-    thread-safe chunked (all in cache)         27        28        29
-    thread-safe chunked (1 slice in cache)     29        33        39
-    thread-safe chunked (1 row in cache)       45        48        52
-    chunked (initial creation, all in cache)   33        43        57
+    win64/vs2012 (koethe-laptop):            uint8     float    double
+    plain array                                 18        18        18
+    chunked array (all in cache)                25        26        26
+    thread-safe chunked (all in cache)          27        28        29
+    thread-safe chunked (1 slice in cache)      29        33        39
+    thread-safe chunked (1 row in cache)        45        48        52
+    chunked (initial creation, all in cache)    33        43        57
+    
+    linux/gcc 4.7.3 (birdofprey):            uint8     float    double
+    plain array                                 16        20        21
+    chunked array (all in cache)                17        23        24
+    thread-safe chunked (all in cache)          19        24        25
+    thread-safe chunked (1 slice in cache)      20        29        34
+    thread-safe chunked (1 row in cache)        24        33        39
+    chunked (initial creation, all in cache)    22        34        48
 
     **********************
-    win64/vs2012:
     image size: 400^3, chunk size: 127^3, i.e. chunk count: 4^3
-    numbers in msec, excluding time to store file on disk
+    times in msec, excluding time to store file on disk
     
-                                             uint8     float    double
+    win64/vs2012 (koethe-laptop):            uint8     float    double
     plain array                                130       130       130
     chunked array (all in cache)               190       190       200
     thread-safe chunked (all in cache)         190       200       210
     thread-safe chunked (1 slice in cache)     210       235       280
     thread-safe chunked (1 row in cache)       240       270       300
     chunked (initial creation, all in cache)   230       300       400
+    
+    linux/gcc 4.7.3 (birdofprey):            uint8     float    double
+    plain array                                130       162       165
+    chunked array (all in cache)               131       180       184
+    thread-safe chunked (all in cache)         135       183       188
+    thread-safe chunked (1 slice in cache)     146       218       258
+    thread-safe chunked (1 row in cache)       154       229       270
+    chunked (initial creation, all in cache)   173       269       372
 
 */
 
@@ -178,7 +192,7 @@ struct ChunkShape<2>
 template <>
 struct ChunkShape<3>
 {
-    static const unsigned int bits = 7;
+    static const unsigned int bits = 6;
     static const unsigned int value = 1 << bits;
     static const unsigned int mask = value -1;
     
