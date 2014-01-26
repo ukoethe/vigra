@@ -40,6 +40,14 @@
    when the compiler doesn't yet support C++11.
 */
 
+#if defined(__GNUC__) && (!defined(_GLIBCXX_HAS_GTHREADS) || !defined(_GLIBCXX_USE_C99_STDINT_TR1))
+#  define VIGRA_NO_STD_THREADING
+#endif
+
+#if _MSC_VER <= 1600
+#  define VIGRA_NO_STD_THREADING
+#endif
+
 #ifdef VIGRA_NO_STD_THREADING
 #  include <boost/thread/thread.hpp>
 #  include <boost/thread/mutex.hpp>

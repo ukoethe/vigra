@@ -33,12 +33,43 @@
 /*                                                                      */
 /************************************************************************/
 
+/* benchmark results for a simple loop 'if(iter.get<1>() != count++)'
+
+    ********************
+    win64/vs2012:
+    image size: 200^3, chunk size: 64^3, i.e. chunk count: 4^3
+    numbers in msec, excluding time to store file on disk
+    
+                                             uint8     float    double
+    plain array                                18        18        18
+    chunked array (all in cache)               25        26        26
+    thread-safe chunked (all in cache)         27        28        29
+    thread-safe chunked (1 slice in cache)     29        33        39
+    thread-safe chunked (1 row in cache)       45        48        52
+    chunked (initial creation, all in cache)   33        43        57
+
+    **********************
+    win64/vs2012:
+    image size: 400^3, chunk size: 127^3, i.e. chunk count: 4^3
+    numbers in msec, excluding time to store file on disk
+    
+                                             uint8     float    double
+    plain array                                130       130       130
+    chunked array (all in cache)               190       190       200
+    thread-safe chunked (all in cache)         190       200       210
+    thread-safe chunked (1 slice in cache)     210       235       280
+    thread-safe chunked (1 row in cache)       240       270       300
+    chunked (initial creation, all in cache)   230       300       400
+
+*/
+
 #ifndef VIGRA_MULTI_ARRAY_CHUNKED_HXX
 #define VIGRA_MULTI_ARRAY_CHUNKED_HXX
 
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
 #include "threading.hxx"
+#include "timing.hxx"
 
 #ifdef _WIN32
 # include "windows.h"
@@ -49,6 +80,10 @@
 # include <sys/stat.h>
 # include <sys/mman.h>
 #endif
+
+#define VIGRA_CHUNKED_ARRAY_THREAD_SAFE
+
+double timeit = 0;
 
 namespace vigra {
 
@@ -143,7 +178,7 @@ struct ChunkShape<2>
 template <>
 struct ChunkShape<3>
 {
-    static const unsigned int bits = 6;
+    static const unsigned int bits = 7;
     static const unsigned int value = 1 << bits;
     static const unsigned int mask = value -1;
     
@@ -375,7 +410,11 @@ class ChunkBase
     
     threading::atomic<pointer> pointer_;
     shape_type shape_, strides_;
+#ifdef VIGRA_CHUNKED_ARRAY_THREAD_SAFE
     mutable threading::atomic<int> refcount_;
+#else
+    mutable int refcount_;
+#endif
 };
 
 
@@ -399,7 +438,8 @@ Alternatives are:
 * Back chunks by HDF5 chunks, possibly using on-the-fly compression. This
   is in particular useful for existing HDF5 files.
 * Back chunks by HDF5 datasets. This can be combined with compression 
-  (both explicit and on-the-fly).
+  (both explicit and on-the-fly) or with memory mapping (using the 
+  function H5Dget_offset() to get the offset from the beginning of the file).
 */
 template <unsigned int N, class T>
 class ChunkedArray
@@ -666,8 +706,10 @@ class ChunkedArrayTmpFile
 : public ChunkedArray<N, T>
 {
   public:
-#ifndef _WIN32
-    typedef int HANDLE;
+#ifdef _WIN32
+    typedef HANDLE FileHandle;
+#else
+    typedef int FileHandle;
 #endif    
     
     class Chunk
@@ -700,7 +742,7 @@ class ChunkedArrayTmpFile
             this->strides_ = detail::defaultStride(this->shape_);
         }
         
-        void setFile(HANDLE file, std::ptrdiff_t offset)
+        void setFile(FileHandle file, std::ptrdiff_t offset)
         {
             file_ = file;
             offset_ = offset;
@@ -736,7 +778,7 @@ class ChunkedArrayTmpFile
                 if(!p)
                     throw std::runtime_error("ChunkedArrayChunk::map(): mmap() failed.");
             #endif
-                this->pointer_.store(p);
+                this->pointer_.store(p, threading::memory_order_release);
             }
             return p;
         }
@@ -756,7 +798,7 @@ class ChunkedArrayTmpFile
         
         std::ptrdiff_t offset_;
         std::size_t alloc_size_;
-        HANDLE file_;
+        FileHandle file_;
         Chunk * cache_next_;
     };
 
@@ -766,7 +808,7 @@ class ChunkedArrayTmpFile
     typedef value_type * pointer;
     typedef value_type & reference;
     
-    ChunkedArrayTmpFile(shape_type const & shape, std::string const & path = "")
+    ChunkedArrayTmpFile(shape_type const & shape, std::string const & path = "", int cache_max=0)
     : ChunkedArray<N, T>(shape),
       outer_array_(outerShape(shape)),
       file_size_(),
@@ -774,7 +816,7 @@ class ChunkedArrayTmpFile
       cache_first_(0), cache_last_(0),
       cache_size_(0),
       // cache_max_size_(max(outer_array_.shape())*2)
-      cache_max_size_(8)
+      cache_max_size_(cache_max ? cache_max : max(outer_array_.shape())*2)
     {
         // set shape of the chunks
         typename ChunkStorage::iterator i = outer_array_.begin(), 
@@ -875,9 +917,15 @@ class ChunkedArrayTmpFile
     
     virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & border, ChunkBase<N, T> ** chunk_ptr)
     {
+        // USETICTOC;
+        // TIC;
         if(*chunk_ptr)
         {
+#ifdef VIGRA_CHUNKED_ARRAY_THREAD_SAFE
             (*chunk_ptr)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+#else
+            --(*chunk_ptr)->refcount_;
+#endif
             *chunk_ptr = 0;
         }
         
@@ -888,98 +936,111 @@ class ChunkedArrayTmpFile
         ChunkShape<N>::chunkIndex(point, chunkIndex);
         Chunk & chunk = outer_array_[chunkIndex];
         
-        T * p = 0;
+#ifdef VIGRA_CHUNKED_ARRAY_THREAD_SAFE
+        // Obtain a reference to the current chunk.
+        // We use a simple spin-lock here because it is very fast in case of success
+        // and failures (i.e. a collisions with another thread) are presumably 
+        // very rare.
         while(true)
         {
-            int rc = chunk.refcount_.load(threading::memory_order_seq_cst);
+            int rc = chunk.refcount_.load(threading::memory_order_acquire);
             if(rc < 0)
             {
                 // cache management in progress => try again later
-                // (we can effort this simplistic collision handling 
-                //  method because collisions will occur very rarely)
                 threading::this_thread::yield();
             }
-            else if(chunk.refcount_.compare_exchange_strong(rc, rc+1, threading::memory_order_seq_cst))
+            else if(chunk.refcount_.compare_exchange_weak(rc, rc+1, threading::memory_order_seq_cst))
             {
-                // we successfully obtained a reference
-                p = chunk.pointer_.load(threading::memory_order_seq_cst);
-                if(p == 0)
-                {
-                    // apply the double-checked locking pattern
-                    threading::lock_guard<threading::mutex> guard(cache_lock_);
-                    p = chunk.pointer_.load(threading::memory_order_seq_cst);
-                    if(p == 0)
-                    {
-                        std::ptrdiff_t offset = file_size_;
-                    #ifdef VIGRA_NO_SPARSE_FILE
-                        std::size_t chunk_size = chunk.alloc_size();
-                        if(chunk.offset_ < 0 && offset + chunk_size > file_capacity_)
-                        {
-                            file_capacity_ *= 2;
-                            lseek(file_, file_capacity_-1, SEEK_SET);
-                            if(write(file_, "0", 1) == -1)
-                                throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
-                        }
-                        file_size_ += chunk_size;
-                    #endif
-                        p = chunk.map(offset);
-                        
-                        // insert in queue of mapped chunks
-                        if(!cache_first_)
-                            cache_first_ = &chunk;
-                        if(cache_last_)
-                            cache_last_->cache_next_ = &chunk;
-                        cache_last_ = &chunk;
-                        ++cache_size_;
-                        
-                        // do cache management if cache is full
-                        // (note that we still hold the cache_lock_)
-                        if(cache_size_ > cache_max_size_)
-                        {
-                            // remove first element from queue
-                            Chunk * c = cache_first_;
-                            cache_first_ = c->cache_next_;
-                            if(cache_first_ == 0)
-                                cache_last_ = 0;
-                            
-                            // check if the refcount is zero and temporarily set it 
-                            // to -1 in order to lock the chunk while cache management 
-                            // is done
-                            rc = 0;
-                            if(c->refcount_.compare_exchange_strong(rc, -1, std::memory_order_seq_cst))
-                            {
-                                // refcount was zero => can unmap
-                                c->unmap();
-                                c->cache_next_ = 0;
-                                --cache_size_;
-                                c->refcount_.store(0, std::memory_order_seq_cst);
-                            }
-                            else
-                            {
-                                // refcount was non-zero => reinsert chunk into queue
-                                if(!cache_first_)
-                                    cache_first_ = c;
-                                if(cache_last_)
-                                    cache_last_->cache_next_ = c;
-                                cache_last_ = c;
-                            }
-                        }
-                    }
-                }
+                // success
                 break;
             }
         }
+#else
+        ++chunk.refcount_;
+#endif
         
+        T * p = chunk.pointer_.load(threading::memory_order_acquire);
+        if(p == 0)
+        {
+            // apply the double-checked locking pattern
+            threading::lock_guard<threading::mutex> guard(cache_lock_);
+            p = chunk.pointer_.load(threading::memory_order_acquire);
+            if(p == 0)
+            {
+                std::ptrdiff_t offset = file_size_;
+            #ifdef VIGRA_NO_SPARSE_FILE
+                std::size_t chunk_size = chunk.alloc_size();
+                if(chunk.offset_ < 0 && offset + chunk_size > file_capacity_)
+                {
+                    file_capacity_ *= 2;
+                    lseek(file_, file_capacity_-1, SEEK_SET);
+                    if(write(file_, "0", 1) == -1)
+                        throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
+                }
+                file_size_ += chunk_size;
+            #endif
+                p = chunk.map(offset);
+                
+                // insert in queue of mapped chunks
+                if(!cache_first_)
+                    cache_first_ = &chunk;
+                if(cache_last_)
+                    cache_last_->cache_next_ = &chunk;
+                cache_last_ = &chunk;
+                ++cache_size_;
+                
+                // do cache management if cache is full
+                // (note that we still hold the cache_lock_)
+                if(cache_size_ > cache_max_size_)
+                {
+                    // remove first element from queue
+                    Chunk * c = cache_first_;
+                    cache_first_ = c->cache_next_;
+                    if(cache_first_ == 0)
+                        cache_last_ = 0;
+                    
+                    // check if the refcount is zero and temporarily set it 
+                    // to -1 in order to lock the chunk while cache management 
+                    // is done
+                    int rc = 0;
+#ifdef VIGRA_CHUNKED_ARRAY_THREAD_SAFE
+                    if(c->refcount_.compare_exchange_strong(rc, -1, std::memory_order_seq_cst))
+#else
+                    if(c->refcount_ == 0)
+#endif
+                    {
+                        // refcount was zero => can unmap
+                        c->unmap();
+                        c->cache_next_ = 0;
+                        --cache_size_;
+#ifdef VIGRA_CHUNKED_ARRAY_THREAD_SAFE
+                        c->refcount_.store(0, std::memory_order_release);
+#endif
+                    }
+                    else
+                    {
+                        // refcount was non-zero => reinsert chunk into queue
+                        if(!cache_first_)
+                            cache_first_ = c;
+                        if(cache_last_)
+                            cache_last_->cache_next_ = c;
+                        cache_last_ = c;
+                    }
+                }
+            }
+        }
+
         strides = chunk.strides_;
         border = (chunkIndex + shape_type(1)) * this->default_chunk_shape_;
         std::size_t offset = ChunkShape<N>::offset(point, strides);
         *chunk_ptr = &chunk;
+        // timeit += TOCN;
         return p + offset;
     }
     
     ChunkStorage outer_array_;  // the array of chunks
 
-    HANDLE file_, mappedFile_;  // the file back-end
+    FileHandle file_, mappedFile_;  // the file back-end
     std::size_t file_size_, file_capacity_;
     
     Chunk * cache_first_, * cache_last_;  // cache of loaded chunks
