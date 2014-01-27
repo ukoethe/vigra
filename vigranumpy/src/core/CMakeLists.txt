@@ -71,4 +71,5 @@ VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     gridGraph.cxx
     graphAlgorithms.cxx
     mergeGraphAdaptor.cxx
+    
   VIGRANUMPY)
