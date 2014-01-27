@@ -82,7 +82,7 @@ namespace vigra{
 
 
         
-        python::class_<Graph>(clsName.c_str(),python::init< TinyVector<int,DIM> >())
+        python::class_<Graph>(clsName.c_str(),python::init< TinyVector<Int64,DIM> >())
         .def(LemonDirectedGraphCoreVisitor<Graph>(clsName))
         .def("getRegionAdjacencyGraph",registerConverters(&pyGetRag<DIM,boost::undirected_tag,UInt32> ),
            (
