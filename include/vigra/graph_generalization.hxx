@@ -56,15 +56,6 @@ namespace vigra{
         typedef typename MAP::ConstReference ConstReference;
     };
 
-
-    template< unsigned int DIM,class T>
-    struct GraphMapTypeTraits<NumpyArray<DIM,T> >{
-        typedef typename NumpyArray<DIM,T>::value_type Value;
-        typedef Value &                                Reference;
-        typedef const Value  &                         ConstReference;
-    };
-
-
     template<class GRAPH>
     struct GraphIteratorAccessor{
         typedef GRAPH Graph;
@@ -114,16 +105,20 @@ namespace vigra{
         typedef TinyVector<index_type,1> IntrinsicEdgeMapShape;
         typedef TinyVector<index_type,1>  IntrinsicArcMapShape;
 
-        IntrinsicNodeMapShape intrinsicNodeMapShape(const Graph & g)const{
-            return IntrinsicNodeMapShape(g.maxNodeId());
+        static IntrinsicNodeMapShape intrinsicNodeMapShape(const Graph & g){
+            return IntrinsicNodeMapShape(g.maxNodeId()+1);
         }
-        IntrinsicEdgeMapShape intrinsicEdgeMapShape(const Graph & g)const{
-            return IntrinsicEdgeMapShape(g.maxEdgeId());
+        static IntrinsicEdgeMapShape intrinsicEdgeMapShape(const Graph & g){
+            return IntrinsicEdgeMapShape(g.maxEdgeId()+1);
         }
-        IntrinsicArcMapShape intrinsicArcMapShape(const Graph & g)const{
-            return  IntrinsicArcMapShape(g.maxArcId());
+        static IntrinsicArcMapShape intrinsicArcMapShape(const Graph & g){
+            return  IntrinsicArcMapShape(g.maxArcId()+1);
         }
 
+
+        static const unsigned int IntrinsicNodeMapDimension=1;
+        static const unsigned int IntrinsicEdgeMapDimension=1;
+        static const unsigned int IntrinsicArceMapDimension=1;
     };
 
     template<unsigned int DIM,class DIRECTED_TAG>
@@ -140,16 +135,18 @@ namespace vigra{
         typedef typename Graph::edge_propmap_shape_type IntrinsicEdgeMapShape;
         typedef typename Graph::edge_propmap_shape_type IntrinsicArcMapShape;
 
-        IntrinsicNodeMapShape intrinsicNodeMapShape(const Graph & g)const{
+        static IntrinsicNodeMapShape intrinsicNodeMapShape(const Graph & g){
             return  g.shape();
         }
-        IntrinsicEdgeMapShape intrinsicEdgeMapShape(const Graph & g)const{
+        static IntrinsicEdgeMapShape intrinsicEdgeMapShape(const Graph & g){
             return  g.edge_propmap_shape();
         }
-        IntrinsicArcMapShape intrinsicArcMapShape(const Graph & g)const{
+        static IntrinsicArcMapShape intrinsicArcMapShape(const Graph & g){
             return  g.arc_propmap_shape();
         }
-
+        static const unsigned int IntrinsicNodeMapDimension=DIM;
+        static const unsigned int IntrinsicEdgeMapDimension=DIM+1;
+        static const unsigned int IntrinsicArceMapDimension=DIM+1;
     };
 
 
@@ -209,6 +206,9 @@ namespace vigra{
         }
 
     };
+
+
+
 
 
 } // namespace vigra

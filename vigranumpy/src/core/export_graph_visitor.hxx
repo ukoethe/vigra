@@ -2,11 +2,17 @@
 #define EXPORT_GRAPH_VISITOR_HXX
 //#define NO_IMPORT_ARRAY
 
+/*std*/
+#include <sstream>
+#include <string>
+
+/*vigra*/
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <boost/python.hpp>
 #include <vigra/graphs.hxx>
 #include <vigra/graph_generalization.hxx>
+#include <vigra/python_graph_generalization.hxx>
 namespace python = boost::python;
 
 namespace vigra{
@@ -28,6 +34,9 @@ struct NodeHolder :  GRAPH::Node
     typename GRAPH::index_type id()const{
         return graph_->id(*this);
     }
+
+
+
     const GRAPH * graph_;
 };
 
@@ -57,6 +66,12 @@ struct EdgeHolder : GRAPH::Edge
     NodeHolder<GRAPH> v()const{
         return NodeHolder<GRAPH>(*graph_,graph_->v(*this));
     }
+
+    typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicEdgeMapShape
+    intrinsicEdgeCoordinate()const{
+        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicEdgeCoordinate(*graph_,*this);
+    }
+
     const GRAPH * graph_; 
 };
 
@@ -149,9 +164,9 @@ public:
     typedef typename Graph::EdgeIt              EdgeIt;
     typedef typename Graph::ArcIt               ArcIt;
     //typedef typename Graph::NeighborNodeIt      NeighborNodeIt;
-    typedef EdgeIteratorHolder<Graph> EdgeIteratorHolderType;
-    typedef NodeIteratorHolder<Graph> NodeIteratorHolderType;
-    typedef ArcIteratorHolder<Graph>  ArcIteratorHolderType;
+    //typedef EdgeIteratorHolder<Graph> EdgeIteratorHolderType;
+    //typedef NodeIteratorHolder<Graph> NodeIteratorHolderType;
+    //typedef ArcIteratorHolder<Graph>  ArcIteratorHolderType;
 
 
     typedef EdgeHolder<Graph> PyEdge;
@@ -179,6 +194,7 @@ public:
         .add_property("v",  &PyEdge::v )
         .def("__eq__",&eqToInvalid<PyEdge>)
         .def("__ne__",&neqToInvalid<PyEdge>)
+        .def("coord",&PyEdge::intrinsicEdgeCoordinate)
         ;
 
         python::class_<PyNode>(nodeHolderClsName.c_str(),python::init< >())
@@ -195,17 +211,23 @@ public:
 
 
 
-        const std::string edgeIteratorHolderClsName = std::string("EdgeIteratorHolder")+clsName_;
-        python::class_<EdgeIteratorHolderType>(edgeIteratorHolderClsName.c_str(),python::no_init)
-        .def("__iter__",python::range(&EdgeIteratorHolderType::begin,&EdgeIteratorHolderType::end))
-        ;
-
-        const std::string nodeIteratorHolderClsName = std::string("NodeIteratorHolder")+clsName_;
-        python::class_<NodeIteratorHolderType>(nodeIteratorHolderClsName.c_str(),python::no_init)
-        .def("__iter__",python::range(&NodeIteratorHolderType::begin,&NodeIteratorHolderType::end))
+        //const std::string edgeIteratorHolderClsName = std::string("EdgeIteratorHolder")+clsName_;
+        //python::class_<EdgeIteratorHolderType>(edgeIteratorHolderClsName.c_str(),python::no_init)
+        //.def("__iter__",python::range(&EdgeIteratorHolderType::begin,&EdgeIteratorHolderType::end))
+        //;
+        //const std::string nodeIteratorHolderClsName = std::string("NodeIteratorHolder")+clsName_;
+        //python::class_<NodeIteratorHolderType>(nodeIteratorHolderClsName.c_str(),python::no_init)
+        //.def("__iter__",python::range(&NodeIteratorHolderType::begin,&NodeIteratorHolderType::end))
         ;
 
         c
+
+            //special members
+            // print graph
+            .def("__str__",&asStr)
+            .def("__len__",&Graph::edgeNum)
+
+
             // basic properties
             .add_property("nodeNum",  &Graph::nodeNum )
             .add_property("edgeNum",  &Graph::edgeNum )
@@ -224,7 +246,7 @@ public:
 
             // item from id
             .def("nodeFromId",&nodeFromId)
-            .def("edgeFromId",&edgeFromId)
+            .def("edgeFromId",&edgeFromId,python::with_custodian_and_ward_postcall<0,1>())
             .def("arcFromId", &arcFromId)
 
             // find edges
@@ -241,9 +263,9 @@ public:
 
 
             // intrinsic shape of maps
-            .add_property("intrinsicNodeMapShape",&IntrinsicGraphShape<Graph>::intrinsicNodeMapShape)
-            .add_property("intrinsicEdgeMapShape",&IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape)
-            .add_property("intrinsicArcMapShape" , &IntrinsicGraphShape<Graph>::intrinsicArcMapShape)
+            .def("intrinsicNodeMapShape",&IntrinsicGraphShape<Graph>::intrinsicNodeMapShape)
+            .def("intrinsicEdgeMapShape",&IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape)
+            .def("intrinsicArcMapShape" , &IntrinsicGraphShape<Graph>::intrinsicArcMapShape)
             // intrinsic coordinate of node/edge/arc
             .def("intrinsicNodeCoordinate",& GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate)
             .def("intrinsicEdgeCoordinate",&GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate)
@@ -251,38 +273,124 @@ public:
 
 
 
-            //numpy batch interface (this should be free functions??!?)
-            .def("edgeIds",registerConverters(&itemIds<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
+            // vectorized  api
+
             .def("nodeIds",registerConverters(&itemIds<Node,NodeIt>),( python::arg("out")=python::object() ) )
+            .def("edgeIds",registerConverters(&itemIds<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
             .def("arcIds" ,registerConverters(&itemIds<Arc ,ArcIt >),( python::arg("out")=python::object() ) )
 
+            .def("findEdges",registerConverters(&findEdges),( python::arg("nodeIdPairs"), python::arg("out")=python::object() ) )
 
+
+            // these functions are defined on the "FULL SET"
+            // - these need to be exported for subsets (lets say a subset of edge ids)(? do we need this)
+            .def("validEdgeIds",registerConverters(&validIds<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
+            .def("validNodeIds",registerConverters(&validIds<Node,NodeIt>),( python::arg("out")=python::object() ) )
+            .def("validArcIds" ,registerConverters(&validIds<Arc ,ArcIt >),( python::arg("out")=python::object() ) )
+            .def("uIds" ,registerConverters(&uIds), ( python::arg("out")=python::object() ) )
+            .def("vIds" ,registerConverters(&uIds), ( python::arg("out")=python::object() ) )
+            .def("uvIds",registerConverters(&uvIds),( python::arg("out")=python::object() ) )
+
+
+            //.def("dtypetest",registerConverters(&dtypetest<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
             
-            // map functions
-            .def("maptest",&maptest)
         ;
     }
 
 
 
-
-    static NumpyAnyArray maptest(
-        const Graph & g,
-        NumpyArray<1,float> map
+    template<class ITEM,class ITEM_IT>
+    static NumpyAnyArray dtypetest(   
+        const Graph & g, 
+        NumpyArray<1,ITEM> out =NumpyArray<1,ITEM>() 
     ){
+        typedef GraphItemHelper<Graph,ITEM> ItemHelper;
+        out.reshapeIfEmpty(typename NumpyArray<1,ITEM>::difference_type(  ItemHelper::itemNum(g)  ));
         size_t  counter=0;
-        for(EdgeIt e(g);e!=lemon::INVALID;++e){
-            std::cout<<"mapval "<<map(counter)<<"\n";
+        for(ITEM_IT i(g);i!=lemon::INVALID;++i){
+            const ITEM item = *i;
+            out(counter)=item;
             ++counter;
-        }    
-        return map;
+        }
+        return out;
     }
 
 
+    static NumpyAnyArray findEdges(
+        const Graph & g,
+        NumpyArray<2,UInt32> nodeIdPairs, 
+        NumpyArray<1,Int32> out =NumpyArray<1,Int32>()  
+    ){
+        out.reshapeIfEmpty(typename NumpyArray<1,Int32>::difference_type(  nodeIdPairs.shape(0)  ));
+        for(size_t i=0;i<nodeIdPairs.shape(0);++i){
+            const Edge e = g.findEdge(
+                g.nodeFromId(nodeIdPairs(i,0)),
+                g.nodeFromId(nodeIdPairs(i,1))
+            );
+            out(i) = e==lemon::INVALID ? -1 : g.id(e);
+        }
+       
+        return out;
+    }
+
+
+    static std::string asStr(const Graph &g){
+        std::stringstream ss;
+        ss<<"Nodes: "<<g.nodeNum()<<" Edges: "<<g.edgeNum()<<" maxNodeId: "<<g.maxNodeId()<<" maxEdgeId: "<<g.maxEdgeId();
+        return ss.str();
+    }
+
+
+    static NumpyAnyArray uIds(const Graph & g, NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() ){
+        typedef GraphItemHelper<Graph,Edge> ItemHelper;
+        out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  ItemHelper::itemNum(g)  ));
+        size_t  counter=0;
+        for(EdgeIt i(g);i!=lemon::INVALID;++i){
+            out(counter)=g.id(g.u(*i));
+            ++counter;
+        }
+        return out;
+    }
+    static NumpyAnyArray vIds(const Graph & g, NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() ){
+        typedef GraphItemHelper<Graph,Edge> ItemHelper;
+        out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  ItemHelper::itemNum(g)  ));
+        size_t  counter=0;
+        for(EdgeIt i(g);i!=lemon::INVALID;++i){
+            out(counter)=g.id(g.v(*i));
+            ++counter;
+        }
+        return out;
+    }
+
+    static NumpyAnyArray uvIds(const Graph & g, NumpyArray<2,UInt32> out =NumpyArray<1,UInt32>() ){
+        typedef GraphItemHelper<Graph,Edge> ItemHelper;
+        out.reshapeIfEmpty(typename NumpyArray<2,UInt32>::difference_type(  ItemHelper::itemNum(g) ,2 ));
+        size_t  counter=0;
+        for(EdgeIt i(g);i!=lemon::INVALID;++i){
+            out(counter,0)=g.id(g.u(*i));
+            out(counter,1)=g.id(g.v(*i));
+            ++counter;
+        }
+        return out;
+    }
+
     template<class ITEM,class ITEM_IT>
-    static NumpyAnyArray itemIds(const Graph & g, NumpyArray<1,index_type> out =NumpyArray<1,index_type>() ){
+    static NumpyAnyArray validIds(const Graph & g, NumpyArray<1,bool> out =NumpyArray<1,UInt32>() ){
         typedef GraphItemHelper<Graph,ITEM> ItemHelper;
-        out.reshapeIfEmpty(typename NumpyArray<1,index_type>::difference_type(  ItemHelper::maxItemId(g)  ));
+        out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  ItemHelper::maxItemId(g)  ));
+        std::fill(out.begin(),out.end(),false);
+        size_t  counter=0;
+        for(ITEM_IT i(g);i!=lemon::INVALID;++i){
+            out(g.id(*i))=true;
+            ++counter;
+        }
+        return out;
+    }
+
+    template<class ITEM,class ITEM_IT>
+    static NumpyAnyArray itemIds(const Graph & g, NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() ){
+        typedef GraphItemHelper<Graph,ITEM> ItemHelper;
+        out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  ItemHelper::itemNum(g)  ));
         size_t  counter=0;
         for(ITEM_IT i(g);i!=lemon::INVALID;++i){
             out(counter)=g.id(*i);

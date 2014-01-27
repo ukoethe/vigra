@@ -64,34 +64,11 @@ VIGRA_ADD_NUMPY_MODULE(optimization SOURCES
     optimization.cxx
   VIGRANUMPY)
 
-#VIGRA_ADD_NUMPY_MODULE(clustering SOURCES
-#    mergegraph.cxx
-#    minindexedpq.cxx
-#    mergegraphmaps.cxx
-#    clustering.cxx
-#  VIGRANUMPY)
-
-
-#VIGRA_ADD_NUMPY_MODULE(cgp SOURCES
-#    cgp.cxx
-#    py_cgp.cxx
-#    py_cell0.cxx
-#    py_cell1.cxx
-#    py_cell2.cxx
-#    py_cell0vec.cxx
-#    py_cell1vec.cxx
-#    py_cell2vec.cxx
-#  VIGRANUMPY)
-
-
-#VIGRA_ADD_NUMPY_MODULE(rag SOURCES
-#    rag.cxx
-#    rag_rag.cxx
-#  VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     graphs.cxx
     adjacencyListGraph.cxx
     gridGraph.cxx
-    
+    graphAlgorithms.cxx
+    mergeGraphAdaptor.cxx
   VIGRANUMPY)

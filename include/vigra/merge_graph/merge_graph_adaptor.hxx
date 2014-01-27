@@ -32,8 +32,8 @@
 #include <vigra/multi_array.hxx>
 #include <vigra/tinyvector.hxx>
 #include <vigra/multi_array.hxx>
-
 #include <vigra/graphs.hxx>
+#include <vigra/graph_helper/dense_map.hxx>
 #include <vigra/graph_helper/graph_item_impl.hxx>
 
 /* vigra merge graph */
@@ -288,7 +288,37 @@ class MergeGraphAdaptor
         typedef detail::GenericIncEdgeIt<MergeGraphType,NodeStorage,OutFilter >  OutArcIt;
         
 
-           
+        template<class T>
+        struct EdgeMap : DenseEdgeReferenceMap<MergeGraphType,T> {
+            EdgeMap()
+            : DenseEdgeReferenceMap<MergeGraphType,T>(){
+            }
+            EdgeMap(const MergeGraphType & g)
+            : DenseEdgeReferenceMap<MergeGraphType,T>(g){
+            }
+        };
+
+
+        template<class T>
+        struct NodeMap : DenseNodeReferenceMap<MergeGraphType,T> {
+            NodeMap()
+            : DenseNodeReferenceMap<MergeGraphType,T>(){
+            }
+            NodeMap(const MergeGraphType & g)
+            : DenseNodeReferenceMap<MergeGraphType,T>(g){
+            }
+        };
+
+
+        template<class T>
+        struct ArcMap : DenseArcReferenceMap<MergeGraphType,T> {
+            ArcMap()
+            : DenseArcReferenceMap<MergeGraphType,T>(){
+            }
+            ArcMap(const MergeGraphType & g)
+            : DenseArcReferenceMap<MergeGraphType,T>(g){
+            }
+        };
 
 
         
@@ -445,10 +475,12 @@ class MergeGraphAdaptor
             return graph_;
         }
 
-    private:
-        typedef std::map<IdType, Node > NodeMap;
-        typedef typename NodeMap::const_iterator ConstNodeMapIterator;
+        // in which node is a "merged inactive" edge
+        Node inactiveEdgesNode(const Edge edge)const{
+            return reprNodeId(graphUId(id(edge)));
+        }
 
+    private:
         // needs acces to const nodeImpl
         template<class G,class NIMPL,class FILT>
         friend class detail::GenericIncEdgeIt;

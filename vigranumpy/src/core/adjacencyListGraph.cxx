@@ -42,6 +42,7 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/adjacency_list_graph.hxx>
+#include <vigra/python_graph_generalization.hxx>
 namespace python = boost::python;
 
 namespace vigra{
@@ -54,14 +55,13 @@ namespace vigra{
         typedef NodeHolder<Graph>   PyNode;
         typedef  ArcHolder<Graph>   PyArc;
 
+        // define graph itself
         const std::string clsName = "AdjacencyListGraph";
         python::class_<Graph>(clsName.c_str(),python::init< const size_t,const size_t , const bool >())
         .def(LemonDirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonDirectedGraphAddItemsVisitor<Graph>(clsName))
         ;
-
     }
-
 } 
 
 

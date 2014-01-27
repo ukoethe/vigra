@@ -615,8 +615,8 @@ namespace vigra{
     AdjacencyListGraph::edgeFromId(
         const AdjacencyListGraph::index_type id
     )const{
-        if(id<edges_.size())
-            return edges_[id].id();
+        if(id<edges_.size() && edges_[id].id()!=-1)
+            return Edge(edges_[id].id());
         else
             return Edge(lemon::INVALID);
     }
@@ -626,8 +626,8 @@ namespace vigra{
     AdjacencyListGraph::nodeFromId(
         const AdjacencyListGraph::index_type id
     )const{
-        if(id<nodes_.size())
-            return nodes_[id].id();
+        if(id<nodes_.size()&& nodes_[id].id()!=-1)
+            return Node(nodes_[id].id());
         else
             return Node(lemon::INVALID);
     }

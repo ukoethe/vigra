@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2011 by Ullrich Koethe                     */
+/*     Copyright 2011-2012 Stefan Schmidt and Ullrich Koethe            */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -33,46 +33,35 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
+/**
+ * This header provides definitions of graph-related types
+ * and optionally provides a gateway to popular graph libraries
+ * (for now, BGL is supported).
+ */
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
+#ifndef VIGRA_PYTHON_GRAPH_GENERALIZATION_HXX
+#define VIGRA_PYTHON_GRAPH_GENERALIZATION_HXX
+
+
 #include <vigra/graphs.hxx>
-namespace python = boost::python;
+ #include <vigra/numpy_array.hxx>
+#include <vigra/multi_gridgraph.hxx>
+ #include <vigra/graph_generalization.hxx>
 
 namespace vigra{
 
 
 
+    template<class MAP>
+    struct GraphMapTypeTraits;
 
-
-	void defineInvalid();
-	void defineAdjacencyListGraph();
-	void defineGridGraph();
-	void defineGraphAlgorithms();
-	void defineMergeGraph();
+    template< unsigned int DIM,class T>
+    struct GraphMapTypeTraits<NumpyArray<DIM,T> >{
+        typedef typename NumpyArray<DIM,T>::value_type Value;
+        typedef Value &                                Reference;
+        typedef const Value  &                         ConstReference;
+    };
 
 } // namespace vigra
 
-using namespace vigra;
-using namespace boost::python;
-
-
-
-
-BOOST_PYTHON_MODULE_INIT(graphs)
-{
-    import_vigranumpy();
-
-    // all exporters needed for graph exporters (like lemon::INVALID)
-    defineInvalid();
-
-    // all graph classes itself (GridGraph , AdjacencyListGraph)
-    defineAdjacencyListGraph();
-    defineGridGraph();
-    defineMergeGraph();
-    // define graph algorithms
-    defineGraphAlgorithms();
-    
-}
+#endif // VIGRA_PYTHON_GRAPH_GENERALIZATION_HXX

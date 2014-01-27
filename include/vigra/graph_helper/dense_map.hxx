@@ -4,7 +4,9 @@
 /*vigra*/
 //#include <vigra/array_vector.hxx>
 #include <vigra/multi_array.hxx>
+#include <vigra/graph_generalization.hxx>
 #include <vigra/graphs.hxx>
+
 
 namespace vigra{
 
@@ -136,6 +138,120 @@ class DenseArcReferenceMap
 		}
 };
 
-}
+template<class G,class AV>
+class NumpyScalarEdgeMap{
+
+public:
+    typedef G  Graph;
+    typedef AV ArrayView;
+    typedef typename  Graph::Edge                Key;
+    typedef typename  ArrayView::value_type      Value;
+    typedef typename  ArrayView::reference       Reference;
+    typedef typename  ArrayView::const_reference ConstReference;
+    //typedef Value &	     					     Reference;
+    //typedef const Value & 		    		     ConstReference;
+
+    NumpyScalarEdgeMap()
+    :   graph_(NULL),
+        array_(){
+    }
+
+    NumpyScalarEdgeMap(const Graph & graph,ArrayView array)
+    :   graph_(&graph),
+        array_(array){
+    }
+
+    Reference operator[](const Key & key){
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_,key)];
+    }
+    ConstReference operator[](const Key & key)const{
+        return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_,key)];
+    }
+private:
+    const Graph * graph_;
+    MultiArrayView<IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension,Value> array_;
+
+};
+
+template<class G,class AV>
+class NumpyScalarNodeMap{
+
+public:
+    typedef G  Graph;
+    typedef AV ArrayView;
+    typedef typename  Graph::Node                Key;
+    typedef typename  ArrayView::value_type      Value;
+    typedef typename  ArrayView::reference       Reference;
+    typedef typename  ArrayView::const_reference ConstReference;
+    //typedef Value &	     					     Reference;
+    //typedef const Value & 		    		     ConstReference;
+
+    NumpyScalarNodeMap()
+    :   graph_(NULL),
+        array_(){
+    }
+
+    NumpyScalarNodeMap(const Graph & graph,ArrayView array)
+    :   graph_(&graph),
+        array_(array){
+    }
+
+    Reference operator[](const Key & key){
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+    }
+    ConstReference operator[](const Key & key)const{
+        return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+    }
+private:
+    const Graph * graph_;
+    MultiArrayView<IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension,Value> array_;
+
+};
+
+
+template<class G,class AV>
+class NumpyMultibandNodeMap{
+
+public:
+    typedef G  Graph;
+    typedef AV ArrayView;
+    typedef typename  Graph::Node                Key;
+
+    //typedef typename  ArrayView::value_type      Value;
+    //typedef typename  ArrayView::reference       Reference;
+    //typedef typename  ArrayView::const_reference ConstReference;
+
+    typedef  MultiArray<1,typename AV::value_type> Value;
+    typedef  MultiArrayView<1,typename AV::value_type> Reference;
+    typedef  MultiArrayView<1,const typename AV::value_type> ConstReference;
+    //typedef Value &	     					     Reference;
+    //typedef const Value & 		    		     ConstReference;
+
+    NumpyMultibandNodeMap()
+    :   graph_(NULL),
+        array_(){
+    }
+
+    NumpyMultibandNodeMap(const Graph & graph,ArrayView array)
+    :   graph_(&graph),
+        array_(array){
+    }
+
+    Reference operator[](const Key & key){
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+    }
+    ConstReference operator[](const Key & key)const{
+        return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+    }
+private:
+    const Graph * graph_;
+    AV array_;
+
+};
+
+
+
+} // end namespace vigra
+
 
 #endif //VIGRA_DENSE_REFERENCE_MAP_HXX 

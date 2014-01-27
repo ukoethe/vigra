@@ -474,26 +474,198 @@ def _genGraphConvenienceFunctions():
 
 
     def regionAdjacencyGraph(graph,labels,ignoreLabel=0,reserveEdges=0):
-        print "get region adjacency graph"
-        rag       = graphs.graph(long(labels.max()+1),reserveEdges)
-        # this will be refactored to a simpler function
-        hyperEdges  = graphs.GridGraphUndirected2dHyperEdgeMap()
-        hyperNodes  = graphs.GridGraphUndirected2dHyperNodeMap()
-
+        if isinstance(graph,graphs.GridGraphUndirected2d):
+            rag       = graphs.graph(long(labels.max()+1),reserveEdges)
+            hyperEdges  = graphs.GridGraphUndirected2dHyperEdgeMap()
+        elif isinstance(graph,graphs.GridGraphUndirected3d):
+            rag       = graphs.graph(long(labels.max()+1),reserveEdges)
+            hyperEdges  = graphs.GridGraphUndirected3dHyperEdgeMap()
+        else  :
+             raise RuntimeError("regionAdjacencyGraph can only be constructed from gridGrad2d and gridGraph3d")
         graph.getRegionAdjacencyGraph(
             labels=labels,
             rag=rag,
             hyperEdges=hyperEdges,
-            hyperNodes=hyperNodes,
             ignoreLabel=0
         )
 
-        return rag,hyperNodes,hyperEdges
+        return rag,hyperEdges
 
     regionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.regionAdjacencyGraph = regionAdjacencyGraph
 
+    """
+    class NumpyArrayEdgeMap(numpy.ndarray):
+        def __new__(cls, graph,dtype,channelShape=[1]):
+            if (len(channelShape)==1):
+                if channelShape[0]==1:
+                    return numpy.ndarray.__new__(cls, shape=[graph.maxEdgeId+1],dtype=dtype)
+                else:
+                    return numpy.ndarray.__new__(cls, shape=[graph.maxEdgeId+1,channelShape[0]],dtype=dtype)
 
+        def __init__(self, *args, **kwargs):
+            print args,
+            print kwargs
+
+        def __array_finalize__(self, obj):
+            pass
+
+        def __getitem__(self,key):
+            try:
+                return super(NumpyArrayEdgeMap, self).__getitem__(key.id)
+            except:
+                return super(NumpyArrayEdgeMap, self).__getitem__(key)
+
+        def __setitem__(self,key,value):
+            super(NumpyArrayEdgeMap, self).__setitem__(key.id,value)
+    """
+
+    def intrinsicGraphMapShape(graph,item):
+        if   item=='edge':
+            return graph.intrinsicEdgeMapShape()
+        elif item=='node':
+            return graph.intrinsicNodeMapShape()
+        elif item=='arc': 
+            return graph.intrinsicArcMapShape()
+        else :
+            raise RuntimeError("%s is not valid,must be 'edge','node' or 'arc' "%item)
+
+    intrinsicGraphMapShape.__module__ = 'vigra.graphs'
+    graphs.intrinsicGraphMapShape = intrinsicGraphMapShape
+
+
+    def graphMap(graph,item,dtype,channels=1):
+        s = intrinsicGraphMapShape(graph,item)
+        if(channels==1):
+            a=numpy.zeros(shape=s,dtype=dtype)
+            return taggedView(a,'x')
+        else:
+            s = s+(channels,)
+            a=numpy.zeros(shape=s,dtype=dtype)
+            return taggedView(a,'xc')
+
+
+
+    graphMap.__module__ = 'vigra.graphs'
+    graphs.graphMap = graphMap
+
+    def hyperEdgeSizes(graph,hyperEdges):
+        out = graphs.graphMap(graph,"edge",dtype=numpy.float32)
+        graphs._hyperEdgeSizes(graph,hyperEdges,out)
+        return out
+
+    hyperEdgeSizes.__module__ = 'vigra.graphs'
+    graphs.hyperEdgeSizes = hyperEdgeSizes
+
+
+    def hyperNodeSizes(rag,graph,labels):
+        out = graphs.graphMap(rag,"node",dtype=numpy.float32)
+        graphs._hyperNodeSizes(rag,graph,labels,out)
+        return out
+
+    hyperNodeSizes.__module__ = 'vigra.graphs'
+    graphs.hyperNodeSizes = hyperNodeSizes
+
+
+    def hyperEdgeImageFeatures(graph,hyperEdgeCoordinates,image,out):
+        graphs._hyperEdgeImageFeatures(graph,hyperEdgeCoordinates,image,out)
+        return out
+
+    hyperEdgeImageFeatures.__module__ = 'vigra.graphs'
+    graphs.hyperEdgeImageFeatures = hyperEdgeImageFeatures
+
+
+    def hyperNodeImageFeatures(rag,graph,labels,image,out):
+        graphs._hyperNodeImageFeatures(rag,graph,labels,image,out)
+        return out
+
+    hyperNodeImageFeatures.__module__ = 'vigra.graphs'
+    graphs.hyperNodeImageFeatures = hyperNodeImageFeatures
+
+    def hierarchicalClustering(graph,edgeIndicatorMap,edgeSizeMap,nodeFeatureMap,nodeSizeMap,edgeMinWeightMap,
+        nodeNumStopCond=1,beta=0.5,degree1Fac=1.0,nodeDistType='chiSquared',wardness=0.0,verbose=False):
+
+        distToNumber = {'chiSquared' : 0,'squaredNorm':1,'normSquared':1, 'norm':2}
+        if nodeDistType not in distToNumber :
+            raise RuntimeError("unknown distance '%s'"%str(nodeDistType))
+
+        if not isinstance(graph,graphs.AdjacencyListGraph):
+            raise RuntimeError("hierarchicalClustering is so far only supported for AdjacencyListGraph")
+
+        param = graphs.HierarchicalClusteringParameterAdjacencyListGraph()
+        param.nodeNumStopCond=long(nodeNumStopCond)
+        param.beta=float(beta)
+        param.nodeDistType=long(distToNumber[nodeDistType])
+        param.degree1Fac=float(degree1Fac)
+        param.wardness=float(wardness)
+        param.verbose=bool(verbose)
+
+        hc = graphs._hierarchicalClusteringAdjacencyListGraph(graph,edgeIndicatorMap,edgeSizeMap,
+            nodeFeatureMap,nodeSizeMap,edgeMinWeightMap, param)
+
+        return hc
+
+    hierarchicalClustering.__module__ = 'vigra.graphs'
+    graphs.hierarchicalClustering = hierarchicalClustering
+
+    def hierarchicalSuperpixels(labels,edgeIndicatorImage,nodeFeaturesImage,nSuperpixels,
+        beta=0.5,nodeDistType='chiSquared',degree1Fac=1.0,wardness=0.0,verbose=False):
+
+        dimension = len(labels.shape)
+        assert dimension == 2 or dimension ==3
+        if nodeFeaturesImage.ndim == dimension:
+            nodeFeatureChannels=1
+        else:
+            assert nodeFeaturesImage.ndim == dimension+1
+            nodeFeatureChannels = nodeFeaturesImage.shape[dimension]
+        
+
+        #if verbose : print "gridGraph"
+        gridGraph = graphs.gridGraph(labels.shape)
+        if verbose :print "gridGraph",gridGraph
+        #if verbose :print "get region adjacency graph"
+        rag,hyperEdges = graphs.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
+
+        #if verbose :print "get the sizes of the hyperedges "
+        hyperEdgeSizes=graphs.hyperEdgeSizes(rag,hyperEdges)
+
+        #if verbose :print "get the sizes of the hypernodes "
+        hyperNodeSizes=graphs.hyperNodeSizes(rag,gridGraph,labels)
+
+
+        #if verbose :print "get the mean features (gradmag) for hyperEdges"
+        edgeIndicator  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
+        edgeMinWeight  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
+        edgeIndicator  = graphs.hyperEdgeImageFeatures(rag,hyperEdges,edgeIndicatorImage,edgeIndicator)
+
+        #if verbose :print "get the mean features (gradmag) for hyperNodes"
+        nodeFeatures = graphs.graphMap(graph=rag,item='node',dtype=numpy.float32,channels=nodeFeatureChannels)
+        nodeFeatures = graphs.hyperNodeImageFeatures(rag,gridGraph,labels,nodeFeaturesImage,nodeFeatures)
+
+
+
+        #if verbose :print "maxEdgeId",rag.maxEdgeId
+        #if verbose :print "maxNodeId",rag.maxNodeId
+        if verbose :print "regionAdjacencyGraph",rag
+
+        hc =  graphs.hierarchicalClustering(rag,edgeIndicator,hyperEdgeSizes,nodeFeatures, hyperNodeSizes,edgeMinWeight,
+                nodeNumStopCond=nSuperpixels,beta=beta,nodeDistType=nodeDistType,degree1Fac=degree1Fac,wardness=wardness,verbose=verbose)
+        hc.cluster()
+
+        newLabels = labels.copy()
+        newLabels = newLabels.reshape(-1)
+        # this is inplace
+        hc.reprNodeIds(newLabels)
+        newLabels = newLabels.reshape(labels.shape)
+
+        if(labels.ndim==2):
+            newLabels = analysis.labelImage(newLabels)
+        if(labels.ndim==3):
+            newLabels = analysis.labelVolume(newLabels)
+        return newLabels
+
+    hierarchicalSuperpixels.__module__ = 'vigra.graphs'
+    graphs.hierarchicalSuperpixels = hierarchicalSuperpixels
 
 _genGraphConvenienceFunctions()
 del _genGraphConvenienceFunctions
