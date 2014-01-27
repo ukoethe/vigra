@@ -78,9 +78,10 @@ namespace vigra{
         hyperNodeSizes(rag,graph,labelMap,sizeMap);
     }
 
-    template<class RAG,class HYPER_EDGE_COORD_MAP,class IMAGE>
+    template<class RAG,class GRAPH,class HYPER_EDGE_COORD_MAP,class IMAGE>
     void pyHyperEdgeImageFeatures(
         const RAG & rag,
+        const GRAPH & graph,
         const HYPER_EDGE_COORD_MAP & hyperEdgeCoordMap,
         IMAGE  image,
         NumpyArray<
@@ -94,7 +95,7 @@ namespace vigra{
             typename IMAGE::value_type
         > ArrayView;
         NumpyScalarEdgeMap<RAG,ArrayView> outMap(rag,outArray);
-        hyperEdgeImageFeatures(rag,hyperEdgeCoordMap,image,outMap);
+        hyperEdgeImageFeatures(rag,graph,hyperEdgeCoordMap,image,outMap);
     }
 
 
@@ -210,7 +211,7 @@ namespace vigra{
             typedef NumpyArray<2,float>                     FeatureImage;
             python::def(
                 "_hyperEdgeImageFeatures",
-                registerConverters(&pyHyperEdgeImageFeatures<AdjacencyListGraph,HyperEdgeMap,FeatureImage>)
+                registerConverters(&pyHyperEdgeImageFeatures<AdjacencyListGraph,GridGraphUndirected2d,HyperEdgeMap,FeatureImage>)
             );
         }
         //gridgraph 3d and adjacency list graph
@@ -219,7 +220,7 @@ namespace vigra{
             typedef NumpyArray<3,float>                     FeatureImage;
             python::def(
                 "_hyperEdgeImageFeatures",
-                registerConverters(&pyHyperEdgeImageFeatures<AdjacencyListGraph,HyperEdgeMap,FeatureImage>)
+                registerConverters(&pyHyperEdgeImageFeatures<AdjacencyListGraph,GridGraphUndirected3d,HyperEdgeMap,FeatureImage>)
             );
         }
     }
