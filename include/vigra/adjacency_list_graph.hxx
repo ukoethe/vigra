@@ -22,7 +22,6 @@
 #include <vigra/algorithm.hxx>
 #include <vigra/graph_helper/graph_item_impl.hxx>
 
-#include <vigra/rag/rag_iterators.hxx>
 
 namespace vigra{
 
