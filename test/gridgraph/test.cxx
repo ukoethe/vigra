@@ -682,6 +682,8 @@ struct GridGraphTests
             
             typename Graph::template ArcMap<int> arcIdMap(g);            
             typename Graph::template EdgeMap<int> edgeIdMap(g);            
+            ArrayVector<unsigned char> arcExistsMap(g.maxArcId()+1, 0);
+            ArrayVector<unsigned char> edgeExistsMap(g.maxEdgeId()+1, 0);
 
             linearSequence(arcIdMap.begin(), arcIdMap.end());
             linearSequence(edgeIdMap.begin(), edgeIdMap.end());
@@ -691,7 +693,7 @@ struct GridGraphTests
             shouldEqual((arcIdMap.shape().template subarray<0, N>()), s);
             shouldEqual(arcIdMap.shape(N), g.maxDegree());
             shouldEqual(edgeMap.shape(), edgeIdMap.shape());
-            
+
             int totalCount = 0;
         
             typename Graph::vertex_iterator j = g.get_vertex_iterator(), 
@@ -795,9 +797,15 @@ struct GridGraphTests
                     shouldEqual(g.oppositeNode(v, *le), u);
                     shouldEqual(g.oppositeNode(lemon::INVALID, *le), Node(lemon::INVALID));
                     
-                    shouldEqual(arcIdMap[*la], g.id(la));
+                    MultiArrayIndex arcId = g.id(*la);
+                    shouldEqual(arcIdMap[*la], arcId);
+                    arcExistsMap[arcId] = 1;  // mark arc as found
+
+                    MultiArrayIndex edgeId = g.id(*le);
                     shouldEqual(edgeIdMap[*la], g.id((typename Graph::Edge &)*la));
                     shouldEqual(edgeIdMap[*le], g.id(*le));
+                    edgeExistsMap[edgeId] = 1;  // mark edge as found
+
                     shouldEqual(*la, g.arcFromId(g.id(*la)));
                     shouldEqual(*le, g.edgeFromId(g.id(*le)));
                 }
@@ -838,6 +846,24 @@ struct GridGraphTests
                     shouldEqual(edgeMap.bindInner(*j).template sum<int>(), g.out_degree(j));
                 else
                     shouldEqual(edgeMap.bindInner(*j).template sum<int>(), 2*g.back_degree(j));
+            }
+
+            for(int id=0; id <= g.maxEdgeId(); ++id)
+            {
+                typename Graph::Edge e = g.edgeFromId(id);
+                if(edgeExistsMap[id])
+                    should(e != lemon::INVALID);
+                else
+                    should(e == lemon::INVALID);
+            }
+
+            for(int id=0; id <= g.maxArcId(); ++id)
+            {
+                typename Graph::Arc a = g.arcFromId(id);
+                if(arcExistsMap[id])
+                    should(a != lemon::INVALID);
+                else
+                    should(a == lemon::INVALID);
             }
         }
     }
