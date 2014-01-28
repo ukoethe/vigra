@@ -40,8 +40,15 @@
    when the compiler doesn't yet support C++11.
 */
 
-#if defined(__GNUC__) && (!defined(_GLIBCXX_HAS_GTHREADS) || !defined(_GLIBCXX_USE_C99_STDINT_TR1))
-#  define VIGRA_NO_STD_THREADING
+
+#if defined(__clang__)
+# if (!__has_include(<thread>) || !__has_include(<mutex>) || !__has_include(<atomic>))
+#    define VIGRA_NO_STD_THREADING
+# endif
+#else
+#  if defined(__GNUC__) && (!defined(_GLIBCXX_HAS_GTHREADS) || !defined(_GLIBCXX_USE_C99_STDINT_TR1))
+#    define VIGRA_NO_STD_THREADING
+#  endif
 #endif
 
 #if defined(_MSC_VER) && _MSC_VER <= 1600
