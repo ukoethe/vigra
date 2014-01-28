@@ -4,7 +4,7 @@ python:
   - "2.7"
 
 before_script:
-  - sudo apt-get install --assume-yes libhdf5-serial-dev libboost-python-dev libjpeg-dev libtiff4-dev libpng12-dev libfftw3-dev cmake
+  - sudo apt-get install --assume-yes libhdf5-serial-dev libboost1.53-all-dev libboost1.53-python-dev libjpeg-dev libtiff4-dev libpng12-dev libfftw3-dev cmake
   - pip install nose
   - pip install numpy
    
