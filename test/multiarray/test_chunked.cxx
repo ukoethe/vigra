@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2004 by Ullrich Koethe                     */
+/*     Copyright 2013-2014 by Ullrich Koethe                            */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -38,13 +38,6 @@
 #include "vigra/unittest.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_array_chunked.hxx"
-#include "vigra/multi_iterator_coupled.hxx"
-#include "vigra/multi_impex.hxx"
-#include "vigra/basicimageview.hxx"
-#include "vigra/navigator.hxx"
-#include "vigra/multi_pointoperators.hxx"
-#include "vigra/tensorutilities.hxx"
-#include "vigra/multi_tensorutilities.hxx"
 #include "vigra/functorexpression.hxx"
 #include "vigra/multi_math.hxx"
 #include "vigra/algorithm.hxx"
@@ -55,6 +48,7 @@
 using namespace vigra;
 using namespace vigra::functor;
 
+#if 0
 template <class T>
 class MultiArrayDataTest
 {
@@ -1599,262 +1593,6 @@ struct MultiImpexTest
 
 };
 
-template <class IMAGE>
-struct ImageViewTest
-{
-    typedef typename IMAGE::value_type value_type;
-    typedef MultiArray<2, value_type> MA;
-    typedef BasicImageView<value_type> Image;
-    static typename Image::value_type data[];
-
-    ImageViewTest()
-    : ma(TinyVector<int, 2>(3,3)),
-      img(makeBasicImageView(ma))
-    {
-        typename Image::Accessor acc = img.accessor();
-        typename Image::iterator i = img.begin();
-
-        acc.set(data[0], i);
-        ++i;
-        acc.set(data[1], i);
-        ++i;
-        acc.set(data[2], i);
-        ++i;
-        acc.set(data[3], i);
-        ++i;
-        acc.set(data[4], i);
-        ++i;
-        acc.set(data[5], i);
-        ++i;
-        acc.set(data[6], i);
-        ++i;
-        acc.set(data[7], i);
-        ++i;
-        acc.set(data[8], i);
-        ++i;
-        should(i == img.end());
-    }
-
-    template <class Iterator>
-    void scanImage(Iterator ul, Iterator lr)
-    {
-        Iterator y = ul;
-        Iterator x = ul;
-        typename Image::Accessor acc = img.accessor();
-
-        should(acc(x) == data[0]);
-        ++x.x;
-        should(acc(x) == data[1]);
-        ++x.x;
-        should(acc(x) == data[2]);
-        ++x.x;
-        should(x.x == lr.x);
-
-        ++y.y;
-        x = y;
-        should(acc(x) == data[3]);
-        ++x.x;
-        should(acc(x) == data[4]);
-        ++x.x;
-        should(acc(x) == data[5]);
-        ++y.y;
-        x = y;
-        should(acc(x) == data[6]);
-        ++x.x;
-        should(acc(x) == data[7]);
-        ++x.x;
-        should(acc(x) == data[8]);
-        ++y.y;
-        should(y.y == lr.y);
-
-        y = ul;
-        should(acc(y, vigra::Diff2D(1,1)) == data[4]);
-    }
-
-    template <class Iterator>
-    void scanRows(Iterator r1, Iterator r2, Iterator r3, int w)
-    {
-        Iterator end = r1 + w;
-        typename Image::Accessor acc = img.accessor();
-
-        should(acc(r1) == data[0]);
-        ++r1;
-        should(acc(r1) == data[1]);
-        ++r1;
-        should(acc(r1) == data[2]);
-        ++r1;
-        should(r1 == end);
-
-        end = r2 + w;
-        should(acc(r2) == data[3]);
-        ++r2;
-        should(acc(r2) == data[4]);
-        ++r2;
-        should(acc(r2) == data[5]);
-        ++r2;
-        should(r2 == end);
-
-        end = r3 + w;
-        should(acc(r3) == data[6]);
-        ++r3;
-        should(acc(r3) == data[7]);
-        ++r3;
-        should(acc(r3) == data[8]);
-        ++r3;
-        should(r3 == end);
-    }
-
-    template <class Iterator>
-    void scanColumns(Iterator c1, Iterator c2, Iterator c3, int h)
-    {
-        Iterator end = c1 + h;
-        typename Image::Accessor acc = img.accessor();
-
-        should(acc(c1) == data[0]);
-        ++c1;
-        should(acc(c1) == data[3]);
-        ++c1;
-        should(acc(c1) == data[6]);
-        ++c1;
-        should(c1 == end);
-
-        end = c2 + h;
-        should(acc(c2) == data[1]);
-        ++c2;
-        should(acc(c2) == data[4]);
-        ++c2;
-        should(acc(c2) == data[7]);
-        ++c2;
-        should(c2 == end);
-
-        end = c3 + h;
-        should(acc(c3) == data[2]);
-        ++c3;
-        should(acc(c3) == data[5]);
-        ++c3;
-        should(acc(c3) == data[8]);
-        ++c3;
-        should(c3 == end);
-    }
-
-    void testStridedImageView()
-    {
-        // create stride MultiArrayView
-        typename MA::difference_type
-            start(0,0), end(2,2);
-        MA roi = ma.subarray(start, end);
-
-        // inspect both the MultiArrayView and the corresponding BasicImageView
-        vigra::FindSum<typename Image::value_type> sum1, sum2;
-        vigra::inspectMultiArray(srcMultiArrayRange(roi), sum1);
-        vigra::inspectImage(srcImageRange(makeBasicImageView(roi)), sum2);
-
-        shouldEqual(sum1.sum(), sum2.sum());
-        shouldEqual(data[0] + data[1] + data[3] + data[4], sum2.sum());
-    }
-
-    void testBasicImageIterator()
-    {
-        typename Image::Iterator ul = img.upperLeft();
-        typename Image::Iterator lr = img.lowerRight();
-
-        scanImage(ul, lr);
-        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(),
-                 (ul+Diff2D(0,2)).rowIterator(), img.width());
-        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(),
-                 (ul+Diff2D(2,0)).columnIterator(), img.height());
-
-        typename Image::Accessor acc = img.accessor();
-        typename Image::iterator i = img.begin();
-        should(acc(i, 4) == data[4]);
-    }
-
-    void testImageIterator()
-    {
-        vigra::ImageIterator<typename Image::value_type>
-            ul(img.begin(), img.width());
-        vigra::ImageIterator<typename Image::value_type> lr = ul + img.size();
-        scanImage(ul, lr);
-        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(),
-                 (ul+Diff2D(0,2)).rowIterator(), img.width());
-        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(),
-                 (ul+Diff2D(2,0)).columnIterator(), img.height());
-    }
-
-    void copyImage()
-    {
-        typedef typename Image::value_type Value;
-
-        Image img1(img);
-        typename Image::iterator i = img.begin();
-        typename Image::iterator i1 = img1.begin();
-        typename Image::Accessor acc = img.accessor();
-
-        for(; i != img.end(); ++i, ++i1)
-        {
-            should(acc(i) == acc(i1));
-        }
-
-        img.init(NumericTraits<Value>::zero());
-        for(; i != img.end(); ++i)
-        {
-            should(acc(i) == Value(NumericTraits<Value>::zero()));
-        }
-        img(1,1) = Value(200);
-        img1 = img;
-        i = img.begin();
-        i1 = img1.begin();
-
-        for(; i != img.end(); ++i, ++i1)
-        {
-            should(acc(i) == acc(i1));
-        }
-    }
-
-    MA ma;
-    Image img;
-};
-
-typedef ImageViewTest<vigra::BImage> BImageViewTest;
-
-template <>
-unsigned char BImageViewTest::data[] = {1,2,3,4,5,6,7,8,9};
-
-typedef ImageViewTest<vigra::DImage> DImageViewTest;
-
-template <>
-double DImageViewTest::data[] = {1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9};
-
-typedef ImageViewTest<vigra::BRGBImage> BRGBImageViewTest;
-typedef vigra::RGBValue<unsigned char> BRGB;
-template <>
-BRGB BRGBImageViewTest::data[] = {
-    BRGB(1,1,1),
-    BRGB(2,2,2),
-    BRGB(3,3,3),
-    BRGB(4,4,4),
-    BRGB(5,5,5),
-    BRGB(6,6,6),
-    BRGB(7,7,7),
-    BRGB(8,8,8),
-    BRGB(9,9,9)
-};
-
-typedef ImageViewTest<vigra::FRGBImage> FRGBImageViewTest;
-typedef vigra::RGBValue<float> FRGB;
-template <>
-FRGB FRGBImageViewTest::data[] = {
-    FRGB(1.1f, 1.1f, 1.1f),
-    FRGB(2.2f, 2.2f, 2.2f),
-    FRGB(3.3f, 3.3f, 3.3f),
-    FRGB(4.4f, 4.4f, 4.4f),
-    FRGB(5.5f, 5.5f, 5.5f),
-    FRGB(6.6f, 6.6f, 6.6f),
-    FRGB(7.7f, 7.7f, 7.7f),
-    FRGB(8.8f, 8.8f, 8.8f),
-    FRGB(9.9f, 9.9f, 9.9f)
-};
-
 struct MultiArrayPointoperatorsTest
 {
 
@@ -2322,235 +2060,104 @@ struct MultiArrayPointoperatorsTest
     }
 };
 
-class MultiMathTest
+#endif
+
+template <class T>
+class MultiArrayChunkedTest
 {
 public:
 
-    typedef double scalar_type;
-    typedef MultiArray <3, scalar_type> array3_type;
-    typedef MultiArrayView <3, scalar_type> view_type;
-    typedef array3_type::difference_type shape3_type;
+    Shape3 s;
     
-    shape3_type shape3;
-    array3_type r1, r2, r3, r4, r5, a, b, c, d;
-    view_type rv, bv, cv, dv;
-
-    MultiMathTest ()
-        : shape3 (4, 3, 2), 
-          r2(shape3),
-          r3(shape3),
-          r4(shape3),
-          r5(Shape3(2,3,4)),
-          a(shape3),
-          b(shape3),
-          c(shape3),
-          d(shape3),
-          rv(r3),
-          bv(b),
-          cv(c),
-          dv(d)
+    MultiArrayChunkedTest()
+    : s(200)
     {
-        // initialize the array to the test data
-        for (unsigned int i = 0; i < 24; ++i)
-        {
-            a[i] = std::exp(-0.2*i);
-            b[i] = 0.5 + i;
-            c[i] = 100.0 + i;
-            d[i] = -(i+1.0);
-        }
+        std::cerr << "chunked multi array test for type " << typeid(T).name() << ": \n";        
     }
-
-    void testSpeed()
+    
+    void testBaselineSpeed()
     {
         using namespace vigra::multi_math;
         using namespace vigra::functor;
-        const int size = 200;
-        Shape3 s(size, size, size);
-        array3_type u(s),
-                    v(s),
-                    w(s);
+
         std::string t;
+        T count = 1;
         USETICTOC;
-        std::cerr << "multi_math speed test: \n";
-#if 0
-        marray::Marray<double> mu(s.begin(), s.end()),
-                               mv(s.begin(), s.end()),
-                               mw(s.begin(), s.end());
-        
-        TIC;
-        marray::Marray<double>::iterator iu = mu.begin(), end = mu.end(),
-                                         iv = mv.begin(), iw = mw.begin();
-        for(; iu != end; ++iu, ++iv, ++iw)
-            *iw = *iu * *iv;
-        t = TOCS;
-        std::cerr << "    marray iterator: " << t << "\n";
-        TIC;
-        mw = mu*mv;
-        t = TOCS;
-        std::cerr << "    marray expression: " << t << "\n";
-#endif
-        //TIC;
-        //typedef array3_type::view_type View;
-        //View::iterator wi = ((View &)w).begin(), wend = wi.getEndIterator(),
-        //               ui = ((View &)u).begin(), vi = ((View &)v).begin();
-        //for(; wi != wend; ++wi, ++ui, ++vi)
-        //            *wi = *ui * *vi;
-        //t = TOCS;
-        //std::cerr << "    StridedScanOrderIterator: " << t << "\n";
-        TIC;
-        typedef CoupledIteratorType<3, scalar_type, scalar_type, scalar_type>::type CI;
-        CI i = createCoupledIterator(w, u, v), end = i.getEndIterator();
-        for(; i != end; ++i)
-                    i.get<1>() = i.get<2>() * i.get<3>();
-        t = TOCS;
-        std::cerr << "    CoupledScanOrderIterator: " << t << "\n";
-        //TIC;
-        //w = u*v;
-        //t = TOCS;
-        //std::cerr << "    multi_math expression: " << t << "\n";
-        //TIC;
-        //w.transpose() = u.transpose()*v.transpose();
-        //t = TOCS;
-        //std::cerr << "    transposed multi_math expression: " << t << "\n";
-        //TIC;
-        //combineTwoMultiArrays(srcMultiArrayRange(u), srcMultiArray(v), destMultiArray(w),
-        //                      Arg1()*Arg2());
-        //t = TOCS;
-        //std::cerr << "    lambda expression: " << t << "\n";
-        //TIC;
-        //combineTwoMultiArrays(srcMultiArrayRange(u.transpose()), srcMultiArray(v.transpose()), destMultiArray(w),
-        //                      Arg1()*Arg2());
-        //t = TOCS;
-        //std::cerr << "    transposed lambda expression: " << t << "\n";
-        //TIC;
-        //for(int z=0; z<size; ++z)
-        //    for(int y=0; y<size; ++y)
-        //        for(int x=0; x<size; ++x)
-        //            w(x,y,z) = u(x,y,z) * v(x,y,z);
-        //t = TOCS;
-        //std::cerr << "    explicit loops: " << t << "\n";
-        //i = createCoupledIterator(w, u, v);
-        //TIC;
-        //for(i.dim<2>() = 0; i.dim<2>() <size; ++i.dim<2>())
-        //    for(i.dim<1>() = 0; i.dim<1>()<size; ++i.dim<1>())
-        //        for(i.dim<0>() = 0; i.dim<0>()<size; ++i.dim<0>())
-        //            i.get<1>() = i.get<2>() * i.get<3>();
-        //t = TOCS;
-        //std::cerr << "    coupled iterator explicit template loops: " << t << "\n";
-        //i = createCoupledIterator(w, u, v);
-        //TIC;
-        //for(i.resetDim(2); i.coord(2) < size; i.incDim(2))
-        //    for(i.resetDim(1); i.coord(1) < size; i.incDim(1))
-        //        for(i.resetDim(0); i.coord(0) < size; i.incDim(0))
-        //            i.get<1>() = i.get<2>() * i.get<3>();
-        //t = TOCS;
-        //std::cerr << "    coupled iterator explicit runtime loops: " << t << "\n";
-
-        //TIC;
-        //FILE * f = fopen("testdata.dat", "rb");
-        //fread(w.data(), sizeof(scalar_type), w.size(), f);
-        //t = TOCS;
-        //std::cerr << "   plain fread: " << t << "\n";
-        //fclose(f);
-
-        ChunkedArrayTmpFile<3, scalar_type> barray(s, ".\\");
-
-        typedef CoupledHandleType<3, ChunkedMemory<scalar_type> >::type  P1;
-        typedef P1::base_type                                            P0;
-        typedef CoupledScanOrderIterator<3, P1>                          IteratorType;
-
-        IteratorType bi(P1(barray, 
-                           P0(barray.shape())));
-        int count = 1;
-        int start = 0, stop = size;
-        //for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-        //    for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-        //        for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
-        //        {
-        //            std::cerr << count << ": " << (int)bi.get<1>() << "\n";
-        //            bi.get<1>() = count;
-        //        }
-        //count = 1;
-        //for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-        //    for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-        //        for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
-        //        {
-        //            std::cerr << count << ": " << (int)bi.get<1>() << "\n";
-        //        }
-        //for(bi.setDim(2,127); bi.coord(2) < 129; bi.incDim(2))
-        //    for(bi.setDim(1,127); bi.coord(1) < 129; bi.incDim(1))
-        //        for(bi.setDim(0,127); bi.coord(0) < 129; bi.incDim(0), ++count)
-        //        {
-        //            std::cerr << count << ": " << (int)bi.get<1>() << "\n";
-        //            bi.get<1>() = count;
-        //        }
-        //count = 1;
-        //for(bi.setDim(2,127); bi.coord(2) < 129; bi.incDim(2))
-        //    for(bi.setDim(1,127); bi.coord(1) < 129; bi.incDim(1))
-        //        for(bi.setDim(0,127); bi.coord(0) < 129; bi.incDim(0), ++count)
-        //        {
-        //            std::cerr << count << ": " << (int)bi.get<1>() << "\n";
-        //        }
+        MultiArray<3, T> u(s);
+        typename MultiArray<3, T>::iterator i   = u.begin(),
+                                            end = i.getEndIterator();
         count = 1;
-        start = 0;
-        stop = size;
+        for(; i != end; ++i, ++count)
+            *i = count;
+            
+        i   = u.begin();
+        count = 1;
         TIC;
-        for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-            for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-                for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
+        for(; i != end; ++i, ++count)
+            if(count != *i)
+                std::cerr << i.coord() << " not equal\n";
+        t = TOCS;
+        std::cerr << "    contiguous array (baseline): " << t << "\n";
+    }
+    
+    void testSpeedCacheAll()
+    {
+        testSpeedImpl(200);
+    }
+    
+    void testSpeedCacheSlice()
+    {
+        testSpeedImpl(16);
+    }
+    
+    void testSpeedCacheRow()
+    {
+        testSpeedImpl(4);
+    }
+    
+    void testSpeedImpl(int cache_max)
+    {
+        using namespace vigra::multi_math;
+        using namespace vigra::functor;
+
+        std::string t;
+        T count = 1;
+        USETICTOC;
+
+        std::cerr << "max cache size: " << cache_max << ": \n";     
+        ChunkedArrayTmpFile<3, T> v(s, "", cache_max);
+        typedef typename CoupledHandleType<3, ChunkedMemory<T> >::type  P1;
+        typedef typename P1::base_type                                  P0;
+        typedef CoupledScanOrderIterator<3, P1>                IteratorType;
+
+        IteratorType bi(P1(v, P0(s)));
+        count = 1;
+        int start = 0;
+        // int stop = size;
+        TIC;
+        for(bi.setDim(2,start); bi.coord(2) < s[2]; bi.incDim(2))
+            for(bi.setDim(1,start); bi.coord(1) < s[1]; bi.incDim(1))
+                for(bi.setDim(0,start); bi.coord(0) < s[0]; bi.incDim(0), ++count)
                 {
-                    bi.get<1>() = count;
+                    bi.template get<1>() = count;
                 }
         t = TOCS;
         std::cerr << "    chunked iterator create file: " << t << "\n";
-        ////std::cerr << " global count: " << vigra::globalCount << "\n";
+
         count = 1;
         TIC;
-        for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-            for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-                for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
+        for(bi.setDim(2,start); bi.coord(2) < s[2]; bi.incDim(2))
+            for(bi.setDim(1,start); bi.coord(1) < s[1]; bi.incDim(1))
+                for(bi.setDim(0,start); bi.coord(0) < s[0]; bi.incDim(0), ++count)
                 {
-                    if(bi.get<1>() != count)
+                    if(bi.template get<1>() != count)
                         std::cerr << bi.coord() << " not equal\n";
                 }
         t = TOCS;
-        std::cerr << "    chunked iterator explicit runtime loops: " << t << "\n";
-        //count = 1;
-        //TIC;
-        //for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-        //    for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-        //        for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
-        //        {
-        //            if(bi.get<1>() != count)
-        //                std::cerr << bi.coord() << " not equal\n";
-        //        }
-        //t = TOCS;
-        //std::cerr << "    blocked iterator explicit runtime loops: " << t << "\n";
-        //std::cerr << &barray[Shape3(0,0,0)] << "  address\n";
-        //std::cerr << &barray[Shape3(64,0,0)] << "  address\n";
-        //std::cerr << &barray[Shape3(0,128,0)] << "  address\n";
-        //std::cerr << &barray[Shape3(64,64,0)] << "  address\n";
-        //count = 0;
-        //i = createCoupledIterator(w, u, v);
-        //for(; i != end; ++i)
-        //            i.get<1>() = ++count;
-        //
-        //typedef CoupledHandleType<3, ChunkedMemory<scalar_type>, scalar_type >::type  Q2;
-        //typedef Q2::base_type                                            Q1;
-        //typedef Q1::base_type                                            Q0;
-        //typedef CoupledScanOrderIterator<3, Q2>                      Q;
-
-        //Q qi(Q2(w, Q1(barray, 
-        //                   Q0(barray.shape()))));
-        //for(qi.setDim(2,0); qi.coord(2) < size; qi.incDim(2))
-        //    for(qi.setDim(1,0); qi.coord(1) < size; qi.incDim(1))
-        //        for(qi.setDim(0,0); qi.coord(0) < size; qi.incDim(0))
-        //        {
-        //            if(qi.get<1>() != qi.get<2>())
-        //                std::cerr << qi.coord() << " not equal\n";
-        //        }
+        std::cerr << "    chunked iterator: " << t << "\n";
     }
 
+#if 0
     void testBasicArithmetic()
     {
         using namespace vigra::multi_math;
@@ -2986,35 +2593,10 @@ public:
                 for(int x=0; x<a.shape(0); ++x)
                     shouldEqualTolerance(a(x,y,z), std::atan2(4.0, 3.0), 1e-16);
     }
-
+#endif
 };
 
-
-struct ImageViewTestSuite
-: public vigra::test_suite
-{
-    ImageViewTestSuite()
-    : vigra::test_suite("ImageViewTestSuite")
-    {
-		add( testCase( &BImageViewTest::testStridedImageView));
-        add( testCase( &BImageViewTest::testBasicImageIterator));
-        add( testCase( &BImageViewTest::testImageIterator));
-        add( testCase( &BImageViewTest::copyImage));
-		add( testCase( &DImageViewTest::testStridedImageView));
-        add( testCase( &DImageViewTest::testBasicImageIterator));
-        add( testCase( &DImageViewTest::testImageIterator));
-        add( testCase( &DImageViewTest::copyImage));
-		add( testCase( &BRGBImageViewTest::testStridedImageView));
-        add( testCase( &BRGBImageViewTest::testBasicImageIterator));
-        add( testCase( &BRGBImageViewTest::testImageIterator));
-        add( testCase( &BRGBImageViewTest::copyImage));
-		add( testCase( &FRGBImageViewTest::testStridedImageView));
-        add( testCase( &FRGBImageViewTest::testBasicImageIterator));
-        add( testCase( &FRGBImageViewTest::testImageIterator));
-        add( testCase( &FRGBImageViewTest::copyImage));
-    }
-};
-
+#if 0
 struct MultiArrayTestSuite
 : public vigra::test_suite
 {
@@ -3097,11 +2679,13 @@ struct MultiArrayDataTestSuite
     }
 };
 
-struct MultiArrayPointOperatorsTestSuite
+#endif
+
+struct MultiArrayChunkedTestTestSuite
 : public vigra::test_suite
 {
-  MultiArrayPointOperatorsTestSuite()
-    : vigra::test_suite("MultiArrayPointOperatorsTestSuite")
+  MultiArrayChunkedTestTestSuite()
+    : vigra::test_suite("MultiArrayChunkedTestTestSuite")
     {
         //add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
         //add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
@@ -3122,7 +2706,19 @@ struct MultiArrayPointOperatorsTestSuite
         //add( testCase( &MultiArrayPointoperatorsTest::testInspect ) );
         //add( testCase( &MultiArrayPointoperatorsTest::testTensorUtilities ) );
 
-        add( testCase( &MultiMathTest::testSpeed ) );
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testBaselineSpeed ) );
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCacheAll ) );
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCacheSlice ) );
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCacheRow ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testBaselineSpeed ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCacheAll ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCacheSlice ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCacheRow ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testBaselineSpeed ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheAll ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheSlice ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheRow ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeed2 ) );
         //add( testCase( &MultiMathTest::testBasicArithmetic ) );
         //add( testCase( &MultiMathTest::testExpandMode ) );
         //add( testCase( &MultiMathTest::testAllFunctions ) );
@@ -3138,6 +2734,11 @@ int main(int argc, char ** argv)
 {
     int failed = 0;
 
+    // run the multi-array point operator test suite
+    MultiArrayChunkedTestTestSuite test0;
+    failed += test0.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test0.report() << std::endl;
+
     //// run the multi-array testsuite
     //MultiArrayTestSuite test1;
     //int failed = test1.run(vigra::testsToBeExecuted(argc, argv));
@@ -3147,16 +2748,6 @@ int main(int argc, char ** argv)
     //MultiArrayDataTestSuite test1a;
     //failed += test1a.run(vigra::testsToBeExecuted(argc, argv));
     //std::cout << test1a.report() << std::endl;
-
-    //// run the image testsuite
-    //ImageViewTestSuite test2;
-    //failed += test2.run(vigra::testsToBeExecuted(argc, argv));
-    //std::cout << test2.report() << std::endl;
-
-    // run the multi-array point operator test suite
-    MultiArrayPointOperatorsTestSuite test3;
-    failed += test3.run(vigra::testsToBeExecuted(argc, argv));
-    std::cout << test3.report() << std::endl;
     
     return (failed != 0);
 }
