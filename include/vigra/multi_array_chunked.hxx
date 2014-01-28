@@ -984,14 +984,18 @@ class ChunkedArrayTmpFile
                 std::ptrdiff_t offset = file_size_;
             #ifdef VIGRA_NO_SPARSE_FILE
                 std::size_t chunk_size = chunk.alloc_size();
-                if(chunk.offset_ < 0 && offset + chunk_size > file_capacity_)
+                if(chunk.offset_ < 0)
                 {
-                    file_capacity_ *= 2;
-                    lseek(file_, file_capacity_-1, SEEK_SET);
-                    if(write(file_, "0", 1) == -1)
-                        throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
+                    if(offset + chunk_size > file_capacity_)
+                    {
+                        file_capacity_ *= 2;
+                        if(lseek(file_, file_capacity_-1, SEEK_SET) == -1)
+                            throw std::runtime_error("ChunkedArrayTmpFile(): unable to reset file size.");
+                        if(write(file_, "0", 1) == -1)
+                            throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
+                    }
+                    file_size_ += chunk_size;
                 }
-                file_size_ += chunk_size;
             #endif
                 p = chunk.map(offset);
                 
