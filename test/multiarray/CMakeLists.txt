@@ -18,4 +18,8 @@ if(NOT MSVC)
     SET(CMAKE_CXX_FLAGS "-pthread -std=c++11 ${CMAKE_CXX_FLAGS}")
 endif()
 
+if(APPLE)
+    SET(CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+endif()
+
 VIGRA_ADD_TEST(test_multiarray_chunked test_chunked.cxx)
