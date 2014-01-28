@@ -2067,10 +2067,16 @@ class MultiArrayChunkedTest
 {
 public:
 
-    Shape3 s;
+    typedef ChunkedArrayTmpFile<3, T> ArrayType;
+    typedef typename CoupledHandleType<3, ChunkedMemory<T> >::type  P1;
+    typedef typename P1::base_type                                  P0;
+    typedef CoupledScanOrderIterator<3, P1>                IteratorType;
+
+    Shape3 s, outer_shape;
     
     MultiArrayChunkedTest()
-    : s(200)
+    : s(200),
+      outer_shape(outerShape(s))
     {
         std::cerr << "chunked multi array test for type " << typeid(T).name() << ": \n";        
     }
@@ -2095,24 +2101,29 @@ public:
         TIC;
         for(; i != end; ++i, ++count)
             if(count != *i)
-                std::cerr << i.coord() << " not equal\n";
+            {
+                shouldEqual(*i, count);
+            }
         t = TOCS;
         std::cerr << "    contiguous array (baseline): " << t << "\n";
     }
     
     void testSpeedCacheAll()
     {
-        testSpeedImpl(200);
+        int cache_size = prod(outer_shape);
+        testSpeedImpl(cache_size);
     }
     
     void testSpeedCacheSlice()
     {
-        testSpeedImpl(16);
+        int cache_size = outer_shape[0]*outer_shape[1];
+        testSpeedImpl(cache_size);
     }
     
     void testSpeedCacheRow()
     {
-        testSpeedImpl(4);
+        int cache_size = outer_shape[0];
+        testSpeedImpl(cache_size);
     }
     
     void testSpeedImpl(int cache_max)
@@ -2125,11 +2136,7 @@ public:
         USETICTOC;
 
         std::cerr << "max cache size: " << cache_max << ": \n";     
-        ChunkedArrayTmpFile<3, T> v(s, "", cache_max);
-        typedef typename CoupledHandleType<3, ChunkedMemory<T> >::type  P1;
-        typedef typename P1::base_type                                  P0;
-        typedef CoupledScanOrderIterator<3, P1>                IteratorType;
-
+        ArrayType v(s, "", cache_max);
         IteratorType bi(P1(v, P0(s)));
         count = 1;
         int start = 0;
@@ -2151,10 +2158,57 @@ public:
                 for(bi.setDim(0,start); bi.coord(0) < s[0]; bi.incDim(0), ++count)
                 {
                     if(bi.template get<1>() != count)
-                        std::cerr << bi.coord() << " not equal\n";
+                        shouldEqual(bi.template get<1>(), count);
                 }
         t = TOCS;
         std::cerr << "    chunked iterator: " << t << "\n";
+    }
+
+    static void testMultiThreadedImpl(ArrayType * v, int startIndex, int d, int * go)
+    {
+        while(*go == 0)
+            threading::this_thread::yield();
+            
+        Shape3 s = v->shape();
+        int sliceSize = s[0]*s[1];
+        
+        IteratorType bi(P1(*v, P0(s)));
+        T count = 1 + startIndex*sliceSize;
+        for(bi.setDim(2,startIndex); bi.coord(2) < s[2]; bi.addDim(2, d), count += (d-1)*sliceSize)
+            for(bi.setDim(1,0); bi.coord(1) < s[1]; bi.incDim(1))
+                for(bi.setDim(0,0); bi.coord(0) < s[0]; bi.incDim(0), ++count)
+                {
+                    bi.template get<1>() = count;
+                }
+    }
+
+    void testMultiThreaded()
+    {
+        int go = 0;
+        ArrayType v(s, "", outer_shape[0]*outer_shape[1]);
+        
+        threading::thread t1(testMultiThreadedImpl, &v, 0, 4, &go);
+        threading::thread t2(testMultiThreadedImpl, &v, 1, 4, &go);
+        threading::thread t3(testMultiThreadedImpl, &v, 2, 4, &go);
+        threading::thread t4(testMultiThreadedImpl, &v, 3, 4, &go);
+     
+        go = 1;
+     
+        t4.join();
+        t3.join();
+        t2.join();
+        t1.join();
+        
+        T count = 1;
+
+        IteratorType bi(P1(v, P0(s)));
+        for(bi.setDim(2,0); bi.coord(2) < s[2]; bi.incDim(2))
+            for(bi.setDim(1,0); bi.coord(1) < s[1]; bi.incDim(1))
+                for(bi.setDim(0,0); bi.coord(0) < s[0]; bi.incDim(0), ++count)
+                {
+                    if(bi.template get<1>() != count)
+                        shouldEqual(bi.template get<1>(), count);
+                }
     }
 
 #if 0
@@ -2718,6 +2772,11 @@ struct MultiArrayChunkedTestTestSuite
         add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheAll ) );
         add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheSlice ) );
         add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheRow ) );
+        
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreaded ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testMultiThreaded ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testMultiThreaded ) );
+
         // add( testCase( &MultiArrayChunkedTest<double>::testSpeed2 ) );
         //add( testCase( &MultiMathTest::testBasicArithmetic ) );
         //add( testCase( &MultiMathTest::testExpandMode ) );
