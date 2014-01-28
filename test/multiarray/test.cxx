@@ -33,11 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <stdio.h>
-
 #include "vigra/unittest.hxx"
 #include "vigra/multi_array.hxx"
-#include "vigra/multi_array_chunked.hxx"
 #include "vigra/multi_iterator_coupled.hxx"
 #include "vigra/multi_impex.hxx"
 #include "vigra/basicimageview.hxx"
@@ -2429,126 +2426,22 @@ public:
         //            w(x,y,z) = u(x,y,z) * v(x,y,z);
         //t = TOCS;
         //std::cerr << "    explicit loops: " << t << "\n";
-        //i = createCoupledIterator(w, u, v);
-        //TIC;
-        //for(i.dim<2>() = 0; i.dim<2>() <size; ++i.dim<2>())
-        //    for(i.dim<1>() = 0; i.dim<1>()<size; ++i.dim<1>())
-        //        for(i.dim<0>() = 0; i.dim<0>()<size; ++i.dim<0>())
-        //            i.get<1>() = i.get<2>() * i.get<3>();
-        //t = TOCS;
-        //std::cerr << "    coupled iterator explicit template loops: " << t << "\n";
-        //i = createCoupledIterator(w, u, v);
-        //TIC;
-        //for(i.resetDim(2); i.coord(2) < size; i.incDim(2))
-        //    for(i.resetDim(1); i.coord(1) < size; i.incDim(1))
-        //        for(i.resetDim(0); i.coord(0) < size; i.incDim(0))
-        //            i.get<1>() = i.get<2>() * i.get<3>();
-        //t = TOCS;
-        //std::cerr << "    coupled iterator explicit runtime loops: " << t << "\n";
-
-        //TIC;
-        //FILE * f = fopen("testdata.dat", "rb");
-        //fread(w.data(), sizeof(scalar_type), w.size(), f);
-        //t = TOCS;
-        //std::cerr << "   plain fread: " << t << "\n";
-        //fclose(f);
-
-        ChunkedArrayTmpFile<3, scalar_type> barray(s, ".\\");
-
-        typedef CoupledHandleType<3, ChunkedMemory<scalar_type> >::type  P1;
-        typedef P1::base_type                                            P0;
-        typedef CoupledScanOrderIterator<3, P1>                          IteratorType;
-
-        IteratorType bi(P1(barray, 
-                           P0(barray.shape())));
-        int count = 1;
-        int start = 0, stop = size;
-        //for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-        //    for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-        //        for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
-        //        {
-        //            std::cerr << count << ": " << (int)bi.get<1>() << "\n";
-        //            bi.get<1>() = count;
-        //        }
-        //count = 1;
-        //for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-        //    for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-        //        for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
-        //        {
-        //            std::cerr << count << ": " << (int)bi.get<1>() << "\n";
-        //        }
-        //for(bi.setDim(2,127); bi.coord(2) < 129; bi.incDim(2))
-        //    for(bi.setDim(1,127); bi.coord(1) < 129; bi.incDim(1))
-        //        for(bi.setDim(0,127); bi.coord(0) < 129; bi.incDim(0), ++count)
-        //        {
-        //            std::cerr << count << ": " << (int)bi.get<1>() << "\n";
-        //            bi.get<1>() = count;
-        //        }
-        //count = 1;
-        //for(bi.setDim(2,127); bi.coord(2) < 129; bi.incDim(2))
-        //    for(bi.setDim(1,127); bi.coord(1) < 129; bi.incDim(1))
-        //        for(bi.setDim(0,127); bi.coord(0) < 129; bi.incDim(0), ++count)
-        //        {
-        //            std::cerr << count << ": " << (int)bi.get<1>() << "\n";
-        //        }
-        count = 1;
-        start = 0;
-        stop = size;
+        i = createCoupledIterator(w, u, v);
         TIC;
-        for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-            for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-                for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
-                {
-                    bi.get<1>() = count;
-                }
+        for(i.dim<2>() = 0; i.dim<2>() <size; ++i.dim<2>())
+            for(i.dim<1>() = 0; i.dim<1>()<size; ++i.dim<1>())
+                for(i.dim<0>() = 0; i.dim<0>()<size; ++i.dim<0>())
+                    i.get<1>() = i.get<2>() * i.get<3>();
         t = TOCS;
-        std::cerr << "    chunked iterator create file: " << t << "\n";
-        ////std::cerr << " global count: " << vigra::globalCount << "\n";
-        count = 1;
+        std::cerr << "    coupled iterator explicit template loops: " << t << "\n";
+        i = createCoupledIterator(w, u, v);
         TIC;
-        for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-            for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-                for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
-                {
-                    if(bi.get<1>() != count)
-                        std::cerr << bi.coord() << " not equal\n";
-                }
+        for(i.resetDim(2); i.coord(2) < size; i.incDim(2))
+            for(i.resetDim(1); i.coord(1) < size; i.incDim(1))
+                for(i.resetDim(0); i.coord(0) < size; i.incDim(0))
+                    i.get<1>() = i.get<2>() * i.get<3>();
         t = TOCS;
-        std::cerr << "    chunked iterator explicit runtime loops: " << t << "\n";
-        //count = 1;
-        //TIC;
-        //for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
-        //    for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
-        //        for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
-        //        {
-        //            if(bi.get<1>() != count)
-        //                std::cerr << bi.coord() << " not equal\n";
-        //        }
-        //t = TOCS;
-        //std::cerr << "    blocked iterator explicit runtime loops: " << t << "\n";
-        //std::cerr << &barray[Shape3(0,0,0)] << "  address\n";
-        //std::cerr << &barray[Shape3(64,0,0)] << "  address\n";
-        //std::cerr << &barray[Shape3(0,128,0)] << "  address\n";
-        //std::cerr << &barray[Shape3(64,64,0)] << "  address\n";
-        //count = 0;
-        //i = createCoupledIterator(w, u, v);
-        //for(; i != end; ++i)
-        //            i.get<1>() = ++count;
-        //
-        //typedef CoupledHandleType<3, ChunkedMemory<scalar_type>, scalar_type >::type  Q2;
-        //typedef Q2::base_type                                            Q1;
-        //typedef Q1::base_type                                            Q0;
-        //typedef CoupledScanOrderIterator<3, Q2>                      Q;
-
-        //Q qi(Q2(w, Q1(barray, 
-        //                   Q0(barray.shape()))));
-        //for(qi.setDim(2,0); qi.coord(2) < size; qi.incDim(2))
-        //    for(qi.setDim(1,0); qi.coord(1) < size; qi.incDim(1))
-        //        for(qi.setDim(0,0); qi.coord(0) < size; qi.incDim(0))
-        //        {
-        //            if(qi.get<1>() != qi.get<2>())
-        //                std::cerr << qi.coord() << " not equal\n";
-        //        }
+        std::cerr << "    coupled iterator explicit runtime loops: " << t << "\n";
     }
 
     void testBasicArithmetic()
@@ -3103,55 +2996,53 @@ struct MultiArrayPointOperatorsTestSuite
   MultiArrayPointOperatorsTestSuite()
     : vigra::test_suite("MultiArrayPointOperatorsTestSuite")
     {
-        //add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testCopyOuterExpansion ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testCopyInnerExpansion ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testTransform ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testTransformOuterExpand ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testTransformInnerExpand ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testTransformOuterReduce ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testTransformInnerReduce ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testCombine2 ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testCombine2OuterExpand ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerExpand ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testCombine2OuterReduce ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerReduce ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testInitMultiArrayBorder ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testInspect ) );
-        //add( testCase( &MultiArrayPointoperatorsTest::testTensorUtilities ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopyOuterExpansion ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopyInnerExpansion ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransform ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformOuterExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformInnerExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformOuterReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformInnerReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2 ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2OuterExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2OuterReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testInitMultiArrayBorder ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testInspect ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTensorUtilities ) );
 
         add( testCase( &MultiMathTest::testSpeed ) );
-        //add( testCase( &MultiMathTest::testBasicArithmetic ) );
-        //add( testCase( &MultiMathTest::testExpandMode ) );
-        //add( testCase( &MultiMathTest::testAllFunctions ) );
-        //add( testCase( &MultiMathTest::testComputedAssignment ) );
-        //add( testCase( &MultiMathTest::testNonscalarValues ) );
-        //add( testCase( &MultiMathTest::testMixedExpressions ) );
-        //add( testCase( &MultiMathTest::testComplex ) );
+        add( testCase( &MultiMathTest::testBasicArithmetic ) );
+        add( testCase( &MultiMathTest::testExpandMode ) );
+        add( testCase( &MultiMathTest::testAllFunctions ) );
+        add( testCase( &MultiMathTest::testComputedAssignment ) );
+        add( testCase( &MultiMathTest::testNonscalarValues ) );
+        add( testCase( &MultiMathTest::testMixedExpressions ) );
+        add( testCase( &MultiMathTest::testComplex ) );
     }
 }; // struct MultiArrayPointOperatorsTestSuite
 
 
 int main(int argc, char ** argv)
 {
-    int failed = 0;
+    // run the multi-array testsuite
+    MultiArrayTestSuite test1;
+    int failed = test1.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test1.report() << std::endl;
 
-    //// run the multi-array testsuite
-    //MultiArrayTestSuite test1;
-    //int failed = test1.run(vigra::testsToBeExecuted(argc, argv));
-    //std::cout << test1.report() << std::endl;
+    // run the multi-array data-testsuite
+    MultiArrayDataTestSuite test1a;
+    failed += test1a.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test1a.report() << std::endl;
 
-    //// run the multi-array data-testsuite
-    //MultiArrayDataTestSuite test1a;
-    //failed += test1a.run(vigra::testsToBeExecuted(argc, argv));
-    //std::cout << test1a.report() << std::endl;
-
-    //// run the image testsuite
-    //ImageViewTestSuite test2;
-    //failed += test2.run(vigra::testsToBeExecuted(argc, argv));
-    //std::cout << test2.report() << std::endl;
+    // run the image testsuite
+    ImageViewTestSuite test2;
+    failed += test2.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test2.report() << std::endl;
 
     // run the multi-array point operator test suite
     MultiArrayPointOperatorsTestSuite test3;
