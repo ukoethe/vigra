@@ -15,7 +15,11 @@ VIGRA_ADD_TEST(test_multiarray test.cxx LIBRARIES vigraimpex)
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/impex)
 
 if(NOT MSVC)
-    SET(CMAKE_CXX_FLAGS "-pthread -std=c++11 ${CMAKE_CXX_FLAGS}")
+    IF (CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0")
+        SET(CMAKE_CXX_FLAGS "-pthread ${CMAKE_CXX_FLAGS}")
+    else()
+        SET(CMAKE_CXX_FLAGS "-pthread -std=c++11 ${CMAKE_CXX_FLAGS}")
+    endif()
 endif()
 
 if(APPLE)
