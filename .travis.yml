@@ -4,9 +4,7 @@ python:
   - "2.7"
 
 before_script:
-  - echo "yes" | sudo add-apt-repository ppa:apokluda/boost1.53
-  - sudo apt-get update
-  - sudo apt-get install --assume-yes libhdf5-serial-dev libboost-thread1.53-dev libboost-python1.53-dev libjpeg-dev libtiff4-dev libpng12-dev libfftw3-dev cmake
+  - sudo apt-get install --assume-yes libhdf5-serial-dev libboost-python-dev libjpeg-dev libtiff4-dev libpng12-dev libfftw3-dev cmake
   - pip install nose
   - pip install numpy
    
