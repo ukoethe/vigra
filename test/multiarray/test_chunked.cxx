@@ -2139,7 +2139,7 @@ public:
             for(bi.setDim(1,start); bi.coord(1) < s[1]; bi.incDim(1))
                 for(bi.setDim(0,start); bi.coord(0) < s[0]; bi.incDim(0), ++count)
                 {
-                    bi.get<1>() = count;
+                    bi.template get<1>() = count;
                 }
         t = TOCS;
         std::cerr << "    chunked iterator create file: " << t << "\n";
@@ -2150,7 +2150,7 @@ public:
             for(bi.setDim(1,start); bi.coord(1) < s[1]; bi.incDim(1))
                 for(bi.setDim(0,start); bi.coord(0) < s[0]; bi.incDim(0), ++count)
                 {
-                    if(bi.get<1>() != count)
+                    if(bi.template get<1>() != count)
                         std::cerr << bi.coord() << " not equal\n";
                 }
         t = TOCS;
