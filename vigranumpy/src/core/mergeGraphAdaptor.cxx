@@ -153,7 +153,7 @@ namespace vigra{
         
     }
 
-    void defineMergeGraph(){
+    void defineMergeGraphNew(){
         defineMergeGraphT<AdjacencyListGraph>("AdjacencyListGraph");
     }
 

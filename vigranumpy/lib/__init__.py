@@ -567,8 +567,8 @@ def _genGraphConvenienceFunctions():
     graphs.hyperNodeSizes = hyperNodeSizes
 
 
-    def hyperEdgeImageFeatures(graph,hyperEdgeCoordinates,image,out):
-        graphs._hyperEdgeImageFeatures(graph,hyperEdgeCoordinates,image,out)
+    def hyperEdgeImageFeatures(rag,graph,hyperEdgeCoordinates,image,out):
+        graphs._hyperEdgeImageFeatures(rag,graph,hyperEdgeCoordinates,image,out)
         return out
 
     hyperEdgeImageFeatures.__module__ = 'vigra.graphs'
@@ -648,7 +648,7 @@ def _genGraphConvenienceFunctions():
         #if verbose :print "get the mean features (gradmag) for hyperEdges"
         edgeIndicator  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
         edgeMinWeight  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
-        edgeIndicator  = graphs.hyperEdgeImageFeatures(rag,hyperEdges,edgeIndicatorImage,edgeIndicator)
+        edgeIndicator  = graphs.hyperEdgeImageFeatures(rag,gridGraph,hyperEdges,edgeIndicatorImage,edgeIndicator)
 
         #if verbose :print "get the mean features (gradmag) for hyperNodes"
         nodeFeatures = graphs.graphMap(graph=rag,item='node',dtype=numpy.float32,channels=nodeFeatureChannels)

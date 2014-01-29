@@ -101,9 +101,9 @@ namespace vigra{
         typedef typename Graph::Edge Edge ;
         typedef typename  Graph::Arc  Arc ;
 
-        typedef TinyVector<index_type,1> IntrinsicNodeMapShape;
-        typedef TinyVector<index_type,1> IntrinsicEdgeMapShape;
-        typedef TinyVector<index_type,1>  IntrinsicArcMapShape;
+        typedef TinyVector<Int64,1> IntrinsicNodeMapShape;
+        typedef TinyVector<Int64,1> IntrinsicEdgeMapShape;
+        typedef TinyVector<Int64,1>  IntrinsicArcMapShape;
 
         static IntrinsicNodeMapShape intrinsicNodeMapShape(const Graph & g){
             return IntrinsicNodeMapShape(g.maxNodeId()+1);

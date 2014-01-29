@@ -19,7 +19,7 @@ def showSeg(img,labels):
 
 
 
-if False:
+if True:
 	print "get input"
 	f       = '100075.jpg'
 	f       = '69015.jpg'
@@ -41,11 +41,11 @@ if False:
 	labels = vigraph.hierarchicalSuperpixels(labels=labels,edgeIndicatorImage=gradmag,nodeFeaturesImage=imgLab,
 		nSuperpixels=40,verbose=True,beta=0.2,nodeDistType='squaredNorm',degree1Fac=1.0,wardness=1)#0.001)
 
-	#showSeg(img,labels)
-	#pylab.show()
+	showSeg(img,labels)
+	pylab.show()
 
 
-if True:
+if False:
 	print "get input"
 	f   = 'data.h5'
 	img = vigra.impex.readHDF5(f,'data')[0:200,0:100,0:100].astype(numpy.float32)

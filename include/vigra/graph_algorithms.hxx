@@ -244,9 +244,10 @@ namespace vigra{
         }    
     }
 
-    template<class GRAPH,class HYPER_EDGE_COORDINATE_MAP,class IMAGE,class HYPER_EDGE_FEATURE_MAP>
+    template<class RAG,class GRAPH,class HYPER_EDGE_COORDINATE_MAP,class IMAGE,class HYPER_EDGE_FEATURE_MAP>
     void hyperEdgeImageFeatures(
-        const GRAPH & g,
+        const RAG & rag,
+        const GRAPH & graph,
         const HYPER_EDGE_COORDINATE_MAP & hyperEdges,
         const IMAGE & image,
         HYPER_EDGE_FEATURE_MAP  & out
@@ -257,21 +258,22 @@ namespace vigra{
         typedef typename OutMap::Value Value;
         typedef typename IMAGE::difference_type ImageCoord;
 
-        for(typename  GRAPH::EdgeIt e(g);e!=lemon::INVALID;++e){
+        for(typename  RAG::EdgeIt e(rag);e!=lemon::INVALID;++e){
             HyperEdgeCoordVec hyperEdgeCoords = hyperEdges[*e];
             out[*e]=Value(0);
             const size_t nEdges = hyperEdgeCoords.size();
             for(size_t i=0;i<nEdges;++i){
-                TinyVectorType edgeCoord = hyperEdgeCoords[i];
-                const size_t oi=edgeCoord[edgeCoord.size()-1];
+                //TinyVectorType edgeCoord = hyperEdgeCoords[i];
+                //const size_t oi=edgeCoord[edgeCoord.size()-1];
 
                 // todo: replace me with morge "vigra-ish" functions
-                typedef typename IMAGE::difference_type DiffType;
-                DiffType imgCoord;
-                std::copy(edgeCoord.begin(),edgeCoord.begin()+imgCoord.size(),imgCoord.begin());
-                out[*e]+=image[imgCoord];
-                imgCoord[oi]+=1;
-                out[*e]+=image[imgCoord];
+                //typedef typename IMAGE::difference_type DiffType;
+                //DiffType imgCoord;
+                //std::copy(edgeCoord.begin(),edgeCoord.begin()+imgCoord.size(),imgCoord.begin());
+                out[*e]+=image[graph.u( hyperEdgeCoords[i]) ];
+                out[*e]+=image[graph.v( hyperEdgeCoords[i]) ];
+                //imgCoord[oi]+=1;
+                //out[*e]+=image[imgCoord];
             }
             // todo: replace me with functors normalization / outpu
             out[*e]/=static_cast<Value>(2*hyperEdgeCoords.size());
