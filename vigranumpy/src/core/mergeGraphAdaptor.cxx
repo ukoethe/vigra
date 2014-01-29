@@ -43,8 +43,9 @@
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/adjacency_list_graph.hxx>
 #include <vigra/merge_graph/merge_graph_adaptor.hxx>
+#include <vigra/merge_graph/maps/clustering_operator.hxx>
 #include <vigra/python_graph_generalization.hxx>
-
+#include <vigra/hierarchical_clustering.hxx>
 
 namespace python = boost::python;
 
@@ -52,7 +53,70 @@ namespace vigra{
 
 
     template<class GRAPH>
+    
+    cluster_operators::EdgeWeightNodeFeatures<
+        MergeGraphAdaptor<GRAPH>,
+        NumpyScalarEdgeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float> > ,
+        NumpyScalarEdgeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float> > , 
+        NumpyMultibandNodeMap<GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension+1,Multiband<float> > >,
+        NumpyScalarNodeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float> > ,
+        NumpyScalarEdgeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float> > 
+    > * 
+    pyEdgeWeightNodeFeaturesConstructor(
+        MergeGraphAdaptor<GRAPH> & mergeGraph,
+        NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>                edgeIndicatorMapArray,
+        NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>                edgeSizeMapArray,
+        NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension+1,Multiband<float> >  nodeFeatureMapArray,
+        NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float >               nodeSizeMapArray,
+        NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>                edgeMinWeightMapArray
+    ){
+        typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>               EdgeFloatArray;
+        typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float>               NodeFloatArray;
+        typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension+1,Multiband<float> > NodeMultibandFloatArray;
+        typedef NumpyScalarEdgeMap<GRAPH,EdgeFloatArray>                EdgeFloatMap;
+        typedef NumpyScalarNodeMap<GRAPH,NodeFloatArray>                NodeFloatMap;
+        typedef NumpyMultibandNodeMap<GRAPH,NodeMultibandFloatArray>    NodeMultibandFloatMap;
+        // allocate the thin wrappers
+        EdgeFloatMap           edgeIndicatorMap(mergeGraph.graph(),edgeIndicatorMapArray);
+        EdgeFloatMap           edgeSizeMap(mergeGraph.graph(),edgeSizeMapArray);   
+        NodeMultibandFloatMap  nodeFeatureMap(mergeGraph.graph(),nodeFeatureMapArray);
+        NodeFloatMap           nodeSizeMap(mergeGraph.graph(),nodeSizeMapArray);
+        EdgeFloatMap           edgeMinWeightMap(mergeGraph.graph(),edgeMinWeightMapArray);
+
+        typedef cluster_operators::EdgeWeightNodeFeatures<
+            MergeGraphAdaptor<GRAPH> ,
+            NumpyScalarEdgeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float> > ,
+            NumpyScalarEdgeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float> > , 
+            NumpyMultibandNodeMap<GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension+1,Multiband<float> > >,
+            NumpyScalarNodeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float> > ,
+            NumpyScalarEdgeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float> > 
+        > OperatorType;
+
+        return new OperatorType(mergeGraph,
+            edgeIndicatorMap,edgeSizeMap,
+            nodeFeatureMap, nodeSizeMap,
+            edgeMinWeightMap
+        );
+    }
+
+
+    template<class CLUSTER_OPERATOR>
+    void defineHierarchicalClustering(const std::string & opClsName){
+        typedef CLUSTER_OPERATOR ClusterOperator;
+        typedef HierarchicalClustering<ClusterOperator> HCluster;
+
+        const std::string clsName = std::string("HierarchicalClustering")+ opClsName;
+        python::class_<HCluster,boost::noncopyable>(
+            clsName.c_str(),python::init<ClusterOperator &>()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()]
+        );
+
+
+    }
+
+
+    template<class GRAPH>
     void defineMergeGraphT(const std::string & clsName){
+
         typedef GRAPH Graph;
         typedef MergeGraphAdaptor<Graph> MergeGraphAdaptor;
         typedef typename MergeGraphAdaptor::Edge Edge;
@@ -65,6 +129,26 @@ namespace vigra{
         )
         .def(LemonDirectedGraphCoreVisitor<MergeGraphAdaptor>(mgAdaptorClsName))
         ;
+
+        // define operator and the cluster class for this operator
+        {
+            typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>                EdgeFloatArray;
+            typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float>                NodeFloatArray;
+            typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension+1,Multiband<float> >  NodeMultibandFloatArray;
+            typedef NumpyScalarEdgeMap<GRAPH,EdgeFloatArray>                EdgeFloatMap;
+            typedef NumpyScalarNodeMap<GRAPH,NodeFloatArray>                NodeFloatMap;
+            typedef NumpyMultibandNodeMap<GRAPH,NodeMultibandFloatArray>    NodeMultibandFloatMap;
+            typedef cluster_operators::EdgeWeightNodeFeatures<MergeGraphAdaptor,EdgeFloatMap,EdgeFloatMap,
+                NodeMultibandFloatMap,NodeFloatMap,EdgeFloatMap> OperatorType;
+            const std::string operatorName = mgAdaptorClsName + std::string("EdgeWeightNodeFeatureOperator");
+
+            python::class_<OperatorType  >(operatorName.c_str(),python::no_init)
+            .def("__init__", python::make_constructor(&pyEdgeWeightNodeFeaturesConstructor<Graph>))//,
+                //python::return_value_policy<python::manage_new_object>() )
+            ;
+            defineHierarchicalClustering<OperatorType>(operatorName);
+        }
+
 
         
     }

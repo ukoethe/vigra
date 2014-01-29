@@ -608,6 +608,18 @@ def _genGraphConvenienceFunctions():
     hierarchicalClustering.__module__ = 'vigra.graphs'
     graphs.hierarchicalClustering = hierarchicalClustering
 
+    def mergeGraph(graph):
+        if isinstance(graph,graphs.AdjacencyListGraph):
+            return AdjacencyListGraphMergeGraphAdaptor(graph)
+        else :
+            raise RuntimeError("mergeGraph is only implemented for AdjacencyListGraph")
+
+    mergeGraph.__module__ = 'vigra.graphs'
+    graphs.mergeGraph = mergeGraph
+
+
+
+
     def hierarchicalSuperpixels(labels,edgeIndicatorImage,nodeFeaturesImage,nSuperpixels,
         beta=0.5,nodeDistType='chiSquared',degree1Fac=1.0,wardness=0.0,verbose=False):
 
@@ -643,14 +655,27 @@ def _genGraphConvenienceFunctions():
         nodeFeatures = graphs.hyperNodeImageFeatures(rag,gridGraph,labels,nodeFeaturesImage,nodeFeatures)
 
 
+        print "get merge graph  (REFACTOR THIS PART)"
+        mergeGraph = graphs.AdjacencyListGraphMergeGraphAdaptor(rag)
+        mg = graphs.mergeGraph(rag)
+
+        print "set up cluster operator"
+        clusterOperator =  AdjacencyListGraphMergeGraphAdaptorEdgeWeightNodeFeatureOperator(
+            mergeGraph,
+            edgeIndicator,hyperEdgeSizes,
+            nodeFeatures,hyperNodeSizes.
+            edgeMinWeight
+        )
+
+
 
         #if verbose :print "maxEdgeId",rag.maxEdgeId
         #if verbose :print "maxNodeId",rag.maxNodeId
-        if verbose :print "regionAdjacencyGraph",rag
+        #if verbose :print "regionAdjacencyGraph",rag
 
-        hc =  graphs.hierarchicalClustering(rag,edgeIndicator,hyperEdgeSizes,nodeFeatures, hyperNodeSizes,edgeMinWeight,
-                nodeNumStopCond=nSuperpixels,beta=beta,nodeDistType=nodeDistType,degree1Fac=degree1Fac,wardness=wardness,verbose=verbose)
-        hc.cluster()
+        #hc =  graphs.hierarchicalClustering(rag,edgeIndicator,hyperEdgeSizes,nodeFeatures, hyperNodeSizes,edgeMinWeight,
+        #        nodeNumStopCond=nSuperpixels,beta=beta,nodeDistType=nodeDistType,degree1Fac=degree1Fac,wardness=wardness,verbose=verbose)
+        #hc.cluster()
 
         newLabels = labels.copy()
         newLabels = newLabels.reshape(-1)

@@ -297,7 +297,7 @@ namespace vigra{
     }
 
 
-
+    /*
     template<class GRAPH>
     void defineHierarchicalClustering(const std::string clsNamePostfix){
         typedef GRAPH GraphType;
@@ -353,7 +353,7 @@ namespace vigra{
         .def("reprNodeIds",registerConverters(&pyReprNodeIds<HierarchicalClusteringType>))
         ;
     }
-
+    */
     void defineGraphAlgorithms(){
         
         //typedef AdjacencyListGraph  AdjacencyListGraph;
@@ -365,7 +365,7 @@ namespace vigra{
         defineHyperNodeSizes();
         defineHyperEdgeFeatures();
         defineHyperNodeFeatures();
-        defineHierarchicalClustering<AdjacencyListGraph>("AdjacencyListGraph");
+        //defineHierarchicalClustering<AdjacencyListGraph>("AdjacencyListGraph");
 
     }
 

@@ -43,6 +43,52 @@
 
 namespace vigra {
 
+template<class GRAPH,class ITEM>
+struct MergeGraphItemHelper;
+
+template<class MG>
+struct MergeGraphItemHelper<MG,typename MG::Edge>{
+    typedef typename MG::Graph Graph;
+    typedef typename MG::index_type index_type ;
+    typedef typename MG::Edge Item;
+    typedef typename Graph::Edge GraphItem;
+    typedef typename MG::EdgeIt ItemIt;
+
+
+    static index_type maxItemId(const MG & g){
+        return g.maxEdgeId();
+    }
+    static index_type itemNum(const MG & g){
+        return g.edgeNum();
+    }
+
+    static GraphItem itemToGraphItem(const MG & g,const Item & item){
+        const index_type id = g.id(item);
+        return g.graph().edgeFromId(id);
+    }
+};
+
+template<class MG>
+struct MergeGraphItemHelper<MG,typename MG::Node>{
+    typedef typename MG::Graph Graph;
+    typedef typename MG::index_type index_type ;
+    typedef typename MG::Node Item;
+    typedef typename Graph::Node GraphItem;
+    typedef typename MG::NodeIt ItemIt;
+
+
+    static index_type maxItemId(const MG & g){
+        return g.maxNodeId();
+    }
+    static index_type itemNum(const MG & g){
+        return g.nodeNum();
+    }
+    static GraphItem itemToGraphItem(const MG & g,const Item & item){
+        const index_type id = g.id(item);
+        return g.graph().nodeFromId(id);
+    }
+};
+
 
 template<class MERGE_GRAPH>
 class MergeGraphNodeIt
