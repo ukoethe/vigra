@@ -95,6 +95,7 @@ struct ArcHolder: GRAPH::Arc {
     const GRAPH * graph_;
 };
 
+
 template<class GRAPH>
 struct EdgeIteratorHolder{
 

@@ -51,9 +51,7 @@ namespace python = boost::python;
 
 namespace vigra{
 
-
     template<class GRAPH>
-    
     cluster_operators::EdgeWeightNodeFeatures<
         MergeGraphAdaptor<GRAPH>,
         NumpyScalarEdgeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float> > ,
@@ -76,12 +74,6 @@ namespace vigra{
         typedef NumpyScalarEdgeMap<GRAPH,EdgeFloatArray>                EdgeFloatMap;
         typedef NumpyScalarNodeMap<GRAPH,NodeFloatArray>                NodeFloatMap;
         typedef NumpyMultibandNodeMap<GRAPH,NodeMultibandFloatArray>    NodeMultibandFloatMap;
-        // allocate the thin wrappers
-        EdgeFloatMap           edgeIndicatorMap(mergeGraph.graph(),edgeIndicatorMapArray);
-        EdgeFloatMap           edgeSizeMap(mergeGraph.graph(),edgeSizeMapArray);   
-        NodeMultibandFloatMap  nodeFeatureMap(mergeGraph.graph(),nodeFeatureMapArray);
-        NodeFloatMap           nodeSizeMap(mergeGraph.graph(),nodeSizeMapArray);
-        EdgeFloatMap           edgeMinWeightMap(mergeGraph.graph(),edgeMinWeightMapArray);
 
         typedef cluster_operators::EdgeWeightNodeFeatures<
             MergeGraphAdaptor<GRAPH> ,
@@ -91,6 +83,15 @@ namespace vigra{
             NumpyScalarNodeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float> > ,
             NumpyScalarEdgeMap<   GRAPH, NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float> > 
         > OperatorType;
+
+        // allocate the thin wrappers
+        EdgeFloatMap           edgeIndicatorMap(mergeGraph.graph(),edgeIndicatorMapArray);
+        EdgeFloatMap           edgeSizeMap(mergeGraph.graph(),edgeSizeMapArray);   
+        NodeMultibandFloatMap  nodeFeatureMap(mergeGraph.graph(),nodeFeatureMapArray);
+        NodeFloatMap           nodeSizeMap(mergeGraph.graph(),nodeSizeMapArray);
+        EdgeFloatMap           edgeMinWeightMap(mergeGraph.graph(),edgeMinWeightMapArray);
+
+
 
         return new OperatorType(mergeGraph,
             edgeIndicatorMap,edgeSizeMap,
