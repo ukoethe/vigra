@@ -71,7 +71,7 @@ namespace vigra{
 
 
         typedef typename EDGE_INDICATOR_MAP::Value ValueType;
-        typedef ValueType WeightType;u
+        typedef ValueType WeightType;
         typedef MERGE_GRAPH MergeGraph;
         typedef typename MergeGraph::Graph Graph;
         typedef typename Graph::Edge GraphEdge;
