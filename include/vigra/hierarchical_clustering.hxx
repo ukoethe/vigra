@@ -31,7 +31,7 @@ namespace vigra{
             Parameter(
                 const size_t      nodeNumStopCond = 1,
                 const bool        buildMergeTree  = true,
-                const bool        verbose         = false
+                const bool        verbose         = true
             )
             :   nodeNumStopCond_ (nodeNumStopCond),
                 buildMergeTreeEncoding_(buildMergeTree),
@@ -94,11 +94,11 @@ namespace vigra{
             while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0){
                 
 
-                const Edge edgeToRemove = clusterOperator_.minWeightEdge();
+                const Edge edgeToRemove = clusterOperator_.contractionEdge();
                 if(param_.buildMergeTreeEncoding_){
                     const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove)); 
                     const MergeGraphIndexType vid = mergeGraph_.id(mergeGraph_.v(edgeToRemove));  
-                    const ValueType w             = clusterOperator_.minWeight();
+                    const ValueType w             = clusterOperator_.contractionWeight();
                     // do the merge 
                     mergeGraph_.contractEdge( edgeToRemove);
                     const MergeGraphIndexType aliveNodeId = mergeGraph_.hasNodeId(uid) ? uid : vid;

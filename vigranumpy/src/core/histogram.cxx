@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*     Copyright 2011-2012 Stefan Schmidt and Ullrich Koethe            */
+/*                 Copyright 2011 by Ullrich Koethe                     */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -33,115 +33,68 @@
 /*                                                                      */
 /************************************************************************/
 
-/**
- * This header provides definitions of graph-related types
- * and optionally provides a gateway to popular graph libraries
- * (for now, BGL is supported).
- */
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyhistogram_PyArray_API
+//#define NO_IMPORT_ARRAY
 
-#ifndef VIGRA_PYTHON_GRAPH_GENERALIZATION_HXX
-#define VIGRA_PYTHON_GRAPH_GENERALIZATION_HXX
-
-
-#include <vigra/graphs.hxx>
- #include <vigra/numpy_array.hxx>
-#include <vigra/multi_gridgraph.hxx>
- #include <vigra/graph_generalization.hxx>
+#include <vigra/numpy_array.hxx>
+#include <vigra/numpy_array_converters.hxx>
+#include <vigra/multi_histogram.hxx>
+namespace python = boost::python;
 
 namespace vigra{
 
 
-
-template<class MAP>
-struct GraphMapTypeTraits;
-
-template< unsigned int DIM,class T>
-struct GraphMapTypeTraits<NumpyArray<DIM,T> >{
-    typedef typename NumpyArray<DIM,T>::value_type Value;
-    typedef Value &                                Reference;
-    typedef const Value  &                         ConstReference;
-};
-
-
-    
-template<class GRAPH>
-struct NodeHolder :  GRAPH::Node
-{
-    typedef typename GRAPH::Node Node;
-    NodeHolder(const lemon::Invalid & iv = lemon::INVALID)
-    : Node(lemon::INVALID),
-      graph_(NULL)
-    {}
-    NodeHolder(const GRAPH & g , const Node & item)
-    : Node(item),
-      graph_(&g)
-    {}
-
-    typename GRAPH::index_type id()const{
-        return graph_->id(*this);
+    template<unsigned int DIM,unsigned int CHANNELS>
+    NumpyAnyArray pyMultiGaussianHistogram(
+        NumpyArray<DIM,TinyVector<float,CHANNELS> > image,
+        const TinyVector<float,CHANNELS> minVals,
+        const TinyVector<float,CHANNELS> maxVals,
+        const size_t bins,
+        const float  sigma,
+        const float sigmaBin,
+        NumpyArray<DIM+2,float> histogram = NumpyArray<DIM+2,float>()
+    ){
+        typename NumpyArray<DIM+2,float>::difference_type  outShape;
+        for(size_t d=0;d<DIM;++d){
+            outShape[d]=image.shape(d);
+        }
+        outShape[DIM]=bins;
+        outShape[DIM+1]=CHANNELS;
+        histogram.reshapeIfEmpty(outShape);
+        multi_gaussian_histogram<DIM,float,CHANNELS,float>(image,minVals,maxVals,bins,
+            sigma,sigmaBin,histogram);
+        return histogram;
     }
 
-
-
-    const GRAPH * graph_;
-};
-
-
-
-template<class GRAPH>
-struct EdgeHolder : GRAPH::Edge
-{
-
-    typedef typename GRAPH::Edge Edge;
-    EdgeHolder(const lemon::Invalid & iv = lemon::INVALID)
-    : Edge(lemon::INVALID),
-      graph_(NULL)
-    {}
-    EdgeHolder(const GRAPH & g , const Edge & item)
-    : Edge(item),
-      graph_(&g)
-    {}
-
-    typename GRAPH::index_type id()const{
-        return graph_->id(*this);
+    template<unsigned int DIM,unsigned int CHANNELS>
+    void defineMultiGaussianHistogram(){
+        python::def("gaussianHistogram",registerConverters(&pyMultiGaussianHistogram<DIM,CHANNELS>),
+            (
+                python::arg("image"),
+                python::arg("minVals"),
+                python::arg("maxVals"),
+                python::arg("bins")=30,
+                python::arg("sigma")=3.0,
+                python::arg("sigmaBin")=2.0,
+                python::arg("out")=python::object()
+            )
+        );
     }
-
-    NodeHolder<GRAPH> u()const{
-        return NodeHolder<GRAPH>(*graph_,graph_->u(*this));
-    }
-    NodeHolder<GRAPH> v()const{
-        return NodeHolder<GRAPH>(*graph_,graph_->v(*this));
-    }
-
-    typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicEdgeMapShape
-    intrinsicEdgeCoordinate()const{
-        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicEdgeCoordinate(*graph_,*this);
-    }
-
-    const GRAPH * graph_; 
-};
-
-
-
-template<class GRAPH>
-struct ArcHolder: GRAPH::Arc {
-    typedef typename GRAPH::Arc Arc;
-    ArcHolder(const lemon::Invalid & iv = lemon::INVALID)
-    : Arc(lemon::INVALID),
-      graph_(NULL)
-    {}
-    ArcHolder(const GRAPH & g , const Arc & item)
-    : Arc(item),
-      graph_(&g)
-    {}
-
-    typename GRAPH::index_type id()const{
-        return graph_->id(*this);
-    }
-    const GRAPH * graph_;
-};
 
 
 } // namespace vigra
 
-#endif // VIGRA_PYTHON_GRAPH_GENERALIZATION_HXX
+using namespace vigra;
+using namespace boost::python;
+
+
+
+
+BOOST_PYTHON_MODULE_INIT(histogram)
+{
+    import_vigranumpy();
+
+    // all exporters needed for graph exporters (like lemon::INVALID)
+    defineMultiGaussianHistogram<2,3>();
+
+}

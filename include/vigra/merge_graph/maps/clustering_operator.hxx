@@ -94,12 +94,10 @@ namespace vigra{
             EDGE_SIZE_MAP edgeSizeMap,
             NODE_FEATURE_MAP nodeFeatureMap,
             NODE_SIZE_MAP nodeSizeMap,
-            MIN_WEIGHT_MAP minWeightEdgeMap
-            //,
-            //const size_t nodeDistType,
-            //const ValueType beta,
-            //const ValueType degree1Fac,
-            //const ValueType wardness
+            MIN_WEIGHT_MAP minWeightEdgeMap,
+            const ValueType beta,
+            const size_t nodeDistType,
+            const ValueType wardness=1.0
         )
         :   mergeGraph_(mergeGraph),
             edgeIndicatorMap_(edgeIndicatorMap),
@@ -107,12 +105,10 @@ namespace vigra{
             nodeFeatureMap_(nodeFeatureMap),
             nodeSizeMap_(nodeSizeMap),
             minWeightEdgeMap_(minWeightEdgeMap),
-            pq_(mergeGraph.maxEdgeId()+1)
-            //,
-            //nodeDistType_(nodeDistType),
-            //beta_(beta),
-            //degree1Fac_(degree1Fac),
-            //wardness_(wardness)
+            pq_(mergeGraph.maxEdgeId()+1),
+            beta_(beta),
+            nodeDistType_(nodeDistType),
+            wardness_(wardness)
         {
 
             mergeGraph_.registerMergeNodeCallBack(*this,& SelfType::mergeNodes);
@@ -177,7 +173,7 @@ namespace vigra{
                 minWeightEdgeMap_[incGraphEdge]=newWeight;
             }
         }
-        Edge minWeightEdge(){
+        Edge contractionEdge(){
             index_type minLabel = pq_.top();
             while(mergeGraph_.hasEdgeId(minLabel)==false){
                 pq_.deleteItem(minLabel);
@@ -185,7 +181,7 @@ namespace vigra{
             }
             return Edge(minLabel);
         }
-        ValueType minWeight()const{
+        WeightType contractionWeight()const{
             return pq_.topPriority();
         }
         MergeGraph & mergeGraph(){
@@ -202,11 +198,8 @@ namespace vigra{
             const GraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const GraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
-            const size_t degU = mergeGraph_.degree(u);
-            const size_t degV = mergeGraph_.degree(v);
 
-            const ValueType degFac = degU==1 || degV==1 ? degree1Fac_ : 1.0;
-            const ValueType wardFacRaw = 1.0 / ( 1.0/nodeSizeMap_[uu] + 1.0/nodeSizeMap_[vv] );
+            const ValueType wardFacRaw = 1.0 / ( 1.0/std::log(nodeSizeMap_[uu]) + 1.0/std::log(nodeSizeMap_[vv]) );
             const ValueType wardFac = (wardFacRaw*wardness_) + (1.0-wardness_);
 
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
@@ -226,7 +219,7 @@ namespace vigra{
             else{
                 throw std::runtime_error("wrong distance type");
             }
-            const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*degFac*wardFac;
+            const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
             return totalWeight;
         }
 
@@ -239,9 +232,8 @@ namespace vigra{
         MIN_WEIGHT_MAP minWeightEdgeMap_;
         vigra::ChangeablePriorityQueue< ValueType > pq_;
 
-        size_t nodeDistType_;
         ValueType beta_;
-        ValueType degree1Fac_;
+        size_t nodeDistType_;
         ValueType wardness_;
     };
 

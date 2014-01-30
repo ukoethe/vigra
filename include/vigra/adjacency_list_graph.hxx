@@ -318,11 +318,41 @@ namespace vigra{
             ++nodeNum_;
             return Node(id);
         }
+        Node addNode(const index_type id){
+            if(id == nodes_.size()){
+                nodes_.push_back(NodeStorage(id));
+                ++nodeNum_;
+                return Node(id);
+            }
+            else if(id<nodes_.size()){
+                const Node node = nodeFromId(id);
+                if(node==lemon::INVALID){
+                    nodes_[id]=NodeStorage(id);
+                    ++nodeNum_;
+                    return Node(id);
+                }
+                else{
+                    return node;
+                }
+            }
+            else{
+                // refactor me
+                while(nodes_.size()<id){
+                    nodes_.push_back(NodeStorage(lemon::INVALID));
+                }
+                nodes_.push_back(NodeStorage(id));
+                ++nodeNum_;
+                return Node(id);
+            }
+        }
 
         Edge addEdge(const Node & u , const Node & v){
             const Edge foundEdge  = findEdge(u,v);
             if(foundEdge!=lemon::INVALID){
                 return foundEdge;
+            }
+            else if(u==lemon::INVALID || v==lemon::INVALID){
+                return Edge(lemon::INVALID);
             }
             else{
                 const index_type id = edges_.size();
@@ -333,6 +363,13 @@ namespace vigra{
                 return Edge(id);
             }   
         }
+
+        Edge addEdge(const index_type u ,const index_type v){
+            const Node uu = addNode(u);
+            const Node vv = addNode(v);
+            return addEdge(uu,vv);
+        }
+
         
         bool zeroStart()const{
             return zeroStart_;

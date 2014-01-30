@@ -110,9 +110,7 @@ import colors
 import noise
 import geometry
 import optimization
-#import clustering
-#import cgp
-#import rag
+import histogram
 import graphs
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
@@ -582,46 +580,50 @@ def _genGraphConvenienceFunctions():
     hyperNodeImageFeatures.__module__ = 'vigra.graphs'
     graphs.hyperNodeImageFeatures = hyperNodeImageFeatures
 
-    def hierarchicalClustering(graph,edgeIndicatorMap,edgeSizeMap,nodeFeatureMap,nodeSizeMap,edgeMinWeightMap,
-        nodeNumStopCond=1,beta=0.5,degree1Fac=1.0,nodeDistType='chiSquared',wardness=0.0,verbose=False):
 
-        distToNumber = {'chiSquared' : 0,'squaredNorm':1,'normSquared':1, 'norm':2}
-        if nodeDistType not in distToNumber :
-            raise RuntimeError("unknown distance '%s'"%str(nodeDistType))
+    def minEdgeWeightNodeDist(mergeGraph,edgeWeights,edgeSizes,nodeFeatures,nodeSize,outWeight,
+        beta,nodeDistType,wardness):
+            # call unsave c++ function and make it save
 
-        if not isinstance(graph,graphs.AdjacencyListGraph):
-            raise RuntimeError("hierarchicalClustering is so far only supported for AdjacencyListGraph")
+            if    nodeDistType=='squaredNorm':
+                nd=0
+            elif  nodeDistType=='norm':
+                nd=1
+            elif  nodeDistType=='chiSquared':
+                nd=2
+            else :
+                raise RuntimeError("'%s' is not a supported distance type"%str(nodeDistType))
 
-        param = graphs.HierarchicalClusteringParameterAdjacencyListGraph()
-        param.nodeNumStopCond=long(nodeNumStopCond)
-        param.beta=float(beta)
-        param.nodeDistType=long(distToNumber[nodeDistType])
-        param.degree1Fac=float(degree1Fac)
-        param.wardness=float(wardness)
-        param.verbose=bool(verbose)
+            op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeSizes,nodeFeatures,nodeSize,outWeight,
+                float(beta),long(nd),float(wardness))
+            op.__dict__['__base_object__']=mergeGraph
+            return op
 
-        hc = graphs._hierarchicalClusteringAdjacencyListGraph(graph,edgeIndicatorMap,edgeSizeMap,
-            nodeFeatureMap,nodeSizeMap,edgeMinWeightMap, param)
-
+    minEdgeWeightNodeDist.__module__ = 'vigra.graphs'
+    graphs.minEdgeWeightNodeDist = minEdgeWeightNodeDist    
+      
+    def hierarchicalClustering(clusterOperator,nodeNumStopCond):
+        # call unsave c++ function and make it save
+        hc = graphs.__hierarchicalClustering(clusterOperator,long(nodeNumStopCond))
+        hc.__dict__['__base_object__']=clusterOperator
         return hc
 
     hierarchicalClustering.__module__ = 'vigra.graphs'
     graphs.hierarchicalClustering = hierarchicalClustering
 
     def mergeGraph(graph):
-        if isinstance(graph,graphs.AdjacencyListGraph):
-            return AdjacencyListGraphMergeGraphAdaptor(graph)
-        else :
-            raise RuntimeError("mergeGraph is only implemented for AdjacencyListGraph")
+        # call unsave c++ function and make it save
+        mg = graphs.__mergeGraph(graph)
+        mg.__dict__['__base_object__']=graph
+        return mg
 
     mergeGraph.__module__ = 'vigra.graphs'
     graphs.mergeGraph = mergeGraph
 
 
 
-
     def hierarchicalSuperpixels(labels,edgeIndicatorImage,nodeFeaturesImage,nSuperpixels,
-        beta=0.5,nodeDistType='chiSquared',degree1Fac=1.0,wardness=0.0,verbose=False):
+        beta=0.5,nodeDistType='squaredNorm',wardness=0.0,verbose=False):
 
         dimension = len(labels.shape)
         assert dimension == 2 or dimension ==3
@@ -634,48 +636,29 @@ def _genGraphConvenienceFunctions():
 
         #if verbose : print "gridGraph"
         gridGraph = graphs.gridGraph(labels.shape)
-        if verbose :print "gridGraph",gridGraph
-        #if verbose :print "get region adjacency graph"
+        
+
         rag,hyperEdges = graphs.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
+        if verbose :print "regionAdjacencyGraph",rag
+        hyperEdgeSizes = graphs.hyperEdgeSizes(rag,hyperEdges)
+        hyperNodeSizes = graphs.hyperNodeSizes(rag,gridGraph,labels)
 
-        #if verbose :print "get the sizes of the hyperedges "
-        hyperEdgeSizes=graphs.hyperEdgeSizes(rag,hyperEdges)
-
-        #if verbose :print "get the sizes of the hypernodes "
-        hyperNodeSizes=graphs.hyperNodeSizes(rag,gridGraph,labels)
-
-
-        #if verbose :print "get the mean features (gradmag) for hyperEdges"
         edgeIndicator  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
         edgeMinWeight  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
         edgeIndicator  = graphs.hyperEdgeImageFeatures(rag,gridGraph,hyperEdges,edgeIndicatorImage,edgeIndicator)
 
-        #if verbose :print "get the mean features (gradmag) for hyperNodes"
-        nodeFeatures = graphs.graphMap(graph=rag,item='node',dtype=numpy.float32,channels=nodeFeatureChannels)
-        nodeFeatures = graphs.hyperNodeImageFeatures(rag,gridGraph,labels,nodeFeaturesImage,nodeFeatures)
+        nodeFeatures   = graphs.graphMap(graph=rag,item='node',dtype=numpy.float32,channels=nodeFeatureChannels)
+        nodeFeatures   = graphs.hyperNodeImageFeatures(rag,gridGraph,labels,nodeFeaturesImage,nodeFeatures)
 
 
-        print "get merge graph  (REFACTOR THIS PART)"
-        mergeGraph = graphs.AdjacencyListGraphMergeGraphAdaptor(rag)
-        mg = graphs.mergeGraph(rag)
+        mergeGraph = graphs.mergeGraph(rag)
+        clusterOperator = graphs.minEdgeWeightNodeDist(mergeGraph,edgeIndicator,hyperEdgeSizes,
+            nodeFeatures,hyperNodeSizes,edgeMinWeight,
+            beta=beta,nodeDistType=nodeDistType,wardness=wardness)
+        hc  = graphs.hierarchicalClustering(clusterOperator,nodeNumStopCond=nSuperpixels,)
+        hc.cluster()
 
-        print "set up cluster operator"
-        clusterOperator =  AdjacencyListGraphMergeGraphAdaptorEdgeWeightNodeFeatureOperator(
-            mergeGraph,
-            edgeIndicator,hyperEdgeSizes,
-            nodeFeatures,hyperNodeSizes.
-            edgeMinWeight
-        )
-
-
-
-        #if verbose :print "maxEdgeId",rag.maxEdgeId
-        #if verbose :print "maxNodeId",rag.maxNodeId
-        #if verbose :print "regionAdjacencyGraph",rag
-
-        #hc =  graphs.hierarchicalClustering(rag,edgeIndicator,hyperEdgeSizes,nodeFeatures, hyperNodeSizes,edgeMinWeight,
-        #        nodeNumStopCond=nSuperpixels,beta=beta,nodeDistType=nodeDistType,degree1Fac=degree1Fac,wardness=wardness,verbose=verbose)
-        #hc.cluster()
+        print "clustering done..."
 
         newLabels = labels.copy()
         newLabels = newLabels.reshape(-1)
@@ -691,6 +674,10 @@ def _genGraphConvenienceFunctions():
 
     hierarchicalSuperpixels.__module__ = 'vigra.graphs'
     graphs.hierarchicalSuperpixels = hierarchicalSuperpixels
+
+    INVALID = graphs.Invalid()
+    #hierarchicalSuperpixels.__module__ = 'vigra.graphs'
+    graphs.INVALID = INVALID
 
 _genGraphConvenienceFunctions()
 del _genGraphConvenienceFunctions

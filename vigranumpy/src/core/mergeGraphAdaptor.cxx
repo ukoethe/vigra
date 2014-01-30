@@ -44,6 +44,7 @@
 #include <vigra/adjacency_list_graph.hxx>
 #include <vigra/merge_graph/merge_graph_adaptor.hxx>
 #include <vigra/merge_graph/maps/clustering_operator.hxx>
+#include <vigra/merge_graph/maps/python_clustering_operator.hxx>
 #include <vigra/python_graph_generalization.hxx>
 #include <vigra/hierarchical_clustering.hxx>
 
@@ -66,7 +67,10 @@ namespace vigra{
         NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>                edgeSizeMapArray,
         NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension+1,Multiband<float> >  nodeFeatureMapArray,
         NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float >               nodeSizeMapArray,
-        NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>                edgeMinWeightMapArray
+        NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>                edgeMinWeightMapArray,
+        const float beta,
+        const size_t nodeDistType,
+        const float wardness 
     ){
         typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>               EdgeFloatArray;
         typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float>               NodeFloatArray;
@@ -96,8 +100,45 @@ namespace vigra{
         return new OperatorType(mergeGraph,
             edgeIndicatorMap,edgeSizeMap,
             nodeFeatureMap, nodeSizeMap,
-            edgeMinWeightMap
+            edgeMinWeightMap,
+            beta,nodeDistType,wardness
         );
+    }
+
+
+    template<class GRAPH>
+    cluster_operators::PythonOperator<MergeGraphAdaptor<GRAPH> > * 
+    pyPythonOperatorConstructor(
+        MergeGraphAdaptor<GRAPH> & mergeGraph,
+        python::object object,
+        const bool useMergeNodeCallback,
+        const bool useMergeEdgesCallback,
+        const bool useEraseEdgeCallback
+    ){
+
+        typedef cluster_operators::PythonOperator< MergeGraphAdaptor<GRAPH>  > OperatorType;
+        return new OperatorType(mergeGraph,object,useMergeNodeCallback,useMergeEdgesCallback,useEraseEdgeCallback);
+    }
+
+    template<class CLUSTER_OP>
+    HierarchicalClustering<CLUSTER_OP> * pyHierarchicalClusteringConstructor(CLUSTER_OP & clusterOp,const size_t nodeNumStopCond){
+        typename HierarchicalClustering<CLUSTER_OP>::Parameter param;
+        param.nodeNumStopCond_=nodeNumStopCond;
+        return new  HierarchicalClustering<CLUSTER_OP>(clusterOp,param);
+    }
+
+    template<class GRAPH>
+    MergeGraphAdaptor<GRAPH> * pyMergeGraphConstructor(const GRAPH & graph){
+        return new  MergeGraphAdaptor<GRAPH>(graph);
+    }
+
+    template<class HCLUSTER>
+    void pyReprNodeIds(
+        const HCLUSTER &     hcluster,
+        NumpyArray<1,UInt32> labels
+    ){
+        for(size_t i=0;i<labels.shape(0);++i)
+            labels(i)=hcluster.reprNodeId(labels(i));
     }
 
 
@@ -109,8 +150,15 @@ namespace vigra{
         const std::string clsName = std::string("HierarchicalClustering")+ opClsName;
         python::class_<HCluster,boost::noncopyable>(
             clsName.c_str(),python::init<ClusterOperator &>()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()]
-        );
+        )
+        .def("cluster",&HCluster::cluster)
+        .def("reprNodeIds",registerConverters(&pyReprNodeIds<HCluster>))
+        ;
 
+        // free function
+        python::def("__hierarchicalClustering",registerConverters(&pyHierarchicalClusteringConstructor<ClusterOperator>),
+            python::return_value_policy<python::manage_new_object>()  
+        );
 
     }
 
@@ -131,6 +179,11 @@ namespace vigra{
         .def(LemonDirectedGraphCoreVisitor<MergeGraphAdaptor>(mgAdaptorClsName))
         ;
 
+
+        python::def("__mergeGraph",&pyMergeGraphConstructor<Graph>,
+            python::return_value_policy<python::manage_new_object>()  
+        );
+
         // define operator and the cluster class for this operator
         {
             typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>                EdgeFloatArray;
@@ -141,15 +194,32 @@ namespace vigra{
             typedef NumpyMultibandNodeMap<GRAPH,NodeMultibandFloatArray>    NodeMultibandFloatMap;
             typedef cluster_operators::EdgeWeightNodeFeatures<MergeGraphAdaptor,EdgeFloatMap,EdgeFloatMap,
                 NodeMultibandFloatMap,NodeFloatMap,EdgeFloatMap> OperatorType;
-            const std::string operatorName = mgAdaptorClsName + std::string("EdgeWeightNodeFeatureOperator");
+            const std::string operatorName = mgAdaptorClsName + std::string("MinEdgeWeightNodeDistOperator");
 
             python::class_<OperatorType  >(operatorName.c_str(),python::no_init)
             .def("__init__", python::make_constructor(&pyEdgeWeightNodeFeaturesConstructor<Graph>))//,
                 //python::return_value_policy<python::manage_new_object>() )
             ;
+
+            python::def("__minEdgeWeightNodeDistOperator",registerConverters(&pyEdgeWeightNodeFeaturesConstructor<Graph>),
+                python::return_value_policy<python::manage_new_object>()  
+            );
+
+
             defineHierarchicalClustering<OperatorType>(operatorName);
         }
-
+        {
+            typedef cluster_operators::PythonOperator<MergeGraphAdaptor> OperatorType;
+            const std::string operatorName = mgAdaptorClsName + std::string("PythonOperator");
+            python::class_<OperatorType  >(operatorName.c_str(),python::no_init)
+            .def("__init__", python::make_constructor(&pyEdgeWeightNodeFeaturesConstructor<Graph>))//,
+                //python::return_value_policy<python::manage_new_object>() )
+            ;
+            python::def("__pythonOperator",registerConverters(&pyPythonOperatorConstructor<Graph>),
+                python::return_value_policy<python::manage_new_object>()  
+            );
+            defineHierarchicalClustering<OperatorType>(operatorName);
+        }
 
         
     }

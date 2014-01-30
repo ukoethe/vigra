@@ -28,18 +28,31 @@ if True:
 	img     = vigra.impex.readImage(f)#[0:100,0:100,:]
 	imgLab  = vigra.colors.transform_RGB2Lab(img)
 	newShape = [img.shape[0]*2-1,img.shape[1]*2-1]
-	imgLab 	= vigra.resize(imgLab,newShape)
-	img 	= vigra.resize(img,newShape)
+	#imgLab 	= vigra.resize(imgLab,newShape)
+	#img 	= vigra.resize(img,newShape)
 	gradmag = vigra.filters.gaussianGradientMagnitude(imgLab,sigma)
 	gradmag = numpy.squeeze(gradmag).astype(numpy.float32)
-	labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,2)
+	labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,10)
 	labels 		 = numpy.squeeze(vigra.analysis.labelImage(labels))
 
 	numLabels = labels.max()
 
+	
+
+	
+	print "get histogram"
+	hist = vigra.histogram.gaussianHistogram(img,
+		minVals=[0.0,0.0,0.0],maxVals=[255.01,255.01,255.01],
+		bins=30,sigma=7.0).reshape([img.shape[0],img.shape[1],-1])
+
+	hsum = numpy.sum(hist,axis=2)
+	hist/=hsum[:,:,numpy.newaxis]
+
+
+
 	print "start hierarchicalSuperpixels"
-	labels = vigraph.hierarchicalSuperpixels(labels=labels,edgeIndicatorImage=gradmag,nodeFeaturesImage=imgLab,
-		nSuperpixels=40,verbose=True,beta=0.2,nodeDistType='squaredNorm',degree1Fac=1.0,wardness=1)#0.001)
+	labels = vigraph.hierarchicalSuperpixels(labels=labels,edgeIndicatorImage=gradmag,nodeFeaturesImage=hist,
+		nSuperpixels=5,verbose=True,beta=0.,nodeDistType='chiSquared',wardness=1.0)#0.001)
 
 	showSeg(img,labels)
 	pylab.show()
@@ -54,4 +67,4 @@ if False:
 	labels = vigra.analysis.labelVolume(labels)
 	print "start hierarchicalSuperpixels"
 	labels = vigraph.hierarchicalSuperpixels(labels=labels,edgeIndicatorImage=gradmag,nodeFeaturesImage=img,
-		nSuperpixels=10,verbose=True,beta=0.2,nodeDistType='squaredNorm',degree1Fac=1.0,wardness=1)#0.001)
+		nSuperpixels=10,verbose=True,beta=0.2,nodeDistType='squaredNorm',wardness=1)#0.001)

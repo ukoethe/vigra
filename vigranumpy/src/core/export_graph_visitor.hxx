@@ -18,83 +18,6 @@ namespace python = boost::python;
 namespace vigra{
 
 
-template<class GRAPH>
-struct NodeHolder :  GRAPH::Node
-{
-    typedef typename GRAPH::Node Node;
-    NodeHolder(const lemon::Invalid & iv = lemon::INVALID)
-    : Node(lemon::INVALID),
-      graph_(NULL)
-    {}
-    NodeHolder(const GRAPH & g , const Node & item)
-    : Node(item),
-      graph_(&g)
-    {}
-
-    typename GRAPH::index_type id()const{
-        return graph_->id(*this);
-    }
-
-
-
-    const GRAPH * graph_;
-};
-
-
-
-template<class GRAPH>
-struct EdgeHolder : GRAPH::Edge
-{
-
-    typedef typename GRAPH::Edge Edge;
-    EdgeHolder(const lemon::Invalid & iv = lemon::INVALID)
-    : Edge(lemon::INVALID),
-      graph_(NULL)
-    {}
-    EdgeHolder(const GRAPH & g , const Edge & item)
-    : Edge(item),
-      graph_(&g)
-    {}
-
-    typename GRAPH::index_type id()const{
-        return graph_->id(*this);
-    }
-
-    NodeHolder<GRAPH> u()const{
-        return NodeHolder<GRAPH>(*graph_,graph_->u(*this));
-    }
-    NodeHolder<GRAPH> v()const{
-        return NodeHolder<GRAPH>(*graph_,graph_->v(*this));
-    }
-
-    typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicEdgeMapShape
-    intrinsicEdgeCoordinate()const{
-        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicEdgeCoordinate(*graph_,*this);
-    }
-
-    const GRAPH * graph_; 
-};
-
-
-
-template<class GRAPH>
-struct ArcHolder: GRAPH::Arc {
-    typedef typename GRAPH::Arc Arc;
-    ArcHolder(const lemon::Invalid & iv = lemon::INVALID)
-    : Arc(lemon::INVALID),
-      graph_(NULL)
-    {}
-    ArcHolder(const GRAPH & g , const Arc & item)
-    : Arc(item),
-      graph_(&g)
-    {}
-
-    typename GRAPH::index_type id()const{
-        return graph_->id(*this);
-    }
-    const GRAPH * graph_;
-};
-
 
 template<class GRAPH>
 struct EdgeIteratorHolder{
@@ -252,7 +175,7 @@ public:
 
             // find edges
             .def("findEdge",&findEdge)
-
+            .def("findEdge",&findEdgeFromIds)
             //  uv source target
             .def("u",&u)
             .def("v",&v)
@@ -440,6 +363,11 @@ public:
     static PyEdge findEdge( const Graph & self ,const PyNode & u , const PyNode & v){
         return PyEdge(self,self.findEdge(u,v));
     }
+
+    static PyEdge findEdgeFromIds( const Graph & self ,const index_type u , const index_type v){
+        return PyEdge(self,self.findEdge(self.nodeFromId(u),self.nodeFromId(v)));
+    }
+
     static index_type nodeId( const Graph & self,const PyNode & node ){return  self.id(node);}
     static index_type edgeId( const Graph & self,const PyEdge & edge ){return  self.id(edge);}
     static index_type arcId(  const Graph & self,const PyArc & arc ){return  self.id(arc);}
@@ -495,16 +423,38 @@ public:
         c
             // add node
             .def("addNode",&addNode)
+            .def("addNode",&addNodeFromId)
             .def("addEdge",&addEdge)
+            .def("addEdges",registerConverters(&addEdges),
+                (
+                    python::arg("edges"),
+                    python::arg("out")=python::object()
+                )
+            )
         ;
     }
 
     static PyNode addNode(Graph & self){
         return PyNode(self,self.addNode());
     }
+    static PyNode addNodeFromId(Graph & self,const index_type id){
+        return PyNode(self,self.addNode(id));
+    }
 
     static PyEdge addEdge(Graph & self ,const PyNode & u , const PyNode & v){
         return PyEdge(self,self.addEdge(u,v));
+    }
+
+    static NumpyAnyArray addEdges(Graph & self,
+        NumpyArray<2,UInt32> edges,
+        NumpyArray<1,UInt32> edgeIds  =NumpyArray<1,index_type>()
+    ){
+        edgeIds.reshapeIfEmpty(typename NumpyArray<1,index_type>::difference_type(edges.shape(0)));
+        for(size_t i=0;i<edges.shape(0);++i){
+            const Edge e = self.addEdge(edges(i,0),edges(i,1));
+            edgeIds(i)=self.id(e);
+        }
+        return edgeIds;
     }
 };
 
