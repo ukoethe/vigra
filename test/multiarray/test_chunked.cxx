@@ -2067,7 +2067,10 @@ class MultiArrayChunkedTest
 {
 public:
 
-    typedef ChunkedArrayTmpFile<3, T> ArrayType;
+    typedef ChunkedArrayBase<3, T>                                  BaseArrayType;
+    typedef ChunkedArrayTmpFile<3, T>                               TmpFileArrayType;
+    typedef ChunkedArray<3, T>                                      AllocArrayType;
+    typedef ChunkedArrayCompressed<3, T>                            CompressedArrayType;
     typedef typename CoupledHandleType<3, ChunkedMemory<T> >::type  P1;
     typedef typename P1::base_type                                  P0;
     typedef CoupledScanOrderIterator<3, P1>                IteratorType;
@@ -2108,25 +2111,8 @@ public:
         std::cerr << "    contiguous array (baseline): " << t << "\n";
     }
     
-    void testSpeedCacheAll()
-    {
-        int cache_size = prod(outer_shape);
-        testSpeedImpl(cache_size);
-    }
-    
-    void testSpeedCacheSlice()
-    {
-        int cache_size = outer_shape[0]*outer_shape[1];
-        testSpeedImpl(cache_size);
-    }
-    
-    void testSpeedCacheRow()
-    {
-        int cache_size = outer_shape[0];
-        testSpeedImpl(cache_size);
-    }
-    
-    void testSpeedImpl(int cache_max)
+    template <class Array>
+    void testSpeedImpl(Array & v)
     {
         using namespace vigra::multi_math;
         using namespace vigra::functor;
@@ -2135,8 +2121,6 @@ public:
         T count = 1;
         USETICTOC;
 
-        std::cerr << "max cache size: " << cache_max << ": \n";     
-        ArrayType v(s, "", cache_max);
         IteratorType bi(P1(v, P0(s)));
         count = 1;
         int start = 0;
@@ -2149,7 +2133,7 @@ public:
                     bi.template get<1>() = count;
                 }
         t = TOCS;
-        std::cerr << "    chunked iterator create file: " << t << "\n";
+        std::cerr << "    chunked iterator create and init: " << t << "\n";
 
         count = 1;
         TIC;
@@ -2161,10 +2145,57 @@ public:
                         shouldEqual(bi.template get<1>(), count);
                 }
         t = TOCS;
-        std::cerr << "    chunked iterator: " << t << "\n";
+        std::cerr << "    chunked iterator read: " << t << "\n";
+    }
+    
+    void testSpeedCacheAll()
+    {
+        int cache_max = prod(outer_shape);
+        std::cerr << "    backend: tmp file, max cache: " << cache_max << "\n";
+        TmpFileArrayType v(s, cache_max);
+        testSpeedImpl(v);
+    }
+    
+    void testSpeedCacheSlice()
+    {
+        int cache_max = outer_shape[0]*outer_shape[1];
+        std::cerr << "    backend: tmp file, max cache: " << cache_max << "\n";
+        TmpFileArrayType v(s, cache_max);
+        testSpeedImpl(v);
+    }
+    
+    void testSpeedCacheRow()
+    {
+        int cache_max = outer_shape[0];
+        std::cerr << "    backend: tmp file, max cache: " << cache_max << "\n";
+        TmpFileArrayType v(s, cache_max);
+        testSpeedImpl(v);
+    }
+    
+    void testSpeedAllocArray()
+    {
+        std::cerr << "    backend: alloc\n";
+        AllocArrayType v(s);
+        testSpeedImpl(v);
+    }
+    
+    void testSpeedCompressedArraySnappy()
+    {
+        int cache_max = outer_shape[0]*outer_shape[1];
+        std::cerr << "    backend: compressed, max cache: " << cache_max << "\n";
+        CompressedArrayType v(s, cache_max, SNAPPY);
+        testSpeedImpl(v);
+    }
+    
+    void testSpeedCompressedArrayZlib()
+    {
+        int cache_max = outer_shape[0]*outer_shape[1];
+        std::cerr << "    backend: compressed, max cache: " << cache_max << "\n";
+        CompressedArrayType v(s, cache_max, ZLIB);
+        testSpeedImpl(v);
     }
 
-    static void testMultiThreadedImpl(ArrayType * v, int startIndex, int d, int * go)
+    static void testMultiThreadedRun(BaseArrayType * v, int startIndex, int d, int * go)
     {
         while(*go == 0)
             threading::this_thread::yield();
@@ -2182,15 +2213,15 @@ public:
                 }
     }
 
-    void testMultiThreaded()
+    template <class Array>
+    void testMultiThreadedImpl(Array & v)
     {
         int go = 0;
-        ArrayType v(s, "", outer_shape[0]*outer_shape[1]);
         
-        threading::thread t1(testMultiThreadedImpl, &v, 0, 4, &go);
-        threading::thread t2(testMultiThreadedImpl, &v, 1, 4, &go);
-        threading::thread t3(testMultiThreadedImpl, &v, 2, 4, &go);
-        threading::thread t4(testMultiThreadedImpl, &v, 3, 4, &go);
+        threading::thread t1(testMultiThreadedRun, &v, 0, 4, &go);
+        threading::thread t2(testMultiThreadedRun, &v, 1, 4, &go);
+        threading::thread t3(testMultiThreadedRun, &v, 2, 4, &go);
+        threading::thread t4(testMultiThreadedRun, &v, 3, 4, &go);
      
         go = 1;
      
@@ -2209,6 +2240,29 @@ public:
                     if(bi.template get<1>() != count)
                         shouldEqual(bi.template get<1>(), count);
                 }
+    }
+    
+    void testMultiThreaded()
+    {
+        int cache_max = outer_shape[0]*outer_shape[1];
+        std::cerr << "    multi-threaded, backend: tmp file, max cache: " << cache_max << "\n";
+        TmpFileArrayType v(s, cache_max);
+        testMultiThreadedImpl(v);
+    }
+    
+    void testMultiThreadedAlloc()
+    {
+        std::cerr << "    multi-threaded, backend: alloc\n";
+        AllocArrayType v(s);
+        testMultiThreadedImpl(v);
+    }
+    
+    void testMultiThreadedCompressed()
+    {
+        int cache_max = outer_shape[0]*outer_shape[1];
+        std::cerr << "    multi-threaded, backend: compressed, max cache: " << cache_max << "\n";
+        CompressedArrayType v(s, cache_max);
+        testMultiThreadedImpl(v);
     }
 
 #if 0
@@ -2760,22 +2814,44 @@ struct MultiArrayChunkedTestTestSuite
         //add( testCase( &MultiArrayPointoperatorsTest::testInspect ) );
         //add( testCase( &MultiArrayPointoperatorsTest::testTensorUtilities ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testBaselineSpeed ) );
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCacheAll ) );
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCacheSlice ) );
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCacheRow ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testBaselineSpeed ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCacheAll ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCacheSlice ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCacheRow ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testBaselineSpeed ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheAll ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheSlice ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheRow ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testBaselineSpeed ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCacheAll ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCacheSlice ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCacheRow ) );
         
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreaded ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testMultiThreaded ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testMultiThreaded ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testBaselineSpeed ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedCacheAll ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedCacheSlice ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedCacheRow ) );
+        
+        // add( testCase( &MultiArrayChunkedTest<double>::testBaselineSpeed ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheAll ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheSlice ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedCacheRow ) );
+        
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreaded ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreaded ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreaded ) );
+
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedAllocArray ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedAllocArray ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedAllocArray ) );
+
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedAlloc ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedAlloc ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedAlloc ) );
+
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArraySnappy ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArraySnappy ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArraySnappy ) );
+
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayZlib ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayZlib ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayZlib ) );
+
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedCompressed ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedCompressed ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedCompressed ) );
 
         // add( testCase( &MultiArrayChunkedTest<double>::testSpeed2 ) );
         //add( testCase( &MultiMathTest::testBasicArithmetic ) );
