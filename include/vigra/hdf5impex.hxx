@@ -37,6 +37,7 @@
 #define VIGRA_HDF5IMPEX_HXX
 
 #include <string>
+#include <memory>
 
 #define H5Gcreate_vers 2
 #define H5Gopen_vers 2
@@ -220,6 +221,7 @@ public:
         if(handle_ && destructor_)
             res = (*destructor_)(handle_);
         handle_ = 0;
+        destructor_ = 0;
         return res;
     }
 
@@ -562,7 +564,7 @@ Namespace: vigra
 class HDF5File
 {
   protected:
-    HDF5Handle fileHandle_;
+    std::shared_ptr<HDF5Handle> fileHandle_;
 
     // current group handle
     HDF5Handle cGroupHandle_;
@@ -637,9 +639,21 @@ class HDF5File
         private to enforce this).
         */
     HDF5File(std::string filename, OpenMode mode, int track_creation_times = 0)
-        : track_time(track_creation_times)
+    : track_time(track_creation_times)
     {
         open(filename, mode);
+    }
+
+        /** \brief Copy a HDF5File object.
+
+            The new object will refer to the same file and group as \a other.
+        */
+    HDF5File(HDF5File const & other)
+    : fileHandle_(other.fileHandle_),
+      track_time(other.track_time)
+    {
+        cGroupHandle_ = HDF5Handle(openCreateGroup_(other.currentGroupName_()), &H5Gclose, 
+                                   "HDF5File(HDF5File const &): Failed to open group.");
     }
 
         /** \brief The destructor flushes and closes the file.
@@ -653,12 +667,27 @@ class HDF5File
         // http://www.hdfgroup.org/HDF5/doc/RM/RM_H5F.html#File-Close .
     }
     
-    // copying is not permitted.
-  private:
-    HDF5File(const HDF5File &);
-    void operator=(const HDF5File &);
+        /** \brief Assign a HDF5File object.
 
-  public:
+            Calls close() on the present file and The new object will refer to the same file and group as \a other.
+        */
+    HDF5File & operator=(HDF5File const & other)
+    {
+        if(this != &other)
+        {
+            close();
+            fileHandle_ = other.fileHandle_;
+            cGroupHandle_ = HDF5Handle(openCreateGroup_(other.currentGroupName_()), &H5Gclose, 
+                                       "HDF5File::operator=(): Failed to open group.");
+            track_time = other.track_time;
+        }
+        return *this;
+    }
+
+    int file_use_count() const
+    {
+        return fileHandle_.use_count();
+    }
   
         /** \brief Open or create the given file in the given mode and set the group to "/".
             If another file is currently open, it is first closed.
@@ -668,15 +697,21 @@ class HDF5File
         close();
         
         std::string errorMessage = "HDF5File.open(): Could not open or create file '" + filename + "'.";
-        fileHandle_ = HDF5Handle(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
+        fileHandle_.reset(new HDF5Handle(createFile_(filename, mode), &H5Fclose, errorMessage.c_str()));
         cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File.open(): Failed to open root group.");
     }
 
         /** \brief Close the current file.
-         */
+        
+            Calls close() on the present file and then assigns itself to the same file and group as \a other.
+        */
     void close()
     {
-        bool success = cGroupHandle_.close() >= 0 && fileHandle_.close() >= 0;
+        bool success = cGroupHandle_.close() >= 0; // && 
+                       // fileHandle_.use_count() == 1
+                            // ? fileHandle_->close() >= 0
+                            // : true;
+        fileHandle_.swap(std::shared_ptr<HDF5Handle>());
         vigra_postcondition(success, "HDF5File.close() failed.");
     }
 
@@ -685,7 +720,7 @@ class HDF5File
     inline void root()
     {
         std::string message = "HDF5File::root(): Could not open group '/'.";
-        cGroupHandle_ = HDF5Handle(H5Gopen(fileHandle_, "/", H5P_DEFAULT),&H5Gclose,message.c_str());
+        cGroupHandle_ = HDF5Handle(H5Gopen(fileHandle_->get(), "/", H5P_DEFAULT),&H5Gclose,message.c_str());
     }
 
         /** \brief Change the current group.
@@ -827,7 +862,7 @@ class HDF5File
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
-        return (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) > 0);
+        return (H5Lexists(fileHandle_->get(), datasetName.c_str(), H5P_DEFAULT) > 0);
     }
 
         /** \brief Get the number of dimensions of a certain dataset
@@ -966,7 +1001,7 @@ class HDF5File
         group_name = get_absolute_path(group_name);
 
         // group must exist
-        vigra_precondition(group_name == "/" || H5Lexists(fileHandle_, group_name.c_str(), H5P_DEFAULT) != 0, 
+        vigra_precondition(group_name == "/" || H5Lexists(fileHandle_->get(), group_name.c_str(), H5P_DEFAULT) != 0, 
                            errorMessage.c_str());
 
         // open group and return group handle
@@ -1061,7 +1096,7 @@ class HDF5File
     bool existsAttribute(std::string object_name, std::string attribute_name)
     {
         std::string obj_path = get_absolute_path(object_name);
-        htri_t exists = H5Aexists_by_name(fileHandle_, obj_path.c_str(),
+        htri_t exists = H5Aexists_by_name(fileHandle_->get(), obj_path.c_str(),
                                           attribute_name.c_str(), H5P_DEFAULT);
         vigra_precondition(exists >= 0, "HDF5File::existsAttribute(): "
                                         "object '" + object_name + "' "
@@ -1682,7 +1717,7 @@ class HDF5File
         */
     inline void flushToDisk()
     {
-        H5Fflush(fileHandle_, H5F_SCOPE_GLOBAL);
+        H5Fflush(fileHandle_->get(), H5F_SCOPE_GLOBAL);
     }
 
   private:
@@ -1847,9 +1882,9 @@ class HDF5File
          */
     inline std::string fileName_() const
     {
-        int len = H5Fget_name(fileHandle_,NULL,1000);
+        int len = H5Fget_name(fileHandle_->get(),NULL,1000);
         ArrayVector<char> name (len+1,0);
-        H5Fget_name(fileHandle_,name.begin(),len+1);
+        H5Fget_name(fileHandle_->get(),name.begin(),len+1);
 
         return std::string(name.begin());
     }
@@ -1894,7 +1929,7 @@ class HDF5File
         groupName = get_absolute_path(groupName);
 
         // open root group
-        hid_t parent = H5Gopen(fileHandle_, "/", H5P_DEFAULT);
+        hid_t parent = H5Gopen(fileHandle_->get(), "/", H5P_DEFAULT);
         if(groupName == "/")
         {
             return parent;
@@ -1968,7 +2003,7 @@ class HDF5File
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
-        if(H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) <= 0)
+        if(H5Lexists(fileHandle_->get(), datasetName.c_str(), H5P_DEFAULT) <= 0)
         {
             std::cerr << "HDF5File::getDatasetHandle_(): Dataset '" << datasetName << "' does not exist.\n";
             return -1;
@@ -1990,7 +2025,7 @@ class HDF5File
         if (!object_name.size())
             return H5O_TYPE_GROUP;
 
-        htri_t exists = H5Lexists(fileHandle_, name.c_str(), H5P_DEFAULT);
+        htri_t exists = H5Lexists(fileHandle_->get(), name.c_str(), H5P_DEFAULT);
         vigra_precondition(exists > 0,  "HDF5File::get_object_type_(): "
                                         "object \"" + name + "\" "
                                         "not found.");
@@ -2605,7 +2640,7 @@ void HDF5File::read_attribute_(std::string datasetName,
     std::string dataset_path = get_absolute_path(datasetName);
     // open Attribute handle
     std::string message = "HDF5File::readAttribute(): could not get handle for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
-    HDF5Handle attr_handle (H5Aopen_by_name(fileHandle_,dataset_path.c_str(),attributeName.c_str(),H5P_DEFAULT,H5P_DEFAULT),&H5Aclose, message.c_str());
+    HDF5Handle attr_handle (H5Aopen_by_name(fileHandle_->get(),dataset_path.c_str(),attributeName.c_str(),H5P_DEFAULT,H5P_DEFAULT),&H5Aclose, message.c_str());
 
     // get Attribute dataspace
     message = "HDF5File::readAttribute(): could not get dataspace for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
