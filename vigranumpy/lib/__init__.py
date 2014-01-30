@@ -95,7 +95,6 @@ The following sub-modules group related functionality:
 * learning   (machine learning and classification)
 * noise      (noise estimation and normalization)
 * geometry   (geometric algorithms, e.g. convex hull)
-* clustering   (hierarchical clustering algorithms, e.g. convex UCM,Ward)
 ''' % _vigra_doc_path
  
 from __version__ import version
@@ -112,6 +111,7 @@ import geometry
 import optimization
 import histogram
 import graphs
+import utilities
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 
