@@ -76,3 +76,7 @@ VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
 VIGRA_ADD_NUMPY_MODULE(histogram SOURCES
     histogram.cxx
   VIGRANUMPY)
+
+VIGRA_ADD_NUMPY_MODULE(utilities SOURCES
+    utilities.cxx
+  VIGRANUMPY)

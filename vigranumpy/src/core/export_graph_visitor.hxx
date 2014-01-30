@@ -170,7 +170,7 @@ public:
 
             // item from id
             .def("nodeFromId",&nodeFromId)
-            .def("edgeFromId",&edgeFromId,python::with_custodian_and_ward_postcall<0,1>())
+            .def("edgeFromId",&edgeFromId)//,python::with_custodian_and_ward_postcall<0,1>())
             .def("arcFromId", &arcFromId)
 
             // find edges

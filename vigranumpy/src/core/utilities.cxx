@@ -45,6 +45,18 @@ namespace python = boost::python;
 
 namespace vigra{
 
+    template<class PQ>
+    void pyPush(
+        PQ & pq, 
+        const NumpyArray<1,UInt32> indices,
+        const NumpyArray<1,float>  priorities
+    ){
+        for(size_t i=0;i<indices.shape(0);++i){
+            pq.push(indices(i),priorities(i));
+        }
+    }
+
+
 
 
 
@@ -53,12 +65,16 @@ namespace vigra{
 
         typedef ChangeablePriorityQueue<T,COMP> PQ;
 
-        python::class_<PQ>(clsName.c_str(),python::init<>())
-        .def("push",&PQ::push)
-        .def("pop",&PQ::pop)
-        .def("__len__",&PQ::size)
-        .def("__contains__",&PQ::contains)
-        .def("__empty__", & PQ::empty)
+        python::class_<PQ>(clsName.c_str(),python::init<const size_t>())
+        .def("push",            registerConverters(&pyPush<PQ>))
+        .def("push",            &PQ::push)
+        .def("pop",             &PQ::pop)
+        .def("top",             &PQ::top)
+        .def("topPriority",     &PQ::topPriority)
+        .def("deleteItem",      &PQ::deleteItem)
+        .def("__len__",         &PQ::size)
+        .def("contains",    &PQ::contains)
+        .def("__empty__",       &PQ::empty)
         ;
 
     }

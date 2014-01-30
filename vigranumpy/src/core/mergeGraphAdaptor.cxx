@@ -215,7 +215,7 @@ namespace vigra{
             .def("__init__", python::make_constructor(&pyEdgeWeightNodeFeaturesConstructor<Graph>))//,
                 //python::return_value_policy<python::manage_new_object>() )
             ;
-            python::def("__pythonOperator",registerConverters(&pyPythonOperatorConstructor<Graph>),
+            python::def("__pythonClusterOperator",registerConverters(&pyPythonOperatorConstructor<Graph>),
                 python::return_value_policy<python::manage_new_object>()  
             );
             defineHierarchicalClustering<OperatorType>(operatorName);

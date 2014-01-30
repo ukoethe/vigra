@@ -601,7 +601,16 @@ def _genGraphConvenienceFunctions():
 
     minEdgeWeightNodeDist.__module__ = 'vigra.graphs'
     graphs.minEdgeWeightNodeDist = minEdgeWeightNodeDist    
-      
+
+    def pythonClusterOperator(mergeGraph,opertator,useMergeNodeCallback=True,useMergeEdgesCallback=True,useEraseEdgeCallback=True):
+      #call unsave function and make it save
+      op = graphs.__pythonClusterOperator(mergeGraph,opertator,useMergeNodeCallback,useMergeEdgesCallback,useEraseEdgeCallback)
+      op.__dict__['__base_object__']=mergeGraph
+      return op
+
+    pythonClusterOperator.__module__ = 'vigra.graphs'
+    graphs.pythonClusterOperator = pythonClusterOperator    
+
     def hierarchicalClustering(clusterOperator,nodeNumStopCond):
         # call unsave c++ function and make it save
         hc = graphs.__hierarchicalClustering(clusterOperator,long(nodeNumStopCond))
