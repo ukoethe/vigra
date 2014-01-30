@@ -93,6 +93,9 @@ public:
     //typedef ArcIteratorHolder<Graph>  ArcIteratorHolderType;
 
 
+    typedef NeighbourNodeIteratorHolder<Graph> PyNeighbourNodeIteratorHolder;
+
+
     typedef EdgeHolder<Graph> PyEdge;
     typedef NodeHolder<Graph> PyNode;
     typedef  ArcHolder<Graph> PyArc;
@@ -135,10 +138,12 @@ public:
 
 
 
-        //const std::string edgeIteratorHolderClsName = std::string("EdgeIteratorHolder")+clsName_;
-        //python::class_<EdgeIteratorHolderType>(edgeIteratorHolderClsName.c_str(),python::no_init)
-        //.def("__iter__",python::range(&EdgeIteratorHolderType::begin,&EdgeIteratorHolderType::end))
-        //;
+        const std::string neighbourNodeIteratorHolderClsName = std::string("NeighbourNodeIteratorHolder")+clsName_;
+        python::class_<PyNeighbourNodeIteratorHolder>(neighbourNodeIteratorHolderClsName.c_str(),python::no_init)
+        .def("__iter__",python::range(&PyNeighbourNodeIteratorHolder::begin,&PyNeighbourNodeIteratorHolder::end))
+        ;
+
+
         //const std::string nodeIteratorHolderClsName = std::string("NodeIteratorHolder")+clsName_;
         //python::class_<NodeIteratorHolderType>(nodeIteratorHolderClsName.c_str(),python::no_init)
         //.def("__iter__",python::range(&NodeIteratorHolderType::begin,&NodeIteratorHolderType::end))
@@ -181,9 +186,13 @@ public:
             .def("v",&v)
             .def("source",&source)
             .def("target",&target)
+
+
             // iterators
             //.def("edgeIter",&edgeHolder,python::with_custodian_and_ward_postcall<0,1>() )  // graph may not be deleted bevore holder is deleted
             //.def("nodeIter",&nodeHolder,python::with_custodian_and_ward_postcall<0,1>() )  // graph may not be deleted bevore holder is deleted
+
+            .def("neighbourNodeIter",&getNeighbourNodeIteratorHolder,python::with_custodian_and_ward_postcall<0,1>())
 
 
             // intrinsic shape of maps
@@ -221,7 +230,9 @@ public:
         ;
     }
 
-
+    static PyNeighbourNodeIteratorHolder getNeighbourNodeIteratorHolder(const Graph & self,const PyNode & node){
+        return PyNeighbourNodeIteratorHolder(self,node);
+    }
 
     template<class ITEM,class ITEM_IT>
     static NumpyAnyArray dtypetest(   

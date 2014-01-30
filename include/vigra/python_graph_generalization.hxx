@@ -42,11 +42,14 @@
 #ifndef VIGRA_PYTHON_GRAPH_GENERALIZATION_HXX
 #define VIGRA_PYTHON_GRAPH_GENERALIZATION_HXX
 
+/*boost*/
+#include <boost/iterator/transform_iterator.hpp>
 
+/*vigra*/
 #include <vigra/graphs.hxx>
- #include <vigra/numpy_array.hxx>
+#include <vigra/numpy_array.hxx>
 #include <vigra/multi_gridgraph.hxx>
- #include <vigra/graph_generalization.hxx>
+#include <vigra/graph_generalization.hxx>
 
 namespace vigra{
 
@@ -140,6 +143,53 @@ struct ArcHolder: GRAPH::Arc {
     }
     const GRAPH * graph_;
 };
+
+
+template<class GRAPH>
+struct ArcToTargetNode{
+    typedef typename GRAPH::Node Node;
+    typedef typename GRAPH::Arc  Arc;
+
+    ArcToTargetNode(const GRAPH & graph)
+    : graph_(&graph){
+    }
+
+    NodeHolder<GRAPH> operator()(const Arc & arc)const{
+        return NodeHolder<GRAPH>(*graph_,graph_->target(arc));
+    }
+    const GRAPH * graph_;
+};
+
+template<class GRAPH>
+struct NeighbourNodeIteratorHolder{
+
+    typedef typename GRAPH::Node Node;
+    typedef typename GRAPH::OutArcIt OutArcIt;
+
+    typedef boost::transform_iterator<ArcToTargetNode<GRAPH> ,OutArcIt ,NodeHolder<GRAPH>, NodeHolder<GRAPH> > const_iterator;
+
+    NeighbourNodeIteratorHolder(const GRAPH & graph,const Node & node)
+    : graph_(&graph),
+      node_(node)
+    {
+
+    }
+
+    const_iterator begin()const{
+        OutArcIt iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_,node_);
+        return const_iterator(iter,ArcToTargetNode<GRAPH>(*graph_));
+    }
+
+    const_iterator end()const{
+        OutArcIt iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_,node_);
+        return const_iterator(iter,ArcToTargetNode<GRAPH>(*graph_));
+    }
+
+    const GRAPH * graph_;
+    Node node_;
+};
+
+
 
 
 } // namespace vigra
