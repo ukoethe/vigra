@@ -37,7 +37,8 @@
 #define VIGRA_HDF5IMPEX_HXX
 
 #include <string>
-#include <memory>
+#include <algorithm>
+#include <utility>
 
 #define H5Gcreate_vers 2
 #define H5Gopen_vers 2
@@ -78,8 +79,6 @@
 #include "utilities.hxx"
 #include "error.hxx"
 
-#include <algorithm>
-
 #if defined(_MSC_VER)
 #  include <io.h>
 #else
@@ -107,26 +106,39 @@ inline bool isHDF5(char const * filename)
 #endif
 }
 
-    /** \brief Wrapper for hid_t objects.
+    /** \brief Wrapper for unique hid_t objects.
 
-    Newly created or opened HDF5 handles are usually stored as objects of type 'hid_t'. When the handle
+    This class offers the functionality of <tt>std::unique_ptr</tt> for HDF5 handles 
+    (type <tt>hid_t</tt>). Unfortunately, <tt>std::unique_ptr</tt> cannot be used directly 
+    for this purpose because it only works with pointers, whereas <tt>hid_t</tt> is an integer type.
+    
+    Newly created or opened HDF5 handles are stored as objects of type <tt>hid_t</tt>. When the handle
     is no longer needed, the appropriate close function must be called. However, if a function is 
     aborted by an exception, this is difficult to ensure. Class HDF5Handle is a smart pointer that 
     solves this problem by calling the close function in the destructor (This is analogous to how 
-    VIGRA_UNIQUE_PTR calls 'delete' on the contained pointer). A pointer to the close function must be 
-    passed to the constructor, along with an error message that is raised when creation/opening fails. 
+    <tt>std::unique_ptr</tt> calls 'delete' on the contained pointer). A pointer to the close function 
+    must be passed to the constructor, along with an error message that is raised when 
+    creation/opening fails. 
     
-    Since HDF5Handle objects are convertible to hid_t, they can be used in the code in place 
-    of the latter.
+    When a <tt>HDF5Handle</tt> is created or assigned from another one, ownership passes on to the  
+    left-hand-side handle object, and the right-hand-side objects is resest to a NULL handle.
+    
+    Since <tt>HDF5Handle</tt> objects are convertible to <tt>hid_t</tt>, they can be used in the code 
+    in place of the latter.
 
     <b>Usage:</b>
 
     \code
     HDF5Handle file_id(H5Fopen(filename, H5F_ACC_RDWR, H5P_DEFAULT), 
                        &H5Fclose, 
-                       "Error message.");
+                       "Error message when H5Fopen() fails.");
                        
     ... // use file_id in the same way as a plain hid_t object
+    
+    // pass ownership to a new handle object
+    HDF5Handle new_handle(file_id);
+    
+    assert(file_id.get() == 0);
     \endcode
 
     <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
@@ -157,7 +169,7 @@ public:
         It will be closed with the given close function \a destructor as soon as this 
         HDF5Handle is destructed, except when \a destructor is a NULL pointer (in which
         case nothing happens at destruction time). If \a h has a value that indicates
-        failed opening or creation (by HDF5 convention, this means if it is a negative number),
+        failed opening or creation (by HDF5 convention, this means that \a h is negative),
         an exception is raised by calling <tt>vigra_fail(error_message)</tt>.
 
         <b>Usage:</b>
@@ -179,7 +191,8 @@ public:
     }
 
         /** \brief Copy constructor.
-            Hands over ownership of the RHS handle (analogous to VIGRA_UNIQUE_PTR).
+        
+            Hands over ownership of the RHS handle (analogous to <tt>std::unique_pt</tt>).
         */
     HDF5Handle(HDF5Handle const & h)
     : handle_( h.handle_ ),
@@ -190,7 +203,7 @@ public:
     
         /** \brief Assignment.
             Calls close() for the LHS handle and hands over ownership of the 
-            RHS handle (analogous to VIGRA_UNIQUE_PTR).
+            RHS handle (analogous to <tt>std::unique_pt</tt>).
         */
     HDF5Handle & operator=(HDF5Handle const & h)
     {
@@ -223,6 +236,43 @@ public:
         handle_ = 0;
         destructor_ = 0;
         return res;
+    }
+    
+        /** \brief Return the contained handle and sets the wrapper to the NULL handle
+            without calling <tt>close()</tt>.
+        */
+    hid_t release()
+    {
+        hid_t res = handle_;
+        handle_ = 0;
+        destructor_ = 0;
+        return res;
+    }
+    
+        /** \brief Reset the wrapper to a new handle.
+        
+             Equivalent to <tt>handle = HDF5Handle(h, destructor, error_message)</tt>.
+        */
+    void reset(hid_t h, Destructor destructor, const char * error_message)
+    {
+        if(h < 0)
+            vigra_fail(error_message);
+        if(h != handle_)
+        {
+            close();
+            handle_ = h;
+            destructor_ = destructor;
+        }
+    }
+    
+        /** \brief Swap the contents of two handle wrappers.
+        
+            Also available as <tt>std::swap(handle1, handle2)</tt>.
+        */    
+    void swap(HDF5Handle & h)
+    {
+        std::swap(handle_, h.handle_);
+        std::swap(destructor_, h.destructor_);
     }
 
         /** \brief Get a temporary hid_t object for the contained handle.
@@ -273,6 +323,271 @@ public:
         return handle_ != h;
     }
 };
+
+
+    /** \brief Wrapper for shared hid_t objects.
+
+    This class offers the functionality of <tt>std::shared_ptr</tt> for HDF5 handles 
+    (type <tt>hid_t</tt>). Unfortunately, <tt>std::shared_ptr</tt> cannot be used directly 
+    for this purpose because it only works with pointers, whereas <tt>hid_t</tt> is an integer type.
+    
+    Newly created or opened HDF5 handles are stored as objects of type <tt>hid_t</tt>. When the handle
+    is no longer needed, the appropriate close function must be called. However, if a function is 
+    aborted by an exception, this is difficult to ensure. Class HDF5HandleShared is a smart pointer 
+    that solves this problem by calling the close function in the destructor of the handle's last 
+    owner (This is analogous to how <tt>std::shared_ptr</tt> calls 'delete' on the contained
+    pointer). A pointer to the close function must be passed to the constructor, along with an error 
+    message that is raised when creation/opening fails. 
+    
+    When a <tt>HDF5HandleShared</tt> is created or assigned from another one, ownership is shared
+    between the two handles, and the value returned by <tt>use_count()</tt> increases by one.
+    
+    Since <tt>HDF5HandleShared</tt> objects are convertible to <tt>hid_t</tt>, they can be used in the code 
+    in place of the latter.
+
+    <b>Usage:</b>
+
+    \code
+    HDF5HandleShared file_id(H5Fopen(filename, H5F_ACC_RDWR, H5P_DEFAULT), 
+                             &H5Fclose, 
+                             "Error message when H5Fopen() fails.");
+                       
+    ... // use file_id in the same way as a plain hid_t object
+    
+    // share ownership between same_id and file_id
+    HDF5HandleShared same_id(file_id);
+    assert(same_id.use_count() == 2);
+    assert(same_id.get() == file_id.get());
+    \endcode
+
+    <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
+    Namespace: vigra
+    */
+class HDF5HandleShared
+{
+public:
+    typedef herr_t (*Destructor)(hid_t);
+    
+private:
+    hid_t handle_;
+    Destructor destructor_;
+    size_t * refcount_;
+    
+public:
+
+        /** \brief Default constructor.
+            Creates a NULL handle.
+        **/
+    HDF5HandleShared()
+    : handle_( 0 ),
+      destructor_(0),
+      refcount_(0)
+    {}
+
+        /** \brief Create a shared wrapper for a plain hid_t object.
+
+        The hid_t object \a h is assumed to be the return value of an open or create function.
+        It will be closed with the given close function \a destructor as soon as this 
+        HDF5HandleShared is destructed, except when \a destructor is a NULL pointer (in which
+        case nothing happens at destruction time). If \a h has a value that indicates
+        failed opening or creation (by HDF5 convention, this means that \a h is negative),
+        an exception is raised by calling <tt>vigra_fail(error_message)</tt>.
+
+        <b>Usage:</b>
+
+        \code
+        HDF5HandleShared file_id(H5Fopen(filename, H5F_ACC_RDWR, H5P_DEFAULT), 
+                                 &H5Fclose, 
+                                 "Error message.");
+                           
+        ... // use file_id in the same way
+        \endcode
+        */
+    HDF5HandleShared(hid_t h, Destructor destructor, const char * error_message)
+    : handle_( h ),
+      destructor_(destructor),
+      refcount_(0)
+    {
+        if(handle_ < 0)
+            vigra_fail(error_message);
+        if(handle_ > 0)
+            refcount_ = new size_t(1);
+    }
+
+        /** \brief Copy constructor.
+            Shares ownership with the RHS handle (analogous to <tt>std::shared_ptr</tt>).
+        */
+    HDF5HandleShared(HDF5HandleShared const & h)
+    : handle_( h.handle_ ),
+      destructor_(h.destructor_),
+      refcount_(h.refcount_)
+    {
+        if(refcount_)
+            ++(*refcount_);
+    }
+    
+        /** \brief Assignment.
+            Call close() for the present LHS handle and share ownership with the 
+            RHS handle (analogous to <tt>std::shared_ptr</tt>).
+        */
+    HDF5HandleShared & operator=(HDF5HandleShared const & h)
+    {
+        if(h.handle_ != handle_)
+        {
+            close();
+            handle_ = h.handle_;
+            destructor_ = h.destructor_;
+            refcount_ = h.refcount_;
+            if(refcount_)
+                ++(*refcount_);
+        }
+        return *this;
+    }
+
+        /** \brief Destructor (calls close())
+        */
+    ~HDF5HandleShared()
+    {
+        close();
+    }
+    
+        /** \brief Close the handle if this is the unique (i.e. last) owner. 
+        
+             Calls the destructor function of the handle (if one has been registered in the constructor) 
+             when <tt>handle.use_count() == 1</tt> and sets the handle to NULL in any case.
+        */
+    herr_t close()
+    {
+        herr_t res = 1;
+        if(refcount_)
+        {
+            --(*refcount_);
+            if(*refcount_ == 0) 
+            {
+                if(destructor_)
+                    res = (*destructor_)(handle_);
+                delete refcount_;
+            }
+        }
+        handle_ = 0;
+        destructor_ = 0;
+        refcount_ = 0;
+        return res;
+    }
+    
+        /** \brief Reset the handle to a new value. 
+        
+             Equivalent to <tt>handle = HDF5HandleShared(h, destructor, error_message)</tt>.
+        */
+    void reset(hid_t h, Destructor destructor, const char * error_message)
+    {
+        if(h < 0)
+            vigra_fail(error_message);
+        if(h != handle_)
+        {
+            close();
+            handle_ = h;
+            destructor_ = destructor;
+            if(handle_ > 0)
+                refcount_ = new size_t(1);
+        }
+    }
+    
+        /** \brief Get the number of owners of the contained handle.
+        */
+    size_t use_count() const
+    {
+        return refcount_
+                 ? *refcount_
+                 : 0;
+    }
+    
+        /** \brief Check if this is the unique owner of the conatined handle.
+        
+            Equivalent to <tt>handle.use_count() == 1</tt>.
+        */
+    bool unique() const
+    {
+        return use_count() == 1;
+    }
+    
+        /** \brief Swap the contents of two handle wrappers.
+        
+            Also available as <tt>std::swap(handle1, handle2)</tt>.
+        */    
+    void swap(HDF5HandleShared & h)
+    {
+        std::swap(handle_, h.handle_);
+        std::swap(destructor_, h.destructor_);
+        std::swap(refcount_, h.refcount_);
+    }
+
+        /** \brief Get a temporary hid_t object for the contained handle.
+            Do not call a close function on the return value - a crash will be likely
+            otherwise.
+        */
+    hid_t get() const
+    {
+        return handle_;
+    }
+
+        /** \brief Convert to a plain hid_t object.
+
+        This function ensures that hid_t objects can be transparently replaced with 
+        HDF5HandleShared objects in user code. Do not call a close function on the return 
+        value - a crash will be likely otherwise.
+        */
+    operator hid_t() const
+    {
+        return handle_;
+    }
+
+        /** \brief Equality comparison of the contained handle.
+        */
+    bool operator==(HDF5HandleShared const & h) const
+    {
+        return handle_ == h.handle_;
+    }
+
+        /** \brief Equality comparison of the contained handle.
+        */
+    bool operator==(hid_t h) const
+    {
+        return handle_ == h;
+    }
+
+        /** \brief Inequality comparison of the contained handle.
+        */
+    bool operator!=(HDF5HandleShared const & h) const
+    {
+        return handle_ != h.handle_;
+    }
+
+        /** \brief Inequality comparison of the contained handle.
+        */
+    bool operator!=(hid_t h) const
+    {
+        return handle_ != h;
+    }
+};
+
+} // namespace vigra
+
+namespace std {
+
+inline void swap(vigra::HDF5Handle & l, vigra::HDF5Handle & r)
+{
+    l.swap(r);
+}
+
+inline void swap(vigra::HDF5HandleShared & l, vigra::HDF5HandleShared & r)
+{
+    l.swap(r);
+}
+
+} // namespace std
+
+namespace vigra {
 
 /********************************************************/
 /*                                                      */
@@ -564,7 +879,7 @@ Namespace: vigra
 class HDF5File
 {
   protected:
-    std::shared_ptr<HDF5Handle> fileHandle_;
+    HDF5HandleShared fileHandle_;
 
     // current group handle
     HDF5Handle cGroupHandle_;
@@ -697,7 +1012,7 @@ class HDF5File
         close();
         
         std::string errorMessage = "HDF5File.open(): Could not open or create file '" + filename + "'.";
-        fileHandle_.reset(new HDF5Handle(createFile_(filename, mode), &H5Fclose, errorMessage.c_str()));
+        fileHandle_ = HDF5HandleShared(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
         cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File.open(): Failed to open root group.");
     }
 
@@ -707,11 +1022,7 @@ class HDF5File
         */
     void close()
     {
-        bool success = cGroupHandle_.close() >= 0; // && 
-                       // fileHandle_.use_count() == 1
-                            // ? fileHandle_->close() >= 0
-                            // : true;
-        fileHandle_.swap(std::shared_ptr<HDF5Handle>());
+        bool success = cGroupHandle_.close() >= 0 && fileHandle_.close() >= 0;
         vigra_postcondition(success, "HDF5File.close() failed.");
     }
 
@@ -720,7 +1031,7 @@ class HDF5File
     inline void root()
     {
         std::string message = "HDF5File::root(): Could not open group '/'.";
-        cGroupHandle_ = HDF5Handle(H5Gopen(fileHandle_->get(), "/", H5P_DEFAULT),&H5Gclose,message.c_str());
+        cGroupHandle_ = HDF5Handle(H5Gopen(fileHandle_, "/", H5P_DEFAULT),&H5Gclose,message.c_str());
     }
 
         /** \brief Change the current group.
@@ -862,7 +1173,7 @@ class HDF5File
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
-        return (H5Lexists(fileHandle_->get(), datasetName.c_str(), H5P_DEFAULT) > 0);
+        return (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) > 0);
     }
 
         /** \brief Get the number of dimensions of a certain dataset
@@ -1001,7 +1312,7 @@ class HDF5File
         group_name = get_absolute_path(group_name);
 
         // group must exist
-        vigra_precondition(group_name == "/" || H5Lexists(fileHandle_->get(), group_name.c_str(), H5P_DEFAULT) != 0, 
+        vigra_precondition(group_name == "/" || H5Lexists(fileHandle_, group_name.c_str(), H5P_DEFAULT) != 0, 
                            errorMessage.c_str());
 
         // open group and return group handle
@@ -1096,7 +1407,7 @@ class HDF5File
     bool existsAttribute(std::string object_name, std::string attribute_name)
     {
         std::string obj_path = get_absolute_path(object_name);
-        htri_t exists = H5Aexists_by_name(fileHandle_->get(), obj_path.c_str(),
+        htri_t exists = H5Aexists_by_name(fileHandle_, obj_path.c_str(),
                                           attribute_name.c_str(), H5P_DEFAULT);
         vigra_precondition(exists >= 0, "HDF5File::existsAttribute(): "
                                         "object '" + object_name + "' "
@@ -1717,7 +2028,7 @@ class HDF5File
         */
     inline void flushToDisk()
     {
-        H5Fflush(fileHandle_->get(), H5F_SCOPE_GLOBAL);
+        H5Fflush(fileHandle_, H5F_SCOPE_GLOBAL);
     }
 
   private:
@@ -1882,9 +2193,9 @@ class HDF5File
          */
     inline std::string fileName_() const
     {
-        int len = H5Fget_name(fileHandle_->get(),NULL,1000);
+        int len = H5Fget_name(fileHandle_,NULL,1000);
         ArrayVector<char> name (len+1,0);
-        H5Fget_name(fileHandle_->get(),name.begin(),len+1);
+        H5Fget_name(fileHandle_,name.begin(),len+1);
 
         return std::string(name.begin());
     }
@@ -1929,7 +2240,7 @@ class HDF5File
         groupName = get_absolute_path(groupName);
 
         // open root group
-        hid_t parent = H5Gopen(fileHandle_->get(), "/", H5P_DEFAULT);
+        hid_t parent = H5Gopen(fileHandle_, "/", H5P_DEFAULT);
         if(groupName == "/")
         {
             return parent;
@@ -2003,7 +2314,7 @@ class HDF5File
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
-        if(H5Lexists(fileHandle_->get(), datasetName.c_str(), H5P_DEFAULT) <= 0)
+        if(H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) <= 0)
         {
             std::cerr << "HDF5File::getDatasetHandle_(): Dataset '" << datasetName << "' does not exist.\n";
             return -1;
@@ -2025,7 +2336,7 @@ class HDF5File
         if (!object_name.size())
             return H5O_TYPE_GROUP;
 
-        htri_t exists = H5Lexists(fileHandle_->get(), name.c_str(), H5P_DEFAULT);
+        htri_t exists = H5Lexists(fileHandle_, name.c_str(), H5P_DEFAULT);
         vigra_precondition(exists > 0,  "HDF5File::get_object_type_(): "
                                         "object \"" + name + "\" "
                                         "not found.");
@@ -2640,7 +2951,7 @@ void HDF5File::read_attribute_(std::string datasetName,
     std::string dataset_path = get_absolute_path(datasetName);
     // open Attribute handle
     std::string message = "HDF5File::readAttribute(): could not get handle for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
-    HDF5Handle attr_handle (H5Aopen_by_name(fileHandle_->get(),dataset_path.c_str(),attributeName.c_str(),H5P_DEFAULT,H5P_DEFAULT),&H5Aclose, message.c_str());
+    HDF5Handle attr_handle (H5Aopen_by_name(fileHandle_,dataset_path.c_str(),attributeName.c_str(),H5P_DEFAULT,H5P_DEFAULT),&H5Aclose, message.c_str());
 
     // get Attribute dataspace
     message = "HDF5File::readAttribute(): could not get dataspace for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";

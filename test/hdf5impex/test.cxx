@@ -1265,7 +1265,7 @@ public:
 
         hid_t get_file_id() const
         {
-            return fileHandle_->get();
+            return fileHandle_;
         }
 
         void closeCurrentGroup()
