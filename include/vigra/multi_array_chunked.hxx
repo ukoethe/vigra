@@ -91,7 +91,7 @@
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
 #include "threading.hxx"
-#include "timing.hxx"
+#include "hdf5impex.hxx"
 
 #ifdef _WIN32
 # include "windows.h"
@@ -288,16 +288,19 @@ class ChunkBase
     {
         if(this != &rhs)
         {
-            if(pointer_ == 0 && rhs.pointer_ == 0)
+            pointer p = pointer_.load(threading::memory_order_acquire);
+            pointer rp = rhs.pointer_.load(threading::memory_order_acquire);
+            if(p == 0 && rp == 0)
             {
                 shape_ = rhs.shape_;
                 strides_ = rhs.strides_;
             }
-            else if(pointer_ != 0 && rhs.pointer_ != 0)
+            else if(p != 0 && rp != 0)
             {
                 vigra_precondition(shape_ == rhs.shape_, // implies stride equality
                     "ChunkBase::operator=(): shape mismatch.");
-                std::copy(rhs.pointer_, rhs.pointer_ + rhs.size(), pointer_);
+                std::copy(rp, rp + rhs.size(), p);
+                pointer_.store(p, threading::memory_order_release);
             }
             else
             {
@@ -351,6 +354,13 @@ Alternatives are:
 * Back chunks by HDF5 datasets. This can be combined with compression 
   (both explicit and on-the-fly) or with memory mapping (using the 
   function H5Dget_offset() to get the offset from the beginning of the file).
+  
+FIXME:
+* HDF5 only works for scalar types
+* Allocators are not used
+* the array implementations should go into cxx files in src/impex
+* public API for temp file arrays in swap missing
+
 */
 template <unsigned int N, class T>
 class ChunkedArrayBase
@@ -361,7 +371,7 @@ class ChunkedArrayBase
     typedef value_type * pointer;
     typedef value_type & reference;
         
-    ChunkedArrayBase(
+    ChunkedArrayBase()
     : shape_(0),
       default_chunk_shape_(ChunkShape<N>::value)
     {}
@@ -414,8 +424,9 @@ class ChunkedArray
         typedef value_type * pointer;
         typedef value_type & reference;
         
-        Chunk()
-        : ChunkBase<N, T>()
+        Chunk(Alloc const & alloc = Alloc())
+        : ChunkBase<N, T>(),
+          alloc_(alloc)
         {}
         
         ~Chunk()
@@ -427,8 +438,8 @@ class ChunkedArray
         {
             vigra_precondition(pointer_ == (void*)0,
                 "ChunkedArray::Chunk::reshape(): chunk was already allocated.");
-            shape_ = shape;
-            strides_ = detail::defaultStride(shape);
+            this->shape_ = shape;
+            this->strides_ = detail::defaultStride(shape);
         }
         
         pointer allocate()
@@ -479,9 +490,9 @@ class ChunkedArray
     typedef value_type * pointer;
     typedef value_type & reference;
     
-    ChunkedArray(shape_type const & shape)
+    ChunkedArray(shape_type const & shape, Alloc const & alloc = Alloc())
     : ChunkedArrayBase<N, T>(shape),
-      outer_array_(outerShape(shape))
+      outer_array_(outerShape(shape), Chunk(alloc))
     {
         // set shape of the chunks
         typename ChunkStorage::iterator i   = outer_array_.begin(), 
@@ -580,8 +591,8 @@ class ChunkedArrayCompressed
         {
             vigra_precondition(pointer_ == (void*)0,
                 "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
-            shape_ = shape;
-            strides_ = detail::defaultStride(shape);
+            this->shape_ = shape;
+            this->strides_ = detail::defaultStride(shape);
         }
         
         pointer allocate()
@@ -897,147 +908,58 @@ class ChunkedArrayHDF5
         
         Chunk()
         : ChunkBase<N, T>(),
-          compressed_(),
+          array_(0),
           cache_next_(0)
         {}
         
         ~Chunk()
         {
-            deallocate();
+            write();
         }
     
-        void reshape(shape_type const & shape)
+        void reshape(shape_type const & shape, shape_type const & start, 
+                     ChunkedArrayHDF5 * array)
         {
             vigra_precondition(pointer_ == (void*)0,
                 "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
-            shape_ = shape;
-            strides_ = detail::defaultStride(shape);
+            this->shape_ = shape;
+            this->strides_ = detail::defaultStride(shape);
+            start_ = start;
+            array_ = array;
         }
         
-        pointer allocate()
+        void write()
+        {
+            pointer p = this->pointer_.load(threading::memory_order_acquire);
+            if(p != 0)
+            {
+                herr_t status = array_->file_.writeBlock(array_->dataset_, start_, storage_);
+                vigra_postcondition(status >= 0,
+                    "ChunkedArrayHDF5: write to dataset failed.");
+                storage_.swap(MultiArray<N, T>());
+                this->pointer_.store(0, threading::memory_order_release);
+            }
+        }
+        
+        pointer read()
         {
             pointer p = this->pointer_.load(threading::memory_order_acquire);
             if(p == 0)
             {
-                typedef typename Alloc::size_type Size;
-                Size i = 0,
-                     s = this->size();
-                p = alloc_.allocate (s);
-                try {
-                    for (; i < s; ++i)
-                        alloc_.construct (p + i, T());
-                }
-                catch (...) {
-                    for (Size j = 0; j < i; ++j)
-                        alloc_.destroy (p + j);
-                    alloc_.deallocate (p, s);
-                    throw;
-                }
+                storage_.reshape(this->shape_);
+                herr_t status = array_->file_.readBlock(array_->dataset_, start_, this->shape_, storage_);
+                vigra_postcondition(status >= 0,
+                    "ChunkedArrayHDF5: read from dataset failed.");
+                p = storage_.data();
                 this->pointer_.store(p, threading::memory_order_release);
             }
             return p;
         }
         
-        void deallocate()
-        {
-            pointer p = this->pointer_.load(threading::memory_order_acquire);
-            if(p != 0)
-            {
-                typedef typename Alloc::size_type Size;
-                Size i = 0,
-                     s = this->size();
-                for (; i < s; ++i)
-                    alloc_.destroy (p + i);
-                alloc_.deallocate (p, s);
-                this->pointer_.store(0, threading::memory_order_release);
-            }
-            compressed_.clear();
-        }
-        
-        void compress(ChunkCompression method)
-        {
-            pointer p = this->pointer_.load(threading::memory_order_acquire);
-            if(p != 0)
-            {
-                vigra_invariant(compressed_.size() == 0,
-                    "ChunkedArrayCompressed::Chunk::compress(): compressed and uncompressed pointer are both non-zero.");
-
-                switch(method)
-                {
-                  case ZLIB:
-                  {
-                    uLong sourceLen = this->size()*sizeof(T),
-                          destLen   = compressBound(sourceLen);
-                    ArrayVector<Bytef> buffer(destLen);
-                    int res = ::compress(buffer.data(), &destLen, (Bytef *)p, sourceLen);
-                    vigra_postcondition(res == Z_OK,
-                        "ChunkedArrayCompressed::Chunk::compress(): zlib compression failed.");                    
-                    compressed_.insert(compressed_.begin(), 
-                                       (char*)buffer.data(), (char*)buffer.data() + destLen);
-                    break;
-                  }
-                  case SNAPPY:
-                  {
-                    size_t sourceLen = this->size()*sizeof(T),
-                           destLen;
-                    ArrayVector<char> buffer(snappy::MaxCompressedLength(sourceLen));
-                    snappy::RawCompress((const char*)p, sourceLen, &buffer[0], &destLen);
-                    compressed_.insert(compressed_.begin(), buffer.data(), buffer.data() + destLen);
-                    break;
-                  }
-                }
-
-                // std::cerr << "compression ratio: " << double(destLen) / sourceLen << "\n";
-                alloc_.deallocate(p, (typename Alloc::size_type)this->size());
-                this->pointer_.store(0, threading::memory_order_release);
-            }
-        }
-        
-        pointer uncompress(ChunkCompression method)
-        {
-            pointer p = this->pointer_.load(threading::memory_order_acquire);
-            if(p == 0)
-            {
-                if(compressed_.size())
-                {
-                    p = alloc_.allocate((typename Alloc::size_type)this->size());
-
-                    switch(method)
-                    {
-                      case ZLIB:
-                      {
-                        uLong sourceLen = compressed_.size(),
-                              destLen   = this->size()*sizeof(T);
-                        int res = ::uncompress((Bytef *)p, &destLen, (Bytef *)compressed_.data(), sourceLen);
-                        vigra_postcondition(res == Z_OK,
-                            "ChunkedArrayCompressed::Chunk::uncompress(): zlib decompression failed.");
-                        break;
-                      }
-                      case SNAPPY:
-                      {
-                        snappy::RawUncompress(compressed_.data(), compressed_.size(), (char *)p);
-                        break;
-                      }
-                    }
-                    compressed_.clear();
-                    this->pointer_.store(p, threading::memory_order_release);
-                }
-                else
-                {
-                    p = allocate();
-                }
-            }
-            else
-            {
-                vigra_invariant(compressed_.size() == 0,
-                    "ChunkedArrayCompressed::Chunk::uncompress(): compressed and uncompressed pointer are both non-zero.");
-            }
-            return p;
-        }
-        
-        ArrayVector<char> compressed_;
+        MultiArray<N, T> storage_;
+        shape_type start_;
+        ChunkedArrayHDF5 * array_;
         Chunk * cache_next_;
-        Alloc alloc_;
     };
     
     typedef MultiArray<N, Chunk> ChunkStorage;
@@ -1050,13 +972,13 @@ class ChunkedArrayHDF5
                      shape_type const & shape, int cache_max = 0, int compression = 0)
     : ChunkedArrayBase<N, T>(),
       file_(file),
-      dataset_name_(dataset),
+      dataset_(),
       outer_array_(),
       cache_first_(0), cache_last_(0),
       cache_size_(0),
       cache_max_size_(cache_max ? cache_max : max(outer_array_.shape())*2)
     {
-        if(file.existsDataset(dataset))
+        if(file_.existsDataset(dataset))
         {
             ArrayVector<hsize_t> fileShape(file.getDatasetShape(dataset));
             
@@ -1066,10 +988,11 @@ class ChunkedArrayHDF5
             for(unsigned int k=0; k<N; ++k)
                 vigra_precondition(fileShape[k] == shape[k],
                     "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
+            dataset_ = file.getDatasetHandleShared(dataset);
         }
         else
         {
-            file.createDataset(dataset, shape, T(), this->default_chunk_shape_, compression);
+            dataset_ = file_.createDataset(dataset, shape, T(), this->default_chunk_shape_, compression);
         }
         init(shape);
     }
@@ -1078,7 +1001,7 @@ class ChunkedArrayHDF5
                      int cache_max = 0, int compression = 0)
     : ChunkedArrayBase<N, T>(),
       file_(file),
-      dataset_name_(dataset),
+      dataset_(),
       outer_array_(),
       cache_first_(0), cache_last_(0),
       cache_size_(0),
@@ -1086,13 +1009,13 @@ class ChunkedArrayHDF5
     {
         vigra_precondition(file.existsDataset(dataset),
             "ChunkedArrayHDF5(file, dataset): dataset does not exist.");
+        dataset_ = file.getDatasetHandleShared(dataset);
             
         ArrayVector<hsize_t> fileShape(file.getDatasetShape(dataset));
         // FIXME: the following checks don't work when T == TinyVector
         vigra_precondition(fileShape.size() == N,
             "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
         shape_type shape(fileShape.begin());
-
         init(shape);
     }
     
@@ -1118,6 +1041,15 @@ class ChunkedArrayHDF5
     ~ChunkedArrayHDF5()
     {
         std::cerr << "    final cache size: " << cache_size_ << "\n";
+        
+        // make sure that chunks are written to disk before the destructor of 
+        // file_ is called
+        outer_array_.swap(ChunkStorage());
+    }
+    
+    void flushToDisk()
+    {
+        file_.flushToDisk();
     }
     
     // void map()
@@ -1195,7 +1127,7 @@ class ChunkedArrayHDF5
             p = chunk.pointer_.load(threading::memory_order_acquire);
             if(p == 0)
             {
-                p = chunk.uncompress(compression_method_);
+                p = chunk.read();
                 
                 // insert in queue of mapped chunks
                 if(!cache_first_)
@@ -1226,7 +1158,7 @@ class ChunkedArrayHDF5
 #endif
                     {
                         // refcount was zero => can compress
-                        c->compress(compression_method_);
+                        c->write();
                         c->cache_next_ = 0;
                         --cache_size_;
 #ifdef VIGRA_CHUNKED_ARRAY_THREAD_SAFE
@@ -1254,7 +1186,7 @@ class ChunkedArrayHDF5
     }
     
     HDF5File file_;
-    std::string dataset_name_;
+    HDF5HandleShared dataset_;
     
     ChunkStorage outer_array_;  // the array of chunks
 
