@@ -382,19 +382,19 @@ class ChunkedArrayBase
         
     ChunkedArrayBase()
     : shape_(0),
-      default_chunk_shape_(ChunkShape<N>::value)
+      chunk_shape_(ChunkShape<N>::value)
     {}
         
     ChunkedArrayBase(shape_type const & shape)
     : shape_(shape),
-      default_chunk_shape_(ChunkShape<N>::value)
+      chunk_shape_(ChunkShape<N>::value)
     {}
     
     virtual ~ChunkedArrayBase()
     {}
     
     virtual pointer ptr(shape_type const & point, 
-                        shape_type & strides, shape_type & border, 
+                        shape_type & strides, shape_type & upper_bound, 
                         ChunkBase<N, T> ** chunk) = 0;
     
     shape_type const & shape() const
@@ -415,7 +415,71 @@ class ChunkedArrayBase
         shape_ = shape;
     }
     
-    shape_type shape_, default_chunk_shape_;
+    shape_type shape_, chunk_shape_;
+};
+
+template <unsigned int N, class T, class Alloc = std::allocator<T> >
+class ChunkedArrayFull
+: public ChunkedArrayBase<N, T>
+{
+  public:
+        
+    typedef MultiArray<N, T, Alloc> Storage;
+    typedef typename Storage::difference_type  shape_type;
+    typedef T value_type;
+    typedef value_type * pointer;
+    typedef value_type & reference;
+    
+    ChunkedArrayFull(shape_type const & shape, Alloc const & alloc = Alloc())
+    : ChunkedArrayBase<N, T>(shape),
+      upper_bound_(shape + shape_type(1)),
+      array_(shape, alloc)
+    {
+        this->chunk_shape_ = shape + shape_type(2);
+    }
+    
+    ~ChunkedArrayFull()
+    {}
+    
+    // void map()
+    // {
+        // typename ChunkStorage::iterator  i = outer_array_.begin(), 
+             // end = outer_array_.end();
+        // for(; i != end; ++i)
+        // {
+            // i->map();
+        // }
+    // }
+    
+    // void unmap()
+    // {
+        // typename ChunkStorage::iterator  i = outer_array_.begin(), 
+             // end = outer_array_.end();
+        // for(; i != end; ++i)
+        // {
+            // i->unmap();
+        // }
+    // }
+
+    // reference operator[](shape_type const & p)
+    // {
+        // return *ptr(p);
+    // }
+    
+    virtual pointer ptr(shape_type const & point, 
+                        shape_type & strides, shape_type & upper_bound, 
+                        ChunkBase<N, T> **)
+    {
+        if(!this->isInside(point))
+            return 0;
+
+        strides = array_.stride();
+        upper_bound = upper_bound_;
+        return &array_[point];
+    }
+    
+    Storage array_;  // a contiguous array
+    shape_type upper_bound_;
 };
 
 template <unsigned int N, class T, class Alloc = std::allocator<T> >
@@ -508,8 +572,8 @@ class ChunkedArray
                                         end = outer_array_.end();
         for(; i != end; ++i)
         {
-            i->reshape(min(this->default_chunk_shape_, 
-                           shape - i.point()*this->default_chunk_shape_));
+            i->reshape(min(this->chunk_shape_, 
+                           shape - i.point()*this->chunk_shape_));
         }
     }
     
@@ -541,7 +605,7 @@ class ChunkedArray
         // return *ptr(p);
     // }
     
-    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & border, ChunkBase<N, T> **)
+    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & upper_bound, ChunkBase<N, T> **)
     {
         if(!this->isInside(point))
             return 0;
@@ -559,7 +623,7 @@ class ChunkedArray
         }
 
         strides = chunk.strides_;
-        border = (chunkIndex + shape_type(1)) * this->default_chunk_shape_;
+        upper_bound = (chunkIndex + shape_type(1)) * this->chunk_shape_;
         std::size_t offset = ChunkShape<N>::offset(point, strides);
         return p + offset;
     }
@@ -749,8 +813,8 @@ class ChunkedArrayCompressed
                                         end = outer_array_.end();
         for(; i != end; ++i)
         {
-            i->reshape(min(this->default_chunk_shape_, 
-                           shape - i.point()*this->default_chunk_shape_));
+            i->reshape(min(this->chunk_shape_, 
+                           shape - i.point()*this->chunk_shape_));
         }
     }
     
@@ -784,7 +848,7 @@ class ChunkedArrayCompressed
         // return *ptr(p);
     // }
     
-    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & border, ChunkBase<N, T> ** chunk_ptr)
+    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & upper_bound, ChunkBase<N, T> ** chunk_ptr)
     {
         if(*chunk_ptr)
         {
@@ -886,7 +950,7 @@ class ChunkedArrayCompressed
         }
 
         strides = chunk.strides_;
-        border = (chunkIndex + shape_type(1)) * this->default_chunk_shape_;
+        upper_bound = (chunkIndex + shape_type(1)) * this->chunk_shape_;
         std::size_t offset = ChunkShape<N>::offset(point, strides);
         *chunk_ptr = &chunk;
         return p + offset;
@@ -1001,7 +1065,7 @@ class ChunkedArrayHDF5
         }
         else
         {
-            dataset_ = file_.createDataset(dataset, shape, T(), this->default_chunk_shape_, compression);
+            dataset_ = file_.createDataset(dataset, shape, T(), this->chunk_shape_, compression);
         }
         init(shape);
     }
@@ -1040,8 +1104,8 @@ class ChunkedArrayHDF5
                                         end = outer_array_.end();
         for(; i != end; ++i)
         {
-            shape_type start = i.point()*this->default_chunk_shape_;
-            i->reshape(min(this->default_chunk_shape_, shape - start),
+            shape_type start = i.point()*this->chunk_shape_;
+            i->reshape(min(this->chunk_shape_, shape - start),
                        start,
                        this);
         }
@@ -1086,7 +1150,7 @@ class ChunkedArrayHDF5
         // return *ptr(p);
     // }
     
-    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & border, ChunkBase<N, T> ** chunk_ptr)
+    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & upper_bound, ChunkBase<N, T> ** chunk_ptr)
     {
         if(*chunk_ptr)
         {
@@ -1188,7 +1252,7 @@ class ChunkedArrayHDF5
         }
 
         strides = chunk.strides_;
-        border = (chunkIndex + shape_type(1)) * this->default_chunk_shape_;
+        upper_bound = (chunkIndex + shape_type(1)) * this->chunk_shape_;
         std::size_t offset = ChunkShape<N>::offset(point, strides);
         *chunk_ptr = &chunk;
         return p + offset;
@@ -1328,15 +1392,15 @@ class ChunkedArrayTmpFile
         std::size_t size = 0;
         for(; i != end; ++i)
         {
-            i->reshape(min(this->default_chunk_shape_, shape - i.point()*this->default_chunk_shape_),
+            i->reshape(min(this->chunk_shape_, shape - i.point()*this->chunk_shape_),
                        mmap_alignment);
             size += i->alloc_size();
         }
         
-        std::cerr << "file size: " << size << "\n";
+        std::cerr << "    file size: " << size << "\n";
 
     #ifdef VIGRA_NO_SPARSE_FILE
-        file_capacity_ = 4*prod(this->default_chunk_shape_)*sizeof(T);
+        file_capacity_ = 4*prod(this->chunk_shape_)*sizeof(T);
     #else
         file_capacity_ = size;
     #endif
@@ -1387,7 +1451,7 @@ class ChunkedArrayTmpFile
     
     ~ChunkedArrayTmpFile()
     {
-        std::cerr << "final cache size: " << cache_size_ << "\n";
+        std::cerr << "    final cache size: " << cache_size_ << "\n";
         unmap();
     #ifdef _WIN32
         ::CloseHandle(mappedFile_);
@@ -1422,14 +1486,16 @@ class ChunkedArrayTmpFile
         // return *ptr(p);
     // }
     
-    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & border, ChunkBase<N, T> ** chunk_ptr)
+    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & upper_bound, ChunkBase<N, T> ** chunk_ptr)
     {
         // USETICTOC;
         // TIC;
         if(*chunk_ptr)
         {
 #ifdef VIGRA_CHUNKED_ARRAY_THREAD_SAFE
-            (*chunk_ptr)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+            int old_rc = (*chunk_ptr)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+            if(old_rc == 0)
+                vigra_invariant(0, "refcount got negative!");
 #else
             --(*chunk_ptr)->refcount_;
 #endif
@@ -1542,7 +1608,7 @@ class ChunkedArrayTmpFile
         }
 
         strides = chunk.strides_;
-        border = (chunkIndex + shape_type(1)) * this->default_chunk_shape_;
+        upper_bound = (chunkIndex + shape_type(1)) * this->chunk_shape_;
         std::size_t offset = ChunkShape<N>::offset(point, strides);
         *chunk_ptr = &chunk;
         // timeit += TOCN;
@@ -1590,13 +1656,15 @@ public:
     typedef value_type const &                    const_reference;
     typedef typename base_type::shape_type        shape_type;
     
-    typedef T* (*SetPointerFct)(shape_type const & p, array_type * array, shape_type & strides, shape_type & border);
+    typedef pointer (*SetPointerFct)(array_type * array, shape_type const & p, 
+                                     shape_type & strides, shape_type & border, chunk_type ** chunk);
     
     static SetPointerFct setPointer;
     
-    static T* setPointerFct(shape_type const & p, array_type * array, shape_type & strides, shape_type & border)
+    static pointer setPointerFct(array_type * array, shape_type const & p, 
+                                 shape_type & strides, shape_type & border, chunk_type ** chunk)
     {
-        return array->ptr(p, strides, border);
+        return array->ptr(p, strides, border, chunk);
     }
 
     CoupledHandle()
@@ -1605,13 +1673,41 @@ public:
       array_()
     {}
 
+    CoupledHandle(CoupledHandle const & other)
+    : base_type(other),
+      pointer_(), 
+      array_(other.array_),
+      chunk_()
+    {
+        pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
+    }
+
     CoupledHandle(array_type & array, NEXT const & next)
     : base_type(next),
       pointer_(), 
       array_(&array),
       chunk_()
     {
-        pointer_ = array_->ptr(point(), strides_, border_, &chunk_);
+        pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
+    }
+
+    ~CoupledHandle()
+    {
+        // deref the present chunk
+        array_->ptr(shape_type(-1), strides_, upper_bound_, &chunk_);
+    }
+
+    CoupledHandle & operator=(CoupledHandle const & other)
+    {
+        if(this != &other)
+        {
+            // deref the present chunk
+             array_->ptr(shape_type(-1), strides_, upper_bound_, &chunk_);
+             base_type::operator=(other);
+             array_ = other.array_;
+             pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
+        }
+        return *this;
     }
     
     using base_type::point;
@@ -1620,73 +1716,73 @@ public:
     inline void incDim(int dim) 
     {
         base_type::incDim(dim);
-        // if((point()[dim] & chunk_shape::mask) == 0)
-        // {
-            // if(point()[dim] < shape()[dim])
-                // pointer_ = (*setPointer)(point(), array_, strides_, border_);
-        // }
-        // else
-        // {
-            // pointer_ += strides_[dim];
-        // }
         pointer_ += strides_[dim];
-        if(point()[dim] == border_[dim])
+        if(point()[dim] == upper_bound_[dim])
         {
+            // if(point()[dim] > shape()[dim])
+                // // this invariant check prevents the compiler from optimizing stupidly
+                // // (it makes a difference of a factor 2!)                
+                // vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
+            // else
+                // pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
             if(point()[dim] < shape()[dim])
-                // pointer_ = (*setPointer)(point(), array_, strides_, border_);
-                pointer_ = array_->ptr(point(), strides_, border_, &chunk_);
+                pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
         }
     }
 
-    // inline void decDim(int dim) 
-    // {
-        // view_.unsafePtr() -= strides_[dim];
-        // base_type::decDim(dim);
-    // }
+    inline void decDim(int dim) 
+    {
+        base_type::decDim(dim);
+        pointer_ -= strides_[dim];
+        if(point()[dim] < upper_bound_[dim] - array_->chunk_shape_[dim])
+        {
+            // if(point()[dim] < -1)
+                // // this invariant check prevents the compiler from optimizing stupidly
+                // // (it makes a difference of a factor 2!)                
+                // vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
+            // else
+            if(point()[dim] >= 0)
+                pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
+        }
+    }
 
     inline void addDim(int dim, MultiArrayIndex d) 
     {
         base_type::addDim(dim, d);
-        if(point()[dim] < shape()[dim])
-            pointer_ = array_->ptr(point(), strides_, border_, &chunk_);
-        // if(dim == 0)
-            // std::cerr << point() << " " << pointer_ << " " << strides_ << " " << border_ << "\n";
+        if(point()[dim] < shape()[dim] && point()[dim] >= 0)
+            pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
     }
 
-    // inline void add(shape_type const & d) 
-    // {
-        // view_.unsafePtr() += dot(d, strides_);
-        // base_type::add(d);
-    // }
+    inline void add(shape_type const & d) 
+    {
+        base_type::add(d);
+        pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
+    }
     
-    // template<int DIMENSION>
-    // inline void increment() 
-    // {
-        // view_.unsafePtr() += strides_[DIMENSION];
-        // base_type::template increment<DIMENSION>();
-    // }
+    template<int DIMENSION>
+    inline void increment() 
+    {
+        incDim(DIMENSION);
+    }
     
-    // template<int DIMENSION>
-    // inline void decrement() 
-    // {
-        // view_.unsafePtr() -= strides_[DIMENSION];
-        // base_type::template decrement<DIMENSION>();
-    // }
+    template<int DIMENSION>
+    inline void decrement() 
+    {
+        decDim(DIMENSION);
+    }
     
-    // // TODO: test if making the above a default case of the this hurts performance
-    // template<int DIMENSION>
-    // inline void increment(MultiArrayIndex offset) 
-    // {
-        // view_.unsafePtr() += offset*strides_[DIMENSION];
-        // base_type::template increment<DIMENSION>(offset);
-    // }
+    // TODO: test if making the above a default case of the this hurts performance
+    template<int DIMENSION>
+    inline void increment(MultiArrayIndex d) 
+    {
+        addDim(DIMENSION, d);
+    }
     
-    // template<int DIMENSION>
-    // inline void decrement(MultiArrayIndex offset) 
-    // {
-        // view_.unsafePtr() -= offset*strides_[DIMENSION];
-        // base_type::template decrement<DIMENSION>(offset);
-    // }
+    template<int DIMENSION>
+    inline void decrement(MultiArrayIndex d) 
+    {
+        addDim(DIMENSION, -d);
+    }
     
     // void restrictToSubarray(shape_type const & start, shape_type const & end)
     // {
@@ -1726,7 +1822,7 @@ public:
     }
 
     pointer pointer_;
-    shape_type strides_, border_;
+    shape_type strides_, upper_bound_;
     array_type * array_;
     chunk_type * chunk_;
 };
@@ -1734,8 +1830,6 @@ public:
 template <class T, class NEXT>
 typename CoupledHandle<ChunkedMemory<T>, NEXT>::SetPointerFct 
 CoupledHandle<ChunkedMemory<T>, NEXT>::setPointer = &CoupledHandle<ChunkedMemory<T>, NEXT>::setPointerFct;
-
-
 
 // template <class T, class NEXT>
 // class CoupledHandle<ChunkedMemory<T>, NEXT>
@@ -1898,202 +1992,6 @@ CoupledHandle<ChunkedMemory<T>, NEXT>::setPointer = &CoupledHandle<ChunkedMemory
 // typename CoupledHandle<ChunkedMemory<T>, NEXT>::SetPointerFct 
 // CoupledHandle<ChunkedMemory<T>, NEXT>::setPointer = &CoupledHandle<ChunkedMemory<T>, NEXT>::setPointerFct;
 
-
-#if 0
-template <class T, class NEXT>
-class CoupledHandle
-: public NEXT
-{
-public:
-    typedef NEXT                            base_type;
-    typedef CoupledHandle<T, NEXT>          self_type;
-    
-    static const int index =                NEXT::index + 1;    // index of this member of the chain
-    static const unsigned int dimensions =  NEXT::dimensions;
-
-    typedef T                               value_type;
-    typedef T *                             pointer;
-    typedef T const *                       const_pointer;
-    typedef T &                             reference;
-    typedef T const &                       const_reference;
-    typedef typename base_type::shape_type  shape_type;
-
-    CoupledHandle()
-    : base_type(),
-      pointer_(), 
-      strides_()
-    {}
-
-    CoupledHandle(const_pointer p, shape_type const & strides, NEXT const & next)
-    : base_type(next),
-      pointer_(const_cast<pointer>(p)), 
-      strides_(strides)
-    {}
-
-    template <class Stride>
-    CoupledHandle(MultiArrayView<dimensions, T, Stride> const & v, NEXT const & next)
-    : base_type(next),
-      pointer_(const_cast<pointer>(v.data())), 
-      strides_(v.stride())
-    {
-        vigra_precondition(v.shape() == this->shape(), "createCoupledIterator(): shape mismatch.");
-    }
-
-    inline void incDim(int dim) 
-    {
-        pointer_ += strides_[dim];
-        base_type::incDim(dim);
-    }
-
-    inline void decDim(int dim) 
-    {
-        pointer_ -= strides_[dim];
-        base_type::decDim(dim);
-    }
-
-    inline void addDim(int dim, MultiArrayIndex d) 
-    {
-        pointer_ += d*strides_[dim];
-        base_type::addDim(dim, d);
-    }
-
-    inline void add(shape_type const & d) 
-    {
-        pointer_ += dot(d, strides_);
-        base_type::add(d);
-    }
-    
-    template<int DIMENSION>
-    inline void increment() 
-    {
-        pointer_ += strides_[DIMENSION];
-        base_type::template increment<DIMENSION>();
-    }
-    
-    template<int DIMENSION>
-    inline void decrement() 
-    {
-        pointer_ -= strides_[DIMENSION];
-        base_type::template decrement<DIMENSION>();
-    }
-    
-    // TODO: test if making the above a default case of the this hurts performance
-    template<int DIMENSION>
-    inline void increment(MultiArrayIndex offset) 
-    {
-        pointer_ += offset*strides_[DIMENSION];
-        base_type::template increment<DIMENSION>(offset);
-    }
-    
-    template<int DIMENSION>
-    inline void decrement(MultiArrayIndex offset) 
-    {
-        pointer_ -= offset*strides_[DIMENSION];
-        base_type::template decrement<DIMENSION>(offset);
-    }
-    
-    void restrictToSubarray(shape_type const & start, shape_type const & end)
-    {
-        pointer_ += dot(start, strides_);
-        base_type::restrictToSubarray(start, end);
-    }
-
-    // ptr access
-    reference operator*()
-    {
-        return *pointer_;
-    }
-
-    const_reference operator*() const
-    {
-        return *pointer_;
-    }
-
-    pointer operator->()
-    {
-        return pointer_;
-    }
-
-    const_pointer operator->() const
-    {
-        return pointer_;
-    }
-
-    pointer ptr()
-    {
-        return pointer_;
-    }
-
-    const_pointer ptr() const
-    {
-        return pointer_;
-    }
-
-    shape_type const & strides() const
-    {
-        return strides_;
-    }
-
-    pointer pointer_;
-    shape_type strides_;
-};
-
-template <unsigned int N, class T, class TAIL>
-struct ComposeCoupledHandle<N, TypeList<T, TAIL> >
-{
-    typedef typename ComposeCoupledHandle<N, TAIL>::type  BaseType;
-    typedef typename MultiArrayShape<N>::type             shape_type;
-    typedef CoupledHandle<T, BaseType>                    type;
-    
-    template <class S>
-    type exec(MultiArrayView<N, T, S> const & m, 
-              shape_type const & start, shape_type const & end,
-              BaseType const & base)
-    {
-        return type(m.subarray(start, end).data(), m.stride(), base);
-    }
-    
-    template <class S>
-    type exec(MultiArrayView<N, T, S> const & m, BaseType const & base)
-    {
-        return type(m.data(), m.stride(), base);
-    }
-};
-
-template <unsigned int N>
-struct ComposeCoupledHandle<N, void>
-{
-    typedef typename MultiArrayShape<N>::type  shape_type;
-    typedef CoupledHandle<shape_type, void>    type;
-    
-    type exec(shape_type const & shape)
-    {
-        return type(shape);
-    }
-    
-    type exec(shape_type const & start, shape_type const & end)
-    {
-        return type(end-start);
-    }
-};
-
-template <unsigned int N, class T1=void, class T2=void, class T3=void, class T4=void, class T5=void>
-struct CoupledHandleType
-{
-    // reverse the order to get the desired index order
-    typedef typename MakeTypeList<T5, T4, T3, T2, T1>::type TypeList;
-    typedef typename ComposeCoupledHandle<N, TypeList>::type type;
-};
-
-template <unsigned int N, class T1, class T2, class T3, class T4, class T5>
-struct CoupledHandleType<N, Multiband<T1>, T2, T3, T4, T5>
-{
-    // reverse the order to get the desired index order
-    typedef typename MakeTypeList<T5, T4, T3, T2, Multiband<T1> >::type TypeList;
-    typedef typename ComposeCoupledHandle<N-1, TypeList>::type type;
-};
-
-#endif
 
 } // namespace vigra
 
