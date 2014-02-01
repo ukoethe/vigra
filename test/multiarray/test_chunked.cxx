@@ -2204,7 +2204,8 @@ public:
         std::string filename = "test_chunked_" + asString(sizeof(T)) + ".h5";
         HDF5File file(filename, HDF5File::New);
         
-        HDF5ArrayType v(file, "test", s, cache_max);
+        int compression = 1;
+        HDF5ArrayType v(file, "test", s, cache_max, compression);
         testSpeedImpl(v);
     }
 

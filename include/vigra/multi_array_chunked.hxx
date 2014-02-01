@@ -83,6 +83,15 @@
     thread-safe chunked (1 row in cache)       154       229       270
     chunked (initial creation, all in cache)   173       269       372
 
+    ***********************
+    compression:
+    * SNAPPY is very fast, but cannot compress the float data
+      (it achieves 5-10% for uint8 and 50% for double)
+    * ZLIB achieves at least a factor of 5 better compression,
+      but is more than an order of magnitude slower
+    * HDF5 compression is already sufficient at level 1 (4-15%,
+      higher levels don't lead to big gains) and a factor 3-10 slower 
+      than without compression.
 */
 
 #ifndef VIGRA_MULTI_ARRAY_CHUNKED_HXX
