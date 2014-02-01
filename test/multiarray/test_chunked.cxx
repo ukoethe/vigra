@@ -2142,21 +2142,21 @@ public:
         bi = IteratorType(P1(v, P0(s)));
         count = 1;
         TIC;
-        for(bi.setDim(2,start); bi.coord(2) < s[2]; bi.incDim(2))
-            for(bi.setDim(1,start); bi.coord(1) < s[1]; bi.incDim(1))
-                for(bi.setDim(0,start); bi.coord(0) < s[0]; bi.incDim(0), ++count)
-                {
-                    if(bi.template get<1>() != count)
-                        shouldEqual(bi.template get<1>(), count);
-                }
-        // for(; bi != end; ++bi, ++count)
-        // {
-            // if(bi.template get<1>() != count)
-            // {
-                // std::cerr << bi.point() << "\n";
-                // shouldEqual(bi.template get<1>(), count);
-            // }
-        // }
+        // for(bi.setDim(2,start); bi.coord(2) < s[2]; bi.incDim(2))
+            // for(bi.setDim(1,start); bi.coord(1) < s[1]; bi.incDim(1))
+                // for(bi.setDim(0,start); bi.coord(0) < s[0]; bi.incDim(0), ++count)
+                // {
+                    // if(bi.template get<1>() != count)
+                        // shouldEqual(bi.template get<1>(), count);
+                // }
+        for(; bi != end; ++bi, ++count)
+        {
+            if(bi.template get<1>() != count)
+            {
+                std::cerr << bi.point() << "\n";
+                shouldEqual(bi.template get<1>(), count);
+            }
+        }
         t = TOCS;
         std::cerr << "    chunked iterator read: " << t << "\n";
     }
@@ -2292,7 +2292,7 @@ public:
     void testMultiThreadedCompressed()
     {
         int cache_max = outer_shape[0]*outer_shape[1];
-        std::cerr << "    multi-threaded, backend: compressed, max cache: " << cache_max << "\n";
+        std::cerr << "    multi-threaded, backend: SNAPPY, max cache: " << cache_max << "\n";
         CompressedArrayType v(s, cache_max);
         testMultiThreadedImpl(v);
     }

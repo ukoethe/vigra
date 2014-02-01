@@ -1719,13 +1719,7 @@ public:
         pointer_ += strides_[dim];
         if(point()[dim] == upper_bound_[dim])
         {
-            // if(point()[dim] > shape()[dim])
-                // // this invariant check prevents the compiler from optimizing stupidly
-                // // (it makes a difference of a factor 2!)                
-                // vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
-            // else
-                // pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
-            if(point()[dim] < shape()[dim])
+            // if(point()[dim] < shape()[dim])
                 pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
         }
     }
@@ -1736,12 +1730,7 @@ public:
         pointer_ -= strides_[dim];
         if(point()[dim] < upper_bound_[dim] - array_->chunk_shape_[dim])
         {
-            // if(point()[dim] < -1)
-                // // this invariant check prevents the compiler from optimizing stupidly
-                // // (it makes a difference of a factor 2!)                
-                // vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
-            // else
-            if(point()[dim] >= 0)
+            // if(point()[dim] >= 0)
                 pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
         }
     }
@@ -1762,16 +1751,37 @@ public:
     template<int DIMENSION>
     inline void increment() 
     {
-        incDim(DIMENSION);
+        // incDim(DIMENSION);
+        base_type::template increment<DIMENSION>();
+        pointer_ += strides_[DIMENSION];
+        if(point()[DIMENSION] == upper_bound_[DIMENSION])
+        {
+            if(point()[DIMENSION] > shape()[DIMENSION])
+                // this invariant check prevents the compiler from optimizing stupidly
+                // (it makes a difference of a factor of 2!)                
+                vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
+            else 
+                pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
+        }
     }
     
     template<int DIMENSION>
     inline void decrement() 
     {
-        decDim(DIMENSION);
+        // decDim(DIMENSION);
+        base_type::template decrement<DIMENSION>();
+        pointer_ -= strides_[DIMENSION];
+        if(point()[DIMENSION] < upper_bound_[DIMENSION] - array_->chunk_shape_[DIMENSION])
+        {
+            if(point()[DIMENSION] < -1)
+                // this invariant check prevents the compiler from optimizing stupidly
+                // (it makes a difference of a factor of 2!)                
+                vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
+            else
+                pointer_ = array_->ptr(point(), strides_, upper_bound_, &chunk_);
+        }
     }
     
-    // TODO: test if making the above a default case of the this hurts performance
     template<int DIMENSION>
     inline void increment(MultiArrayIndex d) 
     {
