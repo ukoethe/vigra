@@ -365,11 +365,60 @@ Alternatives are:
   function H5Dget_offset() to get the offset from the beginning of the file).
   
 FIXME:
-* HDF5 only works for scalar types
-* Allocators are not used
-* the array implementations should go into cxx files in src/impex
+* HDF5 only works for scalar types so far
 * public API for temp file arrays in swap missing
-
+* support ZLIB compression levels
+* allocators are not used
+* the array implementations should go into cxx files in src/impex
+  * this requires implementation of the low-level functions independently of dtype
+    (use 'char *' and multiply shape and stride with sizeof(T))
+* decide chunk locking policies for array views (in particular, for index access)
+  * array view has functions fetch()/release() (better names?) to lock/unlock 
+    _all_ chunks in the view
+  * release() is automatically called in the destructor
+  * it should be possible to call fetch in the constructor via a flag,
+    but should the constructor fetch by default?
+  * how should fetch() handle the case when the cache is too small
+    * throw an exception?
+    * silently enlarge the cache?
+    * temporarily enlarge the cache?
+    * provide an option to control the behavior?
+  * also provide copySubarray() with ReadOnly and ReadWrite flags, where
+    ReadWrite copies the subarray back in the destructor or on demand
+    * locking is only required while each slice is copied
+    * the copy functions can use normal array views and iterators
+    * the ReadWrite version can store a checksum for each chunk (or part
+      of a chunk) to detect collisions on write
+    * use shared pointers to support memory management of the subarrays?
+* find efficient ways to support slicing and transposition in the indexing
+  functions of a view. 
+  1. possibility: each view contains
+      * an index object 'bound_index_' with original dimension whose values denote 
+        coordinates of bound axes and offsets for unbound coordinates
+      * a permutation object 'permutation_' with dimension of the view that maps 
+        view coordinates to original coordinates
+      * that is:
+        operator[](index)
+        {
+            shape_type full_index(bound_index_);
+            for(int k=0; k<N_view; ++k)
+                full_index[permutation_[k]] += index[k];
+            split full_index into chunk part and local part
+            look up chunk
+            return pixel
+        }
+      * maybe this is faster if it is combined with the stride computation?
+      * an optimization for unsliced arrays is desirable
+  2. possibility:
+      * add the point offset to the low-dimensional index
+      * split low-dimensional index into chunk part and local part
+      * look up chunk
+      * determine scalar pointer offset from local part and strides plus a 
+        chunk-specific correction that can be stored in a 3^N array 
+        - but can we efficiently determine where to look in that offset array?
+  3. possibility:
+      * don't care about speed - require copySubarray() if indexing should
+        be fast
 */
 template <unsigned int N, class T>
 class ChunkedArrayBase
