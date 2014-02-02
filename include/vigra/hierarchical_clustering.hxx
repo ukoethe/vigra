@@ -31,7 +31,7 @@ namespace vigra{
             Parameter(
                 const size_t      nodeNumStopCond = 1,
                 const bool        buildMergeTree  = true,
-                const bool        verbose         = true
+                const bool        verbose         = false
             )
             :   nodeNumStopCond_ (nodeNumStopCond),
                 buildMergeTreeEncoding_(buildMergeTree),

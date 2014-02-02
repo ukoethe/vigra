@@ -59,17 +59,21 @@ namespace vigra{
     template<class GRAPH>
     struct GraphIteratorAccessor{
         typedef GRAPH Graph;
-        typedef typename Graph::Node Node;
-        typedef typename Graph::NodeIt NodeIt;
-        typedef typename Graph::EdgeIt EdgeIt;
-        typedef typename Graph::ArcIt  ArcIt;
-        typedef typename Graph::OutArcIt OutArcIt;
+        typedef typename Graph::Node        Node;
+        typedef typename Graph::NodeIt      NodeIt;
+        typedef typename Graph::EdgeIt      EdgeIt;
+        typedef typename Graph::ArcIt       ArcIt;
+        typedef typename Graph::OutArcIt    OutArcIt;
+        typedef typename Graph::IncEdgeIt   IncEdgeIt;
 
         static NodeIt nodesBegin(const Graph & g){ return NodeIt(g);}
         static EdgeIt edgesBegin(const Graph & g){ return EdgeIt(g);}
         static ArcIt  arcsBegin( const Graph & g){ return ArcIt( g);}
         static OutArcIt outArcBegin(const Graph & g,const Node & node){
             return OutArcIt(g,node);
+        }
+        static IncEdgeIt incEdgeBegin(const Graph & g,const Node & node){
+            return IncEdgeIt(g,node);
         }
 
 
@@ -78,6 +82,9 @@ namespace vigra{
         static ArcIt  arcsEnd( const Graph & g){ return ArcIt( lemon::INVALID);}
         static OutArcIt outArcEnd(const Graph & g,const Node & node){
             return OutArcIt(lemon::INVALID);
+        }
+        static IncEdgeIt incEdgeEnd(const Graph & g,const Node & node){
+            return IncEdgeIt(lemon::INVALID);
         }
     };
 
@@ -90,6 +97,7 @@ namespace vigra{
         typedef typename Graph::EdgeIt EdgeIt;
         typedef typename Graph::ArcIt  ArcIt;
         typedef typename Graph::OutArcIt OutArcIt;
+        typedef typename Graph::IncEdgeIt   IncEdgeIt;
 
         static NodeIt   nodesBegin(const Graph & g){ return NodeIt(g);}
         static EdgeIt   edgesBegin(const Graph & g){ return g.get_edge_iterator();}
@@ -97,11 +105,18 @@ namespace vigra{
         static OutArcIt outArcBegin(const Graph & g,const Node & node){
             return g.get_out_edge_iterator(node);
         }
+         static IncEdgeIt incEdgeBegin(const Graph & g,const Node & node){
+            return IncEdgeIt(g,node);
+        }
+
         static NodeIt   nodesEnd(const Graph & g){ return g.get_vertex_end_iterator();}
         static EdgeIt   edgesEnd(const Graph & g){ return g.get_edge_end_iterator();}
         static ArcIt    arcsEnd( const Graph & g){ return g.get_arc_end_iterator(); }
         static OutArcIt outArcEnd(const Graph & g,const Node & node){
             return g.get_out_edge_end_iterator(node);
+        }
+        static IncEdgeIt incEdgeEnd(const Graph & g,const Node & node){
+            return IncEdgeIt(lemon::INVALID);
         }
     };
 

@@ -94,7 +94,7 @@ public:
 
 
     typedef NeighbourNodeIteratorHolder<Graph> PyNeighbourNodeIteratorHolder;
-
+    typedef IncEdgeIteratorHolder<Graph>       PyIncEdgeIteratorHolder;
 
     typedef EdgeHolder<Graph> PyEdge;
     typedef NodeHolder<Graph> PyNode;
@@ -143,7 +143,10 @@ public:
         .def("__iter__",python::range(&PyNeighbourNodeIteratorHolder::begin,&PyNeighbourNodeIteratorHolder::end))
         ;
 
-
+        const std::string incEdgeIteratorHolderClsName = std::string("IncEdgeIteratorHolder")+clsName_;
+        python::class_<PyIncEdgeIteratorHolder>(incEdgeIteratorHolderClsName.c_str(),python::no_init)
+        .def("__iter__",python::range(&PyIncEdgeIteratorHolder::begin,&PyIncEdgeIteratorHolder::end))
+        ;
         //const std::string nodeIteratorHolderClsName = std::string("NodeIteratorHolder")+clsName_;
         //python::class_<NodeIteratorHolderType>(nodeIteratorHolderClsName.c_str(),python::no_init)
         //.def("__iter__",python::range(&NodeIteratorHolderType::begin,&NodeIteratorHolderType::end))
@@ -184,6 +187,11 @@ public:
             //  uv source target
             .def("u",&u)
             .def("v",&v)
+            .def("uId",&uId)
+            .def("vId",&vId)
+            .def("uvId",&uvId)
+            .def("uvId",&uvIdFromId)
+
             .def("source",&source)
             .def("target",&target)
 
@@ -193,7 +201,7 @@ public:
             //.def("nodeIter",&nodeHolder,python::with_custodian_and_ward_postcall<0,1>() )  // graph may not be deleted bevore holder is deleted
 
             .def("neighbourNodeIter",&getNeighbourNodeIteratorHolder,python::with_custodian_and_ward_postcall<0,1>())
-
+            .def("incEdgeIter",      &getIncEdgeIteratorHolder,python::with_custodian_and_ward_postcall<0,1>())
 
             // intrinsic shape of maps
             .def("intrinsicNodeMapShape",&IntrinsicGraphShape<Graph>::intrinsicNodeMapShape)
@@ -229,6 +237,11 @@ public:
             
         ;
     }
+
+    static PyIncEdgeIteratorHolder getIncEdgeIteratorHolder(const Graph & self,const PyNode & node){
+        return PyIncEdgeIteratorHolder(self,node);
+    }
+
 
     static PyNeighbourNodeIteratorHolder getNeighbourNodeIteratorHolder(const Graph & self,const PyNode & node){
         return PyNeighbourNodeIteratorHolder(self,node);
@@ -335,8 +348,21 @@ public:
     }
 
 
+    static  python::tuple uvId(const Graph & self,const PyEdge & e){
+        return  python::make_tuple(self.id(self.u(e)),self.id(self.u(e)) );
+    }
 
+    static  python::tuple uvIdFromId(const Graph & self,const index_type i){
+        const Edge e = self.edgeFromId(i);
+        return  python::make_tuple(self.id(self.u(e)),self.id(self.u(e)) );
+    }
 
+    static  index_type uId(const Graph & self,const PyEdge & e){
+        return self.id(self.u(e));
+    }
+    static  index_type vId(const Graph & self,const PyEdge & e){
+        return self.id(self.u(e));
+    }
     static  PyNode u(const Graph & self,const PyEdge & e){
         return PyNode(self,self.u(e));
     }

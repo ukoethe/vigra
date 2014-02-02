@@ -342,6 +342,28 @@ def _genWatershedsUnionFind():
 _genWatershedsUnionFind()
 del _genWatershedsUnionFind
 
+
+
+# define watershedsReoptimization)
+def _genWatershedsReoptimization():
+    def watershedsReoptimization(labels,edgeIndicator,shrinkN,out=None):
+        # do unseeding
+        seeds=analysis.segToSeeds(labels,long(shrinkN))
+        if seeds.ndim==2:
+            seeds=analysis.labelImageWithBackground(seeds)
+        elif seeds.ndim==3:
+            seeds=analysis.labelVolumeWithBackground(seeds)
+        else :
+            raise RuntimeError("only implemented for 2d and 3d")
+        return analysis.watersheds(edgeIndicator,seeds=seeds,out=out)
+        
+    watershedsReoptimization.__module__ = 'vigra.analysis'
+    analysis.watershedsReoptimization = watershedsReoptimization
+
+_genWatershedsReoptimization()
+del _genWatershedsReoptimization
+
+
 # define tensor convenience functions
 def _genTensorConvenienceFunctions():
     def hessianOfGaussianEigenvalues(image, scale, out=None, 
@@ -441,6 +463,8 @@ def _genFeaturConvenienceFunctions():
 
 _genFeaturConvenienceFunctions()
 del _genFeaturConvenienceFunctions
+
+
 
 
 

@@ -163,6 +163,13 @@ namespace vigra{
     }
 
 
+
+    template<class MG>
+    NodeHolder<MG> pyInactiveEdgesNode(const MG & mg,const EdgeHolder<MG> & edge){
+        return NodeHolder<MG>(mg,mg.inactiveEdgesNode(edge));
+    }
+
+
     template<class GRAPH>
     void defineMergeGraphT(const std::string & clsName){
 
@@ -177,6 +184,7 @@ namespace vigra{
             mgAdaptorClsName.c_str(),python::init<const Graph &>()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()]
         )
         .def(LemonDirectedGraphCoreVisitor<MergeGraphAdaptor>(mgAdaptorClsName))
+        .def("inactiveEdgesNode",&pyInactiveEdgesNode<MergeGraphAdaptor>)
         ;
 
 

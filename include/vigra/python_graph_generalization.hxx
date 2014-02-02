@@ -145,15 +145,15 @@ struct ArcHolder: GRAPH::Arc {
 };
 
 
+namespace detail_python_graph_generalization{
+
 template<class GRAPH>
-struct ArcToTargetNode{
+struct ArcToTargetNodeHolder{
     typedef typename GRAPH::Node Node;
     typedef typename GRAPH::Arc  Arc;
-
-    ArcToTargetNode(const GRAPH & graph)
+    ArcToTargetNodeHolder(const GRAPH & graph)
     : graph_(&graph){
     }
-
     NodeHolder<GRAPH> operator()(const Arc & arc)const{
         return NodeHolder<GRAPH>(*graph_,graph_->target(arc));
     }
@@ -161,30 +161,63 @@ struct ArcToTargetNode{
 };
 
 template<class GRAPH>
+struct ArcToEdgeHolder{
+    typedef typename GRAPH::Edge Edge;
+    typedef typename GRAPH::Arc  Arc;
+    ArcToEdgeHolder(const GRAPH & graph)
+    : graph_(&graph){
+    }
+    EdgeHolder<GRAPH> operator()(const Arc & arc)const{
+        const Edge edge(arc);
+        return EdgeHolder<GRAPH>(*graph_,edge);
+    }
+    const GRAPH * graph_;
+};
+
+}
+
+template<class GRAPH>
 struct NeighbourNodeIteratorHolder{
-
     typedef typename GRAPH::Node Node;
-    typedef typename GRAPH::OutArcIt OutArcIt;
-
-    typedef boost::transform_iterator<ArcToTargetNode<GRAPH> ,OutArcIt ,NodeHolder<GRAPH>, NodeHolder<GRAPH> > const_iterator;
-
+    typedef typename GRAPH::OutArcIt Iter;
+    typedef detail_python_graph_generalization::ArcToTargetNodeHolder<GRAPH> Transform;
+    typedef boost::transform_iterator<Transform ,Iter ,NodeHolder<GRAPH>, NodeHolder<GRAPH> > const_iterator;
     NeighbourNodeIteratorHolder(const GRAPH & graph,const Node & node)
     : graph_(&graph),
-      node_(node)
-    {
-
+      node_(node){
     }
-
     const_iterator begin()const{
-        OutArcIt iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_,node_);
-        return const_iterator(iter,ArcToTargetNode<GRAPH>(*graph_));
+        Iter iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_,node_);
+        return const_iterator(iter,Transform(*graph_));
     }
-
     const_iterator end()const{
-        OutArcIt iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_,node_);
-        return const_iterator(iter,ArcToTargetNode<GRAPH>(*graph_));
+        Iter iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_,node_);
+        return const_iterator(iter,Transform(*graph_));
     }
+    const GRAPH * graph_;
+    Node node_;
+};
 
+
+template<class GRAPH>
+struct IncEdgeIteratorHolder{
+    typedef typename GRAPH::Node Node;
+    typedef typename GRAPH::Edge Edge;
+    typedef typename GRAPH::OutArcIt Iter;
+    typedef detail_python_graph_generalization::ArcToEdgeHolder<GRAPH> Transform;
+    typedef boost::transform_iterator<Transform ,Iter ,EdgeHolder<GRAPH>, EdgeHolder<GRAPH> > const_iterator;
+    IncEdgeIteratorHolder(const GRAPH & graph,const Node & node)
+    : graph_(&graph),
+      node_(node){
+    }
+    const_iterator begin()const{
+        Iter iter = GraphIteratorAccessor<GRAPH>::outArcBegin(*graph_,node_);
+        return const_iterator(iter,Transform(*graph_));
+    }
+    const_iterator end()const{
+        Iter iter = GraphIteratorAccessor<GRAPH>::outArcEnd(*graph_,node_);
+        return const_iterator(iter,Transform(*graph_));
+    }
     const GRAPH * graph_;
     Node node_;
 };

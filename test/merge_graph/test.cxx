@@ -37,7 +37,7 @@
 #include "vigra/unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/multi_array.hxx"
-#include "vigra/rag/rag.hxx"
+#include "vigra/adjacency_list_graph.hxx"
 #include "vigra/merge_graph/merge_graph_adaptor.hxx"
 using namespace vigra;
 
@@ -45,22 +45,22 @@ using namespace vigra;
 
 
 template<class IN_LABEL_TYPE>
-struct Rag2MergeGraphTest{
+struct AdjacencyListGraph2MergeGraphTest{
 
     typedef IN_LABEL_TYPE                        InLabelType;
-    typedef vigra::Rag<2,InLabelType>            RagType;
-    typedef vigra::MergeGraphAdaptor<RagType>    MergeGraphType;
+    typedef vigra::AdjacencyListGraph            Graph;
+    typedef vigra::MergeGraphAdaptor<Graph>    MergeGraphType;
     typedef typename MergeGraphType::index_type  index_type;
     typedef typename MergeGraphType::IdType      IdType;
-    typedef typename RagType::Node               RagNode;
-    typedef typename RagType::Edge               RagEdge;
-    typedef typename RagType::Arc                RagArc;
-    typedef typename RagType::EdgeIt             RagEdgeIt;
-    typedef typename RagType::NodeIt             RagNodeIt;
-    typedef typename RagType::ArcIt              RagArcIt;
-    typedef typename RagType::IncEdgeIt          RagIncEdgeIt;
-    typedef typename RagType::InArcIt            RagInArcIt;
-    typedef typename RagType::OutArcIt           RagOutArcIt;
+    typedef typename Graph::Node               GraphNode;
+    typedef typename Graph::Edge               GraphEdge;
+    typedef typename Graph::Arc                GraphArc;
+    typedef typename Graph::EdgeIt             GraphEdgeIt;
+    typedef typename Graph::NodeIt             GraphNodeIt;
+    typedef typename Graph::ArcIt              GraphArcIt;
+    typedef typename Graph::IncEdgeIt          GraphIncEdgeIt;
+    typedef typename Graph::InArcIt            GraphInArcIt;
+    typedef typename Graph::OutArcIt           GraphOutArcIt;
 
 
     typedef typename MergeGraphType::Node        Node;
@@ -73,12 +73,11 @@ struct Rag2MergeGraphTest{
     typedef typename MergeGraphType::InArcIt     InArcIt;
     typedef typename MergeGraphType::OutArcIt    OutArcIt;
 
-    typedef typename RagType::NeighborNodeIt     NeighborNodeIt;
-    typedef typename RagType::InputLabelingView  InputLabelingView;
-    typedef typename RagType::InputLabelingArray InputLabelingArray;
+    typedef typename Graph::NeighborNodeIt     NeighborNodeIt;
 
 
-    RagType rag2x2_;
+
+    Graph graph2x2_;
 
     bool nodeHasEdge(const MergeGraphType & g,const index_type n,const index_type & e)const{
         const Edge edge  = g.edgeFromId(e);
@@ -129,60 +128,40 @@ struct Rag2MergeGraphTest{
     }
 
 
-    Rag2MergeGraphTest(){
-        //std::cout<<"Rag2MergeGraphTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType g(labels);
-        rag2x2_=g;
+    AdjacencyListGraph2MergeGraphTest(){
+        AdjacencyListGraph g;
+        const GraphNode n1=g.addNode(1);
+        const GraphNode n2=g.addNode(2);
+        const GraphNode n3=g.addNode(3);
+        const GraphNode n4=g.addNode(4);
+        g.addEdge(n1,n2);
+        g.addEdge(n1,n3);
+        g.addEdge(n2,n4);
+        g.addEdge(n3,n4);
+        graph2x2_=g;
     }
 
 
 
-    void ragTest()
+    void GraphTest()
     {
-        //std::cout<<"ragTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-
-        // 1 |3
-        // __ __
-        // 2 |4
-
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-
-
-        // create rag
-        RagType rag(labels);
-
         // create merge graph adpator
-        MergeGraphType g(rag);
+        MergeGraphType g(graph2x2_);
 
 
 
         //std::cout<<"basic sizes \n";
         // assert basic sizes
 
-        should(g.edgeNum()==4);
-        should(g.nodeNum()==4);
-        should(g.arcNum()==8);
+        shouldEqual(g.edgeNum(),4);
+        shouldEqual(g.nodeNum(),4);
+        shouldEqual(g.arcNum(),8);
 
         //std::cout<<"max  ids \n";
 
-        should(g.maxEdgeId()==4);
-        should(g.maxNodeId()==4);
-        should(g.maxArcId()==g.maxEdgeId()*2+1);
+        shouldEqual(g.maxEdgeId(),4);
+        shouldEqual(g.maxNodeId(),4);
+        shouldEqual(g.maxArcId(),g.maxEdgeId()*2+1);
 
         //std::cout<<"find edges \n";
 
@@ -265,21 +244,10 @@ struct Rag2MergeGraphTest{
         should( g.id(g.target(allArcs[6]))==g.id(g.u(allEdges[2])));
         should( g.id(g.target(allArcs[7]))==g.id(g.u(allEdges[3])));
     }
-    void ragArcTest()
+    void GraphArcTest()
     {
-        //std::cout<<"ragArcTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+        // create merge graph adpator
+        MergeGraphType g(graph2x2_);;
         
         // check sources and targets of arcs which are just the "natural edges"
         should(  g.source(g.arcFromId(1)) == g.u(g.edgeFromId(1)) );
@@ -318,21 +286,10 @@ struct Rag2MergeGraphTest{
 
     }
 
-    void ragEdgeItTest()
+    void GraphEdgeItTest()
     {
-        //std::cout<<"ragEdgeItTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+        // create merge graph adpator
+        MergeGraphType g(graph2x2_);
 
         
 
@@ -400,21 +357,10 @@ struct Rag2MergeGraphTest{
             shouldEqual(3,g.id(edgeVec[1]));
         }
     }
-    void ragNodeItTest()
+    void GraphNodeItTest()
     {
-        //std::cout<<"ragNodeItTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+        // create merge graph adpator
+        MergeGraphType g(graph2x2_);
         {
             NodeIt begin(g);
             NodeIt invalid(lemon::INVALID);
@@ -477,21 +423,10 @@ struct Rag2MergeGraphTest{
             shouldEqual(3,g.id(nodeVec[1]));
         }
     }
-    void ragArcItTest()
+    void GraphArcItTest()
     {
-        //std::cout<<"ragArcItTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+        // create merge graph adpator
+        MergeGraphType g(graph2x2_);
         {
             ArcIt begin(g);
             ArcIt invalid(lemon::INVALID);
@@ -571,22 +506,10 @@ struct Rag2MergeGraphTest{
         }
     }
 
-    void ragFindEdgeTest(){
+    void GraphFindEdgeTest(){
 
-        //std::cout<<"ragFindEdgeTest \n";
-
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+        // create merge graph adpator
+        MergeGraphType g(graph2x2_);
 
         const Node n1=g.nodeFromId(1);
         const Node n2=g.nodeFromId(2);
@@ -613,23 +536,10 @@ struct Rag2MergeGraphTest{
 
     }
 
-    void ragUVOrderTest(){
+    void GraphUVOrderTest(){
 
-        //std::cout<<"ragUVOrderTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
-
+        // create merge graph adpator
+        MergeGraphType g(graph2x2_);
         const Node n1=g.nodeFromId(1);
         const Node n2=g.nodeFromId(2);
         const Node n3=g.nodeFromId(3);
@@ -641,29 +551,17 @@ struct Rag2MergeGraphTest{
         const Edge e34 = g.findEdge(n3,n4);
 
 
-        // for rag id(u(edge)) < id(v(edge));
+        // for Graph id(u(edge)) < id(v(edge));
         should(g.id(g.u(e12))<g.id(g.v(e12)));
         should(g.id(g.u(e12))<g.id(g.v(e12)));
         should(g.id(g.u(e12))<g.id(g.v(e12)));
         should(g.id(g.u(e12))<g.id(g.v(e12)));
     }
 
-    void ragIncEdgeItTest()
+    void GraphIncEdgeItTest()
     {
-        //std::cout<<"ragIncEdgeItTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+        // create merge graph adpator
+        MergeGraphType g(graph2x2_);
 
         Node n1=g.nodeFromId(1);
         Node n2=g.nodeFromId(2);
@@ -743,22 +641,10 @@ struct Rag2MergeGraphTest{
     }
 
 
-    void ragInArcItTest()
+    void GraphInArcItTest()
     {
-        //std::cout<<"ragInArcItTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+        // create merge graph adpator
+        MergeGraphType g(graph2x2_);
 
         Node n1=g.nodeFromId(1);
         Node n2=g.nodeFromId(2);
@@ -826,22 +712,10 @@ struct Rag2MergeGraphTest{
     }
 
 
-    void ragOutArcItTest()
+    void GraphOutArcItTest()
     {
-        //std::cout<<"ragOutArcItTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-
-        // 1 |3
-        // __ __
-        // 2 |4
-        labels(0,0)=1;
-        labels(0,1)=2;
-        labels(1,0)=3;
-        labels(1,1)=4;
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+        // create merge graph adpator
+        MergeGraphType g(graph2x2_);
 
         Node n1=g.nodeFromId(1);
         Node n2=g.nodeFromId(2);
@@ -907,33 +781,30 @@ struct Rag2MergeGraphTest{
     }
 
 
-    void ragMergeChainTest()
+    void GraphMergeChainTest()
     {
 
         const size_t nChainNodes  = 6;
         const size_t nChainEdges  = nChainNodes-1;
-
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(nChainNodes,1));
-
-        for(index_type i=0;i<nChainNodes;++i){
-            labels(i)=i+1;
+        Graph graph;
+        for(size_t i=1;i<=6;i++){
+            graph.addNode(i);
         }
-        RagType rag(labels);
+        for(size_t i=1;i<6;i++){
+            graph.addEdge(graph.nodeFromId(i),graph.nodeFromId(i+1));
+        }
+
 
         
-        should(rag.edgeFromId(0)==lemon::INVALID);
-        should(rag.edgeFromId(6)==lemon::INVALID);
-        should(rag.edgeFromId(1)!=lemon::INVALID);
-        should(rag.edgeFromId(2)!=lemon::INVALID);
-        should(rag.edgeFromId(3)!=lemon::INVALID);
-        should(rag.edgeFromId(4)!=lemon::INVALID);
-        should(rag.edgeFromId(5)!=lemon::INVALID);
+        should(graph.edgeFromId(0)==lemon::INVALID);
+        should(graph.edgeFromId(6)==lemon::INVALID);
+        should(graph.edgeFromId(1)!=lemon::INVALID);
+        should(graph.edgeFromId(2)!=lemon::INVALID);
+        should(graph.edgeFromId(3)!=lemon::INVALID);
+        should(graph.edgeFromId(4)!=lemon::INVALID);
+        should(graph.edgeFromId(5)!=lemon::INVALID);
 
-
-
-
-
-        MergeGraphType g(rag);
+        MergeGraphType g(graph);
         should(g.edgeFromId(0)==lemon::INVALID);
         should(g.edgeFromId(6)==lemon::INVALID);
         should(g.edgeFromId(1)!=lemon::INVALID);
@@ -982,31 +853,39 @@ struct Rag2MergeGraphTest{
     }
 
 
-    void ragMergeGridDegreeTest(){
-        //std::cout<<"ragOutArcItTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(3,3));
-
+    void GraphMergeGridDegreeTest(){
         // 1 |2 | 3
         // __ __  _
         // 4 |5 | 6
         // __ __  _
         // 7 |8 | 9
-        labels(0,0)=1;
-        labels(1,0)=2;
-        labels(2,0)=3;
-    
-        labels(0,1)=4;
-        labels(1,1)=5;
-        labels(2,1)=6;
+        // create Graph
+        Graph graph;
+        {
+            const GraphNode n1 = graph.addNode(1);
+            const GraphNode n2 = graph.addNode(2);
+            const GraphNode n3 = graph.addNode(3);
+            const GraphNode n4 = graph.addNode(4);
+            const GraphNode n5 = graph.addNode(5);
+            const GraphNode n6 = graph.addNode(6);
+            const GraphNode n7 = graph.addNode(7);
+            const GraphNode n8 = graph.addNode(8);
+            const GraphNode n9 = graph.addNode(9);
 
-        labels(0,2)=7;
-        labels(1,2)=8;
-        labels(2,2)=9;
-
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+            graph.addEdge(n1,n2);
+            graph.addEdge(n2,n3);
+            graph.addEdge(n4,n5);
+            graph.addEdge(n5,n6);
+            graph.addEdge(n7,n8);
+            graph.addEdge(n8,n9);
+            graph.addEdge(n1,n4);
+            graph.addEdge(n2,n5);
+            graph.addEdge(n3,n6);
+            graph.addEdge(n4,n7);
+            graph.addEdge(n5,n8);
+            graph.addEdge(n6,n9);
+        }
+        MergeGraphType g(graph);
 
         const Node n1 = g.nodeFromId(1);
         const Node n2 = g.nodeFromId(2);
@@ -1043,9 +922,9 @@ struct Rag2MergeGraphTest{
         // __ __  _
         // 7 |8 | 9
         shouldEqual(g.nodeNum(),9);
-        shouldEqual(g.maxNodeId(),rag.maxNodeId());
+        shouldEqual(g.maxNodeId(),graph.maxNodeId());
         shouldEqual(g.edgeNum(),12);
-        shouldEqual(g.maxEdgeId(),rag.maxEdgeId());
+        shouldEqual(g.maxEdgeId(),graph.maxEdgeId());
         shouldEqual(degreeSum(g),g.edgeNum()*2);
         // check degrees 
         shouldEqual(g.degree(n1),2);
@@ -1272,31 +1151,42 @@ struct Rag2MergeGraphTest{
     }
 
 
-    void ragMergeGridEdgeTest(){
-        //std::cout<<"ragOutArcItTest \n";
-        // create labels
-        InputLabelingArray labels(typename InputLabelingArray::difference_type(3,3));
-
+    void GraphMergeGridEdgeTest(){
         // 1 |2 | 3
         // __ __  _
         // 4 |5 | 6
         // __ __  _
         // 7 |8 | 9
-        labels(0,0)=1;
-        labels(1,0)=2;
-        labels(2,0)=3;
-    
-        labels(0,1)=4;
-        labels(1,1)=5;
-        labels(2,1)=6;
 
-        labels(0,2)=7;
-        labels(1,2)=8;
-        labels(2,2)=9;
+        // create Graph
+        Graph graph;
+        {
+            const GraphNode n1 = graph.addNode(1);
+            const GraphNode n2 = graph.addNode(2);
+            const GraphNode n3 = graph.addNode(3);
+            const GraphNode n4 = graph.addNode(4);
+            const GraphNode n5 = graph.addNode(5);
+            const GraphNode n6 = graph.addNode(6);
+            const GraphNode n7 = graph.addNode(7);
+            const GraphNode n8 = graph.addNode(8);
+            const GraphNode n9 = graph.addNode(9);
 
-        // create rag
-        RagType rag(labels);
-        MergeGraphType g(rag);
+
+            graph.addEdge(n1,n2);
+            graph.addEdge(n2,n3);
+            graph.addEdge(n4,n5);
+            graph.addEdge(n5,n6);
+            graph.addEdge(n7,n8);
+            graph.addEdge(n8,n9);
+            graph.addEdge(n1,n4);
+            graph.addEdge(n2,n5);
+            graph.addEdge(n3,n6);
+            graph.addEdge(n4,n7);
+            graph.addEdge(n5,n8);
+            graph.addEdge(n6,n9);
+        }
+        MergeGraphType g(graph);
+
 
         const Node n1 = g.nodeFromId(1);
         const Node n2 = g.nodeFromId(2);
@@ -1333,9 +1223,9 @@ struct Rag2MergeGraphTest{
         // __ __ _
         // 7 |8 |9
         shouldEqual(g.nodeNum(),9);
-        shouldEqual(g.maxNodeId(),rag.maxNodeId());
+        shouldEqual(g.maxNodeId(),graph.maxNodeId());
         shouldEqual(g.edgeNum(),12);
-        shouldEqual(g.maxEdgeId(),rag.maxEdgeId());
+        shouldEqual(g.maxEdgeId(),graph.maxEdgeId());
 
 
 
@@ -1695,35 +1585,35 @@ struct Rag2MergeGraphTest{
 
 
  
-struct RagMergeGraphAdaptorTestSuite
+struct AdjacencyListGraphMergeGraphAdaptorTestSuite
 : public vigra::test_suite
 {
-    RagMergeGraphAdaptorTestSuite()
-    : vigra::test_suite("RagMergeGraphTestSuite")
+    AdjacencyListGraphMergeGraphAdaptorTestSuite()
+    : vigra::test_suite("AdjacencyListGraphMergeGraphAdaptorTestSuite")
     {   
         
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragArcTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragFindEdgeTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragUVOrderTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragEdgeItTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragNodeItTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragArcItTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragIncEdgeItTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragInArcItTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragOutArcItTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphArcTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphFindEdgeTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphUVOrderTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphEdgeItTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphNodeItTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphArcItTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphIncEdgeItTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphInArcItTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphOutArcItTest));
         
 
         // test which do some merging
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragMergeChainTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragMergeGridDegreeTest));
-        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragMergeGridEdgeTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphMergeChainTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphMergeGridDegreeTest));
+        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphMergeGridEdgeTest));
     }
 };
 
 int main(int argc, char ** argv)
 {
-    RagMergeGraphAdaptorTestSuite test;
+    AdjacencyListGraphMergeGraphAdaptorTestSuite test;
 
     int failed = test.run(vigra::testsToBeExecuted(argc, argv));
 
