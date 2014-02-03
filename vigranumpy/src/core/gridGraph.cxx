@@ -36,15 +36,21 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
 #define NO_IMPORT_ARRAY
 
-#include "export_graph_visitor.hxx"
+#define WITH_BOOST_GRAPH
 
+/*vigra*/
+#include "export_graph_visitor.hxx"
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/adjacency_list_graph.hxx>
 #include <vigra/graph_algorithms.hxx>
 #include <vigra/python_graph_generalization.hxx>
+#include <vigra/graph_helper/on_the_fly_edge_map.hxx>
 
+/*boost*/
+#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/graph/dijkstra_shortest_paths_no_color_map.hpp>
 
 namespace python = boost::python;
 
@@ -60,6 +66,58 @@ namespace vigra{
         const Int64                                                                                ignoreLabel=-1
     ){
         makeRegionAdjacencyGraph(graph,labelMap,rag,hyperEdges,ignoreLabel);
+    }
+
+
+
+
+    template<unsigned int DIM,class DTAG>
+    void pyGridGraphShortestPath(
+        const NumpyArray<DIM,float>   edgeIndicatorImage,
+        const TinyVector<UInt32,DIM > source,
+        const TinyVector<UInt32,DIM > target
+    ){
+        // make a grid graph
+        typedef GridGraph< DIM,boost::undirected_tag > Graph;
+        typedef typename Graph::vertex_descriptor vertex_descriptor;
+        typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,float> > NodeFloatMap;
+        typedef OnTheFlyEdgeMap<Graph,NodeFloatMap> ImplicitEdgeMap;
+
+
+        // make a node map from edgeIndicator image
+        const Graph g(edgeIndicatorImage.shape());
+        NodeFloatMap edgeIndicatorNodeMap(g,edgeIndicatorImage);
+        ImplicitEdgeMap edgeIndicatorEdgeMap(g,edgeIndicatorNodeMap);
+
+
+        // make a distance map and predecessor map
+        typedef typename Graph:: template NodeMap<vertex_descriptor> PredecessorMapType;
+        typedef typename Graph:: template NodeMap<float> DistMapType;
+        typedef typename Graph:: template NodeMap<int>   IndexMapType;
+
+        //typedef NumpyArray<DIM,float>  b
+
+        PredecessorMapType pmap(g);
+        DistMapType        dmap(g);
+        IndexMapType       imap(g);
+
+        vertex_descriptor s(source);
+
+        typedef std::less<float>            DistCompare;
+        typedef boost::closed_plus<float>   DistanceWeightCombineFunction;
+
+        DistCompare distCompare;
+        DistanceWeightCombineFunction distanceWeightCombineFunction;
+        //boost::dijkstra_shortest_paths_no_color_map(g,pmap,dmap,edgeIndicatorEdgeMap,imap,
+        //    distCompare,distanceWeightCombineFunction,
+        //    std::numeric_limits<float>::infinity(),float(0)
+        //);
+
+
+        //boost::dijkstra_shortest_paths_no_color_map( g,s,
+        //                       boost::distance_map( dmap ).weight_map( edgeIndicatorEdgeMap )//.predecessor_map(pmap) 
+        //                       );
+
     }
 
 
@@ -94,6 +152,7 @@ namespace vigra{
         )
         ;
 
+        python::def("shortestImagePath",registerConverters(&pyGridGraphShortestPath<DIM,boost::undirected_tag>) );
         
     }
 

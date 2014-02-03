@@ -102,7 +102,7 @@ class MyOperator(object):
         fromEdge  = self.edgeIndicator[ei]
         fromNodes = numpy.sqrt(self.nodeDist(self.nodeFeatures[ui],self.nodeFeatures[vi]))
 
-        w = float(fromEdge)+2.0*float(fromNodes)
+        w = float(fromEdge)+float(fromNodes)
         ward  = 1.0/numpy.log(self.nodeSize[ui]) + 1.0/numpy.log(self.nodeSize[vi])
         return w
         return float(w/ward)
@@ -149,7 +149,7 @@ print "get input"
 f       = '100075.jpg'
 f       = '69015.jpg'
 f       = '12003.jpg'
-sigma   = 5.0
+sigma   = 3.0
 img     = vigra.impex.readImage(f)#[0:100,0:100,:]
 imgLab  = vigra.colors.transform_RGB2Lab(img)
 newShape = [img.shape[0]*2-1,img.shape[1]*2-1]
@@ -187,7 +187,7 @@ myop             = MyOperator(  mergeGraph,rag,edgeIndicator=edgeIndicator,edgeS
                                 )         
 clusterOperator  = vigraph.pythonClusterOperator(mergeGraph=mergeGraph, opertator=myop)
 print "get the cluster class"
-hc = vigraph.hierarchicalClustering(clusterOperator,5)
+hc = vigraph.hierarchicalClustering(clusterOperator,50)
 
 print "do clustering"
 hc.cluster()
@@ -205,7 +205,7 @@ showSeg(img,labels)
 pylab.show()
 
 
-labeling ,nseg = vigra.analysis.watershedsReoptimization(labels,gradmag,2)
+labeling ,nseg = vigra.analysis.watershedsReoptimization(labels,gradmag,6,visu=True)
 
 showSeg(img,labeling)
 pylab.show()

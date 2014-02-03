@@ -183,12 +183,12 @@ struct AdjacencyListGraph2MergeGraphTest{
         ArcIt abegin(g);
         ArcIt aend(lemon::INVALID);
 
-        std::cout<<"fill node vec \n";
+
         std::vector<Node> allNodes(nbegin,nend);
         should(allNodes.size()==4);
 
 
-        std::cout<<"fill edge vec \n";
+
         std::vector<Edge> allEdges(ebegin,eend);
         should(allEdges.size()==4);
 
@@ -937,7 +937,6 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.degree(n8),3);
         shouldEqual(g.degree(n9),2);
 
-        std::cout<<"MERGE 45\n";
 
         /////////////////
         // merge 4|5 

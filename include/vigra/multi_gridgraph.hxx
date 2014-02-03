@@ -45,6 +45,18 @@ struct NeighborhoodTests;
 
 namespace vigra {
 
+
+template<unsigned int N, class T, class Stride>
+inline
+typename vigra::MultiArrayView<N, T, Stride>::const_reference 
+get(vigra::MultiArrayView<N, T, Stride> const & pmap,
+    typename vigra::MultiArrayView<N, T, Stride>::difference_type const & k)
+{ 
+    return pmap[k]; 
+}
+
+
+
 /** \addtogroup GraphDataStructures Graph Data Structures
         
         A GridGraph class implementing the APIs of the <a href="http://www.boost.org/doc/libs/release/libs/graph/">boost::graph</a> and
@@ -2914,14 +2926,16 @@ void put(vigra::MultiArrayView<N, T, Stride> & pmap,
 
     /** \brief Read the value at key \a k in property map \a pmap (API: boost).
     */
-template<unsigned int N, class T, class Stride>
-inline
-typename vigra::MultiArrayView<N, T, Stride>::const_reference 
-get(vigra::MultiArrayView<N, T, Stride> const & pmap,
-    typename vigra::MultiArrayView<N, T, Stride>::difference_type const & k)
-{ 
-    return pmap[k]; 
-}
+//template<unsigned int N, class T, class Stride>
+//inline
+//typename vigra::MultiArrayView<N, T, Stride>::const_reference 
+//get(vigra::MultiArrayView<N, T, Stride> const & pmap,
+//    typename vigra::MultiArrayView<N, T, Stride>::difference_type const & k)
+//{ 
+//    return pmap[k]; 
+//}
+
+
 
 #if 0
 
@@ -3030,7 +3044,7 @@ class OutDegMap<vigra::GridGraph<N, DirectedTag> >
 namespace vigra {
 namespace boost_graph { 
 
-using boost::get;
+//using boost::get;
 
 }} // namespace vigra::boost_graph
 

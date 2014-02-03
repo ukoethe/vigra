@@ -346,15 +346,45 @@ del _genWatershedsUnionFind
 
 # define watershedsReoptimization)
 def _genWatershedsReoptimization():
-    def watershedsReoptimization(labels,edgeIndicator,shrinkN,out=None):
+    def watershedsReoptimization(labels,edgeIndicator,shrinkN,out=None,visu=False):
         # do unseeding
+
+        #if visu :
+        #  import matplotlib,numpy
+        #  import pylab
+        #  # A random colormap for matplotlib
+        #  cmap = matplotlib.colors.ListedColormap ( numpy.random.rand ( 256,3))
+        #  pylab.imshow ( numpy.swapaxes(labels,0,1) , cmap = cmap)
+        #  pylab.show()
+
+
         seeds=analysis.segToSeeds(labels,long(shrinkN))
-        if seeds.ndim==2:
-            seeds=analysis.labelImageWithBackground(seeds)
-        elif seeds.ndim==3:
-            seeds=analysis.labelVolumeWithBackground(seeds)
-        else :
-            raise RuntimeError("only implemented for 2d and 3d")
+
+        if visu :
+          import matplotlib,numpy
+          import pylab
+          # A random colormap for matplotlib
+          cmap = matplotlib.colors.ListedColormap ( numpy.random.rand ( 256,3))
+          pylab.imshow ( numpy.swapaxes(seeds,0,1) , cmap = cmap)
+          pylab.show()
+
+
+
+        #if seeds.ndim==2:
+        #    seeds=analysis.labelImageWithBackground(seeds)
+        #elif seeds.ndim==3:
+        #    seeds=analysis.labelVolumeWithBackground(seeds)
+        #else :
+        #    raise RuntimeError("only implemented for 2d and 3d")
+
+        if visu :
+          import matplotlib,numpy
+          import pylab
+          # A random colormap for matplotlib
+          cmap = matplotlib.colors.ListedColormap ( numpy.random.rand ( 256,3))
+          pylab.imshow ( numpy.swapaxes(seeds,0,1) , cmap = cmap)
+          pylab.show()
+
         return analysis.watersheds(edgeIndicator,seeds=seeds,out=out)
         
     watershedsReoptimization.__module__ = 'vigra.analysis'
