@@ -161,25 +161,22 @@ public:
 
 
             // basic properties
-            .add_property("nodeNum",  &Graph::nodeNum )
-            .add_property("edgeNum",  &Graph::edgeNum )
-            .add_property("arcNum",   &Graph::arcNum  )
-            .add_property("maxNodeId",&Graph::maxNodeId )
-            .add_property("maxEdgeId",&Graph::maxEdgeId )
-            .add_property("maxArcId" ,&Graph::maxNodeId )
+            .add_property("nodeNum",  &Graph::nodeNum ,"number of nodes within the graph")
+            .add_property("edgeNum",  &Graph::edgeNum ,"number of edges within the graph")
+            .add_property("arcNum",   &Graph::arcNum  ,"number of arcs (2*edgeNum for undirected graphs)")
+            .add_property("maxNodeId",&Graph::maxNodeId,"maximum id of a valid edge in the graph")
+            .add_property("maxEdgeId",&Graph::maxEdgeId,"maximum id of a valid node in the graph")
+            .add_property("maxArcId" ,&Graph::maxNodeId,"maximum id of a valid arc in the graph")
 
             // id functions
-            .def("nodeId",&nodeId)
-            .def("edgeId",&edgeId)
-            .def("arcId" ,&arcId)
-            .def("id",&nodeId)
-            .def("id",&edgeId)
-            .def("id",&arcId)
+            .def("id",&nodeId, "get the id of a given node")
+            .def("id",&edgeId, "get the id of a given edge")
+            .def("id",&arcId , "get the id of a given arc")
 
             // item from id
-            .def("nodeFromId",&nodeFromId)
-            .def("edgeFromId",&edgeFromId)//,python::with_custodian_and_ward_postcall<0,1>())
-            .def("arcFromId", &arcFromId)
+            .def("nodeFromId",&nodeFromId,"get the node descriptor from the given id")
+            .def("edgeFromId",&edgeFromId,"get the edge descriptor from the given id")//,python::with_custodian_and_ward_postcall<0,1>())
+            .def("arcFromId", &arcFromId ,"get the arc descriptor from the given id")
 
             // find edges
             .def("findEdge",&findEdge)
@@ -213,24 +210,30 @@ public:
             .def("intrinsicArcCoordinate",& GraphDescriptorToMultiArrayIndex<Graph>::intrinsicArcCoordinate )
 
 
-
+            ///////////////////////////////////
             // vectorized  api
-
+            ///////////////////////////////////
             .def("nodeIds",registerConverters(&itemIds<Node,NodeIt>),( python::arg("out")=python::object() ) )
             .def("edgeIds",registerConverters(&itemIds<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
             .def("arcIds" ,registerConverters(&itemIds<Arc ,ArcIt >),( python::arg("out")=python::object() ) )
 
             .def("findEdges",registerConverters(&findEdges),( python::arg("nodeIdPairs"), python::arg("out")=python::object() ) )
 
-
-            // these functions are defined on the "FULL SET"
-            // - these need to be exported for subsets (lets say a subset of edge ids)(? do we need this)
-            .def("validEdgeIds",registerConverters(&validIds<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
-            .def("validNodeIds",registerConverters(&validIds<Node,NodeIt>),( python::arg("out")=python::object() ) )
-            .def("validArcIds" ,registerConverters(&validIds<Arc ,ArcIt >),( python::arg("out")=python::object() ) )
             .def("uIds" ,registerConverters(&uIds), ( python::arg("out")=python::object() ) )
             .def("vIds" ,registerConverters(&uIds), ( python::arg("out")=python::object() ) )
             .def("uvIds",registerConverters(&uvIds),( python::arg("out")=python::object() ) )
+            .def("uIds",registerConverters(&uIdsSubset),( python::arg("edgeIds"),python::arg("out")=python::object() ) )
+            .def("vIds",registerConverters(&vIdsSubset),( python::arg("edgeIds"),python::arg("out")=python::object() ) )
+            .def("uvIds",registerConverters(&uvIdsSubset),( python::arg("edgeIds"),python::arg("out")=python::object() ) )
+            
+
+
+            // these functions are defined on the "FULL SET"
+            .def("validEdgeIds",registerConverters(&validIds<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
+            .def("validNodeIds",registerConverters(&validIds<Node,NodeIt>),( python::arg("out")=python::object() ) )
+            .def("validArcIds" ,registerConverters(&validIds<Arc ,ArcIt >),( python::arg("out")=python::object() ) )
+
+
 
 
             //.def("dtypetest",registerConverters(&dtypetest<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
@@ -318,6 +321,57 @@ public:
             out(counter,0)=g.id(g.u(*i));
             out(counter,1)=g.id(g.v(*i));
             ++counter;
+        }
+        return out;
+    }
+
+    static NumpyAnyArray uIdsSubset(
+        const Graph & g, 
+        NumpyArray<1,UInt32> edgeIds,
+        NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() 
+    ){
+        typedef GraphItemHelper<Graph,Edge> ItemHelper;
+        out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  edgeIds.shape(0)));
+        for(size_t i=0;i<edgeIds.shape(0);++i){
+            const index_type edgeId=edgeIds(i);
+            const Edge edge  = g.edgeFromId(edgeId);
+            if(edge!=lemon::INVALID){
+                out(i)=g.id(g.u(edge));
+            }
+        }
+        return out;
+    }
+    static NumpyAnyArray vIdsSubset(
+        const Graph & g, 
+        NumpyArray<1,UInt32> edgeIds,
+        NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() 
+    ){
+        typedef GraphItemHelper<Graph,Edge> ItemHelper;
+        out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  edgeIds.shape(0)));
+        for(size_t i=0;i<edgeIds.shape(0);++i){
+            const index_type edgeId=edgeIds(i);
+            const Edge edge  = g.edgeFromId(edgeId);
+            if(edge!=lemon::INVALID){
+                out(i)=g.id(g.v(edge));
+            }
+        }
+        return out;
+    }
+
+    static NumpyAnyArray uvIdsSubset(
+        const Graph & g, 
+        NumpyArray<1,UInt32> edgeIds,
+        NumpyArray<2,UInt32> out =NumpyArray<1,UInt32>() 
+    ){
+        typedef GraphItemHelper<Graph,Edge> ItemHelper;
+        out.reshapeIfEmpty(typename NumpyArray<2,UInt32>::difference_type(  edgeIds.shape(0) ,2 ));
+        for(size_t i=0;i<edgeIds.shape(0);++i){
+            const index_type edgeId=edgeIds(i);
+            const Edge edge  = g.edgeFromId(edgeId);
+            if(edge!=lemon::INVALID){
+                out(i,0)=g.id(g.u(edge));
+                out(i,1)=g.id(g.v(edge));
+            }
         }
         return out;
     }
