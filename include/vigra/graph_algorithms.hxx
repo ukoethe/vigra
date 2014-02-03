@@ -366,6 +366,52 @@ namespace vigra{
         }
     }
         
+    template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE>
+    void shortestPath(
+        const GRAPH         & graph,
+        const WEIGHTS       & weights,
+        const typename GRAPH::Node & source,
+        PREDECESSORS        & predecessors,
+        DISTANCE            & distance
+    ){
+
+        typedef GRAPH Graph;
+        typedef WEIGHTS::value_type     WeightType;
+        typedef DISTANCE::value_type    DistanceType;
+        typedef typename Graph::Node    Node;
+        typedef typename Graph::NodeIt  NodeIt;
+
+        const size_t maxNodeId = graph.maxNodeId();
+        vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> pq(maxNodeId);
+
+        for(NodeIt n(graph);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            pq.push(graph.id(node),std::numeric_limits<WeightType>::infinity() );
+            distance[node]=std::numeric_limits<DistanceType>::infinity();
+        }
+
+        distance[source]=static_cast<DistanceType>(0.0);
+        pq.push(graph.id(source),0.0);
+
+        while(!pq.empty()){
+            const size_t topNode pq.top();
+            pq.pop();
+
+            // loop over all neigbours
+            for(....){
+                const Node otherNode;
+                const size_t otherNodeId = graph.id(otherNode);
+
+                if(pq.contains(otherNodeId)){
+                    
+                }
+
+            }
+        }
+
+
+
+    }
 
 
 
