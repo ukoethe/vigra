@@ -521,7 +521,40 @@ namespace vigra{
             }
         }
     }
-      
+    
+
+    template<class GRAPH,class WEIGHTS,class IS_MST_EDGE>
+    void minimumSpanningTree(
+        const GRAPH     & graph,
+        WEIGHTS         & weights,
+        IS_MST_EDGE     & isMstEdge
+    ){  
+
+        typedef GRAPH Graph,
+        typedef typename Graph::Node Node;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::EdgeIt EdgeIt;
+        typedef EdgeMapIteratorHelper<GRAPH,WEIGHTS>     WeightIterHelper;
+        typedef EdgeMapIteratorHelper<GRAPH,IS_MST_EDGE> IsMstIterHelper;
+
+        std::fill(IsMstIterHelper::begin(graph,isMstEdge),IsMstIterHelper::end(graph,isMstEdge),false);
+
+        //// argort weights...
+//
+        //typedef UfdType;
+//
+        //UfdType ufd(graph.maxNodeId());
+//
+        //for(EdgeIt e(graph);e!=lemon::INVALID;++e){
+        //    const Node u=graph.u(*e);
+        //    const Node v=graph.v(*e);
+        //    if(ufd.find(graph.id(u)!=ufd.find(graph.id(v))){
+//
+        //    }
+        //}
+
+
+    }  
 
 } // namespace vigra
 
