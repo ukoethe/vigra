@@ -46,8 +46,9 @@
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/numpy_array.hxx>
 #include <vigra/priority_queue.hxx>
-
+#include <vigra/union_find.hxx>
 #include <boost/iterator/transform_iterator.hpp>
+
 
 namespace vigra{
 
@@ -523,6 +524,17 @@ namespace vigra{
     }
     
 
+    namespace detail_mst{
+        template<class WEIGHT,class EDGE>
+        struct Compare{
+            typedef std::pair<WEIGHT,EDGE> PairType;
+            bool operator()(const PairType  & a,const PairType & b)const{
+                return a.first < b.first;
+            }
+        };
+    }
+
+
     template<class GRAPH,class WEIGHTS,class IS_MST_EDGE>
     void minimumSpanningTree(
         const GRAPH     & graph,
@@ -530,30 +542,40 @@ namespace vigra{
         IS_MST_EDGE     & isMstEdge
     ){  
 
-        typedef GRAPH Graph,
+        typedef GRAPH Graph;
         typedef typename Graph::Node Node;
         typedef typename Graph::Edge Edge;
         typedef typename Graph::EdgeIt EdgeIt;
+        typedef typename Graph::Value WeightType;
         typedef EdgeMapIteratorHelper<GRAPH,WEIGHTS>     WeightIterHelper;
         typedef EdgeMapIteratorHelper<GRAPH,IS_MST_EDGE> IsMstIterHelper;
+        typedef detail::Partition<size_t> UfdType;
 
         std::fill(IsMstIterHelper::begin(graph,isMstEdge),IsMstIterHelper::end(graph,isMstEdge),false);
 
-        //// argort weights...
-//
-        //typedef UfdType;
-//
-        //UfdType ufd(graph.maxNodeId());
-//
-        //for(EdgeIt e(graph);e!=lemon::INVALID;++e){
-        //    const Node u=graph.u(*e);
-        //    const Node v=graph.v(*e);
-        //    if(ufd.find(graph.id(u)!=ufd.find(graph.id(v))){
-//
-        //    }
-        //}
 
+        //// argort weights... (this might be solved more elegant with a some kind of coupled iterator)
+        std::vector< std::pair<WeightType,Edge> > edgeAndWeights(graph.edgeNum());
+        size_t denseIndex=0;
+        for(EdgeIt e(graph);e!=lemon::INVALID;++e){
+            edgeAndWeights[denseIndex].first=weights[*e];
+            edgeAndWeights[denseIndex].second=e;
+            ++denseIndex;
+        }
+        detail_mst::Compare<WeightType,Edge> comperator;
+        std::sort(edgeAndWeights.begin(),edgeAndWeights.end(),comperator);
 
+        UfdType ufd(graph.maxNodeId());
+
+        for(size_t i=0;i<edgeAndWeights.size();++i){
+            const Edge e=edgeAndWeights[i].second;
+            const size_t uId=graph.id(graph.u(e));
+            const size_t vId=graph.id(graph.v(e));
+            if(ufd.find(uId)!=ufd.find(vId)){
+                isMstEdge[e]=true;
+                ufd.merge(uId,vId);
+            }
+        }
     }  
 
 } // namespace vigra
