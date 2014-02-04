@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*     Copyright 2011-2012 Stefan Schmidt and Ullrich Koethe            */
+/*                 Copyright 2011 by Ullrich Koethe                     */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -34,9 +34,7 @@
 /************************************************************************/
 
 /**
- * This header provides definitions of graph-related types
- * and optionally provides a gateway to popular graph libraries
- * (for now, BGL is supported).
+ * This header provides definitions of graph-related algorithms
  */
 
 #ifndef VIGRA_GRAPH_MAP_ALGORITHMS_HXX
@@ -47,6 +45,8 @@
 #include <vigra/graph_generalization.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/numpy_array.hxx>
+#include <vigra/priority_queue.hxx>
+
 #include <boost/iterator/transform_iterator.hpp>
 
 namespace vigra{
@@ -367,20 +367,22 @@ namespace vigra{
     }
         
     template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE>
-    void shortestPath(
-        const GRAPH         & graph,
-        const WEIGHTS       & weights,
-        const typename GRAPH::Node & source,
-        PREDECESSORS        & predecessors,
-        DISTANCE            & distance
+    void shortestPathDijkstra(
+        const GRAPH         &           graph,
+        const typename GRAPH::Node &    source,
+        const WEIGHTS       &           weights,
+        PREDECESSORS        &           predecessors,
+        DISTANCE            &           distance,
+        const typename GRAPH::Node &    target  = lemon::INVALID
     ){
 
-        typedef GRAPH Graph;
-        typedef WEIGHTS::value_type     WeightType;
-        typedef DISTANCE::value_type    DistanceType;
-        typedef typename Graph::Node    Node;
-        typedef typename Graph::NodeIt  NodeIt;
-
+        typedef GRAPH                       Graph;
+        typedef typename Graph::Node        Node;
+        typedef typename Graph::Edge        Edge;
+        typedef typename Graph::NodeIt      NodeIt;
+        typedef typename Graph::OutArcIt    OutArcIt;
+        typedef typename WEIGHTS::value_type     WeightType;
+        typedef typename DISTANCE::value_type    DistanceType;
         const size_t maxNodeId = graph.maxNodeId();
         vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> pq(maxNodeId);
 
@@ -388,32 +390,138 @@ namespace vigra{
             const Node node(*n);
             pq.push(graph.id(node),std::numeric_limits<WeightType>::infinity() );
             distance[node]=std::numeric_limits<DistanceType>::infinity();
+            predecessors[node]=lemon::INVALID;
         }
 
         distance[source]=static_cast<DistanceType>(0.0);
         pq.push(graph.id(source),0.0);
 
-        while(!pq.empty()){
-            const size_t topNode pq.top();
-            pq.pop();
+        bool finished=false;
+        while(!pq.empty() && !finished){
+            const WeightType minDist = pq.topPriority();
+            if(minDist < std::numeric_limits<DistanceType>::infinity()){
+                const Node topNode(graph.nodeFromId(pq.top()));
+                pq.pop();
+                // loop over all neigbours
+                for(OutArcIt outArcIt(graph,topNode);outArcIt!=lemon::INVALID;++outArcIt){
+                    const Node otherNode = graph.target(*outArcIt);
+                    const size_t otherNodeId = graph.id(otherNode);
 
-            // loop over all neigbours
-            for(....){
-                const Node otherNode;
-                const size_t otherNodeId = graph.id(otherNode);
-
-                if(pq.contains(otherNodeId)){
-                    
+                    if(pq.contains(otherNodeId)){
+                        const Edge edge(*outArcIt);
+                        const DistanceType currentDist      = distance[otherNode];
+                        const DistanceType alternativeDist  = distance[topNode]+weights[edge];
+                        if(alternativeDist<currentDist){
+                            pq.push(otherNodeId,alternativeDist);
+                            distance[otherNode]=alternativeDist;
+                            predecessors[otherNode]=topNode;
+                        }
+                    }
+                    if(target==otherNode){
+                        finished=true;
+                        break;
+                    }
                 }
-
+            }
+            else{
+                finished=true;
+                break;
+            }
+            if(finished){
+                break;
             }
         }
-
-
-
     }
 
 
+    template<class GRAPH,class T>
+    struct ZeroHeuristc{
+        typedef typename GRAPH::Node Node;
+        T operator()(const Node & a ,const Node & b )const{
+            return static_cast<T>(0.0);
+        }
+    };
+
+
+    template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE,class HEURSTIC>
+    void shortestPathAStar(
+        const GRAPH         &           graph,
+        const typename GRAPH::Node &    source,
+        const typename GRAPH::Node &    target,
+        const WEIGHTS       &           weights,
+        PREDECESSORS        &           predecessors,
+        DISTANCE            &           distance,
+        const HEURSTIC      &           heuristic
+    ){
+
+        typedef GRAPH                       Graph;
+        typedef typename Graph::Node        Node;
+        typedef typename Graph::Edge        Edge;
+        typedef typename Graph::NodeIt      NodeIt;
+        typedef typename Graph::OutArcIt    OutArcIt;
+
+        typedef typename WEIGHTS::value_type     WeightType;
+        typedef typename DISTANCE::value_type    DistanceType;
+
+        typename  GRAPH:: template NodeMap<bool> closedSet(graph);
+        vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> estimatedDistanceOpenSet(graph.maxNodeId());
+        // initialize
+        for(NodeIt n(graph);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            closedSet[node]=false;
+            distance[node]=std::numeric_limits<DistanceType>::infinity();
+            predecessors[node]=lemon::INVALID;
+        }
+        // distance and estimated distance for start node
+        distance[source]=static_cast<DistanceType>(0.0);
+        estimatedDistanceOpenSet.push(graph.id(source),heuristic(source,target));
+
+        // while any nodes left in openSet
+        while(!estimatedDistanceOpenSet.empty()){
+
+            // get the node with the lpwest estimated distance in the open set
+            const Node current = graph.nodeFromId(estimatedDistanceOpenSet.top());
+
+            // reached target?
+            if(current==target)
+                break;
+
+            // remove current from openSet
+            // add current to closedSet
+            estimatedDistanceOpenSet.pop();
+            closedSet[current]=true;
+
+            // iterate over neigbours of current
+            for(OutArcIt outArcIt(graph,current);outArcIt!=lemon::INVALID;++outArcIt){
+
+                // get neigbour node and id
+                const Node neighbour = graph.target(*outArcIt);
+                const size_t neighbourId = graph.id(neighbour);
+
+                // if neighbour is not yet in closedSet
+                if(!closedSet[neighbour]){
+
+                    // get edge between current and neigbour
+                    const Edge edge(*outArcIt);
+
+                    // get tentative score
+                    const DistanceType tenativeScore = distance[current] + weights[edge];
+
+                    // neighbour NOT in openSet OR tentative score better than the current distance
+                    if(!estimatedDistanceOpenSet.contains(neighbourId) || tenativeScore < distance[neighbour] ){
+                        // set predecessors and distance
+                        predecessors[neighbour]=current;
+                        distance[neighbour]=tenativeScore;
+
+                        // update the estimated cost from neighbour to target
+                        // ( and neigbour will be (re)-added to openSet)
+                        estimatedDistanceOpenSet.push(neighbourId,distance[neighbour]+heuristic(neighbour,target));
+                    }
+                }
+            }
+        }
+    }
+      
 
 } // namespace vigra
 
