@@ -183,7 +183,7 @@ namespace vigra{
         python::class_<MergeGraphAdaptor,boost::noncopyable>(
             mgAdaptorClsName.c_str(),python::init<const Graph &>()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()]
         )
-        .def(LemonDirectedGraphCoreVisitor<MergeGraphAdaptor>(mgAdaptorClsName))
+        .def(LemonUndirectedGraphCoreVisitor<MergeGraphAdaptor>(mgAdaptorClsName))
         .def("inactiveEdgesNode",&pyInactiveEdgesNode<MergeGraphAdaptor>)
         ;
 

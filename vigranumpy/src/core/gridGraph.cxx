@@ -108,13 +108,51 @@ namespace vigra{
         typename  Graph::template NodeMap<size_t>  nodeSizeMap(g,1.0);
 
         // run alg.
-        std::cout<<"start felzenszwalbSegmentation\n";
         felzenszwalbSegmentation(g,edgeIndicatorEdgeMap,nodeSizeMap,k,nodeLabelingMap);
-        std::cout<<"done felzenszwalbSegmentation\n";
         return labeling;
     }
 
+    template<unsigned int DIM,class DTAG>
+    NumpyAnyArray pyGridGraphMinimumSpanningTreeSegmentation(
+        NumpyArray<DIM+1,Multiband<float> >   image,
+        const bool                            useWeightThreshold,
+        const bool                            useNodeNumThreshold,
+        const float                           weightThreshold,
+        const size_t                          nodeNumThreshold, 
+        NumpyArray<DIM,UInt32>                labeling = NumpyArray<DIM,UInt32>()
+    ){
+        typename NumpyArray<DIM,UInt32>::difference_type outShape;
+        for(size_t i=0;i<DIM;++i){
+            outShape[i]=image.shape(i);
+        }
+        //resize output? 
+        labeling.reshapeIfEmpty(outShape);
 
+        // make a grid graph
+        typedef GridGraph< DIM,boost::undirected_tag > Graph;
+        typedef typename Graph::Node Node;
+        typedef NumpyMultibandNodeMap<Graph,  NumpyArray<DIM+1,Multiband<float> >  > NodeMultiFloatMap;
+        typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,UInt32> > NodeLabelMap;
+        typedef distances::Manhattan<float> DistanceType;
+        typedef OnTheFlyEdgeMap<Graph,NodeMultiFloatMap,DistanceType,float > ImplicitEdgeMap;
+
+        // make grid graph
+        const Graph g(outShape);
+
+        // make a node map from edgeIndicator image
+        // and make implicit edge map from that
+        NodeMultiFloatMap imageMap(g,image);
+        DistanceType distanceFunctor;
+        ImplicitEdgeMap edgeIndicatorEdgeMap(g,imageMap,distanceFunctor);
+
+        // make the result label map from image
+        NodeLabelMap nodeLabelingMap(g,labeling);
+
+        // run alg.
+        minimumSpanningTreeSegmentation(g,edgeIndicatorEdgeMap,useWeightThreshold,useNodeNumThreshold,
+            weightThreshold,nodeNumThreshold,nodeLabelingMap);
+        return labeling;
+    }
 
     template<unsigned int DIM,class DTAG>
     NumpyAnyArray pyGridGraphShortestPathDijkstra(
@@ -221,116 +259,6 @@ namespace vigra{
         return distanceImage;
     }
 
-    /*
-    template<unsigned int DIM,class DTAG>
-    void pyGridGraphAllPairsOfShortestPathDijkstra(
-        NumpyArray<DIM,float>   edgeIndicatorImage
-    ){
-
-        //resize output? 
-       //distanceImage.reshapeIfEmpty(edgeIndicatorImage.shape());
-
-        // make a grid graph
-        typedef GridGraph< DIM,boost::undirected_tag > Graph;
-        typedef typename Graph::Node Node;
-        typedef typename Graph::NodeIt NodeIt;
-        typedef typename Graph::vertex_descriptor vertex_descriptor;
-        typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,float> > NodeFloatMap;
-        typedef OnTheFlyEdgeMap<Graph,NodeFloatMap> ImplicitEdgeMap;
-
-        // make grid graph
-        const Graph g(edgeIndicatorImage.shape());
-
-        // make a node map from edgeIndicator image
-        // and make implicit edge map from that
-        NodeFloatMap edgeIndicatorNodeMap(g,edgeIndicatorImage);
-        ImplicitEdgeMap edgeIndicatorEdgeMap(g,edgeIndicatorNodeMap);
-
-        // make a distance map and predecessor map
-        typedef typename Graph:: template NodeMap<vertex_descriptor> PredecessorMapType;
-        typedef typename Graph:: template NodeMap<float> DistMapType;
-        typedef typename Graph:: template NodeMap<int>   IndexMapType;
-
-
-        PredecessorMapType pmap(g);
-        DistMapType        dmap(g);
-
-        vigra::ChangeablePriorityQueue<float> pq(g.maxNodeId()+1);
-
-        size_t counter=0;
-        for(NodeIt n(g);n!=lemon::INVALID;++n){
-            shortestPathDijkstraFast(g,*n,edgeIndicatorEdgeMap,pmap,dmap,pq);
-            if(counter % 1==0)
-                std::cout<<"\r"<<std::setw(10)<<counter<<"/"<<g.nodeNum()<<std::flush;
-            ++counter;
-        }
-
-        
-    }
-
-
-    template<unsigned int DIM,class DTAG>
-    NumpyAnyArray pyGridGraphShortestPathAStar(
-        NumpyArray<DIM,float>   edgeIndicatorImage,
-        typename NumpyArray<DIM,float>::difference_type source,
-        typename NumpyArray<DIM,float>::difference_type target
-    ){
-        // make a grid graph
-        typedef GridGraph< DIM,boost::undirected_tag > Graph;
-        typedef typename Graph::Node Node;
-        typedef typename Graph::vertex_descriptor vertex_descriptor;
-        typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,float> > NodeFloatMap;
-        typedef OnTheFlyEdgeMap<Graph,NodeFloatMap> ImplicitEdgeMap;
-
-
-        // make a node map from edgeIndicator image
-        const Graph g(edgeIndicatorImage.shape());
-        NodeFloatMap edgeIndicatorNodeMap(g,edgeIndicatorImage);
-        ImplicitEdgeMap edgeIndicatorEdgeMap(g,edgeIndicatorNodeMap);
-
-
-        // make a distance map and predecessor map
-        typedef typename Graph:: template NodeMap<vertex_descriptor> PredecessorMapType;
-        typedef typename Graph:: template NodeMap<float> DistMapType;
-        typedef typename Graph:: template NodeMap<int>   IndexMapType;
-
-        //typedef NumpyArray<DIM,float>  b
-
-        PredecessorMapType pmap(g);
-        DistMapType        dmap(g);
-
-        const Node s(source); 
-        const Node t(target); 
-
-        ZeroHeuristc<Graph,float> heuristc;
-
-        shortestPathAStar(g,s,t,edgeIndicatorEdgeMap,pmap,dmap,heuristc);
-        std::vector<Node> path;
-
-        // has the target node been reached?
-        if(pmap[t]==lemon::INVALID){
-            NumpyArray<2,UInt32>  pathCooordinates(typename NumpyArray<2,UInt32>::difference_type(0,0));
-            return pathCooordinates;
-        }
-        else{
-            Node running = t;
-            path.push_back(t);
-            while(running!=s){
-                running=pmap[running];
-                path.push_back(running);
-            }
-            NumpyArray<2,UInt32>  pathCooordinates(typename NumpyArray<2,UInt32>::difference_type(path.size(),DIM));
-            for(size_t i=0;i<path.size();++i){
-                for(size_t d=0;d<DIM;++d)
-                    pathCooordinates(path.size()-1-i,d)=path[i][d];
-            }
-            return pathCooordinates;
-        }
-    }
-        */
-
-
-
     template<unsigned int DIM>
     void defineGridGraphT(const std::string & clsName){
 
@@ -350,7 +278,7 @@ namespace vigra{
 
         
         python::class_<Graph>(clsName.c_str(),python::init< TinyVector<Int64,DIM> >())
-        .def(LemonDirectedGraphCoreVisitor<Graph>(clsName))
+        .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def("getRegionAdjacencyGraph",registerConverters(&pyGetRag<DIM,boost::undirected_tag,UInt32> ),
            (
                python::arg("labels"),
@@ -371,6 +299,17 @@ namespace vigra{
                python::arg("out")=python::object()
             )
         );
+        python::def("minimumSpanningTreeSegmentation",registerConverters(&pyGridGraphMinimumSpanningTreeSegmentation<DIM,boost::undirected_tag>),
+            (
+               python::arg("weights"),
+               python::arg("useWeightThreshold")=false,
+               python::arg("useNodeNumThreshold")=true,
+               python::arg("weightThreshold")=0.0,
+               python::arg("nodeNumThreshold")=0,
+               python::arg("out")=python::object()
+            )
+        );
+
         python::def("shortestImagePathDistanceImageDijkstra",registerConverters(&pyGridGraphShortestPathDijkstraDistanceImage<DIM,boost::undirected_tag>),
             (
                python::arg("weights"),

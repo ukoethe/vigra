@@ -58,8 +58,8 @@ namespace vigra{
         // define graph itself
         const std::string clsName = "AdjacencyListGraph";
         python::class_<Graph>(clsName.c_str(),python::init< const size_t,const size_t , const bool >())
-        .def(LemonDirectedGraphCoreVisitor<Graph>(clsName))
-        .def(LemonDirectedGraphAddItemsVisitor<Graph>(clsName))
+        .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
+        .def(LemonUndirectedGraphAddItemsVisitor<Graph>(clsName))
         ;
     }
 } 

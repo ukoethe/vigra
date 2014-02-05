@@ -68,15 +68,15 @@ struct ArcIteratorHolder{
 
 
 template<class GRAPH>
-class LemonDirectedGraphCoreVisitor 
-:   public boost::python::def_visitor<LemonDirectedGraphCoreVisitor<GRAPH> >
+class LemonUndirectedGraphCoreVisitor 
+:   public boost::python::def_visitor<LemonUndirectedGraphCoreVisitor<GRAPH> >
 {
 public:
 
     friend class def_visitor_access;
 
     typedef GRAPH Graph;
-    typedef LemonDirectedGraphCoreVisitor<GRAPH> VisitorType;
+    typedef LemonUndirectedGraphCoreVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
     
     typedef typename Graph::index_type       index_type;
@@ -100,7 +100,7 @@ public:
     typedef NodeHolder<Graph> PyNode;
     typedef  ArcHolder<Graph> PyArc;
 
-    LemonDirectedGraphCoreVisitor(const std::string clsName)
+    LemonUndirectedGraphCoreVisitor(const std::string clsName)
     :clsName_(clsName){
 
     }
@@ -469,8 +469,8 @@ public:
 
 
 template<class GRAPH>
-class LemonDirectedGraphAddItemsVisitor 
-:   public boost::python::def_visitor<LemonDirectedGraphAddItemsVisitor<GRAPH> >
+class LemonUndirectedGraphAddItemsVisitor 
+:   public boost::python::def_visitor<LemonUndirectedGraphAddItemsVisitor<GRAPH> >
 {
 public:
 
@@ -478,7 +478,7 @@ public:
 
     typedef GRAPH Graph;
 
-    typedef LemonDirectedGraphAddItemsVisitor<GRAPH> VisitorType;
+    typedef LemonUndirectedGraphAddItemsVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
     
     typedef typename Graph::index_type       index_type;
@@ -499,7 +499,7 @@ public:
     typedef NodeHolder<Graph> PyNode;
     typedef  ArcHolder<Graph> PyArc;
 
-    LemonDirectedGraphAddItemsVisitor(const std::string clsName)
+    LemonUndirectedGraphAddItemsVisitor(const std::string clsName)
     :clsName_(clsName){
 
     }

@@ -632,36 +632,25 @@ namespace vigra{
     }
     
 
-    namespace detail_mst{
-        template<class WEIGHT,class EDGE>
-        struct Compare{
-            typedef std::pair<WEIGHT,EDGE> PairType;
-            bool operator()(const PairType  & a,const PairType & b)const{
-                return a.first < b.first;
-            }
-        };
-    }
 
-
-    template<class GRAPH,class WEIGHTS,class IS_MST_EDGE>
-    void minimumSpanningTree(
+    template<class GRAPH,class WEIGHTS,class NODE_LABEL_MAP>
+    void minimumSpanningTreeSegmentation(
         const GRAPH     & graph,
         WEIGHTS         & weights,
-        IS_MST_EDGE     & isMstEdge
+        const bool useWeightThreshold,
+        const bool useNodeThreshold,
+        typename WEIGHTS::Value weightThreshold,
+        const  size_t nodeNumThreshold,
+        NODE_LABEL_MAP     &  nodeLabeling
     ){  
 
         typedef GRAPH Graph;
         typedef typename Graph::Node Node;
         typedef typename Graph::Edge Edge;
         typedef typename Graph::EdgeIt EdgeIt;
-        typedef typename Graph::Value WeightType;
+        typedef typename WEIGHTS::Value WeightType;
         typedef EdgeMapIteratorHelper<GRAPH,WEIGHTS>     WeightIterHelper;
-        typedef EdgeMapIteratorHelper<GRAPH,IS_MST_EDGE> IsMstIterHelper;
         typedef detail::Partition<size_t> UfdType;
-
-        std::fill(IsMstIterHelper::begin(graph,isMstEdge),IsMstIterHelper::end(graph,isMstEdge),false);
-
-
     
         // sort the edges by their weights
         std::vector<Edge> sortedEdges;
@@ -669,15 +658,24 @@ namespace vigra{
         edgeSort(graph,weights,comperator,sortedEdges);
 
         UfdType ufd(graph.maxNodeId()+1);
+        const size_t unusedSets = ufd.numberOfSets()-graph.nodeNum();
 
         for(size_t i=0;i<sortedEdges.size();++i){
             const Edge e=sortedEdges[i];
             const size_t uId=graph.id(graph.u(e));
             const size_t vId=graph.id(graph.v(e));
+
+            if(useWeightThreshold && weightThreshold <= weights[e])
+                break;
+            if(useNodeThreshold && (ufd.numberOfSets()-unusedSets)<=nodeNumThreshold )
+                break; 
             if(ufd.find(uId)!=ufd.find(vId)){
-                isMstEdge[e]=true;
                 ufd.merge(uId,vId);
             }
+        }
+        for(typename  GRAPH::NodeIt n(graph);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            nodeLabeling[node]=ufd.find(graph.id(node));
         }
     }  
 
