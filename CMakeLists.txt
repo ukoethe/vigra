@@ -79,6 +79,7 @@ ENDIF ()
 ##################################################
 
 INCLUDE(VigraFindPackage)
+VIGRA_FIND_PACKAGE(ZLIB)
 VIGRA_FIND_PACKAGE(TIFF NAMES libtiff)
 VIGRA_FIND_PACKAGE(JPEG NAMES libjpeg)
 VIGRA_FIND_PACKAGE(PNG)

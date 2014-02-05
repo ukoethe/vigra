@@ -114,6 +114,7 @@
 
 #include <zlib.h>
 #include <snappy.h>
+#include "minilzo.h"
 
 #define VIGRA_CHUNKED_ARRAY_THREAD_SAFE
 
@@ -365,14 +366,18 @@ Alternatives are:
   function H5Dget_offset() to get the offset from the beginning of the file).
   
 FIXME:
-* HDF5 only works for scalar types so far
-* public API for temp file arrays in swap missing
-* support ZLIB compression levels
-* allocators are not used
+* backends:
+   * allocators are not used
+   * HDF5 only works for scalar types so far
+   * temp file arrays in swap (just an API addition to the constructor)
+   * support ZLIB compression levels
+   * support TIFF chunked reading
 * the array implementations should go into cxx files in src/impex
   * this requires implementation of the low-level functions independently of dtype
     (use 'char *' and multiply shape and stride with sizeof(T))
-* decide chunk locking policies for array views (in particular, for index access)
+  * don't forget to increment the soversion after the change
+  * alternative: provide 'config_local.hxx' with flags for available packages
+* decide on chunk locking policies for array views (in particular, for index access)
   * array view has functions fetch()/release() (better names?) to lock/unlock 
     _all_ chunks in the view
   * release() is automatically called in the destructor
@@ -681,7 +686,7 @@ class ChunkedArray
     threading::mutex cache_lock_;
 };
 
-enum ChunkCompression { ZLIB, SNAPPY };
+enum ChunkCompression { ZLIB, SNAPPY, LZO };
 
 template <unsigned int N, class T, class Alloc = std::allocator<T> >
 class ChunkedArrayCompressed
@@ -765,6 +770,7 @@ class ChunkedArrayCompressed
                 vigra_invariant(compressed_.size() == 0,
                     "ChunkedArrayCompressed::Chunk::compress(): compressed and uncompressed pointer are both non-zero.");
 
+                double ratio = 0.0;
                 switch(method)
                 {
                   case ZLIB:
@@ -777,6 +783,7 @@ class ChunkedArrayCompressed
                         "ChunkedArrayCompressed::Chunk::compress(): zlib compression failed.");                    
                     compressed_.insert(compressed_.begin(), 
                                        (char*)buffer.data(), (char*)buffer.data() + destLen);
+                    ratio = double(destLen) / sourceLen;
                     break;
                   }
                   case SNAPPY:
@@ -784,16 +791,41 @@ class ChunkedArrayCompressed
                     size_t sourceLen = this->size()*sizeof(T),
                            destLen;
                     ArrayVector<char> buffer(snappy::MaxCompressedLength(sourceLen));
-                    snappy::RawCompress((const char*)p, sourceLen, &buffer[0], &destLen);
+                    snappy::RawCompress((const char*)p, sourceLen, buffer.data(), &destLen);
                     compressed_.insert(compressed_.begin(), buffer.data(), buffer.data() + destLen);
+                    ratio = double(destLen) / sourceLen;
+                    break;
+                  }
+                  case LZO:
+                  {
+                    static const int workmemSize = 
+                              (LZO1X_1_MEM_COMPRESS + sizeof(lzo_align_t) - 1) / sizeof(lzo_align_t);
+                    static ArrayVector<lzo_align_t> wrkmem(workmemSize);
+                    
+                    lzo_uint sourceLen = this->size()*sizeof(T),
+                             destLen;
+                    ArrayVector<lzo_byte> buffer(lzoMaxLen(sourceLen));
+                    int res = lzo1x_1_compress((const lzo_bytep)p, sourceLen, 
+                                               buffer.data(), &destLen, 
+                                               wrkmem.data());
+                    vigra_postcondition(res == LZO_E_OK,
+                        "ChunkedArrayCompressed::Chunk::compress(): lzo compression failed.");
+
+                    compressed_.insert(compressed_.begin(), buffer.data(), buffer.data() + destLen);
+                    ratio = double(destLen) / sourceLen;
                     break;
                   }
                 }
 
-                // std::cerr << "compression ratio: " << double(destLen) / sourceLen << "\n";
+                // std::cerr << "compression ratio: " << ratio << "\n";
                 alloc_.deallocate(p, (typename Alloc::size_type)this->size());
                 this->pointer_.store(0, threading::memory_order_release);
             }
+        }
+        
+        static lzo_uint lzoMaxLen(lzo_uint size)
+        {
+            return size + size / 16 + 64 + 3;
         }
         
         pointer uncompress(ChunkCompression method)
@@ -819,6 +851,16 @@ class ChunkedArrayCompressed
                       case SNAPPY:
                       {
                         snappy::RawUncompress(compressed_.data(), compressed_.size(), (char *)p);
+                        break;
+                      }
+                      case LZO:
+                      {
+                        lzo_uint sourceLen = compressed_.size(),
+                                 destLen = this->size()*sizeof(T);
+                        int res = lzo1x_decompress((const lzo_bytep)compressed_.data(), sourceLen,
+                                                    (lzo_bytep)p, &destLen, NULL);
+                        vigra_postcondition(res == LZO_E_OK,
+                            "ChunkedArrayCompressed::Chunk::uncompress(): lzo decompression failed.");
                         break;
                       }
                     }
@@ -864,6 +906,12 @@ class ChunkedArrayCompressed
         {
             i->reshape(min(this->chunk_shape_, 
                            shape - i.point()*this->chunk_shape_));
+        }
+        if(method == LZO)
+        {
+            static int lzo_active = lzo_init();
+            vigra_precondition(lzo_active == LZO_E_OK,
+                 "ChunkedArrayCompressed(): lzo_init() failed.");
         }
     }
     

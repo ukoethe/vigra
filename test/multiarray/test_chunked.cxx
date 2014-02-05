@@ -2207,6 +2207,14 @@ public:
         testSpeedImpl(v);
     }
     
+    void testSpeedCompressedArrayLZO()
+    {
+        int cache_max = outer_shape[0]*outer_shape[1];
+        std::cerr << "    backend: LZO, max cache: " << cache_max << "\n";
+        CompressedArrayType v(s, cache_max, LZO);
+        testSpeedImpl(v);
+    }
+    
     void testSpeedCompressedArrayZlib()
     {
         int cache_max = outer_shape[0]*outer_shape[1];
@@ -2862,53 +2870,57 @@ struct MultiArrayChunkedTestTestSuite
         add( testCase( &MultiArrayChunkedTest<float>::testBaselineSpeed ) );
         add( testCase( &MultiArrayChunkedTest<double>::testBaselineSpeed ) );
         
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedFullArray ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedFullArray ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedFullArray ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedFullArray ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedFullArray ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedFullArray ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedAllocArray ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedAllocArray ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedAllocArray ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedAllocArray ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedAllocArray ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedAllocArray ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileAllCached ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileAllCached ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileAllCached ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileAllCached ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileAllCached ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileAllCached ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileSliceCached ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileSliceCached ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileSliceCached ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileSliceCached ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileSliceCached ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileSliceCached ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileRowCached ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileRowCached ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileRowCached ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileRowCached ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileRowCached ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileRowCached ) );
 
         add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArraySnappy ) );
         add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArraySnappy ) );
         add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArraySnappy ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayZlib ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayZlib ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayZlib ) );
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayLZO ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayLZO ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayLZO ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedHDF5Array ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedHDF5Array ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedHDF5Array ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayZlib ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayZlib ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayZlib ) );
+
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedHDF5Array ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedHDF5Array ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedHDF5Array ) );
         
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreaded ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testMultiThreaded ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testMultiThreaded ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreaded ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreaded ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreaded ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedAlloc ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedAlloc ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedAlloc ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedAlloc ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedAlloc ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedAlloc ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedCompressed ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedCompressed ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedCompressed ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedCompressed ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedCompressed ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedCompressed ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedHDF5 ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedHDF5 ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedHDF5 ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedHDF5 ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedHDF5 ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedHDF5 ) );
 
         // add( testCase( &MultiArrayChunkedTest<double>::testSpeed2 ) );
         //add( testCase( &MultiMathTest::testBasicArithmetic ) );
