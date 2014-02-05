@@ -385,7 +385,79 @@ namespace vigra{
         typedef typename WEIGHTS::value_type     WeightType;
         typedef typename DISTANCE::value_type    DistanceType;
         const size_t maxNodeId = graph.maxNodeId();
-        vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> pq(maxNodeId);
+        vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> pq(maxNodeId+1);
+
+        for(NodeIt n(graph);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            pq.push(graph.id(node),std::numeric_limits<WeightType>::infinity() );
+            distance[node]=std::numeric_limits<DistanceType>::infinity();
+            predecessors[node]=lemon::INVALID;
+        }
+
+        distance[source]=static_cast<DistanceType>(0.0);
+        pq.push(graph.id(source),0.0);
+
+        bool finished=false;
+        while(!pq.empty() && !finished){
+            const WeightType minDist = pq.topPriority();
+            if(minDist < std::numeric_limits<DistanceType>::infinity()){
+                const Node topNode(graph.nodeFromId(pq.top()));
+                pq.pop();
+                // loop over all neigbours
+                for(OutArcIt outArcIt(graph,topNode);outArcIt!=lemon::INVALID;++outArcIt){
+                    const Node otherNode = graph.target(*outArcIt);
+                    const size_t otherNodeId = graph.id(otherNode);
+
+                    if(pq.contains(otherNodeId)){
+                        const Edge edge(*outArcIt);
+                        const DistanceType currentDist      = distance[otherNode];
+                        const DistanceType alternativeDist  = distance[topNode]+weights[edge];
+                        if(alternativeDist<currentDist){
+                            pq.push(otherNodeId,alternativeDist);
+                            distance[otherNode]=alternativeDist;
+                            predecessors[otherNode]=topNode;
+                        }
+                    }
+                    if(target==otherNode){
+                        finished=true;
+                        break;
+                    }
+                }
+            }
+            else{
+                finished=true;
+                break;
+            }
+            if(finished){
+                break;
+            }
+        }
+    }
+
+
+
+
+    template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE>
+    void shortestPathDijkstraFast(
+        const GRAPH         &                                        graph,
+        const typename GRAPH::Node &                                 source,
+        const WEIGHTS       &                                        weights,
+        PREDECESSORS        &                                        predecessors,
+        DISTANCE            &                                        distance,
+        vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> pq,
+        const typename GRAPH::Node &    target  = lemon::INVALID,
+        const bool fill=true
+    ){
+
+        typedef GRAPH                       Graph;
+        typedef typename Graph::Node        Node;
+        typedef typename Graph::Edge        Edge;
+        typedef typename Graph::NodeIt      NodeIt;
+        typedef typename Graph::OutArcIt    OutArcIt;
+        typedef typename WEIGHTS::value_type     WeightType;
+        typedef typename DISTANCE::value_type    DistanceType;
+        const size_t maxNodeId = graph.maxNodeId();
+        //vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> pq(maxNodeId+1);
 
         for(NodeIt n(graph);n!=lemon::INVALID;++n){
             const Node node(*n);
@@ -465,7 +537,7 @@ namespace vigra{
         typedef typename DISTANCE::value_type    DistanceType;
 
         typename  GRAPH:: template NodeMap<bool> closedSet(graph);
-        vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> estimatedDistanceOpenSet(graph.maxNodeId());
+        vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> estimatedDistanceOpenSet(graph.maxNodeId()+1);
         // initialize
         for(NodeIt n(graph);n!=lemon::INVALID;++n){
             const Node node(*n);

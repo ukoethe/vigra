@@ -174,6 +174,52 @@ namespace vigra{
         return distanceImage;
     }
 
+    /*
+    template<unsigned int DIM,class DTAG>
+    void pyGridGraphAllPairsOfShortestPathDijkstra(
+        NumpyArray<DIM,float>   edgeIndicatorImage
+    ){
+
+        //resize output? 
+       //distanceImage.reshapeIfEmpty(edgeIndicatorImage.shape());
+
+        // make a grid graph
+        typedef GridGraph< DIM,boost::undirected_tag > Graph;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::vertex_descriptor vertex_descriptor;
+        typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,float> > NodeFloatMap;
+        typedef OnTheFlyEdgeMap<Graph,NodeFloatMap> ImplicitEdgeMap;
+
+        // make grid graph
+        const Graph g(edgeIndicatorImage.shape());
+
+        // make a node map from edgeIndicator image
+        // and make implicit edge map from that
+        NodeFloatMap edgeIndicatorNodeMap(g,edgeIndicatorImage);
+        ImplicitEdgeMap edgeIndicatorEdgeMap(g,edgeIndicatorNodeMap);
+
+        // make a distance map and predecessor map
+        typedef typename Graph:: template NodeMap<vertex_descriptor> PredecessorMapType;
+        typedef typename Graph:: template NodeMap<float> DistMapType;
+        typedef typename Graph:: template NodeMap<int>   IndexMapType;
+
+
+        PredecessorMapType pmap(g);
+        DistMapType        dmap(g);
+
+        vigra::ChangeablePriorityQueue<float> pq(g.maxNodeId()+1);
+
+        size_t counter=0;
+        for(NodeIt n(g);n!=lemon::INVALID;++n){
+            shortestPathDijkstraFast(g,*n,edgeIndicatorEdgeMap,pmap,dmap,pq);
+            if(counter % 1==0)
+                std::cout<<"\r"<<std::setw(10)<<counter<<"/"<<g.nodeNum()<<std::flush;
+            ++counter;
+        }
+
+        
+    }
 
 
     template<unsigned int DIM,class DTAG>
@@ -234,6 +280,7 @@ namespace vigra{
             return pathCooordinates;
         }
     }
+        */
 
 
 
@@ -268,7 +315,10 @@ namespace vigra{
         ;
 
         python::def("shortestImagePathDijkstra",registerConverters(&pyGridGraphShortestPathDijkstra<DIM,boost::undirected_tag>) );
-        python::def("shortestImagePathAStar",registerConverters(&pyGridGraphShortestPathAStar<DIM,boost::undirected_tag>) );
+       
+        //python::def("shortestImagePathAStar",registerConverters(&pyGridGraphShortestPathAStar<DIM,boost::undirected_tag>) );
+        //python::def("allPairsOfshortestImagePath",registerConverters(&pyGridGraphAllPairsOfShortestPathDijkstra<DIM,boost::undirected_tag>) );
+
 
         python::def("shortestImagePathDistanceImageDijkstra",registerConverters(&pyGridGraphShortestPathDijkstraDistanceImage<DIM,boost::undirected_tag>),
             (
