@@ -650,6 +650,51 @@ namespace vigra{
         }
     }  
 
+
+
+    template< class GRAPH , class EDGE_WEIGHTS, class NODE_SIZE>
+    void felzenszwalbSegmentation(
+        const GRAPH &         graph,
+        const EDGE_WEIGHTS &  edgeWeights,
+        const NODE_SIZE    &  nodeSizes
+    ){
+        typedef GRAPH Graph;
+        typedef EDGE_WEIGHTS::Value EdgeWeightType;
+        typedef EDGE_WEIGHTS::Value NodeSizeType;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph:: template NodeMap<WeightType>   NodeIntDiffMap;
+        typedef typename Graph:: template NodeMap<NodeSizeType> NodeSizeMap;
+
+
+        typedef EdgeMapIteratorHelper<GRAPH,WEIGHTS>     WeightIterHelper;
+
+        // initalize node size map  and
+
+        // initlaize internal node diff map
+
+        // sort the edges by their weights
+        std::vector<Edge> sortedEdges;
+        edgeSort(graph,edgeWeights,sortedEdges);
+
+        // make the ufd
+        Partition<size_t> ufd(g.maxNodeId()+1);
+
+        // iterate over edges is the sorted order
+        for(size_t i=0;i<sortedEdges.size();++i){
+            const Edge e  = sortedEdges[e];
+            const Node u  = g.u(e);
+            const Node v  = g.v(e);
+            const size_t ui = g.id(u);
+            const size_t vi = g.id(v);
+
+            // disjoint ?
+            if(ufd.find(ui)!=ufd.find(vi)){
+                //check if to merge or not
+            }
+        }
+    } 
+
 } // namespace vigra
 
 #endif // VIGRA_GRAPH_MAP_ALGORITHMS_HXX
