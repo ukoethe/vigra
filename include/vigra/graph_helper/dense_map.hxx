@@ -273,10 +273,10 @@ public:
 
     typedef  MultiArray<1,typename AV::value_type>           Value;
     typedef  MultiArrayView<1,typename AV::value_type>       Reference;
-    typedef  MultiArrayView<1,const typename AV::value_type> ConstReference;
+    typedef  MultiArrayView<1,typename AV::value_type> ConstReference;
     typedef  MultiArray<1,typename AV::value_type>           value_type;
     typedef  MultiArrayView<1,typename AV::value_type>       reference;
-    typedef  MultiArrayView<1,const typename AV::value_type> const_reference;
+    typedef  MultiArrayView<1,typename AV::value_type> const_reference;
     //typedef Value &                                Reference;
     //typedef const Value &                          ConstReference;
 
@@ -294,11 +294,11 @@ public:
         return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
     }
     ConstReference operator[](const Key & key)const{
-        return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+        return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
     }
 private:
     const Graph * graph_;
-    AV array_;
+    mutable AV array_;
 
 };
 
@@ -318,10 +318,10 @@ public:
 
     typedef  MultiArray<1,typename AV::value_type>           Value;
     typedef  MultiArrayView<1,typename AV::value_type>       Reference;
-    typedef  MultiArrayView<1,const typename AV::value_type> ConstReference;
+    typedef  MultiArrayView<1,typename AV::value_type> ConstReference;
     typedef  MultiArray<1,typename AV::value_type>           value_type;
     typedef  MultiArrayView<1,typename AV::value_type>       reference;
-    typedef  MultiArrayView<1,const typename AV::value_type> const_reference;
+    typedef  MultiArrayView<1,typename AV::value_type> const_reference;
     //typedef Value &                                Reference;
     //typedef const Value &                          ConstReference;
 
@@ -343,7 +343,7 @@ public:
     }
 private:
     const Graph * graph_;
-    AV array_;
+    mutable AV array_;
 
 };
 
@@ -352,118 +352,6 @@ private:
 } // end namespace vigra
 
 
-namespace boost{
-
-    template<class T,class KEY,class REF,class CREF>
-    void put( vigra::DenseReferenceMap<T,KEY,REF,CREF> & pmap, const KEY & key ,CREF value){
-        pmap[key]=value;
-    }
-    template<class T,class KEY,class REF,class CREF>
-    void get(const vigra::DenseReferenceMap<T,KEY,REF,CREF> & pmap, const KEY & key ,REF value){
-        value=pmap[key];
-    }
-
-
-    template<class GRAPH,class ITEM,class T,class REF,class CREF>
-    void put( vigra::DenseGraphItemReferenceMap<GRAPH,ITEM,T,REF,CREF> & pmap, const ITEM & key ,CREF value){
-        pmap[key]=value;
-    }
-    template<class GRAPH,class ITEM,class T,class REF,class CREF>
-    void get(const vigra::DenseGraphItemReferenceMap<GRAPH,ITEM,T,REF,CREF> & pmap, const ITEM & key ,REF value){
-        value=pmap[key];
-    }
-
-    template<class GRAPH,class T,class REF,class CREF>
-    void put( vigra::DenseNodeReferenceMap<GRAPH,T,REF,CREF> & pmap, const typename GRAPH::vertex_descriptor & key ,CREF value){
-        pmap[key]=value;
-    }
-    template<class GRAPH,class T,class REF,class CREF>
-    void get(const vigra::DenseNodeReferenceMap<GRAPH,T,REF,CREF> & pmap, const typename GRAPH::vertex_descriptor & key ,REF value){
-        value=pmap[key];
-    }
-    template<class GRAPH,class T,class REF,class CREF>
-    void put( vigra::DenseEdgeReferenceMap<GRAPH,T,REF,CREF> & pmap, const typename GRAPH::edge_descriptor & key ,CREF value){
-        pmap[key]=value;
-    }
-    template<class GRAPH,class T,class REF,class CREF>
-    void get(const vigra::DenseEdgeReferenceMap<GRAPH,T,REF,CREF> & pmap, const typename GRAPH::edge_descriptor & key ,REF value){
-        value=pmap[key];
-    }
-
-    template<class GRAPH,class AV>
-    void put( 
-            vigra::NumpyScalarEdgeMap<GRAPH,AV> & pmap, 
-            const typename GRAPH::vertex_descriptor & key ,
-            typename vigra::NumpyScalarEdgeMap<GRAPH,AV>::const_reference value
-    ){
-        pmap[key]=value;
-    }
-
-    template<class GRAPH,class AV>
-    void get( 
-            const vigra::NumpyScalarEdgeMap<GRAPH,AV> & pmap, 
-            const typename GRAPH::vertex_descriptor & key ,
-            typename vigra::NumpyScalarEdgeMap<GRAPH,AV>::reference value
-    ){
-        value = pmap[key];
-    }
-
-    template<class GRAPH,class AV>
-    void put( 
-            vigra::NumpyScalarNodeMap<GRAPH,AV> & pmap, 
-            const typename GRAPH::vertex_descriptor & key ,
-            typename vigra::NumpyScalarNodeMap<GRAPH,AV>::const_reference value
-    ){
-        pmap[key]=value;
-    }
-
-    template<class GRAPH,class AV>
-    void get( 
-            const vigra::NumpyScalarNodeMap<GRAPH,AV> & pmap, 
-            const typename GRAPH::vertex_descriptor & key ,
-            typename vigra::NumpyScalarNodeMap<GRAPH,AV>::reference value
-    ){
-        value = pmap[key];
-    }
-
-    template<class GRAPH,class AV>
-    void put( 
-            vigra::NumpyMultibandNodeMap<GRAPH,AV> & pmap, 
-            const typename GRAPH::vertex_descriptor & key ,
-            typename vigra::NumpyMultibandNodeMap<GRAPH,AV>::const_reference value
-    ){
-        pmap[key]=value;
-    }
-
-    template<class GRAPH,class AV>
-    void get( 
-            const vigra::NumpyMultibandNodeMap<GRAPH,AV> & pmap, 
-            const typename GRAPH::vertex_descriptor & key ,
-            typename vigra::NumpyMultibandNodeMap<GRAPH,AV>::reference value
-    ){
-        value = pmap[key];
-    }
-
-
-    template<class GRAPH,class AV>
-    void put( 
-            vigra::NumpyMultibandEdgeMap<GRAPH,AV> & pmap, 
-            const typename GRAPH::vertex_descriptor & key ,
-            typename vigra::NumpyMultibandEdgeMap<GRAPH,AV>::const_reference value
-    ){
-        pmap[key]=value;
-    }
-
-    template<class GRAPH,class AV>
-    void get( 
-            const vigra::NumpyMultibandEdgeMap<GRAPH,AV> & pmap, 
-            const typename GRAPH::vertex_descriptor & key ,
-            typename vigra::NumpyMultibandEdgeMap<GRAPH,AV>::reference value
-    ){
-        value = pmap[key];
-    }
-
-}
 
 
 #endif //VIGRA_DENSE_REFERENCE_MAP_HXX 

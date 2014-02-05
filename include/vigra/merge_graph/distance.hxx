@@ -37,6 +37,26 @@ namespace distances{
 	};
 
 
+	template<class T>
+	struct Manhattan{
+		Manhattan(){}
+
+		template<class A,class B>
+		T operator()(const A & a ,const B & b)const{
+
+			const size_t nA=a.shape(0);
+			const size_t nB=b.shape(0);
+			T res = 0.0;
+			for(size_t i=0;i<nA;++i){
+				const T aa=static_cast<T>(a(i));
+				const T bb=static_cast<T>(b(i));
+				const T diff = aa-bb;
+				res+=std::fabs(diff);	
+			}
+			return res;
+		}
+
+	};
 
 	template<class T>
 	struct SquaredNorm{

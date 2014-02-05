@@ -47,6 +47,7 @@
 #include <vigra/graph_algorithms.hxx>
 #include <vigra/python_graph_generalization.hxx>
 #include <vigra/graph_helper/on_the_fly_edge_map.hxx>
+#include <vigra/merge_graph/distance.hxx>
 
 /*boost*/
 #include <boost/graph/dijkstra_shortest_paths.hpp>
@@ -70,6 +71,50 @@ namespace vigra{
 
 
 
+    template<unsigned int DIM,class DTAG>
+    NumpyAnyArray pyGridGraphFelzenszwalbSegmentation(
+        NumpyArray<DIM+1,Multiband<float> >   image,
+        const float                           k, 
+        NumpyArray<DIM,UInt32>                labeling = NumpyArray<DIM,UInt32>()
+    ){
+        typename NumpyArray<DIM,UInt32>::difference_type outShape;
+        for(size_t i=0;i<DIM;++i){
+            outShape[i]=image.shape(i);
+        }
+        //resize output? 
+        labeling.reshapeIfEmpty(outShape);
+
+        // make a grid graph
+        typedef GridGraph< DIM,boost::undirected_tag > Graph;
+        typedef typename Graph::Node Node;
+        typedef NumpyMultibandNodeMap<Graph,  NumpyArray<DIM+1,Multiband<float> >  > NodeMultiFloatMap;
+        typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,UInt32> > NodeLabelMap;
+        typedef distances::Manhattan<float> DistanceType;
+        typedef OnTheFlyEdgeMap<Graph,NodeMultiFloatMap,DistanceType,float > ImplicitEdgeMap;
+
+        // make grid graph
+        const Graph g(outShape);
+
+        // make a node map from edgeIndicator image
+        // and make implicit edge map from that
+        NodeMultiFloatMap imageMap(g,image);
+        DistanceType distanceFunctor;
+        ImplicitEdgeMap edgeIndicatorEdgeMap(g,imageMap,distanceFunctor);
+
+        // make the result label map from image
+         NodeLabelMap nodeLabelingMap(g,labeling);
+
+        // make sizemap filled with ones
+        typename  Graph::template NodeMap<size_t>  nodeSizeMap(g,1.0);
+
+        // run alg.
+        std::cout<<"start felzenszwalbSegmentation\n";
+        felzenszwalbSegmentation(g,edgeIndicatorEdgeMap,nodeSizeMap,k,nodeLabelingMap);
+        std::cout<<"done felzenszwalbSegmentation\n";
+        return labeling;
+    }
+
+
 
     template<unsigned int DIM,class DTAG>
     NumpyAnyArray pyGridGraphShortestPathDijkstra(
@@ -82,13 +127,14 @@ namespace vigra{
         typedef typename Graph::Node Node;
         typedef typename Graph::vertex_descriptor vertex_descriptor;
         typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,float> > NodeFloatMap;
-        typedef OnTheFlyEdgeMap<Graph,NodeFloatMap> ImplicitEdgeMap;
+        typedef OnTheFlyEdgeMap<Graph,NodeFloatMap,std::plus<float> ,float> ImplicitEdgeMap;
 
 
         // make a node map from edgeIndicator image
         const Graph g(edgeIndicatorImage.shape());
         NodeFloatMap edgeIndicatorNodeMap(g,edgeIndicatorImage);
-        ImplicitEdgeMap edgeIndicatorEdgeMap(g,edgeIndicatorNodeMap);
+        std::plus<float> functor;
+        ImplicitEdgeMap edgeIndicatorEdgeMap(g,edgeIndicatorNodeMap,functor);
 
 
         // make a distance map and predecessor map
@@ -145,7 +191,7 @@ namespace vigra{
         typedef typename Graph::Node Node;
         typedef typename Graph::vertex_descriptor vertex_descriptor;
         typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,float> > NodeFloatMap;
-        typedef OnTheFlyEdgeMap<Graph,NodeFloatMap> ImplicitEdgeMap;
+        typedef OnTheFlyEdgeMap<Graph,NodeFloatMap,std::plus<float> ,float> ImplicitEdgeMap;
 
         // make grid graph
         const Graph g(edgeIndicatorImage.shape());
@@ -153,7 +199,8 @@ namespace vigra{
         // make a node map from edgeIndicator image
         // and make implicit edge map from that
         NodeFloatMap edgeIndicatorNodeMap(g,edgeIndicatorImage);
-        ImplicitEdgeMap edgeIndicatorEdgeMap(g,edgeIndicatorNodeMap);
+        std::plus<float> functor;
+        ImplicitEdgeMap edgeIndicatorEdgeMap(g,edgeIndicatorNodeMap,functor);
 
 
         // make a distance map from distance image
@@ -316,10 +363,14 @@ namespace vigra{
 
         python::def("shortestImagePathDijkstra",registerConverters(&pyGridGraphShortestPathDijkstra<DIM,boost::undirected_tag>) );
        
-        //python::def("shortestImagePathAStar",registerConverters(&pyGridGraphShortestPathAStar<DIM,boost::undirected_tag>) );
-        //python::def("allPairsOfshortestImagePath",registerConverters(&pyGridGraphAllPairsOfShortestPathDijkstra<DIM,boost::undirected_tag>) );
-
-
+      
+        python::def("felzenszwalbSegmentation",registerConverters(&pyGridGraphFelzenszwalbSegmentation<DIM,boost::undirected_tag>),
+            (
+               python::arg("weights"),
+               python::arg("k"),
+               python::arg("out")=python::object()
+            )
+        );
         python::def("shortestImagePathDistanceImageDijkstra",registerConverters(&pyGridGraphShortestPathDijkstraDistanceImage<DIM,boost::undirected_tag>),
             (
                python::arg("weights"),

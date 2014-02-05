@@ -40,7 +40,12 @@
 #ifndef VIGRA_GRAPH_MAP_ALGORITHMS_HXX
 #define VIGRA_GRAPH_MAP_ALGORITHMS_HXX
 
+/*std*/
+#include <algorithm>
+#include <vector>
+#include <functional>
 
+/*vigra*/
 #include <vigra/graphs.hxx>
 #include <vigra/graph_generalization.hxx>
 #include <vigra/multi_gridgraph.hxx>
@@ -51,6 +56,46 @@
 
 
 namespace vigra{
+
+
+    namespace detail_graph_algorithms{
+        template <class GRAPH_MAP,class COMPERATOR>
+        struct GraphItemCompare
+        {
+            
+            GraphItemCompare(const GRAPH_MAP & map,const COMPERATOR & comperator)
+            : map_(map),
+              comperator_(comperator){
+
+            }
+
+            template<class KEY>
+            bool operator()(const KEY & a, const KEY & b) const{
+                return comperator_(map_[a],map_[b]);
+            }
+
+            const GRAPH_MAP & map_;
+            const COMPERATOR & comperator_;
+        };
+    }
+
+    template<class GRAPH,class WEIGHTS,class COMPERATOR>
+    void edgeSort(
+        const GRAPH   & g,
+        const WEIGHTS & weights,
+        const COMPERATOR  & comperator,
+        std::vector<typename GRAPH::Edge> & sortedEdges
+    ){
+        sortedEdges.resize(g.edgeNum());
+        size_t c=0;
+        for(typename GRAPH::EdgeIt e(g);e!=lemon::INVALID;++e){
+            sortedEdges[c]=*e;
+            ++c;
+        }
+        detail_graph_algorithms::GraphItemCompare<WEIGHTS,COMPERATOR> edgeComperator(weights,comperator);
+        std::sort(sortedEdges.begin(),sortedEdges.end(),edgeComperator);
+    }
+
 
     template<class GRAPH,class MAP>
     class EdgeMapIteratorHelper{
@@ -264,17 +309,8 @@ namespace vigra{
             out[*e]=Value(0);
             const size_t nEdges = hyperEdgeCoords.size();
             for(size_t i=0;i<nEdges;++i){
-                //TinyVectorType edgeCoord = hyperEdgeCoords[i];
-                //const size_t oi=edgeCoord[edgeCoord.size()-1];
-
-                // todo: replace me with morge "vigra-ish" functions
-                //typedef typename IMAGE::difference_type DiffType;
-                //DiffType imgCoord;
-                //std::copy(edgeCoord.begin(),edgeCoord.begin()+imgCoord.size(),imgCoord.begin());
                 out[*e]+=image[graph.u( hyperEdgeCoords[i]) ];
                 out[*e]+=image[graph.v( hyperEdgeCoords[i]) ];
-                //imgCoord[oi]+=1;
-                //out[*e]+=image[imgCoord];
             }
             // todo: replace me with functors normalization / outpu
             out[*e]/=static_cast<Value>(2*hyperEdgeCoords.size());
@@ -626,21 +662,16 @@ namespace vigra{
         std::fill(IsMstIterHelper::begin(graph,isMstEdge),IsMstIterHelper::end(graph,isMstEdge),false);
 
 
-        //// argort weights... (this might be solved more elegant with a some kind of coupled iterator)
-        std::vector< std::pair<WeightType,Edge> > edgeAndWeights(graph.edgeNum());
-        size_t denseIndex=0;
-        for(EdgeIt e(graph);e!=lemon::INVALID;++e){
-            edgeAndWeights[denseIndex].first=weights[*e];
-            edgeAndWeights[denseIndex].second=e;
-            ++denseIndex;
-        }
-        detail_mst::Compare<WeightType,Edge> comperator;
-        std::sort(edgeAndWeights.begin(),edgeAndWeights.end(),comperator);
+    
+        // sort the edges by their weights
+        std::vector<Edge> sortedEdges;
+        std::less<WeightType> comperator;
+        edgeSort(graph,weights,comperator,sortedEdges);
 
-        UfdType ufd(graph.maxNodeId());
+        UfdType ufd(graph.maxNodeId()+1);
 
-        for(size_t i=0;i<edgeAndWeights.size();++i){
-            const Edge e=edgeAndWeights[i].second;
+        for(size_t i=0;i<sortedEdges.size();++i){
+            const Edge e=sortedEdges[i];
             const size_t uId=graph.id(graph.u(e));
             const size_t vId=graph.id(graph.v(e));
             if(ufd.find(uId)!=ufd.find(vId)){
@@ -651,47 +682,78 @@ namespace vigra{
     }  
 
 
+   
 
-    template< class GRAPH , class EDGE_WEIGHTS, class NODE_SIZE>
+
+
+    template< class GRAPH , class EDGE_WEIGHTS, class NODE_SIZE,class NODE_LABEL_MAP>
     void felzenszwalbSegmentation(
         const GRAPH &         graph,
         const EDGE_WEIGHTS &  edgeWeights,
-        const NODE_SIZE    &  nodeSizes
+        const NODE_SIZE    &  nodeSizes,
+        const float           k,
+        NODE_LABEL_MAP     &  nodeLabeling
     ){
         typedef GRAPH Graph;
-        typedef EDGE_WEIGHTS::Value EdgeWeightType;
-        typedef EDGE_WEIGHTS::Value NodeSizeType;
+        typedef typename EDGE_WEIGHTS::Value WeightType;
+        typedef typename EDGE_WEIGHTS::Value NodeSizeType;
         typedef typename Graph::Node Node;
         typedef typename Graph::Edge Edge;
         typedef typename Graph:: template NodeMap<WeightType>   NodeIntDiffMap;
-        typedef typename Graph:: template NodeMap<NodeSizeType> NodeSizeMap;
+        typedef typename Graph:: template NodeMap<NodeSizeType> NodeSizeAccMap;
 
+        typedef NodeMapIteratorHelper<GRAPH,NODE_SIZE  >      NodeSizeMapHelper;
+        typedef NodeMapIteratorHelper<GRAPH,NodeSizeAccMap  > NodeAccSizeMapHelper;
+        typedef NodeMapIteratorHelper<GRAPH,NodeIntDiffMap  > NodeIntDiffMapHelper;
+        typedef detail::Partition<size_t> UfdType;
 
-        typedef EdgeMapIteratorHelper<GRAPH,WEIGHTS>     WeightIterHelper;
+        // initalize node size map  and internal diff map
+        NodeIntDiffMap internalDiff(graph);
+        NodeSizeAccMap nodeSizeAcc(graph);
+        std::copy(NodeSizeMapHelper::begin(graph,nodeSizes),NodeSizeMapHelper::end(graph,nodeSizes),NodeAccSizeMapHelper::begin(graph,nodeSizeAcc));
+        std::fill(NodeIntDiffMapHelper::begin(graph,internalDiff),NodeIntDiffMapHelper::end(graph,internalDiff),static_cast<WeightType>(0.0));
 
-        // initalize node size map  and
 
         // initlaize internal node diff map
 
         // sort the edges by their weights
         std::vector<Edge> sortedEdges;
-        edgeSort(graph,edgeWeights,sortedEdges);
+        std::less<WeightType> comperator;
+        edgeSort(graph,edgeWeights,comperator,sortedEdges);
 
         // make the ufd
-        Partition<size_t> ufd(g.maxNodeId()+1);
+        UfdType ufd(graph.maxNodeId()+1);
 
         // iterate over edges is the sorted order
         for(size_t i=0;i<sortedEdges.size();++i){
-            const Edge e  = sortedEdges[e];
-            const Node u  = g.u(e);
-            const Node v  = g.v(e);
-            const size_t ui = g.id(u);
-            const size_t vi = g.id(v);
+            const Edge e  = sortedEdges[i];
+            const size_t rui = ufd.find(graph.id(graph.u(e)));
+            const size_t rvi = ufd.find(graph.id(graph.v(e)));
+            const Node   ru  = graph.nodeFromId(rui);
+            const Node   rv  = graph.nodeFromId(rvi);
+            if(rui!=rvi){
 
-            // disjoint ?
-            if(ufd.find(ui)!=ufd.find(vi)){
-                //check if to merge or not
+                //check if to merge or not ?
+                const WeightType   w         = edgeWeights[e];
+                const NodeSizeType sizeRu    = nodeSizeAcc[ru];
+                const NodeSizeType sizeRv    = nodeSizeAcc[rv];
+                const WeightType tauRu       = static_cast<WeightType>(k)/static_cast<WeightType>(sizeRu);
+                const WeightType tauRv       = static_cast<WeightType>(k)/static_cast<WeightType>(sizeRv);
+                const WeightType minIntDiff  = std::min(internalDiff[ru]+tauRu,internalDiff[rv]+tauRv);
+                if(w<=minIntDiff){
+                    // do merge
+                    ufd.merge(rui,rvi);
+                    // update size and internal difference
+                    const size_t newRepId = ufd.find(rui);
+                    const Node newRepNode = graph.nodeFromId(newRepId);
+                    internalDiff[newRepNode]=w;
+                    nodeSizeAcc[newRepNode] = sizeRu+sizeRv;
+                }
             }
+        }
+        for(typename  GRAPH::NodeIt n(graph);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            nodeLabeling[node]=ufd.find(graph.id(node));
         }
     } 
 

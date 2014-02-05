@@ -45,7 +45,7 @@
 namespace vigra{
 
 
-template<class G,class NODE_MAP>
+template<class G,class NODE_MAP,class FUNCTOR,class RESULT>
 class OnTheFlyEdgeMap{
 
 public:
@@ -53,8 +53,8 @@ public:
     typedef typename Graph::Node Node;
     typedef NODE_MAP  NodeMap;
     typedef typename  Graph::Edge      Key;
-    typedef typename  NodeMap::Value   Value;
-    typedef typename  NodeMap::Value   ConstReference;
+    typedef RESULT   Value;
+    typedef RESULT   ConstReference;
 
     typedef Key             key_type;
     typedef Value           value_type;
@@ -62,61 +62,35 @@ public:
 
     typedef boost::readable_property_map_tag category;
 
-    OnTheFlyEdgeMap(const Graph & graph,const NodeMap & nodeMap)
+    OnTheFlyEdgeMap(const Graph & graph,const NodeMap & nodeMap,FUNCTOR & f)
     :   graph_(graph),
-        nodeMap_(nodeMap){
+        nodeMap_(nodeMap),
+        f_(f){
     }
 
     ConstReference operator[](const Key & key){
         const Node u(graph_.u(key));
         const Node v(graph_.v(key));
-        return (nodeMap_[u]+nodeMap_[v])/static_cast<Value>(2.0);
+        return f_(nodeMap_[u],nodeMap_[v]);
     }
 
     ConstReference operator[](const Key & key)const{
         const Node u(graph_.u(key));
         const Node v(graph_.v(key));
-        return (nodeMap_[u]+nodeMap_[v])/static_cast<Value>(2.0);
+        return f_(nodeMap_[u],nodeMap_[v]);
     }
 private:
 
     const Graph & graph_;
     const NodeMap & nodeMap_;
-
+    FUNCTOR & f_;
 };
-
-
-
-
 
 
 
 } // end namespace vigra
 
 
-namespace boost{
-
-
-    template<class G,class NODE_MAP>
-    typename NODE_MAP::value_type
-    get(const vigra::OnTheFlyEdgeMap<G,NODE_MAP> & pmap, const typename G::Edge & key){
-        return pmap[key];
-    }
-
-
-
-    // property_traits class template
-    template <class G,class NODE_MAP >
-    struct property_traits< vigra::OnTheFlyEdgeMap<G,NODE_MAP> >
-    {
-        typedef vigra::OnTheFlyEdgeMap<G,NODE_MAP> PropMap;
-        typedef typename PropMap::key_type    key_type;
-        typedef typename PropMap::value_type  value_type; 
-        //typedef typename PropMap::reference   reference;
-        typedef typename PropMap::category    category;
-    };
-
-}
 
 
 #endif //VIGRA_ON_THE_FLY_EDGE_MAP_HXX 
