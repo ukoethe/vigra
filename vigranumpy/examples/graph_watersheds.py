@@ -31,15 +31,14 @@ def segImg(img,labels):
 
     return imgToDisplay
 
-def showSeg(img,labels):
-    vigra.imshow(segImg(img,labels))
+
 
 
 print "get input"
 f       = '100075.jpg'
 #f       = '69015.jpg'
-#f       = '12003.jpg'
-sigma   = 1.0
+f       = '12003.jpg'
+sigma   = 4.0
 img     = vigra.impex.readImage(f)#[0:100,0:100,:]
 imgLab  = vigra.colors.transform_RGB2Lab(img)
 newShape = [img.shape[0]*2-1,img.shape[1]*2-1]
@@ -47,7 +46,7 @@ newShape = [img.shape[0]*2-1,img.shape[1]*2-1]
 #img    = vigra.resize(img,newShape)
 gradmag = vigra.filters.gaussianGradientMagnitude(imgLab,sigma)
 gradmag = numpy.squeeze(gradmag).astype(numpy.float32)
-labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,15)
+labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,25)
 labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
 
 numLabels = labels.max()
@@ -94,8 +93,14 @@ class WsCallsback:
         self.img = img
         self.seedNr = 1
     def clearSeeds(self, event=None):
+        print "clear segs"
         self.seeds[:]=0
         self.seedNr = 1
+
+    def nextSeed(self, event):
+        print "next seed "
+        self.seedNr +=1
+        print self.seedNr
 
     def segment(self, event):
 
@@ -117,21 +122,23 @@ class WsCallsback:
                 y/=2
                 print "ragId",x,y,self.labels[x,y]
                 self.seeds[self.labels[x,y]]=self.seedNr
-                self.seedNr+=1
+                #self.seedNr+=1
 
 callback = WsCallsback(seeds,labels,img)
+axclear = plt.axes([0.5, 0.05, 0.1, 0.075])
 axprev = plt.axes([0.7, 0.05, 0.1, 0.075])
 axnext = plt.axes([0.81, 0.05, 0.1, 0.075])
 
 
-clear = Button(axnext, 'Clear')
+clear = Button(axclear, 'Clear')
 clear.on_clicked(callback.clearSeeds)
+
 segment = Button(axprev, 'Segment')
 segment.on_clicked(callback.segment)
 
+nextSeed = Button(axnext, 'NextSeed')
+nextSeed.on_clicked(callback.nextSeed)
+
 cid = fig.canvas.mpl_connect('button_press_event', callback.onclick)
 
-
-
-#showSeg(img,newLabel)
 pylab.show()

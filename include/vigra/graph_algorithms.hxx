@@ -58,11 +58,20 @@
 #include <vigra/adjacency_list_graph.hxx>
 
 
-
-
+#define LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(GRAPH_CLS,PREFIX,POSTFIX) \
+    typedef typename GRAPH_CLS::Edge        PREFIX##Edge      ## POSTFIX; \
+    typedef typename GRAPH_CLS::Node        PREFIX##Node      ## POSTFIX; \
+    typedef typename GRAPH_CLS::Arc         PREFIX##Arc       ## POSTFIX; \
+    typedef typename GRAPH_CLS::EdgeIt      PREFIX##EdgeIt##POSTFIX; \
+    typedef typename GRAPH_CLS::NodeIt      PREFIX##NodeIt    ## POSTFIX; \
+    typedef typename GRAPH_CLS::ArcIt       PREFIX##ArcIt     ## POSTFIX; \
+    typedef typename GRAPH_CLS::OutArcIt    PREFIX##OutArcIt  ## POSTFIX; \
+    typedef typename GRAPH_CLS::OutArcIt    PREFIX##OutArcIt  ## POSTFIX
 
 
 namespace vigra{
+
+
 
 
     namespace detail_graph_algorithms{
@@ -164,7 +173,6 @@ namespace vigra{
 
     };
 
-
     template<class GRAPH,class MAP>
     class NodeMapIteratorHelper{
     public:
@@ -222,9 +230,25 @@ namespace vigra{
             return const_iterator(iter,f);
         }
     private:
-
     };
 
+
+    template<class G,class A,class B>
+    void copyNodeMap(const G & g,const A & a ,B & b){
+        std::copy(NodeMapIteratorHelper<G,A>::begin(g,a),NodeMapIteratorHelper<G,A>::end(g,a), NodeMapIteratorHelper<G,B>::begin(g,b));
+    }
+    template<class G,class A,class B>
+    void copyEdgeMap(const G & g,const A & a ,B & b){
+        std::copy(EdgeMapIteratorHelper<G,A>::begin(g,a),EdgeMapIteratorHelper<G,A>::end(g,a), EdgeMapIteratorHelper<G,B>::begin(g,b));
+    }
+    template<class G,class A,class T>
+    void fillNodeMap(const G & g, A & a ,const T & value){
+        std::fill(NodeMapIteratorHelper<G,A>::begin(g,a),NodeMapIteratorHelper<G,A>::end(g,a), value);
+    }
+    template<class G,class A,class T>
+    void fillEdgeMap(const G & g,A & a ,const T & value){
+        std::fill(EdgeMapIteratorHelper<G,A>::begin(g,a),EdgeMapIteratorHelper<G,A>::end(g,a), value);
+    }
 
 
 
@@ -340,20 +364,11 @@ namespace vigra{
         typedef GRAPH_IN_NODE_LABEL_MAP LabelMap;
         typedef typename GraphMapTypeTraits<GRAPH_IN_NODE_LABEL_MAP>::Value LabelType;
         typedef GRAPH_IN GraphIn;
-        typedef typename GraphIn::Edge EdgeGraphIn;
-        typedef typename GraphIn::Node NodeGraphIn;
-        typedef typename GraphIn::EdgeIt EdgeItInGraph;
-        typedef typename GraphIn::NodeIt NodeItInGraph;
-        
-        typedef AdjacencyListGraph      GraphOut;
-        typedef typename GraphOut::Edge EdgeGraphOut;
-        typedef typename GraphOut::Node NodeGraphOut;
-        typedef typename GraphOut::EdgeIt EdgeItOutGraph;
-        typedef typename GraphOut::NodeIt NodeItOutGraph;
+        typedef AdjacencyListGraph GraphOut;
+        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(GraphIn, , GraphIn);
+        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(GraphOut, ,GraphOut);
         typedef typename GraphOut:: template EdgeMap< std::vector<EdgeGraphIn> > HyperEdgeMap;
         typedef typename GraphOut:: template NodeMap< std::vector<NodeGraphIn> > HyperNodeMap;
-
-        
         // iterate over all labels in the node map to find min max
         typedef NodeMapIteratorHelper<GraphIn,LabelMap> NodeIterHelper;
         const LabelType  minLabel = *std::min_element(NodeIterHelper::begin(graphIn,labels),NodeIterHelper::end(graphIn,labels));
@@ -384,7 +399,7 @@ namespace vigra{
             rag.addNode();
         }
         // add al edges
-        for(EdgeItInGraph e(graphIn);e!=lemon::INVALID;++e){
+        for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
             const LabelType lv = labels[graphIn.v(edge)];
@@ -399,7 +414,7 @@ namespace vigra{
 
         hyperEdges.assign(rag);
         // add edges
-        for(EdgeItInGraph e(graphIn);e!=lemon::INVALID;++e){
+        for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
             const LabelType lv = labels[graphIn.v(edge)];
@@ -421,10 +436,7 @@ namespace vigra{
     ){
 
         typedef GRAPH                       Graph;
-        typedef typename Graph::Node        Node;
-        typedef typename Graph::Edge        Edge;
-        typedef typename Graph::NodeIt      NodeIt;
-        typedef typename Graph::OutArcIt    OutArcIt;
+        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
         typedef typename WEIGHTS::value_type     WeightType;
         typedef typename DISTANCE::value_type    DistanceType;
         const size_t maxNodeId = graph.maxNodeId();
@@ -493,10 +505,7 @@ namespace vigra{
     ){
 
         typedef GRAPH                       Graph;
-        typedef typename Graph::Node        Node;
-        typedef typename Graph::Edge        Edge;
-        typedef typename Graph::NodeIt      NodeIt;
-        typedef typename Graph::OutArcIt    OutArcIt;
+        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
         typedef typename WEIGHTS::value_type     WeightType;
         typedef typename DISTANCE::value_type    DistanceType;
         const size_t maxNodeId = graph.maxNodeId();
@@ -571,10 +580,7 @@ namespace vigra{
     ){
 
         typedef GRAPH                       Graph;
-        typedef typename Graph::Node        Node;
-        typedef typename Graph::Edge        Edge;
-        typedef typename Graph::NodeIt      NodeIt;
-        typedef typename Graph::OutArcIt    OutArcIt;
+        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
 
         typedef typename WEIGHTS::value_type     WeightType;
         typedef typename DISTANCE::value_type    DistanceType;
@@ -652,9 +658,7 @@ namespace vigra{
     ){  
 
         typedef GRAPH Graph;
-        typedef typename Graph::Node Node;
-        typedef typename Graph::Edge Edge;
-        typedef typename Graph::EdgeIt EdgeIt;
+        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
         typedef typename WEIGHTS::Value WeightType;
         typedef EdgeMapIteratorHelper<GRAPH,WEIGHTS>     WeightIterHelper;
         typedef detail::Partition<size_t> UfdType;
@@ -694,37 +698,26 @@ namespace vigra{
         LABELS             & labels
     ){  
         typedef GRAPH Graph;
-        typedef typename Graph::Node Node;
-        typedef typename Graph::Edge Edge;
-        typedef typename Graph::EdgeIt EdgeIt;
-        typedef typename Graph::NodeIt NodeIt;
-        typedef typename Graph::OutArcIt OutArcIt;
+        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename SEEDS::Value   SeedType;
         typedef typename LABELS::Value  LabelType;
-        typedef typename Graph:: template NodeMap<bool> NodeBoolMap;
-
-
+        typedef typename Graph:: template NodeMap<bool>    NodeBoolMap;
         typedef NodeMapIteratorHelper<Graph,NodeBoolMap  > InPQHelper;
-        typedef NodeMapIteratorHelper<Graph,SEEDS  > SeedsHelper;
-        typedef NodeMapIteratorHelper<Graph,LABELS > LabelsHelper;
+        typedef NodeMapIteratorHelper<Graph,SEEDS  >       SeedsHelper;
+        typedef NodeMapIteratorHelper<Graph,LABELS >       LabelsHelper;
         typedef PriorityQueue<Node,WeightType,true> PQ;
 
         PQ pq;
         NodeBoolMap inPQ(g);
+        copyNodeMap(g,seeds,labels);
+        fillNodeMap(g,inPQ,false);
 
-        std::copy(SeedsHelper::begin(g,seeds),SeedsHelper::end(g,seeds),LabelsHelper::begin(g,labels));
-        std::fill(InPQHelper::begin(g,inPQ),InPQHelper::end(g,inPQ),false);
-
-
+        bool anySeed=false;
         for(NodeIt n(g);n!=lemon::INVALID;++n){
             const Node node(*n);
             if(labels[node]!=static_cast<LabelType>(0)){
-
-                //std::cout<<"seed node "<<g.id(node)<<" with seed label "<<labels[node]<<"\n";
-                // iterate over all neighbour nodes
-                // and  check if there are nodes with label 0
-
+                anySeed=true;
                 for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
                     const Edge edge(*a);
                     const Node neigbour=g.target(*a);
@@ -738,80 +731,82 @@ namespace vigra{
         }
 
 
-        //std::cout<<"pqsize "<< pq.size()<<"\n";
+        if(anySeed){
 
-        while(!pq.empty()){
-            const Node node       = pq.top();
-            const LabelType label = labels[node]; 
-            //std::cout<<"node "<<g.id(node)<<" with label "<<label<<"\n";
-            if(label!=0){
-                throw std::runtime_error("this should not happen 0");
-            }
-
-            pq.pop();
-
-            std::set<LabelType> neigbourLabels;
-
-            for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
-                const Edge edge(*a);
-                const Node neigbour=g.target(*a);
-                //std::cout<<"n-node "<<g.id(neigbour)<<" with label "<<labels[neigbour]<<"\n";
-                if(labels[neigbour]==static_cast<LabelType>(0)){
-                    if(!inPQ[neigbour]){
-                        //pq.push(neigbour,edgeWeights[edge]);
-                        //inPQ[neigbour]=true;
-                    }
+            while(!pq.empty()){
+                const Node node       = pq.top();
+                const LabelType label = labels[node]; 
+                //std::cout<<"node "<<g.id(node)<<" with label "<<label<<"\n";
+                if(label!=0){
+                    throw std::runtime_error("this should not happen 0");
                 }
-                else{
-                    neigbourLabels.insert(labels[neigbour]);
-                }
-            }
-            if(neigbourLabels.size()==0){
-                //throw std::runtime_error("this should not happen 1");
-            }
-            if(neigbourLabels.size()==1){
-                labels[node]=*neigbourLabels.begin();
 
+                pq.pop();
+                bool moreThanOneLabel = false;
+                LabelType labelFound  = 0 ;
                 for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
                     const Edge edge(*a);
                     const Node neigbour=g.target(*a);
-                    //std::cout<<"n-node "<<g.id(neigbour)<<" with label "<<labels[neigbour]<<"\n";
-                    if(labels[neigbour]==static_cast<LabelType>(0)){
-                        if(!inPQ[neigbour]){
-                            pq.push(neigbour,edgeWeights[edge]);
-                            inPQ[neigbour]=true;
+                    if(labels[neigbour]!=static_cast<LabelType>(0)){
+                        if(labelFound==0){
+                            labelFound=labels[neigbour];
+                        }
+                        else{
+                            moreThanOneLabel=true;
+                            break;
                         }
                     }
-                    else{
-                        neigbourLabels.insert(labels[neigbour]);
+                }
+                if(labelFound!=0 && !moreThanOneLabel ){
+                    labels[node]=labelFound;
+                    for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
+                        const Edge edge(*a);
+                        const Node neigbour=g.target(*a);
+                        if(labels[neigbour]==static_cast<LabelType>(0)){
+                            if(!inPQ[neigbour]){
+                                pq.push(neigbour,edgeWeights[edge]);
+                                inPQ[neigbour]=true;
+                            }
+                        }
                     }
                 }
             }
-        }
 
 
-        for(NodeIt n(g);n!=lemon::INVALID;++n){
-            const Node node(*n);
-            if(labels[node]==static_cast<LabelType>(0)){
+            for(NodeIt n(g);n!=lemon::INVALID;++n){
+                const Node node(*n);
+                if(labels[node]==static_cast<LabelType>(0)){
 
-                WeightType minWeight       = std::numeric_limits<WeightType>::infinity();
-                LabelType  minWeightLabel  = static_cast<LabelType>(0);
-                for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
-                    const Edge edge(*a);
-                    const Node neigbour=g.target(*a);
-                    if(labels[neigbour]!=0 && edgeWeights[edge]<minWeight){
-                        minWeight=edgeWeights[edge];;
-                        minWeightLabel=labels[neigbour];
+                    WeightType minWeight       = std::numeric_limits<WeightType>::infinity();
+                    LabelType  minWeightLabel  = static_cast<LabelType>(0);
+                    for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
+                        const Edge edge(*a);
+                        const Node neigbour=g.target(*a);
+                        if(labels[neigbour]!=0 && edgeWeights[edge]<minWeight){
+                            minWeight=edgeWeights[edge];;
+                            minWeightLabel=labels[neigbour];
+                        }
                     }
+                    if(minWeightLabel==0){
+                        throw std::runtime_error("this should not happen 2");
+                    }
+                    labels[node]=minWeightLabel;
                 }
-                if(minWeightLabel==0){
-                    throw std::runtime_error("this should not happen 2");
-                }
-                labels[node]=minWeightLabel;
             }
+
         }
     }
-   
+    
+
+    template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
+    void carvingSegmentation(
+        const GRAPH & g,
+        const EDGE_WEIGHTS & edgeWeights,
+        const SEEDS        & seeds,
+        LABELS             & labels
+    ){
+        
+    }
 
 
 
@@ -824,10 +819,9 @@ namespace vigra{
         NODE_LABEL_MAP     &  nodeLabeling
     ){
         typedef GRAPH Graph;
+        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename EDGE_WEIGHTS::Value NodeSizeType;
-        typedef typename Graph::Node Node;
-        typedef typename Graph::Edge Edge;
         typedef typename Graph:: template NodeMap<WeightType>   NodeIntDiffMap;
         typedef typename Graph:: template NodeMap<NodeSizeType> NodeSizeAccMap;
 
@@ -838,9 +832,10 @@ namespace vigra{
 
         // initalize node size map  and internal diff map
         NodeIntDiffMap internalDiff(graph);
-        NodeSizeAccMap nodeSizeAcc(graph);
-        std::copy(NodeSizeMapHelper::begin(graph,nodeSizes),NodeSizeMapHelper::end(graph,nodeSizes),NodeAccSizeMapHelper::begin(graph,nodeSizeAcc));
-        std::fill(NodeIntDiffMapHelper::begin(graph,internalDiff),NodeIntDiffMapHelper::end(graph,internalDiff),static_cast<WeightType>(0.0));
+        NodeSizeAccMap nodeSizeAcc(graph);  
+        copyNodeMap(graph,nodeSizes,nodeSizeAcc);
+        fillNodeMap(graph,internalDiff,static_cast<WeightType>(0.0));
+
 
 
         // initlaize internal node diff map
@@ -885,6 +880,30 @@ namespace vigra{
             nodeLabeling[node]=ufd.find(graph.id(node));
         }
     } 
+
+
+
+
+
+
+    template<class GRAPH, class NODE_FEATURES,class NODE_SIZES,class EDGE_WEIGHTS,class NODE_FEATURES_OUT>
+    void graphSmoothing(
+        const GRAPH & g,
+        const NODE_FEATURES & nodeFeatures,
+        const NODE_FEATURES & nodeSizes,
+        const EDGE_WEIGHTS  & edgeWeights,
+        NODE_FEATURES_OUT   & nodeFeaturesOut
+
+    ){
+        typedef GRAPH Graph;
+        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
+        typedef typename NODE_FEATURES::Value NodeFeaturesValueType;
+        for(NodeIt n(g);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            NodeFeaturesValueType nodeFeature = nodeFeatures[n];
+
+        }
+    }
 
 } // namespace vigra
 

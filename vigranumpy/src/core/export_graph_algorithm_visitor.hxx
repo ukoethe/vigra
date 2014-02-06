@@ -14,6 +14,7 @@
 #include <vigra/graph_helper/dense_map.hxx>
 #include <vigra/python_graph_generalization.hxx>
 #include <vigra/graph_algorithms.hxx>
+#include <vigra/metrics.hxx>
 namespace python = boost::python;
 
 namespace vigra{
@@ -48,11 +49,18 @@ public:
 
 
     // predefined array (for map usage)
+    const static unsigned int EdgeMapDim = IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension;
+    const static unsigned int NodeMapDim = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension;
 
-    typedef NumpyArray<IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension,float>  FloatEdgeArray;
-    typedef NumpyArray<IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension,UInt32> NodeLabelArray;
-    typedef NumpyScalarEdgeMap<Graph,FloatEdgeArray>    FloatEdgeArrayMap;
-    typedef NumpyScalarNodeMap<Graph,NodeLabelArray>    NodeLabelArrayMap;
+    typedef NumpyArray<EdgeMapDim,   Singleband<float > > FloatEdgeArray;
+    typedef NumpyArray<NodeMapDim,   Singleband<float > > FloatNodeArray;
+    typedef NumpyArray<NodeMapDim,   Singleband<UInt32> > UInt32NodeArray;
+    typedef NumpyArray<NodeMapDim +1,Multiband <float > > MultiFloatNodeArray;
+
+    typedef NumpyScalarEdgeMap<Graph,FloatEdgeArray>         FloatEdgeArrayMap;
+    typedef NumpyScalarNodeMap<Graph,FloatNodeArray>         FloatNodeArrayMap;
+    typedef NumpyScalarNodeMap<Graph,UInt32NodeArray>        UInt32NodeArrayMap;
+    typedef NumpyMultibandNodeMap<Graph,MultiFloatNodeArray> MultiFloatNodeArrayMap;
 
     LemonGraphSegmentationAlgotithmVisitor(const std::string clsName)
     :clsName_(clsName){
@@ -63,8 +71,24 @@ public:
     void visit(classT& c) const
     {
         
-        // free functions
-        python::def("watershedsSegmentation",&pyWatershedSegmentation,
+        // free functions:
+        // - node feature distance to edge weights
+        // - watersheds-segmentation
+        // - felzenwalb-segmentation
+        // - labeling
+
+
+        python::def("nodeFeatureDistToEdgeWeight",registerConverters(&pyNodeFeatureDistToEdgeWeight),
+            (
+                python::arg("graph"),
+                python::arg("nodeFeatures"),
+                python::arg("metric"),
+                python::arg("out")=python::object()
+            ),
+            "convert node features to edge weights with the given metric"
+        );
+
+        python::def("watershedsSegmentation",registerConverters(&pyWatershedSegmentation),
             (
                 python::arg("graph"),
                 python::arg("edgeWeights"),
@@ -74,26 +98,134 @@ public:
             "Seeded watersheds on a edge weighted graph"
         );
 
+        python::def("felzenszwalbSegmentation",registerConverters(&pyFelzenszwalbSegmentation),
+            (
+                python::arg("graph"),
+                python::arg("edgeWeights"),
+                python::arg("nodeSizes")=python::object(),
+                python::arg("k")=300.0f,
+                python::arg("out")=python::object()
+            ),
+            "Felzenwalb graph based segmentation"
+        );
+
     }
+
+
+   
+
+
+    static NumpyAnyArray pyNodeFeatureDistToEdgeWeight(
+        const GRAPH & g,
+        const MultiFloatNodeArray & nodeFeaturesArray,
+        const std::string & functor,
+        FloatEdgeArray edgeWeightsArray
+    ){
+        edgeWeightsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g) );
+
+        if(functor=="eucledian" || functor=="norm" || functor=="l2"){
+            typedef  metrics::Norm<float> DistFunctor;
+            DistFunctor f;
+            return pyNodeFeatureDistToEdgeWeightT<DistFunctor>(g,nodeFeaturesArray,f,edgeWeightsArray);
+        }
+        if(functor=="squaredNorm"){
+            typedef  metrics::SquaredNorm<float> DistFunctor;
+            DistFunctor f;
+            return pyNodeFeatureDistToEdgeWeightT<DistFunctor>(g,nodeFeaturesArray,f,edgeWeightsArray);
+        }
+        else if (functor=="manhattan" || functor=="l1"){
+            typedef  metrics::Manhattan<float> DistFunctor;
+            DistFunctor f;
+            return pyNodeFeatureDistToEdgeWeightT<DistFunctor>(g,nodeFeaturesArray,f,edgeWeightsArray);
+        }
+        else if (functor=="chiSquared"){
+            typedef  metrics::ChiSquared<float> DistFunctor;
+            DistFunctor f;
+            return pyNodeFeatureDistToEdgeWeightT<DistFunctor>(g,nodeFeaturesArray,f,edgeWeightsArray);
+        }
+        else{
+            throw std::runtime_error(
+                "distance not supported\n"
+                "supported distance types:\n"
+                "- eucledian/norm/l2\n"
+                "- squaredNorm\n"
+                "- manhattan/l1\n"
+                "- chiSquared\n"
+            );
+        }
+    }
+
+    template<class FUNCTOR>
+    static NumpyAnyArray pyNodeFeatureDistToEdgeWeightT(
+        const GRAPH & g,
+        const MultiFloatNodeArray & nodeFeaturesArray,
+        FUNCTOR & functor,
+        FloatEdgeArray edgeWeightsArray
+    ){
+        // reshape out?
+        edgeWeightsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g) );
+
+        // numpy arrays => lemon maps
+        MultiFloatNodeArrayMap nodeFeatureArrayMap(g,nodeFeaturesArray);
+        FloatEdgeArrayMap      edgeWeightsArrayMap(g,edgeWeightsArray);
+        
+        for(EdgeIt e(g);e!=lemon::INVALID;++e){
+            const Edge edge(*e);
+            const Node u=g.u(edge);
+            const Node v=g.v(edge);
+            edgeWeightsArrayMap[edge]=functor(nodeFeatureArrayMap[u],nodeFeatureArrayMap[v]);
+        }
+        return edgeWeightsArray;
+    }
+
 
 
 
     static NumpyAnyArray pyWatershedSegmentation(
         const GRAPH & g,
         FloatEdgeArray edgeWeightsArray,
-        NodeLabelArray seedsArray,
-        NodeLabelArray labelsArray
+        UInt32NodeArray seedsArray,
+        UInt32NodeArray labelsArray
     ){
         // reize output ? 
-        labelsArray.reshapeIfEmpty(seedsArray.shape());
+        labelsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
 
         // numpy arrays => lemon maps
         FloatEdgeArrayMap edgeWeightsArrayMap(g,edgeWeightsArray);
-        NodeLabelArrayMap seedsArrayMap(g,seedsArray);
-        NodeLabelArrayMap labelsArrayMap(g,labelsArray);
+        UInt32NodeArrayMap seedsArrayMap(g,seedsArray);
+        UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
 
         // call algorithm itself
         watershedsSegmentation(g,edgeWeightsArrayMap,seedsArrayMap,labelsArrayMap);
+
+        // retun labels
+        return labelsArray;
+    }
+
+    static NumpyAnyArray pyFelzenszwalbSegmentation(
+        const GRAPH & g,
+        FloatEdgeArray edgeWeightsArray,
+        FloatNodeArray nodeSizesArray,
+        const float k,
+        UInt32NodeArray labelsArray
+    ){
+        // reize output ? 
+        labelsArray.reshapeIfEmpty(  IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
+
+        // is size array empty?
+        // if empty fill with ones
+        if(nodeSizesArray.shape(0)==0){
+            nodeSizesArray.reshapeIfEmpty(edgeWeightsArray.shape());
+            std::fill(nodeSizesArray.begin(),nodeSizesArray.end(),1.0);
+        }
+
+        // numpy arrays => lemon maps
+        FloatEdgeArrayMap  edgeWeightsArrayMap(g,edgeWeightsArray);
+        FloatNodeArrayMap  nodeSizesArrayMap(g,nodeSizesArray);
+        UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
+
+        // call algorithm itself
+        felzenszwalbSegmentation(g,edgeWeightsArrayMap,nodeSizesArrayMap,k,labelsArrayMap);
 
         // retun labels
         return labelsArray;
