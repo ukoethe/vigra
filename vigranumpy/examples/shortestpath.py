@@ -52,7 +52,7 @@ if True:
             elif len(clickList)==2:
                 print "target ",clickList[1]
 
-                path = vigra.graphs.shortestImagePathAStar(weights, clickList[0],clickList[1] )
+                path = vigra.graphs.shortestImagePathDijkstra(weights, clickList[0],clickList[1] )
                 coords = (path[:,0],path[:,1])
                 visuimg =img.copy()
                 iR=visuimg[:,:,0]
