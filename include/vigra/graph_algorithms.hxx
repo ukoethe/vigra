@@ -45,6 +45,9 @@
 #include <vector>
 #include <functional>
 
+/*boost*/
+ #include <boost/iterator/transform_iterator.hpp>
+
 /*vigra*/
 #include <vigra/graphs.hxx>
 #include <vigra/graph_generalization.hxx>
@@ -52,7 +55,11 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/priority_queue.hxx>
 #include <vigra/union_find.hxx>
-#include <boost/iterator/transform_iterator.hpp>
+#include <vigra/adjacency_list_graph.hxx>
+
+
+
+
 
 
 namespace vigra{
@@ -679,7 +686,131 @@ namespace vigra{
         }
     }  
 
+    template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
+    void watershedsSegmentation(
+        const GRAPH & g,
+        const EDGE_WEIGHTS & edgeWeights,
+        const SEEDS        & seeds,
+        LABELS             & labels
+    ){  
+        typedef GRAPH Graph;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::EdgeIt EdgeIt;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::OutArcIt OutArcIt;
+        typedef typename EDGE_WEIGHTS::Value WeightType;
+        typedef typename SEEDS::Value   SeedType;
+        typedef typename LABELS::Value  LabelType;
+        typedef typename Graph:: template NodeMap<bool> NodeBoolMap;
 
+
+        typedef NodeMapIteratorHelper<Graph,NodeBoolMap  > InPQHelper;
+        typedef NodeMapIteratorHelper<Graph,SEEDS  > SeedsHelper;
+        typedef NodeMapIteratorHelper<Graph,LABELS > LabelsHelper;
+        typedef PriorityQueue<Node,WeightType,true> PQ;
+
+        PQ pq;
+        NodeBoolMap inPQ(g);
+
+        std::copy(SeedsHelper::begin(g,seeds),SeedsHelper::end(g,seeds),LabelsHelper::begin(g,labels));
+        std::fill(InPQHelper::begin(g,inPQ),InPQHelper::end(g,inPQ),false);
+
+
+        for(NodeIt n(g);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            if(labels[node]!=static_cast<LabelType>(0)){
+
+                //std::cout<<"seed node "<<g.id(node)<<" with seed label "<<labels[node]<<"\n";
+                // iterate over all neighbour nodes
+                // and  check if there are nodes with label 0
+
+                for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
+                    const Edge edge(*a);
+                    const Node neigbour=g.target(*a);
+                    //std::cout<<"n- node "<<g.id(neigbour)<<"\n";
+                    if(labels[neigbour]==static_cast<LabelType>(0) && !inPQ[neigbour]){
+                        pq.push(neigbour,edgeWeights[edge]);
+                        inPQ[neigbour]=true;
+                    }
+                }
+            }
+        }
+
+
+        //std::cout<<"pqsize "<< pq.size()<<"\n";
+
+        while(!pq.empty()){
+            const Node node       = pq.top();
+            const LabelType label = labels[node]; 
+            //std::cout<<"node "<<g.id(node)<<" with label "<<label<<"\n";
+            if(label!=0){
+                throw std::runtime_error("this should not happen 0");
+            }
+
+            pq.pop();
+
+            std::set<LabelType> neigbourLabels;
+
+            for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
+                const Edge edge(*a);
+                const Node neigbour=g.target(*a);
+                //std::cout<<"n-node "<<g.id(neigbour)<<" with label "<<labels[neigbour]<<"\n";
+                if(labels[neigbour]==static_cast<LabelType>(0)){
+                    if(!inPQ[neigbour]){
+                        //pq.push(neigbour,edgeWeights[edge]);
+                        //inPQ[neigbour]=true;
+                    }
+                }
+                else{
+                    neigbourLabels.insert(labels[neigbour]);
+                }
+            }
+            if(neigbourLabels.size()==0){
+                //throw std::runtime_error("this should not happen 1");
+            }
+            if(neigbourLabels.size()==1){
+                labels[node]=*neigbourLabels.begin();
+
+                for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
+                    const Edge edge(*a);
+                    const Node neigbour=g.target(*a);
+                    //std::cout<<"n-node "<<g.id(neigbour)<<" with label "<<labels[neigbour]<<"\n";
+                    if(labels[neigbour]==static_cast<LabelType>(0)){
+                        if(!inPQ[neigbour]){
+                            pq.push(neigbour,edgeWeights[edge]);
+                            inPQ[neigbour]=true;
+                        }
+                    }
+                    else{
+                        neigbourLabels.insert(labels[neigbour]);
+                    }
+                }
+            }
+        }
+
+
+        for(NodeIt n(g);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            if(labels[node]==static_cast<LabelType>(0)){
+
+                WeightType minWeight       = std::numeric_limits<WeightType>::infinity();
+                LabelType  minWeightLabel  = static_cast<LabelType>(0);
+                for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
+                    const Edge edge(*a);
+                    const Node neigbour=g.target(*a);
+                    if(labels[neigbour]!=0 && edgeWeights[edge]<minWeight){
+                        minWeight=edgeWeights[edge];;
+                        minWeightLabel=labels[neigbour];
+                    }
+                }
+                if(minWeightLabel==0){
+                    throw std::runtime_error("this should not happen 2");
+                }
+                labels[node]=minWeightLabel;
+            }
+        }
+    }
    
 
 

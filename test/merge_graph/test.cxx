@@ -1599,8 +1599,8 @@ struct AdjacencyListGraphMergeGraphAdaptorTestSuite
         add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphNodeItTest));
         add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphArcItTest));
         add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphIncEdgeItTest));
-        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphInArcItTest));
-        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphOutArcItTest));
+        //add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphInArcItTest));
+        //add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphOutArcItTest));
         
 
         // test which do some merging

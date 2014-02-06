@@ -38,6 +38,7 @@
 
 
 #include "export_graph_visitor.hxx"
+#include "export_graph_algorithm_visitor.hxx"
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
@@ -60,6 +61,7 @@ namespace vigra{
         python::class_<Graph>(clsName.c_str(),python::init< const size_t,const size_t , const bool >())
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonUndirectedGraphAddItemsVisitor<Graph>(clsName))
+        .def(LemonGraphSegmentationAlgotithmVisitor<Graph>(clsName))
         ;
     }
 } 

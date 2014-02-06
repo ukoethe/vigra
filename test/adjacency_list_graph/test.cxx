@@ -1526,8 +1526,8 @@ struct AdjacencyListGraphTestSuite
 
         add( testCase( &AdjacencyListGraphOffTest::adjGraphArcTest));
         add( testCase( &AdjacencyListGraphOffTest::adjGraphArcItTest));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphInArcItTest));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphOutArcItTest));
+        //add( testCase( &AdjacencyListGraphOffTest::adjGraphInArcItTest));
+        //add( testCase( &AdjacencyListGraphOffTest::adjGraphOutArcItTest));
 
 
     }

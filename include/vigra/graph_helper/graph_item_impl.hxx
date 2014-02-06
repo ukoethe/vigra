@@ -90,7 +90,7 @@ namespace vigra{
                 const typename GRAPH::index_type edgeId,
                 const typename GRAPH::index_type ownNodeId
             ){
-                return  g.id(g.u(g.edgeFromId(edgeId)))==ownNodeId;
+                return  true;//g.id(g.u(g.edgeFromId(edgeId)))==ownNodeId;
             } 
             static ResultType transform(
                 const GRAPH & g,
@@ -98,7 +98,7 @@ namespace vigra{
                 const typename GRAPH::index_type ownNodeId
             ){
                 const typename GRAPH::Edge edge(g.edgeFromId(edgeId));
-                return g.direct(edge,true);
+                return g.direct(edge,g.nodeFromId(ownNodeId));
                 //direct (Edge const &e, Node const &n)
             }
 
@@ -114,7 +114,7 @@ namespace vigra{
                 const typename GRAPH::index_type edgeId,
                 const typename GRAPH::index_type ownNodeId
             ){
-                return  g.id(g.v(g.edgeFromId(edgeId)))==ownNodeId;
+                return  true;//g.id(g.v(g.edgeFromId(edgeId)))==ownNodeId;
             } 
             ResultType static transform(
                 const GRAPH & g,
@@ -122,7 +122,9 @@ namespace vigra{
                 const typename GRAPH::index_type ownNodeId
             ){
                 const typename GRAPH::Edge edge(g.edgeFromId(edgeId));
-                return g.direct(edge,true);
+                const typename GRAPH::Node ownNode   = g.nodeFromId(ownNodeId);
+                const typename GRAPH::Node otherNode = g.u(edge)==ownNode ? g.v(edge) : g.u(edge);
+                return g.direct(edge,otherNode);
             }
             static const bool IsFilter = true ; 
         };

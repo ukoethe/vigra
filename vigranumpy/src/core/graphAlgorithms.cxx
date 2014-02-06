@@ -366,8 +366,6 @@ namespace vigra{
         defineHyperNodeSizes();
         defineHyperEdgeFeatures();
         defineHyperNodeFeatures();
-        //defineHierarchicalClustering<AdjacencyListGraph>("AdjacencyListGraph");
-
     }
 
 } 
