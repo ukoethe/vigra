@@ -86,6 +86,40 @@ private:
     FUNCTOR & f_;
 };
 
+template<class G,class EDGE_MAP_A,class EDGE_MAP_B,class FUNCTOR,class RESULT>
+class BinaryOpEdgeMap{
+public:
+    typedef G  Graph;
+    typedef typename Graph::Edge Key;
+    typedef RESULT   Value;
+    typedef RESULT   ConstReference;
+
+    typedef Key             key_type;
+    typedef Value           value_type;
+    typedef ConstReference  const_reference;
+
+    typedef boost::readable_property_map_tag category;
+
+    BinaryOpEdgeMap(const Graph & graph,const EDGE_MAP_A & edgeMapA,const EDGE_MAP_B & edgeMapB,FUNCTOR & f)
+    :   graph_(graph),
+        edgeMapA_(edgeMapA),
+        edgeMapB_(edgeMapB),
+        f_(f){
+    }
+    ConstReference operator[](const Key & key){
+        return f_(edgeMapA_[key],edgeMapB_[key]);
+    }
+    ConstReference operator[](const Key & key)const{
+        return f_(edgeMapA_[key],edgeMapB_[key]);
+    }
+private:
+
+    const Graph & graph_;
+    const EDGE_MAP_A & edgeMapA_;
+    const EDGE_MAP_B & edgeMapB_;
+    FUNCTOR & f_;
+};
+
 
 
 } // end namespace vigra

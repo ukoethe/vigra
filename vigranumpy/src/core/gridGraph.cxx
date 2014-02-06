@@ -71,9 +71,10 @@ namespace vigra{
 
 
 
-    template<unsigned int DIM,class DTAG>
-    NumpyAnyArray pyGridGraphFelzenszwalbSegmentation(
-        NumpyArray<DIM+1,Multiband<float> >   image,
+    template<unsigned int DIM,class DTAG,class DIST_FUNCTOR>
+    NumpyAnyArray pyGridGraphFelzenszwalbSegmentationT(
+        NumpyArray<DIM+1,Multiband<float>  >   image,
+        NumpyArray<DIM  ,float >               edgeIndicatorImage,
         const float                           k, 
         NumpyArray<DIM,UInt32>                labeling = NumpyArray<DIM,UInt32>()
     ){
@@ -88,28 +89,70 @@ namespace vigra{
         typedef GridGraph< DIM,boost::undirected_tag > Graph;
         typedef typename Graph::Node Node;
         typedef NumpyMultibandNodeMap<Graph,  NumpyArray<DIM+1,Multiband<float> >  > NodeMultiFloatMap;
+        typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,float> > NodeFloatMap;
         typedef NumpyScalarNodeMap<Graph,  NumpyArray<DIM,UInt32> > NodeLabelMap;
         typedef distances::Manhattan<float> DistanceType;
-        typedef OnTheFlyEdgeMap<Graph,NodeMultiFloatMap,DistanceType,float > ImplicitEdgeMap;
+        typedef OnTheFlyEdgeMap<Graph,NodeMultiFloatMap,DistanceType,float > ImplicitNodeDiffMap;
+        typedef std::plus<float> AccType;
+        typedef OnTheFlyEdgeMap<Graph,NodeFloatMap,AccType,float > ImplicitEdgeIndicatorMap;
+        typedef std::plus<float> BinOp;
+        typedef BinaryOpEdgeMap<Graph,ImplicitEdgeIndicatorMap,ImplicitNodeDiffMap,BinOp,float> CombinedEdgeWeightMap;
 
         // make grid graph
         const Graph g(outShape);
 
-        // make a node map from edgeIndicator image
+        // make a node map from image 
         // and make implicit edge map from that
         NodeMultiFloatMap imageMap(g,image);
         DistanceType distanceFunctor;
-        ImplicitEdgeMap edgeIndicatorEdgeMap(g,imageMap,distanceFunctor);
+        ImplicitNodeDiffMap nodeDistEdgeMap(g,imageMap,distanceFunctor);
+
+        // make a node map from edge edge indicator image
+        // and make implicit edge map from that
+        NodeFloatMap  edgeIndicatorImageNodeMap(g,edgeIndicatorImage);
+        AccType accFunctor;
+        ImplicitEdgeIndicatorMap edgeIndicatorEdgeMap(g,edgeIndicatorImageNodeMap,accFunctor);
+
+
+        // combine both maps
+        BinOp binOpFunctor;
+        CombinedEdgeWeightMap combinedEdgeWeightMap(g,edgeIndicatorEdgeMap,nodeDistEdgeMap,binOpFunctor);
 
         // make the result label map from image
-         NodeLabelMap nodeLabelingMap(g,labeling);
+        NodeLabelMap nodeLabelingMap(g,labeling);
 
         // make sizemap filled with ones
         typename  Graph::template NodeMap<size_t>  nodeSizeMap(g,1.0);
 
         // run alg.
-        felzenszwalbSegmentation(g,edgeIndicatorEdgeMap,nodeSizeMap,k,nodeLabelingMap);
+        felzenszwalbSegmentation(g,combinedEdgeWeightMap,nodeSizeMap,k,nodeLabelingMap);
         return labeling;
+    }
+
+
+    template<unsigned int DIM,class DTAG>
+    NumpyAnyArray pyGridGraphFelzenszwalbSegmentation(
+        NumpyArray<DIM+1,Multiband<float>  > image,
+        NumpyArray<DIM  ,float >             edgeIndicatorImage,
+        const float                          k, 
+        const std::string &                  distanceType,
+        NumpyArray<DIM,UInt32>               labeling = NumpyArray<DIM,UInt32>()
+    ){
+        if      (distanceType=="l1" || distanceType == "manhatten")
+            return pyGridGraphFelzenszwalbSegmentationT<DIM,DTAG,distances::Manhattan<float> >(
+                image,edgeIndicatorImage,k,labeling);
+        else if (distanceType=="l2" || distanceType == "eucledian")
+            return pyGridGraphFelzenszwalbSegmentationT<DIM,DTAG,distances::Norm<float> >(
+                image,edgeIndicatorImage,k,labeling);
+        else if (distanceType=="chiSquared")
+            return pyGridGraphFelzenszwalbSegmentationT<DIM,DTAG,distances::ChiSquared<float> >(
+                 image,edgeIndicatorImage,k,labeling);
+        else{
+            throw std::runtime_error("unknown distance type");
+            return labeling;
+        } 
+
+            
     }
 
     template<unsigned int DIM,class DTAG>
@@ -294,8 +337,10 @@ namespace vigra{
       
         python::def("felzenszwalbSegmentation",registerConverters(&pyGridGraphFelzenszwalbSegmentation<DIM,boost::undirected_tag>),
             (
-               python::arg("weights"),
+               python::arg("nodeFeatures"),
+               python::arg("edgeWeights"),
                python::arg("k"),
+               python::arg("distanceType")=std::string("manhatten"),
                python::arg("out")=python::object()
             )
         );

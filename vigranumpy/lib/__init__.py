@@ -295,6 +295,23 @@ def imshow(image):
     else:
         raise RuntimeError("vigra.imshow(): Image must have 1 or 3 channels.")
 
+
+def segShow(img,labels,edgeColor=(1,0,0) ):
+    crackedEdges = analysis.regionImageToCrackEdgeImage(labels)
+    whereEdge    =  numpy.where(crackedEdges==0)
+    imgToDisplay = resize(img,crackedEdges.shape)
+    imgToDisplay-=imgToDisplay.min()
+    imgToDisplay/=imgToDisplay.max()
+    for c in range(img.ndim):
+        ic = imgToDisplay[:,:,c]
+        ic[whereEdge]=edgeColor[c]
+
+    imshow(imgToDisplay)
+
+def show():
+    import matplotlib.pylab
+    matplotlib.pylab.show()
+
         
 # auto-generate code for additional Kernel generators:
 def _genKernelFactories(name):
