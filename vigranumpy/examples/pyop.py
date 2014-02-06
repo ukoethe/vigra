@@ -205,7 +205,11 @@ showSeg(img,labels)
 pylab.show()
 
 
-labeling ,nseg = vigra.analysis.watershedsReoptimization(labels,gradmag,6,visu=True)
+ragNodeLabeling ,nseg = vigra.analysis.watershedsReoptimization(labels,gradmag,6,visu=True)
+
+
+
+
 
 showSeg(img,labeling)
 pylab.show()

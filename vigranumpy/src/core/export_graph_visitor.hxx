@@ -11,6 +11,7 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <boost/python.hpp>
 #include <vigra/graphs.hxx>
+#include <vigra/graph_helper/dense_map.hxx>
 #include <vigra/graph_generalization.hxx>
 #include <vigra/python_graph_generalization.hxx>
 namespace python = boost::python;
@@ -548,63 +549,6 @@ public:
         return edgeIds;
     }
 };
-
-
-
-
-
-
-template<class GRAPH>
-class LemonGraphMapVisitor 
-:   public boost::python::def_visitor<LemonGraphMapVisitor<GRAPH> >
-{
-public:
-
-    friend class def_visitor_access;
-
-    typedef GRAPH Graph;
-
-    typedef LemonGraphMapVisitor<GRAPH> VisitorType;
-    // Lemon Graph Typedefs
-    
-    typedef typename Graph::index_type       index_type;
-    typedef typename Graph::Edge             Edge;
-    typedef typename Graph::Node             Node;
-    typedef typename Graph::Arc              Arc;
-
-    typedef typename Graph::NodeIt              NodeIt;
-    typedef typename Graph::EdgeIt              EdgeIt;
-    typedef typename Graph::ArcIt               ArcIt;
-
-
-    typedef EdgeHolder<Graph> PyEdge;
-    typedef NodeHolder<Graph> PyNode;
-    typedef  ArcHolder<Graph> PyArc;
-
-    LemonGraphMapVisitor(const std::string clsName)
-    :clsName_(clsName){
-
-    }
-    std::string clsName_;
-    template <class classT>
-    void visit(classT& c) const
-    {
-        
-        
-
-
-        //c
-        //    // add node
-        //    .def("addNode",&addNode)
-        //    .def("addEdge",&addEdge)
-        //;
-    }
-
-
-};
-
-
-
 
 } // end namespace vigra
 
