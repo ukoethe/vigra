@@ -690,12 +690,36 @@ namespace vigra{
         }
     }  
 
-    template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
-    void watershedsSegmentation(
+    namespace detail_watersheds_segmentation{
+
+    struct IdentityFunctor{
+        template<class L, class T>
+        T operator()(const L label,const T  priority)const{
+            return priority;
+        }
+    };
+
+    template<class PRIORITY_TYPE,class LABEL_TYPE>
+    struct CarvingFunctor{
+        CarvingFunctor(const LABEL_TYPE backgroundLabel,const PRIORITY_TYPE & factor)
+        :   backgroundLabel_(backgroundLabel),
+            factor_(factor){
+        }
+        PRIORITY_TYPE operator()(const LABEL_TYPE label,const PRIORITY_TYPE  priority)const{
+            return (label==backgroundLabel_ ? priority*factor_ : priority);
+        }
+        LABEL_TYPE     backgroundLabel_;
+        PRIORITY_TYPE  factor_;
+    };
+
+
+    template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class PRIORITY_MANIP_FUNCTOR,class LABELS>
+    void watershedsSegmentationImpl(
         const GRAPH & g,
-        const EDGE_WEIGHTS & edgeWeights,
-        const SEEDS        & seeds,
-        LABELS             & labels
+        const EDGE_WEIGHTS      & edgeWeights,
+        const SEEDS             & seeds,
+        PRIORITY_MANIP_FUNCTOR  & priorManipFunctor,
+        LABELS                  & labels
     ){  
         typedef GRAPH Graph;
         LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
@@ -723,7 +747,8 @@ namespace vigra{
                     const Node neigbour=g.target(*a);
                     //std::cout<<"n- node "<<g.id(neigbour)<<"\n";
                     if(labels[neigbour]==static_cast<LabelType>(0) && !inPQ[neigbour]){
-                        pq.push(neigbour,edgeWeights[edge]);
+                        const WeightType priority = priorManipFunctor(labels[node],edgeWeights[edge]);
+                        pq.push(neigbour,priority);
                         inPQ[neigbour]=true;
                     }
                 }
@@ -764,6 +789,7 @@ namespace vigra{
                         const Node neigbour=g.target(*a);
                         if(labels[neigbour]==static_cast<LabelType>(0)){
                             if(!inPQ[neigbour]){
+                                const WeightType priority = priorManipFunctor(labelFound,edgeWeights[edge]);
                                 pq.push(neigbour,edgeWeights[edge]);
                                 inPQ[neigbour]=true;
                             }
@@ -782,8 +808,9 @@ namespace vigra{
                     for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
                         const Edge edge(*a);
                         const Node neigbour=g.target(*a);
-                        if(labels[neigbour]!=0 && edgeWeights[edge]<minWeight){
-                            minWeight=edgeWeights[edge];;
+                        const WeightType priority = priorManipFunctor(labels[neigbour],edgeWeights[edge]);
+                        if(labels[neigbour]!=0 && priority<minWeight){
+                            minWeight=priority;
                             minWeightLabel=labels[neigbour];
                         }
                     }
@@ -793,19 +820,36 @@ namespace vigra{
                     labels[node]=minWeightLabel;
                 }
             }
-
         }
     }
-    
+
+    } // end namespace detail_watersheds_segmentation
 
     template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
-    void carvingSegmentation(
+    void watershedsSegmentation(
         const GRAPH & g,
         const EDGE_WEIGHTS & edgeWeights,
         const SEEDS        & seeds,
         LABELS             & labels
+    ){  
+        detail_watersheds_segmentation::IdentityFunctor f;
+        detail_watersheds_segmentation::watershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
+    }   
+    
+
+    template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
+    void carvingSegmentation(
+        const GRAPH                         & g,
+        const EDGE_WEIGHTS                  & edgeWeights,
+        const SEEDS                         & seeds,
+        const typename LABELS::Value        backgroundLabel,
+        const typename EDGE_WEIGHTS::Value  backgroundBias,
+        LABELS                      & labels
     ){
-        
+        typedef typename EDGE_WEIGHTS::Value WeightType;
+        typedef typename LABELS::Value       LabelType;
+        detail_watersheds_segmentation::CarvingFunctor<WeightType,LabelType> f(backgroundLabel,backgroundBias);
+        detail_watersheds_segmentation::watershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
     }
 
 

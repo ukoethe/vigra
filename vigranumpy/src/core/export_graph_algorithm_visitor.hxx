@@ -74,6 +74,7 @@ public:
         // free functions:
         // - node feature distance to edge weights
         // - watersheds-segmentation
+        // - carving-segmentation
         // - felzenwalb-segmentation
         // - labeling
 
@@ -93,6 +94,18 @@ public:
                 python::arg("graph"),
                 python::arg("edgeWeights"),
                 python::arg("seeds"),
+                python::arg("out")=python::object()
+            ),
+            "Seeded watersheds on a edge weighted graph"
+        );
+
+        python::def("carvingSegmentation",registerConverters(&pyCarvingSegmentation),
+            (
+                python::arg("graph"),
+                python::arg("edgeWeights"),
+                python::arg("seeds"),
+                python::arg("backgroundLabel"),
+                python::arg("backgroundBias"),
                 python::arg("out")=python::object()
             ),
             "Seeded watersheds on a edge weighted graph"
@@ -178,9 +191,6 @@ public:
         return edgeWeightsArray;
     }
 
-
-
-
     static NumpyAnyArray pyWatershedSegmentation(
         const GRAPH & g,
         FloatEdgeArray edgeWeightsArray,
@@ -197,6 +207,29 @@ public:
 
         // call algorithm itself
         watershedsSegmentation(g,edgeWeightsArrayMap,seedsArrayMap,labelsArrayMap);
+
+        // retun labels
+        return labelsArray;
+    }
+
+    static NumpyAnyArray pyCarvingSegmentation(
+        const GRAPH & g,
+        FloatEdgeArray edgeWeightsArray,
+        UInt32NodeArray seedsArray,
+        const UInt32    backgroundLabel,
+        const float     backgroundBias,
+        UInt32NodeArray labelsArray
+    ){
+        // reize output ? 
+        labelsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
+
+        // numpy arrays => lemon maps
+        FloatEdgeArrayMap edgeWeightsArrayMap(g,edgeWeightsArray);
+        UInt32NodeArrayMap seedsArrayMap(g,seedsArray);
+        UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
+
+        // call algorithm itself
+        carvingSegmentation(g,edgeWeightsArrayMap,seedsArrayMap,backgroundLabel,backgroundBias,labelsArrayMap);
 
         // retun labels
         return labelsArray;
