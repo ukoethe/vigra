@@ -69,8 +69,7 @@ public:
     std::string clsName_;
     template <class classT>
     void visit(classT& c) const
-    {
-        
+    {   
         // free functions:
         // - node feature distance to edge weights
         // - watersheds-segmentation
