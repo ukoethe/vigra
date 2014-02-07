@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2011 by Ullrich Koethe                     */
+/*     Copyright 2014 by Thorsten Beier Ullrich Koeth                   */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -58,7 +58,7 @@
 #include <vigra/adjacency_list_graph.hxx>
 
 
-#define LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(GRAPH_CLS,PREFIX,POSTFIX) \
+#define LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GRAPH_CLS,PREFIX,POSTFIX) \
     typedef typename GRAPH_CLS::Edge        PREFIX##Edge      ## POSTFIX; \
     typedef typename GRAPH_CLS::Node        PREFIX##Node      ## POSTFIX; \
     typedef typename GRAPH_CLS::Arc         PREFIX##Arc       ## POSTFIX; \
@@ -365,8 +365,8 @@ namespace vigra{
         typedef typename GraphMapTypeTraits<GRAPH_IN_NODE_LABEL_MAP>::Value LabelType;
         typedef GRAPH_IN GraphIn;
         typedef AdjacencyListGraph GraphOut;
-        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(GraphIn, , GraphIn);
-        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(GraphOut, ,GraphOut);
+        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GraphIn, , GraphIn);
+        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GraphOut, ,GraphOut);
         typedef typename GraphOut:: template EdgeMap< std::vector<EdgeGraphIn> > HyperEdgeMap;
         typedef typename GraphOut:: template NodeMap< std::vector<NodeGraphIn> > HyperNodeMap;
         // iterate over all labels in the node map to find min max
@@ -436,7 +436,7 @@ namespace vigra{
     ){
 
         typedef GRAPH                       Graph;
-        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
+        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
         typedef typename WEIGHTS::value_type     WeightType;
         typedef typename DISTANCE::value_type    DistanceType;
         const size_t maxNodeId = graph.maxNodeId();
@@ -505,7 +505,7 @@ namespace vigra{
     ){
 
         typedef GRAPH                       Graph;
-        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
+        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
         typedef typename WEIGHTS::value_type     WeightType;
         typedef typename DISTANCE::value_type    DistanceType;
         const size_t maxNodeId = graph.maxNodeId();
@@ -580,7 +580,7 @@ namespace vigra{
     ){
 
         typedef GRAPH                       Graph;
-        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
+        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
 
         typedef typename WEIGHTS::value_type     WeightType;
         typedef typename DISTANCE::value_type    DistanceType;
@@ -658,7 +658,7 @@ namespace vigra{
     ){  
 
         typedef GRAPH Graph;
-        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
+        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
         typedef typename WEIGHTS::Value WeightType;
         typedef EdgeMapIteratorHelper<GRAPH,WEIGHTS>     WeightIterHelper;
         typedef detail::Partition<size_t> UfdType;
@@ -722,7 +722,7 @@ namespace vigra{
         LABELS                  & labels
     ){  
         typedef GRAPH Graph;
-        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
+        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename SEEDS::Value   SeedType;
         typedef typename LABELS::Value  LabelType;
@@ -863,7 +863,7 @@ namespace vigra{
         NODE_LABEL_MAP     &  nodeLabeling
     ){
         typedef GRAPH Graph;
-        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
+        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename EDGE_WEIGHTS::Value NodeSizeType;
         typedef typename Graph:: template NodeMap<WeightType>   NodeIntDiffMap;
@@ -930,22 +930,35 @@ namespace vigra{
 
 
 
-    template<class GRAPH, class NODE_FEATURES,class NODE_SIZES,class EDGE_WEIGHTS,class NODE_FEATURES_OUT>
+    template<class GRAPH, class NODE_FEATURES,class SMOOTH_FACTOR,class NODE_FEATURES_OUT>
     void graphSmoothing(
         const GRAPH & g,
-        const NODE_FEATURES & nodeFeatures,
-        const NODE_FEATURES & nodeSizes,
-        const EDGE_WEIGHTS  & edgeWeights,
-        NODE_FEATURES_OUT   & nodeFeaturesOut
+        const NODE_FEATURES  & nodeFeaturesIn,
+        const SMOOTH_FACTOR  & smoothFactors,
+        NODE_FEATURES_OUT    & nodeFeaturesOut
 
     ){
         typedef GRAPH Graph;
-        LEMON_UNDIRECTED_GRPAPH_TYPEDEFS(Graph, , );
-        typedef typename NODE_FEATURES::Value NodeFeaturesValueType;
-        for(NodeIt n(g);n!=lemon::INVALID;++n){
-            const Node node(*n);
-            NodeFeaturesValueType nodeFeature = nodeFeatures[n];
+        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
+        typedef typename NODE_FEATURES_IN::ConstReference NodeFeatureInConstRef;
+        typedef typename NODE_FEATURES_OUT::Reference     NodeFeatureOutRef;
+        typedef SMOOTH_FACTOR::ConstReference SmoothFactorType;
 
+
+        fillNodeMap(nodeFeaturesOut,0.0);
+
+        for(NodeIt n(g);n!=lemon::INVALID;++n){
+
+            const Node node(*n);
+
+            NodeFeatureInConstRef nodeFeaturesIn  = nodeFeaturesIn[n];
+            NodeFeatureOutRef     nodeFeaturesOut = nodeFeaturesOut[n];
+
+            for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
+                const Edge edge(*a);
+                const Node neigbour(g.target(*a));
+                SmoothFactorType smoothFactor=smoothFactors[edge];
+            }
         }
     }
 
