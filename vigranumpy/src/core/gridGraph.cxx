@@ -317,10 +317,10 @@ namespace vigra{
         python::class_<HyperEdgeMap>(hyperEdgeMapNamClsName.c_str(),python::init<>())
         ;
 
-
+        typedef typename MultiArray<DIM,int>::difference_type ShapeType;
 
         
-        python::class_<Graph>(clsName.c_str(),python::init< TinyVector<Int64,DIM> >())
+        python::class_<Graph>(clsName.c_str(),python::init< ShapeType >())
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def("getRegionAdjacencyGraph",registerConverters(&pyGetRag<DIM,boost::undirected_tag,UInt32> ),
            (

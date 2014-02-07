@@ -126,15 +126,16 @@ namespace vigra{
     class IntrinsicGraphShape{
     private:
         typedef GRAPH Graph;
-    typedef typename Graph::index_type  index_type;
+        typedef typename vigra::MultiArray<1,int>::difference_type DiffType1d;
+        typedef typename Graph::index_type  index_type;
     public:
         typedef typename Graph::Node Node ;
         typedef typename Graph::Edge Edge ;
         typedef typename  Graph::Arc  Arc ;
 
-        typedef TinyVector<Int64,1> IntrinsicNodeMapShape;
-        typedef TinyVector<Int64,1> IntrinsicEdgeMapShape;
-        typedef TinyVector<Int64,1>  IntrinsicArcMapShape;
+        typedef DiffType1d IntrinsicNodeMapShape;
+        typedef DiffType1d IntrinsicEdgeMapShape;
+        typedef DiffType1d  IntrinsicArcMapShape;
 
         static IntrinsicNodeMapShape intrinsicNodeMapShape(const Graph & g){
             return IntrinsicNodeMapShape(g.maxNodeId()+1);
