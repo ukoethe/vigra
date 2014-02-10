@@ -519,14 +519,14 @@ del _genFeaturConvenienceFunctions
 
 def _genGraphConvenienceFunctions():
 
-    def gridGraph(shape,directed=False):
+    def gridGraph(shape,directNeighborhood=True,directed=False):
         if directed :
              raise RuntimeError("directed GridGraph is not yet wrapped to python")
 
         if(len(shape)==2):
-            return graphs.GridGraphUndirected2d(shape)
+            return graphs.GridGraphUndirected2d(shape,directNeighborhood)
         elif(len(shape)==3):
-            return graphs.GridGraphUndirected3d(shape)
+            return graphs.GridGraphUndirected3d(shape,directNeighborhood)
         else:
             raise RuntimeError("GridGraph is only implemented for 2d and 3d grids")
 

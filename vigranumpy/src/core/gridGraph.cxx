@@ -84,7 +84,13 @@ namespace vigra{
         return NodeHolder<  GridGraph<DIM,boost::undirected_tag> >(g,node);
     }
 
-
+    template<unsigned int DIM,class DTAG>
+    GridGraph<DIM,DTAG>  * pyGridGraphFactory(
+        typename MultiArray<DIM,int>::difference_type shape,
+        const bool directNeighborhood
+    ){
+        return new GridGraph<DIM,DTAG>(shape,directNeighborhood?DirectNeighborhood:IndirectNeighborhood);
+    }
 
     template<unsigned int DIM>
     void defineGridGraphT(const std::string & clsName){
@@ -105,6 +111,7 @@ namespace vigra{
 
         
         python::class_<Graph>(clsName.c_str(),python::init< ShapeType >())
+        .def("__init__",python::make_constructor(&pyGridGraphFactory<DIM,boost::undirected_tag>))
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
         .def("coordinateToNode",pyCoordinateToNode<DIM,boost::undirected_tag>)

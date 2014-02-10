@@ -27,7 +27,7 @@ gradmag = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLab,sigma))
 weights  = numpy.exp(-4.0*gradmag)
 
 
-gridGraph  = vigraph.gridGraph(gradmag.shape)
+gridGraph  = vigraph.gridGraph(gradmag.shape,False)  
 pathFinder = vigraph.ShortestPathPathDijkstra(gridGraph)
 
 
