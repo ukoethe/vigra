@@ -65,6 +65,8 @@ BOOST_PYTHON_MODULE_INIT(graphs)
 {
     import_vigranumpy();
 
+    python::docstring_options doc_options(true, true, false);
+
     // all exporters needed for graph exporters (like lemon::INVALID)
     defineInvalid();
 

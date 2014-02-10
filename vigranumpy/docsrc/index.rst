@@ -524,7 +524,40 @@ method proposed by Foerstner.
 .. automodule:: vigra.noise
    :members:
 
-   
+
+Histogram and Channel Representation
+----------------------------------
+
+The module vigra.histogram provides histograms and channel representation
+
+.. automodule:: vigra.histogram
+   :members:
+
+
+
+Graphs and Algorithms on Graphs
+----------------------------------
+
+The module vigra.graphs provides graphs and graph algorithms
+
+.. automodule:: vigra.graphs
+   :members:
+  
+
+Utilities 
+----------------------------------
+
+The module vigra.utilities provides  utilities and tools
+like priority queues with changeable priorities
+
+.. automodule:: vigra.utilities
+   :members:
+    
+
+
+
+
+
 .. _sec-own-modules:
 
 Writing Your Own C++ Modules

@@ -95,6 +95,9 @@ The following sub-modules group related functionality:
 * learning   (machine learning and classification)
 * noise      (noise estimation and normalization)
 * geometry   (geometric algorithms, e.g. convex hull)
+* histogram  (histograms and channel representation)
+* graphs     (grid graphs / graphs / graph algorithms)
+* utilities  (priority queues)
 ''' % _vigra_doc_path
  
 from __version__ import version
@@ -519,10 +522,25 @@ del _genFeaturConvenienceFunctions
 
 def _genGraphConvenienceFunctions():
 
-    def gridGraph(shape,directNeighborhood=True,directed=False):
-        if directed :
-             raise RuntimeError("directed GridGraph is not yet wrapped to python")
+    def gridGraph(shape,directNeighborhood=True):
+        '''Return a grid graph with certain shape. 
 
+            Parameters:
+
+                - shape -- shape of the image
+                - directNeighborhood -- use  4 (True) or 8 (False) neighborhood (default: True
+
+
+            use::
+
+                >>> # 4-connected
+                >>> g = vigra.graps.gridGraph(shape=[10,20])
+                >>> g.nodeNum
+                200
+                >>> # 8-connected
+                >>> g = vigra.graps.gridGraph(shape=[10,20],directNeighborhood=False)
+
+        '''
         if(len(shape)==2):
             return graphs.GridGraphUndirected2d(shape,directNeighborhood)
         elif(len(shape)==3):
@@ -534,6 +552,8 @@ def _genGraphConvenienceFunctions():
     graphs.gridGraph = gridGraph
 
     def graph(nodes=0,edges=0,zeroStart=False,directed=False):
+        ''' test doc string
+        '''
         if directed :
              raise RuntimeError("directed Graph is not yet implemented")
         return graphs.AdjacencyListGraph(nodes,edges,zeroStart)
@@ -550,7 +570,7 @@ def _genGraphConvenienceFunctions():
             rag       = graphs.graph(long(labels.max()+1),reserveEdges)
             hyperEdges  = graphs.GridGraphUndirected3dHyperEdgeMap()
         else  :
-             raise RuntimeError("regionAdjacencyGraph can only be constructed from gridGrad2d and gridGraph3d")
+            raise RuntimeError("regionAdjacencyGraph can only be constructed from gridGrad2d and gridGraph3d")
         graph.getRegionAdjacencyGraph(
             labels=labels,
             rag=rag,

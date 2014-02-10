@@ -13,7 +13,7 @@ import math
 print "get input"
 f       = '100075.jpg'
 f       = '69015.jpg'
-#f       = '12003.jpg'
+f       = '12003.jpg'
 sigma   = 3.0
 
 img          = vigra.impex.readImage(f)#[0:100,0:100,:]
@@ -35,8 +35,8 @@ nodeFeatures   = vigraph.hyperNodeImageFeatures(rag,gridGraph,labels,img,nodeFea
 imgOut=img.copy()
 imageNodeFeatures = vigraph.nodeIdsFeatures(graph=rag,nodeIds=labels,features=nodeFeatures,out=imgOut)
 imageNodeFeatures = vigra.taggedView(imageNodeFeatures,"xyc")
-#vigra.imshow(imageNodeFeatures)
-#vigra.show()
+vigra.imshow(imageNodeFeatures)
+vigra.show()
 
 
 edgeWeights = edgeIndicator 
@@ -59,7 +59,7 @@ print edgeWeights[rag.edgeIds()].max()
 
 
 resultFeatures = vigraph.recursiveGraphSmoothing(rag,nodeFeatures,edgeWeights,
-    gamma=0.1,edgeThreshold=1.8,scale=5.3,iterations=1000)
+    gamma=0.0001,edgeThreshold=3.8,scale=1.3,iterations=100)
 
 
 # visualize node features
