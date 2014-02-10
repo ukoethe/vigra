@@ -56,7 +56,7 @@
 #include <vigra/priority_queue.hxx>
 #include <vigra/union_find.hxx>
 #include <vigra/adjacency_list_graph.hxx>
-
+#include <vigra/graph_helper/on_the_fly_edge_map.hxx>
 
 #define LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GRAPH_CLS,PREFIX,POSTFIX) \
     typedef typename GRAPH_CLS::Edge        PREFIX##Edge      ## POSTFIX; \
@@ -66,7 +66,7 @@
     typedef typename GRAPH_CLS::NodeIt      PREFIX##NodeIt    ## POSTFIX; \
     typedef typename GRAPH_CLS::ArcIt       PREFIX##ArcIt     ## POSTFIX; \
     typedef typename GRAPH_CLS::OutArcIt    PREFIX##OutArcIt  ## POSTFIX; \
-    typedef typename GRAPH_CLS::OutArcIt    PREFIX##OutArcIt  ## POSTFIX
+    typedef typename GRAPH_CLS::InArcIt     PREFIX##InArcIt   ## POSTFIX
 
 
 namespace vigra{
@@ -115,121 +115,120 @@ namespace vigra{
 
     template<class GRAPH,class MAP>
     class EdgeMapIteratorHelper{
-    public:
-        typedef typename GraphMapTypeTraits<MAP>::Reference      Reference;
-        typedef typename GraphMapTypeTraits<MAP>::ConstReference ConstReference;
-        typedef typename GraphMapTypeTraits<MAP>::Value          Value;
-    private:
-        struct Transform{
-            
-            Transform(MAP & map)
-            : map_(&map){
+        public:
+            typedef typename GraphMapTypeTraits<MAP>::Reference      Reference;
+            typedef typename GraphMapTypeTraits<MAP>::ConstReference ConstReference;
+            typedef typename GraphMapTypeTraits<MAP>::Value          Value;
+        private:
+            struct Transform{
+                
+                Transform(MAP & map)
+                : map_(&map){
+                }
+                template<class ITEM>
+                Reference operator()(const ITEM & item)const{
+                    return  map_->operator[](item);
+                }
+                mutable MAP * map_;
+            };  
+            struct ConstTransform{
+                
+                ConstTransform(const MAP & map)
+                : map_(&map){
+                }
+                template<class ITEM>
+                ConstReference operator()(const ITEM & item)const{
+                    return  map_->operator[](item);
+                }
+                const MAP * map_;
+            }; 
+        public:
+            typedef  boost::transform_iterator< Transform,      typename GRAPH::EdgeIt,Reference      ,Value> iterator;
+            typedef  boost::transform_iterator< ConstTransform, typename GRAPH::EdgeIt,ConstReference ,Value> const_iterator;
+            static iterator
+            begin(const GRAPH & g, MAP & map){
+                Transform f(map);
+                typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesBegin(g);
+                return iterator(iter,f);
             }
-            template<class ITEM>
-            Reference operator()(const ITEM & item)const{
-                return  map_->operator[](item);
+            static iterator
+            end(const GRAPH & g, MAP & map){
+                Transform f(map);
+                typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesEnd(g);
+                return iterator(iter,f);
             }
-            mutable MAP * map_;
-        };  
-        struct ConstTransform{
-            
-            ConstTransform(const MAP & map)
-            : map_(&map){
+            static const_iterator
+            begin(const GRAPH & g, const MAP & map){
+                ConstTransform f(map);
+                typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesBegin(g);
+                return const_iterator(iter,f);
             }
-            template<class ITEM>
-            ConstReference operator()(const ITEM & item)const{
-                return  map_->operator[](item);
+            static const_iterator
+            end(const GRAPH & g,const MAP & map){
+                ConstTransform f(map);
+                typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesEnd(g);
+                return const_iterator(iter,f);
             }
-            const MAP * map_;
-        }; 
-    public:
-        typedef  boost::transform_iterator< Transform,      typename GRAPH::EdgeIt,Reference      ,Value> iterator;
-        typedef  boost::transform_iterator< ConstTransform, typename GRAPH::EdgeIt,ConstReference ,Value> const_iterator;
-        static iterator
-        begin(const GRAPH & g, MAP & map){
-            Transform f(map);
-            typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesBegin(g);
-            return iterator(iter,f);
-        }
-        static iterator
-        end(const GRAPH & g, MAP & map){
-            Transform f(map);
-            typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesEnd(g);
-            return iterator(iter,f);
-        }
-        static const_iterator
-        begin(const GRAPH & g, const MAP & map){
-            ConstTransform f(map);
-            typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesBegin(g);
-            return const_iterator(iter,f);
-        }
-        static const_iterator
-        end(const GRAPH & g,const MAP & map){
-            ConstTransform f(map);
-            typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesEnd(g);
-            return const_iterator(iter,f);
-        }
-    private:
-
+        private:
     };
 
     template<class GRAPH,class MAP>
     class NodeMapIteratorHelper{
-    public:
-        typedef typename GraphMapTypeTraits<MAP>::Reference      Reference;
-        typedef typename GraphMapTypeTraits<MAP>::ConstReference ConstReference;
-        typedef typename GraphMapTypeTraits<MAP>::Value          Value;
-    private:
-        struct Transform{
-            
-            Transform(MAP & map)
-            : map_(&map){
+        public:
+            typedef typename GraphMapTypeTraits<MAP>::Reference      Reference;
+            typedef typename GraphMapTypeTraits<MAP>::ConstReference ConstReference;
+            typedef typename GraphMapTypeTraits<MAP>::Value          Value;
+        private:
+            struct Transform{
+                
+                Transform(MAP & map)
+                : map_(&map){
+                }
+                template<class ITEM>
+                Reference operator()(const ITEM & item)const{
+                    return  map_->operator[](item);
+                }
+                mutable MAP * map_;
+            };  
+            struct ConstTransform{
+                
+                ConstTransform(const MAP & map)
+                : map_(&map){
+                }
+                template<class ITEM>
+                ConstReference operator()(const ITEM & item)const{
+                    return  map_->operator[](item);
+                }
+                const MAP * map_;
+            }; 
+        public:
+            typedef  boost::transform_iterator< Transform,      typename GRAPH::NodeIt,Reference      ,Value> iterator;
+            typedef  boost::transform_iterator< ConstTransform, typename GRAPH::NodeIt,ConstReference ,Value> const_iterator;
+            static iterator
+            begin(const GRAPH & g, MAP & map){
+                Transform f(map);
+                typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesBegin(g);
+                return iterator(iter,f);
             }
-            template<class ITEM>
-            Reference operator()(const ITEM & item)const{
-                return  map_->operator[](item);
+            static iterator
+            end(const GRAPH & g, MAP & map){
+                Transform f(map);
+                typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesEnd(g);
+                return iterator(iter,f);
             }
-            mutable MAP * map_;
-        };  
-        struct ConstTransform{
-            
-            ConstTransform(const MAP & map)
-            : map_(&map){
+            static const_iterator
+            begin(const GRAPH & g, const MAP & map){
+                ConstTransform f(map);
+                typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesBegin(g);
+                return const_iterator(iter,f);
             }
-            template<class ITEM>
-            ConstReference operator()(const ITEM & item)const{
-                return  map_->operator[](item);
+            static const_iterator
+            end(const GRAPH & g,const MAP & map){
+                ConstTransform f(map);
+                typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesEnd(g);
+                return const_iterator(iter,f);
             }
-            const MAP * map_;
-        }; 
-    public:
-        typedef  boost::transform_iterator< Transform,      typename GRAPH::NodeIt,Reference      ,Value> iterator;
-        typedef  boost::transform_iterator< ConstTransform, typename GRAPH::NodeIt,ConstReference ,Value> const_iterator;
-        static iterator
-        begin(const GRAPH & g, MAP & map){
-            Transform f(map);
-            typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesBegin(g);
-            return iterator(iter,f);
-        }
-        static iterator
-        end(const GRAPH & g, MAP & map){
-            Transform f(map);
-            typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesEnd(g);
-            return iterator(iter,f);
-        }
-        static const_iterator
-        begin(const GRAPH & g, const MAP & map){
-            ConstTransform f(map);
-            typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesBegin(g);
-            return const_iterator(iter,f);
-        }
-        static const_iterator
-        end(const GRAPH & g,const MAP & map){
-            ConstTransform f(map);
-            typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesEnd(g);
-            return const_iterator(iter,f);
-        }
-    private:
+        private:
     };
 
 
@@ -347,7 +346,6 @@ namespace vigra{
             out[*e]/=static_cast<Value>(2*hyperEdgeCoords.size());
         }
     }
-
 
 
     template<
@@ -492,71 +490,137 @@ namespace vigra{
 
 
 
-    template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE>
-    void shortestPathDijkstraFast(
-        const GRAPH         &                                        graph,
-        const typename GRAPH::Node &                                 source,
-        const WEIGHTS       &                                        weights,
-        PREDECESSORS        &                                        predecessors,
-        DISTANCE            &                                        distance,
-        vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> pq,
-        const typename GRAPH::Node &    target  = lemon::INVALID,
-        const bool fill=true
-    ){
 
-        typedef GRAPH                       Graph;
+
+    template<class GRAPH,class WEIGHT_TYPE>
+    class ShortestPathDijkstra{
+    public:
+        typedef GRAPH Graph;
+
         LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
-        typedef typename WEIGHTS::value_type     WeightType;
-        typedef typename DISTANCE::value_type    DistanceType;
-        const size_t maxNodeId = graph.maxNodeId();
-        //vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> pq(maxNodeId+1);
 
-        for(NodeIt n(graph);n!=lemon::INVALID;++n){
-            const Node node(*n);
-            pq.push(graph.id(node),std::numeric_limits<WeightType>::infinity() );
-            distance[node]=std::numeric_limits<DistanceType>::infinity();
-            predecessors[node]=lemon::INVALID;
+        typedef WEIGHT_TYPE WeightType;
+        typedef ChangeablePriorityQueue<WeightType>           PqType;
+        typedef typename Graph:: template NodeMap<Node>       PredecessorsMap;
+        typedef typename Graph:: template NodeMap<WeightType> DistanceMap;
+            
+
+        ShortestPathDijkstra(const Graph & g)
+        :   graph_(g),
+            pq_(g.maxNodeId()+1),
+            predMap_(g),
+            distMap_(g)
+        {
         }
 
-        distance[source]=static_cast<DistanceType>(0.0);
-        pq.push(graph.id(source),0.0);
+        template<class WEIGHTS>
+        void run(const WEIGHTS & weights,const Node & source,const Node & target = lemon::INVALID){
+            source_=source;
+            target_=target;
 
-        bool finished=false;
-        while(!pq.empty() && !finished){
-            const WeightType minDist = pq.topPriority();
-            if(minDist < std::numeric_limits<DistanceType>::infinity()){
-                const Node topNode(graph.nodeFromId(pq.top()));
-                pq.pop();
-                // loop over all neigbours
-                for(OutArcIt outArcIt(graph,topNode);outArcIt!=lemon::INVALID;++outArcIt){
-                    const Node otherNode = graph.target(*outArcIt);
-                    const size_t otherNodeId = graph.id(otherNode);
+            this->initializeMaps();
 
-                    if(pq.contains(otherNodeId)){
-                        const Edge edge(*outArcIt);
-                        const DistanceType currentDist      = distance[otherNode];
-                        const DistanceType alternativeDist  = distance[topNode]+weights[edge];
-                        if(alternativeDist<currentDist){
-                            pq.push(otherNodeId,alternativeDist);
-                            distance[otherNode]=alternativeDist;
-                            predecessors[otherNode]=topNode;
+            bool finished=false;
+            while(!pq_.empty() && !finished){
+                const Node topNode(graph_.nodeFromId(pq_.top()));
+                if(predMap_[topNode]!=lemon::INVALID || topNode==source_ ){
+                    pq_.pop();
+                    // loop over all neigbours
+                    for(OutArcIt outArcIt(graph_,topNode);outArcIt!=lemon::INVALID;++outArcIt){
+                        const Node otherNode = graph_.target(*outArcIt);
+                        const size_t otherNodeId = graph_.id(otherNode);
+    
+                        if(pq_.contains(otherNodeId)){
+                            const Edge edge(*outArcIt);
+                            const WeightType currentDist     = distMap_[otherNode];
+                            const WeightType alternativeDist = distMap_[topNode]+weights[edge];
+                            if(alternativeDist<currentDist){
+                                pq_.push(otherNodeId,alternativeDist);
+                                distMap_[otherNode]=alternativeDist;
+                                predMap_[otherNode]=topNode;
+                            }
+                        }
+                        if(otherNode==target_){
+                            finished=true;
+                            break;
                         }
                     }
-                    if(target==otherNode){
-                        finished=true;
-                        break;
-                    }
+                }
+                else{
+                    finished=true;
+                    break;
+                }
+                if(finished){
+                    break;
                 }
             }
-            else{
-                finished=true;
-                break;
+        }
+
+        const Graph & graph()const{
+            return graph_;
+        }
+
+        const Node & source()const{
+            return source_;
+        }
+        const Node & target()const{
+            return target_;
+        }
+
+        bool hasTarget()const{
+            return target_!=lemon::INVALID;
+        }
+
+        const PredecessorsMap & predecessors()const{
+            return predMap_;
+        }
+        const DistanceMap & distances()const{
+            return distMap_;
+        }
+
+
+    private:
+
+        void initializeMaps(){
+            for(NodeIt n(graph_);n!=lemon::INVALID;++n){
+                const Node node(*n);
+                pq_.push(graph_.id(node),std::numeric_limits<WeightType>::infinity() );
+                distMap_[node]=std::numeric_limits<WeightType>::infinity();
+                predMap_[node]=lemon::INVALID;
             }
-            if(finished){
-                break;
+            distMap_[source_]=static_cast<WeightType>(0.0);
+            pq_.push(graph_.id(source_),0.0);
+        }
+
+        const Graph  & graph_;
+        PqType  pq_;
+        PredecessorsMap predMap_;
+        DistanceMap     distMap_;
+
+        Node source_;
+        Node target_;
+    };
+
+
+    template<class NODE,class PREDECESSORS>
+    size_t pathLength(
+        const NODE source,
+        const NODE target,
+        const PREDECESSORS & predecessors
+    ){
+        if(predecessors[target]==lemon::INVALID)
+            return 0;
+        else{
+            NODE currentNode = target;
+            size_t length=1;
+            while(currentNode!=source){
+                currentNode=predecessors[currentNode];
+                length+=1;
             }
+            return length;
         }
     }
+
 
 
     template<class GRAPH,class T>
@@ -928,39 +992,172 @@ namespace vigra{
 
 
 
+    namespace detail_graph_smoothing{
 
-
-    template<class GRAPH, class NODE_FEATURES,class SMOOTH_FACTOR,class NODE_FEATURES_OUT>
-    void graphSmoothing(
+    template<
+        class GRAPH, 
+        class NODE_FEATURES_IN,
+        class EDGE_WEIGHTS,
+        class WEIGHTS_TO_SMOOTH_FACTOR,
+        class NODE_FEATURES_OUT
+    >
+    void graphSmoothingImpl(
         const GRAPH & g,
-        const NODE_FEATURES  & nodeFeaturesIn,
-        const SMOOTH_FACTOR  & smoothFactors,
-        NODE_FEATURES_OUT    & nodeFeaturesOut
+        const NODE_FEATURES_IN   & nodeFeaturesIn,
+        const EDGE_WEIGHTS       & edgeWeights,
+        WEIGHTS_TO_SMOOTH_FACTOR & weightsToSmoothFactor,
+        NODE_FEATURES_OUT        & nodeFeaturesOut
 
     ){
         typedef GRAPH Graph;
         LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
         typedef typename NODE_FEATURES_IN::ConstReference NodeFeatureInConstRef;
+        typedef typename NODE_FEATURES_IN::Value          NodeFeatureInValue;
         typedef typename NODE_FEATURES_OUT::Reference     NodeFeatureOutRef;
-        typedef SMOOTH_FACTOR::ConstReference SmoothFactorType;
+        typedef typename EDGE_WEIGHTS::ConstReference SmoothFactorType;
 
 
-        fillNodeMap(nodeFeaturesOut,0.0);
+        fillNodeMap(g,nodeFeaturesOut,0.0);
 
         for(NodeIt n(g);n!=lemon::INVALID;++n){
 
             const Node node(*n);
 
-            NodeFeatureInConstRef nodeFeaturesIn  = nodeFeaturesIn[n];
-            NodeFeatureOutRef     nodeFeaturesOut = nodeFeaturesOut[n];
+            NodeFeatureInValue    featIn  = nodeFeaturesIn[node];
+            NodeFeatureOutRef     featOut = nodeFeaturesOut[node];
 
+            featOut=0;
+            float weightSum = 0.0;
+            size_t degree    = 0;
             for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
                 const Edge edge(*a);
                 const Node neigbour(g.target(*a));
-                SmoothFactorType smoothFactor=smoothFactors[edge];
+                SmoothFactorType smoothFactor= weightsToSmoothFactor(edgeWeights[edge]);
+
+                NodeFeatureInValue neighbourFeat = nodeFeaturesIn[neigbour];
+                neighbourFeat*=smoothFactor;
+                featOut += neighbourFeat;
+                weightSum+=smoothFactor;
+                ++degree;
             }
+            // fixme..set me to right type 
+            featIn*=static_cast<float>(degree);
+            weightSum+=static_cast<float>(degree);
+            featOut+=featIn;
+            featOut/=weightSum;
         }
     }
+
+    template<class T>
+    struct ExpSmoothFactor{
+        ExpSmoothFactor(const T lambda,const T edgeThreshold,const T scale)
+        :   lambda_(lambda),
+            edgeThreshold_(edgeThreshold),
+            scale_(scale){
+        }
+        T operator()(const T weight){
+            return weight> edgeThreshold_ ? 0 :  std::exp(-1.0*lambda_*weight)*scale_;
+        }
+        T lambda_;
+        T edgeThreshold_;
+        T scale_;
+    };
+
+
+
+    }
+
+    template<class GRAPH, class NODE_FEATURES_IN,class EDGE_INDICATOR,class NODE_FEATURES_OUT>
+    void graphSmoothing(
+        const GRAPH & g,
+        const NODE_FEATURES_IN  & nodeFeaturesIn,
+        const EDGE_INDICATOR    & edgeIndicator,
+        const float lambda,
+        const float edgeThreshold,
+        const float scale,
+        NODE_FEATURES_OUT       & nodeFeaturesOut
+    ){
+        detail_graph_smoothing::ExpSmoothFactor<float> functor(lambda,edgeThreshold,scale);
+        detail_graph_smoothing::graphSmoothingImpl(g,nodeFeaturesIn,edgeIndicator,functor,nodeFeaturesOut);
+    }
+
+
+    template<class GRAPH, class NODE_FEATURES_IN,class EDGE_INDICATOR,class NODE_FEATURES_OUT>
+    void recursiveGraphSmoothing(
+        const GRAPH & g,
+        const NODE_FEATURES_IN   & nodeFeaturesIn,
+        const EDGE_INDICATOR     & edgeIndicator,
+        const float lambda,
+        const float edgeThreshold,
+        const float scale,
+        size_t                    iterations,
+        NODE_FEATURES_OUT       & nodeFeaturesBuffer,
+        NODE_FEATURES_OUT       & nodeFeaturesOut
+    ){
+
+        iterations = std::max(size_t(1),iterations);
+        // initial run
+        graphSmoothing(g,nodeFeaturesIn,edgeIndicator,lambda,edgeThreshold,scale,nodeFeaturesOut);
+        iterations -=1;
+
+        bool outAsIn=true;
+        for(size_t i=0;i<iterations;++i){
+            if(outAsIn){
+                graphSmoothing(g,nodeFeaturesOut,edgeIndicator,lambda,edgeThreshold,scale,nodeFeaturesBuffer);
+                outAsIn=false;
+            }
+            else{
+                graphSmoothing(g,nodeFeaturesBuffer,edgeIndicator,lambda,edgeThreshold,scale,nodeFeaturesOut);
+                outAsIn=true;
+            }
+        }
+        if(!outAsIn){
+            copyNodeMap(g,nodeFeaturesBuffer,nodeFeaturesOut);
+        }
+    }
+
+
+
+    template<class GRAPH, class NODE_FEATURES_IN,class DISTANCE,class NODE_FEATURES_OUT>
+    void dynamicRecursiveGraphSmoothing(
+        const GRAPH & g,
+        const NODE_FEATURES_IN   & nodeFeaturesIn,
+        const float lambda,
+        const float edgeThreshold,
+        const float scale,
+        DISTANCE distanceFunctor,
+        size_t                    iterations,
+        NODE_FEATURES_OUT       & nodeFeaturesBuffer,
+        NODE_FEATURES_OUT       & nodeFeaturesOut
+    ){
+
+        // on the flight edge weight maps (refactor result type)
+        OnTheFlyEdgeMap<GRAPH,NODE_FEATURES_IN ,DISTANCE,float> inEdgeIndicator(g,nodeFeaturesIn,distanceFunctor);
+        OnTheFlyEdgeMap<GRAPH,NODE_FEATURES_OUT,DISTANCE,float> outEdgeIndicator(g,nodeFeaturesIn,distanceFunctor);
+        OnTheFlyEdgeMap<GRAPH,NODE_FEATURES_OUT,DISTANCE,float> bufferEdgeIndicator(g,nodeFeaturesIn,distanceFunctor);
+
+        iterations = std::max(size_t(1),iterations);
+        // initial run
+        graphSmoothing(g,nodeFeaturesIn,inEdgeIndicator,lambda,edgeThreshold,scale,nodeFeaturesOut);
+        iterations -=1;
+
+        bool outAsIn=true;
+        for(size_t i=0;i<iterations;++i){
+            if(outAsIn){
+                graphSmoothing(g,nodeFeaturesOut,outEdgeIndicator,lambda,edgeThreshold,scale,nodeFeaturesBuffer);
+                outAsIn=false;
+            }
+            else{
+                graphSmoothing(g,nodeFeaturesBuffer,bufferEdgeIndicator,lambda,edgeThreshold,scale,nodeFeaturesOut);
+                outAsIn=true;
+            }
+        }
+        if(!outAsIn){
+            copyNodeMap(g,nodeFeaturesBuffer,nodeFeaturesOut);
+        }
+    }
+
+
 
 } // namespace vigra
 

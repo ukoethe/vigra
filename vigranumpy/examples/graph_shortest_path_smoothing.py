@@ -12,14 +12,14 @@ import math
 
 print "get input"
 f       = '100075.jpg'
-#f       = '69015.jpg'
+f       = '69015.jpg'
 f       = '12003.jpg'
-sigma   = 4.0
+sigma   = 3.0
 
 img          = vigra.impex.readImage(f)#[0:100,0:100,:]
 imgLab       = vigra.colors.transform_RGB2Lab(img)
 gradmag      = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLab,sigma))
-labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,5)
+labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,10)
 labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
 
 
@@ -31,16 +31,28 @@ hyperNodeSizes = vigraph.hyperNodeSizes(rag,gridGraph,labels)
 nodeFeatures   = vigraph.graphMap(graph=rag,item='node',dtype=numpy.float32,channels=3)
 nodeFeatures   = vigraph.hyperNodeImageFeatures(rag,gridGraph,labels,img,nodeFeatures)
 
+# visualize node features
+imgOut=img.copy()
+imageNodeFeatures = vigraph.nodeIdsFeatures(graph=rag,nodeIds=labels,features=nodeFeatures,out=imgOut)
+imageNodeFeatures = vigra.taggedView(imageNodeFeatures,"xyc")
+#vigra.imshow(imageNodeFeatures)
+#vigra.show()
 
 
-edgeWeights = edgeIndicator 
-edgeWeights+= 0.1*vigraph.nodeFeatureDistToEdgeWeight(rag,nodeFeatures,metric='l1')
+edgeWeights = edgeIndicator**2
+#edgeWeights+= 0.01*vigraph.nodeFeatureDistToEdgeWeight(rag,nodeFeatures,metric='l1')
 
 
-ragLabels   = vigraph.felzenszwalbSegmentation(rag,edgeWeights,k=50)
-imageLabels = vigraph.nodeIdsLabels(graph=rag,nodeIds=labels,labels=ragLabels)
+print edgeWeights[rag.edgeIds()].min()
+print edgeWeights[rag.edgeIds()].max()
 
 
-vigra.segShow(img,imageLabels)
+resultFeatures = vigraph.shortestPathSmoothing(rag,nodeFeatures,edgeWeights,
+    gamma=0.05,edgeThreshold=50.8,scale=0.001)
+
+
+# visualize node features
+imageNodeFeatures = vigraph.nodeIdsFeatures(graph=rag,nodeIds=labels,features=resultFeatures)
+imageNodeFeatures = vigra.taggedView(imageNodeFeatures,"xyc")
+vigra.imshow(imageNodeFeatures)
 vigra.show()
-

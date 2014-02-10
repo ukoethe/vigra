@@ -563,31 +563,6 @@ def _genGraphConvenienceFunctions():
     regionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.regionAdjacencyGraph = regionAdjacencyGraph
 
-    """
-    class NumpyArrayEdgeMap(numpy.ndarray):
-        def __new__(cls, graph,dtype,channelShape=[1]):
-            if (len(channelShape)==1):
-                if channelShape[0]==1:
-                    return numpy.ndarray.__new__(cls, shape=[graph.maxEdgeId+1],dtype=dtype)
-                else:
-                    return numpy.ndarray.__new__(cls, shape=[graph.maxEdgeId+1,channelShape[0]],dtype=dtype)
-
-        def __init__(self, *args, **kwargs):
-            print args,
-            print kwargs
-
-        def __array_finalize__(self, obj):
-            pass
-
-        def __getitem__(self,key):
-            try:
-                return super(NumpyArrayEdgeMap, self).__getitem__(key.id)
-            except:
-                return super(NumpyArrayEdgeMap, self).__getitem__(key)
-
-        def __setitem__(self,key,value):
-            super(NumpyArrayEdgeMap, self).__setitem__(key.id,value)
-    """
 
     def intrinsicGraphMapShape(graph,item):
         if   item=='edge':
@@ -758,6 +733,89 @@ def _genGraphConvenienceFunctions():
     INVALID = graphs.Invalid()
     #hierarchicalSuperpixels.__module__ = 'vigra.graphs'
     graphs.INVALID = INVALID
+
+
+    def nodeIdsLabels(graph,nodeIds,labels,out=None):
+        nodeIdsShape = nodeIds.shape
+        if out is not None:
+            out=out.reshape(-1)
+        out = graphs._nodeIdsLabels(graph=graph,nodeIds=nodeIds.reshape(-1) ,labels=labels,out=out)
+        out = out.reshape(nodeIdsShape)
+        return out
+
+    nodeIdsLabels.__module__ = 'vigra.graphs'
+    graphs.nodeIdsLabels = nodeIdsLabels
+
+
+    def nodeIdsFeatures(graph,nodeIds,features,out=None):
+        nodeMapShape = graph.intrinsicNodeMapShape()
+        featureMapShape       = features.shape
+        if len(nodeMapShape)+1==features.ndim:
+            spatialInputShape = nodeIds.shape
+            numberOfChannels  = featureMapShape[-1]
+            outShape = spatialInputShape + (numberOfChannels,)
+
+            if out is not None:
+                out = out.reshape([-1,numberOfChannels])
+                out = taggedView(out,'xc')
+
+            out = graphs._nodeIdsFeatures(graph=graph,nodeIds=nodeIds.reshape(-1) ,features=features,out=out)
+            out = out.reshape(outShape)
+            return out
+        elif len(nodeMapShape)==features.ndim:
+            raise RuntimeError("feature map has wrong dimension: feature map must have a channel dimension")
+        else :
+            raise RuntimeError("feature map has wrong dimension")
+    
+    nodeIdsFeatures.__module__ = 'vigra.graphs'
+    graphs.nodeIdsFeatures = nodeIdsFeatures
+
+
+
+
+    class ShortestPathPathDijkstra(object):
+        def __init__(self,graph):
+            self.pathFinder =  graphs._shortestPathDijkstra(graph)
+            self.pathFinder.__dict__['__base_object__']=graph
+            self.source = None
+            self.target = None
+        def run(self,weights,source,target=None,weightType='edgeWeights'):
+            self.source = source
+            self.target = target
+            if(weightType=='edgeWeights'):
+                if targe is None:
+                    self.pathFinder.run(weights,source)
+                else:
+                    self.pathFinder.run(weights,source,target)
+            elif(weightType=='nodeSumWeights'):
+                if target is None:
+                    self.pathFinder.runNodeSumWeights(weights,source)
+                else:
+                    self.pathFinder.runNodeSumWeights(weights,source,target)
+            else :
+                raise RuntimeError("weightType '%s' is not supported, try 'edgeWeights' or 'nodeSumWeights' "%str(weightType))
+            return self
+
+        def path(self,target=None,pathType='coordinates'):
+            if target is None:
+                assert self.target is not None
+                target=self.target
+
+            if pathType=='coordinates':
+                return self.pathFinder.nodeCoordinatePath(target)
+            elif pathType == 'ids':
+                return self.pathFinder.nodeIdPath(target)
+
+        def distances(self,out=None):
+            self.pathFinder.distances(out)
+        def predecessors(self,out=None):
+            self.pathFinder.predecessors(out)
+
+
+    ShortestPathPathDijkstra.__module__ = 'vigra.graphs'
+    graphs.ShortestPathPathDijkstra = ShortestPathPathDijkstra
+
+
 
 _genGraphConvenienceFunctions()
 del _genGraphConvenienceFunctions

@@ -46,6 +46,8 @@ newShape = [img.shape[0]*2-1,img.shape[1]*2-1]
 #img    = vigra.resize(img,newShape)
 gradmag = vigra.filters.gaussianGradientMagnitude(imgLab,sigma)
 gradmag = numpy.squeeze(gradmag).astype(numpy.float32)
+
+#gradmag = gradmag ** 0.5
 labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,25)
 labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
 

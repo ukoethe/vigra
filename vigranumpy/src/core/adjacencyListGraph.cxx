@@ -62,7 +62,7 @@ namespace vigra{
         python::class_<Graph>(clsName.c_str(),python::init< const size_t,const size_t , const bool >())
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonUndirectedGraphAddItemsVisitor<Graph>(clsName))
-        .def(LemonGraphSegmentationAlgotithmVisitor<Graph>(clsName))
+        .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
         ;
     }
 } 
