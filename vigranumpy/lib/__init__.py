@@ -566,8 +566,6 @@ def _genGraphConvenienceFunctions():
 
                 - graph
         '''
-        if directed :
-             raise RuntimeError("directed Graph is not yet implemented")
         return graphs.AdjacencyListGraph(nodes,edges,zeroStart)
         
     graph.__module__ = 'vigra.graphs'
