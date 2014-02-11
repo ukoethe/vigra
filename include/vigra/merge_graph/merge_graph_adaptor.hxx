@@ -579,82 +579,8 @@ class MergeGraphAdaptor
 
         std::vector< NodeStorage >  nodeVector_;
 
-
-        // BUFFERS
-
-        struct NodeNodeEdge{
-            index_type  n0_;
-            index_type  n1_;
-            index_type  edge_;
-
-            NodeNodeEdge(){}
-            NodeNodeEdge(
-                const index_type  n0,
-                const index_type  n1,
-                const index_type  edge
-            )   
-            :   n0_(n0<n1 ? n0 : n1),
-                n1_(n0<n1 ? n1 : n0),
-                edge_(edge){
-            }
-
-
-            bool operator<(const NodeNodeEdge & other )const{
-                if(n0_<other.n0_)
-                    return true;
-                else if(n0_>other.n0_)
-                    return false;
-                else
-                    return n1_<other.n1_;
-            }
-            bool operator>(const NodeNodeEdge & other )const{
-                if(n0_>other.n0_)
-                    return true;
-                else if(n0_<other.n0_)
-                    return false;
-                else
-                    return n1_>other.n1_;
-            }
-            bool operator==(const NodeNodeEdge & other )const{
-                return n0_==other.n0_ && n1_==other.n1_;
-            }
-            bool operator!=(const NodeNodeEdge & other )const{
-                return n0_!=other.n0_ ||n1_!=other.n1_;
-            }
-        };
-
-
         size_t nDoubleEdges_;
         std::vector<std::pair<index_type,index_type> > doubleEdges_;
-
-        std::vector<NodeNodeEdge> vectorMap_;
-
-
-        std::vector<index_type> sharedAdjacentNodes_;
-
-
-
-        size_t sharedAdjacentNodes(index_type uid,index_type vid){
-
-            size_t nShared =0;
-
-            NodeStorage::AdjIt iter1 = nodeVector_[uid].adjacencyBegin();
-            NodeStorage::AdjIt end1  = nodeVector_[uid].adjacencyEnd();
-            NodeStorage::AdjIt iter2 = nodeVector_[vid].adjacencyBegin();
-            NodeStorage::AdjIt end2  = nodeVector_[uid].adjacencyEnd();
-
-             while (iter1!=end1 && iter2!=end2){
-                if (*iter1<*iter2) 
-                    ++iter1;
-                else if (*iter2<*iter1) 
-                    ++iter2;
-                else {
-                    sharedAdjacentNodes_[nShared]=iter1->nodeId();
-                    ++nShared; ++iter1; ++iter2;
-                }
-            }
-            return nShared;
-        }
 };
 
 
@@ -674,9 +600,7 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
     edgeUfd_(graph.maxEdgeId()+1),
     nodeVector_(graph.maxNodeId()+1),
     nDoubleEdges_(0),
-    doubleEdges_(graph_.edgeNum()/2 +1),
-    vectorMap_(graph_.edgeNum()),
-    sharedAdjacentNodes_(graph_.nodeNum())
+    doubleEdges_(graph_.edgeNum()/2 +1)
 {
     for(index_type possibleNodeId = 0 ; possibleNodeId <= graph_.maxNodeId(); ++possibleNodeId){
         if(graph_.nodeFromId(possibleNodeId)==lemon::INVALID){
@@ -1089,75 +1013,46 @@ void MergeGraphAdaptor<GRAPH>::contractEdge(
     const IdType newNodeRep    = reprNodeId(nodesIds[0]);
     const IdType notNewNodeRep =  (newNodeRep == nodesIds[0] ? nodesIds[1] : nodesIds[0] );
 
-
-
-
-    // finde alle nodes die ajdacent zu nodesIds[0] und nodeIds[1] sind
-    const size_t nSharedNodes = sharedAdjacentNodes(newNodeRep,notNewNodeRep);
-    //std::cout<<"nSharedNodes between "<<newNodeRep<<" "<<notNewNodeRep<<" : "<<nSharedNodes<<"\n";
-
-    // REFACTOR THIS VECTOR
-    std::vector<index_type > doubleEdges;
-
-    // if there are no nodes which are adjacent to notNewNodeRep and newNotRep 
-    // then there can't be any double edge
-    if(nSharedNodes==0){
-        // nur die neu erzeugete node muss gecleaned werden
-        // einfaches leoschn der edge in adj. langt
-        nodeVector_[newNodeRep].merge(nodeVector_[notNewNodeRep]);
-        typename NodeStorage::AdjIt iter=nodeVector_[notNewNodeRep].adjacencyBegin();
-        typename NodeStorage::AdjIt end =nodeVector_[notNewNodeRep].adjacencyEnd();
-        for(;iter!=end;++iter){
-
-            const size_t adjToDeadNodeId = iter->nodeId(); 
-            if(adjToDeadNodeId!=newNodeRep){
+    typename NodeStorage::AdjIt iter=nodeVector_[notNewNodeRep].adjacencyBegin();
+    typename NodeStorage::AdjIt end =nodeVector_[notNewNodeRep].adjacencyEnd();
+   
+    nDoubleEdges_=0;
+    for(;iter!=end;++iter){
+        const size_t adjToDeadNodeId = iter->nodeId(); 
+        if(adjToDeadNodeId!=newNodeRep){
+            // we need to check if this node is also adjacent to ne ACTIVE node
+            std::pair<index_type,bool> found=nodeVector_[adjToDeadNodeId].findEdge(newNodeRep);
+            if(found.second){
+                edgeUfd_.merge(iter->edgeId(),found.first);
+                nodeVector_[adjToDeadNodeId].eraseFromAdjacency(notNewNodeRep);
+                nodeVector_[adjToDeadNodeId].insert(newNodeRep,found.first);
+                const index_type edgeA = iter->edgeId();
+                const index_type edgeB = found.first;
+                const index_type edgeR  = edgeUfd_.find(edgeA);
+                const index_type edgeNR = edgeR==edgeA ? edgeB : edgeA; 
+                doubleEdges_[nDoubleEdges_]=std::pair<index_type,index_type>(edgeR,edgeNR );
+                ++nDoubleEdges_;
+            }
+            else{
                 nodeVector_[adjToDeadNodeId].eraseFromAdjacency(notNewNodeRep);
                 nodeVector_[adjToDeadNodeId].insert(newNodeRep,iter->edgeId());
             }
         }
-        nodeVector_[notNewNodeRep].clear();
-        nodeVector_[newNodeRep].eraseFromAdjacency(notNewNodeRep);
-        nodeVector_[newNodeRep].eraseFromAdjacency(newNodeRep); // no self adjacecy
     }
-    else{
-        typename NodeStorage::AdjIt iter=nodeVector_[notNewNodeRep].adjacencyBegin();
-        typename NodeStorage::AdjIt end =nodeVector_[notNewNodeRep].adjacencyEnd();
-        for(;iter!=end;++iter){
 
-            const size_t adjToDeadNodeId = iter->nodeId(); 
-            if(adjToDeadNodeId!=newNodeRep){
-                // we need to check if this node is also adjacent to ne ACTIVE node
-                std::pair<index_type,bool> found=nodeVector_[adjToDeadNodeId].findEdge(newNodeRep);
-
-
-                if(found.second){
-                    // THERE WILL BE DOUBLE EDGES
-
-                    // edge between dead and neigbour is
-                    // iter->edgeId()
-                    // other edge is in found.first
-                    doubleEdges.push_back(iter->edgeId());
-                    doubleEdges.push_back(found.first);
-                    edgeUfd_.merge(iter->edgeId(),found.first);
-
-                    nodeVector_[adjToDeadNodeId].eraseFromAdjacency(notNewNodeRep);
-                    nodeVector_[adjToDeadNodeId].insert(newNodeRep,found.first);
-                }
-                else{
-                    // edge id will stay the same,but 
-                    nodeVector_[adjToDeadNodeId].eraseFromAdjacency(notNewNodeRep);
-                    nodeVector_[adjToDeadNodeId].insert(newNodeRep,iter->edgeId());
-                }
-            }
-        }
-
-        nodeVector_[newNodeRep].merge(nodeVector_[notNewNodeRep]);
-        nodeVector_[newNodeRep].eraseFromAdjacency(notNewNodeRep);
-        nodeVector_[newNodeRep].eraseFromAdjacency(newNodeRep); // no self adjacecy
-
-        nodeVector_[notNewNodeRep].clear();
-    }
+    nodeVector_[newNodeRep].merge(nodeVector_[notNewNodeRep]);
+    nodeVector_[newNodeRep].eraseFromAdjacency(notNewNodeRep);
+    nodeVector_[newNodeRep].eraseFromAdjacency(newNodeRep); // no self adjacecy
+    nodeVector_[notNewNodeRep].clear();
+    
     edgeUfd_.eraseElement(toDeleteEdgeIndex);
+
+    this->callEraseEdgeCallbacks(toDeleteEdgeIndex);
+    this->callMergeNodeCallbacks(Node(newNodeRep),Node(notNewNodeRep));
+    for(size_t de=0;de<nDoubleEdges_;++de){
+        this->callMergeEdgeCallbacks(Edge(doubleEdges_[de].first),Edge(doubleEdges_[de].second));
+    }
+
 }
 
 
