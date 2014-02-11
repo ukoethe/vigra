@@ -2,6 +2,7 @@ import vigra
 import vigra.graphs as vigraph
 import pylab
 import numpy
+np=numpy
 import sys
 import matplotlib
 import pylab as plt
@@ -19,29 +20,71 @@ from matplotlib.widgets import Slider, Button, RadioButtons
 print "get input"
 f       = '100075.jpg'
 f       = '69015.jpg'
-#f       = '12003.jpg'
-sigma   = 2.0
-img     = vigra.impex.readImage(f)#[0:100,0:100,:]
-imgLab  = vigra.colors.transform_RGB2Lab(img)
-gradmag = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLab,sigma))
-weights  = numpy.exp(-4.0*gradmag)
+f       = "/media/tbeier/GSP1RMCPRFR/iso.03530.png"
+img     = vigra.impex.readImage(f)
 
+if(img.shape[2]==1):
+    print "lab",img.shape 
+    img = numpy.concatenate([img]*3,axis=2)
+    #img = numpy.swapaxes(img,0,2)
+    #img = numpy.swapaxes(img,0,1)
+    imgLab = img
+    print "lab",imgLab.shape
+    imgLab = vigra.taggedView(imgLab,'xyc')
+else:
+    imgLab = vigra.colors.transform_RGB2Lab(img)
+    imgLab = vigra.taggedView(imgLab,'xyc')
+sigma   = 2.0
+
+
+imgLab-=imgLab.min()
+imgLab/=imgLab.max()
+imgLab*=255
+#imgLab = numpy.array([img,img,img])
+
+#imgLab = numpy.swapaxes(imgLab,0,2)
+
+
+print imgLab.shape
+
+#gradmag = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLab,sigma))
+gradmag = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLab,sigma))
+hessian = numpy.squeeze(vigra.filters.hessianOfGaussianEigenvalues(imgLab[:,:,0],sigma))[:,:,0]
+hessian-=hessian.min()
+raw     = 256-imgLab[:,:,0].copy()
+#vigra.imshow(hessian)
+#vigra.show()
+
+
+def makeWeights(gamma):
+    global hessian,gradmag,raw
+    print "hessian",hessian.min(),hessian.max()
+    print "raw ",raw.min(),raw.max()
+    w= numpy.exp((raw**0.5)*gamma)#**0.5
+    w = numpy.array(w).astype(numpy.float32)
+    #w*= gamma
+
+    return w
+
+weights  = makeWeights(3.0)
 
 gridGraph  = vigraph.gridGraph(gradmag.shape,False)  
 pathFinder = vigraph.ShortestPathPathDijkstra(gridGraph)
 
 
-visuimg =img.copy()
+visuimg =imgLab.copy()
 ax = plt.gca()
 fig = plt.gcf()
 visuimg-=visuimg.min()
 visuimg/=visuimg.max()
-implot = ax.imshow(numpy.swapaxes(visuimg,0,1))
+implot = ax.imshow(numpy.swapaxes(visuimg,0,1),cmap='gray')
 
 clickList=[]
 
 
 frozen = False
+
+
 
 
 def makeVisuImage(path,img):
@@ -82,9 +125,9 @@ def onclick(event):
 
                 source = gridGraph.coordinateToNode(clickList[0])
                 target = gridGraph.coordinateToNode(clickList[1])
-
+                weights  = makeWeights(sgamma.val)
                 path = pathFinder.run(weights, source,target,weightType='nodeSumWeights').path(pathType='coordinates')
-                visuimg = makeVisuImage(path,img)
+                visuimg = makeVisuImage(path,imgLab)
                 implot.set_data(numpy.swapaxes(visuimg,0,1))
                 plt.draw()
 
@@ -99,7 +142,7 @@ axunfreeze   = plt.axes([0.8, 0.00, 0.1, 0.075])
 bfreeze   = Button(axfreeze, 'freeze')
 bunfreeze = Button(axunfreeze, 'unfrease and clear')
 
-sgamma = Slider(axslider, 'gamma', 0.0001, 5.0, valinit=5.0)
+sgamma = Slider(axslider, 'gamma', 0.01, 5.0, valinit=1.0)
 
 
 def freeze(event):
@@ -113,14 +156,18 @@ def unfreeze(event):
 
 def onslide(event):
     global img,gradmag,weights,clickList,sgamma
-    weights  = numpy.exp(-float(sgamma.val)*gradmag)
+    weights[:]  = makeWeights(sgamma.val)
     print "onslide",clickList
     if len(clickList)>=2:
         print "we have  path"
         source = gridGraph.coordinateToNode(clickList[0])
         target = gridGraph.coordinateToNode(clickList[1])
         path = pathFinder.run(weights, source,target,weightType='nodeSumWeights').path(pathType='coordinates')
-        visuimg = makeVisuImage(path,img)
+
+        
+
+
+        visuimg = makeVisuImage(path,imgLab)
         implot.set_data(numpy.swapaxes(visuimg,0,1))
         plt.draw()
 

@@ -306,10 +306,10 @@ class MergeGraphAdaptor
 
 
     
-    typedef  RandomAccessSet<index_type>   NodeStorageEdgeSet;
+
     //typedef  std::set<index_type>   NodeStorageEdgeSet;
-    typedef detail::GenericNodeImpl<index_type,NodeStorageEdgeSet >  NodeStorage;
-    typedef detail::GenericEdgeImpl<index_type >                       EdgeStorage;
+    typedef detail::GenericNodeImpl<index_type,false >  NodeStorage;
+    typedef detail::GenericEdgeImpl<index_type >        EdgeStorage;
 
 
 
@@ -374,7 +374,7 @@ class MergeGraphAdaptor
         MergeGraphAdaptor& operator=( const MergeGraphAdaptor& ); // non copyable
     public:
         MergeGraphAdaptor(const Graph &  graph);
-        void   setInitalEdge(const size_t initEdge,const size_t initNode0,const size_t initNode1);
+        //void   setInitalEdge(const size_t initEdge,const size_t initNode0,const size_t initNode1);
 
         // query (sizes) 
         size_t edgeNum()const;
@@ -531,7 +531,16 @@ class MergeGraphAdaptor
         template<class G,class NIMPL,class FILT>
         friend class detail::GenericIncEdgeIt;
 
-
+        template<class G>
+        friend class detail::NeighborNodeFilter;
+        template<class G>
+        friend class detail::IncEdgeFilter;
+        template<class G>
+        friend class detail::BackEdgeFilter;
+        template<class G>
+        friend class detail::IsOutFilter;
+        template<class G>
+        friend class detail::IsInFilter;
         friend class MergeGraphNodeIt<MergeGraphType>;
         friend class MergeGraphArcIt<MergeGraphType>;
         friend class MergeGraphEdgeIt<MergeGraphType>;
@@ -555,7 +564,7 @@ class MergeGraphAdaptor
 
 
 
-        void combineDoubleEdges(const std::vector<IdType> & ,const IdType ,const IdType );
+        //void combineDoubleEdges(const std::vector<IdType> & ,const IdType ,const IdType );
         void searchLocalDoubleEdges(const NodeStorage & node);// , DoubleMap & doubleMap);
 
 
@@ -619,6 +628,34 @@ class MergeGraphAdaptor
         std::vector<std::pair<index_type,index_type> > doubleEdges_;
 
         std::vector<NodeNodeEdge> vectorMap_;
+
+
+        std::vector<index_type> sharedAdjacentNodes_;
+
+
+
+        size_t sharedAdjacentNodes(index_type uid,index_type vid)const{
+
+            size_t nShared =0;
+
+            NodeStorage::AdjIt iter1 = nodeVector_[uid].adjacencyBegin();
+            NodeStorage::AdjIt end1  = nodeVector_[uid].adjacencyEnd();
+            NodeStorage::AdjIt iter2 = nodeVector_[vid].adjacencyBegin();
+            NodeStorage::AdjIt end2  = nodeVector_[uid].adjacencyEnd();
+
+             while (iter1!=end1 && iter2!=end2){
+                if (*iter1<*iter2) 
+                    ++iter1;
+                else if (*iter2<*iter1) 
+                    ++iter2;
+                else {
+                    *result = *iter1;
+                    sharedAdjacentNodes_[nShared]=iter1->nodeId();
+                    ++nShared; ++iter1; ++iter2;
+                }
+            }
+            return nShared;
+        }
 };
 
 
@@ -639,7 +676,8 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
     nodeVector_(graph.maxNodeId()+1),
     nDoubleEdges_(0),
     doubleEdges_(graph_.edgeNum()/2 +1),
-    vectorMap_(graph_.edgeNum())
+    vectorMap_(graph_.edgeNum()),
+    sharedAdjacentNodes_(graph_.noodeNum())
 {
     for(index_type possibleNodeId = 0 ; possibleNodeId <= graph_.maxNodeId(); ++possibleNodeId){
         if(graph_.nodeFromId(possibleNodeId)==lemon::INVALID){
@@ -675,8 +713,8 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
             //CGP_ASSERT_OP(gvid,>=,0);
 
 
-            nodeVector_[ guid ].insertEdgeId(possibleEdgeId);
-            nodeVector_[ gvid ].insertEdgeId(possibleEdgeId);   
+            nodeVector_[ guid ].insert(gvid,possibleEdgeId);
+            nodeVector_[ gvid ].insert(guid,possibleEdgeId);   
         }
     }
     
@@ -687,14 +725,15 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
 template<class GRAPH>
 inline  typename MergeGraphAdaptor<GRAPH>::Edge
 MergeGraphAdaptor<GRAPH>::findEdge  (
-    const typename MergeGraphAdaptor<GRAPH>::Node & nodeA,
-    const typename MergeGraphAdaptor<GRAPH>::Node & nodeB
+    const typename MergeGraphAdaptor<GRAPH>::Node & a,
+    const typename MergeGraphAdaptor<GRAPH>::Node & b
 )const{
 
-    if(nodeA!=nodeB){
-        const std::pair<IdType,bool> result = nodeImpl(nodeA).sharedEdge(nodeImpl(nodeB));
-        if (result.second)
-            return Edge(result.first);
+    if(a!=b){
+        std::pair<index_type,bool> res =  nodeVector_[id(a)].findEdge(id(b));
+        if(res.second){
+            return Edge(res.first);
+        }
     }
     return Edge(lemon::INVALID);
 }
@@ -940,16 +979,16 @@ void MergeGraphAdaptor<GRAPH>::stateOfInitalEdges(
     throw std::runtime_error("REFACTORE ME");
 }
 
-template<class GRAPH>
-inline void MergeGraphAdaptor<GRAPH>::setInitalEdge(
-    const size_t initEdge,
-    const size_t initNode0,
-    const size_t initNode1
-){
-    // set up the edges of a given region mapping
-    nodeVector_[initNode0].edges_.insert(initEdge);
-    nodeVector_[initNode1].edges_.insert(initEdge);
-}
+//template<class GRAPH>
+//inline void MergeGraphAdaptor<GRAPH>::setInitalEdge(
+//    const size_t initEdge,
+//    const size_t initNode0,
+//    const size_t initNode1
+//){
+//    // set up the edges of a given region mapping
+//    nodeVector_[initNode0].edges_.insert(initEdge);
+//    nodeVector_[initNode1].edges_.insert(initEdge);
+//}
 
 template<class GRAPH>
 inline size_t MergeGraphAdaptor<GRAPH>::nodeNum()const{
@@ -969,7 +1008,7 @@ inline size_t MergeGraphAdaptor<GRAPH>::edgeNum()const{
     return edgeUfd_.numberOfSets();
 }
 
-
+/*
 template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::combineDoubleEdges(
     const std::vector<typename MergeGraphAdaptor<GRAPH>::IdType > & toCombine,
@@ -1009,7 +1048,7 @@ void MergeGraphAdaptor<GRAPH>::combineDoubleEdges(
 
     //CGP_ASSERT_OP(dynamicEdges_.size(),==,edgeUfd_.numberOfSets());
 }
-
+*/
 template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
     typename MergeGraphAdaptor<GRAPH>::NodeStorage const & node 
@@ -1038,6 +1077,41 @@ void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
 
 
 
+template<class GRAPH>
+void MergeGraphAdaptor<GRAPH>::contractEdge(
+    const typename MergeGraphAdaptor<GRAPH>::Edge & toDeleteEdge
+){
+    const index_type toDeleteEdgeIndex = id(toDeleteEdge);
+    const index_type nodesIds[2]={id(u(toDeleteEdge)),id(v(toDeleteEdge))};
+
+    // merge the two nodes
+    nodeUfd_.merge(nodesIds[0],nodesIds[1]);
+    const IdType newNodeRep    = reprNodeId(nodesIds[0]);
+    const IdType notNewNodeRep =  (newNodeRep == nodesIds[0] ? nodesIds[1] : nodesIds[0] );
+
+    // finde alle nodes die ajdacent zu nodesIds[0] und nodeIds[1] sind
+    const size_t nSharedNode = sharedAdjacentNodes(nodesIds[0],nodesIds[1]);
+
+
+    // wennn nSharedNodes == 0 dann kann es keine double edges geben
+    if(nSharedNodes==0){
+        // nur die neu erzeugete node muss gecleaned werden
+        // einfaches leoschn der edge in adj. langt
+        nodeVector_[newNodeRep].merge(nodeVector_[notNewNoderep]);
+        nodeVector_[notNewNoderep].clear();
+        nodeVector_[newNodeRep].eraseFromAdjacency(notNewNoderep,toDeleteEdgeIndex);
+
+        //TODO..callbacks
+    }
+    else{
+        // (1) :
+        //  ES GIBT IMMMER INTERE DOUBLE EDGES
+    }
+}
+
+
+
+/*
 template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::contractEdge(
     const typename MergeGraphAdaptor<GRAPH>::Edge & toDeleteEdge
@@ -1123,7 +1197,7 @@ void MergeGraphAdaptor<GRAPH>::contractEdge(
     //CGP_ASSERT_OP(this->nodeNum(),==,preNumNodes-1);
 }
 
-
+*/
 
 
 

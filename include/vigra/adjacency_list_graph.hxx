@@ -238,8 +238,7 @@ namespace vigra{
     private:
         // private typedes which are needed for defining public typedes
         typedef AdjacencyListGraph                                          GraphType;
-        typedef RandomAccessSet<index_type>                               NodeStorageEdgeSet;
-        typedef detail::GenericNodeImpl<index_type,NodeStorageEdgeSet>    NodeStorage;
+        typedef detail::GenericNodeImpl<index_type,false>                   NodeStorage;
         typedef detail::GenericEdgeImpl<index_type >                      EdgeStorage;
         typedef detail::NeighborNodeFilter<GraphType>                       NnFilter;
         typedef detail::IncEdgeFilter<GraphType>                            IncFilter;
@@ -392,6 +391,17 @@ namespace vigra{
         template<class G,class NIMPL,class FILT>
         friend class detail::GenericIncEdgeIt;
 
+        template<class G>
+        friend class detail::NeighborNodeFilter;
+        template<class G>
+        friend class detail::IncEdgeFilter;
+        template<class G>
+        friend class detail::BackEdgeFilter;
+        template<class G>
+        friend class detail::IsOutFilter;
+        template<class G>
+        friend class detail::IsInFilter;
+
 
         friend class detail_adjacency_list_graph::ItemIter<GraphType,Node>;
         friend class detail_adjacency_list_graph::ItemIter<GraphType,Edge>;
@@ -494,12 +504,14 @@ namespace vigra{
             return Edge(lemon::INVALID);
         }
         else{
-            const index_type id = edges_.size();
-            edges_.push_back(EdgeStorage(u.id(),v.id(),id));
-            nodeImpl(u).insertEdgeId(id);
-            nodeImpl(v).insertEdgeId(id);
+            const index_type eid  = edges_.size();
+            const index_type uid = u.id();
+            const index_type vid = v.id();
+            edges_.push_back(EdgeStorage(uid,vid,eid));
+            nodeImpl(u).insert(vid,eid);
+            nodeImpl(v).insert(uid,eid);
             ++edgeNum_;
-            return Edge(id);
+            return Edge(eid);
         }   
     }
 
@@ -772,13 +784,13 @@ namespace vigra{
         const AdjacencyListGraph::Node & a,
         const AdjacencyListGraph::Node & b
     )const{
-        std::pair<index_type,bool> res =  nodes_[id(a)].sharedEdge(nodes_[id(b)]);
-        if(res.second){
-            return Edge(res.first);
+        if(a!=b){
+            std::pair<index_type,bool> res =  nodes_[id(a)].findEdge(id(b));
+            if(res.second){
+                return Edge(res.first);
+            }
         }
-        else{
-            return Edge(lemon::INVALID);
-        }
+        return Edge(lemon::INVALID);
     }
 
 
