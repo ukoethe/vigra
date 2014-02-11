@@ -296,7 +296,7 @@ namespace vigra{
 
                 // modification
                 void  merge(const GenericNodeImpl & other){
-                    adjacency_.insert(other.adjacency_.begin(),adjacency_.edges_.end());
+                    adjacency_.insert(other.adjacency_.begin(),other.adjacency_.end());
                 }
 
                 
@@ -331,9 +331,9 @@ namespace vigra{
                     adjacency_.clear();
                 }
 
-                void eraseFromAdjacency(const nodeId,const edgeId){
+                void eraseFromAdjacency(const index_type nodeId){
                     // edge id does not matter?
-                    adjacency_.erase(AdjacencyElement(nodeId,edgeId))
+                    adjacency_.erase(AdjacencyElement(nodeId,0));
                 }
 
                 /*

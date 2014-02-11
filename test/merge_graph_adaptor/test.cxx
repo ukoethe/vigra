@@ -952,21 +952,23 @@ struct AdjacencyListGraph2MergeGraphTest{
         // 7 |8 | 9
         shouldEqual(g.nodeNum(),8);
         shouldEqual(g.edgeNum(),11);
-        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        
         // check degrees 
         shouldEqual(g.degree(n1),2);
         shouldEqual(g.degree(g.reprNode(n1)),2);
         shouldEqual(g.degree(g.reprNode(n2)),3);
         shouldEqual(g.degree(g.reprNode(n3)),2);
+        //std::cout<<"REPR NODE OF 4 is \n"<<g.reprNodeId(g.id(n4))<<"\n";
         shouldEqual(g.degree(g.reprNode(n4)),5);
         shouldEqual(g.degree(g.reprNode(n5)),5);
         shouldEqual(g.degree(g.reprNode(n6)),3);
         shouldEqual(g.degree(g.reprNode(n7)),2);
         shouldEqual(g.degree(g.reprNode(n8)),3);
         shouldEqual(g.degree(g.reprNode(n9)),2);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
 
 
-
+        //std::cout<<"\n   start here \n";
         /////////////////
         // merge 1|4
         //////////////////
@@ -978,9 +980,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         // 4  5 | 6
         // __ __  _
         // 7 |8 | 9
-        shouldEqual(g.nodeNum(),7);
-        shouldEqual(g.edgeNum(),9);
-        shouldEqual(degreeSum(g),g.edgeNum()*2);
+
         // check degrees 
         shouldEqual(g.degree(g.reprNode(n1)),4);
         shouldEqual(g.degree(g.reprNode(n2)),2);
@@ -991,8 +991,10 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.degree(g.reprNode(n7)),2);
         shouldEqual(g.degree(g.reprNode(n8)),3);
         shouldEqual(g.degree(g.reprNode(n9)),2);
-
-
+        shouldEqual(g.nodeNum(),7);
+        shouldEqual(g.edgeNum(),9);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        //std::cout<<"\n   end here \n";
         /////////////////
         // merge 2|3
         //////////////////
@@ -1375,8 +1377,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         // 4 |5 |6
         // __ __ _
         // 7 |8 |9
-        shouldEqual(g.nodeNum(),7);
-        shouldEqual(g.edgeNum(),9);
+
 
         should( g.findEdge(g.reprNode(n1),g.reprNode(n2))!=lemon::INVALID);
         should( g.findEdge(g.reprNode(n1),g.reprNode(n3))!=lemon::INVALID);
@@ -1414,7 +1415,8 @@ struct AdjacencyListGraph2MergeGraphTest{
         should( g.findEdge(g.reprNode(n7),g.reprNode(n8))!=lemon::INVALID);
         should( g.findEdge(g.reprNode(n7),g.reprNode(n9))==lemon::INVALID);
         should( g.findEdge(g.reprNode(n8),g.reprNode(n9))!=lemon::INVALID);
-
+        shouldEqual(g.nodeNum(),7);
+        shouldEqual(g.edgeNum(),9);
 
         /////////////////
         // merge 5|6

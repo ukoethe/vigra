@@ -528,8 +528,11 @@ def _genGraphConvenienceFunctions():
             Parameters:
 
                 - shape -- shape of the image
-                - directNeighborhood -- use  4 (True) or 8 (False) neighborhood (default: True
+                - directNeighborhood -- use  4 (True) or 8 (False) neighborhood (default: True)
 
+            Returns:
+
+                - grid graph
 
             use::
 
@@ -551,8 +554,17 @@ def _genGraphConvenienceFunctions():
     gridGraph.__module__ = 'vigra.graphs'
     graphs.gridGraph = gridGraph
 
-    def graph(nodes=0,edges=0,zeroStart=False,directed=False):
-        ''' test doc string
+    def graph(nodes=0,edges=0,zeroStart=False):
+        ''' Return an empty directed graph
+
+            Parameters :
+
+                - nodes -- number of nodes to reserveEdges
+                - edges -- number of edges to reserve
+
+            Returns :
+
+                - graph
         '''
         if directed :
              raise RuntimeError("directed Graph is not yet implemented")
@@ -563,6 +575,21 @@ def _genGraphConvenienceFunctions():
 
 
     def regionAdjacencyGraph(graph,labels,ignoreLabel=0,reserveEdges=0):
+        """ Return a region adjacency graph for a labeld graph.
+
+            Parameters:
+
+                - graph  -- input graph
+                - lables -- node-map with labels for each nodeSumWeights
+                - ignoreLabel -- label to ingnore (default: 0)
+                    (must be 0 currently)
+                - reserveEdges -- reverse a certain number of edges (default: 0)
+
+            Returns:
+
+                - rag -- the region adjacency graph 
+                - hyperEdges --  edges of graph for each edge of rag
+        """
         if isinstance(graph,graphs.GridGraphUndirected2d):
             rag       = graphs.graph(long(labels.max()+1),reserveEdges)
             hyperEdges  = graphs.GridGraphUndirected2dHyperEdgeMap()
@@ -585,6 +612,24 @@ def _genGraphConvenienceFunctions():
 
 
     def intrinsicGraphMapShape(graph,item):
+        """ Intrinsic shape of node/edge/arc-map for a given graph.
+
+            Node edge and arc maps are stored in numpy arrays by default.
+            The instric shape may not be confused with the number
+            of nodes/edges/arcs. The instric shape is used to
+            allocate a numpy are which can store data for nodes/arcs/edgeSizes
+            of a given graph.
+
+            Parameters:
+
+                - graph -- input graph to get the shape for
+
+                - item  -- item must be ``'node'`` , ``'edge'`` or ``'arc'``
+
+            Returns:
+
+                - shape as tuple
+        """
         if   item=='edge':
             return graph.intrinsicEdgeMapShape()
         elif item=='node':
@@ -599,6 +644,19 @@ def _genGraphConvenienceFunctions():
 
 
     def graphMap(graph,item,dtype,channels=1):
+        """ Return a graph map for a given graph item (``'node'`` , ``'edge'`` or ``'arc'``).
+
+            Parameters:
+
+                - graph    -- graph to get a graph map for
+                - item     -- ``'node'`` , ``'edge'`` or ``'arc'``
+                - dtype    -- desired dtype 
+                - channels -- number of channels (default: 1)
+
+            Returns:
+
+                - graphmap as numpy.ndarray
+        """
         s = intrinsicGraphMapShape(graph,item)
         if(channels==1):
             a=numpy.zeros(shape=s,dtype=dtype)
@@ -614,6 +672,20 @@ def _genGraphConvenienceFunctions():
     graphs.graphMap = graphMap
 
     def hyperEdgeSizes(graph,hyperEdges):
+        ''' Get the number of edges for each edge in the region adjacnecy graph.
+
+            See :func:`getRegionAdjacencyGraph` to get a region adjacnecy graph
+
+            Parameters:
+
+                - graph -- the region adjacency graph
+
+                - hyperEdges -- hyperEdge-Map for the graph
+
+            Returns: 
+
+                - hyperEdge sizes as numpy.ndarray
+        '''
         out = graphs.graphMap(graph,"edge",dtype=numpy.float32)
         graphs._hyperEdgeSizes(graph,hyperEdges,out)
         return out
@@ -623,6 +695,25 @@ def _genGraphConvenienceFunctions():
 
 
     def hyperNodeSizes(rag,graph,labels):
+        ''' Get the number of nodes for each node in the region adjacnecy graph.
+
+            See :func:`vigra.graphs.getRegionAdjacencyGraph` to get a region adjacnecy graph
+
+            Parameters:
+
+                - rag   -- the region adjacnecy graph
+
+                - graph  -- the graph the region graph based on (GridGraph for example)
+
+                - rag -- the region adjacency graph itself
+
+                - labels -- the node label map w.r.t. graph 
+
+            Returns: 
+
+                - hyperNode sizes as numpy.ndarray
+
+        '''
         out = graphs.graphMap(rag,"node",dtype=numpy.float32)
         graphs._hyperNodeSizes(rag,graph,labels,out)
         return out
