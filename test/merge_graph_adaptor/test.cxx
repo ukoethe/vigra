@@ -968,6 +968,15 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(degreeSum(g),g.edgeNum()*2);
 
 
+        {
+            for(size_t i=0;i<=9;++i)
+            for(IncEdgeIt iter(g,g.reprNodeId(i));iter!=lemon::INVALID;++iter){
+                should(*iter!=lemon::INVALID);
+            }
+        }
+
+
+
         //std::cout<<"\n   start here \n";
         /////////////////
         // merge 1|4
@@ -994,6 +1003,16 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.nodeNum(),7);
         shouldEqual(g.edgeNum(),9);
         shouldEqual(degreeSum(g),g.edgeNum()*2);
+        {
+            for(size_t i=0;i<=9;++i)
+            for(IncEdgeIt iter(g,g.reprNodeId(i));iter!=lemon::INVALID;++iter){
+                if(*iter==lemon::INVALID){
+                    std::cout<<"node id "<<i<<"repr "<<g.reprNodeId(i)<<"\n";
+                }
+                should(*iter!=lemon::INVALID);
+            }
+        }
+
         //std::cout<<"\n   end here \n";
         /////////////////
         // merge 2|3
@@ -1019,7 +1038,15 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.degree(g.reprNode(n7)),2);
         shouldEqual(g.degree(g.reprNode(n8)),3);
         shouldEqual(g.degree(g.reprNode(n9)),2);
-
+        {
+            for(size_t i=0;i<=9;++i)
+            for(IncEdgeIt iter(g,g.reprNodeId(i));iter!=lemon::INVALID;++iter){
+                if(*iter==lemon::INVALID){
+                    std::cout<<"node id "<<i<<"repr "<<g.reprNodeId(i)<<"\n";
+                }
+                should(*iter!=lemon::INVALID);
+            }
+        }
 
         /////////////////
         // merge 8|9
@@ -1045,7 +1072,12 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.degree(g.reprNode(n7)),2);
         shouldEqual(g.degree(g.reprNode(n8)),3);
         shouldEqual(g.degree(g.reprNode(n9)),3);
-
+        {
+            for(size_t i=0;i<=9;++i)
+            for(IncEdgeIt iter(g,g.reprNodeId(i));iter!=lemon::INVALID;++iter){
+                should(*iter!=lemon::INVALID);
+            }
+        }
 
         /////////////////
         // merge 5|6
@@ -1071,7 +1103,12 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.degree(g.reprNode(n7)),2);
         shouldEqual(g.degree(g.reprNode(n8)),2);
         shouldEqual(g.degree(g.reprNode(n9)),2);
-
+        {
+            for(size_t i=0;i<=9;++i)
+            for(IncEdgeIt iter(g,g.reprNodeId(i));iter!=lemon::INVALID;++iter){
+                should(*iter!=lemon::INVALID);
+            }
+        }
 
         /////////////////
         // merge repr(2|5)
@@ -1097,7 +1134,12 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.degree(g.reprNode(n7)),2);
         shouldEqual(g.degree(g.reprNode(n8)),2);
         shouldEqual(g.degree(g.reprNode(n9)),2);
-
+        {
+            for(size_t i=0;i<=9;++i)
+            for(IncEdgeIt iter(g,g.reprNodeId(i));iter!=lemon::INVALID;++iter){
+                should(*iter!=lemon::INVALID);
+            }
+        }
 
 
         /////////////////
@@ -1124,7 +1166,12 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.degree(g.reprNode(n7)),1);
         shouldEqual(g.degree(g.reprNode(n8)),1);
         shouldEqual(g.degree(g.reprNode(n9)),1);
-
+        {
+            for(size_t i=0;i<=9;++i)
+            for(IncEdgeIt iter(g,g.reprNodeId(i));iter!=lemon::INVALID;++iter){
+                should(*iter!=lemon::INVALID);
+            }
+        }
 
         /////////////////
         // merge repr(7|8)
@@ -1150,6 +1197,12 @@ struct AdjacencyListGraph2MergeGraphTest{
         shouldEqual(g.degree(g.reprNode(n7)),0);
         shouldEqual(g.degree(g.reprNode(n8)),0);
         shouldEqual(g.degree(g.reprNode(n9)),0);
+        {
+            for(size_t i=0;i<=9;++i)
+            for(IncEdgeIt iter(g,g.reprNodeId(i));iter!=lemon::INVALID;++iter){
+                should(*iter!=lemon::INVALID);
+            }
+        }
     }
 
 

@@ -1005,6 +1005,7 @@ template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::contractEdge(
     const typename MergeGraphAdaptor<GRAPH>::Edge & toDeleteEdge
 ){
+    //std::cout<<"node num "<<nodeNum()<<"\n";
     const index_type toDeleteEdgeIndex = id(toDeleteEdge);
     const index_type nodesIds[2]={id(u(toDeleteEdge)),id(v(toDeleteEdge))};
 
@@ -1024,35 +1025,55 @@ void MergeGraphAdaptor<GRAPH>::contractEdge(
             std::pair<index_type,bool> found=nodeVector_[adjToDeadNodeId].findEdge(newNodeRep);
             if(found.second){
                 edgeUfd_.merge(iter->edgeId(),found.first);
-                nodeVector_[adjToDeadNodeId].eraseFromAdjacency(notNewNodeRep);
-                nodeVector_[adjToDeadNodeId].insert(newNodeRep,found.first);
+                
                 const index_type edgeA = iter->edgeId();
                 const index_type edgeB = found.first;
                 const index_type edgeR  = edgeUfd_.find(edgeA);
                 const index_type edgeNR = edgeR==edgeA ? edgeB : edgeA; 
+
+                nodeVector_[adjToDeadNodeId].eraseFromAdjacency(notNewNodeRep);
+                nodeVector_[adjToDeadNodeId].eraseFromAdjacency(newNodeRep);
+                nodeVector_[adjToDeadNodeId].insert(newNodeRep,edgeR);
+
+                // symetric
+                nodeVector_[newNodeRep].eraseFromAdjacency(adjToDeadNodeId);
+                nodeVector_[newNodeRep].insert(adjToDeadNodeId,edgeR);
+
                 doubleEdges_[nDoubleEdges_]=std::pair<index_type,index_type>(edgeR,edgeNR );
                 ++nDoubleEdges_;
             }
             else{
                 nodeVector_[adjToDeadNodeId].eraseFromAdjacency(notNewNodeRep);
+                nodeVector_[adjToDeadNodeId].eraseFromAdjacency(newNodeRep);
                 nodeVector_[adjToDeadNodeId].insert(newNodeRep,iter->edgeId());
+
+                // symetric
+                nodeVector_[newNodeRep].eraseFromAdjacency(adjToDeadNodeId);
+                nodeVector_[newNodeRep].insert(adjToDeadNodeId,iter->edgeId());
+
             }
         }
     }
 
-    nodeVector_[newNodeRep].merge(nodeVector_[notNewNodeRep]);
+    //nodeVector_[newNodeRep].merge(nodeVector_[notNewNodeRep]);
     nodeVector_[newNodeRep].eraseFromAdjacency(notNewNodeRep);
-    nodeVector_[newNodeRep].eraseFromAdjacency(newNodeRep); // no self adjacecy
+    //nodeVector_[newNodeRep].eraseFromAdjacency(newNodeRep); // no self adjacecy
     nodeVector_[notNewNodeRep].clear();
     
     edgeUfd_.eraseElement(toDeleteEdgeIndex);
 
-    this->callEraseEdgeCallbacks(toDeleteEdgeIndex);
+    //std::cout<<"merge nodes callbacks\n";
+    
     this->callMergeNodeCallbacks(Node(newNodeRep),Node(notNewNodeRep));
+
+    //std::cout<<"merge double edge callbacks\n";
     for(size_t de=0;de<nDoubleEdges_;++de){
         this->callMergeEdgeCallbacks(Edge(doubleEdges_[de].first),Edge(doubleEdges_[de].second));
     }
+    //std::cout<<"erase edge callbacks\n";
+    this->callEraseEdgeCallbacks(Edge(toDeleteEdgeIndex));
 
+    //std::cout<<"and done\n";
 }
 
 

@@ -154,24 +154,41 @@ namespace vigra{
             vb/=nodeSizeMap_[bb];
         }
         void eraseEdge(const Edge & edge){
+
+            //std::cout<<"start to erase edge "<<mergeGraph_.id(edge)<<"\n";
             // delete edge from pq
             pq_.deleteItem(edge.id());
             // get the new region the edge is in
             // (since the edge is no any more an active edge)
+            //std::cout<<"get the new node  \n";
             const Node newNode = mergeGraph_.inactiveEdgesNode(edge);
+            //std::cout<<"new node "<<mergeGraph_.id(newNode)<<"\n";
 
+            size_t counter=0;
             // iterate over all edges of this node
             for (IncEdgeIt e(mergeGraph_,newNode);e!=lemon::INVALID;++e){
+
+                //std::cout<<"get inc edge\n";
                 const Edge incEdge(*e);
+
+                //std::cout<<"get inc graph edge\n";
                 const GraphEdge incGraphEdge = EdgeHelper::itemToGraphItem(mergeGraph_,incEdge);
+
+                //std::cout<<"get inc edge weight"<<counter<<"\n";
                 // compute the new weight for this edge
                 // (this should involve region differences)
                 const ValueType newWeight = getEdgeWeight(incEdge);
                 // change the weight in pq by repushing
+
+                //std::cout<<"push\n";
                 pq_.push(incEdge.id(),newWeight);
                 // remember edge weight
+
+                //std::cout<<"set new\n";
                 minWeightEdgeMap_[incGraphEdge]=newWeight;
+                ++counter;
             }
+            std::cout<<"done\n";
         }
         Edge contractionEdge(){
             index_type minLabel = pq_.top();
@@ -190,18 +207,23 @@ namespace vigra{
     private:
         ValueType getEdgeWeight(const Edge & e){
 
-            
-
+            //std::cout<<"raw id ?"<<e.id()<<"\n";
+            //std::cout<<"is E Invalid ?"<<bool(e==lemon::INVALID)<<"\n";
+            //std::cout<<"GET THE IEDGE WEIGHT for edge<<"<< mergeGraph_.id(e) <<"<<\n";
+            //std::cout<<"1\n";
             const Node u = mergeGraph_.u(e);
             const Node v = mergeGraph_.v(e);
+
+            //std::cout<<"2\n";
             const GraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
             const GraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const GraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
-
+            //std::cout<<"3\n";
             const ValueType wardFacRaw = 1.0 / ( 1.0/std::log(nodeSizeMap_[uu]) + 1.0/std::log(nodeSizeMap_[vv]) );
             const ValueType wardFac = (wardFacRaw*wardness_) + (1.0-wardness_);
 
+            //std::cout<<"4\n";
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist;
             if(nodeDistType_==NORM_DISTANCE){
@@ -219,6 +241,7 @@ namespace vigra{
             else{
                 throw std::runtime_error("wrong distance type");
             }
+            //std::cout<<"5\n";
             const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
             return totalWeight;
         }

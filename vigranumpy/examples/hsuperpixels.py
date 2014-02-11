@@ -32,7 +32,7 @@ if True:
 	img 	= vigra.resize(img,newShape)
 	gradmag = vigra.filters.gaussianGradientMagnitude(imgLab,sigma)
 	gradmag = numpy.squeeze(gradmag).astype(numpy.float32)
-	labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,2)
+	labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,10)
 	labels 		 = numpy.squeeze(vigra.analysis.labelImage(labels))
 
 	numLabels = labels.max()
