@@ -188,7 +188,7 @@ namespace vigra{
                 minWeightEdgeMap_[incGraphEdge]=newWeight;
                 ++counter;
             }
-            std::cout<<"done\n";
+            //std::cout<<"done\n";
         }
         Edge contractionEdge(){
             index_type minLabel = pq_.top();
