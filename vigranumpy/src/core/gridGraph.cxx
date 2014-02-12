@@ -114,6 +114,7 @@ namespace vigra{
         .def("__init__",python::make_constructor(&pyGridGraphFactory<DIM,boost::undirected_tag>))
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
+        .def(LemonGridGraphAlgorithmAddonVisitor<Graph>(clsName))
         .def("coordinateToNode",pyCoordinateToNode<DIM,boost::undirected_tag>)
         .def("getRegionAdjacencyGraph",registerConverters(&pyGetRag<DIM,boost::undirected_tag,UInt32> ),
            (

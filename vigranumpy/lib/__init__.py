@@ -892,7 +892,7 @@ def _genGraphConvenienceFunctions():
             self.source = source
             self.target = target
             if(weightType=='edgeWeights'):
-                if targe is None:
+                if target is None:
                     self.pathFinder.run(weights,source)
                 else:
                     self.pathFinder.run(weights,source,target)

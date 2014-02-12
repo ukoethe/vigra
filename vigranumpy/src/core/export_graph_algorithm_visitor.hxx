@@ -16,6 +16,8 @@
 #include <vigra/python_graph_generalization.hxx>
 #include <vigra/graph_algorithms.hxx>
 #include <vigra/metrics.hxx>
+#include <vigra/multi_gridgraph.hxx>
+#include <vigra/error.hxx>
 namespace python = boost::python;
 
 namespace vigra{
@@ -69,7 +71,34 @@ void pathCoordinates(
 
 
 
+template<class GRAPH>
+class LemonGraphShortestPathAddon 
+:   public boost::python::def_visitor<LemonGraphShortestPathAddon<GRAPH> >
+{
+public:
+    friend class def_visitor_access;
+    template <class classT>
+    void visit(classT& c) const{   
+    }
+};
 
+
+// for grid graphs
+template<unsigned int DIM,class DTAG>
+class LemonGraphShortestPathAddon< GridGraph<DIM,DTAG> > 
+:   public boost::python::def_visitor<LemonGraphShortestPathAddon< GridGraph<DIM,DTAG> > >
+{
+public:
+    friend class def_visitor_access;
+    typedef GridGraph<DIM,DTAG> Graph;
+    typedef ShortestPathDijkstra<Graph,float> ShortestPathDijkstraType;
+
+    template <class classT>
+    void visit(classT& c) const{   
+    }
+
+
+};
 
 
 template<class GRAPH>
@@ -181,6 +210,7 @@ public:
                 python::arg("out")=python::object()
             )
         )
+        .def(LemonGraphShortestPathAddon<Graph>())
         ;
 
         python::def("_shortestPathDijkstra",&pyShortestPathDijkstraTypeFactory,
@@ -702,6 +732,121 @@ public:
 
 };
 
+
+template<class GRAPH>
+class LemonGridGraphAlgorithmAddonVisitor 
+:   public boost::python::def_visitor<LemonGridGraphAlgorithmAddonVisitor<GRAPH> >
+{
+public:
+
+    friend class def_visitor_access;
+
+    typedef GRAPH Graph;
+
+    typedef LemonGraphAlgorithmVisitor<GRAPH> VisitorType;
+    // Lemon Graph Typedefs
+    
+    typedef typename Graph::index_type       index_type;
+    typedef typename Graph::Edge             Edge;
+    typedef typename Graph::Node             Node;
+    typedef typename Graph::Arc              Arc;
+
+    typedef typename Graph::NodeIt              NodeIt;
+    typedef typename Graph::EdgeIt              EdgeIt;
+    typedef typename Graph::ArcIt               ArcIt;
+
+
+    typedef EdgeHolder<Graph> PyEdge;
+    typedef NodeHolder<Graph> PyNode;
+    typedef  ArcHolder<Graph> PyArc;
+
+
+    // predefined array (for map usage)
+    const static unsigned int EdgeMapDim = IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension;
+    const static unsigned int NodeMapDim = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension;
+
+    typedef NumpyArray<EdgeMapDim,   Singleband<float > > FloatEdgeArray;
+    typedef NumpyArray<NodeMapDim,   Singleband<float > > FloatNodeArray;
+    typedef NumpyArray<NodeMapDim,   Singleband<UInt32> > UInt32NodeArray;
+    typedef NumpyArray<NodeMapDim,   Singleband<Int32 > > Int32NodeArray;
+    typedef NumpyArray<NodeMapDim +1,Multiband <float > > MultiFloatNodeArray;
+
+    typedef NumpyScalarEdgeMap<Graph,FloatEdgeArray>         FloatEdgeArrayMap;
+    typedef NumpyScalarNodeMap<Graph,FloatNodeArray>         FloatNodeArrayMap;
+    typedef NumpyScalarNodeMap<Graph,UInt32NodeArray>        UInt32NodeArrayMap;
+    typedef NumpyScalarNodeMap<Graph,Int32NodeArray>         Int32NodeArrayMap;
+    typedef NumpyMultibandNodeMap<Graph,MultiFloatNodeArray> MultiFloatNodeArrayMap;
+
+
+    typedef ShortestPathDijkstra<Graph,float> ShortestPathDijkstraType;
+
+
+    typedef typename GraphDescriptorToMultiArrayIndex<Graph>::IntrinsicNodeMapShape NodeCoordinate;
+    typedef NumpyArray<1,NodeCoordinate>  NodeCoorinateArray;
+
+    LemonGridGraphAlgorithmAddonVisitor(const std::string & clsName){}
+
+
+    template <class classT>
+    void visit(classT& c) const
+    {   
+
+        // - edge weights from interpolated image
+        exportMiscAlgorithms();
+
+    }
+
+
+    void exportMiscAlgorithms()const{
+        
+
+
+        python::def("edgeWeightsFromIterpolatedImage",registerConverters(&pyEdgeWeightsFromIterpolatedImage),
+            (
+                python::arg("graph"),
+                python::arg("image"),
+                python::arg("out")=python::object()
+            ),
+            "convert node features to edge weights with the given metric"
+        );
+    }
+
+
+
+    static NumpyAnyArray pyEdgeWeightsFromIterpolatedImage(
+        const GRAPH & g,
+        const FloatNodeArray & interpolatedImage,
+        FloatEdgeArray edgeWeightsArray
+    ){
+
+        for(size_t d=0;d<NodeMapDim;++d){
+            vigra_precondition(interpolatedImage.shape(d)==2*g.shape()[d]+1, "interpolated shape must be shape*2 +1");
+            //{
+            //    throw std::runtime_error()
+            //}
+        }
+
+
+        edgeWeightsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g) );
+
+        // numpy arrays => lemon maps
+        FloatEdgeArrayMap edgeWeightsArrayMap(g,edgeWeightsArray);
+        typedef typename FloatNodeArray::difference_type CoordType;
+        for(EdgeIt iter(g); iter!=lemon::INVALID; ++ iter){
+
+            const Edge edge(*iter);
+            const CoordType uCoord(g.u(edge));
+            const CoordType vCoord(g.u(edge));
+            const CoordType tCoord = uCoord+vCoord;
+            edgeWeightsArrayMap[edge]=interpolatedImage[tCoord];
+        }
+        return edgeWeightsArray;
+    }
+
+
+
+
+};
 
 
 
