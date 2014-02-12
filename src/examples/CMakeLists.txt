@@ -13,6 +13,7 @@ SET(TARGETS
     watershed
     weightedWatersheds
     voronoi
+    nnlsq
     total_variation)
 
 ADD_CUSTOM_TARGET(examples)

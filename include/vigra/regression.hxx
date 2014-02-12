@@ -891,24 +891,41 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     return detail::leastAngleRegressionImpl(A, b, activeSets, &lasso_solutions, &lsq_solutions, options);
 }
 
-   /** Non-negative Least Squares Regression.
+    /** Non-negative Least Squares Regression.
 
-       Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
-       and a column vector \a b of length <tt>m</tt> rows, this function computes
-       a column vector \a x of length <tt>n</tt> with <b>non-negative entries</b> that solves the optimization problem
+        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
+        and a column vector \a b of length <tt>m</tt> rows, this function computes
+        a column vector \a x of length <tt>n</tt> with <b>non-negative entries</b> that solves the optimization problem
 
-        \f[ \tilde \textrm{\bf x} = \textrm{argmin}
-            \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2
-            \textrm{ subject to } \textrm{\bf x} \ge \textrm{\bf 0}
-        \f]
+         \f[ \tilde \textrm{\bf x} = \textrm{argmin}
+             \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2
+             \textrm{ subject to } \textrm{\bf x} \ge \textrm{\bf 0}
+         \f]
 
-       Both \a b and \a x must be column vectors (i.e. matrices with <tt>1</tt> column).
-       Note that all matrices must already have the correct shape. The solution is computed by means
-       of \ref leastAngleRegression() with non-negativity constraint.
+        Both \a b and \a x must be column vectors (i.e. matrices with <tt>1</tt> column).
+        Note that all matrices must already have the correct shape. The solution is computed by means
+        of \ref leastAngleRegression() with non-negativity constraint.
 
-       <b>\#include</b> \<vigra/regression.hxx\>
-       Namespaces: vigra and vigra::linalg
-   */
+        <b>\#include</b> \<vigra/regression.hxx\><br/>
+        Namespaces: vigra and vigra::linalg
+     
+        <b> Declarations:</b>
+      
+        \code
+        namespace vigra {
+            namespace linalg {
+                template <class T, class C1, class C2, class C3>
+                void
+                nonnegativeLeastSquares(MultiArrayView<2, T, C1> const & A,
+                                        MultiArrayView<2, T, C2> const &b, 
+                                        MultiArrayView<2, T, C3> &x);
+            }
+            using linalg::nonnegativeLeastSquares;
+        }
+        \endcode
+    */
+doxygen_overloaded_function(template <...> unsigned int nonnegativeLeastSquares)
+
 template <class T, class C1, class C2, class C3>
 inline void
 nonnegativeLeastSquares(MultiArrayView<2, T, C1> const & A,
