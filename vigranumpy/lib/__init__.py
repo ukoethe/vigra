@@ -554,7 +554,13 @@ def _genGraphConvenienceFunctions():
     gridGraph.__module__ = 'vigra.graphs'
     graphs.gridGraph = gridGraph
 
-    def graph(nodes=0,edges=0,zeroStart=False):
+
+    def isGridGraph(obj):
+      return isinstance(obj,(graphs.GridGraphUndirected2d , graphs.GridGraphUndirected3d))
+    isGridGraph.__module__ = 'vigra.graphs'
+    graphs.isGridGraph = isGridGraph  
+
+    def listGraph(nodes=0,edges=0):
         ''' Return an empty directed graph
 
             Parameters :
@@ -566,47 +572,107 @@ def _genGraphConvenienceFunctions():
 
                 - graph
         '''
-        return graphs.AdjacencyListGraph(nodes,edges,zeroStart)
+        return graphs.AdjacencyListGraph(nodes,edges)
         
-    graph.__module__ = 'vigra.graphs'
-    graphs.graph = graph
+    listGraph.__module__ = 'vigra.graphs'
+    graphs.listGraph = listGraph
 
 
-    def regionAdjacencyGraph(graph,labels,ignoreLabel=0,reserveEdges=0):
+
+
+    BoostPythonMetaclassAdjacencyListGraph = graphs.AdjacencyListGraph.__class__ 
+
+    class injectorAdjacencyListGraph(object):
+        class __metaclass__(BoostPythonMetaclassAdjacencyListGraph):
+            def __init__(self, name, bases, dict):
+                for b in bases:
+                    if type(b) not in (self, type):
+                        for k,v in dict.items():
+                            setattr(b,k,v)
+                return type.__init__(self, name, bases, dict)
+
+    ##inject some methods in the point foo
+    class moreAdjacencyListGraph(injectorAdjacencyListGraph, graphs.AdjacencyListGraph):
+        def baseGraph(self):
+            try :
+                return self._baseGraph
+            except:
+                raise RuntimeError("base graph has not been registered")
+
+        def baseGraphLabels(self):
+            try :
+                return self._baseGraphLabels
+            except:
+                raise RuntimeError("base graph has not been registered => therfore no baseGraphLabels")
+        def affiliatedEdges(self):
+            try :
+                return self._affiliatedEdges
+            except:
+                raise RuntimeError("base graph has not been registered => therfore no affiliatedEdges")
+        def ignoreLabel(self):
+            try :
+                return self._ignoreLabel
+            except:
+                raise RuntimeError("base graph has not been registered => therfore no ignoreLabel")
+
+
+        def hasGridGraphBaseGraph(self,recursive=False):
+            if recursive :
+                if graphs.isGridGraph(self.baseGraph):
+                    return True;
+                else :
+                    try :
+                        return self.baseGraph.hasGridGraphBaseGraph(True)
+                    except:
+                        return False
+            else :
+                return graphs.isGridGraph(self.baseGraph)
+
+
+
+
+        
+
+    def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0):
         """ Return a region adjacency graph for a labeld graph.
 
             Parameters:
 
                 - graph  -- input graph
                 - lables -- node-map with labels for each nodeSumWeights
-                - ignoreLabel -- label to ingnore (default: 0)
-                    (must be 0 currently)
+                - ignoreLabel -- label to ingnore (default: None)
                 - reserveEdges -- reverse a certain number of edges (default: 0)
 
             Returns:
-
-                - rag -- the region adjacency graph 
-                - hyperEdges --  edges of graph for each edge of rag
+                - rag -- instance of RegionAdjacencyGraph
         """
-        if isinstance(graph,graphs.GridGraphUndirected2d):
-            rag       = graphs.graph(long(labels.max()+1),reserveEdges)
-            hyperEdges  = graphs.GridGraphUndirected2dHyperEdgeMap()
-        elif isinstance(graph,graphs.GridGraphUndirected3d):
-            rag       = graphs.graph(long(labels.max()+1),reserveEdges)
-            hyperEdges  = graphs.GridGraphUndirected3dHyperEdgeMap()
-        else  :
-            raise RuntimeError("regionAdjacencyGraph can only be constructed from gridGrad2d and gridGraph3d")
-        graph.getRegionAdjacencyGraph(
-            labels=labels,
-            rag=rag,
-            hyperEdges=hyperEdges,
-            ignoreLabel=0
-        )
+        if ignoreLabel is None:
+                ignoreLabel=-1
 
-        return rag,hyperEdges
+        rag=graphs.listGraph(0,reserveEdges)
+        affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,rag,ignoreLabel)
+
+  
+        rag._baseGraph       = graph
+        rag._baseGraphLabels = labels
+        rag._affiliatedEdges = affiliatedEdges
+        rag._ignoreLabel     = ignoreLabel
+        return rag
+
+       
+
+
 
     regionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.regionAdjacencyGraph = regionAdjacencyGraph
+
+    def gridRegionAdjacencyGraph(labels,ignoreLabel=None,reserveEdges=0):
+      _gridGraph=graphs.gridGraph(numpy.squeeze(labels).shape)
+      rag=graphs.regionAdjacencyGraph(_gridGraph,labels,ignoreLabel,reserveEdges)
+      return _gridGraph,rag
+
+    gridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
+    graphs.gridRegionAdjacencyGraph = gridRegionAdjacencyGraph
 
 
     def intrinsicGraphMapShape(graph,item):
@@ -669,72 +735,33 @@ def _genGraphConvenienceFunctions():
     graphMap.__module__ = 'vigra.graphs'
     graphs.graphMap = graphMap
 
-    def hyperEdgeSizes(graph,hyperEdges):
-        ''' Get the number of edges for each edge in the region adjacnecy graph.
 
-            See :func:`getRegionAdjacencyGraph` to get a region adjacnecy graph
+    def ragEdgeFeatures(self,edgeFeatures,acc,out=None):
+      graph = self.baseGraph()
+      affiliatedEdges = self.affiliatedEdges()
+      return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,acc,out)
 
-            Parameters:
+    def ragEdgeSize(self,out=None):
+      affiliatedEdges = self.affiliatedEdges()
+      return graphs._ragEdgeSize(self,affiliatedEdges,out)
 
-                - graph -- the region adjacency graph
-
-                - hyperEdges -- hyperEdge-Map for the graph
-
-            Returns: 
-
-                - hyperEdge sizes as numpy.ndarray
-        '''
-        out = graphs.graphMap(graph,"edge",dtype=numpy.float32)
-        graphs._hyperEdgeSizes(graph,hyperEdges,out)
-        return out
-
-    hyperEdgeSizes.__module__ = 'vigra.graphs'
-    graphs.hyperEdgeSizes = hyperEdgeSizes
+    def ragNodeFeatures(self,nodeFeatures,acc,out=None):
+      graph = self.baseGraph()
+      labels = self.baseGraphLabels()
+      ignoreLabel = self.ignoreLabel()
+      return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,acc,ignoreLabel,out)
 
 
-    def hyperNodeSizes(rag,graph,labels):
-        ''' Get the number of nodes for each node in the region adjacnecy graph.
+    def ragNodeSize(self,out=None):
+      ignoreLabel =self.ignoreLabel()
+      graph = self.baseGraph()
+      labels = self.baseGraphLabels()
+      return graphs._ragNodeSize(self,graph,labels,ignoreLabel,out)
 
-            See :func:`vigra.graphs.getRegionAdjacencyGraph` to get a region adjacnecy graph
-
-            Parameters:
-
-                - rag   -- the region adjacnecy graph
-
-                - graph  -- the graph the region graph based on (GridGraph for example)
-
-                - rag -- the region adjacency graph itself
-
-                - labels -- the node label map w.r.t. graph 
-
-            Returns: 
-
-                - hyperNode sizes as numpy.ndarray
-
-        '''
-        out = graphs.graphMap(rag,"node",dtype=numpy.float32)
-        graphs._hyperNodeSizes(rag,graph,labels,out)
-        return out
-
-    hyperNodeSizes.__module__ = 'vigra.graphs'
-    graphs.hyperNodeSizes = hyperNodeSizes
-
-
-    def hyperEdgeImageFeatures(rag,graph,hyperEdgeCoordinates,image,out):
-        graphs._hyperEdgeImageFeatures(rag,graph,hyperEdgeCoordinates,image,out)
-        return out
-
-    hyperEdgeImageFeatures.__module__ = 'vigra.graphs'
-    graphs.hyperEdgeImageFeatures = hyperEdgeImageFeatures
-
-
-    def hyperNodeImageFeatures(rag,graph,labels,image,out):
-        graphs._hyperNodeImageFeatures(rag,graph,labels,image,out)
-        return out
-
-    hyperNodeImageFeatures.__module__ = 'vigra.graphs'
-    graphs.hyperNodeImageFeatures = hyperNodeImageFeatures
-
+    graphs.AdjacencyListGraph.accumulateEdgeFeatures = ragEdgeFeatures
+    graphs.AdjacencyListGraph.accumulateEdgeSize     = ragEdgeSize
+    graphs.AdjacencyListGraph.accumulateNodeFeatures = ragNodeFeatures
+    graphs.AdjacencyListGraph.accumulateNodeSize     = ragNodeSize
 
     def minEdgeWeightNodeDist(mergeGraph,edgeWeights,edgeSizes,nodeFeatures,nodeSize,outWeight,
         beta,nodeDistType,wardness):
@@ -860,7 +887,7 @@ def _genGraphConvenienceFunctions():
         nodeMapShape = graph.intrinsicNodeMapShape()
         featureMapShape       = features.shape
         if len(nodeMapShape)+1==features.ndim:
-            spatialInputShape = nodeIds.shape
+            spatialInputShape = numpy.squeeze(nodeIds).shape
             numberOfChannels  = featureMapShape[-1]
             outShape = spatialInputShape + (numberOfChannels,)
 
@@ -888,21 +915,13 @@ def _genGraphConvenienceFunctions():
             self.pathFinder.__dict__['__base_object__']=graph
             self.source = None
             self.target = None
-        def run(self,weights,source,target=None,weightType='edgeWeights'):
+        def run(self,weights,source,target=None):
             self.source = source
             self.target = target
-            if(weightType=='edgeWeights'):
-                if target is None:
-                    self.pathFinder.run(weights,source)
-                else:
-                    self.pathFinder.run(weights,source,target)
-            elif(weightType=='nodeSumWeights'):
-                if target is None:
-                    self.pathFinder.runNodeSumWeights(weights,source)
-                else:
-                    self.pathFinder.runNodeSumWeights(weights,source,target)
-            else :
-                raise RuntimeError("weightType '%s' is not supported, try 'edgeWeights' or 'nodeSumWeights' "%str(weightType))
+            if target is None:
+                self.pathFinder.run(weights,source)
+            else:
+                self.pathFinder.run(weights,source,target)
             return self
 
         def path(self,target=None,pathType='coordinates'):

@@ -160,7 +160,7 @@ struct AdjacencyListGraph2MergeGraphTest{
 
         //std::cout<<"max  ids \n";
 
-        shouldEqual(g.maxEdgeId(),4);
+        shouldEqual(g.maxEdgeId(),3);
         shouldEqual(g.maxNodeId(),4);
         shouldEqual(g.maxArcId(),g.maxEdgeId()*2+1);
 
@@ -194,24 +194,24 @@ struct AdjacencyListGraph2MergeGraphTest{
         should(allEdges.size()==4);
 
 
-        should(1==g.id( allEdges[0] ) );
-        should(2==g.id( allEdges[1] ) );
-        should(3==g.id( allEdges[2] ) );
-        should(4==g.id( allEdges[3] ) );
+        should(0==g.id( allEdges[0] ) );
+        should(1==g.id( allEdges[1] ) );
+        should(2==g.id( allEdges[2] ) );
+        should(3==g.id( allEdges[3] ) );
         
      
         std::vector<Arc>  allArcs( abegin,aend);
         should(allArcs.size() ==8);
           
-        should(1==g.id( allArcs[0] ) );
-        should(2==g.id( allArcs[1] ) );
-        should(3==g.id( allArcs[2] ) );
-        should(4==g.id( allArcs[3] ) );
+        should(0==g.id( allArcs[0] ) );
+        should(1==g.id( allArcs[1] ) );
+        should(2==g.id( allArcs[2] ) );
+        should(3==g.id( allArcs[3] ) );
 
-        should(1+g.maxEdgeId()+1==g.id( allArcs[4] ) );
-        should(2+g.maxEdgeId()+1==g.id( allArcs[5] ) );
-        should(3+g.maxEdgeId()+1==g.id( allArcs[6] ) );
-        should(4+g.maxEdgeId()+1==g.id( allArcs[7] ) );
+        should(0+g.maxEdgeId()+1==g.id( allArcs[4] ) );
+        should(1+g.maxEdgeId()+1==g.id( allArcs[5] ) );
+        should(2+g.maxEdgeId()+1==g.id( allArcs[6] ) );
+        should(3+g.maxEdgeId()+1==g.id( allArcs[7] ) );
 
         should( g.id(g.source(allArcs[0]))==g.id(g.u(allEdges[0])));
         should( g.id(g.source(allArcs[1]))==g.id(g.u(allEdges[1])));
@@ -251,39 +251,39 @@ struct AdjacencyListGraph2MergeGraphTest{
         MergeGraphType g(graph2x2_);;
         
         // check sources and targets of arcs which are just the "natural edges"
+        should(  g.source(g.arcFromId(0)) == g.u(g.edgeFromId(0)) );
         should(  g.source(g.arcFromId(1)) == g.u(g.edgeFromId(1)) );
         should(  g.source(g.arcFromId(2)) == g.u(g.edgeFromId(2)) );
         should(  g.source(g.arcFromId(3)) == g.u(g.edgeFromId(3)) );
-        should(  g.source(g.arcFromId(4)) == g.u(g.edgeFromId(4)) );
 
+        should(  g.target(g.arcFromId(0)) == g.v(g.edgeFromId(0)) );
         should(  g.target(g.arcFromId(1)) == g.v(g.edgeFromId(1)) );
         should(  g.target(g.arcFromId(2)) == g.v(g.edgeFromId(2)) );
         should(  g.target(g.arcFromId(3)) == g.v(g.edgeFromId(3)) );
-        should(  g.target(g.arcFromId(4)) == g.v(g.edgeFromId(4)) );
 
 
 
 
         // check sources and targets of arcs which are flipped "natural edges"
-        should(  g.source(g.arcFromId(6)) == g.v(g.edgeFromId(1)) );
-        should(  g.source(g.arcFromId(7)) == g.v(g.edgeFromId(2)) );
-        should(  g.source(g.arcFromId(8)) == g.v(g.edgeFromId(3)) );
-        should(  g.source(g.arcFromId(9)) == g.v(g.edgeFromId(4)) );
+        should(  g.source(g.arcFromId(4)) == g.v(g.edgeFromId(0)) );
+        should(  g.source(g.arcFromId(5)) == g.v(g.edgeFromId(1)) );
+        should(  g.source(g.arcFromId(6)) == g.v(g.edgeFromId(2)) );
+        should(  g.source(g.arcFromId(7)) == g.v(g.edgeFromId(3)) );
 
-        should(  g.target(g.arcFromId(6)) == g.u(g.edgeFromId(1)) );
-        should(  g.target(g.arcFromId(7)) == g.u(g.edgeFromId(2)) );
-        should(  g.target(g.arcFromId(8)) == g.u(g.edgeFromId(3)) );
-        should(  g.target(g.arcFromId(9)) == g.u(g.edgeFromId(4)) );
+        should(  g.target(g.arcFromId(4)) == g.u(g.edgeFromId(0)) );
+        should(  g.target(g.arcFromId(5)) == g.u(g.edgeFromId(1)) );
+        should(  g.target(g.arcFromId(6)) == g.u(g.edgeFromId(2)) );
+        should(  g.target(g.arcFromId(7)) == g.u(g.edgeFromId(3)) );
 
         // check that arcs are convertible to edges
+        should(Edge(g.arcFromId(0))==g.edgeFromId(0));
         should(Edge(g.arcFromId(1))==g.edgeFromId(1));
         should(Edge(g.arcFromId(2))==g.edgeFromId(2));
         should(Edge(g.arcFromId(3))==g.edgeFromId(3));
-        should(Edge(g.arcFromId(4))==g.edgeFromId(4));
-        should(Edge(g.arcFromId(6))==g.edgeFromId(1));
-        should(Edge(g.arcFromId(7))==g.edgeFromId(2));
-        should(Edge(g.arcFromId(8))==g.edgeFromId(3));
-        should(Edge(g.arcFromId(9))==g.edgeFromId(4));
+        should(Edge(g.arcFromId(4))==g.edgeFromId(0));
+        should(Edge(g.arcFromId(5))==g.edgeFromId(1));
+        should(Edge(g.arcFromId(6))==g.edgeFromId(2));
+        should(Edge(g.arcFromId(7))==g.edgeFromId(3));
 
     }
 
@@ -303,10 +303,10 @@ struct AdjacencyListGraph2MergeGraphTest{
             
             std::vector<Edge> edgeVec(begin,invalid);
             shouldEqual(4,edgeVec.size());
-            shouldEqual(1,g.id(edgeVec[0]));
-            shouldEqual(2,g.id(edgeVec[1]));
-            shouldEqual(3,g.id(edgeVec[2]));
-            shouldEqual(4,g.id(edgeVec[3]));
+            shouldEqual(0,g.id(edgeVec[0]));
+            shouldEqual(1,g.id(edgeVec[1]));
+            shouldEqual(2,g.id(edgeVec[2]));
+            shouldEqual(3,g.id(edgeVec[3]));
         }
         {
             EdgeIt begin(g);
@@ -315,25 +315,25 @@ struct AdjacencyListGraph2MergeGraphTest{
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
             shouldEqual(4,edgeVec.size());
-            shouldEqual(1,g.id(edgeVec[0]));
-            shouldEqual(2,g.id(edgeVec[1]));
-            shouldEqual(3,g.id(edgeVec[2]));
-            shouldEqual(4,g.id(edgeVec[3]));
+            shouldEqual(0,g.id(edgeVec[0]));
+            shouldEqual(1,g.id(edgeVec[1]));
+            shouldEqual(2,g.id(edgeVec[2]));
+            shouldEqual(3,g.id(edgeVec[3]));
         }
         {
-            EdgeIt begin(g,g.edgeFromId(2));
+            EdgeIt begin(g,g.edgeFromId(1));
             should(begin!=lemon::INVALID);
 
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
             shouldEqual(3,edgeVec.size());
-            shouldEqual(2,g.id(edgeVec[0]));
-            shouldEqual(3,g.id(edgeVec[1]));
-            shouldEqual(4,g.id(edgeVec[2]));
+            shouldEqual(1,g.id(edgeVec[0]));
+            shouldEqual(2,g.id(edgeVec[1]));
+            shouldEqual(3,g.id(edgeVec[2]));
         }
         {
-            EdgeIt begin(g,g.edgeFromId(2));
-            EdgeIt end(g,g.edgeFromId(3));
+            EdgeIt begin(g,g.edgeFromId(1));
+            EdgeIt end(g,g.edgeFromId(2));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);    
@@ -342,20 +342,20 @@ struct AdjacencyListGraph2MergeGraphTest{
             shouldEqual(std::distance(begin,end),1);
             std::vector<Edge> edgeVec(begin,end);
             shouldEqual(1,edgeVec.size());
-            shouldEqual(2,g.id(edgeVec[0]));
+            shouldEqual(1,g.id(edgeVec[0]));
         }
 
         {
-            EdgeIt begin(g,g.edgeFromId(2));
-            EdgeIt end(g,g.edgeFromId(4));
+            EdgeIt begin(g,g.edgeFromId(1));
+            EdgeIt end(g,g.edgeFromId(3));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);
 
             std::vector<Edge> edgeVec(begin,end);
             shouldEqual(2,edgeVec.size());
-            shouldEqual(2,g.id(edgeVec[0]));
-            shouldEqual(3,g.id(edgeVec[1]));
+            shouldEqual(1,g.id(edgeVec[0]));
+            shouldEqual(2,g.id(edgeVec[1]));
         }
     }
     void GraphNodeItTest()
@@ -435,15 +435,15 @@ struct AdjacencyListGraph2MergeGraphTest{
             shouldEqual(std::distance(begin,invalid),8);            
             std::vector<Arc> arcVec(begin,invalid);
             shouldEqual(8,arcVec.size());
-            shouldEqual(1,g.id(arcVec[0]));
-            shouldEqual(2,g.id(arcVec[1]));
-            shouldEqual(3,g.id(arcVec[2]));
-            shouldEqual(4,g.id(arcVec[3]));
+            shouldEqual(0,g.id(arcVec[0]));
+            shouldEqual(1,g.id(arcVec[1]));
+            shouldEqual(2,g.id(arcVec[2]));
+            shouldEqual(3,g.id(arcVec[3]));
 
-            shouldEqual(1+g.maxEdgeId()+1,g.id(arcVec[4]));
-            shouldEqual(2+g.maxEdgeId()+1,g.id(arcVec[5]));
-            shouldEqual(3+g.maxEdgeId()+1,g.id(arcVec[6]));
-            shouldEqual(4+g.maxEdgeId()+1,g.id(arcVec[7]));
+            shouldEqual(0+g.maxEdgeId()+1,g.id(arcVec[4]));
+            shouldEqual(1+g.maxEdgeId()+1,g.id(arcVec[5]));
+            shouldEqual(2+g.maxEdgeId()+1,g.id(arcVec[6]));
+            shouldEqual(3+g.maxEdgeId()+1,g.id(arcVec[7]));
         }
         {
             ArcIt begin(g);
@@ -452,36 +452,36 @@ struct AdjacencyListGraph2MergeGraphTest{
             ArcIt empty;
             std::vector<Arc> arcVec(begin,empty);
             shouldEqual(8,arcVec.size());
-            shouldEqual(1,g.id(arcVec[0]));
-            shouldEqual(2,g.id(arcVec[1]));
-            shouldEqual(3,g.id(arcVec[2]));
-            shouldEqual(4,g.id(arcVec[3]));
+            shouldEqual(0,g.id(arcVec[0]));
+            shouldEqual(1,g.id(arcVec[1]));
+            shouldEqual(2,g.id(arcVec[2]));
+            shouldEqual(3,g.id(arcVec[3]));
 
-            shouldEqual(1+g.maxEdgeId()+1,g.id(arcVec[4]));
-            shouldEqual(2+g.maxEdgeId()+1,g.id(arcVec[5]));
-            shouldEqual(3+g.maxEdgeId()+1,g.id(arcVec[6]));
-            shouldEqual(4+g.maxEdgeId()+1,g.id(arcVec[7]));
+            shouldEqual(0+g.maxEdgeId()+1,g.id(arcVec[4]));
+            shouldEqual(1+g.maxEdgeId()+1,g.id(arcVec[5]));
+            shouldEqual(2+g.maxEdgeId()+1,g.id(arcVec[6]));
+            shouldEqual(3+g.maxEdgeId()+1,g.id(arcVec[7]));
         }
         {
-            ArcIt begin(g,g.arcFromId(2));
+            ArcIt begin(g,g.arcFromId(1));
             should(begin!=lemon::INVALID);
 
             ArcIt empty;
             std::vector<Arc> arcVec(begin,empty);
             shouldEqual(7,arcVec.size());
 
-            shouldEqual(2,g.id(arcVec[0]));
-            shouldEqual(3,g.id(arcVec[1]));
-            shouldEqual(4,g.id(arcVec[2]));
+            shouldEqual(1,g.id(arcVec[0]));
+            shouldEqual(2,g.id(arcVec[1]));
+            shouldEqual(3,g.id(arcVec[2]));
 
-            shouldEqual(1+g.maxEdgeId()+1,g.id(arcVec[3]));
-            shouldEqual(2+g.maxEdgeId()+1,g.id(arcVec[4]));
-            shouldEqual(3+g.maxEdgeId()+1,g.id(arcVec[5]));
-            shouldEqual(4+g.maxEdgeId()+1,g.id(arcVec[6]));
+            shouldEqual(0+g.maxEdgeId()+1,g.id(arcVec[3]));
+            shouldEqual(1+g.maxEdgeId()+1,g.id(arcVec[4]));
+            shouldEqual(2+g.maxEdgeId()+1,g.id(arcVec[5]));
+            shouldEqual(3+g.maxEdgeId()+1,g.id(arcVec[6]));
         }
         {
-            ArcIt begin(g,g.arcFromId(2));
-            ArcIt end(g,g.arcFromId(3));
+            ArcIt begin(g,g.arcFromId(1));
+            ArcIt end(g,g.arcFromId(2));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);    
@@ -490,20 +490,20 @@ struct AdjacencyListGraph2MergeGraphTest{
             shouldEqual(std::distance(begin,end),1);
             std::vector<Arc> arcVec(begin,end);
             shouldEqual(1,arcVec.size());
-            shouldEqual(2,g.id(arcVec[0]));
+            shouldEqual(1,g.id(arcVec[0]));
         }
 
         {
-            ArcIt begin(g,g.arcFromId(2));
-            ArcIt end(g,g.arcFromId(4));
+            ArcIt begin(g,g.arcFromId(1));
+            ArcIt end(g,g.arcFromId(3));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);
 
             std::vector<Arc> arcVec(begin,end);
             shouldEqual(2,arcVec.size());
-            shouldEqual(2,g.id(arcVec[0]));
-            shouldEqual(3,g.id(arcVec[1]));
+            shouldEqual(1,g.id(arcVec[0]));
+            shouldEqual(2,g.id(arcVec[1]));
         }
     }
 
@@ -782,76 +782,7 @@ struct AdjacencyListGraph2MergeGraphTest{
     }
 
 
-    void GraphMergeChainTest()
-    {
 
-        const size_t nChainNodes  = 6;
-        const size_t nChainEdges  = nChainNodes-1;
-        Graph graph;
-        for(size_t i=1;i<=6;i++){
-            graph.addNode(i);
-        }
-        for(size_t i=1;i<6;i++){
-            graph.addEdge(graph.nodeFromId(i),graph.nodeFromId(i+1));
-        }
-
-
-        
-        should(graph.edgeFromId(0)==lemon::INVALID);
-        should(graph.edgeFromId(6)==lemon::INVALID);
-        should(graph.edgeFromId(1)!=lemon::INVALID);
-        should(graph.edgeFromId(2)!=lemon::INVALID);
-        should(graph.edgeFromId(3)!=lemon::INVALID);
-        should(graph.edgeFromId(4)!=lemon::INVALID);
-        should(graph.edgeFromId(5)!=lemon::INVALID);
-
-        MergeGraphType g(graph);
-        should(g.edgeFromId(0)==lemon::INVALID);
-        should(g.edgeFromId(6)==lemon::INVALID);
-        should(g.edgeFromId(1)!=lemon::INVALID);
-        should(g.edgeFromId(2)!=lemon::INVALID);
-        should(g.edgeFromId(3)!=lemon::INVALID);
-        should(g.edgeFromId(4)!=lemon::INVALID);
-        should(g.edgeFromId(5)!=lemon::INVALID);
-
-        should(g.nodeFromId(0)==lemon::INVALID);
-        should(g.nodeFromId(7)==lemon::INVALID);
-
-        should(g.nodeFromId(1)!=lemon::INVALID);
-        should(g.nodeFromId(2)!=lemon::INVALID);
-        should(g.nodeFromId(3)!=lemon::INVALID);
-        should(g.nodeFromId(4)!=lemon::INVALID);
-        should(g.nodeFromId(5)!=lemon::INVALID);
-        should(g.nodeFromId(6)!=lemon::INVALID);
-
-
-
-        should(g.nodeNum() == nChainNodes);
-        should(g.edgeNum() == nChainEdges);
-
-
-        // remove edges from 1 to 5
-
-
-        for(size_t e=1;e<=5;++e){
-            should(g.edgeNum()==nChainEdges-(e-1));
-            should(g.nodeNum()==nChainNodes-(e-1));
-            // check that edge is there 
-            should(g.hasEdgeId(e));
-            should(g.edgeFromId(e)!=lemon::INVALID);
-            should(g.degree(g.u(e))<=2);
-            should(g.degree(g.v(e))<=2);
-            // fist node is rep of e, second node still untouched e+1
-            should(g.id(g.u(g.edgeFromId(e)))==g.reprNodeId(e));
-            should(g.id(g.v(g.edgeFromId(e)))==e+1);
-            // remove the edge
-            g.contractEdge(g.edgeFromId(e));
-            should(!g.hasEdgeId(e));
-            should(g.edgeFromId(e)==lemon::INVALID);
-            should(g.edgeNum()==nChainEdges-(e-1)-1);
-            should(g.nodeNum()==nChainNodes-(e-1)-1);
-        }
-    }
 
 
     void GraphMergeGridDegreeTest(){
@@ -1660,7 +1591,6 @@ struct AdjacencyListGraphMergeGraphAdaptorTestSuite
         
 
         // test which do some merging
-        add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphMergeChainTest));
         add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphMergeGridDegreeTest));
         add( testCase( &AdjacencyListGraph2MergeGraphTest<vigra::UInt32>::GraphMergeGridEdgeTest));
     }

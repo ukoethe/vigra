@@ -84,7 +84,7 @@ namespace vigra{
 
             ItemIter(const G & g)
             :   graph_(&g),
-                id_(g.zeroStart() ? 0 : 1),
+                id_(0),
                 item_(ItemHelper::itemFromId(*graph_,id_))
             {
                 while( !isEnd()  &&  item_==lemon::INVALID ){
@@ -108,7 +108,7 @@ namespace vigra{
                 return graph_==NULL || id_>ItemHelper::maxItemId(*graph_);
             }
             bool isBegin( )const{
-                return graph_!=NULL && (graph_->zeroStart() && id_ == 0 || !graph_->zeroStart() && id_ == 1);
+                return graph_!=NULL &&  id_ == 0 ;
             }
 
             bool equal(const ItemIter & other) const{
@@ -286,6 +286,9 @@ namespace vigra{
             EdgeMap(const GraphType & g)
             : DenseEdgeReferenceMap<GraphType,T>(g){
             }
+            EdgeMap(const GraphType & g,const T & val)
+            : DenseEdgeReferenceMap<GraphType,T>(g,val){
+            }
         };
 
         template<class T>
@@ -294,6 +297,9 @@ namespace vigra{
             }
             NodeMap(const GraphType & g)
             : DenseNodeReferenceMap<GraphType,T>(g){
+            }
+            NodeMap(const GraphType & g,const T & val)
+            : DenseNodeReferenceMap<GraphType,T>(g,val){
             }
         };
 
@@ -304,6 +310,9 @@ namespace vigra{
             ArcMap(const GraphType & g)
             : DenseArcReferenceMap<GraphType,T>(g){
             }
+            ArcMap(const GraphType & g,const T & val)
+            : DenseArcReferenceMap<GraphType,T>(g,val){
+            }
         };
 
 
@@ -312,7 +321,7 @@ namespace vigra{
     public:
         // todo...refactor this crap...always start add zero
         // (if one wants to start at  1 just just g.addNode(1).. and so on)
-        AdjacencyListGraph(const size_t nodes=0,const size_t edges=0,const bool zeroStart=false);
+        AdjacencyListGraph(const size_t nodes=0,const size_t edges=0);
 
         index_type edgeNum()const;
         index_type nodeNum()const;
@@ -360,11 +369,7 @@ namespace vigra{
         Edge addEdge(const Node & u , const Node & v);
         Edge addEdge(const index_type u ,const index_type v);
 
-        
-        // TODO refactore  / remove this crap !
-        bool zeroStart()const{
-            return zeroStart_;
-        }
+    
 
         ////////////////////////
         // BOOST API
@@ -425,8 +430,6 @@ namespace vigra{
 
         size_t nodeNum_;
         size_t edgeNum_;
-
-        bool zeroStart_;
     };
 
 
@@ -435,22 +438,15 @@ namespace vigra{
 
     inline AdjacencyListGraph::AdjacencyListGraph(
         const size_t reserveNodes,
-        const size_t reserveEdges,
-        const bool   zeroStart
+        const size_t reserveEdges
     )
     :   nodes_(),
         edges_(),
         nodeNum_(0),
-        edgeNum_(0),
-        zeroStart_(zeroStart)
+        edgeNum_(0)
     {
         nodes_.reserve(reserveNodes);
         edges_.reserve(reserveEdges);
-
-        if(!zeroStart_){
-            nodes_.push_back(NodeStorage(lemon::INVALID));
-            edges_.push_back(EdgeStorage(lemon::INVALID));
-        }
     }
 
 

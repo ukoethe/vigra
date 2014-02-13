@@ -39,7 +39,9 @@
 
 
 #include "export_graph_visitor.hxx"
+#include "export_graph_rag_visitor.hxx"
 #include "export_graph_algorithm_visitor.hxx"
+#include "export_graph_shortest_path_visitor.hxx"
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
@@ -59,10 +61,12 @@ namespace vigra{
 
         // define graph itself
         const std::string clsName = "AdjacencyListGraph";
-        python::class_<Graph>(clsName.c_str(),python::init< const size_t,const size_t , const bool >())
+        python::class_<Graph>(clsName.c_str(),python::init< const size_t,const size_t >())
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonUndirectedGraphAddItemsVisitor<Graph>(clsName))
         .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
+        .def(LemonGraphShortestPathVisitor<Graph>(clsName))
+        .def(LemonGraphRagVisitor<Graph>(clsName))
         ;
     }
 } 

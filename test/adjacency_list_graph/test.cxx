@@ -65,7 +65,7 @@ struct AdjacencyListGraphOffTest{
     }
 
     void adjGraphSimpleTestStart0(){
-        GraphType g(0,0,true);
+        GraphType g(0,0);
 
         // add nodes
         shouldEqual(g.nodeNum(),0);
@@ -223,7 +223,7 @@ struct AdjacencyListGraphOffTest{
         // 2 |4
     }
     void adjGraphSimpleTestStart1(){
-        GraphType g(0,0,false);
+        GraphType g(0,0);
 
         // add nodes
         shouldEqual(g.nodeNum(),0);
@@ -235,7 +235,7 @@ struct AdjacencyListGraphOffTest{
         should(g.nodeFromId(4)==lemon::INVALID);
         should(g.nodeFromId(5)==lemon::INVALID);
 
-        Node n1 = g.addNode();
+        Node n1 = g.addNode(1);
         shouldEqual(g.nodeNum(),1);
         shouldEqual(g.edgeNum(),0);
         shouldEqual(g.maxNodeId(),1);
@@ -246,7 +246,7 @@ struct AdjacencyListGraphOffTest{
         should(g.nodeFromId(4)==lemon::INVALID);
         should(g.nodeFromId(5)==lemon::INVALID);
 
-        Node n2 = g.addNode();
+        Node n2 = g.addNode(2);
         shouldEqual(g.nodeNum(),2);
         shouldEqual(g.edgeNum(),0);
         shouldEqual(g.maxNodeId(),2);
@@ -257,7 +257,7 @@ struct AdjacencyListGraphOffTest{
         should(g.nodeFromId(4)==lemon::INVALID);
         should(g.nodeFromId(5)==lemon::INVALID);
 
-        Node n3 = g.addNode();
+        Node n3 = g.addNode(3);
         shouldEqual(g.nodeNum(),3);
         shouldEqual(g.edgeNum(),0);
         shouldEqual(g.maxNodeId(),3);
@@ -269,7 +269,7 @@ struct AdjacencyListGraphOffTest{
         should(g.nodeFromId(5)==lemon::INVALID);
 
 
-        Node n4 = g.addNode();
+        Node n4 = g.addNode(4);
         shouldEqual(g.nodeNum(),4);
         shouldEqual(g.edgeNum(),0);
         shouldEqual(g.maxNodeId(),4);
@@ -300,20 +300,20 @@ struct AdjacencyListGraphOffTest{
         should(g.edgeFromId(2)==lemon::INVALID);
         should(g.edgeFromId(3)==lemon::INVALID);
         should(g.edgeFromId(4)==lemon::INVALID);
-        should(g.edgeFromId(5)==lemon::INVALID);
+
 
 
         Edge e12  = g.addEdge(n1,n2);
         shouldEqual(g.edgeNum(),1);
-        shouldEqual(g.maxEdgeId(),1);
+        shouldEqual(g.maxEdgeId(),0);
         should(g.u(e12)==n1);
         should(g.v(e12)==n2);
-        should(g.edgeFromId(0)==lemon::INVALID);
-        should(g.edgeFromId(1)!=lemon::INVALID);
+        should(g.edgeFromId(0)!=lemon::INVALID);
+        should(g.edgeFromId(1)==lemon::INVALID);
         should(g.edgeFromId(2)==lemon::INVALID);
         should(g.edgeFromId(3)==lemon::INVALID);
         should(g.edgeFromId(4)==lemon::INVALID);
-        should(g.edgeFromId(5)==lemon::INVALID);
+
         should(  g.findEdge(n1,n2) != lemon::INVALID  );
         should(  g.findEdge(n1,n3) == lemon::INVALID  );
         should(  g.findEdge(n1,n4) == lemon::INVALID  );
@@ -323,15 +323,14 @@ struct AdjacencyListGraphOffTest{
 
         Edge e13  = g.addEdge(n1,n3);
         shouldEqual(g.edgeNum(),2);
-        shouldEqual(g.maxEdgeId(),2);
+        shouldEqual(g.maxEdgeId(),1);
         should(g.u(e13)==n1);
         should(g.v(e13)==n3);
-        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(0)!=lemon::INVALID);
         should(g.edgeFromId(1)!=lemon::INVALID);
-        should(g.edgeFromId(2)!=lemon::INVALID);
+        should(g.edgeFromId(2)==lemon::INVALID);
         should(g.edgeFromId(3)==lemon::INVALID);
         should(g.edgeFromId(4)==lemon::INVALID);
-        should(g.edgeFromId(5)==lemon::INVALID);
         should(  g.findEdge(n1,n2) != lemon::INVALID  );
         should(  g.findEdge(n1,n3) != lemon::INVALID  );
         should(  g.findEdge(n1,n4) == lemon::INVALID  );
@@ -341,15 +340,14 @@ struct AdjacencyListGraphOffTest{
 
         Edge e24  = g.addEdge(n2,n4);
         shouldEqual(g.edgeNum(),3);  
-        shouldEqual(g.maxEdgeId(),3);
+        shouldEqual(g.maxEdgeId(),2);
         should(g.u(e24)==n2);
         should(g.v(e24)==n4);
-        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(0)!=lemon::INVALID);
         should(g.edgeFromId(1)!=lemon::INVALID);
         should(g.edgeFromId(2)!=lemon::INVALID);
-        should(g.edgeFromId(3)!=lemon::INVALID);
+        should(g.edgeFromId(3)==lemon::INVALID);
         should(g.edgeFromId(4)==lemon::INVALID);
-        should(g.edgeFromId(5)==lemon::INVALID);
         should(  g.findEdge(n1,n2) != lemon::INVALID  );
         should(  g.findEdge(n1,n3) != lemon::INVALID  );
         should(  g.findEdge(n1,n4) == lemon::INVALID  );
@@ -359,15 +357,14 @@ struct AdjacencyListGraphOffTest{
 
         Edge e34  = g.addEdge(n3,n4);
         shouldEqual(g.edgeNum(),4);
-        shouldEqual(g.maxEdgeId(),4);
+        shouldEqual(g.maxEdgeId(),3);
         should(g.u(e34)==n3);
         should(g.v(e34)==n4);
-        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(0)!=lemon::INVALID);
         should(g.edgeFromId(1)!=lemon::INVALID);
         should(g.edgeFromId(2)!=lemon::INVALID);
         should(g.edgeFromId(3)!=lemon::INVALID);
-        should(g.edgeFromId(4)!=lemon::INVALID);
-        should(g.edgeFromId(5)==lemon::INVALID);
+        should(g.edgeFromId(4)==lemon::INVALID);
         should(  g.findEdge(n1,n2) != lemon::INVALID  );
         should(  g.findEdge(n1,n3) != lemon::INVALID  );
         should(  g.findEdge(n1,n4) == lemon::INVALID  );
@@ -387,7 +384,7 @@ struct AdjacencyListGraphOffTest{
         // __ __
         // 2 |4
         // create g
-        GraphType g(0,0,true);
+        GraphType g(0,0);
 
         Node n1=g.addNode();
         Node n2=g.addNode();
@@ -474,10 +471,10 @@ struct AdjacencyListGraphOffTest{
         // create g
         GraphType g;
 
-        Node n1=g.addNode();
-        Node n2=g.addNode();
-        Node n3=g.addNode();
-        Node n4=g.addNode();
+        Node n1=g.addNode(1);
+        Node n2=g.addNode(2);
+        Node n3=g.addNode(3);
+        Node n4=g.addNode(4);
 
         g.addEdge(n1,n2);
         g.addEdge(n1,n3);
@@ -486,7 +483,6 @@ struct AdjacencyListGraphOffTest{
 
 
         
-
         {
             EdgeIt begin(g);
             EdgeIt invalid(lemon::INVALID);
@@ -496,10 +492,10 @@ struct AdjacencyListGraphOffTest{
             
             std::vector<Edge> edgeVec(begin,invalid);
             shouldEqual(4,edgeVec.size());
-            shouldEqual(1,g.id(edgeVec[0]));
-            shouldEqual(2,g.id(edgeVec[1]));
-            shouldEqual(3,g.id(edgeVec[2]));
-            shouldEqual(4,g.id(edgeVec[3]));
+            shouldEqual(0,g.id(edgeVec[0]));
+            shouldEqual(1,g.id(edgeVec[1]));
+            shouldEqual(2,g.id(edgeVec[2]));
+            shouldEqual(3,g.id(edgeVec[3]));
         }
         {
             EdgeIt begin(g);
@@ -508,25 +504,25 @@ struct AdjacencyListGraphOffTest{
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
             shouldEqual(4,edgeVec.size());
-            shouldEqual(1,g.id(edgeVec[0]));
-            shouldEqual(2,g.id(edgeVec[1]));
-            shouldEqual(3,g.id(edgeVec[2]));
-            shouldEqual(4,g.id(edgeVec[3]));
+            shouldEqual(0,g.id(edgeVec[0]));
+            shouldEqual(1,g.id(edgeVec[1]));
+            shouldEqual(2,g.id(edgeVec[2]));
+            shouldEqual(3,g.id(edgeVec[3]));
         }
         {
-            EdgeIt begin(g,g.edgeFromId(2));
+            EdgeIt begin(g,g.edgeFromId(1));
             should(begin!=lemon::INVALID);
 
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
             shouldEqual(3,edgeVec.size());
-            shouldEqual(2,g.id(edgeVec[0]));
-            shouldEqual(3,g.id(edgeVec[1]));
-            shouldEqual(4,g.id(edgeVec[2]));
+            shouldEqual(1,g.id(edgeVec[0]));
+            shouldEqual(2,g.id(edgeVec[1]));
+            shouldEqual(3,g.id(edgeVec[2]));
         }
         {
-            EdgeIt begin(g,g.edgeFromId(2));
-            EdgeIt end(g,g.edgeFromId(3));
+            EdgeIt begin(g,g.edgeFromId(1));
+            EdgeIt end(g,g.edgeFromId(2));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);    
@@ -535,20 +531,20 @@ struct AdjacencyListGraphOffTest{
             shouldEqual(std::distance(begin,end),1);
             std::vector<Edge> edgeVec(begin,end);
             shouldEqual(1,edgeVec.size());
-            shouldEqual(2,g.id(edgeVec[0]));
+            shouldEqual(1,g.id(edgeVec[0]));
         }
 
         {
-            EdgeIt begin(g,g.edgeFromId(2));
-            EdgeIt end(g,g.edgeFromId(4));
+            EdgeIt begin(g,g.edgeFromId(1));
+            EdgeIt end(g,g.edgeFromId(3));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);
 
             std::vector<Edge> edgeVec(begin,end);
             shouldEqual(2,edgeVec.size());
-            shouldEqual(2,g.id(edgeVec[0]));
-            shouldEqual(3,g.id(edgeVec[1]));
+            shouldEqual(1,g.id(edgeVec[0]));
+            shouldEqual(2,g.id(edgeVec[1]));
         }
     }
 
@@ -559,7 +555,7 @@ struct AdjacencyListGraphOffTest{
         // __ __
         // 2 |4
         // create g
-        GraphType g(0,0,true);
+        GraphType g(0,0);
 
         Node n1=g.addNode();
         Node n2=g.addNode();
@@ -641,10 +637,10 @@ struct AdjacencyListGraphOffTest{
         // create g
         GraphType g;
 
-        Node n1=g.addNode();
-        Node n2=g.addNode();
-        Node n3=g.addNode();
-        Node n4=g.addNode();
+        Node n1=g.addNode(1);
+        Node n2=g.addNode(2);
+        Node n3=g.addNode(3);
+        Node n4=g.addNode(4);
 
         g.addEdge(n1,n2);
         g.addEdge(n1,n3);
@@ -716,7 +712,7 @@ struct AdjacencyListGraphOffTest{
     void adjGraphTestStart0()
     {
 
-        GraphType g(0,0,true);
+        GraphType g(0,0);
 
         Node n1=g.addNode();
         Node n2=g.addNode();
@@ -833,10 +829,10 @@ struct AdjacencyListGraphOffTest{
         // create g
         GraphType g;
 
-        Node n1=g.addNode();
-        Node n2=g.addNode();
-        Node n3=g.addNode();
-        Node n4=g.addNode();
+        Node n1=g.addNode(1);
+        Node n2=g.addNode(2);
+        Node n3=g.addNode(3);
+        Node n4=g.addNode(4);
 
        g.addEdge(n1,n2);
        g.addEdge(n1,n3);
@@ -851,9 +847,9 @@ struct AdjacencyListGraphOffTest{
         should(g.edgeNum()==4);
         should(g.nodeNum()==4);
         should(g.arcNum()==8);
-        should(g.maxEdgeId()==4);
+        should(g.maxEdgeId()==3);
         should(g.maxNodeId()==4);
-        should(g.maxArcId()==9);
+        should(g.maxArcId()==7);
 
         should( g.findEdge(g.nodeFromId(1),g.nodeFromId(3) )!=lemon::INVALID);
         should( g.findEdge(g.nodeFromId(1),g.nodeFromId(2) )!=lemon::INVALID);
@@ -879,41 +875,41 @@ struct AdjacencyListGraphOffTest{
         should(allEdges.size()==4);
 
 
-        should(1==g.id( allEdges[0] ) );
-        should(2==g.id( allEdges[1] ) );
-        should(3==g.id( allEdges[2] ) );
-        should(4==g.id( allEdges[3] ) );
+        should(0==g.id( allEdges[0] ) );
+        should(1==g.id( allEdges[1] ) );
+        should(2==g.id( allEdges[2] ) );
+        should(3==g.id( allEdges[3] ) );
         
 
         std::vector<Arc>  allArcs( abegin,aend);
         should(allArcs.size() ==8);
 
-        shouldEqual(g.id(allArcs[0]),1);
-        shouldEqual(g.id(allArcs[1]),2);
-        shouldEqual(g.id(allArcs[2]),3);
-        shouldEqual(g.id(allArcs[3]),4);
-        shouldEqual(g.id(allArcs[4]),6);
-        shouldEqual(g.id(allArcs[5]),7);
-        shouldEqual(g.id(allArcs[6]),8);
-        shouldEqual(g.id(allArcs[7]),9);
+        shouldEqual(g.id(allArcs[0]),0);
+        shouldEqual(g.id(allArcs[1]),1);
+        shouldEqual(g.id(allArcs[2]),2);
+        shouldEqual(g.id(allArcs[3]),3);
+        shouldEqual(g.id(allArcs[4]),4);
+        shouldEqual(g.id(allArcs[5]),5);
+        shouldEqual(g.id(allArcs[6]),6);
+        shouldEqual(g.id(allArcs[7]),7);
 
-        shouldEqual(allArcs[0].edgeId(),1);
-        shouldEqual(allArcs[1].edgeId(),2);
-        shouldEqual(allArcs[2].edgeId(),3);
-        shouldEqual(allArcs[3].edgeId(),4);
-        shouldEqual(allArcs[4].edgeId(),1);
-        shouldEqual(allArcs[5].edgeId(),2);
-        shouldEqual(allArcs[6].edgeId(),3);
-        shouldEqual(allArcs[7].edgeId(),4);
+        shouldEqual(allArcs[0].edgeId(),0);
+        shouldEqual(allArcs[1].edgeId(),1);
+        shouldEqual(allArcs[2].edgeId(),2);
+        shouldEqual(allArcs[3].edgeId(),3);
+        shouldEqual(allArcs[4].edgeId(),0);
+        shouldEqual(allArcs[5].edgeId(),1);
+        shouldEqual(allArcs[6].edgeId(),2);
+        shouldEqual(allArcs[7].edgeId(),3);
         
-        shouldEqual(allArcs[0].id(),1);
-        shouldEqual(allArcs[1].id(),2);
-        shouldEqual(allArcs[2].id(),3);
-        shouldEqual(allArcs[3].id(),4);
-        shouldEqual(allArcs[4].id(),6);
-        shouldEqual(allArcs[5].id(),7);
-        shouldEqual(allArcs[6].id(),8);
-        shouldEqual(allArcs[7].id(),9);
+        shouldEqual(allArcs[0].id(),0);
+        shouldEqual(allArcs[1].id(),1);
+        shouldEqual(allArcs[2].id(),2);
+        shouldEqual(allArcs[3].id(),3);
+        shouldEqual(allArcs[4].id(),4);
+        shouldEqual(allArcs[5].id(),5);
+        shouldEqual(allArcs[6].id(),6);
+        shouldEqual(allArcs[7].id(),7);
         
 
         should( g.id(g.source(allArcs[0]))==g.id(g.u(allEdges[0])));
@@ -957,10 +953,10 @@ struct AdjacencyListGraphOffTest{
         // create g
         GraphType g;
 
-        Node n1=g.addNode();
-        Node n2=g.addNode();
-        Node n3=g.addNode();
-        Node n4=g.addNode();
+        Node n1=g.addNode(1);
+        Node n2=g.addNode(2);
+        Node n3=g.addNode(3);
+        Node n4=g.addNode(4);
 
         g.addEdge(n1,n2);
         g.addEdge(n1,n3);
@@ -968,39 +964,39 @@ struct AdjacencyListGraphOffTest{
         g.addEdge(n3,n4);
         
         // check sources and targets of arcs which are just the "natural edges"
+        should(  g.source(g.arcFromId(0)) == g.u(g.edgeFromId(0)) );
         should(  g.source(g.arcFromId(1)) == g.u(g.edgeFromId(1)) );
         should(  g.source(g.arcFromId(2)) == g.u(g.edgeFromId(2)) );
         should(  g.source(g.arcFromId(3)) == g.u(g.edgeFromId(3)) );
-        should(  g.source(g.arcFromId(4)) == g.u(g.edgeFromId(4)) );
 
+        should(  g.target(g.arcFromId(0)) == g.v(g.edgeFromId(0)) );
         should(  g.target(g.arcFromId(1)) == g.v(g.edgeFromId(1)) );
         should(  g.target(g.arcFromId(2)) == g.v(g.edgeFromId(2)) );
         should(  g.target(g.arcFromId(3)) == g.v(g.edgeFromId(3)) );
-        should(  g.target(g.arcFromId(4)) == g.v(g.edgeFromId(4)) );
 
 
 
 
         // check sources and targets of arcs which are flipped "natural edges"
-        should(  g.source(g.arcFromId(6)) == g.v(g.edgeFromId(1)) );
-        should(  g.source(g.arcFromId(7)) == g.v(g.edgeFromId(2)) );
-        should(  g.source(g.arcFromId(8)) == g.v(g.edgeFromId(3)) );
-        should(  g.source(g.arcFromId(9)) == g.v(g.edgeFromId(4)) );
-        should(  g.target(g.arcFromId(6)) == g.u(g.edgeFromId(1)) );
-        should(  g.target(g.arcFromId(7)) == g.u(g.edgeFromId(2)) );
-        should(  g.target(g.arcFromId(8)) == g.u(g.edgeFromId(3)) );
-        should(  g.target(g.arcFromId(9)) == g.u(g.edgeFromId(4)) );
+        should(  g.source(g.arcFromId(4)) == g.v(g.edgeFromId(0)) );
+        should(  g.source(g.arcFromId(5)) == g.v(g.edgeFromId(1)) );
+        should(  g.source(g.arcFromId(6)) == g.v(g.edgeFromId(2)) );
+        should(  g.source(g.arcFromId(7)) == g.v(g.edgeFromId(3)) );
+        should(  g.target(g.arcFromId(4)) == g.u(g.edgeFromId(0)) );
+        should(  g.target(g.arcFromId(5)) == g.u(g.edgeFromId(1)) );
+        should(  g.target(g.arcFromId(6)) == g.u(g.edgeFromId(2)) );
+        should(  g.target(g.arcFromId(7)) == g.u(g.edgeFromId(3)) );
 
         // check that arcs are convertible to edges
+        should(Edge(g.arcFromId(0))==g.edgeFromId(0));
         should(Edge(g.arcFromId(1))==g.edgeFromId(1));
         should(Edge(g.arcFromId(2))==g.edgeFromId(2));
         should(Edge(g.arcFromId(3))==g.edgeFromId(3));
-        should(Edge(g.arcFromId(4))==g.edgeFromId(4));
 
-        should(Edge(g.arcFromId(6))==g.edgeFromId(1));
-        should(Edge(g.arcFromId(7))==g.edgeFromId(2));
-        should(Edge(g.arcFromId(8))==g.edgeFromId(3));
-        should(Edge(g.arcFromId(9))==g.edgeFromId(4));
+        should(Edge(g.arcFromId(0))==g.edgeFromId(0));
+        should(Edge(g.arcFromId(1))==g.edgeFromId(1));
+        should(Edge(g.arcFromId(2))==g.edgeFromId(2));
+        should(Edge(g.arcFromId(3))==g.edgeFromId(3));
 
     }
 
@@ -1012,10 +1008,10 @@ struct AdjacencyListGraphOffTest{
         // create g
         GraphType g;
 
-        Node n1=g.addNode();
-        Node n2=g.addNode();
-        Node n3=g.addNode();
-        Node n4=g.addNode();
+        Node n1=g.addNode(1);
+        Node n2=g.addNode(2);
+        Node n3=g.addNode(3);
+        Node n4=g.addNode(4);
 
         g.addEdge(n1,n2);
         g.addEdge(n1,n3);
@@ -1028,14 +1024,14 @@ struct AdjacencyListGraphOffTest{
             shouldEqual(std::distance(begin,invalid),8);            
             std::vector<Arc> arcVec(begin,invalid);
             shouldEqual(8,arcVec.size());
-            shouldEqual(1,g.id(arcVec[0]));
-            shouldEqual(2,g.id(arcVec[1]));
-            shouldEqual(3,g.id(arcVec[2]));
-            shouldEqual(4,g.id(arcVec[3]));
-            shouldEqual(6,g.id(arcVec[4]));
-            shouldEqual(7,g.id(arcVec[5]));
-            shouldEqual(8,g.id(arcVec[6]));
-            shouldEqual(9,g.id(arcVec[7]));
+            shouldEqual(0,g.id(arcVec[0]));
+            shouldEqual(1,g.id(arcVec[1]));
+            shouldEqual(2,g.id(arcVec[2]));
+            shouldEqual(3,g.id(arcVec[3]));
+            shouldEqual(4,g.id(arcVec[4]));
+            shouldEqual(5,g.id(arcVec[5]));
+            shouldEqual(6,g.id(arcVec[6]));
+            shouldEqual(7,g.id(arcVec[7]));
         }
         {
             ArcIt begin(g);
@@ -1044,33 +1040,33 @@ struct AdjacencyListGraphOffTest{
             ArcIt empty;
             std::vector<Arc> arcVec(begin,empty);
             shouldEqual(8,arcVec.size());
-            shouldEqual(1,g.id(arcVec[0]));
-            shouldEqual(2,g.id(arcVec[1]));
-            shouldEqual(3,g.id(arcVec[2]));
-            shouldEqual(4,g.id(arcVec[3]));
-            shouldEqual(6,g.id(arcVec[4]));
-            shouldEqual(7,g.id(arcVec[5]));
-            shouldEqual(8,g.id(arcVec[6]));
-            shouldEqual(9,g.id(arcVec[7]));
+            shouldEqual(0,g.id(arcVec[0]));
+            shouldEqual(1,g.id(arcVec[1]));
+            shouldEqual(2,g.id(arcVec[2]));
+            shouldEqual(3,g.id(arcVec[3]));
+            shouldEqual(4,g.id(arcVec[4]));
+            shouldEqual(5,g.id(arcVec[5]));
+            shouldEqual(6,g.id(arcVec[6]));
+            shouldEqual(7,g.id(arcVec[7]));
         }
         {
-            ArcIt begin(g,g.arcFromId(2));
+            ArcIt begin(g,g.arcFromId(1));
             should(begin!=lemon::INVALID);
 
             ArcIt empty;
             std::vector<Arc> arcVec(begin,empty);
             shouldEqual(7,arcVec.size());
-            shouldEqual(2,g.id(arcVec[0]));
-            shouldEqual(3,g.id(arcVec[1]));
-            shouldEqual(4,g.id(arcVec[2]));
-            shouldEqual(6,g.id(arcVec[3]));
-            shouldEqual(7,g.id(arcVec[4]));
-            shouldEqual(8,g.id(arcVec[5]));
-            shouldEqual(9,g.id(arcVec[6]));
+            shouldEqual(1,g.id(arcVec[0]));
+            shouldEqual(2,g.id(arcVec[1]));
+            shouldEqual(3,g.id(arcVec[2]));
+            shouldEqual(4,g.id(arcVec[3]));
+            shouldEqual(5,g.id(arcVec[4]));
+            shouldEqual(6,g.id(arcVec[5]));
+            shouldEqual(7,g.id(arcVec[6]));
         }
         {
-            ArcIt begin(g,g.arcFromId(2));
-            ArcIt end(g,g.arcFromId(3));
+            ArcIt begin(g,g.arcFromId(1));
+            ArcIt end(g,g.arcFromId(2));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);    
@@ -1079,20 +1075,20 @@ struct AdjacencyListGraphOffTest{
             shouldEqual(std::distance(begin,end),1);
             std::vector<Arc> arcVec(begin,end);
             shouldEqual(1,arcVec.size());
-            shouldEqual(2,g.id(arcVec[0]));
+            shouldEqual(1,g.id(arcVec[0]));
         }
 
         {
-            ArcIt begin(g,g.arcFromId(2));
-            ArcIt end(g,g.arcFromId(4));
+            ArcIt begin(g,g.arcFromId(1));
+            ArcIt end(g,g.arcFromId(3));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);
 
             std::vector<Arc> arcVec(begin,end);
             shouldEqual(2,arcVec.size());
-            shouldEqual(2,g.id(arcVec[0]));
-            shouldEqual(3,g.id(arcVec[1]));
+            shouldEqual(1,g.id(arcVec[0]));
+            shouldEqual(2,g.id(arcVec[1]));
         }
     }
 
@@ -1101,12 +1097,12 @@ struct AdjacencyListGraphOffTest{
 
         {
 
-        GraphType g(0,0,false);
+        GraphType g(0,0);
 
-        Node n1=g.addNode();
-        Node n2=g.addNode();
-        Node n3=g.addNode();
-        Node n4=g.addNode();
+        Node n1=g.addNode(1);
+        Node n2=g.addNode(2);
+        Node n3=g.addNode(3);
+        Node n4=g.addNode(4);
 
         Edge e12 = g.addEdge(n1,n2);
         Edge e13 = g.addEdge(n1,n3);
@@ -1135,7 +1131,7 @@ struct AdjacencyListGraphOffTest{
         }
 
         {
-        GraphType g(0,0,true);
+        GraphType g(0,0);
 
         Node n1=g.addNode();
         Node n2=g.addNode();
@@ -1175,7 +1171,7 @@ struct AdjacencyListGraphOffTest{
         // __ __
         // 2 |4
         // create g
-        GraphType g(0,0,true);
+        GraphType g(0,0);
 
         Node n1=g.addNode();
         Node n2=g.addNode();
@@ -1259,10 +1255,10 @@ struct AdjacencyListGraphOffTest{
         // create g
         GraphType g;
 
-        Node n1=g.addNode();
-        Node n2=g.addNode();
-        Node n3=g.addNode();
-        Node n4=g.addNode();
+        Node n1=g.addNode(1);
+        Node n2=g.addNode(2);
+        Node n3=g.addNode(3);
+        Node n4=g.addNode(4);
 
         Edge e12 = g.addEdge(n1,n2);
         Edge e13 = g.addEdge(n1,n3);
@@ -1342,10 +1338,10 @@ struct AdjacencyListGraphOffTest{
         // create g
         GraphType g;
 
-        Node n1=g.addNode();
-        Node n2=g.addNode();
-        Node n3=g.addNode();
-        Node n4=g.addNode();
+        Node n1=g.addNode(1);
+        Node n2=g.addNode(2);
+        Node n3=g.addNode(3);
+        Node n4=g.addNode(4);
 
         Edge e12 = g.addEdge(n1,n2);
         Edge e13 = g.addEdge(n1,n3);
@@ -1417,7 +1413,6 @@ struct AdjacencyListGraphOffTest{
     
     }
 
-
     void adjGraphOutArcItTest()
     {
         // 1 |3
@@ -1426,10 +1421,10 @@ struct AdjacencyListGraphOffTest{
         // create g
         GraphType g;
 
-        Node n1=g.addNode();
-        Node n2=g.addNode();
-        Node n3=g.addNode();
-        Node n4=g.addNode();
+        Node n1=g.addNode(1);
+        Node n2=g.addNode(2);
+        Node n3=g.addNode(3);
+        Node n4=g.addNode(4);
 
         Edge e12 = g.addEdge(n1,n2);
         Edge e13 = g.addEdge(n1,n3);

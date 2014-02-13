@@ -55,7 +55,7 @@ class TestGraph(object):
 
         IV = vigraph.INVALID
 
-        g  = vigraph.graph()
+        g  = vigraph.listGraph()
         assert g.nodeNum == 0
         assert g.edgeNum == 0
         assert g.nodeFromId(0)==IV
@@ -133,7 +133,7 @@ class TestGraph(object):
         nodeIds = np.unique(edges.reshape(-1))
 
 
-        g = vigraph.graph()
+        g = vigraph.listGraph()
 
         edgeIds = g.addEdges(edges)
 

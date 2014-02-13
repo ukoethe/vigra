@@ -23,84 +23,6 @@ namespace python = boost::python;
 namespace vigra{
 
 
-template<class GRAPH,class PREDECESSORS,class IDS_ARRAY>
-void pathIds(
-    const GRAPH & g,
-    const typename  GRAPH::Node source,
-    const typename  GRAPH::Node target,
-    const PREDECESSORS & predecessors,
-    IDS_ARRAY & ids
-){
-    if(predecessors[target]!=lemon::INVALID){
-
-        ids(0)=g.id(target);
-        typename GRAPH::Node currentNode = target;
-        size_t length=1;
-        while(currentNode!=source){
-            currentNode=predecessors[currentNode];
-            ids(length)=g.id(currentNode);
-            length+=1;
-        }
-        // reverse such ids[0]==g.id(source)
-        std::reverse(ids.begin(),ids.begin()+length);
-    }
-}
-
-template<class GRAPH,class PREDECESSORS,class COORDINATE_ARRAY>
-void pathCoordinates(
-    const GRAPH & g,
-    const typename  GRAPH::Node source,
-    const typename  GRAPH::Node target,
-    const PREDECESSORS & predecessors,
-    COORDINATE_ARRAY & coords
-){
-    typedef GraphDescriptorToMultiArrayIndex<GRAPH> DescToCoord;
-    if(predecessors[target]!=lemon::INVALID){
-        coords(0)=DescToCoord::intrinsicNodeCoordinate(g,target);
-        typename GRAPH::Node currentNode = target;
-        size_t length=1;
-        while(currentNode!=source){
-            currentNode=predecessors[currentNode];
-            coords(length)=DescToCoord::intrinsicNodeCoordinate(g,currentNode);
-            length+=1;
-        }
-        // reverse such ids[0]==DescToCoord::intrinsicNodeCoordinate(g,source);
-        std::reverse(coords.begin(),coords.begin()+length);
-    }
-}
-
-
-
-template<class GRAPH>
-class LemonGraphShortestPathAddon 
-:   public boost::python::def_visitor<LemonGraphShortestPathAddon<GRAPH> >
-{
-public:
-    friend class def_visitor_access;
-    template <class classT>
-    void visit(classT& c) const{   
-    }
-};
-
-
-// for grid graphs
-template<unsigned int DIM,class DTAG>
-class LemonGraphShortestPathAddon< GridGraph<DIM,DTAG> > 
-:   public boost::python::def_visitor<LemonGraphShortestPathAddon< GridGraph<DIM,DTAG> > >
-{
-public:
-    friend class def_visitor_access;
-    typedef GridGraph<DIM,DTAG> Graph;
-    typedef ShortestPathDijkstra<Graph,float> ShortestPathDijkstraType;
-
-    template <class classT>
-    void visit(classT& c) const{   
-    }
-
-
-};
-
-
 template<class GRAPH>
 class LemonGraphAlgorithmVisitor 
 :   public boost::python::def_visitor<LemonGraphAlgorithmVisitor<GRAPH> >
@@ -157,67 +79,6 @@ public:
 
     }
 
-    void exportShortestPathAlgorithms()const{
-        // class based algorithms (with factories):
-        // - ShortestPathDijkstra
-        const std::string dijkstraClsName = std::string("ShortestPathDijkstra")+clsName_;
-        python::class_<ShortestPathDijkstraType, boost::noncopyable >(dijkstraClsName.c_str(),python::init<const Graph &>())
-        .def("run",registerConverters(&runShortestPathNoTarget),
-            (
-                python::arg("edgeWeights"),
-                python::arg("source")
-            )
-        )
-        .def("run",registerConverters(&runShortestPath),
-            (
-                python::arg("edgeWeights"),
-                python::arg("source"),
-                python::arg("target")
-            )
-        )
-        .def("runNodeSumWeights",registerConverters(&runShortestPathNodeMapNoTarget),
-            (
-                python::arg("edgeWeights"),
-                python::arg("source")
-            )
-        )
-        .def("runNodeSumWeights",registerConverters(&runShortestPathNodeMap),
-            (
-                python::arg("edgeWeights"),
-                python::arg("source"),
-                python::arg("target")
-            )
-        )
-        .def("nodeIdPath",registerConverters(&makeNodeIdPath),
-            (
-                python::arg("target"),
-                python::arg("out")=python::object()
-            ) 
-        )
-        .def("nodeCoordinatePath",registerConverters(&makeNodeCoordinatePath),
-            (
-                python::arg("target"),
-                python::arg("out")=python::object()
-            ) 
-        )
-        .def("distances",registerConverters(&pyShortestPathDistance),
-            (
-                python::arg("out")=python::object()
-            )
-        )
-        .def("predecessors",registerConverters(&pyShortestPathPredecessors),
-            (
-                python::arg("out")=python::object()
-            )
-        )
-        .def(LemonGraphShortestPathAddon<Graph>())
-        ;
-
-        python::def("_shortestPathDijkstra",&pyShortestPathDijkstraTypeFactory,
-            python::return_value_policy<python::manage_new_object>() 
-        );
-
-    }
 
     void exportSegmentationAlgorithms()const{
         python::def("watershedsSegmentation",registerConverters(&pyWatershedSegmentation),
@@ -282,6 +143,14 @@ public:
             ),
             "convert node features to edge weights with the given metric"
         );
+        python::def("nodeFeatureSumToEdgeWeight",registerConverters(&pyNodeFeatureSumToEdgeWeight),
+            (
+                python::arg("graph"),
+                python::arg("nodeFeatures"),
+                python::arg("out")=python::object()
+            ),
+            "convert node features to edge weights with the given metric"
+        );
     }
 
     void exportSmoothingAlgorithms()const{
@@ -321,9 +190,6 @@ public:
     template <class classT>
     void visit(classT& c) const
     {   
-        // - Dijkstra
-        exportShortestPathAlgorithms();
-
         // - watersheds-segmentation
         // - carving-segmentation
         // - felzenwalb-segmentation
@@ -338,134 +204,6 @@ public:
         // - dynamicRecursiveGraphSmoothing
         exportSmoothingAlgorithms();
     }
-
-
-    static ShortestPathDijkstraType * pyShortestPathDijkstraTypeFactory(const Graph & g){
-        return new ShortestPathDijkstraType(g);
-    }
-
-    static NumpyAnyArray pyShortestPathDistance(
-        const ShortestPathDijkstraType & sp,
-        FloatNodeArray distanceArray = FloatNodeArray()
-    ){
-        // reshape output
-        distanceArray.reshapeIfEmpty(  IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(sp.graph()));
-
-        // numpy arrays => lemon maps
-        FloatNodeArrayMap distanceArrayMap(sp.graph(),distanceArray);
-
-        copyNodeMap(sp.graph(),sp.distances(),distanceArrayMap);
-
-        return distanceArray;
-    }
-
-
-    static NumpyAnyArray pyShortestPathPredecessors(
-        const ShortestPathDijkstraType & sp,
-        Int32NodeArray predecessorsArray = FloatNodeArray()
-    ){
-        // reshape output
-        predecessorsArray.reshapeIfEmpty(  IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(sp.graph()));
-
-        // numpy arrays => lemon maps
-        Int32NodeArrayMap predecessorsArrayMap(sp.graph(),predecessorsArray);
-
-        for(NodeIt n(sp.graph());n!=lemon::INVALID;++n){
-            const Node pred = sp.predecessors()[*n];
-            predecessorsArrayMap[*n]= (pred!=lemon::INVALID ? sp.graph().id(pred) : -1);
-        }
-        return predecessorsArray;
-    }
-
-
-    static NumpyAnyArray makeNodeIdPath(
-        const ShortestPathDijkstraType & sp,
-        PyNode target,
-        NumpyArray<1,Singleband<UInt32> > nodeIdPath = NumpyArray<1,Singleband<UInt32> >()
-    ){
-        typename  ShortestPathDijkstraType::PredecessorsMap predMap = sp.predecessors();
-        const Node source = sp.source();
-        Node currentNode = target; 
-        // comput length of the path
-        const size_t length = pathLength(Node(source),Node(target),predMap);
-        nodeIdPath.reshapeIfEmpty(typename NumpyArray<1,Singleband<UInt32> >::difference_type(length));
-        pathIds(sp.graph(),source,target,predMap,nodeIdPath);
-        return nodeIdPath;
-        
-    }
-
-    static NumpyAnyArray makeNodeCoordinatePath(
-        const ShortestPathDijkstraType & sp,
-        PyNode target,
-        NodeCoorinateArray nodeCoordinates = NodeCoorinateArray()
-    ){
-        typename  ShortestPathDijkstraType::PredecessorsMap predMap = sp.predecessors();
-        const Node source = sp.source();
-        // comput length of the path
-        const size_t length = pathLength(Node(source),Node(target),predMap);
-        std::cout<<"path length "<<length<<"\n";
-        nodeCoordinates.reshapeIfEmpty(typename NumpyArray<1,Singleband<UInt32> >::difference_type(length));
-        pathCoordinates(sp.graph(),source,target,predMap,nodeCoordinates);
-        return nodeCoordinates;
-    }
-
-    static void runShortestPath(
-        ShortestPathDijkstraType & sp,
-        FloatEdgeArray edgeWeightsArray,
-        PyNode source,
-        PyNode target
-    ){
-        // numpy arrays => lemon maps
-        FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
-
-        // run algorithm itself
-        sp.run(edgeWeightsArrayMap,source,target);
-    }
-
-    static void runShortestPathNoTarget(
-        ShortestPathDijkstraType & sp,
-        FloatEdgeArray edgeWeightsArray,
-        PyNode source
-    ){
-        // numpy arrays => lemon maps
-        FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
-
-        // run algorithm itself
-        sp.run(edgeWeightsArrayMap,source);
-    }
-
-    // 
-    static void runShortestPathNodeMapNoTarget(
-        ShortestPathDijkstraType & sp,
-        FloatNodeArray nodeEdgeWeightsArray,
-        PyNode source
-    ){
-        // numpy arrays => lemon maps
-        FloatNodeArrayMap nodeEdgeWeightsArrayMap(sp.graph(),nodeEdgeWeightsArray);
-        std::plus<float> functor;
-        OnTheFlyEdgeMap<Graph,FloatNodeArrayMap ,std::plus<float>,float> edgeWeightsMap(sp.graph(),
-            nodeEdgeWeightsArrayMap,functor);
-
-        // run algorithm itself
-        sp.run(edgeWeightsMap,source);
-    }
-
-    static void runShortestPathNodeMap(
-        ShortestPathDijkstraType & sp,
-        FloatNodeArray nodeEdgeWeightsArray,
-        PyNode source,
-        PyNode target
-    ){
-        // numpy arrays => lemon maps
-        FloatNodeArrayMap nodeEdgeWeightsArrayMap(sp.graph(),nodeEdgeWeightsArray);
-        std::plus<float> functor;
-        OnTheFlyEdgeMap<Graph,FloatNodeArrayMap ,std::plus<float>,float> edgeWeightsMap(sp.graph(),
-            nodeEdgeWeightsArrayMap,functor);
-
-        // run algorithm itself
-        sp.run(edgeWeightsMap,source,target);
-    }
-
 
     static NumpyAnyArray pyNodeIdsLabels(
         const GRAPH & g,
@@ -541,6 +279,29 @@ public:
                 "- chiSquared\n"
             );
         }
+    }
+
+
+
+    static NumpyAnyArray pyNodeFeatureSumToEdgeWeight(
+        const GRAPH & g,
+        const FloatNodeArray & nodeFeaturesArray,
+        FloatEdgeArray edgeWeightsArray
+    ){
+        // reshape out?
+        edgeWeightsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g) );
+
+        // numpy arrays => lemon maps
+        FloatNodeArrayMap  nodeFeatureArrayMap(g,nodeFeaturesArray);
+        FloatEdgeArrayMap  edgeWeightsArrayMap(g,edgeWeightsArray);
+        
+        for(EdgeIt e(g);e!=lemon::INVALID;++e){
+            const Edge edge(*e);
+            const Node u=g.u(edge);
+            const Node v=g.v(edge);
+            edgeWeightsArrayMap[edge]=nodeFeatureArrayMap[u]+nodeFeatureArrayMap[v];
+        }
+        return edgeWeightsArray;
     }
 
     template<class FUNCTOR>
@@ -801,7 +562,7 @@ public:
         
 
 
-        python::def("edgeWeightsFromIterpolatedImage",registerConverters(&pyEdgeWeightsFromIterpolatedImage),
+        python::def("edgeFeaturesFromInterpolatedImage",registerConverters(&pyEdgeWeightsFromInterpolatedImage),
             (
                 python::arg("graph"),
                 python::arg("image"),
@@ -813,7 +574,7 @@ public:
 
 
 
-    static NumpyAnyArray pyEdgeWeightsFromIterpolatedImage(
+    static NumpyAnyArray pyEdgeWeightsFromInterpolatedImage(
         const GRAPH & g,
         const FloatNodeArray & interpolatedImage,
         FloatEdgeArray edgeWeightsArray
@@ -821,9 +582,6 @@ public:
 
         for(size_t d=0;d<NodeMapDim;++d){
             vigra_precondition(interpolatedImage.shape(d)==2*g.shape()[d]+1, "interpolated shape must be shape*2 +1");
-            //{
-            //    throw std::runtime_error()
-            //}
         }
 
 
@@ -842,10 +600,6 @@ public:
         }
         return edgeWeightsArray;
     }
-
-
-
-
 };
 
 

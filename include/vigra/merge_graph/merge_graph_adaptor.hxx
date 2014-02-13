@@ -334,35 +334,40 @@ class MergeGraphAdaptor
         typedef detail::GenericIncEdgeIt<MergeGraphType,NodeStorage,OutFilter >  OutArcIt;
         
 
+
         template<class T>
         struct EdgeMap : DenseEdgeReferenceMap<MergeGraphType,T> {
-            EdgeMap()
-            : DenseEdgeReferenceMap<MergeGraphType,T>(){
+            EdgeMap(): DenseEdgeReferenceMap<MergeGraphType,T>(){
             }
             EdgeMap(const MergeGraphType & g)
             : DenseEdgeReferenceMap<MergeGraphType,T>(g){
             }
+            EdgeMap(const MergeGraphType & g,const T & val)
+            : DenseEdgeReferenceMap<MergeGraphType,T>(g,val){
+            }
         };
-
 
         template<class T>
         struct NodeMap : DenseNodeReferenceMap<MergeGraphType,T> {
-            NodeMap()
-            : DenseNodeReferenceMap<MergeGraphType,T>(){
+            NodeMap(): DenseNodeReferenceMap<MergeGraphType,T>(){
             }
             NodeMap(const MergeGraphType & g)
             : DenseNodeReferenceMap<MergeGraphType,T>(g){
             }
+            NodeMap(const MergeGraphType & g,const T & val)
+            : DenseNodeReferenceMap<MergeGraphType,T>(g,val){
+            }
         };
-
 
         template<class T>
         struct ArcMap : DenseArcReferenceMap<MergeGraphType,T> {
-            ArcMap()
-            : DenseArcReferenceMap<MergeGraphType,T>(){
+            ArcMap(): DenseArcReferenceMap<MergeGraphType,T>(){
             }
             ArcMap(const MergeGraphType & g)
             : DenseArcReferenceMap<MergeGraphType,T>(g){
+            }
+            ArcMap(const MergeGraphType & g,const T & val)
+            : DenseArcReferenceMap<MergeGraphType,T>(g,val){
             }
         };
 

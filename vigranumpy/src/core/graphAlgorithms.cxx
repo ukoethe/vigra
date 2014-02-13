@@ -137,7 +137,7 @@ namespace vigra{
 
 
     template<class HCLUSTER>
-    python::tuple leadNodeIdsAsNumpyArray(
+    python::tuple leafNodeIdsAsNumpyArray(
         const HCLUSTER &            hcluster,
         const typename HCLUSTER::MergeGraphIndexType treeNodeId,
         NumpyArray<1,UInt32>  leafes  = NumpyArray<1,UInt32>()
@@ -157,7 +157,7 @@ namespace vigra{
         return python::make_tuple(leafes,leafNum);
     } 
 
-
+    /*
     void defineHyperEdgeSizes(){
         typedef GridGraph<2,boost::undirected_tag> GridGraphUndirected2d;
         typedef GridGraph<3,boost::undirected_tag> GridGraphUndirected3d;
@@ -255,6 +255,9 @@ namespace vigra{
         }
     }
 
+
+    */
+
     template<class HCLUSTER>
     void pyReprNodeIds(
         const HCLUSTER &     hcluster,
@@ -345,7 +348,7 @@ namespace vigra{
         .def("transformInputMaps",&HierarchicalClusteringType::transformInputMaps)
         .def("mergeTreeEncoding",&mergeTreeEncodingAsNumpyArray<HierarchicalClusteringType>)
         .def("mergeGraph",&HierarchicalClusteringType::mergeGraph,python::return_internal_reference<>() )
-        .def("leafNodeIds",&leadNodeIdsAsNumpyArray<HierarchicalClusteringType>,
+        .def("leafNodeIds",&leafNodeIdsAsNumpyArray<HierarchicalClusteringType>,
             (
                 python::arg("treeNodeId"),
                 python::arg("out")=python::object()
@@ -362,10 +365,10 @@ namespace vigra{
         typedef GridGraph<3,boost::undirected_tag> GridGraphUndirected3d;
 
 
-        defineHyperEdgeSizes();
-        defineHyperNodeSizes();
-        defineHyperEdgeFeatures();
-        defineHyperNodeFeatures();
+        //defineHyperEdgeSizes();
+        //defineHyperNodeSizes();
+        //defineHyperEdgeFeatures();
+        //defineHyperNodeFeatures();
     }
 
 } 

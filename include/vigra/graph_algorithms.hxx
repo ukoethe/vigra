@@ -251,15 +251,15 @@ namespace vigra{
 
 
 
-    template<class GRAPH,class HYPER_EDGE_MAP,class HYPER_EDGE_SIZE_MAP>
-    void hyperEdgeSizes(
-        const GRAPH & g,
-        const HYPER_EDGE_MAP & hyperEdges,
-        HYPER_EDGE_SIZE_MAP  & out
+    template<class RAG,class AFFILIATED_EDGES,class SIZE_OF_AFFILIATED_EDGES>
+    void sizeOfAffiliatedEdges(
+        const RAG & rag,
+        const AFFILIATED_EDGES & affiliatedEdges,
+        SIZE_OF_AFFILIATED_EDGES  & out
     ){
-        for(typename  GRAPH::EdgeIt e(g);e!=lemon::INVALID;++e){
-            const size_t size = hyperEdges[*e].size();
-            out[*e]=static_cast<typename HYPER_EDGE_SIZE_MAP::Value>(size);
+        for(typename  RAG::EdgeIt e(rag);e!=lemon::INVALID;++e){
+            const size_t size = affiliatedEdges[*e].size();
+            out[*e]=static_cast<typename SIZE_OF_AFFILIATED_EDGES::Value>(size);
         }
     }
 
@@ -324,7 +324,7 @@ namespace vigra{
     void hyperEdgeImageFeatures(
         const RAG & rag,
         const GRAPH & graph,
-        const HYPER_EDGE_COORDINATE_MAP & hyperEdges,
+        const HYPER_EDGE_COORDINATE_MAP & affiliatedEdges,
         const IMAGE & image,
         HYPER_EDGE_FEATURE_MAP  & out
     ){
@@ -335,7 +335,7 @@ namespace vigra{
         typedef typename IMAGE::difference_type ImageCoord;
 
         for(typename  RAG::EdgeIt e(rag);e!=lemon::INVALID;++e){
-            HyperEdgeCoordVec hyperEdgeCoords = hyperEdges[*e];
+            HyperEdgeCoordVec hyperEdgeCoords = affiliatedEdges[*e];
             out[*e]=Value(0);
             const size_t nEdges = hyperEdgeCoords.size();
             for(size_t i=0;i<nEdges;++i){
@@ -356,9 +356,10 @@ namespace vigra{
         GRAPH_IN                   graphIn,
         GRAPH_IN_NODE_LABEL_MAP    labels,
         AdjacencyListGraph & rag,
-        typename AdjacencyListGraph:: template EdgeMap< std::vector<typename GRAPH_IN::Edge> > & hyperEdges,
+        typename AdjacencyListGraph:: template EdgeMap< std::vector<typename GRAPH_IN::Edge> > & affiliatedEdges,
         const Int64   ignoreLabel=-1
     ){
+        rag=AdjacencyListGraph();
         typedef GRAPH_IN_NODE_LABEL_MAP LabelMap;
         typedef typename GraphMapTypeTraits<GRAPH_IN_NODE_LABEL_MAP>::Value LabelType;
         typedef GRAPH_IN GraphIn;
@@ -366,63 +367,43 @@ namespace vigra{
         LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GraphIn, , GraphIn);
         LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GraphOut, ,GraphOut);
         typedef typename GraphOut:: template EdgeMap< std::vector<EdgeGraphIn> > HyperEdgeMap;
-        typedef typename GraphOut:: template NodeMap< std::vector<NodeGraphIn> > HyperNodeMap;
         // iterate over all labels in the node map to find min max
         typedef NodeMapIteratorHelper<GraphIn,LabelMap> NodeIterHelper;
-        const LabelType  minLabel = *std::min_element(NodeIterHelper::begin(graphIn,labels),NodeIterHelper::end(graphIn,labels));
-        const LabelType  maxLabel = *std::max_element(NodeIterHelper::begin(graphIn,labels),NodeIterHelper::end(graphIn,labels));
-
-        if(ignoreLabel==0 && rag.zeroStart())
-            throw std::runtime_error("if ignoreLabel == 0, rag.zeroStart() must be false");
-        if( minLabel==1 && rag.zeroStart() )
-            throw std::runtime_error("if minLabel==1, rag.zeroStart() must be false");
-        if( ignoreLabel==1  && !rag.zeroStart())
-            throw std::runtime_error("if ignoreLabel == 1, rag.zerStart() must be true");
-        if( ignoreLabel==1  && minLabel!=0)
-            throw std::runtime_error("if ignoreLabel == 1, minLabel must be 0");
-
-
-        if(ignoreLabel!=0 || minLabel!= 1 || rag.zeroStart()){
-            throw std::runtime_error("WORK IN PROGRESS LIMITATION VIOLATED  => this should evaluate to false (ignoreLabel!=0 || minLabel!= 1 || rag.zeroStart() ) ");
+        
+        for(NodeItGraphIn iter(graphIn);iter!=lemon::INVALID;++iter){
+            const LabelType l=labels[*iter];
+            if(ignoreLabel==-1 || static_cast<Int64>(l)!=ignoreLabel)
+                rag.addNode(l);
         }
 
-
-
-        size_t numberOfNodes = maxLabel; // TODO
-        size_t reserveEdges  = 0;
-
-        // SET UP RAG GAPPH
-        // add nodes
-        for(size_t n=0;n<numberOfNodes;++n){
-            rag.addNode();
-        }
         // add al edges
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
             const LabelType lv = labels[graphIn.v(edge)];
-            if(lu!=lv){
+            if(  lu!=lv && ( ignoreLabel==-1 || (static_cast<Int64>(lu)!=ignoreLabel  && static_cast<Int64>(lv)!=ignoreLabel) )  ){
                 // if there is an edge between lu and lv no new edge will be added
-                rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
+                rag.addEdge( rag.nodeFromId(lu),rag.nodeFromId(lv));
             }
         }
 
         // SET UP HYPEREDGES
-
-
-        hyperEdges.assign(rag);
+        affiliatedEdges.assign(rag);
         // add edges
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
             const LabelType lv = labels[graphIn.v(edge)];
-            if(lu!=lv){
+            if(  lu!=lv && ( ignoreLabel==-1 || (static_cast<Int64>(lu)!=ignoreLabel  && static_cast<Int64>(lv)!=ignoreLabel) )  ){
                 EdgeGraphOut ragEdge= rag.findEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
-                hyperEdges[ragEdge].push_back(edge);
+                affiliatedEdges[ragEdge].push_back(edge);
             }
         }
+
     }
-        
+
+  
+
     template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE>
     void shortestPathDijkstra(
         const GRAPH         &           graph,

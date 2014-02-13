@@ -112,11 +112,11 @@ public:
 
     }
     DenseGraphItemReferenceMap(const Graph & g)
-    :   DenseReferenceMapType(ItemHelper::maxItemId(g)){
+    :   DenseReferenceMapType(ItemHelper::itemNum(g)==0 ? 0: ItemHelper::maxItemId(g) ){
 
     }
     DenseGraphItemReferenceMap(const Graph & g,typename DenseReferenceMapType::ConstReference value)
-    :   DenseReferenceMapType(ItemHelper::maxItemId(g),value){
+    :   DenseReferenceMapType(ItemHelper::itemNum(g)==0 ? 0: ItemHelper::maxItemId(g)){
 
     }
     void assign(const Graph & g){
