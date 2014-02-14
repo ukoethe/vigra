@@ -300,9 +300,10 @@ def imshow(image):
 
 
 def segShow(img,labels,edgeColor=(1,0,0) ):
+    labels = numpy.squeeze(labels)
     crackedEdges = analysis.regionImageToCrackEdgeImage(labels)
     whereEdge    =  numpy.where(crackedEdges==0)
-    imgToDisplay = resize(img,crackedEdges.shape)
+    imgToDisplay = resize(img,numpy.squeeze(crackedEdges).shape)
     imgToDisplay-=imgToDisplay.min()
     imgToDisplay/=imgToDisplay.max()
     for c in range(img.ndim):
@@ -554,6 +555,28 @@ def _genGraphConvenienceFunctions():
     gridGraph.__module__ = 'vigra.graphs'
     graphs.gridGraph = gridGraph
 
+    # extend grid graph via meta classes
+    for cls in [graphs.GridGraphUndirected2d, graphs.GridGraphUndirected3d] :
+
+        metaCls = cls.__class__
+
+        class gridGraphInjector(object):
+            class __metaclass__(metaCls):
+                def __init__(self, name, bases, dict):
+                    for b in bases:
+                        if type(b) not in (self, type):
+                            for k,v in dict.items():
+                                setattr(b,k,v)
+                    return type.__init__(self, name, bases, dict)
+
+        ##inject some methods in the point foo
+        class more_point(gridGraphInjector, cls):
+            @property
+            def shape(self):
+                return self.intrinsicNodeMapShape()
+
+
+
 
     def isGridGraph(obj):
       return isinstance(obj,(graphs.GridGraphUndirected2d , graphs.GridGraphUndirected3d))
@@ -578,60 +601,84 @@ def _genGraphConvenienceFunctions():
     graphs.listGraph = listGraph
 
 
+    class RegionAdjacencyGraph(graphs.AdjacencyListGraph):
+        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
+            super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
+
+            if ignoreLabel is None:
+                ignoreLabel=-1
+
+            self.labels          = labels
+            self.ignoreLabel     = ignoreLabel
+            self.baseGraphLabels = labels
+            self.baseGraph       = graph
+            # set up rag
+            self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
+
+        def accumulateEdgeFeatures(self,edgeFeatures,acc,out=None):
+            graph = self.baseGraph
+            affiliatedEdges = self.affiliatedEdges
+            return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,acc,out)
+
+        def accumulateEdgeSize(self,out=None):
+            affiliatedEdges = self.affiliatedEdges
+            return graphs._ragEdgeSize(self,affiliatedEdges,out)
+
+        def accumulateNodeFeatures(self,nodeFeatures,acc,out=None):
+            graph = self.baseGraph
+            labels = self.baseGraphLabels
+            ignoreLabel = self.ignoreLabel
+            return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,acc,ignoreLabel,out)
+
+        def accumulateNodeSize(self,out=None):
+            ignoreLabel =self.ignoreLabel
+            graph = self.baseGraph
+            labels = self.baseGraphLabels
+            return graphs._ragNodeSize(self,graph,labels,ignoreLabel,out)
 
 
-    BoostPythonMetaclassAdjacencyListGraph = graphs.AdjacencyListGraph.__class__ 
+    RegionAdjacencyGraph.__module__ = 'vigra.graphs'
+    graphs.RegionAdjacencyGraph = RegionAdjacencyGraph
 
-    class injectorAdjacencyListGraph(object):
-        class __metaclass__(BoostPythonMetaclassAdjacencyListGraph):
-            def __init__(self, name, bases, dict):
-                for b in bases:
-                    if type(b) not in (self, type):
-                        for k,v in dict.items():
-                            setattr(b,k,v)
-                return type.__init__(self, name, bases, dict)
+    class GridRegionAdjacencyGraph(graphs.RegionAdjacencyGraph):
+        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
+            if not (isGridGraph(graph) or  isinstance(graph,GridRegionAdjacencyGraph)):
+                raise RuntimeError("graph must be a GridGraph or a GridRegionAdjacencyGraph")
+            super(GridRegionAdjacencyGraph,self).__init__(graph,labels,ignoreLabel,reserveEdges)
 
-    ##inject some methods in the point foo
-    class moreAdjacencyListGraph(injectorAdjacencyListGraph, graphs.AdjacencyListGraph):
-        def baseGraph(self):
-            try :
-                return self._baseGraph
-            except:
-                raise RuntimeError("base graph has not been registered")
+        @property
+        def shape(self):
+            return self.baseGraph.shape
 
-        def baseGraphLabels(self):
-            try :
-                return self._baseGraphLabels
-            except:
-                raise RuntimeError("base graph has not been registered => therfore no baseGraphLabels")
-        def affiliatedEdges(self):
-            try :
-                return self._affiliatedEdges
-            except:
-                raise RuntimeError("base graph has not been registered => therfore no affiliatedEdges")
-        def ignoreLabel(self):
-            try :
-                return self._ignoreLabel
-            except:
-                raise RuntimeError("base graph has not been registered => therfore no ignoreLabel")
-
-
-        def hasGridGraphBaseGraph(self,recursive=False):
-            if recursive :
-                if graphs.isGridGraph(self.baseGraph):
-                    return True;
+        def _showSegWithoutLabels(self,img,_labels=None):
+            if isGridGraph(self.baseGraph):
+                if _labels is None :
+                    projectedLabels = self.labels
                 else :
-                    try :
-                        return self.baseGraph.hasGridGraphBaseGraph(True)
-                    except:
-                        return False
+                    projectedLabels = _labels
+                print "base is grid graph"
+                print projectedLabels.shape
+                segShow(img,projectedLabels)
+            else:
+                if _labels is None :
+                    pLabels = graphs.nodeIdsLabels(graph=self.baseGraph,nodeIds=self.baseGraph.labels,labels=self.labels)
+                else:
+                    pLabels = graphs.nodeIdsLabels(graph=self.baseGraph,nodeIds=self.baseGraph.labels,labels=_labels)
+                self.baseGraph.show(img,_labels=pLabels)
+
+
+        def show(self,img,labels=None):
+            if labels is None :
+                self._showSegWithoutLabels(img)
             else :
-                return graphs.isGridGraph(self.baseGraph)
+                pLabels = graphs.nodeIdsLabels(graph=self.baseGraph,nodeIds=self.labels,labels=labels)
+                self._showSegWithoutLabels(img,pLabels)
 
 
+    GridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
+    graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
 
 
-        
 
     def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0):
         """ Return a region adjacency graph for a labeld graph.
@@ -644,20 +691,15 @@ def _genGraphConvenienceFunctions():
                 - reserveEdges -- reverse a certain number of edges (default: 0)
 
             Returns:
-                - rag -- instance of RegionAdjacencyGraph
+                - rag -- instance of RegionAdjacencyGraph or GridRegionAdjacencyGraph
+                    If graph is a GridGraph or a GridRegionAdjacencyGraph, a GridRegionAdjacencyGraph 
+                    will be returned.
+                    Otherwise a RegionAdjacencyGraph will be returned
         """
-        if ignoreLabel is None:
-                ignoreLabel=-1
-
-        rag=graphs.listGraph(0,reserveEdges)
-        affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,rag,ignoreLabel)
-
-  
-        rag._baseGraph       = graph
-        rag._baseGraphLabels = labels
-        rag._affiliatedEdges = affiliatedEdges
-        rag._ignoreLabel     = ignoreLabel
-        return rag
+        if isinstance(graph , graphs.GridRegionAdjacencyGraph) or isGridGraph(graph):
+            return GridRegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges)
+        else:
+            return RegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges) 
 
        
 
@@ -736,32 +778,7 @@ def _genGraphConvenienceFunctions():
     graphs.graphMap = graphMap
 
 
-    def ragEdgeFeatures(self,edgeFeatures,acc,out=None):
-      graph = self.baseGraph()
-      affiliatedEdges = self.affiliatedEdges()
-      return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,acc,out)
 
-    def ragEdgeSize(self,out=None):
-      affiliatedEdges = self.affiliatedEdges()
-      return graphs._ragEdgeSize(self,affiliatedEdges,out)
-
-    def ragNodeFeatures(self,nodeFeatures,acc,out=None):
-      graph = self.baseGraph()
-      labels = self.baseGraphLabels()
-      ignoreLabel = self.ignoreLabel()
-      return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,acc,ignoreLabel,out)
-
-
-    def ragNodeSize(self,out=None):
-      ignoreLabel =self.ignoreLabel()
-      graph = self.baseGraph()
-      labels = self.baseGraphLabels()
-      return graphs._ragNodeSize(self,graph,labels,ignoreLabel,out)
-
-    graphs.AdjacencyListGraph.accumulateEdgeFeatures = ragEdgeFeatures
-    graphs.AdjacencyListGraph.accumulateEdgeSize     = ragEdgeSize
-    graphs.AdjacencyListGraph.accumulateNodeFeatures = ragNodeFeatures
-    graphs.AdjacencyListGraph.accumulateNodeSize     = ragNodeSize
 
     def minEdgeWeightNodeDist(mergeGraph,edgeWeights,edgeSizes,nodeFeatures,nodeSize,outWeight,
         beta,nodeDistType,wardness):
