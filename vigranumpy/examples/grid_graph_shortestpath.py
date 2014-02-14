@@ -39,6 +39,9 @@ f       = '69015.jpg'
 #f       = "/media/tbeier/GSP1RMCPRFR/iso.03530.png"
 img     = vigra.impex.readImage(f)
 
+
+print img.shape
+
 if(img.shape[2]==1):
     img    = numpy.concatenate([img]*3,axis=2)
     imgLab = img
@@ -60,7 +63,7 @@ print imgLab.shape
 
 
 print "interpolate image"
-imgLabBig = vigra.resize(imgLab,[imgLab.shape[0]*2+1,imgLab.shape[1]*2+1 ])
+imgLabBig = vigra.resize(imgLab,[imgLab.shape[0]*2-1,imgLab.shape[1]*2-1 ])
 
 
 # make a few edge weights
