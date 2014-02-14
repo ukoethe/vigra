@@ -40,9 +40,7 @@
 
 /*vigra*/
 #include "export_graph_visitor.hxx"
-#include "export_graph_rag_visitor.hxx"
 #include "export_graph_algorithm_visitor.hxx"
-#include "export_graph_shortest_path_visitor.hxx"
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
@@ -62,6 +60,19 @@ namespace python = boost::python;
 namespace vigra{
 
 
+
+
+
+    template<unsigned int DIM,class DTAG,class LABEL_TYPE>
+    void pyGetRag(
+        const GridGraph<DIM,DTAG>                                                                & graph,
+        NumpyArray<DIM,LABEL_TYPE>                                                                labelMap,
+        AdjacencyListGraph                                                                       & rag,
+        AdjacencyListGraph:: template EdgeMap< std::vector<typename GridGraph<DIM,DTAG>::Edge> > & hyperEdges,
+        const Int64                                                                                ignoreLabel=-1
+    ){
+        makeRegionAdjacencyGraph(graph,labelMap,rag,hyperEdges,ignoreLabel);
+    }
 
 
     template<unsigned int DIM,class DTAG>
@@ -88,7 +99,13 @@ namespace vigra{
         typedef typename Graph::Edge Edge;
         typedef typename Graph::Node Node;
 
+        typedef typename AdjacencyListGraph:: template EdgeMap< std::vector<Edge> > HyperEdgeMap;
+        typedef typename AdjacencyListGraph:: template NodeMap< std::vector<Node> > HyperNodeMap;
 
+
+        const std::string hyperEdgeMapNamClsName = clsName + std::string("HyperEdgeMap");
+        python::class_<HyperEdgeMap>(hyperEdgeMapNamClsName.c_str(),python::init<>())
+        ;
 
         typedef typename MultiArray<DIM,int>::difference_type ShapeType;
 
@@ -98,9 +115,15 @@ namespace vigra{
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
         .def(LemonGridGraphAlgorithmAddonVisitor<Graph>(clsName))
-        .def(LemonGraphShortestPathVisitor<Graph>(clsName))
-        .def(LemonGraphRagVisitor<Graph>(clsName))
         .def("coordinateToNode",pyCoordinateToNode<DIM,boost::undirected_tag>)
+        .def("getRegionAdjacencyGraph",registerConverters(&pyGetRag<DIM,boost::undirected_tag,UInt32> ),
+           (
+               python::arg("labels"),
+               python::arg("rag"),
+               python::arg("hyperEdges"),
+               python::arg("ignoreLabel")=-1
+           )
+        )
         ;
 
        

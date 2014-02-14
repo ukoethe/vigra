@@ -18,7 +18,7 @@ sigma   = 3.0
 print "prepare input"
 img                 = vigra.impex.readImage(f)#[0:100,0:100,:]
 imgLab       	    = vigra.colors.transform_RGB2Lab(img)
-imgLabInterpolated  = vigra.resize(imgLab,[imgLab.shape[0]*2+1,imgLab.shape[1]*2+1 ])
+imgLabInterpolated  = vigra.resize(imgLab,[imgLab.shape[0]*2-1,imgLab.shape[1]*2-1 ])
 gradmagInterpolated = vigra.filters.gaussianGradientMagnitude(imgLabInterpolated,sigma)
 labels ,nseg 		= vigra.analysis.slicSuperpixels(imgLab,10.0,10)
 labels       		= vigra.analysis.labelImage(labels)
@@ -28,7 +28,18 @@ print "get rag and grid graph "
 gridGraph,rag = vigraph.gridRegionAdjacencyGraph(labels=labels,ignoreLabel=None)
 
 
+
 print type(rag)
+
+
+class Rag2(vigraph.AdjacencyListGraph):
+	def __init__(self):
+		super(Rag2,self).__init__(0,0)
+
+
+rag2 = Rag2()
+
+
 
 
 # get grid graph and edge weights
@@ -46,11 +57,18 @@ ragNodeFeatures = rag.accumulateNodeFeatures(img,acc='mean')
 
 # visualize node features
 imgOut=img.copy()
-projectedRagNodeFeatures = vigraph.nodeIdsFeatures(graph=rag,nodeIds=labels,features=ragNodeFeatures,out=imgOut)
+projectedRagNodeFeatures = vigraph.nodeIdsFeatures(graph=rag2,nodeIds=labels,features=ragNodeFeatures,out=imgOut)
 print projectedRagNodeFeatures.shape
 projectedRagNodeFeatures = vigra.taggedView(projectedRagNodeFeatures,"xyc")
 vigra.imshow(projectedRagNodeFeatures)
 vigra.show()
+
+
+
+
+
+
+
 
 
 
