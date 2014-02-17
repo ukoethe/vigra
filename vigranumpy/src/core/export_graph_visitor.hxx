@@ -218,6 +218,8 @@ public:
             .def("edgeIds",registerConverters(&itemIds<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
             .def("arcIds" ,registerConverters(&itemIds<Arc ,ArcIt >),( python::arg("out")=python::object() ) )
 
+            .def("nodeIdMap",registerConverters(&nodeIdMap),( python::arg("out")=python::object() ) )
+
             .def("findEdges",registerConverters(&findEdges),( python::arg("nodeIdPairs"), python::arg("out")=python::object() ) )
 
             .def("uIds" ,registerConverters(&uIds), ( python::arg("out")=python::object() ) )
@@ -465,6 +467,24 @@ public:
     static index_type arcId(  const Graph & self,const PyArc & arc ){return  self.id(arc);}
     //static EdgeIteratorHolderType edgeHolder(const Graph & self){return EdgeIteratorHolderType(self);}
     //static NodeIteratorHolderType nodeHolder(const Graph & self){return NodeIteratorHolderType(self);}
+
+
+    static NumpyAnyArray nodeIdMap(
+        const Graph & graph,
+        typename PyNodeMapTraits<Graph,   UInt32>::Array  idArray
+    ){  
+        //reshape output
+        idArray.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(graph));
+
+        // array to lemon map
+        typename PyNodeMapTraits<Graph,   UInt32>::Map idArrayMap(graph, idArray);
+
+        for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
+            idArrayMap[*iter]=graph.id(*iter);
+        }
+
+        return idArray;
+    }
 
 };
 

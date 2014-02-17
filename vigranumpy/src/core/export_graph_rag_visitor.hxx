@@ -14,6 +14,7 @@
 #include <vigra/graph_helper/dense_map.hxx>
 #include <vigra/graph_helper/on_the_fly_edge_map.hxx>
 #include <vigra/python_graph_generalization.hxx>
+#include <vigra/python_graph_maps.hxx>
 #include <vigra/graph_algorithms.hxx>
 #include <vigra/metrics.hxx>
 #include <vigra/multi_gridgraph.hxx>
@@ -21,11 +22,6 @@
 namespace python = boost::python;
 
 namespace vigra{
-
-
-
-
-
 
 
 
@@ -130,7 +126,7 @@ public:
             python::return_value_policy<  python::manage_new_object >()
         );
 
-        python::def("_ragEdgeFeatures",registerConverters(&pyRagEdgeFeatures),
+        python::def("_ragEdgeFeatures",registerConverters(&pyRagEdgeFeatures<Singleband<float> >),
             (
                 python::arg("rag"),
                 python::arg("graph"),
@@ -180,7 +176,20 @@ public:
                 python::arg("out")=python::object()
             )
         );
+
+
+
+
+
+        exportPyRagProjectNodeFeaturesToBaseGraph< Singleband<float > >();
+        exportPyRagProjectNodeFeaturesToBaseGraph< Singleband<UInt32> >();
+        exportPyRagProjectNodeFeaturesToBaseGraph< Multiband< float > >();
+        exportPyRagProjectNodeFeaturesToBaseGraph< Multiband< UInt32> >();
+
     }
+
+
+
 
 
     static RagAffiliatedEdges * pyMakeRegionAdjacencyGraph(
@@ -201,13 +210,15 @@ public:
         return affiliatedEdges;
     }
 
+
+    template<class T>
     static NumpyAnyArray  pyRagEdgeFeatures(
         const RagGraph &           rag,
         const Graph &              graph,
         const RagAffiliatedEdges & affiliatedEdges,
-        FloatEdgeArray             edgeFeaturesArray,
+        typename PyEdgeMapTraits<Graph,T >::Array edgeFeaturesArray ,
         const std::string &        accumulator,
-        RagFloatEdgeArray          ragEdgeFeaturesArray
+        typename PyEdgeMapTraits<RagGraph,T >::Array ragEdgeFeaturesArray
     ){
 
         vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum"),
@@ -218,8 +229,8 @@ public:
         ragEdgeFeaturesArray.reshapeIfEmpty(IntrinsicGraphShape<RagGraph>::intrinsicEdgeMapShape(rag));
         std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
         // numpy arrays => lemon maps
-        FloatEdgeArrayMap    edgeFeaturesArrayMap(graph,edgeFeaturesArray);
-        RagFloatEdgeArrayMap ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
+        typename PyEdgeMapTraits<Graph   ,T >::Map edgeFeaturesArrayMap(graph,edgeFeaturesArray);
+        typename PyEdgeMapTraits<RagGraph,T >::Map ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
 
         const bool isMeanAcc= accumulator==std::string("mean");
         for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
@@ -388,6 +399,47 @@ public:
 
 
 
+    template<class T>
+    static void exportPyRagProjectNodeFeaturesToBaseGraph(){
+        python::def("_ragProjectNodeFeaturesToBaseGraph",
+            registerConverters(  &pyRagProjectNodeFeaturesToBaseGraph< T > ),
+            (
+                python::arg("rag"),
+                python::arg("baseGraph"),
+                python::arg("baseGraphLabels"),
+                python::arg("ragNodeFeatures"),
+                python::arg("ignoreLabel")=-1,
+                python::arg("out")=python::object()
+            )
+        );
+    }
+
+    template<class T>
+    static NumpyAnyArray pyRagProjectNodeFeaturesToBaseGraph(
+        const RagGraph &                                         rag,
+        const Graph    &                                         graph,
+        const typename PyNodeMapTraits<Graph,   UInt32>::Array & labelsWhichGeneratedRagArray,
+        const typename PyNodeMapTraits<RagGraph,T     >::Array & ragNodeFeaturesArray,
+        const Int32                                              ignoreLabel=-1,
+        typename PyNodeMapTraits<Graph,T>::Array                 graphNodeFeaturesArray=typename PyNodeMapTraits<Graph,T>::Array() // out
+    ){
+        // reshape out  ( last argument (out) will be reshaped if empty, and #channels is taken from second argument)
+        reshapeNodeMapIfEmpty(graph,ragNodeFeaturesArray,graphNodeFeaturesArray);
+        // numpy arrays => lemon maps 
+        typename PyNodeMapTraits<Graph,   UInt32>::Map labelsWhichGeneratedRagArrayMap(graph, labelsWhichGeneratedRagArray);
+        typename PyNodeMapTraits<RagGraph,T     >::Map ragNodeFeaturesArrayMap(rag,ragNodeFeaturesArray);
+        typename PyNodeMapTraits<Graph,   T     >::Map graphNodeFeaturesArrayMap(graph,graphNodeFeaturesArray);
+        // run algorithm
+        for(typename Graph::NodeIt iter(graph);iter!=lemon::INVALID;++iter){
+            if(ignoreLabel==-1 || static_cast<Int32>(labelsWhichGeneratedRagArrayMap[*iter])!=ignoreLabel)
+                graphNodeFeaturesArrayMap[*iter]=ragNodeFeaturesArrayMap[rag.nodeFromId(labelsWhichGeneratedRagArrayMap[*iter])];
+            else{
+                // ???
+                // aks U. Koethe here
+            }
+        }
+        return graphNodeFeaturesArray; // out
+    }
 
 private:
     std::string clsName_;

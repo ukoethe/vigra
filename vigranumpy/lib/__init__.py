@@ -570,7 +570,7 @@ def _genGraphConvenienceFunctions():
                     return type.__init__(self, name, bases, dict)
 
         ##inject some methods in the point foo
-        class more_point(gridGraphInjector, cls):
+        class moreGridGraph(gridGraphInjector, cls):
             @property
             def shape(self):
                 return self.intrinsicNodeMapShape()
@@ -637,6 +637,29 @@ def _genGraphConvenienceFunctions():
             return graphs._ragNodeSize(self,graph,labels,ignoreLabel,out)
 
 
+
+        def projectNodeFeatureToBaseGraph(self,features,out=None):
+            out=graphs._ragProjectNodeFeaturesToBaseGraph(
+                rag=self,
+                baseGraph=self.baseGraph,
+                baseGraphLabels=numpy.squeeze(self.baseGraphLabels),
+                ragNodeFeatures=features,
+                ignoreLabel=self.ignoreLabel,
+                out=out
+            )
+            print "out",out.shape,out.dtype
+            return out
+
+        def projectLabelsToBaseGraph(self,labels=None):
+            if labels is None :
+                # identity segmentation on this level
+                labels = self.nodeIdMap()
+            return self.projectNodeFeatureToBaseGraph(features=labels)
+
+ 
+
+
+
     RegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.RegionAdjacencyGraph = RegionAdjacencyGraph
 
@@ -650,29 +673,21 @@ def _genGraphConvenienceFunctions():
         def shape(self):
             return self.baseGraph.shape
 
-        def _showSegWithoutLabels(self,img,_labels=None):
+        def projectLabelsToGridGraph(self,labels=None):
+            if labels is None :
+                # identity segmentation on this level
+                labels = self.nodeIdMap()
+
             if isGridGraph(self.baseGraph):
-                if _labels is None :
-                    projectedLabels = self.labels
-                else :
-                    projectedLabels = _labels
-                print "base is grid graph"
-                print projectedLabels.shape
-                segShow(img,projectedLabels)
-            else:
-                if _labels is None :
-                    pLabels = graphs.nodeIdsLabels(graph=self.baseGraph,nodeIds=self.baseGraph.labels,labels=self.labels)
-                else:
-                    pLabels = graphs.nodeIdsLabels(graph=self.baseGraph,nodeIds=self.baseGraph.labels,labels=_labels)
-                self.baseGraph.show(img,_labels=pLabels)
+                return self.projectLabelsToBaseGraph(labels)
+            else :
+                labels = self.projectLabelsToBaseGraph(labels)
+                return self.baseGraph.projectLabelsToGridGraph(labels)
 
 
         def show(self,img,labels=None):
-            if labels is None :
-                self._showSegWithoutLabels(img)
-            else :
-                pLabels = graphs.nodeIdsLabels(graph=self.baseGraph,nodeIds=self.labels,labels=labels)
-                self._showSegWithoutLabels(img,pLabels)
+            pLabels = self.projectLabelsToGridGraph(labels)
+            segShow(img,numpy.squeeze(pLabels))
 
 
     GridRegionAdjacencyGraph.__module__ = 'vigra.graphs'

@@ -50,7 +50,7 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/graph_generalization.hxx>
-
+#include <vigra/python_graph_maps.hxx>
 namespace vigra{
 
 
