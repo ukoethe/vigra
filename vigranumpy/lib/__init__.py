@@ -848,6 +848,19 @@ def _genGraphConvenienceFunctions():
     def hierarchicalSuperpixels(labels,edgeIndicatorImage,nodeFeaturesImage,nSuperpixels,
         beta=0.5,nodeDistType='squaredNorm',wardness=0.0,verbose=False):
 
+        shape  = numpy.squeeze(labels).shape
+        eShape = numpy.squeeze(edgeIndicatorImage).shape
+        tShape = tuple( [ 2*s-1 for s in shape  ]  )
+        if(eShape==shape):
+            eImg = sampling.resize(numpy.squeeze(edgeIndicatorImage),tShape)
+        elif(eShape==tShape):
+            eImg = numpy.squeeze(edgeIndicatorImage)
+        else :
+            raise RuntimeError("edge indactor image has wrong shape")
+
+        
+
+
         dimension = len(labels.shape)
         assert dimension == 2 or dimension ==3
         if nodeFeaturesImage.ndim == dimension:
@@ -860,18 +873,20 @@ def _genGraphConvenienceFunctions():
         #if verbose : print "gridGraph"
         gridGraph = graphs.gridGraph(labels.shape)
         
+        eIndicator =  graphs.edgeFeaturesFromInterpolatedImage(gridGraph,eImg)
 
-        rag,hyperEdges = graphs.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
+        rag = graphs.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
         if verbose :print "regionAdjacencyGraph",rag
-        hyperEdgeSizes = graphs.hyperEdgeSizes(rag,hyperEdges)
-        hyperNodeSizes = graphs.hyperNodeSizes(rag,gridGraph,labels)
+        hyperEdgeSizes = rag.accumulateEdgeSize()
+        hyperNodeSizes = rag.accumulateEdgeSize()
 
-        edgeIndicator  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
+
         edgeMinWeight  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
-        edgeIndicator  = graphs.hyperEdgeImageFeatures(rag,gridGraph,hyperEdges,edgeIndicatorImage,edgeIndicator)
 
-        nodeFeatures   = graphs.graphMap(graph=rag,item='node',dtype=numpy.float32,channels=nodeFeatureChannels)
-        nodeFeatures   = graphs.hyperNodeImageFeatures(rag,gridGraph,labels,nodeFeaturesImage,nodeFeatures)
+        print edgeIndicatorImage.shape,edgeIndicatorImage.dtype
+
+        edgeIndicator  = rag.accumulateEdgeFeatures(numpy.squeeze(eIndicator),acc='mean')
+        nodeFeatures   = rag.accumulateNodeFeatures(nodeFeaturesImage,acc='mean')
 
 
         mergeGraph = graphs.mergeGraph(rag)

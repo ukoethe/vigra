@@ -43,6 +43,7 @@
 #include "export_graph_rag_visitor.hxx"
 #include "export_graph_algorithm_visitor.hxx"
 #include "export_graph_shortest_path_visitor.hxx"
+#include "export_graph_hierarchical_clustering_visitor.hxx"
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
@@ -99,6 +100,7 @@ namespace vigra{
         .def(LemonGridGraphAlgorithmAddonVisitor<Graph>(clsName))
         .def(LemonGraphShortestPathVisitor<Graph>(clsName))
         .def(LemonGraphRagVisitor<Graph>(clsName))
+        .def(LemonGraphHierachicalClusteringVisitor<Graph>(clsName))
         .def("coordinateToNode",pyCoordinateToNode<DIM,boost::undirected_tag>)
         ;
 

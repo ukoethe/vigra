@@ -50,8 +50,6 @@ namespace vigra{
 	void defineInvalid();
 	void defineAdjacencyListGraph();
 	void defineGridGraph();
-	void defineGraphAlgorithms();
-	void defineMergeGraphNew();
 
 } // namespace vigra
 
@@ -73,8 +71,6 @@ BOOST_PYTHON_MODULE_INIT(graphs)
     // all graph classes itself (GridGraph , AdjacencyListGraph)
     defineAdjacencyListGraph();
     defineGridGraph();
-    defineMergeGraphNew();
-    // define graph algorithms
-    defineGraphAlgorithms();
+
     
 }

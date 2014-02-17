@@ -131,7 +131,7 @@ namespace vigra{
             while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0){
                 
 
-                const Edge edgeToRemove = clusterOperator_.contractionEdge();
+                const MergeGraphEdge edgeToRemove = clusterOperator_.contractionEdge();
                 if(param_.buildMergeTreeEncoding_){
                     const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove)); 
                     const MergeGraphIndexType vid = mergeGraph_.id(mergeGraph_.v(edgeToRemove));  

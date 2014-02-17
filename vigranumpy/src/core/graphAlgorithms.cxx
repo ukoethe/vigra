@@ -116,46 +116,6 @@ namespace vigra{
     }
 
 
-    template<class HCLUSTER>
-    python::tuple mergeTreeEncodingAsNumpyArray(const HCLUSTER & hcluster) {
-        typedef typename HCLUSTER::MergeTreeEncoding      MergeTreeEncoding;
-        typedef typename HCLUSTER::MergeGraphIndexType    MergeGraphIndexType;
-        typedef typename HCLUSTER::ValueType              ValueType;
-        const MergeTreeEncoding & encoding = hcluster.mergeTreeEndcoding();
-        const MergeGraphIndexType numMerges = encoding.size();
-        //CPP BUG?!?
-        NumpyArray<1,ValueType> w = NumpyArray<1,ValueType>(typename NumpyArray<1,ValueType>::difference_type(numMerges));
-        NumpyArray<2,MergeGraphIndexType> indices = NumpyArray<2,MergeGraphIndexType>(typename NumpyArray<2,MergeGraphIndexType>::difference_type(numMerges,3));
-        for(MergeGraphIndexType m=0;m<numMerges;++m){
-            w(int(m))=encoding[m].w_;
-            indices(m,0)=encoding[m].a_;
-            indices(m,1)=encoding[m].b_;
-            indices(m,2)=encoding[m].r_;
-        }
-        return python::make_tuple(indices,w);
-    } 
-
-
-    template<class HCLUSTER>
-    python::tuple leafNodeIdsAsNumpyArray(
-        const HCLUSTER &            hcluster,
-        const typename HCLUSTER::MergeGraphIndexType treeNodeId,
-        NumpyArray<1,UInt32>  leafes  = NumpyArray<1,UInt32>()
-    ) {
-        typedef typename HCLUSTER::MergeTreeEncoding      MergeTreeEncoding;
-        typedef typename HCLUSTER::MergeGraphIndexType    MergeGraphIndexType;
-        typedef typename HCLUSTER::ValueType              ValueType;
-        
-        leafes.reshapeIfEmpty( typename NumpyArray<1,UInt32>::difference_type( hcluster.graph().nodeNum()) );
-
-        if(leafes.shape(0)!=hcluster.graph().nodeNum()){
-            throw std::runtime_error("out.shape(0) must be equal nodeNum");
-        }
-
-        // todo make leafes size check
-        const size_t leafNum=hcluster.leafNodeIds(treeNodeId,leafes.begin());
-        return python::make_tuple(leafes,leafNum);
-    } 
 
     /*
     void defineHyperEdgeSizes(){
