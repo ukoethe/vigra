@@ -615,7 +615,7 @@ def _genGraphConvenienceFunctions():
             # set up rag
             self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
 
-        def accumulateEdgeFeatures(self,edgeFeatures,acc,out=None):
+        def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
             graph = self.baseGraph
             affiliatedEdges = self.affiliatedEdges
             return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,acc,out)
@@ -624,7 +624,7 @@ def _genGraphConvenienceFunctions():
             affiliatedEdges = self.affiliatedEdges
             return graphs._ragEdgeSize(self,affiliatedEdges,out)
 
-        def accumulateNodeFeatures(self,nodeFeatures,acc,out=None):
+        def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
             graph = self.baseGraph
             labels = self.baseGraphLabels
             ignoreLabel = self.ignoreLabel

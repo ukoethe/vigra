@@ -23,10 +23,9 @@ labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,10)
 labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
 
 
-gridGraph      = vigraph.gridGraph(img.shape[0:2])
-rag,hyperEdges = vigraph.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
-nodeFeatures   = vigraph.graphMap(graph=rag,item='node',dtype=numpy.float32,channels=3)
-nodeFeatures   = vigraph.hyperNodeImageFeatures(rag,gridGraph,labels,img,nodeFeatures)
+gridGraph    = vigraph.gridGraph(img.shape[0:2])
+rag		     = vigraph.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
+nodeFeatures = rag.accumulateNodeFeatures(img)
 
 # visualize node features
 imgOut=img.copy()
@@ -43,5 +42,10 @@ resultFeatures = vigraph.dynamicRecursiveGraphSmoothing(rag,nodeFeatures,'square
 # visualize node features
 imageNodeFeatures = vigraph.nodeIdsFeatures(graph=rag,nodeIds=labels,features=resultFeatures)
 imageNodeFeatures = vigra.taggedView(imageNodeFeatures,"xyc")
+
+
+vigra.imshow(img)
+vigra.show()
+
 vigra.imshow(imageNodeFeatures)
 vigra.show()

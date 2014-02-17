@@ -18,18 +18,21 @@ sigma   = 4.0
 
 img          = vigra.impex.readImage(f)#[0:100,0:100,:]
 imgLab       = vigra.colors.transform_RGB2Lab(img)
-gradmag      = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLab,sigma))
+imgLabInterpolated  = vigra.resize(imgLab,[imgLab.shape[0]*2-1,imgLab.shape[1]*2-1 ])
+gradmag      = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLabInterpolated,sigma))
 labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,5)
 labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
 
 
-gridGraph      = vigraph.gridGraph(img.shape[0:2])
-rag,hyperEdges = vigraph.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
-edgeIndicator  = vigraph.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
-edgeIndicator  = vigraph.hyperEdgeImageFeatures(rag,gridGraph,hyperEdges,gradmag,edgeIndicator)
-hyperNodeSizes = vigraph.hyperNodeSizes(rag,gridGraph,labels)
-nodeFeatures   = vigraph.graphMap(graph=rag,item='node',dtype=numpy.float32,channels=3)
-nodeFeatures   = vigraph.hyperNodeImageFeatures(rag,gridGraph,labels,img,nodeFeatures)
+gridGraph = vigraph.gridGraph(img.shape[0:2])
+gridGraphEdgeIndicator =  vigraph.edgeFeaturesFromInterpolatedImage(gridGraph,gradmag)
+
+
+
+rag = vigraph.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
+edgeIndicator  = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
+hyperNodeSizes = rag.accumulateNodeSize()
+nodeFeatures   = rag.accumulateNodeFeatures(img)
 
 
 
