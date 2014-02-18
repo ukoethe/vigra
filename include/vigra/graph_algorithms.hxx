@@ -434,7 +434,7 @@ namespace vigra{
         bool finished=false;
         while(!pq.empty() && !finished){
             const WeightType minDist = pq.topPriority();
-            if(minDist < std::numeric_limits<DistanceType>::infinity()){
+            if(true){//minDist < std::numeric_limits<DistanceType>::infinity()){
                 const Node topNode(graph.nodeFromId(pq.top()));
                 pq.pop();
                 // loop over all neigbours
@@ -453,8 +453,8 @@ namespace vigra{
                         }
                     }
                     if(target==otherNode){
-                        finished=true;
-                        break;
+                        //finished=true;
+                        //break;
                     }
                 }
             }
@@ -502,8 +502,13 @@ namespace vigra{
             this->initializeMaps();
 
             bool finished=false;
-            while(!pq_.empty() && !finished){
+            while(!pq_.empty() ){ //&& !finished){
                 const Node topNode(graph_.nodeFromId(pq_.top()));
+                if(topNode==target_){
+                    std::cout<<"REACHED TARGET\n";
+                    finished=true;
+                    break;
+                }
                 if(predMap_[topNode]!=lemon::INVALID || topNode==source_ ){
                     pq_.pop();
                     // loop over all neigbours
@@ -521,10 +526,7 @@ namespace vigra{
                                 predMap_[otherNode]=topNode;
                             }
                         }
-                        if(otherNode==target_){
-                            finished=true;
-                            break;
-                        }
+
                     }
                 }
                 else{
@@ -557,6 +559,10 @@ namespace vigra{
         }
         const DistanceMap & distances()const{
             return distMap_;
+        }
+
+        WeightType distance(const Node & target)const{
+            return distMap_[target];
         }
 
 

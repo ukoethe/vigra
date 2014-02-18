@@ -983,7 +983,8 @@ def _genGraphConvenienceFunctions():
                 return self.pathFinder.nodeCoordinatePath(target)
             elif pathType == 'ids':
                 return self.pathFinder.nodeIdPath(target)
-
+        def distance(self,target):
+          return self.pathFinder.distance(target)
         def distances(self,out=None):
             self.pathFinder.distances(out)
         def predecessors(self,out=None):

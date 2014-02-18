@@ -32,7 +32,7 @@ if True:
 	#img 	= vigra.resize(img,newShape)
 	gradmag = vigra.filters.gaussianGradientMagnitude(imgLab,sigma)
 	gradmag = numpy.squeeze(gradmag).astype(numpy.float32)
-	labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,2)
+	labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,10)
 	labels 		 = numpy.squeeze(vigra.analysis.labelImage(labels))
 
 	numLabels = labels.max()
@@ -51,7 +51,7 @@ if True:
 	t0=time.time()
 	print "start hierarchicalSuperpixels"
 	labels = vigraph.hierarchicalSuperpixels(labels=labels,edgeIndicatorImage=gradmag,nodeFeaturesImage=hist,
-		nSuperpixels=5,verbose=True,beta=0.01,nodeDistType='chiSquared',wardness=1.0)#0.001)
+		nSuperpixels=100,verbose=True,beta=0.01,nodeDistType='chiSquared',wardness=1.0)#0.001)
 	t1=time.time()
 	print "hcluster time",t1-t0
 	showSeg(img,labels)
