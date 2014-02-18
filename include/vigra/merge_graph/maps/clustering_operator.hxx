@@ -37,7 +37,7 @@
 
 /*vigra*/
 #include <vigra/priority_queue.hxx>
-#include <vigra/merge_graph/distance.hxx>
+#include <vigra/metrics.hxx>
 
 namespace vigra{
 
@@ -227,15 +227,15 @@ namespace vigra{
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist;
             if(nodeDistType_==NORM_DISTANCE){
-                distances::Norm<ValueType> nodeDistFunctor;
+                metrics::Norm<ValueType> nodeDistFunctor;
                 fromNodeDist= nodeDistFunctor(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             }
             else if(nodeDistType_==NORM_SQUARED_DISTANCE){
-                distances::SquaredNorm<ValueType> nodeDistFunctor;
+                metrics::SquaredNorm<ValueType> nodeDistFunctor;
                 fromNodeDist= nodeDistFunctor(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             }
             else if(nodeDistType_==CHI_SQUARED_DISTANCE){
-                distances::ChiSquared<ValueType> nodeDistFunctor;
+                metrics::ChiSquared<ValueType> nodeDistFunctor;
                 fromNodeDist= nodeDistFunctor(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             }
             else{
