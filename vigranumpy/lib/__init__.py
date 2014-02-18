@@ -795,9 +795,13 @@ def _genGraphConvenienceFunctions():
 
 
 
-    def minEdgeWeightNodeDist(mergeGraph,edgeWeights,edgeSizes,nodeFeatures,nodeSize,outWeight,
-        beta,nodeDistType,wardness):
+    def minEdgeWeightNodeDist(mergeGraph,edgeWeights,edgeSizes,nodeFeatures,nodeSize,outWeight=None,
+        beta=0.5,nodeDistType='squaredNorm',wardness=1.0):
             # call unsave c++ function and make it save
+
+            if outWeight is None:
+                outWeight=graphs.graphmap(mergeGraph,item='edge',dtype=numpy.float32)
+
 
             if    nodeDistType=='squaredNorm':
                 nd=0
@@ -811,6 +815,7 @@ def _genGraphConvenienceFunctions():
             op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeSizes,nodeFeatures,nodeSize,outWeight,
                 float(beta),long(nd),float(wardness))
             op.__dict__['__base_object__']=mergeGraph
+            op.__dict__['__outWeightArray__']=outWeight
             return op
 
     minEdgeWeightNodeDist.__module__ = 'vigra.graphs'
@@ -896,8 +901,6 @@ def _genGraphConvenienceFunctions():
         hc  = graphs.hierarchicalClustering(clusterOperator,nodeNumStopCond=nSuperpixels,)
         hc.cluster()
 
-        print "clustering done..."
-
         newLabels = labels.copy()
         newLabels = newLabels.reshape(-1)
         # this is inplace
@@ -959,7 +962,7 @@ def _genGraphConvenienceFunctions():
     class ShortestPathPathDijkstra(object):
         def __init__(self,graph):
             self.pathFinder =  graphs._shortestPathDijkstra(graph)
-            self.pathFinder.__dict__['__base_object__']=graph
+            self.graph=raph
             self.source = None
             self.target = None
         def run(self,weights,source,target=None):

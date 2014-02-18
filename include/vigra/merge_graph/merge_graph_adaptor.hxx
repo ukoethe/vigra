@@ -8,24 +8,20 @@
 /* boost */
 #include <boost/function.hpp>
 #include <boost/iterator/iterator_facade.hpp>
-//#include <boost/unordered_map.hpp> 
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 
-/* std tr1 library */
-//#include <tr1/unordered_map>
+
 
 /* std library */
 #include <set>
 #include <vector>
-#include <iostream>
 #include <algorithm>
 #include <cmath>
 #include <deque>
 #include <map>
 #include <stdexcept>
 #include <sstream>
-
-/*parallel std*/
-//#include <parallel/algorithm>
 
 
 /* vigra */
@@ -35,13 +31,18 @@
 #include <vigra/graphs.hxx>
 #include <vigra/graph_helper/dense_map.hxx>
 #include <vigra/graph_helper/graph_item_impl.hxx>
-
-/* vigra merge graph */
-#include "merge_graph_callbacks.hxx"
-#include "iterable_partition.hxx"
 #include <vigra/random_access_set.hxx>
 
+
+/* vigra merge graph */
+#include "iterable_partition.hxx"
+
+
 namespace vigra {
+
+
+
+
 
 template<class GRAPH,class ITEM>
 struct MergeGraphItemHelper;
@@ -279,9 +280,76 @@ private:
     mutable Arc arc_;
 };
 
+
+
+template<class NODE,class EDGE>
+class MergeGraphCallbacks{
+    public:
+        //callbacks typedefs
+        typedef boost::function<void (const NODE & ,const NODE &)>        MergeNodeCallBackType;
+        typedef boost::function<void (const EDGE & ,const EDGE &)>        MergeEdgeCallBackType;
+        typedef boost::function<void (const EDGE &)>                      EraseEdgeCallBackType;
+
+        MergeGraphCallbacks(){}
+
+
+        template<class OBJ,class F>
+        void registerMergeNodeCallBack(OBJ & obj,F  f){
+            MergeNodeCallBackType internalF ;
+            internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
+            mergeNodeCallbacks_.push_back(internalF);
+        }
+        template<class OBJ,class F>
+        void registerMergeEdgeCallBack(OBJ & obj,F  f){
+            MergeEdgeCallBackType internalF ;
+            internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
+            mergeEdgeCallbacks_.push_back(internalF);
+        }
+        template<class OBJ,class F>
+        void registerEraseEdgeCallBack(OBJ & obj,F  f){
+            EraseEdgeCallBackType internalF ;
+            internalF = boost::bind(boost::mem_fn(f), &obj , _1);
+            eraseEdgeCallbacks_.push_back(internalF);
+        }
+
+
+        void registerMergeNodeCallBack(MergeNodeCallBackType  f){
+            mergeNodeCallbacks_.push_back(f);
+        }
+        void registerMergeEdgeCallBack(MergeEdgeCallBackType  f){
+            mergeEdgeCallbacks_.push_back(f);
+        }
+        void registerEraseEdgeCallBack(EraseEdgeCallBackType  f){
+            eraseEdgeCallbacks_.push_back(f);
+        }
+
+    protected:
+        void callMergeNodeCallbacks(const NODE & a,const NODE & b){
+            for(size_t i=0;i<mergeNodeCallbacks_.size();++i)
+                mergeNodeCallbacks_[i](a,b);
+        }
+        void callMergeEdgeCallbacks(const EDGE & a,const EDGE & b){
+            for(size_t i=0;i<mergeEdgeCallbacks_.size();++i)
+                mergeEdgeCallbacks_[i](a,b);
+        }
+        void callEraseEdgeCallbacks(const EDGE & a){
+            for(size_t i=0;i<eraseEdgeCallbacks_.size();++i)
+                eraseEdgeCallbacks_[i](a);
+        }
+    private:
+
+        // callback vectors
+        std::vector<MergeNodeCallBackType> mergeNodeCallbacks_;
+        std::vector<MergeEdgeCallBackType> mergeEdgeCallbacks_;
+        std::vector<EraseEdgeCallBackType> eraseEdgeCallbacks_;
+};
+
+
+
+
 template<class GRAPH>
 class MergeGraphAdaptor 
-:   public NewMergeGraphCallbacks<
+:   public MergeGraphCallbacks<
         detail::GenericNode<vigra::Int64> ,
         detail::GenericEdge<vigra::Int64> 
     > 
@@ -597,7 +665,7 @@ class MergeGraphAdaptor
 
 template<class GRAPH>
 MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
-:   NewMergeGraphCallbacks<Node,Edge >(),
+:   MergeGraphCallbacks<Node,Edge >(),
     graph_(graph),
     nInitNodes_(0),
     nInitEdges_(0),
