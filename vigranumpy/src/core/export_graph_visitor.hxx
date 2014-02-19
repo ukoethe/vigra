@@ -129,11 +129,14 @@ public:
         .add_property("id",  &PyNode::id )
         .def("__eq__",&eqToInvalid<PyNode>)
         .def("__ne__",&neqToInvalid<PyNode>)
+        .def("coord",&PyNode::intrinsicNodeCoordinate)
         ;
+
         python::class_< PyArc>( arcHolderClsName.c_str(),python::init< >())
         .add_property("id",  &PyArc::id )
         .def("__eq__",&eqToInvalid<PyArc>)
         .def("__ne__",&neqToInvalid<PyArc>)
+        .def("coord",&PyArc::intrinsicArcCoordinate)
         ;
 
 

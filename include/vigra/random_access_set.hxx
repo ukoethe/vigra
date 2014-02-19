@@ -1,3 +1,4 @@
+//! @cond Doxygen_Suppress
 #pragma once
 #ifndef VIGRA_RANDOM_ACCESS_SET_HXX
 #define VIGRA_RANDOM_ACCESS_SET_HXX
@@ -595,3 +596,4 @@ RandomAccessSet<Key,Compare,Alloc>::get_allocator() const
 } // namespace vigra
 
 #endif // VIGRA_RANDOM_ACCESS_SET_HXX
+//! @endcond
