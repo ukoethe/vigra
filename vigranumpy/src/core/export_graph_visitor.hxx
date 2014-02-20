@@ -14,6 +14,10 @@
 #include <vigra/graph_helper/dense_map.hxx>
 #include <vigra/graph_generalization.hxx>
 #include <vigra/python_graph_generalization.hxx>
+
+/*boost*/
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+
 namespace python = boost::python;
 
 namespace vigra{
@@ -101,6 +105,13 @@ public:
     typedef NodeHolder<Graph> PyNode;
     typedef  ArcHolder<Graph> PyArc;
 
+    typedef std::vector<PyEdge> PyEdgeVector;
+    typedef std::vector<PyNode> PyNodeVector;
+    typedef std::vector<PyArc > PyArcVector;
+
+
+        
+
     LemonUndirectedGraphCoreVisitor(const std::string clsName)
     :clsName_(clsName){
 
@@ -115,6 +126,11 @@ public:
         const std::string edgeHolderClsName = std::string("Edge")+clsName_;
         const std::string nodeHolderClsName = std::string("Node")+clsName_;
         const std::string arcHolderClsName  = std::string("Arc") +clsName_;
+
+
+        const std::string edgeHolderVectorClsName = std::string("EdgeVector")+clsName_;
+        const std::string nodeHolderVectorClsName = std::string("NodeVector")+clsName_;
+        const std::string  arcHolderVectorClsName = std::string("ArcVector") +clsName_;
 
         python::class_<PyEdge>(edgeHolderClsName.c_str(),python::init< >())
         .add_property("id",  &PyEdge::id )
@@ -135,6 +151,13 @@ public:
         .def("__eq__",&eqToInvalid<PyArc>)
         .def("__ne__",&neqToInvalid<PyArc>)
         ;
+
+
+        python::class_<PyEdgeVector>(edgeHolderVectorClsName.c_str(),python::init<>())
+        .def(python::vector_indexing_suite< PyEdgeVector >() );
+        ;   
+
+
 
 
 
