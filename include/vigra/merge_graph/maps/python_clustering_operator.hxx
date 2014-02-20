@@ -41,7 +41,6 @@
 
 /*vigra*/
 #include <vigra/priority_queue.hxx>
-#include <vigra/merge_graph/distance.hxx>
 
 namespace vigra{
 

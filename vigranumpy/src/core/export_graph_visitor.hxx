@@ -145,11 +145,14 @@ public:
         .add_property("id",  &PyNode::id )
         .def("__eq__",&eqToInvalid<PyNode>)
         .def("__ne__",&neqToInvalid<PyNode>)
+        .def("coord",&PyNode::intrinsicNodeCoordinate)
         ;
+
         python::class_< PyArc>( arcHolderClsName.c_str(),python::init< >())
         .add_property("id",  &PyArc::id )
         .def("__eq__",&eqToInvalid<PyArc>)
         .def("__ne__",&neqToInvalid<PyArc>)
+        .def("coord",&PyArc::intrinsicArcCoordinate)
         ;
 
 
@@ -198,16 +201,21 @@ public:
             .def("id",&arcId , "get the id of a given arc")
 
             // item from id
-            .def("nodeFromId",&nodeFromId,"get the node descriptor from the given id")
+            .def("nodeFromId",&nodeFromId,
+                (
+                    python::arg("id")
+                ),
+                "get the node descriptor from the given id"
+            )
             .def("edgeFromId",&edgeFromId,"get the edge descriptor from the given id")//,python::with_custodian_and_ward_postcall<0,1>())
             .def("arcFromId", &arcFromId ,"get the arc descriptor from the given id")
 
             // find edges
-            .def("findEdge",&findEdge)
-            .def("findEdge",&findEdgeFromIds)
+            .def("findEdge",&findEdge,"find an edge between node u and v")
+            .def("findEdge",&findEdgeFromIds,"find the edge between two nodes given their id")
             //  uv source target
-            .def("u",&u)
-            .def("v",&v)
+            .def("u",&u,"get the u node of an edge")
+            .def("v",&v,"geht the v node of an edge")
             .def("uId",&uId)
             .def("vId",&vId)
             .def("uvId",&uvId)

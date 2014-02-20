@@ -52,11 +52,7 @@
 #include <vigra/graph_algorithms.hxx>
 #include <vigra/python_graph_generalization.hxx>
 #include <vigra/graph_helper/on_the_fly_edge_map.hxx>
-#include <vigra/merge_graph/distance.hxx>
 
-/*boost*/
-#include <boost/graph/dijkstra_shortest_paths.hpp>
-#include <boost/graph/dijkstra_shortest_paths_no_color_map.hpp>
 
 namespace python = boost::python;
 

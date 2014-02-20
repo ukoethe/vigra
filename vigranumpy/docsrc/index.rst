@@ -543,7 +543,17 @@ The module vigra.graphs provides graphs and graph algorithms
 
 .. automodule:: vigra.graphs
    :members:
-  
+
+.. autoclass:: vigra.graphs.GridGraphUndirected2d
+   :members:
+
+.. autoclass:: vigra.graphs.GridGraphUndirected3d
+   :members:
+
+.. autoclass:: vigra.graphs.AdjacencyListGraph
+    :members:
+
+
 
 Utilities 
 ----------------------------------

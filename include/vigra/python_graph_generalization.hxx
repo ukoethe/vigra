@@ -84,7 +84,10 @@ struct NodeHolder :  GRAPH::Node
         return graph_->id(*this);
     }
 
-
+    typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicNodeMapShape
+    intrinsicNodeCoordinate()const{
+        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(*graph_,*this);
+    }
 
     const GRAPH * graph_;
 };
@@ -141,6 +144,13 @@ struct ArcHolder: GRAPH::Arc {
     typename GRAPH::index_type id()const{
         return graph_->id(*this);
     }
+
+    typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicArcMapShape
+    intrinsicArcCoordinate()const{
+        return GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicArcCoordinate(*graph_,*this);
+    }
+
+
     const GRAPH * graph_;
 };
 

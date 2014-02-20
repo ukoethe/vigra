@@ -962,7 +962,7 @@ def _genGraphConvenienceFunctions():
     class ShortestPathPathDijkstra(object):
         def __init__(self,graph):
             self.pathFinder =  graphs._shortestPathDijkstra(graph)
-            self.graph=raph
+            self.graph=graph
             self.source = None
             self.target = None
         def run(self,weights,source,target=None):
@@ -983,7 +983,8 @@ def _genGraphConvenienceFunctions():
                 return self.pathFinder.nodeCoordinatePath(target)
             elif pathType == 'ids':
                 return self.pathFinder.nodeIdPath(target)
-
+        def distance(self,target):
+          return self.pathFinder.distance(target)
         def distances(self,out=None):
             self.pathFinder.distances(out)
         def predecessors(self,out=None):

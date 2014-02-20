@@ -52,7 +52,7 @@ namespace vigra {
 
         typedef GridGraph<DIM,boost::undirected_tag> Graph;
         typedef typename Graph::Node Node;
-        typedef typename Graph::Edge Edge;
+        //typedef typename Graph::Edge Edge;
         typedef typename Graph::NodeIt graph_scanner;
         typedef typename Graph::OutArcIt neighbor_iterator;
 

@@ -160,6 +160,11 @@ public:
                 python::arg("out")=python::object()
             ) 
         )
+        .def("distance",&pyShortestPathSingleDist,
+            (
+                python::arg("target")
+            )
+        )
         .def("distances",registerConverters(&pyShortestPathDistance),
             (
                 python::arg("out")=python::object()
@@ -203,6 +208,13 @@ public:
         copyNodeMap(sp.graph(),sp.distances(),distanceArrayMap);
 
         return distanceArray;
+    }
+
+    static float pyShortestPathSingleDist(
+        const ShortestPathDijkstraType & sp,
+        const PyNode & target
+    ){
+        return sp.distance(target);
     }
 
 

@@ -228,7 +228,9 @@ namespace vigra{
     }
 
 
-    
+    /** \brief undirected adjacency list graph in the LEMON API 
+
+    */
     class AdjacencyListGraph
     {
         
@@ -239,24 +241,34 @@ namespace vigra{
         // private typedes which are needed for defining public typedes
         typedef AdjacencyListGraph                                          GraphType;
         typedef detail::GenericNodeImpl<index_type,false>                   NodeStorage;
-        typedef detail::GenericEdgeImpl<index_type >                      EdgeStorage;
+        typedef detail::GenericEdgeImpl<index_type >                        EdgeStorage;
         typedef detail::NeighborNodeFilter<GraphType>                       NnFilter;
         typedef detail::IncEdgeFilter<GraphType>                            IncFilter;
         typedef detail::IsInFilter<GraphType>                               InFlter;
         typedef detail::IsOutFilter<GraphType>                              OutFilter;
     public:
         // LEMON API TYPEDEFS (and a few more(NeighborNodeIt))
+
+        /// node descriptor
         typedef detail::GenericNode<index_type>                           Node;
+        /// edge descriptor
         typedef detail::GenericEdge<index_type>                           Edge;
+        /// arc descriptor
         typedef detail::GenericArc<index_type>                            Arc;
+        /// edge iterator
         typedef detail_adjacency_list_graph::ItemIter<GraphType,Edge>    EdgeIt;
+        /// node iterator
         typedef detail_adjacency_list_graph::ItemIter<GraphType,Node>    NodeIt; 
+        /// arc iterator
         typedef detail_adjacency_list_graph::ArcIt<GraphType>            ArcIt;
         
+        /// incident edge iterator
         typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,IncFilter >  IncEdgeIt;
+        /// incoming arc iterator
         typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,InFlter   >  InArcIt;
+        /// outgoing arc iterator
         typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,OutFilter >  OutArcIt;
-        // custom but lemonsih
+
         typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,NnFilter  >  NeighborNodeIt;
 
         // BOOST GRAPH API TYPEDEFS
@@ -278,7 +290,7 @@ namespace vigra{
         typedef Node vertex_descriptor;
 
 
-
+        /// default edge map 
         template<class T>
         struct EdgeMap : DenseEdgeReferenceMap<GraphType,T> {
             EdgeMap(): DenseEdgeReferenceMap<GraphType,T>(){
@@ -291,6 +303,7 @@ namespace vigra{
             }
         };
 
+        /// default node map 
         template<class T>
         struct NodeMap : DenseNodeReferenceMap<GraphType,T> {
             NodeMap(): DenseNodeReferenceMap<GraphType,T>(){
@@ -303,6 +316,7 @@ namespace vigra{
             }
         };
 
+        /// default arc map 
         template<class T>
         struct ArcMap : DenseArcReferenceMap<GraphType,T> {
             ArcMap(): DenseArcReferenceMap<GraphType,T>(){
@@ -319,54 +333,132 @@ namespace vigra{
 
     // public member functions
     public:
-        // todo...refactor this crap...always start add zero
-        // (if one wants to start at  1 just just g.addNode(1).. and so on)
+        /// construct 
+        /// @param nodes : reserve space for n nodes
+        /// @param edges : reserve space for n edges
         AdjacencyListGraph(const size_t nodes=0,const size_t edges=0);
 
+        /** \brief Get the number of edges in this graph (API: LEMON).
+        */
         index_type edgeNum()const;
+
+        /** \brief Get the number of nodes in this graph (API: LEMON).
+        */
         index_type nodeNum()const;
+        /** \brief Get the number of arcs in this graph (API: LEMON).
+        */
         index_type arcNum()const;
 
+        /** \brief Get the maximum ID of any edge in this graph (API: LEMON).
+        */
         index_type maxEdgeId()const;
+        /** \brief Get the maximum ID of any node in this graph (API: LEMON).
+        */
         index_type maxNodeId()const;
+        /** \brief Get the maximum ID of any edge in arc graph (API: LEMON).
+        */
         index_type maxArcId()const;
 
+        /** \brief Create an arc for the given edge \a e, oriented along the 
+            edge's natural (<tt>forward = true</tt>) or reversed 
+            (<tt>forward = false</tt>) direction (API: LEMON).
+        */
         Arc direct(const Edge & edge,const bool forward)const;
-        Arc direct(const Edge & edge,const Node & node)const;
-        bool direction(const Arc & arc)const;
 
+        /** \brief Create an arc for the given edge \a e oriented
+            so that node \a n is the starting node of the arc (API: LEMON), or
+            return <tt>lemon::INVALID</tt> if the edge is not incident to this node.
+        */
+        Arc direct(const Edge & edge,const Node & node)const;
+
+        /** \brief Return <tt>true</tt> when the arc is looking on the underlying
+            edge in its natural (i.e. forward) direction, <tt>false</tt> otherwise (API: LEMON).
+        */
+        bool direction(const Arc & arc)const;
+        /** \brief Get the start node of the given edge \a e (API: LEMON,<br/>
+            the boost::graph API provides the free function <tt>boost::source(e, graph)</tt>).
+        */
         Node u(const Edge & edge)const;
+        /** \brief Get the end node of the given edge \a e (API: LEMON,<br/>
+            the boost::graph API provides the free function <tt>boost::target(e, graph)</tt>).
+        */
         Node v(const Edge & edge)const;
+        /** \brief Get the start node of the given arc \a a (API: LEMON).
+        */
         Node source(const Arc & arc)const;
+        /** \brief Get the end node of the given arc \a a (API: LEMON).
+        */
         Node target(const Arc & arc)const;
+        /** \brief Return the opposite node of the given node \a n
+            along edge \a e (API: LEMON), or return <tt>lemon::INVALID</tt>
+            if the edge is not incident to this node.
+        */
         Node oppositeNode(Node const &n, const Edge &e) const;
 
+        /** \brief Return the start node of the edge the given iterator is referring to (API: LEMON).
+        */
         Node baseNode(const IncEdgeIt & iter)const;
+        /** \brief Return the start node of the edge the given iterator is referring to (API: LEMON).
+        */
         Node baseNode(const OutArcIt & iter)const;
 
+        /** \brief Return the end node of the edge the given iterator is referring to (API: LEMON).
+        */
         Node runningNode(const IncEdgeIt & iter)const;
+        /** \brief Return the end node of the edge the given iterator is referring to (API: LEMON).
+        */ 
         Node runningNode(const OutArcIt & iter)const;
 
 
-        // ids 
+        /** \brief Get the ID  for node desciptor \a v (API: LEMON).
+        */
         index_type id(const Node & node)const;
+        /** \brief Get the ID  for edge desciptor \a v (API: LEMON).
+        */
         index_type id(const Edge & edge)const;
+        /** \brief Get the ID  for arc desciptor \a v (API: LEMON).
+        */
         index_type id(const Arc  & arc )const;
 
-        // get edge / node from id
+        /** \brief Get edge descriptor for given node ID \a i (API: LEMON).
+            Return <tt>Edge(lemon::INVALID)</tt> when the ID does not exist in this graph.
+        */
         Edge edgeFromId(const index_type id)const;
+
+        /** \brief Get node descriptor for given node ID \a i (API: LEMON).
+            Return <tt>Node(lemon::INVALID)</tt> when the ID does not exist in this graph.
+        */
         Node nodeFromId(const index_type id)const;
+        /** \brief Get arc descriptor for given node ID \a i (API: LEMON).
+            Return <tt>Arc(lemon::INVALID)</tt> when the ID does not exist in this graph.
+        */
         Arc  arcFromId(const index_type id)const;
 
 
-        // find edge
+        /** \brief Get a descriptor for the edge connecting vertices \a u and \a v,<br/>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON).
+        */
         Edge findEdge(const Node & a,const Node & b)const;
+        /** \brief Get a descriptor for the arc connecting vertices \a u and \a v,<br/>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON).
+        */
         Arc  findArc(const Node & u,const Node & v)const;
 
-
+        /* \brief add a new node to the graph. 
+            the next unused id will be assigned to the node
+        */
         Node addNode();
+        /* \brief add a  node to the graph with a given id.
+            If there is  another node with this id, no
+            new node will be added.
+        */
         Node addNode(const index_type id);
+        /* \brief add an edge to the graph.
+            If there is an other edge between u and v no new edge will be added.
+        */
         Edge addEdge(const Node & u , const Node & v);
+        /* \brief add an edge to the graph.
+            If there is an other edge between u and v no new edge will be added.
+            If the nodes for the given id's are not in the graph, they will be added.
+        */
         Edge addEdge(const index_type u ,const index_type v);
 
     
