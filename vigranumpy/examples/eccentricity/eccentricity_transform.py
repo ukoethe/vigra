@@ -2,6 +2,13 @@ import vigra
 import numpy
 import vigra.graphs as vigraph
 import matplotlib.pyplot as plt
+import sys
+
+
+gamma = 0.0001
+percentage = 10
+f = "figure_1.png"
+
 
 
 ## img: image segment with 0: inside, 1: outside
@@ -57,7 +64,7 @@ def eccentricity( img, distFunc = "exponential", showPathImage = False, percenta
     nTargets = len(tx)
 
     ## Indices of start points for paths (random)
-    nPoints = int(numpy.ceil(percentageOfPaths * nTargets / 100))
+    nPoints = int(numpy.ceil(percentageOfPaths * nTargets / 100.0))
     numpy.random.seed(42)
     starts = numpy.random.permutation(range(nTargets))[:nPoints]
 
@@ -72,7 +79,7 @@ def eccentricity( img, distFunc = "exponential", showPathImage = False, percenta
             target = gridGraph.coordinateToNode((int(tx[j]), int(ty[j])))
             path = pathFinder.path(pathType='coordinates', target=target)
             pathLength = pathFinder.distance(target)
-            if pathLength > maxPathLength:
+            if pathLength > maxPathLength or maxPathLength == 0:
                 maxPathLength = pathLength
                 maxPath = path
         maxPaths.append(maxPath)
@@ -87,31 +94,52 @@ def eccentricity( img, distFunc = "exponential", showPathImage = False, percenta
     return maxPathLengths
 
 
-
-
-percentage = 10
-gamma = 0.0001
-f = "../100075.jpg"
-
 ## Read image
 img = vigra.impex.readImage(f)
+labels = numpy.squeeze(vigra.analysis.labelImage(img))
 
-labels ,nseg = vigra.analysis.slicSuperpixels(img,100.0,50)
-labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
+### Compute slic superpixels
+#labels ,nseg = vigra.analysis.slicSuperpixels(img,100.0,50)
+#labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
 
+## Compute bounding boxes
 regionFeatures = vigra.analysis.extractRegionFeatures(img, labels)
-#print regionFeatures.activeFeatures()
 upperLeftBBs = regionFeatures["Coord<Minimum>"]
 lowerRightBBs = regionFeatures["Coord<Maximum>"]
 nBoxes = len(upperLeftBBs)-1
 
+## Get segment inside its bounding box
+segments = []
+nonEmptyBoxIndices = []
 for i in range(nBoxes):
     subImg = labels[ upperLeftBBs[i+1][0]:lowerRightBBs[i+1][0], upperLeftBBs[i+1][1]:lowerRightBBs[i+1][1] ].copy()
     where = numpy.where(subImg==i+1)
-    assert len(where[0]) > 0
-    subImg[where] = 0
-    subImg[numpy.where(subImg!=0)] = 1
-    eccentricity(subImg, distFunc="exponential", showPathImage=True, percentageOfPaths=percentage)
-    eccentricity(subImg, distFunc="inverse", showPathImage=True, percentageOfPaths=percentage)
-    eccentricity(subImg, distFunc="linear", showPathImage=True, percentageOfPaths=percentage)
+    if len(where[0]) > 0:
+        subImg[where] = 0
+        subImg[numpy.where(subImg!=0)] = 1
+        segments.append(subImg)
+        nonEmptyBoxIndices.append(i+1)
+
+## Apply eccentricity transform
+pathLengths = []
+for seg in segments:
+    #eccentricity(subImg, distFunc="exponential", showPathImage=True, percentageOfPaths=percentage)
+    #eccentricity(subImg, distFunc="inverse", showPathImage=True, percentageOfPaths=percentage)
+    pathLength = eccentricity(seg, distFunc="linear", showPathImage=False, percentageOfPaths=percentage)
+    pathLengths.append(pathLength)
     #vigra.show()
+
+## Testimage: map longest path to color
+maxPath = 0
+for i in range(len(pathLengths)):
+    m = max(pathLengths[i])
+    if m > maxPath:
+        maxPath = m
+labelCopy = labels.copy()
+for i in range(len(pathLengths)):
+    val = max(pathLengths[i]) * 255.0/maxPath
+    j = nonEmptyBoxIndices[i]
+    labelCopy[numpy.where(labels == j)] = val
+
+vigra.imshow(labelCopy)
+vigra.show()
