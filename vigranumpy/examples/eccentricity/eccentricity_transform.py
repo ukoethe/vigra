@@ -101,7 +101,6 @@ labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
 
 regionFeatures = vigra.analysis.extractRegionFeatures(img, labels)
 #print regionFeatures.activeFeatures()
-
 upperLeftBBs = regionFeatures["Coord<Minimum>"]
 lowerRightBBs = regionFeatures["Coord<Maximum>"]
 nBoxes = len(upperLeftBBs)-1
