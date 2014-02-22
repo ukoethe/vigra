@@ -616,11 +616,20 @@ def _genGraphConvenienceFunctions():
             def shape(self):
                 return self.intrinsicNodeMapShape()
 
+            def nodeSize(self):
+                size = graphs.graphMap(self,item='node',dtype=numpy.float32)
+                size[:]=1
+                return size
+
+            def edgeLength(self):
+                size = graphs.graphMap(self,item='edge',dtype=numpy.float32)
+                size[:]=1
+                return size
 
 
 
     def isGridGraph(obj):
-      return isinstance(obj,(graphs.GridGraphUndirected2d , graphs.GridGraphUndirected3d))
+        return isinstance(obj,(graphs.GridGraphUndirected2d , graphs.GridGraphUndirected3d))
     isGridGraph.__module__ = 'vigra.graphs'
     graphs.isGridGraph = isGridGraph  
 
@@ -661,23 +670,11 @@ def _genGraphConvenienceFunctions():
             affiliatedEdges = self.affiliatedEdges
             return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,acc,out)
 
-        def accumulateEdgeSize(self,out=None):
-            affiliatedEdges = self.affiliatedEdges
-            return graphs._ragEdgeSize(self,affiliatedEdges,out)
-
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
             graph = self.baseGraph
             labels = self.baseGraphLabels
             ignoreLabel = self.ignoreLabel
             return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,acc,ignoreLabel,out)
-
-        def accumulateNodeSize(self,out=None):
-            ignoreLabel =self.ignoreLabel
-            graph = self.baseGraph
-            labels = self.baseGraphLabels
-            return graphs._ragNodeSize(self,graph,labels,ignoreLabel,out)
-
-
 
         def projectNodeFeatureToBaseGraph(self,features,out=None):
             out=graphs._ragProjectNodeFeaturesToBaseGraph(
@@ -690,6 +687,18 @@ def _genGraphConvenienceFunctions():
             )
             #print "out",out.shape,out.dtype
             return out
+
+        def projectLabelsBack(self,steps,labels=None,current=0):
+            if labels is None :
+                # identity segmentation on this level
+                labels = self.nodeIdMap()
+
+            if steps == current :
+                return labels
+            else :
+                labels = self.projectLabelsToBaseGraph(labels)
+                return self.baseGraph.projectLabelsBack(steps,labels,current+1)
+
 
         def projectLabelsToBaseGraph(self,labels=None):
             if labels is None :
@@ -730,6 +739,12 @@ def _genGraphConvenienceFunctions():
             pLabels = self.projectLabelsToGridGraph(labels)
             segShow(img,numpy.squeeze(pLabels))
 
+        def nodeSize(self):
+            baseNodeSizes = self.baseGraph.nodeSize()
+            return self.accumulateNodeFeatures(baseNodeSizes,acc='sum')
+        def edgeLength(self):
+            baseNodeSizes = self.baseGraph.edgeLength()
+            return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
 
     GridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
@@ -820,13 +835,32 @@ def _genGraphConvenienceFunctions():
                 - graphmap as numpy.ndarray
         """
         s = intrinsicGraphMapShape(graph,item)
+        intrDim = len(s)
         if(channels==1):
             a=numpy.zeros(shape=s,dtype=dtype)
-            return taggedView(a,'x')
+            if intrDim == 1:
+                return taggedView(a,'x')
+            elif intrDim == 2:
+                return taggedView(a,'xy')
+            elif intrDim == 3:
+                return taggedView(a,'xyz')
+            elif intrDim == 4:
+                return taggedView(a,'xyzt')
+            else :
+                raise RuntimeError("graphs with intrisic dimension >4 are not supported")
         else:
             s = s+(channels,)
             a=numpy.zeros(shape=s,dtype=dtype)
-            return taggedView(a,'xc')
+            if intrDim == 1:
+                return taggedView(a,'xc')
+            elif intrDim == 2:
+                return taggedView(a,'xyc')
+            elif intrDim == 3:
+                return taggedView(a,'xyzc')
+            elif intrDim == 4:
+                return taggedView(a,'xyztc')
+            else :
+                raise RuntimeError("graphs with intrisic dimension >4 are not supported")
 
 
 
@@ -841,7 +875,7 @@ def _genGraphConvenienceFunctions():
             # call unsave c++ function and make it save
 
             if outWeight is None:
-                outWeight=graphs.graphmap(mergeGraph,item='edge',dtype=numpy.float32)
+                outWeight=graphs.graphMap(mergeGraph,item='edge',dtype=numpy.float32)
 
 
             if    nodeDistType=='squaredNorm':

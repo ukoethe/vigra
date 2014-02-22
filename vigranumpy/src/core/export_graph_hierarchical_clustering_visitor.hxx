@@ -145,6 +145,11 @@ public:
         )
         .def("cluster",&HCluster::cluster)
         .def("reprNodeIds",registerConverters(&pyReprNodeIds<HCluster>))
+        .def("resultLabels",registerConverters(&pyResultLabels<HCluster>),
+            (
+                python::arg("out")=python::object()
+            )
+        )
         ;
 
         // free function
@@ -261,6 +266,22 @@ public:
     ){
         for(size_t i=0;i<labels.shape(0);++i)
             labels(i)=hcluster.reprNodeId(labels(i));
+    }
+
+
+    template<class HCLUSTER>
+    static NumpyAnyArray pyResultLabels(
+        const HCLUSTER  & hcluster,
+        UInt32NodeArray   resultArray
+    ){
+        resultArray.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(hcluster.graph()));
+
+        UInt32NodeArrayMap resultArrayMap(hcluster.graph(),resultArray);
+
+        for(NodeIt iter(hcluster.graph());iter!=lemon::INVALID;++iter ){
+            resultArrayMap[*iter]=hcluster.mergeGraph().reprNodeId(hcluster.graph().id(*iter));
+        }
+        return resultArray;
     }
 
     template<class HCLUSTER>

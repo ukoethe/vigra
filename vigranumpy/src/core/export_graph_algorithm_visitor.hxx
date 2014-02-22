@@ -121,6 +121,7 @@ public:
                 python::arg("edgeWeights"),
                 python::arg("nodeSizes")=python::object(),
                 python::arg("k")=300.0f,
+                python::arg("nodeNumStop")=-1,
                 python::arg("out")=python::object()
             ),
             "Felzenwalb graph based segmentation"
@@ -434,6 +435,7 @@ public:
         FloatEdgeArray edgeWeightsArray,
         FloatNodeArray nodeSizesArray,
         const float k,
+        const int nodeNumStop,
         UInt32NodeArray labelsArray
     ){
         // resize output ? 
@@ -452,7 +454,7 @@ public:
         UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
 
         // call algorithm itself
-        felzenszwalbSegmentation(g,edgeWeightsArrayMap,nodeSizesArrayMap,k,labelsArrayMap);
+        felzenszwalbSegmentation(g,edgeWeightsArrayMap,nodeSizesArrayMap,k,labelsArrayMap,nodeNumStop);
 
         // retun labels
         return labelsArray;

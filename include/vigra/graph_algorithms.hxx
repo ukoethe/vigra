@@ -813,8 +813,9 @@ namespace vigra{
         const GRAPH &         graph,
         const EDGE_WEIGHTS &  edgeWeights,
         const NODE_SIZE    &  nodeSizes,
-        const float           k,
-        NODE_LABEL_MAP     &  nodeLabeling
+        float           k,
+        NODE_LABEL_MAP     &  nodeLabeling,
+        const int             nodeNumStopCond = -1
     ){
         typedef GRAPH Graph;
         LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
@@ -846,30 +847,50 @@ namespace vigra{
         // make the ufd
         UfdType ufd(graph.maxNodeId()+1);
 
-        // iterate over edges is the sorted order
-        for(size_t i=0;i<sortedEdges.size();++i){
-            const Edge e  = sortedEdges[i];
-            const size_t rui = ufd.find(graph.id(graph.u(e)));
-            const size_t rvi = ufd.find(graph.id(graph.v(e)));
-            const Node   ru  = graph.nodeFromId(rui);
-            const Node   rv  = graph.nodeFromId(rvi);
-            if(rui!=rvi){
+        size_t nodeNum = graph.nodeNum();
 
-                //check if to merge or not ?
-                const WeightType   w         = edgeWeights[e];
-                const NodeSizeType sizeRu    = nodeSizeAcc[ru];
-                const NodeSizeType sizeRv    = nodeSizeAcc[rv];
-                const WeightType tauRu       = static_cast<WeightType>(k)/static_cast<WeightType>(sizeRu);
-                const WeightType tauRv       = static_cast<WeightType>(k)/static_cast<WeightType>(sizeRv);
-                const WeightType minIntDiff  = std::min(internalDiff[ru]+tauRu,internalDiff[rv]+tauRv);
-                if(w<=minIntDiff){
-                    // do merge
-                    ufd.merge(rui,rvi);
-                    // update size and internal difference
-                    const size_t newRepId = ufd.find(rui);
-                    const Node newRepNode = graph.nodeFromId(newRepId);
-                    internalDiff[newRepNode]=w;
-                    nodeSizeAcc[newRepNode] = sizeRu+sizeRv;
+
+        while(true){
+            // iterate over edges is the sorted order
+            for(size_t i=0;i<sortedEdges.size();++i){
+                const Edge e  = sortedEdges[i];
+                const size_t rui = ufd.find(graph.id(graph.u(e)));
+                const size_t rvi = ufd.find(graph.id(graph.v(e)));
+                const Node   ru  = graph.nodeFromId(rui);
+                const Node   rv  = graph.nodeFromId(rvi);
+                if(rui!=rvi){
+
+                    //check if to merge or not ?
+                    const WeightType   w         = edgeWeights[e];
+                    const NodeSizeType sizeRu    = nodeSizeAcc[ru];
+                    const NodeSizeType sizeRv    = nodeSizeAcc[rv];
+                    const WeightType tauRu       = static_cast<WeightType>(k)/static_cast<WeightType>(sizeRu);
+                    const WeightType tauRv       = static_cast<WeightType>(k)/static_cast<WeightType>(sizeRv);
+                    const WeightType minIntDiff  = std::min(internalDiff[ru]+tauRu,internalDiff[rv]+tauRv);
+                    if(w<=minIntDiff){
+                        // do merge
+                        ufd.merge(rui,rvi);
+                        --nodeNum;
+                        // update size and internal difference
+                        const size_t newRepId = ufd.find(rui);
+                        const Node newRepNode = graph.nodeFromId(newRepId);
+                        internalDiff[newRepNode]=w;
+                        nodeSizeAcc[newRepNode] = sizeRu+sizeRv;
+                    }
+                }
+                if(nodeNum==nodeNumStopCond){
+                    break;
+                }
+            }
+            if(nodeNumStopCond==-1){
+                break;
+            }
+            else{
+                if(nodeNum>nodeNumStopCond){
+                    k*=1.2;
+                }
+                else{
+                    break;
                 }
             }
         }
