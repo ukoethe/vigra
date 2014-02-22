@@ -18,6 +18,7 @@
 #include <vigra/metrics.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/error.hxx>
+#include <vigra/multi_watersheds.hxx>
 namespace python = boost::python;
 
 namespace vigra{
@@ -81,7 +82,7 @@ public:
 
 
     void exportSegmentationAlgorithms()const{
-        python::def("watershedsSegmentation",registerConverters(&pyWatershedSegmentation),
+        python::def("watershedsSegmentation",registerConverters(&pyEdgeWeightedWatershedsSegmentation),
             (
                 python::arg("graph"),
                 python::arg("edgeWeights"),
@@ -89,6 +90,17 @@ public:
                 python::arg("out")=python::object()
             ),
             "Seeded watersheds on a edge weighted graph"
+        );
+
+        python::def("nodeWeightedWatershedsSegmentation",registerConverters(&pyNodeWeightedWatershedsSegmentation),
+            (
+                python::arg("graph"),
+                python::arg("nodWeights"),
+                python::arg("seeds")=python::object(),
+                python::arg("method")=std::string("regionGrowing"),
+                python::arg("out")=python::object()
+            ),
+            "Seeded watersheds on a node  weighted graph"
         );
 
         python::def("carvingSegmentation",registerConverters(&pyCarvingSegmentation),
@@ -327,7 +339,7 @@ public:
         return edgeWeightsArray;
     }
 
-    static NumpyAnyArray pyWatershedSegmentation(
+    static NumpyAnyArray pyEdgeWeightedWatershedsSegmentation(
         const GRAPH & g,
         FloatEdgeArray edgeWeightsArray,
         UInt32NodeArray seedsArray,
@@ -346,6 +358,52 @@ public:
 
         // retun labels
         return labelsArray;
+    }
+
+    static NumpyAnyArray pyNodeWeightedWatershedsSegmentation(
+        const Graph &       g,
+        FloatNodeArray      nodeWeightsArray,
+        UInt32NodeArray     seedsArray,
+        const std::string & method,
+        UInt32NodeArray     labelsArray
+    ){
+
+        // resize output ? 
+        seedsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
+        labelsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
+
+        if(!seedsArray.size()==0){
+            std::copy(seedsArray.begin(),seedsArray.end(),labelsArray.begin());
+        }
+        else{
+            std::fill(labelsArray.begin(),labelsArray.end(),0);
+        }
+
+
+        WatershedOptions watershedsOption;
+        if(method==std::string("regionGrowing"))
+            watershedsOption.regionGrowing();
+        else
+            watershedsOption.unionFind();
+
+        // numpy arrays => lemon maps
+        FloatNodeArrayMap  nodeWeightsArrayMap(g,nodeWeightsArray);
+        UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
+
+
+        //lemon_graph::graph_detail::generateWatershedSeeds(g, nodeWeightsArrayMap, labelsArrayMap, watershedsOption.seed_options);
+
+        // generate seeds from local minima
+        //typedef unsigned char MarkerType;
+        //typename Graph::template NodeMap<MarkerType>  minima(g);
+
+
+        lemon_graph::graph_detail::generateWatershedSeeds(g, nodeWeightsArrayMap, labelsArrayMap, watershedsOption.seed_options);
+        lemon_graph::graph_detail::seededWatersheds(g, nodeWeightsArrayMap, labelsArrayMap, watershedsOption);
+
+        return labelsArray;
+
+
     }
 
     static NumpyAnyArray pyCarvingSegmentation(
@@ -429,7 +487,6 @@ public:
         // retun smoothed features
         return nodeFeaturesOutArray;
     }
-
 
     static NumpyAnyArray pyDynamicRecursiveGraphSmoothing(
         const GRAPH & g,

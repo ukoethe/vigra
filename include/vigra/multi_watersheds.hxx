@@ -70,17 +70,19 @@ prepareWatersheds(Graph const & g,
         typename T1Map::value_type lowestValue  = data[*node];
         typename T2Map::value_type lowestIndex  = -1;
 
-        for(neighbor_iterator arc(g, node); arc != INVALID; ++arc) 
+        for(neighbor_iterator arc(g, *node); arc != INVALID; ++arc) 
         {
             if(data[g.target(*arc)] <= lowestValue)
             {
                 lowestValue = data[g.target(*arc)];
                 lowestIndex = arc.neighborIndex();
+                //lowestIndex   = g.id(g.target(*arc));
             }
         }
         lowestNeighborIndex[*node] = lowestIndex;
     }
 }
+
 
 template <class Graph, class T1Map, class T2Map, class T3Map>
 typename T2Map::value_type
@@ -160,7 +162,12 @@ generateWatershedSeeds(Graph const & g,
             "generateWatershedSeeds(): SeedOptions.levelSets() must be specified with threshold.");
     
         using namespace multi_math;
-        minima = data <= DataType(options.thresh);
+        //minima = data <= DataType(options.thresh);
+
+
+        for(typename Graph::NodeIt iter(g);iter!=lemon::INVALID;++iter){
+            minima[*iter]= data[*iter] <= DataType(options.thresh);
+        }
     }
     else
     {
@@ -205,7 +212,7 @@ seededWatersheds(Graph const & g,
             if(maxRegionLabel < label)
                 maxRegionLabel = label;
                 
-            for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+            for (neighbor_iterator arc(g, *node); arc != INVALID; ++arc)
             {
                 if(labels[g.target(*arc)] == 0)
                 {
@@ -267,11 +274,16 @@ seededWatersheds(Graph const & g,
     if(keepContours)
     {
         // Replace the temporary contour label with label 0.
-        typename T2Map::iterator k   = labels.begin(),
-                                 end = labels.end();
-        for(; k != end; ++k)
-            if(*k == contourLabel)
-                *k = 0;
+        ///typename T2Map::iterator k   = labels.begin(),
+        ///                         end = labels.end();
+        ///for(; k != end; ++k)
+        ///    if(*k == contourLabel)
+        ///        *k = 0;
+
+        for(typename Graph::NodeIt iter(g);iter!=lemon::INVALID;++iter){
+            if(labels[*iter]==contourLabel)
+                labels[*iter]=0;
+        }
     }
     
     return maxRegionLabel;

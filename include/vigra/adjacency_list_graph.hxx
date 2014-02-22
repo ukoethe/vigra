@@ -246,6 +246,7 @@ namespace vigra{
         typedef detail::IncEdgeFilter<GraphType>                            IncFilter;
         typedef detail::IsInFilter<GraphType>                               InFlter;
         typedef detail::IsOutFilter<GraphType>                              OutFilter;
+        typedef detail::IsBackOutFilter<GraphType>                          BackOutFilter;
     public:
         // LEMON API TYPEDEFS (and a few more(NeighborNodeIt))
 
@@ -270,6 +271,11 @@ namespace vigra{
         typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,OutFilter >  OutArcIt;
 
         typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,NnFilter  >  NeighborNodeIt;
+
+
+        /// outgoing back arc iterator
+        typedef detail::GenericIncEdgeIt<GraphType,NodeStorage,BackOutFilter >  OutBackArcIt;
+
 
         // BOOST GRAPH API TYPEDEFS
         // - categories (not complete yet)
@@ -461,7 +467,15 @@ namespace vigra{
         */
         Edge addEdge(const index_type u ,const index_type v);
 
-    
+        
+        size_t maxDegree()const{
+            size_t md=0;
+            for(NodeIt it(*this);it!=lemon::INVALID;++it){
+                std::max(md, size_t( degree(*it) ) );
+            }
+            return md;
+        }
+
 
         ////////////////////////
         // BOOST API
@@ -496,6 +510,8 @@ namespace vigra{
         friend class detail::BackEdgeFilter;
         template<class G>
         friend class detail::IsOutFilter;
+        template<class G>
+        friend class detail::IsBackOutFilter;
         template<class G>
         friend class detail::IsInFilter;
 

@@ -87,7 +87,28 @@ namespace vigra{
 
             static const bool IsFilter = true ; 
         };
+        template<class GRAPH>
+        struct IsBackOutFilter{
+            typedef typename GRAPH::Arc ResultType;
+            typedef typename GRAPH::NodeStorage::AdjacencyElement AdjacencyElement;
+            
+            static bool valid(
+                const GRAPH & g,
+                const AdjacencyElement & adj,
+                const typename GRAPH::index_type ownNodeId
+            ){
+                return adj.nodeId() < ownNodeId;
+            } 
+            static ResultType transform(
+                const GRAPH & g,
+                const AdjacencyElement & adj,
+                const typename GRAPH::index_type ownNodeId
+            ){
+                return g.direct(g.edgeFromId(adj.edgeId()) ,g.nodeFromId(ownNodeId));
+            }
 
+            static const bool IsFilter = true ; 
+        };
         template<class GRAPH>
         struct IsOutFilter{
             typedef typename GRAPH::Arc ResultType;
@@ -110,6 +131,8 @@ namespace vigra{
 
             static const bool IsFilter = false ; 
         };
+
+
 
         template<class GRAPH>
         struct IsInFilter{
@@ -167,6 +190,20 @@ namespace vigra{
                 ownNodeId_(-1),
                 adjIter_(),
                 resultItem_(lemon::INVALID){
+            }   
+            // from a given node iterator
+            GenericIncEdgeIt(const Graph & g , const NodeIt & nodeIt)
+            :   nodeImpl_(&g.nodeImpl(*nodeIt)),
+                graph_(&g),
+                ownNodeId_(g.id(*nodeIt)),
+                adjIter_(g.nodeImpl(*nodeIt).adjacencyBegin()),
+                resultItem_(lemon::INVALID){
+
+                if(FILTER::IsFilter){
+                    while(adjIter_!=nodeImpl_->adjacencyEnd() && !FILTER::valid(*graph_,*adjIter_,ownNodeId_) ) {
+                        ++adjIter_;
+                    }
+                }
             }
 
             // from a given node

@@ -306,11 +306,52 @@ def segShow(img,labels,edgeColor=(1,0,0) ):
     imgToDisplay = resize(img,numpy.squeeze(crackedEdges).shape)
     imgToDisplay-=imgToDisplay.min()
     imgToDisplay/=imgToDisplay.max()
-    for c in range(img.ndim):
+    for c in range(3):
         ic = imgToDisplay[:,:,c]
         ic[whereEdge]=edgeColor[c]
 
     imshow(imgToDisplay)
+
+def nestedSegShow(img,labels,edgeColors,scale=1):
+
+    shape=(labels.shape[0]*scale,labels.shape[1]*scale)
+    if scale!=1:
+        img=vigra.resize(img,shape)
+    
+
+
+
+    assert numpy.squeeze(labels).ndim==3
+    nSegs  = labels.shape[2]
+
+    tShape=(img.shape[0]*2-1,img.shape[1]*2-1)
+
+    imgToDisplay = resize(img,tShape)
+    imgToDisplay-=imgToDisplay.min()
+    imgToDisplay/=imgToDisplay.max()
+
+    imgIn = imgToDisplay.copy()
+
+    for si in range(nSegs):
+        l = labels[:,:,si].copy()
+        if scale!=1:
+            l=resize(l.astype(numpy.float32),shape,order=0).astype(numpy.uint32)
+
+        crackedEdges = analysis.regionImageToCrackEdgeImage(l)
+        whereEdge    = numpy.where(crackedEdges==0)
+
+        edgeColor = edgeColors[si][0:3]
+        if len(edgeColors[si])<4:
+            alpha = 0.0
+        else:
+            alpha = edgeColors[si][3]
+        for c in range(3):
+            icI = imgIn[:,:,c]
+            ic  = imgToDisplay[:,:,c]
+            ic[whereEdge]=(1.0-alpha) * edgeColors[si][c] + alpha*icI[whereEdge]
+
+    imshow(imgToDisplay)
+
 
 def show():
     import matplotlib.pylab
@@ -647,7 +688,7 @@ def _genGraphConvenienceFunctions():
                 ignoreLabel=self.ignoreLabel,
                 out=out
             )
-            print "out",out.shape,out.dtype
+            #print "out",out.shape,out.dtype
             return out
 
         def projectLabelsToBaseGraph(self,labels=None):

@@ -47,10 +47,31 @@
 
 namespace vigra {
 
+
+namespace detail_local_minima{
+    template<class G>
+    struct NodeAtBorder{
+        template<class NODE_ITER>
+        static bool atBorder(const NODE_ITER & node ){
+            return false;
+        }
+    };
+
+    template<unsigned int DIM,class DTAG>
+    struct NodeAtBorder< GridGraph<DIM,DTAG> >{
+        template<class NODE_ITER>
+        static bool atBorder(const NODE_ITER & node ){
+            return node.atBorder();
+        }
+    }; 
+
+};
+
+
 namespace boost_graph {
 
-  // Attempt without LValue propmaps, using only the free functions
-  // to access ReadablePropertyMap (input) and WritablePropertyMap (label)
+// Attempt without LValue propmaps, using only the free functions
+// to access ReadablePropertyMap (input) and WritablePropertyMap (label)
 template <class Graph, class T1Map, class T2Map, class Compare>
 unsigned int
 localMinMaxGraph(Graph const &g, 
@@ -120,10 +141,12 @@ localMinMaxGraph(Graph const &g,
         if (!compare(current, threshold))
             continue;
           
-        if(!allowAtBorder && node.atBorder())
+        //if(!allowAtBorder && node.atBorder())
+        //    continue;
+        if(!allowAtBorder && vigra::detail_local_minima::NodeAtBorder<Graph>::atBorder(node))
             continue;
         
-        neighbor_iterator arc(g, node);
+        neighbor_iterator arc(g, *node);
         for (; arc != INVALID; ++arc) 
             if (!compare(current, src[g.target(*arc)])) 
                 break;
@@ -136,6 +159,7 @@ localMinMaxGraph(Graph const &g,
     }
     return count;
 }
+
 
 template <class Graph, class T1Map, class T2Map, class Compare, class Equal>
 unsigned int
@@ -169,14 +193,14 @@ extendedLocalMinMaxGraph(Graph const &g,
         typename T1Map::value_type current = src[*node];
 
         if (!compare(current, threshold) ||
-            (!allowAtBorder && node.atBorder()))
+            (!allowAtBorder &&  vigra::detail_local_minima::NodeAtBorder<Graph>::atBorder(node) ))
         {
             isExtremum[label] = 0;
             --count;
             continue;
         }
         
-        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc) 
+        for (neighbor_iterator arc(g, *node); arc != INVALID; ++arc) 
         {
             if (label != regions[g.target(*arc)] && compare(src[g.target(*arc)], current)) 
             {

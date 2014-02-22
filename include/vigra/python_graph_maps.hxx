@@ -89,6 +89,9 @@ public:
         return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_,key)];
     }
 private:
+    bool any()const{
+        return array_.any();
+    }
     const Graph * graph_;
     MultiArrayView<IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension,Value> array_;
 
@@ -127,6 +130,9 @@ public:
     }
     ConstReference operator[](const Key & key)const{
         return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
+    }
+    bool any()const{
+        return array_.any();
     }
 private:
     const Graph * graph_;
@@ -173,6 +179,9 @@ public:
     ConstReference operator[](const Key & key)const{
         return array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(*graph_,key)];
     }
+    bool any()const{
+        return array_.any();
+    }
 private:
     const Graph * graph_;
     mutable AV array_;
@@ -217,6 +226,9 @@ public:
     }
     ConstReference operator[](const Key & key)const{
         return   array_[GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate(*graph_,key)];
+    }
+    bool any()const{
+        return array_.any();
     }
 private:
     const Graph * graph_;

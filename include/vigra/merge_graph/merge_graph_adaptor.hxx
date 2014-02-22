@@ -598,6 +598,13 @@ class MergeGraphAdaptor
         Node inactiveEdgesNode(const Edge edge)const{
             return reprNodeId(graphUId(id(edge)));
         }
+        size_t maxDegree()const{
+            size_t md=0;
+            for(NodeIt it(*this);it!=lemon::INVALID;++it){
+                std::max(md, size_t( degree(*it) ) );
+            }
+            return md;
+        }
 
     private:
         // needs acces to const nodeImpl
