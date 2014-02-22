@@ -2,22 +2,37 @@
 
 
 
+def makeEdgeIndicator(
+	graph,
+	edgeIndicator = None,
+	nodeFeatures  = None,
+	**kwargs
+):
+	pass
+
 
 def graphSegmentation(
 	graph,
-	nodeFeatures   = None,
-	edgeIndicators = None,
+	edgeIndicator = None,
+	nodeFeatures  = None
 	method,
 	**kwargs
 ) :
 	
 	if method in ("fw","felzenszwalb") :
+
+		# get the mixed edge indicator
+		edgeInd = makeEdgeIndicator(graph,edgeIndicator,nodeFeatures,**kwargs)
+		
+
+	if method in ("mc","multicut"):
+		# get the mixed edge indicator
+		edgeInd = makeEdgeIndicator(graph,edgeIndicator,nodeFeatures,**kwargs)
+
+	if method in ("ws","watersheds"):
+		# get the mixed edge indicator
+		edgeInd = makeEdgeIndicator(graph,edgeIndicator,nodeFeatures,**kwargs)
+
+	if method in ("hc","hierarchicalClustering"):
 		pass
-	if method = ("mc","multicut"):
-		pass
-	if method = ("mcw","multiwaycut"):
-		pass
-	if method = ("hc","hierarchicalClustering")
-		pass
-	if method = ("watersheds")
-		pass
+	
