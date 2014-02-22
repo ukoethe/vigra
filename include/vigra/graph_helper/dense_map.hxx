@@ -120,7 +120,7 @@ public:
 
     }
     void assign(const Graph & g){
-        this->assign(ItemHelper::itemNum(g)==0 ? 0: ItemHelper::maxItemId(g));
+        DenseReferenceMapType::assign(ItemHelper::itemNum(g)==0 ? 0: ItemHelper::maxItemId(g));
     }
 };
 

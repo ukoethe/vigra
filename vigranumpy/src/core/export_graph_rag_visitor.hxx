@@ -207,6 +207,7 @@ public:
         // call algorithm itself
         makeRegionAdjacencyGraph(graph,labelsArrayMap,rag,*affiliatedEdges,ignoreLabel);
 
+        std::cout<<"return\n";
         return affiliatedEdges;
     }
 

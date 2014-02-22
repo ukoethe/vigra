@@ -268,7 +268,6 @@ namespace vigra{
         typedef AdjacencyListGraph GraphOut;
         LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GraphIn, , GraphIn);
         LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GraphOut, ,GraphOut);
-        typedef typename GraphOut:: template EdgeMap< std::vector<EdgeGraphIn> > HyperEdgeMap;
         // iterate over all labels in the node map to find min max
         typedef NodeMapIteratorHelper<GraphIn,LabelMap> NodeIterHelper;
         
@@ -288,7 +287,6 @@ namespace vigra{
                 rag.addEdge( rag.nodeFromId(lu),rag.nodeFromId(lv));
             }
         }
-
         // SET UP HYPEREDGES
         affiliatedEdges.assign(rag);
         // add edges
@@ -296,12 +294,15 @@ namespace vigra{
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
             const LabelType lv = labels[graphIn.v(edge)];
+            //std::cout<<"edge between ?? "<<lu<<" "<<lv<<"\n";
             if(  lu!=lv && ( ignoreLabel==-1 || (static_cast<Int64>(lu)!=ignoreLabel  && static_cast<Int64>(lv)!=ignoreLabel) )  ){
+                //std::cout<<"find edge between "<<lu<<" "<<lv<<"\n";
                 EdgeGraphOut ragEdge= rag.findEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
+                //std::cout<<"invalid?"<<bool(ragEdge==lemon::INVALID)<<" id "<<rag.id(ragEdge)<<"\n";
                 affiliatedEdges[ragEdge].push_back(edge);
+                //std::cout<<"write done\n";
             }
         }
-
     }
 
   
