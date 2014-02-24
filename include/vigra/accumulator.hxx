@@ -5437,8 +5437,10 @@ class RangeHistogramBase
     {
         vigra_precondition(this->value_.size() > 0,
             "RangeHistogramBase::setMinMax(...): setBinCount(...) has not been called.");
-        vigra_precondition(mi < ma,
-            "RangeHistogramBase::setMinMax(...): min < max required.");
+        vigra_precondition(mi <= ma,
+            "RangeHistogramBase::setMinMax(...): min <= max required.");
+        if(mi == ma)
+            ma += this->value_.size() * NumericTraits<double>::epsilon();
         offset_ = mi;
         scale_ = (double)this->value_.size() / (ma - mi);
         inverse_scale_ = 1.0 / scale_;
