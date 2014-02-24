@@ -629,6 +629,15 @@ public:
             ),
             "convert node features to edge weights with the given metric"
         );
+
+        python::def("edgeFeaturesFromInterpolatedImageCorrected",registerConverters(&pyEdgeWeightsFromInterpolatedImageCorrected),
+            (
+                python::arg("graph"),
+                python::arg("image"),
+                python::arg("out")=python::object()
+            ),
+            "convert node features to edge weights with the given metric"
+        );
     }
 
 
@@ -654,9 +663,45 @@ public:
 
             const Edge edge(*iter);
             const CoordType uCoord(g.u(edge));
-            const CoordType vCoord(g.u(edge));
+            const CoordType vCoord(g.v(edge));
             const CoordType tCoord = uCoord+vCoord;
             edgeWeightsArrayMap[edge]=interpolatedImage[tCoord];
+        }
+        return edgeWeightsArray;
+    }
+
+
+
+    static NumpyAnyArray pyEdgeWeightsFromInterpolatedImageCorrected(
+        const GRAPH & g,
+        const FloatNodeArray & interpolatedImage,
+        FloatEdgeArray edgeWeightsArray
+    ){
+
+        for(size_t d=0;d<NodeMapDim;++d){
+            //std::cout<<"is "<<interpolatedImage.shape(d)<<"gs "<<2*g.shape()[d]-1<<"\n";
+            vigra_precondition(interpolatedImage.shape(d)==2*g.shape()[d]-1, "interpolated shape must be shape*2 -1");
+        }
+
+
+        edgeWeightsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g) );
+
+        // numpy arrays => lemon maps
+        FloatEdgeArrayMap edgeWeightsArrayMap(g,edgeWeightsArray);
+        typedef typename FloatNodeArray::difference_type CoordType;
+        for(EdgeIt iter(g); iter!=lemon::INVALID; ++ iter){
+
+            const Edge edge(*iter);
+            const CoordType uCoord(g.u(edge));
+            const CoordType vCoord(g.v(edge));
+            const CoordType tCoord = uCoord+vCoord;
+            int diffCounter = 0;
+            for(int i=0; i<NodeMapDim; ++i) {
+                if (uCoord[i] != vCoord[i]) {
+                    diffCounter++;
+                }
+            }
+            edgeWeightsArrayMap[edge]=sqrt(diffCounter)*interpolatedImage[tCoord];
         }
         return edgeWeightsArray;
     }
