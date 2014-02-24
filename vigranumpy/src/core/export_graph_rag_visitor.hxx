@@ -132,6 +132,7 @@ public:
                 python::arg("graph"),
                 python::arg("affiliatedEdges"),
                 python::arg("edgeFeatures"),
+                python::arg("edgeSizes"),
                 python::arg("acc"),
                 python::arg("out")=python::object()
             )
@@ -143,6 +144,7 @@ public:
                 python::arg("graph"),
                 python::arg("labels"),
                 python::arg("nodeFeatures"),
+                python::arg("nodeSizes"),
                 python::arg("acc"),
                 python::arg("ignoreLabel")=-1,
                 python::arg("out")=python::object()
@@ -154,6 +156,7 @@ public:
                 python::arg("graph"),
                 python::arg("labels"),
                 python::arg("nodeFeatures"),
+                python::arg("nodeSizes"),
                 python::arg("acc"),
                 python::arg("ignoreLabel")=-1,
                 python::arg("out")=python::object()
@@ -217,6 +220,7 @@ public:
         const Graph &              graph,
         const RagAffiliatedEdges & affiliatedEdges,
         typename PyEdgeMapTraits<Graph,T >::Array edgeFeaturesArray ,
+        typename PyEdgeMapTraits<Graph,T >::Array edgeSizesArray,
         const std::string &        accumulator,
         typename PyEdgeMapTraits<RagGraph,T >::Array ragEdgeFeaturesArray
     ){
@@ -230,17 +234,21 @@ public:
         std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
         // numpy arrays => lemon maps
         typename PyEdgeMapTraits<Graph   ,T >::Map edgeFeaturesArrayMap(graph,edgeFeaturesArray);
+        typename PyEdgeMapTraits<Graph   ,T >::Map edgeSizesArrayMap(graph,edgeSizesArray);
         typename PyEdgeMapTraits<RagGraph,T >::Map ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
 
         const bool isMeanAcc= accumulator==std::string("mean");
         for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
             const RagEdge ragEdge = *iter;
             const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+            float weightSum=0.0;
             for(size_t i=0;i<affEdges.size();++i){
-                ragEdgeFeaturesArrayMap[ragEdge]+=edgeFeaturesArrayMap[affEdges[i]];
+                const float weight = edgeSizesArrayMap[affEdges[i]];
+                ragEdgeFeaturesArrayMap[ragEdge]+=weight*edgeFeaturesArrayMap[affEdges[i]];
+                weightSum+=weight;
             }
             if(isMeanAcc){
-                ragEdgeFeaturesArrayMap[ragEdge]/=static_cast<float>(affEdges.size());
+                ragEdgeFeaturesArrayMap[ragEdge]/=weightSum;
             }
         }
         return ragEdgeFeaturesArray;
@@ -252,6 +260,7 @@ public:
         const Graph &              graph,
         UInt32NodeArray            labelsArray,
         FloatNodeArray             nodeFeaturesArray,
+        FloatNodeArray             nodeSizesArray,
         const std::string &        accumulator,
         const Int32                ignoreLabel=-1,
         RagFloatNodeArray          ragNodeFeaturesArray=RagFloatNodeArray()
@@ -269,6 +278,7 @@ public:
         // numpy arrays => lemon maps
         UInt32NodeArrayMap   labelsArrayMap(graph,labelsArray);
         FloatNodeArrayMap    nodeFeaturesArrayMap(graph,nodeFeaturesArray);
+        FloatNodeArrayMap    nodeSizesArrayMap(graph,nodeSizesArray);
         RagFloatNodeArrayMap ragNodeFeaturesArrayMap(rag,ragNodeFeaturesArray);
 
         if(accumulator == std::string("mean")){
@@ -276,9 +286,10 @@ public:
             for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
                 UInt32 l = labelsArrayMap[*iter];
                 if(ignoreLabel==-1 || static_cast<Int32>(l)!=ignoreLabel){
+                    const float  weight = nodeSizesArrayMap[*iter];
                     const RagNode ragNode   = rag.nodeFromId(l);
-                    ragNodeFeaturesArrayMap[ragNode]+=nodeFeaturesArrayMap[*iter];
-                    counting[ragNode]+=1.0;
+                    ragNodeFeaturesArrayMap[ragNode]+= weight*nodeFeaturesArrayMap[*iter];
+                    counting[ragNode]+=weight;
                 }
             }
             for(RagNodeIt iter(rag);iter!=lemon::INVALID;++iter){
@@ -304,6 +315,7 @@ public:
         const Graph &              graph,
         UInt32NodeArray            labelsArray,
         MultiFloatNodeArray        nodeFeaturesArray,
+        FloatNodeArray             nodeSizesArray,
         const std::string &        accumulator,
         const Int32                ignoreLabel=-1,
         RagMultiFloatNodeArray     ragNodeFeaturesArray=RagMultiFloatNodeArray()
@@ -325,6 +337,7 @@ public:
         // numpy arrays => lemon maps
         UInt32NodeArrayMap        labelsArrayMap(graph,labelsArray);
         MultiFloatNodeArrayMap    nodeFeaturesArrayMap(graph,nodeFeaturesArray);
+        FloatNodeArrayMap         nodeSizesArrayMap(graph,nodeSizesArray);
         RagMultiFloatNodeArrayMap ragNodeFeaturesArrayMap(rag,ragNodeFeaturesArray);
 
         if(accumulator == std::string("mean")){
@@ -332,9 +345,12 @@ public:
             for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
                 UInt32 l = labelsArrayMap[*iter];
                 if(ignoreLabel==-1 || static_cast<Int32>(l)!=ignoreLabel){
+                    const float weight = nodeSizesArrayMap[*iter];
                     const RagNode ragNode   = rag.nodeFromId(l);
-                    ragNodeFeaturesArrayMap[ragNode]+=nodeFeaturesArrayMap[*iter];
-                    counting[ragNode]+=1.0;
+                    typename MultiFloatNodeArrayMap::Value feat = nodeFeaturesArrayMap[*iter];
+                    feat*=weight;
+                    ragNodeFeaturesArrayMap[ragNode]+=feat;
+                    counting[ragNode]+=weight;
                 }
             }
             for(RagNodeIt iter(rag);iter!=lemon::INVALID;++iter){
