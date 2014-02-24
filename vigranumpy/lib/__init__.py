@@ -668,13 +668,23 @@ def _genGraphConvenienceFunctions():
         def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
             graph = self.baseGraph
             affiliatedEdges = self.affiliatedEdges
-            return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,acc,out)
+            if acc == 'mean':
+              weights = self.baseGraph.edgeLength()
+            else :
+              weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
+              weights[:]=1
+            return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
             graph = self.baseGraph
             labels = self.baseGraphLabels
             ignoreLabel = self.ignoreLabel
-            return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,acc,ignoreLabel,out)
+            if acc == 'mean':
+              weights = self.baseGraph.nodeSize()
+            else :
+              weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
+              weights[:]=1
+            return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,weights,acc,ignoreLabel,out)
 
         def projectNodeFeatureToBaseGraph(self,features,out=None):
             out=graphs._ragProjectNodeFeaturesToBaseGraph(

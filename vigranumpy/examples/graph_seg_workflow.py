@@ -153,7 +153,7 @@ graph1NodeFeatures = graph1.accumulateNodeFeatures(img,acc='mean')
 
 
 
-graph1Labels = graphSegmentation(graph1,graph1EdgeWeights,graph1NodeFeatures,method='shfw',nodeNumStop=10)   
+graph1Labels = graphSegmentation(graph1,graph1EdgeWeights,graph1NodeFeatures,method='fw',nodeNumStop=10)   
 graph2       = vigraph.regionAdjacencyGraph(graph=graph1,labels=graph1Labels,ignoreLabel=None)
 
 graph2EdgeWeights = graph2.accumulateEdgeFeatures(graph1EdgeWeights,acc='mean')
