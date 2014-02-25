@@ -13,7 +13,7 @@ import pylab
 
 f       = '100075.jpg'
 f       = '69015.jpg'
-f       = '12003.jpg'
+#f       = '12003.jpg'
 sigma   = 2.0
 
 print "prepare input"
@@ -283,16 +283,20 @@ graph1NodeFeatures = graph1.accumulateNodeFeatures(img,acc='mean')
 
 
 l_hc = graphSegmentation(   graph1,graph1EdgeWeights,graph1NodeFeatures,
-                                    method='hc',nodeNumStop=5,beta=0.01,k=100.0,
+                                    method='hc',nodeNumStop=10,beta=0.01,k=100.0,
                                     wardness=1.0,makeHierarchical=True)   
 
 l_mc = graphSegmentation(   graph1,graph1EdgeWeights,graph1NodeFeatures,
-                                    method='mc',nodeNumStop=5,beta=0.01,k=100.0,
+                                    method='mc',nodeNumStop=10,beta=0.01,k=100.0,
                                     wardness=1.0,makeHierarchical=True)   
 
 f = pylab.figure()
-f.add_subplot(2, 1, 0)
+ax0=f.add_subplot(2, 1, 0)
 graph1.showNested(img,l_hc)
-f.add_subplot(2, 1, 1)
+ax0.set_title("hc")
+
+ax1=f.add_subplot(2, 1, 1)
 graph1.showNested(img,l_mc)
+ax1.set_title("mc")
+
 pylab.show()

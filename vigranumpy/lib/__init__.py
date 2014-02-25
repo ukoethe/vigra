@@ -329,7 +329,7 @@ def nestedSegShow(img,labels,edgeColors=None,scale=1):
       edgeColors=numpy.ones([nSegs,4])
 
       a  =numpy.array([0,0,0.0,0.6],dtype=numpy.float32)
-      b  =numpy.array([0,1,0,0.4],dtype=numpy.float32)
+      b  =numpy.array([1,0,0,0.4],dtype=numpy.float32)
 
       for s in range(nSegs):
         f=float(s)/float(nSegs-1)
