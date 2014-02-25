@@ -47,15 +47,17 @@ namespace vigra{
 
 
 
-	void defineInvalid();
-	void defineAdjacencyListGraph();
-	void defineGridGraph();
+	void defineInvalid(){
+        python::class_<lemon::Invalid>("Invalid",python::init<>());
+    }
 
+	void defineAdjacencyListGraph();
+	void defineGridGraph2d();
+    void defineGridGraph3d();
 } // namespace vigra
 
 using namespace vigra;
 using namespace boost::python;
-
 
 
 
@@ -70,7 +72,7 @@ BOOST_PYTHON_MODULE_INIT(graphs)
 
     // all graph classes itself (GridGraph , AdjacencyListGraph)
     defineAdjacencyListGraph();
-    defineGridGraph();
-
+    defineGridGraph2d();
+    defineGridGraph3d();
     
 }

@@ -164,6 +164,21 @@ public:
             ),
             "convert node features to edge weights with the given metric"
         );
+
+        python::def("opengmMulticutDataStructure",registerConverters(&pyMulticutDataStructure),
+            (
+                python::arg("graph"),
+                python::arg("edgeWeights")
+            )
+        );
+        python::def("opengmArgToLabeling",registerConverters(&pyMulticutArgToLabeling),
+            (
+                python::arg("graph"),
+                python::arg("arg"),
+                python::arg("out")=python::object()
+            )
+        );
+
     }
 
     void exportSmoothingAlgorithms()const{
@@ -197,6 +212,16 @@ public:
             ),
             "recursive edge weighted guided graph smoothing"
         );
+
+        python::def("wardCorrection",registerConverters(&pyWardCorrection),
+            (
+                python::arg("graph"),
+                python::arg("edgeIndicator"),
+                python::arg("nodeSize"),
+                python::arg("out")=python::object()
+            ),
+            "apply wards method to an edgeIndicator"
+        );
     }
 
     std::string clsName_;
@@ -216,6 +241,80 @@ public:
         // - recursiveGraphSmoothing
         // - dynamicRecursiveGraphSmoothing
         exportSmoothingAlgorithms();
+    }
+
+
+    static NumpyAnyArray pyWardCorrection(
+        const Graph &           g,
+        const FloatEdgeArray    edgeWeightsArray,
+        const FloatNodeArray    nodeSizeArray,
+        const float             wardness,
+        FloatEdgeArray    outArray
+    ){
+        outArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g));
+
+        // numpy arrays => lemon maps
+        FloatEdgeArrayMap  edgeWeightsArrayMap(g,edgeWeightsArray);
+        FloatNodeArrayMap  nodeSizeArrayMap(g,nodeSizeArray);
+        FloatEdgeArrayMap  outArrayMap(g,outArray);
+
+        for(EdgeIt iter(g);iter!=lemon::INVALID;++iter){
+            const float uSize=nodeSizeArrayMap[g.u(*iter)];
+            const float vSize=nodeSizeArrayMap[g.v(*iter)];
+            const float w = edgeWeightsArrayMap[*iter];
+            const float ward  = 1.0f/(1.0f/std::log(uSize) + 1.0f/std::log(vSize)  );
+            const float wardF = wardness*ward + (1.0-wardness);
+            outArrayMap[*iter]=w*wardF;
+        }
+        return outArray;
+
+    }
+
+
+    static python::tuple pyMulticutDataStructure(
+        const Graph &           g,
+        const FloatEdgeArray    edgeWeightsArray
+    ){
+        UInt32NodeArray toDenseArray( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g));
+
+        // numpy arrays => lemon maps
+        UInt32NodeArrayMap toDenseArrayMap(g,toDenseArray);
+        FloatEdgeArrayMap  edgeWeightsArrayMap(g,edgeWeightsArray);
+
+        NumpyArray<2,UInt32> vis      ((    typename NumpyArray<2,UInt64>::difference_type(g.edgeNum(),2)));
+        NumpyArray<1,float > weights  ((    typename NumpyArray<1,double>::difference_type(g.edgeNum()  )));
+        
+        size_t denseIndex = 0 ;
+        for(NodeIt iter(g);iter!=lemon::INVALID;++iter){
+            toDenseArrayMap[*iter]=denseIndex;
+            ++denseIndex;
+        }
+        denseIndex=0;
+        for(EdgeIt iter(g);iter!=lemon::INVALID;++iter){
+            const size_t dU=toDenseArrayMap[g.u(*iter)];
+            const size_t dV=toDenseArrayMap[g.v(*iter)];
+            vis(denseIndex,0)=std::min(dU,dV);
+            vis(denseIndex,1)=std::max(dU,dV);
+            weights(denseIndex)=edgeWeightsArrayMap[*iter];
+            ++denseIndex;
+        }
+        return python::make_tuple(vis,weights);
+
+    }
+
+    static NumpyAnyArray pyMulticutArgToLabeling(
+        const Graph &              g,
+        const NumpyArray<1,UInt32> arg,
+        UInt32NodeArray            labelsArray
+    ){
+        labelsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g));
+        UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
+        size_t denseIndex = 0 ;
+        for(NodeIt iter(g);iter!=lemon::INVALID;++iter){
+            labelsArrayMap[*iter]=arg(denseIndex);
+            ++denseIndex;
+        }
+        return labelsArray;
     }
 
     static NumpyAnyArray pyNodeIdsLabels(
