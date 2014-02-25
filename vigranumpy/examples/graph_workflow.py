@@ -33,11 +33,11 @@ graph0,graph1 = vigraph.gridRegionAdjacencyGraph(labels=labels,ignoreLabel=None)
 graph0EdgeWeights =  vigraph.edgeFeaturesFromInterpolatedImage(graph0,gradmagInterpolated)
 
 
-graph1EdgeSize    = graph1.accumulateEdgeSize()
+graph1EdgeSize    = graph1.edgeLength()
 graph1EdgeWeights = graph1.accumulateEdgeFeatures(graph0EdgeWeights,acc='mean')
 
 
-graph1NodeSize     = graph1.accumulateNodeSize()
+graph1NodeSize     = graph1.nodeSize()
 graph1NodeFeatures = graph1.accumulateNodeFeatures(img,acc='mean')
 
 
@@ -77,7 +77,7 @@ edgeColors=[
     (0  , 1.0, 0 ,0.4),
 ]
 
-vigra.nestedSegShow(img=img,labels=gridLabels,edgeColors=edgeColors)
+graph3.showNested(img=img)
 vigra.show()
 
 

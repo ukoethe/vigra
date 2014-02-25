@@ -9,7 +9,7 @@ import pylab
 import matplotlib.pyplot as plt
 from   matplotlib.widgets import Button
 import math
-
+import pylab
 
 f       = '100075.jpg'
 f       = '69015.jpg'
@@ -29,8 +29,8 @@ labels              = vigra.analysis.labelImage(labels)
 graph0,graph1 = vigraph.gridRegionAdjacencyGraph(labels=labels,ignoreLabel=None)
 
 
-graph1.show(img)
-vigra.show()
+
+
 
 # get grid graph and edge weights
 graph0EdgeWeights =  vigraph.edgeFeaturesFromInterpolatedImage(graph0,gradmagInterpolated)
@@ -282,16 +282,17 @@ graph1NodeFeatures = graph1.accumulateNodeFeatures(img,acc='mean')
 
 
 
-graph1Labels = graphSegmentation(   graph1,graph1EdgeWeights,graph1NodeFeatures,
+l_hc = graphSegmentation(   graph1,graph1EdgeWeights,graph1NodeFeatures,
                                     method='hc',nodeNumStop=5,beta=0.01,k=100.0,
                                     wardness=1.0,makeHierarchical=True)   
 
-graph2       = vigraph.regionAdjacencyGraph(graph=graph1,labels=graph1Labels,ignoreLabel=None)
+l_mc = graphSegmentation(   graph1,graph1EdgeWeights,graph1NodeFeatures,
+                                    method='mc',nodeNumStop=5,beta=0.01,k=100.0,
+                                    wardness=1.0,makeHierarchical=True)   
 
-graph2EdgeWeights = graph2.accumulateEdgeFeatures(graph1EdgeWeights,acc='mean')
-graph2NodeFeatures = graph2.accumulateNodeFeatures(graph1NodeFeatures,acc='mean')
-
-
-graph2.show(img)
-vigra.show()
-
+f = pylab.figure()
+f.add_subplot(2, 1, 0)
+graph1.showNested(img,l_hc)
+f.add_subplot(2, 1, 1)
+graph1.showNested(img,l_mc)
+pylab.show()

@@ -286,14 +286,14 @@ def imshow(image):
         image = image.dropChannelAxis().view(numpy.ndarray)
         plot = matplotlib.pyplot.imshow(image, cmap=matplotlib.cm.gray, \
                                          norm=matplotlib.cm.colors.Normalize())
-        matplotlib.pylab.show()
+        #matplotlib.pylab.show()
         return plot
     elif image.channels == 3:
         if image.dtype != numpy.uint8:
             out = image.__class__(image.shape, dtype=numpy.uint8, axistags=image.axistags)
             image = colors.linearRangeMapping(image, newRange=(0.0, 255.0), out=out)
         plot = matplotlib.pyplot.imshow(image.view(numpy.ndarray))
-        matplotlib.pylab.show()
+        #matplotlib.pylab.show()
         return plot
     else:
         raise RuntimeError("vigra.imshow(): Image must have 1 or 3 channels.")
@@ -310,9 +310,9 @@ def segShow(img,labels,edgeColor=(1,0,0) ):
         ic = imgToDisplay[:,:,c]
         ic[whereEdge]=edgeColor[c]
 
-    imshow(imgToDisplay)
+    return imshow(imgToDisplay)
 
-def nestedSegShow(img,labels,edgeColors,scale=1):
+def nestedSegShow(img,labels,edgeColors=None,scale=1):
 
     shape=(labels.shape[0]*scale,labels.shape[1]*scale)
     if scale!=1:
@@ -323,6 +323,17 @@ def nestedSegShow(img,labels,edgeColors,scale=1):
 
     assert numpy.squeeze(labels).ndim==3
     nSegs  = labels.shape[2]
+
+
+    if edgeColors is None :
+      edgeColors=numpy.ones([nSegs,4])
+
+      a  =numpy.array([0,0,0.0,0.6],dtype=numpy.float32)
+      b  =numpy.array([0,1,0,0.4],dtype=numpy.float32)
+
+      for s in range(nSegs):
+        f=float(s)/float(nSegs-1)
+        edgeColors[s,:]=f*b + (1.0-f)*a
 
     tShape=(img.shape[0]*2-1,img.shape[1]*2-1)
 
@@ -340,17 +351,17 @@ def nestedSegShow(img,labels,edgeColors,scale=1):
         crackedEdges = analysis.regionImageToCrackEdgeImage(l)
         whereEdge    = numpy.where(crackedEdges==0)
 
-        edgeColor = edgeColors[si][0:3]
+   
         if len(edgeColors[si])<4:
             alpha = 0.0
         else:
-            alpha = edgeColors[si][3]
+            alpha = edgeColors[si,3]
         for c in range(3):
             icI = imgIn[:,:,c]
             ic  = imgToDisplay[:,:,c]
-            ic[whereEdge]=(1.0-alpha) * edgeColors[si][c] + alpha*icI[whereEdge]
+            ic[whereEdge]=(1.0-alpha) * edgeColors[si,c] + alpha*icI[whereEdge]
 
-    imshow(imgToDisplay)
+    return imshow(imgToDisplay)
 
 
 def show():
@@ -716,9 +727,6 @@ def _genGraphConvenienceFunctions():
                 labels = self.nodeIdMap()
             return self.projectNodeFeatureToBaseGraph(features=labels)
 
- 
-
-
 
     RegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.RegionAdjacencyGraph = RegionAdjacencyGraph
@@ -744,10 +752,29 @@ def _genGraphConvenienceFunctions():
                 labels = self.projectLabelsToBaseGraph(labels)
                 return self.baseGraph.projectLabelsToGridGraph(labels)
 
+        def showNested(self,img,labels=None):
+            ll=[]
+            if labels is not None:
+              ll.append( self.projectLabelsToGridGraph(labels) )
+            ll.append( self.projectLabelsToGridGraph() )
+
+            g=self.baseGraph
+            while isGridGraph(g)==False:
+              ll.append( g.projectLabelsToGridGraph() )
+              g=g.baseGraph
+
+
+            ll.reverse()
+            gridLabels = [l[...,numpy.newaxis] for l in ll ]
+            gridLabels = numpy.concatenate(gridLabels,axis=2)
+
+
+            return nestedSegShow(img,gridLabels)
+
 
         def show(self,img,labels=None):
             pLabels = self.projectLabelsToGridGraph(labels)
-            segShow(img,numpy.squeeze(pLabels))
+            return segShow(img,numpy.squeeze(pLabels))
 
         def nodeSize(self):
             baseNodeSizes = self.baseGraph.nodeSize()
@@ -967,8 +994,8 @@ def _genGraphConvenienceFunctions():
 
         rag = graphs.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
         if verbose :print "regionAdjacencyGraph",rag
-        hyperEdgeSizes = rag.accumulateEdgeSize()
-        hyperNodeSizes = rag.accumulateEdgeSize()
+        hyperEdgeSizes = rag.edgeSize()
+        hyperNodeSizes = rag.edgeSize()
 
 
         edgeMinWeight  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
