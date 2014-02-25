@@ -50,6 +50,7 @@ public:
     typedef typename RagGraph::Edge             RagEdge;
     typedef typename RagGraph::Node             RagNode;
     typedef typename RagGraph::Arc              RagArc;
+    typedef typename RagGraph::OutArcIt         RagOutArcIt;
     typedef typename RagGraph::NodeIt           RagNodeIt;
     typedef typename RagGraph::EdgeIt           RagEdgeIt;
     typedef typename RagGraph::ArcIt            RagArcIt;
@@ -59,6 +60,7 @@ public:
     typedef NodeHolder<Graph> PyNode;
     typedef  ArcHolder<Graph> PyArc;
 
+    typedef NodeHolder<RagGraph> PyRagNode;
 
     // predefined array (for map usage)
     const static unsigned int EdgeMapDim = IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension;
@@ -135,6 +137,15 @@ public:
                 python::arg("edgeSizes"),
                 python::arg("acc"),
                 python::arg("out")=python::object()
+            )
+        );
+
+        python::def("_ragFindEdges",registerConverters(&pyRagFindEdges<Singleband<float> >),
+            (
+                python::arg("rag"),
+                python::arg("graph"),
+                python::arg("affiliatedEdges"),
+                python::arg("labels")
             )
         );
 
@@ -252,6 +263,57 @@ public:
             }
         }
         return ragEdgeFeaturesArray;
+    }
+
+
+    // TODO: Check if pyRagFindEdges is working.
+    template<class T>
+    static NumpyAnyArray  pyRagFindEdges(
+        const RagGraph &           rag,
+        const Graph &              graph,
+        const RagAffiliatedEdges & affiliatedEdges,
+        UInt32NodeArray            labelsArray,
+        const PyRagNode &          ragNode
+    ){
+        UInt32NodeArrayMap   labelsArrayMap(graph,labelsArray);
+        RagNode node = ragNode;
+        UInt32 nodeLabel = rag.id(node);
+
+        // Get number of points
+        UInt32 nPoints = 0;
+        for (RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter) {
+            const RagEdge ragEdge(*iter);
+            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+            nPoints += affEdges.size();
+        }
+        NumpyArray<2, UInt32> edgePoints(NumpyArray<2, UInt32>::difference_type(nPoints, NodeMapDim));
+
+        // Find edges
+        UInt32 nNext = 0;
+        for(RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter) {
+            const RagEdge ragEdge(*iter);
+            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+            for (size_t i=0; i<affEdges.size(); ++i) {
+                Node u = graph.u(affEdges[i]);
+                Node v = graph.v(affEdges[i]);
+                UInt32 uLabel = labelsArrayMap[u];
+                UInt32 vLabel = labelsArrayMap[v];
+
+                NodeCoordinate coords;
+                if (uLabel == nodeLabel) {
+                    coords = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, u);
+                } else if (vLabel == nodeLabel) {
+                    coords = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, v);
+                } else {
+                    // If you get here, then there's an error. Maybe print a message?
+                }
+                for(size_t k=0; k<coords.size(); ++k) {
+                    edgePoints(nNext, k) = coords[k];
+                }
+                nNext++;
+            }
+        }
+        return edgePoints;
     }
 
 
