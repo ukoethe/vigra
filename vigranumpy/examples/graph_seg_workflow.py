@@ -65,11 +65,6 @@ def makeEdgeIndicator(  graph,edgeIndicator=None,nodeFeatures=None,
         return eI
     else:
         nodeSize = getNodeSizes(graph)
-        #print wardness
-        #print "MAX NODE SIZE ",nodeSize.max()
-        #print nodeSize
-        #print nodeSize.shape,nodeSize.dtype
-        #print eI.shape,eI.dtype
         eWard=graphs.wardCorrection(graph,eI,nodeSize,wardness)
 
         #print "diff" ,eWard-eI
@@ -199,10 +194,59 @@ def multicutSegmentation(graph,edgeIndicator,nodeNumStop=None,gamma=0.1):
     return labels
 
 def graphSegmentation(  graph,edgeIndicator=None,nodeFeatures=None,
-                        method='fw',beta= 0.1,metric = 'squaredNorm',
+                        beta= 0.1,metric = 'squaredNorm',method='hc',
                         nodeNumStop=None,k=0.1,wardness=1.0,
                         makeHierarchical=True) :
+    """ High level function for graph segmentation.
 
+        Keyword Arguments:
+
+            graph           --  input graph
+
+            edgeIndicator   --  a scalar for each edge where high values indicate that
+                the two nodes of the edge should stay in seperate clusters / regions.
+                And a low values should indicate that both nodes should be merged
+                into the same cluster. 
+                The edgeIndicator can be None if nodeFeatures are given. (default None)
+
+            nodeFeatures    -- a feature vector for each node.
+                From that feature vector, an edge weight based on the differences
+                of two features of adjacent nodes is used as an an additional edge weight.
+                nodeFeatures can be None if an edgeIndicator is given    (default None)
+
+            beta            -- weight edgeIndicator and nodeFeatures betwen 0 and 1 .
+                0 means only edgeIndicator, 1 means only nodeFeaure distances as edgeIndicator
+
+            metic           -- metric to get an edge weight from two adjacent node's features
+
+
+            method          -- segmentation algorithm / method : (default 'hc')
+                Can be one of the following:
+
+                    'fw'/'felzenszwalb' -- felzenszwalb minimum spanning tree based segmentation:
+                        A very fast algorithm but not the best results should be expected.
+                        See http://cs.brown.edu/~pff/segment/ for details
+
+                        Felzenszwalb Parameters:
+                            k -  (default 0.1)
+
+
+                    'mc'/'multicut'     -- multicut / correlation clustering based segmentation.
+                        Multicut can be viewed as 'one-shot' agglomeration
+                        An approximative solver is used (Cut Glue and Cut).
+                        If nodeNumStop is not None, a binary search sceme is used to 
+                        get a segementation with nodeNumStop nodes.
+
+                        Multicut Parameters :
+
+                    'hc'/hierarchicalClustering  -- TODO...
+
+            nodeNumStop   -- specifiy how many nodes the resul graph should have.
+                (no result graph is returned, but a labeling for the input graph, 
+                can be turned into an new more coarser graph)
+
+
+    """
     ##############################################
     # preprocessing
     ##############################################
