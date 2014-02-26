@@ -37,17 +37,120 @@ import sys
 print >> sys.stderr, "\nexecuting test file", __file__
 execfile('set_paths.py')
 
+
 from nose.tools import assert_equal, raises
 from vigra import numpy as np
+from vigra import numpy as numpy
 from vigra import graphs as vigraph
+from vigra import graphs,taggedView
+import vigra
+
+def testGridGraphSegmentationFelzenszwalbSegmentation():
+    dataRGB  = numpy.random.random([3,3,3]).astype(numpy.float32)
+    dataRGB  = taggedView(dataRGB,'xyc')
+    data  = numpy.random.random([3,3]).astype(numpy.float32)
+    edata = numpy.random.random([3*2-1,3*2-1]).astype(numpy.float32)
+    g0 = graphs.gridGraph(data.shape)
+
+    ew = graphs.edgeFeaturesFromInterpolatedImage(g0,edata)
+
+    labels = graphs.felzenszwalbSegmentation(graph=g0,edgeWeights=ew,k=1.0,nodeNumStop=5)
+
+    g1  = graphs.regionAdjacencyGraph(graph=g0,labels=labels)
+    assert g1.nodeNum == 5
+
+
+    
+    data  = numpy.random.random([3,3,3]).astype(numpy.float32)
+    edata = numpy.random.random([3*2-1,3*2-1,3*2-1]).astype(numpy.float32)
+    g0 = graphs.gridGraph(data.shape)
+
+    ew = graphs.edgeFeaturesFromInterpolatedImage(g0,edata)
+
+    labels = graphs.felzenszwalbSegmentation(graph=g0,edgeWeights=ew,k=1.0,nodeNumStop=15)
+
+    g1  = graphs.regionAdjacencyGraph(graph=g0,labels=labels)
+    assert g1.nodeNum == 15
+
+def testGridGraphWatersheds():
+
+    data  = numpy.random.random([10,10,10]).astype(numpy.float32)
+    edata = numpy.random.random([10*2-1,10*2-1,10*2-1]).astype(numpy.float32)
+    g0 = graphs.gridGraph(data.shape)
+
+
+    ew = graphs.edgeFeaturesFromInterpolatedImage(graph=g0,image=edata)
+
+    # generate seeds
+    seeds = graphs.nodeWeightedWatershedsSeeds(graph=g0,nodeWeights=data)
+    # node weighted watershed seeds
+    labelsNodeWeightedA  = graphs.nodeWeightedWatersheds(graph=g0,nodeWeights=data,seeds=seeds)
+    # node weighted watershed seeds
+    labelsNodeWeightedB  = graphs.nodeWeightedWatersheds(graph=g0,nodeWeights=data)
+    # edge weighted watershed seeds
+    labelsEdgeWeighted  = graphs.edgeWeightedWatersheds(graph=g0,edgeWeights=ew,seeds=seeds)
+
+    assert numpy.array_equal(labelsNodeWeightedA,labelsNodeWeightedB)
+
+    data  = numpy.random.random([10,10]).astype(numpy.float32)
+    edata = numpy.random.random([10*2-1,10*2-1]).astype(numpy.float32)
+    g0 = graphs.gridGraph(data.shape)
+
+
+    ew = graphs.edgeFeaturesFromInterpolatedImage(graph=g0,image=edata)
+
+    # generate seeds
+    seeds = graphs.nodeWeightedWatershedsSeeds(graph=g0,nodeWeights=data)
+    # node weighted watershed seeds
+    labelsNodeWeightedA  = graphs.nodeWeightedWatersheds(graph=g0,nodeWeights=data,seeds=seeds)
+    # node weighted watershed seeds
+    labelsNodeWeightedB  = graphs.nodeWeightedWatersheds(graph=g0,nodeWeights=data)
+    # edge weighted watershed seeds
+    labelsEdgeWeighted  = graphs.edgeWeightedWatersheds(graph=g0,edgeWeights=ew,seeds=seeds)
+
+    assert numpy.array_equal(labelsNodeWeightedA,labelsNodeWeightedB)
+
+
+def testGridGraphAgglomerativeClustering():
+    dataRGB  = numpy.random.random([10,10,3]).astype(numpy.float32)
+    dataRGB  = vigra.taggedView(dataRGB,'xyc')
+    data  = numpy.random.random([10,10]).astype(numpy.float32)
+    edata = numpy.random.random([10*2-1,10*2-1]).astype(numpy.float32)
+    g0 = graphs.gridGraph(data.shape)
+
+
+    ew = graphs.edgeFeaturesFromInterpolatedImage(graph=g0,image=edata)
+    #ew = taggedView(ew,'xyz')
+
+    
+    labels = graphs.agglomerativeClustering(graph=g0,edgeWeights=ew,nodeFeatures=dataRGB,nodeNumStop=5)
+    g1  = graphs.regionAdjacencyGraph(graph=g0,labels=labels)
+    assert g1.nodeNum == 5
+    
+    labels = graphs.agglomerativeClustering(graph=g0,edgeWeights=ew,nodeNumStop=5)
+    g1  = graphs.regionAdjacencyGraph(graph=g0,labels=labels)
+    assert g1.nodeNum == 5
 
 
 
+    dataRGB  = numpy.random.random([10,10,10,3]).astype(numpy.float32)
+    dataRGB  = vigra.taggedView(dataRGB,'xyzc')
+    data  = numpy.random.random([10,10,10]).astype(numpy.float32)
+    edata = numpy.random.random([10*2-1,10*2-1,10*2-1]).astype(numpy.float32)
+    g0 = graphs.gridGraph(data.shape)
 
-def testGridGraph():
-    pass
 
+    ew = graphs.edgeFeaturesFromInterpolatedImage(graph=g0,image=edata)
+    #ew = taggedView(ew,'xyz')
 
+    
+    labels = graphs.agglomerativeClustering(graph=g0,edgeWeights=ew,nodeFeatures=dataRGB,nodeNumStop=5)
+    g1  = graphs.regionAdjacencyGraph(graph=g0,labels=labels)
+    assert g1.nodeNum == 5
+    
+    labels = graphs.agglomerativeClustering(graph=g0,edgeWeights=ew,nodeNumStop=5)
+    g1  = graphs.regionAdjacencyGraph(graph=g0,labels=labels)
+    assert g1.nodeNum == 5
 
 class TestGraph(object):
 

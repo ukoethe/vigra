@@ -68,7 +68,7 @@ namespace vigra{
         static const size_t CHI_SQUARED_DISTANCE=0;
         static const size_t NORM_SQUARED_DISTANCE=1;
         static const size_t NORM_DISTANCE=2;
-
+        static const size_t L1_DISTANCE=3;
 
         typedef typename EDGE_INDICATOR_MAP::Value ValueType;
         typedef ValueType WeightType;
@@ -236,6 +236,10 @@ namespace vigra{
             }
             else if(nodeDistType_==CHI_SQUARED_DISTANCE){
                 metrics::ChiSquared<ValueType> nodeDistFunctor;
+                fromNodeDist= nodeDistFunctor(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
+            }
+            else if(nodeDistType_==L1_DISTANCE){
+                metrics::Manhattan<ValueType> nodeDistFunctor;
                 fromNodeDist= nodeDistFunctor(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             }
             else{

@@ -553,6 +553,16 @@ The module vigra.graphs provides graphs and graph algorithms
 .. autoclass:: vigra.graphs.AdjacencyListGraph
     :members:
 
+.. autoclass:: vigra.graphs.RegionAdjacencyGraph
+    :members:
+
+.. autoclass:: vigra.graphs.GridRegionAdjacencyGraph
+    :members:
+
+
+.. autoclass:: vigra.graphs.ShortestPathPathDijkstra
+    :members:
+
 
 
 Utilities 

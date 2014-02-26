@@ -103,6 +103,7 @@ public:
         )
         .def(LemonUndirectedGraphCoreVisitor<MergeGraph>(mgAdaptorClsName))
         .def("inactiveEdgesNode",&pyInactiveEdgesNode)
+        .def("graph",&pyMergeGraphsGraph, python::return_internal_reference<>())
         ;
 
         python::def("__mergeGraph",&pyMergeGraphConstructor,
@@ -158,7 +159,9 @@ public:
         );
     }
 
-
+    static const Graph & pyMergeGraphsGraph(const MergeGraph & mg){
+        return mg.graph();
+    }
 
 
     static MergeGraph * pyMergeGraphConstructor(const GRAPH & graph){

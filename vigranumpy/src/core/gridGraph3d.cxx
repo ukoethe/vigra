@@ -81,7 +81,7 @@ namespace vigra{
     }
 
     template<unsigned int DIM>
-    void defineGridGraphT(const std::string & clsName){
+    void defineGridGraphT3d(const std::string & clsName){
 
         typedef GridGraph<DIM,boost::undirected_tag> Graph;
         typedef typename Graph::Edge Edge;
@@ -105,7 +105,7 @@ namespace vigra{
 
     void defineGridGraph3d(){
         //defineGridGraphT<2>("GridGraphUndirected2d");
-        defineGridGraphT<3>("GridGraphUndirected3d");
+        defineGridGraphT3d<3>("GridGraphUndirected3d");
     }
 
 

@@ -82,7 +82,7 @@ public:
 
 
     void exportSegmentationAlgorithms()const{
-        python::def("watershedsSegmentation",registerConverters(&pyEdgeWeightedWatershedsSegmentation),
+        python::def("_edgeWeightedWatershedsSegmentation",registerConverters(&pyEdgeWeightedWatershedsSegmentation),
             (
                 python::arg("graph"),
                 python::arg("edgeWeights"),
@@ -92,18 +92,26 @@ public:
             "Seeded watersheds on a edge weighted graph"
         );
 
-        python::def("nodeWeightedWatershedsSegmentation",registerConverters(&pyNodeWeightedWatershedsSegmentation),
+        python::def("_nodeWeightedWatershedsSegmentation",registerConverters(&pyNodeWeightedWatershedsSegmentation),
             (
                 python::arg("graph"),
-                python::arg("nodWeights"),
-                python::arg("seeds")=python::object(),
+                python::arg("nodeWeights"),
+                python::arg("seeds"),
                 python::arg("method")=std::string("regionGrowing"),
                 python::arg("out")=python::object()
             ),
-            "Seeded watersheds on a node  weighted graph"
+            "Seeded watersheds on a node weighted graph"
+        );
+        python::def("_nodeWeightedWatershedsSeeds",registerConverters(&pyNodeWeightedWatershedsSeeds),
+            (
+                python::arg("graph"),
+                python::arg("nodeWeights"),
+                python::arg("out")=python::object()
+            ),
+            "Generate seeds for node weighted watersheds"
         );
 
-        python::def("carvingSegmentation",registerConverters(&pyCarvingSegmentation),
+        python::def("_carvingSegmentation",registerConverters(&pyCarvingSegmentation),
             (
                 python::arg("graph"),
                 python::arg("edgeWeights"),
@@ -115,11 +123,11 @@ public:
             "Seeded watersheds on a edge weighted graph"
         );
 
-        python::def("felzenszwalbSegmentation",registerConverters(&pyFelzenszwalbSegmentation),
+        python::def("_felzenszwalbSegmentation",registerConverters(&pyFelzenszwalbSegmentation),
             (
                 python::arg("graph"),
                 python::arg("edgeWeights"),
-                python::arg("nodeSizes")=python::object(),
+                python::arg("nodeSizes"),
                 python::arg("k")=300.0f,
                 python::arg("nodeNumStop")=-1,
                 python::arg("out")=python::object()
@@ -147,7 +155,7 @@ public:
             )
         );
 
-        python::def("nodeFeatureDistToEdgeWeight",registerConverters(&pyNodeFeatureDistToEdgeWeight),
+        python::def("_nodeFeatureDistToEdgeWeight",registerConverters(&pyNodeFeatureDistToEdgeWeight),
             (
                 python::arg("graph"),
                 python::arg("nodeFeatures"),
@@ -156,22 +164,22 @@ public:
             ),
             "convert node features to edge weights with the given metric"
         );
-        python::def("nodeFeatureSumToEdgeWeight",registerConverters(&pyNodeFeatureSumToEdgeWeight),
+        python::def("_nodeFeatureSumToEdgeWeight",registerConverters(&pyNodeFeatureSumToEdgeWeight),
             (
                 python::arg("graph"),
                 python::arg("nodeFeatures"),
                 python::arg("out")=python::object()
             ),
-            "convert node features to edge weights with the given metric"
+            "convert node features to edge weights"
         );
 
-        python::def("opengmMulticutDataStructure",registerConverters(&pyMulticutDataStructure),
+        python::def("_opengmMulticutDataStructure",registerConverters(&pyMulticutDataStructure),
             (
                 python::arg("graph"),
                 python::arg("edgeWeights")
             )
         );
-        python::def("opengmArgToLabeling",registerConverters(&pyMulticutArgToLabeling),
+        python::def("_opengmArgToLabeling",registerConverters(&pyMulticutArgToLabeling),
             (
                 python::arg("graph"),
                 python::arg("arg"),
@@ -183,7 +191,7 @@ public:
 
     void exportSmoothingAlgorithms()const{
 
-        python::def("recursiveGraphSmoothing",registerConverters(&pyRecursiveGraphSmoothing),
+        python::def("_recursiveGraphSmoothing",registerConverters(&pyRecursiveGraphSmoothing),
             (
                 python::arg("graph"),
                 python::arg("nodeFeatures"),
@@ -198,7 +206,7 @@ public:
             "recursive edge weighted guided graph smoothing"
         );
 
-        python::def("dynamicRecursiveGraphSmoothing",registerConverters(&pyDynamicRecursiveGraphSmoothing),
+        python::def("_dynamicRecursiveGraphSmoothing",registerConverters(&pyDynamicRecursiveGraphSmoothing),
             (
                 python::arg("graph"),
                 python::arg("nodeFeatures"),
@@ -213,7 +221,7 @@ public:
             "recursive edge weighted guided graph smoothing"
         );
 
-        python::def("wardCorrection",registerConverters(&pyWardCorrection),
+        python::def("_wardCorrection",registerConverters(&pyWardCorrection),
             (
                 python::arg("graph"),
                 python::arg("edgeIndicator"),
@@ -469,15 +477,7 @@ public:
     ){
 
         // resize output ? 
-        seedsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
         labelsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
-
-        if(!seedsArray.size()==0){
-            std::copy(seedsArray.begin(),seedsArray.end(),labelsArray.begin());
-        }
-        else{
-            std::fill(labelsArray.begin(),labelsArray.end(),0);
-        }
 
 
         WatershedOptions watershedsOption;
@@ -488,22 +488,35 @@ public:
 
         // numpy arrays => lemon maps
         FloatNodeArrayMap  nodeWeightsArrayMap(g,nodeWeightsArray);
-        UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
+        UInt32NodeArrayMap seedsArrayMap(g,seedsArray);
 
 
         //lemon_graph::graph_detail::generateWatershedSeeds(g, nodeWeightsArrayMap, labelsArrayMap, watershedsOption.seed_options);
-
-        // generate seeds from local minima
-        //typedef unsigned char MarkerType;
-        //typename Graph::template NodeMap<MarkerType>  minima(g);
-
-
-        lemon_graph::graph_detail::generateWatershedSeeds(g, nodeWeightsArrayMap, labelsArrayMap, watershedsOption.seed_options);
-        lemon_graph::graph_detail::seededWatersheds(g, nodeWeightsArrayMap, labelsArrayMap, watershedsOption);
-
+        lemon_graph::graph_detail::seededWatersheds(g, nodeWeightsArrayMap, seedsArrayMap, watershedsOption);\
+        std::copy(seedsArray.begin(),seedsArray.end(),labelsArray.begin());
         return labelsArray;
+    }
 
+    static NumpyAnyArray pyNodeWeightedWatershedsSeeds(
+        const Graph &       g,
+        FloatNodeArray      nodeWeightsArray,
+        UInt32NodeArray     seedsArray
+    ){
+        const std::string method="regionGrowing";
+        // resize output ? 
+        seedsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
 
+        WatershedOptions watershedsOption;
+        if(method==std::string("regionGrowing"))
+            watershedsOption.regionGrowing();
+
+        // numpy arrays => lemon maps
+        FloatNodeArrayMap  nodeWeightsArrayMap(g,nodeWeightsArray);
+        UInt32NodeArrayMap seedsArrayMap(g,seedsArray);
+
+        lemon_graph::graph_detail::generateWatershedSeeds(g, nodeWeightsArrayMap, seedsArrayMap, watershedsOption.seed_options);
+
+        return seedsArray;
     }
 
     static NumpyAnyArray pyCarvingSegmentation(
@@ -539,13 +552,6 @@ public:
     ){
         // resize output ? 
         labelsArray.reshapeIfEmpty(  IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
-
-        // is size array empty?
-        // if empty fill with ones
-        if(nodeSizesArray.shape(0)==0){
-            nodeSizesArray.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g));
-            std::fill(nodeSizesArray.begin(),nodeSizesArray.end(),1.0);
-        }
 
         // numpy arrays => lemon maps
         FloatEdgeArrayMap  edgeWeightsArrayMap(g,edgeWeightsArray);
@@ -726,7 +732,7 @@ public:
                 python::arg("image"),
                 python::arg("out")=python::object()
             ),
-            "convert node features to edge weights with the given metric"
+            "convert an image with with shape = graph.shape *2 -1 to an edge weight array"
         );
 
         python::def("edgeFeaturesFromInterpolatedImageCorrected",registerConverters(&pyEdgeWeightsFromInterpolatedImageCorrected),
@@ -735,7 +741,7 @@ public:
                 python::arg("image"),
                 python::arg("out")=python::object()
             ),
-            "convert node features to edge weights with the given metric"
+            "convert an image with with shape = graph.shape *2 -1 to an edge weight array"
         );
     }
 

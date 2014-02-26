@@ -568,12 +568,9 @@ _genFeaturConvenienceFunctions()
 del _genFeaturConvenienceFunctions
 
 
-
-
-
-
-
-def _genGraphConvenienceFunctions():
+# define grid graph convenience functions
+# and extend grid graph classes
+def _genGridGraphConvenienceFunctions():
 
     def gridGraph(shape,directNeighborhood=True):
         '''Return a grid graph with certain shape. 
@@ -632,7 +629,7 @@ def _genGraphConvenienceFunctions():
                 size[:]=1
                 return size
 
-            def edgeLength(self):
+            def edgeLengths(self):
                 size = graphs.graphMap(self,item='edge',dtype=numpy.float32)
                 size[:]=1
                 return size
@@ -644,13 +641,20 @@ def _genGraphConvenienceFunctions():
     isGridGraph.__module__ = 'vigra.graphs'
     graphs.isGridGraph = isGridGraph  
 
+_genGridGraphConvenienceFunctions()
+del _genGridGraphConvenienceFunctions
+
+
+
+def _genGraphConvenienceFunctions():
+
     def listGraph(nodes=0,edges=0):
         ''' Return an empty directed graph
 
             Parameters :
 
-                - nodes -- number of nodes to reserveEdges
-                - edges -- number of edges to reserve
+                - nodes : number of nodes to reserveEdges
+                - edges : number of edges to reserve
 
             Returns :
 
@@ -660,170 +664,6 @@ def _genGraphConvenienceFunctions():
         
     listGraph.__module__ = 'vigra.graphs'
     graphs.listGraph = listGraph
-
-
-    class RegionAdjacencyGraph(graphs.AdjacencyListGraph):
-        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
-            super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
-
-            if ignoreLabel is None:
-                ignoreLabel=-1
-
-            self.labels          = labels
-            self.ignoreLabel     = ignoreLabel
-            self.baseGraphLabels = labels
-            self.baseGraph       = graph
-            # set up rag
-            self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
-
-        def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
-            graph = self.baseGraph
-            affiliatedEdges = self.affiliatedEdges
-            if acc == 'mean':
-              weights = self.baseGraph.edgeLength()
-            else :
-              weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
-              weights[:]=1
-            return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
-
-        def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
-            graph = self.baseGraph
-            labels = self.baseGraphLabels
-            ignoreLabel = self.ignoreLabel
-            if acc == 'mean':
-              weights = self.baseGraph.nodeSize()
-            else :
-              weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
-              weights[:]=1
-            return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,weights,acc,ignoreLabel,out)
-
-        def projectNodeFeatureToBaseGraph(self,features,out=None):
-            out=graphs._ragProjectNodeFeaturesToBaseGraph(
-                rag=self,
-                baseGraph=self.baseGraph,
-                baseGraphLabels=numpy.squeeze(self.baseGraphLabels),
-                ragNodeFeatures=features,
-                ignoreLabel=self.ignoreLabel,
-                out=out
-            )
-            #print "out",out.shape,out.dtype
-            return out
-
-        def projectLabelsBack(self,steps,labels=None,current=0):
-            if labels is None :
-                # identity segmentation on this level
-                labels = self.nodeIdMap()
-
-            if steps == current :
-                return labels
-            else :
-                labels = self.projectLabelsToBaseGraph(labels)
-                return self.baseGraph.projectLabelsBack(steps,labels,current+1)
-
-
-        def projectLabelsToBaseGraph(self,labels=None):
-            if labels is None :
-                # identity segmentation on this level
-                labels = self.nodeIdMap()
-            return self.projectNodeFeatureToBaseGraph(features=labels)
-
-
-    RegionAdjacencyGraph.__module__ = 'vigra.graphs'
-    graphs.RegionAdjacencyGraph = RegionAdjacencyGraph
-
-    class GridRegionAdjacencyGraph(graphs.RegionAdjacencyGraph):
-        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
-            if not (isGridGraph(graph) or  isinstance(graph,GridRegionAdjacencyGraph)):
-                raise RuntimeError("graph must be a GridGraph or a GridRegionAdjacencyGraph")
-            super(GridRegionAdjacencyGraph,self).__init__(graph,labels,ignoreLabel,reserveEdges)
-
-        @property
-        def shape(self):
-            return self.baseGraph.shape
-
-        def projectLabelsToGridGraph(self,labels=None):
-            if labels is None :
-                # identity segmentation on this level
-                labels = self.nodeIdMap()
-
-            if isGridGraph(self.baseGraph):
-                return self.projectLabelsToBaseGraph(labels)
-            else :
-                labels = self.projectLabelsToBaseGraph(labels)
-                return self.baseGraph.projectLabelsToGridGraph(labels)
-
-        def showNested(self,img,labels=None):
-            ll=[]
-            if labels is not None:
-              ll.append( self.projectLabelsToGridGraph(labels) )
-            ll.append( self.projectLabelsToGridGraph() )
-
-            g=self.baseGraph
-            while isGridGraph(g)==False:
-              ll.append( g.projectLabelsToGridGraph() )
-              g=g.baseGraph
-
-
-            ll.reverse()
-            gridLabels = [l[...,numpy.newaxis] for l in ll ]
-            gridLabels = numpy.concatenate(gridLabels,axis=2)
-
-
-            return nestedSegShow(img,gridLabels)
-
-
-        def show(self,img,labels=None):
-            pLabels = self.projectLabelsToGridGraph(labels)
-            return segShow(img,numpy.squeeze(pLabels))
-
-        def nodeSize(self):
-            baseNodeSizes = self.baseGraph.nodeSize()
-            return self.accumulateNodeFeatures(baseNodeSizes,acc='sum')
-        def edgeLength(self):
-            baseNodeSizes = self.baseGraph.edgeLength()
-            return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
-
-    GridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
-    graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
-
-
-
-    def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0):
-        """ Return a region adjacency graph for a labeld graph.
-
-            Parameters:
-
-                - graph  -- input graph
-                - lables -- node-map with labels for each nodeSumWeights
-                - ignoreLabel -- label to ingnore (default: None)
-                - reserveEdges -- reverse a certain number of edges (default: 0)
-
-            Returns:
-                - rag -- instance of RegionAdjacencyGraph or GridRegionAdjacencyGraph
-                    If graph is a GridGraph or a GridRegionAdjacencyGraph, a GridRegionAdjacencyGraph 
-                    will be returned.
-                    Otherwise a RegionAdjacencyGraph will be returned
-        """
-        if isinstance(graph , graphs.GridRegionAdjacencyGraph) or isGridGraph(graph):
-            return GridRegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges)
-        else:
-            return RegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges) 
-
-       
-
-
-
-    regionAdjacencyGraph.__module__ = 'vigra.graphs'
-    graphs.regionAdjacencyGraph = regionAdjacencyGraph
-
-    def gridRegionAdjacencyGraph(labels,ignoreLabel=None,reserveEdges=0):
-      _gridGraph=graphs.gridGraph(numpy.squeeze(labels).shape)
-      rag=graphs.regionAdjacencyGraph(_gridGraph,labels,ignoreLabel,reserveEdges)
-      return _gridGraph,rag
-
-    gridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
-    graphs.gridRegionAdjacencyGraph = gridRegionAdjacencyGraph
-
 
     def intrinsicGraphMapShape(graph,item):
         """ Intrinsic shape of node/edge/arc-map for a given graph.
@@ -836,9 +676,9 @@ def _genGraphConvenienceFunctions():
 
             Parameters:
 
-                - graph -- input graph to get the shape for
+                - graph : input graph to get the shape for
 
-                - item  -- item must be ``'node'`` , ``'edge'`` or ``'arc'``
+                - item  : item must be ``'node'`` , ``'edge'`` or ``'arc'``
 
             Returns:
 
@@ -857,23 +697,25 @@ def _genGraphConvenienceFunctions():
     graphs.intrinsicGraphMapShape = intrinsicGraphMapShape
 
 
-    def graphMap(graph,item,dtype,channels=1):
+    def graphMap(graph,item,dtype=numpy.float32,channels=1,addChannelDim=False):
         """ Return a graph map for a given graph item (``'node'`` , ``'edge'`` or ``'arc'``).
 
             Parameters:
 
-                - graph    -- graph to get a graph map for
-                - item     -- ``'node'`` , ``'edge'`` or ``'arc'``
-                - dtype    -- desired dtype 
-                - channels -- number of channels (default: 1)
+                - graph    : graph to get a graph map for
+                - item     : ``'node'`` , ``'edge'`` or ``'arc'``
+                - dtype    : desired dtype 
+                - channels : number of channels (default: 1)
+                - addChannelDim -- add an explicit channelDim :(default: False)
+                    only useful if channels == 1 
 
             Returns:
 
-                - graphmap as numpy.ndarray
+                - graphmap as numpy.ndarray / VigraArray
         """
         s = intrinsicGraphMapShape(graph,item)
         intrDim = len(s)
-        if(channels==1):
+        if(channels==1) and addChannelDim==False:
             a=numpy.zeros(shape=s,dtype=dtype)
             if intrDim == 1:
                 return taggedView(a,'x')
@@ -905,14 +747,580 @@ def _genGraphConvenienceFunctions():
     graphs.graphMap = graphMap
 
 
+    def mergeGraph(graph):
+        # call unsave c++ function and make it save
+        mg = graphs.__mergeGraph(graph)
+        mg.__dict__['__base_object__']=graph
+        return mg
+
+    mergeGraph.__module__ = 'vigra.graphs'
+    graphs.mergeGraph = mergeGraph
 
 
-    def minEdgeWeightNodeDist(mergeGraph,edgeWeights,edgeSizes,nodeFeatures,nodeSize,outWeight=None,
+    INVALID = graphs.Invalid()
+    graphs.INVALID = INVALID
+
+
+
+    class ShortestPathPathDijkstra(object):
+        def __init__(self,graph):
+            """ shortest path computer
+
+                Keyword Arguments:
+
+                    - graph : input graph
+
+            """
+            self.pathFinder =  graphs._shortestPathDijkstra(graph)
+            self.graph=graph
+            self.source = None
+            self.target = None
+        def run(self,weights,source,target=None):
+            """ run shortest path search
+
+                Keyword Arguments:
+
+                   - weights : edge weights encoding distance from two adjacent nodes
+
+                   - source : source node 
+
+                   - target : target node (default: None)
+                        If target node is None, the shortest path
+                        to all nodes!=source is computed
+
+            """
+            self.source = source
+            self.target = target
+            if target is None:
+                self.pathFinder.run(weights,source)
+            else:
+                self.pathFinder.run(weights,source,target)
+            return self
+
+        def path(self,target=None,pathType='coordinates'):
+            """ get the shortest path from source to target
+
+                Keyword Arguments:
+
+                    - weights : edge weights encoding distance from two adjacent nodes
+
+                    - source : source node 
+
+                    - target : target node (default: None)
+                        If target node is None, the target specified
+                        by 'run' is used.
+
+                    pathType : 'coordinates' or 'ids' path (default: 'coordinates')
+
+
+
+            """
+            if target is None:
+                assert self.target is not None
+                target=self.target
+
+            if pathType=='coordinates':
+                return self.pathFinder.nodeCoordinatePath(target)
+            elif pathType == 'ids':
+                return self.pathFinder.nodeIdPath(target)
+        def distance(self,target=None):
+            """ get distance from source to target
+
+                Keyword Arguments:
+                    - target : target node (default: None)
+                        If target node is None, the target specified
+                        by 'run' is used.
+            """
+            if target is None:
+                assert self.target is not None
+                target=self.target
+            return self.pathFinder.distance(target)
+
+        def distances(self,out=None):
+            """ return the full distance map"""
+            self.pathFinder.distances(out)
+        def predecessors(self,out=None):
+            """ return the full predecessors map"""
+            self.pathFinder.predecessors(out)
+
+
+    ShortestPathPathDijkstra.__module__ = 'vigra.graphs'
+    graphs.ShortestPathPathDijkstra = ShortestPathPathDijkstra
+
+_genGraphConvenienceFunctions()
+del _genGraphConvenienceFunctions
+
+
+def _genRegionAdjacencyGraphConvenienceFunctions():
+
+
+
+    class RegionAdjacencyGraph(graphs.AdjacencyListGraph):
+        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
+            """ Region adjacency graph
+
+                Keyword Arguments :
+                    - graph : the base graph, the region adjacency graph should be based on
+
+                    - labels : label map for the graph
+
+                    - ignoreLabel : ignore a label in the labels map (default: None)
+
+                    - reserveEdges : reserve a certain number of Edges
+
+                Attributes:
+
+                    - labels : labels passed in constructor
+
+                    - ignoreLabel  : ignoreLabel passed in constructor
+
+                    - baseGraphLabels : labels passed in constructor 
+                        (fixme,dublicated attribute (see labels) )
+
+                    - baseGraph : baseGraph is the graph passed in constructor
+
+                    - affiliatedEdges : for each edge in the region adjacency graph,
+                        a vector of edges of the baseGraph is stored in affiliatedEdges
+
+
+            """
+            super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
+
+            if ignoreLabel is None:
+                ignoreLabel=-1
+
+            self.labels          = labels
+            self.ignoreLabel     = ignoreLabel
+            self.baseGraphLabels = labels
+            self.baseGraph       = graph
+            # set up rag
+            self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
+
+        def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
+            graph = self.baseGraph
+            affiliatedEdges = self.affiliatedEdges
+            if acc == 'mean':
+              weights = self.baseGraph.edgeLengths()
+            else :
+              weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
+              weights[:]=1
+            return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
+
+        def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
+            graph = self.baseGraph
+            labels = self.baseGraphLabels
+            ignoreLabel = self.ignoreLabel
+            if acc == 'mean':
+              weights = self.baseGraph.nodeSize()
+            else :
+              weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
+              weights[:]=1
+            return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,weights,acc,ignoreLabel,out)
+
+        def projectNodeFeatureToBaseGraph(self,features,out=None):
+            out=graphs._ragProjectNodeFeaturesToBaseGraph(
+                rag=self,
+                baseGraph=self.baseGraph,
+                baseGraphLabels=numpy.squeeze(self.baseGraphLabels),
+                ragNodeFeatures=features,
+                ignoreLabel=self.ignoreLabel,
+                out=out
+            )
+            #print "out",out.shape,out.dtype
+            return out
+
+        def projectLabelsBack(self,steps,labels=None,_current=0):
+            if labels is None :
+                # identity segmentation on this level
+                labels = self.nodeIdMap()
+
+            if steps == current :
+                return labels
+            else :
+                labels = self.projectLabelsToBaseGraph(labels)
+                return self.baseGraph.projectLabelsBack(steps,labels,_current+1)
+
+
+        def projectLabelsToBaseGraph(self,labels=None):
+            if labels is None :
+                # identity segmentation on this level
+                labels = self.nodeIdMap()
+            return self.projectNodeFeatureToBaseGraph(features=labels)
+
+
+    RegionAdjacencyGraph.__module__ = 'vigra.graphs'
+    graphs.RegionAdjacencyGraph = RegionAdjacencyGraph
+
+    class GridRegionAdjacencyGraph(graphs.RegionAdjacencyGraph):
+        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
+            """ Grid Region adjacency graph
+
+                A region adjaceny graph,where the base graph should be
+                a grid graph or a GridRegionAdjacencyGraph.
+
+
+                Keyword Arguments :
+                    - graph : the base graph, the region adjacency graph should be based on
+
+                    - labels : label map for the graph
+
+                    - ignoreLabel : ignore a label in the labels map (default: None)
+
+                    - reserveEdges : reserve a certain number of Edges
+
+                Attributes:
+
+                    - labels : labels passed in constructor
+
+                    - ignoreLabel  : ignoreLabel passed in constructor
+
+                    - baseGraphLabels : labels passed in constructor 
+                        (fixme,dublicated attribute (see labels) )
+
+                    - baseGraph : baseGraph is the graph passed in constructor
+
+                    - affiliatedEdges : for each edge in the region adjacency graph,
+                        a vector of edges of the baseGraph is stored in affiliatedEdges
+
+                    - shape : shape of the grid graph which is a base graph in the
+                        complete graph chain.
+
+
+            """
+            if not (graphs.isGridGraph(graph) or  isinstance(graph,GridRegionAdjacencyGraph)):
+                raise RuntimeError("graph must be a GridGraph or a GridRegionAdjacencyGraph")
+            super(GridRegionAdjacencyGraph,self).__init__(graph,labels,ignoreLabel,reserveEdges)
+
+        @property
+        def shape(self):
+            return self.baseGraph.shape
+
+        def projectLabelsToGridGraph(self,labels=None):
+            if labels is None :
+                # identity segmentation on this level
+                labels = self.nodeIdMap()
+
+            if graphs.isGridGraph(self.baseGraph):
+                return self.projectLabelsToBaseGraph(labels)
+            else :
+                labels = self.projectLabelsToBaseGraph(labels)
+                return self.baseGraph.projectLabelsToGridGraph(labels)
+
+        def showNested(self,img,labels=None):
+            ll=[]
+            if labels is not None:
+              ll.append( self.projectLabelsToGridGraph(labels) )
+            ll.append( self.projectLabelsToGridGraph() )
+
+            g=self.baseGraph
+            while graphs.isGridGraph(g)==False:
+              ll.append( g.projectLabelsToGridGraph() )
+              g=g.baseGraph
+
+
+            ll.reverse()
+            gridLabels = [l[...,numpy.newaxis] for l in ll ]
+            gridLabels = numpy.concatenate(gridLabels,axis=2)
+
+
+            return nestedSegShow(img,gridLabels)
+
+
+        def show(self,img,labels=None):
+            pLabels = self.projectLabelsToGridGraph(labels)
+            return segShow(img,numpy.squeeze(pLabels))
+
+        def nodeSize(self):
+            baseNodeSizes = self.baseGraph.nodeSize()
+            return self.accumulateNodeFeatures(baseNodeSizes,acc='sum')
+        def edgeLengths(self):
+            baseNodeSizes = self.baseGraph.edgeLengths()
+            return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
+
+    GridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
+    graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
+
+
+
+    def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0):
+        """ Return a region adjacency graph for a labeld graph.
+
+            Parameters:
+
+                - graph  -- input graph
+                - lables -- node-map with labels for each nodeSumWeights
+                - ignoreLabel -- label to ingnore (default: None)
+                - reserveEdges -- reverse a certain number of edges (default: 0)
+
+            Returns:
+                - rag -- instance of RegionAdjacencyGraph or GridRegionAdjacencyGraph
+                    If graph is a GridGraph or a GridRegionAdjacencyGraph, a GridRegionAdjacencyGraph 
+                    will be returned.
+                    Otherwise a RegionAdjacencyGraph will be returned
+        """
+        if isinstance(graph , graphs.GridRegionAdjacencyGraph) or graphs.isGridGraph(graph):
+            return GridRegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges)
+        else:
+            return RegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges) 
+
+
+    regionAdjacencyGraph.__module__ = 'vigra.graphs'
+    graphs.regionAdjacencyGraph = regionAdjacencyGraph
+
+    def gridRegionAdjacencyGraph(labels,ignoreLabel=None,reserveEdges=0):
+      _gridGraph=graphs.gridGraph(numpy.squeeze(labels).shape)
+      rag=graphs.regionAdjacencyGraph(_gridGraph,labels,ignoreLabel,reserveEdges)
+      return _gridGraph,rag
+
+    gridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
+    graphs.gridRegionAdjacencyGraph = gridRegionAdjacencyGraph
+
+_genRegionAdjacencyGraphConvenienceFunctions()
+del _genRegionAdjacencyGraphConvenienceFunctions
+
+
+def _genGraphSegmentationFunctions():
+
+    def getNodeSizes(graph):
+        """ get size of nodes:
+
+            This functions will try to call 'graph.nodeSize()' .
+            If this fails, a node map filled with 1.0 will be 
+            returned
+
+            Keyword Arguments:
+
+                - graph : input graph
+        """
+        try:
+            return g.nodeSize()
+        except:
+            size = graphs.graphMap(g,'node',dtype=numpy.float32)
+            size[:]=1
+            return size
+    getNodeSizes.__module__ = 'vigra.graphs'
+    graphs.getNodeSizes = getNodeSizes
+
+    def getEdgeLengths(graph):
+        """ get lengths/sizes of edges:
+
+            This functions will try to call 'graph.edgeLength()' .
+            If this fails, an edge map filled with 1.0 will be 
+            returned
+
+            Keyword Arguments:
+
+                - graph : input graph
+        """
+        try:
+            return g.edgeLengths()
+        except:
+            size = graphs.graphMap(g,'edge',dtype=numpy.float32)
+            size[:]=1
+            return size
+    getEdgeLengths.__module__ = 'vigra.graphs'
+    graphs.getEdgeLengths = getEdgeLengths
+
+
+    def felzenszwalbSegmentation(graph,edgeWeights,nodeSizes=None,k=1.0,nodeNumStop=None,out=None):
+        """ felzenszwalbs segmentation method
+
+        Keyword Arguments :
+
+            - graph : input graph
+
+            - edgeWeights : edge weights / indicators
+
+            - nodeSizes : size of each node (default: None) 
+                If nodeSizes is None, 'getNodeSizes' will be called
+
+            - k : free parameter in felzenszwalbs algorithms (default : 1.0)
+                (todo: write better docu)
+
+            - nodeNumStop : stop the agglomeration at a given nodeNum (default :None)
+                If nodeNumStop is None, the resulting number of nodes does depend on k.
+
+
+            - backgroundBias : backgroundBias (default  : None)
+
+        """
+        if nodeNumStop is None :
+            nodeNumStop=-1
+        if nodeSizes is None :
+            nodeSizes=graphs.getNodeSizes(graph)
+        return graphs._felzenszwalbSegmentation(graph=graph,edgeWeights=edgeWeights,nodeSizes=nodeSizes,
+                                                k=k,nodeNumStop=nodeNumStop,out=out)
+
+
+    felzenszwalbSegmentation.__module__ = 'vigra.graphs'
+    graphs.felzenszwalbSegmentation = felzenszwalbSegmentation
+
+
+    def edgeWeightedWatersheds(graph,edgeWeights,seeds,backgoundLabel=None,backgroundBias=None,out=None):
+        """ edge weighted seeded watersheds
+
+        Keyword Arguments :
+
+            - graph : input graph
+
+            - edgeWeights : evaluation weights
+
+            - seeds : node map with seeds .
+                For at least one node, seeds must be nonzero
+
+            - backgroundLabel : a specific backgroundLabel (default : None)
+
+            - backgroundBias : backgroundBias (default  : None)
+
+        """
+        if backgoundLabel is None and backgroundBias is None:
+            return graphs._edgeWeightedWatershedsSegmentation(graph=graph,edgeWeights=edgeWeights,seeds=seeds,
+                                                                out=out)
+        else :
+            if backgoundLabel is None or backgroundBias is None:
+                raise RuntimeError("if backgoundLabel or backgroundBias is not None, the other must also be not None")
+            return graphs._carvingSegmentation(graph=graph,edgeWeights=edgeWeights,seeds=seeds,
+                                                backgroundLabel=backgroundLabel,backgroundBias=backgroundBias,out=out)
+
+    edgeWeightedWatersheds.__module__ = 'vigra.graphs'
+    graphs.edgeWeightedWatersheds = edgeWeightedWatersheds
+
+    def nodeWeightedWatershedsSeeds(graph,nodeWeights,out=None):
+        """ generate watersheds seeds
+
+        Keyword Arguments :
+
+            - graph : input graph
+
+            - nodeWeights : node height map
+
+            - out : seed map
+
+        """
+        return graphs._nodeWeightedWatershedsSeeds(graph=graph,nodeWeights=nodeWeights,out=out)
+
+    nodeWeightedWatershedsSeeds.__module__ = 'vigra.graphs'
+    graphs.nodeWeightedWatershedsSeeds = nodeWeightedWatershedsSeeds
+
+    def nodeWeightedWatersheds(graph,nodeWeights,seeds=None,method='regionGrowing',out=None):
+        """ node weighted seeded watersheds
+
+        Keyword Arguments :
+
+            - graph : input graph
+
+            - nodeWeights : node height map / evaluation weights
+
+            - seeds : node map with seeds (default: None)
+                If seeds are None, 'nodeWeightedWatershedsSeeds' will be called
+
+        """
+
+        if seeds  is None:
+            seeds = graphs.nodeWeightedWatershedsSeeds(graph=graph,nodeWeights=nodeWeights)
+        if method!='regionGrowing':
+            raise RuntimeError("currently only 'regionGrowing' is supported")
+        return graphs._nodeWeightedWatershedsSegmentation(graph=graph,nodeWeights=nodeWeights,seeds=seeds,method=method,out=out)
+
+    nodeWeightedWatersheds.__module__ = 'vigra.graphs'
+    graphs.nodeWeightedWatersheds = nodeWeightedWatersheds
+
+    def agglomerativeClustering(graph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,
+            nodeNumStop=None,beta=0.5,metric='l1',wardness=1.0,out=None):
+        """ agglomerative hierarchicalClustering
+        Keyword Arguments :
+
+            - graph : input graph
+
+            - edgeWeights : edge weights / indicators (default : None)
+
+            - edgeLengths : length  / weight of each edge (default : None)
+                Since we do weighted mean agglomeration, a length/weight
+                is needed for each edge to merge 2 edges w.r.t. weighted mean.
+                If no edge is given, 'getEdgeLengths' is called.
+
+            - nodeFeatures : a feature vector for each node (default: None)
+                A feature vector as RGB values,or a histogram for each node.
+                Within the agglomeration, an additional edge weight will be
+                computed from the "difference" between the features of two adjacent nodes.
+                The metric specified in the keyword 'metric' is used to compute this
+                difference
+
+            - nodeSizes : size  / weight of each node (default : None)
+                Since we do weighted mean agglomeration, a size / weight
+                is needed for each node to merge 2 edges w.r.t. weighted mean.
+                If no edge is given, 'getNodeSizes' is called.
+
+            - nodeNumStop : stop the agglomeration at a given nodeNum (default : graph.nodeNum/2)
+
+            - beta : weight between edgeWeights and nodeFeatures based edgeWeights (default:0.5) :
+                    0.0 means only edgeWeights (from keyword edge weights) and 1.0 means only edgeWeights 
+                    from nodeFeatures differences
+
+            - metric : metric used to compute node feature difference (default : 'l1')
+
+            - wardness : 0 means do not apply wards critrion, 1.0 means fully apply wards critrion (default : 1.0)
+
+            - out : preallocated nodeMap for the resulting labeling (default : None)
+
+        Returns:
+
+            A node labele map encoding the segmentation
+
+        """
+        assert edgeWeights is not None or nodeFeatures is not None
+
+        if nodeNumStop is None:
+            nodeNumStop = max(graph.nodeNum/2,min(graph.nodeNum,2))
+
+        if edgeLengths is None :
+            edgeLengths = graphs.getEdgeLengths(graph)
+        if nodeSizes is None:
+            nodeSizes = graphs.getNodeSizes(graph)
+
+        if edgeWeights is None :
+            edgeWeights = graphs.graphMap(graph,'edge')
+            edgeWeights[:]=0
+
+        if nodeFeatures is None :
+            nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
+            nodeFeatures[:]=0
+
+
+        mg = graphs.mergeGraph(graph)
+        clusterOp = graphs.minEdgeWeightNodeDist(mg,edgeWeights=edgeWeights,edgeLengths=edgeLengths,
+                                                    nodeFeatures=nodeFeatures,nodeSizes=nodeSizes,
+                                                    beta=float(beta),nodeDistType=metric,wardness=wardness)
+        hc = graphs.hierarchicalClustering(clusterOp,nodeNumStopCond=nodeNumStop)
+        hc.cluster()
+        labels = hc.resultLabels(out=out)
+        return labels
+
+
+    agglomerativeClustering.__module__ = 'vigra.graphs'
+    graphs.agglomerativeClustering = agglomerativeClustering
+
+
+    def minEdgeWeightNodeDist(mergeGraph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,outWeight=None,
         beta=0.5,nodeDistType='squaredNorm',wardness=1.0):
-            # call unsave c++ function and make it save
+            graph=mergeGraph.graph()
+            assert edgeWeights is not None or nodeFeatures is not None
+
+            if edgeLengths is None :
+                edgeLengths = graphs.getEdgeLengths(graph,addChannelDim=True)
+            if nodeSizes is None:
+                nodeSizes = graphs.getNodeSizes(graph,addChannelDim=True)
+
+            if edgeWeights is None :
+                edgeWeights = graphs.graphMap(graph,'edge',addChannelDim=True)
+                edgeWeights[:]=0
+
+            if nodeFeatures is None :
+                nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
+                nodeFeatures[:]=0
 
             if outWeight is None:
-                outWeight=graphs.graphMap(mergeGraph,item='edge',dtype=numpy.float32)
+                outWeight=graphs.graphMap(graph,item='edge',dtype=numpy.float32)
 
 
             if    nodeDistType=='squaredNorm':
@@ -921,10 +1329,13 @@ def _genGraphConvenienceFunctions():
                 nd=1
             elif  nodeDistType=='chiSquared':
                 nd=2
+            elif nodeDistType in ('l1','manhatten'):
+                nd=3
             else :
                 raise RuntimeError("'%s' is not a supported distance type"%str(nodeDistType))
 
-            op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeSizes,nodeFeatures,nodeSize,outWeight,
+            # call unsave c++ function and make it sav
+            op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,
                 float(beta),long(nd),float(wardness))
             op.__dict__['__base_object__']=mergeGraph
             op.__dict__['__outWeightArray__']=outWeight
@@ -951,163 +1362,5 @@ def _genGraphConvenienceFunctions():
     hierarchicalClustering.__module__ = 'vigra.graphs'
     graphs.hierarchicalClustering = hierarchicalClustering
 
-    def mergeGraph(graph):
-        # call unsave c++ function and make it save
-        mg = graphs.__mergeGraph(graph)
-        mg.__dict__['__base_object__']=graph
-        return mg
-
-    mergeGraph.__module__ = 'vigra.graphs'
-    graphs.mergeGraph = mergeGraph
-
-
-
-    def hierarchicalSuperpixels(labels,edgeIndicatorImage,nodeFeaturesImage,nSuperpixels,
-        beta=0.5,nodeDistType='squaredNorm',wardness=0.0,verbose=False):
-
-        shape  = numpy.squeeze(labels).shape
-        eShape = numpy.squeeze(edgeIndicatorImage).shape
-        tShape = tuple( [ 2*s-1 for s in shape  ]  )
-        if(eShape==shape):
-            eImg = sampling.resize(numpy.squeeze(edgeIndicatorImage),tShape)
-        elif(eShape==tShape):
-            eImg = numpy.squeeze(edgeIndicatorImage)
-        else :
-            raise RuntimeError("edge indactor image has wrong shape")
-
-        
-
-
-        dimension = len(labels.shape)
-        assert dimension == 2 or dimension ==3
-        if nodeFeaturesImage.ndim == dimension:
-            nodeFeatureChannels=1
-        else:
-            assert nodeFeaturesImage.ndim == dimension+1
-            nodeFeatureChannels = nodeFeaturesImage.shape[dimension]
-        
-
-        #if verbose : print "gridGraph"
-        gridGraph = graphs.gridGraph(labels.shape)
-        
-        eIndicator =  graphs.edgeFeaturesFromInterpolatedImage(gridGraph,eImg)
-
-        rag = graphs.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
-        if verbose :print "regionAdjacencyGraph",rag
-        hyperEdgeSizes = rag.edgeSize()
-        hyperNodeSizes = rag.edgeSize()
-
-
-        edgeMinWeight  = graphs.graphMap(graph=rag,item='edge',dtype=numpy.float32,channels=1)
-
-        print edgeIndicatorImage.shape,edgeIndicatorImage.dtype
-
-        edgeIndicator  = rag.accumulateEdgeFeatures(numpy.squeeze(eIndicator),acc='mean')
-        nodeFeatures   = rag.accumulateNodeFeatures(nodeFeaturesImage,acc='mean')
-
-
-        mergeGraph = graphs.mergeGraph(rag)
-        clusterOperator = graphs.minEdgeWeightNodeDist(mergeGraph,edgeIndicator,hyperEdgeSizes,
-            nodeFeatures,hyperNodeSizes,edgeMinWeight,
-            beta=beta,nodeDistType=nodeDistType,wardness=wardness)
-        hc  = graphs.hierarchicalClustering(clusterOperator,nodeNumStopCond=nSuperpixels,)
-        hc.cluster()
-
-        newLabels = labels.copy()
-        newLabels = newLabels.reshape(-1)
-        # this is inplace
-        hc.reprNodeIds(newLabels)
-        newLabels = newLabels.reshape(labels.shape)
-
-        if(labels.ndim==2):
-            newLabels = analysis.labelImage(newLabels)
-        if(labels.ndim==3):
-            newLabels = analysis.labelVolume(newLabels)
-        return newLabels
-
-    hierarchicalSuperpixels.__module__ = 'vigra.graphs'
-    graphs.hierarchicalSuperpixels = hierarchicalSuperpixels
-
-    INVALID = graphs.Invalid()
-    #hierarchicalSuperpixels.__module__ = 'vigra.graphs'
-    graphs.INVALID = INVALID
-
-
-    def nodeIdsLabels(graph,nodeIds,labels,out=None):
-        nodeIdsShape = nodeIds.shape
-        if out is not None:
-            out=out.reshape(-1)
-        out = graphs._nodeIdsLabels(graph=graph,nodeIds=nodeIds.reshape(-1) ,labels=labels,out=out)
-        out = out.reshape(nodeIdsShape)
-        return out
-
-    nodeIdsLabels.__module__ = 'vigra.graphs'
-    graphs.nodeIdsLabels = nodeIdsLabels
-
-
-    def nodeIdsFeatures(graph,nodeIds,features,out=None):
-        nodeMapShape = graph.intrinsicNodeMapShape()
-        featureMapShape       = features.shape
-        if len(nodeMapShape)+1==features.ndim:
-            spatialInputShape = numpy.squeeze(nodeIds).shape
-            numberOfChannels  = featureMapShape[-1]
-            outShape = spatialInputShape + (numberOfChannels,)
-
-            if out is not None:
-                out = out.reshape([-1,numberOfChannels])
-                out = taggedView(out,'xc')
-
-            out = graphs._nodeIdsFeatures(graph=graph,nodeIds=nodeIds.reshape(-1) ,features=features,out=out)
-            out = out.reshape(outShape)
-            return out
-        elif len(nodeMapShape)==features.ndim:
-            raise RuntimeError("feature map has wrong dimension: feature map must have a channel dimension")
-        else :
-            raise RuntimeError("feature map has wrong dimension")
-    
-    nodeIdsFeatures.__module__ = 'vigra.graphs'
-    graphs.nodeIdsFeatures = nodeIdsFeatures
-
-
-
-
-    class ShortestPathPathDijkstra(object):
-        def __init__(self,graph):
-            self.pathFinder =  graphs._shortestPathDijkstra(graph)
-            self.graph=graph
-            self.source = None
-            self.target = None
-        def run(self,weights,source,target=None):
-            self.source = source
-            self.target = target
-            if target is None:
-                self.pathFinder.run(weights,source)
-            else:
-                self.pathFinder.run(weights,source,target)
-            return self
-
-        def path(self,target=None,pathType='coordinates'):
-            if target is None:
-                assert self.target is not None
-                target=self.target
-
-            if pathType=='coordinates':
-                return self.pathFinder.nodeCoordinatePath(target)
-            elif pathType == 'ids':
-                return self.pathFinder.nodeIdPath(target)
-        def distance(self,target):
-          return self.pathFinder.distance(target)
-        def distances(self,out=None):
-            self.pathFinder.distances(out)
-        def predecessors(self,out=None):
-            self.pathFinder.predecessors(out)
-
-
-    ShortestPathPathDijkstra.__module__ = 'vigra.graphs'
-    graphs.ShortestPathPathDijkstra = ShortestPathPathDijkstra
-
-
-
-_genGraphConvenienceFunctions()
-del _genGraphConvenienceFunctions
-
+_genGraphSegmentationFunctions()
+del _genGraphSegmentationFunctions
