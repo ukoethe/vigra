@@ -270,7 +270,7 @@ def searchfor(searchstring):
             print attr+"."+cont
 
 # FIXME: use axistags here
-def imshow(image):
+def imshow(image,show=True):
     '''Display a scalar or RGB image by means of matplotlib.
        If the image does not have one or three channels, an exception is raised.
        The image will be automatically scaled to the range 0...255 when its dtype 
@@ -286,20 +286,22 @@ def imshow(image):
         image = image.dropChannelAxis().view(numpy.ndarray)
         plot = matplotlib.pyplot.imshow(image, cmap=matplotlib.cm.gray, \
                                          norm=matplotlib.cm.colors.Normalize())
-        #matplotlib.pylab.show()
+        if show:
+            matplotlib.pylab.show()
         return plot
     elif image.channels == 3:
         if image.dtype != numpy.uint8:
             out = image.__class__(image.shape, dtype=numpy.uint8, axistags=image.axistags)
             image = colors.linearRangeMapping(image, newRange=(0.0, 255.0), out=out)
         plot = matplotlib.pyplot.imshow(image.view(numpy.ndarray))
-        #matplotlib.pylab.show()
+        if show:
+            matplotlib.pylab.show()
         return plot
     else:
         raise RuntimeError("vigra.imshow(): Image must have 1 or 3 channels.")
 
 
-def segShow(img,labels,edgeColor=(1,0,0) ):
+def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False):
     labels = numpy.squeeze(labels)
     crackedEdges = analysis.regionImageToCrackEdgeImage(labels)
     whereEdge    =  numpy.where(crackedEdges==0)
@@ -308,11 +310,11 @@ def segShow(img,labels,edgeColor=(1,0,0) ):
     imgToDisplay/=imgToDisplay.max()
     for c in range(3):
         ic = imgToDisplay[:,:,c]
-        ic[whereEdge]=edgeColor[c]
+        ic[whereEdge]=(1.0-alpha)*edgeColor[c] + alpha*ic[whereEdge]
 
-    return imshow(imgToDisplay)
+    return imshow(imgToDisplay,show=show)
 
-def nestedSegShow(img,labels,edgeColors=None,scale=1):
+def nestedSegShow(img,labels,edgeColors=None,scale=1,show=False):
 
     shape=(labels.shape[0]*scale,labels.shape[1]*scale)
     if scale!=1:
@@ -361,7 +363,7 @@ def nestedSegShow(img,labels,edgeColors=None,scale=1):
             ic  = imgToDisplay[:,:,c]
             ic[whereEdge]=(1.0-alpha) * edgeColors[si,c] + alpha*icI[whereEdge]
 
-    return imshow(imgToDisplay)
+    return imshow(imgToDisplay,show=show)
 
 
 def show():
@@ -620,16 +622,21 @@ def _genGridGraphConvenienceFunctions():
 
         ##inject some methods in the point foo
         class moreGridGraph(gridGraphInjector, cls):
+            
             @property
             def shape(self):
+                """ shape of grid graph"""
                 return self.intrinsicNodeMapShape()
 
+            
             def nodeSize(self):
+                """ node map filled with 1.0"""
                 size = graphs.graphMap(self,item='node',dtype=numpy.float32)
                 size[:]=1
                 return size
 
             def edgeLengths(self):
+                """ node map filled with 1.0"""
                 size = graphs.graphMap(self,item='edge',dtype=numpy.float32)
                 size[:]=1
                 return size
@@ -637,6 +644,7 @@ def _genGridGraphConvenienceFunctions():
 
 
     def isGridGraph(obj):
+        """ check if obj is gridGraph"""
         return isinstance(obj,(graphs.GridGraphUndirected2d , graphs.GridGraphUndirected3d))
     isGridGraph.__module__ = 'vigra.graphs'
     graphs.isGridGraph = isGridGraph  
@@ -748,6 +756,10 @@ def _genGraphConvenienceFunctions():
 
 
     def mergeGraph(graph):
+        """ get a merge graph from input graph.
+
+            A merge graph might be usefull for hierarchical clustering
+        """
         # call unsave c++ function and make it save
         mg = graphs.__mergeGraph(graph)
         mg.__dict__['__base_object__']=graph
@@ -897,6 +909,19 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
 
         def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
+            """ accumulate edge features from base graphs edges features
+
+                Keyword Argument:
+
+                    - edgeFeatures : edge features of baseGraph
+                    - acc : used accumulator (default: 'mean')
+                        Currently only 'mean' and 'sum' are implemented
+                    - out :  preallocated edge map 
+
+                Returns : 
+                    accumulated edge features
+            """
+
             graph = self.baseGraph
             affiliatedEdges = self.affiliatedEdges
             if acc == 'mean':
@@ -907,6 +932,18 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
+            """ accumulate edge features from base graphs edges features
+
+                Keyword Argument:
+
+                    - nodeFeatures : node features of baseGraph
+                    - acc : used accumulator (default: 'mean')
+                        Currently only 'mean' and 'sum' are implemented
+                    - out :  preallocated node map (default: None)
+
+                Returns : 
+                    accumulated node features
+            """
             graph = self.baseGraph
             labels = self.baseGraphLabels
             ignoreLabel = self.ignoreLabel
@@ -918,6 +955,16 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,weights,acc,ignoreLabel,out)
 
         def projectNodeFeatureToBaseGraph(self,features,out=None):
+            """ project node features from this graph, to the base graph of this graph.
+
+                Keyword Arguments:
+
+                    - features : node feautres for this graph
+                    - out :  preallocated node map of baseGraph (default: None)
+
+                Returns :
+                    projected node features of base graph
+            """
             out=graphs._ragProjectNodeFeaturesToBaseGraph(
                 rag=self,
                 baseGraph=self.baseGraph,
@@ -930,6 +977,14 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             return out
 
         def projectLabelsBack(self,steps,labels=None,_current=0):
+            """  project labels from current graph to baseGraph and repeat this recursively
+
+                Keyword  Arguments:
+
+                    - steps : how often should the labels be projected back
+                    - labels : labels for the current graph (default: None)
+                        If labels is None, each node gets its own label
+            """
             if labels is None :
                 # identity segmentation on this level
                 labels = self.nodeIdMap()
@@ -942,10 +997,22 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
         def projectLabelsToBaseGraph(self,labels=None):
+            """ project node labels from this graph, to the base graph of this graph.
+
+                Keyword Arguments:
+
+                    - labels : node labels for this graph (default: None)
+                        If labels is None, each node gets its own label
+                    - out :  preallocated node map of baseGraph (default: None)
+
+                Returns :
+            """
             if labels is None :
                 # identity segmentation on this level
                 labels = self.nodeIdMap()
             return self.projectNodeFeatureToBaseGraph(features=labels)
+
+
 
 
     RegionAdjacencyGraph.__module__ = 'vigra.graphs'
@@ -968,7 +1035,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
                     - reserveEdges : reserve a certain number of Edges
 
-                Attributes:
+                Attributes :
 
                     - labels : labels passed in constructor
 
@@ -993,9 +1060,21 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
         @property
         def shape(self):
+            """ shape of the underlying grid graph"""
             return self.baseGraph.shape
 
         def projectLabelsToGridGraph(self,labels=None):
+            """project labels of this graph to the underlying grid graph.
+
+                Keyword Arguments :
+
+                    - labels : node labeling of this graph (default: None)
+                        If labels is None, each node gets its own label
+
+                Returns :
+                    grid graph labeling
+
+            """
             if labels is None :
                 # identity segmentation on this level
                 labels = self.nodeIdMap()
@@ -1006,7 +1085,33 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 labels = self.projectLabelsToBaseGraph(labels)
                 return self.baseGraph.projectLabelsToGridGraph(labels)
 
+        def projectNodeFeaturesToGridGraph(self,features):
+            """ project features of this graph to the underlying grid graph.
+                Therefore project the features to an image.
+
+                Keyword Arguments :
+
+                    - features : nodeFeatures of the current graph
+
+                Returns :
+                    grid graph labeling
+
+            """
+            if graphs.isGridGraph(self.baseGraph):
+                return self.projectNodeFeatureToBaseGraph(features)
+            else :
+                features = self.projectNodeFeatureToBaseGraph(features)
+                return self.baseGraph.projectNodeFeaturesToGridGraph(features)
+
         def showNested(self,img,labels=None):
+            """ show the complet graph chain  / hierarchy given an RGB image
+
+                Keyword Arguments:
+                    - img : RGB image 
+
+                    - labels : node labeling of this graph (default: None)
+                        If labels is None, each node gets its own label
+            """
             ll=[]
             if labels is not None:
               ll.append( self.projectLabelsToGridGraph(labels) )
@@ -1026,14 +1131,30 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             return nestedSegShow(img,gridLabels)
 
 
-        def show(self,img,labels=None):
+        def show(self,img,labels=None,edgeColor=(0,0,0),alpha=0.3):
+            """ show the graph given an RGB image
+
+                Keyword Arguments:
+                    - img : RGB image 
+
+                    - labels : node labeling of this graph (default: None)
+                        If labels is None, each node gets its own label
+
+                    - edgeColor : RGB tuple of edge color (default: (0,0,0) ).
+                        Do not use values bigger than 1 in edgeColor.
+
+                    - alpha : make edges semi transparent (default: 0.3).
+                        0 means no transparency,1 means full transparency.
+            """
             pLabels = self.projectLabelsToGridGraph(labels)
-            return segShow(img,numpy.squeeze(pLabels))
+            return segShow(img,numpy.squeeze(pLabels),edgeColor=edgeColor,alpha=alpha)
 
         def nodeSize(self):
+            """ get the geometric size of the nodes """
             baseNodeSizes = self.baseGraph.nodeSize()
             return self.accumulateNodeFeatures(baseNodeSizes,acc='sum')
         def edgeLengths(self):
+            """ get the geometric length of the edges"""
             baseNodeSizes = self.baseGraph.edgeLengths()
             return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
 
@@ -1068,9 +1189,18 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     graphs.regionAdjacencyGraph = regionAdjacencyGraph
 
     def gridRegionAdjacencyGraph(labels,ignoreLabel=None,reserveEdges=0):
-      _gridGraph=graphs.gridGraph(numpy.squeeze(labels).shape)
-      rag=graphs.regionAdjacencyGraph(_gridGraph,labels,ignoreLabel,reserveEdges)
-      return _gridGraph,rag
+        """ get a region adjacency graph and a grid graph from a labeling.
+
+            This function will call 'graphs.gridGraph' and 'graphs.regionAdjacencyGraph'
+
+            Keyword Arguments:
+                - labels : label image
+                - ignoreLabel : label to ingnore (default: None)
+                - reserveEdges : reserve a number of edges (default: 0)
+        """
+        _gridGraph=graphs.gridGraph(numpy.squeeze(labels).shape)
+        rag=graphs.regionAdjacencyGraph(_gridGraph,labels,ignoreLabel,reserveEdges)
+        return _gridGraph,rag
 
     gridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.gridRegionAdjacencyGraph = gridRegionAdjacencyGraph
@@ -1093,9 +1223,9 @@ def _genGraphSegmentationFunctions():
                 - graph : input graph
         """
         try:
-            return g.nodeSize()
+            return graph.nodeSize()
         except:
-            size = graphs.graphMap(g,'node',dtype=numpy.float32)
+            size = graphs.graphMap(graph,'node',dtype=numpy.float32)
             size[:]=1
             return size
     getNodeSizes.__module__ = 'vigra.graphs'
@@ -1113,9 +1243,9 @@ def _genGraphSegmentationFunctions():
                 - graph : input graph
         """
         try:
-            return g.edgeLengths()
+            return graph.edgeLengths()
         except:
-            size = graphs.graphMap(g,'edge',dtype=numpy.float32)
+            size = graphs.graphMap(graph,'edge',dtype=numpy.float32)
             size[:]=1
             return size
     getEdgeLengths.__module__ = 'vigra.graphs'
@@ -1138,7 +1268,7 @@ def _genGraphSegmentationFunctions():
                 (todo: write better docu)
 
             - nodeNumStop : stop the agglomeration at a given nodeNum (default :None)
-                If nodeNumStop is None, the resulting number of nodes does depend on k.
+                If nodeNumStop is None, the resulting number of nodes does depends on k.
 
 
             - backgroundBias : backgroundBias (default  : None)
@@ -1237,7 +1367,7 @@ def _genGraphSegmentationFunctions():
             - edgeLengths : length  / weight of each edge (default : None)
                 Since we do weighted mean agglomeration, a length/weight
                 is needed for each edge to merge 2 edges w.r.t. weighted mean.
-                If no edge is given, 'getEdgeLengths' is called.
+                If no edgeLengths is given, 'getEdgeLengths' is called.
 
             - nodeFeatures : a feature vector for each node (default: None)
                 A feature vector as RGB values,or a histogram for each node.
@@ -1249,7 +1379,7 @@ def _genGraphSegmentationFunctions():
             - nodeSizes : size  / weight of each node (default : None)
                 Since we do weighted mean agglomeration, a size / weight
                 is needed for each node to merge 2 edges w.r.t. weighted mean.
-                If no edge is given, 'getNodeSizes' is called.
+                If no nodeSizes is given, 'getNodeSizes' is called.
 
             - nodeNumStop : stop the agglomeration at a given nodeNum (default : graph.nodeNum/2)
 
@@ -1364,3 +1494,67 @@ def _genGraphSegmentationFunctions():
 
 _genGraphSegmentationFunctions()
 del _genGraphSegmentationFunctions
+
+
+
+def _genGraphSmoothingFunctions():
+    def recursiveGraphSmoothing( graph,nodeFeatures,edgeIndicator,gamma,
+                               edgeThreshold,scale=1.0,iterations=1,out=None):
+        """ recursive graph smoothing to smooth node features.
+            Each node feature is smoothed with the features of neighbor nodes.
+            The strength of the smoothing is computed from:
+
+                "edgeIndicator > edgeThreshold ? 0 : exp(-1.0*gamma*edgeIndicator)*scale"
+
+            Therefore this filter is edge preserving.
+
+            Keyword Arguments :
+
+                - graph : input graph
+
+                - nodeFeatures : node features which should be smoothed
+
+                - edgeIndicator  : edge indicator 
+
+                - gamma  : scale edgeIndicator by gamma bevore taking the negative exponent
+
+                - scale  : how much should a node be mixed with its neighbours per iteration 
+
+                - iteration : how often should recursiveGraphSmoothing be called recursively
+
+            Returns : 
+                smoothed nodeFeatures
+
+        """
+        return graphs._recursiveGraphSmoothing(graph=graph,nodeFeatures=nodeFeatures,edgeIndicator=edgeIndicator,
+                              gamma=gamma,edgeThreshold=edgeThreshold,scale=scale,iterations=iterations,out=out)
+
+    recursiveGraphSmoothing.__module__ = 'vigra.graphs'
+    graphs.recursiveGraphSmoothing = recursiveGraphSmoothing
+
+_genGraphSmoothingFunctions()
+del _genGraphSmoothingFunctions
+
+
+
+def _genGraphMiscFunctions():
+    
+    def nodeFeaturesToEdgeWeights(graph,nodeFeatures,metric='l1',out=None):
+        """ compute an edge indicator from node features .
+
+            Keyword Arguments :
+                - graph : input graph
+                - nodeFeatures : node map with feature vector for each node
+                - metric : metric / distance used to convert 2 node features to
+                    an edge weight
+
+            Returns :
+                edge indicator
+        """
+        return graphs._nodeFeaturesToEdgeWeights(graph=graph,nodeFeatures=nodeFeatures,metric=metric,out=out)
+
+    nodeFeaturesToEdgeWeights.__module__ = 'vigra.graphs'
+    graphs.nodeFeaturesToEdgeWeights = nodeFeaturesToEdgeWeights
+
+_genGraphMiscFunctions()
+del _genGraphMiscFunctions

@@ -1027,49 +1027,6 @@ namespace vigra{
         }
     }
 
-
-
-    template<class GRAPH, class NODE_FEATURES_IN,class DISTANCE,class NODE_FEATURES_OUT>
-    void dynamicRecursiveGraphSmoothing(
-        const GRAPH & g,
-        const NODE_FEATURES_IN   & nodeFeaturesIn,
-        const float lambda,
-        const float edgeThreshold,
-        const float scale,
-        DISTANCE distanceFunctor,
-        size_t                    iterations,
-        NODE_FEATURES_OUT       & nodeFeaturesBuffer,
-        NODE_FEATURES_OUT       & nodeFeaturesOut
-    ){
-
-        // on the flight edge weight maps (refactor result type)
-        OnTheFlyEdgeMap<GRAPH,NODE_FEATURES_IN ,DISTANCE,float> inEdgeIndicator(g,nodeFeaturesIn,distanceFunctor);
-        OnTheFlyEdgeMap<GRAPH,NODE_FEATURES_OUT,DISTANCE,float> outEdgeIndicator(g,nodeFeaturesIn,distanceFunctor);
-        OnTheFlyEdgeMap<GRAPH,NODE_FEATURES_OUT,DISTANCE,float> bufferEdgeIndicator(g,nodeFeaturesIn,distanceFunctor);
-
-        iterations = std::max(size_t(1),iterations);
-        // initial run
-        graphSmoothing(g,nodeFeaturesIn,inEdgeIndicator,lambda,edgeThreshold,scale,nodeFeaturesOut);
-        iterations -=1;
-
-        bool outAsIn=true;
-        for(size_t i=0;i<iterations;++i){
-            if(outAsIn){
-                graphSmoothing(g,nodeFeaturesOut,outEdgeIndicator,lambda,edgeThreshold,scale,nodeFeaturesBuffer);
-                outAsIn=false;
-            }
-            else{
-                graphSmoothing(g,nodeFeaturesBuffer,bufferEdgeIndicator,lambda,edgeThreshold,scale,nodeFeaturesOut);
-                outAsIn=true;
-            }
-        }
-        if(!outAsIn){
-            copyNodeMap(g,nodeFeaturesBuffer,nodeFeaturesOut);
-        }
-    }
-
-
-
 } // namespace vigra
 
 #endif // VIGRA_GRAPH_MAP_ALGORITHMS_HXX

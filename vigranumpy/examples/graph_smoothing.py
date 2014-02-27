@@ -20,7 +20,7 @@ img          = vigra.impex.readImage(f)#[0:100,0:100,:]
 imgLab       = vigra.colors.transform_RGB2Lab(img)
 imgLabInterpolated  = vigra.resize(imgLab,[imgLab.shape[0]*2-1,imgLab.shape[1]*2-1 ])
 gradmag      = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLabInterpolated,sigma))
-labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,5)
+labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,20)
 labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
 
 
@@ -31,20 +31,18 @@ gridGraphEdgeIndicator =  vigraph.edgeFeaturesFromInterpolatedImage(gridGraph,gr
 
 rag = vigraph.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
 edgeIndicator  = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
-hyperNodeSizes = rag.accumulateNodeSize()
 nodeFeatures   = rag.accumulateNodeFeatures(img)
 
 
 
-edgeWeights = edgeIndicator 
-edgeWeights+= 0.1*vigraph.nodeFeatureDistToEdgeWeight(rag,nodeFeatures,metric='l1')
-
-resultFeatures = vigraph.recursiveGraphSmoothing(rag,nodeFeatures,edgeWeights,
-    gamma=0.0001,edgeThreshold=3.8,scale=1.3,iterations=100)
+resultFeatures = vigraph.recursiveGraphSmoothing(rag,nodeFeatures,edgeIndicator,
+    gamma=0.0001,edgeThreshold=2.0,scale=1.0,iterations=20)
 
 
-# visualize node features
-imageNodeFeatures = vigraph.nodeIdsFeatures(graph=rag,nodeIds=labels,features=resultFeatures)
-imageNodeFeatures = vigra.taggedView(imageNodeFeatures,"xyc")
-vigra.imshow(imageNodeFeatures)
+resultImg = rag.projectNodeFeaturesToGridGraph(resultFeatures)
+resultImg = vigra.taggedView(resultImg,"xyc")
+
+rag.show(resultImg,alpha=0.7)
+
+#vigra.imshow(resultImg)
 vigra.show()

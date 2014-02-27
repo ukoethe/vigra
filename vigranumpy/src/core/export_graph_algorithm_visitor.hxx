@@ -137,23 +137,6 @@ public:
     }
 
     void exportMiscAlgorithms()const{
-        python::def("_nodeIdsLabels",registerConverters(&pyNodeIdsLabels),
-            (
-                python::arg("graph"),
-                python::arg("nodeIds"),
-                python::arg("labels"),
-                python::arg("out")=python::object()
-            )
-        );
-
-        python::def("_nodeIdsFeatures",registerConverters(&pyNodeIdsFeatures),
-            (
-                python::arg("graph"),
-                python::arg("nodeIds"),
-                python::arg("features"),
-                python::arg("out")=python::object()
-            )
-        );
 
         python::def("_nodeFeatureDistToEdgeWeight",registerConverters(&pyNodeFeatureDistToEdgeWeight),
             (
@@ -186,7 +169,15 @@ public:
                 python::arg("out")=python::object()
             )
         );
-
+        python::def("_wardCorrection",registerConverters(&pyWardCorrection),
+            (
+                python::arg("graph"),
+                python::arg("edgeIndicator"),
+                python::arg("nodeSize"),
+                python::arg("out")=python::object()
+            ),
+            "apply wards method to an edgeIndicator"
+        );
     }
 
     void exportSmoothingAlgorithms()const{
@@ -206,30 +197,6 @@ public:
             "recursive edge weighted guided graph smoothing"
         );
 
-        python::def("_dynamicRecursiveGraphSmoothing",registerConverters(&pyDynamicRecursiveGraphSmoothing),
-            (
-                python::arg("graph"),
-                python::arg("nodeFeatures"),
-                python::arg("metric"),
-                python::arg("gamma"),
-                python::arg("edgeThreshold"),
-                python::arg("scale"),
-                python::arg("iterations")=1,
-                python::arg("buffer")=python::object(),
-                python::arg("out")=python::object()
-            ),
-            "recursive edge weighted guided graph smoothing"
-        );
-
-        python::def("_wardCorrection",registerConverters(&pyWardCorrection),
-            (
-                python::arg("graph"),
-                python::arg("edgeIndicator"),
-                python::arg("nodeSize"),
-                python::arg("out")=python::object()
-            ),
-            "apply wards method to an edgeIndicator"
-        );
     }
 
     std::string clsName_;
@@ -247,7 +214,6 @@ public:
         exportMiscAlgorithms();
 
         // - recursiveGraphSmoothing
-        // - dynamicRecursiveGraphSmoothing
         exportSmoothingAlgorithms();
     }
 
@@ -324,7 +290,7 @@ public:
         }
         return labelsArray;
     }
-
+    /*
     static NumpyAnyArray pyNodeIdsLabels(
         const GRAPH & g,
         NumpyArray<1,Singleband<UInt32> >  nodeIds,
@@ -360,7 +326,7 @@ public:
             out[Coord1(i)]=nodeFeaturesArrayMap[g.nodeFromId(nodeIds(i))];
         return out;
     }
-
+    */
     static NumpyAnyArray pyNodeFeatureDistToEdgeWeight(
         const GRAPH & g,
         const MultiFloatNodeArray & nodeFeaturesArray,
