@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2011 by Ullrich Koethe                     */
+/*   Copyright 2014 by Ullrich Koethe  and Thorsten Beier               */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -33,14 +33,15 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef VIGRA_DENSE_REFERENCE_MAP_HXX
-#define VIGRA_DENSE_REFERENCE_MAP_HXX
+
+#ifndef VIGRA_GRAPH_MAPS
+#define VIGRA_GRAPH_MAPS
 
 /*vigra*/
-//#include <vigra/array_vector.hxx>
 #include <vigra/multi_array.hxx>
 #include <vigra/graph_generalization.hxx>
 #include <vigra/graphs.hxx>
+
 
 namespace vigra{
 
@@ -179,9 +180,85 @@ class DenseArcReferenceMap
         }
 };
 
+
+template<class G,class NODE_MAP,class FUNCTOR,class RESULT>
+class OnTheFlyEdgeMap{
+
+public:
+    typedef G  Graph;
+    typedef typename Graph::Node Node;
+    typedef NODE_MAP  NodeMap;
+    typedef typename  Graph::Edge      Key;
+    typedef RESULT   Value;
+    typedef RESULT   ConstReference;
+
+    typedef Key             key_type;
+    typedef Value           value_type;
+    typedef ConstReference  const_reference;
+
+    typedef boost::readable_property_map_tag category;
+
+    OnTheFlyEdgeMap(const Graph & graph,const NodeMap & nodeMap,FUNCTOR & f)
+    :   graph_(graph),
+        nodeMap_(nodeMap),
+        f_(f){
+    }
+
+    ConstReference operator[](const Key & key){
+        const Node u(graph_.u(key));
+        const Node v(graph_.v(key));
+        return f_(nodeMap_[u],nodeMap_[v]);
+    }
+
+    ConstReference operator[](const Key & key)const{
+        const Node u(graph_.u(key));
+        const Node v(graph_.v(key));
+        return f_(nodeMap_[u],nodeMap_[v]);
+    }
+private:
+
+    const Graph & graph_;
+    const NodeMap & nodeMap_;
+    FUNCTOR & f_;
+};
+
+template<class G,class EDGE_MAP_A,class EDGE_MAP_B,class FUNCTOR,class RESULT>
+class BinaryOpEdgeMap{
+public:
+    typedef G  Graph;
+    typedef typename Graph::Edge Key;
+    typedef RESULT   Value;
+    typedef RESULT   ConstReference;
+
+    typedef Key             key_type;
+    typedef Value           value_type;
+    typedef ConstReference  const_reference;
+
+    typedef boost::readable_property_map_tag category;
+
+    BinaryOpEdgeMap(const Graph & graph,const EDGE_MAP_A & edgeMapA,const EDGE_MAP_B & edgeMapB,FUNCTOR & f)
+    :   graph_(graph),
+        edgeMapA_(edgeMapA),
+        edgeMapB_(edgeMapB),
+        f_(f){
+    }
+    ConstReference operator[](const Key & key){
+        return f_(edgeMapA_[key],edgeMapB_[key]);
+    }
+    ConstReference operator[](const Key & key)const{
+        return f_(edgeMapA_[key],edgeMapB_[key]);
+    }
+private:
+
+    const Graph & graph_;
+    const EDGE_MAP_A & edgeMapA_;
+    const EDGE_MAP_B & edgeMapB_;
+    FUNCTOR & f_;
+};
+
+
+
+
 } // end namespace vigra
 
-
-
-
-#endif //VIGRA_DENSE_REFERENCE_MAP_HXX 
+#endif // VIGRA_GRAPH_MAPS

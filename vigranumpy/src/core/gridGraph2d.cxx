@@ -51,7 +51,6 @@
 #include <vigra/adjacency_list_graph.hxx>
 #include <vigra/graph_algorithms.hxx>
 #include <vigra/python_graph_generalization.hxx>
-#include <vigra/graph_helper/on_the_fly_edge_map.hxx>
 
 
 namespace python = boost::python;

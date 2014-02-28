@@ -11,8 +11,7 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <boost/python.hpp>
 #include <vigra/graphs.hxx>
-#include <vigra/graph_helper/dense_map.hxx>
-#include <vigra/graph_helper/on_the_fly_edge_map.hxx>
+#include <vigra/graph_maps.hxx>
 #include <vigra/python_graph_generalization.hxx>
 #include <vigra/python_graph_maps.hxx>
 #include <vigra/graph_algorithms.hxx>

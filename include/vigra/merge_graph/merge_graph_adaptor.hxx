@@ -29,7 +29,7 @@
 #include <vigra/tinyvector.hxx>
 #include <vigra/multi_array.hxx>
 #include <vigra/graphs.hxx>
-#include <vigra/graph_helper/dense_map.hxx>
+#include <vigra/graph_maps.hxx>
 #include <vigra/graph_helper/graph_item_impl.hxx>
 #include <vigra/random_access_set.hxx>
 

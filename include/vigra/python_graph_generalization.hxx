@@ -184,7 +184,79 @@ struct ArcToEdgeHolder{
     const GRAPH * graph_;
 };
 
+template<class GRAPH>
+struct NodeToNodeHolder{
+    typedef typename GRAPH::Node Node;
+    NodeToNodeHolder(const GRAPH & graph)
+    : graph_(&graph){
+    }
+    NodeHolder<GRAPH> operator()(const Node & node)const{
+        return NodeHolder<GRAPH>(*graph_,node);
+    }
+    const GRAPH * graph_;
+};
+
+template<class GRAPH>
+struct EdgeToEdgeHolder{
+    typedef typename GRAPH::Edge Edge;
+    EdgeToEdgeHolder(const GRAPH & graph)
+    : graph_(&graph){
+    }
+    EdgeHolder<GRAPH> operator()(const Edge & edge)const{
+        return EdgeHolder<GRAPH>(*graph_,edge);
+    }
+    const GRAPH * graph_;
+};
+
 }
+
+
+template<class GRAPH>
+struct NodeIteratorHolder{
+    typedef typename GRAPH::Node    Node;
+    typedef typename GRAPH::NodeIt  Iter;
+    typedef detail_python_graph_generalization::NodeToNodeHolder<GRAPH> Transform;
+    typedef boost::transform_iterator<Transform ,Iter ,NodeHolder<GRAPH>, NodeHolder<GRAPH> > const_iterator;
+    NodeIteratorHolder(const GRAPH & graph,const Node & node = Node(lemon::INVALID) )
+    : graph_(&graph),
+      node_(node){
+    }
+    const_iterator begin()const{
+
+        Iter iter = GraphIteratorAccessor<GRAPH>::nodesBegin(*graph_);
+        return const_iterator(iter,Transform(*graph_));
+    }
+    const_iterator end()const{
+        Iter iter = GraphIteratorAccessor<GRAPH>::nodesEnd(*graph_);
+        return const_iterator(iter,Transform(*graph_));
+    }
+    const GRAPH * graph_;
+    Node node_;
+};
+
+template<class GRAPH>
+struct EdgeIteratorHolder{
+    typedef typename GRAPH::Edge    Edge;
+    typedef typename GRAPH::EdgeIt  Iter;
+    typedef detail_python_graph_generalization::EdgeToEdgeHolder<GRAPH> Transform;
+    typedef boost::transform_iterator<Transform ,Iter ,EdgeHolder<GRAPH>, EdgeHolder<GRAPH> > const_iterator;
+    EdgeIteratorHolder(const GRAPH & graph,const Edge & edge = Edge(lemon::INVALID) )
+    : graph_(&graph),
+      edge_(edge){
+    }
+    const_iterator begin()const{
+
+        Iter iter = GraphIteratorAccessor<GRAPH>::edgesBegin(*graph_);
+        return const_iterator(iter,Transform(*graph_));
+    }
+    const_iterator end()const{
+        Iter iter = GraphIteratorAccessor<GRAPH>::edgesEnd(*graph_);
+        return const_iterator(iter,Transform(*graph_));
+    }
+    const GRAPH * graph_;
+    Edge edge_;
+};
+
 
 template<class GRAPH>
 struct NeighbourNodeIteratorHolder{
