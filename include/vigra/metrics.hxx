@@ -10,34 +10,6 @@ namespace metrics{
 
 
 
-    template<class T,unsigned int NORM,bool TAKE_ROOT>
-    class PNorm{
-    public:
-        PNorm(){}
-        T operator()(const T & a,const T & b)const{
-            return opImpl(&a,&a+1,&b);
-        }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
-            return opImpl(a.begin(),a.end(),b.begin());
-        } 
-    private:
-        template<class ITER_A,class ITER_B>
-        T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
-        )const{
-            T res = static_cast<T>(0.0);
-            while(iterA!=endA){
-                const T aa=static_cast<T>(*iterA);
-                const T bb=static_cast<T>(*iterB);
-                const T diff = aa-bb;
-                res+= std::abs(std::pow(diff,NORM));  
-                ++iterA;
-                ++iterB;
-            }
-            return TAKE_ROOT ? std::pow(res,static_cast<T>(1)/static_cast<T>(NORM)) : res;
-        }
-    };
 
     template<class T>
     class ChiSquared{
@@ -97,6 +69,35 @@ namespace metrics{
                 ++iterB;
             }
             return std::sqrt(res)/std::sqrt(2.0);
+        }
+    };
+    
+    template<class T,unsigned int NORM,bool TAKE_ROOT=true>
+    class PNorm{
+    public:
+        PNorm(){}
+        T operator()(const T & a,const T & b)const{
+            return opImpl(&a,&a+1,&b);
+        }
+        template<class A>
+        T operator()(const A & a,const A & b)const{
+            return opImpl(a.begin(),a.end(),b.begin());
+        } 
+    private:
+        template<class ITER_A,class ITER_B>
+        T opImpl(
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
+        )const{
+            T res = static_cast<T>(0.0);
+            while(iterA!=endA){
+                const T aa=static_cast<T>(*iterA);
+                const T bb=static_cast<T>(*iterB);
+                const T diff = aa-bb;
+                res+= std::abs(std::pow(diff,NORM));  
+                ++iterA;
+                ++iterB;
+            }
+            return TAKE_ROOT ? std::pow(res,static_cast<T>(1)/static_cast<T>(NORM)) : res;
         }
     };
 
