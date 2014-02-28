@@ -84,13 +84,41 @@
     chunked (initial creation, all in cache)   173       269       372
 
     ***********************
-    compression:
-    * SNAPPY is very fast, but cannot compress the float data
-      (it achieves 5-10% for uint8 and 50% for double)
-    * ZLIB achieves at least a factor of 5 better compression,
-      but is more than an order of magnitude slower
+    Compression:
+    * I tried ZLIB, LZO, SNAPPY, LZ4, LZFX and FASTLZ (with compression levels 1 -- faster
+      and level 2 -- higher compression). There are also QuickLZ and LZMAT which claim 
+      to be fast, but they are under a GPL license.
+    * ZLIB compresses best, but is quite slow even at compression level 1 
+      (times are in ms and include compression and decompression).
+                 byte   float   double
+        ZLIB      121    3100     5800
+        ZLIB1      79    1110     1190
+        LZO        43     104      280
+        SNAPPY     46      71      305
+        LZ4        42      70      283
+        LZFX       76     278      330
+        FASTLZ1    52     280      309
+        FASTLZ1    53     286      339
+    * The fast compression algorithms are unable to compress the float array
+      and achieve ~50% for the double array, whereas ZLIB achieves 32% and 16%
+      respectively (at the fastest compression level 1, it is still 33% and 17%
+      respectively). LZFX cannot even compress the byte data (probably a bug?).
+      Average compression ratios for the byte array are
+        ZLIB:    2.3%
+        ZLIB1:   4.6%
+        LZO:     5.6%
+        SNAPPY:  9.8%
+        LZ4:     9.7%
+        FASTLZ1: 7.6%
+        FASTLZ2: 7.9%
+    * LZO is under GPL (but there is a Java implementation under Apache license at
+      http://svn.apache.org/repos/asf/hadoop/common/tags/release-0.19.2/src/core/org/apache/hadoop/io/compress/lzo/)
+      The others are BSD and MIT (FASTLZ).
+    * Snappy doesn't support Windows natively, but porting is simple (see my github repo)
+    * The source code for LZO, LZ4, LZFX, and FASTLZ can simply be copied to VIGRA, 
+      but LZO's GPL license is unsuitable.
     * HDF5 compression is already sufficient at level 1 (4-15%,
-      higher levels don't lead to big gains) and a factor 3-10 slower 
+      higher levels don't lead to big gains) and only a factor 3-10 slower 
       than without compression.
 */
 
@@ -101,6 +129,7 @@
 #include "multi_array.hxx"
 #include "threading.hxx"
 #include "hdf5impex.hxx"
+#include "compression.hxx"
 
 #ifdef _WIN32
 # include "windows.h"
@@ -111,10 +140,6 @@
 # include <sys/stat.h>
 # include <sys/mman.h>
 #endif
-
-#include <zlib.h>
-#include <snappy.h>
-#include "minilzo.h"
 
 #define VIGRA_CHUNKED_ARRAY_THREAD_SAFE
 
@@ -364,7 +389,7 @@ Alternatives are:
 * Back chunks by HDF5 datasets. This can be combined with compression 
   (both explicit and on-the-fly) or with memory mapping (using the 
   function H5Dget_offset() to get the offset from the beginning of the file).
-  
+    
 FIXME:
 * backends:
    * allocators are not used
@@ -686,8 +711,6 @@ class ChunkedArray
     threading::mutex cache_lock_;
 };
 
-enum ChunkCompression { ZLIB, SNAPPY, LZO };
-
 template <unsigned int N, class T, class Alloc = std::allocator<T> >
 class ChunkedArrayCompressed
 : public ChunkedArrayBase<N, T>
@@ -761,8 +784,8 @@ class ChunkedArrayCompressed
             }
             compressed_.clear();
         }
-        
-        void compress(ChunkCompression method)
+                
+        void compress(CompressionMethod method)
         {
             pointer p = this->pointer_.load(threading::memory_order_acquire);
             if(p != 0)
@@ -770,65 +793,15 @@ class ChunkedArrayCompressed
                 vigra_invariant(compressed_.size() == 0,
                     "ChunkedArrayCompressed::Chunk::compress(): compressed and uncompressed pointer are both non-zero.");
 
-                double ratio = 0.0;
-                switch(method)
-                {
-                  case ZLIB:
-                  {
-                    uLong sourceLen = this->size()*sizeof(T),
-                          destLen   = compressBound(sourceLen);
-                    ArrayVector<Bytef> buffer(destLen);
-                    int res = ::compress(buffer.data(), &destLen, (Bytef *)p, sourceLen);
-                    vigra_postcondition(res == Z_OK,
-                        "ChunkedArrayCompressed::Chunk::compress(): zlib compression failed.");                    
-                    compressed_.insert(compressed_.begin(), 
-                                       (char*)buffer.data(), (char*)buffer.data() + destLen);
-                    ratio = double(destLen) / sourceLen;
-                    break;
-                  }
-                  case SNAPPY:
-                  {
-                    size_t sourceLen = this->size()*sizeof(T),
-                           destLen;
-                    ArrayVector<char> buffer(snappy::MaxCompressedLength(sourceLen));
-                    snappy::RawCompress((const char*)p, sourceLen, buffer.data(), &destLen);
-                    compressed_.insert(compressed_.begin(), buffer.data(), buffer.data() + destLen);
-                    ratio = double(destLen) / sourceLen;
-                    break;
-                  }
-                  case LZO:
-                  {
-                    static const int workmemSize = 
-                              (LZO1X_1_MEM_COMPRESS + sizeof(lzo_align_t) - 1) / sizeof(lzo_align_t);
-                    static ArrayVector<lzo_align_t> wrkmem(workmemSize);
-                    
-                    lzo_uint sourceLen = this->size()*sizeof(T),
-                             destLen;
-                    ArrayVector<lzo_byte> buffer(lzoMaxLen(sourceLen));
-                    int res = lzo1x_1_compress((const lzo_bytep)p, sourceLen, 
-                                               buffer.data(), &destLen, 
-                                               wrkmem.data());
-                    vigra_postcondition(res == LZO_E_OK,
-                        "ChunkedArrayCompressed::Chunk::compress(): lzo compression failed.");
+                ::vigra::compress((char const *)p, this->size()*sizeof(T), compressed_, method);
 
-                    compressed_.insert(compressed_.begin(), buffer.data(), buffer.data() + destLen);
-                    ratio = double(destLen) / sourceLen;
-                    break;
-                  }
-                }
-
-                // std::cerr << "compression ratio: " << ratio << "\n";
+                // std::cerr << "compression ratio: " << double(compressed_.size())/(this->size()*sizeof(T)) << "\n";
                 alloc_.deallocate(p, (typename Alloc::size_type)this->size());
                 this->pointer_.store(0, threading::memory_order_release);
             }
         }
         
-        static lzo_uint lzoMaxLen(lzo_uint size)
-        {
-            return size + size / 16 + 64 + 3;
-        }
-        
-        pointer uncompress(ChunkCompression method)
+        pointer uncompress(CompressionMethod method)
         {
             pointer p = this->pointer_.load(threading::memory_order_acquire);
             if(p == 0)
@@ -837,33 +810,8 @@ class ChunkedArrayCompressed
                 {
                     p = alloc_.allocate((typename Alloc::size_type)this->size());
 
-                    switch(method)
-                    {
-                      case ZLIB:
-                      {
-                        uLong sourceLen = compressed_.size(),
-                              destLen   = this->size()*sizeof(T);
-                        int res = ::uncompress((Bytef *)p, &destLen, (Bytef *)compressed_.data(), sourceLen);
-                        vigra_postcondition(res == Z_OK,
-                            "ChunkedArrayCompressed::Chunk::uncompress(): zlib decompression failed.");
-                        break;
-                      }
-                      case SNAPPY:
-                      {
-                        snappy::RawUncompress(compressed_.data(), compressed_.size(), (char *)p);
-                        break;
-                      }
-                      case LZO:
-                      {
-                        lzo_uint sourceLen = compressed_.size(),
-                                 destLen = this->size()*sizeof(T);
-                        int res = lzo1x_decompress((const lzo_bytep)compressed_.data(), sourceLen,
-                                                    (lzo_bytep)p, &destLen, NULL);
-                        vigra_postcondition(res == LZO_E_OK,
-                            "ChunkedArrayCompressed::Chunk::uncompress(): lzo decompression failed.");
-                        break;
-                      }
-                    }
+                    ::vigra::uncompress(compressed_.data(), compressed_.size(), 
+                                        (char*)p, this->size()*sizeof(T), method);
                     compressed_.clear();
                     this->pointer_.store(p, threading::memory_order_release);
                 }
@@ -891,7 +839,7 @@ class ChunkedArrayCompressed
     typedef value_type * pointer;
     typedef value_type & reference;
     
-    ChunkedArrayCompressed(shape_type const & shape, int cache_max = 0, ChunkCompression method=SNAPPY)
+    ChunkedArrayCompressed(shape_type const & shape, int cache_max = 0, CompressionMethod method=LZ4)
     : ChunkedArrayBase<N, T>(shape),
       outer_array_(outerShape(shape)),
       cache_first_(0), cache_last_(0),
@@ -906,12 +854,6 @@ class ChunkedArrayCompressed
         {
             i->reshape(min(this->chunk_shape_, 
                            shape - i.point()*this->chunk_shape_));
-        }
-        if(method == LZO)
-        {
-            static int lzo_active = lzo_init();
-            vigra_precondition(lzo_active == LZO_E_OK,
-                 "ChunkedArrayCompressed(): lzo_init() failed.");
         }
     }
     
@@ -1057,7 +999,7 @@ class ChunkedArrayCompressed
 
     Chunk * cache_first_, * cache_last_;  // cache of loaded chunks
     std::size_t cache_size_, cache_max_size_;
-    ChunkCompression compression_method_;
+    CompressionMethod compression_method_;
     threading::mutex cache_lock_;
 };
 

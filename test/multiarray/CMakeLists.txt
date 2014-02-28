@@ -26,7 +26,6 @@ if(APPLE)
     SET(CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
 endif()
 
-SET(SNAPPY_LIBRARIES "c:/install/lib/snappy.lib")
-INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR} ${HDF5_INCLUDE_DIR} ${SNAPPY_INCLUDE_DIR})
-VIGRA_ADD_TEST(test_multiarray_chunked test_chunked.cxx minilzo.c
-               LIBRARIES vigraimpex ${SNAPPY_LIBRARIES} ${ZLIB_LIBRARIES} ${HDF5_CORE_LIBRARY} ${HDF5_HL_LIBRARY})
+INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
+VIGRA_ADD_TEST(test_multiarray_chunked test_chunked.cxx 
+               LIBRARIES vigraimpex ${HDF5_CORE_LIBRARY} ${HDF5_HL_LIBRARY})
