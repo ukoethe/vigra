@@ -1415,184 +1415,6 @@ public:
     }
 };
 
-class MultiArrayNavigatorTest
-{
-public:
-
-    typedef unsigned int scalar_type;
-    typedef MultiArray <3, scalar_type> array3_type;
-    typedef MultiArrayView <3, scalar_type> array3_view_type;
-    typedef array3_type::difference_type difference3_type;
-    
-    difference3_type shape3;
-    array3_type array3;
-
-    MultiArrayNavigatorTest ()
-        : shape3 (4, 3, 2), array3 (shape3)
-    {
-        // initialize the array to the test data
-        for (unsigned int i = 0; i < 24; ++i)
-            array3.data () [i] = i;
-    }
-
-    void testNavigator ()
-    {
-        unsigned char expected[][24] = 
-            {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
-            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
-            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
-        typedef MultiArrayNavigator<array3_type::traverser, 3> Navigator;
-        for(int d=0; d<3; ++d)
-        {
-            Navigator nav(array3.traverser_begin(), array3.shape(), d);
-            int k = 0;
-            for(; nav.hasMore(); ++nav)
-            {
-                Navigator::iterator i = nav.begin(), end = nav.end();
-                for(; i != end; ++i, ++k)
-                    shouldEqual(*i, expected[d][k]);
-            }
-        }
-        
-        Shape3 start(1, 1, 0), stop(3, 3, 2);
-        unsigned char sexpected[][8] = 
-            {{5,  6,  9, 10, 17, 18, 21, 22},
-            {5,  9,  6, 10, 17, 21, 18, 22},
-            {5, 17,  6, 18,  9, 21, 10, 22}};
-        for(int d=0; d<3; ++d)
-        {
-            Navigator nav(array3.traverser_begin(), start, stop, d);
-            int k = 0;
-            for(; nav.hasMore(); ++nav)
-            {
-                Navigator::iterator i = nav.begin(), end = nav.end();
-                for(; i != end; ++i, ++k)
-                    shouldEqual(*i, sexpected[d][k]);
-            }
-        }
-    }
-
-    void testCoordinateNavigator ()
-    {
-        unsigned char expected[][24] = 
-            {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
-            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
-            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
-        typedef MultiCoordinateNavigator<3> Navigator;
-        for(int d=0; d<3; ++d)
-        {
-            Navigator nav(array3.shape(), d);
-            int k = 0;
-            for(; nav.hasMore(); ++nav)
-            {
-                Navigator::value_type i = nav.begin(), end = nav.end();
-                for(; i[d] != end[d]; ++i[d], ++k)
-                    shouldEqual(array3[i], expected[d][k]);
-            }
-        }
-    }    
-};
-
-struct MultiImpexTest
-{
-    typedef MultiArray<3, unsigned char> Array;
-    typedef Array::difference_type Shape;
-    typedef Array::traverser Traverser;
-    
-    Array array;
-    
-    MultiImpexTest()
-    : array(Shape(2,3,4))
-    {
-        int value = 1;
-        
-        Traverser i3 = array.traverser_begin ();
-
-        for (; i3 != array.traverser_end(); ++i3, ++value) 
-        {
-            typedef Traverser::next_type Traverser2;
-            Traverser2 i2 = i3.begin ();
-            for (; i2 != i3.end(); ++i2) 
-            {
-                typedef Traverser2::next_type Traverser1;
-                Traverser1 i1 = i2.begin ();
-                for (; i1 != i2.end(); ++i1)
-                {
-                    *i1 = value;
-                }
-            }
-        }
-    }
-    
-    void testImpex()
-    {
-#if defined(HasTIFF)
-        const char * ext1 = ".tif";
-#else
-        const char * ext1 = ".xv";
-#endif
-        exportVolume(array, VolumeExportInfo("test", ext1));
-        
-        Array result;
-        
-        VolumeImportInfo import_info("test", ext1);
-        shouldEqual(Shape(2,3,4), import_info.shape());
-
-        result.reshape(import_info.shape());
-        importVolume(import_info, result);
-        
-        shouldEqual(result(0,1,0), 1);
-        shouldEqual(result(0,1,1), 2);
-        shouldEqual(result(0,1,2), 3);
-        shouldEqual(result(0,1,3), 4);
-
-#if defined(HasPNG)
-        const char * ext2 = ".png";
-#else
-        const char * ext2 = ".pnm";
-#endif
-        exportVolume(array, std::string("impex/test"), std::string(ext2));
-        
-        importVolume(result, std::string("impex/test"), std::string(ext2));
-        
-        shouldEqual(result.shape(), Shape(2,3,4));
-        shouldEqual(result(0,1,0), 1);
-        shouldEqual(result(0,1,1), 2);
-        shouldEqual(result(0,1,2), 3);
-        shouldEqual(result(0,1,3), 4);
-
-#ifdef _WIN32
-        exportVolume(array, VolumeExportInfo("impex\\test", ext2));
-        
-        importVolume(result, std::string("impex\\test"), std::string(ext2));
-        
-        shouldEqual(result.shape(), Shape(2,3,4));
-        shouldEqual(result(0,1,0), 1);
-        shouldEqual(result(0,1,1), 2);
-        shouldEqual(result(0,1,2), 3);
-        shouldEqual(result(0,1,3), 4);
-#endif // _WIN32
-    }
-
-#if defined(HasTIFF)
-    void testMultipageTIFF()
-    {
-        exportVolume(array, VolumeExportInfo("multipage.tif"));
-
-        VolumeImportInfo info("multipage.tif");
-        shouldEqual(Shape(2,3,4), info.shape());
-
-        Array result(info.shape());
-        importVolume(info, result);
-        shouldEqual(result(0,1,0), 1);
-        shouldEqual(result(0,1,1), 2);
-        shouldEqual(result(0,1,2), 3);
-        shouldEqual(result(0,1,3), 4);
-    }
-#endif
-
-};
-
 struct MultiArrayPointoperatorsTest
 {
 
@@ -2123,8 +1945,10 @@ public:
         T count = 1;
         USETICTOC;
 
-        IteratorType bi(P1(v, P0(s))),
-                     end = bi.getEndIterator();
+        // IteratorType bi(P1(v, P0(s))),
+                     // end = bi.getEndIterator();
+        typename Array::iterator bi  = v.begin(),
+                                 end = v.end();
 
         count = 1;
         int start = 0;
@@ -2139,7 +1963,8 @@ public:
         t = TOCS;
         std::cerr << "    chunked iterator create and init: " << t << "\n";
 
-        bi = IteratorType(P1(v, P0(s)));
+        // bi = IteratorType(P1(v, P0(s)));
+        bi = v.begin();
         count = 1;
         TIC;
         // for(bi.setDim(2,start); bi.coord(2) < s[2]; bi.incDim(2))
@@ -2159,6 +1984,15 @@ public:
         }
         t = TOCS;
         std::cerr << "    chunked iterator read: " << t << "\n";
+        
+        // typename Array::ManagedSubarray sub(Shape3(3));
+        // v.copySubarray(Shape3(63, 63, 63), sub);
+        // for(auto i = sub.begin(), end = sub.end(); i != end; ++i)
+        // {
+            // std::cerr << (UInt64)*i << " ";
+            // if(i.point()[0] == 2)
+                // std::cerr << "\n";
+        // }
     }
     
     void testSpeedFullArray()
@@ -2878,9 +2712,9 @@ struct MultiArrayChunkedTestTestSuite
         // add( testCase( &MultiArrayChunkedTest<float>::testSpeedAllocArray ) );
         // add( testCase( &MultiArrayChunkedTest<double>::testSpeedAllocArray ) );
 
-        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileAllCached ) );
-        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileAllCached ) );
-        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileAllCached ) );
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileAllCached ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileAllCached ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileAllCached ) );
 
         // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileSliceCached ) );
         // add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileSliceCached ) );
@@ -2895,13 +2729,13 @@ struct MultiArrayChunkedTestTestSuite
         add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayLZ4 ) );
         add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayLZ4 ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayZlib ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayZlib ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayZlib ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayZlib ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayZlib ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayZlib ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayZlibFast ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayZlibFast ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayZlibFast ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayZlibFast ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayZlibFast ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayZlibFast ) );
 
         // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedHDF5Array ) );
         // add( testCase( &MultiArrayChunkedTest<float>::testSpeedHDF5Array ) );
