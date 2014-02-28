@@ -37,7 +37,7 @@
 #ifndef VIGRA_CONFIG_HXX
 #define VIGRA_CONFIG_HXX
 
-#include "configVersion.hxx"
+#include "config_version.hxx"
 #include <stdexcept>
 
 ///////////////////////////////////////////////////////////
