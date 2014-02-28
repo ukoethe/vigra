@@ -52,7 +52,6 @@
 #include <vigra/graphs.hxx>
 #include <vigra/graph_generalization.hxx>
 #include <vigra/multi_gridgraph.hxx>
-#include <vigra/numpy_array.hxx>
 #include <vigra/priority_queue.hxx>
 #include <vigra/union_find.hxx>
 #include <vigra/adjacency_list_graph.hxx>
@@ -305,76 +304,6 @@ namespace vigra{
         }
     }
 
-  
-
-    template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE>
-    void shortestPathDijkstra(
-        const GRAPH         &           graph,
-        const typename GRAPH::Node &    source,
-        const WEIGHTS       &           weights,
-        PREDECESSORS        &           predecessors,
-        DISTANCE            &           distance,
-        const typename GRAPH::Node &    target  = lemon::INVALID
-    ){
-
-        typedef GRAPH                       Graph;
-        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
-        typedef typename WEIGHTS::value_type     WeightType;
-        typedef typename DISTANCE::value_type    DistanceType;
-        const size_t maxNodeId = graph.maxNodeId();
-        vigra::ChangeablePriorityQueue<typename WEIGHTS::value_type> pq(maxNodeId+1);
-
-        for(NodeIt n(graph);n!=lemon::INVALID;++n){
-            const Node node(*n);
-            pq.push(graph.id(node),std::numeric_limits<WeightType>::infinity() );
-            distance[node]=std::numeric_limits<DistanceType>::infinity();
-            predecessors[node]=lemon::INVALID;
-        }
-
-        distance[source]=static_cast<DistanceType>(0.0);
-        pq.push(graph.id(source),0.0);
-
-        bool finished=false;
-        while(!pq.empty() && !finished){
-            const WeightType minDist = pq.topPriority();
-            if(true){//minDist < std::numeric_limits<DistanceType>::infinity()){
-                const Node topNode(graph.nodeFromId(pq.top()));
-                pq.pop();
-                // loop over all neigbours
-                for(OutArcIt outArcIt(graph,topNode);outArcIt!=lemon::INVALID;++outArcIt){
-                    const Node otherNode = graph.target(*outArcIt);
-                    const size_t otherNodeId = graph.id(otherNode);
-
-                    if(pq.contains(otherNodeId)){
-                        const Edge edge(*outArcIt);
-                        const DistanceType currentDist      = distance[otherNode];
-                        const DistanceType alternativeDist  = distance[topNode]+weights[edge];
-                        if(alternativeDist<currentDist){
-                            pq.push(otherNodeId,alternativeDist);
-                            distance[otherNode]=alternativeDist;
-                            predecessors[otherNode]=topNode;
-                        }
-                    }
-                    if(target==otherNode){
-                        //finished=true;
-                        //break;
-                    }
-                }
-            }
-            else{
-                finished=true;
-                break;
-            }
-            if(finished){
-                break;
-            }
-        }
-    }
-
-
-
-
-
 
     template<class GRAPH,class WEIGHT_TYPE>
     class ShortestPathDijkstra{
@@ -408,7 +337,6 @@ namespace vigra{
             while(!pq_.empty() ){ //&& !finished){
                 const Node topNode(graph_.nodeFromId(pq_.top()));
                 if(topNode==target_){
-                    std::cout<<"REACHED TARGET\n";
                     finished=true;
                     break;
                 }
