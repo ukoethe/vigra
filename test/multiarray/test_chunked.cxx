@@ -1962,6 +1962,17 @@ public:
                 }
         t = TOCS;
         std::cerr << "    chunked iterator create and init: " << t << "\n";
+        
+        // {
+            // typename Array::SubarrayType sub(Shape3(3));
+            // v.copySubarray(Shape3(63, 63, 63), sub, true);
+            // for(auto i = sub.begin(), end = sub.end(); i != end; ++i)
+            // {
+                // std::cerr << (UInt64)*i << " ";
+                // if(i.point()[0] == 2)
+                    // std::cerr << "\n";
+            // }
+        // }
 
         // bi = IteratorType(P1(v, P0(s)));
         bi = v.begin();
@@ -1985,14 +1996,6 @@ public:
         t = TOCS;
         std::cerr << "    chunked iterator read: " << t << "\n";
         
-        // typename Array::ManagedSubarray sub(Shape3(3));
-        // v.copySubarray(Shape3(63, 63, 63), sub);
-        // for(auto i = sub.begin(), end = sub.end(); i != end; ++i)
-        // {
-            // std::cerr << (UInt64)*i << " ";
-            // if(i.point()[0] == 2)
-                // std::cerr << "\n";
-        // }
     }
     
     void testSpeedFullArray()

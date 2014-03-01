@@ -73,6 +73,12 @@ struct Multiband  // the last axis is explicitly designated as channel axis
     typedef T value_type;
 };
 
+template <class T>
+struct ChunkedMemory  // the array is organised in chunks
+{
+    typedef T value_type;
+};
+
 template<class T>
 struct NumericTraits<Singleband<T> >
 : public NumericTraits<T>
@@ -212,6 +218,18 @@ struct ResolveMultiband<Multiband<T> >
     {
         return vigra::detail::defaultMultibandStride(shape);
     }
+};
+
+template <class T>
+struct ResolveChunkedMemory
+{
+    typedef T type;
+};
+
+template <class T>
+struct ResolveChunkedMemory<ChunkedMemory<T> >
+{
+    typedef T type;
 };
 
 } // namespace detail
