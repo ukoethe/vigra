@@ -405,6 +405,13 @@ class StridedScanOrderIterator
     {
         return this->scanOrderIndex();
     }
+
+    StridedScanOrderIterator & 
+    restrictToSubarray(shape_type const & start, shape_type const & stop)
+    {
+        base_type::restrictToSubarray(start, stop);
+        return *this;
+    }
     
   protected:
     StridedScanOrderIterator(base_type const & base) 

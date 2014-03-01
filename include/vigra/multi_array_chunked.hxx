@@ -395,7 +395,7 @@ class ChunkedArrayView
     {
         if(!write_back_ || !array_)
             return;
-        typename CArray::iterator i   = array_->begin().restrictToSubarray(offset_, offset_ + shape()),
+        typename CArray::iterator i   = array_->begin().restrictToSubarray(offset_, offset_ + this->shape()),
                                   end = i.getEndIterator();
         typename SArray::iterator j   = this->begin();
         
@@ -726,9 +726,9 @@ template <unsigned int N, class T>
 typename ChunkedArrayBase<N, T>::iterator
 createCoupledIterator(ChunkedArrayBase<N, T> & m)
 {
-    typedef ChunkedArrayBase<N, T>::iterator       IteratorType;
-    typedef typename IteratorType::handle_type     P1;
-    typedef typename P1::base_type                 P0;
+    typedef typename ChunkedArrayBase<N, T>::iterator    IteratorType;
+    typedef typename IteratorType::handle_type           P1;
+    typedef typename P1::base_type                       P0;
     
     return IteratorType(P1(m, 
                         P0(m.shape())));
@@ -812,7 +812,7 @@ class ChunkedArray
     
         void reshape(shape_type const & shape)
         {
-            vigra_precondition(pointer_ == (void*)0,
+            vigra_precondition(this->pointer_ == (void*)0,
                 "ChunkedArray::Chunk::reshape(): chunk was already allocated.");
             this->shape_ = shape;
             this->strides_ = detail::defaultStride(shape);
@@ -922,7 +922,7 @@ class ChunkedArrayCompressed
     
         void reshape(shape_type const & shape)
         {
-            vigra_precondition(pointer_ == (void*)0,
+            vigra_precondition(this->pointer_ == (void*)0,
                 "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
             this->shape_ = shape;
             this->strides_ = detail::defaultStride(shape);
@@ -1040,7 +1040,7 @@ class ChunkedArrayCompressed
     
     ~ChunkedArrayCompressed()
     {
-        std::cerr << "    final cache size: " << cache_size_ << "\n";
+        std::cerr << "    final cache size: " << this->cache_size_ << "\n";
     }
     
     virtual pointer loadChunk(ChunkBase<N, T> * chunk)
@@ -1091,7 +1091,7 @@ class ChunkedArrayHDF5
         void reshape(shape_type const & shape, shape_type const & start, 
                      ChunkedArrayHDF5 * array)
         {
-            vigra_precondition(pointer_ == (void*)0,
+            vigra_precondition(this->pointer_ == (void*)0,
                 "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
             this->shape_ = shape;
             this->strides_ = detail::defaultStride(shape);
@@ -1203,7 +1203,7 @@ class ChunkedArrayHDF5
     
     ~ChunkedArrayHDF5()
     {
-        std::cerr << "    final cache size: " << cache_size_ << "\n";
+        std::cerr << "    final cache size: " << this->cache_size_ << "\n";
         
         // make sure that chunks are written to disk before the destructor of 
         // file_ is called
@@ -1412,13 +1412,13 @@ class ChunkedArrayTmpFile
     
     ~ChunkedArrayTmpFile()
     {
-        std::cerr << "    final cache size: " << cache_size_ << "\n";
+        std::cerr << "    final cache size: " << this->cache_size_ << "\n";
         unmap();
     #ifdef _WIN32
         ::CloseHandle(mappedFile_);
         ::CloseHandle(file_);
     #else
-        close(file_);
+        ::close(file_);
     #endif
     }
     
