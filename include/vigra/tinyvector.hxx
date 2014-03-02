@@ -859,6 +859,20 @@ class TinyVectorBase
 #endif
         return TinyVectorView<VALUETYPE, TO-FROM>(data_+FROM);
     }
+    
+    TinyVector<VALUETYPE, SIZE-1>
+    dropIndex(int m) const
+    {
+#ifdef VIGRA_CHECK_BOUNDS
+        vigra_precondition(0 <= m && m < SIZE, "Dimension out of bounds");
+#endif
+        TinyVector<VALUETYPE, SIZE-1> res(SkipInitialization);
+        for(int k=0; k<m; ++k)
+            res[k] = data_[k];
+        for(int k=m; k<SIZE-1; ++k)
+            res[k] = data_[k+1];
+        return res;
+    }
 
         /** Size of TinyVector vector always equals the template parameter SIZE.
         */

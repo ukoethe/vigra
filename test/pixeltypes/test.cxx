@@ -182,6 +182,12 @@ struct TinyVectorTest
         IV r = reverse(iv3);
         for(int k=0; k<SIZE; ++k)
             shouldEqual(iv3[k], r[SIZE-1-k]);
+
+        typedef TinyVector<typename FV::value_type, SIZE-1> FV1;
+        FV1 fv10(fv3.begin());
+        shouldEqual(fv10, fv3.dropIndex(SIZE-1));
+        FV1 fv11(fv3.begin()+1);
+        shouldEqual(fv11, fv3.dropIndex(0));
     }
 
     void testComparison()
