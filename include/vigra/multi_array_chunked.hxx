@@ -227,222 +227,115 @@ struct ChunkShape;
 template <class T>
 struct ChunkShape<1, T>
 {
-    static const unsigned int bits0 = 18;
-    static const unsigned int mask0 = (1 << bits0) - 1;
-    
-    static void chunkIndex(Shape1 const & p, Shape1 & b)
+    static Shape1 defaultShape()
     {
-        typedef std::size_t UI;
-        b[0] = (UI)p[0] >> bits0;
-    }
-    
-    static std::size_t chunkOffset(Shape1 const & p, Shape1 const & s)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] >> bits0) * s[0];
-    }
-    
-    static std::size_t offsetInChunk(Shape1 const & p, Shape1 const & s)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] & mask0) * s[0];
-    }
-
-    static Shape1 chunkArrayShape(Shape1 shape)
-    {
-        shape[0] = (shape[0] + mask0) >> bits0;
-        return shape;
-    }
-
-    static Shape1 standardChunkShape()
-    {
-        return Shape1(1 << bits0);
+        return Shape1(1 << 18);
     }
 };
 
 template <class T>
 struct ChunkShape<2, T>
 {
-    static const unsigned int bits0 = 9;
-    static const unsigned int bits1 = 9;
-    static const unsigned int mask0 = (1 << bits0) - 1;
-    static const unsigned int mask1 = (1 << bits1) - 1;
-    
-    static void chunkIndex(Shape2 const & p, Shape2 & b)
+    static Shape2 defaultShape()
     {
-        typedef std::size_t UI;
-        b[0] = (UI)p[0] >> bits0;
-        b[1] = (UI)p[1] >> bits1;
-    }
-    
-    static std::size_t chunkOffset(Shape2 const & p, Shape2 const & s)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] >> bits0) * s[0] +
-               ((UI)p[1] >> bits1) * s[1];
-    }
-    
-    static std::size_t chunkOffset(Shape2 const & p, Shape2 const & s, Shape2 const & b)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] >> b[0]) * s[0] +
-               ((UI)p[1] >> b[1]) * s[1];
-    }
-    
-    static std::size_t offsetInChunk(Shape2 const & p, Shape2 const & s)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] & mask0) * s[0] +
-               ((UI)p[1] & mask1) * s[1];
-    }
-    
-    static std::size_t offsetInChunk(Shape2 const & p, Shape2 const & s, Shape2 const & m)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] & (UI)m[0]) * s[0] +
-               ((UI)p[1] & (UI)m[1]) * s[1];
-    }
-
-    static Shape2 chunkArrayShape(Shape2 shape)
-    {
-        shape[0] = (shape[0] + mask0) >> bits0;
-        shape[1] = (shape[1] + mask1) >> bits1;
-        return shape;
-    }
-
-    static Shape2 standardChunkShape()
-    {
-        return Shape2(1 << bits0, 1 << bits1);
+        return Shape2(1 << 9, 1 << 9);
     }
 };
 
 template <class T>
 struct ChunkShape<3, T>
 {
-    static const unsigned int bits0 = 6;
-    static const unsigned int bits1 = 6;
-    static const unsigned int bits2 = 6;
-    static const unsigned int mask0 = (1 << bits0) - 1;
-    static const unsigned int mask1 = (1 << bits1) - 1;
-    static const unsigned int mask2 = (1 << bits2) - 1;
-    
-    static void chunkIndex(Shape3 const & p, Shape3 & b)
+    static Shape3 defaultShape()
     {
-        typedef std::size_t UI;
-        b[0] = (UI)p[0] >> bits0;
-        b[1] = (UI)p[1] >> bits1;
-        b[2] = (UI)p[2] >> bits2;
-    }
-    
-    static Shape3 bits()
-    {
-        return Shape3(bits0, bits1, bits2);
-    }
-    
-    static Shape3 mask()
-    {
-        return Shape3(mask0, mask1, mask2);
-    }
-    
-    static std::size_t chunkOffset(Shape3 const & p, Shape3 const & s)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] >> bits0) * s[0] +
-               ((UI)p[1] >> bits1) * s[1] +
-               ((UI)p[2] >> bits2) * s[2];
-    }
-    
-    static std::size_t chunkOffset(Shape3 const & p, Shape3 const & s, Shape3 const & b)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] >> b[0]) * s[0] +
-               ((UI)p[1] >> b[1]) * s[1] +
-               ((UI)p[2] >> b[2]) * s[2];
-    }
-    
-    static std::size_t offsetInChunk(Shape3 const & p, Shape3 const & s)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] & mask0) * s[0] +
-               ((UI)p[1] & mask1) * s[1] +
-               ((UI)p[2] & mask2) * s[2];
-    
-    }
-    static std::size_t offsetInChunk(Shape3 const & p, Shape3 const & s, Shape3 const & m)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] & (UI)m[0]) * s[0] +
-               ((UI)p[1] & (UI)m[1]) * s[1] +
-               ((UI)p[2] & (UI)m[2]) * s[2];
-    }
-
-    static Shape3 chunkArrayShape(Shape3 shape)
-    {
-        shape[0] = (shape[0] + mask0) >> bits0;
-        shape[1] = (shape[1] + mask1) >> bits1;
-        shape[2] = (shape[2] + mask2) >> bits2;
-        return shape;
-    }
-
-    static Shape3 standardChunkShape()
-    {
-        return Shape3(1 << bits0, 1 << bits1, 1 << bits2);
+        return Shape3(1 << 6, 1 << 6, 1 << 6);
     }
 };
 
 template <class T>
 struct ChunkShape<4, T>
 {
-    static const unsigned int bits0 = 6;
-    static const unsigned int bits1 = 6;
-    static const unsigned int bits2 = 4;
-    static const unsigned int bits3 = 2;
-    static const unsigned int mask0 = (1 << bits0) - 1;
-    static const unsigned int mask1 = (1 << bits1) - 1;
-    static const unsigned int mask2 = (1 << bits2) - 1;
-    static const unsigned int mask3 = (1 << bits3) - 1;
-    
-    static void chunkIndex(Shape4 const & p, Shape4 & b)
-    {
-        typedef std::size_t UI;
-        b[0] = (UI)p[0] >> bits0;
-        b[1] = (UI)p[1] >> bits1;
-        b[2] = (UI)p[2] >> bits2;
-        b[3] = (UI)p[3] >> bits3;
-    }
-    
-    static std::size_t chunkOffset(Shape4 const & p, Shape4 const & s)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] >> bits0) * s[0] +
-               ((UI)p[1] >> bits1) * s[1] +
-               ((UI)p[2] >> bits2) * s[2] +
-               ((UI)p[3] >> bits3) * s[3];
-    }
-    
-    static std::size_t offsetInChunk(Shape4 const & p, Shape4 const & s)
-    {
-        typedef std::size_t UI;
-        return ((UI)p[0] & mask0) * s[0] +
-               ((UI)p[1] & mask1) * s[1] +
-               ((UI)p[2] & mask2) * s[2] +
-               ((UI)p[3] & mask3) * s[3];
-    }
-
-    static Shape4 chunkArrayShape(Shape4 shape)
-    {
-        shape[0] = (shape[0] + mask0) >> bits0;
-        shape[1] = (shape[1] + mask1) >> bits1;
-        shape[2] = (shape[2] + mask2) >> bits2;
-        shape[3] = (shape[3] + mask3) >> bits3;
-        return shape;
-    }
-
-    static Shape4 standardChunkShape()
+    static Shape4 defaultShape()
     {
         return Shape4(1 << bits0, 1 << bits1, 1 << bits2, 1 << bits3);
     }
 };
+
+template <unsigned int N>
+struct ChunkIndexing
+{
+    template <class T, int M>
+    static void chunkIndex(TinyVector<T, M> const & p, 
+                           TinyVector<T, M> const & bits, 
+                           TinyVector<T, M> & index)
+    {
+        typedef std::size_t UI;
+        ChunkIndexing<N-1>::chunkIndex(p, bits, index);
+        index[N-1] = (UI)p[N-1] >> bits[N-1];
+    }
+    
+    template <class T, int M>
+    static std::size_t chunkOffset(TinyVector<T, M> const & p, 
+                                   TinyVector<T, M> const & bits, 
+                                   TinyVector<T, M> const & strides)
+    {
+        typedef std::size_t UI;
+        return ChunkIndexing<N-1>::chunkOffset(p, bits, strides) +
+               ((UI)p[N-1] >> bits[N-1]) * strides[N-1];
+    }
+    
+    template <class T, int M>
+    static std::size_t offsetInChunk(TinyVector<T, M> const & p, 
+                                     TinyVector<T, M> const & mask, 
+                                     TinyVector<T, M> const & strides)
+    {
+        typedef std::size_t UI;
+        return ChunkIndexing<N-1>::offsetInChunk(p, mask, strides) +
+               ((UI)p[N-1] & (UI)mask[N-1]) * strides[N-1];
+    }
+};
+
+template <>
+struct ChunkIndexing<1>
+{
+    template <class T, int M>
+    static void chunkIndex(TinyVector<T, M> const & p, 
+                           TinyVector<T, M> const & bits, 
+                           TinyVector<T, M> & index)
+    {
+        typedef std::size_t UI;
+        index[0] = (UI)p[0] >> bits[0];
+    }
+    
+    template <class T, int M>
+    static std::size_t chunkOffset(TinyVector<T, M> const & p, 
+                                   TinyVector<T, M> const & bits, 
+                                   TinyVector<T, M> const & strides)
+    {
+        typedef std::size_t UI;
+        return ((UI)p[0] >> bits[0]) * strides[0];
+    }
+    
+    template <class T, int M>
+    static std::size_t offsetInChunk(TinyVector<T, M> const & p, 
+                                     TinyVector<T, M> const & mask, 
+                                     TinyVector<T, M> const & strides)
+    {
+        typedef std::size_t UI;
+        return ((UI)p[0] & (UI)mask[0]) * strides[0];
+    }
+};
+
+
+template <class T, int M>
+inline TinyVector<T, M> 
+chunkArrayShape(TinyVector<T, M> shape, 
+                TinyVector<T, M> const & bits, 
+                TinyVector<T, M> const & mask)
+{
+    for(int k=0; k<M; ++k)
+        shape[k] = (shape[k] + mask[k]) >> bits[k];
+    return shape;
+}
 
 template <unsigned int N, class T>
 class ChunkBase
@@ -622,13 +515,13 @@ class MultiArrayView<N, T, ChunkedArrayTag>
     : shape_(shape)
     {}
     
-    reference operator[](shape_type p)
+    reference operator[](shape_type point)
     {
-        p += offset_;
-        // Chunk * chunk = chunks_.data() + ChunkShape<N, T>::chunkOffset(p, chunks_.stride());
-        // return *(chunk->pointer_ + ChunkShape<N, T>::offsetInChunk(p, chunk->strides_));
-        Chunk * chunk = chunks_.data() + ChunkShape<N, T>::chunkOffset(p, chunks_.stride(), bits_);
-        return *(chunk->pointer_ + ChunkShape<N, T>::offsetInChunk(p, chunk->strides_, mask_));
+        point += offset_;
+        Chunk * chunk = chunks_.data() + 
+                        ChunkIndexing<N>::chunkOffset(point, bits_, chunks_.stride());
+        return *(chunk->pointer_ + 
+                 ChunkIndexing<N>::offsetInChunk(point, mask_, chunk->strides_));
     }
     
     MultiArrayView<N-1, T, ChunkedArrayTag> 
@@ -772,21 +665,39 @@ class ChunkedArray
     typedef ChunkBase<N, T> Chunk;
     typedef MultiArrayView<N, T, ChunkedArrayTag>                   ViewType;
         
-    ChunkedArray(int cache_max = 0)
+    ChunkedArray(int cache_max = 0, 
+                 shape_type const & chunk_shape = ChunkShape<N, T>::defaultShape())
     : shape_(0),
-      chunk_shape_(ChunkShape<N, T>::standardChunkShape()),
+      chunk_shape_(chunk_shape),
       cache_first_(0), cache_last_(0),
       cache_size_(0),
       cache_max_size_(cache_max)
-    {}
+    {
+        initBitMask();
+    }
         
-    ChunkedArray(shape_type const & shape, int cache_max = 0)
+    ChunkedArray(shape_type const & shape, int cache_max = 0, 
+                 shape_type const & chunk_shape = ChunkShape<N, T>::defaultShape())
     : shape_(shape),
-      chunk_shape_(ChunkShape<N, T>::standardChunkShape()),
+      chunk_shape_(chunk_shape),
       cache_first_(0), cache_last_(0),
       cache_size_(0),
       cache_max_size_(cache_max)
-    {}
+    {
+        initBitMask();
+    }
+    
+    void initBitMask()
+    {
+        for(unsigned int k=0; k<N; ++k)
+        {
+            UInt32 bits = log2i(chunk_shape_[k]);
+            vigra_precondition(chunk_shape_[k] == MultiArrayIndex(1 << bits),
+                               "ChunkedArray: chunk_shape elements must be powers of 2.");
+            bits_[k] = bits;
+            mask_[k] = chunk_shape_[k]-1;
+        }
+    }
     
     virtual ~ChunkedArray()
     {}
@@ -823,7 +734,7 @@ class ChunkedArray
             return 0;
 
         shape_type chunkIndex(SkipInitialization);
-        ChunkShape<N, T>::chunkIndex(global_point, chunkIndex);
+        ChunkIndexing<N>::chunkIndex(global_point, bits_, chunkIndex);
         ChunkBase<N, T> * chunk = lookupChunk(chunkIndex);
         
         // Obtain a reference to the current chunk.
@@ -903,7 +814,7 @@ class ChunkedArray
 
         strides = chunk->strides_;
         upper_bound = (chunkIndex + shape_type(1)) * this->chunk_shape_ - h->offset_;
-        std::size_t offset = ChunkShape<N, T>::offsetInChunk(global_point, strides);
+        std::size_t offset = ChunkIndexing<N>::offsetInChunk(global_point, mask_, strides);
         h->chunk_ = chunk;
         return p + offset;
     }
@@ -914,8 +825,8 @@ class ChunkedArray
                            "ChunkedArray::copySubarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
-        ChunkShape<N, T>::chunkIndex(start, chunkStart);
-        ChunkShape<N, T>::chunkIndex(stop-shape_type(1), chunkStop);
+        ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
+        ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
         chunkStop += shape_type(1);
         
         threading::lock_guard<threading::mutex> guard(cache_lock_);
@@ -949,8 +860,8 @@ class ChunkedArray
                            "ChunkedArray::copySubarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
-        ChunkShape<N, T>::chunkIndex(start, chunkStart);
-        ChunkShape<N, T>::chunkIndex(stop-shape_type(1), chunkStop);
+        ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
+        ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
         chunkStop += shape_type(1);
         
         MultiCoordinateIterator<N> i(chunkStart, chunkStop),
@@ -990,14 +901,14 @@ class ChunkedArray
                            "ChunkedArray::copySubarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
-        ChunkShape<N, T>::chunkIndex(start, chunkStart);
-        ChunkShape<N, T>::chunkIndex(stop-shape_type(1), chunkStop);
+        ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
+        ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
         chunkStop += shape_type(1);
         
         view.chunks_.reshape(chunkStop-chunkStart);
         view.offset_ = start - chunkStart * this->chunk_shape_;
-        view.bits_   = ChunkShape<N, T>::bits();
-        view.mask_   = ChunkShape<N, T>::mask();
+        view.bits_   = bits_;
+        view.mask_   = mask_;
         view.chunk_shape_   = chunk_shape_;
         
         typedef typename ViewType::UnrefProxy UP;
@@ -1084,7 +995,7 @@ class ChunkedArray
         shape_ = shape;
     }
     
-    shape_type shape_, chunk_shape_;
+    shape_type shape_, chunk_shape_, bits_, mask_;
     Chunk * cache_first_, * cache_last_;
     std::size_t cache_size_, cache_max_size_;
     threading::mutex cache_lock_;
@@ -1237,7 +1148,7 @@ class ChunkedArrayLazy
     
     ChunkedArrayLazy(shape_type const & shape, Alloc const & alloc = Alloc())
     : ChunkedArray<N, T>(shape),
-      outer_array_(ChunkShape<N, T>::chunkArrayShape(shape), Chunk(alloc))
+      outer_array_(chunkArrayShape(shape, this->bits_, this->mask_), Chunk(alloc))
     {
         // set shape of the chunks
         typename ChunkStorage::iterator i   = outer_array_.begin(), 
@@ -1395,7 +1306,7 @@ class ChunkedArrayCompressed
     
     ChunkedArrayCompressed(shape_type const & shape, int cache_max = 0, CompressionMethod method=LZ4)
     : ChunkedArray<N, T>(shape, cache_max ? cache_max : max(outer_array_.shape())*2),
-      outer_array_(ChunkShape<N, T>::chunkArrayShape(shape)),
+      outer_array_(chunkArrayShape(shape, this->bits_, this->mask_)),
       compression_method_(method)
     {
         // set shape of the chunks
@@ -1555,7 +1466,7 @@ class ChunkedArrayHDF5
     void init(shape_type const & shape)
     {
         reshape(shape);
-        outer_array_.reshape(ChunkShape<N, T>::chunkArrayShape(shape));
+        outer_array_.reshape(chunkArrayShape(shape, this->bits_, this->mask_));
         if(this->cache_max_size_ == 0)
             this->cache_max_size_ = max(outer_array_.shape())*2;
         
@@ -1713,7 +1624,7 @@ class ChunkedArrayTmpFile
     
     ChunkedArrayTmpFile(shape_type const & shape, int cache_max=0, std::string const & path = "")
     : ChunkedArray<N, T>(shape, cache_max ? cache_max : max(outer_array_.shape())*2),
-      outer_array_(ChunkShape<N, T>::chunkArrayShape(shape)),
+      outer_array_(chunkArrayShape(shape, this->bits_, this->mask_)),
       file_size_(),
       file_capacity_()
     {

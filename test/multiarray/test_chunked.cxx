@@ -1903,7 +1903,7 @@ public:
     
     MultiArrayChunkedTest()
     : s(200, 201, 202),
-      outer_shape(ChunkShape<3, T>::chunkArrayShape(s))
+      outer_shape(chunkArrayShape(s, Shape3(6), Shape3(63)))
     {
         std::cerr << "chunked multi array test for type " << typeid(T).name() << ": \n";        
     }
@@ -1987,7 +1987,7 @@ public:
             }
             std::cerr << "\n";
             
-            MultiArrayView<2, T, ChunkedArrayTag> sub3(sub2.bindAt(2, 1));
+            MultiArrayView<2, T, ChunkedArrayTag> sub3(sub2.bindAt(1, 1));
             MultiCoordinateIterator<2> cc(sub3.shape_),
                                        ccend(cc.getEndIterator());
             for(; cc != ccend; ++cc)
