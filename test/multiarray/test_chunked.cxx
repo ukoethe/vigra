@@ -1996,6 +1996,24 @@ public:
                 if(cc.point()[0] == 2)
                     std::cerr << "\n";
             }
+            std::cerr << "\n";
+            
+            for(auto i = sub3.begin(), end = sub3.end(); i != end; ++i)
+            {
+                std::cerr << (UInt64)*i << " ";
+                if(i.point()[0] == 2)
+                    std::cerr << "\n";
+            }
+            std::cerr << "\n";
+            
+            MultiArrayView<2, T, ChunkedArrayTag> sub4(Shape2(2,2));
+            sub3.subarray(Shape2(1,1), sub4);
+            for(auto i = sub4.begin(), end = sub4.end(); i != end; ++i)
+            {
+                std::cerr << (UInt64)*i << " ";
+                if(i.point()[0] == 1)
+                    std::cerr << "\n";
+            }
         }
 
         // bi = IteratorType(P1(v, P0(s)));

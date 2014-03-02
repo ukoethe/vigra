@@ -458,12 +458,6 @@ class ChunkedArrayBase
     virtual ~ChunkedArrayBase()
     {}
     
-    virtual pointer loadChunk(Chunk * chunk) = 0;
-    
-    virtual void unloadChunk(Chunk * chunk) = 0;
-    
-    virtual Chunk * lookupChunk(shape_type const & index) = 0;
-    
     virtual void unrefChunk(ChunkedHandle<N, T> * h) = 0;
     
     virtual void unrefChunks(shape_type const & start, shape_type const & stop) = 0;
@@ -471,18 +465,18 @@ class ChunkedArrayBase
     virtual pointer getChunk(shape_type const & point, 
                              shape_type & strides, shape_type & upper_bound, 
                              ChunkedHandle<N, T> * h) = 0;
-
-    virtual void copySubarray(shape_type const & start, 
-                              ChunkedSubarrayCopy<N, T> & subarray, bool write_on_destruction = false) = 0;
 };
 
 template <unsigned int N, class T>
 class MultiArrayView<N, T, ChunkedArrayTag>
+: public ChunkedArrayBase<N, T>
 {
   public:
     typedef typename MultiArrayShape<N>::type shape_type;
     typedef T* pointer;
     typedef T& reference;
+    typedef StridedScanOrderIterator<N, ChunkedMemory<T>, T&, T*>   iterator;
+    typedef MultiArrayView<N, T, ChunkedArrayTag> ViewType;
     
     class Chunk
     {
@@ -514,6 +508,31 @@ class MultiArrayView<N, T, ChunkedArrayTag>
     MultiArrayView(shape_type const & shape)
     : shape_(shape)
     {}
+    
+    virtual void unrefChunk(ChunkedHandle<N, T> *) {}
+    
+    virtual void unrefChunks(shape_type const &, shape_type const &) {}
+    
+    virtual pointer getChunk(shape_type const & point, 
+                             shape_type & strides, shape_type & upper_bound, 
+                             ChunkedHandle<N, T> * h)
+    {
+        shape_type global_point = point + h->offset_;
+
+        if(!this->isInside(global_point))
+            return 0;
+        
+        global_point += offset_;
+        shape_type coffset = offset_ + h->offset_;
+        
+        shape_type chunkIndex(SkipInitialization);
+        ChunkIndexing<N>::chunkIndex(global_point, bits_, chunkIndex);
+        Chunk * chunk = &chunks_[chunkIndex];
+        strides = chunk->strides_;
+        upper_bound = (chunkIndex + shape_type(1)) * chunk_shape_ - coffset;
+        std::size_t offset = ChunkIndexing<N>::offsetInChunk(global_point, mask_, strides);
+        return chunk->pointer_ + offset;
+    }
     
     reference operator[](shape_type point)
     {
@@ -552,11 +571,59 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         
         return res;
     }
+    
+    void subarray(shape_type start, ViewType & view)
+    {
+        shape_type stop = start + view.shape_;
+        
+        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop <= shape_).all(),
+                           "MultiArrayView<N-1, T, ChunkedArrayTag>::subarray(): subarray out of bounds.");
+        start += offset_;
+        stop  += offset_;
+        shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
+        ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
+        ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
+        chunkStop += shape_type(1);
+        
+        view.chunks_ = chunks_.subarray(chunkStart, chunkStop);
+        view.offset_ = start - chunkStart * chunk_shape_;
+        view.bits_   = bits_;
+        view.mask_   = mask_;
+        view.chunk_shape_   = chunk_shape_;
+        view.unref_ = unref_;
+    }
+    
+    bool isInside(shape_type const & p) const
+    {
+        return (shape_type() <= p).all() && (p < shape_).all();
+    }
+    
+    iterator begin()
+    {
+        return createCoupledIterator(*this);
+    }
+    
+    iterator end()
+    {
+        return begin().getEndIterator();
+    }
 
     MultiArray<N, Chunk> chunks_;
     shape_type shape_, offset_, bits_, mask_, chunk_shape_;
     std::shared_ptr<UnrefProxy> unref_;
 };
+
+template <unsigned int N, class T>
+typename MultiArrayView<N, T, ChunkedArrayTag>::iterator
+createCoupledIterator(MultiArrayView<N, T, ChunkedArrayTag> & m)
+{
+    typedef typename MultiArrayView<N, T, ChunkedArrayTag>::iterator    IteratorType;
+    typedef typename IteratorType::handle_type           P1;
+    typedef typename P1::base_type                       P0;
+    
+    return IteratorType(P1(m, 
+                        P0(m.shape_)));
+}
 
 /*
 The present implementation uses a memory-mapped sparse file to store the chunks.
@@ -897,7 +964,7 @@ class ChunkedArray
     {
         shape_type stop = start + view.shape_;
         
-        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop < shape()).all(),
+        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop <= shape()).all(),
                            "ChunkedArray::copySubarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
@@ -948,7 +1015,7 @@ class ChunkedArray
     {
         shape_type stop   = start + subarray.shape();
         
-        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop < shape()).all(),
+        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop <= shape()).all(),
                            "ChunkedArray::copySubarray(): subarray out of bounds.");
                            
         iterator i(begin().restrictToSubarray(start, stop)),
