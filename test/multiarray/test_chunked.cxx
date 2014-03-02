@@ -1889,10 +1889,10 @@ class MultiArrayChunkedTest
 {
 public:
 
-    typedef ChunkedArrayBase<3, T>                                  BaseArrayType;
+    typedef ChunkedArray<3, T>                                      BaseArrayType;
     typedef ChunkedArrayFull<3, T>                                  FullArrayType;
     typedef ChunkedArrayTmpFile<3, T>                               TmpFileArrayType;
-    typedef ChunkedArray<3, T>                                      AllocArrayType;
+    typedef ChunkedArrayLazy<3, T>                                  AllocArrayType;
     typedef ChunkedArrayCompressed<3, T>                            CompressedArrayType;
     typedef ChunkedArrayHDF5<3, T>                                  HDF5ArrayType;
     typedef typename CoupledHandleType<3, ChunkedMemory<T> >::type  P1;
@@ -1903,7 +1903,7 @@ public:
     
     MultiArrayChunkedTest()
     : s(200, 201, 202),
-      outer_shape(outerShape(s))
+      outer_shape(ChunkShape<3, T>::chunkArrayShape(s))
     {
         std::cerr << "chunked multi array test for type " << typeid(T).name() << ": \n";        
     }
@@ -1963,16 +1963,29 @@ public:
         t = TOCS;
         std::cerr << "    chunked iterator create and init: " << t << "\n";
         
-        // {
-            // typename Array::SubarrayType sub(Shape3(3));
-            // v.copySubarray(Shape3(63, 63, 63), sub, true);
-            // for(auto i = sub.begin(), end = sub.end(); i != end; ++i)
-            // {
-                // std::cerr << (UInt64)*i << " ";
-                // if(i.point()[0] == 2)
-                    // std::cerr << "\n";
-            // }
-        // }
+        {
+            Shape3 start(63, 63, 63), stop(66, 66, 66);
+            typename Array::SubarrayType sub(stop - start);
+            v.copySubarray(Shape3(63, 63, 63), sub, true);
+            for(auto i = sub.begin(), end = sub.end(); i != end; ++i)
+            {
+                std::cerr << (UInt64)*i << " ";
+                if(i.point()[0] == 2)
+                    std::cerr << "\n";
+            }
+            std::cerr << "\n";
+            
+            typename Array::ViewType sub2(stop - start);
+            v.subarray(start, sub2);
+            MultiCoordinateIterator<3> c(stop - start),
+                                       cend(c.getEndIterator());
+            for(; c != cend; ++c)
+            {
+                std::cerr << (UInt64)sub2[c] << " ";
+                if(c.point()[0] == 2)
+                    std::cerr << "\n";
+            }
+        }
 
         // bi = IteratorType(P1(v, P0(s)));
         bi = v.begin();

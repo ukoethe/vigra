@@ -88,29 +88,36 @@ struct VigraFalseType
 
 /********************************************************/
 /*                                                      */
-/*                   StridedArrayTag                    */
+/*          tags for MultiArray memory layout           */
 /*                                                      */
 /********************************************************/
 
 /** tag for marking a MultiArray strided.
 
-    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    <b>\#include</b> \<vigra/metaprogramming.hxx\> <br/>
     Namespace: vigra
 */
 struct StridedArrayTag {};
 
-/********************************************************/
-/*                                                      */
-/*                  UnstridedArrayTag                   */
-/*                                                      */
-/********************************************************/
-
 /** tag for marking a MultiArray unstrided.
 
-    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    <b>\#include</b> \<vigra/metaprogramming.hxx\> <br/>
     Namespace: vigra
 */
 struct UnstridedArrayTag {};
+
+/** tag for marking a MultiArray chunked.
+
+    <b>\#include</b> \<vigra/metaprogramming.hxx\> <br/>
+    Namespace: vigra
+*/
+struct ChunkedArrayTag {};
+
+/********************************************************/
+/*                                                      */
+/*                      TypeTraits                      */
+/*                                                      */
+/********************************************************/
 
 template<class T>
 class TypeTraits
