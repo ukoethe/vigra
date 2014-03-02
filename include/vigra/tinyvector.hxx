@@ -204,7 +204,7 @@ struct ExecLoop
     }
 
     template <class T1, class T2>
-    static bool less(T1 const * left, T2 const * right)
+    static bool lexicographicLessThan(T1 const * left, T2 const * right)
     {
         for(int i=0; i<LEVEL; ++i)
         {
@@ -486,13 +486,13 @@ struct UnrollLoop
     }
 
     template <class T1, class T2>
-    static bool less(T1 const * left, T2 const * right)
+    static bool lexicographicLessThan(T1 const * left, T2 const * right)
     {
         if(*left < *right)
             return true;
         if(*right < *left)
             return false;
-        return UnrollLoop<LEVEL - 1>::less(left+1, right+1);
+        return UnrollLoop<LEVEL - 1>::lexicographicLessThan(left+1, right+1);
     }
 
     template <class T>
@@ -574,7 +574,7 @@ struct UnrollLoop<0>
     template <class T1, class T2>
     static bool notEqual(T1, T2) { return false; }
     template <class T1, class T2>
-    static bool less(T1, T2) { return false; }
+    static bool lexicographicLessThan(T1, T2) { return false; }
     template <class T1, class T2>
     static void min(T1, T2) {}
     template <class T1, class T2>
@@ -1263,14 +1263,62 @@ operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     return ltype::notEqual(l.begin(), r.begin());
 }
 
-    /// lexicographical comparison
+    /// pointwise less-then
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
-inline bool
+inline TinyVector<bool, SIZE>
 operator<(TinyVectorBase<V1, SIZE, D1, D2> const & l,
           TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
+    TinyVector<bool, SIZE> res(SkipInitialization);
+    for(int k=0; k < SIZE; ++k)
+        res[k] = (l[k] < r[k]);
+    return res;
+}
+
+    /// pointwise greate-then
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline TinyVector<bool, SIZE>
+operator>(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+          TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    TinyVector<bool, SIZE> res(SkipInitialization);
+    for(int k=0; k < SIZE; ++k)
+        res[k] = (l[k] > r[k]);
+    return res;
+}
+
+    /// pointwise less-equal
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline TinyVector<bool, SIZE>
+operator<=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+           TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    TinyVector<bool, SIZE> res(SkipInitialization);
+    for(int k=0; k < SIZE; ++k)
+        res[k] = (l[k] <= r[k]);
+    return res;
+}
+
+    /// pointwise greater-equal
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline TinyVector<bool, SIZE>
+operator>=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+           TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    TinyVector<bool, SIZE> res(SkipInitialization);
+    for(int k=0; k < SIZE; ++k)
+        res[k] = (l[k] >= r[k]);
+    return res;
+}
+
+    /// lexicographical comparison
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline bool
+lexicographicLessThan(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+                      TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
     typedef typename detail::LoopType<SIZE>::type ltype;
-    return ltype::less(l.begin(), r.begin());
+    return ltype::lexicographicLessThan(l.begin(), r.begin());
 }
 
 template <class V, int SIZE, class D1, class D2, class D3, class D4>
