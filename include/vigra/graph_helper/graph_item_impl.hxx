@@ -156,14 +156,6 @@ namespace vigra{
             static const bool IsFilter = false ; 
         };
 
-
-        //  This class with the filter above can create 
-        //  the following lemon iterators :
-        //   - IncEdgeIt
-        //   - OutArcIt
-        //   - 
-        //
-        //
         template<class GRAPH,class NODE_IMPL,class FILTER>    
         class GenericIncEdgeIt
 

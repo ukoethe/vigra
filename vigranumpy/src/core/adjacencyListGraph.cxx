@@ -47,7 +47,7 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/adjacency_list_graph.hxx>
-#include <vigra/python_graph_generalization.hxx>
+#include <vigra/python_graph.hxx>
 namespace python = boost::python;
 
 namespace vigra{

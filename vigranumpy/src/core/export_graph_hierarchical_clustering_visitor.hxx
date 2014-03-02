@@ -11,16 +11,13 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <boost/python.hpp>
 #include <vigra/graphs.hxx>
-#include <vigra/graph_helper/dense_map.hxx>
-#include <vigra/graph_helper/on_the_fly_edge_map.hxx>
-#include <vigra/merge_graph/maps/python_graph.hxx>
-#include <vigra/python_graph_maps.hxx>
+#include <vigra/graph_maps.hxx>
+#include <vigra/python_graph.hxx>
 #include <vigra/graph_algorithms.hxx>
 #include <vigra/metrics.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/error.hxx>
-#include <vigra/merge_graph/merge_graph_adaptor.hxx>
-
+#include <vigra/merge_graph_adaptor.hxx>
 #include <vigra/hierarchical_clustering.hxx>
 
 namespace python = boost::python;

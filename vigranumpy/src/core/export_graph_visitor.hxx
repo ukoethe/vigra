@@ -11,9 +11,9 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <boost/python.hpp>
 #include <vigra/graphs.hxx>
-#include <vigra/graph_helper/dense_map.hxx>
+#include <vigra/graph_maps.hxx>
 #include <vigra/graph_generalization.hxx>
-#include <vigra/python_graph_generalization.hxx>
+#include <vigra/python_graph.hxx>
 
 /*boost*/
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -23,53 +23,6 @@ namespace python = boost::python;
 namespace vigra{
 
 
-
-template<class GRAPH>
-struct EdgeIteratorHolder{
-
-    typedef typename GraphIteratorAccessor<GRAPH>::EdgeIt const_iterator;
-    EdgeIteratorHolder( ):graph_(NULL){}
-    EdgeIteratorHolder(const GRAPH & g):graph_(&g){}
-    const_iterator begin()const{
-        return GraphIteratorAccessor<GRAPH>::edgesBegin(*graph_);
-    }
-    const_iterator end()const{
-        return GraphIteratorAccessor<GRAPH>::edgesEnd(*graph_);
-    }
-
-    const GRAPH * graph_;
-};
-
-
-template<class GRAPH>
-struct NodeIteratorHolder{
-
-    typedef typename GraphIteratorAccessor<GRAPH>::NodeIt const_iterator;
-    NodeIteratorHolder( ):graph_(NULL){}
-    NodeIteratorHolder(const GRAPH & g):graph_(&g){}
-    const_iterator begin()const{
-        return GraphIteratorAccessor<GRAPH>::nodesBegin(*graph_);
-    }
-    const_iterator end()const{
-        return GraphIteratorAccessor<GRAPH>::nodesBegin(*graph_);
-    }
-    const GRAPH * graph_;
-};
-
-template<class GRAPH>
-struct ArcIteratorHolder{
-
-    typedef typename GraphIteratorAccessor<GRAPH>::ArcIt const_iterator;
-    ArcIteratorHolder( ):graph_(NULL){}
-    ArcIteratorHolder(const GRAPH & g):graph_(&g){}
-    const_iterator begin()const{
-        return GraphIteratorAccessor<GRAPH>::arcsBegin(*graph_);
-    }
-    const_iterator end()const{
-        return GraphIteratorAccessor<GRAPH>::arcsEnd(*graph_);
-    }
-    const GRAPH * graph_;
-};
 
 
 template<class GRAPH>
@@ -97,6 +50,8 @@ public:
     //typedef NodeIteratorHolder<Graph> NodeIteratorHolderType;
     //typedef ArcIteratorHolder<Graph>  ArcIteratorHolderType;
 
+    typedef NodeIteratorHolder<Graph>          PyNodeIteratorHolder;
+    typedef EdgeIteratorHolder<Graph>          PyEdgeIteratorHolder;
 
     typedef NeighbourNodeIteratorHolder<Graph> PyNeighbourNodeIteratorHolder;
     typedef IncEdgeIteratorHolder<Graph>       PyIncEdgeIteratorHolder;
@@ -163,7 +118,15 @@ public:
 
 
 
+        const std::string nodeIteratorHolderClsName = std::string("NodeIteratorHolder")+clsName_;
+        python::class_<PyNodeIteratorHolder>(nodeIteratorHolderClsName.c_str(),python::no_init)
+        .def("__iter__",python::range(&PyNodeIteratorHolder::begin,&PyNodeIteratorHolder::end))
+        ;
 
+        const std::string edgeIteratorHolderClsName = std::string("EdgeIteratorHolder")+clsName_;
+        python::class_<PyEdgeIteratorHolder>(edgeIteratorHolderClsName.c_str(),python::no_init)
+        .def("__iter__",python::range(&PyEdgeIteratorHolder::begin,&PyEdgeIteratorHolder::end))
+        ;
 
         const std::string neighbourNodeIteratorHolderClsName = std::string("NeighbourNodeIteratorHolder")+clsName_;
         python::class_<PyNeighbourNodeIteratorHolder>(neighbourNodeIteratorHolderClsName.c_str(),python::no_init)
@@ -229,6 +192,8 @@ public:
             //.def("edgeIter",&edgeHolder,python::with_custodian_and_ward_postcall<0,1>() )  // graph may not be deleted bevore holder is deleted
             //.def("nodeIter",&nodeHolder,python::with_custodian_and_ward_postcall<0,1>() )  // graph may not be deleted bevore holder is deleted
 
+            .def("nodeIter",&getNodeIteratorHolder,python::with_custodian_and_ward_postcall<0,1>())
+            .def("edgeIter",&getEdgeIteratorHolder,python::with_custodian_and_ward_postcall<0,1>())
             .def("neighbourNodeIter",&getNeighbourNodeIteratorHolder,python::with_custodian_and_ward_postcall<0,1>())
             .def("incEdgeIter",      &getIncEdgeIteratorHolder,python::with_custodian_and_ward_postcall<0,1>())
 
@@ -274,6 +239,15 @@ public:
             
         ;
     }
+
+    static PyEdgeIteratorHolder getEdgeIteratorHolder(const Graph & self){
+        return PyEdgeIteratorHolder(self);
+    }
+
+    static PyNodeIteratorHolder getNodeIteratorHolder(const Graph & self){
+        return PyNodeIteratorHolder(self);
+    }
+
 
     static PyIncEdgeIteratorHolder getIncEdgeIteratorHolder(const Graph & self,const PyNode & node){
         return PyIncEdgeIteratorHolder(self,node);
@@ -496,8 +470,7 @@ public:
     static index_type nodeId( const Graph & self,const PyNode & node ){return  self.id(node);}
     static index_type edgeId( const Graph & self,const PyEdge & edge ){return  self.id(edge);}
     static index_type arcId(  const Graph & self,const PyArc & arc ){return  self.id(arc);}
-    //static EdgeIteratorHolderType edgeHolder(const Graph & self){return EdgeIteratorHolderType(self);}
-    //static NodeIteratorHolderType nodeHolder(const Graph & self){return NodeIteratorHolderType(self);}
+
 
 
     static NumpyAnyArray nodeIdMap(
@@ -542,9 +515,7 @@ public:
     typedef typename Graph::EdgeIt              EdgeIt;
     typedef typename Graph::ArcIt               ArcIt;
     //typedef typename Graph::NeighborNodeIt      NeighborNodeIt;
-    typedef EdgeIteratorHolder<Graph> EdgeIteratorHolderType;
-    typedef NodeIteratorHolder<Graph> NodeIteratorHolderType;
-    typedef ArcIteratorHolder<Graph>  ArcIteratorHolderType;
+
 
 
     typedef EdgeHolder<Graph> PyEdge;

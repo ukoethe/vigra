@@ -260,3 +260,27 @@ class TestGraph(object):
         findEdges = g.findEdges(edges)
 
         assert np.array_equal(findEdges,edgeIds)
+
+    def testIters(self):
+        g  = vigraph.listGraph()
+        
+        nodes = [n for n in g.nodeIter()]
+        assert len(nodes)==0
+
+        g.addNode(3)
+        nodes = [n for n in g.nodeIter()]
+        assert len(nodes)==1
+        assert g.id(nodes[0]) == 3 
+
+        g.addNode(6)
+        nodes = [n for n in g.nodeIter()]
+        assert len(nodes)==2
+        assert g.id(nodes[0]) == 3 
+        assert g.id(nodes[1]) == 6 
+
+        g.addNode(2)
+        nodes = [n for n in g.nodeIter()]
+        assert len(nodes)==3
+        assert g.id(nodes[0]) == 2 
+        assert g.id(nodes[1]) == 3 
+        assert g.id(nodes[2]) == 6 
