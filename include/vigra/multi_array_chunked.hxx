@@ -282,11 +282,25 @@ struct ChunkShape<2, T>
                ((UI)p[1] >> bits1) * s[1];
     }
     
+    static std::size_t chunkOffset(Shape2 const & p, Shape2 const & s, Shape2 const & b)
+    {
+        typedef std::size_t UI;
+        return ((UI)p[0] >> b[0]) * s[0] +
+               ((UI)p[1] >> b[1]) * s[1];
+    }
+    
     static std::size_t offsetInChunk(Shape2 const & p, Shape2 const & s)
     {
         typedef std::size_t UI;
         return ((UI)p[0] & mask0) * s[0] +
                ((UI)p[1] & mask1) * s[1];
+    }
+    
+    static std::size_t offsetInChunk(Shape2 const & p, Shape2 const & s, Shape2 const & m)
+    {
+        typedef std::size_t UI;
+        return ((UI)p[0] & (UI)m[0]) * s[0] +
+               ((UI)p[1] & (UI)m[1]) * s[1];
     }
 
     static Shape2 chunkArrayShape(Shape2 shape)
@@ -320,6 +334,16 @@ struct ChunkShape<3, T>
         b[2] = (UI)p[2] >> bits2;
     }
     
+    static Shape3 bits()
+    {
+        return Shape3(bits0, bits1, bits2);
+    }
+    
+    static Shape3 mask()
+    {
+        return Shape3(mask0, mask1, mask2);
+    }
+    
     static std::size_t chunkOffset(Shape3 const & p, Shape3 const & s)
     {
         typedef std::size_t UI;
@@ -328,12 +352,28 @@ struct ChunkShape<3, T>
                ((UI)p[2] >> bits2) * s[2];
     }
     
+    static std::size_t chunkOffset(Shape3 const & p, Shape3 const & s, Shape3 const & b)
+    {
+        typedef std::size_t UI;
+        return ((UI)p[0] >> b[0]) * s[0] +
+               ((UI)p[1] >> b[1]) * s[1] +
+               ((UI)p[2] >> b[2]) * s[2];
+    }
+    
     static std::size_t offsetInChunk(Shape3 const & p, Shape3 const & s)
     {
         typedef std::size_t UI;
         return ((UI)p[0] & mask0) * s[0] +
                ((UI)p[1] & mask1) * s[1] +
                ((UI)p[2] & mask2) * s[2];
+    
+    }
+    static std::size_t offsetInChunk(Shape3 const & p, Shape3 const & s, Shape3 const & m)
+    {
+        typedef std::size_t UI;
+        return ((UI)p[0] & (UI)m[0]) * s[0] +
+               ((UI)p[1] & (UI)m[1]) * s[1] +
+               ((UI)p[2] & (UI)m[2]) * s[2];
     }
 
     static Shape3 chunkArrayShape(Shape3 shape)
@@ -585,12 +625,43 @@ class MultiArrayView<N, T, ChunkedArrayTag>
     reference operator[](shape_type p)
     {
         p += offset_;
-        Chunk * chunk = chunks_.data() + ChunkShape<N, T>::chunkOffset(p, chunks_.stride());
-        return *(chunk->pointer_ + ChunkShape<N, T>::offsetInChunk(p, chunk->strides_));
+        // Chunk * chunk = chunks_.data() + ChunkShape<N, T>::chunkOffset(p, chunks_.stride());
+        // return *(chunk->pointer_ + ChunkShape<N, T>::offsetInChunk(p, chunk->strides_));
+        Chunk * chunk = chunks_.data() + ChunkShape<N, T>::chunkOffset(p, chunks_.stride(), bits_);
+        return *(chunk->pointer_ + ChunkShape<N, T>::offsetInChunk(p, chunk->strides_, mask_));
+    }
+    
+    MultiArrayView<N-1, T, ChunkedArrayTag> 
+    bindAt(MultiArrayIndex m, MultiArrayIndex d) const
+    {
+        typedef typename MultiArrayShape<N-1>::type SM;
+
+        MultiArrayView<N-1, T, ChunkedArrayTag> res(shape_.dropIndex(m));
+        res.offset_ = offset_.dropIndex(m);
+        res.bits_   = bits_.dropIndex(m);
+        res.mask_   = mask_.dropIndex(m);
+        res.chunk_shape_   = chunk_shape_.dropIndex(m);
+        res.chunks_.reshape(chunks_.shape().dropIndex(m));
+        
+        typedef std::size_t UI;
+        UI start = offset_[m] + d;
+        UI chunkStart = start >> bits_[m];
+        UI startInChunk = start - chunkStart * chunk_shape_[m];
+        
+        MultiArrayView<N-1, Chunk> view(chunks_.bindAt(m, chunkStart));
+        MultiCoordinateIterator<N-1> i(view.shape()),
+                                     end(i.getEndIterator());
+        for(; i != end; ++i)
+        {
+            res.chunks_[*i].pointer_ = view[*i].pointer_ + startInChunk*view[*i].strides_[m];
+            res.chunks_[*i].strides_ = view[*i].strides_.dropIndex(m);
+        }
+        
+        return res;
     }
 
     MultiArray<N, Chunk> chunks_;
-    shape_type shape_, offset_;
+    shape_type shape_, offset_, bits_, mask_, chunk_shape_;
     std::shared_ptr<UnrefProxy> unref_;
 };
 
@@ -925,6 +996,9 @@ class ChunkedArray
         
         view.chunks_.reshape(chunkStop-chunkStart);
         view.offset_ = start - chunkStart * this->chunk_shape_;
+        view.bits_   = ChunkShape<N, T>::bits();
+        view.mask_   = ChunkShape<N, T>::mask();
+        view.chunk_shape_   = chunk_shape_;
         
         typedef typename ViewType::UnrefProxy UP;
         view.unref_ = std::shared_ptr<UP>(new UP(start, stop, this));

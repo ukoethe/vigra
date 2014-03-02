@@ -1985,6 +1985,17 @@ public:
                 if(c.point()[0] == 2)
                     std::cerr << "\n";
             }
+            std::cerr << "\n";
+            
+            MultiArrayView<2, T, ChunkedArrayTag> sub3(sub2.bindAt(2, 1));
+            MultiCoordinateIterator<2> cc(sub3.shape_),
+                                       ccend(cc.getEndIterator());
+            for(; cc != ccend; ++cc)
+            {
+                std::cerr << (UInt64)sub3[cc] << " ";
+                if(cc.point()[0] == 2)
+                    std::cerr << "\n";
+            }
         }
 
         // bi = IteratorType(P1(v, P0(s)));
