@@ -265,7 +265,6 @@ public:
     }
 
 
-    // TODO: Remove duplicates in edgePoints.
     template<class T>
     static NumpyAnyArray  pyRagFindEdges(
         const RagGraph &           rag,
@@ -308,7 +307,6 @@ public:
                 }
                 for(size_t k=0; k<coords.size(); ++k) {
                     edgePoints(nNext, k) = coords[k];
-                    //edgePoints(k, nNext) = coords[k];
                 }
                 nNext++;
             }
