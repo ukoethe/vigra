@@ -636,6 +636,14 @@ struct AdjacencyListGraphOffTest{
         // 2 |4
         // create g
         GraphType g;
+        {
+            NodeIt begin(g);
+            NodeIt invalid(lemon::INVALID);
+            should(std::distance(begin,invalid)==0);
+            should(begin==invalid);
+            should(begin==lemon::INVALID);
+        }
+
 
         Node n1=g.addNode(1);
         Node n2=g.addNode(2);

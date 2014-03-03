@@ -55,7 +55,7 @@
 #include <vigra/priority_queue.hxx>
 #include <vigra/union_find.hxx>
 #include <vigra/adjacency_list_graph.hxx>
-#include <vigra/graph_helper/on_the_fly_edge_map.hxx>
+#include <vigra/graph_maps.hxx>
 
 #define LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GRAPH_CLS,PREFIX,POSTFIX) \
     typedef typename GRAPH_CLS::Edge        PREFIX##Edge      ## POSTFIX; \

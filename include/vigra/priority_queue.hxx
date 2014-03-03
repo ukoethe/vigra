@@ -400,6 +400,13 @@ class PriorityQueue<ValueType, unsigned short, Ascending>
 };
 
 
+
+/** \brief Heap-based changable priority queue with a maximum number of elemements.
+
+    This pq allows to change the priorities of elements in the queue
+    <b>\#include</b> \<vigra/priority_queue.hxx\><br>
+    Namespace: vigra
+*/
 template<class T,class COMPARE = std::less<T> >
 class ChangeablePriorityQueue {
 
@@ -413,7 +420,7 @@ public:
 
 
 
-    // Create an empty ChangeablePriorityQueue which can contain atmost maxSize_ elements
+    /// Create an empty ChangeablePriorityQueue which can contain atmost maxSize elements
     ChangeablePriorityQueue(const size_t maxSize)  
     : maxSize_(maxSize),
       currentSize_(0),
@@ -425,24 +432,25 @@ public:
             indices_[i] = -1;
     }
  
-    // check if the PQ is empty
+    /// check if the PQ is empty
     bool empty() const {
         return currentSize_ == 0;
     }
  
-    // check if i is an index on the PQ
+    /// check if i is an index on the PQ
     bool contains(const int i) const{
         return indices_[i] != -1;
     }
  
-    // return the number of elements in the PQ
+    /// return the number of elements in the PQ
     int size()const{
         return currentSize_;
     }
  
 
-    /** /brief a index with a given priority
-        if the queue contains i bevore this 
+    /** \brief Insert a index with a given priority.
+
+        If the queue contains i bevore this 
         call the priority of the given index will
         be changed
     */
@@ -459,13 +467,13 @@ public:
         }
     }
  
-    /** /brief get index with top priority
+    /** \brief get index with top priority
     */
     const_reference top() const {
         return heap_[1];
     }
  
-    /** /brief get top priority
+    /**\brief get top priority
     */
     priority_type topPriority() const {
         return priorities_[heap_[1]];
@@ -481,12 +489,12 @@ public:
         heap_[currentSize_+1] = -1;
     }
  
-    // returns the value associated with index i
+    /// returns the value associated with index i
     priority_type priority(const value_type i) const{
         return priorities_[i];
     }
   
-    // deleqte the priority associated with index i
+    /// deleqte the priority associated with index i
     void deleteItem(const value_type i)   {
         int ind = indices_[i];
         swapItems(ind, currentSize_--);
@@ -494,6 +502,10 @@ public:
         bubbleDown(ind);
         indices_[i] = -1;
     }
+    /** \brief change priority of a given index.
+        The index must be in the queue!
+        Call push to auto insert / change .
+    */
     void changePriority(const value_type i,const priority_type p)  {
         if(_gt(p,priorities_[i])){
             priorities_[i] = p;

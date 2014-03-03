@@ -46,7 +46,6 @@
 #include "vigra/copyimage.hxx"
 #include "vigra/sized_int.hxx"
 #include "vigra/priority_queue.hxx"
-#include "vigra/merge_graph/iterable_partition.hxx"
 
 using namespace vigra;
 
@@ -230,124 +229,6 @@ struct ArrayVectorTest
 };
 
 
-template<class ID_TYPE>
-struct IterablePartitonTest
-{
-    typedef ID_TYPE IdType;
-    typedef vigra::merge_graph_detail::IterablePartition<IdType> PartitionType;
-    typedef std::set<IdType> SetType;
-    typedef std::vector<IdType> VecType;
-    IterablePartitonTest()
-    {
-
-    }
-
-    void trueReps(const PartitionType ufd,SetType &set){
-        set.clear();
-        for(IdType i=0;i<ufd.numberOfElements();++i){
-            if(ufd.find(i)==i){
-                set.insert(i);
-            }
-        }
-    }
-
-    void trueReps(const PartitionType ufd,SetType &set,SetType & c){
-        set.clear();
-        for(IdType i=0;i<ufd.numberOfElements();++i){
-            if(ufd.find(i)==i){
-                set.insert(i);
-            }
-        }
-        for(typename  SetType::const_iterator iter=c.begin();iter!=c.end();++iter){
-            const IdType toRemove=*iter;
-            should(set.find(toRemove)!=set.end());
-            set.erase(toRemove);
-        }
-
-    }
-
-
-    void testReps(const PartitionType ufd,VecType & vec){
-        vec.clear();
-        vec.assign(ufd.begin(),ufd.end());
-    }
-
-
-
-
-    void iteratorTest1(){
-        PartitionType ufd(6);
-        SetType trueRep;
-        VecType testRep;
-
-        trueReps(ufd,trueRep);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-
-            
-
-        ufd.merge(0,1);
-        trueReps(ufd,trueRep);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-        
-        ufd.merge(0,2);
-        trueReps(ufd,trueRep);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-        
-        ufd.merge(0,3);
-        trueReps(ufd,trueRep);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-
-        ufd.merge(3,3);
-        trueReps(ufd,trueRep);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-
-        ufd.merge(4,5);
-        trueReps(ufd,trueRep);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-
-        ufd.merge(3,5);
-        trueReps(ufd,trueRep);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-    }
-
-    void iteratorTest2(){
-        PartitionType ufd(6);
-        SetType trueRep;
-        VecType testRep;
-
-        trueReps(ufd,trueRep);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-
-        SetType erased;
-        erased.insert(0);
-        ufd.eraseElement(0);
-
-        trueReps(ufd,trueRep,erased);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-
-        ufd.merge(1,2);
-        trueReps(ufd,trueRep,erased);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-
-        IdType rep12 = ufd.find(1);
-        erased.insert(rep12);
-        ufd.eraseElement(rep12);
-        trueReps(ufd,trueRep,erased);
-        testReps(ufd,testRep);
-        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
-    }
-    
-};
 
 
 struct BucketQueueTest
@@ -1272,10 +1153,6 @@ struct UtilitiesTestSuite
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
         add( testCase( &ArrayVectorTest::testAmbiguousConstructor));
-        add( testCase( &IterablePartitonTest<UInt32>::iteratorTest1));
-        add( testCase( &IterablePartitonTest<UInt32>::iteratorTest2));
-        add( testCase( &IterablePartitonTest<Int32>::iteratorTest1));
-        add( testCase( &IterablePartitonTest<Int32>::iteratorTest2));
         add( testCase( &BucketQueueTest::testDescending));
         add( testCase( &BucketQueueTest::testAscending));
         add( testCase( &BucketQueueTest::testDescendingMapped));

@@ -42,7 +42,7 @@
 #include  <set>
 
 /*boost*/
-#include <boost/foreach.hpp>
+#include <boost/iterator.hpp>
 
 /*vigra*/
 #include <vigra/multi_array.hxx>
@@ -50,7 +50,7 @@
 #include <vigra/graphs.hxx>
 #include <vigra/tinyvector.hxx>
 #include <vigra/random_access_set.hxx>
-#include <vigra/graph_helper/dense_map.hxx>
+#include <vigra/graph_maps.hxx>
 
 
 #include <vigra/algorithm.hxx>
@@ -105,7 +105,7 @@ namespace vigra{
 
             friend class boost::iterator_core_access;
             bool isEnd( )const{
-                return graph_==NULL || id_>ItemHelper::maxItemId(*graph_);
+                return graph_==NULL ||  ItemHelper::itemNum(*graph_)==0 || id_>ItemHelper::maxItemId(*graph_);
             }
             bool isBegin( )const{
                 return graph_!=NULL &&  id_ == 0 ;
