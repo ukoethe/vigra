@@ -75,8 +75,8 @@ prepareWatersheds(Graph const & g,
             if(data[g.target(*arc)] <= lowestValue)
             {
                 lowestValue = data[g.target(*arc)];
-                lowestIndex = arc.neighborIndex();
-                //lowestIndex   = g.id(g.target(*arc));
+                //lowestIndex = arc.neighborIndex();
+                lowestIndex   = g.id(g.target(*arc));
             }
         }
         lowestNeighborIndex[*node] = lowestIndex;
@@ -107,8 +107,8 @@ unionFindWatersheds(Graph const & g,
         for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if current target is center's lowest neighbor or vice versa
-            if(lowestNeighborIndex[*node] == arc.neighborIndex() || 
-               lowestNeighborIndex[g.target(*arc)] == g.oppositeIndex(arc.neighborIndex()))
+            if(lowestNeighborIndex[*node] == g.id(g.target( *arc ))|| 
+               lowestNeighborIndex[g.target(*arc)] ==g.id(*node) )
             {
                 if(data[*node] == data[g.target(*arc)])
                     hasPlateauNeighbor = true;
@@ -303,7 +303,7 @@ watershedsGraph(Graph const & g,
         vigra_precondition(g.maxDegree() <= NumericTraits<unsigned short>::max(),
             "watershedsGraph(): cannot handle nodes with degree > 65535.");
             
-        typename Graph::template NodeMap<unsigned short>  lowestNeighborIndex(g);
+        typename Graph::template NodeMap<unsigned int>  lowestNeighborIndex(g);
         
         graph_detail::prepareWatersheds(g, data, lowestNeighborIndex);
         return graph_detail::unionFindWatersheds(g, data, lowestNeighborIndex, labels);
