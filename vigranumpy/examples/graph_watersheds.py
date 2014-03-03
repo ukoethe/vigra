@@ -101,7 +101,8 @@ class WsCallsback:
         print self.seedNr
 
     def segment(self, event):
-        ragLabels = vigra.graphs.watershedsSegmentation(rag,edgeIndicator,self.seeds)
+        # ragLabels = vigra.graphs.watershedsSegmentation(rag,edgeIndicator,self.seeds)
+        ragLabels = vigra.graphs.edgeWeightedWatersheds(rag,edgeIndicator,self.seeds)
         self.newLabel  = labelImageFromRagLabels(ragLabels,self.labels,img.shape,out=self.newLabel)
         implot.set_data(numpy.swapaxes(segImg(self.img,self.newLabel),0,1))
         ax.imshow(numpy.swapaxes(segImg(self.img,self.newLabel),0,1))

@@ -109,7 +109,7 @@ struct  ConstRepIter
 template<class T>
 class IterablePartition {
 public:
-   friend class ConstRepIter<T>;
+   friend struct ConstRepIter<T>;
    typedef T value_type;
    typedef std::size_t SizeTType;
    IterablePartition();
@@ -782,15 +782,15 @@ class MergeGraphAdaptor
         friend class detail::GenericIncEdgeIt;
 
         template<class G>
-        friend class detail::NeighborNodeFilter;
+        friend struct detail::NeighborNodeFilter;
         template<class G>
-        friend class detail::IncEdgeFilter;
+        friend struct detail::IncEdgeFilter;
         template<class G>
-        friend class detail::BackEdgeFilter;
+        friend struct detail::BackEdgeFilter;
         template<class G>
-        friend class detail::IsOutFilter;
+        friend struct detail::IsOutFilter;
         template<class G>
-        friend class detail::IsInFilter;
+        friend struct detail::IsInFilter;
         friend class MergeGraphNodeIt<MergeGraphType>;
         friend class MergeGraphArcIt<MergeGraphType>;
         friend class MergeGraphEdgeIt<MergeGraphType>;

@@ -240,7 +240,7 @@ namespace vigra{
     }
     /// \brief fill a lemon node map    template<class G,class A,class T>
     template<class G,class A,class T>
-    void fillNodeMap(const G & g, A & a ,const T & value){
+    void fillNodeMap(const G & g, A & a, const T & value){
         std::fill(NodeMapIteratorHelper<G,A>::begin(g,a),NodeMapIteratorHelper<G,A>::end(g,a), value);
     }
     /// \brief fill a lemon edge map
@@ -875,7 +875,7 @@ namespace vigra{
             }
             else{
                 if(nodeNum>nodeNumStopCond){
-                    k*=1.2;
+                    k *= 1.2f;
                 }
                 else{
                     break;
@@ -920,7 +920,7 @@ namespace vigra{
         typedef typename EDGE_WEIGHTS::ConstReference SmoothFactorType;
 
 
-        fillNodeMap(g,nodeFeaturesOut,0.0);
+        fillNodeMap(g, nodeFeaturesOut, typename NODE_FEATURES_OUT::value_type(0.0));
 
         for(NodeIt n(g);n!=lemon::INVALID;++n){
 
