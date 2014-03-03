@@ -15,6 +15,7 @@
 #include <vigra/graph_generalization.hxx>
 #include <vigra/python_graph.hxx>
 
+
 /*boost*/
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
