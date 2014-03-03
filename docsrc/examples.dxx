@@ -13,67 +13,71 @@
     
     <li> Convert an image file into another file type:
     <a href="convert_8cxx-example.html">convert.cxx</a> <br>
-    Usage: <TT>convert infile outfile</TT>
+    Usage: <TT>example_convert infile outfile</TT>
     
     <li> Read an image file and write out a subimage:
     <a href="subimage_8cxx-example.html">subimage.cxx</a> <br>
-    Usage: <TT>subimage infile outfile</TT>
+    Usage: <TT>example_subimage infile outfile</TT>
     
     <li> Invert an image file (create a negative) using the function 
     \ref transformImage():
     <a href="invert_8cxx-example.html">invert.cxx</a> <br>
-    Usage: <TT>invert infile outfile</TT>
+    Usage: <TT>example_invert infile outfile</TT>
     
     <li> Invert an image file (create a negative) by coding the loop
     explicitly:
     <a href="invert_explicitly_8cxx-example.html">invert_explicitly.cxx</a> <br>
-    Usage: <TT>invert_explicitly infile outfile</TT>
+    Usage: <TT>example_invert_explicitly infile outfile</TT>
     
     <li> Resize an image using \ref resizeImageSplineInterpolation():
     <a href="resize_8cxx-example.html">resize.cxx</a> <br>
-    Usage: <TT>resize infile outfile</TT>
+    Usage: <TT>example_resize infile outfile</TT>
     
     <li> Smooth an image using \ref RecursiveConvolution functions:
     <a href="smooth_8cxx-example.html">smooth.cxx</a> <br>
-    Usage: <TT>smooth infile outfile</TT>
+    Usage: <TT>example_smooth infile outfile</TT>
     
     <li> Find the gray value profile along the image diagonal 
     by means of a \ref vigra::LineIterator :
     <a href="profile_8cxx-example.html">profile.cxx</a> <br>
-    Usage: <TT>profile infile</TT>, generates <TT>profile.gif</TT>
+    Usage: <TT>example_profile infile</TT>, generates <TT>profile.gif</TT>
 
     <li> Create series of slices through different color spaces.:
     <a href="palette_8cxx-example.html">palette.cxx</a> <br>
-    Usage: <TT>palette lab</TT>, generates <TT>lab_*.gif</TT> (44 images)
+    Usage: <TT>example_palette lab</TT>, generates <TT>lab_*.gif</TT> (44 images)
 
     <li> Reduce image size by mean of a Gaussian pyramid:
     <a href="pyramid_8cxx-example.html">pyramid.cxx</a> <br>
-    Usage: <TT>pyramid infile outfile</TT>
+    Usage: <TT>example_pyramid infile outfile</TT>
     
     <li> Find edges by means of a 
     \ref differenceOfExponentialEdgeImage():
     <a href="edge_8cxx-example.html">edge.cxx</a> <br>
-    Usage: <TT>edge infile outfile</TT>
+    Usage: <TT>example_edge infile outfile</TT>
     <li> Segment image by means of the watershed algorithm, using 
     \ref seededRegionGrowing():
     <a href="watershed_8cxx-example.html">watershed.cxx</a> <br>
-    Usage: <TT>watershed infile outfile</TT>
+    Usage: <TT>example_watershed infile outfile</TT>
     
     <li> Generate a Voronoi diagram, using \ref distanceTransform() and
     \ref seededRegionGrowing():
     <a href="voronoi_8cxx-example.html">voronoi.cxx</a> <br>
-    Usage: <TT>voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT>
+    Usage: <TT>example_voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT>
     (Voronoi diagram)
         
     <li> Measure boundary and corner strengths with the 
     \ref boundaryTensor():
-    <a href="boundarytensor_8cxx-example.html">boundarytensor.cxx</a> <br>
+    <a href="example_boundarytensor_8cxx-example.html">boundarytensor.cxx</a> <br>
     Usage: <TT>boundarytensor infile</TT>, creates <tt>boundarystrength.tif</tt> and <tt>cornerstrength.tif</tt>
     
     <li> Total Variation (TV) Regularization
     <a href="total_variation_8cxx-example.html">total_variation.cxx</a> <br>
-    Usage: <TT>total_variation parameterfile</TT>
+    Usage: <TT>example_total_variation parameterfile</TT>
     (cf. example parameter files *.par for standard TV regularization, anisotropic and second order TV)
+    
+    <li> Non-negative least-squares regression
+    <a href="nnlsq_8cxx-example.html">nnlsq.cxx</a> <br>
+    Usage: <TT>example_nnlsq</TT> (no parameters - example data are defined in nnlsq.cxx)
     
     </ul>
 */
@@ -81,79 +85,85 @@
 /** \example convert.cxx
     Convert an image file into another file type
     <br>
-    Usage: <TT>convert infile outfile</TT>
+    Usage: <TT>example_convert infile outfile</TT>
 */
 
 /** \example subimage.cxx
     Read an image file and write out a subimage
     <br>
-    Usage: <TT>subimage infile outfile</TT>
+    Usage: <TT>example_subimage infile outfile</TT>
 */
     
 /** \example invert.cxx
     Invert an image file (create a negative) using the function 
     \ref transformImage()
     <br>
-    Usage: <TT>invert infile outfile</TT>
+    Usage: <TT>example_invert infile outfile</TT>
 */
     
 /** \example invert_explicitly.cxx
     Invert an image file (create a negative) by coding the loop
     explicitly
     <br>
-    Usage: <TT>invert_explicitly infile outfile</TT>
+    Usage: <TT>example_invert_explicitly infile outfile</TT>
 */
     
 /** \example resize.cxx
     Resize an image using \ref resizeImageSplineInterpolation()<br>
-    Usage: <TT>resize infile outfile</TT>
+    Usage: <TT>example_resize infile outfile</TT>
 */
     
 /** \example smooth.cxx
     Smooth an image using \ref RecursiveConvolution functions:
     <a href="smooth.cxx-example.html">smooth.cxx</a> <br>
-    Usage: <TT>smooth infile outfile</TT>
+    Usage: <TT>example_smooth infile outfile</TT>
 */
     
 /** \example profile.cxx
     Find the gray value profile along the image diagonal 
     by means of a \ref vigra::LineIterator<br>
-    Usage: <TT>profile infile</TT>, generates <TT>profile.gif</TT>
+    Usage: <TT>example_profile infile</TT>, generates <TT>profile.gif</TT>
 */
 
 /** \example palette.cxx
     Create series of slices through different color spaces.
-    Usage: <TT>palette luv</TT>, generates <TT>luv_*.gif</TT> (44 images)
+    Usage: <TT>example_palette luv</TT>, generates <TT>luv_*.gif</TT> (44 images)
 */
 
 /** \example pyramid.cxx
     Reduce image size by mean of a Gaussian pyramid<br>
-    Usage: <TT>pyramid infile outfile</TT>
+    Usage: <TT>example_pyramid infile outfile</TT>
 */
     
 /** \example edge.cxx
     Find edges by means of a 
     \ref differenceOfExponentialEdgeImage()<br>
-    Usage: <TT>edge infile outfile</TT>
+    Usage: <TT>example_edge infile outfile</TT>
 */
     
 /** \example watershed.cxx
     Segment image by means of the watershed algorithm, using 
     \ref seededRegionGrowing()<br>
-    Usage: <TT>watershed infile outfile</TT>
+    Usage: <TT>example_watershed infile outfile</TT>
 */
     
 /** \example voronoi.cxx
     Generate a Voronoi diagram, using \ref distanceTransform() and
     \ref seededRegionGrowing()<br>
-    Usage: <TT>voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT> (Voronoi diagram)
+    Usage: <TT>example_voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT> (Voronoi diagram)
 */
 
 /** \example boundarytensor.cxx        
     Measure boundary and corner strengths with the 
     \ref boundaryTensor():
     <a href="boundarytensor.cxx-example.html">boundarytensor.cxx</a> <br>
-    Usage: <TT>boundarytensor infile</TT>, creates <tt>boundarystrength.tif</tt> and <tt>cornerstrength.tif</tt>
+    Usage: <TT>example_boundarytensor infile</TT>, creates <tt>boundarystrength.tif</tt> and <tt>cornerstrength.tif</tt>
+*/
+
+/** \example nnlsq.cxx
+       Solve a non-negative least-squares problem with the LARS algorithm (see \ref nonnegativeLeastSquares())
+       or the Goldfarb-Idnani algorithm (see \ref quadraticProgramming())<br>
+       Usage: <TT>example_nnlsq</TT> (no parameters - example data are defined in nnlsq.cxx)
 */
 
 /** \example total_variation.cxx

@@ -131,7 +131,7 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
      </ul>
      
      The function writes the optimal solution into the vector \a x and returns the cost of this solution. 
-     If the problem is infeasible, std::numeric_limits::infinity() is returned. In this case
+     If the problem is infeasible, <tt>std::numeric_limits::infinity()</tt> is returned. In this case
      the value of vector \a x is undefined.
      
      <b>Usage:</b>
@@ -164,7 +164,43 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
                    
       double f = quadraticProgramming(G, g, CE, ce, CI, ci, x);
      \endcode
+     
+     This algorithm can also be used to solve non-negative least squares problems
+     (see \ref nonnegativeLeastSquares() for an alternative algorithm). Consider the 
+     problem to minimize <tt> f = (A*x - b)' * (A*x - b) </tt> subject to <tt> x &gt;= 0</tt>.
+     Expanding the product in the objective gives <tt>f = x'*A'*A*x - 2*b'*A*x + b'*b</tt>.
+     This is equivalent to the problem of minimizing <tt>fn = 0.5 * x'*G*x + g'*x</tt> with
+     <tt>G = A'*A</tt> and <tt>g = -A'*b</tt> (the constant term <tt>b'*b</tt> has no
+     effect on the optimal solution and can be dropped). The following code computes the 
+     solution <tt>x' = [18.4493, 0, 4.50725]</tt>:
+     \code
+        double A_data[] = {
+             1, -3,  2,
+            -3, 10, -5,
+             2, -5,  6
+        };
+
+        double b_data[] = {
+             27, 
+            -78, 
+             64
+        };
+
+        Matrix<double> A(3, 3, A_data),
+                       b(3, 1, b_data),
+                       G =   transpose(A)*A,
+                       g = -(transpose(A)*b),
+                       CE,    // empty since there are no equality constraints
+                       ce,    // likewise
+                       CI = identityMatrix<double>(3), // constrain all elements of x
+                       ci(3, 1, 0.0),                  // ... to be non-negative
+                       x(3, 1);
+
+        quadraticProgramming(G, g, CE, ce, CI, ci, x);
+     \endcode
    */
+doxygen_overloaded_function(template <...> unsigned int quadraticProgramming)
+
 template <class T, class C1, class C2, class C3, class C4, class C5, class C6, class C7>
 T 
 quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2> const & g,  
