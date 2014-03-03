@@ -256,7 +256,7 @@ struct ChunkShape<4, T>
 {
     static Shape4 defaultShape()
     {
-        return Shape4(1 << bits0, 1 << bits1, 1 << bits2, 1 << bits3);
+        return Shape4(1 << 6, 1 << 6, 1 << 4, 1 << 2);
     }
 };
 
