@@ -457,7 +457,8 @@ public:
 
 
         //lemon_graph::graph_detail::generateWatershedSeeds(g, nodeWeightsArrayMap, labelsArrayMap, watershedsOption.seed_options);
-        lemon_graph::graph_detail::seededWatersheds(g, nodeWeightsArrayMap, seedsArrayMap, watershedsOption);\
+        lemon_graph::watershedsGraph(g, nodeWeightsArrayMap, seedsArrayMap, watershedsOption);
+        //lemon_graph::graph_detail::seededWatersheds(g, nodeWeightsArrayMap, seedsArrayMap, watershedsOption);
         std::copy(seedsArray.begin(),seedsArray.end(),labelsArray.begin());
         return labelsArray;
     }

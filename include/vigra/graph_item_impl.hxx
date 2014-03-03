@@ -253,7 +253,6 @@ namespace vigra{
             mutable ResultItem resultItem_;
         };
 
-        /// The adjacency of a vertex consists of a vertex and a connecting edge.
         template<class T>
         class Adjacency {
         public:
@@ -283,10 +282,6 @@ namespace vigra{
             Value nodeId_;
             Value edgeId_;
         };
-
-
-
-
 
 
         template<class INDEX_TYPE,bool USE_STL_SET>
@@ -365,25 +360,6 @@ namespace vigra{
                     adjacency_.erase(AdjacencyElement(nodeId,0));
                 }
 
-                /*
-                bool eraseEdge(const size_t edgeIndex){
-                    return edges_.erase(edgeIndex)==1;
-                }
-                void eraseAndInsert(const index_type removeEdge,const index_type insertEdge){
-                    edges_.erase(removeEdge);
-                    edges_.insert(insertEdge);
-                }
-
-
-
-                const EdgeIdSet & edgeIdSet()const{
-                    return edges_;
-                }
-
-                void insertEdgeId(const index_type id){
-                	edges_.insert(id);
-                }
-                */
             public:
 
                 SetType adjacency_;

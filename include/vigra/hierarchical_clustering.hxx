@@ -44,12 +44,13 @@
 #include <queue>          
 #include <iomanip>
 #include <vigra/priority_queue.hxx>
-#include <vigra/metrics.hxx>
+#include <vigra/metrics.hxx> 
 
 namespace vigra{      
 
 namespace cluster_operators{
 
+    /// \brief  get minimum edge weight from an edge indicator and difference of node features
     template<
         class MERGE_GRAPH,
         class EDGE_INDICATOR_MAP,
@@ -93,6 +94,7 @@ namespace cluster_operators{
 
         typedef typename EDGE_INDICATOR_MAP::Reference EdgeIndicatorReference;
         typedef typename NODE_FEATURE_MAP::Reference NodeFeatureReference;
+        /// \brief construct cluster operator
         EdgeWeightNodeFeatures(
             MergeGraph & mergeGraph,
             EDGE_INDICATOR_MAP edgeIndicatorMap,
@@ -131,6 +133,7 @@ namespace cluster_operators{
             }
         }
 
+        /// \brief will be called via callbacks from mergegraph
         void mergeEdges(const Edge & a,const Edge & b){
             // update features / weigts etc
             const GraphEdge aa=EdgeHelper::itemToGraphItem(mergeGraph_,a);
@@ -146,6 +149,8 @@ namespace cluster_operators{
             // delete b from pq
             pq_.deleteItem(b.id());
         }
+
+        /// \brief will be called via callbacks from mergegraph
         void mergeNodes(const Node & a,const Node & b){
             const GraphNode aa=NodeHelper::itemToGraphItem(mergeGraph_,a);
             const GraphNode bb=NodeHelper::itemToGraphItem(mergeGraph_,b);
@@ -158,6 +163,8 @@ namespace cluster_operators{
             va/=(nodeSizeMap_[aa]);
             vb/=nodeSizeMap_[bb];
         }
+
+        /// \brief will be called via callbacks from mergegraph
         void eraseEdge(const Edge & edge){
 
             //std::cout<<"start to erase edge "<<mergeGraph_.id(edge)<<"\n";
@@ -195,6 +202,8 @@ namespace cluster_operators{
             }
             //std::cout<<"done\n";
         }
+
+        /// \brief get the edge which should be contracted next
         Edge contractionEdge(){
             index_type minLabel = pq_.top();
             while(mergeGraph_.hasEdgeId(minLabel)==false){
@@ -203,9 +212,14 @@ namespace cluster_operators{
             }
             return Edge(minLabel);
         }
+
+        /// \brief get the edge weight of the edge which should be contracted next
         WeightType contractionWeight()const{
             return pq_.topPriority();
         }
+
+
+        /// \brief get a reference to the merge graph
         MergeGraph & mergeGraph(){
             return mergeGraph_;
         }
@@ -272,7 +286,7 @@ namespace cluster_operators{
 
 
 
-
+    /// \brief  do hierarchical clustering with a given cluster operator
     template< class CLUSTER_OPERATOR>
     class HierarchicalClustering{
 
@@ -320,11 +334,10 @@ namespace cluster_operators{
 
         typedef std::vector<MergeItem> MergeTreeEncoding;
 
-
+        /// \brief construct HierarchicalClustering from clusterOperator and an optional parameter object
         HierarchicalClustering(
             ClusterOperator & clusterOperator,
             const Parameter & parameter = Parameter()
-
         )
         :  
             clusterOperator_(clusterOperator),
@@ -345,11 +358,8 @@ namespace cluster_operators{
             }
         }
 
+        /// \brief start the clustering
         void cluster(){
-            // ClusterOperator does registration by itself
-            //mergeGraph_.registerMergeNodeCallBack(clusterOperator_,& MgMinWeightOperator::mergeNodes);
-            //mergeGraph_.registerMergeEdgeCallBack(clusterOperator_,& MgMinWeightOperator::mergeEdges);
-            //mergeGraph_.registerEraseEdgeCallBack(clusterOperator_,& MgMinWeightOperator::eraseEdge);
             if(param_.verbose_)
                 std::cout<<"\n"; 
             while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0){
@@ -381,28 +391,12 @@ namespace cluster_operators{
                 std::cout<<"\n"; 
         }
 
-        //void transformInputMaps(){
-        //    for(EdgeIt e(graph_);e!=lemon::INVALID;++e){
-        //        const Edge reprEdge =  mergeGraph_.reprGraphEdge(*e);
-        //        if(reprEdge!=*e){
-        //            edgeIndicatorMap_[*e]=edgeIndicatorMap_[reprEdge];
-        //            edgeSizeMap_[*e]     =edgeSizeMap_[reprEdge];
-        //            minWeightOutMap_[*e] =minWeightOutMap_[reprEdge];
-        //        }
-        //    }
-        //    for(NodeIt n(graph_);n!=lemon::INVALID;++n){
-        //        const Node reprNode = mergeGraph_.reprGraphNode(*n);
-        //        if(reprNode!=*n){
-        //            nodeFeatureMap_[*n]=nodeFeatureMap_[reprNode];
-        //            nodeSizeMap_[*n]   =nodeSizeMap_[reprNode];
-        //        }
-        //    }
-        //}
-
+        /// \brief get the encoding of the merge tree
         const MergeTreeEncoding & mergeTreeEndcoding()const{
             return mergeTreeEndcoding_;
         }
 
+        /// \brief get the node id's which are the leafes of a treeNodeId
         template<class OUT_ITER>
         size_t leafNodeIds(const MergeGraphIndexType treeNodeId, OUT_ITER begin)const{
             if(treeNodeId<=graph_.maxNodeId()){
@@ -437,14 +431,17 @@ namespace cluster_operators{
             }
         }
 
-
+        /// \brief get the graph the merge graph is based on
         const Graph & graph()const{
             return graph_;
         }
+
+        /// \brief get the merge graph
         const MergeGraph & mergeGraph()const{
             return mergeGraph_;
-        }
+        }   
 
+        /// \brief get the representative node id
         const MergeGraphIndexType reprNodeId(const MergeGraphIndexType id)const{
             return mergeGraph_.reprNodeId(id);
         }
