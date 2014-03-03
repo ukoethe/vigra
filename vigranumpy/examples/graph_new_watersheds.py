@@ -12,9 +12,9 @@ import math
 import pylab
 
 f       = '100075.jpg'
-f       = '69015.jpg'
+#f       = '69015.jpg'
 #f       = '12003.jpg'
-sigma   = 2.0
+sigma   = 1.0
 
 print "prepare input"
 img                 = vigra.impex.readImage(f)#[0:100,0:100,:]
@@ -33,7 +33,6 @@ graph0,graph1 = vigraph.gridRegionAdjacencyGraph(labels=labels,ignoreLabel=None)
 
 
 # edge weights / node weights
-
 graph0NodeWeights = gradmag
 graph0EdgeWeights = vigraph.edgeFeaturesFromInterpolatedImage(graph0,gradmagInterpolated)
 
@@ -52,6 +51,8 @@ seeds = graphs.nodeWeightedWatershedsSeeds(graph1,graph1NodeWeights)
 labelsNodeWeighted  = graphs.nodeWeightedWatersheds(graph1,graph1NodeWeights,seeds)
 
 
+# generate seeds
+seeds = graphs.nodeWeightedWatershedsSeeds(graph1,graph1NodeWeights)
 # edge weighted watershed seeds
 labelsEdgeWeighted  = graphs.edgeWeightedWatersheds(graph1,graph1EdgeWeights,seeds)
 

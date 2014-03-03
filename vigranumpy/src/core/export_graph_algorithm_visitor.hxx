@@ -427,7 +427,7 @@ public:
         UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
 
         // call algorithm itself
-        watershedsSegmentation(g,edgeWeightsArrayMap,seedsArrayMap,labelsArrayMap);
+        edgeWeightedWatershedsSegmentation(g,edgeWeightsArrayMap,seedsArrayMap,labelsArrayMap);
 
         // retun labels
         return labelsArray;
