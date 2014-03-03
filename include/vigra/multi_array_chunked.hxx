@@ -943,26 +943,24 @@ class ChunkedArray
         if(cache_max_size_ > 0)
         {
             threading::lock_guard<threading::mutex> guard(cache_lock_);
-            Chunk * c = cache_first_, ** prev = 0;
-            while(cache_size_ > cache_max_size_ && c != 0)
+            Chunk ** c = &cache_first_;
+            while(cache_size_ > cache_max_size_ && (*c) != 0)
             {
-                Chunk * n = c->cache_next_;
                 int rc = 0;
-                if(c->refcount_.compare_exchange_strong(rc, -1, std::memory_order_acquire))
+                if((*c)->refcount_.compare_exchange_strong(rc, -1, std::memory_order_acquire))
                 {
                     // refcount was zero => can unload
-                    unloadChunk(c);
-                    if(prev)
-                        *prev = n;
-                    c->cache_next_ = 0;
+                    unloadChunk(*c);
+                    Chunk * n = (*c)->cache_next_;
+                    (*c)->cache_next_ = 0;
                     --cache_size_;
-                    c->refcount_.store(0, std::memory_order_release);
+                    (*c)->refcount_.store(0, std::memory_order_release);
+                    *c = n;
                 }
                 else
                 {
-                    prev = &c->cache_next_;
+                    c = &(*c)->cache_next_;
                 }
-                c = n;
             }
         }
     }
