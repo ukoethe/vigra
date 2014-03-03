@@ -572,10 +572,9 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         return res;
     }
     
-    void subarray(shape_type start, ViewType & view)
+    MultiArrayView<N, T, ChunkedArrayTag> 
+    subarray(shape_type start, shape_type stop)
     {
-        shape_type stop = start + view.shape_;
-        
         vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop <= shape_).all(),
                            "MultiArrayView<N-1, T, ChunkedArrayTag>::subarray(): subarray out of bounds.");
         start += offset_;
@@ -585,12 +584,14 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
         chunkStop += shape_type(1);
         
+        MultiArrayView<N, T, ChunkedArrayTag> view(stop-start);
         view.chunks_ = chunks_.subarray(chunkStart, chunkStop);
         view.offset_ = start - chunkStart * chunk_shape_;
         view.bits_   = bits_;
         view.mask_   = mask_;
         view.chunk_shape_   = chunk_shape_;
         view.unref_ = unref_;
+        return view;
     }
     
     bool isInside(shape_type const & p) const
@@ -942,7 +943,7 @@ class ChunkedArray
         if(cache_max_size_ > 0)
         {
             threading::lock_guard<threading::mutex> guard(cache_lock_);
-            Chunk * c = cache_first_;
+            Chunk * c = cache_first_, ** prev = 0;
             while(cache_size_ > cache_max_size_ && c != 0)
             {
                 Chunk * n = c->cache_next_;
@@ -951,21 +952,27 @@ class ChunkedArray
                 {
                     // refcount was zero => can unload
                     unloadChunk(c);
+                    if(prev)
+                        *prev = n;
                     c->cache_next_ = 0;
                     --cache_size_;
                     c->refcount_.store(0, std::memory_order_release);
+                }
+                else
+                {
+                    prev = &c->cache_next_;
                 }
                 c = n;
             }
         }
     }
     
-    void subarray(shape_type const & start, ViewType & view)
+    void viewSubarray(shape_type const & start, ViewType & view)
     {
         shape_type stop = start + view.shape_;
         
         vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop <= shape()).all(),
-                           "ChunkedArray::copySubarray(): subarray out of bounds.");
+                           "ChunkedArray::viewSubarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
         ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
@@ -1010,8 +1017,10 @@ class ChunkedArray
         }
     }
     
-    virtual void copySubarray(shape_type const & start, 
-                              ChunkedSubarrayCopy<N, T> & subarray, bool write_on_destruction = false)
+    virtual void 
+    copySubarray(shape_type const & start, 
+                 ChunkedSubarrayCopy<N, T> & subarray, 
+                 bool write_on_destruction = false)
     {
         shape_type stop   = start + subarray.shape();
         

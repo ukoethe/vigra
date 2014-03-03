@@ -1976,7 +1976,7 @@ public:
             std::cerr << "\n";
             
             typename Array::ViewType sub2(stop - start);
-            v.subarray(start, sub2);
+            v.viewSubarray(start, sub2);
             MultiCoordinateIterator<3> c(stop - start),
                                        cend(c.getEndIterator());
             for(; c != cend; ++c)
@@ -2006,8 +2006,8 @@ public:
             }
             std::cerr << "\n";
             
-            MultiArrayView<2, T, ChunkedArrayTag> sub4(Shape2(2,2));
-            sub3.subarray(Shape2(1,1), sub4);
+            MultiArrayView<2, T, ChunkedArrayTag> 
+                sub4(sub3.subarray(Shape2(1,1), Shape2(3,3)));
             for(auto i = sub4.begin(), end = sub4.end(); i != end; ++i)
             {
                 std::cerr << (UInt64)*i << " ";
