@@ -54,7 +54,7 @@
 
 
 #include <vigra/algorithm.hxx>
-#include <vigra/graph_helper/graph_item_impl.hxx>
+#include <vigra/graph_item_impl.hxx>
 
 
 namespace vigra{
