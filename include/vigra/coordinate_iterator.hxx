@@ -121,6 +121,12 @@ struct StridePair
     {
         return index;
     }
+    
+    bool indexLess(index_type const & other) const
+    {
+        return lexicographicLessThan(idx(), other);
+    }
+    
     double & dim0()
     {
         return coord[0];
@@ -229,6 +235,11 @@ struct StridePairPointer : public StridePairCoord<N>
     const index_type & idx() const
     {
         return index;
+    }
+    
+    bool indexLess(index_type const & other) const
+    {
+        return idx() < other;
     }
 
     void operator+=(stride_type x)
@@ -438,7 +449,7 @@ class CoordinateStride : protected S
     }
     bool operator<(const CoordinateStride & y) const
     {
-        return idx() < y.idx();
+        return this->indexLess(y.idx());
     }
 
     bool operator<=(const CoordinateStride & y) const
