@@ -143,7 +143,8 @@ public:
                 python::arg("rag"),
                 python::arg("graph"),
                 python::arg("affiliatedEdges"),
-                python::arg("labels")
+                python::arg("labels"),
+                python::arg("node")
             )
         );
 
@@ -264,7 +265,6 @@ public:
     }
 
 
-    // TODO: Check if pyRagFindEdges is working.
     template<class T>
     static NumpyAnyArray  pyRagFindEdges(
         const RagGraph &           rag,
@@ -287,7 +287,7 @@ public:
         NumpyArray<2, UInt32> edgePoints(NumpyArray<2, UInt32>::difference_type(nPoints, NodeMapDim));
 
         // Find edges
-        UInt32 nNext = 0;
+        size_t nNext = 0;
         for(RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter) {
             const RagEdge ragEdge(*iter);
             const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
