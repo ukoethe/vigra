@@ -37,6 +37,7 @@ import sys
 import copy
 import numpy
 import ufunc
+import collections 
 import vigranumpycore
 
 from vigranumpycore import AxisType, AxisInfo, AxisTags
@@ -1132,6 +1133,8 @@ class VigraArray(numpy.ndarray):
         try:
             res = numpy.ndarray.__getitem__(self, index)
         except:
+            if not isinstance(index, collections.Iterable):
+                raise
             res = numpy.ndarray.__getitem__(self, 
                      map(lambda x: None if isinstance(x, AxisInfo) else x, index))
         if res is not self and hasattr(res, 'axistags'):
