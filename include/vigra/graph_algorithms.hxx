@@ -920,7 +920,7 @@ namespace vigra{
         typedef typename EDGE_WEIGHTS::ConstReference SmoothFactorType;
 
 
-        fillNodeMap(g, nodeFeaturesOut, typename NODE_FEATURES_OUT::value_type(0.0));
+        //fillNodeMap(g, nodeFeaturesOut, typename NODE_FEATURES_OUT::value_type(0.0));
 
         for(NodeIt n(g);n!=lemon::INVALID;++n){
 
@@ -939,7 +939,10 @@ namespace vigra{
 
                 NodeFeatureInValue neighbourFeat = nodeFeaturesIn[neigbour];
                 neighbourFeat*=smoothFactor;
-                featOut += neighbourFeat;
+                if(degree==0)
+                    featOut = neighbourFeat;
+                else
+                    featOut += neighbourFeat;
                 weightSum+=smoothFactor;
                 ++degree;
             }

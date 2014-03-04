@@ -1,14 +1,6 @@
 import vigra
 import vigra.graphs as vigraph
-import pylab
 import numpy
-import sys
-import matplotlib
-import pylab
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Button
-import math
-
 
 print "get input"
 f       = '100075.jpg'
@@ -29,11 +21,10 @@ gridGraphEdgeIndicator =  vigraph.edgeFeaturesFromInterpolatedImage(gridGraph,gr
 
 
 
-rag = vigraph.regionAdjacencyGraph(gridGraph,labels)
+rag = vigraph.regionAdjacencyGraph(gridGraph, labels)
 edgeWeights = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
-labels   = vigraph.felzenszwalbSegmentation(rag,edgeWeights,k=50)
+labels   = vigraph.felzenszwalbSegmentation(rag, edgeWeights, k=50)
 
 
-rag.show(img,labels)
+rag.show(img, labels)
 vigra.show()
-

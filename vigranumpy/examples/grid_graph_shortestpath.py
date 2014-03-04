@@ -1,12 +1,5 @@
 import vigra
 import vigra.graphs as vigraph
-<<<<<<< HEAD
-import numpy
-import pylab as plt
-import math
-from matplotlib.widgets import Slider, Button
-
-=======
 import pylab
 import numpy
 np=numpy
@@ -15,7 +8,6 @@ import matplotlib
 import pylab as plt
 import math
 from matplotlib.widgets import Slider, Button, RadioButtons
->>>>>>> 95c348d188e7e481cbba03834d574b2acc42cf38
 
 def makeWeights(gamma):
     global hessian,gradmag,gridGraph
@@ -23,26 +15,6 @@ def makeWeights(gamma):
     print "raw ",raw.min(),raw.max()
     wImg= numpy.exp((gradmag**0.5)*gamma*-1.0)#**0.5
     wImg = numpy.array(wImg).astype(numpy.float32)
-<<<<<<< HEAD
-    w=vigra.graphs.edgeFeaturesFromInterpolatedImageCorrected(gridGraph,wImg)
-    return w
-
-
-def makeVisuImage(path,img):
-    coords = (path[:,0],path[:,1])
-    visuimg =img.copy()
-    iR=visuimg[:, :, 0]
-    iG=visuimg[:, :, 1]
-    iB=visuimg[:, :, 2]
-    iR[coords] =  255
-    iG[coords] = 0
-    iB[coords] = 0
-    visuimg -= visuimg.min()
-    visuimg /= visuimg.max()
-    return visuimg
-
-
-=======
     w=vigra.graphs.edgeFeaturesFromInterpolatedImage(gridGraph,wImg)
     return w
 
@@ -62,7 +34,6 @@ def makeVisuImage(path,img):
 
 
 
->>>>>>> 95c348d188e7e481cbba03834d574b2acc42cf38
 f       = '100075.jpg'
 f       = '69015.jpg'
 #f       = "/media/tbeier/GSP1RMCPRFR/iso.03530.png"
@@ -99,15 +70,9 @@ imgLabBig = vigra.resize(imgLab,[imgLab.shape[0]*2-1,imgLab.shape[1]*2-1 ])
 
 gradmag = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLabBig,sigma))
 hessian = numpy.squeeze(vigra.filters.hessianOfGaussianEigenvalues(imgLabBig[:,:,0],sigma))[:,:,0]
-<<<<<<< HEAD
-hessian -= hessian.min()
-raw = 256-imgLabBig[:, :, 0].copy()
-gridGraph  = vigraph.gridGraph(imgLab.shape[:2],False)
-=======
 hessian-=hessian.min()
 raw     = 256-imgLabBig[:,:,0].copy()
 gridGraph  = vigraph.gridGraph(imgLab.shape[:2],False)  
->>>>>>> 95c348d188e7e481cbba03834d574b2acc42cf38
 
 
 
