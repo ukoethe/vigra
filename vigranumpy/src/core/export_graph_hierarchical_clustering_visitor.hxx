@@ -95,7 +95,7 @@ public:
     void exportMergeGraph()const{
         const std::string mgAdaptorClsName = clsName_ + std::string("MergeGraph");
         python::class_<MergeGraph,boost::noncopyable>(
-            mgAdaptorClsName.c_str(),python::init<const Graph &>()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()]
+            mgAdaptorClsName.c_str(),python::init<const Graph &>()[python::with_custodian_and_ward<2 /*custodian == self*/, 1 /*ward == const InputLabelingView & */>()]
         )
         .def(LemonUndirectedGraphCoreVisitor<MergeGraph>(mgAdaptorClsName))
         .def("inactiveEdgesNode",&pyInactiveEdgesNode)

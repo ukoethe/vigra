@@ -88,6 +88,7 @@ def testGridGraphWatersheds():
     # node weighted watershed seeds
     labelsNodeWeightedB  = graphs.nodeWeightedWatersheds(graph=g0,nodeWeights=data)
     # edge weighted watershed seeds
+    seeds = graphs.nodeWeightedWatershedsSeeds(graph=g0,nodeWeights=data)
     labelsEdgeWeighted  = graphs.edgeWeightedWatersheds(graph=g0,edgeWeights=ew,seeds=seeds)
 
     assert numpy.array_equal(labelsNodeWeightedA,labelsNodeWeightedB)

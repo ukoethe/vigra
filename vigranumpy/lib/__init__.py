@@ -641,6 +641,12 @@ def _genGridGraphConvenienceFunctions():
                 size[:]=1
                 return size
 
+            def mergeGraph(self):
+                if  len(self.shape)==2:
+                    mg = graphs.GridGraphUndirected2dMergeGraph(self)
+                else:
+                    mg =  graphs.GridGraphUndirected3dMergeGraph(self)
+                return mg
 
 
     def isGridGraph(obj):
@@ -760,10 +766,9 @@ def _genGraphConvenienceFunctions():
 
             A merge graph might be usefull for hierarchical clustering
         """
-        # call unsave c++ function and make it save
-        mg = graphs.__mergeGraph(graph)
-        mg.__dict__['__base_object__']=graph
-        return mg
+        mg = graph.mergeGraph()
+        mg.__base_graph__=graph
+        return graph.mergeGraph()
 
     mergeGraph.__module__ = 'vigra.graphs'
     graphs.mergeGraph = mergeGraph
@@ -908,6 +913,9 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             # set up rag
             self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
 
+        def mergeGraph(self):
+            return graphs.AdjacencyListGraphMergeGraph(self)
+
         def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
             """ accumulate edge features from base graphs edges features
 
@@ -921,7 +929,6 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 Returns : 
                     accumulated edge features
             """
-
             graph = self.baseGraph
             affiliatedEdges = self.affiliatedEdges
             if acc == 'mean':
@@ -929,7 +936,8 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             else :
               weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
               weights[:]=1
-            return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
+            return  graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
+
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
             """ accumulate edge features from base graphs edges features
@@ -1416,14 +1424,26 @@ def _genGraphSegmentationFunctions():
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 
-
+        print "get mg"
         mg = graphs.mergeGraph(graph)
+        print "get cluster op"
         clusterOp = graphs.minEdgeWeightNodeDist(mg,edgeWeights=edgeWeights,edgeLengths=edgeLengths,
                                                     nodeFeatures=nodeFeatures,nodeSizes=nodeSizes,
                                                     beta=float(beta),nodeDistType=metric,wardness=wardness)
+        #clusterOp.nodeSizes    = nodeSizes
+        #clusterOp.edgeLengths  = edgeLengths
+        #clusterOp.nodeFeatures = nodeFeatures
+        #clusterOp.edgeWeights  = edgeWeights        
+        print "get hc"
         hc = graphs.hierarchicalClustering(clusterOp,nodeNumStopCond=nodeNumStop)
+        print "do cluster"
         hc.cluster()
+        print "get result"
         labels = hc.resultLabels(out=out)
+        print labels
+        print labels.min(),labels.max()
+        print "mg node num ",mg.nodeNum
+        print "return stuff"
         return labels
 
 
@@ -1467,8 +1487,16 @@ def _genGraphSegmentationFunctions():
             # call unsave c++ function and make it sav
             op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,
                 float(beta),long(nd),float(wardness))
-            op.__dict__['__base_object__']=mergeGraph
-            op.__dict__['__outWeightArray__']=outWeight
+            #op.__dict__['__base_object__']=mergeGraph
+            #op.__dict__['__outWeightArray__']=outWeight
+
+            op.__base_object__=mergeGraph
+            op.__outWeightArray__=outWeight
+
+            op.edgeLengths=edgeLengths
+            op.nodeSizes=nodeSizes
+            op.edgeLengths=edgeLengths
+            op.nodeFeatures=nodeFeatures
             return op
 
     minEdgeWeightNodeDist.__module__ = 'vigra.graphs'
@@ -1477,7 +1505,8 @@ def _genGraphSegmentationFunctions():
     def pythonClusterOperator(mergeGraph,opertator,useMergeNodeCallback=True,useMergeEdgesCallback=True,useEraseEdgeCallback=True):
       #call unsave function and make it save
       op = graphs.__pythonClusterOperator(mergeGraph,opertator,useMergeNodeCallback,useMergeEdgesCallback,useEraseEdgeCallback)
-      op.__dict__['__base_object__']=mergeGraph
+      #op.__dict__['__base_object__']=mergeGraph
+      op.__base_object__=mergeGraph
       return op
 
     pythonClusterOperator.__module__ = 'vigra.graphs'
@@ -1486,7 +1515,8 @@ def _genGraphSegmentationFunctions():
     def hierarchicalClustering(clusterOperator,nodeNumStopCond):
         # call unsave c++ function and make it save
         hc = graphs.__hierarchicalClustering(clusterOperator,long(nodeNumStopCond))
-        hc.__dict__['__base_object__']=clusterOperator
+        #hc.__dict__['__base_object__']=clusterOperator
+        hc.__base_object__ = clusterOperator
         return hc
 
     hierarchicalClustering.__module__ = 'vigra.graphs'

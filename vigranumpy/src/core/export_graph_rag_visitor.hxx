@@ -235,6 +235,8 @@ public:
         typename PyEdgeMapTraits<RagGraph,T >::Array ragEdgeFeaturesArray
     ){
 
+        vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
+
         vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum"),
             "currently the accumulators are limited to mean and sum"
         );
@@ -261,6 +263,8 @@ public:
                 ragEdgeFeaturesArrayMap[ragEdge]/=weightSum;
             }
         }
+
+
         return ragEdgeFeaturesArray;
     }
 
