@@ -190,7 +190,7 @@ public:
                 python::arg("edgeThreshold"),
                 python::arg("scale"),
                 python::arg("iterations")=1,
-                python::arg("buffer")=python::object(),
+                python::arg("outBuffer")=python::object(),
                 python::arg("out")=python::object()
             ),
             "recursive edge weighted guided graph smoothing"
@@ -427,7 +427,7 @@ public:
         UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
 
         // call algorithm itself
-        watershedsSegmentation(g,edgeWeightsArrayMap,seedsArrayMap,labelsArrayMap);
+        edgeWeightedWatershedsSegmentation(g,edgeWeightsArrayMap,seedsArrayMap,labelsArrayMap);
 
         // retun labels
         return labelsArray;
@@ -453,13 +453,14 @@ public:
 
         // numpy arrays => lemon maps
         FloatNodeArrayMap  nodeWeightsArrayMap(g,nodeWeightsArray);
-        UInt32NodeArrayMap seedsArrayMap(g,seedsArray);
+        UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
 
+        std::copy(seedsArray.begin(),seedsArray.end(),labelsArray.begin());
 
         //lemon_graph::graph_detail::generateWatershedSeeds(g, nodeWeightsArrayMap, labelsArrayMap, watershedsOption.seed_options);
-        lemon_graph::watershedsGraph(g, nodeWeightsArrayMap, seedsArrayMap, watershedsOption);
+        lemon_graph::watershedsGraph(g, nodeWeightsArrayMap, labelsArrayMap, watershedsOption);
         //lemon_graph::graph_detail::seededWatersheds(g, nodeWeightsArrayMap, seedsArrayMap, watershedsOption);
-        std::copy(seedsArray.begin(),seedsArray.end(),labelsArray.begin());
+        
         return labelsArray;
     }
 
@@ -542,11 +543,15 @@ public:
         MultiFloatNodeArray nodeFeaturesBufferArray,
         MultiFloatNodeArray nodeFeaturesOutArray
     ){
+
+        reshapeNodeMapIfEmpty(g,nodeFeaturesArray,nodeFeaturesBufferArray);
+        reshapeNodeMapIfEmpty(g,nodeFeaturesArray,nodeFeaturesOutArray);
+
         // resize output ? 
-        nodeFeaturesOutArray.reshapeIfEmpty( nodeFeaturesArray.taggedShape());
+        //nodeFeaturesOutArray.reshapeIfEmpty( nodeFeaturesArray.taggedShape());
 
         // resize buffer ? 
-        nodeFeaturesBufferArray.reshapeIfEmpty( nodeFeaturesArray.taggedShape());
+        //nodeFeaturesBufferArray.reshapeIfEmpty( nodeFeaturesArray.taggedShape());
 
         // numpy arrays => lemon maps
         MultiFloatNodeArrayMap nodeFeaturesArrayMap(g,nodeFeaturesArray);
@@ -556,66 +561,6 @@ public:
 
         // call algorithm itself
         recursiveGraphSmoothing(g,nodeFeaturesArrayMap,edgeIndicatorArrayMap,lambda,edgeThreshold,scale,iterations,nodeFeaturesBufferArrayMap,nodeFeaturesOutArrayMap);
-
-        // retun smoothed features
-        return nodeFeaturesOutArray;
-    }
-
-    static NumpyAnyArray pyDynamicRecursiveGraphSmoothing(
-        const GRAPH & g,
-        MultiFloatNodeArray nodeFeaturesArray,
-        const std::string & functor,
-        const float         lambda,
-        const float         edgeThreshold,
-        const float         scale,
-        const size_t        iterations,
-        MultiFloatNodeArray nodeFeaturesBufferArray,
-        MultiFloatNodeArray nodeFeaturesOutArray
-    ){
-        // resize output ? 
-        nodeFeaturesOutArray.reshapeIfEmpty( nodeFeaturesArray.taggedShape());
-
-        // resize buffer ? 
-        nodeFeaturesBufferArray.reshapeIfEmpty( nodeFeaturesArray.taggedShape());
-
-        // numpy arrays => lemon maps
-        MultiFloatNodeArrayMap nodeFeaturesArrayMap(g,nodeFeaturesArray);
-        MultiFloatNodeArrayMap nodeFeaturesBufferArrayMap(g,nodeFeaturesBufferArray);
-        MultiFloatNodeArrayMap nodeFeaturesOutArrayMap(g,nodeFeaturesOutArray);
-
-        // call algorithm itself
-        if(functor==std::string("eucledian") || functor==std::string("norm") || functor==std::string("l2")){
-            typedef  metrics::Norm<float> DistFunctor;
-            DistFunctor f;
-            dynamicRecursiveGraphSmoothing(g,nodeFeaturesArrayMap,lambda,edgeThreshold,scale,f,iterations,nodeFeaturesBufferArrayMap,nodeFeaturesOutArrayMap);
-        }
-        else if(functor==std::string("squaredNorm")){
-            typedef  metrics::SquaredNorm<float> DistFunctor;
-            DistFunctor f;
-            dynamicRecursiveGraphSmoothing(g,nodeFeaturesArrayMap,lambda,edgeThreshold,scale,f,iterations,nodeFeaturesBufferArrayMap,nodeFeaturesOutArrayMap);
-        }
-        else if (functor==std::string("manhattan") || functor==std::string("l1")){
-            typedef  metrics::Manhattan<float> DistFunctor;
-            DistFunctor f;
-            dynamicRecursiveGraphSmoothing(g,nodeFeaturesArrayMap,lambda,edgeThreshold,scale,f,iterations,nodeFeaturesBufferArrayMap,nodeFeaturesOutArrayMap);
-        }
-        else if (functor==std::string("chiSquared")){
-            typedef  metrics::ChiSquared<float> DistFunctor;
-            DistFunctor f;
-            dynamicRecursiveGraphSmoothing(g,nodeFeaturesArrayMap,lambda,edgeThreshold,scale,f,iterations,nodeFeaturesBufferArrayMap,nodeFeaturesOutArrayMap);
-        }
-        else{
-            std::cout<<"selected distance "<<functor<<"\n";
-            throw std::runtime_error(
-                "distance not supported\n"
-                "supported distance types:\n"
-                "- eucledian/norm/l2\n"
-                "- squaredNorm\n"
-                "- manhattan/l1\n"
-                "- chiSquared\n"
-            );
-        }
-
 
         // retun smoothed features
         return nodeFeaturesOutArray;

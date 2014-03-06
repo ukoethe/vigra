@@ -219,7 +219,7 @@ namespace cluster_operators{
         }
 
 
-        /// \brief get a reference to the merge graph
+        /// \brief get a reference to the merge
         MergeGraph & mergeGraph(){
             return mergeGraph_;
         }

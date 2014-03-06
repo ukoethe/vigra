@@ -57,15 +57,8 @@
 #include <vigra/adjacency_list_graph.hxx>
 #include <vigra/graph_maps.hxx>
 
-#define LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GRAPH_CLS,PREFIX,POSTFIX) \
-    typedef typename GRAPH_CLS::Edge        PREFIX##Edge      ## POSTFIX; \
-    typedef typename GRAPH_CLS::Node        PREFIX##Node      ## POSTFIX; \
-    typedef typename GRAPH_CLS::Arc         PREFIX##Arc       ## POSTFIX; \
-    typedef typename GRAPH_CLS::EdgeIt      PREFIX##EdgeIt##POSTFIX; \
-    typedef typename GRAPH_CLS::NodeIt      PREFIX##NodeIt    ## POSTFIX; \
-    typedef typename GRAPH_CLS::ArcIt       PREFIX##ArcIt     ## POSTFIX; \
-    typedef typename GRAPH_CLS::OutArcIt    PREFIX##OutArcIt  ## POSTFIX; \
-    typedef typename GRAPH_CLS::InArcIt     PREFIX##InArcIt   ## POSTFIX
+
+
 
 
 namespace vigra{
@@ -94,6 +87,10 @@ namespace vigra{
         };
     }
 
+    /// \brief get a vector of Edge descriptors
+    ///
+    /// Sort the Edge descriptors given weights 
+    /// and a comperator
     template<class GRAPH,class WEIGHTS,class COMPERATOR>
     void edgeSort(
         const GRAPH   & g,
@@ -111,7 +108,7 @@ namespace vigra{
         std::sort(sortedEdges.begin(),sortedEdges.end(),edgeComperator);
     }
 
-
+    /// \brief helper to make an iterator from a lemon edge map
     template<class GRAPH,class MAP>
     class EdgeMapIteratorHelper{
         public:
@@ -171,6 +168,7 @@ namespace vigra{
         private:
     };
 
+    /// \brief helper to make an iterator from a lemon node map
     template<class GRAPH,class MAP>
     class NodeMapIteratorHelper{
         public:
@@ -230,25 +228,35 @@ namespace vigra{
         private:
     };
 
-
+    /// \brief copy a lemon node map
     template<class G,class A,class B>
     void copyNodeMap(const G & g,const A & a ,B & b){
         std::copy(NodeMapIteratorHelper<G,A>::begin(g,a),NodeMapIteratorHelper<G,A>::end(g,a), NodeMapIteratorHelper<G,B>::begin(g,b));
     }
+    /// \brief copy a lemon edge map
     template<class G,class A,class B>
     void copyEdgeMap(const G & g,const A & a ,B & b){
         std::copy(EdgeMapIteratorHelper<G,A>::begin(g,a),EdgeMapIteratorHelper<G,A>::end(g,a), EdgeMapIteratorHelper<G,B>::begin(g,b));
     }
+    /// \brief fill a lemon node map    template<class G,class A,class T>
     template<class G,class A,class T>
-    void fillNodeMap(const G & g, A & a ,const T & value){
+    void fillNodeMap(const G & g, A & a, const T & value){
         std::fill(NodeMapIteratorHelper<G,A>::begin(g,a),NodeMapIteratorHelper<G,A>::end(g,a), value);
     }
+    /// \brief fill a lemon edge map
     template<class G,class A,class T>
     void fillEdgeMap(const G & g,A & a ,const T & value){
         std::fill(EdgeMapIteratorHelper<G,A>::begin(g,a),EdgeMapIteratorHelper<G,A>::end(g,a), value);
     }
 
-
+    /// \brief make a region adjacency graph from a graph and labels w.r.t. that graph
+    ///
+    /// \param graphIn  : input graph
+    /// \param labels   : labels w.r.t. graphIn
+    /// \param[out] rag  : region adjacency graph 
+    /// \param[out] affiliatedEdges : a vector of edges of graphIn for each edge in rag
+    /// \param      ingoreLabel : optional label to ignore (default: -1 means no label will be ignored)
+    ///
     template<
         class GRAPH_IN,
         class GRAPH_IN_NODE_LABEL_MAP
@@ -265,8 +273,12 @@ namespace vigra{
         typedef typename GraphMapTypeTraits<GRAPH_IN_NODE_LABEL_MAP>::Value LabelType;
         typedef GRAPH_IN GraphIn;
         typedef AdjacencyListGraph GraphOut;
-        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GraphIn, , GraphIn);
-        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(GraphOut, ,GraphOut);
+
+        typedef typename GraphIn::Edge   EdgeGraphIn;
+        typedef typename GraphIn::NodeIt NodeItGraphIn;
+        typedef typename GraphIn::EdgeIt EdgeItGraphIn;
+
+        typedef typename GraphOut::Edge   EdgeGraphOut;
         // iterate over all labels in the node map to find min max
         typedef NodeMapIteratorHelper<GraphIn,LabelMap> NodeIterHelper;
         
@@ -304,20 +316,23 @@ namespace vigra{
         }
     }
 
-
+    /// \brief shortest path computer
     template<class GRAPH,class WEIGHT_TYPE>
     class ShortestPathDijkstra{
     public:
         typedef GRAPH Graph;
 
-        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::OutArcIt OutArcIt;
 
         typedef WEIGHT_TYPE WeightType;
         typedef ChangeablePriorityQueue<WeightType>           PqType;
         typedef typename Graph:: template NodeMap<Node>       PredecessorsMap;
         typedef typename Graph:: template NodeMap<WeightType> DistanceMap;
             
-
+        /// \ brief constructor from graph
         ShortestPathDijkstra(const Graph & g)
         :   graph_(g),
             pq_(g.maxNodeId()+1),
@@ -326,6 +341,12 @@ namespace vigra{
         {
         }
 
+        /// \brief run shortest path given edge weights
+        ///
+        /// \param weights : edge weights encoding the distance between adjacent nodes (must be non-negative) 
+        /// \param source  : source node where shortest path should start
+        /// \param target  : target node where shortest path should stop. If target is not given,
+        ///     the shortest path from source to all reachable nodes is computed
         template<class WEIGHTS>
         void run(const WEIGHTS & weights,const Node & source,const Node & target = lemon::INVALID){
             source_=source;
@@ -369,29 +390,33 @@ namespace vigra{
                 }
             }
         }
-
+        /// \brief get the graph
         const Graph & graph()const{
             return graph_;
         }
-
+        /// \brief get the source node
         const Node & source()const{
             return source_;
         }
+        /// \brief get the target node
         const Node & target()const{
             return target_;
         }
 
+        /// \brief check if explicit target is given
         bool hasTarget()const{
             return target_!=lemon::INVALID;
         }
 
+        /// \brief get the predecessors node map (after a call of run)
         const PredecessorsMap & predecessors()const{
             return predMap_;
         }
+        /// \brief get the distances node map (after a call of run)
         const DistanceMap & distances()const{
             return distMap_;
         }
-
+        /// \brief get the distance to a rarget node (after a call of run)
         WeightType distance(const Node & target)const{
             return distMap_[target];
         }
@@ -419,7 +444,7 @@ namespace vigra{
         Node target_;
     };
 
-
+    /// \brief get the length in node units of a path
     template<class NODE,class PREDECESSORS>
     size_t pathLength(
         const NODE source,
@@ -441,15 +466,7 @@ namespace vigra{
 
 
 
-    template<class GRAPH,class T>
-    struct ZeroHeuristc{
-        typedef typename GRAPH::Node Node;
-        T operator()(const Node & a ,const Node & b )const{
-            return static_cast<T>(0.0);
-        }
-    };
-
-
+    /// \brief Astar Shortest path search
     template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE,class HEURSTIC>
     void shortestPathAStar(
         const GRAPH         &           graph,
@@ -462,7 +479,11 @@ namespace vigra{
     ){
 
         typedef GRAPH                       Graph;
-        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::OutArcIt OutArcIt;
+
 
         typedef typename WEIGHTS::value_type     WeightType;
         typedef typename DISTANCE::value_type    DistanceType;
@@ -527,7 +548,13 @@ namespace vigra{
     }
     
 
-
+    /// \brief Minimum Spanning tree based segmentation
+    /// 
+    /// \param graph: input graph
+    /// \param weights : edge weights / edge indicator
+    /// \param useWeightThreshold : use a weight threshold as stoping criterion
+    /// \param useNodeThreshold : use a number of nodes as stoping criterion 
+    /// \param[out] : resulting  nodeLabeling (not dense)
     template<class GRAPH,class WEIGHTS,class NODE_LABEL_MAP>
     void minimumSpanningTreeSegmentation(
         const GRAPH     & graph,
@@ -540,7 +567,10 @@ namespace vigra{
     ){  
 
         typedef GRAPH Graph;
-        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
+        
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
         typedef typename WEIGHTS::Value WeightType;
         typedef EdgeMapIteratorHelper<GRAPH,WEIGHTS>     WeightIterHelper;
         typedef detail::Partition<size_t> UfdType;
@@ -596,7 +626,7 @@ namespace vigra{
 
 
     template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class PRIORITY_MANIP_FUNCTOR,class LABELS>
-    void watershedsSegmentationImpl(
+    void edgeWeightedWatershedsSegmentationImpl(
         const GRAPH & g,
         const EDGE_WEIGHTS      & edgeWeights,
         const SEEDS             & seeds,
@@ -604,7 +634,12 @@ namespace vigra{
         LABELS                  & labels
     ){  
         typedef GRAPH Graph;
-        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::EdgeIt EdgeIt;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::OutArcIt OutArcIt;
+
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename SEEDS::Value   SeedType;
         typedef typename LABELS::Value  LabelType;
@@ -707,18 +742,32 @@ namespace vigra{
 
     } // end namespace detail_watersheds_segmentation
 
+
+    /// \brief edge weighted watersheds Segmentataion
+    /// 
+    /// \param graph: input graph
+    /// \param edgeWeights : edge weights / edge indicator
+    /// \param seeds : seed must be non empty!
+    /// \param[labels] labels : resulting  nodeLabeling (not necessarily dense)
     template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
-    void watershedsSegmentation(
+    void edgeWeightedWatershedsSegmentation(
         const GRAPH & g,
         const EDGE_WEIGHTS & edgeWeights,
         const SEEDS        & seeds,
         LABELS             & labels
     ){  
         detail_watersheds_segmentation::IdentityFunctor f;
-        detail_watersheds_segmentation::watershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
+        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
     }   
     
-
+    /// \brief edge weighted watersheds Segmentataion
+    /// 
+    /// \param graph: input graph
+    /// \param edgeWeights : edge weights / edge indicator
+    /// \param seeds : seed must be non empty!
+    /// \param backgroundLabel : which label is background
+    /// \param backgroundBias  : bias for background
+    /// \param[labels] labels : resulting  nodeLabeling (not necessarily dense)
     template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
     void carvingSegmentation(
         const GRAPH                         & g,
@@ -731,11 +780,19 @@ namespace vigra{
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename LABELS::Value       LabelType;
         detail_watersheds_segmentation::CarvingFunctor<WeightType,LabelType> f(backgroundLabel,backgroundBias);
-        detail_watersheds_segmentation::watershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
+        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
     }
 
 
-
+    /// \brief edge weighted watersheds Segmentataion
+    /// 
+    /// \param graph: input graph
+    /// \param edgeWeights : edge weights / edge indicator
+    /// \param nodeSizes : size of each node
+    /// \param k : free parameter of felzenszwalb algorithm
+    /// \param backgroundBias  : bias for background
+    /// \param[labels] nodeLabeling :  nodeLabeling (not necessarily dense)
+    /// \param nodeNumStopCond      : optional stopping condition
     template< class GRAPH , class EDGE_WEIGHTS, class NODE_SIZE,class NODE_LABEL_MAP>
     void felzenszwalbSegmentation(
         const GRAPH &         graph,
@@ -746,7 +803,10 @@ namespace vigra{
         const int             nodeNumStopCond = -1
     ){
         typedef GRAPH Graph;
-        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
+
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename EDGE_WEIGHTS::Value NodeSizeType;
         typedef typename Graph:: template NodeMap<WeightType>   NodeIntDiffMap;
@@ -815,7 +875,7 @@ namespace vigra{
             }
             else{
                 if(nodeNum>nodeNumStopCond){
-                    k*=1.2;
+                    k *= 1.2f;
                 }
                 else{
                     break;
@@ -849,14 +909,18 @@ namespace vigra{
 
     ){
         typedef GRAPH Graph;
-        LEMON_UNDIRECTED_GRAPH_TYPEDEFS(Graph, , );
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::OutArcIt OutArcIt;
+
         typedef typename NODE_FEATURES_IN::ConstReference NodeFeatureInConstRef;
         typedef typename NODE_FEATURES_IN::Value          NodeFeatureInValue;
         typedef typename NODE_FEATURES_OUT::Reference     NodeFeatureOutRef;
         typedef typename EDGE_WEIGHTS::ConstReference SmoothFactorType;
 
 
-        fillNodeMap(g,nodeFeaturesOut,0.0);
+        //fillNodeMap(g, nodeFeaturesOut, typename NODE_FEATURES_OUT::value_type(0.0));
 
         for(NodeIt n(g);n!=lemon::INVALID;++n){
 
@@ -875,7 +939,10 @@ namespace vigra{
 
                 NodeFeatureInValue neighbourFeat = nodeFeaturesIn[neigbour];
                 neighbourFeat*=smoothFactor;
-                featOut += neighbourFeat;
+                if(degree==0)
+                    featOut = neighbourFeat;
+                else
+                    featOut += neighbourFeat;
                 weightSum+=smoothFactor;
                 ++degree;
             }
@@ -906,6 +973,16 @@ namespace vigra{
 
     }
 
+
+    /// \smooth node features of a graph
+    ///
+    /// \param g               : input graph
+    /// \param nodeFeaturesIn  : input node features which should be smoothed       
+    /// \param edgeIndicator   : edge indicator to indicate over which edges one should smooth        
+    /// \param lambda          : scale edge indicator by lambda bevore taking negative exponent
+    /// \param edgeThreshold   : edge threshold
+    /// \param scale           : how much smoothing should be applied
+    /// \param[out] nodeFeaturesOut : smoothed node features
     template<class GRAPH, class NODE_FEATURES_IN,class EDGE_INDICATOR,class NODE_FEATURES_OUT>
     void graphSmoothing(
         const GRAPH & g,
@@ -920,7 +997,17 @@ namespace vigra{
         detail_graph_smoothing::graphSmoothingImpl(g,nodeFeaturesIn,edgeIndicator,functor,nodeFeaturesOut);
     }
 
-
+    /// \smooth node features of a graph
+    ///
+    /// \param g               : input graph
+    /// \param nodeFeaturesIn  : input node features which should be smoothed       
+    /// \param edgeIndicator   : edge indicator to indicate over which edges one should smooth        
+    /// \param lambda          : scale edge indicator by lambda bevore taking negative exponent
+    /// \param edgeThreshold   : edge threshold
+    /// \param scale           : how much smoothing should be applied
+    /// \param iteration       : how often should this algorithm be called recursively
+    /// \param[out] nodeFeaturesOut : preallocated(!) buffer to store node features temp.
+    /// \param[out] nodeFeaturesOut : smoothed node features
     template<class GRAPH, class NODE_FEATURES_IN,class EDGE_INDICATOR,class NODE_FEATURES_OUT>
     void recursiveGraphSmoothing(
         const GRAPH & g,

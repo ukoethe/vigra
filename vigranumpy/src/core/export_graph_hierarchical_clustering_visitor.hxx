@@ -263,7 +263,7 @@ public:
         const HCLUSTER &     hcluster,
         NumpyArray<1,UInt32> labels
     ){
-        for(size_t i=0;i<labels.shape(0);++i)
+        for(MultiArrayIndex i=0; i<labels.shape(0); ++i)
             labels(i)=hcluster.reprNodeId(labels(i));
     }
 

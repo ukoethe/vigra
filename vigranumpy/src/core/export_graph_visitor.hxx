@@ -282,7 +282,7 @@ public:
         NumpyArray<1,Int32> out =NumpyArray<1,Int32>()  
     ){
         out.reshapeIfEmpty(typename NumpyArray<1,Int32>::difference_type(  nodeIdPairs.shape(0)  ));
-        for(size_t i=0;i<nodeIdPairs.shape(0);++i){
+        for(MultiArrayIndex i=0; i<nodeIdPairs.shape(0); ++i){
             const Edge e = g.findEdge(
                 g.nodeFromId(nodeIdPairs(i,0)),
                 g.nodeFromId(nodeIdPairs(i,1))
@@ -341,7 +341,7 @@ public:
     ){
         typedef GraphItemHelper<Graph,Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  edgeIds.shape(0)));
-        for(size_t i=0;i<edgeIds.shape(0);++i){
+        for(MultiArrayIndex i=0; i<edgeIds.shape(0); ++i){
             const index_type edgeId=edgeIds(i);
             const Edge edge  = g.edgeFromId(edgeId);
             if(edge!=lemon::INVALID){
@@ -357,7 +357,7 @@ public:
     ){
         typedef GraphItemHelper<Graph,Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  edgeIds.shape(0)));
-        for(size_t i=0;i<edgeIds.shape(0);++i){
+        for(MultiArrayIndex i=0; i<edgeIds.shape(0); ++i){
             const index_type edgeId=edgeIds(i);
             const Edge edge  = g.edgeFromId(edgeId);
             if(edge!=lemon::INVALID){
@@ -374,7 +374,7 @@ public:
     ){
         typedef GraphItemHelper<Graph,Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<2,UInt32>::difference_type(  edgeIds.shape(0) ,2 ));
-        for(size_t i=0;i<edgeIds.shape(0);++i){
+        for(MultiArrayIndex i=0; i<edgeIds.shape(0); ++i){
             const index_type edgeId=edgeIds(i);
             const Edge edge  = g.edgeFromId(edgeId);
             if(edge!=lemon::INVALID){
@@ -565,7 +565,7 @@ public:
         NumpyArray<1,UInt32> edgeIds  =NumpyArray<1,index_type>()
     ){
         edgeIds.reshapeIfEmpty(typename NumpyArray<1,index_type>::difference_type(edges.shape(0)));
-        for(size_t i=0;i<edges.shape(0);++i){
+        for(MultiArrayIndex i=0; i<edges.shape(0); ++i){
             const Edge e = self.addEdge(edges(i,0),edges(i,1));
             edgeIds(i)=self.id(e);
         }

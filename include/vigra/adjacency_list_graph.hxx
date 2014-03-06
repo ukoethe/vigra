@@ -503,17 +503,17 @@ namespace vigra{
         friend class detail::GenericIncEdgeIt;
 
         template<class G>
-        friend class detail::NeighborNodeFilter;
+        friend struct detail::NeighborNodeFilter;
         template<class G>
-        friend class detail::IncEdgeFilter;
+        friend struct detail::IncEdgeFilter;
         template<class G>
-        friend class detail::BackEdgeFilter;
+        friend struct detail::BackEdgeFilter;
         template<class G>
-        friend class detail::IsOutFilter;
+        friend struct detail::IsOutFilter;
         template<class G>
-        friend class detail::IsBackOutFilter;
+        friend struct detail::IsBackOutFilter;
         template<class G>
-        friend class detail::IsInFilter;
+        friend struct detail::IsInFilter;
 
 
         friend class detail_adjacency_list_graph::ItemIter<GraphType,Node>;
@@ -573,7 +573,7 @@ namespace vigra{
             ++nodeNum_;
             return Node(id);
         }
-        else if(id<nodes_.size()){
+        else if((std::size_t)id < nodes_.size()){
             const Node node = nodeFromId(id);
             if(node==lemon::INVALID){
                 nodes_[id]=NodeStorage(id);
@@ -586,7 +586,7 @@ namespace vigra{
         }
         else{
             // refactor me
-            while(nodes_.size()<id){
+            while(nodes_.size() < (std::size_t)id){
                 nodes_.push_back(NodeStorage(lemon::INVALID));
             }
             nodes_.push_back(NodeStorage(id));
@@ -845,7 +845,7 @@ namespace vigra{
     AdjacencyListGraph::edgeFromId(
         const AdjacencyListGraph::index_type id
     )const{
-        if(id<edges_.size() && edges_[id].id()!=-1)
+        if((std::size_t)id < edges_.size() && edges_[id].id() != -1)
             return Edge(edges_[id].id());
         else
             return Edge(lemon::INVALID);
@@ -856,7 +856,7 @@ namespace vigra{
     AdjacencyListGraph::nodeFromId(
         const AdjacencyListGraph::index_type id
     )const{
-        if(id<nodes_.size()&& nodes_[id].id()!=-1)
+        if((std::size_t)id < nodes_.size() && nodes_[id].id() != -1)
             return Node(nodes_[id].id());
         else
             return Node(lemon::INVALID);
