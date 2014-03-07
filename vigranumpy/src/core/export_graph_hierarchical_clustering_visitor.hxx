@@ -103,7 +103,8 @@ public:
         ;
 
         python::def("__mergeGraph",&pyMergeGraphConstructor,
-            python::return_value_policy<python::manage_new_object>()
+            python::with_custodian_and_ward_postcall< 1,0 ,
+                    python::return_value_policy<   python::manage_new_object      >  >()  
         );
     }
 
@@ -114,7 +115,15 @@ public:
             .def("__init__", python::make_constructor(&pyEdgeWeightNodeFeaturesConstructor))
             ;
             python::def("__minEdgeWeightNodeDistOperator",registerConverters(&pyEdgeWeightNodeFeaturesConstructor),
-                python::return_value_policy<python::manage_new_object>()  
+                python::with_custodian_and_ward_postcall< 1,0 ,
+                    python::with_custodian_and_ward_postcall< 2 ,0,
+                        python::with_custodian_and_ward_postcall< 3 ,0,
+                            python::with_custodian_and_ward_postcall< 4 ,0,
+                                python::with_custodian_and_ward_postcall< 5 ,0,
+                                    python::with_custodian_and_ward_postcall< 6 ,0,
+                                        python::return_value_policy<   python::manage_new_object      
+
+                >  >    >   >   >   >   >()  
             );
 
         }
@@ -126,7 +135,9 @@ public:
                 //python::return_value_policy<python::manage_new_object>() )
             ;
             python::def("__pythonClusterOperator",registerConverters(&pyPythonOperatorConstructor),
-                python::return_value_policy<python::manage_new_object>()  
+                python::with_custodian_and_ward_postcall< 1,0 ,
+                    python::with_custodian_and_ward_postcall< 2,0 ,
+                        python::return_value_policy<   python::manage_new_object      >  >  >()  
             );
         }
     }
@@ -151,7 +162,8 @@ public:
 
         // free function
         python::def("__hierarchicalClustering",registerConverters(&pyHierarchicalClusteringConstructor<ClusterOperator>),
-            python::return_value_policy<python::manage_new_object>()  
+            python::with_custodian_and_ward_postcall< 1,0 ,
+                    python::return_value_policy<   python::manage_new_object      >  >()  
         );
     }
 
