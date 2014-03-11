@@ -37,8 +37,8 @@
  * This header provides definitions of graph-related algorithms
  */
 
-#ifndef VIGRA_GRAPH_MAP_ALGORITHMS_HXX
-#define VIGRA_GRAPH_MAP_ALGORITHMS_HXX
+#ifndef VIGRA_GRAPH_ALGORITHMS_HXX
+#define VIGRA_GRAPH_ALGORITHMS_HXX
 
 /*std*/
 #include <algorithm>
@@ -49,13 +49,13 @@
  #include <boost/iterator/transform_iterator.hpp>
 
 /*vigra*/
-#include <vigra/graphs.hxx>
-#include <vigra/graph_generalization.hxx>
-#include <vigra/multi_gridgraph.hxx>
-#include <vigra/priority_queue.hxx>
-#include <vigra/union_find.hxx>
-#include <vigra/adjacency_list_graph.hxx>
-#include <vigra/graph_maps.hxx>
+#include "graphs.hxx"
+#include "graph_generalization.hxx"
+#include "multi_gridgraph.hxx"
+#include "priority_queue.hxx"
+#include "union_find.hxx"
+#include "adjacency_list_graph.hxx"
+#include "graph_maps.hxx"
 
 
 
@@ -238,7 +238,7 @@ namespace vigra{
     void copyEdgeMap(const G & g,const A & a ,B & b){
         std::copy(EdgeMapIteratorHelper<G,A>::begin(g,a),EdgeMapIteratorHelper<G,A>::end(g,a), EdgeMapIteratorHelper<G,B>::begin(g,b));
     }
-    /// \brief fill a lemon node map    template<class G,class A,class T>
+    /// \brief fill a lemon node map 
     template<class G,class A,class T>
     void fillNodeMap(const G & g, A & a, const T & value){
         std::fill(NodeMapIteratorHelper<G,A>::begin(g,a),NodeMapIteratorHelper<G,A>::end(g,a), value);
@@ -353,12 +353,9 @@ namespace vigra{
             target_=target;
 
             this->initializeMaps();
-
-            bool finished=false;
             while(!pq_.empty() ){ //&& !finished){
                 const Node topNode(graph_.nodeFromId(pq_.top()));
                 if(topNode==target_){
-                    finished=true;
                     break;
                 }
                 if(predMap_[topNode]!=lemon::INVALID || topNode==source_ ){
@@ -380,13 +377,6 @@ namespace vigra{
                         }
 
                     }
-                }
-                else{
-                    finished=true;
-                    break;
-                }
-                if(finished){
-                    break;
                 }
             }
         }
@@ -604,7 +594,7 @@ namespace vigra{
 
     namespace detail_watersheds_segmentation{
 
-    struct IdentityFunctor{
+    struct RawPriorityFunctor{
         template<class L, class T>
         T operator()(const L label,const T  priority)const{
             return priority;
@@ -756,7 +746,7 @@ namespace vigra{
         const SEEDS        & seeds,
         LABELS             & labels
     ){  
-        detail_watersheds_segmentation::IdentityFunctor f;
+        detail_watersheds_segmentation::RawPriorityFunctor f;
         detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
     }   
     
@@ -1044,4 +1034,4 @@ namespace vigra{
 
 } // namespace vigra
 
-#endif // VIGRA_GRAPH_MAP_ALGORITHMS_HXX
+#endif // VIGRA_GRAPH_ALGORITHMS_HXX
