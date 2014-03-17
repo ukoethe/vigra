@@ -818,6 +818,23 @@ def _genGraphConvenienceFunctions():
                 self.pathFinder.run(weights,source,target)
             return self
 
+        def runIgnoreLargeWeights(self,weights,source,val):
+            """ run shortest path search, nodes with all edge weights larger than val will be ignored
+
+                Keyword Arguments:
+
+                   - weights : edge weights encoding distance from two adjacent nodes
+
+                   - source : source node
+                   
+                   - val : upper bound
+
+            """
+            self.source = source
+            self.target = None
+            self.pathFinder.runIgnoreLargeWeights(weights,source,val)
+            return self
+
         def path(self,target=None,pathType='coordinates'):
             """ get the shortest path from source to target
 
