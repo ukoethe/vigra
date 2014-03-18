@@ -478,6 +478,4 @@ namespace cluster_operators{
 
 }
 
-
-
 #endif // VIGRA_HIERARCHICAL_CLUSTERING_HXX
