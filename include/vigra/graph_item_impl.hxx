@@ -262,6 +262,10 @@ namespace vigra{
             mutable ResultItem resultItem_;
         };
 
+        // an element in the implementation
+        // of adjacency list
+        // End users will not notice this class
+        // => implementation detail
         template<class T>
         class Adjacency {
         public:
@@ -293,6 +297,10 @@ namespace vigra{
         };
 
 
+        // an element in the implementation
+        // of adjacency list
+        // End users will not notice this class
+        // => implementation detail
         template<class INDEX_TYPE,bool USE_STL_SET>
         class GenericNodeImpl{
 
@@ -480,6 +488,12 @@ namespace vigra{
             }
             bool operator > (const GenericEdge<INDEX_TYPE> & other )const{
                 return id_ > other.id_;
+            }
+            bool operator <= (const GenericEdge<INDEX_TYPE> & other )const{
+                return id_ <= other.id_;
+            }
+            bool operator >= (const GenericEdge<INDEX_TYPE> & other )const{
+                return id_ >= other.id_;
             }
 
 
