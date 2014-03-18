@@ -448,7 +448,7 @@ namespace cluster_operators{
             return mergeGraph_.reprNodeId(id);
         }
     private:
-        // privat methods
+
         MergeGraphIndexType timeStampToIndex(const MergeGraphIndexType timestamp)const{
             return timestamp- graph_.maxNodeId();
         }
