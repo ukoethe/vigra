@@ -153,7 +153,7 @@ namespace vigra{
                 const AdjacencyElement & adj,
                 const typename GRAPH::index_type ownNodeId
             ){
-                return  true;//g.id(g.v(g.edgeFromId(edgeId)))==ownNodeId;
+                return  true;
             } 
             ResultType static transform(
                 const GRAPH & g,
