@@ -45,7 +45,7 @@ def eccentricity( img, distFunc = "exponential", showPathImage = False, percenta
         distImage = numpy.exp(distImage*-gamma)
     elif distFunc == "linear":
         maxDist = distImage.max()
-        distImage = maxDist - distImage
+        distImage = maxDist - distImage + 10
     elif distFunc == "inverse":
         w = numpy.where(distImage!=0)
         distImage[w] = 1/distImage[w]
@@ -55,6 +55,11 @@ def eccentricity( img, distFunc = "exponential", showPathImage = False, percenta
     ## Distance in the inside between two pixels is 1.0
     #distImage = bigImg.copy().astype(numpy.float32)
     #distImage[inside]=1.0
+
+    # if len(imgSaveName)>1:
+    #     plt.imshow(numpy.swapaxes(distImage, 1, 0))
+    #     plt.savefig(imgSaveName+"_dist.png")
+    #     #scipy.misc.imsave(imgSaveName+"_dist.png", numpy.swapaxes(distImage, 1, 0))
 
     ## Set the outside to a very high value
     distImage[outside]=1000.0
@@ -175,7 +180,7 @@ def eccentricity( img, distFunc = "exponential", showPathImage = False, percenta
     plt.figure(distFunc)
     plt.imshow(numpy.swapaxes(imgp, 1, 0), interpolation='none')
     if len(imgSaveName)>1:
-         scipy.misc.imsave(imgSaveName, numpy.swapaxes(imgp, 1, 0))
+         scipy.misc.imsave(imgSaveName+".png", numpy.swapaxes(imgp, 1, 0))
     #plt.show()
 
 
@@ -223,8 +228,8 @@ for i in range(nBoxes):
 pathLengths = []
 counter = 0
 for seg in segments:
-    saveName = "ecc_transform_from_center_with_distance_transform/ecc_seg_"+`counter`+".png"
-    #saveName = ""
+    #saveName = "ecc_transform_from_center_with_distance_transform/ecc_seg_"+`counter`
+    saveName = ""
     pathLength = eccentricity(seg, distFunc="linear", showPathImage=False, percentageOfPaths=percentage, imgSaveName=saveName)
     pathLengths.append(pathLength)
     counter = counter+1
