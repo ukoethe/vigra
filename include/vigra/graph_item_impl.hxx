@@ -12,6 +12,15 @@
 
 namespace vigra{
 
+    /*
+        within this namespace we implement 
+        filter to provide generic lemon iterators
+        for a single incEdgeIterator like iterator
+        
+        These Iterators are used by:
+        - AdjacencyListGraph
+        - MergeGraphAdaptor
+    */
     namespace detail{
 
 

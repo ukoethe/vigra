@@ -45,32 +45,6 @@
 
 namespace vigra {
 
-
-namespace detail{
-
-template <class OUT_TYPE,class InputIterator1, class InputIterator2>
-std::pair<OUT_TYPE,bool> first_set_intersection (
-    InputIterator1 first1, 
-    InputIterator1 last1,
-    InputIterator2 first2, 
-    InputIterator2 last2
-)
-{
-    while (first1!=last1 && first2!=last2){
-        if (*first1<*first2) 
-            ++first1;
-        else if (*first2<*first1) 
-            ++first2;
-        else {
-            return std::pair<OUT_TYPE,bool>(static_cast<OUT_TYPE>(*first1),true);
-        }
-    }
-    return std::pair<OUT_TYPE,bool>(OUT_TYPE( ),false); 
-}
-
-} // end namespace detail
-
-
 /** \addtogroup MathFunctions
 */
 //@{
