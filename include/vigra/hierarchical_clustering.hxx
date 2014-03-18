@@ -210,7 +210,7 @@ namespace cluster_operators{
             index_type minLabel = pq_.top();
             while(mergeGraph_.hasEdgeId(minLabel)==false){
                 pq_.deleteItem(minLabel);
-                index_type minLabel = pq_.top();
+                minLabel = pq_.top();
             }
             return Edge(minLabel);
         }
