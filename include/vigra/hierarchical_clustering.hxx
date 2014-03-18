@@ -43,8 +43,10 @@
 /*std*/
 #include <queue>          
 #include <iomanip>
-#include <vigra/priority_queue.hxx>
-#include <vigra/metrics.hxx> 
+
+/*vigra*/
+#include "priority_queue.hxx"
+#include "metrics.hxx" 
 
 namespace vigra{      
 

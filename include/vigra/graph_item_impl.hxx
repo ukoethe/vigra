@@ -5,9 +5,9 @@
 #include <boost/iterator/iterator_facade.hpp>
 
 /*vigra*/
-#include <vigra/algorithm.hxx>
-#include <vigra/tinyvector.hxx>
-#include <vigra/random_access_set.hxx>
+#include "algorithm.hxx"
+#include "tinyvector.hxx"
+#include "random_access_set.hxx"
 
 
 namespace vigra{

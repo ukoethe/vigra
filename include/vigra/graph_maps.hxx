@@ -38,9 +38,9 @@
 #define VIGRA_GRAPH_MAPS
 
 /*vigra*/
-#include <vigra/multi_array.hxx>
-#include <vigra/graph_generalization.hxx>
-#include <vigra/graphs.hxx>
+#include "multi_array.hxx"
+#include "graph_generalization.hxx"
+#include "graphs.hxx"
 
 
 namespace vigra{

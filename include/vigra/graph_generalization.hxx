@@ -43,8 +43,8 @@
 #define VIGRA_GRAPH_GENERALIZATION_HXX
 
 
-#include <vigra/graphs.hxx>
-#include <vigra/multi_gridgraph.hxx>
+#include "graphs.hxx"
+#include "multi_gridgraph.hxx"
 namespace vigra{
 
 

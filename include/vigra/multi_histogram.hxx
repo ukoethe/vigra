@@ -36,10 +36,10 @@
 #ifndef VIGRA_MULTI_HISTOGRAMM_HXX
 #define VIGRA_MULTI_HISTOGRAMM_HXX
 
-#include <vigra/multi_array.hxx> 
-#include <vigra/tinyvector.hxx> 
-#include <vigra/multi_gridgraph.hxx> 
-#include <vigra/multi_convolution.hxx>
+#include "multi_array.hxx"
+#include "tinyvector.hxx"
+#include "multi_gridgraph.hxx"
+#include "multi_convolution.hxx"
 
 
 namespace vigra{
