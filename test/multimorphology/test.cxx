@@ -177,40 +177,75 @@ struct MultiMorphologyTest
         IntVolume res(vol.shape()), res2(vol.shape());
         int f = NumericTraits<int>::one();
         
-        static const int desired[] = {  0, 0, 0, 0, 0, 
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,
-
-                                        0, 0, 0, 0, 0, 
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,
-
-                                        0, 0, 0, 0, 0, 
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, f, 0, 0,  
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,
-
-                                        0, 0, 0, 0, 0, 
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,
-
-                                        0, 0, 0, 0, 0, 
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0,  
-                                        0, 0, 0, 0, 0};
+        static const int desiredErosion[] = {  0, 0, 0, 0, 0, 
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,
+                                               
+                                               0, 0, 0, 0, 0, 
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,
+                                               
+                                               0, 0, 0, 0, 0, 
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, f, 0, 0,  
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,
+                                               
+                                               0, 0, 0, 0, 0, 
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,
+                                               
+                                               0, 0, 0, 0, 0, 
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0,  
+                                               0, 0, 0, 0, 0};
 
         multiBinaryErosion(vol, res, 1);
-        shouldEqualSequence(res.begin(), res.end(), desired);
+        shouldEqualSequence(res.begin(), res.end(), desiredErosion);
 
-        multiBinaryDilation(res, res2, 1.8);
+        static const int desiredDilation[] = {  0, 0, 0, 0, 0, 
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, 0, 0, 0,
+                                                
+                                                0, 0, 0, 0, 0, 
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, f, 0, 0,  
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, 0, 0, 0,
+                                                
+                                                0, 0, 0, 0, 0, 
+                                                0, 0, f, 0, 0,  
+                                                0, f, f, f, 0,  
+                                                0, 0, f, 0, 0,  
+                                                0, 0, 0, 0, 0,
+                                                
+                                                0, 0, 0, 0, 0, 
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, f, 0, 0,  
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, 0, 0, 0,
+                                                
+                                                0, 0, 0, 0, 0, 
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, 0, 0, 0,  
+                                                0, 0, 0, 0, 0};
+
+        IntVolume v2(res);
+        
+        multiBinaryDilation(v2, res, 1);
+        shouldEqualSequence(res.begin(), res.end(), desiredDilation);
+
+        multiBinaryDilation(v2, res2, 1.8);
         shouldEqualSequence(res2.begin(), res2.end(), vol.begin());
     }
     
