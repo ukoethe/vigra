@@ -1963,59 +1963,6 @@ public:
         t = TOCS;
         std::cerr << "    chunked iterator create and init: " << t << "\n";
         
-        {
-            Shape3 start(63, 63, 63), stop(66, 66, 66);
-            typename Array::SubarrayType sub(stop - start);
-            v.copySubarray(Shape3(63, 63, 63), sub, true);
-            for(auto i = sub.begin(), end = sub.end(); i != end; ++i)
-            {
-                std::cerr << (UInt64)*i << " ";
-                if(i.point()[0] == 2)
-                    std::cerr << "\n";
-            }
-            std::cerr << "\n";
-            
-            typename Array::ViewType sub2(stop - start);
-            v.viewSubarray(start, sub2);
-            MultiCoordinateIterator<3> c(stop - start),
-                                       cend(c.getEndIterator());
-            for(; c != cend; ++c)
-            {
-                std::cerr << (UInt64)sub2[c] << " ";
-                if(c.point()[0] == 2)
-                    std::cerr << "\n";
-            }
-            std::cerr << "\n";
-            
-            MultiArrayView<2, T, ChunkedArrayTag> sub3(sub2.bindAt(1, 1));
-            MultiCoordinateIterator<2> cc(sub3.shape_),
-                                       ccend(cc.getEndIterator());
-            for(; cc != ccend; ++cc)
-            {
-                std::cerr << (UInt64)sub3[cc] << " ";
-                if(cc.point()[0] == 2)
-                    std::cerr << "\n";
-            }
-            std::cerr << "\n";
-            
-            for(auto i = sub3.begin(), end = sub3.end(); i != end; ++i)
-            {
-                std::cerr << (UInt64)*i << " ";
-                if(i.point()[0] == 2)
-                    std::cerr << "\n";
-            }
-            std::cerr << "\n";
-            
-            MultiArrayView<2, T, ChunkedArrayTag> 
-                sub4(sub3.subarray(Shape2(1,1), Shape2(3,3)));
-            for(auto i = sub4.begin(), end = sub4.end(); i != end; ++i)
-            {
-                std::cerr << (UInt64)*i << " ";
-                if(i.point()[0] == 1)
-                    std::cerr << "\n";
-            }
-        }
-
         // bi = IteratorType(P1(v, P0(s)));
         bi = v.begin();
         count = 1;
@@ -2114,6 +2061,112 @@ public:
         testSpeedImpl(v);
     }
 
+    template <class Array>
+    void testSubarraySpeedImpl(Array & v)
+    {
+        using namespace vigra::multi_math;
+        using namespace vigra::functor;
+
+        std::string t;
+        T count = 1;
+        USETICTOC;
+
+        typename Array::iterator bi  = v.begin(),
+                                 end = v.end();
+
+        count = 1;
+        int start = 0;
+        // int stop = size;
+        TIC;
+        for(bi.setDim(2,start); bi.coord(2) < s[2]; bi.incDim(2))
+            for(bi.setDim(1,start); bi.coord(1) < s[1]; bi.incDim(1))
+                for(bi.setDim(0,start); bi.coord(0) < s[0]; bi.incDim(0), ++count)
+                {
+                    bi.template get<1>() = count;
+                }
+        t = TOCS;
+        std::cerr << "    chunked iterator create and init: " << t << "\n";
+        
+        // {
+            // Shape3 start(63, 63, 63), stop(66, 66, 66);
+            // typename Array::SubarrayType sub(stop - start);
+            // v.copySubarray(Shape3(63, 63, 63), sub, true);
+            // for(auto i = sub.begin(), end = sub.end(); i != end; ++i)
+            // {
+                // std::cerr << (UInt64)*i << " ";
+                // if(i.point()[0] == 2)
+                    // std::cerr << "\n";
+            // }
+            // std::cerr << "\n";
+            
+            // typename Array::ViewType sub2(stop - start);
+            // v.viewSubarray(start, sub2);
+            // MultiCoordinateIterator<3> c(stop - start),
+                                       // cend(c.getEndIterator());
+            // for(; c != cend; ++c)
+            // {
+                // std::cerr << (UInt64)sub2[c] << " ";
+                // if(c.point()[0] == 2)
+                    // std::cerr << "\n";
+            // }
+            // std::cerr << "\n";
+            
+            // MultiArrayView<2, T, ChunkedArrayTag> sub3(sub2.bindAt(1, 1));
+            // MultiCoordinateIterator<2> cc(sub3.shape_),
+                                       // ccend(cc.getEndIterator());
+            // for(; cc != ccend; ++cc)
+            // {
+                // std::cerr << (UInt64)sub3[cc] << " ";
+                // if(cc.point()[0] == 2)
+                    // std::cerr << "\n";
+            // }
+            // std::cerr << "\n";
+            
+            // for(auto i = sub3.begin(), end = sub3.end(); i != end; ++i)
+            // {
+                // std::cerr << (UInt64)*i << " ";
+                // if(i.point()[0] == 2)
+                    // std::cerr << "\n";
+            // }
+            // std::cerr << "\n";
+            
+            // MultiArrayView<2, T, ChunkedArrayTag> 
+                // sub4(sub3.subarray(Shape2(1,1), Shape2(3,3)));
+            // for(auto i = sub4.begin(), end = sub4.end(); i != end; ++i)
+            // {
+                // std::cerr << (UInt64)*i << " ";
+                // if(i.point()[0] == 1)
+                    // std::cerr << "\n";
+            // }
+        // }
+
+        MultiArrayView<3, T, ChunkedArrayTag> sub4(v.shape());
+        v.viewSubarray(Shape3(), sub4);
+        // ChunkedSubarrayCopy<3, T> sub4(v.shape());
+        // v.copySubarray(Shape3(), sub4);
+        count = 1;
+        MultiCoordinateIterator<3> c(v.shape()), cend = c.getEndIterator();
+        TIC;
+        for(; c != cend; ++c, ++count)
+        {
+            if(sub4[*c] != count)
+            {
+                std::cerr << c << "\n";
+                shouldEqual(sub4[*c], count);
+            }
+        }
+        t = TOCS;
+        std::cerr << "    chunked subarray read: " << t << "\n";
+        
+    }
+    
+    void testSubarraySpeedAllocArray()
+    {
+        std::cerr << "    backend: alloc\n";
+        AllocArrayType v(s);
+        testSubarraySpeedImpl(v);
+    }
+    
     static void testMultiThreadedRun(BaseArrayType * v, int startIndex, int d, int * go)
     {
         while(*go == 0)
@@ -2757,9 +2810,9 @@ struct MultiArrayChunkedTestTestSuite
         // add( testCase( &MultiArrayChunkedTest<float>::testSpeedAllocArray ) );
         // add( testCase( &MultiArrayChunkedTest<double>::testSpeedAllocArray ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileAllCached ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileAllCached ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileAllCached ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileAllCached ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileAllCached ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileAllCached ) );
 
         // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedTmpFileSliceCached ) );
         // add( testCase( &MultiArrayChunkedTest<float>::testSpeedTmpFileSliceCached ) );
@@ -2770,9 +2823,9 @@ struct MultiArrayChunkedTestTestSuite
         // add( testCase( &MultiArrayChunkedTest<double>::testSpeedTmpFileRowCached ) );
 
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayLZ4 ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayLZ4 ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayLZ4 ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayLZ4 ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayLZ4 ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testSpeedCompressedArrayLZ4 ) );
 
         // add( testCase( &MultiArrayChunkedTest<UInt8>::testSpeedCompressedArrayZlib ) );
         // add( testCase( &MultiArrayChunkedTest<float>::testSpeedCompressedArrayZlib ) );
@@ -2786,6 +2839,10 @@ struct MultiArrayChunkedTestTestSuite
         // add( testCase( &MultiArrayChunkedTest<float>::testSpeedHDF5Array ) );
         // add( testCase( &MultiArrayChunkedTest<double>::testSpeedHDF5Array ) );
         
+        add( testCase( &MultiArrayChunkedTest<UInt8>::testSubarraySpeedAllocArray ) );
+        add( testCase( &MultiArrayChunkedTest<float>::testSubarraySpeedAllocArray ) );
+        add( testCase( &MultiArrayChunkedTest<double>::testSubarraySpeedAllocArray ) );
+        
         // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreaded ) );
         // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreaded ) );
         // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreaded ) );
@@ -2794,9 +2851,9 @@ struct MultiArrayChunkedTestTestSuite
         // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedAlloc ) );
         // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedAlloc ) );
 
-        add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedCompressed ) );
-        add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedCompressed ) );
-        add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedCompressed ) );
+        // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedCompressed ) );
+        // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedCompressed ) );
+        // add( testCase( &MultiArrayChunkedTest<double>::testMultiThreadedCompressed ) );
 
         // add( testCase( &MultiArrayChunkedTest<UInt8>::testMultiThreadedHDF5 ) );
         // add( testCase( &MultiArrayChunkedTest<float>::testMultiThreadedHDF5 ) );

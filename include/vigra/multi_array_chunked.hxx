@@ -141,7 +141,14 @@
 # include <sys/mman.h>
 #endif
 
-double timeit = 0;
+// Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
+#ifdef VIGRA_CHECK_BOUNDS
+#define VIGRA_ASSERT_INSIDE(diff) \
+  vigra_precondition(this->isInside(diff), "Index out of bounds")
+#else
+#define VIGRA_ASSERT_INSIDE(diff)
+#endif
+
 
 namespace vigra {
 
@@ -472,11 +479,21 @@ class MultiArrayView<N, T, ChunkedArrayTag>
 : public ChunkedArrayBase<N, T>
 {
   public:
-    typedef typename MultiArrayShape<N>::type shape_type;
-    typedef T* pointer;
-    typedef T& reference;
-    typedef StridedScanOrderIterator<N, ChunkedMemory<T>, T&, T*>   iterator;
-    typedef MultiArrayView<N, T, ChunkedArrayTag> ViewType;
+    enum ActualDimension { actual_dimension = (N==0) ? 1 : N };
+    typedef T value_type;   // FIXME: allow Multiband<T> ???
+    typedef value_type &reference;
+    typedef const value_type &const_reference;
+    typedef value_type *pointer;
+    typedef const value_type *const_pointer;
+    typedef typename MultiArrayShape<actual_dimension>::type difference_type;
+    typedef difference_type key_type;
+    typedef difference_type size_type;
+    typedef difference_type shape_type;
+    typedef MultiArrayIndex difference_type_1;
+    typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<T>, T&, T*> iterator;
+    typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<T>, T const &, T const *> const_iterator;
+    typedef MultiArrayView<N, T, ChunkedArrayTag> view_type;
+    typedef ChunkedArrayTag StrideTag;
     
     class Chunk
     {
@@ -505,10 +522,6 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         ChunkedArrayBase<N, T> * array_;
     };
     
-    MultiArrayView(shape_type const & shape)
-    : shape_(shape)
-    {}
-    
     virtual void unrefChunk(ChunkedHandle<N, T> *) {}
     
     virtual void unrefChunks(shape_type const &, shape_type const &) {}
@@ -534,8 +547,110 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         return chunk->pointer_ + offset;
     }
     
+    MultiArrayView(shape_type const & shape)
+    : shape_(shape)
+    {}
+    
+    MultiArrayView & operator=(MultiArrayView const & rhs)
+    {
+        // FIXME
+        if(this != &rhs)
+            assignImpl(rhs);
+        return *this;
+    }
+
+    #define VIGRA_CHUNKED_ARRAY_VIEW_ASSIGN(op) \
+    template<class U, class C1> \
+    MultiArrayView & operator op(MultiArrayView<N, U, C1> const & rhs) \
+    { \
+        vigra_precondition(this->shape() == rhs.shape(), \
+                           "MultiArrayView::operator" #op "(): shape mismatch."); \
+        iterator i = begin(), ie = end(); \
+        typename MultiArrayView<N, U, C1>::const_iterator j = rhs.begin(); \
+        for(; i != ie; ++i, ++j) \
+            *i op detail::RequiresExplicitCast<value_type>::cast(*j); \
+        return *this; \
+    } \
+     \
+    MultiArrayView & operator op(value_type const & v) \
+    { \
+        if(hasData()) \
+        { \
+            iterator i = begin(), ie = end(); \
+            for(; i != ie; ++i) \
+                *i op v; \
+        } \
+        return *this; \
+    }
+    
+    VIGRA_CHUNKED_ARRAY_VIEW_ASSIGN(=)
+    VIGRA_CHUNKED_ARRAY_VIEW_ASSIGN(+=)
+    VIGRA_CHUNKED_ARRAY_VIEW_ASSIGN(-=)
+    VIGRA_CHUNKED_ARRAY_VIEW_ASSIGN(*=)
+    VIGRA_CHUNKED_ARRAY_VIEW_ASSIGN(/=)
+    
+    #undef VIGRA_CHUNKED_ARRAY_VIEW_ASSIGN
+
+    // template<class Expression>
+    // MultiArrayView & operator=(multi_math::MultiMathOperand<Expression> const & rhs)
+    // {
+        // multi_math::math_detail::assign(*this, rhs);
+        // return *this;
+    // }
+
+        // /** Add-assignment of an array expression. Fails with
+            // <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         // */
+    // template<class Expression>
+    // MultiArrayView & operator+=(multi_math::MultiMathOperand<Expression> const & rhs)
+    // {
+        // multi_math::math_detail::plusAssign(*this, rhs);
+        // return *this;
+    // }
+
+        // /** Subtract-assignment of an array expression. Fails with
+            // <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         // */
+    // template<class Expression>
+    // MultiArrayView & operator-=(multi_math::MultiMathOperand<Expression> const & rhs)
+    // {
+        // multi_math::math_detail::minusAssign(*this, rhs);
+        // return *this;
+    // }
+
+        // /** Multiply-assignment of an array expression. Fails with
+            // <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         // */
+    // template<class Expression>
+    // MultiArrayView & operator*=(multi_math::MultiMathOperand<Expression> const & rhs)
+    // {
+        // multi_math::math_detail::multiplyAssign(*this, rhs);
+        // return *this;
+    // }
+
+        // /** Divide-assignment of an array expression. Fails with
+            // <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         // */
+    // template<class Expression>
+    // MultiArrayView & operator/=(multi_math::MultiMathOperand<Expression> const & rhs)
+    // {
+        // multi_math::math_detail::divideAssign(*this, rhs);
+        // return *this;
+    // }
+
     reference operator[](shape_type point)
     {
+        VIGRA_ASSERT_INSIDE(point);
+        point += offset_;
+        Chunk * chunk = chunks_.data() + 
+                        ChunkIndexing<N>::chunkOffset(point, bits_, chunks_.stride());
+        return *(chunk->pointer_ + 
+                 ChunkIndexing<N>::offsetInChunk(point, mask_, chunk->strides_));
+    }
+
+    const_reference operator[](shape_type point) const
+    {
+        VIGRA_ASSERT_INSIDE(point);
         point += offset_;
         Chunk * chunk = chunks_.data() + 
                         ChunkIndexing<N>::chunkOffset(point, bits_, chunks_.stride());
@@ -543,17 +658,178 @@ class MultiArrayView<N, T, ChunkedArrayTag>
                  ChunkIndexing<N>::offsetInChunk(point, mask_, chunk->strides_));
     }
     
-    MultiArrayView<N-1, T, ChunkedArrayTag> 
+    template <int M>
+    MultiArrayView <N-M, T, ChunkedArrayTag> operator[] (const TinyVector<MultiArrayIndex, M> &d) const
+    {
+        return bindInner(d);
+    }
+
+    reference operator[](difference_type_1 d)
+    {
+        difference_type coord(SkipInitialization);
+        detail::ScanOrderToCoordinate<actual_dimension>::exec(d, shape_, coord);
+        return operator[](coord);
+    }
+
+    const_reference operator[](difference_type_1 d) const
+    {
+        difference_type coord(SkipInitialization);
+        detail::ScanOrderToCoordinate<actual_dimension>::exec(d, shape_, coord);
+        return operator[](coord);
+    }
+
+    difference_type scanOrderIndexToCoordinate(difference_type_1 d) const
+    {
+        difference_type coord(SkipInitialization);
+        detail::ScanOrderToCoordinate<actual_dimension>::exec(d, shape_, coord);
+        return coord;
+    }
+
+        /** convert coordinate to scan-order index.
+         */
+    difference_type_1 coordinateToScanOrderIndex(const difference_type &d) const
+    {
+        return detail::CoordinateToScanOrder<actual_dimension>::exec(shape_, d);
+    }
+
+        // /** 1D array access. Use only if N == 1.
+         // */
+    // reference operator() (difference_type_1 x)
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x));
+        // return m_ptr [detail::CoordinatesToOffest<StrideTag>::exec(m_stride, x)];
+    // }
+
+        // /** 2D array access. Use only if N == 2.
+         // */
+    // reference operator() (difference_type_1 x, difference_type_1 y)
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x, y));
+        // return m_ptr [detail::CoordinatesToOffest<StrideTag>::exec(m_stride, x, y)];
+    // }
+
+        // /** 3D array access. Use only if N == 3.
+         // */
+    // reference operator() (difference_type_1 x, difference_type_1 y, difference_type_1 z)
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x, y, z));
+        // return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z];
+    // }
+
+        // /** 4D array access. Use only if N == 4.
+         // */
+    // reference operator() (difference_type_1 x, difference_type_1 y,
+                          // difference_type_1 z, difference_type_1 u)
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x, y, z, u));
+        // return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u];
+    // }
+
+        // /** 5D array access. Use only if N == 5.
+         // */
+    // reference operator() (difference_type_1 x, difference_type_1 y, difference_type_1 z,
+                          // difference_type_1 u, difference_type_1 v)
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x, y,z, u,v));
+        // return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u + m_stride[4]*v];
+    // }
+
+        // /** 1D const array access. Use only if N == 1.
+         // */
+    // const_reference operator() (difference_type_1 x) const
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x));
+        // return m_ptr [detail::CoordinatesToOffest<StrideTag>::exec(m_stride, x)];
+    // }
+
+        // /** 2D const array access. Use only if N == 2.
+         // */
+    // const_reference operator() (difference_type_1 x, difference_type_1 y) const
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x, y));
+        // return m_ptr [detail::CoordinatesToOffest<StrideTag>::exec(m_stride, x, y)];
+    // }
+
+        // /** 3D const array access. Use only if N == 3.
+         // */
+    // const_reference operator() (difference_type_1 x, difference_type_1 y, difference_type_1 z) const
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x,y,z));
+        // return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z];
+    // }
+
+        // /** 4D const array access. Use only if N == 4.
+         // */
+    // const_reference operator() (difference_type_1 x, difference_type_1 y,
+                                // difference_type_1 z, difference_type_1 u) const
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x,y,z,u));
+        // return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u];
+    // }
+
+        // /** 5D const array access. Use only if N == 5.
+         // */
+    // const_reference operator() (difference_type_1 x, difference_type_1 y, difference_type_1 z,
+                                // difference_type_1 u, difference_type_1 v) const
+    // {
+        // VIGRA_ASSERT_INSIDE(difference_type(x,y,z,u,v));
+        // return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u + m_stride[4]*v];
+    // }
+
+    template <class U>
+    MultiArrayView & init(const U & init)
+    {
+        return operator=(init);
+    }
+
+
+    void copy(const MultiArrayView & rhs)
+    {
+        operator=(rhs);
+    }
+
+    template <class U, class CN>
+    void copy(const MultiArrayView <N, U, CN>& rhs)
+    {
+        operator=(rhs);
+    }
+
+    template <class T2, class C2>
+    void swapData(MultiArrayView <N, T2, C2> rhs)
+    {
+        if(this == &rhs)
+            return;
+        vigra_precondition(this->shape() == rhs.shape(),
+                           "MultiArrayView::swapData(): shape mismatch.");
+        iterator i = begin(), ie = end();
+        typename MultiArrayView<N, T2, C2>::iterator j = rhs.begin();
+        for(; i != ie; ++i, ++j)
+            std::swap(*i, *j);
+    }
+    
+    bool isUnstrided(unsigned int dimension = N-1) const
+    {
+        if(chunks_.size() > 1)
+            return false;
+        difference_type s = vigra::detail::defaultStride<actual_dimension>(shape());
+        for(unsigned int k = 0; k <= dimension; ++k)
+            if(chunks_.data()->strides_[k] != s[k])
+                return false;
+        return true;
+    }
+    
+    MultiArrayView<N-1, value_type, ChunkedArrayTag> 
     bindAt(MultiArrayIndex m, MultiArrayIndex d) const
     {
         typedef typename MultiArrayShape<N-1>::type SM;
 
-        MultiArrayView<N-1, T, ChunkedArrayTag> res(shape_.dropIndex(m));
+        MultiArrayView<N-1, value_type, ChunkedArrayTag> res(shape_.dropIndex(m));
         res.offset_ = offset_.dropIndex(m);
         res.bits_   = bits_.dropIndex(m);
         res.mask_   = mask_.dropIndex(m);
         res.chunk_shape_   = chunk_shape_.dropIndex(m);
         res.chunks_.reshape(chunks_.shape().dropIndex(m));
+        res.unref_ = unref_;
         
         typedef std::size_t UI;
         UI start = offset_[m] + d;
@@ -572,10 +848,77 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         return res;
     }
     
+    template <unsigned int M>
+    MultiArrayView <N-1, value_type, ChunkedArrayTag>
+    bind (difference_type_1 d) const
+    {
+        return bindAt(M, d);
+    }
+
+    MultiArrayView <N-1, value_type, ChunkedArrayTag>
+    bindOuter (difference_type_1 d) const
+    {
+        return bindAt(N-1, d);
+    }
+
+    template <int M, class Index>
+    MultiArrayView <N-M, value_type, ChunkedArrayTag> 
+    bindOuter(const TinyVector <Index, M> &d) const
+    {
+        return bindAt(N-1, d[M-1]).bindOuter(d.dropIndex(M-1));
+    }
+
+    template <class Index>
+    MultiArrayView <N-1, value_type, ChunkedArrayTag> 
+    bindOuter(const TinyVector <Index, 1> &d) const
+    {
+        return bindAt(N-1, d[0]);
+    }
+
+    template <int M, class Index>
+    MultiArrayView <N-M, value_type, ChunkedArrayTag> 
+    bindInner(const TinyVector <Index, M> &d) const
+    {
+        return bindAt(0, d[0]).bindInner(d.dropIndex(0));
+    }
+
+    template <class Index>
+    MultiArrayView <N-1, value_type, ChunkedArrayTag> 
+    bindInner(const TinyVector <Index, 1> &d) const
+    {
+        return bindAt(0, d[0]);
+    }
+    
+    // MultiArrayView <N, typename ExpandElementResult<T>::type, StridedArrayTag> 
+    // bindElementChannel(difference_type_1 i) const
+    // {
+        // vigra_precondition(0 <= i && i < ExpandElementResult<T>::size,
+              // "MultiArrayView::bindElementChannel(i): 'i' out of range.");
+        // return expandElements(0).bindInner(i);
+    // }
+
+    // MultiArrayView <N+1, typename ExpandElementResult<T>::type, StridedArrayTag> 
+    // expandElements(difference_type_1 d) const;
+    
+    // MultiArrayView <N+1, T, StrideTag>
+    // insertSingletonDimension (difference_type_1 i) const;
+    
+    // MultiArrayView<N, Multiband<value_type>, StrideTag> multiband() const
+    // {
+        // return MultiArrayView<N, Multiband<value_type>, StrideTag>(*this);
+    // }
+
+    // MultiArrayView<1, T, StridedArrayTag> diagonal() const
+    // {
+        // return MultiArrayView<1, T, StridedArrayTag>(Shape1(vigra::min(m_shape)), 
+                                                     // Shape1(vigra::sum(m_stride)), m_ptr);
+    // }
+
+    
     MultiArrayView<N, T, ChunkedArrayTag> 
     subarray(shape_type start, shape_type stop)
     {
-        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop <= shape_).all(),
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape_),
                            "MultiArrayView<N-1, T, ChunkedArrayTag>::subarray(): subarray out of bounds.");
         start += offset_;
         stop  += offset_;
@@ -593,22 +936,256 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         view.unref_ = unref_;
         return view;
     }
+
+        // /** apply an additional striding to the image, thereby reducing
+            // the shape of the array.
+            // for example, multiplying the stride of dimension one by three
+            // turns an appropriately laid out (interleaved) rgb image into
+            // a single band image.
+        // */
+    // MultiArrayView <N, T, StridedArrayTag>
+    // stridearray (const difference_type &s) const
+    // {
+        // difference_type shape = m_shape;
+        // for (unsigned int i = 0; i < actual_dimension; ++i)
+            // shape [i] /= s [i];
+        // return MultiArrayView <N, T, StridedArrayTag>(shape, m_stride * s, m_ptr);
+    // }
+
+    // MultiArrayView <N, T, StridedArrayTag>
+    // transpose () const
+    // {
+        // difference_type shape(m_shape.begin(), difference_type::ReverseCopy),
+                        // stride(m_stride.begin(), difference_type::ReverseCopy);
+        // return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
+    // }
+
+    // MultiArrayView <N, T, StridedArrayTag>
+    // transpose(const difference_type &permutation) const
+    // {
+        // return permuteDimensions(permutation);
+    // }
+
+    // MultiArrayView <N, T, StridedArrayTag>
+    // permuteDimensions (const difference_type &s) const;
+
+        // /** Permute the dimensions of the array so that the strides are in ascending order.
+            // Determines the appropriate permutation and then calls permuteDimensions().
+        // */
+    // MultiArrayView <N, T, StridedArrayTag>
+    // permuteStridesAscending() const;
     
+        // /** Permute the dimensions of the array so that the strides are in descending order.
+            // Determines the appropriate permutation and then calls permuteDimensions().
+        // */
+    // MultiArrayView <N, T, StridedArrayTag>
+    // permuteStridesDescending() const;
+    
+        // /** Compute the ordering of the strides in this array.
+            // The result is describes the current permutation of the axes relative 
+            // to the standard ascending stride order.
+        // */
+    // difference_type strideOrdering() const
+    // {
+        // return strideOrdering(m_stride);
+    // }
+    
+        // /** Compute the ordering of the given strides.
+            // The result is describes the current permutation of the axes relative 
+            // to the standard ascending stride order.
+        // */
+    // static difference_type strideOrdering(difference_type strides);
+
+    difference_type_1 elementCount () const
+    {
+        return prod(shape_);
+    }
+
+    difference_type_1 size () const
+    {
+        return elementCount();
+    }
+
+    const difference_type & shape () const
+    {
+        return shape_;
+    }
+
+    difference_type_1 size (difference_type_1 n) const
+    {
+        return shape_ [n];
+    }
+
+    difference_type_1 shape (difference_type_1 n) const
+    {
+        return shape_ [n];
+    }
+
+    difference_type_1 width() const
+    {
+        return shape_ [0];
+    }
+
+    difference_type_1 height() const
+    {
+        return shape_ [1];
+    }
+
+    // const difference_type & stride () const
+    // {
+        // return m_stride;
+    // }
+
+    // difference_type_1 stride (int n) const
+    // {
+        // return m_stride [n];
+    // }
+
+    template <class U, class C1>
+    bool operator==(MultiArrayView<N, U, C1> const & rhs) const
+    {
+        if(this->shape() != rhs.shape())
+            return false;
+        const_iterator i = begin(), ie = end();
+        typename MultiArrayView<N, U, C1>::const_iterator j = rhs.begin();
+        for(; i != ie; ++i, ++j)
+            if(*i != *j)
+                return false;
+        return true;
+    }
+
+    template <class U, class C1>
+    bool operator!=(MultiArrayView<N, U, C1> const & rhs) const
+    {
+        return !operator==(rhs);
+    }
+
     bool isInside(shape_type const & p) const
     {
-        return (shape_type() <= p).all() && (p < shape_).all();
+        return allLessEqual(shape_type(), p) && allLess(p, shape_);
     }
-    
+
+    // bool all() const
+    // {
+        // bool res = true;
+        // detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     // res, 
+                                     // detail::AllTrueReduceFunctor(),
+                                     // MetaInt<actual_dimension-1>());
+        // return res;
+    // }
+
+    // bool any() const
+    // {
+        // bool res = false;
+        // detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     // res, 
+                                     // detail::AnyTrueReduceFunctor(),
+                                     // MetaInt<actual_dimension-1>());
+        // return res;
+    // }
+
+    // void minmax(T * minimum, T * maximum) const
+    // {
+        // std::pair<T, T> res(NumericTraits<T>::max(), NumericTraits<T>::min());
+        // detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     // res, 
+                                     // detail::MinmaxReduceFunctor(),
+                                     // MetaInt<actual_dimension-1>());
+        // *minimum = res.first;
+        // *maximum = res.second;
+    // }
+
+    // template <class U>
+    // void meanVariance(U * mean, U * variance) const
+    // {
+        // typedef typename NumericTraits<U>::RealPromote R;
+        // R zero = R();
+        // triple<double, R, R> res(0.0, zero, zero);
+        // detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     // res, 
+                                     // detail::MeanVarianceReduceFunctor(),
+                                     // MetaInt<actual_dimension-1>());
+        // *mean     = res.second;
+        // *variance = res.third / res.first;
+    // }
+
+    // template <class U>
+    // U sum() const
+    // {
+        // U res = NumericTraits<U>::zero();
+        // detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     // res, 
+                                     // detail::SumReduceFunctor(),
+                                     // MetaInt<actual_dimension-1>());
+        // return res;
+    // }
+
+    // template <class U, class S>
+    // void sum(MultiArrayView<N, U, S> sums) const
+    // {
+        // transformMultiArray(srcMultiArrayRange(*this),
+                            // destMultiArrayRange(sums),
+                            // FindSum<U>());
+    // }
+
+    // template <class U>
+    // U product() const
+    // {
+        // U res = NumericTraits<U>::one();
+        // detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     // res, 
+                                     // detail::ProdReduceFunctor(),
+                                     // MetaInt<actual_dimension-1>());
+        // return res;
+    // }
+
+    // typename NormTraits<MultiArrayView>::SquaredNormType 
+    // squaredNorm() const
+    // {
+        // typedef typename NormTraits<MultiArrayView>::SquaredNormType SquaredNormType;
+        // SquaredNormType res = NumericTraits<SquaredNormType>::zero();
+        // detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     // res, 
+                                     // detail::SquaredL2NormReduceFunctor(),
+                                     // MetaInt<actual_dimension-1>());
+        // return res;
+    // }
+
+    // typename NormTraits<MultiArrayView>::NormType 
+    // norm(int type = 2, bool useSquaredNorm = true) const;
+
+    bool hasData () const
+    {
+        return chunks_.hasData();
+    }
+
     iterator begin()
     {
         return createCoupledIterator(*this);
     }
-    
+
+    const_iterator begin() const
+    {
+        return createCoupledIterator(*this);
+    }
+
     iterator end()
     {
         return begin().getEndIterator();
     }
 
+    const_iterator end() const
+    {
+        return begin().getEndIterator();
+    }
+
+
+    view_type view ()
+    {
+        return *this;
+    }
+    
     MultiArray<N, Chunk> chunks_;
     shape_type shape_, offset_, bits_, mask_, chunk_shape_;
     std::shared_ptr<UnrefProxy> unref_;
@@ -731,7 +1308,7 @@ class ChunkedArray
     typedef StridedScanOrderIterator<N, ChunkedMemory<T>, T&, T*>   iterator;
     typedef ChunkedSubarrayCopy<N, T>                                  SubarrayType;
     typedef ChunkBase<N, T> Chunk;
-    typedef MultiArrayView<N, T, ChunkedArrayTag>                   ViewType;
+    typedef MultiArrayView<N, T, ChunkedArrayTag>                   view_type;
         
     ChunkedArray(int cache_max = 0, 
                  shape_type const & chunk_shape = ChunkShape<N, T>::defaultShape())
@@ -889,7 +1466,7 @@ class ChunkedArray
     
     virtual void refChunks(shape_type const & start, shape_type const & stop)
     {
-        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop < shape()).all(),
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
                            "ChunkedArray::copySubarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
@@ -924,8 +1501,8 @@ class ChunkedArray
     
     virtual void unrefChunks(shape_type const & start, shape_type const & stop)
     {
-        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop < shape()).all(),
-                           "ChunkedArray::copySubarray(): subarray out of bounds.");
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
+                           "ChunkedArray::unrefChunks(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
         ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
@@ -965,11 +1542,11 @@ class ChunkedArray
         }
     }
     
-    void viewSubarray(shape_type const & start, ViewType & view)
+    void viewSubarray(shape_type const & start, view_type & view)
     {
         shape_type stop = start + view.shape_;
         
-        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop <= shape()).all(),
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
                            "ChunkedArray::viewSubarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
@@ -983,7 +1560,7 @@ class ChunkedArray
         view.mask_   = mask_;
         view.chunk_shape_   = chunk_shape_;
         
-        typedef typename ViewType::UnrefProxy UP;
+        typedef typename view_type::UnrefProxy UP;
         view.unref_ = std::shared_ptr<UP>(new UP(start, stop, this));
         
         threading::lock_guard<threading::mutex> guard(cache_lock_);
@@ -1009,7 +1586,7 @@ class ChunkedArray
                     ++cache_size_;
                 }
             }
-            typename ViewType::Chunk * vc = &view.chunks_[*i - chunkStart];
+            typename view_type::Chunk * vc = &view.chunks_[*i - chunkStart];
             vc->pointer_ = p;
             vc->strides_ = chunk->strides_;
         }
@@ -1022,7 +1599,7 @@ class ChunkedArray
     {
         shape_type stop   = start + subarray.shape();
         
-        vigra_precondition((shape_type() <= start).all() && (start < stop).all() && (stop <= shape()).all(),
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
                            "ChunkedArray::copySubarray(): subarray out of bounds.");
                            
         iterator i(begin().restrictToSubarray(start, stop)),
@@ -2058,5 +2635,7 @@ public:
 };
 
 } // namespace vigra
+
+#undef VIGRA_ASSERT_INSIDE
 
 #endif /* VIGRA_MULTI_ARRAY_CHUNKED_HXX */
