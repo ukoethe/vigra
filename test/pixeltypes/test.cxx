@@ -206,22 +206,18 @@ struct TinyVectorTest
         should(iv3 != fv3);
         should(fv3 != bv3);
 
-        should(lexicographicLessThan(bv0, bv1));
+        should(bv0 < bv1);
 
-        should((bv0 < bv1).all());
-        should(!(bv1 < bv3).all());
-        should((bv1 < bv3).any());
-        should((bv1 > bv0).all());
-        should(!(bv3 > bv1).all());
-        should((bv3 > bv1).any());
-        should((bv0 <= bv1).all());
-        should((bv1 <= bv3).all());
-        should(!(bv3 <= bv1).all());
-        should((bv3 <= bv1).any());
-        should((bv1 >= bv0).all());
-        should((bv3 >= bv1).all());
-        should(!(bv1 >= bv3).all());
-        should((bv1 >= bv3).any());
+        should(allLess(bv0, bv1));
+        should(!allLess(bv1, bv3));
+        should(allGreater(bv1, bv0));
+        should(!allGreater(bv3, bv1));
+        should(allLessEqual(bv0, bv1));
+        should(allLessEqual(bv1, bv3));
+        should(!allLessEqual(bv3, bv1));
+        should(allGreaterEqual(bv1, bv0));
+        should(allGreaterEqual(bv3, bv1));
+        should(!allGreaterEqual(bv1, bv3));
 
         should(closeAtTolerance(fv3, fv3));
         
