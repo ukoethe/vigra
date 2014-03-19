@@ -619,13 +619,18 @@ class HDF5File
 
         /** \brief Default constructor.
 
-        A file can later be opened via the open() function.
-        
-        If \a track_creation_times is non-zero, time tagging of datasets will be enabled (it is disabled
-        by default).
+        A file can later be opened via the open() function. Time tagging of datasets is disabled.
         */
-    HDF5File(int track_creation_times = 0)
-    : track_time(track_creation_times)
+    HDF5File()
+    : track_time(0)
+    {}
+
+        /** \brief Construct with time tagging of datasets enabled.
+
+        If \a track_creation_times is 'true', time tagging of datasets will be enabled.
+        */
+    explicit HDF5File(bool track_creation_times)
+    : track_time(track_creation_times ? 1 : 0)
     {}
 
         /** \brief Open or create an HDF5File object.
@@ -636,8 +641,8 @@ class HDF5File
         Note that the HDF5File class is not copyable (the copy constructor is 
         private to enforce this).
         */
-    HDF5File(std::string filename, OpenMode mode, int track_creation_times = 0)
-        : track_time(track_creation_times)
+    HDF5File(std::string filename, OpenMode mode, bool track_creation_times = false)
+        : track_time(track_creation_times ? 1 : 0)
     {
         open(filename, mode);
     }
@@ -645,30 +650,36 @@ class HDF5File
         /** \brief Initialize an HDF5File object from HDF5 file handle
 
         Initializes an HDF5File object corresponding to the HDF5 file
-        opened elsewhere specified with the given file id.
-        Current group is set to the specified pathname.
+        opened elsewhere. Usually, \a fileHandle should be constructed
+        with a <tt>NULL</tt> destructor so that ownership is not transferred
+        to the new HDF5File object. If \a fileHandle contains a destructor
+        pointer, ownership will be transferred. (FIXME: This will be improved
+        by the introduction of shared handles in the near future).
+        
+        The current group is set to the specified \a pathname.
 
         \warning In case the underlying HDF5 library used by Vigra is not
         exactly the same library used to open the file with the given id,
         this method will lead to crashes.
         */
-    HDF5File(hid_t inf_id, const std::string & pathname = "")
+    explicit HDF5File(HDF5Handle & fileHandle, const std::string & pathname = "")
     {
-        // get group handle for given pathname
-        fileHandle_ = HDF5Handle(inf_id, NULL,
-                "HDF5File(hid_t, pathname): Could not initialize HDF5Handle");
+        fileHandle_ = fileHandle;
+
+        // get group handle for given pathname        
         // calling openCreateGroup_ without setting a valid cGroupHandle does
         // not work. Starting from root() is a safe bet.
         root();
         cGroupHandle_ = HDF5Handle(openCreateGroup_(pathname), &H5Gclose,
-                "HDF5File(hid_t, pathname): Failed to open group");
+                "HDF5File(fileHandle, pathname): Failed to open group");
 
         // extract track_time attribute
         hbool_t track_times_tmp;
-        hid_t plist_id = H5Fget_create_plist(inf_id);
+        HDF5Handle plist_id(H5Fget_create_plist(fileHandle_), &H5Pclose,
+                "HDF5File(fileHandle, pathname): Failed to open file creation property list");
         herr_t status = H5Pget_obj_track_times(plist_id, &track_times_tmp );
         vigra_postcondition(status >= 0,
-            "HDF5File(hid_t, pathname): cannot access track time attribute");
+            "HDF5File(fileHandle, pathname): cannot access track time attribute");
         track_time = track_times_tmp;
     }
 

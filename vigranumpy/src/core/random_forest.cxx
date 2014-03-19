@@ -333,6 +333,14 @@ void defineRandomForest()
     class_<RandomForest<LabelType> > rfclass_new("RandomForest",python::no_init);
 
     rfclass_new
+        .def("__init__",python::make_constructor(&pythonImportRandomForestFromHDF5id<LabelType>,
+                                                 boost::python::default_call_policies(),
+                                                 ( arg("file_id"),
+                                                   arg("pathInFile")="")),
+             "Load from an open HDF5 file id (note that the keyword 'file_id' must\n"
+             "be specified explicitly, otherwise the argument will be interpreted as\n"
+             "the number of trees to be used)::\n\n"
+             "  RandomForest(file_id=id, pathInFile='/path/to/dataset')\n\n")
         .def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<LabelType,float>),
                                                  boost::python::default_call_policies(),
                                                  ( arg("treeCount")=255,
@@ -363,12 +371,6 @@ void defineRandomForest()
                                                    arg("pathInFile")="")),
              "Load from HDF5 file::\n\n"
              "  RandomForest(filename, pathInFile)\n\n")
-        .def("__init__",python::make_constructor(&pythonImportRandomForestFromHDF5id<LabelType>,
-                                                 boost::python::default_call_policies(),
-                                                 ( arg("file_id"),
-                                                   arg("pathInFile")="")),
-             "Load from an open HDF5 file id::\n\n"
-             "  RandomForest(file_id, pathInFile)\n\n")
 #endif // HasHDF5
         .def("featureCount",
             &RandomForest<LabelType>::column_count,
