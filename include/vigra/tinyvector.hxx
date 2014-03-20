@@ -882,11 +882,25 @@ class TinyVectorBase
 
     const_pointer data() const { return data_; }
     
+        /** \brief Factory function for a unit vector for dimension \a k.
+        */
     static TinyVector<VALUETYPE, SIZE> unitVector(int k)
     {
         VIGRA_ASSERT_INSIDE(k);
         TinyVector<VALUETYPE, SIZE> ret;
         ret[k] = 1;
+        return ret;
+    }
+    
+        /** \brief Factory function for a linear sequence.
+        
+            The result will be initialized as <tt>res[k] = start + k*step</tt>.
+        */
+    static TinyVector<VALUETYPE, SIZE> linearSequence(VALUETYPE start=VALUETYPE(), VALUETYPE step=VALUETYPE(1))
+    {
+        TinyVector<VALUETYPE, SIZE> ret(SkipInitialization);
+        for(int k=0; k<SIZE; ++k, start+=step)
+            ret[k] = start;
         return ret;
     }
 
@@ -2100,6 +2114,24 @@ TinyVector<V, SIZE>
 reverse(TinyVector<V, SIZE> const & t)
 {
     return TinyVector<V, SIZE>(t.begin(), TinyVector<V, SIZE>::ReverseCopy);
+}
+
+    /** \brief transposed copy
+    
+        Elements are arranged such that <tt>res[k] = t[permutation[k]]</tt>.
+    */
+template <class V, int SIZE, class T>
+inline
+TinyVector<V, SIZE>
+transpose(TinyVector<V, SIZE> const & t, TinyVector<T, SIZE> const & permutation)
+{
+    TinyVector<V, SIZE> res(SkipInitialization);
+    for(int k=0; k<SIZE; ++k)
+    {
+        VIGRA_ASSERT_INSIDE(permutation[k]);
+        res[k] = t[permutation[k]];
+    }
+    return res;
 }
 
 //@}
