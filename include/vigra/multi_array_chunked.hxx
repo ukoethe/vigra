@@ -433,13 +433,13 @@ class ChunkedSubarrayCopy
             writeBack();
     }
     
-    void writeBack()
+    void writeBack() const
     {
         if(!array_)
             return;
         typename CArray::iterator i   = array_->begin().restrictToSubarray(offset_, offset_ + this->shape()),
                                   end = i.getEndIterator();
-        typename SArray::iterator j   = this->begin();
+        typename SArray::const_iterator j   = this->begin();
         
         for(; i != end; ++i, ++j)
             *i = *j;
@@ -554,15 +554,38 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         return chunk->pointer_ + offset;
     }
     
-    MultiArrayView(shape_type const & shape)
+    MultiArrayView()
+    : shape_()
+    {}
+    
+    explicit MultiArrayView(shape_type const & shape)
     : shape_(shape)
     {}
     
     MultiArrayView & operator=(MultiArrayView const & rhs)
     {
-        // FIXME
         if(this != &rhs)
-            assignImpl(rhs);
+        {
+            if(!hasData())
+            {
+                chunks_ = rhs.chunks_;
+                shape_ = rhs.shape_;
+                offset_ = rhs.offset_;
+                bits_ = rhs.bits_;
+                mask_ = rhs.mask_;
+                chunk_shape_ = rhs.chunk_shape_;
+                unref_ = rhs.unref_;
+            }
+            else
+            {
+                vigra_precondition(this->shape() == rhs.shape(),
+                                   "MultiArrayView::operator=(): shape mismatch.");
+                iterator i = begin(), ie = end();
+                const_iterator j = rhs.begin();
+                for(; i != ie; ++i, ++j)
+                    *i = *j;
+            }
+        }
         return *this;
     }
 
@@ -778,12 +801,6 @@ class MultiArrayView<N, T, ChunkedArrayTag>
     MultiArrayView & init(const U & init)
     {
         return operator=(init);
-    }
-
-
-    void copy(const MultiArrayView & rhs)
-    {
-        operator=(rhs);
     }
 
     template <class U, class CN>
@@ -1433,7 +1450,7 @@ class ChunkedArray
         
         // Obtain a reference to the current chunk.
         // We use a simple spin-lock here because it is very fast in case of success
-        // and failures (i.e. a collisions with another thread) are presumably 
+        // and failures (i.e. collisions with another thread) are presumably 
         // very rare.
         while(true)
         {

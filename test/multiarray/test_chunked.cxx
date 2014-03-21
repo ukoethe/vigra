@@ -121,6 +121,98 @@ public:
         // should(!empty2.hasData());
     // }
 
+    void test_assignment()
+    {
+        MultiArrayView <3, T, ChunkedArrayTag> v(shape);
+        should(!v.hasData());    
+        
+        array->viewSubarray(Shape3(), v);
+        should(v.hasData());        
+        
+        MultiArrayView <3, T, ChunkedArrayTag> vc;
+        should(!vc.hasData());
+        
+        vc = v;
+        should(vc.hasData());
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+        
+        vc = T(7);
+        std::vector<T> v7ref(vc.size(), T(7));
+        should(vc.hasData());
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), v7ref.begin());
+        shouldEqualSequence(v.begin(), v.end(), v7ref.begin());
+        
+        vc = ref;
+        should(vc.hasData());
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+        
+        MultiArrayView <3, T, ChunkedArrayTag> vs(Shape3(4));
+        should(!vs.hasData());    
+        array->viewSubarray(Shape3(), vs);
+        should(vs.hasData());
+        
+        try
+        {
+            vc = vs;
+            failTest("shape mismatch in assignment failed to throw exception");
+        }
+        catch(PreconditionViolation & e)
+        {
+            std::string expected("\nPrecondition violation!\nMultiArrayView::operator=(): shape mismatch.\n"),
+                        actual(e.what());
+            shouldEqual(actual.substr(0, expected.size()), expected);
+        }
+        
+        vc += T(1);
+        ref += T(1);
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+        
+        vc += v;
+        ref *= T(2);
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+         
+        vc += T(42);
+        ref += T(42);
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+        
+        vc -= T(42);
+        ref -= T(42);
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+       
+        ref /= T(2);
+        vc -= ref;
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+        
+        vc *= v;
+        ref *= ref;
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+        
+        vc *= T(4);
+        ref *= T(4);
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+         
+        vc /= T(4);
+        ref /= T(4);
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+       
+        using namespace multi_math;
+        ref = sqrt(ref);
+        vc /= ref;
+        shouldEqual(vc.shape(), ref.shape());
+        shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
+    }
+    
     void testEquality ()
     {
         shouldEqual(array->shape(), ref.shape());
@@ -2941,6 +3033,7 @@ struct ChunkedMultiArraySpeedTestTestSuite
         {
             typedef ChunkedArrayFull<3, float> T;
             add( testCase( &ChunkedMultiArrayTest<T>::testEquality ) );
+            add( testCase( &ChunkedMultiArrayTest<T>::test_assignment ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_bindAt ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_subarray ) );
         }
@@ -2948,6 +3041,7 @@ struct ChunkedMultiArraySpeedTestTestSuite
         {
             typedef ChunkedArrayLazy<3, float> T;
             add( testCase( &ChunkedMultiArrayTest<T>::testEquality ) );
+            add( testCase( &ChunkedMultiArrayTest<T>::test_assignment ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_bindAt ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_subarray ) );
         }
@@ -2955,6 +3049,7 @@ struct ChunkedMultiArraySpeedTestTestSuite
         {
             typedef ChunkedArrayCompressed<3, float> T;
             add( testCase( &ChunkedMultiArrayTest<T>::testEquality ) );
+            add( testCase( &ChunkedMultiArrayTest<T>::test_assignment ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_bindAt ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_subarray ) );
         }
@@ -2962,6 +3057,7 @@ struct ChunkedMultiArraySpeedTestTestSuite
         {
             typedef ChunkedArrayHDF5<3, float> T;
             add( testCase( &ChunkedMultiArrayTest<T>::testEquality ) );
+            add( testCase( &ChunkedMultiArrayTest<T>::test_assignment ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_bindAt ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_subarray ) );
         }
@@ -2969,6 +3065,7 @@ struct ChunkedMultiArraySpeedTestTestSuite
         {
             typedef ChunkedArrayTmpFile<3, float> T;
             add( testCase( &ChunkedMultiArrayTest<T>::testEquality ) );
+            add( testCase( &ChunkedMultiArrayTest<T>::test_assignment ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_bindAt ) );
             add( testCase( &ChunkedMultiArrayTest<T>::test_subarray ) );
         }
