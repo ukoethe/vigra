@@ -412,45 +412,6 @@ class ChunkBase
 };
 
 template <unsigned int N, class T>
-class ChunkedSubarrayCopy
-: public MultiArray<N, T>
-{
-  public:
-    typedef ChunkedArray<N, T>  CArray;
-    typedef MultiArray<N, T>        SArray;
-    typedef typename  MultiArrayView<N, T>::difference_type shape_type;
-  
-    ChunkedSubarrayCopy(shape_type const & s)
-    : MultiArray<N, T>(s),
-      array_(0),
-      offset_(),
-      write_on_destruction_(false)
-    {}
-    
-    ~ChunkedSubarrayCopy()
-    {
-        if(write_on_destruction_)
-            writeBack();
-    }
-    
-    void writeBack() const
-    {
-        if(!array_)
-            return;
-        typename CArray::iterator i   = array_->begin().restrictToSubarray(offset_, offset_ + this->shape()),
-                                  end = i.getEndIterator();
-        typename SArray::const_iterator j   = this->begin();
-        
-        for(; i != end; ++i, ++j)
-            *i = *j;
-    }
-  
-    CArray * array_;
-    shape_type offset_;
-    bool write_on_destruction_;
-};
-
-template <unsigned int N, class T>
 class ChunkedArrayBase
 {
   public:
@@ -458,7 +419,6 @@ class ChunkedArrayBase
     typedef T value_type;
     typedef value_type * pointer;
     typedef value_type & reference;
-    typedef ChunkedSubarrayCopy<N, T>  SubarrayType;
     typedef ChunkBase<N, T> Chunk;
 
     virtual ~ChunkedArrayBase()
@@ -1345,7 +1305,6 @@ class ChunkedArray
     // typedef typename iterator::value_type                           handle;
     typedef StridedScanOrderIterator<N, ChunkedMemory<T>, reference, pointer>   iterator;
     typedef StridedScanOrderIterator<N, ChunkedMemory<T>, const_reference, const_pointer>   const_iterator;
-    typedef ChunkedSubarrayCopy<N, T>                                  SubarrayType;
     typedef ChunkBase<N, T> Chunk;
     typedef MultiArrayView<N, T, ChunkedArrayTag>                   view_type;
     
@@ -1596,18 +1555,58 @@ class ChunkedArray
         }
     }
     
-    void viewSubarray(shape_type const & start, view_type & view) const
+    template <class U, class Stride>
+    void 
+    checkoutSubarray(shape_type const & start, 
+                     MultiArrayView<N, U, Stride> & subarray) const
     {
-        shape_type stop = start + view.shape_;
+        shape_type stop   = start + subarray.shape();
         
         vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
-                           "ChunkedArray::viewSubarray(): subarray out of bounds.");
+                           "checkoutSubarray::copySubarray(): subarray out of bounds.");
+                           
+        const_iterator i(begin().restrictToSubarray(start, stop)),
+                       end(i.getEndIterator());
+        typename MultiArrayView<N, U, Stride>::iterator j = subarray.begin();
+        
+        for(; i != end; ++i, ++j)
+        {
+           *j = *i;
+        }
+    }
+    
+    template <class U, class Stride>
+    void 
+    commitSubarray(shape_type const & start, 
+                   MultiArrayView<N, U, Stride> const & subarray)
+    {
+        shape_type stop   = start + subarray.shape();
+        
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
+                           "ChunkedArray::commitSubarray(): subarray out of bounds.");
+                           
+        iterator i(begin().restrictToSubarray(start, stop)),
+                 end(i.getEndIterator());
+        typename MultiArrayView<N, U, Stride>::const_iterator j = subarray.begin();
+        
+        for(; i != end; ++i, ++j)
+        {
+           *i = *j;
+        }
+    }
+    
+    view_type 
+    subarray(shape_type const & start, shape_type const & stop) const
+    {
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
+                           "ChunkedArray::subarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
         ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
         ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
         chunkStop += shape_type(1);
         
+        view_type view(stop-start);
         view.chunks_.reshape(chunkStop-chunkStart);
         view.offset_ = start - chunkStart * this->chunk_shape_;
         view.bits_   = bits_;
@@ -1619,40 +1618,16 @@ class ChunkedArray
         view.unref_ = std::shared_ptr<UP>(new UP(start, stop, self));
         
         self->refChunks(start, stop, &view.chunks_);
-    }
-    
-    virtual void 
-    copySubarray(shape_type const & start, 
-                 ChunkedSubarrayCopy<N, T> & subarray, 
-                 bool write_on_destruction = false) const
-    {
-        shape_type stop   = start + subarray.shape();
-        
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
-                           "ChunkedArray::copySubarray(): subarray out of bounds.");
-                           
-        const_iterator i(begin().restrictToSubarray(start, stop)),
-                       end(i.getEndIterator());
-        typename SubarrayType::iterator j = subarray.begin();
-        
-        for(; i != end; ++i, ++j)
-        {
-           *j = *i;
-        }
-        subarray.array_ = const_cast<ChunkedArray*>(this);
-        subarray.write_on_destruction_ = write_on_destruction;
-        subarray.offset_ = start;
+        return view;
     }
     
     MultiArrayView<N-1, T, ChunkedArrayTag> 
     bindAt(MultiArrayIndex m, MultiArrayIndex d) const
     {
-        shape_type start, new_shape(shape());
+        shape_type start, stop(shape());
         start[m] = d;
-        new_shape[m] = 1;
-        MultiArrayView<N, T, ChunkedArrayTag> view(new_shape);
-        viewSubarray(start, view);
-        return view.bindAt(m, 0);
+        stop[m] = d+1;
+        return subarray(start, stop).bindAt(m, 0);
     }
             
     shape_type const & shape() const

@@ -123,10 +123,10 @@ public:
 
     void test_assignment()
     {
-        MultiArrayView <3, T, ChunkedArrayTag> v(shape);
+        MultiArrayView <3, T, ChunkedArrayTag> v;
         should(!v.hasData());    
         
-        array->viewSubarray(Shape3(), v);
+        v = array->subarray(Shape3(), shape);
         should(v.hasData());        
         
         MultiArrayView <3, T, ChunkedArrayTag> vc;
@@ -149,9 +149,7 @@ public:
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
         
-        MultiArrayView <3, T, ChunkedArrayTag> vs(Shape3(4));
-        should(!vs.hasData());    
-        array->viewSubarray(Shape3(), vs);
+        MultiArrayView <3, T, ChunkedArrayTag> vs(array->subarray(Shape3(), Shape3(4)));
         should(vs.hasData());
         
         try
@@ -348,13 +346,11 @@ public:
     {
         {
             Shape3 start, stop(ref.shape());  // whole array
-            MultiArrayView <3, T, ChunkedArrayTag> v(stop-start);
-            array->viewSubarray(start, v);
-            
+            MultiArrayView <3, T, ChunkedArrayTag> v(array->subarray(start, stop));
             MultiArrayView <3, T, ChunkedArrayTag> vt(v.transpose());
 
-            ChunkedSubarrayCopy <3, T> c(stop-start);
-            array->copySubarray(start, c);
+            MultiArray <3, T> c(stop-start);
+            array->checkoutSubarray(start, c);
             
             MultiArrayView <3, T, StridedArrayTag> vr = ref.subarray(start, stop);
             MultiArrayView <3, T, StridedArrayTag> vtr = vr.transpose();
@@ -377,13 +373,11 @@ public:
         
         {
             Shape3 start(3,2,1), stop(4,5,6);  // single chunk
-            MultiArrayView <3, T, ChunkedArrayTag> v(stop-start);
-            array->viewSubarray(start, v);
-            
+            MultiArrayView <3, T, ChunkedArrayTag> v(array->subarray(start, stop));
             MultiArrayView <3, T, ChunkedArrayTag> vt(v.transpose());
 
-            ChunkedSubarrayCopy <3, T> c(stop-start);
-            array->copySubarray(start, c);
+            MultiArray <3, T> c(stop-start);
+            array->checkoutSubarray(start, c);
             
             MultiArrayView <3, T, StridedArrayTag> vr = ref.subarray(start, stop);
             MultiArrayView <3, T, StridedArrayTag> vtr = vr.transpose();
@@ -406,11 +400,11 @@ public:
         
         {
             Shape3 start(7,6,5), stop(9,10,11); // across chunk borders
-            MultiArrayView <3, T, ChunkedArrayTag> v(stop-start);
-            array->viewSubarray(start, v);
+            MultiArrayView <3, T, ChunkedArrayTag> v(array->subarray(start, stop));
+            MultiArrayView <3, T, ChunkedArrayTag> vt(v.transpose());
             
-            ChunkedSubarrayCopy <3, T> c(stop-start);
-            array->copySubarray(start, c);
+            MultiArray <3, T> c(stop-start);
+            array->checkoutSubarray(start, c);
             
             MultiArrayView <3, T, StridedArrayTag> vr = ref.subarray(start, stop);
             
@@ -2376,10 +2370,9 @@ public:
             // }
         // }
 
-        MultiArrayView<3, T, ChunkedArrayTag> sub(v.shape());
-        v.viewSubarray(Shape3(), sub);
-        ChunkedSubarrayCopy<3, T> copy(v.shape());
-        v.copySubarray(Shape3(), copy);
+        MultiArrayView<3, T, ChunkedArrayTag> sub(v.subarray(Shape3(), v.shape()));
+        MultiArray<3, T> copy(v.shape());
+        v.checkoutSubarray(Shape3(), copy);
         // count = 1;
         // MultiCoordinateIterator<3> c(v.shape()), cend = c.getEndIterator();
         // TIC;
