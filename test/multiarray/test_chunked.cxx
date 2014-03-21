@@ -79,7 +79,7 @@ public:
     ChunkedMultiArrayTest ()
         : shape (20, 21, 22), chunk_shape (8),
           ref(shape),
-          cache_max(21*22)
+          cache_max(9)
     {
         linearSequence(ref.begin(), ref.end());
         createArray(array);

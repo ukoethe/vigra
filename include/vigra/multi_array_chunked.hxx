@@ -125,6 +125,8 @@
 #ifndef VIGRA_MULTI_ARRAY_CHUNKED_HXX
 #define VIGRA_MULTI_ARRAY_CHUNKED_HXX
 
+#include <queue>
+
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
 #include "threading.hxx"
@@ -356,7 +358,6 @@ class ChunkBase
     : pointer_(0),
       shape_(),
       strides_(),
-      cache_next_(0),
       refcount_(0)
     {}
     
@@ -364,7 +365,6 @@ class ChunkBase
     : pointer_(p),
       shape_(shape),
       strides_(detail::defaultStride(shape)),
-      cache_next_(0),
       refcount_(0)
     {}
     
@@ -372,7 +372,6 @@ class ChunkBase
     : pointer_(0),
       shape_(rhs.shape_),
       strides_(rhs.strides_),
-      cache_next_(0),
       refcount_(0)
     {}
     
@@ -409,7 +408,6 @@ class ChunkBase
     
     threading::atomic<pointer> pointer_;
     shape_type shape_, strides_;
-    ChunkBase * cache_next_;
     mutable threading::atomic<int> refcount_;
 };
 
@@ -1338,8 +1336,6 @@ class ChunkedArray
                  shape_type const & chunk_shape = ChunkShape<N, T>::defaultShape())
     : shape_(0),
       chunk_shape_(prod(chunk_shape) > 0 ? chunk_shape : ChunkShape<N, T>::defaultShape()),
-      cache_first_(0), cache_last_(0),
-      cache_size_(0),
       cache_max_size_(cache_max)
     {
         initBitMask();
@@ -1349,8 +1345,6 @@ class ChunkedArray
                  shape_type const & chunk_shape = ChunkShape<N, T>::defaultShape())
     : shape_(shape),
       chunk_shape_(prod(chunk_shape) > 0 ? chunk_shape : ChunkShape<N, T>::defaultShape()),
-      cache_first_(0), cache_last_(0),
-      cache_size_(0),
       cache_max_size_(cache_max)
     {
         initBitMask();
@@ -1369,7 +1363,9 @@ class ChunkedArray
     }
     
     virtual ~ChunkedArray()
-    {}
+    {
+        std::cerr << "    final cache size: " << this->cache_.size() << "\n";
+    }
 
     template <class U, class C1>
     bool operator==(MultiArrayView<N, U, C1> const & rhs) const
@@ -1457,22 +1453,14 @@ class ChunkedArray
                 if(cache_max_size_ > 0)
                 {
                     // insert in queue of mapped chunks
-                    if(!cache_first_)
-                        cache_first_ = chunk;
-                    if(cache_last_)
-                        cache_last_->cache_next_ = chunk;
-                    cache_last_ = chunk;
-                    ++cache_size_;
-                    
+                    cache_.push(chunk);
                     // do cache management if cache is full
                     // (note that we still hold the cache_lock_)
-                    if(cache_size_ > cache_max_size_)
+                    if(cache_.size() > cache_max_size_)
                     {
                         // remove first element from queue
-                        Chunk * c = cache_first_;
-                        cache_first_ = c->cache_next_;
-                        if(cache_first_ == 0)
-                            cache_last_ = 0;
+                        Chunk * c = cache_.front();
+                        cache_.pop();
                         
                         // check if the refcount is zero and temporarily set it 
                         // to -1 in order to lock the chunk while cache management 
@@ -1482,18 +1470,12 @@ class ChunkedArray
                         {
                             // refcount was zero => can unload
                             unloadChunk(c);
-                            c->cache_next_ = 0;
-                            --cache_size_;
                             c->refcount_.store(0, std::memory_order_release);
                         }
                         else
                         {
                             // refcount was non-zero => reinsert chunk into queue
-                            if(!cache_first_)
-                                cache_first_ = c;
-                            if(cache_last_)
-                                cache_last_->cache_next_ = c;
-                            cache_last_ = c;
+                            cache_.push(c);
                         }
                     }
                 }
@@ -1533,12 +1515,7 @@ class ChunkedArray
                 if(cache_max_size_ > 0)
                 {
                     // insert in queue of mapped chunks
-                    if(!cache_first_)
-                        cache_first_ = chunk;
-                    if(cache_last_)
-                        cache_last_->cache_next_ = chunk;
-                    cache_last_ = chunk;
-                    ++cache_size_;
+                    cache_.push(chunk);
                 }
             }
             if(destChunks)
@@ -1571,23 +1548,22 @@ class ChunkedArray
         if(cache_max_size_ > 0)
         {
             threading::lock_guard<threading::mutex> guard(cache_lock_);
-            Chunk ** c = &cache_first_;
-            while(cache_size_ > cache_max_size_ && (*c) != 0)
+
+            int total_size = cache_.size();
+            while(cache_.size() > cache_max_size_ && total_size--)
             {
+                Chunk * c = cache_.front();
+                cache_.pop();
                 int rc = 0;
-                if((*c)->refcount_.compare_exchange_strong(rc, -1, std::memory_order_acquire))
+                if(c->refcount_.compare_exchange_strong(rc, -1, std::memory_order_acquire))
                 {
                     // refcount was zero => can unload
-                    unloadChunk(*c);
-                    Chunk * n = (*c)->cache_next_;
-                    (*c)->cache_next_ = 0;
-                    --cache_size_;
-                    (*c)->refcount_.store(0, std::memory_order_release);
-                    *c = n;
+                    unloadChunk(c);
+                    c->refcount_.store(0, std::memory_order_release);
                 }
                 else
                 {
-                    c = &(*c)->cache_next_;
+                    cache_.push(c);
                 }
             }
         }
@@ -1694,9 +1670,9 @@ class ChunkedArray
     }
     
     shape_type shape_, chunk_shape_, bits_, mask_;
-    Chunk * cache_first_, * cache_last_;
-    std::size_t cache_size_, cache_max_size_;
+    std::size_t cache_max_size_;
     threading::mutex cache_lock_;
+    std::queue<Chunk*> cache_;
 };
 
 /** Returns a CoupledScanOrderIterator to simultaneously iterate over image m1 and its coordinates. 
@@ -2045,9 +2021,7 @@ class ChunkedArrayCompressed
     }
     
     ~ChunkedArrayCompressed()
-    {
-        std::cerr << "    final cache size: " << this->cache_size_ << "\n";
-    }
+    {}
     
     virtual pointer loadChunk(ChunkBase<N, T> * chunk)
     {
@@ -2210,8 +2184,6 @@ class ChunkedArrayHDF5
     
     ~ChunkedArrayHDF5()
     {
-        std::cerr << "    final cache size: " << this->cache_size_ << "\n";
-        
         // make sure that chunks are written to disk before the destructor of 
         // file_ is called
         outer_array_.swap(ChunkStorage());
@@ -2420,7 +2392,6 @@ class ChunkedArrayTmpFile
     
     ~ChunkedArrayTmpFile()
     {
-        std::cerr << "    final cache size: " << this->cache_size_ << "\n";
         unmap();
     #ifdef _WIN32
         ::CloseHandle(mappedFile_);
