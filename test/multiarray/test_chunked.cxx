@@ -64,6 +64,7 @@ public:
     // typedef typename vigra::detail::ResolveMultiband<T>::type   scalar_type;
     typedef typename Array::value_type T;
     typedef MultiArray <3, T> plain;
+    typedef VIGRA_UNIQUE_PTR<ChunkedArray<3, T> > ArrayPtr;
     // typedef MultiArray <3, T> array3_type;
     // typedef MultiArrayView<3, Multiband<scalar_type> >  MultibandView3;
     // typedef typename array3_type::view_type       array3_view_type;
@@ -72,7 +73,7 @@ public:
     // typedef typename array3_type::difference_type difference3_type;
     
     Shape3 shape, chunk_shape;
-    VIGRA_UNIQUE_PTR<Array> array;
+    ArrayPtr array;
     plain ref;
     int cache_max;
 
@@ -82,34 +83,34 @@ public:
           cache_max(9)
     {
         linearSequence(ref.begin(), ref.end());
-        createArray(array);
+        array = createArray((Array *)0);
         linearSequence(array->begin(), array->end());
     }
     
-    void createArray(VIGRA_UNIQUE_PTR<ChunkedArrayFull<3, T> > & a)
+    ArrayPtr createArray(ChunkedArrayFull<3, T> *)
     {
-        a.reset(new ChunkedArrayFull<3, T>(shape));
+        return ArrayPtr(new ChunkedArrayFull<3, T>(shape));
     }
     
-    void createArray(VIGRA_UNIQUE_PTR<ChunkedArrayLazy<3, T> > & a)
+    ArrayPtr createArray(ChunkedArrayLazy<3, T> *)
     {
-        a.reset(new ChunkedArrayLazy<3, T>(shape, chunk_shape));
+        return ArrayPtr(new ChunkedArrayLazy<3, T>(shape, chunk_shape));
     }
     
-    void createArray(VIGRA_UNIQUE_PTR<ChunkedArrayCompressed<3, T> > & a)
+    ArrayPtr createArray(ChunkedArrayCompressed<3, T> *)
     {
-        a.reset(new ChunkedArrayCompressed<3, T>(shape, cache_max, LZ4, chunk_shape));
+        return ArrayPtr(new ChunkedArrayCompressed<3, T>(shape, cache_max, LZ4, chunk_shape));
     }
     
-    void createArray(VIGRA_UNIQUE_PTR<ChunkedArrayHDF5<3, T> > & a)
+    ArrayPtr createArray(ChunkedArrayHDF5<3, T> *)
     {
         HDF5File hdf5_file("chunked_test.h5", HDF5File::New);
-        a.reset(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", shape, cache_max, 1, chunk_shape));
+        return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", shape, cache_max, 1, chunk_shape));
     }
     
-    void createArray(VIGRA_UNIQUE_PTR<ChunkedArrayTmpFile<3, T> > & a)
+    ArrayPtr createArray(ChunkedArrayTmpFile<3, T> *)
     {
-        a.reset(new ChunkedArrayTmpFile<3, T>(shape, cache_max, "", chunk_shape));
+        return ArrayPtr(new ChunkedArrayTmpFile<3, T>(shape, cache_max, "", chunk_shape));
     }
 
     // void testHasData ()

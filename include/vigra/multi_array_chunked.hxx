@@ -1287,6 +1287,10 @@ FIXME:
   3. possibility:
       * don't care about speed - require copySubarray() if indexing should
         be fast
+* provide a ChunkIterator that iterates over all chunks in a given ROI and returns a
+  MultiArrayView for the present chunk (which remains locked in cache until the 
+  iterator is advanced).
+* implement proper copy constructors and assignment for al backends
 */
 template <unsigned int N, class T>
 class ChunkedArray
@@ -1366,8 +1370,7 @@ class ChunkedArray
     
     virtual pointer loadChunk(Chunk * chunk) = 0;
     
-    virtual void unloadChunk(Chunk * chunk)
-    {}
+    virtual void unloadChunk(Chunk * chunk) = 0;
     
     virtual Chunk * lookupChunk(shape_type const & index) = 0;
     
@@ -1705,17 +1708,27 @@ createCoupledIterator(ChunkedArray<N, T> const & m)
 
 template <unsigned int N, class T, class Alloc = std::allocator<T> >
 class ChunkedArrayFull
-: public ChunkedArray<N, T>
+: public ChunkedArray<N, T>,
+  public MultiArray<N, T, Alloc>
 {
   public:
         
-    typedef MultiArray<N, T, Alloc> Storage;
-    typedef typename Storage::difference_type  shape_type;
-    typedef T value_type;
-    typedef value_type * pointer;
-    typedef value_type & reference;
-    typedef typename ChunkedArray<N, T>::Chunk Chunk;
-    typedef typename ChunkedArray<N, T>::view_type view_type;
+    typedef MultiArray<N, T, Alloc>             Storage;
+    typedef typename Storage::value_type        value_type;
+    typedef typename Storage::pointer           pointer;
+    typedef typename Storage::const_pointer     const_pointer;
+    typedef typename Storage::reference         reference;
+    typedef typename Storage::const_reference   const_reference;
+    typedef typename Storage::difference_type   difference_type;
+    typedef typename Storage::difference_type   shape_type;
+    typedef typename Storage::key_type          key_type;
+    typedef typename Storage::size_type         size_type;
+    typedef typename Storage::difference_type_1 difference_type_1;
+    typedef typename Storage::iterator          iterator;
+    typedef typename Storage::const_iterator    const_iterator;
+    typedef typename Storage::view_type         view_type;
+
+    typedef typename ChunkedArray<N, T>::Chunk       Chunk;
     
     static shape_type computeChunkShape(shape_type s)
     {
@@ -1724,13 +1737,46 @@ class ChunkedArrayFull
         return s;
     }
     
+    using Storage::subarray;
+    using Storage::bindOuter;
+    using Storage::bindInner;
+    using Storage::bind;
+    using Storage::bindAt;
+    using Storage::isInside;
+    using Storage::shape;
+    using Storage::begin;
+    using Storage::end;
+    using Storage::operator==;
+    using Storage::operator!=;
+    
     ChunkedArrayFull(shape_type const & shape, Alloc const & alloc = Alloc())
     : ChunkedArray<N, T>(shape, 0, computeChunkShape(shape)),
-      array_(shape, alloc),
+      Storage(shape, alloc),
       upper_bound_(shape + shape_type(1)),
-      chunk_(shape, array_.data())
+      chunk_(shape, this->data())
     {
         chunk_.refcount_.store(1);
+    }
+    
+    ChunkedArrayFull(ChunkedArrayFull const & rhs)
+    : ChunkedArray<N, T>(rhs),
+      Storage(rhs),
+      upper_bound_(rhs.upper_bound_),
+      chunk_(shape, this->data())
+    {
+        chunk_.refcount_.store(1);
+    }
+    
+    ChunkedArrayFull & operator=(ChunkedArrayFull const & rhs)
+    {
+        if(this != &rhs)
+        {
+            ChunkedArray<N, T>::operator=(rhs);
+            Storage::operator=(rhs);
+            upper_bound_ = rhs.upper_bound_;
+            chunk_ = rhs.chunk_;
+        }
+        return *this;
     }
     
     ~ChunkedArrayFull()
@@ -1738,8 +1784,11 @@ class ChunkedArrayFull
     
     virtual pointer loadChunk(ChunkBase<N, T> *)
     {
-        return array_.data();
+        return this->data();
     }
+    
+    virtual void unloadChunk(ChunkBase<N, T> *)
+    {}
     
     virtual ChunkBase<N,T> * lookupChunk(shape_type const &)
     {
@@ -1755,12 +1804,11 @@ class ChunkedArrayFull
         if(!this->isInside(global_point))
             return 0;
 
-        strides = array_.stride();
+        strides = this->stride();
         upper_bound = upper_bound_;
-        return &array_[global_point];
+        return &Storage::operator[](global_point);
     }
     
-    Storage array_;  // a contiguous array
     shape_type upper_bound_;
     Chunk chunk_;    // a dummy chunk to fulfill the API
 };
@@ -1868,6 +1916,9 @@ class ChunkedArrayLazy
     {
         return static_cast<Chunk *>(chunk)->allocate();
     }
+    
+    virtual void unloadChunk(ChunkBase<N, T> *)
+    {}
     
     virtual Chunk * lookupChunk(shape_type const & index)
     {
