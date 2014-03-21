@@ -1331,6 +1331,8 @@ class ChunkedArray
     typedef ChunkedSubarrayCopy<N, T>                                  SubarrayType;
     typedef ChunkBase<N, T> Chunk;
     typedef MultiArrayView<N, T, ChunkedArrayTag>                   view_type;
+    
+    static const int chunk_locked = -2;
         
     ChunkedArray(int cache_max = 0, 
                  shape_type const & chunk_shape = ChunkShape<N, T>::defaultShape())
@@ -1397,7 +1399,11 @@ class ChunkedArray
     {
         if(h->chunk_)
         {
-            static_cast<Chunk*>(h->chunk_)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+            int rc = static_cast<Chunk*>(h->chunk_)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+        #ifdef VIGRA_CHECK_BOUNDS
+            vigra_invariant(rc >= 0,
+                            "ChunkedArray::unrefChunk(): chunk refcount got negative!");
+        #endif
             h->chunk_ = 0;
         }
     }
@@ -1408,7 +1414,11 @@ class ChunkedArray
     {
         if(h->chunk_)
         {
-            static_cast<Chunk*>(h->chunk_)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+            int rc = static_cast<Chunk*>(h->chunk_)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+        #ifdef VIGRA_CHECK_BOUNDS
+            vigra_invariant(rc >= 0,
+                            "ChunkedArray::getChunk(): chunk refcount got negative!");
+        #endif
             h->chunk_ = 0;
         }
         
@@ -1428,7 +1438,7 @@ class ChunkedArray
         while(true)
         {
             int rc = chunk->refcount_.load(threading::memory_order_acquire);
-            if(rc < 0)
+            if(rc == chunk_locked)
             {
                 // cache management in progress => try again later
                 threading::this_thread::yield();
@@ -1463,10 +1473,10 @@ class ChunkedArray
                         cache_.pop();
                         
                         // check if the refcount is zero and temporarily set it 
-                        // to -1 in order to lock the chunk while cache management 
+                        // to 'chunk_locked' in order to lock the chunk while cache management 
                         // is done
                         int rc = 0;
-                        if(c->refcount_.compare_exchange_strong(rc, -1, std::memory_order_acquire))
+                        if(c->refcount_.compare_exchange_strong(rc, chunk_locked, std::memory_order_acquire))
                         {
                             // refcount was zero => can unload
                             unloadChunk(c);
@@ -1555,7 +1565,7 @@ class ChunkedArray
                 Chunk * c = cache_.front();
                 cache_.pop();
                 int rc = 0;
-                if(c->refcount_.compare_exchange_strong(rc, -1, std::memory_order_acquire))
+                if(c->refcount_.compare_exchange_strong(rc, chunk_locked, std::memory_order_acquire))
                 {
                     // refcount was zero => can unload
                     unloadChunk(c);
