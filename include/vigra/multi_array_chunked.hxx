@@ -1316,6 +1316,7 @@ FIXME:
   iterator is advanced).
 * implement proper copy constructors and assignment for all backends
 * test HDF5 constructor from existing dataset
+* put HDF5 into header of its own
 * is the full getChunk() function slow? Check this with a simplified one
   in a ChunkedArrayLazy where all chunlks are already implemented, so that 
   we can simply can skip the check
@@ -2265,7 +2266,9 @@ class ChunkedArrayHDF5
         if(!file_.existsDataset(dataset_name_))
         {
             int compression_level = 1;
-            dataset_ = file_.createDataset(dataset_name_, shape, T(), this->chunk_shape_, compression_level);
+            dataset_ = file_.createDatasetImpl<T>(dataset_name_, 
+                                                  shape, this->chunk_shape_, 
+                                                  compression_level);
         }
         init(shape);
     }
@@ -2283,7 +2286,9 @@ class ChunkedArrayHDF5
     {
         if(!file_.existsDataset(dataset_name_))
         {
-            dataset_ = file_.createDataset(dataset_name_, shape, T(), this->chunk_shape_, compression_level);
+            dataset_ = file_.createDatasetImpl<T>(dataset_name_, 
+                                                  shape, this->chunk_shape_, 
+                                                  compression_level);
         }
         init(shape);
     }
@@ -2309,14 +2314,29 @@ class ChunkedArrayHDF5
         // check shape
         // FIXME: the following checks don't work when T == TinyVector
         ArrayVector<hsize_t> fileShape(file_.getDatasetShape(dataset_name_));
-        vigra_precondition(fileShape.size() == N,
-            "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
-        if(prod(desired_shape) > 0)
-            for(unsigned int k=0; k<N; ++k)
-                vigra_precondition(fileShape[k] == desired_shape[k],
-                    "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
-        this->shape_ = shape_type(fileShape.begin());
-
+        typedef detail::HDF5TypeTraits<T> TypeTraits;
+        if(TypeTraits::numberOfBands() > 1)
+        {
+            vigra_precondition(fileShape.size() == N+1,
+                "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
+            vigra_precondition(fileShape[0] == TypeTraits::numberOfBands(),
+                "ChunkedArrayHDF5(file, dataset): dataset has wrong number of bands.");
+            if(prod(desired_shape) > 0)
+                for(unsigned int k=0; k<N; ++k)
+                    vigra_precondition(fileShape[k+1] == desired_shape[k],
+                        "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
+            this->shape_ = shape_type(fileShape.begin()+1);
+        }
+        else
+        {
+            vigra_precondition(fileShape.size() == N,
+                "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
+            if(prod(desired_shape) > 0)
+                for(unsigned int k=0; k<N; ++k)
+                    vigra_precondition(fileShape[k] == desired_shape[k],
+                        "ChunkedArrayHDF5(file, dataset, shape): shape mismatch between dataset and shape argument.");
+            this->shape_ = shape_type(fileShape.begin());
+        }
         outer_array_.reshape(chunkArrayShape(this->shape_, this->bits_, this->mask_));
         
         // set shape of the chunks

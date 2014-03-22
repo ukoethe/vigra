@@ -213,8 +213,7 @@ void linearSequence(Iterator first, Iterator last, Value start, Value step)
 template <class Iterator, class Value>
 void linearSequence(Iterator first, Iterator last, Value start)
 {
-    for(; first != last; ++first, ++start)
-        *first = start;
+    linearSequence(first, last, start, NumericTraits<Value>::one());
 }
 
 template <class Iterator>

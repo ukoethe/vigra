@@ -720,96 +720,175 @@ class HDF5ImportInfo
 
 namespace detail {
 
-template<class type>
+template <class T>
+struct HDF5TypeTraits
+{
+    static hid_t getH5DataType()
+    {
+        std::runtime_error("getH5DataType(): invalid type");
+        return 0;
+    }
+    
+    static int numberOfBands()
+    {
+        std::runtime_error("numberOfBands(): invalid type");
+        return 0;
+    }
+};
+
+template<class T>
 inline hid_t getH5DataType()
 {
-    std::runtime_error("getH5DataType(): invalid type");
-    return 0;
+    return HDF5TypeTraits<T>::getH5DataType();
 }
 
 #define VIGRA_H5_DATATYPE(type, h5type) \
-template<> \
-inline hid_t getH5DataType<type>() \
-{ return h5type;}
+template <> \
+struct HDF5TypeTraits<type> \
+{ \
+    static hid_t getH5DataType() \
+    { \
+        return h5type; \
+    } \
+    static int numberOfBands() \
+    { \
+        return 1; \
+    } \
+    typedef type value_type; \
+}; \
+template <int M> \
+struct HDF5TypeTraits<TinyVector<type, M> > \
+{ \
+    static hid_t getH5DataType() \
+    { \
+        return h5type; \
+    } \
+    static int numberOfBands() \
+    { \
+        return M; \
+    } \
+    typedef type value_type; \
+}; \
+template <> \
+struct HDF5TypeTraits<RGBValue<type> > \
+{ \
+    static hid_t getH5DataType() \
+    { \
+        return h5type; \
+    } \
+    static int numberOfBands() \
+    { \
+        return 3; \
+    } \
+    typedef type value_type; \
+}; \
 
 VIGRA_H5_DATATYPE(char, H5T_NATIVE_CHAR)
+VIGRA_H5_DATATYPE(signed char, H5T_NATIVE_SCHAR)
+VIGRA_H5_DATATYPE(unsigned char, H5T_NATIVE_UCHAR)
+VIGRA_H5_DATATYPE(signed short, H5T_NATIVE_SHORT)
+VIGRA_H5_DATATYPE(unsigned short, H5T_NATIVE_USHORT)
+VIGRA_H5_DATATYPE(signed int, H5T_NATIVE_INT)
+VIGRA_H5_DATATYPE(unsigned int, H5T_NATIVE_UINT)
+VIGRA_H5_DATATYPE(signed long, H5T_NATIVE_LONG)
+VIGRA_H5_DATATYPE(unsigned long, H5T_NATIVE_ULONG)
+VIGRA_H5_DATATYPE(signed long long, H5T_NATIVE_LLONG)
+VIGRA_H5_DATATYPE(unsigned long long, H5T_NATIVE_ULLONG)
 VIGRA_H5_DATATYPE(float, H5T_NATIVE_FLOAT)
 VIGRA_H5_DATATYPE(double, H5T_NATIVE_DOUBLE)
 VIGRA_H5_DATATYPE(long double, H5T_NATIVE_LDOUBLE)
 
 // char arrays with flexible length require 'handcrafted' H5 datatype
-template<>
-inline hid_t getH5DataType<char*>()
+template <>
+struct HDF5TypeTraits<char*>
 {
-    hid_t stringtype = H5Tcopy (H5T_C_S1);
-    H5Tset_size(stringtype, H5T_VARIABLE);
-    return stringtype;
-}
-template<>
-inline hid_t getH5DataType<const char*>()
+    static hid_t getH5DataType()
+    {
+        hid_t stringtype = H5Tcopy (H5T_C_S1);
+        H5Tset_size(stringtype, H5T_VARIABLE);
+        return stringtype;
+    }
+    
+    static int numberOfBands()
+    {
+        return 1;
+    }
+};
+
+template <>
+struct HDF5TypeTraits<const char*>
 {
-    hid_t stringtype = H5Tcopy (H5T_C_S1);
-    H5Tset_size(stringtype, H5T_VARIABLE);
-    return stringtype;
-}
+    static hid_t getH5DataType()
+    {
+        hid_t stringtype = H5Tcopy (H5T_C_S1);
+        H5Tset_size(stringtype, H5T_VARIABLE);
+        return stringtype;
+    }
+    
+    static int numberOfBands()
+    {
+        return 1;
+    }
+};
+
 #undef VIGRA_H5_DATATYPE
 
-template <unsigned int SIZE>
-struct HDF5TypeBySize;
+// template <unsigned int SIZE>
+// struct HDF5TypeBySize;
 
-template <>
-struct HDF5TypeBySize<1>
-{
-    static hid_t signed_type() { return H5T_NATIVE_INT8; }
-    static hid_t unsigned_type() { return H5T_NATIVE_UINT8; }
-};
+// template <>
+// struct HDF5TypeBySize<1>
+// {
+    // static hid_t signed_type() { return H5T_NATIVE_INT8; }
+    // static hid_t unsigned_type() { return H5T_NATIVE_UINT8; }
+// };
 
-template <>
-struct HDF5TypeBySize<2>
-{
-    static hid_t signed_type() { return H5T_NATIVE_INT16; }
-    static hid_t unsigned_type() { return H5T_NATIVE_UINT16; }
-};
+// template <>
+// struct HDF5TypeBySize<2>
+// {
+    // static hid_t signed_type() { return H5T_NATIVE_INT16; }
+    // static hid_t unsigned_type() { return H5T_NATIVE_UINT16; }
+// };
 
-template <>
-struct HDF5TypeBySize<4>
-{
-    static hid_t signed_type() { return H5T_NATIVE_INT32; }
-    static hid_t unsigned_type() { return H5T_NATIVE_UINT32; }
-};
+// template <>
+// struct HDF5TypeBySize<4>
+// {
+    // static hid_t signed_type() { return H5T_NATIVE_INT32; }
+    // static hid_t unsigned_type() { return H5T_NATIVE_UINT32; }
+// };
 
-template <>
-struct HDF5TypeBySize<8>
-{
-    static hid_t signed_type() { return H5T_NATIVE_INT64; }
-    static hid_t unsigned_type() { return H5T_NATIVE_UINT64; }
-};
+// template <>
+// struct HDF5TypeBySize<8>
+// {
+    // static hid_t signed_type() { return H5T_NATIVE_INT64; }
+    // static hid_t unsigned_type() { return H5T_NATIVE_UINT64; }
+// };
 
-#define VIGRA_H5_SIGNED_DATATYPE(type) \
-template<> \
-inline hid_t getH5DataType<type>() \
-{ return HDF5TypeBySize<sizeof(type)>::signed_type(); }
+// #define VIGRA_H5_SIGNED_DATATYPE(type) \
+// template<> \
+// inline hid_t getH5DataType<type>() \
+// { return HDF5TypeBySize<sizeof(type)>::signed_type(); }
 
-VIGRA_H5_SIGNED_DATATYPE(signed char)
-VIGRA_H5_SIGNED_DATATYPE(signed short)
-VIGRA_H5_SIGNED_DATATYPE(signed int)
-VIGRA_H5_SIGNED_DATATYPE(signed long)
-VIGRA_H5_SIGNED_DATATYPE(signed long long)
+// VIGRA_H5_SIGNED_DATATYPE(signed char)
+// VIGRA_H5_SIGNED_DATATYPE(signed short)
+// VIGRA_H5_SIGNED_DATATYPE(signed int)
+// VIGRA_H5_SIGNED_DATATYPE(signed long)
+// VIGRA_H5_SIGNED_DATATYPE(signed long long)
 
-#undef VIGRA_H5_SIGNED_DATATYPE
+// #undef VIGRA_H5_SIGNED_DATATYPE
 
-#define VIGRA_H5_UNSIGNED_DATATYPE(type) \
-template<> \
-inline hid_t getH5DataType<type>() \
-{ return HDF5TypeBySize<sizeof(type)>::unsigned_type(); }
+// #define VIGRA_H5_UNSIGNED_DATATYPE(type) \
+// template<> \
+// inline hid_t getH5DataType<type>() \
+// { return HDF5TypeBySize<sizeof(type)>::unsigned_type(); }
 
-VIGRA_H5_UNSIGNED_DATATYPE(unsigned char)
-VIGRA_H5_UNSIGNED_DATATYPE(unsigned short)
-VIGRA_H5_UNSIGNED_DATATYPE(unsigned int)
-VIGRA_H5_UNSIGNED_DATATYPE(unsigned long)
-VIGRA_H5_UNSIGNED_DATATYPE(unsigned long long)
+// VIGRA_H5_UNSIGNED_DATATYPE(unsigned char)
+// VIGRA_H5_UNSIGNED_DATATYPE(unsigned short)
+// VIGRA_H5_UNSIGNED_DATATYPE(unsigned int)
+// VIGRA_H5_UNSIGNED_DATATYPE(unsigned long)
+// VIGRA_H5_UNSIGNED_DATATYPE(unsigned long long)
 
-#undef VIGRA_H5_UNSIGNED_DATATYPE
+// #undef VIGRA_H5_UNSIGNED_DATATYPE
 
 #if 0
 template<>
@@ -1588,16 +1667,19 @@ class HDF5File
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
-
-        writeBlock_(datasetName, blockOffset, array, detail::getH5DataType<T>(), 1);
+        typedef detail::HDF5TypeTraits<T> TypeTraits;
+        writeBlock_(datasetName, blockOffset, array, 
+                    TypeTraits::getH5DataType(), TypeTraits::numberOfBands());
     }
 
     template<unsigned int N, class T, class Stride>
     inline herr_t writeBlock(HDF5HandleShared dataset, 
-                           typename MultiArrayShape<N>::type blockOffset, 
-                           const MultiArrayView<N, T, Stride> & array)
+                             typename MultiArrayShape<N>::type blockOffset, 
+                             const MultiArrayView<N, T, Stride> & array)
     {
-        return writeBlock_(dataset, blockOffset, array, detail::getH5DataType<T>(), 1);
+        typedef detail::HDF5TypeTraits<T> TypeTraits;
+        return writeBlock_(dataset, blockOffset, array, 
+                           TypeTraits::getH5DataType(), TypeTraits::numberOfBands());
     }
 
     // non-scalar (TinyVector) and unstrided multi arrays
@@ -1648,17 +1730,6 @@ class HDF5File
         write(datasetName, m_array, compression);
     }
 
-    template<unsigned int N, class T, int SIZE, class Stride>
-    inline void writeBlock(std::string datasetName, 
-                           typename MultiArrayShape<N>::type blockOffset, 
-                           const MultiArrayView<N, TinyVector<T, SIZE>, Stride> & array)
-    {
-        // make datasetName clean
-        datasetName = get_absolute_path(datasetName);
-
-        writeBlock_(datasetName, blockOffset, array, detail::getH5DataType<T>(), SIZE);
-    }
-
     // non-scalar (RGBValue) and unstrided multi arrays
     template<unsigned int N, class T, class Stride>
     inline void write(std::string datasetName, 
@@ -1684,17 +1755,6 @@ class HDF5File
         datasetName = get_absolute_path(datasetName);
 
         write_(datasetName, array, detail::getH5DataType<T>(), 3, chunkSize, compression);
-    }
-
-    template<unsigned int N, class T, class Stride>
-    inline void writeBlock(std::string datasetName, 
-                           typename MultiArrayShape<N>::type blockOffset, 
-                           const MultiArrayView<N, RGBValue<T>, Stride> & array)
-    {
-        // make datasetName clean
-        datasetName = get_absolute_path(datasetName);
-
-        writeBlock_(datasetName, blockOffset, array, detail::getH5DataType<T>(), 3);
     }
 
          /** \brief Write a single value.
@@ -1831,8 +1891,9 @@ class HDF5File
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
-
-        readBlock_(datasetName, blockOffset, blockShape, array, detail::getH5DataType<T>(), 1);
+        typedef detail::HDF5TypeTraits<T> TypeTraits;
+        readBlock_(datasetName, blockOffset, blockShape, array, 
+                   TypeTraits::getH5DataType(), TypeTraits::numberOfBands());
     }
 
     template<unsigned int N, class T, class Stride>
@@ -1841,7 +1902,9 @@ class HDF5File
                           typename MultiArrayShape<N>::type blockShape, 
                           MultiArrayView<N, T, Stride> array)
     {
-        return readBlock_(dataset, blockOffset, blockShape, array, detail::getH5DataType<T>(), 1);
+        typedef detail::HDF5TypeTraits<T> TypeTraits;
+        return readBlock_(dataset, blockOffset, blockShape, array, 
+                          TypeTraits::getH5DataType(), TypeTraits::numberOfBands());
     }
 
     // non-scalar (TinyVector) and unstrided target MultiArrayView
@@ -1878,18 +1941,6 @@ class HDF5File
         read_(datasetName, array, detail::getH5DataType<T>(), SIZE);
     }
 
-    template<unsigned int N, class T, int SIZE, class Stride>
-    inline void readBlock(std::string datasetName, 
-                          typename MultiArrayShape<N>::type blockOffset, 
-                          typename MultiArrayShape<N>::type blockShape, 
-                          MultiArrayView<N, TinyVector<T, SIZE>, Stride> array)
-    {
-        // make datasetName clean
-        datasetName = get_absolute_path(datasetName);
-
-        readBlock_(datasetName, blockOffset, blockShape, array, detail::getH5DataType<T>(), SIZE);
-    }
-
     // non-scalar (RGBValue) and unstrided target MultiArrayView
     template<unsigned int N, class T, class Stride>
     inline void read(std::string datasetName, MultiArrayView<N, RGBValue<T>, Stride> array)
@@ -1922,18 +1973,6 @@ class HDF5File
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), 3);
-    }
-
-    template<unsigned int N, class T, class Stride>
-    inline void readBlock(std::string datasetName, 
-                          typename MultiArrayShape<N>::type blockOffset, 
-                          typename MultiArrayShape<N>::type blockShape, 
-                          MultiArrayView<N, RGBValue<T>, Stride> array)
-    {
-        // make datasetName clean
-        datasetName = get_absolute_path(datasetName);
-
-        readBlock_(datasetName, blockOffset, blockShape, array, detail::getH5DataType<T>(), 3);
     }
 
         /** \brief Read a single value.
@@ -2050,6 +2089,79 @@ class HDF5File
 
         //create the dataset.
         HDF5HandleShared datasetHandle(H5Dcreate(parent, setname.c_str(), detail::getH5DataType<T>(), 
+                                                 dataspaceHandle, H5P_DEFAULT, plist, H5P_DEFAULT),
+                                       &H5Dclose, 
+                                       "HDF5File::createDataset(): unable to create dataset.");
+        if(parent != cGroupHandle_)
+            H5Gclose(parent);
+            
+        return datasetHandle;
+    }
+    
+    template<class T, unsigned int N>
+    HDF5HandleShared 
+    createDatasetImpl(std::string datasetName, 
+                      TinyVector<MultiArrayIndex, N> const & shape, 
+                      TinyVector<MultiArrayIndex, N> const & chunkSize,
+                      int compressionParameter = 0)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        std::string groupname = SplitString(datasetName).first();
+        std::string setname = SplitString(datasetName).last();
+
+        hid_t parent = openCreateGroup_(groupname);
+
+        // delete the dataset if it already exists
+        deleteDataset_(parent, setname);
+
+        // invert dimensions to guarantee c-order
+        // add an extra dimension in case that the data is non-scalar
+        typedef detail::HDF5TypeTraits<T> TypeTraits;
+        ArrayVector<hsize_t> shape_inv;
+        if(TypeTraits::numberOfBands() > 1)
+        {
+            shape_inv.resize(N+1);
+            shape_inv[N] = TypeTraits::numberOfBands();
+        }
+        else
+        {
+            shape_inv.resize(N);
+        }
+        for(unsigned int k=0; k<N; ++k)
+            shape_inv[N-1-k] = shape[k];
+
+        // create dataspace
+        HDF5Handle 
+        dataspaceHandle = HDF5Handle(H5Screate_simple(shape_inv.size(), shape_inv.data(), NULL),
+                                    &H5Sclose, "HDF5File::createDataset(): unable to create dataspace for scalar data.");
+
+        // set fill value
+        HDF5Handle plist ( H5Pcreate(H5P_DATASET_CREATE), &H5Pclose, "HDF5File::createDataset(): unable to create property list." );
+        typename TypeTraits::value_type init = TypeTraits::value_type();
+        H5Pset_fill_value(plist, TypeTraits::getH5DataType(), &init);
+
+        // turn off time tagging of datasets by default.
+        H5Pset_obj_track_times(plist, track_time);
+
+        // enable chunks
+        ArrayVector<hsize_t> chunks(defineChunks(chunkSize, shape, TypeTraits::numberOfBands(), compressionParameter));
+        if(chunks.size() > 0)
+        {
+            std::reverse(chunks.begin(), chunks.end());
+            H5Pset_chunk (plist, chunks.size(), chunks.begin());
+        }
+
+        // enable compression
+        if(compressionParameter > 0)
+        {
+            H5Pset_deflate(plist, compressionParameter);
+        }
+
+        //create the dataset.
+        HDF5HandleShared datasetHandle(H5Dcreate(parent, setname.c_str(), 
+                                                 TypeTraits::getH5DataType(), 
                                                  dataspaceHandle, H5P_DEFAULT, plist, H5P_DEFAULT),
                                        &H5Dclose, 
                                        "HDF5File::createDataset(): unable to create dataset.");
@@ -2741,23 +2853,41 @@ herr_t HDF5File::writeBlock_(HDF5HandleShared datasetHandle,
                              const hid_t datatype, 
                              const int numBandsOfType)
 {
-    // hyperslab parameters for position, size, ...
-    hsize_t boffset [N];
-    hsize_t bshape [N];
-    hsize_t bones [N];
+    ArrayVector<hsize_t> boffset, bshape, bones(N+1, 1);
+    hssize_t dimensions = getDatasetDimensions_(datasetHandle);
+    if(numBandsOfType > 1)
+    {
+        vigra_precondition(N+1 == dimensions,
+            "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
+        bshape.resize(N+1);
+        boffset.resize(N+1);
+        bshape[N] = numBandsOfType;
+        boffset[N] = 0;
+    }
+    else
+    {
+        vigra_precondition(N == dimensions,
+            "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
+        bshape.resize(N);
+        boffset.resize(N);
+    }
 
-    for(int i = 0; i < N; i++){
-        boffset[i] = blockOffset[N-1-i];
-        bshape[i] = array.size(N-1-i);
-        bones[i] = 1;
+    for(int i = 0; i < N; ++i)
+    {
+        // vigra and hdf5 use different indexing
+        bshape[N-1-i] = array.shape(i);
+        boffset[N-1-i] = blockOffset[i];
     }
 
     // create a target dataspace in memory with the shape of the desired block
-    HDF5Handle memspace_handle (H5Screate_simple(N,bshape,NULL),&H5Sclose,"Unable to get origin dataspace");
+    HDF5Handle memspace_handle (H5Screate_simple(bshape.size(), bshape.data(), NULL),
+                                &H5Sclose,
+                                "Unable to get origin dataspace");
 
     // get file dataspace and select the desired block
     HDF5Handle dataspaceHandle (H5Dget_space(datasetHandle),&H5Sclose,"Unable to create target dataspace");
-    H5Sselect_hyperslab(dataspaceHandle, H5S_SELECT_SET, boffset, bones, bones, bshape);
+    H5Sselect_hyperslab(dataspaceHandle, H5S_SELECT_SET, 
+                        boffset.data(), bones.data(), bones.data(), bshape.data());
 
     herr_t status = 0;
     if(array.isUnstrided())
@@ -2970,42 +3100,45 @@ herr_t HDF5File::readBlock_(HDF5HandleShared datasetHandle,
                             MultiArrayView<N, T, Stride> &array, 
                             const hid_t datatype, const int numBandsOfType)
 {
-    //Prepare to read without using HDF5ImportInfo
-    //ArrayVector<hsize_t> dimshape = getDatasetShape(datasetName) ;
-    hssize_t dimensions = getDatasetDimensions_(datasetHandle);
-
-    int offset = (numBandsOfType > 1)
-                     ? 1
-                     : 0;
-
-    vigra_precondition(( (N + offset ) ==  MultiArrayIndex(dimensions)), // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
-        "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
-
     vigra_precondition(blockShape == array.shape(),
          "HDF5File::readBlock(): Array shape disagrees with block size.");
 
-    // hyperslab parameters for position, size, ...
-    hsize_t boffset [N];
-    hsize_t bshape [N];
-    hsize_t bones [N];
+    ArrayVector<hsize_t> boffset, bshape, bones(N+1, 1);
+    hssize_t dimensions = getDatasetDimensions_(datasetHandle);
+    if(numBandsOfType > 1)
+    {
+        vigra_precondition(N+1 == dimensions,
+            "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
+        bshape.resize(N+1);
+        boffset.resize(N+1);
+        bshape[N] = numBandsOfType;
+        boffset[N] = 0;
+    }
+    else
+    {
+        vigra_precondition(N == dimensions,
+            "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
+        bshape.resize(N);
+        boffset.resize(N);
+    }
 
-    for(int i = 0; i < N; i++){
+    for(int i = 0; i < N; ++i)
+    {
         // vigra and hdf5 use different indexing
-        boffset[i] = blockOffset[N-1-i];
-        //bshape[i] = blockShape[i];
-        bshape[i] = blockShape[N-1-i];
-        //boffset[i] = blockOffset[N-1-i];
-        bones[i] = 1;
+        bshape[N-1-i] = blockShape[i];
+        boffset[N-1-i] = blockOffset[i];
     }
 
     // create a target dataspace in memory with the shape of the desired block
-    HDF5Handle memspace_handle(H5Screate_simple(N,bshape,NULL),&H5Sclose,
+    HDF5Handle memspace_handle(H5Screate_simple(bshape.size(), bshape.data(), NULL),
+                               &H5Sclose,
                                "Unable to create target dataspace");
 
     // get file dataspace and select the desired block
-    HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle),&H5Sclose, 
+    HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle), &H5Sclose, 
                                "Unable to get dataspace");
-    H5Sselect_hyperslab(dataspaceHandle, H5S_SELECT_SET, boffset, bones, bones, bshape);
+    H5Sselect_hyperslab(dataspaceHandle, H5S_SELECT_SET, 
+                        boffset.data(), bones.data(), bones.data(), bshape.data());
 
     herr_t status = 0;
     if(array.isUnstrided())

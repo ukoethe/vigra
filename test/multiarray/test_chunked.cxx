@@ -143,7 +143,7 @@ public:
         should(*array == ref);
         should(*array != ref.subarray(Shape3(1),ref.shape()));
         
-        ++ref[ref.size()-1];
+        ref[ref.size()-1] = ref[ref.size()-1] + T(1);
         should(*array != ref);
         
         // FIXME: test copy construction?
@@ -247,9 +247,7 @@ public:
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
        
-        using namespace multi_math;
-        ref = sqrt(ref);
-        vc /= ref;
+        vc /= PlainArray(ref.shape(), T(1));
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
     }
@@ -623,10 +621,10 @@ public:
         int sliceSize = s[0]*s[1];
         
         Iterator bi(v->begin());
-        T count = startIndex*sliceSize;
-        for(bi.setDim(2,startIndex); bi.coord(2) < s[2]; bi.addDim(2, d), count += (d-1)*sliceSize)
+        T count(startIndex*sliceSize), start((d-1)*sliceSize), inc(1);
+        for(bi.setDim(2,startIndex); bi.coord(2) < s[2]; bi.addDim(2, d), count += start)
             for(bi.setDim(1,0); bi.coord(1) < s[1]; bi.incDim(1))
-                for(bi.setDim(0,0); bi.coord(0) < s[0]; bi.incDim(0), ++count)
+                for(bi.setDim(0,0); bi.coord(0) < s[0]; bi.incDim(0), count += inc)
                 {
                     *bi = count;
                 }
@@ -1428,6 +1426,12 @@ struct ChunkedMultiArrayTestSuite
         testImpl<ChunkedArrayCompressed<3, float> >();
         testImpl<ChunkedArrayHDF5<3, float> >();
         testImpl<ChunkedArrayTmpFile<3, float> >();
+        
+        testImpl<ChunkedArrayFull<3, TinyVector<float, 3> > >();
+        testImpl<ChunkedArrayLazy<3, TinyVector<float, 3> > >();
+        testImpl<ChunkedArrayCompressed<3, TinyVector<float, 3> > >();
+        testImpl<ChunkedArrayHDF5<3, TinyVector<float, 3> > >();
+        testImpl<ChunkedArrayTmpFile<3, TinyVector<float, 3> > >();
         
         testSpeedImpl<unsigned char>();
         testSpeedImpl<float>();
