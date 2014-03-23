@@ -108,7 +108,8 @@ public:
                                 ChunkedArrayHDF5<3, T> *)
     {
         HDF5File hdf5_file("chunked_test.h5", HDF5File::New);
-        return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", shape, chunk_shape));
+        return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New, 
+                                                   shape, chunk_shape));
     }
     
     static ArrayPtr createArray(Shape3 const & shape, 
@@ -131,11 +132,11 @@ public:
         
         if(IsSameType<Array, ChunkedArrayFull<3, T> >::value)
         {
-            shouldEqual(array->shapeOfChunkArray(), Shape3(1));
+            shouldEqual(array->chunkArrayShape(), Shape3(1));
         }
         else
         {
-            shouldEqual(array->shapeOfChunkArray(), Shape3(3));
+            shouldEqual(array->chunkArrayShape(), Shape3(3));
         }
         
         shouldEqualSequence(array->begin(), array->end(), ref.begin());
@@ -1263,7 +1264,8 @@ public:
                                 ChunkedArrayHDF5<3, T> *)
     {
         HDF5File hdf5_file("chunked_test.h5", HDF5File::New);
-        return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", 0, shape));
+        return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New, 
+                                                   ZLIB_NONE, shape));
     }
     
     static ArrayPtr createArray(Shape3 const & shape, 
@@ -1333,7 +1335,7 @@ public:
     void testIteratorSpeed_LargeCache()
     {
         array = createArray(shape, (Array *)0);
-        array->setCacheMaxSize(prod(array->shapeOfChunkArray()));
+        array->setCacheMaxSize(prod(array->chunkArrayShape()));
         linearSequence(array->begin(), array->end());
         testIteratorSpeed();
     }

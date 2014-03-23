@@ -49,6 +49,7 @@ std::size_t compressImpl(char const * source, std::size_t srcSize,
     switch(method)
     {
       case ZLIB:
+      case ZLIB_NONE:
       case ZLIB_FAST:
       case ZLIB_BEST:
       {
@@ -130,6 +131,7 @@ void uncompress(char const * source, std::size_t srcSize,
     switch(method)
     {
       case ZLIB:
+      case ZLIB_NONE:
       case ZLIB_FAST:
       case ZLIB_BEST:
       {

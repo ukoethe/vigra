@@ -833,63 +833,6 @@ struct HDF5TypeTraits<const char*>
 
 #undef VIGRA_H5_DATATYPE
 
-// template <unsigned int SIZE>
-// struct HDF5TypeBySize;
-
-// template <>
-// struct HDF5TypeBySize<1>
-// {
-    // static hid_t signed_type() { return H5T_NATIVE_INT8; }
-    // static hid_t unsigned_type() { return H5T_NATIVE_UINT8; }
-// };
-
-// template <>
-// struct HDF5TypeBySize<2>
-// {
-    // static hid_t signed_type() { return H5T_NATIVE_INT16; }
-    // static hid_t unsigned_type() { return H5T_NATIVE_UINT16; }
-// };
-
-// template <>
-// struct HDF5TypeBySize<4>
-// {
-    // static hid_t signed_type() { return H5T_NATIVE_INT32; }
-    // static hid_t unsigned_type() { return H5T_NATIVE_UINT32; }
-// };
-
-// template <>
-// struct HDF5TypeBySize<8>
-// {
-    // static hid_t signed_type() { return H5T_NATIVE_INT64; }
-    // static hid_t unsigned_type() { return H5T_NATIVE_UINT64; }
-// };
-
-// #define VIGRA_H5_SIGNED_DATATYPE(type) \
-// template<> \
-// inline hid_t getH5DataType<type>() \
-// { return HDF5TypeBySize<sizeof(type)>::signed_type(); }
-
-// VIGRA_H5_SIGNED_DATATYPE(signed char)
-// VIGRA_H5_SIGNED_DATATYPE(signed short)
-// VIGRA_H5_SIGNED_DATATYPE(signed int)
-// VIGRA_H5_SIGNED_DATATYPE(signed long)
-// VIGRA_H5_SIGNED_DATATYPE(signed long long)
-
-// #undef VIGRA_H5_SIGNED_DATATYPE
-
-// #define VIGRA_H5_UNSIGNED_DATATYPE(type) \
-// template<> \
-// inline hid_t getH5DataType<type>() \
-// { return HDF5TypeBySize<sizeof(type)>::unsigned_type(); }
-
-// VIGRA_H5_UNSIGNED_DATATYPE(unsigned char)
-// VIGRA_H5_UNSIGNED_DATATYPE(unsigned short)
-// VIGRA_H5_UNSIGNED_DATATYPE(unsigned int)
-// VIGRA_H5_UNSIGNED_DATATYPE(unsigned long)
-// VIGRA_H5_UNSIGNED_DATATYPE(unsigned long long)
-
-// #undef VIGRA_H5_UNSIGNED_DATATYPE
-
 #if 0
 template<>
 inline hid_t getH5DataType<FFTWComplex<float> >()
@@ -971,6 +914,8 @@ class HDF5File
   private:
     // time tagging of datasets, turned off (= 0) by default.
     int track_time;
+    
+    bool read_only_;
 
     // helper class for ls()
     struct ls_closure
@@ -1026,7 +971,8 @@ class HDF5File
         by default).
         */
     HDF5File(int track_creation_times = 0)
-    : track_time(track_creation_times)
+    : track_time(track_creation_times),
+      read_only_(true)
     {}
 
         /** \brief Open or create an HDF5File object.
@@ -1049,7 +995,8 @@ class HDF5File
         */
     HDF5File(HDF5File const & other)
     : fileHandle_(other.fileHandle_),
-      track_time(other.track_time)
+      track_time(other.track_time),
+      read_only_(other.read_only_)
     {
         cGroupHandle_ = HDF5Handle(openCreateGroup_(other.currentGroupName_()), &H5Gclose, 
                                    "HDF5File(HDF5File const &): Failed to open group.");
@@ -1079,6 +1026,7 @@ class HDF5File
             cGroupHandle_ = HDF5Handle(openCreateGroup_(other.currentGroupName_()), &H5Gclose, 
                                        "HDF5File::operator=(): Failed to open group.");
             track_time = other.track_time;
+            read_only_ = other.read_only_;
         }
         return *this;
     }
@@ -1086,6 +1034,16 @@ class HDF5File
     int file_use_count() const
     {
         return fileHandle_.use_count();
+    }
+    
+    bool isReadOnly() const
+    {
+        return read_only_;
+    }
+    
+    void setReadOnly(bool stat=true)
+    {
+        read_only_ = stat;
     }
   
         /** \brief Open or create the given file in the given mode and set the group to "/".
@@ -1098,6 +1056,7 @@ class HDF5File
         std::string errorMessage = "HDF5File.open(): Could not open or create file '" + filename + "'.";
         fileHandle_ = HDF5HandleShared(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
         cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File.open(): Failed to open root group.");
+        setReadOnly(mode == OpenReadOnly);
     }
 
         /** \brief Close the current file.
@@ -1175,6 +1134,9 @@ class HDF5File
         */
     inline void mkdir(std::string groupName)
     {
+        vigra_precondition(!isReadOnly(),
+            "HDF5File::mkdir(): file is read-only.");
+        
         std::string message = "HDF5File::mkdir(): Could not create group '" + groupName + "'.\n";
 
         // make groupName clean
@@ -1189,6 +1151,9 @@ class HDF5File
         */
     inline void cd_mk(std::string groupName)
     {
+        vigra_precondition(!isReadOnly(),
+            "HDF5File::cd_mk(): file is read-only.");
+        
         std::string  message = "HDF5File::cd_mk(): Could not create group '" + groupName + "'.";
 
         // make groupName clean
@@ -2035,6 +2000,7 @@ class HDF5File
         return createDataset<N,T>(datasetName, shape, init, chunkSize, compressionParameter);
     }
 
+        // FIXME: implement this in terms of createDatasetImpl()
     template<unsigned int N, class T>
     HDF5HandleShared createDataset(std::string datasetName, 
                                    TinyVector<MultiArrayIndex, N> const & shape, 
@@ -2042,6 +2008,9 @@ class HDF5File
                                    TinyVector<MultiArrayIndex, N> const & chunkSize, 
                                    int compressionParameter = 0)
     {
+        vigra_precondition(!isReadOnly(),
+            "HDF5File::createDataset(): file is read-only.");
+        
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
 
@@ -2105,6 +2074,9 @@ class HDF5File
                       TinyVector<MultiArrayIndex, N> const & chunkSize,
                       int compressionParameter = 0)
     {
+        vigra_precondition(!isReadOnly(),
+            "HDF5File::createDataset(): file is read-only.");
+        
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
 
@@ -2710,6 +2682,9 @@ void HDF5File::write_(std::string &datasetName,
                       typename MultiArrayShape<N>::type &chunkSize, 
                       int compressionParameter)
 {
+    vigra_precondition(!isReadOnly(),
+        "HDF5File::write(): file is read-only.");
+        
     std::string groupname = SplitString(datasetName).first();
     std::string setname = SplitString(datasetName).last();
 
@@ -2853,6 +2828,9 @@ herr_t HDF5File::writeBlock_(HDF5HandleShared datasetHandle,
                              const hid_t datatype, 
                              const int numBandsOfType)
 {
+    vigra_precondition(!isReadOnly(),
+        "HDF5File::writeBlock(): file is read-only.");
+        
     ArrayVector<hsize_t> boffset, bshape, bones(N+1, 1);
     hssize_t dimensions = getDatasetDimensions_(datasetHandle);
     if(numBandsOfType > 1)
@@ -2913,6 +2891,9 @@ void HDF5File::write_attribute_(std::string name,
                                 const hid_t datatype, 
                                 const int numBandsOfType)
 {
+    vigra_precondition(!isReadOnly(),
+        "HDF5File::writeAttribute(): file is read-only.");
+        
     // shape of the array. Add one dimension, if array contains non-scalars.
     ArrayVector<hsize_t> shape(array.shape().begin(), array.shape().end());
     std::reverse(shape.begin(), shape.end());
