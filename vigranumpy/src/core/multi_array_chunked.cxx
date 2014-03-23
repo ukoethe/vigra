@@ -47,6 +47,8 @@
 #include <boost/python.hpp>
 #include <boost/python/slice.hpp>
 
+#include <sstream>
+
 namespace python = boost::python;
 
 namespace vigra {
@@ -75,15 +77,16 @@ ChunkedArray_chunkArrayShape(ChunkedArray<N, T> const & array)
 template <unsigned int N, class T>
 std::string ChunkedArray_repr(ChunkedArray<N, T> const & array)
 {
-    return array.backend() << "( shape=" << array.shape() << 
+    std::stringstream s;
+    s << array.backend() << "( shape=" << array.shape() << 
            ", dtype=" << NumpyArrayValuetypeTraits<T>::typeName() << ")";
+    return s.str();
 }
 
 template <unsigned int N, class T>
 std::string ChunkedArray_str(ChunkedArray<N, T> const & array)
 {
-    return array.backend() << "( shape=" << array.shape() << 
-           ", dtype=" << NumpyArrayValuetypeTraits<T>::typeName() << ")";
+    return ChunkedArray_repr(array);
 }
 
 template <unsigned int N, class T>
@@ -264,7 +267,7 @@ ptr_to_python(ChunkedArray<N, T> * a)
                                       python::detail::make_owning_holder>()(a);
 }
 
-template <class T, unsigned int N>
+template <class T, int N>
 ChunkedArray<N, T> *
 construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape)
 {
@@ -290,7 +293,7 @@ construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
     return 0;
 }
 
-template <class T, unsigned int N>
+template <class T, int N>
 ChunkedArray<N, T> * 
 construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
                            TinyVector<MultiArrayIndex, N> const & chunk_shape)
@@ -318,7 +321,7 @@ construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
     return 0;
 }
 
-template <class T, unsigned int N>
+template <class T, int N>
 ChunkedArray<N, T> * 
 construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
                                  CompressionMethod method,
@@ -350,7 +353,7 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
     return 0;
 }
 
-template <class T, unsigned int N>
+template <class T, int N>
 ChunkedArray<N, T> * 
 construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
                               TinyVector<MultiArrayIndex, N> const & chunk_shape,
@@ -383,7 +386,7 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
 }
 
 #ifdef HasHDF5
-template <class T, unsigned int N>
+template <class T, int N>
 ChunkedArray<N, T> * 
 construct_ChunkedArrayHDF5(std::string filename,
                            std::string datasetName,

@@ -517,17 +517,17 @@ public:
         Iterator i5 = array->begin();
         Iterator i6 = array->begin();
 
-        for (p[2]=0, i3.resetDim(2), i4.setDim(2, 0), i5.dim<2>() = 0, i6.resetDim(2); 
+        for (p[2]=0, i3.resetDim(2), i4.setDim(2, 0), i5.template dim<2>() = 0, i6.resetDim(2); 
                 i3.point(2) != s[2]; 
-                i3.incDim(2), i4.addDim(2, 1), ++i5.dim<2>(), i6.dim<2>() += 1, ++p[2]) 
+                i3.incDim(2), i4.addDim(2, 1), ++i5.template dim<2>(), i6.template dim<2>() += 1, ++p[2]) 
         {
-            for (p[1]=0, i3.resetDim(1), i4.setDim(1, 0), i5.dim<1>() = 0, i6.resetDim(1); 
+            for (p[1]=0, i3.resetDim(1), i4.setDim(1, 0), i5.template dim<1>() = 0, i6.resetDim(1); 
                     i3.point(1) != s[1]; 
-                    i3.incDim(1), i4.addDim(1, 1), ++i5.dim<1>(), i6.dim<1>() += 1, ++p[1]) 
+                    i3.incDim(1), i4.addDim(1, 1), ++i5.template dim<1>(), i6.template dim<1>() += 1, ++p[1]) 
             {
-                for (p[0]=0, i3.resetDim(0), i4.setDim(0, 0), i5.dim<0>() = 0, i6.resetDim(0); 
+                for (p[0]=0, i3.resetDim(0), i4.setDim(0, 0), i5.template dim<0>() = 0, i6.resetDim(0); 
                         i3.point(0) != s[0]; 
-                        i3.incDim(0), i4.addDim(0, 1), ++i5.dim<0>(), i6.dim<0>() += 1, ++p[0], ++i1, ++c, i2 += 1, ++count)
+                        i3.incDim(0), i4.addDim(0, 1), ++i5.template dim<0>(), i6.template dim<0>() += 1, ++p[0], ++i1, ++c, i2 += 1, ++count)
                 {
                     shouldEqual(&*i1, &v[p]);
                     shouldEqual(&*i2, &v[p]);
@@ -560,24 +560,24 @@ public:
                     should(!(i1 > iend));
                     should(!(i1 >= iend));
 
-                    should(i5.dim<2>() == p[2]);
-                    should(i5.dim<1>() == p[1]);
-                    should(i5.dim<0>() == p[0]);
-                    should(i5.dim<2>() != s[2]);
-                    should(i5.dim<1>() != s[1]);
-                    should(i5.dim<0>() != s[0]);
-                    should(i5.dim<2>() <= p[2]);
-                    should(i5.dim<1>() <= p[1]);
-                    should(i5.dim<0>() <= p[0]);
-                    should(i5.dim<2>() < s[2]);
-                    should(i5.dim<1>() < s[1]);
-                    should(i5.dim<0>() < s[0]);
-                    should(i5.dim<2>() >= 0);
-                    should(i5.dim<1>() >= 0);
-                    should(i5.dim<0>() >= 0);
-                    shouldNot(i5.dim<2>() > s[2]);
-                    shouldNot(i5.dim<1>() > s[1]);
-                    shouldNot(i5.dim<0>() > s[0]);
+                    should(i5.template dim<2>() == p[2]);
+                    should(i5.template dim<1>() == p[1]);
+                    should(i5.template dim<0>() == p[0]);
+                    should(i5.template dim<2>() != s[2]);
+                    should(i5.template dim<1>() != s[1]);
+                    should(i5.template dim<0>() != s[0]);
+                    should(i5.template dim<2>() <= p[2]);
+                    should(i5.template dim<1>() <= p[1]);
+                    should(i5.template dim<0>() <= p[0]);
+                    should(i5.template dim<2>() < s[2]);
+                    should(i5.template dim<1>() < s[1]);
+                    should(i5.template dim<0>() < s[0]);
+                    should(i5.template dim<2>() >= 0);
+                    should(i5.template dim<1>() >= 0);
+                    should(i5.template dim<0>() >= 0);
+                    shouldNot(i5.template dim<2>() > s[2]);
+                    shouldNot(i5.template dim<1>() > s[1]);
+                    shouldNot(i5.template dim<0>() > s[0]);
 
                     shouldEqual(iend - i1, v.size() - count);
 

@@ -2029,7 +2029,7 @@ class HDF5File
             whose indices represent the 'x'-, 'y'-, and 'z'-axis in that order, is reversed
             upon writing to an HDF5 file, i.e. in the file the axis order is 'z', 'y', 'x'. 
         */
-    template<unsigned int N, class T>
+    template<int N, class T>
     HDF5HandleShared createDataset(std::string datasetName, 
                                    TinyVector<MultiArrayIndex, N> const & shape, 
                                    T init = T(), 
@@ -2047,7 +2047,7 @@ class HDF5File
     }
 
         // FIXME: implement this in terms of createDatasetImpl()
-    template<unsigned int N, class T>
+    template<int N, class T>
     HDF5HandleShared createDataset(std::string datasetName, 
                                    TinyVector<MultiArrayIndex, N> const & shape, 
                                    T init, 
@@ -2074,7 +2074,7 @@ class HDF5File
 
         // invert dimensions to guarantee c-order
         hsize_t shape_inv[N];
-        for(unsigned int k=0; k<N; ++k)
+        for(int k=0; k<N; ++k)
             shape_inv[N-1-k] = shape[k];
 
         // create dataspace
@@ -2113,7 +2113,7 @@ class HDF5File
         return datasetHandle;
     }
     
-    template<class T, unsigned int N>
+    template<class T, int N>
     HDF5HandleShared 
     createDatasetImpl(std::string datasetName, 
                       TinyVector<MultiArrayIndex, N> const & shape, 
@@ -2147,7 +2147,7 @@ class HDF5File
         {
             shape_inv.resize(N);
         }
-        for(unsigned int k=0; k<N; ++k)
+        for(int k=0; k<N; ++k)
             shape_inv[N-1-k] = shape[k];
 
         // create dataspace
@@ -2157,7 +2157,7 @@ class HDF5File
 
         // set fill value
         HDF5Handle plist ( H5Pcreate(H5P_DATASET_CREATE), &H5Pclose, "HDF5File::createDataset(): unable to create property list." );
-        typename TypeTraits::value_type init = TypeTraits::value_type();
+        typename TypeTraits::value_type init = typename TypeTraits::value_type();
         H5Pset_fill_value(plist, TypeTraits::getH5DataType(), &init);
 
         // turn off time tagging of datasets by default.

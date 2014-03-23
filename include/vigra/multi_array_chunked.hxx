@@ -126,12 +126,20 @@
 #define VIGRA_MULTI_ARRAY_CHUNKED_HXX
 
 #include <queue>
+#include <string>
 
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
 #include "threading.hxx"
 #include "hdf5impex.hxx"
 #include "compression.hxx"
+
+// FIXME: why is this needed when compiling the Python bindng,
+//        but not when compiling test_multiarray_chunked?
+#if defined(__GNUC__)
+#  define memory_order_release memory_order_seq_cst
+#  define memory_order_acquire memory_order_seq_cst
+#endif
 
 #ifdef _WIN32
 # include "windows.h"
@@ -905,7 +913,7 @@ class MultiArrayView<N, T, ChunkedArrayTag>
     {
         if(chunks_.size() > 1)
             return false;
-        difference_type s = vigra::detail::defaultStride<actual_dimension>(shape());
+        difference_type s = vigra::detail::defaultStride<actual_dimension>(this->shape());
         for(unsigned int k = 0; k <= dimension; ++k)
             if(chunks_.data()->strides_[k] != s[k])
                 return false;
@@ -1565,7 +1573,7 @@ class ChunkedArray
     virtual void refChunks(shape_type const & start, shape_type const & stop,
                            typename view_type::ChunkHolder * destChunks = 0)
     {
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, this->shape()),
                            "ChunkedArray::copySubarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
@@ -1603,7 +1611,7 @@ class ChunkedArray
     
     virtual void unrefChunks(shape_type const & start, shape_type const & stop)
     {
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, this->shape()),
                            "ChunkedArray::unrefChunks(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
@@ -1654,7 +1662,7 @@ class ChunkedArray
     {
         shape_type stop   = start + subarray.shape();
         
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, this->shape()),
                            "ChunkedArray::checkoutSubarray(): subarray out of bounds.");
                            
         const_iterator i(begin().restrictToSubarray(start, stop)),
@@ -1676,7 +1684,7 @@ class ChunkedArray
         
         vigra_precondition(!this->isReadOnly(),
                            "ChunkedArray::commitSubarray(): array is read-only.");
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, this->shape()),
                            "ChunkedArray::commitSubarray(): subarray out of bounds.");
                            
         iterator i(begin().restrictToSubarray(start, stop)),
@@ -1692,7 +1700,7 @@ class ChunkedArray
     view_type 
     subarray(shape_type const & start, shape_type const & stop) const
     {
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, shape()),
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, this->shape()),
                            "ChunkedArray::subarray(): subarray out of bounds.");
         
         shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
@@ -1747,7 +1755,7 @@ class ChunkedArray
     MultiArrayView<N-1, T, ChunkedArrayTag> 
     bindAt(MultiArrayIndex m, MultiArrayIndex d) const
     {
-        shape_type start, stop(shape());
+        shape_type start, stop(this->shape());
         start[m] = d;
         stop[m] = d+1;
         return subarray(start, stop).bindAt(m, 0);
@@ -1803,7 +1811,7 @@ class ChunkedArray
     std::size_t cacheMaxSize() const
     {
         if(cache_max_size_ < 0)
-            const_cast<int &>(cache_max_size_) = detail::defaultCacheSize(chunkArrayShape());
+            const_cast<int &>(cache_max_size_) = detail::defaultCacheSize(this->chunkArrayShape());
         return cache_max_size_;
     }
     

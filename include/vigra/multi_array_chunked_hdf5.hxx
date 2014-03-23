@@ -98,7 +98,7 @@ class ChunkedArrayHDF5
                     vigra_postcondition(status >= 0,
                         "ChunkedArrayHDF5: write to dataset failed.");
                 }
-                storage_.swap(MultiArray<N, T>());
+                MultiArray<N, T>().swap(storage_);
             }
         }
         
@@ -249,7 +249,7 @@ class ChunkedArrayHDF5
     {
         // make sure that chunks are written to disk before the destructor of 
         // file_ is called
-        outer_array_.swap(ChunkStorage());
+        ChunkStorage().swap(outer_array_);
     }
     
     void flushToDisk()
