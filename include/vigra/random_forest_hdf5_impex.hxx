@@ -224,6 +224,33 @@ void rf_export_HDF5(const RandomForest<T, Tag> & rf,
     rf_export_HDF5(rf, h5context, pathname);
 }
 
+/** \brief Save a random forest to an HDF5 file specified by its id
+
+    The random forest is saved as a set of HDF5 datasets, groups, and
+    attributes below a certain HDF5 group (default: root). No additional data
+    should be stored in that group.
+
+    \warning In case the underlying HDF5 library used by Vigra is not
+    exactly the same library used to open the file with the given id, this
+    method will lead to crashes.
+
+    \param rf       Random forest object to be exported
+    \param file_id  HDF5 file id
+    \param pathname If empty or not supplied, save the random forest to the
+                    root group of the HDF5 file. Otherwise, save to a
+                    new-created group specified by the path name (relative
+                    to the root group).
+*/
+template<class T, class Tag>
+void rf_export_HDF5(const RandomForest<T, Tag> & rf,
+                    hid_t outf_id,
+                    const std::string & pathname = "")
+{
+    HDF5HandleShared fileHandle(outf_id, NULL, "");
+    HDF5File h5context(fileHandle, pathname);
+    rf_export_HDF5(rf, h5context);
+}
+
 /** \brief Read a random forest from an HDF5File object's specified group.
     
     The random forest is read from a certain HDF5 group (default: current group
@@ -261,6 +288,7 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
     // get external parameters
     detail::problemspec_import_HDF5(h5context, rf.ext_param_,
                                     rf_hdf5_ext_param);
+    rf.trees_.clear();
     // get all groups in base path
     // no check for the rf_hdf5_tree prefix...
     std::vector<std::string> names = h5context.ls();
@@ -298,6 +326,33 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
 {
     HDF5File h5context(filename, HDF5File::OpenReadOnly);
     return rf_import_HDF5(rf, h5context, pathname);
+}
+
+/** \brief Read a random forest from an HDF5 file specified by its id.
+
+    The random forest is read from a certain HDF5 group (default: root group
+    of the HDF5 file) as a set of HDF5 datasets, groups, and attributes.
+    No additional data should be present in that group.
+
+    \warning In case the underlying HDF5 library used by Vigra is not
+    exactly the same library used to open the file with the given id, this
+    method will lead to crashes.
+
+    \param rf        Random forest object to be imported
+    \param inf_id   HDF5 file id
+    \param pathname  If empty or not supplied, read from the random forest
+                     from the current group of the HDF5 file. Otherwise,
+                     use the group specified by the path name, which may
+                     be either relative or absolute.
+*/
+template<class T, class Tag>
+bool rf_import_HDF5(RandomForest<T, Tag> & rf, 
+                    hid_t inf_id,
+                    const std::string & pathname = "")
+{
+    HDF5HandleShared fileHandle(inf_id, NULL, "");
+    HDF5File h5context(fileHandle, pathname, true);
+    return rf_import_HDF5(rf, h5context);
 }
 
 } // namespace vigra

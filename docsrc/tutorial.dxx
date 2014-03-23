@@ -876,14 +876,16 @@
     }
     \endcode
     
-    These simple tricks already get you a long way in the advanced use of VIGRA. You will notice, that many existing VIGRA functions are not implemented in temrs of \ref vigra::MultiArrayView, but in terms of \ref ImageIterators "image iterators" and \ref MultiIteratorGroup "hierarchical iterators". However, these iterators are quite difficult to use, so the MultiArrayView approach is recommended for new code.
+    These simple tricks already get you a long way in the advanced use of VIGRA. You will notice, that many existing VIGRA functions are not implemented in temrs of \ref vigra::MultiArrayView, but in terms of \ref ImageIterators "image iterators" and \ref MultiIteratorGroup "hierarchical iterators". However, these iterators are more difficult to use, so the MultiArrayView approach is recommended for new code.
 */
 
 /** \page PythonBindingsTutorial VIGRA Python Bindings
     
+    See also the full <a href="../vigranumpy/index.html">vigranumpy reference</a>!
+    
     When you configure VIGRA with the option <tt>-DWITH_VIGRANUMPY=1</tt> while running cmake, a Python module <tt>vigra</tt> will be compiled and installed. It exposes most of VIGRA's functionality for easy scripting and prototyping in Python. Most importantly, VIGRA's Python bindings are fully integrated with the popular 'numpy' package so that you can call vigra functions directly with numpy <tt>ndarrays</tt>. No explicit or implicit conversion of data formats is required.
     
-    The syntax of the Python version is usually very similar to the C++ syntax, with one important difference: You do not have to pass pre-allocated result images to the functions. That is, while in C++ you write
+    The syntax of the Python version is usually very similar to the C++ syntax, with one important difference: You do not have to pass pre-allocated result arrays to the functions. That is, while the call to <tt>gaussianSmoothing()</tt> in C++ is written like this
     
     \code
     MultiArray<2, float> inputImage(Shape2(width, height)), 
@@ -903,31 +905,71 @@
     >>> inputImage = numpy.zeros((width, height), dtype=numpy.float32)
     ...  # fill inputImage
     
-    # smooth image with Gaussian filter with sigma=1.5
-    # (resultImage is automatically allocated and returned) 
     >>> resultImage = vigra.filters.gaussianSmoothing(inputImage, 1.5);
     \endcode
     
-    However, it is still possible to pass a result array of appropriate shape explicitly by means of the <tt>out</tt> parameter:
+    The result image is automatically allocated and returned by the function. Nonetheless, it is still possible to pass a result array of appropriate shape explicitly by means of the <tt>out</tt> parameter:
     
     \code
     >>> resultImage = numpy.zeros(inputImage.shape, dtype=numpy.float32)
     >>> vigra.filters.gaussianSmoothing(inputImage, 1.5, out=resultImage)
     \endcode
     
-    If the C++ function provides options, they are exposed on the Python side as keyword arguments:
+    This is, for example, useful when the same result image should be reused in several calls of the same function to avoid the repeated creation of new result arrays. Another possible use is the application of a function to only a rectangular region-of-interest: When the full result array is already allocated, you can pass a view of the approriate subarray to the <tt>out</tt> parameter in order to fill just the desired ROI.
+    
+    When a C++ function provides options, they are exposed on the Python side as keyword arguments:
     
     \code
     >>> labeling, max_label = vigra.analysis.watersheds(inputImage, seeds=seedImage, method='UnionFind')
     \endcode
     
-    In general, the correspondence between a Python function and its C++ counterpart is straightforward, and the Python documentation frequently refers to the C++ documentation for details. However, there is an important caveat: the default axis interpretation is different in VIGRA's <tt>MultiArray</tt> (which uses 'Fortran order') and in numpy's <tt>ndarray</tt> (which uses 'C-order). To help you deal with this difficulty, vigranumpy provides a subclass <a href="../vigranumpy/index.html#axistags-and-the-vigraarray-data-structure">VigraArray</a> of <tt>ndarray</tt> and the concept of <a href="../vigranumpy/index.html#more-on-the-motivation-and-use-of-axistags">axistags</a>.
+    In general, the correspondence between a Python function and its C++ counterpart is straightforward, and the Python documentation frequently refers to the C++ documentation for details. However, there is a crucial difference: the default axis interpretation is different in VIGRA's <tt>MultiArray</tt> (which interpretes axes as x, y, z, so called 'Fortran' order) and in numpy's <tt>ndarray</tt> (which interpretes them as z, y, x, so called 'C'-order). To help you deal with this difficulty, vigranumpy provides a subclass <a href="../vigranumpy/index.html#axistags-and-the-vigraarray-data-structure">VigraArray</a> of <tt>ndarray</tt> and the concept of <a href="../vigranumpy/index.html#more-on-the-motivation-and-use-of-axistags">axistags</a>. Please take the time to read this material in order to avoid surprises.
     
-    The full Python documentation is available via <a href="../vigranumpy/index.html">HTML</a> or can be obtained directly from the Python prompt by the <tt>help()</tt> command:
+    The full <a href="../vigranumpy/index.html">vigranumpy reference</a> is available via HTML or can be obtained directly at the Python prompt by the <tt>help()</tt> command:
     
     \code
     >>> help(vigra.filters.gaussianSmoothing)
     \endcode
     
-    An important
+    Another important difference between C++ and Python is that vigranumpy exposes most functions only for a restricted set of pixel types. This restriction is necessary because support for all possible type combinations would result in a combinatorial explosion and unreasonably large Python modules. In general, all functions are implemented for <tt>float</tt> pixel types (called <tt>numpy.float32</tt> on the Python side), and some provide <tt>uint8</tt> and/or <tt>uint32</tt> versions in addition. If you call a function with an unsupported pixel type, an error message listing the supported types will be printed:
+    
+    \code
+    >>> a = vigra.ScalarImage((20,20), dtype=numpy.float64)
+
+    >>> vigra.gaussianSmoothing(a, 1) # doesn't support numpy.float64
+    ArgumentError: Python argument types in
+        vigra.filters.gaussianSmoothing(numpy.ndarray, int)
+    did not match C++ signature:
+        gaussianSmoothing(class vigra::NumpyArray<3,struct vigra::Multiband<float>,struct vigra::StridedArrayTag> array, class boost::python::api::object sigma, class vigra::NumpyArray<3,struct vigra::Multiband<float>,struct vigra::StridedArrayTag> out=None, class boost::python::api::object sigma_d=0.0, class boost::python::api::object step_size=1.0, double window_size=0.0, class boost::python::api::object roi=None)    
+
+        gaussianSmoothing(class vigra::NumpyArray<4,struct vigra::Multiband<float>,struct vigra::StridedArrayTag> array, class boost::python::api::object sigma, class vigra::NumpyArray<4,struct vigra::Multiband<float>,struct vigra::StridedArrayTag> out=None, class boost::python::api::object sigma_d=0.0, class boost::python::api::object step_size=1.0, double window_size=0.0, class boost::python::api::object roi=None)
+    \endcode
+    
+    The error message is automatically generated by boost::python and therefore rather technical. It says that <tt>%gaussianSmoothing()</tt> supports 3- and 4-dimensional arrays where the rightmost dimension is interpreted as a channel axis, and the pixel type must be <tt>float</tt> (these properties are indicated by the type specifications <tt>NumpyArray<3,struct vigra::Multiband<float></tt> and <tt>NumpyArray<4,struct vigra::Multiband<float></tt> respectively). Thus, the input array must be a <tt>float32</tt> image or volume with either no explicit channel axis (in which case a singleton channel axis will be inserted automatically) or with arbitrary many channels (e.g. RGB). 
+    
+    <a href="../vigranumpy/index.html#more-on-the-motivation-and-use-of-axistags">Axistags</a> allow vigranumpy to distinguish if a given 3-dimensional array is to be interpreted as a 2D image with multiple channels, or as a 3D volume with only a single channel. If no axistags are attached to the array, it is unspecified which version of an algorithm will be called. Axistags are automatically specified when arrays are created with one of the factory functions in the <tt>vigra</tt> module, for example:
+    
+    \code
+    >>> a = vigra.ScalarImage((30, 20))
+    >>> print "%s \n %r" % (a.shape, a.axistags)
+    (30L, 20L)
+     x y
+
+    >>> a = vigra.RGBImage((30, 20))
+    >>> print "%s \n %r" % (a.shape, a.axistags)
+    (30L, 20L, 3L)
+     x y c
+
+    >>> a = vigra.ScalarVolume((30, 20, 10))
+    >>> print "%s \n %r" % (a.shape, a.axistags)
+    (30L, 20L, 10L)
+     x y z
+
+    >>> a = vigra.RGBVolume((30, 20, 10))
+    >>> print "%s \n %r" % (a.shape, a.axistags)
+    (30L, 20L, 10L, 3L)
+     x y z c
+    \endcode
+    
+    Axistags are encoded 'x', 'y', 'z' for the three spatial axes, 'c' for a channel axis, and 't' for a time axis. If the channel axis is missing, vigranumpy will assume that the array has only a single channel. That is, arrays with shape (30, 20, 1) and axistags 'x y c' are equivalent to arrays with shape (30, 20) and axistags 'x y'. Functions that change the order of the axes (such as <tt>%array.transpose()</tt>) or reduce the number of axes (e.g. <tt>array[:, 1, :]</tt>) also modify the axistags accordingly, so that you can always ask for the axis meaning by simply calling <tt>array.axistags</tt>.
 */

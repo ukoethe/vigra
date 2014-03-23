@@ -45,7 +45,7 @@ namespace vigra{
 
 //---------------------------------------------------------------------------
 
-void projectEllipse2D_FirstQuad (double &vx, double &vy, double a, double b, const double eps, const int iter_max){                
+inline void projectEllipse2D_FirstQuad (double &vx, double &vy, double a, double b, const double eps, const int iter_max){                
   
   double t=0,tmin,tmax,d1,d2,f,x1,y1,l;                      
   int i;
@@ -84,7 +84,7 @@ void projectEllipse2D_FirstQuad (double &vx, double &vy, double a, double b, con
 }
 
 
-void projectEllipse2D(double &vx, double &vy, const double _a,const double _b,const double eps,const int max_iter){
+inline void projectEllipse2D(double &vx, double &vy, const double _a,const double _b,const double eps,const int max_iter){
   
   //double err;
   double a=_a,b=_b;

@@ -158,6 +158,8 @@ struct ExecLoop
     VIGRA_EXEC_LOOP(sqrt, = vigra::sqrt)
     VIGRA_EXEC_LOOP(fromPromote, = NumericTraits<T1>::fromPromote)
     VIGRA_EXEC_LOOP(fromRealPromote, = NumericTraits<T1>::fromRealPromote)
+    VIGRA_EXEC_LOOP_SCALAR(addScalar, +)
+    VIGRA_EXEC_LOOP_SCALAR(subScalar, -)
     VIGRA_EXEC_LOOP_SCALAR(mulScalar, *)
     VIGRA_EXEC_LOOP_SCALAR(divScalar, /)
     
@@ -449,6 +451,8 @@ struct UnrollLoop
     VIGRA_UNROLL_LOOP(sqrt, = vigra::sqrt)
     VIGRA_UNROLL_LOOP(fromPromote, = NumericTraits<T1>::fromPromote)
     VIGRA_UNROLL_LOOP(fromRealPromote, = NumericTraits<T1>::fromRealPromote)
+    VIGRA_UNROLL_LOOP_SCALAR(addScalar, +)
+    VIGRA_UNROLL_LOOP_SCALAR(subScalar, -)
     VIGRA_UNROLL_LOOP_SCALAR(mulScalar, *)
     VIGRA_UNROLL_LOOP_SCALAR(divScalar, /)
     
@@ -544,7 +548,11 @@ struct UnrollLoop<0>
     template <class T1, class T2>
     static void add(T1, T2) {}
     template <class T1, class T2>
+    static void addScalar(T1, T2) {}
+    template <class T1, class T2>
     static void sub(T1, T2) {}
+    template <class T1, class T2>
+    static void subScalar(T1, T2) {}
     template <class T1, class T2>
     static void mul(T1, T2) {}
     template <class T1, class T2>
@@ -752,6 +760,22 @@ class TinyVectorBase
     DERIVED & operator%=(TinyVectorBase<T1, SIZE, D1, D2> const & r)
     {
         Loop::mod(data_, r.begin());
+        return static_cast<DERIVED &>(*this);
+    }
+
+        /** Component-wise scalar multiply-assignment
+        */
+    DERIVED & operator+=(double r)
+    {
+        Loop::addScalar(data_, r);
+        return static_cast<DERIVED &>(*this);
+    }
+
+        /** Component-wise scalar divide-assignment
+        */
+    DERIVED & operator-=(double r)
+    {
+        Loop::subScalar(data_, r);
         return static_cast<DERIVED &>(*this);
     }
 
@@ -1784,6 +1808,42 @@ operator%(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     return typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote(l) %= r;
 }
 
+    /// component-wise left scalar addition
+template <class V, int SIZE, class D1, class D2>
+inline
+typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
+operator+(double v, TinyVectorBase<V, SIZE, D1, D2> const & r)
+{
+    return typename NumericTraits<TinyVector<V, SIZE> >::RealPromote(r) += v;
+}
+
+    /// component-wise right scalar addition
+template <class V, int SIZE, class D1, class D2>
+inline
+typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
+operator+(TinyVectorBase<V, SIZE, D1, D2> const & l, double v)
+{
+    return typename NumericTraits<TinyVector<V, SIZE> >::RealPromote(l) += v;
+}
+
+    /// component-wise left scalar subtraction
+template <class V, int SIZE, class D1, class D2>
+inline
+typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
+operator-(double v, TinyVectorBase<V, SIZE, D1, D2> const & r)
+{
+    return typename NumericTraits<TinyVector<V, SIZE> >::RealPromote(v) -= r;
+}
+
+    /// component-wise right scalar subtraction
+template <class V, int SIZE, class D1, class D2>
+inline
+typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
+operator-(TinyVectorBase<V, SIZE, D1, D2> const & l, double v)
+{
+    return typename NumericTraits<TinyVector<V, SIZE> >::RealPromote(l) -= v;
+}
+
     /// component-wise left scalar multiplication
 template <class V, int SIZE, class D1, class D2>
 inline
@@ -1802,7 +1862,16 @@ operator*(TinyVectorBase<V, SIZE, D1, D2> const & l, double v)
     return typename NumericTraits<TinyVector<V, SIZE> >::RealPromote(l) *= v;
 }
 
-    /// component-wise scalar division
+    /// component-wise left scalar division
+template <class V, int SIZE, class D1, class D2>
+inline
+typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
+operator/(double v, TinyVectorBase<V, SIZE, D1, D2> const & r)
+{
+    return typename NumericTraits<TinyVector<V, SIZE> >::RealPromote(v) /= r;
+}
+
+    /// component-wise right scalar division
 template <class V, int SIZE, class D1, class D2>
 inline
 typename NumericTraits<TinyVector<V, SIZE> >::RealPromote

@@ -329,6 +329,10 @@ struct TinyVectorTest
         should(dot(bv, bv) == expectedSM2);
         should(bv.squaredMagnitude() == expectedSM2);
 
+        should(equalVector(bv0 + 1.0, fv1));
+        should(equalVector(1.0 + bv0, fv1));
+        should(equalVector(bv1 - 1.0, fv0));
+        should(equalVector(1.0 - bv1, fv0));
         should(equalVector(bv3 - iv3, bv0));
         should(equalVector(fv3 - fv3, fv0));
         BV bvp = (bv3 + bv3)*0.5;
@@ -353,7 +357,11 @@ struct TinyVectorTest
         should(equalIter(fvp.begin(), fvp.end(), fp));
         fvp = fv3 / 2.0;
         float fp1[] = {0.6f, 1.2f, 1.8f, 2.4f, 4.05f, 4.85f};
-        
+        should(equalIter(fvp.begin(), fvp.end(), fp1));
+        shouldEqual(2.0 / fv1, 2.0 * fv1);        
+        float fp2[] = {1.0f, 0.5f, 0.25f, 0.2f, 0.125f, 0.1f};
+        fvp = 1.0 / bv3;
+        should(equalIter(fvp.begin(), fvp.end(), fp2));
 
         int ivsq[] = { 1, 4, 16, 25, 64, 100 };
         ivp = iv3*iv3;

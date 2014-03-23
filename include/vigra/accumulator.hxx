@@ -4389,16 +4389,16 @@ class Kurtosis
     {
         static const unsigned int workInPass = 2;
         
-        typedef typename LookupDependency<Central<PowerSum<4> >, BASE>::value_type value_type;
-        typedef value_type                                                  result_type;
+        typedef typename LookupDependency<Central<PowerSum<4> >, BASE>::value_type  value_type;
+        typedef value_type                                                          result_type;
 
         result_type operator()() const
         {
             typedef Central<PowerSum<4> > Sum4;
             typedef Central<PowerSum<2> > Sum2;
         
-                        using namespace multi_math;
-            return getDependency<Count>(*this) * getDependency<Sum4>(*this) / sq(getDependency<Sum2>(*this)) - value_type(3.0);
+            using namespace multi_math;
+            return getDependency<Count>(*this) * getDependency<Sum4>(*this) / sq(getDependency<Sum2>(*this)) - 3.0;
         }
     };
 };
@@ -4426,11 +4426,11 @@ class UnbiasedKurtosis
         static const unsigned int workInPass = 2;
         
         typedef typename LookupDependency<Central<PowerSum<4> >, BASE>::value_type value_type;
-        typedef value_type                                                  result_type;
+        typedef value_type                                                         result_type;
 
         result_type operator()() const
         {
-                        using namespace multi_math;
+            using namespace multi_math;
             double n = getDependency<Count>(*this);
             return (n-1.0)/((n-2.0)*(n-3.0))*((n+1.0)*getDependency<Kurtosis>(*this) + value_type(6.0));
         }
@@ -5437,8 +5437,10 @@ class RangeHistogramBase
     {
         vigra_precondition(this->value_.size() > 0,
             "RangeHistogramBase::setMinMax(...): setBinCount(...) has not been called.");
-        vigra_precondition(mi < ma,
-            "RangeHistogramBase::setMinMax(...): min < max required.");
+        vigra_precondition(mi <= ma,
+            "RangeHistogramBase::setMinMax(...): min <= max required.");
+        if(mi == ma)
+            ma += this->value_.size() * NumericTraits<double>::epsilon();
         offset_ = mi;
         scale_ = (double)this->value_.size() / (ma - mi);
         inverse_scale_ = 1.0 / scale_;

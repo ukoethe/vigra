@@ -2004,24 +2004,24 @@ fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     
     The following functions implement various variants of FFT-based convolution:
     
-        <DL>
-        <DT><b>convolveFFT</b><DD> Convolve a real-valued input array with a kernel such that the 
-                            result is also real-valued. That is, the kernel is either provided
-                            as a real-valued array in the spatial domain, or as a 
-                            complex-valued array in the Fourier domain, using the half-space format 
-                            of the R2C Fourier transform (see below).
-        <DT><b>convolveFFTMany</b><DD> Like <tt>convolveFFT</tt>, but you may provide many kernels at once 
-                            (using an iterator pair specifying the kernel sequence). 
-                            This has the advantage that the forward transform of the input array needs 
-                            to be executed only once.
-        <DT><b>convolveFFTComplex</b><DD> Convolve a complex-valued input array with a complex-valued kernel, 
-                            resulting in a complex-valued output array. An additional flag is used to 
-                            specify whether the kernel is defined in the spatial or frequency domain.
-        <DT><b>convolveFFTComplexMany</b><DD> Like <tt>convolveFFTComplex</tt>, but you may provide many kernels at once 
-                            (using an iterator pair specifying the kernel sequence). 
-                            This has the advantage that the forward transform of the input array needs 
-                            to be executed only once.
-        </DL>
+    <DL>
+    <DT><b>convolveFFT</b><DD> Convolve a real-valued input array with a kernel such that the 
+                        result is also real-valued. That is, the kernel is either provided
+                        as a real-valued array in the spatial domain, or as a 
+                        complex-valued array in the Fourier domain, using the half-space format 
+                        of the R2C Fourier transform (see below).
+    <DT><b>convolveFFTMany</b><DD> Like <tt>convolveFFT</tt>, but you may provide many kernels at once 
+                        (using an iterator pair specifying the kernel sequence). 
+                        This has the advantage that the forward transform of the input array needs 
+                        to be executed only once.
+    <DT><b>convolveFFTComplex</b><DD> Convolve a complex-valued input array with a complex-valued kernel, 
+                        resulting in a complex-valued output array. An additional flag is used to 
+                        specify whether the kernel is defined in the spatial or frequency domain.
+    <DT><b>convolveFFTComplexMany</b><DD> Like <tt>convolveFFTComplex</tt>, but you may provide many 
+                        kernels at once (using an iterator pair specifying the kernel sequence). 
+                        This has the advantage that the forward transform of the input array needs 
+                        to be executed only once.
+    </DL>
     
     The output arrays must have the same shape as the input arrays. In the "Many" variants of the
     convolution functions, the kernels must all have the same shape.
@@ -2066,7 +2066,7 @@ fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     <tt>libfftw3f</tt> and <tt>libfftw3l</tt> respectively.
     
     The Fourier transform functions internally create <a href="http://www.fftw.org/doc/Using-Plans.html">FFTW plans</a>
-    which control the algorithm details. The plans are creates with the flag <tt>FFTW_ESTIMATE</tt>, i.e.
+    which control the algorithm details. The plans are created with the flag <tt>FFTW_ESTIMATE</tt>, i.e.
     optimal settings are guessed or read from saved "wisdom" files. If you need more control over planning,
     you can use the class \ref FFTWConvolvePlan.
     
