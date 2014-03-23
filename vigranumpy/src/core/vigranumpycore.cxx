@@ -58,6 +58,7 @@ UInt32 pychecksum(python::str const & s)
 
 void registerNumpyArrayConverters();
 void defineAxisTags();
+void defineChunkedArray();
 
 } // namespace vigra
 
@@ -69,6 +70,7 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
     import_array();
     registerNumpyArrayConverters();
     defineAxisTags();
+    defineChunkedArray();
     
     def("checksum", &pychecksum, args("data"));
 }

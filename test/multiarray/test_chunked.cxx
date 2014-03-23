@@ -38,6 +38,9 @@
 #include "vigra/unittest.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_array_chunked.hxx"
+#ifdef HasHDF5
+#include "vigra/multi_array_chunked_hdf5.hxx"
+#endif
 #include "vigra/functorexpression.hxx"
 #include "vigra/multi_math.hxx"
 #include "vigra/algorithm.hxx"
@@ -103,6 +106,7 @@ public:
         return ArrayPtr(new ChunkedArrayCompressed<3, T>(LZ4, shape, chunk_shape));
     }
     
+#ifdef HasHDF5
     static ArrayPtr createArray(Shape3 const & shape, 
                                 Shape3 const & chunk_shape,
                                 ChunkedArrayHDF5<3, T> *)
@@ -111,6 +115,7 @@ public:
         return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New, 
                                                    shape, chunk_shape));
     }
+#endif
     
     static ArrayPtr createArray(Shape3 const & shape, 
                                 Shape3 const & chunk_shape,
@@ -144,9 +149,13 @@ public:
         should(*array == ref);
         should(*array != ref.subarray(Shape3(1),ref.shape()));
         
+        shouldEqual(array->getItem(Shape3(1,8,17)), ref[Shape3(1,8,17)]);
+        
         ref[ref.size()-1] = ref[ref.size()-1] + T(1);
         should(*array != ref);
-        
+        array->setItem(ref.shape()-Shape3(1), ref[ref.size()-1]);
+        should(*array == ref);
+
         // FIXME: test copy construction?
         
         // should(array3 != array3.subarray(Shape(1,1,1), Shape(2,2,2)));
@@ -1260,6 +1269,7 @@ public:
         return ArrayPtr(new ChunkedArrayCompressed<3, T>(LZ4, shape));
     }
     
+#ifdef HasHDF5
     static ArrayPtr createArray(Shape3 const & shape, 
                                 ChunkedArrayHDF5<3, T> *)
     {
@@ -1267,6 +1277,7 @@ public:
         return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New, 
                                                    ZLIB_NONE, shape));
     }
+#endif
     
     static ArrayPtr createArray(Shape3 const & shape, 
                                 ChunkedArrayTmpFile<3, T> *)
@@ -1404,9 +1415,11 @@ struct ChunkedMultiArrayTestSuite
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayLazy<3, T> >::testNestedLoopSpeed )));
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayLazy<3, T> >::testIteratorSpeed )));
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayCompressed<3, T> >::testIteratorSpeed )));
-        add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayHDF5<3, T> >::testIteratorSpeed )));
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayTmpFile<3, T> >::testIteratorSpeed )));
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayTmpFile<3, T> >::testIteratorSpeed_LargeCache )));
+#ifdef HasHDF5
+        add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayHDF5<3, T> >::testIteratorSpeed )));
+#endif
     }
     
     template <class T>
@@ -1416,8 +1429,10 @@ struct ChunkedMultiArrayTestSuite
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayFull<3, T> >::testIndexingSpeed )));
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayLazy<3, T> >::testIndexingSpeed )));
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayCompressed<3, T> >::testIndexingSpeed )));
-        add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayHDF5<3, T> >::testIndexingSpeed )));
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayTmpFile<3, T> >::testIndexingSpeed )));
+#ifdef HasHDF5
+        add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayHDF5<3, T> >::testIndexingSpeed )));
+#endif
     }
     
     ChunkedMultiArrayTestSuite()
@@ -1426,14 +1441,18 @@ struct ChunkedMultiArrayTestSuite
         testImpl<ChunkedArrayFull<3, float> >();
         testImpl<ChunkedArrayLazy<3, float> >();
         testImpl<ChunkedArrayCompressed<3, float> >();
-        testImpl<ChunkedArrayHDF5<3, float> >();
         testImpl<ChunkedArrayTmpFile<3, float> >();
+#ifdef HasHDF5
+        testImpl<ChunkedArrayHDF5<3, float> >();
+#endif
         
         testImpl<ChunkedArrayFull<3, TinyVector<float, 3> > >();
         testImpl<ChunkedArrayLazy<3, TinyVector<float, 3> > >();
         testImpl<ChunkedArrayCompressed<3, TinyVector<float, 3> > >();
-        testImpl<ChunkedArrayHDF5<3, TinyVector<float, 3> > >();
         testImpl<ChunkedArrayTmpFile<3, TinyVector<float, 3> > >();
+#ifdef HasHDF5
+        testImpl<ChunkedArrayHDF5<3, TinyVector<float, 3> > >();
+#endif
         
         testSpeedImpl<unsigned char>();
         testSpeedImpl<float>();

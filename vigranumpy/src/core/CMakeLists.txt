@@ -9,6 +9,9 @@ VIGRA_ADD_NUMPY_MODULE(core
     vigranumpycore.cxx
     converters.cxx
     axistags.cxx
+    multi_array_chunked.cxx
+  LIBRARIES   
+    ${VIGRANUMPY_IMPEX_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(impex 
