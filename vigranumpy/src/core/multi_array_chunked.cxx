@@ -435,7 +435,7 @@ void defineChunkedArrayImpl()
     docstring_options doc_options(true, false, false);
 
     typedef ChunkedArray<N, T> Array;
-    class_<Array, Array*>("ChunkedArray", 
+    class_<Array, boost::noncopyable>("ChunkedArray", 
          "\n"
          "Base class for chunked arrays.\n\n", 
          no_init)

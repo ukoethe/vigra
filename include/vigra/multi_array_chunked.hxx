@@ -464,47 +464,17 @@ class ChunkedArrayBase
     virtual ~ChunkedArrayBase()
     {}
     
-    // virtual void unrefChunk(ChunkedHandle<N, T> * h) = 0;
+    virtual void unrefChunk(ChunkedHandle<N, T> * h) = 0;
     
-    // virtual void unrefChunks(shape_type const & start, shape_type const & stop) = 0;
-    
-    // virtual pointer getChunk(shape_type const & point, 
-                             // shape_type & strides, shape_type & upper_bound, 
-                             // ChunkedHandle<N, T> * h) = 0;
-    
-    // virtual std::string backend() const = 0;
-
-    // virtual shape_type chunkArrayShape() const = 0;
-    
-    virtual void unrefChunk(ChunkedHandle<N, T> * h)
-    {
-        vigra_invariant(false, "ChunkedArrayBase virtual function called.");
-    }
-    
-    virtual void unrefChunks(shape_type const & start, shape_type const & stop)
-    {
-        vigra_invariant(false, "ChunkedArrayBase virtual function called.");
-    }
+    virtual void unrefChunks(shape_type const & start, shape_type const & stop) = 0;
     
     virtual pointer getChunk(shape_type const & point, 
                              shape_type & strides, shape_type & upper_bound, 
-                             ChunkedHandle<N, T> * h)
-    {
-        vigra_invariant(false, "ChunkedArrayBase virtual function called.");
-        return 0;
-    }
+                             ChunkedHandle<N, T> * h) = 0;
     
-    virtual std::string backend() const
-    {
-        vigra_invariant(false, "ChunkedArrayBase virtual function called.");
-        return "";
-    }
-    
-    virtual shape_type chunkArrayShape() const
-    {
-        vigra_invariant(false, "ChunkedArrayBase virtual function called.");
-        return shape_type();
-    }
+    virtual std::string backend() const = 0;
+
+    virtual shape_type chunkArrayShape() const = 0;
     
     virtual bool isReadOnly() const
     {
@@ -1450,28 +1420,11 @@ class ChunkedArray
         return !operator==(rhs);
     }
     
-    // virtual pointer loadChunk(Chunk * chunk) = 0;
+    virtual pointer loadChunk(Chunk * chunk) = 0;
     
-    // virtual void unloadChunk(Chunk * chunk) = 0;
+    virtual void unloadChunk(Chunk * chunk) = 0;
     
-    // virtual Chunk * lookupChunk(shape_type const & index) = 0;
-    
-    virtual pointer loadChunk(Chunk * chunk)
-    {
-        vigra_invariant(false, "ChunkedArray virtual function called.");
-        return 0;
-    }
-    
-    virtual void unloadChunk(Chunk * chunk)
-    {
-        vigra_invariant(false, "ChunkedArray virtual function called.");
-    }
-    
-    virtual Chunk * lookupChunk(shape_type const & index)
-    {
-        vigra_invariant(false, "ChunkedArray virtual function called.");
-        return 0;
-    }
+    virtual Chunk * lookupChunk(shape_type const & index) = 0;
     
     virtual void unrefChunk(ChunkedHandle<N, T> * h)
     {
