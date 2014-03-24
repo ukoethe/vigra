@@ -23,7 +23,17 @@ namespace vigra{
     */
     namespace detail{
 
+        /*
+            a filter is a functor 
+            which makes an lemon iterator 
+            from a std::set<Adjacency<...> >::const_iterator like
+            iterator.
+            Using these filters will reduce the code 
+            needed to implement lemon compatible iterators
+        */
 
+        // filter to iterate over neighbor nodes for
+        // for a given node
         template<class GRAPH>
         struct NeighborNodeFilter{
             typedef typename GRAPH::Node ResultType;

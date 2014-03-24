@@ -296,6 +296,27 @@ class IteratorAdaptor
     BaseType adaptee_;
 };
 
+
+
+
+
+
+
+
+namespace detail_iterator_facade{
+
+
+
+
+}
+
+
+
+
+
+
+
+
 } // namespace vigra
 
 

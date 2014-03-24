@@ -505,6 +505,59 @@ private:
 
 
 
+
+
+
+// tagged shape for lemon graphs
+// edge map / node map / arc map 
+template<class G>
+class TaggedGraphShape{
+public:
+    typedef G Graph;
+    const static unsigned int ND = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension;
+    const static unsigned int ED = IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension;
+    const static unsigned int AD = IntrinsicGraphShape<Graph>::IntrinsicArcMapDimension;
+    static TaggedShape  taggedNodeMapShape(const Graph & graph){
+        return NumpyArray<ND,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(graph),"n");
+    }
+    static TaggedShape  taggedEdgeMapShape(const Graph & graph){
+        return NumpyArray<ED,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(graph),"e");
+    }
+    static TaggedShape  taggedArcMapShape(const Graph & graph){
+        return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),"e");
+    }
+};
+
+// macro to specialize TaggedGraphShape for 
+// grid graphs up to 4 dimensions
+#define VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(DIM,tn,te,ta) \
+template<class BOOST_DIRECTED_TAG> \
+class TaggedGraphShape<GridGraph<DIM,BOOST_DIRECTED_TAG> >{ \
+public: \
+    typedef GridGraph<DIM,BOOST_DIRECTED_TAG> Graph; \
+    const static unsigned int ND = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension; \
+    const static unsigned int ED = IntrinsicGraphShape<Graph>::IntrinsicEdgeMapDimension; \
+    const static unsigned int AD = IntrinsicGraphShape<Graph>::IntrinsicArcMapDimension; \
+    static TaggedShape  taggedNodeMapShape(const Graph & graph){ \
+       return NumpyArray<ND,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(graph),tn); \
+    } \
+    static TaggedShape  taggedEdgeMapShape(const Graph & graph){  \
+       return NumpyArray<ED,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(graph),te);  \
+    } \
+    static TaggedShape  taggedArcMapShape(const Graph & graph){  \
+       return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),ta);  \
+    } \
+};
+
+VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(1,"x","xe","xe");
+VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(2,"xy","xye","xye");
+VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(3,"xyz","xyze","xyze");
+VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(4,"xyzt","xyzte","xyzte");
+
+#undef VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO
+
+
+
 // TODO ASK UKOETHE FOR HELP HERE
 template<unsigned int G_DIM ,class T,class G,unsigned int OG_DIM>
 void reshapeNodeMapIfEmpty(

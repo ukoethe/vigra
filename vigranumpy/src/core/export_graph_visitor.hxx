@@ -202,6 +202,10 @@ public:
             .def("intrinsicNodeMapShape",&IntrinsicGraphShape<Graph>::intrinsicNodeMapShape)
             .def("intrinsicEdgeMapShape",&IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape)
             .def("intrinsicArcMapShape" , &IntrinsicGraphShape<Graph>::intrinsicArcMapShape)
+            .def("taggedNodeMapShape",&TaggedGraphShape<Graph>::taggedNodeMapShape)
+            .def("taggedEdgeMapShape",&TaggedGraphShape<Graph>::taggedEdgeMapShape)
+            .def("taggedArcMapShape" , &TaggedGraphShape<Graph>::taggedArcMapShape)
+
             // intrinsic coordinate of node/edge/arc
             .def("intrinsicNodeCoordinate",& GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate)
             .def("intrinsicEdgeCoordinate",&GraphDescriptorToMultiArrayIndex<Graph>::intrinsicEdgeCoordinate)

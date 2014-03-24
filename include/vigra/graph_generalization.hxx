@@ -56,6 +56,9 @@ namespace vigra{
         typedef typename MAP::ConstReference ConstReference;
     };
 
+    // generalizes the iterator begin end accessed
+    // since grid graph has no constructor
+    // for INVALID
     template<class GRAPH>
     struct GraphIteratorAccessor{
         typedef GRAPH Graph;
@@ -88,7 +91,9 @@ namespace vigra{
         }
     };
 
-
+    // generalizes the iterator begin end accessed
+    // since grid graph has no constructor
+    // for INVALID
     template<unsigned int DIM,class DIRECTED_TAG>
     struct GraphIteratorAccessor<GridGraph<DIM,DIRECTED_TAG> >{
         typedef GridGraph<DIM,DIRECTED_TAG> Graph;
@@ -121,7 +126,7 @@ namespace vigra{
     };
 
 
-
+    // shape of graphs node,edge,arc-maps
     template<class GRAPH>
     class IntrinsicGraphShape{
     private:
@@ -150,9 +155,9 @@ namespace vigra{
 
         static const unsigned int IntrinsicNodeMapDimension=1;
         static const unsigned int IntrinsicEdgeMapDimension=1;
-        static const unsigned int IntrinsicArceMapDimension=1;
+        static const unsigned int IntrinsicArcMapDimension=1;
     };
-
+    // shape of graphs node,edge,arc-maps
     template<unsigned int DIM,class DIRECTED_TAG>
     class IntrinsicGraphShape<GridGraph<DIM,DIRECTED_TAG> >{
     private:
@@ -178,12 +183,11 @@ namespace vigra{
         }
         static const unsigned int IntrinsicNodeMapDimension=DIM;
         static const unsigned int IntrinsicEdgeMapDimension=DIM+1;
-        static const unsigned int IntrinsicArceMapDimension=DIM+1;
+        static const unsigned int IntrinsicArcMapDimension=DIM+1;
     };
 
-
-
-
+    // convert a descriptor to an multi_array index w.r.t. 
+    // an node/edge/arc map
     template<class GRAPH>
     class GraphDescriptorToMultiArrayIndex{
     private:
@@ -210,8 +214,8 @@ namespace vigra{
 
     };
 
-
-
+    // convert a descriptor to an multi_array index w.r.t. 
+    // an node/edge/arc map
     template<unsigned int DIM,class DIRECTED_TAG>
     class GraphDescriptorToMultiArrayIndex<GridGraph<DIM,DIRECTED_TAG> >{
     private:
