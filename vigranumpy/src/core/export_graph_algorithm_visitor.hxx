@@ -336,7 +336,7 @@ public:
     ){
         edgeWeightsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g) );
 
-        if(functor==std::string("eucledian") || functor==std::string("norm") || functor==std::string("l2")){
+        if(functor==std::string("euclidean") || functor==std::string("norm") || functor==std::string("l2")){
             typedef  metrics::Norm<float> DistFunctor;
             DistFunctor f;
             return pyNodeFeatureDistToEdgeWeightT<DistFunctor>(g,nodeFeaturesArray,f,edgeWeightsArray);
@@ -360,7 +360,7 @@ public:
             throw std::runtime_error(
                 "distance not supported\n"
                 "supported distance types:\n"
-                "- eucledian/norm/l2\n"
+                "- euclidean/norm/l2\n"
                 "- squaredNorm\n"
                 "- manhattan/l1\n"
                 "- chiSquared\n"
