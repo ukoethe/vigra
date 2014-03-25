@@ -575,62 +575,6 @@ namespace vigra{
         }
     }
     
-    /*
-    /// \brief Minimum Spanning tree based segmentation
-    /// 
-    /// \param graph: input graph
-    /// \param weights : edge weights / edge indicator
-    /// \param useWeightThreshold : use a weight threshold as stoping criterion
-    /// \param useNodeThreshold : use a number of nodes as stoping criterion 
-    /// \param[out] : resulting  nodeLabeling (not dense)
-    template<class GRAPH,class WEIGHTS,class NODE_LABEL_MAP>
-    void minimumSpanningTreeSegmentation(
-        const GRAPH     & graph,
-        WEIGHTS         & weights,
-        const bool useWeightThreshold,
-        const bool useNodeThreshold,
-        typename WEIGHTS::Value weightThreshold,
-        const  size_t nodeNumThreshold,
-        NODE_LABEL_MAP     &  nodeLabeling
-    ){  
-
-        typedef GRAPH Graph;
-        
-        typedef typename Graph::Edge Edge;
-        typedef typename Graph::Node Node;
-        typedef typename Graph::NodeIt NodeIt;
-        typedef typename WEIGHTS::Value WeightType;
-        typedef EdgeMapIteratorHelper<GRAPH,WEIGHTS>     WeightIterHelper;
-        typedef detail::Partition<size_t> UfdType;
-    
-        // sort the edges by their weights
-        std::vector<Edge> sortedEdges;
-        std::less<WeightType> comperator;
-        edgeSort(graph,weights,comperator,sortedEdges);
-
-        UfdType ufd(graph.maxNodeId()+1);
-        const size_t unusedSets = ufd.numberOfSets()-graph.nodeNum();
-
-        for(size_t i=0;i<sortedEdges.size();++i){
-            const Edge e=sortedEdges[i];
-            const size_t uId=graph.id(graph.u(e));
-            const size_t vId=graph.id(graph.v(e));
-
-            if(useWeightThreshold && weightThreshold <= weights[e])
-                break;
-            if(useNodeThreshold && (ufd.numberOfSets()-unusedSets)<=nodeNumThreshold )
-                break; 
-            if(ufd.find(uId)!=ufd.find(vId)){
-                ufd.merge(uId,vId);
-            }
-        }
-        for(typename  GRAPH::NodeIt n(graph);n!=lemon::INVALID;++n){
-            const Node node(*n);
-            nodeLabeling[node]=ufd.find(graph.id(node));
-        }
-    }  
-    */
-
 
     namespace detail_watersheds_segmentation{
 
