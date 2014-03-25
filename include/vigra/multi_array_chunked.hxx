@@ -452,13 +452,15 @@ class ChunkedArrayBase
     typedef ChunkBase<N, T> Chunk;
     
     ChunkedArrayBase()
-    : shape_(),
-      chunk_shape_()
+    : shape_()
+    , chunk_shape_()
+    , data_bytes_()
     {}
     
     ChunkedArrayBase(shape_type const & shape, shape_type const & chunk_shape)
-    : shape_(shape),
-      chunk_shape_(prod(chunk_shape) > 0 ? chunk_shape : detail::ChunkShape<N, T>::defaultShape())
+    : shape_(shape)
+    , chunk_shape_(prod(chunk_shape) > 0 ? chunk_shape : detail::ChunkShape<N, T>::defaultShape())
+    , data_bytes_()
     {}
 
     virtual ~ChunkedArrayBase()
@@ -514,7 +516,22 @@ class ChunkedArrayBase
         return true;
     }
     
+    virtual std::size_t dataBytes(Chunk * c) const
+    {
+        return c->pointer_ == (void*)0
+                 ? 0
+                 : c->size()*sizeof(T);
+    }
+    
+    std::size_t dataBytes() const
+    {
+        return data_bytes_;
+    }
+    
+    virtual std::size_t overheadBytes() const = 0;
+
     shape_type shape_, chunk_shape_;
+    std::size_t data_bytes_;
 };
 
 struct ChunkUnrefProxyBase
@@ -609,6 +626,11 @@ class MultiArrayView<N, T, ChunkedArrayTag>
     virtual std::string backend() const
     {
         return "MultiArrayView<ChunkedArrayTag>";
+    }
+
+    virtual std::size_t overheadBytes() const
+    {
+        return chunks_.size()*sizeof(Chunk);
     }
 
     MultiArrayView()
@@ -1474,6 +1496,7 @@ class ChunkedArray
             if(p == 0)
             {
                 p = loadChunk(chunk);
+                this->data_bytes_ += dataBytes(chunk);
                 
                 if(cacheMaxSize() > 0)
                 {
@@ -1546,6 +1569,7 @@ class ChunkedArray
             if(p == 0)
             {
                 p = loadChunk(chunk);
+                this->data_bytes_ += dataBytes(chunk);
 
                 if(cacheMaxSize() > 0)
                 {
@@ -1598,7 +1622,9 @@ class ChunkedArray
             if(c->refcount_.compare_exchange_strong(rc, chunk_locked, std::memory_order_acquire))
             {
                 // refcount was zero => can unload
+                this->data_bytes_ -= dataBytes(c);
                 unloadChunk(c);
+                this->data_bytes_ += dataBytes(c);
                 c->refcount_.store(0, std::memory_order_release);
             }
             else
@@ -1918,6 +1944,11 @@ class ChunkedArrayFull
     {
         return &chunk_;
     }
+
+    virtual std::size_t overheadBytes() const
+    {
+        return sizeof(Chunk);
+    }
     
     virtual pointer getChunk(shape_type const & point, 
                              shape_type & strides, shape_type & upper_bound, 
@@ -2045,6 +2076,11 @@ class ChunkedArrayLazy
     {
         return "ChunkedArrayLazy";
     }
+
+    virtual std::size_t overheadBytes() const
+    {
+        return outer_array_.size()*sizeof(Chunk);
+    }
     
     ChunkStorage outer_array_;  // the array of chunks
 };
@@ -2141,6 +2177,13 @@ class ChunkedArrayCompressed
             }
             return p;
         }
+    
+        virtual std::size_t data_bytes() const
+        {
+            return this->pointer_ == (void*)0
+                     ? compressed_.size()
+                     : this->size()*sizeof(T);
+        }
         
         ArrayVector<char> compressed_;
         Alloc alloc_;
@@ -2225,6 +2268,18 @@ class ChunkedArrayCompressed
           default:
             return "unknown";
         }
+    }
+    
+    virtual std::size_t dataBytes(Chunk * c) const
+    {
+        return c->pointer_ == (void*)0
+                 ? c->compressed_.size()
+                 : c->size()*sizeof(T);
+    }
+
+    virtual std::size_t overheadBytes() const
+    {
+        return outer_array_.size()*sizeof(Chunk);
     }
         
     ChunkStorage outer_array_;  // the array of chunks
@@ -2462,6 +2517,11 @@ class ChunkedArrayTmpFile
     virtual std::string backend() const
     {
         return "ChunkedArrayTmpFile";
+    }
+
+    virtual std::size_t overheadBytes() const
+    {
+        return outer_array_.size()*sizeof(Chunk);
     }
     
     void unmap()

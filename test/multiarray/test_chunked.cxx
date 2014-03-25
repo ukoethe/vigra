@@ -1275,7 +1275,7 @@ public:
     {
         HDF5File hdf5_file("chunked_test.h5", HDF5File::New);
         return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New, 
-                                                   ZLIB_NONE, shape));
+                                                   NO_COMPRESSION, shape));
     }
 #endif
     
@@ -1345,6 +1345,7 @@ public:
     
     void testIteratorSpeed_LargeCache()
     {
+        array.reset(0);
         array = createArray(shape, (Array *)0);
         array->setCacheMaxSize(prod(array->chunkArrayShape()));
         linearSequence(array->begin(), array->end());
@@ -1419,6 +1420,7 @@ struct ChunkedMultiArrayTestSuite
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayTmpFile<3, T> >::testIteratorSpeed_LargeCache )));
 #ifdef HasHDF5
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayHDF5<3, T> >::testIteratorSpeed )));
+        add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayHDF5<3, T> >::testIteratorSpeed_LargeCache )));
 #endif
     }
     

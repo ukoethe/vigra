@@ -447,6 +447,10 @@ void defineChunkedArrayImpl()
              "\nshape of internal array of chunks.\n")
         .add_property("size", &Array::size,
              "\nnumber of elements of the array.\n")
+        .add_property("overhead_bytes", &Array::overheadBytes,
+             "\nsize of the overhead caused by chunked storage.\n")
+        .add_property("data_bytes", (std::size_t (Array::*)() const)&Array::dataBytes,
+             "\nsize of the currently allocated part of the data.\n")
         .add_property("backend", &Array::backend,
              "\nthe backend driver of this array.\n")
         .add_property("read_only", &Array::isReadOnly,

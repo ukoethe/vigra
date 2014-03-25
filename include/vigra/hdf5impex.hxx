@@ -2695,7 +2695,7 @@ class HDF5File
     void readBlock_(std::string datasetName, 
                     typename MultiArrayShape<N>::type &blockOffset, 
                     typename MultiArrayShape<N>::type &blockShape, 
-                    MultiArrayView<N, T, Stride> &array, 
+                    MultiArrayView<N, T, Stride> array, 
                     const hid_t datatype, const int numBandsOfType)
     {
         std::string errorMessage ("HDF5File::readBlock(): Unable to open dataset '" + datasetName + "'.");
@@ -2714,7 +2714,7 @@ class HDF5File
     herr_t readBlock_(HDF5HandleShared dataset, 
                       typename MultiArrayShape<N>::type &blockOffset, 
                       typename MultiArrayShape<N>::type &blockShape, 
-                      MultiArrayView<N, T, Stride> &array, 
+                      MultiArrayView<N, T, Stride> array, 
                       const hid_t datatype, const int numBandsOfType);
 };  /* class HDF5File */
 
@@ -3124,7 +3124,7 @@ template<unsigned int N, class T, class Stride>
 herr_t HDF5File::readBlock_(HDF5HandleShared datasetHandle, 
                             typename MultiArrayShape<N>::type &blockOffset, 
                             typename MultiArrayShape<N>::type &blockShape, 
-                            MultiArrayView<N, T, Stride> &array, 
+                            MultiArrayView<N, T, Stride> array, 
                             const hid_t datatype, const int numBandsOfType)
 {
     vigra_precondition(blockShape == array.shape(),

@@ -2,6 +2,18 @@ IF(MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 ENDIF()
 
+if(NOT MSVC)
+    IF (CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0")
+        SET(CMAKE_CXX_FLAGS "-pthread -std=c++0x ${CMAKE_CXX_FLAGS}")
+    else()
+        SET(CMAKE_CXX_FLAGS "-pthread -std=c++11 ${CMAKE_CXX_FLAGS}")
+    endif()
+endif()
+
+if(APPLE)
+    SET(CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+endif()
+
 # note special treatment of target vigranumpy_core: 
 # module name is automatically changed into vigranumpycore
 VIGRA_ADD_NUMPY_MODULE(core 
