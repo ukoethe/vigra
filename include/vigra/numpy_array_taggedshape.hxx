@@ -625,6 +625,11 @@ class TaggedShape
         return *this;
     }
 
+    bool hasChannelAxis() const
+    {
+        return channelAxis !=none;
+    }
+
     TaggedShape & fromFrequencyDomain()
     {
         return toFrequencyDomain(-1);

@@ -2,6 +2,9 @@
 #define VIGRA_EXPORT_GRAPH_HIERARCHICAL_CLUSTERING_VISTITOR_HXX
 //#define NO_IMPORT_ARRAY
 
+/*boost python before anything else*/
+#include <boost/python.hpp>
+
 /*std*/
 #include <sstream>
 #include <string>
@@ -9,7 +12,6 @@
 /*vigra*/
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <boost/python.hpp>
 #include <vigra/graphs.hxx>
 #include <vigra/graph_maps.hxx>
 #include <vigra/python_graph.hxx>

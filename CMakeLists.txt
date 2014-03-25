@@ -8,9 +8,6 @@ cmake_minimum_required(VERSION 2.6)
 
 PROJECT(vigra)
 
-# options
-OPTION( WITH_PROFILING "build profiling code" ON)
-
 # read the current version from configVersion.hxx
 file(READ ${vigra_SOURCE_DIR}/include/vigra/configVersion.hxx VIGRA_VERSION_FILE)
 string(REGEX MATCH "VIGRA_VERSION_MAJOR[ \t\n]+[^ \t\n]+" VIGRA_VERSION_MAJOR ${VIGRA_VERSION_FILE})
@@ -183,11 +180,6 @@ ADD_SUBDIRECTORY(docsrc)
 IF(WITH_VIGRANUMPY)
     ADD_SUBDIRECTORY(vigranumpy)
 ENDIF()
-
-IF(WITH_PROFILING)
-    ADD_SUBDIRECTORY(profiling)
-ENDIF()
-
 
 IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/private/CMakeLists.txt)
     ADD_SUBDIRECTORY(private EXCLUDE_FROM_ALL)

@@ -575,7 +575,7 @@ namespace vigra{
         }
     }
     
-
+    /*
     /// \brief Minimum Spanning tree based segmentation
     /// 
     /// \param graph: input graph
@@ -629,6 +629,8 @@ namespace vigra{
             nodeLabeling[node]=ufd.find(graph.id(node));
         }
     }  
+    */
+
 
     namespace detail_watersheds_segmentation{
 
@@ -708,7 +710,7 @@ namespace vigra{
                 const LabelType label = labels[node]; 
                 //std::cout<<"node "<<g.id(node)<<" with label "<<label<<"\n";
                 if(label!=0){
-                    throw std::runtime_error("this should not happen 0");
+                    throw std::runtime_error("seems like there are no seeds at all");
                 }
 
                 pq.pop();
@@ -758,9 +760,6 @@ namespace vigra{
                             minWeight=priority;
                             minWeightLabel=labels[neigbour];
                         }
-                    }
-                    if(minWeightLabel==0){
-                        throw std::runtime_error("this should not happen 2");
                     }
                     labels[node]=minWeightLabel;
                 }
@@ -843,7 +842,6 @@ namespace vigra{
         typedef NodeMapIteratorHelper<GRAPH,NODE_SIZE  >      NodeSizeMapHelper;
         typedef NodeMapIteratorHelper<GRAPH,NodeSizeAccMap  > NodeAccSizeMapHelper;
         typedef NodeMapIteratorHelper<GRAPH,NodeIntDiffMap  > NodeIntDiffMapHelper;
-        typedef detail::Partition<size_t> UfdType;
 
         // initalize node size map  and internal diff map
         NodeIntDiffMap internalDiff(graph);
@@ -861,17 +859,18 @@ namespace vigra{
         edgeSort(graph,edgeWeights,comperator,sortedEdges);
 
         // make the ufd
-        UfdType ufd(graph.maxNodeId()+1);
+        detail::UnionFindArray<UInt64> ufdArray(graph.maxNodeId()+1);
 
-        size_t nodeNum = graph.nodeNum();
+
+        size_t nodeNum = graph.nodeNum();   
 
 
         while(true){
             // iterate over edges is the sorted order
             for(size_t i=0;i<sortedEdges.size();++i){
                 const Edge e  = sortedEdges[i];
-                const size_t rui = ufd.find(graph.id(graph.u(e)));
-                const size_t rvi = ufd.find(graph.id(graph.v(e)));
+                const size_t rui = ufdArray.find(graph.id(graph.u(e)));
+                const size_t rvi = ufdArray.find(graph.id(graph.v(e)));
                 const Node   ru  = graph.nodeFromId(rui);
                 const Node   rv  = graph.nodeFromId(rvi);
                 if(rui!=rvi){
@@ -885,10 +884,10 @@ namespace vigra{
                     const WeightType minIntDiff  = std::min(internalDiff[ru]+tauRu,internalDiff[rv]+tauRv);
                     if(w<=minIntDiff){
                         // do merge
-                        ufd.merge(rui,rvi);
+                        ufdArray.makeUnion(rui,rvi);
                         --nodeNum;
                         // update size and internal difference
-                        const size_t newRepId = ufd.find(rui);
+                        const size_t newRepId = ufdArray.find(rui);
                         const Node newRepNode = graph.nodeFromId(newRepId);
                         internalDiff[newRepNode]=w;
                         nodeSizeAcc[newRepNode] = sizeRu+sizeRv;
@@ -910,9 +909,10 @@ namespace vigra{
                 }
             }
         }
+        ufdArray.makeContiguous();
         for(typename  GRAPH::NodeIt n(graph);n!=lemon::INVALID;++n){
             const Node node(*n);
-            nodeLabeling[node]=ufd.find(graph.id(node));
+            nodeLabeling[node]=ufdArray[graph.id(node)];
         }
     } 
 

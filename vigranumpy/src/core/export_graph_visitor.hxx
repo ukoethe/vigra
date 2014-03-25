@@ -2,6 +2,9 @@
 #define EXPORT_GRAPH_VISITOR_HXX
 //#define NO_IMPORT_ARRAY
 
+/*boost python before anything else*/
+#include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 /*std*/
 #include <sstream>
 #include <string>
@@ -9,15 +12,11 @@
 /*vigra*/
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <boost/python.hpp>
 #include <vigra/graphs.hxx>
 #include <vigra/graph_maps.hxx>
 #include <vigra/graph_generalization.hxx>
 #include <vigra/python_graph.hxx>
 
-
-/*boost*/
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 namespace python = boost::python;
 

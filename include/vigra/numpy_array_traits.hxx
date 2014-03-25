@@ -43,7 +43,6 @@
 #include "numerictraits.hxx"
 #include "multi_array.hxx"
 #include "numpy_array_taggedshape.hxx"
-#include <boost/python.hpp>
 namespace vigra {
 
 /********************************************************/
@@ -112,7 +111,7 @@ struct NumpyArrayValuetypeTraits<type > \
     } \
 };
 
-VIGRA_NUMPY_VALUETYPE_TRAITS(boost::python::object,           NPY_OBJECT, boost::python::objec, "OBJECT")
+
 VIGRA_NUMPY_VALUETYPE_TRAITS(bool,           NPY_BOOL, bool, "UINT8")
 VIGRA_NUMPY_VALUETYPE_TRAITS(signed char,    NPY_INT8, int8, "INT16")
 VIGRA_NUMPY_VALUETYPE_TRAITS(unsigned char,  NPY_UINT8, uint8, "UINT8")

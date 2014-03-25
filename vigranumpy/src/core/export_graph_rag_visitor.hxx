@@ -2,6 +2,9 @@
 #define VIGRA_EXPORT_GRAPH_RAG_VISITOR_HXX
 //#define NO_IMPORT_ARRAY
 
+/*boost python before anything else*/
+#include <boost/python.hpp>
+
 /*std*/
 #include <sstream>
 #include <string>
@@ -9,7 +12,6 @@
 /*vigra*/
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <boost/python.hpp>
 #include <vigra/graphs.hxx>
 #include <vigra/graph_maps.hxx>
 #include <vigra/python_graph.hxx>
@@ -242,7 +244,7 @@ public:
         );
 
         // resize out
-        ragEdgeFeaturesArray.reshapeIfEmpty(IntrinsicGraphShape<RagGraph>::intrinsicEdgeMapShape(rag));
+        ragEdgeFeaturesArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedEdgeMapShape(rag));
         std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
         // numpy arrays => lemon maps
         typename PyEdgeMapTraits<Graph   ,T >::Map edgeFeaturesArrayMap(graph,edgeFeaturesArray);
@@ -336,7 +338,7 @@ public:
 
         // resize out
 
-        ragNodeFeaturesArray.reshapeIfEmpty(IntrinsicGraphShape<RagGraph>::intrinsicNodeMapShape(rag));
+        ragNodeFeaturesArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedNodeMapShape(rag));
         std::fill(ragNodeFeaturesArray.begin(),ragNodeFeaturesArray.end(),0.0f);
 
         // numpy arrays => lemon maps
@@ -395,7 +397,7 @@ public:
         }
         outShape[RagNodeMapDim]=nodeFeaturesArray.shape(NodeMapDim);
 
-        ragNodeFeaturesArray.reshapeIfEmpty(   RagMultiFloatNodeArray::ArrayTraits::taggedShape(outShape,"xc") );
+        ragNodeFeaturesArray.reshapeIfEmpty(   RagMultiFloatNodeArray::ArrayTraits::taggedShape(outShape,"nc") );
         std::fill(ragNodeFeaturesArray.begin(),ragNodeFeaturesArray.end(),0.0f);
 
         // numpy arrays => lemon maps
@@ -442,7 +444,7 @@ public:
         RagFloatNodeArray          ragNodeSizeArray=RagFloatNodeArray()
     ){
         // resize out
-        ragNodeSizeArray.reshapeIfEmpty(IntrinsicGraphShape<RagGraph>::intrinsicNodeMapShape(rag));
+        ragNodeSizeArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedNodeMapShape(rag));
         std::fill(ragNodeSizeArray.begin(),ragNodeSizeArray.end(),0.0f);
 
         // numpy arrays => lemon maps
@@ -465,7 +467,7 @@ public:
         RagFloatEdgeArray          ragEdgeFeaturesArray
     ){
         // reshape out
-        ragEdgeFeaturesArray.reshapeIfEmpty(IntrinsicGraphShape<RagGraph>::intrinsicEdgeMapShape(rag));
+        ragEdgeFeaturesArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedEdgeMapShape(rag));
         // numpy arrays => lemon maps
         RagFloatEdgeArrayMap ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
 
@@ -503,8 +505,17 @@ public:
         const Int32                                              ignoreLabel=-1,
         typename PyNodeMapTraits<Graph,T>::Array                 graphNodeFeaturesArray=typename PyNodeMapTraits<Graph,T>::Array() // out
     ){
+
+        TaggedShape ragNodeFeaturesArrayShape = ragNodeFeaturesArray.taggedShape();
+        TaggedShape graphNodeFeaturesArrayShape = TaggedGraphShape<Graph>::taggedNodeMapShape(graph);
+        if(ragNodeFeaturesArrayShape.hasChannelAxis()){
+            graphNodeFeaturesArrayShape.setChannelCount(ragNodeFeaturesArrayShape.channelCount());
+        }
+        graphNodeFeaturesArray.reshapeIfEmpty(graphNodeFeaturesArrayShape);
+
+
         // reshape out  ( last argument (out) will be reshaped if empty, and #channels is taken from second argument)
-        reshapeNodeMapIfEmpty(graph,ragNodeFeaturesArray,graphNodeFeaturesArray);
+        //reshapeNodeMapIfEmpty(graph,ragNodeFeaturesArray,graphNodeFeaturesArray);
         // numpy arrays => lemon maps 
         typename PyNodeMapTraits<Graph,   UInt32>::Map labelsWhichGeneratedRagArrayMap(graph, labelsWhichGeneratedRagArray);
         typename PyNodeMapTraits<RagGraph,T     >::Map ragNodeFeaturesArrayMap(rag,ragNodeFeaturesArray);
