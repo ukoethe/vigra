@@ -36,6 +36,7 @@
 #ifndef VIGRA_MEMORY_HXX
 #define VIGRA_MEMORY_HXX
 
+#include <cstring>
 #include "metaprogramming.hxx"
 
 namespace vigra { 
@@ -62,22 +63,130 @@ Dest uninitializedCopy(Src s, Src end, Dest d)
 }
 
 template <class T>
-inline void destroy_n(T * /* p */, std::ptrdiff_t /* n */, VigraTrueType /* isPOD */)
+struct PlacementNewAllocator
 {
-}
+    T * allocate(std::size_t n)
+    {
+        return (T*)::operator new(n*sizeof(T));
+    }
+
+    void deallocate(T * p, std::size_t)
+    {
+        return ::operator delete(p);
+    }
+
+    void construct(T * p, T const & initial)
+    {
+        new(p) T(initial);
+    }
+    
+    void destroy(T * p)
+    {
+        p->~T();
+    }
+};
 
 template <class T>
-inline void destroy_n(T * p, std::ptrdiff_t n, VigraFalseType /* isPOD */)
+inline void 
+destroy_n(T * /* p */, std::size_t /* n */, VigraTrueType /* isPOD */)
+{}
+
+template <class T>
+inline void 
+destroy_n(T * p, std::size_t n, VigraFalseType /* isPOD */)
 {
-    T * end = p + n;
-    for(; p != end; ++p)
+    for(std::size_t i=0; i < n; ++i, ++p)
         p->~T();
 }
 
 template <class T>
-inline void destroy_n(T * p, std::ptrdiff_t n)
+inline void
+destroy_n(T * p, std::size_t n)
 {
     destroy_n(p, n, typename TypeTraits<T>::isPOD());
+}
+
+template <class T, class Alloc>
+inline T * 
+alloc_initialize_impl(std::size_t n, Alloc & alloc, VigraTrueType /* isPOD */)
+{
+    T * p = alloc.allocate(n);
+    std::memset(p, 0, n*sizeof(T));
+    return p;
+}
+
+template <class T, class Alloc>
+inline T * 
+alloc_initialize_impl(std::size_t n, Alloc & alloc, VigraFalseType /* isPOD */)
+{
+    T * p = alloc.allocate(n);
+    std::size_t i=0;
+    try 
+    {
+        T initial = T();
+        for (; i < n; ++i)
+            alloc.construct(p+i, initial);
+    }
+    catch (...) 
+    {
+        for (std::size_t j=0; j < i; ++j)
+            alloc.destroy(p+j);
+        alloc.deallocate(p, n);
+        throw;
+    }
+    return p;
+}
+
+template <class T, class Alloc>
+inline T * 
+alloc_initialize_n(std::size_t n, Alloc & alloc)
+{
+    return alloc_initialize_impl<T>(n, alloc, typename TypeTraits<T>::isPOD());
+}
+
+template <class T>
+inline T * 
+alloc_initialize_n(std::size_t n)
+{
+    PlacementNewAllocator<T> alloc();
+    return alloc_initialize_impl<T>(n, alloc, typename TypeTraits<T>::isPOD());
+}
+
+template <class T, class Alloc>
+inline void 
+destroy_dealloc_impl(T * p, std::size_t n, Alloc & alloc, VigraTrueType /* isPOD */)
+{
+    alloc.deallocate(p, n);
+}
+
+template <class T, class Alloc>
+inline void 
+destroy_dealloc_impl(T * p, std::size_t n, Alloc & alloc, VigraFalseType /* isPOD */)
+{
+    for (std::size_t i=0; i < n; ++i)
+        alloc.destroy(p + i);
+    alloc.deallocate(p, n);
+}
+
+template <class T, class Alloc>
+inline T * 
+destroy_dealloc_n(T * p, std::size_t n, Alloc & alloc)
+{
+    if(p != 0)
+        destroy_dealloc_impl(p, n, alloc, typename TypeTraits<T>::isPOD());
+    return 0;
+}
+
+template <class T>
+inline T * 
+destroy_dealloc_n(T * p, std::size_t n)
+{
+    if(p != 0)
+    {
+        PlacementNewAllocator<T> alloc();
+        destroy_dealloc_impl(p, n, alloc, typename TypeTraits<T>::isPOD());
+    }
+    return 0;
 }
 
 /********************************************************************/

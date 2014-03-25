@@ -1983,20 +1983,7 @@ class ChunkedArrayLazy
             pointer p = this->pointer_.load(threading::memory_order_acquire);
             if(!p)
             {
-                typedef typename Alloc::size_type Size;
-                Size i = 0,
-                     s = this->size();
-                p = alloc_.allocate (s);
-                try {
-                    for (; i < s; ++i)
-                        alloc_.construct (p + i, T());
-                }
-                catch (...) {
-                    for (Size j = 0; j < i; ++j)
-                        alloc_.destroy (p + j);
-                    alloc_.deallocate (p, s);
-                    throw;
-                }
+                p = detail::alloc_initialize_n<T>(this->size(), alloc_);
                 this->pointer_.store(p, threading::memory_order_release);
             }
             return p;
@@ -2005,15 +1992,7 @@ class ChunkedArrayLazy
         void deallocate()
         {
             pointer p = this->pointer_.exchange(0, threading::memory_order_release);
-            if(p)
-            {
-                typedef typename Alloc::size_type Size;
-                Size i = 0,
-                     s = this->size();
-                for (; i < s; ++i)
-                    alloc_.destroy (p + i);
-                alloc_.deallocate (p, s);
-            }
+            detail::destroy_dealloc_n(p, this->size(), alloc_);
         }
         
         Alloc alloc_;
@@ -2108,20 +2087,7 @@ class ChunkedArrayCompressed
             pointer p = this->pointer_.load(threading::memory_order_acquire);
             if(p == 0)
             {
-                typedef typename Alloc::size_type Size;
-                Size i = 0,
-                     s = this->size();
-                p = alloc_.allocate (s);
-                try {
-                    for (; i < s; ++i)
-                        alloc_.construct (p + i, T());
-                }
-                catch (...) {
-                    for (Size j = 0; j < i; ++j)
-                        alloc_.destroy (p + j);
-                    alloc_.deallocate (p, s);
-                    throw;
-                }
+                p = detail::alloc_initialize_n<T>(this->size(), alloc_);
                 this->pointer_.store(p, threading::memory_order_release);
             }
             return p;
@@ -2130,15 +2096,7 @@ class ChunkedArrayCompressed
         void deallocate()
         {
             pointer p = this->pointer_.exchange(0, threading::memory_order_release);
-            if(p != 0)
-            {
-                typedef typename Alloc::size_type Size;
-                Size i = 0,
-                     s = this->size();
-                for (; i < s; ++i)
-                    alloc_.destroy (p + i);
-                alloc_.deallocate (p, s);
-            }
+            detail::destroy_dealloc_n(p, this->size(), alloc_);
             compressed_.clear();
         }
                 
@@ -2153,11 +2111,7 @@ class ChunkedArrayCompressed
                 ::vigra::compress((char const *)p, this->size()*sizeof(T), compressed_, method);
 
                 // std::cerr << "compression ratio: " << double(compressed_.size())/(this->size()*sizeof(T)) << "\n";
-                std::size_t i = 0,
-                            s = this->size();
-                for (; i < s; ++i)
-                    alloc_.destroy (p + i);
-                alloc_.deallocate(p, (typename Alloc::size_type)this->size());
+                detail::destroy_dealloc_n(p, this->size(), alloc_);
             }
         }
         
