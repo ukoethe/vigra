@@ -33,6 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
+#include <algorithm>
 #include "vigra/compression.hxx"
 #include "lz4.h"
 
@@ -48,6 +49,11 @@ std::size_t compressImpl(char const * source, std::size_t srcSize,
 {
     switch(method)
     {
+      case NO_COMPRESSION:
+      {
+        ArrayVector<char>(source, source+srcSize).swap(buffer);
+        return srcSize;
+      }
       case ZLIB:
       case ZLIB_NONE:
       case ZLIB_FAST:
@@ -130,6 +136,11 @@ void uncompress(char const * source, std::size_t srcSize,
 {
     switch(method)
     {
+      case NO_COMPRESSION:
+      {
+        std::copy(source, source+srcSize, dest);
+        break;
+      }
       case ZLIB:
       case ZLIB_NONE:
       case ZLIB_FAST:

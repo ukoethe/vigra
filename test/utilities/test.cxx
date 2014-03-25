@@ -530,6 +530,21 @@ struct CompressionTest
                    
         shouldEqualSequence(data.begin(), data.end(), decompressed.begin());
     }
+    
+    void testNoCompression()
+    {
+        ArrayVector<char> compressed;
+        compress(data.begin(), data.size(), compressed, NO_COMPRESSION);
+        
+        shouldEqual(compressed.size(), data.size());
+        
+        ArrayVector<char> decompressed(data.size());
+        
+        uncompress(compressed.begin(), compressed.size(),
+                   decompressed.begin(), decompressed.size(), NO_COMPRESSION);
+                   
+        shouldEqualSequence(data.begin(), data.end(), decompressed.begin());
+    }
 };
 
 struct UtilitiesTestSuite
@@ -552,6 +567,7 @@ struct UtilitiesTestSuite
         add( testCase( &stringTest));
         add( testCase( &CompressionTest::testZLIB));
         add( testCase( &CompressionTest::testLZ4));
+        add( testCase( &CompressionTest::testNoCompression));
     }
 };
 
