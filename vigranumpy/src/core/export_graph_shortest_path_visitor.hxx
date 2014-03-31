@@ -149,13 +149,6 @@ public:
                 python::arg("target")
             )
         )
-        .def("runIgnoreLargeWeights",registerConverters(&runShortestPathNoTargetIgnoreLargeWeights),
-            (
-                python::arg("edgeWeights"),
-                python::arg("source"),
-                python::arg("val")
-            )
-        )
         .def("nodeIdPath",registerConverters(&makeNodeIdPath),
             (
                 python::arg("target"),
@@ -297,19 +290,6 @@ public:
 
         // run algorithm itself
         sp.run(edgeWeightsArrayMap,source);
-    }
-
-    static void runShortestPathNoTargetIgnoreLargeWeights(
-        ShortestPathDijkstraType & sp,
-        FloatEdgeArray edgeWeightsArray,
-        PyNode source,
-        float val
-    ){
-        // numpy arrays => lemon maps
-        FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
-
-        // run algorithm itself
-        sp.run(edgeWeightsArrayMap,source,lemon::INVALID,val);
     }
 
 };

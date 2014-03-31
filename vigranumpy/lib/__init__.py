@@ -760,6 +760,50 @@ def _genGraphConvenienceFunctions():
 
 
 
+    def graphMap2(graph,item,dtype=numpy.float32,channels=1,addChannelDim=False):
+        """ Return a graph map for a given graph item (``'node'`` , ``'edge'`` or ``'arc'``).
+
+            Parameters:
+
+                - graph    : graph to get a graph map for
+                - item     : ``'node'`` , ``'edge'`` or ``'arc'``
+                - dtype    : desired dtype 
+                - channels : number of channels (default: 1)
+                - addChannelDim -- add an explicit channelDim :(default: False)
+                    only useful if channels == 1 
+
+            Returns:
+
+                - graphmap as numpy.ndarray / VigraArray
+        """
+        s = intrinsicGraphMapShape(graph,item)
+        intrDim = len(s)
+        if(channels==1) and addChannelDim==False:
+            a=numpy.zeros(shape=s,dtype=dtype)
+            if intrDim == 1:
+                return taggedView(a,'x')
+            elif intrDim == 2:
+                return taggedView(a,'xy')
+            elif intrDim == 3:
+                return taggedView(a,'xyz')
+            elif intrDim == 4:
+                return taggedView(a,'xyzt')
+            else :
+                raise RuntimeError("graphs with intrisic dimension >4 are not supported")
+        else:
+            s = s+(channels,)
+            a=numpy.zeros(shape=s,dtype=dtype)
+            if intrDim == 1:
+                return taggedView(a,'xc')
+            elif intrDim == 2:
+                return taggedView(a,'xyc')
+            elif intrDim == 3:
+                return taggedView(a,'xyzc')
+            elif intrDim == 4:
+                return taggedView(a,'xyztc')
+            else :
+                raise RuntimeError("graphs with intrisic dimension >4 are not supported")
+
     graphMap.__module__ = 'vigra.graphs'
     graphs.graphMap = graphMap
 

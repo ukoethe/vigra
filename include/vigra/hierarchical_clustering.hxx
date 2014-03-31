@@ -216,8 +216,14 @@ namespace cluster_operators{
         }
 
         /// \brief get the edge weight of the edge which should be contracted next
-        WeightType contractionWeight()const{
+        WeightType contractionWeight(){
+            index_type minLabel = pq_.top();
+            while(mergeGraph_.hasEdgeId(minLabel)==false){
+                pq_.deleteItem(minLabel);
+                minLabel = pq_.top();
+            }
             return pq_.topPriority();
+
         }
 
 

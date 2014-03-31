@@ -526,6 +526,16 @@ public:
     static TaggedShape  taggedArcMapShape(const Graph & graph){
         return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),"e");
     }
+
+    //static AxisTags  axistagsNodeMap(const Graph & graph){
+    //    return AxisTags("n");
+    //}
+    //static AxisTags  axistagsEdgeMap(const Graph & graph){
+    //    return AxisTags("e");
+    //}
+    //static AxisTags  axistagsArcMap(const Graph & graph){
+    //    return AxisTags("e");
+    //}
 };
 
 // macro to specialize TaggedGraphShape for 

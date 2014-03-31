@@ -348,15 +348,10 @@ namespace vigra{
         /// \param target  : target node where shortest path should stop. If target is not given,
         ///     the shortest path from source to all reachable nodes is computed
         template<class WEIGHTS>
-        void run(const WEIGHTS & weights,const Node & source,const Node & target = lemon::INVALID,WeightType bound = -1){
+        void run(const WEIGHTS & weights,const Node & source,const Node & target = lemon::INVALID){
             source_=source;
             target_=target;
-
-            if (bound > 0) {
-                this->initializeMapsIgnoreNegativeWeights<WEIGHTS>(weights,bound);
-            } else {
-                this->initializeMaps();
-            }
+            this->initializeMaps();
             while(!pq_.empty() ){ //&& !finished){
                 const Node topNode(graph_.nodeFromId(pq_.top()));
                 if(topNode==target_){
@@ -385,14 +380,6 @@ namespace vigra{
             }
         }
 
-        /// \brief run shortest path given edge weights, nodes with negative edges are ignored
-        ///
-        /// \param weights : edge weights encoding the distance between adjacent nodes 
-        /// \param source  : source node where shortest path should start
-        template<class WEIGHTS>
-        void runIgnoreLargeWeights(const WEIGHTS & weights,const Node & source,const WeightType & val){
-            run(weights, source, lemon::INVALID, val);
-        }
 
         /// \brief get the graph
         const Graph & graph()const{
@@ -428,29 +415,6 @@ namespace vigra{
 
     private:
 
-        template<class WEIGHTS>
-        void initializeMapsIgnoreNegativeWeights(const WEIGHTS & weights, const WeightType & val) {
-            for(NodeIt n(graph_);n!=lemon::INVALID;++n){
-                const Node node(*n);
-                bool allLarge = true;
-                for(OutArcIt outArcIt(graph_,node);outArcIt!=lemon::INVALID;++outArcIt){
-                    const Edge edge(*outArcIt);
-                    if (weights[edge] < val) {
-                        allLarge = false;
-                        break;
-                    }
-                }
-                if (allLarge) {
-                    predMap_[node]=source_;
-                } else {
-                    pq_.push(graph_.id(node),std::numeric_limits<WeightType>::infinity() );
-                    predMap_[node]=lemon::INVALID;
-                }
-                distMap_[node]=std::numeric_limits<WeightType>::infinity();
-            }
-            distMap_[source_]=static_cast<WeightType>(0.0);
-            pq_.push(graph_.id(source_),0.0);
-        }
 
         void initializeMaps(){
             for(NodeIt n(graph_);n!=lemon::INVALID;++n){

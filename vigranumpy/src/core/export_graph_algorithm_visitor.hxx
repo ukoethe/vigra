@@ -648,14 +648,15 @@ public:
             "convert an image with with shape = graph.shape *2 -1 to an edge weight array"
         );
 
-        python::def("edgeFeaturesFromInterpolatedImageCorrected",registerConverters(&pyEdgeWeightsFromInterpolatedImageCorrected),
-            (
-                python::arg("graph"),
-                python::arg("image"),
-                python::arg("out")=python::object()
-            ),
-            "convert an image with with shape = graph.shape *2 -1 to an edge weight array"
-        );
+        //'python::def("edgeFeaturesFromInterpolatedImageCorrected",registerConverters(&pyEdgeWeightsFromInterpolatedImageCorrected),
+        //'    (
+        //'        python::arg("graph"),
+        //'        python::arg("image"),
+        //'        python::arg("out")=python::object()
+        //'    ),
+        //'    "convert an image with with shape = graph.shape *2 -1 to an edge weight array"
+        //'    ""
+        //');
     }
 
 
@@ -689,7 +690,7 @@ public:
     }
 
 
-
+    /*
     static NumpyAnyArray pyEdgeWeightsFromInterpolatedImageCorrected(
         const GRAPH & g,
         const FloatNodeArray & interpolatedImage,
@@ -723,6 +724,7 @@ public:
         }
         return edgeWeightsArray;
     }
+    */
 };
 
 
