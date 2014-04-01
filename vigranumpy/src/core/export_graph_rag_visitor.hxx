@@ -525,8 +525,7 @@ public:
             if(ignoreLabel==-1 || static_cast<Int32>(labelsWhichGeneratedRagArrayMap[*iter])!=ignoreLabel)
                 graphNodeFeaturesArrayMap[*iter]=ragNodeFeaturesArrayMap[rag.nodeFromId(labelsWhichGeneratedRagArrayMap[*iter])];
             else{
-                // ???
-                // aks U. Koethe here
+                // do nothing
             }
         }
         return graphNodeFeaturesArray; // out

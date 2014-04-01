@@ -527,15 +527,15 @@ public:
         return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),"e");
     }
 
-    //static AxisTags  axistagsNodeMap(const Graph & graph){
-    //    return AxisTags("n");
-    //}
-    //static AxisTags  axistagsEdgeMap(const Graph & graph){
-    //    return AxisTags("e");
-    //}
-    //static AxisTags  axistagsArcMap(const Graph & graph){
-    //    return AxisTags("e");
-    //}
+    static AxisInfo  axistagsNodeMap(const Graph & graph){
+       return AxisInfo("n");
+    }
+    static AxisInfo  axistagsEdgeMap(const Graph & graph){
+       return AxisInfo("e");
+    }
+    static AxisInfo  axistagsArcMap(const Graph & graph){
+       return AxisInfo("e");
+    }
 };
 
 // macro to specialize TaggedGraphShape for 
@@ -556,6 +556,15 @@ public: \
     } \
     static TaggedShape  taggedArcMapShape(const Graph & graph){  \
        return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),ta);  \
+    } \
+    static AxisInfo  axistagsNodeMap(const Graph & graph){ \
+       return AxisInfo(tn); \
+    } \
+    static AxisInfo  axistagsEdgeMap(const Graph & graph){ \
+       return AxisInfo(te); \
+    } \
+    static AxisInfo  axistagsArcMap(const Graph & graph){ \
+       return AxisInfo(ta); \
     } \
 };
 

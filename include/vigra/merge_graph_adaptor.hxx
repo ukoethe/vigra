@@ -20,13 +20,13 @@
 #include <map>
 
 /* vigra */
-#include <vigra/multi_array.hxx>
-#include <vigra/tinyvector.hxx>
-#include <vigra/multi_array.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/graph_maps.hxx>
-#include <vigra/graph_item_impl.hxx>
-#include <vigra/random_access_set.hxx>
+#include "multi_array.hxx"
+#include "tinyvector.hxx"
+#include "multi_array.hxx"
+#include "graphs.hxx"
+#include "graph_maps.hxx"
+#include "graph_item_impl.hxx"
+#include "random_access_set.hxx"
 
 
 namespace vigra {
