@@ -2006,10 +2006,8 @@ class HDF5File
     inline void read(std::string datasetName, std::string &data) { readAtomic(datasetName,data); }
 
         /** \brief Create a new dataset.
-            This function can be used to create a dataset filled with a default value,
+            This function can be used to create a dataset filled with a default value \a init,
             for example before writing data into it using \ref writeBlock().
-            Attention: only atomic datatypes are provided. For spectral data, add an
-            dimension (case RGB: add one dimension of size 3).
 
             shape determines the dimension and the size of the dataset.
 
@@ -2019,7 +2017,9 @@ class HDF5File
             Compression can be activated by setting 
             \code compression = parameter; // 0 \< parameter \<= 9 
             \endcode
-            where 0 stands for no compression and 9 for maximum compression.
+            where 0 stands for no compression and 9 for maximum compression. If 
+            a non-zero compression level is specified, but the chunk size is zero,
+            a default chunk size will be chosen (compression always requires chunks).
 
             If the first character of datasetName is a "/", the path will be interpreted as absolute path,
             otherwise it will be interpreted as path relative to the current group.
@@ -2030,163 +2030,29 @@ class HDF5File
             upon writing to an HDF5 file, i.e. in the file the axis order is 'z', 'y', 'x'. 
         */
     template<int N, class T>
-    HDF5HandleShared createDataset(std::string datasetName, 
-                                   TinyVector<MultiArrayIndex, N> const & shape, 
-                                   T init = T(), 
-                                   int iChunkSize = 0, 
-                                   int compressionParameter = 0)
-    {
-        // make datasetName clean
-        datasetName = get_absolute_path(datasetName);
+    HDF5HandleShared 
+    createDataset(std::string datasetName, 
+                  TinyVector<MultiArrayIndex, N> const & shape, 
+                  typename detail::HDF5TypeTraits<T>::value_type init = 
+                                                     typename detail::HDF5TypeTraits<T>::value_type(), 
+                  TinyVector<MultiArrayIndex, N> const & chunkSize = TinyVector<MultiArrayIndex, N>(), 
+                  int compressionParameter = 0);
 
+        // for backwards compatibility
+    template<int N, class T>
+    HDF5HandleShared 
+    createDataset(std::string datasetName, 
+                  TinyVector<MultiArrayIndex, N> const & shape, 
+                  T init, 
+                  int iChunkSize, 
+                  int compressionParameter = 0)
+    {
         typename MultiArrayShape<N>::type chunkSize;
         for(int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
-        return createDataset<N,T>(datasetName, shape, init, chunkSize, compressionParameter);
-    }
-
-        // FIXME: implement this in terms of createDatasetImpl()
-    template<int N, class T>
-    HDF5HandleShared createDataset(std::string datasetName, 
-                                   TinyVector<MultiArrayIndex, N> const & shape, 
-                                   T init, 
-                                   TinyVector<MultiArrayIndex, N> const & chunkSize, 
-                                   int compressionParameter = 0)
-    {
-        vigra_precondition(!isReadOnly(),
-            "HDF5File::createDataset(): file is read-only.");
-        
-        // make datasetName clean
-        datasetName = get_absolute_path(datasetName);
-
-        std::string groupname = SplitString(datasetName).first();
-        std::string setname = SplitString(datasetName).last();
-
-        hid_t parent = openCreateGroup_(groupname);
-
-        // delete the dataset if it already exists
-        deleteDataset_(parent, setname);
-
-        // create dataspace
-        // add an extra dimension in case that the data is non-scalar
-        HDF5Handle dataspaceHandle;
-
-        // invert dimensions to guarantee c-order
-        hsize_t shape_inv[N];
-        for(int k=0; k<N; ++k)
-            shape_inv[N-1-k] = shape[k];
-
-        // create dataspace
-        dataspaceHandle = HDF5Handle(H5Screate_simple(N, shape_inv, NULL),
-                                    &H5Sclose, "HDF5File::createDataset(): unable to create dataspace for scalar data.");
-
-        // set fill value
-        HDF5Handle plist ( H5Pcreate(H5P_DATASET_CREATE), &H5Pclose, "HDF5File::createDataset(): unable to create property list." );
-        H5Pset_fill_value(plist,detail::getH5DataType<T>(), &init);
-
-        // turn off time tagging of datasets by default.
-        H5Pset_obj_track_times(plist, track_time);
-
-        // enable chunks
-        ArrayVector<hsize_t> chunks(defineChunks(chunkSize, shape, 1, compressionParameter));
-        if(chunks.size() > 0)
-        {
-            std::reverse(chunks.begin(), chunks.end());
-            H5Pset_chunk (plist, chunks.size(), chunks.begin());
-        }
-
-        // enable compression
-        if(compressionParameter > 0)
-        {
-            H5Pset_deflate(plist, compressionParameter);
-        }
-
-        //create the dataset.
-        HDF5HandleShared datasetHandle(H5Dcreate(parent, setname.c_str(), detail::getH5DataType<T>(), 
-                                                 dataspaceHandle, H5P_DEFAULT, plist, H5P_DEFAULT),
-                                       &H5Dclose, 
-                                       "HDF5File::createDataset(): unable to create dataset.");
-        if(parent != cGroupHandle_)
-            H5Gclose(parent);
-            
-        return datasetHandle;
-    }
-    
-    template<class T, int N>
-    HDF5HandleShared 
-    createDatasetImpl(std::string datasetName, 
-                      TinyVector<MultiArrayIndex, N> const & shape, 
-                      TinyVector<MultiArrayIndex, N> const & chunkSize,
-                      int compressionParameter = 0)
-    {
-        vigra_precondition(!isReadOnly(),
-            "HDF5File::createDataset(): file is read-only.");
-        
-        // make datasetName clean
-        datasetName = get_absolute_path(datasetName);
-
-        std::string groupname = SplitString(datasetName).first();
-        std::string setname = SplitString(datasetName).last();
-
-        hid_t parent = openCreateGroup_(groupname);
-
-        // delete the dataset if it already exists
-        deleteDataset_(parent, setname);
-
-        // invert dimensions to guarantee c-order
-        // add an extra dimension in case that the data is non-scalar
-        typedef detail::HDF5TypeTraits<T> TypeTraits;
-        ArrayVector<hsize_t> shape_inv;
-        if(TypeTraits::numberOfBands() > 1)
-        {
-            shape_inv.resize(N+1);
-            shape_inv[N] = TypeTraits::numberOfBands();
-        }
-        else
-        {
-            shape_inv.resize(N);
-        }
-        for(int k=0; k<N; ++k)
-            shape_inv[N-1-k] = shape[k];
-
-        // create dataspace
-        HDF5Handle 
-        dataspaceHandle = HDF5Handle(H5Screate_simple(shape_inv.size(), shape_inv.data(), NULL),
-                                    &H5Sclose, "HDF5File::createDataset(): unable to create dataspace for scalar data.");
-
-        // set fill value
-        HDF5Handle plist ( H5Pcreate(H5P_DATASET_CREATE), &H5Pclose, "HDF5File::createDataset(): unable to create property list." );
-        typename TypeTraits::value_type init = typename TypeTraits::value_type();
-        H5Pset_fill_value(plist, TypeTraits::getH5DataType(), &init);
-
-        // turn off time tagging of datasets by default.
-        H5Pset_obj_track_times(plist, track_time);
-
-        // enable chunks
-        ArrayVector<hsize_t> chunks(defineChunks(chunkSize, shape, TypeTraits::numberOfBands(), compressionParameter));
-        if(chunks.size() > 0)
-        {
-            std::reverse(chunks.begin(), chunks.end());
-            H5Pset_chunk (plist, chunks.size(), chunks.begin());
-        }
-
-        // enable compression
-        if(compressionParameter > 0)
-        {
-            H5Pset_deflate(plist, compressionParameter);
-        }
-
-        //create the dataset.
-        HDF5HandleShared datasetHandle(H5Dcreate(parent, setname.c_str(), 
-                                                 TypeTraits::getH5DataType(), 
-                                                 dataspaceHandle, H5P_DEFAULT, plist, H5P_DEFAULT),
-                                       &H5Dclose, 
-                                       "HDF5File::createDataset(): unable to create dataset.");
-        if(parent != cGroupHandle_)
-            H5Gclose(parent);
-            
-        return datasetHandle;
+        return this->template createDataset<N, T>(datasetName, shape, init, 
+                                                  chunkSize, compressionParameter);
     }
 
         /** \brief Immediately write all data to disk
@@ -2232,9 +2098,9 @@ class HDF5File
     
     template <class Shape>
     ArrayVector<hsize_t> 
-    defineChunks(Shape const & chunks, Shape const & shape, int numBands, int compression = 0)
+    defineChunks(Shape chunks, Shape const & shape, int numBands, int compression = 0)
     {
-        if(chunks[0] > 0)
+        if(prod(chunks) > 0)
         {
             ArrayVector<hsize_t> res(chunks.begin(), chunks.end());
             if(numBands > 1)
@@ -2243,14 +2109,9 @@ class HDF5File
         }
         else if(compression > 0)
         {
-            // set default chunks to enable compression 
-            // (arbitrarily include about 300k pixels into each chunk, but make sure
-            //  that the chunk size doesn't exceed the shape)
-            ArrayVector<hsize_t> res(shape.begin(), shape.end());
-            hsize_t chunk_length = (hsize_t)std::pow(300000.0, 1.0 / shape.size());
-            for(unsigned int k=0; k < shape.size(); ++k)
-                if(res[k] > chunk_length)
-                    res[k] = chunk_length;
+            // set default chunks to enable compression
+            chunks = min(detail::ChunkShape<Shape::static_size>::defaultShape(), shape);
+            ArrayVector<hsize_t> res(chunks.begin(), chunks.end());
             if(numBands > 1)
                 res.insert(res.begin(), numBands);
             return res;
@@ -2717,6 +2578,84 @@ class HDF5File
                       MultiArrayView<N, T, Stride> array, 
                       const hid_t datatype, const int numBandsOfType);
 };  /* class HDF5File */
+
+/********************************************************************/
+
+template<int N, class T>
+HDF5HandleShared 
+HDF5File::createDataset(std::string datasetName, 
+                        TinyVector<MultiArrayIndex, N> const & shape, 
+                        typename detail::HDF5TypeTraits<T>::value_type init, 
+                         TinyVector<MultiArrayIndex, N> const & chunkSize, 
+                         int compressionParameter)
+{
+    vigra_precondition(!isReadOnly(),
+        "HDF5File::createDataset(): file is read-only.");
+    
+    // make datasetName clean
+    datasetName = get_absolute_path(datasetName);
+
+    std::string groupname = SplitString(datasetName).first();
+    std::string setname = SplitString(datasetName).last();
+
+    hid_t parent = openCreateGroup_(groupname);
+
+    // delete the dataset if it already exists
+    deleteDataset_(parent, setname);
+
+    // invert dimensions to guarantee c-order
+    // add an extra dimension in case that the data is non-scalar
+    typedef detail::HDF5TypeTraits<T> TypeTraits;
+    ArrayVector<hsize_t> shape_inv;
+    if(TypeTraits::numberOfBands() > 1)
+    {
+        shape_inv.resize(N+1);
+        shape_inv[N] = TypeTraits::numberOfBands();
+    }
+    else
+    {
+        shape_inv.resize(N);
+    }
+    for(int k=0; k<N; ++k)
+        shape_inv[N-1-k] = shape[k];
+
+    // create dataspace
+    HDF5Handle 
+    dataspaceHandle = HDF5Handle(H5Screate_simple(shape_inv.size(), shape_inv.data(), NULL),
+                                &H5Sclose, "HDF5File::createDataset(): unable to create dataspace for scalar data.");
+
+    // set fill value
+    HDF5Handle plist ( H5Pcreate(H5P_DATASET_CREATE), &H5Pclose, "HDF5File::createDataset(): unable to create property list." );
+    H5Pset_fill_value(plist, TypeTraits::getH5DataType(), &init);
+
+    // turn off time tagging of datasets by default.
+    H5Pset_obj_track_times(plist, track_time);
+
+    // enable chunks
+    ArrayVector<hsize_t> chunks(defineChunks(chunkSize, shape, TypeTraits::numberOfBands(), compressionParameter));
+    if(chunks.size() > 0)
+    {
+        std::reverse(chunks.begin(), chunks.end());
+        H5Pset_chunk (plist, chunks.size(), chunks.begin());
+    }
+
+    // enable compression
+    if(compressionParameter > 0)
+    {
+        H5Pset_deflate(plist, compressionParameter);
+    }
+
+    //create the dataset.
+    HDF5HandleShared datasetHandle(H5Dcreate(parent, setname.c_str(), 
+                                             TypeTraits::getH5DataType(), 
+                                             dataspaceHandle, H5P_DEFAULT, plist, H5P_DEFAULT),
+                                   &H5Dclose, 
+                                   "HDF5File::createDataset(): unable to create dataset.");
+    if(parent != cGroupHandle_)
+        H5Gclose(parent);
+        
+    return datasetHandle;
+}
 
 /********************************************************************/
 
