@@ -71,9 +71,15 @@ public:
     typedef VIGRA_UNIQUE_PTR<BaseArray> ArrayPtr;
     typedef typename BaseArray::iterator Iterator;
     
+    static const int channelCount = NumericTraits<T>::isScalar::value 
+                                       ? 1
+                                       : 3;
+    
     Shape3 shape, chunk_shape;
-    ArrayPtr array;
+    ArrayPtr empty_array, array;
     PlainArray ref;
+    
+    static const int fill_value = 42;
 
     ChunkedMultiArrayTest ()
         : shape(20,21,22),
@@ -81,51 +87,64 @@ public:
           ref(shape)
     {
         linearSequence(ref.begin(), ref.end());
+        empty_array = createArray(shape, chunk_shape, (Array *)0, "empty.h5");
+        empty_array->setCacheMaxSize(27);
         array = createArray(shape, chunk_shape, (Array *)0);
         linearSequence(array->begin(), array->end());
     }
     
     static ArrayPtr createArray(Shape3 const & shape, 
                                 Shape3 const & chunk_shape,
-                                ChunkedArrayFull<3, T> *)
+                                ChunkedArrayFull<3, T> *,
+                                std::string const & = "chunked_test.h5")
     {
-        return ArrayPtr(new ChunkedArrayFull<3, T>(shape));
+        return ArrayPtr(new ChunkedArrayFull<3, T>(shape, ChunkedArrayOptions().fillValue(fill_value)));
     }
     
     static ArrayPtr createArray(Shape3 const & shape, 
                                 Shape3 const & chunk_shape,
-                                ChunkedArrayLazy<3, T> *)
+                                ChunkedArrayLazy<3, T> *,
+                                std::string const & = "chunked_test.h5")
     {
-        return ArrayPtr(new ChunkedArrayLazy<3, T>(shape, chunk_shape));
+        return ArrayPtr(new ChunkedArrayLazy<3, T>(shape, chunk_shape, 
+                                                   ChunkedArrayOptions().fillValue(fill_value)));
     }
     
     static ArrayPtr createArray(Shape3 const & shape, 
                                 Shape3 const & chunk_shape,
-                                ChunkedArrayCompressed<3, T> *)
+                                ChunkedArrayCompressed<3, T> *,
+                                std::string const & = "chunked_test.h5")
     {
-        return ArrayPtr(new ChunkedArrayCompressed<3, T>(LZ4, shape, chunk_shape));
+        return ArrayPtr(new ChunkedArrayCompressed<3, T>(LZ4, shape, chunk_shape, 
+                                                         ChunkedArrayOptions().fillValue(fill_value)));
     }
     
 #ifdef HasHDF5
     static ArrayPtr createArray(Shape3 const & shape, 
                                 Shape3 const & chunk_shape,
-                                ChunkedArrayHDF5<3, T> *)
+                                ChunkedArrayHDF5<3, T> *,
+                                std::string const & name = "chunked_test.h5")
     {
-        HDF5File hdf5_file("chunked_test.h5", HDF5File::New);
+        HDF5File hdf5_file(name, HDF5File::New);
         return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New, 
-                                                   shape, chunk_shape));
+                                                   shape, chunk_shape, 
+                                                   ChunkedArrayOptions().fillValue(fill_value)));
     }
 #endif
     
     static ArrayPtr createArray(Shape3 const & shape, 
                                 Shape3 const & chunk_shape,
-                                ChunkedArrayTmpFile<3, T> *)
+                                ChunkedArrayTmpFile<3, T> *,
+                                std::string const & = "chunked_test.h5")
     {
-        return ArrayPtr(new ChunkedArrayTmpFile<3, T>(shape, chunk_shape, -1, ""));
+        return ArrayPtr(new ChunkedArrayTmpFile<3, T>(shape, chunk_shape, 
+                                                      ChunkedArrayOptions().fillValue(fill_value), ""));
     }
     
     void test_construction ()
     {
+        bool isFullArray = IsSameType<Array, ChunkedArrayFull<3, T> >::value;
+        
         should(array->isInside(Shape3(1,2,3)));
         should(!array->isInside(Shape3(1,23,3)));
         should(!array->isInside(Shape3(1,2,-3)));
@@ -135,16 +154,13 @@ public:
         shouldEqual(array->shape(1), ref.shape(1));
         shouldEqual(array->shape(2), ref.shape(2));
         
-        if(IsSameType<Array, ChunkedArrayFull<3, T> >::value)
-        {
+        if(isFullArray)
             shouldEqual(array->chunkArrayShape(), Shape3(1));
-        }
         else
-        {
             shouldEqual(array->chunkArrayShape(), Shape3(3));
-        }
         
         shouldEqualSequence(array->begin(), array->end(), ref.begin());
+        shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
         
         should(*array == ref);
         should(*array != ref.subarray(Shape3(1),ref.shape()));
@@ -155,6 +171,23 @@ public:
         should(*array != ref);
         array->setItem(ref.shape()-Shape3(1), ref[ref.size()-1]);
         should(*array == ref);
+        
+        if(isFullArray)
+            shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
+        else
+            shouldEqual(empty_array->dataBytes(), 0);
+            
+        PlainArray empty(shape, T(fill_value));
+        // const_iterator should simply use the fill_value_chunk_
+        shouldEqualSequence(empty_array->cbegin(), empty_array->cend(), empty.begin());
+        if(isFullArray)
+            shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
+        else
+            shouldEqual(empty_array->dataBytes(), 0);
+            
+        // non-const iterator should allocate the array and initialize with fill_value_
+        shouldEqualSequence(empty_array->begin(), empty_array->end(), empty.begin());
+        shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
 
         // FIXME: test copy construction?
         
@@ -337,6 +370,29 @@ public:
 
     void test_subarray ()
     {
+        {
+            Shape3 start, stop(ref.shape());  // empty array
+            bool isFullArray = IsSameType<Array, ChunkedArrayFull<3, T> >::value;
+        
+            MultiArrayView <3, T const, ChunkedArrayTag> vc(empty_array->const_subarray(start, stop));
+
+            MultiArray <3, T> c(stop-start);
+            empty_array->checkoutSubarray(start, c);
+            
+            if(isFullArray)
+                shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
+            else
+                shouldEqual(empty_array->dataBytes(), 0);
+                
+            PlainArray empty(shape, T(fill_value));
+            shouldEqualSequence(vc.begin(), vc.end(), empty.begin());
+            shouldEqualSequence(c.begin(), c.end(), empty.begin());
+            
+            MultiArrayView <3, T, ChunkedArrayTag> v(empty_array->subarray(start, stop));
+            shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
+            shouldEqualSequence(v.begin(), v.end(), empty.begin());
+        }
+        
         {
             Shape3 start, stop(ref.shape());  // whole array
             MultiArrayView <3, T, ChunkedArrayTag> v(array->subarray(start, stop));

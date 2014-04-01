@@ -80,7 +80,7 @@ class ChunkedArrayHDF5
         void reshape(shape_type const & shape, shape_type const & start, 
                      ChunkedArrayHDF5 * array)
         {
-            vigra_precondition(this->pointer_ == (void*)0,
+            vigra_precondition(this->pointer_ == 0,
                 "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
             this->shape_ = shape;
             this->strides_ = detail::defaultStride(shape);
@@ -90,33 +90,31 @@ class ChunkedArrayHDF5
         
         void write()
         {
-            pointer p = this->pointer_.exchange(0, threading::memory_order_release);
-            if(p != 0)
+            if(this->pointer_ != 0)
             {
                 if(!array_->file_.isReadOnly())
                 {
                     herr_t status = array_->file_.writeBlock(array_->dataset_, start_, 
-                                          MultiArrayView<N, T>(this->shape_, this->strides_, p));
+                                          MultiArrayView<N, T>(this->shape_, this->strides_, this->pointer_));
                     vigra_postcondition(status >= 0,
                         "ChunkedArrayHDF5: write to dataset failed.");
                 }
-                alloc_.deallocate(p, this->size());
+                alloc_.deallocate(this->pointer_, this->size());
+                this->pointer_ = 0;
             }
         }
         
         pointer read()
         {
-            pointer p = this->pointer_.load(threading::memory_order_acquire);
-            if(p == 0)
+            if(this->pointer_ == 0)
             {
-                p = alloc_.allocate(this->size());
+                this->pointer_ = alloc_.allocate(this->size());
                 herr_t status = array_->file_.readBlock(array_->dataset_, start_, this->shape_, 
-                                     MultiArrayView<N, T>(this->shape_, this->strides_, p));
+                                     MultiArrayView<N, T>(this->shape_, this->strides_, this->pointer_));
                 vigra_postcondition(status >= 0,
                     "ChunkedArrayHDF5: read from dataset failed.");
-                this->pointer_.store(p, threading::memory_order_release);
             }
-            return p;
+            return this->pointer_;
         }
         
         shape_type start_;
@@ -133,10 +131,10 @@ class ChunkedArrayHDF5
     ChunkedArrayHDF5(HDF5File const & file, std::string const & dataset,
                      HDF5File::OpenMode mode,
                      shape_type const & shape,
-                     shape_type const & chunk_shape=shape_type(), 
-                     int cache_max = -1,
+                     shape_type const & chunk_shape=shape_type(),
+                     ChunkedArrayOptions const & options = ChunkedArrayOptions(), 
                      Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape, chunk_shape, cache_max),
+    : ChunkedArray<N, T>(shape, chunk_shape, options),
       file_(file),
       dataset_name_(dataset),
       dataset_(),
@@ -151,10 +149,10 @@ class ChunkedArrayHDF5
                      HDF5File::OpenMode mode,
                      CompressionMethod compression,
                      shape_type const & shape,
-                     shape_type const & chunk_shape=shape_type(), 
-                     int cache_max = -1,
+                     shape_type const & chunk_shape=shape_type(),
+                     ChunkedArrayOptions const & options = ChunkedArrayOptions(), 
                      Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape, chunk_shape, cache_max),
+    : ChunkedArray<N, T>(shape, chunk_shape, options),
       file_(file),
       dataset_name_(dataset),
       dataset_(),
@@ -166,9 +164,9 @@ class ChunkedArrayHDF5
     }
     
     ChunkedArrayHDF5(HDF5File const & file, std::string const & dataset,
-                     int cache_max = -1,
+                     ChunkedArrayOptions const & options = ChunkedArrayOptions(),
                      Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape_type(), shape_type(), cache_max),
+    : ChunkedArray<N, T>(shape_type(), shape_type(), options),
       file_(file),
       dataset_name_(dataset),
       dataset_(),
@@ -193,6 +191,18 @@ class ChunkedArrayHDF5
             
         if(!exists || mode == HDF5File::New)
         {
+            // FIXME: set rdcc_nbytes to 0 (disable cache, because we don't 
+            //        need two caches
+            // H5Pset_chunk_cache (dapl, rdcc_nslots, rdcc_nbytes, rdcc_w0);
+            // Chunk cache size (rdcc_nbytes) should be large
+            // enough to hold all the chunks in a selection
+            // • If this is not possible, it may be best to disable chunk
+            // caching altogether (set rdcc_nbytes to 0)
+            // • rdcc_slots should be a prime number that is at
+            // least 10 to 100 times the number of chunks that can fit
+            // into rdcc_nbytes
+            // • rdcc_w0 should be set to 1 if chunks that have been
+            // fully read/written will never be read/written again
             vigra_precondition(this->size() > 0,
                 "ChunkedArrayHDF5(): invalid shape.");
             dataset_ = file_.createDatasetImpl<T>(dataset_name_, 

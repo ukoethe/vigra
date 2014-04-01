@@ -108,40 +108,40 @@ destroy_n(T * p, std::size_t n)
 
 template <class T, class Alloc>
 inline T * 
-alloc_initialize_impl(std::size_t n, Alloc & alloc, VigraTrueType /* isPOD */)
+alloc_initialize_n(std::size_t n, T const & initial, Alloc & alloc)
 {
     T * p = alloc.allocate(n);
-    std::memset(p, 0, n*sizeof(T));
+    bool useMemset = TypeTraits<T>::isPOD::value &&
+                     (initial == T());
+    if(useMemset)
+    {
+        std::memset(p, 0, n*sizeof(T));
+    }
+    else
+    {
+        std::size_t i=0;
+        try 
+        {
+            for (; i < n; ++i)
+                alloc.construct(p+i, initial);
+        }
+        catch (...) 
+        {
+            for (std::size_t j=0; j < i; ++j)
+                alloc.destroy(p+j);
+            alloc.deallocate(p, n);
+            throw;
+        }
+    }
     return p;
 }
 
-template <class T, class Alloc>
+template <class T>
 inline T * 
-alloc_initialize_impl(std::size_t n, Alloc & alloc, VigraFalseType /* isPOD */)
+alloc_initialize_n(std::size_t n, T const & initial)
 {
-    T * p = alloc.allocate(n);
-    std::size_t i=0;
-    try 
-    {
-        T initial = T();
-        for (; i < n; ++i)
-            alloc.construct(p+i, initial);
-    }
-    catch (...) 
-    {
-        for (std::size_t j=0; j < i; ++j)
-            alloc.destroy(p+j);
-        alloc.deallocate(p, n);
-        throw;
-    }
-    return p;
-}
-
-template <class T, class Alloc>
-inline T * 
-alloc_initialize_n(std::size_t n, Alloc & alloc)
-{
-    return alloc_initialize_impl<T>(n, alloc, typename TypeTraits<T>::isPOD());
+    PlacementNewAllocator<T> alloc();
+    return alloc_initialize_n<T>(n, initial, alloc);
 }
 
 template <class T>
@@ -149,7 +149,7 @@ inline T *
 alloc_initialize_n(std::size_t n)
 {
     PlacementNewAllocator<T> alloc();
-    return alloc_initialize_impl<T>(n, alloc, typename TypeTraits<T>::isPOD());
+    return alloc_initialize_n<T>(n, T(), alloc);
 }
 
 template <class T, class Alloc>

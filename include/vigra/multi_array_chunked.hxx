@@ -384,43 +384,45 @@ class ChunkBase
     typedef T value_type;
     typedef value_type * pointer;
     
+    static const int chunk_asleep = -2;
+    static const int chunk_uninitialized = -3;
+    static const int chunk_locked = -4;
+        
     ChunkBase()
     : pointer_(0),
       shape_(),
       strides_(),
-      refcount_(0)
+      refcount_(chunk_uninitialized)
     {}
     
     ChunkBase(shape_type const & shape, pointer p = 0)
     : pointer_(p),
       shape_(shape),
       strides_(detail::defaultStride(shape)),
-      refcount_(0)
+      refcount_(chunk_uninitialized)
     {}
     
     ChunkBase(ChunkBase const & rhs)
     : pointer_(0),
       shape_(rhs.shape_),
       strides_(rhs.strides_),
-      refcount_(0)
+      refcount_(chunk_uninitialized)
     {}
     
     ChunkBase & operator=(ChunkBase const & rhs)
     {
         if(this != &rhs)
         {
-            pointer p = pointer_.load(threading::memory_order_release);
-            pointer rp = rhs.pointer_.load(threading::memory_order_release);
-            if(p == 0 && rp == 0)
+            if(pointer_ == 0 && rhs.pointer_ == 0)
             {
                 shape_ = rhs.shape_;
                 strides_ = rhs.strides_;
             }
-            else if(p != 0 && rp != 0)
+            else if(pointer_ != 0 && rhs.pointer_ != 0)
             {
                 vigra_precondition(shape_ == rhs.shape_, // implies stride equality
                     "ChunkBase::operator=(): shape mismatch.");
-                std::copy(rp, rp + rhs.size(), p);
+                std::copy(rhs.pointer_, rhs.pointer_ + rhs.size(), pointer_);
             }
             else
             {
@@ -436,7 +438,7 @@ class ChunkBase
         return prod(shape_);
     }
     
-    threading::atomic<pointer> pointer_;
+    pointer pointer_;
     shape_type shape_, strides_;
     mutable threading::atomic<int> refcount_;
 };
@@ -466,13 +468,17 @@ class ChunkedArrayBase
     virtual ~ChunkedArrayBase()
     {}
     
-    virtual void unrefChunk(ChunkedHandle<N, T> * h) = 0;
+    virtual void unrefChunk(ChunkedHandle<N, T> * h) const = 0;
     
     virtual void unrefChunks(shape_type const & start, shape_type const & stop) = 0;
     
     virtual pointer getChunk(shape_type const & point, 
                              shape_type & strides, shape_type & upper_bound, 
                              ChunkedHandle<N, T> * h) = 0;
+    
+    virtual pointer getChunk(shape_type const & point, 
+                             shape_type & strides, shape_type & upper_bound, 
+                             ChunkedHandle<N, T> * h) const = 0;
     
     virtual std::string backend() const = 0;
 
@@ -518,7 +524,7 @@ class ChunkedArrayBase
     
     virtual std::size_t dataBytes(Chunk * c) const
     {
-        return c->pointer_ == (void*)0
+        return c->pointer_ == 0
                  ? 0
                  : c->size()*sizeof(T);
     }
@@ -539,25 +545,27 @@ struct ChunkUnrefProxyBase
     virtual ~ChunkUnrefProxyBase() {}
 };
 
-template <unsigned int N, class T>
-class MultiArrayView<N, T, ChunkedArrayTag>
-: public ChunkedArrayBase<N, T>
+template <unsigned int N, class U>
+class MultiArrayView<N, U, ChunkedArrayTag>
+: public ChunkedArrayBase<N, typename UnqualifiedType<U>::type>
 {
   public:
     enum ActualDimension { actual_dimension = (N==0) ? 1 : N };
+    typedef typename UnqualifiedType<U>::type     T;
     typedef T value_type;   // FIXME: allow Multiband<T> ???
-    typedef value_type &reference;
+    typedef U & reference;
     typedef const value_type &const_reference;
-    typedef value_type *pointer;
+    typedef U * pointer;
     typedef const value_type *const_pointer;
     typedef typename MultiArrayShape<actual_dimension>::type difference_type;
     typedef difference_type key_type;
     typedef difference_type size_type;
     typedef difference_type shape_type;
     typedef MultiArrayIndex difference_type_1;
-    typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<T>, T&, T*> iterator;
-    typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<T>, T const &, T const *> const_iterator;
-    typedef MultiArrayView<N, T, ChunkedArrayTag> view_type;
+    typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<U>, U&, U*> iterator;
+    typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<T const>, T const &, T const *> const_iterator;
+    typedef MultiArrayView<N, U, ChunkedArrayTag> view_type;
+    typedef MultiArrayView<N, T const, ChunkedArrayTag> const_view_type;
     typedef ChunkedArrayTag StrideTag;
     
     class Chunk
@@ -595,13 +603,20 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         return chunks_.shape();
     }
     
-    virtual void unrefChunk(ChunkedHandle<N, T> *) {}
+    virtual void unrefChunk(ChunkedHandle<N, T> *) const {}
     
     virtual void unrefChunks(shape_type const &, shape_type const &) {}
     
-    virtual pointer getChunk(shape_type const & point, 
+    virtual T* getChunk(shape_type const & point, 
                              shape_type & strides, shape_type & upper_bound, 
                              ChunkedHandle<N, T> * h)
+    {
+        return const_cast<MultiArrayView const *>(this)->getChunk(point, strides, upper_bound, h);
+    }
+    
+    virtual T* getChunk(shape_type const & point, 
+                             shape_type & strides, shape_type & upper_bound, 
+                             ChunkedHandle<N, T> * h) const
     {
         shape_type global_point = point + h->offset_;
 
@@ -616,11 +631,11 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         
         shape_type chunkIndex(SkipInitialization);
         detail::ChunkIndexing<N>::chunkIndex(global_point, bits_, chunkIndex);
-        Chunk * chunk = &chunks_[chunkIndex];
+        Chunk const * chunk = &chunks_[chunkIndex];
         strides = chunk->strides_;
         upper_bound = (chunkIndex + shape_type(1)) * this->chunk_shape_ - coffset;
         std::size_t offset = detail::ChunkIndexing<N>::offsetInChunk(global_point, mask_, strides);
-        return chunk->pointer_ + offset;
+        return const_cast<T*>(chunk->pointer_ + offset);
     }
     
     virtual std::string backend() const
@@ -1222,14 +1237,24 @@ class MultiArrayView<N, T, ChunkedArrayTag>
         return createCoupledIterator(*this);
     }
 
-    const_iterator begin() const
-    {
-        return createCoupledIterator(*this);
-    }
-
     iterator end()
     {
         return begin().getEndIterator();
+    }
+
+    const_iterator cbegin() const
+    {
+        return createCoupledIterator(const_cast<MultiArrayView const &>(*this));
+    }
+
+    const_iterator cend() const
+    {
+        return cbegin().getEndIterator();
+    }
+
+    const_iterator begin() const
+    {
+        return createCoupledIterator(*this);
     }
 
     const_iterator end() const
@@ -1271,6 +1296,40 @@ createCoupledIterator(MultiArrayView<N, T, ChunkedArrayTag> const & m)
     return IteratorType(P1(m, 
                         P0(m.shape())));
 }
+
+class ChunkedArrayOptions
+{
+  public:
+    ChunkedArrayOptions()
+    : fill_value(0.0)
+    , cache_max(-1)
+    {}
+    
+    ChunkedArrayOptions & fillValue(double v)
+    {
+        fill_value = v;
+        return *this;
+    }
+    
+    ChunkedArrayOptions fillValue(double v) const
+    {
+        return ChunkedArrayOptions(*this).fillValue(v);
+    }
+    
+    ChunkedArrayOptions & cacheMax(int v)
+    {
+        cache_max = v;
+        return *this;
+    }
+    
+    ChunkedArrayOptions cacheMax(int v) const
+    {
+        return ChunkedArrayOptions(*this).cacheMax(v);
+    }
+    
+    double fill_value;
+    int cache_max;
+};
 
 /*
 The present implementation uses a memory-mapped sparse file to store the chunks.
@@ -1385,19 +1444,28 @@ class ChunkedArray
     typedef value_type & reference;
     typedef value_type const & const_reference;
     typedef StridedScanOrderIterator<N, ChunkedMemory<T>, reference, pointer>   iterator;
-    typedef StridedScanOrderIterator<N, ChunkedMemory<T>, const_reference, const_pointer>   const_iterator;
+    typedef StridedScanOrderIterator<N, ChunkedMemory<T const>, const_reference, const_pointer>   const_iterator;
     typedef ChunkBase<N, T> Chunk;
     typedef MultiArrayView<N, T, ChunkedArrayTag>                   view_type;
+    typedef MultiArrayView<N, T const, ChunkedArrayTag>             const_view_type;
     typedef std::queue<Chunk*> CacheType;
-    static const int chunk_locked = -2;
-        
+    
+    static const int chunk_asleep = Chunk::chunk_asleep;
+    static const int chunk_uninitialized = Chunk::chunk_uninitialized;
+    static const int chunk_locked = Chunk::chunk_locked;
+    
     explicit ChunkedArray(shape_type const & shape, 
                           shape_type const & chunk_shape = shape_type(), 
-                          int cache_max = -1)
-    : ChunkedArrayBase<N, T>(shape, chunk_shape),
-      cache_max_size_(cache_max),
-      cache_lock_(new threading::mutex())
+                          ChunkedArrayOptions const & options = ChunkedArrayOptions())
+    : ChunkedArrayBase<N, T>(shape, chunk_shape)
+    , cache_max_size_(options.cache_max)
+    , cache_lock_(new threading::mutex())
+    , fill_value_(T(options.fill_value)) 
     {
+        fill_value_chunk_.pointer_ = &fill_value_;
+        // fill_value_chunk_.shape_ = this->chunk_shape_;
+        fill_value_chunk_.refcount_.store(1);
+        
         initBitMask();
     }
     
@@ -1448,7 +1516,7 @@ class ChunkedArray
     
     virtual Chunk * lookupChunk(shape_type const & index) = 0;
     
-    virtual void unrefChunk(ChunkedHandle<N, T> * h)
+    virtual void unrefChunk(ChunkedHandle<N, T> * h) const
     {
         if(h->chunk_)
         {
@@ -1457,7 +1525,7 @@ class ChunkedArray
         }
     }
     
-    void unrefChunk(ChunkBase<N, T> * chunk)
+    void unrefChunk(ChunkBase<N, T> * chunk) const
     {
         int rc = chunk->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
     #ifdef VIGRA_CHECK_BOUNDS
@@ -1472,43 +1540,100 @@ class ChunkedArray
         // We use a simple spin-lock here because it is very fast in case of success
         // and failures (i.e. collisions with another thread) are presumably 
         // very rare.
+        int rc = chunk->refcount_.load(threading::memory_order_acquire);
         while(true)
         {
-            int rc = chunk->refcount_.load(threading::memory_order_acquire);
-            if(rc == chunk_locked)
+            if(rc >= 0)
             {
-                // cache management in progress => try again later
-                threading::this_thread::yield();
-            }
-            else if(chunk->refcount_.compare_exchange_weak(rc, rc+1, threading::memory_order_seq_cst))
-            {
-                // success
-                break;
-            }
-        }
-        
-        T * p = chunk->pointer_.load(threading::memory_order_acquire);
-        if(p == 0)
-        {
-            // apply the double-checked locking pattern
-            threading::lock_guard<threading::mutex> guard(*cache_lock_);
-            p = chunk->pointer_.load(threading::memory_order_acquire);
-            if(p == 0)
-            {
-                p = loadChunk(chunk);
-                this->data_bytes_ += dataBytes(chunk);
-                
-                if(cacheMaxSize() > 0)
+                if(chunk->refcount_.compare_exchange_weak(rc, rc+1, threading::memory_order_seq_cst))
                 {
-                    // insert in queue of mapped chunks
-                    cache_.push(chunk);
-
-                    // do cache management if cache is full
-                    // (note that we still hold the cache_lock_)
-                    cleanCache(2);
+                    return chunk->pointer_;
+                }
+            }
+            else
+            {            
+                if(rc == chunk_locked)
+                {
+                    // cache management in progress => try again later
+                    threading::this_thread::yield();
+                    rc = chunk->refcount_.load(threading::memory_order_acquire);
+                }
+                else if(chunk->refcount_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
+                {
+                    break;
                 }
             }
         }
+
+        threading::lock_guard<threading::mutex> guard(*cache_lock_);
+        T * p = loadChunk(chunk);
+        
+        if(rc == chunk_uninitialized)
+            std::fill(p, p + chunk->size(), this->fill_value_);
+            
+        this->data_bytes_ += dataBytes(chunk);
+        
+        if(cacheMaxSize() > 0)
+        {
+            // threading::lock_guard<threading::mutex> guard(*cache_lock_);
+            // insert in queue of mapped chunks
+            cache_.push(chunk);
+
+            // do cache management if cache is full
+            // (note that we still hold the cache_lock_)
+            cleanCache(2);
+        }
+        chunk->refcount_.store(1, threading::memory_order_release);
+        return p;
+    }
+    
+    
+    pointer refChunk(ChunkBase<N, T> * chunk) const
+    {
+        // Obtain a reference to the current chunk.
+        // We use a simple spin-lock here because it is very fast in case of success
+        // and failures (i.e. collisions with another thread) are presumably 
+        // very rare.
+        int rc = chunk->refcount_.load(threading::memory_order_acquire);
+        while(true)
+        {
+            if(rc >= 0)
+            {
+                if(chunk->refcount_.compare_exchange_weak(rc, rc+1, threading::memory_order_seq_cst))
+                {
+                    return chunk->pointer_;
+                }
+            }
+            else
+            {            
+                if(rc == chunk_locked)
+                {
+                    // cache management in progress => try again later
+                    threading::this_thread::yield();
+                    rc = chunk->refcount_.load(threading::memory_order_acquire);
+                }
+                else if(chunk->refcount_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
+                {
+                    break;
+                }
+            }
+        }
+
+        threading::lock_guard<threading::mutex> guard(*cache_lock_);
+        T * p = const_cast<ChunkedArray*>(this)->loadChunk(chunk);
+        const_cast<ChunkedArray*>(this)->data_bytes_ += dataBytes(chunk);
+        
+        if(cacheMaxSize() > 0)
+        {
+            // threading::lock_guard<threading::mutex> guard(*cache_lock_);
+            // insert in queue of mapped chunks
+            const_cast<ChunkedArray*>(this)->cache_.push(chunk);
+
+            // do cache management if cache is full
+            // (note that we still hold the cache_lock_)
+            const_cast<ChunkedArray*>(this)->cleanCache(2);
+        }
+        chunk->refcount_.store(1, threading::memory_order_release);
         return p;
     }
     
@@ -1546,6 +1671,43 @@ class ChunkedArray
         return p + offset;
     }
     
+    virtual pointer getChunk(shape_type const & point, 
+                             shape_type & strides, shape_type & upper_bound, 
+                             ChunkedHandle<N, T> * h) const
+    {
+        if(h->chunk_)
+        {
+            int rc = static_cast<Chunk*>(h->chunk_)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+        #ifdef VIGRA_CHECK_BOUNDS
+            vigra_invariant(rc >= 0,
+                            "ChunkedArray::getChunk(): chunk refcount got negative!");
+        #endif
+            h->chunk_ = 0;
+        }
+        
+        shape_type global_point = point + h->offset_;
+
+        if(!this->isInside(global_point))
+        {
+            upper_bound = point + this->chunk_shape_;
+            return 0;
+        }
+        
+        shape_type chunkIndex(SkipInitialization);
+        detail::ChunkIndexing<N>::chunkIndex(global_point, bits_, chunkIndex);
+        ChunkBase<N, T> * chunk = const_cast<ChunkedArray*>(this)->lookupChunk(chunkIndex);
+        
+        if(chunk->refcount_.load() == chunk_uninitialized)
+            chunk = &const_cast<ChunkedArray*>(this)->fill_value_chunk_;
+        
+        pointer p = refChunk(chunk);
+        strides = chunk->strides_;
+        upper_bound = (chunkIndex + shape_type(1)) * this->chunk_shape_ - h->offset_;
+        std::size_t offset = detail::ChunkIndexing<N>::offsetInChunk(global_point, mask_, strides);
+        h->chunk_ = chunk;
+        return p + offset;
+    }
+    
     virtual void refChunks(shape_type const & start, shape_type const & stop,
                            typename view_type::ChunkHolder * destChunks = 0)
     {
@@ -1563,23 +1725,169 @@ class ChunkedArray
                                    end(i.getEndIterator());
         for(; i != end; ++i)
         {
+            // Chunk * chunk = lookupChunk(*i);
+            // chunk->refcount_.fetch_add(1, threading::memory_order_relaxed);
+            // pointer p = chunk->pointer_.load(threading::memory_order_relaxed);
+            // if(p == 0)
+            // {
+                // p = loadChunk(chunk);
+                // this->data_bytes_ += dataBytes(chunk);
+
+                // if(cacheMaxSize() > 0)
+                // {
+                    // // insert in queue of mapped chunks
+                    // cache_.push(chunk);
+                // }
+            // }
+            // if(destChunks)
+            // {
+                // typename view_type::Chunk * vc = &(*destChunks)[*i - chunkStart];
+                // vc->pointer_ = p;
+                // vc->strides_ = chunk->strides_;
+            // }
             Chunk * chunk = lookupChunk(*i);
-            chunk->refcount_.fetch_add(1, threading::memory_order_relaxed);
-            pointer p = chunk->pointer_.load(threading::memory_order_relaxed);
-            if(p == 0)
+            int rc = chunk->refcount_.load(threading::memory_order_acquire);
+            while(true)
+            {
+                if(rc >= 0)
+                {
+                    if(chunk->refcount_.compare_exchange_weak(rc, rc+1, threading::memory_order_seq_cst))
+                    {
+                        break;
+                    }
+                }
+                else
+                {            
+                    if(rc == chunk_locked)
+                    {
+                        // cache management in progress => try again later
+                        threading::this_thread::yield();
+                        rc = chunk->refcount_.load(threading::memory_order_acquire);
+                    }
+                    else if(chunk->refcount_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
+                    {
+                        break;
+                    }
+                }
+            }
+            
+            pointer p = 0;
+            if(rc >= 0)
+            {
+                p = chunk->pointer_;
+            }
+            else
             {
                 p = loadChunk(chunk);
                 this->data_bytes_ += dataBytes(chunk);
-
+        
+                if(rc == chunk_uninitialized)
+                    std::fill(p, p + chunk->size(), this->fill_value_);
+                
                 if(cacheMaxSize() > 0)
                 {
                     // insert in queue of mapped chunks
                     cache_.push(chunk);
                 }
+                chunk->refcount_.store(1, threading::memory_order_release);
             }
             if(destChunks)
             {
                 typename view_type::Chunk * vc = &(*destChunks)[*i - chunkStart];
+                vc->pointer_ = p;
+                vc->strides_ = chunk->strides_;
+            }
+        }
+    }
+    
+    virtual void refChunks(shape_type const & start, shape_type const & stop,
+                           typename const_view_type::ChunkHolder * destChunks = 0) const
+    {
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, this->shape()),
+                           "ChunkedArray::copySubarray(): subarray out of bounds.");
+        
+        shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
+        detail::ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
+        detail::ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
+        chunkStop += shape_type(1);
+        
+        threading::lock_guard<threading::mutex> guard(*cache_lock_);
+        
+        MultiCoordinateIterator<N> i(chunkStart, chunkStop),
+                                   end(i.getEndIterator());
+        for(; i != end; ++i)
+        {
+            // Chunk * chunk = lookupChunk(*i);
+            // chunk->refcount_.fetch_add(1, threading::memory_order_relaxed);
+            // pointer p = chunk->pointer_.load(threading::memory_order_relaxed);
+            // if(p == 0)
+            // {
+                // p = loadChunk(chunk);
+                // this->data_bytes_ += dataBytes(chunk);
+
+                // if(cacheMaxSize() > 0)
+                // {
+                    // // insert in queue of mapped chunks
+                    // cache_.push(chunk);
+                // }
+            // }
+            // if(destChunks)
+            // {
+                // typename view_type::Chunk * vc = &(*destChunks)[*i - chunkStart];
+                // vc->pointer_ = p;
+                // vc->strides_ = chunk->strides_;
+            // }
+            Chunk * chunk = const_cast<ChunkedArray*>(this)->lookupChunk(*i);
+            int rc = chunk->refcount_.load(threading::memory_order_acquire);
+            if(rc == chunk_uninitialized)
+            {
+                chunk = &const_cast<ChunkedArray*>(this)->fill_value_chunk_;
+                rc = chunk->refcount_.load(threading::memory_order_acquire);
+            }
+            while(true)
+            {
+                if(rc >= 0)
+                {
+                    if(chunk->refcount_.compare_exchange_weak(rc, rc+1, threading::memory_order_seq_cst))
+                    {
+                        break;
+                    }
+                }
+                else
+                {            
+                    if(rc == chunk_locked)
+                    {
+                        // cache management in progress => try again later
+                        threading::this_thread::yield();
+                        rc = chunk->refcount_.load(threading::memory_order_acquire);
+                    }
+                    else if(chunk->refcount_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
+                    {
+                        break;
+                    }
+                }
+            }
+            
+            pointer p = 0;
+            if(rc >= 0)
+            {
+                p = chunk->pointer_;
+            }
+            else
+            {
+                p = const_cast<ChunkedArray*>(this)->loadChunk(chunk);
+                const_cast<ChunkedArray*>(this)->data_bytes_ += dataBytes(chunk);
+                
+                if(cacheMaxSize() > 0)
+                {
+                    // insert in queue of mapped chunks
+                    const_cast<ChunkedArray*>(this)->cache_.push(chunk);
+                }
+                chunk->refcount_.store(1, threading::memory_order_release);
+            }
+            if(destChunks)
+            {
+                typename const_view_type::Chunk * vc = &(*destChunks)[*i - chunkStart];
                 vc->pointer_ = p;
                 vc->strides_ = chunk->strides_;
             }
@@ -1616,6 +1924,21 @@ class ChunkedArray
     {
         for(; cache_.size() > cacheMaxSize() && how_many > 0; --how_many)
         {
+            // Chunk * c = cache_.front();
+            // cache_.pop();
+            // int rc = 0;
+            // if(c->refcount_.compare_exchange_strong(rc, chunk_locked, std::memory_order_acquire))
+            // {
+                // // refcount was zero => can unload
+                // this->data_bytes_ -= dataBytes(c);
+                // unloadChunk(c);
+                // this->data_bytes_ += dataBytes(c);
+                // c->refcount_.store(0, std::memory_order_release);
+            // }
+            // else
+            // {
+                // cache_.push(c);
+            // }
             Chunk * c = cache_.front();
             cache_.pop();
             int rc = 0;
@@ -1625,9 +1948,9 @@ class ChunkedArray
                 this->data_bytes_ -= dataBytes(c);
                 unloadChunk(c);
                 this->data_bytes_ += dataBytes(c);
-                c->refcount_.store(0, std::memory_order_release);
+                c->refcount_.store(chunk_asleep, std::memory_order_release);
             }
-            else
+            else if(rc > 0)
             {
                 cache_.push(c);
             }
@@ -1644,7 +1967,7 @@ class ChunkedArray
         vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, this->shape()),
                            "ChunkedArray::checkoutSubarray(): subarray out of bounds.");
                            
-        const_iterator i(begin().restrictToSubarray(start, stop)),
+        const_iterator i(cbegin().restrictToSubarray(start, stop)),
                        end(i.getEndIterator());
         typename MultiArrayView<N, U, Stride>::iterator j = subarray.begin();
         
@@ -1698,6 +2021,30 @@ class ChunkedArray
         view.unref_ = std::shared_ptr<UP>(new UP(start, stop, self));
         
         self->refChunks(start, stop, &view.chunks_);
+        return view;
+    }
+    
+    const_view_type 
+    const_subarray(shape_type const & start, shape_type const & stop) const
+    {
+        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, this->shape()),
+                           "ChunkedArray::subarray(): subarray out of bounds.");
+        
+        shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
+        detail::ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
+        detail::ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
+        chunkStop += shape_type(1);
+        
+        const_view_type view(stop-start, this->chunk_shape_);
+        view.chunks_.reshape(chunkStop-chunkStart);
+        view.offset_ = start - chunkStart * this->chunk_shape_;
+        view.bits_   = bits_;
+        view.mask_   = mask_;
+        
+        typedef typename view_type::UnrefProxy UP;
+        view.unref_ = std::shared_ptr<UP>(new UP(start, stop, const_cast<ChunkedArray*>(this)));
+        
+        this->refChunks(start, stop, &view.chunks_);
         return view;
     }
     
@@ -1809,6 +2156,16 @@ class ChunkedArray
         return begin().getEndIterator();
     }
     
+    const_iterator cbegin() const
+    {
+        return createCoupledIterator(const_cast<ChunkedArray const &>(*this));
+    }
+    
+    const_iterator cend() const
+    {
+        return cbegin().getEndIterator();
+    }
+    
     const_iterator begin() const
     {
         return createCoupledIterator(*this);
@@ -1823,6 +2180,8 @@ class ChunkedArray
     int cache_max_size_;
     std::shared_ptr<threading::mutex> cache_lock_;
     CacheType cache_;
+    Chunk fill_value_chunk_;
+    value_type fill_value_;
 };
 
 /** Returns a CoupledScanOrderIterator to simultaneously iterate over image m1 and its coordinates. 
@@ -1889,18 +2248,22 @@ class ChunkedArrayFull
     using Storage::bindAt;
     using Storage::isInside;
     using Storage::shape;
+    using Storage::size;
     using Storage::begin;
     using Storage::end;
     using Storage::operator==;
     using Storage::operator!=;
     
-    explicit ChunkedArrayFull(shape_type const & shape, Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape, computeChunkShape(shape), 0),
-      Storage(shape, alloc),
+    explicit ChunkedArrayFull(shape_type const & shape,
+                              ChunkedArrayOptions const & options = ChunkedArrayOptions(), 
+                              Alloc const & alloc = Alloc())
+    : ChunkedArray<N, T>(shape, computeChunkShape(shape), options.cacheMax(0)),
+      Storage(shape, this->fill_value_, alloc),
       upper_bound_(shape),
       chunk_(shape, this->data())
     {
         chunk_.refcount_.store(1);
+        this->data_bytes_ = size()*sizeof(T);
     }
     
     ChunkedArrayFull(ChunkedArrayFull const & rhs)
@@ -1952,6 +2315,23 @@ class ChunkedArrayFull
     
     virtual pointer getChunk(shape_type const & point, 
                              shape_type & strides, shape_type & upper_bound, 
+                             ChunkedHandle<N, T> * h) const
+    {
+        shape_type global_point = point + h->offset_;
+
+        if(!this->isInside(global_point))
+        {
+            upper_bound = point + this->chunk_shape_;
+            return 0;
+        }
+
+        strides = this->stride();
+        upper_bound = upper_bound_;
+        return const_cast<pointer>(&Storage::operator[](global_point));
+    }
+    
+    virtual pointer getChunk(shape_type const & point, 
+                             shape_type & strides, shape_type & upper_bound, 
                              ChunkedHandle<N, T> * h)
     {
         shape_type global_point = point + h->offset_;
@@ -1992,8 +2372,8 @@ class ChunkedArrayLazy
         typedef value_type & reference;
         
         Chunk(Alloc const & alloc = Alloc())
-        : ChunkBase<N, T>(),
-          alloc_(alloc)
+        : ChunkBase<N, T>()
+        , alloc_(alloc)
         {}
         
         ~Chunk()
@@ -2003,7 +2383,7 @@ class ChunkedArrayLazy
     
         void reshape(shape_type const & shape)
         {
-            vigra_precondition(this->pointer_ == (void*)0,
+            vigra_precondition(this->pointer_ == 0,
                 "ChunkedArrayLazy::Chunk::reshape(): chunk was already allocated.");
             this->shape_ = shape;
             this->strides_ = detail::defaultStride(shape);
@@ -2011,19 +2391,15 @@ class ChunkedArrayLazy
         
         pointer allocate()
         {
-            pointer p = this->pointer_.load(threading::memory_order_acquire);
-            if(!p)
-            {
-                p = detail::alloc_initialize_n<T>(this->size(), alloc_);
-                this->pointer_.store(p, threading::memory_order_release);
-            }
-            return p;
+            if(this->pointer_ == 0)
+                this->pointer_ = detail::alloc_initialize_n<T>(this->size(), T(), alloc_);
+            return this->pointer_;
         }
         
         void deallocate()
         {
-            pointer p = this->pointer_.exchange(0, threading::memory_order_release);
-            detail::destroy_dealloc_n(p, this->size(), alloc_);
+            detail::destroy_dealloc_n(this->pointer_, this->size(), alloc_);
+            this->pointer_ = 0;
         }
         
         Alloc alloc_;
@@ -2035,11 +2411,13 @@ class ChunkedArrayLazy
     typedef value_type * pointer;
     typedef value_type & reference;
     
-    ChunkedArrayLazy(shape_type const & shape, 
-                     shape_type const & chunk_shape=shape_type(),
-                     Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape, chunk_shape, 0),
-      outer_array_(detail::computeChunkArrayShape(shape, this->bits_, this->mask_), Chunk(alloc))
+    explicit ChunkedArrayLazy(shape_type const & shape, 
+                              shape_type const & chunk_shape=shape_type(),
+                              ChunkedArrayOptions const & options = ChunkedArrayOptions(),
+                              Alloc const & alloc = Alloc())
+    : ChunkedArray<N, T>(shape, chunk_shape, options.cacheMax(0)),
+      outer_array_(detail::computeChunkArrayShape(shape, this->bits_, this->mask_), 
+                   Chunk(alloc))
     {
         // set shape of the chunks
         typename ChunkStorage::iterator i   = outer_array_.begin(), 
@@ -2112,7 +2490,7 @@ class ChunkedArrayCompressed
     
         void reshape(shape_type const & shape)
         {
-            vigra_precondition(this->pointer_ == (void*)0,
+            vigra_precondition(this->pointer_ == 0,
                 "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
             this->shape_ = shape;
             this->strides_ = detail::defaultStride(shape);
@@ -2120,54 +2498,48 @@ class ChunkedArrayCompressed
         
         pointer allocate()
         {
-            pointer p = this->pointer_.load(threading::memory_order_acquire);
-            if(p == 0)
-            {
-                p = detail::alloc_initialize_n<T>(this->size(), alloc_);
-                this->pointer_.store(p, threading::memory_order_release);
-            }
-            return p;
+            if(this->pointer_ == 0)
+                this->pointer_ = detail::alloc_initialize_n<T>(this->size(), T(), alloc_);
+            return this->pointer_;
         }
         
         void deallocate()
         {
-            pointer p = this->pointer_.exchange(0, threading::memory_order_release);
-            detail::destroy_dealloc_n(p, this->size(), alloc_);
+            detail::destroy_dealloc_n(this->pointer_, this->size(), alloc_);
+            this->pointer_ = 0;
             compressed_.clear();
         }
                 
         void compress(CompressionMethod method)
         {
-            pointer p = this->pointer_.exchange(0, threading::memory_order_release);
-            if(p != 0)
+            if(this->pointer_ != 0)
             {
                 vigra_invariant(compressed_.size() == 0,
                     "ChunkedArrayCompressed::Chunk::compress(): compressed and uncompressed pointer are both non-zero.");
 
-                ::vigra::compress((char const *)p, this->size()*sizeof(T), compressed_, method);
+                ::vigra::compress((char const *)this->pointer_, this->size()*sizeof(T), compressed_, method);
 
                 // std::cerr << "compression ratio: " << double(compressed_.size())/(this->size()*sizeof(T)) << "\n";
-                detail::destroy_dealloc_n(p, this->size(), alloc_);
+                detail::destroy_dealloc_n(this->pointer_, this->size(), alloc_);
+                this->pointer_ = 0;
             }
         }
         
         pointer uncompress(CompressionMethod method)
         {
-            pointer p = this->pointer_.load(threading::memory_order_acquire);
-            if(p == 0)
+            if(this->pointer_ == 0)
             {
                 if(compressed_.size())
                 {
-                    p = alloc_.allocate((typename Alloc::size_type)this->size());
+                    this->pointer_ = alloc_.allocate((typename Alloc::size_type)this->size());
 
                     ::vigra::uncompress(compressed_.data(), compressed_.size(), 
-                                        (char*)p, this->size()*sizeof(T), method);
+                                        (char*)this->pointer_, this->size()*sizeof(T), method);
                     compressed_.clear();
-                    this->pointer_.store(p, threading::memory_order_release);
                 }
                 else
                 {
-                    p = allocate();
+                    this->pointer_ = allocate();
                 }
             }
             else
@@ -2175,12 +2547,12 @@ class ChunkedArrayCompressed
                 vigra_invariant(compressed_.size() == 0,
                     "ChunkedArrayCompressed::Chunk::uncompress(): compressed and uncompressed pointer are both non-zero.");
             }
-            return p;
+            return this->pointer_;
         }
     
         virtual std::size_t data_bytes() const
         {
-            return this->pointer_ == (void*)0
+            return this->pointer_ == 0
                      ? compressed_.size()
                      : this->size()*sizeof(T);
         }
@@ -2196,9 +2568,9 @@ class ChunkedArrayCompressed
     typedef value_type & reference;
     
     explicit ChunkedArrayCompressed(shape_type const & shape, 
-                                    shape_type const & chunk_shape=shape_type(), 
-                                    int cache_max = -1)
-    : ChunkedArray<N, T>(shape, chunk_shape, cache_max),
+                                    shape_type const & chunk_shape=shape_type(),
+                                    ChunkedArrayOptions const & options = ChunkedArrayOptions())
+    : ChunkedArray<N, T>(shape, chunk_shape, options),
       outer_array_(detail::computeChunkArrayShape(shape, this->bits_, this->mask_)),
       compression_method_(LZ4)
     {
@@ -2207,9 +2579,9 @@ class ChunkedArrayCompressed
     
     ChunkedArrayCompressed(CompressionMethod method,
                            shape_type const & shape, 
-                           shape_type const & chunk_shape=shape_type(), 
-                           int cache_max = -1)
-    : ChunkedArray<N, T>(shape, chunk_shape, cache_max),
+                           shape_type const & chunk_shape=shape_type(),
+                           ChunkedArrayOptions const & options = ChunkedArrayOptions())
+    : ChunkedArray<N, T>(shape, chunk_shape, options),
       outer_array_(detail::computeChunkArrayShape(shape, this->bits_, this->mask_)),
       compression_method_(method)
     {
@@ -2272,7 +2644,7 @@ class ChunkedArrayCompressed
     
     virtual std::size_t dataBytes(Chunk * c) const
     {
-        return c->pointer_ == (void*)0
+        return c->pointer_ == 0
                  ? c->compressed_.size()
                  : c->size()*sizeof(T);
     }
@@ -2344,39 +2716,37 @@ class ChunkedArrayTmpFile
         
         pointer map(std::ptrdiff_t offset)
         {
-            pointer p = this->pointer_.load(threading::memory_order_acquire);
-            if(!p)
+            if(this->pointer_ == 0)
             {
                 if(offset_ < 0) 
                     offset_ = offset;
             #ifdef _WIN32
                 static const std::size_t bits = sizeof(DWORD)*8,
                                          mask = (std::size_t(1) << bits) - 1;
-                p = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
+                this->pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
                                            std::size_t(offset_) >> bits, std::size_t(offset_) & mask, alloc_size_);
-                if(!p)
+                if(this->pointer_ == 0)
                     winErrorToException("ChunkedArrayChunk::map(): ");
             #else
-                p = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
+                this->pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
                                   file_, std::size_t(offset_));
-                if(!p)
+                if(this->pointer_ == 0)
                     throw std::runtime_error("ChunkedArrayChunk::map(): mmap() failed.");
             #endif
-                this->pointer_.store(p, threading::memory_order_release);
             }
-            return p;
+            return this->pointer_;
         }
                 
         void unmap()
         {
-            void * p = this->pointer_.exchange(0, threading::memory_order_release);
-            if(p)
+            if(this->pointer_ != 0)
             {
         #ifdef _WIN32
-                ::UnmapViewOfFile(p);
+                ::UnmapViewOfFile(this->pointer_);
         #else
-                munmap(p, alloc_size_);
+                munmap(this->pointer_, alloc_size_);
         #endif
+                this->pointer_ = 0;
             }
         }
         
@@ -2392,10 +2762,10 @@ class ChunkedArrayTmpFile
     typedef value_type & reference;
     
     explicit ChunkedArrayTmpFile(shape_type const & shape,
-                                 shape_type const & chunk_shape=shape_type(), 
-                                 int cache_max = -1, 
+                                 shape_type const & chunk_shape=shape_type(),
+                                 ChunkedArrayOptions const & options = ChunkedArrayOptions(), 
                                  std::string const & path = "")
-    : ChunkedArray<N, T>(shape, chunk_shape, cache_max),
+    : ChunkedArray<N, T>(shape, chunk_shape, options),
       outer_array_(detail::computeChunkArrayShape(shape, this->bits_, this->mask_)),
       file_size_(),
       file_capacity_()
@@ -2576,26 +2946,29 @@ class ChunkedHandle
         Perhaps we can reduce this to a single pointer or otherwise reduce 
         the handle memory to make it faster?
     */
-template <class T, class NEXT>
-class CoupledHandle<ChunkedMemory<T>, NEXT>
+template <class U, class NEXT>
+class CoupledHandle<ChunkedMemory<U>, NEXT>
 : public NEXT,
-  public ChunkedHandle<NEXT::dimensions, T>
+  public ChunkedHandle<NEXT::dimensions, typename UnqualifiedType<U>::type>
 {
 public:
+    typedef typename UnqualifiedType<U>::type     T;
     typedef NEXT                                  base_type;
     typedef ChunkedHandle<NEXT::dimensions, T>    base_type2;
-    typedef CoupledHandle<ChunkedMemory<T>, NEXT> self_type;
+    typedef CoupledHandle<ChunkedMemory<U>, NEXT> self_type;
     
     static const int index =                      NEXT::index + 1;    // index of this member of the chain
     static const unsigned int dimensions =        NEXT::dimensions;
 
-    typedef ChunkedArrayBase<dimensions, T>       array_type;
+    typedef typename IfBool<UnqualifiedType<U>::isConst,
+          ChunkedArrayBase<dimensions, T> const,
+          ChunkedArrayBase<dimensions, T> >::type array_type;
     typedef ChunkBase<dimensions, T>              chunk_type;
-    typedef detail::ChunkShape<dimensions, T>    chunk_shape;
+    typedef detail::ChunkShape<dimensions, T>     chunk_shape;
     typedef T                                     value_type;
-    typedef value_type *                          pointer;
+    typedef U *                                   pointer;
     typedef value_type const *                    const_pointer;
-    typedef value_type &                          reference;
+    typedef U &                                   reference;
     typedef value_type const &                    const_reference;
     typedef typename base_type::shape_type        shape_type;
     
