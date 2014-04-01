@@ -1,48 +1,51 @@
 import vigra
-import vigra.graphs as vigraph
-import pylab
-import numpy
-import sys
-import matplotlib
-import pylab
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Button
-import math
+from vigra import graphs
 
+# parameter:
+filepath = '12003.jpg'   # input image path
+sigmaGradMag = 2.0       # gradient magnitude scale
+superpixelDiameter = 10  # super-pixel size
+slicWeight = 10.0        # SLIC color - spatial weight
+gamma = 0.15             # exp(-gamma * edgeIndicator)
+edgeThreshold = 2.5      # values higher are considered as edges
+scale = 1.0              # how much smoothing
+iterations = 10          # how man smoothing iterations
 
-print "get input"
-f       = '100075.jpg'
-#f       = '69015.jpg'
-f       = '12003.jpg'
-sigma   = 4.0
+# load image and convert to LAB
+img = vigra.impex.readImage(filepath)
 
-img          = vigra.impex.readImage(f)#[0:100,0:100,:]
-imgLab       = vigra.colors.transform_RGB2Lab(img)
-imgLabInterpolated  = vigra.resize(imgLab,[imgLab.shape[0]*2-1,imgLab.shape[1]*2-1 ])
-gradmag      = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLabInterpolated,sigma))
-labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,20)
-labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
+# get super-pixels with slic on LAB image
+imgLab = vigra.colors.transform_RGB2Lab(img)
+labels, nseg = vigra.analysis.slicSuperpixels(imgLab, slicWeight,
+                                              superpixelDiameter)
+labels = vigra.analysis.labelImage(labels)
 
+# compute gradient on interpolated image
+imgLabBig = vigra.resize(imgLab, [imgLab.shape[0]*2-1, imgLab.shape[1]*2-1])
+gradMag = vigra.filters.gaussianGradientMagnitude(imgLabBig, sigmaGradMag)
 
-gridGraph = vigraph.gridGraph(img.shape[0:2])
-gridGraphEdgeIndicator =  vigraph.edgeFeaturesFromInterpolatedImage(gridGraph,gradmag)
+# get 2D grid graph and  edgeMap for grid graph
+# from gradMag of interpolated image
+gridGraph = graphs.gridGraph(img.shape[0:2])
+gridGraphEdgeIndicator = graphs.edgeFeaturesFromInterpolatedImage(gridGraph,
+                                                                  gradMag)
 
+# get region adjacency graph from super-pixel labels
+rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 
+# accumulate edge weights from gradient magnitude
+edgeIndicator = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
 
-rag = vigraph.regionAdjacencyGraph(graph=gridGraph,labels=labels,ignoreLabel=0)
-edgeIndicator  = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
-nodeFeatures   = rag.accumulateNodeFeatures(img)
+# accumulate node features from grid graph node map
+# which is just a plain image (with channels)
+nodeFeatures = rag.accumulateNodeFeatures(imgLab)
+resultFeatures = graphs.recursiveGraphSmoothing(rag, nodeFeatures,
+                                                edgeIndicator,gamma=gamma, 
+                                                edgeThreshold=edgeThreshold,
+                                                scale=scale,
+                                                iterations=iterations)
 
-
-
-resultFeatures = vigraph.recursiveGraphSmoothing(rag,nodeFeatures,edgeIndicator,
-    gamma=0.0001,edgeThreshold=2.0,scale=1.0,iterations=20)
-
-
-resultImg = rag.projectNodeFeaturesToGridGraph(resultFeatures)
-resultImg = vigra.taggedView(resultImg,"xyc")
-
-rag.show(resultImg,alpha=0.7)
-
-#vigra.imshow(resultImg)
+resultImgLab = rag.projectNodeFeaturesToGridGraph(resultFeatures)
+resultImgLab = vigra.taggedView(resultImgLab, "xyc")
+vigra.imshow(vigra.colors.transform_Lab2RGB(resultImgLab))
 vigra.show()

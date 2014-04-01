@@ -1508,8 +1508,6 @@ def _genGraphSegmentationFunctions():
         del hc
         del clusterOp
         del mg
-        print labels
-        print labels.min(),labels.max()
         return labels
 
 
