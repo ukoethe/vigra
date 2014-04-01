@@ -115,8 +115,9 @@ public:
                                 ChunkedArrayCompressed<3, T> *,
                                 std::string const & = "chunked_test.h5")
     {
-        return ArrayPtr(new ChunkedArrayCompressed<3, T>(LZ4, shape, chunk_shape, 
-                                                         ChunkedArrayOptions().fillValue(fill_value)));
+        return ArrayPtr(new ChunkedArrayCompressed<3, T>(shape, chunk_shape, 
+                                                         ChunkedArrayOptions().fillValue(fill_value)
+                                                                              .compression(LZ4)));
     }
     
 #ifdef HasHDF5
@@ -1322,7 +1323,7 @@ public:
     static ArrayPtr createArray(Shape3 const & shape, 
                                 ChunkedArrayCompressed<3, T> *)
     {
-        return ArrayPtr(new ChunkedArrayCompressed<3, T>(LZ4, shape));
+        return ArrayPtr(new ChunkedArrayCompressed<3, T>(shape));
     }
     
 #ifdef HasHDF5
@@ -1331,7 +1332,8 @@ public:
     {
         HDF5File hdf5_file("chunked_test.h5", HDF5File::New);
         return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New, 
-                                                   NO_COMPRESSION, shape));
+                                                   shape, Shape3(), 
+                                                   ChunkedArrayOptions().compression(NO_COMPRESSION)));
     }
 #endif
     

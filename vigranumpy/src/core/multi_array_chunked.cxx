@@ -328,7 +328,8 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
                                  TinyVector<MultiArrayIndex, N> const & chunk_shape,
                                  int cache_max)
 {
-    return new ChunkedArrayCompressed<N, T>(method, shape, chunk_shape, cache_max);
+    return new ChunkedArrayCompressed<N, T>(shape, chunk_shape, 
+            ChunkedArrayOptions().compression(method).cacheMax(cache_max));
 }
 
 template <unsigned int N>
@@ -360,7 +361,8 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
                               int cache_max,
                               std::string path)
 {
-    return new ChunkedArrayTmpFile<N, T>(shape, chunk_shape, cache_max, path);
+    return new ChunkedArrayTmpFile<N, T>(shape, chunk_shape, 
+                                ChunkedArrayOptions().cacheMax(cache_max), path);
 }
 
 template <unsigned int N>
@@ -392,13 +394,14 @@ construct_ChunkedArrayHDF5(std::string filename,
                            std::string datasetName,
                            TinyVector<MultiArrayIndex, N> const & shape,
                            HDF5File::OpenMode mode,
-                           CompressionMethod compression,
+                           CompressionMethod method,
                            TinyVector<MultiArrayIndex, N> const & chunk_shape,
                            int cache_max)
 {
     HDF5File file(filename, mode);
-    return new ChunkedArrayHDF5<N, T>(file, datasetName, mode, compression, 
-                                      shape, chunk_shape, cache_max);
+    return new ChunkedArrayHDF5<N, T>(file, datasetName, mode, 
+                                      shape, chunk_shape, 
+                                      ChunkedArrayOptions().compression(method).cacheMax(cache_max));
 }
 
 template <unsigned int N>

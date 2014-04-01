@@ -82,8 +82,9 @@ class ChunkedArrayHDF5
         {
             vigra_precondition(this->pointer_ == 0,
                 "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
-            this->shape_ = shape;
+            this->size_ = prod(shape);
             this->strides_ = detail::defaultStride(shape);
+            shape_ = shape;
             start_ = start;
             array_ = array;
         }
@@ -95,7 +96,7 @@ class ChunkedArrayHDF5
                 if(!array_->file_.isReadOnly())
                 {
                     herr_t status = array_->file_.writeBlock(array_->dataset_, start_, 
-                                          MultiArrayView<N, T>(this->shape_, this->strides_, this->pointer_));
+                                          MultiArrayView<N, T>(shape_, this->strides_, this->pointer_));
                     vigra_postcondition(status >= 0,
                         "ChunkedArrayHDF5: write to dataset failed.");
                 }
@@ -109,17 +110,20 @@ class ChunkedArrayHDF5
             if(this->pointer_ == 0)
             {
                 this->pointer_ = alloc_.allocate(this->size());
-                herr_t status = array_->file_.readBlock(array_->dataset_, start_, this->shape_, 
-                                     MultiArrayView<N, T>(this->shape_, this->strides_, this->pointer_));
+                herr_t status = array_->file_.readBlock(array_->dataset_, start_, shape_, 
+                                     MultiArrayView<N, T>(shape_, this->strides_, this->pointer_));
                 vigra_postcondition(status >= 0,
                     "ChunkedArrayHDF5: read from dataset failed.");
             }
             return this->pointer_;
         }
         
-        shape_type start_;
+        shape_type shape_, start_;
         ChunkedArrayHDF5 * array_;
         Alloc alloc_;
+        
+      private:
+        Chunk & operator=(Chunk const &);
     };
     
     typedef MultiArray<N, Chunk> ChunkStorage;
@@ -139,25 +143,7 @@ class ChunkedArrayHDF5
       dataset_name_(dataset),
       dataset_(),
       outer_array_(),
-      compression_(ZLIB_FAST),
-      alloc_(alloc)
-    {
-        init(mode);
-    }
-    
-    ChunkedArrayHDF5(HDF5File const & file, std::string const & dataset,
-                     HDF5File::OpenMode mode,
-                     CompressionMethod compression,
-                     shape_type const & shape,
-                     shape_type const & chunk_shape=shape_type(),
-                     ChunkedArrayOptions const & options = ChunkedArrayOptions(), 
-                     Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape, chunk_shape, options),
-      file_(file),
-      dataset_name_(dataset),
-      dataset_(),
-      outer_array_(),
-      compression_(compression),
+      compression_(options.compression_method),
       alloc_(alloc)
     {
         init(mode);
@@ -171,7 +157,7 @@ class ChunkedArrayHDF5
       dataset_name_(dataset),
       dataset_(),
       outer_array_(),
-      compression_(INVALID_COMPRESSION),
+      compression_(options.compression_method),
       alloc_(alloc)
     {
         init(HDF5File::OpenReadOnly);
@@ -203,11 +189,19 @@ class ChunkedArrayHDF5
             // into rdcc_nbytes
             // • rdcc_w0 should be set to 1 if chunks that have been
             // fully read/written will never be read/written again
+            if(compression_ == DEFAULT_COMPRESSION)
+                compression_ = ZLIB_FAST;
+            vigra_precondition(compression_ != LZ4,
+                "ChunkedArrayHDF5(): HDF5 does not support LZ4 compression.");
+            
             vigra_precondition(this->size() > 0,
                 "ChunkedArrayHDF5(): invalid shape.");
-            dataset_ = file_.createDatasetImpl<T>(dataset_name_, 
-                                                  this->shape_, this->chunk_shape_, 
-                                                  compression_);
+            typename detail::HDF5TypeTraits<T>::value_type init(fill_scalar_);
+            dataset_ = file_.createDataset<N, T>(dataset_name_, 
+                                                 this->shape_, 
+                                                 init,
+                                                 this->chunk_shape_, 
+                                                 compression_);
         }
         else
         {
@@ -249,8 +243,8 @@ class ChunkedArrayHDF5
                 }
             }
         }
-        outer_array_.reshape(detail::computeChunkArrayShape(this->shape_, this->bits_, this->mask_),
-                             Chunk(alloc_));
+        ChunkStorage(detail::computeChunkArrayShape(this->shape_, this->bits_, this->mask_),
+                     Chunk(alloc_)).swap(outer_array_);
         
         // set shape of the chunks
         typename ChunkStorage::iterator i   = outer_array_.begin(), 
