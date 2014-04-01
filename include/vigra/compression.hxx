@@ -44,7 +44,7 @@
 
 namespace vigra {
 
-enum CompressionMethod {  INVALID_COMPRESSION=-2,  // no method specified
+enum CompressionMethod {  DEFAULT_COMPRESSION=-2,  // use default method (depending on context)
                           NO_COMPRESSION=-1,       // don't compress
                           ZLIB_NONE=0, // no compression using zlib
                           ZLIB_FAST=1, // fastest compression using zlib

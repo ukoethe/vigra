@@ -70,6 +70,7 @@ std::size_t compressImpl(char const * source, std::size_t srcSize,
         return 0;
     #endif
       }
+      case DEFAULT_COMPRESSION:
       case LZ4:
       {
         std::size_t destSize = ::LZ4_compressBound(srcSize);
@@ -155,6 +156,7 @@ void uncompress(char const * source, std::size_t srcSize,
     #endif
         break;
       }
+      case DEFAULT_COMPRESSION:
       case LZ4:
       {
         int sourceLen = ::LZ4_decompress_fast(source, dest, destSize);
