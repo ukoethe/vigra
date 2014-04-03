@@ -58,7 +58,7 @@ class ChunkedArrayHDF5
   public:
     
     class Chunk
-    : public ChunkBase<N, T>
+    : public SharedChunkBase<N, T>
     {
       public:
         typedef typename MultiArrayShape<N>::type  shape_type;
@@ -67,7 +67,7 @@ class ChunkedArrayHDF5
         typedef value_type & reference;
         
         Chunk(Alloc const & alloc)
-        : ChunkBase<N, T>(),
+        : SharedChunkBase<N, T>(),
           array_(0),
           alloc_(alloc)
         {}
@@ -280,14 +280,15 @@ class ChunkedArrayHDF5
         return outer_array_.shape();
     }
     
-    virtual pointer loadChunk(ChunkBase<N, T> * chunk)
+    virtual pointer loadChunk(SharedChunkBase<N, T> * chunk)
     {
         return static_cast<Chunk *>(chunk)->read();
     }
     
-    virtual void unloadChunk(ChunkBase<N, T> * chunk)
+    virtual bool unloadChunk(SharedChunkBase<N, T> * chunk, bool /* destroy */)
     {
         static_cast<Chunk *>(chunk)->write();
+        return false; // never destroys the data
     }
     
     virtual Chunk * lookupChunk(shape_type const & index)

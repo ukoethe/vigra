@@ -189,6 +189,20 @@ public:
         // non-const iterator should allocate the array and initialize with fill_value_
         shouldEqualSequence(empty_array->begin(), empty_array->end(), empty.begin());
         shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
+        
+        // make sure the central chunk is loaded, so that releaseChunks() will have an effect
+        array->getItem(Shape3(10,10,10));
+        int dataBytesBefore = array->dataBytes();
+        array->releaseChunks(Shape3(5, 0, 3), Shape3(shape[0], shape[1], shape[2]-3), true);
+        if(!isFullArray)
+            should(array->dataBytes() < dataBytesBefore);
+
+        if(IsSameType<Array, ChunkedArrayLazy<3, T> >::value ||
+           IsSameType<Array, ChunkedArrayCompressed<3, T> >::value)
+        {
+            ref.subarray(Shape3(8, 0, 8), Shape3(shape[0], shape[1], 16)) = T(fill_value);
+        }
+        shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
 
         // FIXME: test copy construction?
         
