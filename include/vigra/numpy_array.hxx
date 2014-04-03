@@ -153,6 +153,79 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init,
                python_ptr arraytype = python_ptr());
 
 /********************************************************/
+
+template <class Shape>
+void numpyParseSlicing(Shape const & shape, PyObject * idx, Shape & start, Shape & stop)
+{
+    int N = shape.size();
+    for(int k=0; k<N; ++k)
+    {
+        start[k] = 0;
+        stop[k] = shape[k];
+    }
+    
+    python_ptr index(idx);
+    if(!PySequence_Check(index))
+    {
+        index = python_ptr(PyTuple_Pack(1, index), python_ptr::keep_count);
+        pythonToCppException(index);
+    }
+    int lindex = PyTuple_Size(index);
+    int kindex = 0;
+    for(; kindex<lindex; ++kindex)
+    {
+        if(PyTuple_GET_ITEM((PyTupleObject *)index.ptr(), kindex) == Py_Ellipsis)
+            break;
+    }
+    if(kindex == lindex && lindex < N)
+    {
+        python_ptr ellipsis = python_ptr(PyTuple_Pack(1, Py_Ellipsis), python_ptr::keep_count);
+        pythonToCppException(ellipsis);
+        index = python_ptr(PySequence_Concat(index, ellipsis), python_ptr::keep_count);
+        pythonToCppException(index);
+        ++lindex;
+    }
+    kindex = 0;
+    for(int k=0; k < N; ++k)
+    {
+        PyObject * item = PyTuple_GET_ITEM((PyTupleObject *)index.ptr(), kindex);
+        if(PyInt_Check(item))
+        {
+            MultiArrayIndex i = PyInt_AsLong(item);
+            start[k] = i;
+            if(start[k] < 0)
+                start[k] += shape[k];
+            stop[k] = start[k];
+            ++kindex;
+        }
+        else if(PySlice_Check(item))
+        {
+            Py_ssize_t sstart, sstop, step;
+            int res = PySlice_GetIndices((PySliceObject *)item, shape[k], &sstart, &sstop, &step);
+            pythonToCppException(res == 0);
+            vigra_precondition(step == 1,
+                "numpyParseSlicing(): only unit steps are supported.");
+            start[k] = sstart;
+            stop[k] = sstop;
+            ++kindex;
+        }
+        else if(item == Py_Ellipsis)
+        {
+            if(lindex == N)
+                ++kindex;
+            else
+                ++lindex;
+        }
+        else
+        {
+            vigra_precondition(false,
+                "numpyParseSlicing(): unsupported index object.");
+        }
+    }
+}
+
+
+/********************************************************/
 /*                                                      */
 /*                    NumpyAnyArray                     */
 /*                                                      */

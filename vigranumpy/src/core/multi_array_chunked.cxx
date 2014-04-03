@@ -130,103 +130,34 @@ ChunkedArray_commitSubarray(ChunkedArray<N, T> & self,
 
 template <unsigned int N, class T, class Shape>
 python::object
-bindNumpyArray(NumpyArray<N, T> const & self, Shape const & start, Shape const & stop)
+bindNumpyArray(NumpyArray<N, T> const & self, Shape const & stop)
 {
-    if(allLess(start, stop))
+    if(stop == Shape())
         return python::object(self);
-        
-    int k=0;
-    for(; k<N; ++k)
-        if(start[k] == stop[k])
-            break;
     
-    // FIXME: we should slice the array instead of copying
-    NumpyArray<N-1, T> reduced(self.bindAt(k, 0));
-    return bindNumpyArray(reduced, start.dropIndex(k), stop.dropIndex(k));
-}
-
-template <class T, class Shape>
-python::object
-bindNumpyArray(NumpyArray<1, T> const & self, Shape const & start, Shape const & stop)
-{
-    if(start[0] < stop[0])
-        return python::object(self);
-    else
-        return python::object(self[0]);
+    python_ptr func(PyString_FromString("__getitem__"), python_ptr::keep_count);
+    pythonToCppException(func);
+    python_ptr index(PyTuple_New(N), python_ptr::keep_count);    
+    pythonToCppException(index);
+    for(int k=0; k<N; ++k)
+    {
+        PyObject * item = stop[k] == 0
+                            ? PyInt_FromLong(0)
+                            : PySlice_New(0,0,0);
+        pythonToCppException(item);
+        PyTuple_SET_ITEM((PyTupleObject *)index.ptr(), k, item);
+    }
+    
+    return python::object(python::detail::new_non_null_reference(PyObject_CallMethodObjArgs(self.pyObject(), func.ptr(), index.ptr(), NULL)));
 }
 
 template <unsigned int N, class T>
 python::object
 ChunkedArray_getitem(ChunkedArray<N, T> const & self, python::object index)
 {
-    typedef typename MultiArrayShape<N>::type Shape;
-    python::object ellipsis = python::object(python::detail::borrowed_reference(Py_Ellipsis));
-    if(!PySequence_Check(index.ptr()))
-    {
-        index = python::make_tuple(index);
-    }
-    Shape start, stop(self.shape());
-    int lindex = len(index);
-    int kindex = 0;
-    for(; kindex<lindex; ++kindex)
-    {
-        python::object item = index[kindex];
-        if(item == ellipsis)
-            break;
-    }
-    if(kindex == lindex && lindex < N)
-    {
-        index += python::make_tuple(ellipsis);
-        ++lindex;
-    }
-    kindex = 0;
-    for(int k=0; k < N; ++k)
-    {
-        python::object item = index[kindex];
-        if(PyInt_Check(item.ptr()))
-        {
-            MultiArrayIndex i = python::extract<MultiArrayIndex>(item)();
-            start[k] = i;
-            if(start[k] < 0)
-                start[k] += self.shape(k);
-            stop[k] = start[k];
-            ++kindex;
-        }
-        else if(python::extract<python::slice>(item).check())
-        {
-            python::extract<python::slice> slice(item);
-            python::extract<MultiArrayIndex> step(slice().step());
-            vigra_precondition(!step.check() || step() == 1,
-                "ChunkedArray.__getitem__(): only unit steps are supported.");
-            python::extract<MultiArrayIndex> sstart(slice().start());
-            if(sstart.check())
-            {
-                start[k] = sstart();
-                if(start[k] < 0)
-                    start[k] += self.shape(k);
-            }
-            python::extract<MultiArrayIndex> sstop(slice().stop());
-            if(sstop.check())
-            {
-                stop[k] = sstop();
-                if(stop[k] < 0)
-                    stop[k] += self.shape(k);
-            }
-            ++kindex;
-        }
-        else if(item == ellipsis)
-        {
-            if(lindex == N)
-                ++kindex;
-            else
-                ++lindex;
-        }
-        else
-        {
-            vigra_precondition(false,
-                "ChunkedArray.__getitem__(): unsupported index object.");
-        }
-    }
+    typedef typename ChunkedArray<N, T>::shape_type Shape;
+    Shape start, stop;
+    numpyParseSlicing(self.shape(), index.ptr(), start, stop);
     if(start == stop)
     {
         // return a single point
@@ -237,8 +168,11 @@ ChunkedArray_getitem(ChunkedArray<N, T> const & self, python::object index)
         // return a slice
         Shape subStop = max(start + Shape(1), stop);
         NumpyArray<N, T> subarray(subStop - start);
-        self.checkoutSubarray(start, subarray);
-        return bindNumpyArray(subarray, start, stop);
+        {
+            PyAllowThreads _pythread;
+            self.checkoutSubarray(start, subarray);
+        }
+        return bindNumpyArray(subarray, stop-start);
     }
     else
     {
@@ -246,6 +180,43 @@ ChunkedArray_getitem(ChunkedArray<N, T> const & self, python::object index)
             "ChunkedArray.__getitem__(): invalid index bounds.");
         return python::object();
     }
+}
+
+template <unsigned int N, class T>
+void
+ChunkedArray_setitem(ChunkedArray<N, T> & self, python::object index, T value)
+{
+    typedef typename ChunkedArray<N, T>::shape_type Shape;
+    Shape start, stop;
+    numpyParseSlicing(self.shape(), index.ptr(), start, stop);
+    if(start == stop)
+    {
+        self.setItem(start, value);
+    }
+    else
+    {
+        PyAllowThreads _pythread;
+        stop = max(start + Shape(1), stop);
+        typename ChunkedArray<N, T>::iterator i(self.begin().restrictToSubarray(start, stop)),
+                                              end(i.getEndIterator());
+        for(; i != end; ++i)
+            *i = value;
+    }
+}
+
+template <unsigned int N, class T>
+void
+ChunkedArray_setitem2(ChunkedArray<N, T> & self, python::object index, NumpyArray<N, T> array)
+{
+    typedef typename ChunkedArray<N, T>::shape_type Shape;
+    Shape start, stop;
+    numpyParseSlicing(self.shape(), index.ptr(), start, stop);
+    stop = max(start + Shape(1), stop);
+    vigra_precondition(array.shape() == stop - start,
+        "ChunkedArray.__setitem__(): shape mismatch");
+        
+    PyAllowThreads _pythread;
+    self.commitSubarray(start, array);
 }
 
 
@@ -488,8 +459,13 @@ void defineChunkedArrayImpl()
              registerConverters(&ChunkedArray_commitSubarray<N, T>),
              (arg("start"), arg("array")),
              "\nwrite the given array at offset 'start'.\n")
+        .def("releaseChunks", 
+             &Array::releaseChunks,
+             (arg("start"), arg("stop"),arg("destroy")=false),
+             "\nrelease or destroy all chunks that are completely contained in [start, stop).\n")
         .def("__getitem__", &ChunkedArray_getitem<N, T>)
-        // .def("__setitem__", ChunkedArray_setitem)
+        .def("__setitem__", &ChunkedArray_setitem<N, T>)
+        .def("__setitem__", &ChunkedArray_setitem2<N, T>)
         ;
         
 }
