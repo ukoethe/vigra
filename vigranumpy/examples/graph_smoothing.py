@@ -47,5 +47,6 @@ resultFeatures = graphs.recursiveGraphSmoothing(rag, nodeFeatures,
 
 resultImgLab = rag.projectNodeFeaturesToGridGraph(resultFeatures)
 resultImgLab = vigra.taggedView(resultImgLab, "xyc")
+
 vigra.imshow(vigra.colors.transform_Lab2RGB(resultImgLab))
 vigra.show()

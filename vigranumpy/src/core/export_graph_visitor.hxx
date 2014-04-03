@@ -226,7 +226,7 @@ public:
             .def("findEdges",registerConverters(&findEdges),( python::arg("nodeIdPairs"), python::arg("out")=python::object() ) )
 
             .def("uIds" ,registerConverters(&uIds), ( python::arg("out")=python::object() ) )
-            .def("vIds" ,registerConverters(&uIds), ( python::arg("out")=python::object() ) )
+            .def("vIds" ,registerConverters(&vIds), ( python::arg("out")=python::object() ) )
             .def("uvIds",registerConverters(&uvIds),( python::arg("out")=python::object() ) )
             .def("uIds",registerConverters(&uIdsSubset),( python::arg("edgeIds"),python::arg("out")=python::object() ) )
             .def("vIds",registerConverters(&vIdsSubset),( python::arg("edgeIds"),python::arg("out")=python::object() ) )
@@ -430,7 +430,7 @@ public:
         return self.id(self.u(e));
     }
     static  index_type vId(const Graph & self,const PyEdge & e){
-        return self.id(self.u(e));
+        return self.id(self.v(e));
     }
     static  PyNode u(const Graph & self,const PyEdge & e){
         return PyNode(self,self.u(e));
