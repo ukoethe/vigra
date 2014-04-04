@@ -1704,7 +1704,17 @@ class ChunkedArray
             threading::lock_guard<threading::mutex> guard(*chunk_lock_);
             releaseChunk(chunk, destroy);
         }
-        // FIXME: clean the cache here?
+        
+        // remove all chunks from the cache that are asleep or unitialized
+        threading::lock_guard<threading::mutex> guard(*chunk_lock_);
+        int cache_size = cache_.size();
+        for(int k=0; k < cache_size; ++k)
+        {
+            Chunk * chunk = cache_.front();
+            cache_.pop();
+            if(chunk->refcount_.load() >= 0)
+                cache_.push(chunk);
+        }
     }
     
     template <class U, class Stride>
