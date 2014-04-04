@@ -255,6 +255,7 @@ class ChunkedArrayHDF5
             i->reshape(min(this->chunk_shape_, this->shape_ - start),
                        start,
                        this);
+            this->handle_array_[i.point()].pointer_ = &(*i);
         }
     }
     
