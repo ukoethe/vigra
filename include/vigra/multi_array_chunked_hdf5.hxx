@@ -58,7 +58,7 @@ class ChunkedArrayHDF5
   public:
     
     class Chunk
-    : public SharedChunkBase<N, T>
+    : public ChunkBase<N, T>
     {
       public:
         typedef typename MultiArrayShape<N>::type  shape_type;
@@ -67,7 +67,7 @@ class ChunkedArrayHDF5
         typedef value_type & reference;
         
         Chunk(Alloc const & alloc)
-        : SharedChunkBase<N, T>(),
+        : ChunkBase<N, T>(),
           array_(0),
           alloc_(alloc)
         {}
@@ -82,11 +82,15 @@ class ChunkedArrayHDF5
         {
             vigra_precondition(this->pointer_ == 0,
                 "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
-            this->size_ = prod(shape);
             this->strides_ = detail::defaultStride(shape);
             shape_ = shape;
             start_ = start;
             array_ = array;
+        }
+        
+        std::size_t size() const
+        {
+            return prod(shape_);
         }
         
         void write()
@@ -281,12 +285,12 @@ class ChunkedArrayHDF5
         return outer_array_.shape();
     }
     
-    virtual pointer loadChunk(SharedChunkBase<N, T> * chunk)
+    virtual pointer loadChunk(ChunkBase<N, T> * chunk)
     {
         return static_cast<Chunk *>(chunk)->read();
     }
     
-    virtual bool unloadChunk(SharedChunkBase<N, T> * chunk, bool /* destroy */)
+    virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool /* destroy */)
     {
         static_cast<Chunk *>(chunk)->write();
         return false; // never destroys the data
@@ -302,6 +306,13 @@ class ChunkedArrayHDF5
         return "ChunkedArrayHDF5<'" + file_.filename() + "/" + dataset_name_ + "'>";
     }
 
+    virtual std::size_t dataBytes(ChunkBase<N,T> * c) const
+    {
+        return c->pointer_ == 0
+                 ? 0
+                 : static_cast<Chunk*>(c)->size()*sizeof(T);
+    }
+    
     virtual std::size_t overheadBytes() const
     {
         return outer_array_.size()*sizeof(Chunk);

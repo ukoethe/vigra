@@ -188,7 +188,10 @@ public:
             
         // non-const iterator should allocate the array and initialize with fill_value_
         shouldEqualSequence(empty_array->begin(), empty_array->end(), empty.begin());
-        shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
+        if(IsSameType<Array, ChunkedArrayTmpFile<3, T> >::value)
+            should(empty_array->dataBytes() >= ref.size()*sizeof(T)); // must pad to a full memory page
+        else
+            shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
         
         // make sure the central chunk is loaded, so that releaseChunks() will have an effect
         array->getItem(Shape3(10,10,10));
@@ -404,7 +407,10 @@ public:
             shouldEqualSequence(c.begin(), c.end(), empty.begin());
             
             MultiArrayView <3, T, ChunkedArrayTag> v(empty_array->subarray(start, stop));
-            shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
+            if(IsSameType<Array, ChunkedArrayTmpFile<3, T> >::value)
+                should(empty_array->dataBytes() >= ref.size()*sizeof(T)); // must pad to a full memory page
+            else
+                shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
             shouldEqualSequence(v.begin(), v.end(), empty.begin());
         }
         
