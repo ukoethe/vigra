@@ -472,6 +472,11 @@ class ChunkedArrayBase
         return true;
     }
     
+    std::size_t dataBytesPerChunk() const
+    {
+        return prod(chunk_shape_)*sizeof(T);
+    }
+    
     virtual std::size_t dataBytes(Chunk * c) const
     {
         return c->pointer_ == 0
@@ -483,6 +488,8 @@ class ChunkedArrayBase
     {
         return data_bytes_;
     }
+    
+    virtual std::size_t overheadBytesPerChunk() const = 0;
     
     virtual std::size_t overheadBytes() const = 0;
 
@@ -590,6 +597,11 @@ class MultiArrayView<N, U, ChunkedArrayTag>
         return chunks_.size()*sizeof(Chunk);
     }
 
+    virtual std::size_t overheadBytesPerChunk() const
+    {
+        return sizeof(Chunk);
+    }
+    
     MultiArrayView()
     : ChunkedArrayBase<N, T>()
     {}
@@ -2102,6 +2114,11 @@ class ChunkedArrayFull
     {
         return sizeof(Chunk);
     }
+
+    virtual std::size_t overheadBytesPerChunk() const
+    {
+        return sizeof(Chunk);
+    }
     
     virtual pointer chunkForIterator(shape_type const & point, 
                                      shape_type & strides, shape_type & upper_bound, 
@@ -2255,6 +2272,11 @@ class ChunkedArrayLazy
     virtual std::size_t overheadBytes() const
     {
         return outer_array_.size()*sizeof(Chunk);
+    }
+
+    virtual std::size_t overheadBytesPerChunk() const
+    {
+        return sizeof(Chunk);
     }
     
     ChunkStorage outer_array_;  // the array of chunks
@@ -2447,6 +2469,11 @@ class ChunkedArrayCompressed
     virtual std::size_t overheadBytes() const
     {
         return outer_array_.size()*sizeof(Chunk);
+    }
+
+    virtual std::size_t overheadBytesPerChunk() const
+    {
+        return sizeof(Chunk);
     }
         
     ChunkStorage outer_array_;  // the array of chunks
@@ -2691,6 +2718,11 @@ class ChunkedArrayTmpFile
     virtual std::size_t overheadBytes() const
     {
         return outer_array_.size()*sizeof(Chunk);
+    }
+
+    virtual std::size_t overheadBytesPerChunk() const
+    {
+        return sizeof(Chunk);
     }
     
     void unmap()

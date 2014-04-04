@@ -305,6 +305,11 @@ class ChunkedArrayHDF5
     {
         return outer_array_.size()*sizeof(Chunk);
     }
+
+    virtual std::size_t overheadBytesPerChunk() const
+    {
+        return sizeof(Chunk);
+    }
     
     std::string const & datasetName() const
     {
