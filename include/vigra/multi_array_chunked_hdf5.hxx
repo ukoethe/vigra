@@ -259,7 +259,7 @@ class ChunkedArrayHDF5
             i->reshape(min(this->chunk_shape_, this->shape_ - start),
                        start,
                        this);
-            this->handle_array_[i.point()].pointer_ = &(*i);
+            // this->handle_array_[i.point()].pointer_ = &(*i);
         }
     }
     
@@ -288,6 +288,13 @@ class ChunkedArrayHDF5
     virtual pointer loadChunk(ChunkBase<N, T> * chunk)
     {
         return static_cast<Chunk *>(chunk)->read();
+    }
+    
+    virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
+    {
+        if(*p == 0)
+            *p = &outer_array_[index];
+        return loadChunk(*p);
     }
     
     virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool /* destroy */)

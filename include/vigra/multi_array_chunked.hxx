@@ -354,6 +354,7 @@ template <unsigned int N, class T>
 class SharedChunkHandle
 {
   public:
+    typedef typename MultiArrayShape<N>::type shape_type;
     
     static const int chunk_asleep = -2;
     static const int chunk_uninitialized = -3;
@@ -369,6 +370,11 @@ class SharedChunkHandle
     : pointer_(rhs.pointer_),
       refcount_(chunk_uninitialized)
     {}
+    
+    shape_type const & strides() const
+    {
+        return pointer_->strides_;
+    }
 
     ChunkBase<N, T> * pointer_;
     mutable threading::atomic<int> refcount_;
@@ -1550,6 +1556,8 @@ class ChunkedArray
     
     virtual pointer loadChunk(Chunk * chunk) = 0;
     
+    virtual pointer loadChunk(Chunk ** chunk, shape_type const & chunk_index) = 0;
+    
     virtual bool unloadHandle(Handle * handle, bool destroy = false)
     {
         if(handle == &fill_value_handle_)
@@ -1630,6 +1638,43 @@ class ChunkedArray
         }
     }
         
+    // pointer getChunk(Handle * handle, bool isConst, bool insertInCache, shape_type const & chunk_index) const
+    // {
+        // ChunkedArray * self = const_cast<ChunkedArray *>(this);
+        
+        // int rc = acquireRef(handle);        
+        // if(rc >= 0)
+            // return static_cast<Chunk*>(handle->pointer_)->pointer_;
+
+        // threading::lock_guard<threading::mutex> guard(*chunk_lock_);
+        // try
+        // {
+            // Chunk * chunk = static_cast<Chunk*>(handle->pointer_);
+            // T * p = self->loadChunk(chunk);
+            // if(!isConst && rc == chunk_uninitialized)
+                // std::fill(p, p + prod(chunkShape(chunk_index)), this->fill_value_);
+                
+            // self->data_bytes_ += dataBytes(chunk);
+            
+            // if(cacheMaxSize() > 0 && insertInCache)
+            // {
+                // // insert in queue of mapped chunks
+                // self->cache_.push(handle);
+
+                // // do cache management if cache is full
+                // // (note that we still hold the chunk_lock_)
+                // self->cleanCache(2);
+            // }
+            // handle->refcount_.store(1, threading::memory_order_release);
+            // return p;
+        // }
+        // catch(...)
+        // {
+            // handle->refcount_.store(chunk_failed);
+            // throw;
+        // }
+    // }
+    
     pointer getChunk(Handle * handle, bool isConst, bool insertInCache, shape_type const & chunk_index) const
     {
         ChunkedArray * self = const_cast<ChunkedArray *>(this);
@@ -1641,8 +1686,8 @@ class ChunkedArray
         threading::lock_guard<threading::mutex> guard(*chunk_lock_);
         try
         {
+            T * p = self->loadChunk(&handle->pointer_, chunk_index);
             Chunk * chunk = static_cast<Chunk*>(handle->pointer_);
-            T * p = self->loadChunk(chunk);
             if(!isConst && rc == chunk_uninitialized)
                 std::fill(p, p + prod(chunkShape(chunk_index)), this->fill_value_);
                 
@@ -1696,9 +1741,8 @@ class ChunkedArray
             insertInCache = false;
         }
         
-        Chunk * chunk = static_cast<Chunk *>(handle->pointer_);
         pointer p = getChunk(handle, isConst, insertInCache, chunkIndex);
-        strides = chunk->strides_;
+        strides = handle->strides();
         upper_bound = (chunkIndex + shape_type(1)) * this->chunk_shape_ - h->offset_;
         std::size_t offset = detail::ChunkIndexing<N>::offsetInChunk(global_point, mask_, strides);
         h->chunk_ = handle;
@@ -1883,10 +1927,9 @@ class ChunkedArray
             // Would it be better to acquire it once before the loop?
             pointer p = getChunk(handle, isConst, true, *i);
             
-            Chunk * chunk = static_cast<Chunk*>(handle->pointer_);
             ChunkBase<N, T> * mini_chunk = &view.chunks_[*i - chunk_start];
             mini_chunk->pointer_ = p;
-            mini_chunk->strides_ = chunk->strides_;
+            mini_chunk->strides_ = handle->strides();
             unref->chunks_[i.scanOrderIndex()] = handle;
         }
     }
@@ -1915,35 +1958,34 @@ class ChunkedArray
         return view;
     }
     
-    value_type getItem(shape_type const & p) const
+    value_type getItem(shape_type const & point) const
     {
-        vigra_precondition(this->isInside(p),
+        vigra_precondition(this->isInside(point),
             "ChunkedArray::getItem(): index out of bounds.");
             
         ChunkedArray * self = const_cast<ChunkedArray*>(this);
-        shape_type chunk_index(chunkStart(p));
+        shape_type chunk_index(chunkStart(point));
         Handle * handle = self->lookupHandle(chunk_index);
         if(handle->refcount_.load() == chunk_uninitialized)
             return fill_value_;
-        Chunk * chunk = static_cast<Chunk*>(handle->pointer_);
-        value_type res = *(self->getChunk(handle, true, false, chunk_index) + 
-                           detail::ChunkIndexing<N>::offsetInChunk(p, mask_, chunk->strides_));
+        pointer p = self->getChunk(handle, true, false, chunk_index);
+        value_type res = *(p + 
+                           detail::ChunkIndexing<N>::offsetInChunk(point, mask_, handle->strides()));
         self->unrefChunk(handle);
         return res;
     }
     
-    void setItem(shape_type const & p, value_type const & v)
+    void setItem(shape_type const & point, value_type const & v)
     {
         vigra_precondition(!this->isReadOnly(),
             "ChunkedArray::setItem(): array is read-only.");
-        vigra_precondition(this->isInside(p),
+        vigra_precondition(this->isInside(point),
             "ChunkedArray::setItem(): index out of bounds.");
 
-        shape_type chunk_index(chunkStart(p));
+        shape_type chunk_index(chunkStart(point));
         Handle * handle = lookupHandle(chunk_index);
-        Chunk * chunk = static_cast<Chunk*>(handle->pointer_);
-        *(getChunk(handle, false, false, chunk_index) + 
-          detail::ChunkIndexing<N>::offsetInChunk(p, mask_, chunk->strides_)) = v;
+        pointer p = getChunk(handle, false, false, chunk_index);
+        *(p + detail::ChunkIndexing<N>::offsetInChunk(point, mask_, handle->strides())) = v;
         unrefChunk(handle);
     }
     
@@ -2207,6 +2249,11 @@ class ChunkedArrayFull
         return this->data();
     }
     
+    virtual pointer loadChunk(ChunkBase<N, T> **, shape_type const &)
+    {
+        return this->data();
+    }
+    
     virtual bool unloadChunk(ChunkBase<N, T> *, bool /* destroy */)
     {
         return false; // never destroys the data
@@ -2342,6 +2389,7 @@ class ChunkedArrayLazy
     : ChunkedArray<N, T>(shape, chunk_shape, options.cacheMax(0)),
       outer_array_(detail::computeChunkArrayShape(shape, this->bits_, this->mask_), 
                    Chunk(alloc))
+    , alloc_(alloc)
     {
         // set shape of the chunks
         typename ChunkStorage::iterator i   = outer_array_.begin(), 
@@ -2350,7 +2398,7 @@ class ChunkedArrayLazy
         {
             i->reshape(min(this->chunk_shape_, 
                            shape - i.point()*this->chunk_shape_));
-            this->handle_array_[i.point()].pointer_ = &(*i);
+            // this->handle_array_[i.point()].pointer_ = &(*i);
         }
     }
     
@@ -2365,6 +2413,13 @@ class ChunkedArrayLazy
     virtual pointer loadChunk(ChunkBase<N, T> * chunk)
     {
         return static_cast<Chunk *>(chunk)->allocate();
+    }
+    
+    virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
+    {
+        if(*p == 0)
+            *p = &outer_array_[index];
+        return loadChunk(*p);
     }
     
     virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool destroy)
@@ -2402,6 +2457,7 @@ class ChunkedArrayLazy
     }
     
     ChunkStorage outer_array_;  // the array of chunks
+    Alloc alloc_;
 };
 
 template <unsigned int N, class T, class Alloc = std::allocator<T> >
@@ -2527,7 +2583,7 @@ class ChunkedArrayCompressed
         {
             i->reshape(min(this->chunk_shape_, 
                            this->shape_ - i.point()*this->chunk_shape_));
-            this->handle_array_[i.point()].pointer_ = &(*i);
+            // this->handle_array_[i.point()].pointer_ = &(*i);
         }
     }
     
@@ -2542,6 +2598,13 @@ class ChunkedArrayCompressed
     virtual pointer loadChunk(ChunkBase<N, T> * chunk)
     {
         return static_cast<Chunk *>(chunk)->uncompress(compression_method_);
+    }
+    
+    virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
+    {
+        if(*p == 0)
+            *p = &outer_array_[index];
+        return loadChunk(*p);
     }
     
     virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool destroy)
@@ -2717,7 +2780,7 @@ class ChunkedArrayTmpFile
         {
             i->reshape(min(this->chunk_shape_, shape - i.point()*this->chunk_shape_));
             size += i->alloc_size();
-            this->handle_array_[i.point()].pointer_ = &(*i);
+            // this->handle_array_[i.point()].pointer_ = &(*i);
         }
         
         // std::cerr << "    file size: " << size << "\n";
@@ -2813,6 +2876,13 @@ class ChunkedArrayTmpFile
         return chunk->map(offset);
     }
     
+    virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
+    {
+        if(*p == 0)
+            *p = &outer_array_[index];
+        return loadChunk(*p);
+    }
+
     virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool /* destroy*/)
     {
         static_cast<Chunk *>(chunk)->unmap();
