@@ -395,6 +395,9 @@ class SharedChunkBase
     SharedChunkBase & operator=(SharedChunkBase const & rhs);
 };
 
+template<unsigned int N, class T>
+class ChunkIterator;
+
 template <unsigned int N, class T>
 class ChunkedArrayBase
 {
@@ -522,6 +525,8 @@ class MultiArrayView<N, U, ChunkedArrayTag>
     typedef difference_type size_type;
     typedef difference_type shape_type;
     typedef MultiArrayIndex difference_type_1;
+    typedef ChunkIterator<actual_dimension, U>         chunk_iterator;
+    typedef ChunkIterator<actual_dimension, T const>   chunk_const_iterator;
     typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<U>, U&, U*> iterator;
     typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<T const>, T const &, T const *> const_iterator;
     typedef MultiArrayView<N, U, ChunkedArrayTag> view_type;
@@ -554,6 +559,22 @@ class MultiArrayView<N, U, ChunkedArrayTag>
         return chunks_.shape();
     }
     
+    shape_type chunkStart(shape_type const & global_start) const
+    {
+        shape_type chunk_start(SkipInitialization);
+        detail::ChunkIndexing<N>::chunkIndex(global_start, bits_, chunk_start);
+        return chunk_start;
+    }
+    
+    shape_type chunkStop(shape_type global_stop) const
+    {
+        global_stop -= shape_type(1);
+        shape_type chunk_stop(SkipInitialization);
+        detail::ChunkIndexing<N>::chunkIndex(global_stop, bits_, chunk_stop);
+        chunk_stop += shape_type(1);
+        return chunk_stop;
+    }
+    
     virtual void unrefChunk(ChunkedHandle<N, T> *) const {}
     
     virtual T* chunkForIterator(shape_type const & point, 
@@ -578,8 +599,7 @@ class MultiArrayView<N, U, ChunkedArrayTag>
         global_point += offset_;
         shape_type coffset = offset_ + h->offset_;
         
-        shape_type chunkIndex(SkipInitialization);
-        detail::ChunkIndexing<N>::chunkIndex(global_point, bits_, chunkIndex);
+        shape_type chunkIndex = chunkStart(global_point);
         Chunk const * chunk = &chunks_[chunkIndex];
         strides = chunk->strides_;
         upper_bound = (chunkIndex + shape_type(1)) * this->chunk_shape_ - coffset;
@@ -895,10 +915,10 @@ class MultiArrayView<N, U, ChunkedArrayTag>
         
         typedef std::size_t UI;
         UI start = offset_[m] + d;
-        UI chunkStart = start >> bits_[m];
-        UI startInChunk = start - chunkStart * this->chunk_shape_[m];
+        UI chunk_start = start >> bits_[m];
+        UI startInChunk = start - chunk_start * this->chunk_shape_[m];
         
-        MultiArrayView<N-1, Chunk> view(chunks_.bindAt(m, chunkStart));
+        MultiArrayView<N-1, Chunk> view(chunks_.bindAt(m, chunk_start));
         MultiCoordinateIterator<N-1> i(view.shape()),
                                      end(i.getEndIterator());
         for(; i != end; ++i)
@@ -981,23 +1001,29 @@ class MultiArrayView<N, U, ChunkedArrayTag>
         // return MultiArrayView<1, T, StridedArrayTag>(Shape1(vigra::min(m_shape)), 
                                                      // Shape1(vigra::sum(m_stride)), m_ptr);
     // }
-
     
+    inline void 
+    checkSubarrayBounds(shape_type const & start, shape_type const & stop, 
+                        std::string message) const
+    {
+        message += ": subarray out of bounds.";
+        vigra_precondition(allLessEqual(shape_type(), start) && 
+                           allLess(start, stop) && 
+                           allLessEqual(stop, this->shape_),
+                           message);
+    }
+
     MultiArrayView<N, value_type, ChunkedArrayTag> 
     subarray(shape_type start, shape_type stop)
     {
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && allLessEqual(stop, this->shape_),
-                           "MultiArrayView<N-1, T, ChunkedArrayTag>::subarray(): subarray out of bounds.");
+        checkSubarrayBounds(start, stop, "MultiArrayView<N-1, T, ChunkedArrayTag>::subarray()");
         start += offset_;
         stop  += offset_;
-        shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
-        detail::ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
-        detail::ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
-        chunkStop += shape_type(1);
+        shape_type chunk_start(chunkStart(start));
         
         MultiArrayView<N, value_type, ChunkedArrayTag> view(stop-start, this->chunk_shape_);
-        view.chunks_ = chunks_.subarray(chunkStart, chunkStop);
-        view.offset_ = start - chunkStart * this->chunk_shape_;
+        view.chunks_ = chunks_.subarray(chunk_start, chunkStop(stop));
+        view.offset_ = start - chunk_start * this->chunk_shape_;
         view.bits_   = bits_;
         view.mask_   = mask_;
         view.unref_ = unref_;
@@ -1215,7 +1241,39 @@ class MultiArrayView<N, U, ChunkedArrayTag>
     {
         return begin().getEndIterator();
     }
-
+    
+    chunk_iterator chunk_begin(shape_type const & start, shape_type const & stop)
+    {
+        checkSubarrayBounds(start, stop, "MultiArrayView<N-1, T, ChunkedArrayTag>::chunk_begin()");
+        return chunk_iterator(this, start, stop, chunkStart(start), chunkStop(stop), this->chunk_shape_);
+    }
+    
+    chunk_iterator chunk_end(shape_type const & start, shape_type const & stop)
+    {
+        return chunk_begin(start, stop).getEndIterator();
+    }
+    
+    chunk_const_iterator chunk_begin(shape_type const & start, shape_type const & stop) const
+    {
+        checkSubarrayBounds(start, stop, "MultiArrayView<N-1, T, ChunkedArrayTag>::chunk_begin()");
+        return chunk_const_iterator(this, start, stop, chunkStart(start), chunkStop(stop), this->chunk_shape_);
+    }
+    
+    chunk_const_iterator chunk_end(shape_type const & start, shape_type const & stop) const
+    {
+        return chunk_begin(start, stop).getEndIterator();
+    }
+    
+    chunk_const_iterator chunk_cbegin(shape_type const & start, shape_type const & stop) const
+    {
+        checkSubarrayBounds(start, stop, "MultiArrayView<N-1, T, ChunkedArrayTag>::chunk_cbegin()");
+        return chunk_const_iterator(this, start, stop, chunkStart(start), chunkStop(stop), this->chunk_shape_);
+    }
+    
+    chunk_const_iterator chunk_cend(shape_type const & start, shape_type const & stop) const
+    {
+        return chunk_cbegin(start, stop).getEndIterator();
+    }
 
     view_type view ()
     {
@@ -1410,6 +1468,8 @@ class ChunkedArray
     typedef value_type const * const_pointer;
     typedef value_type & reference;
     typedef value_type const & const_reference;
+    typedef ChunkIterator<N, T>         chunk_iterator;
+    typedef ChunkIterator<N, T const>   chunk_const_iterator;
     typedef StridedScanOrderIterator<N, ChunkedMemory<T>, reference, pointer>   iterator;
     typedef StridedScanOrderIterator<N, ChunkedMemory<T const>, const_reference, const_pointer>   const_iterator;
     typedef SharedChunkBase<N, T> Chunk;
@@ -1457,6 +1517,33 @@ class ChunkedArray
     int cacheSize() const
     {
         return cache_.size();
+    }
+    
+    shape_type chunkStart(shape_type const & global_start) const
+    {
+        shape_type chunk_start(SkipInitialization);
+        detail::ChunkIndexing<N>::chunkIndex(global_start, bits_, chunk_start);
+        return chunk_start;
+    }
+    
+    shape_type chunkStop(shape_type global_stop) const
+    {
+        global_stop -= shape_type(1);
+        shape_type chunk_stop(SkipInitialization);
+        detail::ChunkIndexing<N>::chunkIndex(global_stop, bits_, chunk_stop);
+        chunk_stop += shape_type(1);
+        return chunk_stop;
+    }
+
+    inline void 
+    checkSubarrayBounds(shape_type const & start, shape_type const & stop, 
+                        std::string message) const
+    {
+        message += ": subarray out of bounds.";
+        vigra_precondition(allLessEqual(shape_type(), start) && 
+                           allLess(start, stop) && 
+                           allLessEqual(stop, this->shape_),
+                           message);
     }
 
     template <class U, class C1>
@@ -1603,8 +1690,7 @@ class ChunkedArray
             return 0;
         }
         
-        shape_type chunkIndex(SkipInitialization);
-        detail::ChunkIndexing<N>::chunkIndex(global_point, bits_, chunkIndex);
+        shape_type chunkIndex(chunkStart(global_point));
         
         bool insertInCache = true;
         SharedChunkBase<N, T> * chunk = self->lookupChunk(chunkIndex);
@@ -1691,16 +1777,9 @@ class ChunkedArray
         // behavior.
     void releaseChunks(shape_type const & start, shape_type const & stop, bool destroy = false)
     {
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && 
-                           allLessEqual(stop, this->shape()),
-                           "ChunkedArray::releaseChunks(): subarray out of bounds.");
+        checkSubarrayBounds(start, stop, "ChunkedArray::releaseChunks()");
                            
-        shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
-        detail::ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
-        detail::ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
-        chunkStop += shape_type(1);
-        
-        MultiCoordinateIterator<N> i(chunkStart, chunkStop),
+        MultiCoordinateIterator<N> i(chunkStart(start), chunkStop(stop)),
                                    end(i.getEndIterator());
         for(; i != end; ++i)
         {
@@ -1736,9 +1815,7 @@ class ChunkedArray
     {
         shape_type stop   = start + subarray.shape();
         
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && 
-                           allLessEqual(stop, this->shape()),
-                           "ChunkedArray::checkoutSubarray(): subarray out of bounds.");
+        checkSubarrayBounds(start, stop, "ChunkedArray::checkoutSubarray()");
                            
         const_iterator i(cbegin().restrictToSubarray(start, stop)),
                        end(i.getEndIterator());
@@ -1759,9 +1836,7 @@ class ChunkedArray
         
         vigra_precondition(!this->isReadOnly(),
                            "ChunkedArray::commitSubarray(): array is read-only.");
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && 
-                           allLessEqual(stop, this->shape()),
-                           "ChunkedArray::commitSubarray(): subarray out of bounds.");
+        checkSubarrayBounds(start, stop, "ChunkedArray::commitSubarray()");
                            
         iterator i(begin().restrictToSubarray(start, stop)),
                  end(i.getEndIterator());
@@ -1780,19 +1855,13 @@ class ChunkedArray
     {
         vigra_precondition(isConst || !this->isReadOnly(),
                            "ChunkedArray::subarray(): array is read-only.");
-        vigra_precondition(allLessEqual(shape_type(), start) && allLess(start, stop) && 
-                           allLessEqual(stop, this->shape()),
-                           "ChunkedArray::subarray(): subarray out of bounds.");
-        
-        shape_type chunkStart(SkipInitialization), chunkStop(SkipInitialization);
-        detail::ChunkIndexing<N>::chunkIndex(start, bits_, chunkStart);
-        detail::ChunkIndexing<N>::chunkIndex(stop-shape_type(1), bits_, chunkStop);
-        chunkStop += shape_type(1);
+        checkSubarrayBounds(start, stop, "ChunkedArray::subarray()");
+        shape_type chunk_start(chunkStart(start)), chunk_stop(chunkStop(stop));
         
         view.shape_ = stop-start;
         view.chunk_shape_ = this->chunk_shape_;
-        view.chunks_.reshape(chunkStop-chunkStart);
-        view.offset_ = start - chunkStart * this->chunk_shape_;
+        view.chunks_.reshape(chunk_stop-chunk_start);
+        view.offset_ = start - chunk_start * this->chunk_shape_;
         view.bits_   = bits_;
         view.mask_   = mask_;
 
@@ -1801,7 +1870,7 @@ class ChunkedArray
         Unref * unref = new Unref(view.chunks_.size(), self);
         view.unref_ = std::shared_ptr<Unref>(unref);
         
-        MultiCoordinateIterator<N> i(chunkStart, chunkStop),
+        MultiCoordinateIterator<N> i(chunk_start, chunk_stop),
                                    end(i.getEndIterator());
         for(; i != end; ++i)
         {
@@ -1814,7 +1883,7 @@ class ChunkedArray
             // Would it be better to acquire it once before the loop?
             pointer p = getChunk(chunk, isConst, true);
             
-            ChunkBase<N, T> * mini_chunk = &view.chunks_[*i - chunkStart];
+            ChunkBase<N, T> * mini_chunk = &view.chunks_[*i - chunk_start];
             mini_chunk->pointer_ = p;
             mini_chunk->strides_ = chunk->strides_;
             unref->chunks_[i.scanOrderIndex()] = chunk;
@@ -1851,9 +1920,7 @@ class ChunkedArray
             "ChunkedArray::getItem(): index out of bounds.");
             
         ChunkedArray * self = const_cast<ChunkedArray*>(this);
-        shape_type chunkIndex(SkipInitialization);
-        detail::ChunkIndexing<N>::chunkIndex(p, bits_, chunkIndex);
-        SharedChunkBase<N, T> * chunk = self->lookupChunk(chunkIndex);
+        SharedChunkBase<N, T> * chunk = self->lookupChunk(chunkStart(p));
         if(chunk->refcount_.load() == chunk_uninitialized)
             return fill_value_;
         value_type res = *(self->getChunk(chunk, true, false) + 
@@ -1869,9 +1936,7 @@ class ChunkedArray
         vigra_precondition(this->isInside(p),
             "ChunkedArray::setItem(): index out of bounds.");
 
-        shape_type chunkIndex(SkipInitialization);
-        detail::ChunkIndexing<N>::chunkIndex(p, bits_, chunkIndex);
-        SharedChunkBase<N, T> * chunk = lookupChunk(chunkIndex);
+        SharedChunkBase<N, T> * chunk = lookupChunk(chunkStart(p));
         *(getChunk(chunk, false, false) + 
           detail::ChunkIndexing<N>::offsetInChunk(p, mask_, chunk->strides_)) = v;
         unrefChunk(chunk);
@@ -1973,6 +2038,39 @@ class ChunkedArray
     const_iterator end() const
     {
         return begin().getEndIterator();
+    }
+    
+    chunk_iterator chunk_begin(shape_type const & start, shape_type const & stop)
+    {
+        checkSubarrayBounds(start, stop, "ChunkedArray::chunk_begin()");
+        return chunk_iterator(this, start, stop, chunkStart(start), chunkStop(stop), this->chunk_shape_);
+    }
+    
+    chunk_iterator chunk_end(shape_type const & start, shape_type const & stop)
+    {
+        return chunk_begin(start, stop).getEndIterator();
+    }
+    
+    chunk_const_iterator chunk_begin(shape_type const & start, shape_type const & stop) const
+    {
+        checkSubarrayBounds(start, stop, "ChunkedArray::chunk_begin()");
+        return chunk_const_iterator(this, start, stop, chunkStart(start), chunkStop(stop), this->chunk_shape_);
+    }
+    
+    chunk_const_iterator chunk_end(shape_type const & start, shape_type const & stop) const
+    {
+        return chunk_begin(start, stop).getEndIterator();
+    }
+    
+    chunk_const_iterator chunk_cbegin(shape_type const & start, shape_type const & stop) const
+    {
+        checkSubarrayBounds(start, stop, "ChunkedArray::chunk_cbegin()");
+        return chunk_const_iterator(this, start, stop, chunkStart(start), chunkStop(stop), this->chunk_shape_);
+    }
+    
+    chunk_const_iterator chunk_cend(shape_type const & start, shape_type const & stop) const
+    {
+        return chunk_cbegin(start, stop).getEndIterator();
     }
     
     shape_type bits_, mask_;
@@ -2753,6 +2851,11 @@ class ChunkedHandle
       chunk_(0)
     {}
     
+    ChunkedHandle(shape_type const & offset)
+    : offset_(offset),
+      chunk_(0)
+    {}
+    
     ChunkedHandle(ChunkedHandle const & other)
     : offset_(other.offset_),
       chunk_(0)
@@ -2990,6 +3093,214 @@ public:
     pointer pointer_;
     shape_type strides_, upper_bound_;
     array_type * array_;
+};
+
+template<unsigned int N, class U>
+class ChunkIterator
+: public MultiCoordinateIterator<N>
+, public MultiArrayView<N, typename UnqualifiedType<U>::type>
+{
+  public:
+    typedef typename UnqualifiedType<U>::type      T;
+    typedef MultiCoordinateIterator<N>             base_type;
+    typedef MultiArrayView<N, T>                   base_type2;
+
+    typedef typename base_type::shape_type         shape_type;
+    typedef typename base_type::difference_type    difference_type;
+    typedef ChunkIterator                          iterator;
+    typedef std::random_access_iterator_tag        iterator_category;
+
+    typedef MultiArrayView<N, T>                   value_type;
+    typedef MultiArrayView<N, T> &                 reference;
+    typedef MultiArrayView<N, T> const &           const_reference;
+    typedef MultiArrayView<N, T> *                 pointer;
+    typedef MultiArrayView<N, T> const *           const_pointer;
+    
+    typedef typename IfBool<UnqualifiedType<U>::isConst,
+                          ChunkedArrayBase<N, T> const,
+                          ChunkedArrayBase<N, T> >::type array_type;
+    typedef ChunkedHandle<N, T>        Chunk;
+
+
+    ChunkIterator() 
+    : base_type()
+    , base_type2()
+    {}
+
+    ChunkIterator(array_type * array, 
+                  shape_type const & start, shape_type const & end,
+                  shape_type const & chunk_start, shape_type const & chunk_end,
+                  shape_type const & chunk_shape) 
+    : base_type(chunk_start, chunk_end)
+    , array_(array)
+    , chunk_(chunk_start * chunk_shape)
+    , start_(start - chunk_.offset_)
+    , stop_(end - chunk_.offset_)
+    , chunk_shape_(chunk_shape)
+    {
+        getChunk();
+    }
+
+    ChunkIterator(ChunkIterator const & rhs) 
+    : base_type(rhs)
+    , array_(rhs.array_)
+    , chunk_(rhs.chunk_)
+    , start_(rhs.start_)
+    , stop_(rhs.stop_)
+    , chunk_shape_(rhs.chunk_shape_)
+    {
+        getChunk();
+    }
+
+    ChunkIterator & operator=(ChunkIterator const & rhs)
+    {
+        if(this != &rhs)
+        {
+            base_type::operator=(rhs);
+            array_ = rhs.array_;
+            chunk_ = rhs.chunk_;
+            start_ = rhs.start_;
+            stop_ = rhs.stop_;
+            chunk_shape_ = rhs.chunk_shape_;
+            getChunk();
+        }
+        return *this;
+    }
+
+    reference operator*()
+    {
+        return *this;
+    }
+    
+    const_reference operator*() const
+    {
+        return *this;
+    }
+    
+    pointer operator->()
+    {
+        return this;
+    }
+    
+    const_pointer operator->() const
+    {
+        return this;
+    }
+
+    value_type operator[](MultiArrayIndex i) const
+    {
+        return *(ChunkIterator(*this) += i);
+    }
+
+    void getChunk()
+    {
+        if(array_)
+        {
+            shape_type array_point = max(start_, this->point()*chunk_shape_),
+                       upper_bound(SkipInitialization);
+            this->m_ptr = array_->chunkForIterator(array_point, this->m_stride, upper_bound, &chunk_);
+            this->m_shape = min(upper_bound, stop_) - array_point;
+        }
+    }
+    
+    shape_type chunkStart() const
+    {
+        return max(start_, this->point()*chunk_shape_) + chunk_.offset_;
+    }
+    
+    shape_type chunkStop() const
+    {
+        return chunkStart() + this->m_shape;
+    }
+    
+    ChunkIterator & operator++()
+    {
+        base_type::operator++();
+        getChunk();
+        return *this;
+    }
+    
+    ChunkIterator operator++(int)
+    {
+        ChunkIterator res(*this);
+        ++*this;
+        return res;
+    }
+
+    ChunkIterator & operator+=(MultiArrayIndex i)
+    {
+        base_type::operator+=(i);
+        getChunk();
+        return *this;
+    }
+
+    ChunkIterator & operator+=(const shape_type &coordOffset)
+    {
+        base_type::operator+=(coordOffset);
+        getChunk();
+        return *this;
+    }
+
+    ChunkIterator & operator--()
+    {
+        base_type::operator--();
+        getChunk();
+        return *this;
+    }
+
+    ChunkIterator operator--(int)
+    {
+        ChunkIterator res(*this);
+        --*this;
+        return res;
+    }
+
+    ChunkIterator & operator-=(MultiArrayIndex i)
+    {
+        return operator+=(-i);
+    }
+
+    ChunkIterator & operator-=(const shape_type &coordOffset)
+    {
+        return operator+=(-coordOffset);
+    }
+
+    ChunkIterator getEndIterator() const
+    {
+        ChunkIterator res(*this);
+        static_cast<base_type &>(res) = base_type::getEndIterator();
+        res.getChunk();
+        return res;
+    }
+
+    ChunkIterator operator+(MultiArrayIndex d) const
+    {
+        return ChunkIterator(*this) += d;
+    }
+
+    ChunkIterator operator-(MultiArrayIndex d) const
+    {
+        return ChunkIterator(*this) -= d;
+    }
+
+    ChunkIterator operator+(const shape_type &coordOffset) const
+    {
+        return ChunkIterator(*this) += coordOffset;
+    }
+
+    ChunkIterator operator-(const shape_type &coordOffset) const
+    {
+        return ChunkIterator(*this) -= coordOffset;
+    }
+
+    MultiArrayIndex operator-(const ChunkIterator & other) const
+    {
+        return base_type::operator-(other);
+    }
+    
+    array_type * array_;
+    Chunk chunk_;
+    shape_type start_, stop_, chunk_shape_, array_point_;
 };
 
 } // namespace vigra

@@ -693,6 +693,45 @@ public:
         shouldEqual(&*i2, &v[Shape3(19,20,21)]);
     }
     
+    void testChunkIterator()
+    {
+        Shape3 start(5,0,3), stop(shape[0], shape[1], shape[2]-3);
+        MultiArrayView <3, T, ChunkedArrayTag> v(array->subarray(Shape3(), shape));
+        
+        typename Array::chunk_iterator i = array->chunk_begin(start, stop),
+                                       end = array->chunk_end(start, stop);
+        typename MultiArrayView <3, T, ChunkedArrayTag>::chunk_const_iterator 
+                                       vi = v.chunk_cbegin(start, stop),
+                                       vend = v.chunk_cend(start, stop);
+        int count = -1;
+        for(; i != end; ++i, ++vi, --count)
+        {
+            shouldEqual(i->data(), i[0].data());
+            shouldEqual(i->data(), vi->data());
+            
+            *i = T(count);
+            ref.subarray(i.chunkStart(), i.chunkStop()) = T(count);
+            should(*vi == ref.subarray(i.chunkStart(), i.chunkStop()));
+        }
+        should(vi == vend);
+        shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
+        
+        for(;;)
+        {
+            --i;
+            --vi;
+            ++count;
+            shouldEqual(i->data(), i[0].data());
+            shouldEqual(i->data(), vi->data());
+            shouldEqual((*i)[Shape3()], T(count));
+            *i = T(fill_value);
+            if(i.scanOrderIndex() == 0)
+                break;
+        }
+        ref.subarray(start, stop) = T(fill_value);
+        shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
+    }
+    
     static void testMultiThreadedRun(BaseArray * v, int startIndex, int d, int * go)
     {
         while(*go == 0)
@@ -1477,6 +1516,7 @@ struct ChunkedMultiArrayTestSuite
         add( testCase( &ChunkedMultiArrayTest<Array>::test_bindOuter ) );
         add( testCase( &ChunkedMultiArrayTest<Array>::test_subarray ) );
         add( testCase( &ChunkedMultiArrayTest<Array>::test_iterator ) );
+        add( testCase( &ChunkedMultiArrayTest<Array>::testChunkIterator ) );
         add( testCase( &ChunkedMultiArrayTest<Array>::testMultiThreaded ) );
     }
     
