@@ -103,12 +103,21 @@ unsigned int ChunkedArray_ndim(ChunkedArray<N, T> const &)
 
 template <unsigned int N, class T>
 NumpyAnyArray 
-ChunkedArray_checkoutSubarray(ChunkedArray<N, T> const & self,
+ChunkedArray_checkoutSubarray(python::object array,
                               TinyVector<MultiArrayIndex, N> const & start,
                               TinyVector<MultiArrayIndex, N> const & stop,
                               NumpyArray<N, T> res = NumpyArray<N, T>())
 {
-    res.reshapeIfEmpty(stop-start, 
+    ChunkedArray<N, T> const & self = python::extract<ChunkedArray<N, T> const &>(array)();
+    
+    python_ptr pytags;
+    if(PyObject_HasAttrString(array.ptr(), "axistags"))
+    {
+        pytags = python_ptr(PyObject_GetAttrString(array.ptr(), "axistags"), python_ptr::keep_count);
+    }
+    PyAxisTags tags(pytags, true);
+    TaggedShape shape(stop-start, tags);
+    res.reshapeIfEmpty(shape, 
         "ChunkedArray::checkoutSubarray(): Output array has wrong shape.");
         
     {
@@ -128,18 +137,18 @@ ChunkedArray_commitSubarray(ChunkedArray<N, T> & self,
     self.commitSubarray(start, array);
 }
 
-template <unsigned int N, class T, class Shape>
+template <class Shape>
 python::object
-bindNumpyArray(NumpyArray<N, T> const & self, Shape const & stop)
+bindNumpyArray(NumpyAnyArray self, Shape const & stop)
 {
     if(stop == Shape())
         return python::object(self);
     
     python_ptr func(PyString_FromString("__getitem__"), python_ptr::keep_count);
     pythonToCppException(func);
-    python_ptr index(PyTuple_New(N), python_ptr::keep_count);    
+    python_ptr index(PyTuple_New(stop.size()), python_ptr::keep_count);    
     pythonToCppException(index);
-    for(int k=0; k<N; ++k)
+    for(unsigned int k=0; k<stop.size(); ++k)
     {
         PyObject * item = stop[k] == 0
                             ? PyInt_FromLong(0)
@@ -153,9 +162,11 @@ bindNumpyArray(NumpyArray<N, T> const & self, Shape const & stop)
 
 template <unsigned int N, class T>
 python::object
-ChunkedArray_getitem(ChunkedArray<N, T> const & self, python::object index)
+ChunkedArray_getitem(python::object array, python::object index)
 {
     typedef typename ChunkedArray<N, T>::shape_type Shape;
+    
+    ChunkedArray<N, T> const & self = python::extract<ChunkedArray<N, T> const &>(array)();
     Shape start, stop;
     numpyParseSlicing(self.shape(), index.ptr(), start, stop);
     if(start == stop)
@@ -166,18 +177,13 @@ ChunkedArray_getitem(ChunkedArray<N, T> const & self, python::object index)
     else if(allLessEqual(start, stop))
     {
         // return a slice
-        Shape subStop = max(start + Shape(1), stop);
-        NumpyArray<N, T> subarray(subStop - start);
-        {
-            PyAllowThreads _pythread;
-            self.checkoutSubarray(start, subarray);
-        }
-        return bindNumpyArray(subarray, stop-start);
+        NumpyAnyArray subarray = ChunkedArray_checkoutSubarray<N,T>(array, start, max(start + Shape(1), stop));
+        return python::object(subarray.getitem(Shape(), stop-start));
     }
     else
     {
         vigra_precondition(false,
-            "ChunkedArray.__getitem__(): invalid index bounds.");
+            "ChunkedArray.__getitem__(): index out of bounds.");
         return python::object();
     }
 }
@@ -232,10 +238,19 @@ int numpyScalarTypeNumber(python::object obj)
 
 template <unsigned int N, class T>
 PyObject *
-ptr_to_python(ChunkedArray<N, T> * a)
+ptr_to_python(ChunkedArray<N, T> * a, std::string const & axistags)
 {
-    return python::to_python_indirect<ChunkedArray<N, T>*, 
+    PyObject * pya = python::to_python_indirect<ChunkedArray<N, T>*, 
                                       python::detail::make_owning_holder>()(a);
+    AxisTags at(axistags);
+    vigra_precondition(at.size() == 0 || at.size() == N,
+        "ChunkedArray(): axistags have invalid length.");
+    if(at.size() == N)
+    {
+        int res = PyObject_SetAttrString(pya, "axistags", python::object(at).ptr());
+        pythonToCppException(res != 0);
+    }
+    return pya;
 }
 
 template <class T, int N>
@@ -250,16 +265,17 @@ construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
 template <unsigned int N>
 PyObject *
 construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
-                           python::object dtype, double fill_value)
+                           python::object dtype, double fill_value,
+                           std::string const & axistags)
 {
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayFull<npy_uint8>(shape, fill_value));
+        return ptr_to_python(construct_ChunkedArrayFull<npy_uint8>(shape, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayFull<npy_uint32>(shape, fill_value));
+        return ptr_to_python(construct_ChunkedArrayFull<npy_uint32>(shape, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayFull<npy_float32>(shape, fill_value));
+        return ptr_to_python(construct_ChunkedArrayFull<npy_float32>(shape, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayFull(): unsupported dtype.");
     }
@@ -281,16 +297,17 @@ PyObject *
 construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
                            python::object dtype,
                            TinyVector<MultiArrayIndex, N> const & chunk_shape,
-                           double fill_value)
+                           double fill_value,
+                           std::string const & axistags)
 {
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayLazy<npy_uint8>(shape, chunk_shape, fill_value));
+        return ptr_to_python(construct_ChunkedArrayLazy<npy_uint8>(shape, chunk_shape, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayLazy<npy_uint32>(shape, chunk_shape, fill_value));
+        return ptr_to_python(construct_ChunkedArrayLazy<npy_uint32>(shape, chunk_shape, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayLazy<npy_float32>(shape, chunk_shape, fill_value));
+        return ptr_to_python(construct_ChunkedArrayLazy<npy_float32>(shape, chunk_shape, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayLazy(): unsupported dtype.");
     }
@@ -316,16 +333,20 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
                                  python::object dtype,
                                  TinyVector<MultiArrayIndex, N> const & chunk_shape,
                                  int cache_max,
-                                 double fill_value)
+                                 double fill_value,
+                                 std::string const & axistags)
 {
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayCompressed<npy_uint8>(shape, method, chunk_shape, cache_max, fill_value));
+        return ptr_to_python(construct_ChunkedArrayCompressed<npy_uint8>(shape, method, chunk_shape, 
+                             cache_max, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayCompressed<npy_uint32>(shape, method, chunk_shape, cache_max, fill_value));
+        return ptr_to_python(construct_ChunkedArrayCompressed<npy_uint32>(shape, method, chunk_shape, 
+                             cache_max, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayCompressed<npy_float32>(shape, method, chunk_shape, cache_max, fill_value));
+        return ptr_to_python(construct_ChunkedArrayCompressed<npy_float32>(shape, method, chunk_shape, 
+                             cache_max, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayCompressed(): unsupported dtype.");
     }
@@ -351,16 +372,20 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
                               TinyVector<MultiArrayIndex, N> const & chunk_shape,
                               int cache_max,
                               std::string path,
-                              double fill_value)
+                              double fill_value,
+                              std::string const & axistags)
 {
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayTmpFile<npy_uint8>(shape, chunk_shape, cache_max, path, fill_value));
+        return ptr_to_python(construct_ChunkedArrayTmpFile<npy_uint8>(shape, chunk_shape, cache_max, 
+                             path, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayTmpFile<npy_uint32>(shape, chunk_shape, cache_max, path, fill_value));
+        return ptr_to_python(construct_ChunkedArrayTmpFile<npy_uint32>(shape, chunk_shape, cache_max, 
+                             path, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayTmpFile<npy_float32>(shape, chunk_shape, cache_max, path, fill_value));
+        return ptr_to_python(construct_ChunkedArrayTmpFile<npy_float32>(shape, chunk_shape, cache_max, 
+                             path, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayTmpFile(): unsupported dtype.");
     }
@@ -395,16 +420,20 @@ construct_ChunkedArrayHDF5(std::string filename,
                            CompressionMethod compression,
                            TinyVector<MultiArrayIndex, N> const & chunk_shape,
                            int cache_max,
-                           double fill_value)
+                           double fill_value,
+                           std::string const & axistags)
 {
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayHDF5<npy_uint8>(filename, datasetName, shape, mode, compression, chunk_shape, cache_max, fill_value));
+        return ptr_to_python(construct_ChunkedArrayHDF5<npy_uint8>(filename, datasetName, shape, 
+                             mode, compression, chunk_shape, cache_max, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayHDF5<npy_uint32>(filename, datasetName, shape, mode, compression, chunk_shape, cache_max, fill_value));
+        return ptr_to_python(construct_ChunkedArrayHDF5<npy_uint32>(filename, datasetName, shape, 
+                             mode, compression, chunk_shape, cache_max, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayHDF5<npy_float32>(filename, datasetName, shape, mode, compression, chunk_shape, cache_max, fill_value));
+        return ptr_to_python(construct_ChunkedArrayHDF5<npy_float32>(filename, datasetName, shape, 
+                             mode, compression, chunk_shape, cache_max, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayHDF5(): unsupported dtype.");
     }
@@ -482,21 +511,21 @@ void defineChunkedArrayFactories()
     object default_dtype = object(python::detail::new_reference(dtype));
 
     def("ChunkedArrayFull", &construct_ChunkedArrayFull<N>,
-        (arg("shape"), arg("dtype")=default_dtype, arg("fill_value")=0.0));
+        (arg("shape"), arg("dtype")=default_dtype, arg("fill_value")=0.0, arg("axistags")=""));
     def("ChunkedArrayLazy", &construct_ChunkedArrayLazy<N>,
         (arg("shape"), arg("dtype")=default_dtype, 
-         arg("chunk_shape")=shape_type(), arg("fill_value")=0.0));
+         arg("chunk_shape")=shape_type(), arg("fill_value")=0.0, arg("axistags")=""));
     def("ChunkedArrayCompressed", &construct_ChunkedArrayCompressed<N>,
-        (arg("shape"), arg("method")=LZ4, arg("dtype")=default_dtype, 
-        arg("chunk_shape")=shape_type(), arg("cache_max")=-1, arg("fill_value")=0.0));
+        (arg("shape"), arg("method")=LZ4, arg("dtype")=default_dtype, arg("chunk_shape")=shape_type(), 
+        arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=""));
     def("ChunkedArrayTmpFile", &construct_ChunkedArrayTmpFile<N>,
         (arg("shape"), arg("dtype")=default_dtype, arg("chunk_shape")=shape_type(), 
-         arg("cache_max")=-1, arg("path")="", arg("fill_value")=0.0));
+         arg("cache_max")=-1, arg("path")="", arg("fill_value")=0.0, arg("axistags")=""));
 #ifdef HasHDF5
     def("ChunkedArrayHDF5", &construct_ChunkedArrayHDF5<N>,
         (arg("file_name"), arg("dataset_name"), arg("shape")=shape_type(),
          arg("dtype")=default_dtype, arg("mode")=HDF5File::New, arg("compression")=ZLIB_FAST, 
-         arg("chunk_shape")=shape_type(), arg("cache_max")=-1, arg("fill_value")=0.0));
+         arg("chunk_shape")=shape_type(), arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=""));
 #endif
 }
 
