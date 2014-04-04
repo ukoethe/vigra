@@ -188,6 +188,10 @@ AxisTags_create(python::object i1, python::object i2,
     {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(tags()));
     }
+    else if(PyString_Check(i1.ptr()))
+    {
+        res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(python::extract<std::string>(i1)()));
+    }
     else if(PySequence_Check(i1.ptr()))
     {
         int size = len(i1);
