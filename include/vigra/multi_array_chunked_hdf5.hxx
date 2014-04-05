@@ -66,10 +66,13 @@ class ChunkedArrayHDF5
         typedef value_type * pointer;
         typedef value_type & reference;
         
-        Chunk(Alloc const & alloc)
-        : ChunkBase<N, T>(),
-          array_(0),
-          alloc_(alloc)
+        Chunk(shape_type const & shape, shape_type const & start, 
+              ChunkedArrayHDF5 * array, Alloc const & alloc)
+        : ChunkBase<N, T>(detail::defaultStride(shape))
+        , shape_(shape)
+        , start_(start)
+        , array_(array)
+        , alloc_(alloc)
         {}
         
         ~Chunk()
@@ -77,23 +80,12 @@ class ChunkedArrayHDF5
             write();
         }
     
-        void reshape(shape_type const & shape, shape_type const & start, 
-                     ChunkedArrayHDF5 * array)
-        {
-            vigra_precondition(this->pointer_ == 0,
-                "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
-            this->strides_ = detail::defaultStride(shape);
-            shape_ = shape;
-            start_ = start;
-            array_ = array;
-        }
-        
         std::size_t size() const
         {
             return prod(shape_);
         }
         
-        void write()
+        void write(bool deallocate = true)
         {
             if(this->pointer_ != 0)
             {
@@ -104,8 +96,11 @@ class ChunkedArrayHDF5
                     vigra_postcondition(status >= 0,
                         "ChunkedArrayHDF5: write to dataset failed.");
                 }
-                alloc_.deallocate(this->pointer_, this->size());
-                this->pointer_ = 0;
+                if(deallocate)
+                {
+                    alloc_.deallocate(this->pointer_, this->size());
+                    this->pointer_ = 0;
+                }
             }
         }
         
@@ -130,7 +125,7 @@ class ChunkedArrayHDF5
         Chunk & operator=(Chunk const &);
     };
     
-    typedef MultiArray<N, Chunk> ChunkStorage;
+    typedef MultiArray<N, SharedChunkHandle<N, T> > ChunkStorage;
     typedef typename ChunkStorage::difference_type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;
@@ -146,7 +141,6 @@ class ChunkedArrayHDF5
       file_(file),
       dataset_name_(dataset),
       dataset_(),
-      outer_array_(),
       compression_(options.compression_method),
       alloc_(alloc)
     {
@@ -160,7 +154,6 @@ class ChunkedArrayHDF5
       file_(file),
       dataset_name_(dataset),
       dataset_(),
-      outer_array_(),
       compression_(options.compression_method),
       alloc_(alloc)
     {
@@ -247,31 +240,33 @@ class ChunkedArrayHDF5
                 }
             }
         }
-        ChunkStorage(detail::computeChunkArrayShape(this->shape_, this->bits_, this->mask_),
-                     Chunk(alloc_)).swap(outer_array_);
-        
-        // set shape of the chunks
-        typename ChunkStorage::iterator i   = outer_array_.begin(), 
-                                        end = outer_array_.end();
-        for(; i != end; ++i)
-        {
-            shape_type start = i.point()*this->chunk_shape_;
-            i->reshape(min(this->chunk_shape_, this->shape_ - start),
-                       start,
-                       this);
-            // this->handle_array_[i.point()].pointer_ = &(*i);
-        }
     }
     
     ~ChunkedArrayHDF5()
     {
-        // make sure that chunks are written to disk before the destructor of 
-        // file_ is called
-        ChunkStorage().swap(outer_array_);
+        typename ChunkStorage::iterator i   = this->handle_array_.begin(), 
+                                        end = this->handle_array_.end();
+        for(; i != end; ++i)
+        {
+            if(i->pointer_)
+                delete static_cast<Chunk*>(i->pointer_);
+            i->pointer_ = 0;
+        }
     }
     
     void flushToDisk()
     {
+        if(file_.isReadOnly())
+            return;
+            
+        typename ChunkStorage::iterator i   = this->handle_array_.begin(), 
+                                        end = this->handle_array_.end();
+        for(; i != end; ++i)
+        {
+            Chunk * chunk = static_cast<Chunk*>(i->pointer_);
+            if(chunk)
+                chunk->write(false);
+        }
         file_.flushToDisk();
     }
     
@@ -280,32 +275,20 @@ class ChunkedArrayHDF5
         return file_.isReadOnly();
     }
     
-    virtual shape_type chunkArrayShape() const
-    {
-        return outer_array_.shape();
-    }
-    
-    virtual pointer loadChunk(ChunkBase<N, T> * chunk)
-    {
-        return static_cast<Chunk *>(chunk)->read();
-    }
-    
     virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
     {
         if(*p == 0)
-            *p = &outer_array_[index];
-        return loadChunk(*p);
+        {
+            *p = new Chunk(this->chunkShape(index), index*this->chunk_shape_, this, alloc_);
+            this->overhead_bytes_ += sizeof(Chunk);
+        }
+        return static_cast<Chunk *>(*p)->read();
     }
     
     virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool /* destroy */)
     {
         static_cast<Chunk *>(chunk)->write();
         return false; // never destroys the data
-    }
-    
-    virtual Chunk * lookupChunk(shape_type const & index)
-    {
-        return &outer_array_[index];
     }
     
     virtual std::string backend() const
@@ -320,14 +303,9 @@ class ChunkedArrayHDF5
                  : static_cast<Chunk*>(c)->size()*sizeof(T);
     }
     
-    virtual std::size_t overheadBytes() const
-    {
-        return outer_array_.size()*sizeof(Chunk);
-    }
-
     virtual std::size_t overheadBytesPerChunk() const
     {
-        return sizeof(Chunk);
+        return sizeof(Chunk) + sizeof(SharedChunkHandle<N, T>);
     }
     
     std::string const & datasetName() const
@@ -338,7 +316,6 @@ class ChunkedArrayHDF5
     HDF5File file_;
     std::string dataset_name_;
     HDF5HandleShared dataset_;
-    ChunkStorage outer_array_;  // the array of chunks
     CompressionMethod compression_;
     Alloc alloc_;
 };

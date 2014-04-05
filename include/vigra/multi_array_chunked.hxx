@@ -341,7 +341,7 @@ class ChunkBase
     , pointer_()
     {}
     
-    ChunkBase(shape_type const & strides, pointer p)
+    ChunkBase(shape_type const & strides, pointer p = 0)
     : strides_(strides)
     , pointer_(p)
     {}
@@ -1450,6 +1450,7 @@ class ChunkedArray
     , fill_scalar_(options.fill_value)
     , handle_array_(detail::computeChunkArrayShape(shape, bits_, mask_))
     , data_bytes_()
+    , overhead_bytes_(handle_array_.size()*sizeof(Handle))
     {
         fill_value_chunk_.pointer_ = &fill_value_;
         fill_value_handle_.pointer_ = &fill_value_chunk_;
@@ -1484,6 +1485,11 @@ class ChunkedArray
         return data_bytes_;
     }
     
+    virtual shape_type chunkArrayShape() const
+    {
+        return handle_array_.shape();
+    }
+
     virtual std::size_t dataBytes(Chunk * c) const = 0;
     
     std::size_t dataBytesPerChunk() const
@@ -1491,9 +1497,12 @@ class ChunkedArray
         return prod(this->chunk_shape_)*sizeof(T);
     }
     
-    virtual std::size_t overheadBytesPerChunk() const = 0;
+    std::size_t overheadBytes() const
+    {
+        return overhead_bytes_;
+    }
     
-    virtual std::size_t overheadBytes() const = 0;
+    virtual std::size_t overheadBytesPerChunk() const = 0;
     
     shape_type chunkStart(shape_type const & global_start) const
     {
@@ -1516,6 +1525,8 @@ class ChunkedArray
         return min(this->chunk_shape_, 
                    this->shape_ - chunk_index*this->chunk_shape_);
     }
+    
+    using base_type::chunkShape;
 
     inline void 
     checkSubarrayBounds(shape_type const & start, shape_type const & stop, 
@@ -1547,15 +1558,6 @@ class ChunkedArray
         return !operator==(rhs);
     }
     
-    virtual pointer loadHandle(Handle * handle)
-    {
-        if(handle == &fill_value_handle_)
-            return fill_value_chunk_.pointer_;
-        return loadChunk(static_cast<Chunk*>(handle->pointer_));
-    }
-    
-    virtual pointer loadChunk(Chunk * chunk) = 0;
-    
     virtual pointer loadChunk(Chunk ** chunk, shape_type const & chunk_index) = 0;
     
     virtual bool unloadHandle(Handle * handle, bool destroy = false)
@@ -1566,8 +1568,6 @@ class ChunkedArray
     }
     
     virtual bool unloadChunk(Chunk * chunk, bool destroy = false) = 0;
-    
-    virtual Chunk * lookupChunk(shape_type const & index) = 0;
     
     Handle * lookupHandle(shape_type const & index)
     {
@@ -1638,43 +1638,6 @@ class ChunkedArray
         }
     }
         
-    // pointer getChunk(Handle * handle, bool isConst, bool insertInCache, shape_type const & chunk_index) const
-    // {
-        // ChunkedArray * self = const_cast<ChunkedArray *>(this);
-        
-        // int rc = acquireRef(handle);        
-        // if(rc >= 0)
-            // return static_cast<Chunk*>(handle->pointer_)->pointer_;
-
-        // threading::lock_guard<threading::mutex> guard(*chunk_lock_);
-        // try
-        // {
-            // Chunk * chunk = static_cast<Chunk*>(handle->pointer_);
-            // T * p = self->loadChunk(chunk);
-            // if(!isConst && rc == chunk_uninitialized)
-                // std::fill(p, p + prod(chunkShape(chunk_index)), this->fill_value_);
-                
-            // self->data_bytes_ += dataBytes(chunk);
-            
-            // if(cacheMaxSize() > 0 && insertInCache)
-            // {
-                // // insert in queue of mapped chunks
-                // self->cache_.push(handle);
-
-                // // do cache management if cache is full
-                // // (note that we still hold the chunk_lock_)
-                // self->cleanCache(2);
-            // }
-            // handle->refcount_.store(1, threading::memory_order_release);
-            // return p;
-        // }
-        // catch(...)
-        // {
-            // handle->refcount_.store(chunk_failed);
-            // throw;
-        // }
-    // }
-    
     pointer getChunk(Handle * handle, bool isConst, bool insertInCache, shape_type const & chunk_index) const
     {
         ChunkedArray * self = const_cast<ChunkedArray *>(this);
@@ -2129,7 +2092,7 @@ class ChunkedArray
     value_type fill_value_;
     double fill_scalar_;
     MultiArray<N, Handle> handle_array_;
-    std::size_t data_bytes_; 
+    std::size_t data_bytes_, overhead_bytes_; 
 };
 
 /** Returns a CoupledScanOrderIterator to simultaneously iterate over image m1 and its coordinates. 
@@ -2213,6 +2176,7 @@ class ChunkedArrayFull
         this->handle_array_[0].pointer_ = &chunk_;
         this->handle_array_[0].refcount_.store(1);
         this->data_bytes_ = size()*sizeof(T);
+        this->overhead_bytes_ = overheadBytesPerChunk();
     }
     
     ChunkedArrayFull(ChunkedArrayFull const & rhs)
@@ -2244,11 +2208,6 @@ class ChunkedArrayFull
         return shape_type(1);
     }
     
-    virtual pointer loadChunk(ChunkBase<N, T> *)
-    {
-        return this->data();
-    }
-    
     virtual pointer loadChunk(ChunkBase<N, T> **, shape_type const &)
     {
         return this->data();
@@ -2259,24 +2218,14 @@ class ChunkedArrayFull
         return false; // never destroys the data
     }
     
-    virtual ChunkBase<N,T> * lookupChunk(shape_type const &)
-    {
-        return &chunk_;
-    }
-
     virtual std::size_t dataBytes(Chunk * c) const
     {
         return prod(this->shape());
     }
     
-    virtual std::size_t overheadBytes() const
-    {
-        return sizeof(Chunk);
-    }
-
     virtual std::size_t overheadBytesPerChunk() const
     {
-        return sizeof(Chunk);
+        return sizeof(Chunk) + sizeof(SharedChunkHandle<N, T>);
     }
     
     virtual pointer chunkForIterator(shape_type const & point, 
@@ -2337,9 +2286,9 @@ class ChunkedArrayLazy
         typedef value_type * pointer;
         typedef value_type & reference;
         
-        Chunk(Alloc const & alloc = Alloc())
-        : ChunkBase<N, T>()
-        , size_(0)
+        Chunk(shape_type const & shape, Alloc const & alloc = Alloc())
+        : ChunkBase<N, T>(detail::defaultStride(shape))
+        , size_(prod(shape))
         , alloc_(alloc)
         {}
         
@@ -2348,14 +2297,6 @@ class ChunkedArrayLazy
             deallocate();
         }
     
-        void reshape(shape_type const & shape)
-        {
-            vigra_precondition(this->pointer_ == 0,
-                "ChunkedArrayLazy::Chunk::reshape(): chunk was already allocated.");
-            size_ = prod(shape);
-            this->strides_ = detail::defaultStride(shape);
-        }
-        
         pointer allocate()
         {
             if(this->pointer_ == 0)
@@ -2376,7 +2317,7 @@ class ChunkedArrayLazy
         Chunk & operator=(Chunk const &);
     };
     
-    typedef MultiArray<N, Chunk> ChunkStorage;
+    typedef MultiArray<N, SharedChunkHandle<N, T> > ChunkStorage;
     typedef typename ChunkStorage::difference_type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;
@@ -2386,40 +2327,30 @@ class ChunkedArrayLazy
                               shape_type const & chunk_shape=shape_type(),
                               ChunkedArrayOptions const & options = ChunkedArrayOptions(),
                               Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape, chunk_shape, options.cacheMax(0)),
-      outer_array_(detail::computeChunkArrayShape(shape, this->bits_, this->mask_), 
-                   Chunk(alloc))
+    : ChunkedArray<N, T>(shape, chunk_shape, options.cacheMax(0))
     , alloc_(alloc)
-    {
-        // set shape of the chunks
-        typename ChunkStorage::iterator i   = outer_array_.begin(), 
-                                        end = outer_array_.end();
-        for(; i != end; ++i)
-        {
-            i->reshape(min(this->chunk_shape_, 
-                           shape - i.point()*this->chunk_shape_));
-            // this->handle_array_[i.point()].pointer_ = &(*i);
-        }
-    }
-    
-    ~ChunkedArrayLazy()
     {}
     
-    virtual shape_type chunkArrayShape() const
+    ~ChunkedArrayLazy()
     {
-        return outer_array_.shape();
-    }
-    
-    virtual pointer loadChunk(ChunkBase<N, T> * chunk)
-    {
-        return static_cast<Chunk *>(chunk)->allocate();
+        typename ChunkStorage::iterator i   = this->handle_array_.begin(), 
+                                        end = this->handle_array_.end();
+        for(; i != end; ++i)
+        {
+            if(i->pointer_)
+                delete static_cast<Chunk*>(i->pointer_);
+            i->pointer_ = 0;
+        }
     }
     
     virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
     {
         if(*p == 0)
-            *p = &outer_array_[index];
-        return loadChunk(*p);
+        {
+            *p = new Chunk(this->chunkShape(index));
+            this->overhead_bytes_ += sizeof(Chunk);
+        }
+        return static_cast<Chunk *>(*p)->allocate();
     }
     
     virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool destroy)
@@ -2427,11 +2358,6 @@ class ChunkedArrayLazy
         if(destroy)
             static_cast<Chunk *>(chunk)->deallocate();
         return destroy;
-    }
-    
-    virtual Chunk * lookupChunk(shape_type const & index)
-    {
-        return &outer_array_[index];
     }
     
     virtual std::string backend() const
@@ -2446,17 +2372,11 @@ class ChunkedArrayLazy
                  : static_cast<Chunk*>(c)->size_*sizeof(T);
     }
     
-    virtual std::size_t overheadBytes() const
-    {
-        return outer_array_.size()*sizeof(Chunk);
-    }
-
     virtual std::size_t overheadBytesPerChunk() const
     {
-        return sizeof(Chunk);
+        return sizeof(Chunk) + sizeof(SharedChunkHandle<N, T>);
     }
     
-    ChunkStorage outer_array_;  // the array of chunks
     Alloc alloc_;
 };
 
@@ -2475,9 +2395,9 @@ class ChunkedArrayCompressed
         typedef value_type * pointer;
         typedef value_type & reference;
         
-        Chunk()
-        : ChunkBase<N, T>()
-        , size_(0)
+        Chunk(shape_type const & shape)
+        : ChunkBase<N, T>(detail::defaultStride(shape))
+        , size_(prod(shape))
         , compressed_()
         {}
         
@@ -2486,14 +2406,6 @@ class ChunkedArrayCompressed
             deallocate();
         }
     
-        void reshape(shape_type const & shape)
-        {
-            vigra_precondition(this->pointer_ == 0,
-                "ChunkedArrayCompressed::Chunk::reshape(): chunk was already allocated.");
-            size_ = prod(shape);
-            this->strides_ = detail::defaultStride(shape);
-        }
-        
         pointer allocate()
         {
             if(this->pointer_ == 0)
@@ -2556,7 +2468,7 @@ class ChunkedArrayCompressed
         Chunk & operator=(Chunk const &);
     };
     
-    typedef MultiArray<N, Chunk> ChunkStorage;
+    typedef MultiArray<N, SharedChunkHandle<N, T> > ChunkStorage;
     typedef typename ChunkStorage::difference_type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;
@@ -2566,45 +2478,32 @@ class ChunkedArrayCompressed
                                     shape_type const & chunk_shape=shape_type(),
                                     ChunkedArrayOptions const & options = ChunkedArrayOptions())
     : ChunkedArray<N, T>(shape, chunk_shape, options),
-      outer_array_(detail::computeChunkArrayShape(shape, this->bits_, this->mask_)),
-      compression_method_(options.compression_method)
+       compression_method_(options.compression_method)
     {
         if(compression_method_ == DEFAULT_COMPRESSION)
             compression_method_ = LZ4;
-        init();
-    }
-    
-    void init()
-    {
-        // set shape of the chunks
-        typename ChunkStorage::iterator i   = outer_array_.begin(), 
-                                        end = outer_array_.end();
-        for(; i != end; ++i)
-        {
-            i->reshape(min(this->chunk_shape_, 
-                           this->shape_ - i.point()*this->chunk_shape_));
-            // this->handle_array_[i.point()].pointer_ = &(*i);
-        }
     }
     
     ~ChunkedArrayCompressed()
-    {}
-    
-    virtual shape_type chunkArrayShape() const
     {
-        return outer_array_.shape();
-    }
-    
-    virtual pointer loadChunk(ChunkBase<N, T> * chunk)
-    {
-        return static_cast<Chunk *>(chunk)->uncompress(compression_method_);
+        typename ChunkStorage::iterator i   = this->handle_array_.begin(), 
+                                        end = this->handle_array_.end();
+        for(; i != end; ++i)
+        {
+            if(i->pointer_)
+                delete static_cast<Chunk*>(i->pointer_);
+            i->pointer_ = 0;
+        }
     }
     
     virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
     {
         if(*p == 0)
-            *p = &outer_array_[index];
-        return loadChunk(*p);
+        {
+            *p = new Chunk(this->chunkShape(index));
+            this->overhead_bytes_ += sizeof(Chunk);
+        }
+        return static_cast<Chunk *>(*p)->uncompress(compression_method_);
     }
     
     virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool destroy)
@@ -2614,11 +2513,6 @@ class ChunkedArrayCompressed
         else
             static_cast<Chunk *>(chunk)->compress(compression_method_);
         return destroy;
-    }
-    
-    virtual Chunk * lookupChunk(shape_type const & index)
-    {
-        return &outer_array_[index];
     }
     
     virtual std::string backend() const
@@ -2647,17 +2541,11 @@ class ChunkedArrayCompressed
                  : static_cast<Chunk*>(c)->size_*sizeof(T);
     }
 
-    virtual std::size_t overheadBytes() const
-    {
-        return outer_array_.size()*sizeof(Chunk);
-    }
-
     virtual std::size_t overheadBytesPerChunk() const
     {
-        return sizeof(Chunk);
+        return sizeof(Chunk) + sizeof(SharedChunkHandle<N, T>);
     }
         
-    ChunkStorage outer_array_;  // the array of chunks
     CompressionMethod compression_method_;
 };
 
@@ -2681,9 +2569,13 @@ class ChunkedArrayTmpFile
         typedef value_type * pointer;
         typedef value_type & reference;
         
-        Chunk()
-        : ChunkBase<N, T>()
-        , size_(0)
+        Chunk(shape_type const & shape,
+              std::size_t offset, size_t alloc_size,
+              FileHandle file) 
+        : ChunkBase<N, T>(detail::defaultStride(shape))
+        , offset_(offset)
+        , alloc_size_(alloc_size)
+        , file_(file)
         {}
         
         ~Chunk()
@@ -2691,43 +2583,20 @@ class ChunkedArrayTmpFile
             unmap();
         }
         
-        void reshape(shape_type const & shape)
-        {
-            this->strides_ = detail::defaultStride(shape);
-            file_ = 0;
-            offset_ = 0;
-            std::size_t size = prod(shape)*sizeof(T);
-            std::size_t mask = mmap_alignment - 1;
-            alloc_size_ = (size + mask) & ~mask;
-        }
-        
-        void setFile(FileHandle file, std::ptrdiff_t offset)
-        {
-            file_ = file;
-            offset_ = offset;
-        }
-        
-        std::size_t alloc_size() const
-        {
-            return alloc_size_;
-        }
-        
-        pointer map(std::ptrdiff_t offset)
+        pointer map()
         {
             if(this->pointer_ == 0)
             {
-                if(offset_ < 0) 
-                    offset_ = offset;
             #ifdef _WIN32
                 static const std::size_t bits = sizeof(DWORD)*8,
                                          mask = (std::size_t(1) << bits) - 1;
                 this->pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
-                                           std::size_t(offset_) >> bits, std::size_t(offset_) & mask, alloc_size_);
+                                           std::size_t(offset_) >> bits, offset_ & mask, alloc_size_);
                 if(this->pointer_ == 0)
                     winErrorToException("ChunkedArrayChunk::map(): ");
             #else
                 this->pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
-                                  file_, std::size_t(offset_));
+                                  file_, offset_);
                 if(this->pointer_ == 0)
                     throw std::runtime_error("ChunkedArrayChunk::map(): mmap() failed.");
             #endif
@@ -2748,47 +2617,53 @@ class ChunkedArrayTmpFile
             }
         }
         
-        std::ptrdiff_t offset_;
-        MultiArrayIndex size_;
-        std::size_t alloc_size_;
+        std::size_t offset_, alloc_size_;
         FileHandle file_;
         
       private:
         Chunk & operator=(Chunk const &);
     };
 
-    typedef MultiArray<N, Chunk> ChunkStorage;
-    typedef typename ChunkStorage::difference_type  shape_type;
+    typedef MultiArray<N, SharedChunkHandle<N, T>  > ChunkStorage;
+    typedef MultiArray<N, std::size_t>               OffsetStorage;
+    typedef typename ChunkStorage::difference_type   shape_type;
     typedef T value_type;
     typedef value_type * pointer;
     typedef value_type & reference;
+    
+    static std::size_t computeAllocSize(shape_type const & shape)
+    {
+        std::size_t size = prod(shape)*sizeof(T);
+        std::size_t mask = mmap_alignment - 1;
+        return (size + mask) & ~mask;
+    }
     
     explicit ChunkedArrayTmpFile(shape_type const & shape,
                                  shape_type const & chunk_shape=shape_type(),
                                  ChunkedArrayOptions const & options = ChunkedArrayOptions(), 
                                  std::string const & path = "")
-    : ChunkedArray<N, T>(shape, chunk_shape, options),
-      outer_array_(detail::computeChunkArrayShape(shape, this->bits_, this->mask_)),
-      file_size_(),
-      file_capacity_()
+    : ChunkedArray<N, T>(shape, chunk_shape, options)
+    #ifndef VIGRA_NO_SPARSE_FILE
+    , offset_array_(this->chunkArrayShape())
+    #endif
+    , file_size_()
+    , file_capacity_()
     {
-        // set shape of the chunks
-        typename ChunkStorage::iterator i = outer_array_.begin(), 
-             end = outer_array_.end();
-        std::size_t size = 0;
-        for(; i != end; ++i)
-        {
-            i->reshape(min(this->chunk_shape_, shape - i.point()*this->chunk_shape_));
-            size += i->alloc_size();
-            // this->handle_array_[i.point()].pointer_ = &(*i);
-        }
-        
-        // std::cerr << "    file size: " << size << "\n";
-
     #ifdef VIGRA_NO_SPARSE_FILE
         file_capacity_ = 4*prod(this->chunk_shape_)*sizeof(T);
     #else
+        // compute offset in file
+        typename OffsetStorage::iterator i = offset_array_.begin(), 
+                                         end = offset_array_.end();
+        std::size_t size = 0;
+        for(; i != end; ++i)
+        {
+            *i = size;
+            size += computeAllocSize(this->chunkShape(i.point()));
+        }
         file_capacity_ = size;
+        this->overhead_bytes_ += offset_array_.size()*sizeof(std::size_t);
+        // std::cerr << "    file size: " << size << "\n";
     #endif
     
     #ifdef _WIN32
@@ -2820,24 +2695,18 @@ class ChunkedArrayTmpFile
         if(write(file_, "0", 1) == -1)
             throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
     #endif
-        
-        // tell the chunks about the memory mapping
-        i = outer_array_.begin();
-        int offset = 0;
-        for(; i != end; ++i)
-        {
-    #ifdef VIGRA_NO_SPARSE_FILE
-            i->setFile(mappedFile_, -1);
-    #else
-            i->setFile(mappedFile_, offset);
-            offset += i->alloc_size();
-    #endif
-        }
     }
     
     ~ChunkedArrayTmpFile()
     {
-        unmap();
+        typename ChunkStorage::iterator  i = this->handle_array_.begin(), 
+                                         end = this->handle_array_.end();
+        for(; i != end; ++i)
+        {
+            if(i->pointer_)
+                delete static_cast<Chunk*>(i->pointer_);
+            i->pointer_ = 0;
+        }
     #ifdef _WIN32
         ::CloseHandle(mappedFile_);
         ::CloseHandle(file_);
@@ -2846,19 +2715,14 @@ class ChunkedArrayTmpFile
     #endif
     }
     
-    virtual shape_type chunkArrayShape() const
+    virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
     {
-        return outer_array_.shape();
-    }
-    
-    virtual pointer loadChunk(ChunkBase<N, T> * chunk_base)
-    {
-        Chunk * chunk = static_cast<Chunk *>(chunk_base);
-        std::ptrdiff_t offset = file_size_;
-    #ifdef VIGRA_NO_SPARSE_FILE
-        std::size_t chunk_size = chunk->alloc_size();
-        if(chunk->offset_ < 0)
+        if(*p == 0)
         {
+            shape_type shape = this->chunkShape(index);
+            std::size_t chunk_size = computeAllocSize(shape);
+        #ifdef VIGRA_NO_SPARSE_FILE
+            std::size_t offset = file_size_;
             if(offset + chunk_size > file_capacity_)
             {
                 std::ptrdiff_t new_capacity = file_capacity_ * 120 / 100; // extend file by 20%
@@ -2871,27 +2735,19 @@ class ChunkedArrayTmpFile
                     throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
             }
             file_size_ += chunk_size;
+        #else
+            std::size_t offset = offset_array_[index];
+        #endif
+            *p = new Chunk(shape, offset, chunk_size, mappedFile_);
+            this->overhead_bytes_ += sizeof(Chunk);
         }
-    #endif
-        return chunk->map(offset);
-    }
-    
-    virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
-    {
-        if(*p == 0)
-            *p = &outer_array_[index];
-        return loadChunk(*p);
+        return static_cast<Chunk*>(*p)->map();
     }
 
     virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool /* destroy*/)
     {
         static_cast<Chunk *>(chunk)->unmap();
         return false; // never destroys the data
-    }
-    
-    virtual Chunk * lookupChunk(shape_type const & index)
-    {
-        return &outer_array_[index];
     }
     
     virtual std::string backend() const
@@ -2906,27 +2762,18 @@ class ChunkedArrayTmpFile
                  : static_cast<Chunk*>(c)->alloc_size_;
     }
     
-    virtual std::size_t overheadBytes() const
-    {
-        return outer_array_.size()*sizeof(Chunk);
-    }
-
     virtual std::size_t overheadBytesPerChunk() const
     {
-        return sizeof(Chunk);
+      #ifdef VIGRA_NO_SPARSE_FILE
+        return sizeof(Chunk) + sizeof(SharedChunkHandle<N, T>);
+      #else
+        return sizeof(Chunk) + sizeof(SharedChunkHandle<N, T>) + sizeof(std::size_t);
+      #endif
     }
-    
-    void unmap()
-    {
-        typename ChunkStorage::iterator  i = outer_array_.begin(), 
-             end = outer_array_.end();
-        for(; i != end; ++i)
-        {
-            i->unmap();
-        }
-    }
-    
-    ChunkStorage outer_array_;  // the array of chunks
+        
+  #ifndef VIGRA_NO_SPARSE_FILE
+    OffsetStorage offset_array_;  // the array of chunks
+  #endif
     FileHandle file_, mappedFile_;  // the file back-end
     std::size_t file_size_, file_capacity_;
 };
