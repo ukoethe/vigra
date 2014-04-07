@@ -60,14 +60,22 @@
 #  include <boost/thread/mutex.hpp>
 // #  include <boost/thread/shared_mutex.hpp>
 #  include <boost/thread/locks.hpp>
-#  include <boost/atomic.hpp>
+#  if BOOST_VERSION >= 105300
+#    include <boost/atomic.hpp>
+#    define VIGRA_HAS_ATOMIC 1
+#endif
 #  define VIGRA_THREADING_NAMESPACE boost
 #else
 #  include <thread>
 #  include <mutex>
 // #  include <shared_mutex>  // C++14
 #  include <atomic>
+#  define VIGRA_HAS_ATOMIC 1
 #  define VIGRA_THREADING_NAMESPACE std
+#endif
+
+#if defined(_MSC_VER) && !defined(VIGRA_HAS_ATOMIC)
+#  include "windows.h"
 #endif
 
 namespace vigra { namespace threading {
@@ -113,6 +121,8 @@ using VIGRA_THREADING_NAMESPACE::call_once;
 
 // using VIGRA_THREADING_NAMESPACE::shared_mutex;   // C++14
 // using VIGRA_THREADING_NAMESPACE::shared_lock;  // C++14
+
+#ifdef VIGRA_HAS_ATOMIC
 
 // contents of <atomic>
 
@@ -166,6 +176,141 @@ using VIGRA_THREADING_NAMESPACE::memory_order_seq_cst;
 
 using VIGRA_THREADING_NAMESPACE::atomic_thread_fence;
 using VIGRA_THREADING_NAMESPACE::atomic_signal_fence;
+
+#else  // VIGRA_HAS_ATOMIC not defined
+
+enum memory_order {
+    memory_order_relaxed,
+    memory_order_release,
+    memory_order_acquire,
+    memory_order_consume,
+    memory_order_acq_rel,
+    memory_order_seq_cst
+};
+
+#ifdef _MSC_VER
+
+template <int SIZE=4>
+struct atomic_long_impl
+{
+    typedef LONG value_type;
+    
+    static long add(value_type & dest, long val)
+    {
+        return InterlockedExchangeAdd(&dest, val);
+    }
+    
+    static long sub(value_type & dest, long val)
+    {
+        return InterlockedExchangeAdd(&dest, -val);
+    }
+    
+    static bool compare_exchange(value_type & dest, long & old_val, long new_val)
+    {
+        long check_val = old_val;
+        old_val = InterlockedCompareExchange(&dest, new_val, old_val);
+        return check_val == old_val;
+    }
+};
+
+template <>
+struct atomic_long_impl<8>
+{
+    typedef LONGLONG value_type;
+    
+    static long add(value_type & dest, long val)
+    {
+        return InterlockedExchangeAdd64(&dest, val);
+    }
+    
+    static long sub(value_type & dest, long val)
+    {
+        return InterlockedExchangeAdd64(&dest, -val);
+    }
+    
+    static bool compare_exchange(value_type & dest, long & old_val, long new_val)
+    {
+        long check_val = old_val;
+        old_val = InterlockedCompareExchange64(&dest, new_val, old_val);
+        return check_val == old_val;
+    }
+};
+
+#else
+
+template <int SIZE=4>
+struct atomic_long_impl
+{
+    typedef long value_type;
+    
+    static long add(value_type & dest, long val)
+    {
+        return __sync_fetch_and_add(&dest, val);
+    }
+    
+    static long sub(value_type & dest, long val)
+    {
+        return __sync_fetch_and_sub(&dest, val);
+    }
+    
+    static bool compare_exchange(value_type & dest, long & old_val, long new_val)
+    {
+        long check_val = old_val;
+        old_val = __sync_val_compare_and_swap(&dest, old_val, new_val);
+        return check_val == old_val;
+    }
+};
+
+#endif // _MSC_VER
+
+struct atomic_long
+{
+    typedef atomic_long_impl<sizeof(long)>::value_type value_type;
+    
+    atomic_long(long v = 0)
+    : value_(v)
+    {}
+    
+    atomic_long & operator=(long val)
+    {
+        value_ = val;
+        return *this;
+    }
+    
+    long load(memory_order = memory_order_seq_cst) const
+    {
+        return value_;
+    }
+    
+    void store(long v, memory_order = memory_order_seq_cst)
+    {
+        value_ = v;
+    }
+    
+    long fetch_add(long v, memory_order = memory_order_seq_cst)
+    {
+        return atomic_long_impl<sizeof(long)>::add(value_, v);
+    }
+    
+    long fetch_sub(long v, memory_order = memory_order_seq_cst)
+    {
+        return atomic_long_impl<sizeof(long)>::sub(value_, v);
+    }
+    
+    bool compare_exchange_strong(long & old_val, long new_val, memory_order = memory_order_seq_cst)
+    {
+        return atomic_long_impl<sizeof(long)>::compare_exchange(value_, old_val, new_val);
+    }
+    
+    bool compare_exchange_weak(long & old_val, long new_val, memory_order = memory_order_seq_cst)
+    {
+        return atomic_long_impl<sizeof(long)>::compare_exchange(value_, old_val, new_val);
+    }
+
+    value_type value_;
+};
+
+#endif // VIGRA_HAS_ATOMIC
 
 // not in boost (?)
 // using VIGRA_THREADING_NAMESPACE::atomic_is_lock_free;

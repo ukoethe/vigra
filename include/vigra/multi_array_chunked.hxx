@@ -235,7 +235,7 @@ template <unsigned int N, class T>
 class ChunkedArray;
 
 template <unsigned int N, class T>
-class ChunkedHandle;
+class IteratorChunkHandle;
 
 namespace detail {
 
@@ -356,20 +356,24 @@ class SharedChunkHandle
   public:
     typedef typename MultiArrayShape<N>::type shape_type;
     
-    static const int chunk_asleep = -2;
-    static const int chunk_uninitialized = -3;
-    static const int chunk_locked = -4;
-    static const int chunk_failed = -5;
+    static const long chunk_asleep = -2;
+    static const long chunk_uninitialized = -3;
+    static const long chunk_locked = -4;
+    static const long chunk_failed = -5;
         
     SharedChunkHandle()
     : pointer_(0) 
-    , refcount_(chunk_uninitialized)
-    {}
+    , chunk_state_()
+    {
+        chunk_state_ = chunk_uninitialized;
+    }
     
     SharedChunkHandle(SharedChunkHandle const & rhs)
-    : pointer_(rhs.pointer_),
-      refcount_(chunk_uninitialized)
-    {}
+    : pointer_(rhs.pointer_)
+    , chunk_state_()
+    {
+        chunk_state_ = chunk_uninitialized;
+    }
     
     shape_type const & strides() const
     {
@@ -377,7 +381,7 @@ class SharedChunkHandle
     }
 
     ChunkBase<N, T> * pointer_;
-    mutable threading::atomic<int> refcount_;
+    mutable threading::atomic_long chunk_state_;
     
   private:
     SharedChunkHandle & operator=(SharedChunkHandle const & rhs);
@@ -409,15 +413,15 @@ class ChunkedArrayBase
     virtual ~ChunkedArrayBase()
     {}
     
-    virtual void unrefChunk(ChunkedHandle<N, T> * h) const = 0;
+    virtual void unrefChunk(IteratorChunkHandle<N, T> * h) const = 0;
     
     virtual pointer chunkForIterator(shape_type const & point, 
                                      shape_type & strides, shape_type & upper_bound, 
-                                     ChunkedHandle<N, T> * h) = 0;
+                                     IteratorChunkHandle<N, T> * h) = 0;
     
     virtual pointer chunkForIterator(shape_type const & point, 
                                      shape_type & strides, shape_type & upper_bound, 
-                                     ChunkedHandle<N, T> * h) const = 0;
+                                     IteratorChunkHandle<N, T> * h) const = 0;
     
     virtual std::string backend() const = 0;
 
@@ -539,18 +543,18 @@ class MultiArrayView<N, U, ChunkedArrayTag>
         return chunk_stop;
     }
     
-    virtual void unrefChunk(ChunkedHandle<N, T> *) const {}
+    virtual void unrefChunk(IteratorChunkHandle<N, T> *) const {}
     
     virtual T* chunkForIterator(shape_type const & point, 
                                 shape_type & strides, shape_type & upper_bound, 
-                                ChunkedHandle<N, T> * h)
+                                IteratorChunkHandle<N, T> * h)
     {
         return const_cast<MultiArrayView const *>(this)->chunkForIterator(point, strides, upper_bound, h);
     }
     
     virtual T* chunkForIterator(shape_type const & point, 
                                 shape_type & strides, shape_type & upper_bound, 
-                                ChunkedHandle<N, T> * h) const
+                                IteratorChunkHandle<N, T> * h) const
     {
         shape_type global_point = point + h->offset_;
 
@@ -1433,10 +1437,10 @@ class ChunkedArray
     typedef MultiArrayView<N, T const, ChunkedArrayTag>             const_view_type;
     typedef std::queue<Handle*> CacheType;
     
-    static const int chunk_asleep = Handle::chunk_asleep;
-    static const int chunk_uninitialized = Handle::chunk_uninitialized;
-    static const int chunk_locked = Handle::chunk_locked;
-    static const int chunk_failed = Handle::chunk_failed;
+    static const long chunk_asleep = Handle::chunk_asleep;
+    static const long chunk_uninitialized = Handle::chunk_uninitialized;
+    static const long chunk_locked = Handle::chunk_locked;
+    static const long chunk_failed = Handle::chunk_failed;
     
     explicit ChunkedArray(shape_type const & shape, 
                           shape_type const & chunk_shape = shape_type(), 
@@ -1454,7 +1458,7 @@ class ChunkedArray
     {
         fill_value_chunk_.pointer_ = &fill_value_;
         fill_value_handle_.pointer_ = &fill_value_chunk_;
-        fill_value_handle_.refcount_.store(1);
+        fill_value_handle_.chunk_state_.store(1);
     }
     
     static shape_type initBitMask(shape_type const & chunk_shape)
@@ -1574,9 +1578,9 @@ class ChunkedArray
         return &handle_array_[index];
     }
     
-   virtual void unrefChunk(ChunkedHandle<N, T> * h) const
+   virtual void unrefChunk(IteratorChunkHandle<N, T> * h) const
     {
-        unrefChunk(static_cast<Handle*>(h->chunk_));
+        unrefChunk(h->chunk_);
         h->chunk_ = 0;
     }
     
@@ -1584,7 +1588,7 @@ class ChunkedArray
     {
         if(chunk)
         {
-            int rc = chunk->refcount_.fetch_sub(1);
+            long rc = chunk->chunk_state_.fetch_sub(1);
           #ifdef VIGRA_CHECK_BOUNDS
             vigra_invariant(rc >= 0,
                             "ChunkedArray::unrefChunk(): chunk refcount got negative!");
@@ -1604,20 +1608,22 @@ class ChunkedArray
         }
     }
     
-    int acquireRef(Handle * chunk) const
+    long acquireRef(Handle * handle) const
     {
-        // Obtain a reference to the current chunk.
+        // Obtain a reference to the current chunk handle.
         // We use a simple spin-lock here because it is very fast in case of success
         // and failures (i.e. collisions with another thread) are presumably 
         // very rare.
-        int rc = chunk->refcount_.load(threading::memory_order_acquire);
+        //
+        // the function returns the old value of chunk_state_
+        long rc = handle->chunk_state_.load(threading::memory_order_acquire);
         vigra_precondition(rc != chunk_failed,
-             "ChunkedArray::acquireRef() attempt to access failed chunk.");
+             "ChunkedArray::acquireRef() attempt to access failed handle.");
         while(true)
         {
             if(rc >= 0)
             {
-                if(chunk->refcount_.compare_exchange_weak(rc, rc+1, threading::memory_order_seq_cst))
+                if(handle->chunk_state_.compare_exchange_weak(rc, rc+1, threading::memory_order_seq_cst))
                 {
                     return rc;
                 }
@@ -1628,9 +1634,9 @@ class ChunkedArray
                 {
                     // cache management in progress => try again later
                     threading::this_thread::yield();
-                    rc = chunk->refcount_.load(threading::memory_order_acquire);
+                    rc = handle->chunk_state_.load(threading::memory_order_acquire);
                 }
-                else if(chunk->refcount_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
+                else if(handle->chunk_state_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
                 {
                     return rc;
                 }
@@ -1642,7 +1648,7 @@ class ChunkedArray
     {
         ChunkedArray * self = const_cast<ChunkedArray *>(this);
         
-        int rc = acquireRef(handle);        
+        long rc = acquireRef(handle);        
         if(rc >= 0)
             return static_cast<Chunk*>(handle->pointer_)->pointer_;
 
@@ -1665,12 +1671,12 @@ class ChunkedArray
                 // (note that we still hold the chunk_lock_)
                 self->cleanCache(2);
             }
-            handle->refcount_.store(1, threading::memory_order_release);
+            handle->chunk_state_.store(1, threading::memory_order_release);
             return p;
         }
         catch(...)
         {
-            handle->refcount_.store(chunk_failed);
+            handle->chunk_state_.store(chunk_failed);
             throw;
         }
     }
@@ -1678,12 +1684,12 @@ class ChunkedArray
     inline pointer 
     chunkForIteratorImpl(shape_type const & point, 
                          shape_type & strides, shape_type & upper_bound, 
-                         ChunkedHandle<N, T> * h,
+                         IteratorChunkHandle<N, T> * h,
                          bool isConst) const
     {
         ChunkedArray * self = const_cast<ChunkedArray *>(this);
         
-        unrefChunk(static_cast<Handle*>(h->chunk_));
+        unrefChunk(h->chunk_);
         h->chunk_ = 0;
         
         shape_type global_point = point + h->offset_;
@@ -1698,7 +1704,7 @@ class ChunkedArray
         
         bool insertInCache = true;
         Handle * handle = self->lookupHandle(chunkIndex);
-        if(isConst && handle->refcount_.load() == chunk_uninitialized)
+        if(isConst && handle->chunk_state_.load() == chunk_uninitialized)
         {
             handle = &self->fill_value_handle_;
             insertInCache = false;
@@ -1714,28 +1720,28 @@ class ChunkedArray
         
     virtual pointer chunkForIterator(shape_type const & point, 
                                      shape_type & strides, shape_type & upper_bound, 
-                                     ChunkedHandle<N, T> * h)
+                                     IteratorChunkHandle<N, T> * h)
     {
         return chunkForIteratorImpl(point, strides, upper_bound, h, false);
     }
     
     virtual pointer chunkForIterator(shape_type const & point, 
                                      shape_type & strides, shape_type & upper_bound, 
-                                     ChunkedHandle<N, T> * h) const
+                                     IteratorChunkHandle<N, T> * h) const
     {
         return chunkForIteratorImpl(point, strides, upper_bound, h, true);
     }
     
     // NOTE: This function must only be called while we hold the chunk_lock_.
     //       This implies refcount != chunk_locked, so that race conditions are avoided.
-    int releaseChunk(Handle * handle, bool destroy = false)
+    long releaseChunk(Handle * handle, bool destroy = false)
     {
-        int rc = 0;
-        bool mayUnload = handle->refcount_.compare_exchange_strong(rc, chunk_locked);
+        long rc = 0;
+        bool mayUnload = handle->chunk_state_.compare_exchange_strong(rc, chunk_locked);
         if(!mayUnload && destroy)
         {
             rc = chunk_asleep;
-            mayUnload = handle->refcount_.compare_exchange_strong(rc, chunk_locked);
+            mayUnload = handle->chunk_state_.compare_exchange_strong(rc, chunk_locked);
         }
         if(mayUnload)
         {
@@ -1749,13 +1755,13 @@ class ChunkedArray
                 int didDestroy = unloadChunk(chunk, destroy);
                 this->data_bytes_ += dataBytes(chunk);
                 if(didDestroy)
-                    handle->refcount_.store(chunk_uninitialized);
+                    handle->chunk_state_.store(chunk_uninitialized);
                 else
-                    handle->refcount_.store(chunk_asleep);
+                    handle->chunk_state_.store(chunk_asleep);
             }
             catch(...)
             {
-                handle->refcount_.store(chunk_failed);
+                handle->chunk_state_.store(chunk_failed);
                 throw;
             }
         }
@@ -1769,7 +1775,7 @@ class ChunkedArray
         {
             Handle * handle = cache_.front();
             cache_.pop();
-            int rc = releaseChunk(handle);
+            long rc = releaseChunk(handle);
             if(rc > 0) // refcount was positive => chunk is still needed
                 cache_.push(handle);
         }
@@ -1810,7 +1816,7 @@ class ChunkedArray
         {
             Handle * handle = cache_.front();
             cache_.pop();
-            if(handle->refcount_.load() >= 0)
+            if(handle->chunk_state_.load() >= 0)
                 cache_.push(handle);
         }
     }
@@ -1877,7 +1883,7 @@ class ChunkedArray
         {
             Handle * handle = self->lookupHandle(*i);
             
-            if(isConst && handle->refcount_.load() == chunk_uninitialized)
+            if(isConst && handle->chunk_state_.load() == chunk_uninitialized)
                 handle = &self->fill_value_handle_;
                 
             // This potentially acquires the chunk_lock_ in each iteration.
@@ -1923,7 +1929,7 @@ class ChunkedArray
         ChunkedArray * self = const_cast<ChunkedArray*>(this);
         shape_type chunk_index(chunkStart(point));
         Handle * handle = self->lookupHandle(chunk_index);
-        if(handle->refcount_.load() == chunk_uninitialized)
+        if(handle->chunk_state_.load() == chunk_uninitialized)
             return fill_value_;
         pointer p = self->getChunk(handle, true, false, chunk_index);
         value_type res = *(p + 
@@ -2168,7 +2174,7 @@ class ChunkedArrayFull
       chunk_(detail::defaultStride(shape), this->data())
     {
         this->handle_array_[0].pointer_ = &chunk_;
-        this->handle_array_[0].refcount_.store(1);
+        this->handle_array_[0].chunk_state_.store(1);
         this->data_bytes_ = size()*sizeof(T);
         this->overhead_bytes_ = overheadBytesPerChunk();
     }
@@ -2180,7 +2186,7 @@ class ChunkedArrayFull
       chunk_(detail::defaultStride(shape), this->data())
     {
         this->handle_array_[0].pointer_ = &chunk_;
-        this->handle_array_[0].refcount_.store(1);
+        this->handle_array_[0].chunk_state_.store(1);
     }
     
     ChunkedArrayFull & operator=(ChunkedArrayFull const & rhs)
@@ -2224,7 +2230,7 @@ class ChunkedArrayFull
     
     virtual pointer chunkForIterator(shape_type const & point, 
                                      shape_type & strides, shape_type & upper_bound, 
-                                     ChunkedHandle<N, T> * h) const
+                                     IteratorChunkHandle<N, T> * h) const
     {
         shape_type global_point = point + h->offset_;
 
@@ -2241,7 +2247,7 @@ class ChunkedArrayFull
     
     virtual pointer chunkForIterator(shape_type const & point, 
                                      shape_type & strides, shape_type & upper_bound, 
-                                     ChunkedHandle<N, T> * h)
+                                     IteratorChunkHandle<N, T> * h)
     {
         shape_type global_point = point + h->offset_;
 
@@ -2773,28 +2779,28 @@ class ChunkedArrayTmpFile
 };
 
 template <unsigned int N, class T>
-class ChunkedHandle
+class IteratorChunkHandle
 {
   public:
     typedef ChunkedArray<N, T>             array_type;
     typedef typename MultiArrayShape<N>::type  shape_type;
     
-    ChunkedHandle()
+    IteratorChunkHandle()
     : offset_(),
       chunk_(0)
     {}
     
-    ChunkedHandle(shape_type const & offset)
+    IteratorChunkHandle(shape_type const & offset)
     : offset_(offset),
       chunk_(0)
     {}
     
-    ChunkedHandle(ChunkedHandle const & other)
+    IteratorChunkHandle(IteratorChunkHandle const & other)
     : offset_(other.offset_),
       chunk_(0)
     {}
     
-    ChunkedHandle & operator=(ChunkedHandle const & other)
+    IteratorChunkHandle & operator=(IteratorChunkHandle const & other)
     {
         offset_ = other.offset_;
         chunk_ = 0;
@@ -2802,7 +2808,7 @@ class ChunkedHandle
     }
     
     shape_type offset_;
-    void * chunk_;
+    SharedChunkHandle<N, T> * chunk_;
 };
 
     /*
@@ -2816,12 +2822,12 @@ class ChunkedHandle
 template <class U, class NEXT>
 class CoupledHandle<ChunkedMemory<U>, NEXT>
 : public NEXT,
-  public ChunkedHandle<NEXT::dimensions, typename UnqualifiedType<U>::type>
+  public IteratorChunkHandle<NEXT::dimensions, typename UnqualifiedType<U>::type>
 {
 public:
     typedef typename UnqualifiedType<U>::type     T;
     typedef NEXT                                  base_type;
-    typedef ChunkedHandle<NEXT::dimensions, T>    base_type2;
+    typedef IteratorChunkHandle<NEXT::dimensions, T>    base_type2;
     typedef CoupledHandle<ChunkedMemory<U>, NEXT> self_type;
     
     static const int index =                      NEXT::index + 1;    // index of this member of the chain
@@ -3051,7 +3057,7 @@ class ChunkIterator
     typedef typename IfBool<UnqualifiedType<U>::isConst,
                           ChunkedArrayBase<N, T> const,
                           ChunkedArrayBase<N, T> >::type array_type;
-    typedef ChunkedHandle<N, T>        Chunk;
+    typedef IteratorChunkHandle<N, T>        Chunk;
 
 
     ChunkIterator() 
