@@ -1824,13 +1824,10 @@ class ChunkedArray
         
         checkSubarrayBounds(start, stop, "ChunkedArray::checkoutSubarray()");
                            
-        const_iterator i(cbegin().restrictToSubarray(start, stop)),
-                       end(i.getEndIterator());
-        typename MultiArrayView<N, U, Stride>::iterator j = subarray.begin();
-        
-        for(; i != end; ++i, ++j)
+        chunk_const_iterator i = chunk_cbegin(start, stop);
+        for(; i.isValid(); ++i)
         {
-           *j = *i;
+            subarray.subarray(i.chunkStart()-start, i.chunkStop()-start) = *i;
         }
     }
     
@@ -1845,13 +1842,10 @@ class ChunkedArray
                            "ChunkedArray::commitSubarray(): array is read-only.");
         checkSubarrayBounds(start, stop, "ChunkedArray::commitSubarray()");
                            
-        iterator i(begin().restrictToSubarray(start, stop)),
-                 end(i.getEndIterator());
-        typename MultiArrayView<N, U, Stride>::const_iterator j = subarray.begin();
-        
-        for(; i != end; ++i, ++j)
+        chunk_iterator i = chunk_begin(start, stop);
+        for(; i.isValid(); ++i)
         {
-           *i = *j;
+            *i = subarray.subarray(i.chunkStart()-start, i.chunkStop()-start);
         }
     }
     
