@@ -193,7 +193,7 @@ class ChunkedArrayHDF5
             
             vigra_precondition(this->size() > 0,
                 "ChunkedArrayHDF5(): invalid shape.");
-            typename detail::HDF5TypeTraits<T>::value_type init(fill_scalar_);
+            typename detail::HDF5TypeTraits<T>::value_type init(this->fill_scalar_);
             dataset_ = file_.createDataset<N, T>(dataset_name_, 
                                                  this->shape_, 
                                                  init,

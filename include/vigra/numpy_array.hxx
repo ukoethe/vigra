@@ -167,7 +167,7 @@ void numpyParseSlicing(Shape const & shape, PyObject * idx, Shape & start, Shape
     python_ptr index(idx);
     if(!PySequence_Check(index))
     {
-        index = python_ptr(PyTuple_Pack(1, index), python_ptr::new_nonzero_reference);
+        index = python_ptr(PyTuple_Pack(1, index.ptr()), python_ptr::new_nonzero_reference);
     }
     int lindex = PyTuple_Size(index);
     int kindex = 0;

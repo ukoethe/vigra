@@ -140,7 +140,7 @@ template <class T>
 inline T * 
 alloc_initialize_n(std::size_t n, T const & initial)
 {
-    PlacementNewAllocator<T> alloc();
+    PlacementNewAllocator<T> alloc;
     return alloc_initialize_n<T>(n, initial, alloc);
 }
 
@@ -148,7 +148,7 @@ template <class T>
 inline T * 
 alloc_initialize_n(std::size_t n)
 {
-    PlacementNewAllocator<T> alloc();
+    PlacementNewAllocator<T> alloc;
     return alloc_initialize_n<T>(n, T(), alloc);
 }
 
@@ -183,7 +183,7 @@ destroy_dealloc_n(T * p, std::size_t n)
 {
     if(p != 0)
     {
-        PlacementNewAllocator<T> alloc();
+        PlacementNewAllocator<T> alloc;
         destroy_dealloc_impl(p, n, alloc, typename TypeTraits<T>::isPOD());
     }
     return 0;

@@ -476,28 +476,28 @@ struct ChunkUnrefProxyBase
     virtual ~ChunkUnrefProxyBase() {}
 };
 
-template <unsigned int N, class U>
-class MultiArrayView<N, U, ChunkedArrayTag>
-: public ChunkedArrayBase<N, typename UnqualifiedType<U>::type>
+template <unsigned int N, class T_MaybeConst>
+class MultiArrayView<N, T_MaybeConst, ChunkedArrayTag>
+: public ChunkedArrayBase<N, typename UnqualifiedType<T_MaybeConst>::type>
 {
   public:
     enum ActualDimension { actual_dimension = (N==0) ? 1 : N };
-    typedef typename UnqualifiedType<U>::type     T;
+    typedef typename UnqualifiedType<T_MaybeConst>::type     T;
     typedef T value_type;   // FIXME: allow Multiband<T> ???
-    typedef U & reference;
+    typedef T_MaybeConst & reference;
     typedef const value_type &const_reference;
-    typedef U * pointer;
+    typedef T_MaybeConst * pointer;
     typedef const value_type *const_pointer;
     typedef typename MultiArrayShape<actual_dimension>::type difference_type;
     typedef difference_type key_type;
     typedef difference_type size_type;
     typedef difference_type shape_type;
     typedef MultiArrayIndex difference_type_1;
-    typedef ChunkIterator<actual_dimension, U>         chunk_iterator;
+    typedef ChunkIterator<actual_dimension, T_MaybeConst>         chunk_iterator;
     typedef ChunkIterator<actual_dimension, T const>   chunk_const_iterator;
-    typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<U>, U&, U*> iterator;
+    typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<T_MaybeConst>, T_MaybeConst&, T_MaybeConst*> iterator;
     typedef StridedScanOrderIterator<actual_dimension, ChunkedMemory<T const>, T const &, T const *> const_iterator;
-    typedef MultiArrayView<N, U, ChunkedArrayTag> view_type;
+    typedef MultiArrayView<N, T_MaybeConst, ChunkedArrayTag> view_type;
     typedef MultiArrayView<N, T const, ChunkedArrayTag> const_view_type;
     typedef ChunkedArrayTag StrideTag;
     typedef ChunkBase<N, T> Chunk;
@@ -2397,8 +2397,8 @@ class ChunkedArrayCompressed
         
         Chunk(shape_type const & shape)
         : ChunkBase<N, T>(detail::defaultStride(shape))
-        , size_(prod(shape))
         , compressed_()
+        , size_(prod(shape))
         {}
         
         ~Chunk()
@@ -3081,6 +3081,7 @@ class ChunkIterator
 
     ChunkIterator(ChunkIterator const & rhs) 
     : base_type(rhs)
+    , base_type2(rhs)
     , array_(rhs.array_)
     , chunk_(rhs.chunk_)
     , start_(rhs.start_)
@@ -3235,6 +3236,9 @@ class ChunkIterator
     {
         return base_type::operator-(other);
     }
+    
+    using base_type::operator==;
+    using base_type::operator!=;
     
     array_type * array_;
     Chunk chunk_;
