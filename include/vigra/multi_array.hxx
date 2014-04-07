@@ -215,7 +215,7 @@ inline void \
 name##MultiArrayData(MultiIterator<1, UInt8, Ref, Ptr> si, Shape const & shape, DestIterator d, MetaInt<0>) \
 { \
     Ptr s = &(*si); \
-    for(MultiArrayIndex i=0; i < shape[N]; ++i, ++s, ++d) \
+    for(MultiArrayIndex i=0; i < shape[0]; ++i, ++s, ++d) \
     { \
         *d op detail::RequiresExplicitCast<typename DestIterator::value_type>::cast(*s); \
     } \
