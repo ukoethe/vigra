@@ -952,15 +952,22 @@ class HDF5File
 
         /** \brief Set how a file is opened.
 
-            OpenMode::New creates a new file. If the file already exists, overwrite it.
+            OpenMode::New creates a new file. If the file already exists, it is overwritten.
 
-            OpenMode::Open opens a file for reading/writing. The file will be created,
-                           if necessary.
+            OpenMode::ReadWrite opens a file for reading/writing. The file will be created if it doesn't exist.
+            
+            OpenMode::ReadOnly opens a file for reading. The file as well as any dataset to be accessed must already exist.
         */
     enum OpenMode {
-        New,           // Create new empty file (existing file will be deleted).
-        Open,          // Open file. Create if not existing.
-        OpenReadOnly   // Open file in read-only mode.
+        New,              // Create new empty file (existing file will be deleted).
+        Open,             // Open file. Create if not existing.
+        ReadWrite = Open, // Alias for Open.
+        OpenReadOnly,     // Open file in read-only mode.
+        ReadOnly = OpenReadOnly, // Alias for OpenReadOnly
+        Replace,          // for ChunkedArrayHDF5: replace dataset if it exists, create otherwise
+        Default           // for ChunkedArrayHDF5: use New if file doesn't exist, 
+                          //                           ReadOnly if file and dataset exist
+                          //                           Open otherwise
     };
 
         /** \brief Default constructor.
@@ -2226,7 +2233,7 @@ class HDF5File
         return std::string(name.begin());
     }
 
-        /* create an empty file and open is
+        /* create an empty file or open an existing one
          */
     inline hid_t createFile_(std::string filePath, OpenMode mode = Open)
     {
@@ -2238,22 +2245,26 @@ class HDF5File
         // check if opening was successful (= file exists)
         if ( pFile == NULL )
         {
+            vigra_precondition(mode != OpenReadOnly,
+                "HDF5File::open(): cannot open non-existing file in read-only mode.");
             fileId = H5Fcreate(filePath.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
         }
-        else if(mode == Open)
-        {
-            fclose( pFile );
-            fileId = H5Fopen(filePath.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
-        }
-        else if(mode == OpenReadOnly) {
-            fclose( pFile );
-            fileId = H5Fopen(filePath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-        }
-        else
+        else 
         {
             fclose(pFile);
-            std::remove(filePath.c_str());
-            fileId = H5Fcreate(filePath.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+            if(mode == OpenReadOnly) 
+            {
+                fileId = H5Fopen(filePath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            }
+            else if(mode == New)
+            {
+                std::remove(filePath.c_str());
+                fileId = H5Fcreate(filePath.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+            }
+            else
+            {
+                fileId = H5Fopen(filePath.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
+            }
         }
         return fileId;
     }

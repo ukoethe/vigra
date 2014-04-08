@@ -148,6 +148,7 @@ class ChunkedArrayHDF5
     }
     
     ChunkedArrayHDF5(HDF5File const & file, std::string const & dataset,
+                     HDF5File::OpenMode mode = HDF5File::OpenReadOnly,
                      ChunkedArrayOptions const & options = ChunkedArrayOptions(),
                      Alloc const & alloc = Alloc())
     : ChunkedArray<N, T>(shape_type(), shape_type(), options),
@@ -157,18 +158,31 @@ class ChunkedArrayHDF5
       compression_(options.compression_method),
       alloc_(alloc)
     {
-        init(HDF5File::OpenReadOnly);
+        init(mode);
     }
     
     void init(HDF5File::OpenMode mode)
     {
-        if(mode == HDF5File::OpenReadOnly)
+        bool exists = file_.existsDataset(dataset_name_);
+        
+        if(mode == HDF5File::Replace)
+        {
+            mode = HDF5File::New;
+        }
+        else if(mode == HDF5File::Default)
+        {
+            if(exists)
+                mode = HDF5File::ReadOnly;
+            else
+                mode = HDF5File::New;
+        }
+        
+        if(mode == HDF5File::ReadOnly)
             file_.setReadOnly();
         else
             vigra_precondition(!file_.isReadOnly(),
                 "ChunkedArrayHDF5(): 'mode' is incompatible with read-only file.");
                 
-        bool exists = file_.existsDataset(dataset_name_);
         vigra_precondition(exists || !file_.isReadOnly(),
             "ChunkedArrayHDF5(): dataset does not exist, but file is read-only.");
             
@@ -237,7 +251,14 @@ class ChunkedArrayHDF5
                 else
                 {
                     this->shape_ = shape;
+                    ChunkStorage(detail::computeChunkArrayShape(shape, this->bits_, this->mask_)).swap(handle_array_);
                 }
+            }
+            typename ChunkStorage::iterator i   = this->handle_array_.begin(), 
+                                            end = this->handle_array_.end();
+            for(; i != end; ++i)
+            {
+                i->chunk_state_.store(chunk_asleep);
             }
         }
     }
@@ -259,6 +280,7 @@ class ChunkedArrayHDF5
         if(file_.isReadOnly())
             return;
             
+        threading::lock_guard<threading::mutex> guard(*this->chunk_lock_);
         typename ChunkStorage::iterator i   = this->handle_array_.begin(), 
                                         end = this->handle_array_.end();
         for(; i != end; ++i)

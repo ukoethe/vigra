@@ -225,6 +225,11 @@ ChunkedArray_setitem2(ChunkedArray<N, T> & self, python::object index, NumpyArra
     self.commitSubarray(start, array);
 }
 
+python::object defaultDtype()
+{
+    PyObject * dtype = NumpyArrayValuetypeTraits<npy_float32>::typeObject();
+    return python::object(python::detail::new_reference(dtype));
+}
 
 int numpyScalarTypeNumber(python::object obj)
 {
@@ -255,7 +260,7 @@ ptr_to_python(ChunkedArray<N, T> * a, std::string const & axistags)
 
 template <class T, int N>
 ChunkedArray<N, T> *
-construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
+construct_ChunkedArrayFullImpl(TinyVector<MultiArrayIndex, N> const & shape,
                            double fill_value)
 {
     return new ChunkedArrayFull<N, T>(shape,
@@ -271,11 +276,11 @@ construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayFull<npy_uint8>(shape, fill_value), axistags);
+        return ptr_to_python(construct_ChunkedArrayFullImpl<npy_uint8>(shape, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayFull<npy_uint32>(shape, fill_value), axistags);
+        return ptr_to_python(construct_ChunkedArrayFullImpl<npy_uint32>(shape, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayFull<npy_float32>(shape, fill_value), axistags);
+        return ptr_to_python(construct_ChunkedArrayFullImpl<npy_float32>(shape, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayFull(): unsupported dtype.");
     }
@@ -284,7 +289,7 @@ construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
 
 template <class T, int N>
 ChunkedArray<N, T> * 
-construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
+construct_ChunkedArrayLazyImpl(TinyVector<MultiArrayIndex, N> const & shape,
                            TinyVector<MultiArrayIndex, N> const & chunk_shape,
                            double fill_value)
 {
@@ -303,11 +308,11 @@ construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayLazy<npy_uint8>(shape, chunk_shape, fill_value), axistags);
+        return ptr_to_python(construct_ChunkedArrayLazyImpl<npy_uint8>(shape, chunk_shape, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayLazy<npy_uint32>(shape, chunk_shape, fill_value), axistags);
+        return ptr_to_python(construct_ChunkedArrayLazyImpl<npy_uint32>(shape, chunk_shape, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayLazy<npy_float32>(shape, chunk_shape, fill_value), axistags);
+        return ptr_to_python(construct_ChunkedArrayLazyImpl<npy_float32>(shape, chunk_shape, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayLazy(): unsupported dtype.");
     }
@@ -316,11 +321,11 @@ construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
 
 template <class T, int N>
 ChunkedArray<N, T> * 
-construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
-                                 CompressionMethod method,
-                                 TinyVector<MultiArrayIndex, N> const & chunk_shape,
-                                 int cache_max,
-                                 double fill_value)
+construct_ChunkedArrayCompressedImpl(TinyVector<MultiArrayIndex, N> const & shape,
+                                     CompressionMethod method,
+                                     TinyVector<MultiArrayIndex, N> const & chunk_shape,
+                                     int cache_max,
+                                     double fill_value)
 {
     return new ChunkedArrayCompressed<N, T>(shape, chunk_shape, 
             ChunkedArrayOptions().compression(method).cacheMax(cache_max).fillValue(fill_value));
@@ -339,13 +344,13 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayCompressed<npy_uint8>(shape, method, chunk_shape, 
+        return ptr_to_python(construct_ChunkedArrayCompressedImpl<npy_uint8>(shape, method, chunk_shape, 
                              cache_max, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayCompressed<npy_uint32>(shape, method, chunk_shape, 
+        return ptr_to_python(construct_ChunkedArrayCompressedImpl<npy_uint32>(shape, method, chunk_shape, 
                              cache_max, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayCompressed<npy_float32>(shape, method, chunk_shape, 
+        return ptr_to_python(construct_ChunkedArrayCompressedImpl<npy_float32>(shape, method, chunk_shape, 
                              cache_max, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayCompressed(): unsupported dtype.");
@@ -355,11 +360,11 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
 
 template <class T, int N>
 ChunkedArray<N, T> * 
-construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
-                              TinyVector<MultiArrayIndex, N> const & chunk_shape,
-                              int cache_max,
-                              std::string path,
-                              double fill_value)
+construct_ChunkedArrayTmpFileImpl(TinyVector<MultiArrayIndex, N> const & shape,
+                                  TinyVector<MultiArrayIndex, N> const & chunk_shape,
+                                  int cache_max,
+                                  std::string path,
+                                  double fill_value)
 {
     return new ChunkedArrayTmpFile<N, T>(shape, chunk_shape, 
                                 ChunkedArrayOptions().cacheMax(cache_max).fillValue(fill_value), path);
@@ -378,13 +383,13 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayTmpFile<npy_uint8>(shape, chunk_shape, cache_max, 
+        return ptr_to_python(construct_ChunkedArrayTmpFileImpl<npy_uint8>(shape, chunk_shape, cache_max, 
                              path, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayTmpFile<npy_uint32>(shape, chunk_shape, cache_max, 
+        return ptr_to_python(construct_ChunkedArrayTmpFileImpl<npy_uint32>(shape, chunk_shape, cache_max, 
                              path, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayTmpFile<npy_float32>(shape, chunk_shape, cache_max, 
+        return ptr_to_python(construct_ChunkedArrayTmpFileImpl<npy_float32>(shape, chunk_shape, cache_max, 
                              path, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayTmpFile(): unsupported dtype.");
@@ -393,18 +398,18 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
 }
 
 #ifdef HasHDF5
+
 template <class T, int N>
 ChunkedArray<N, T> * 
-construct_ChunkedArrayHDF5(std::string filename,
-                           std::string datasetName,
-                           TinyVector<MultiArrayIndex, N> const & shape,
-                           HDF5File::OpenMode mode,
-                           CompressionMethod method,
-                           TinyVector<MultiArrayIndex, N> const & chunk_shape,
-                           int cache_max,
-                           double fill_value)
+construct_ChunkedArrayHDF5Impl(HDF5File const & file,
+                               std::string datasetName,
+                               TinyVector<MultiArrayIndex, N> const & shape,
+                               HDF5File::OpenMode mode,
+                               CompressionMethod method,
+                               TinyVector<MultiArrayIndex, N> const & chunk_shape,
+                               int cache_max,
+                               double fill_value)
 {
-    HDF5File file(filename, mode);
     return new ChunkedArrayHDF5<N, T>(file, datasetName, mode, 
                                       shape, chunk_shape, 
                                       ChunkedArrayOptions().compression(method).cacheMax(cache_max).fillValue(fill_value));
@@ -412,33 +417,198 @@ construct_ChunkedArrayHDF5(std::string filename,
 
 template <unsigned int N>
 PyObject *
-construct_ChunkedArrayHDF5(std::string filename,
-                           std::string datasetName,
-                           TinyVector<MultiArrayIndex, N> const & shape,
-                           python::object dtype,
-                           HDF5File::OpenMode mode,
-                           CompressionMethod compression,
-                           TinyVector<MultiArrayIndex, N> const & chunk_shape,
-                           int cache_max,
-                           double fill_value,
-                           std::string const & axistags)
+construct_ChunkedArrayHDF5Impl(HDF5File const & file,
+                               std::string datasetName,
+                               TinyVector<MultiArrayIndex, N> const & shape,
+                               python::object dtype,
+                               HDF5File::OpenMode mode,
+                               CompressionMethod compression,
+                               TinyVector<MultiArrayIndex, N> const & chunk_shape,
+                               int cache_max,
+                               double fill_value,
+                               std::string const & axistags)
 {
-    switch(numpyScalarTypeNumber(dtype))
+    int dtype_code = NPY_FLOAT32;
+    
+    if(dtype != python::object())
+    {
+        dtype_code = numpyScalarTypeNumber(dtype);
+    }
+    else if(file.existsDataset(datasetName))
+    {
+        std::string type = file.getDatasetType(datasetName);
+        if(type == "UINT8")
+            dtype_code = NPY_UINT8;
+        else if(type == "UINT32")
+            dtype_code = NPY_UINT32;
+    }
+    switch(dtype_code)
     {
       case NPY_UINT8:
-        return ptr_to_python(construct_ChunkedArrayHDF5<npy_uint8>(filename, datasetName, shape, 
+        return ptr_to_python(construct_ChunkedArrayHDF5Impl<npy_uint8>(file, datasetName, shape, 
                              mode, compression, chunk_shape, cache_max, fill_value), axistags);
       case NPY_UINT32:
-        return ptr_to_python(construct_ChunkedArrayHDF5<npy_uint32>(filename, datasetName, shape, 
+        return ptr_to_python(construct_ChunkedArrayHDF5Impl<npy_uint32>(file, datasetName, shape, 
                              mode, compression, chunk_shape, cache_max, fill_value), axistags);
       case NPY_FLOAT32:
-        return ptr_to_python(construct_ChunkedArrayHDF5<npy_float32>(filename, datasetName, shape, 
+        return ptr_to_python(construct_ChunkedArrayHDF5Impl<npy_float32>(file, datasetName, shape, 
                              mode, compression, chunk_shape, cache_max, fill_value), axistags);
       default:
         vigra_precondition(false, "ChunkedArrayHDF5(): unsupported dtype.");
     }
     return 0;
 }
+
+PyObject *
+construct_ChunkedArrayHDF5Impl(HDF5File const & file,
+                               std::string datasetName,
+                               python::object py_shape,
+                               python::object dtype,
+                               HDF5File::OpenMode mode,
+                               CompressionMethod compression,
+                               python::object py_chunk_shape,
+                               int cache_max,
+                               double fill_value,
+                               std::string const & axistags)
+{
+    int ndim = 0;
+    bool has_shape = PySequence_Check(py_shape.ptr());
+    if(file.existsDataset(datasetName))
+    {
+        ndim = file.getDatasetDimensions(datasetName);
+        if(PySequence_Check(py_shape.ptr()))
+            vigra_precondition(ndim == python::len(py_shape),
+                "ChunkedArrayHDF5(): mismatch bet.");
+    }
+    else
+    {
+        vigra_precondition(PySequence_Check(py_shape.ptr()),
+            "ChunkedArrayHDF5(): cannot create dataset because no shape is given.");
+        ndim = python::len(py_shape);
+    }
+    
+    bool has_chunk_shape = false;
+    if(PySequence_Check(py_chunk_shape.ptr()))
+    {
+        vigra_precondition(python::len(py_chunk_shape) == ndim,
+            "ChunkedArrayHDF5(): chunk_shape has wrong dimension.");
+        has_chunk_shape = true;
+    }
+    
+    switch(ndim)
+    {
+      case 2:
+      {
+        typedef Shape2 shape_type;
+        
+        shape_type shape = has_shape
+                                ? python::extract<shape_type>(py_shape)()
+                                : shape_type(),
+                   chunk_shape = has_chunk_shape
+                                ? python::extract<shape_type>(py_chunk_shape)()
+                                : shape_type();
+        return construct_ChunkedArrayHDF5Impl<2>(file, datasetName, shape, dtype,
+                             mode, compression, chunk_shape, cache_max, fill_value, axistags);
+      }
+      case 3:
+      {
+        typedef Shape3 shape_type;
+        
+        shape_type shape = has_shape
+                                ? python::extract<shape_type>(py_shape)()
+                                : shape_type(),
+                   chunk_shape = has_chunk_shape
+                                ? python::extract<shape_type>(py_chunk_shape)()
+                                : shape_type();
+        return construct_ChunkedArrayHDF5Impl<3>(file, datasetName, shape, dtype,
+                             mode, compression, chunk_shape, cache_max, fill_value, axistags);
+      }
+      case 4:
+      {
+        typedef Shape4 shape_type;
+        
+        shape_type shape = has_shape
+                                ? python::extract<shape_type>(py_shape)()
+                                : shape_type(),
+                   chunk_shape = has_chunk_shape
+                                ? python::extract<shape_type>(py_chunk_shape)()
+                                : shape_type();
+        return construct_ChunkedArrayHDF5Impl<4>(file, datasetName, shape, dtype,
+                             mode, compression, chunk_shape, cache_max, fill_value, axistags);
+      }
+      case 5:
+      {
+        typedef Shape5 shape_type;
+        
+        shape_type shape = has_shape
+                                ? python::extract<shape_type>(py_shape)()
+                                : shape_type(),
+                   chunk_shape = has_chunk_shape
+                                ? python::extract<shape_type>(py_chunk_shape)()
+                                : shape_type();
+        return construct_ChunkedArrayHDF5Impl<5>(file, datasetName, shape, dtype,
+                             mode, compression, chunk_shape, cache_max, fill_value, axistags);
+      }
+      default:
+        vigra_precondition(false, "ChunkedArrayHDF5(): unsupported array dimension (2 <= ndim <= 5 required).");
+    }
+    return 0;
+}
+
+PyObject *
+construct_ChunkedArrayHDF5(std::string filename,
+                           std::string datasetName,
+                           python::object shape,
+                           python::object dtype,
+                           HDF5File::OpenMode mode,
+                           CompressionMethod compression,
+                           python::object chunk_shape,
+                           int cache_max,
+                           double fill_value,
+                           std::string const & axistags)
+{
+    bool file_exists = isHDF5(filename.c_str());
+    if(mode == HDF5File::Default)
+    {
+        if(!file_exists)
+            mode = HDF5File::New;
+        else if(HDF5File(filename, HDF5File::ReadOnly).existsDataset(datasetName))
+            mode = HDF5File::ReadOnly;
+        else
+            mode = HDF5File::Replace;
+    }
+    HDF5File::OpenMode filemode = mode;
+    if(mode == HDF5File::Replace)
+    {
+        mode = HDF5File::New;
+        if(file_exists)
+            filemode = HDF5File::ReadWrite;
+        else
+            filemode = HDF5File::New;
+    }
+    HDF5File file(filename, filemode);
+    return construct_ChunkedArrayHDF5Impl(file, datasetName, shape, dtype, mode, compression,
+                               chunk_shape, cache_max, fill_value, axistags);
+}
+
+PyObject *
+construct_ChunkedArrayHDF5id(hid_t file_id,
+                             std::string datasetName,
+                             python::object shape,
+                             python::object dtype,
+                             HDF5File::OpenMode mode,
+                             CompressionMethod compression,
+                             python::object chunk_shape,
+                             int cache_max,
+                             double fill_value,
+                             std::string const & axistags)
+{
+    HDF5HandleShared handle(file_id, 0, "");
+    HDF5File file(handle);
+    return construct_ChunkedArrayHDF5Impl(file, datasetName, shape, dtype, mode, compression,
+                               chunk_shape, cache_max, fill_value, axistags);
+}
+
 #endif
 
 template <unsigned int N, class T>
@@ -480,8 +650,6 @@ void defineChunkedArrayImpl()
              "\nthe array's value type\n")
         .add_property("ndim", &ChunkedArray_ndim<N, T>, 
              "\nthe array's dimension\n")
-        // .def("axistags", &ChunkedArray_axistags<N, T>,
-             // "\n(read-only property, type :class:`~vigra.AxisTags`) the axis tags.\n")
         .def("__repr__", &ChunkedArray_repr<N, T>)
         .def("__str__", &ChunkedArray_str<N, T>)
         .def("checkoutSubarray", 
@@ -511,26 +679,17 @@ void defineChunkedArrayFactories()
 
     docstring_options doc_options(true, false, false);
     
-    PyObject * dtype = NumpyArrayValuetypeTraits<npy_float32>::typeObject();
-    object default_dtype = object(python::detail::new_reference(dtype));
-
     def("ChunkedArrayFull", &construct_ChunkedArrayFull<N>,
-        (arg("shape"), arg("dtype")=default_dtype, arg("fill_value")=0.0, arg("axistags")=""));
+        (arg("shape"), arg("dtype")=defaultDtype(), arg("fill_value")=0.0, arg("axistags")=""));
     def("ChunkedArrayLazy", &construct_ChunkedArrayLazy<N>,
-        (arg("shape"), arg("dtype")=default_dtype, 
+        (arg("shape"), arg("dtype")=defaultDtype(), 
          arg("chunk_shape")=shape_type(), arg("fill_value")=0.0, arg("axistags")=""));
     def("ChunkedArrayCompressed", &construct_ChunkedArrayCompressed<N>,
-        (arg("shape"), arg("method")=LZ4, arg("dtype")=default_dtype, arg("chunk_shape")=shape_type(), 
+        (arg("shape"), arg("method")=LZ4, arg("dtype")=defaultDtype(), arg("chunk_shape")=shape_type(), 
         arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=""));
     def("ChunkedArrayTmpFile", &construct_ChunkedArrayTmpFile<N>,
-        (arg("shape"), arg("dtype")=default_dtype, arg("chunk_shape")=shape_type(), 
+        (arg("shape"), arg("dtype")=defaultDtype(), arg("chunk_shape")=shape_type(), 
          arg("cache_max")=-1, arg("path")="", arg("fill_value")=0.0, arg("axistags")=""));
-#ifdef HasHDF5
-    def("ChunkedArrayHDF5", &construct_ChunkedArrayHDF5<N>,
-        (arg("file_name"), arg("dataset_name"), arg("shape")=shape_type(),
-         arg("dtype")=default_dtype, arg("mode")=HDF5File::New, arg("compression")=ZLIB_FAST, 
-         arg("chunk_shape")=shape_type(), arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=""));
-#endif
 }
 
 void defineChunkedArray()
@@ -557,12 +716,17 @@ void defineChunkedArray()
 #ifdef HasHDF5
     enum_<HDF5File::OpenMode>("HDF5Mode",
          "\nEnum to encode open mode for ChunkedArrayHDF5:\n\n"
-         "   ``HDF5Mode.New:``\n      Create new dataset (existing dataset will be deleted)\n"
-         "   ``HDF5Mode.Open:``\n      Open dataset, create when not existing\n"
-         "   ``HDF5Mode.OpenReadOnly:``\n      Open dataset read-only, fail when not existing\n\n")
+         "   ``HDF5Mode.Default:``\n  Use the default strategy (ReadOnly when file and dataset exist, New otherwise)\n"
+         "   ``HDF5Mode.New:``\n      Create new file (existing file will be deleted)\n"
+         "   ``HDF5Mode.ReadWrite:``\n      Open file (create when not existing) and allow creation of new datasets.\n"
+         "                                  Contents of existing datasets may be changed, but not their shape.\n"
+         "   ``HDF5Mode.ReadOnly:``\n     Open files and datasets read-only, fail when not existing.\n"
+         "   ``HDF5Mode.Replace:``\n      Like ReadWrite, but always replace exising datasets.\n\n")
         .value("New", HDF5File::New)
-        .value("Open", HDF5File::Open)
-        .value("OpenReadOnly", HDF5File::OpenReadOnly)
+        .value("ReadWrite", HDF5File::ReadWrite)
+        .value("ReadOnly", HDF5File::ReadOnly)
+        .value("Replace", HDF5File::ReadOnly)
+        .value("Default", HDF5File::ReadOnly)
     ;
 #endif
 
@@ -585,6 +749,17 @@ void defineChunkedArray()
     defineChunkedArrayFactories<3>();
     defineChunkedArrayFactories<4>();
     defineChunkedArrayFactories<5>();
+    
+#ifdef HasHDF5
+    def("ChunkedArrayHDF5", &construct_ChunkedArrayHDF5id,
+        (arg("file_id"), arg("dataset_name"), arg("shape")=python::object(),
+         arg("dtype")=python::object(), arg("mode")=HDF5File::ReadOnly, arg("compression")=ZLIB_FAST, 
+         arg("chunk_shape")=python::object(), arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=""));
+    def("ChunkedArrayHDF5", &construct_ChunkedArrayHDF5,
+        (arg("file_name"), arg("dataset_name"), arg("shape")=python::object(),
+         arg("dtype")=python::object(), arg("mode")=HDF5File::Default, arg("compression")=ZLIB_FAST, 
+         arg("chunk_shape")=python::object(), arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=""));
+#endif
 }
 
 } // namespace vigra
