@@ -866,8 +866,6 @@ class MultiArrayView<N, T_MaybeConst, ChunkedArrayTag>
     MultiArrayView<N-1, value_type, ChunkedArrayTag> 
     bindAt(MultiArrayIndex m, MultiArrayIndex d) const
     {
-        typedef typename MultiArrayShape<N-1>::type SM;
-
         MultiArrayView<N-1, value_type, ChunkedArrayTag> res(this->shape_.dropIndex(m), this->chunk_shape_.dropIndex(m));
         res.offset_ = offset_.dropIndex(m);
         res.bits_   = bits_.dropIndex(m);
