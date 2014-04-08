@@ -62,6 +62,10 @@
     thread-safe chunked (1 slice in cache)      23        37        46
     thread-safe chunked (1 row in cache)        32        50        56
     chunked (initial creation, all in cache)    34        56        77
+    (These numbers refer to nested loop iteration. Scan-order iteration
+     is unfortunately 3.5 times slower on the Mac. On the other hand, 
+     two-level indexing as faster on a Mac than on Linux and Windows --
+     the speed penalty is only a factor of 2 rather than 3.)
 
     **********************
     image size: 400^3, chunk size: 127^3, i.e. chunk count: 4^3
