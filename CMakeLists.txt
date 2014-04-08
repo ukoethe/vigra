@@ -59,6 +59,20 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
     ENDIF()
 ENDIF ()
 
+IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
+    set(SUFFICIENT_TEMPLATE_DEPTH FALSE)
+    TRY_COMPILE(SUFFICIENT_TEMPLATE_DEPTH
+                ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/config/checkTemplateDepth.cxx
+                COMPILE_DEFINITIONS "-DDEPTH=900") 
+            
+    IF(SUFFICIENT_TEMPLATE_DEPTH)
+        MESSAGE(STATUS "Checking template recursion depth: ok")
+    ELSE()
+        SET(CMAKE_CXX_FLAGS "-ftemplate-depth=900 ${CMAKE_CXX_FLAGS}" CACHE STRING  "Flags used by the compiler during all build types" FORCE)
+        MESSAGE(STATUS "Checking template recursion depth: using -ftemplate-depth=900")
+    ENDIF()
+ENDIF()
+
 # if(CMAKE_COMPILER_IS_GNUCXX)
   # exec_program(
       # ${CMAKE_CXX_COMPILER}

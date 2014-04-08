@@ -241,19 +241,27 @@ int numpyScalarTypeNumber(python::object obj)
     return typeNum;
 }
 
-template <unsigned int N, class T>
+template <class Array>
 PyObject *
-ptr_to_python(ChunkedArray<N, T> * a, std::string const & axistags)
+ptr_to_python(Array * a, python::object axistags)
 {
-    PyObject * pya = python::to_python_indirect<ChunkedArray<N, T>*, 
+    PyObject * pya = python::to_python_indirect<Array*, 
                                       python::detail::make_owning_holder>()(a);
-    AxisTags at(axistags);
-    vigra_precondition(at.size() == 0 || at.size() == N,
-        "ChunkedArray(): axistags have invalid length.");
-    if(at.size() == N)
+    if(axistags != python::object())
     {
-        int res = PyObject_SetAttrString(pya, "axistags", python::object(at).ptr());
-        pythonToCppException(res != 0);
+        AxisTags at;
+        if(PyString_Check(axistags.ptr()))
+            at = AxisTags(python::extract<std::string>(axistags)());
+        else
+            at = AxisTags(python::extract<AxisTags const &>(axistags)());
+        int N = Array::shape_type::static_size;
+        vigra_precondition(at.size() == 0 || at.size() == N,
+            "ChunkedArray(): axistags have invalid length.");
+        if(at.size() == N)
+        {
+            int res = PyObject_SetAttrString(pya, "axistags", python::object(at).ptr());
+            pythonToCppException(res != 0);
+        }
     }
     return pya;
 }
@@ -271,7 +279,7 @@ template <unsigned int N>
 PyObject *
 construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
                            python::object dtype, double fill_value,
-                           std::string const & axistags)
+                           python::object axistags)
 {
     switch(numpyScalarTypeNumber(dtype))
     {
@@ -303,7 +311,7 @@ construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
                            python::object dtype,
                            TinyVector<MultiArrayIndex, N> const & chunk_shape,
                            double fill_value,
-                           std::string const & axistags)
+                           python::object axistags)
 {
     switch(numpyScalarTypeNumber(dtype))
     {
@@ -339,7 +347,7 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
                                  TinyVector<MultiArrayIndex, N> const & chunk_shape,
                                  int cache_max,
                                  double fill_value,
-                                 std::string const & axistags)
+                                 python::object axistags)
 {
     switch(numpyScalarTypeNumber(dtype))
     {
@@ -378,7 +386,7 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
                               int cache_max,
                               std::string path,
                               double fill_value,
-                              std::string const & axistags)
+                              python::object axistags)
 {
     switch(numpyScalarTypeNumber(dtype))
     {
@@ -400,7 +408,7 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
 #ifdef HasHDF5
 
 template <class T, int N>
-ChunkedArray<N, T> * 
+ChunkedArrayHDF5<N, T> * 
 construct_ChunkedArrayHDF5Impl(HDF5File const & file,
                                std::string datasetName,
                                TinyVector<MultiArrayIndex, N> const & shape,
@@ -426,7 +434,7 @@ construct_ChunkedArrayHDF5Impl(HDF5File const & file,
                                TinyVector<MultiArrayIndex, N> const & chunk_shape,
                                int cache_max,
                                double fill_value,
-                               std::string const & axistags)
+                               python::object axistags)
 {
     int dtype_code = NPY_FLOAT32;
     
@@ -469,7 +477,7 @@ construct_ChunkedArrayHDF5Impl(HDF5File const & file,
                                python::object py_chunk_shape,
                                int cache_max,
                                double fill_value,
-                               std::string const & axistags)
+                               python::object axistags)
 {
     int ndim = 0;
     bool has_shape = PySequence_Check(py_shape.ptr());
@@ -565,7 +573,7 @@ construct_ChunkedArrayHDF5(std::string filename,
                            python::object chunk_shape,
                            int cache_max,
                            double fill_value,
-                           std::string const & axistags)
+                           python::object axistags)
 {
     bool file_exists = isHDF5(filename.c_str());
     if(mode == HDF5File::Default)
@@ -601,7 +609,7 @@ construct_ChunkedArrayHDF5id(hid_t file_id,
                              python::object chunk_shape,
                              int cache_max,
                              double fill_value,
-                             std::string const & axistags)
+                             python::object axistags)
 {
     HDF5HandleShared handle(file_id, 0, "");
     HDF5File file(handle);
@@ -669,6 +677,19 @@ void defineChunkedArrayImpl()
         .def("__setitem__", &ChunkedArray_setitem2<N, T>)
         ;
         
+#ifdef HasHDF5
+    typedef ChunkedArrayHDF5<N, T> ArrayHDF5;
+    class_<ChunkedArrayHDF5<N, T>, bases<Array>, boost::noncopyable>("ChunkedArrayHDF5", no_init)
+        .def("close", &ArrayHDF5::close)
+        .def("flush", &ArrayHDF5::flushToDisk)
+        .add_property("filename", &ArrayHDF5::fileName,
+             "\nname of the file backend of this array.\n")
+        .add_property("dataset_name", &ArrayHDF5::datasetName,
+             "\nname of the dataset backend of this array.\n")
+        .add_property("readonly", &ArrayHDF5::isReadOnly,
+             "\nTrue if this array is read-only.\n")
+    ; 
+#endif        
 }
 
 template <unsigned int N>
@@ -680,16 +701,16 @@ void defineChunkedArrayFactories()
     docstring_options doc_options(true, false, false);
     
     def("ChunkedArrayFull", &construct_ChunkedArrayFull<N>,
-        (arg("shape"), arg("dtype")=defaultDtype(), arg("fill_value")=0.0, arg("axistags")=""));
+        (arg("shape"), arg("dtype")=defaultDtype(), arg("fill_value")=0.0, arg("axistags")=python::object()));
     def("ChunkedArrayLazy", &construct_ChunkedArrayLazy<N>,
         (arg("shape"), arg("dtype")=defaultDtype(), 
-         arg("chunk_shape")=shape_type(), arg("fill_value")=0.0, arg("axistags")=""));
+         arg("chunk_shape")=shape_type(), arg("fill_value")=0.0, arg("axistags")=python::object()));
     def("ChunkedArrayCompressed", &construct_ChunkedArrayCompressed<N>,
-        (arg("shape"), arg("method")=LZ4, arg("dtype")=defaultDtype(), arg("chunk_shape")=shape_type(), 
-        arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=""));
+        (arg("shape"), arg("compression")=LZ4, arg("dtype")=defaultDtype(), arg("chunk_shape")=shape_type(), 
+         arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=python::object()));
     def("ChunkedArrayTmpFile", &construct_ChunkedArrayTmpFile<N>,
         (arg("shape"), arg("dtype")=defaultDtype(), arg("chunk_shape")=shape_type(), 
-         arg("cache_max")=-1, arg("path")="", arg("fill_value")=0.0, arg("axistags")=""));
+         arg("cache_max")=-1, arg("path")="", arg("fill_value")=0.0, arg("axistags")=python::object()));
 }
 
 void defineChunkedArray()
@@ -754,11 +775,13 @@ void defineChunkedArray()
     def("ChunkedArrayHDF5", &construct_ChunkedArrayHDF5id,
         (arg("file_id"), arg("dataset_name"), arg("shape")=python::object(),
          arg("dtype")=python::object(), arg("mode")=HDF5File::ReadOnly, arg("compression")=ZLIB_FAST, 
-         arg("chunk_shape")=python::object(), arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=""));
+         arg("chunk_shape")=python::object(), arg("cache_max")=-1, arg("fill_value")=0.0, 
+         arg("axistags")=python::object()));
     def("ChunkedArrayHDF5", &construct_ChunkedArrayHDF5,
         (arg("file_name"), arg("dataset_name"), arg("shape")=python::object(),
          arg("dtype")=python::object(), arg("mode")=HDF5File::Default, arg("compression")=ZLIB_FAST, 
-         arg("chunk_shape")=python::object(), arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=""));
+         arg("chunk_shape")=python::object(), arg("cache_max")=-1, arg("fill_value")=0.0, 
+         arg("axistags")=python::object()));
 #endif
 }
 

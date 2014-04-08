@@ -1089,6 +1089,11 @@ class HDF5File
         return fileHandle_.use_count();
     }
     
+    bool isOpen() const
+    {
+        return fileHandle_ != 0;
+    }
+    
     bool isReadOnly() const
     {
         return read_only_;
@@ -1113,8 +1118,6 @@ class HDF5File
     }
 
         /** \brief Close the current file.
-        
-            Calls close() on the present file and then assigns itself to the same file and group as \a other.
         */
     void close()
     {

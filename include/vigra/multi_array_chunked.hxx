@@ -1771,8 +1771,10 @@ class ChunkedArray
     }
     
     // NOTE: this function must only be called while we hold the chunk_lock_
-    void cleanCache(int how_many)
+    void cleanCache(int how_many = -1)
     {
+        if(how_many == -1)
+            how_many = cache_.size();
         for(; cache_.size() > cacheMaxSize() && how_many > 0; --how_many)
         {
             Handle * handle = cache_.front();
@@ -2020,6 +2022,11 @@ class ChunkedArray
     void setCacheMaxSize(std::size_t c)
     {
         cache_max_size_ = c;
+        if(c < cache_.size())
+        {
+            threading::lock_guard<threading::mutex> guard(*chunk_lock_);
+            cleanCache();
+        }
     }
     
     iterator begin()

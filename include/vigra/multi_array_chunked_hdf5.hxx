@@ -265,17 +265,26 @@ class ChunkedArrayHDF5
     
     ~ChunkedArrayHDF5()
     {
-        typename ChunkStorage::iterator i   = this->handle_array_.begin(), 
-                                        end = this->handle_array_.end();
-        for(; i != end; ++i)
-        {
-            if(i->pointer_)
-                delete static_cast<Chunk*>(i->pointer_);
-            i->pointer_ = 0;
-        }
+        closeImpl(true);
+    }
+    
+    void close()
+    {
+        closeImpl(false);
+    }
+    
+    void closeImpl(bool force_destroy)
+    {
+        flushToDiskImpl(true, force_destroy);
+        file_.close();
     }
     
     void flushToDisk()
+    {
+        flushToDiskImpl(false, false);
+    }
+    
+    void flushToDiskImpl(bool destroy, bool force_destroy)
     {
         if(file_.isReadOnly())
             return;
@@ -283,11 +292,29 @@ class ChunkedArrayHDF5
         threading::lock_guard<threading::mutex> guard(*this->chunk_lock_);
         typename ChunkStorage::iterator i   = this->handle_array_.begin(), 
                                         end = this->handle_array_.end();
+        if(destroy && !force_destroy)
+        {
+            for(; i != end; ++i)
+            {
+                vigra_precondition(i->chunk_state_ <= 0,
+                    "ChunkedArrayHDF5::close(): cannot close file because there are active chunks.");
+            }
+            i   = this->handle_array_.begin();
+        }
         for(; i != end; ++i)
         {
             Chunk * chunk = static_cast<Chunk*>(i->pointer_);
-            if(chunk)
+            if(!chunk)
+                continue;
+            if(destroy)
+            {
+                delete chunk;
+                i->pointer_ = 0;
+            }
+            else
+            {
                 chunk->write(false);
+            }
         }
         file_.flushToDisk();
     }
@@ -299,6 +326,8 @@ class ChunkedArrayHDF5
     
     virtual pointer loadChunk(ChunkBase<N, T> ** p, shape_type const & index)
     {
+        vigra_precondition(file_.isOpen(),
+            "ChunkedArrayHDF5::loadChunk(): file was already closed.");
         if(*p == 0)
         {
             *p = new Chunk(this->chunkShape(index), index*this->chunk_shape_, this, alloc_);
@@ -309,8 +338,10 @@ class ChunkedArrayHDF5
     
     virtual bool unloadChunk(ChunkBase<N, T> * chunk, bool /* destroy */)
     {
+        if(!file_.isOpen())
+            return true;
         static_cast<Chunk *>(chunk)->write();
-        return false; // never destroys the data
+        return false; 
     }
     
     virtual std::string backend() const
@@ -330,7 +361,12 @@ class ChunkedArrayHDF5
         return sizeof(Chunk) + sizeof(SharedChunkHandle<N, T>);
     }
     
-    std::string const & datasetName() const
+    std::string fileName() const
+    {
+        return file_.filename();
+    }
+    
+    std::string datasetName() const
     {
         return dataset_name_;
     }
