@@ -2725,10 +2725,7 @@ class ChunkedArrayTmpFile
             std::size_t offset = file_size_;
             if(offset + chunk_size > file_capacity_)
             {
-                std::ptrdiff_t new_capacity = file_capacity_ * 120 / 100; // extend file by 20%
-                file_capacity_ = new_capacity > file_capacity_
-                                     ? new_capacity
-                                     : file_capacity_*2;
+                file_capacity_ = max<std::size_t>(offset+chunk_size, file_capacity_ * 120 / 100); // extend file by 20%
                 if(lseek(file_, file_capacity_-1, SEEK_SET) == -1)
                     throw std::runtime_error("ChunkedArrayTmpFile(): unable to reset file size.");
                 if(write(file_, "0", 1) == -1)
