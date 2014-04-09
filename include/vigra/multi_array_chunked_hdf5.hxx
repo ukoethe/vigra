@@ -125,6 +125,7 @@ class ChunkedArrayHDF5
         Chunk & operator=(Chunk const &);
     };
     
+    typedef ChunkedArray<N, T> base_type;
     typedef MultiArray<N, SharedChunkHandle<N, T> > ChunkStorage;
     typedef typename ChunkStorage::difference_type  shape_type;
     typedef T value_type;
@@ -251,14 +252,14 @@ class ChunkedArrayHDF5
                 else
                 {
                     this->shape_ = shape;
-                    ChunkStorage(detail::computeChunkArrayShape(shape, this->bits_, this->mask_)).swap(handle_array_);
+                    ChunkStorage(detail::computeChunkArrayShape(shape, this->bits_, this->mask_)).swap(this->handle_array_);
                 }
             }
             typename ChunkStorage::iterator i   = this->handle_array_.begin(), 
                                             end = this->handle_array_.end();
             for(; i != end; ++i)
             {
-                i->chunk_state_.store(chunk_asleep);
+                i->chunk_state_.store(base_type::chunk_asleep);
             }
         }
     }
