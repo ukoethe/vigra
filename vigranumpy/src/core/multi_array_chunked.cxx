@@ -243,10 +243,11 @@ int numpyScalarTypeNumber(python::object obj)
 
 template <class Array>
 PyObject *
-ptr_to_python(Array * a, python::object axistags)
+ptr_to_python(Array * array, python::object axistags)
 {
-    PyObject * pya = python::to_python_indirect<Array*, 
-                                      python::detail::make_owning_holder>()(a);
+    python_ptr py_array(python::to_python_indirect<Array*, 
+                                      python::detail::make_owning_holder>()(array), 
+                        python_ptr::new_nonzero_reference);
     if(axistags != python::object())
     {
         AxisTags at;
@@ -259,17 +260,17 @@ ptr_to_python(Array * a, python::object axistags)
             "ChunkedArray(): axistags have invalid length.");
         if(at.size() == N)
         {
-            int res = PyObject_SetAttrString(pya, "axistags", python::object(at).ptr());
+            int res = PyObject_SetAttrString(py_array, "axistags", python::object(at).ptr());
             pythonToCppException(res != 0);
         }
     }
-    return pya;
+    return py_array.release();
 }
 
 template <class T, int N>
 ChunkedArray<N, T> *
 construct_ChunkedArrayFullImpl(TinyVector<MultiArrayIndex, N> const & shape,
-                           double fill_value)
+                               double fill_value)
 {
     return new ChunkedArrayFull<N, T>(shape,
                                       ChunkedArrayOptions().fillValue(fill_value));
@@ -298,8 +299,8 @@ construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
 template <class T, int N>
 ChunkedArray<N, T> * 
 construct_ChunkedArrayLazyImpl(TinyVector<MultiArrayIndex, N> const & shape,
-                           TinyVector<MultiArrayIndex, N> const & chunk_shape,
-                           double fill_value)
+                               TinyVector<MultiArrayIndex, N> const & chunk_shape,
+                               double fill_value)
 {
     return new ChunkedArrayLazy<N, T>(shape, chunk_shape,
                                       ChunkedArrayOptions().fillValue(fill_value));
@@ -481,16 +482,17 @@ construct_ChunkedArrayHDF5Impl(HDF5File const & file,
 {
     int ndim = 0;
     bool has_shape = PySequence_Check(py_shape.ptr());
-    if(file.existsDataset(datasetName))
+    bool use_existing_dataset = file.existsDataset(datasetName) &&
+                                mode != HDF5File::New;
+    if(use_existing_dataset)
     {
         ndim = file.getDatasetDimensions(datasetName);
-        if(PySequence_Check(py_shape.ptr()))
-            vigra_precondition(ndim == python::len(py_shape),
-                "ChunkedArrayHDF5(): mismatch bet.");
+        vigra_precondition(!has_shape || ndim == python::len(py_shape),
+            "ChunkedArrayHDF5(): dimension mismatch between dataset and requested shape.");
     }
     else
     {
-        vigra_precondition(PySequence_Check(py_shape.ptr()),
+        vigra_precondition(has_shape,
             "ChunkedArrayHDF5(): cannot create dataset because no shape is given.");
         ndim = python::len(py_shape);
     }
@@ -505,6 +507,19 @@ construct_ChunkedArrayHDF5Impl(HDF5File const & file,
     
     switch(ndim)
     {
+      case 1:
+      {
+        typedef Shape1 shape_type;
+        
+        shape_type shape = has_shape
+                                ? python::extract<shape_type>(py_shape)()
+                                : shape_type(),
+                   chunk_shape = has_chunk_shape
+                                ? python::extract<shape_type>(py_chunk_shape)()
+                                : shape_type();
+        return construct_ChunkedArrayHDF5Impl<1>(file, datasetName, shape, dtype,
+                             mode, compression, chunk_shape, cache_max, fill_value, axistags);
+      }
       case 2:
       {
         typedef Shape2 shape_type;
@@ -558,7 +573,7 @@ construct_ChunkedArrayHDF5Impl(HDF5File const & file,
                              mode, compression, chunk_shape, cache_max, fill_value, axistags);
       }
       default:
-        vigra_precondition(false, "ChunkedArrayHDF5(): unsupported array dimension (2 <= ndim <= 5 required).");
+        vigra_precondition(false, "ChunkedArrayHDF5(): unsupported array dimension (1 <= ndim <= 5 required).");
     }
     return 0;
 }
