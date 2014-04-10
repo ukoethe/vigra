@@ -201,12 +201,12 @@ public:
             .def("intrinsicNodeMapShape",&IntrinsicGraphShape<Graph>::intrinsicNodeMapShape)
             .def("intrinsicEdgeMapShape",&IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape)
             .def("intrinsicArcMapShape" , &IntrinsicGraphShape<Graph>::intrinsicArcMapShape)
-            .def("taggedNodeMapShape",&TaggedGraphShape<Graph>::taggedNodeMapShape)
-            .def("taggedEdgeMapShape",&TaggedGraphShape<Graph>::taggedEdgeMapShape)
-            .def("taggedArcMapShape" , &TaggedGraphShape<Graph>::taggedArcMapShape)
-            //.def("axistagsNodeMap",&TaggedGraphShape<Graph>::axistagsNodeMap)
-            //.def("axistagsEdgeMap",&TaggedGraphShape<Graph>::axistagsEdgeMap)
-            //.def("axistagsArcMap" , &TaggedGraphShape<Graph>::axistagsArcMap)
+            //.def("taggedNodeMapShape",&TaggedGraphShape<Graph>::taggedNodeMapShape)
+            //.def("taggedEdgeMapShape",&TaggedGraphShape<Graph>::taggedEdgeMapShape)
+            //.def("taggedArcMapShape" , &TaggedGraphShape<Graph>::taggedArcMapShape)
+            .def("axistagsNodeMap",&TaggedGraphShape<Graph>::axistagsNodeMap)
+            .def("axistagsEdgeMap",&TaggedGraphShape<Graph>::axistagsEdgeMap)
+            .def("axistagsArcMap" , &TaggedGraphShape<Graph>::axistagsArcMap)
 
             // intrinsic coordinate of node/edge/arc
             .def("intrinsicNodeCoordinate",& GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate)
