@@ -194,9 +194,8 @@ void HDF5_ls_insert(void* operator_data, const std::string & x)
 {
     static_cast<HDF5File::ls_closure*>(operator_data)->insert(x);
 }
-// callback function for ls(), called via HDF5File::H5Literate()
-// see http://www.parashift.com/c++-faq-lite/pointers-to-members.html#faq-33.2
-// for as to why.
+
+// callback function for ls(), called via HDF5File::ls_H5Literate()
 extern "C"
 herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char* name,
                                  const H5L_info_t*, void* operator_data)
@@ -211,6 +210,15 @@ herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char* name,
     {
         HDF5_ls_insert(operator_data, name);
     }
+    return 0;
+}
+
+// callback function for listAttributes(), called via HDF5File::ls_H5Literate()
+extern "C"
+herr_t HDF5_listAttributes_inserter_callback(hid_t loc_id, const char* name,
+                                             const H5A_info_t*, void* operator_data)
+{
+    HDF5_ls_insert(operator_data, name);
     return 0;
 }
 

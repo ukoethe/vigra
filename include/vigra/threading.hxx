@@ -63,7 +63,7 @@
 #  if BOOST_VERSION >= 105300
 #    include <boost/atomic.hpp>
 #    define VIGRA_HAS_ATOMIC 1
-#endif
+#  endif
 #  define VIGRA_THREADING_NAMESPACE boost
 #else
 #  include <thread>

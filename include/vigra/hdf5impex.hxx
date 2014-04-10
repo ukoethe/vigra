@@ -864,6 +864,7 @@ void HDF5_ls_insert(void*, const std::string &);
 
 VIGRA_EXPORT H5O_type_t HDF5_get_type(hid_t, const char*);
 extern "C" VIGRA_EXPORT herr_t HDF5_ls_inserter_callback(hid_t, const char*, const H5L_info_t*, void*);
+extern "C" VIGRA_EXPORT herr_t HDF5_listAttributes_inserter_callback(hid_t, const char*, const H5A_info_t*, void*);
 
 /********************************************************/
 /*                                                      */
@@ -917,13 +918,14 @@ class HDF5File
     
     bool read_only_;
 
-    // helper class for ls()
+    // helper classes for ls() and listAttributes()
     struct ls_closure
     {
         virtual void insert(const std::string &) = 0;
         virtual ~ls_closure() {}
     };
-    // datastructure to hold a list of dataset and group names
+    
+    // datastructure to hold a std::vector<std::string>
     struct lsOpData : public ls_closure
     {
         std::vector<std::string> & objects;
@@ -933,7 +935,8 @@ class HDF5File
             objects.push_back(x);
         }
     };
-    // (associative-)container closure
+    
+    // datastructure to hold an associative container
     template<class Container>
     struct ls_container_data : public ls_closure
     {
@@ -1431,6 +1434,51 @@ class HDF5File
 
         // open group and return group handle
         return HDF5Handle(openCreateGroup_(group_name), &H5Gclose, "Internal error");
+    }
+
+        // helper function for the various listAttributes() variants.
+    void ls_H5Aiterate(std::string const & group_or_dataset, ls_closure & data) const
+    {
+        H5O_type_t h5_type = get_object_type_(group_or_dataset);
+        vigra_precondition(h5_type == H5O_TYPE_GROUP || h5_type == H5O_TYPE_DATASET, 
+            "HDF5File::listAttributes(): object \"" + group_or_dataset + "\" is neither a group nor a dataset.");
+        // get object handle
+        HDF5Handle object_handle(h5_type == H5O_TYPE_GROUP
+                                     ? const_cast<HDF5File*>(this)->openCreateGroup_(group_or_dataset)
+                                     : getDatasetHandle_(group_or_dataset),
+                                 h5_type == H5O_TYPE_GROUP
+                                     ? &H5Gclose
+                                     : &H5Dclose,
+                                 "HDF5File::listAttributes(): unable to open object.");
+        hsize_t n = 0;
+        H5Aiterate2(object_handle, H5_INDEX_NAME, H5_ITER_NATIVE, &n,
+                    HDF5_listAttributes_inserter_callback, static_cast<void*>(&data));
+    }
+
+        /** \brief List the attribute names of the given group or dataset.
+        
+            If \a group_or_dataset is empty or <tt>"."</tt> (a dot), the command
+            refers to the current group of this file object.
+        */
+    inline std::vector<std::string> listAttributes(std::string const & group_or_dataset) const
+    {
+        std::vector<std::string> list;
+        lsOpData data(list);
+        ls_H5Aiterate(group_or_dataset, data);
+        return list;
+    }
+
+        /** \brief Insert the attribute names of the given group or dataset into the given 
+                   \a container by calling <tt>container.insert(std::string)</tt>.
+        
+            If \a group_or_dataset is empty or <tt>"."</tt> (a dot), the command
+            refers to the current group of this file object.
+        */
+    template<class Container>
+    void listAttributes(std::string const & group_or_dataset, Container & container) const
+    {
+        ls_container_data<Container> data(container);
+        ls_H5Aiterate(group_or_dataset, data);
     }
 
         /** \brief Obtain the HDF5 handle of a attribute.

@@ -37,6 +37,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <set>
 #include "vigra/stdimage.hxx"
 #include "vigra/unittest.hxx"
 #include "vigra/hdf5impex.hxx"
@@ -733,6 +734,10 @@ public:
         file.writeAttribute("/string/dataset","tinyvector attribute", out_attr_3);
         file.writeAttribute("/string/dataset","rgb attribute", out_attr_4);
 
+        std::vector<std::string> attr = file.listAttributes("/double/dataset");
+        shouldEqual(attr.size(), 2);
+        shouldEqual(attr[0], "int attribute");
+        shouldEqual(attr[1], "string attribute");
 
         // read attributes
         MultiArray<2,int> in_attr_1(MultiArrayShape<2>::type(2,3));
@@ -774,6 +779,24 @@ public:
         file.writeAttribute("attrset","set_longdouble",(long double)3.);
         file.writeAttribute("attrset","set_string",std::string("abc").c_str());
         file.writeAttribute("attrset","set_string2",std::string("abcdef"));
+
+        std::set<std::string> many_attr;
+        file.listAttributes("attrset", many_attr);
+        shouldEqual(many_attr.size(), 14);
+        should(many_attr.find("set_char") != many_attr.end());
+        should(many_attr.find("set_int8") != many_attr.end());
+        should(many_attr.find("set_int16") != many_attr.end());
+        should(many_attr.find("set_int32") != many_attr.end());
+        should(many_attr.find("set_int64") != many_attr.end());
+        should(many_attr.find("set_uint8") != many_attr.end());
+        should(many_attr.find("set_uint16") != many_attr.end());
+        should(many_attr.find("set_uint32") != many_attr.end());
+        should(many_attr.find("set_uint64") != many_attr.end());
+        should(many_attr.find("set_float") != many_attr.end());
+        should(many_attr.find("set_double") != many_attr.end());
+        should(many_attr.find("set_longdouble") != many_attr.end());
+        should(many_attr.find("set_string") != many_attr.end());
+        should(many_attr.find("set_string2") != many_attr.end());
 
         char read_char = 0;
         file.readAttribute("attrset","set_char",read_char);
