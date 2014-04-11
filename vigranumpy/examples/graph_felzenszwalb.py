@@ -1,29 +1,42 @@
 import vigra
-import vigra.graphs as vigraph
-import numpy
+import vigra.graphs as graphs
 
-print "get input"
-f       = '100075.jpg'
-#f       = '69015.jpg'
-f       = '12003.jpg'
-sigma   = 4.0
+# parameter:
+filepath = '12003.jpg'   # input image path
+sigmaGradMag = 2.0       # sigma Gaussian gradient
+superpixelDiameter = 10  # super-pixel size
+slicWeight = 10.0        # SLIC color - spatial weight
+k = 10                   # free parameter in felzenszwalbs method
+nodeNumStop = 500        # desired num. nodes in result
 
-img          = vigra.impex.readImage(f)#[0:100,0:100,:]
-imgLab       = vigra.colors.transform_RGB2Lab(img)
-imgLabInterpolated  = vigra.resize(imgLab,[imgLab.shape[0]*2-1,imgLab.shape[1]*2-1 ])
-gradmag      = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLabInterpolated,sigma))
-labels ,nseg = vigra.analysis.slicSuperpixels(imgLab,10.0,2)
-labels       = numpy.squeeze(vigra.analysis.labelImage(labels))
+# load image and convert to LAB
+img = vigra.impex.readImage(filepath)
 
+# get super-pixels with slic on LAB image
+imgLab = vigra.colors.transform_RGB2Lab(img)
+labels, nseg = vigra.analysis.slicSuperpixels(imgLab, slicWeight,
+                                              superpixelDiameter)
+labels = vigra.analysis.labelImage(labels)
 
-gridGraph = vigraph.gridGraph(img.shape[0:2])
-gridGraphEdgeIndicator =  vigraph.edgeFeaturesFromInterpolatedImage(gridGraph,gradmag)
+# compute gradient on interpolated image
+imgLabBig = vigra.resize(imgLab, [imgLab.shape[0]*2-1, imgLab.shape[1]*2-1])
+gradMag = vigra.filters.gaussianGradientMagnitude(imgLabBig, sigmaGradMag)
 
+# get 2D grid graph and  edgeMap for grid graph
+# from gradMag of interpolated image
+gridGraph = graphs.gridGraph(img.shape[0:2])
+gridGraphEdgeIndicator = graphs.edgeFeaturesFromInterpolatedImage(gridGraph,
+                                                                  gradMag)
 
+# get region adjacency graph from super-pixel labels
+rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 
-rag = vigraph.regionAdjacencyGraph(gridGraph, labels)
+# accumulate edge weights from gradient magnitude
 edgeWeights = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
-labels   = vigraph.felzenszwalbSegmentation(rag, edgeWeights, k=50)
+
+# do the segmentation with felzenszwalbs method
+labels   = graphs.felzenszwalbSegmentation(rag, edgeWeights, 
+                                           k=50,nodeNumStop=nodeNumStop)
 
 
 rag.show(img, labels)
