@@ -1,7 +1,7 @@
 import vigra
 from vigra import graphs
 from vigra import numpy
-
+import pylab
 # parameter
 filepath = '12003.jpg'  # input image path
 sigmaGradMag = 2.0      # sigma Gaussian gradient
@@ -9,6 +9,7 @@ superpixelDiameter = 3  # super-pixel size
 slicWeight = 10.0       # SLIC color - spatial weight
 beta = 0.5              # node vs edge weight
 nodeNumStop = 50        # desired num. nodes in result
+
 
 # load image and convert to LAB
 img = vigra.impex.readImage(filepath)
@@ -28,7 +29,6 @@ gradMag = vigra.filters.gaussianGradientMagnitude(imgLabBig, sigmaGradMag)
 gridGraph = graphs.gridGraph(img.shape[0:2])
 gridGraphEdgeIndicator = graphs.edgeFeaturesFromInterpolatedImage(gridGraph,
                                                                   gradMag)
-
 # get region adjacency graph from super-pixel labels
 rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 
@@ -45,5 +45,25 @@ labels = graphs.agglomerativeClustering(graph=rag, edgeWeights=edgeWeights,
                                         nodeNumStop=nodeNumStop)
 
 # show result
+f = pylab.figure()
+ax1 = f.add_subplot(2, 2, 1)
+vigra.imshow(img,show=False)
+ax1.set_title("Input Image")
+pylab.axis('off')
+
+ax2 = f.add_subplot(2, 2, 2)
+rag.show(img)
+ax2.set_title("Over-Segmentation")
+pylab.axis('off')
+
+ax3 = f.add_subplot(2, 2, 3)
+rag.show(img, labels)
+ax3.set_title("Result-Segmentation")
+pylab.axis('off')
+
+ax4 = f.add_subplot(2, 2, 4)
 rag.showNested(img, labels)
+ax4.set_title("Result-Segmentation")
+pylab.axis('off')
+
 vigra.show()
