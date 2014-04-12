@@ -195,6 +195,19 @@ struct atomic_long_impl
 {
     typedef LONG value_type;
     
+    static long load(value_type const & val)
+    {
+        long res = val;
+        MemoryBarrier();
+        return res;
+    }
+    
+    static void store(value_type & dest, long val)
+    {
+        MemoryBarrier();
+        dest = val;
+    }
+    
     static long add(value_type & dest, long val)
     {
         return InterlockedExchangeAdd(&dest, val);
@@ -217,6 +230,19 @@ template <>
 struct atomic_long_impl<8>
 {
     typedef LONGLONG value_type;
+    
+    static long load(value_type const & val)
+    {
+        long res = val;
+        MemoryBarrier();
+        return res;
+    }
+    
+    static void store(value_type & dest, long val)
+    {
+        MemoryBarrier();
+        dest = val;
+    }
     
     static long add(value_type & dest, long val)
     {
@@ -242,6 +268,19 @@ template <int SIZE=4>
 struct atomic_long_impl
 {
     typedef long value_type;
+    
+    static long load(value_type const & val)
+    {
+        long res = val;
+        __sync_synchronize();
+        return res;
+    }
+    
+    static void store(value_type & dest, long val)
+    {
+        __sync_synchronize();
+        dest = val;
+    }
     
     static long add(value_type & dest, long val)
     {
@@ -273,18 +312,18 @@ struct atomic_long
     
     atomic_long & operator=(long val)
     {
-        value_ = val;
+        store(val);
         return *this;
     }
     
     long load(memory_order = memory_order_seq_cst) const
     {
-        return value_;
+        return atomic_long_impl<sizeof(long)>::load(value_);
     }
     
     void store(long v, memory_order = memory_order_seq_cst)
     {
-        value_ = v;
+        atomic_long_impl<sizeof(long)>::store(value_, v);
     }
     
     long fetch_add(long v, memory_order = memory_order_seq_cst)

@@ -1570,7 +1570,7 @@ class ChunkedArray
     {
         if(handle == &fill_value_handle_)
             return false;
-        return unloadChunk(static_cast<Chunk*>(handle->pointer_), destroy);
+        return unloadChunk(handle->pointer_, destroy);
     }
     
     virtual bool unloadChunk(Chunk * chunk, bool destroy = false) = 0;
@@ -1619,8 +1619,6 @@ class ChunkedArray
         //
         // the function returns the old value of chunk_state_
         long rc = handle->chunk_state_.load(threading::memory_order_acquire);
-        vigra_precondition(rc != chunk_failed,
-             "ChunkedArray::acquireRef() attempt to access failed handle.");
         while(true)
         {
             if(rc >= 0)
@@ -1632,7 +1630,12 @@ class ChunkedArray
             }
             else
             {            
-                if(rc == chunk_locked)
+                if(rc == chunk_failed)
+                {
+                    vigra_precondition(false,
+                     "ChunkedArray::acquireRef() attempt to access failed chunk.");
+                }
+                else if(rc == chunk_locked)
                 {
                     // cache management in progress => try again later
                     threading::this_thread::yield();
@@ -1652,13 +1655,13 @@ class ChunkedArray
         
         long rc = acquireRef(handle);        
         if(rc >= 0)
-            return static_cast<Chunk*>(handle->pointer_)->pointer_;
+            return handle->pointer_->pointer_;
 
         threading::lock_guard<threading::mutex> guard(*chunk_lock_);
         try
         {
             T * p = self->loadChunk(&handle->pointer_, chunk_index);
-            Chunk * chunk = static_cast<Chunk*>(handle->pointer_);
+            Chunk * chunk = handle->pointer_;
             if(!isConst && rc == chunk_uninitialized)
                 std::fill(p, p + prod(chunkShape(chunk_index)), this->fill_value_);
                 
@@ -1752,7 +1755,7 @@ class ChunkedArray
             {
                 vigra_invariant(handle != &fill_value_handle_,
                    "ChunkedArray::releaseChunk(): attempt to release fill_value_handle_.");
-                Chunk * chunk = static_cast<Chunk *>(handle->pointer_);
+                Chunk * chunk = handle->pointer_;
                 this->data_bytes_ -= dataBytes(chunk);
                 int didDestroy = unloadChunk(chunk, destroy);
                 this->data_bytes_ += dataBytes(chunk);

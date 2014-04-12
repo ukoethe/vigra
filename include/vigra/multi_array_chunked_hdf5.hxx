@@ -201,6 +201,11 @@ class ChunkedArrayHDF5
             // into rdcc_nbytes
             // • rdcc_w0 should be set to 1 if chunks that have been
             // fully read/written will never be read/written again
+            //
+            // the above may be WRONG in general - it may only apply if the 
+            // chunk size in the file matches the chunk size in the CachedArray.
+            // Otherwise, make sure that the file cache can hold at least as many 
+            // chunks as are needed for a single array chunk.
             if(compression_ == DEFAULT_COMPRESSION)
                 compression_ = ZLIB_FAST;
             vigra_precondition(compression_ != LZ4,
@@ -297,7 +302,7 @@ class ChunkedArrayHDF5
         {
             for(; i != end; ++i)
             {
-                vigra_precondition(i->chunk_state_ <= 0,
+                vigra_precondition(i->chunk_state_.load() <= 0,
                     "ChunkedArrayHDF5::close(): cannot close file because there are active chunks.");
             }
             i   = this->handle_array_.begin();
