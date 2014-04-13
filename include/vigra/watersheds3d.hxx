@@ -172,7 +172,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
             for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
-                LabelType currentLabel = labels.nextFreeLabel(); // default: new region    
+                LabelType currentIndex = labels.nextFreeIndex(); // default: new region    
 
                 //check whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
@@ -189,7 +189,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                         // = Direction of voxel           towards us?
                         if((sa(xs) & nc.directionBit()) || (sa(xs,*nc) & nc.oppositeDirectionBit()))
                         {
-                            currentLabel = labels.makeUnion(da(xd,*nc), currentLabel);
+                            currentIndex = labels.makeUnion(da(xd,*nc), currentIndex);
                         }
                         ++nc;
                     }while(nc!=nce);
@@ -205,12 +205,12 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                         // = Direction of voxel           towards us?
                         if((sa(xs) & nc.directionBit()) || (sa(xs,*nc) & nc.oppositeDirectionBit()))
                         {
-                            currentLabel = labels.makeUnion(da(xd,*nc), currentLabel);
+                            currentIndex = labels.makeUnion(da(xd,*nc), currentIndex);
                         }
                         nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
                     }
                 }
-                da.set(labels.finalizeLabel(currentLabel), xd);
+                da.set(labels.finalizeIndex(currentIndex), xd);
             }
         }
     }
@@ -230,7 +230,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
             for(x = 0; x != w; ++x, ++xd.dim0())
             {
-                da.set(labels[da(xd)], xd);
+                da.set(labels.findLabel(da(xd)), xd);
             }
         }
     }

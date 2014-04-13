@@ -92,7 +92,7 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
     // tree is distinguished by pointing to itself (it contains its
     // own scan order address). This condition is enforced whenever a
     // new region is found or two regions are merged
-    da.set(labels.finalizeLabel(labels.nextFreeLabel()), xd);
+    da.set(labels.finalizeIndex(labels.nextFreeIndex()), xd);
 
     ++xs.x;
     ++xd.x;
@@ -105,7 +105,7 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
         }
         else
         {
-            da.set(labels.finalizeLabel(labels.nextFreeLabel()), xd);
+            da.set(labels.finalizeIndex(labels.nextFreeIndex()), xd);
         }
     }
 
@@ -124,15 +124,15 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
             NeighborOffsetCirculator<Neighborhood> nce(x == 0
                                                          ? ncendBorder
                                                          : ncend);
-            LabelType currentLabel = labels.nextFreeLabel();
+            LabelType currentIndex = labels.nextFreeIndex();
             for(; nc != nce; ++nc)
             {
                 if((sa(xs) & nc.directionBit()) || (sa(xs, *nc) & nc.oppositeDirectionBit()))
                 {
-                    currentLabel = labels.makeUnion(da(xd,*nc), currentLabel);
+                    currentIndex = labels.makeUnion(da(xd,*nc), currentIndex);
                 }
             }
-            da.set(labels.finalizeLabel(currentLabel), xd);
+            da.set(labels.finalizeIndex(currentIndex), xd);
         }
     }
 
@@ -146,7 +146,7 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
         DestIterator xd(yd);
         for(x = 0; x != w; ++x, ++xd.x)
         {
-            da.set(labels[da(xd)], xd);
+            da.set(labels.findLabel(da(xd)), xd);
         }
     }
     return count;

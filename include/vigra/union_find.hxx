@@ -49,80 +49,152 @@ namespace vigra {
 
 namespace detail {
 
+template <class T, class IsSigned = VigraFalseType>
+struct UnionFindAccessorImpl
+{
+    static const T max_label = NumericTraits<T>::maxConst >> 1;
+    static const T anchor_bit = ~max_label;
+    
+    static T max()
+    {
+        return max_label;
+    }
+    
+    static bool isAnchor(T const & t)
+    {
+        return (t & anchor_bit) != 0;
+    }
+    
+    static bool notAnchor(T const & t)
+    {
+        return (t & anchor_bit) == 0;
+    }
+    
+    static T toAnchor(T const & t)
+    {
+        return t | anchor_bit;
+    }
+    
+    static T fromAnchor(T const & t)
+    {
+        return t & max_label;
+    }
+};
+
+template <class T>
+struct UnionFindAccessorImpl<T, VigraTrueType>
+{
+    static T max()
+    {
+        return NumericTraits<T>::max();
+    }
+    
+    static bool isAnchor(T const & t)
+    {
+        return t <= 0;
+    }
+    
+    static bool notAnchor(T const & t)
+    {
+        return t > 0;
+    }
+    
+    static T toAnchor(T const & t)
+    {
+        return t < 0 ? t : -t;
+    }
+    
+    static T fromAnchor(T const & t)
+    {
+        return t < 0 ? -t : t;
+    }
+};
+
 template <class T>
 class UnionFindArray
 {
     typedef typename ArrayVector<T>::difference_type IndexType;
+    typedef UnionFindAccessorImpl<T, typename NumericTraits<T>::isSigned> LabelAccessor;
+
     mutable ArrayVector<T> labels_;
     
   public:
     UnionFindArray(T next_free_label = 1)
     {
         for(T k=0; k <= next_free_label; ++k)
-            labels_.push_back(k);
+            labels_.push_back(LabelAccessor::toAnchor(k));
     }
     
-    T nextFreeLabel() const
+    T nextFreeIndex() const
     {
-        return labels_.back();
+        return T(labels_.size() - 1);
     }
     
-    T find(T label) const
+    T findIndex(T label) const
     {
-        T root = label;
-        while(root != labels_[(IndexType)root])
-            root = labels_[(IndexType)root];
+        IndexType root = label;
+        while(LabelAccessor::notAnchor(labels_[root]))
+            root = (IndexType)labels_[root];
         // path compression
-        while(label != root)
+        while((IndexType)label != root)
         {
             T next = labels_[(IndexType)label];
             labels_[(IndexType)label] = root;
             label = next;
         }
-        return root;
+        return (T)root;
+    } 
+    
+    T findLabel(T label) const
+    {
+        return LabelAccessor::fromAnchor(labels_[findIndex(label)]);
     } 
     
     T makeUnion(T l1, T l2)
     {
-        l1 = find(l1);
-        l2 = find(l2);
-        if(l1 <= l2)
+        IndexType i1 = findIndex(l1);
+        IndexType i2 = findIndex(l2);
+        if(i1 == i2)
         {
-            labels_[(IndexType)l2] = l1;
-            return l1;
+            return i1;
+        }
+        if(i1 < i2)
+        {
+            labels_[i2] = i1;
+            return (T)i1;
         }
         else
         {
-            labels_[(IndexType)l1] = l2;
-            return l2;
+            labels_[i1] = i2;
+            return (T)i2;
         }
     }
     
-    T finalizeLabel(T label)
+    T finalizeIndex(T index)
     {
-        if(label == (T)labels_.size()-1)
+        if(index == (T)labels_.size()-1)
         {
             // indeed a new region
-            vigra_invariant(label < NumericTraits<T>::max(),
+            vigra_invariant(index < LabelAccessor::max(),
                     "connected components: Need more labels than can be represented in the destination type.");
             // create new back entry
-            labels_.push_back((T)labels_.size());
+            labels_.push_back(LabelAccessor::toAnchor((T)labels_.size()));
         }
         else
         {
-            // no new label => reset the back entry of the label array
-            labels_.back() = (T)labels_.size()-1;
+            // no new index => reset the back entry of the index array
+            labels_.back() = LabelAccessor::toAnchor((T)labels_.size()-1);
         }
-        return label;
+        return index;
     }
     
-    T makeNewLabel() 
+    T makeNewIndex() 
     {
-        T label = labels_.back();
-        vigra_invariant(label < NumericTraits<T>::max(),
+        T index = LabelAccessor::fromAnchor(labels_.back());
+        vigra_invariant(index < LabelAccessor::max(),
           "connected components: Need more labels than can be represented in the destination type.");
-        labels_.push_back((T)labels_.size());
-        return label;
+        labels_.push_back(LabelAccessor::toAnchor((T)labels_.size()));
+        return index;
     }
     
     unsigned int makeContiguous()
@@ -131,21 +203,16 @@ class UnionFindArray
         unsigned int count = 0; 
         for(IndexType i=0; i<(IndexType)(labels_.size()-1); ++i)
         {
-            if(labels_[i] == i)
+            if(LabelAccessor::isAnchor(labels_[i]))
             {
-                    labels_[i] = (T)count++;
+                    labels_[i] = LabelAccessor::toAnchor((T)count++);
             }
             else
             {
-                    labels_[i] = labels_[(IndexType)labels_[i]]; 
+                    labels_[i] = findIndex(i);  // path compression
             }
         }
         return count-1;   
-    }
-    
-    T operator[](T label) const
-    {
-        return labels_[(IndexType)label];
     }
 };
 

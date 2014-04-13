@@ -777,8 +777,8 @@ namespace vigra{
             // iterate over edges is the sorted order
             for(size_t i=0;i<sortedEdges.size();++i){
                 const Edge e  = sortedEdges[i];
-                const size_t rui = ufdArray.find(graph.id(graph.u(e)));
-                const size_t rvi = ufdArray.find(graph.id(graph.v(e)));
+                const size_t rui = ufdArray.findIndex(graph.id(graph.u(e)));
+                const size_t rvi = ufdArray.findIndex(graph.id(graph.v(e)));
                 const Node   ru  = graph.nodeFromId(rui);
                 const Node   rv  = graph.nodeFromId(rvi);
                 if(rui!=rvi){
@@ -795,7 +795,7 @@ namespace vigra{
                         ufdArray.makeUnion(rui,rvi);
                         --nodeNum;
                         // update size and internal difference
-                        const size_t newRepId = ufdArray.find(rui);
+                        const size_t newRepId = ufdArray.findIndex(rui);
                         const Node newRepNode = graph.nodeFromId(newRepId);
                         internalDiff[newRepNode]=w;
                         nodeSizeAcc[newRepNode] = sizeRu+sizeRv;
@@ -820,7 +820,7 @@ namespace vigra{
         ufdArray.makeContiguous();
         for(typename  GRAPH::NodeIt n(graph);n!=lemon::INVALID;++n){
             const Node node(*n);
-            nodeLabeling[node]=ufdArray[graph.id(node)];
+            nodeLabeling[node]=ufdArray.findLabel(graph.id(node));
         }
     } 
 

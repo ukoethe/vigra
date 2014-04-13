@@ -244,7 +244,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
 
             for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
-                LabelType currentLabel = label.nextFreeLabel();
+                LabelType currentIndex = label.nextFreeIndex();
 
                 //check whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
@@ -259,7 +259,8 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                         // if colors are equal
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            currentLabel = label.makeUnion(label[da(xd,*nc)], currentLabel);
+                            //currentIndex = label.makeUnion(label.getIndex(da(xd,*nc)), currentIndex);
+                            currentIndex = label.makeUnion(da(xd,*nc), currentIndex);
                         }
                         ++nc;
                     }
@@ -284,12 +285,12 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                         //   colors equal???
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            currentLabel = label.makeUnion(label[da(xd,*nc)], currentLabel);
+                            currentIndex = label.makeUnion(da(xd,*nc), currentIndex);
                         }
                         nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
                     }
                 }
-                da.set(label.finalizeLabel(currentLabel), xd);
+                da.set(label.finalizeIndex(currentIndex), xd);
             }
         }
     }
@@ -309,7 +310,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
 
             for(x = 0; x != w; ++x, ++xd.dim0())
             {
-                da.set(label[da(xd)], xd);
+                da.set(label.findLabel(da(xd)), xd);
             }
         }
     }
@@ -586,11 +587,12 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
             {
                 if(equal(sa(xs), backgroundValue))
                 {
-                    da.set(label[0], xd);
+                    //da.set(label.getIndex(0), xd);
+                    da.set(0, xd);
                     continue;
                 }
 
-                LabelType currentLabel = label.nextFreeLabel();
+                LabelType currentIndex = label.nextFreeIndex();
 
                 //check whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
@@ -605,7 +607,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                         // if colors are equal
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            currentLabel = label.makeUnion(label[da(xd,*nc)], currentLabel);
+                            currentIndex = label.makeUnion(da(xd,*nc), currentIndex);
                         }
                         ++nc;
                     }
@@ -620,12 +622,12 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                         //   colors equal???
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            currentLabel = label.makeUnion(label[da(xd,*nc)], currentLabel);
+                            currentIndex = label.makeUnion(da(xd,*nc), currentIndex);
                         }
                         nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
                     }
                 }
-                da.set(label.finalizeLabel(currentLabel), xd);
+                da.set(label.finalizeIndex(currentIndex), xd);
             }
         }
     }
@@ -645,7 +647,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
 
             for(x = 0; x != w; ++x, ++xd.dim0())
             {
-                da.set(label[da(xd)], xd);
+                da.set(label.findLabel(da(xd)), xd);
             }
         }
     }

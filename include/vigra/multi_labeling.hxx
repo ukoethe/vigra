@@ -67,19 +67,18 @@ labelGraph(Graph const & g,
         typename T1Map::value_type center = data[*node];
         
         // define tentative label for current node
-        LabelType currentLabel = regions.nextFreeLabel();
+        LabelType currentIndex = regions.nextFreeIndex();
         
         for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if colors are equal
             if(equal(center, data[g.target(*arc)]))
             {
-                LabelType neighborLabel = regions[labels[g.target(*arc)]];
-                currentLabel = regions.makeUnion(neighborLabel, currentLabel);
+                currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
             }
         }
         // set label of current node
-        labels[*node] = regions.finalizeLabel(currentLabel);
+        labels[*node] = regions.finalizeIndex(currentIndex);
     }
     
     LabelType count = regions.makeContiguous();
@@ -87,7 +86,7 @@ labelGraph(Graph const & g,
     // pass 2: make component labels contiguous
     for (graph_scanner node(g); node != INVALID; ++node) 
     {
-        labels[*node] = regions[labels[*node]];
+        labels[*node] = regions.findLabel(labels[*node]);
     }
     return count;
 }
@@ -119,19 +118,18 @@ labelGraphWithBackground(Graph const & g,
         }
         
         // define tentative label for current node
-        LabelType currentLabel = regions.nextFreeLabel();
+        LabelType currentIndex = regions.nextFreeIndex();
         
         for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if colors are equal
             if(equal(center, data[g.target(*arc)]))
             {
-                LabelType neighborLabel = regions[labels[g.target(*arc)]];
-                currentLabel = regions.makeUnion(neighborLabel, currentLabel);
+                currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
             }
         }
         // set label of current node
-        labels[*node] = regions.finalizeLabel(currentLabel);
+        labels[*node] = regions.finalizeIndex(currentIndex);
     }
     
     LabelType count = regions.makeContiguous();
@@ -139,7 +137,7 @@ labelGraphWithBackground(Graph const & g,
     // pass 2: make component labels contiguous
     for (graph_scanner node(g); node != INVALID; ++node) 
     {
-        labels[*node] = regions[labels[*node]];
+        labels[*node] = regions.findLabel(labels[*node]);
     }
     return count;
 }

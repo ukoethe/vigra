@@ -242,24 +242,24 @@ unsigned int labelImage(SrcIterator upperlefts,
             {
                 if(equal(sa(xs), sa(xs, neighbor[i])))
                 {
-                    LabelType neighborLabel = label.find(da(xd,neighbor[i]));
+                    LabelType neighborIndex = label.findIndex(da(xd,neighbor[i]));
 
                     for(int j=i+2; j<=endNeighbor; j+=step)
                     {
                         if(equal(sa(xs), sa(xs, neighbor[j])))
                         {
-                            neighborLabel = label.makeUnion(da(xd, neighbor[j]), neighborLabel);
+                            neighborIndex = label.makeUnion(da(xd, neighbor[j]), neighborIndex);
                             break;
                         }
                     }
-                    da.set(neighborLabel, xd);
+                    da.set(neighborIndex, xd);
                     break;
                 }
 
             }
             if(i > endNeighbor)
             {
-                da.set(label.makeNewLabel(), xd);
+                da.set(label.makeNewIndex(), xd);
             }
         }
     }
@@ -274,7 +274,7 @@ unsigned int labelImage(SrcIterator upperlefts,
         typename DestIterator::row_iterator xd = yd.rowIterator();
         for(x = 0; x != w; ++x, ++xd)
         {
-            da.set(label[da(xd)], xd);
+            da.set(label.findLabel(da(xd)), xd);
         }
     }
     return count;
@@ -540,7 +540,7 @@ unsigned int labelImageWithBackground(
                 {
                     if(equal(sa(xs), sa(xs, neighbor[i])))
                     {
-                        IntBiggest neighborLabel = xt[neighbor[i]];
+                        IntBiggest neighborIndex = xt[neighbor[i]];
 
                         for(int j=i+2; j<=endNeighbor; j+=step)
                         {
@@ -548,12 +548,12 @@ unsigned int labelImageWithBackground(
                             {
                                 IntBiggest neighborLabel1 = xt[neighbor[j]];
 
-                                if(neighborLabel != neighborLabel1)
+                                if(neighborIndex != neighborLabel1)
                                 {
                                     // find roots of the region trees
-                                    while(neighborLabel != label[neighborLabel])
+                                    while(neighborIndex != label[neighborIndex])
                                     {
-                                        neighborLabel = label[neighborLabel];
+                                        neighborIndex = label[neighborIndex];
                                     }
                                     while(neighborLabel1 != label[neighborLabel1])
                                     {
@@ -561,20 +561,20 @@ unsigned int labelImageWithBackground(
                                     }
 
                                     // merge the trees
-                                    if(neighborLabel1 < neighborLabel)
+                                    if(neighborLabel1 < neighborIndex)
                                     {
-                                        label[neighborLabel] = neighborLabel1;
-                                        neighborLabel = neighborLabel1;
+                                        label[neighborIndex] = neighborLabel1;
+                                        neighborIndex = neighborLabel1;
                                     }
-                                    else if(neighborLabel < neighborLabel1)
+                                    else if(neighborIndex < neighborLabel1)
                                     {
-                                        label[neighborLabel1] = neighborLabel;
+                                        label[neighborLabel1] = neighborIndex;
                                     }
                                 }
                                 break;
                             }
                         }
-                        *xt = neighborLabel;
+                        *xt = neighborIndex;
                         break;
                     }
 
