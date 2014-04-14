@@ -209,7 +209,7 @@ unsigned int labelImage(SrcIterator upperlefts,
     SrcIterator ys = upperlefts;
     DestIterator yd = upperleftd;
     
-    detail::UnionFindArray<LabelType>  label;    
+    UnionFindArray<LabelType>  label;    
 
     // pass 1: scan image from upper left to lower right
     // to find connected components

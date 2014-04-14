@@ -767,7 +767,7 @@ namespace vigra{
         edgeSort(graph,edgeWeights,comperator,sortedEdges);
 
         // make the ufd
-        detail::UnionFindArray<UInt64> ufdArray(graph.maxNodeId()+1);
+        UnionFindArray<UInt64> ufdArray(graph.maxNodeId()+1);
 
 
         size_t nodeNum = graph.nodeNum();   

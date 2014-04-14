@@ -141,7 +141,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     DestIterator zd = d_Iter;
         
     // temporary image to store region labels
-    detail::UnionFindArray<LabelType> labels;
+    UnionFindArray<LabelType> labels;
     
     // initialize the neighborhood traversers
     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);

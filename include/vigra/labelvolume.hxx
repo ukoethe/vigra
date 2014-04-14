@@ -210,7 +210,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     int x,y,z;       
         
     // temporary image to store region labels
-    detail::UnionFindArray<LabelType>  label;
+    UnionFindArray<LabelType>  label;
         
     //Declare traversers for all three dims at target
     SrcIterator zs = s_Iter;
@@ -551,7 +551,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
     int x,y,z;       
         
     // temporary image to store region labels
-    detail::UnionFindArray<LabelType>  label;
+    UnionFindArray<LabelType>  label;
         
     //Declare traversers for all three dims at target
     SrcIterator zs = s_Iter;

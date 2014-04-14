@@ -59,7 +59,7 @@ labelGraph(Graph const & g,
     typedef typename Graph::OutBackArcIt  neighbor_iterator;
     typedef typename T2Map::value_type    LabelType;
 
-    vigra::detail::UnionFindArray<LabelType>  regions;
+    vigra::UnionFindArray<LabelType>  regions;
 
     // pass 1: find connected components
     for (graph_scanner node(g); node != INVALID; ++node) 
@@ -103,7 +103,7 @@ labelGraphWithBackground(Graph const & g,
     typedef typename Graph::OutBackArcIt  neighbor_iterator;
     typedef typename T2Map::value_type    LabelType;
 
-    vigra::detail::UnionFindArray<LabelType>  regions;
+    vigra::UnionFindArray<LabelType>  regions;
 
     // pass 1: find connected components
     for (graph_scanner node(g); node != INVALID; ++node) 

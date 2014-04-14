@@ -69,7 +69,7 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
     DestIterator xd(yd);
 
     // temporary image to store region labels
-    detail::UnionFindArray<LabelType> labels;
+    UnionFindArray<LabelType> labels;
 
     // initialize the neighborhood circulators
     NeighborOffsetCirculator<Neighborhood> ncstart(Neighborhood::CausalFirst);
