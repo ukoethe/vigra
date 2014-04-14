@@ -528,7 +528,6 @@ public:
     }
 
     static AxisInfo  axistagsNodeMap(const Graph & graph){
-<<<<<<< HEAD
         return AxisInfo("n");
     }
     static AxisInfo  axistagsEdgeMap(const Graph & graph){
@@ -536,15 +535,6 @@ public:
     }
     static AxisTags  axistagsArcMap(const Graph & graph){
         return AxisInfo("e");
-=======
-       return AxisInfo("n");
-    }
-    static AxisInfo  axistagsEdgeMap(const Graph & graph){
-       return AxisInfo("e");
-    }
-    static AxisInfo  axistagsArcMap(const Graph & graph){
-       return AxisInfo("e");
->>>>>>> c5dcff5ade5acabe897b222b7f51deec44a8e166
     }
 };
 
@@ -568,7 +558,6 @@ public: \
        return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),ta);  \
     } \
     static AxisInfo  axistagsNodeMap(const Graph & graph){ \
-<<<<<<< HEAD
         return AxisInfo(tn); \
     } \
     static AxisInfo  axistagsEdgeMap(const Graph & graph){ \
@@ -576,15 +565,6 @@ public: \
     } \
     static AxisTags  axistagsArcMap(const Graph & graph){ \
         return AxisInfo(ta); \
-=======
-       return AxisInfo(tn); \
-    } \
-    static AxisInfo  axistagsEdgeMap(const Graph & graph){ \
-       return AxisInfo(te); \
-    } \
-    static AxisInfo  axistagsArcMap(const Graph & graph){ \
-       return AxisInfo(ta); \
->>>>>>> c5dcff5ade5acabe897b222b7f51deec44a8e166
     } \
 };
 
