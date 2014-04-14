@@ -3,47 +3,56 @@ import vigra.graphs as graphs
 import pylab
 
 
-f       = '100075.jpg'
-#f       = '69015.jpg'
-#f       = '12003.jpg'
-sigma   = 1.0
+# parameter:
+filepath = '100075.jpg'   # input image path
+sigmaGradMag = 3.0       # sigma Gaussian gradient
+superpixelDiameter = 10  # super-pixel size
+slicWeight = 10.0        # SLIC color - spatial weight
 
-print "prepare input"
-img                 = vigra.impex.readImage(f)
-imgLab              = vigra.colors.transform_RGB2Lab(img)
-imgLabInterpolated  = vigra.resize(imgLab, [imgLab.shape[0]*2-1, imgLab.shape[1]*2-1])
-gradmag             = vigra.filters.gaussianGradientMagnitude(imgLab, sigma)
-gradmagInterpolated = vigra.filters.gaussianGradientMagnitude(imgLabInterpolated, sigma)
-labels, nseg        = vigra.analysis.slicSuperpixels(imgLab, 20.0, 5)
-labels              = vigra.analysis.labelImage(labels)
+# load image and convert to LAB
+img = vigra.impex.readImage(filepath)
 
-graph0, graph1 = graphs.gridRegionAdjacencyGraph(labels=labels, ignoreLabel=None)
+# get super-pixels with slic on LAB image
+imgLab = vigra.colors.transform_RGB2Lab(img)
+labels, nseg = vigra.analysis.slicSuperpixels(imgLab, slicWeight,
+                                              superpixelDiameter)
+labels = vigra.analysis.labelImage(labels)
+
+# compute gradient
+imgLabBig = vigra.resize(imgLab, [imgLab.shape[0]*2-1, imgLab.shape[1]*2-1])
+gradMag    = vigra.filters.gaussianGradientMagnitude(imgLab, sigmaGradMag)
+gradMagBig = vigra.filters.gaussianGradientMagnitude(imgLabBig, sigmaGradMag*2.0)
+
+# get 2D grid graph and  edgeMap for grid graph
+# from gradMag of interpolated image
+gridGraph = graphs.gridGraph(img.shape[0:2])
+gridGraphEdgeIndicator = graphs.edgeFeaturesFromInterpolatedImage(gridGraph,
+                                                                  gradMagBig)
+
+# get region adjacency graph from super-pixel labels
+rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 
 
-# edge weights / node weights
-graph0NodeWeights = gradmag
-graph0EdgeWeights = graphs.edgeFeaturesFromInterpolatedImage(graph0, gradmagInterpolated)
-
-graph1EdgeWeights = graph1.accumulateEdgeFeatures(graph0EdgeWeights)
-graph1NodeWeights = graph1.accumulateNodeFeatures(graph0NodeWeights)
-
+# accumulate edge  and ndie weights from gradient magnitude
+ragEdgeWeights = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
+ragNodeWeights = rag.accumulateNodeFeatures(gradMag)
 
 # generate seeds
-seeds = graphs.nodeWeightedWatershedsSeeds(graph1, graph1NodeWeights)
+seeds = graphs.nodeWeightedWatershedsSeeds(rag, ragNodeWeights)
 
 # node weighted watersheds
-labelsNodeWeighted  = graphs.nodeWeightedWatersheds(graph1, graph1NodeWeights, seeds)
+labelsNodeWeighted  = graphs.nodeWeightedWatersheds(rag, ragNodeWeights, seeds)
 
 # edge weighted watersheds
-labelsEdgeWeighted  = graphs.edgeWeightedWatersheds(graph1, graph1EdgeWeights, seeds)
+labelsEdgeWeighted  = graphs.edgeWeightedWatersheds(rag, ragEdgeWeights, seeds)
 
 
 f = pylab.figure()
 ax0 = f.add_subplot(1, 2, 0)
-graph1.showNested(img, labelsNodeWeighted)
+rag.showNested(img, labelsNodeWeighted)
 ax0.set_title("node weighted")
 
 ax1 = f.add_subplot(1, 2, 1)
-graph1.showNested(img, labelsEdgeWeighted)
+rag.showNested(img, labelsEdgeWeighted)
 ax1.set_title("edge weighted")
 pylab.show()

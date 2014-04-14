@@ -3,7 +3,7 @@ from vigra import graphs
 
 # parameter:
 filepath = '12003.jpg'   # input image path
-sigmaGradMag = 2.0       # gradient magnitude scale
+sigmaGradMag = 2.0       # sigma Gaussian gradient
 superpixelDiameter = 10  # super-pixel size
 slicWeight = 10.0        # SLIC color - spatial weight
 gamma = 0.15             # exp(-gamma * edgeIndicator)
