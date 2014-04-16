@@ -127,16 +127,6 @@ public:
    // manipulation
    void reset(const value_type&);
    void merge(value_type, value_type);
-   void insert(const value_type&);
-
-   template<class ITER>
-   value_type multiMerge(const value_type a,ITER begin,ITER end){
-      while(begin!=end){
-         this->merge(a,*begin);
-         ++begin;
-      }
-      return this->find(a);
-   }
 
    value_type firstRep()const{
       return firstRep_;
@@ -1405,85 +1395,6 @@ IterablePartition<T>::merge
       this->eraseElement(notRep,false);
    }
 }  
-
-/// Insert new sets.
-///
-/// \param number Number of sets to insert.
-///
-template<class T>
-inline void
-IterablePartition<T>::insert
-(
-   const value_type& number
-)
-{
-   ranks_.insert(ranks_.end(), static_cast<SizeTType>(number), T(0));
-   parents_.insert(parents_.end(), static_cast<SizeTType>(number), T(0));
-   for(value_type j=numberOfElements_; j<numberOfElements_+number; ++j) {
-      parents_[static_cast<SizeTType>(j)] = j;
-   }
-   numberOfElements_ += number;
-   numberOfSets_ += number;
-}
-
-/// Output all elements which are set representatives.
-///
-/// \param it (Output) Iterator into a container.
-///
-template<class T>
-template<class Iterator>
-inline void
-IterablePartition<T>::representatives
-(
-   Iterator it
-) const
-{
-   for(value_type j=0; j<numberOfElements(); ++j) {
-      if(parents_[static_cast<SizeTType>(j)] == j) {
-         *it = j;
-         ++it;
-      }
-   }
-}
-
-/// Output a continuous labeling of the representative elements.
-///
-/// \param out (Output) A map that assigns each representative element to its label.
-///
-template<class T>
-inline void
-IterablePartition<T>::representativeLabeling
-(
-   std::map<value_type, value_type>& out
-) const
-{
-   out.clear();
-   std::vector<value_type> r(static_cast<SizeTType>(numberOfSets()));
-   representatives(r.begin());
-   for(T j=0; j<numberOfSets(); ++j) {
-      out[ r[static_cast<SizeTType>(j)] ] = j;
-   }
-}
-
-/// Output a continuous labeling of all elements.
-///
-/// \param out (Output) Iterator into a container in which the j-th entry is the label of the element j.
-///
-template<class T>
-template<class Iterator>
-inline void
-IterablePartition<T>::elementLabeling
-(
-   Iterator out
-) const
-{
-   std::map<value_type, value_type> rl;
-   representativeLabeling(rl);
-   for(value_type j=0; j<numberOfElements(); ++j) {
-      *out = rl[find(j)];
-      ++out;
-   }
-}
 
 template<class T>
 inline typename IterablePartition<T>::value_type
