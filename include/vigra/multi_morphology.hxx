@@ -85,7 +85,7 @@ struct MultiBinaryMorphologyImpl
                                  : NumericTraits<DestType>::zero();
         transformMultiArray( tmpArray.traverser_begin(), shape, StandardValueAccessor<double>(), 
                              d, dest, 
-                             ifThenElse( Arg1() >= Param(radius2),
+                             ifThenElse( Arg1() > Param(radius2),
                                          Param(foreground), Param(background) ) );
     }
 };
