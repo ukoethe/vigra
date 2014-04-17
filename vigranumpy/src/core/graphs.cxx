@@ -78,6 +78,8 @@ BOOST_PYTHON_MODULE_INIT(graphs)
         .value("squaredNorm", metrics::SquaredNormMetric)
         .value("norm", metrics::NormMetric)
         .value("manhattan", metrics::ManhattanMetric)
+        .value("symetricKl", metrics::SymetricKlMetric)
+        .value("bhattacharya", metrics::BhattacharyaMetric)
         ;
     
 

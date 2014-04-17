@@ -38,6 +38,8 @@
 #include <vigra/numerictraits.hxx>
 #include <vigra/multi_array.hxx>
 
+#include <cmath>
+
 namespace vigra{
 namespace metrics{
 
@@ -162,12 +164,74 @@ namespace metrics{
         }
     };
 
+    template<class T>
+    class SymetricKlDivergenz{
+    public:
+        SymetricKlDivergenz(){}
+        T operator()(const T & a,const T & b)const{
+            return opImpl(&a,&a+1,&b);
+        }
+        template<class A>
+        T operator()(const A & a,const A & b)const{
+            return opImpl(a.begin(),a.end(),b.begin());
+        } 
+    private:
+        template<class ITER_A,class ITER_B>
+        T opImpl(
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
+        )const{
+            T res = static_cast<T>(0.0);
+            while(iterA!=endA){
+                const T aa=static_cast<T>(*iterA);
+                const T bb=static_cast<T>(*iterB);
+                if(aa>static_cast<T>(0.0000001) && bb>static_cast<T>(0.0000001) ){
+                    const T val = std::log(aa/bb)*aa + std::log(bb/aa)*bb;
+                    if(!std::isinf(val) && !std::isnan(val))
+                        res+=std::log(aa/bb)*aa + std::log(bb/aa)*bb;
+                }
+                ++iterA;
+                ++iterB;
+            }
+            return res/static_cast<T>(2.0);
+        }
+    };
+
+    template<class T>
+    class BhattacharyaDistance{
+    public:
+        BhattacharyaDistance(){}
+        T operator()(const T & a,const T & b)const{
+            return opImpl(&a,&a+1,&b);
+        }
+        template<class A>
+        T operator()(const A & a,const A & b)const{
+            return opImpl(a.begin(),a.end(),b.begin());
+        } 
+    private:
+        template<class ITER_A,class ITER_B>
+        T opImpl(
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
+        )const{
+            T res = static_cast<T>(0.0);
+            while(iterA!=endA){
+                const T aa=static_cast<T>(*iterA);
+                const T bb=static_cast<T>(*iterB);
+                res+=std::sqrt(aa*bb);
+                ++iterA;
+                ++iterB;
+            }
+            return std::sqrt( static_cast<T>(1.0)-res);
+        }
+    };
+
     enum MetricType{
         ChiSquaredMetric=0,
         HellingerMetric=1,
         SquaredNormMetric=2,
         NormMetric=3,
-        ManhattanMetric=4
+        ManhattanMetric=4,
+        SymetricKlMetric=5,
+        BhattacharyaMetric=6
     };
 
 
@@ -192,7 +256,11 @@ namespace metrics{
                 case 3:
                     return norm_(a,b);
                 case 4:
-                    return manhattan_(a,b); 
+                    return manhattan_(a,b);
+                case 5:
+                    return symetricKlDivergenz_(a,b); 
+                case 6 :
+                    return bhattacharyaDistance_(a,b); 
                 default :
                     return 0;
             }
@@ -204,6 +272,8 @@ namespace metrics{
         SquaredNorm<T> squaredNorm_;
         Norm<T> norm_;
         Manhattan<T> manhattan_;
+        SymetricKlDivergenz<T> symetricKlDivergenz_;
+        BhattacharyaDistance<T> bhattacharyaDistance_;
     };
 
 } // end namespace metric
