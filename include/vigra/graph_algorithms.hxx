@@ -978,6 +978,71 @@ namespace vigra{
         }
     }
 
+    /// project ground truth from a base graph, to a region adjacency graph.
+    ///     
+    ///
+    ///
+    ///
+    template<class RAG, class BASE_GRAPH, class BASE_GRAPH_RAG_LABELS,  
+             class BASE_GRAPH_GT,  class RAG_GT, class RAG_GT_QT>
+    void projectGroundTruth(
+        const RAG                   & rag,
+        const BASE_GRAPH            & baseGraph,
+        const BASE_GRAPH_RAG_LABELS & baseGraphRagLabels,
+        const BASE_GRAPH_GT         & baseGraphGt,
+        RAG_GT                      & ragGt,
+        RAG_GT_QT                   & ragGtQt
+    ){
+        typedef typename BASE_GRAPH::Node BaseGraphNode;
+        typedef typename BASE_GRAPH::NodeIt BaseGraphNodeIt;
+        typedef typename RAG::NodeIt RagNodeIt;
+        typedef typename RAG::Node RagNode;
+        typedef typename BASE_GRAPH_RAG_LABELS::Value BaseRagLabelType;
+        typedef typename BASE_GRAPH_GT::Value GtLabelType;
+        typedef typename RAG_GT::Value RagGtLabelType;
+
+        // overlap map
+        typedef std::map<GtLabelType,UInt32> MapType;
+        typedef typename MapType::const_iterator MapIter;
+        typedef typename  RAG:: template NodeMap<MapType> Overlap;
+        Overlap overlap(rag);
+
+        for(BaseGraphNodeIt baseNodeIter(baseGraph); baseNodeIter!=lemon::INVALID; ++baseNodeIter ){
+
+            const BaseGraphNode baseNode = *baseNodeIter;
+
+            // get gt label
+            const GtLabelType gtLabel = baseGraphGt[baseNode];
+
+            // get the label which generated rag 
+            // (node mapping from  bg-node to rag-node-id)
+            const BaseRagLabelType bgRagLabel = baseGraphRagLabels[baseNode];
+            const RagNode  ragNode = rag.nodeFromId(bgRagLabel);
+
+            // fill overlap 
+            overlap[ragNode][gtLabel]+=1;
+        }
+
+        // select label with max overlap
+        for(RagNodeIt ragNodeIter(rag); ragNodeIter!=lemon::INVALID; ++ragNodeIter ){
+            const RagNode  ragNode = *ragNodeIter;
+            const MapType olMap = overlap[ragNode];
+            UInt32 olSize=0;
+            RagGtLabelType bestLabel = 0;
+            for(MapIter  olIter = olMap.begin(); olIter!=olMap.end(); ++olIter ){
+                if(olIter->second > olSize){
+                    olSize = olIter->second;
+                    bestLabel = olIter->first;
+                }
+            }
+            ragGt[ragNode]=bestLabel;
+        }
+    }
+
+
+
+
+
 } // namespace vigra
 
 #endif // VIGRA_GRAPH_ALGORITHMS_HXX

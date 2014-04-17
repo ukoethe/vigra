@@ -98,7 +98,7 @@ namespace metrics{
                 const T aa=std::sqrt(static_cast<T>(*iterA));
                 const T bb=std::sqrt(static_cast<T>(*iterB));
                 const T diff = aa - bb; 
-                sum+=diff*diff;
+                res+=diff*diff;
                 ++iterA;
                 ++iterB;
             }
@@ -162,6 +162,49 @@ namespace metrics{
         }
     };
 
+    enum MetricType{
+        ChiSquaredMetric=0,
+        HellingerMetric=1,
+        SquaredNormMetric=2,
+        NormMetric=3,
+        ManhattanMetric=4
+    };
+
+
+    template<class T>
+    class Metric{
+    public:
+
+        Metric(const MetricType metricType = ManhattanMetric)
+        : metricType_(metricType){
+
+        }
+
+        template<class A>
+        T operator()(const A & a,const A & b)const{
+            switch(static_cast<unsigned int>(metricType_)){
+                case 0:
+                    return chiSquared_(a,b);
+                case 1:
+                    return hellingerDistance_(a,b);
+                case 2:
+                    return squaredNorm_(a,b);
+                case 3:
+                    return norm_(a,b);
+                case 4:
+                    return manhattan_(a,b); 
+                default :
+                    return 0;
+            }
+        } 
+    private:
+        MetricType metricType_;
+        ChiSquared<T> chiSquared_;
+        HellingerDistance<T> hellingerDistance_;
+        SquaredNorm<T> squaredNorm_;
+        Norm<T> norm_;
+        Manhattan<T> manhattan_;
+    };
 
 } // end namespace metric
 } // end namepsace vigra

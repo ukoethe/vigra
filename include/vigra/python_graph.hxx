@@ -735,12 +735,22 @@ public:
     :   mergeGraph_(mergeGraph),
         object_(object)
     {
-        if(useMergeNodeCallback)
-            mergeGraph_.registerMergeNodeCallBack(*this,& SelfType::mergeNodes);
-        if(useMergeEdgesCallback)
-            mergeGraph_.registerMergeEdgeCallBack(*this,& SelfType::mergeEdges);
-        if(useEraseEdgeCallback)
-            mergeGraph_.registerEraseEdgeCallBack(*this,& SelfType::eraseEdge);
+        if(useMergeNodeCallback){
+            typedef typename MergeGraph::MergeNodeCallBackType Callback;
+            Callback cb(Callback:: template from_method<SelfType,&SelfType::mergeNodes>(this));
+            mergeGraph_.registerMergeNodeCallBack(cb);
+
+        }
+        if(useMergeEdgesCallback){
+            typedef typename MergeGraph::MergeEdgeCallBackType Callback;
+            Callback cb(Callback:: template from_method<SelfType,&SelfType::mergeEdges>(this));
+            mergeGraph_.registerMergeEdgeCallBack(cb);
+        }
+        if(useEraseEdgeCallback){
+            typedef typename MergeGraph::EraseEdgeCallBackType Callback;
+            Callback cb(Callback:: template from_method<SelfType,&SelfType::eraseEdge>(this));
+            mergeGraph_.registerEraseEdgeCallBack(cb);
+        }
 
     }
 

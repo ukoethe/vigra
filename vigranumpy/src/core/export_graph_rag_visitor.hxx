@@ -193,6 +193,16 @@ public:
         );
 
 
+        python::def("_ragProjectGroundTruth",registerConverters(& pyProjectGroundTruth),
+            (
+                python::arg("rag"),
+                python::arg("graph"),
+                python::arg("labels"),
+                python::arg("gt"),
+                python::arg("ragGt")=python::object(),
+                python::arg("ragGtQuality")=python::object()
+            )
+        );
 
 
 
@@ -204,7 +214,33 @@ public:
     }
 
 
+    static python::tuple 
+    pyProjectGroundTruth(
+        const RagGraph &    rag,
+        const Graph &       baseGraph,
+        UInt32NodeArray     baseGraphRagLabels,
+        UInt32NodeArray     baseGraphGt,
+        RagUInt32NodeArray  ragGt,
+        RagFloatNodeArray   ragGtQt
+    ){
 
+        // reshape both output arrays
+        ragGt.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedNodeMapShape(rag));
+        ragGtQt.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedNodeMapShape(rag));
+
+        // make lemon maps
+        UInt32NodeArrayMap baseGraphRagLabelsMap(baseGraph, baseGraphRagLabels);
+        UInt32NodeArrayMap baseGraphGtMap(baseGraph, baseGraphGt);
+        RagUInt32NodeArrayMap ragGtMap(rag, ragGt);
+        RagFloatNodeArrayMap ragGtQtMap(rag, ragGtQt);
+
+        // call algorithm
+        projectGroundTruth(rag, baseGraph, baseGraphRagLabelsMap,
+                           baseGraphGtMap, ragGtMap, ragGtQtMap);
+
+
+        return python::make_tuple(ragGt, ragGtQt);
+    }
 
 
     static RagAffiliatedEdges * pyMakeRegionAdjacencyGraph(

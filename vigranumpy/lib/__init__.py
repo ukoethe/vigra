@@ -1089,7 +1089,11 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 labels = self.nodeIdMap()
             return self.projectNodeFeatureToBaseGraph(features=labels)
 
-
+        def projectBaseGraphGt(self, baseGraphGt, gt=None, gtQuality=None):
+            gt, gtQuality = graphs._ragProjectGroundTruth(rag=self, graph=self.baseGraph,
+                                                          labels=self.baseGraphLabels, gt=baseGraphGt,
+                                                          ragGt=gt, ragGtQuality=gtQuality)
+            return gt, gtQuality
 
 
     RegionAdjacencyGraph.__module__ = 'vigra.graphs'
@@ -1538,19 +1542,19 @@ def _genGraphSegmentationFunctions():
 
 
             if    nodeDistType=='squaredNorm':
-                nd=0
+                nd=graphs.MetricType.squaredNorm
             elif  nodeDistType=='norm':
-                nd=1
+                nd=graphs.MetricType.norm
             elif  nodeDistType=='chiSquared':
-                nd=2
-            elif nodeDistType in ('l1','manhatten'):
-                nd=3
+                nd=graphs.MetricType.chiSquared
+            elif nodeDistType in ('l1','manhattan'):
+                nd=graphs.MetricType.manhattan
             else :
                 raise RuntimeError("'%s' is not a supported distance type"%str(nodeDistType))
 
             # call unsave c++ function and make it sav
             op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,
-                float(beta),long(nd),float(wardness))
+                float(beta),nd,float(wardness))
 
 
             op.__base_object__=mergeGraph
@@ -1650,3 +1654,22 @@ def _genGraphMiscFunctions():
 
 _genGraphMiscFunctions()
 del _genGraphMiscFunctions
+
+
+
+
+def loadBSDGt(filename):
+    import scipy.io as sio
+    matContents = sio.loadmat(filename)
+    ngt = len(matContents['groundTruth'][0])
+    print "ngts",ngt
+    gts = []
+    for gti in range(ngt):
+        gt =  matContents['groundTruth'][0][gti][0]['Segmentation'][0]
+        gt = numpy.swapaxes(gt,0,1)
+        gt = gt.astype(numpy.uint32)
+        print gt.min(),gt.max()
+        gts.append(gt[:,:,None])
+    gtArray = numpy.concatenate(gts,axis=2)
+    print gtArray.shape
+    return gtArray

@@ -6,11 +6,10 @@
 
 
 /* boost */
-#include <boost/function.hpp>
 #include <boost/iterator/iterator_facade.hpp>
-#include <boost/bind.hpp>
 
-
+/* delegates / callbacks */
+#include "delegate/delegate.hxx"
 
 /* std library */
 #include <vector>
@@ -455,33 +454,12 @@ private:
 template<class NODE,class EDGE>
 class MergeGraphCallbacks{
     public:
-        //callbacks typedefs
-        typedef boost::function<void (const NODE & ,const NODE &)>        MergeNodeCallBackType;
-        typedef boost::function<void (const EDGE & ,const EDGE &)>        MergeEdgeCallBackType;
-        typedef boost::function<void (const EDGE &)>                      EraseEdgeCallBackType;
+
+        typedef delegate2<void ,const NODE & ,const NODE &>        MergeNodeCallBackType;
+        typedef delegate2<void ,const EDGE & ,const EDGE &>        MergeEdgeCallBackType;
+        typedef delegate1<void ,const EDGE &>                      EraseEdgeCallBackType;
 
         MergeGraphCallbacks(){}
-
-
-        template<class OBJ,class F>
-        void registerMergeNodeCallBack(OBJ & obj,F  f){
-            MergeNodeCallBackType internalF ;
-            internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
-            mergeNodeCallbacks_.push_back(internalF);
-        }
-        template<class OBJ,class F>
-        void registerMergeEdgeCallBack(OBJ & obj,F  f){
-            MergeEdgeCallBackType internalF ;
-            internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
-            mergeEdgeCallbacks_.push_back(internalF);
-        }
-        template<class OBJ,class F>
-        void registerEraseEdgeCallBack(OBJ & obj,F  f){
-            EraseEdgeCallBackType internalF ;
-            internalF = boost::bind(boost::mem_fn(f), &obj , _1);
-            eraseEdgeCallbacks_.push_back(internalF);
-        }
-
 
         void registerMergeNodeCallBack(MergeNodeCallBackType  f){
             mergeNodeCallbacks_.push_back(f);
@@ -507,8 +485,6 @@ class MergeGraphCallbacks{
                 eraseEdgeCallbacks_[i](a);
         }
     private:
-
-        // callback vectors
         std::vector<MergeNodeCallBackType> mergeNodeCallbacks_;
         std::vector<MergeEdgeCallBackType> mergeEdgeCallbacks_;
         std::vector<EraseEdgeCallBackType> eraseEdgeCallbacks_;

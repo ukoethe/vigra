@@ -223,15 +223,15 @@ public:
 
     static DefaultClusterOperator * 
     pyEdgeWeightNodeFeaturesConstructor(
-        MergeGraph &            mergeGraph,
-        FloatEdgeArray          edgeIndicatorMapArray,
-        FloatEdgeArray          edgeSizeMapArray,
-        MultiFloatNodeArray     nodeFeatureMapArray,
-        FloatNodeArray          nodeSizeMapArray,
-        FloatEdgeArray          edgeMinWeightMapArray,
-        const float             beta,
-        const size_t            nodeDistType,
-        const float             wardness 
+        MergeGraph &                mergeGraph,
+        FloatEdgeArray              edgeIndicatorMapArray,
+        FloatEdgeArray              edgeSizeMapArray,
+        MultiFloatNodeArray         nodeFeatureMapArray,
+        FloatNodeArray              nodeSizeMapArray,
+        FloatEdgeArray              edgeMinWeightMapArray,
+        const float                 beta,
+        const metrics::MetricType   nodeDistType,
+        const float                 wardness 
     ){
         typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>               EdgeFloatArray;
         typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float>               NodeFloatArray;
@@ -246,6 +246,8 @@ public:
         MultiFloatNodeArrayMap  nodeFeatureMap(mergeGraph.graph(),nodeFeatureMapArray);
         FloatNodeArrayMap       nodeSizeMap(mergeGraph.graph(),nodeSizeMapArray);
         FloatEdgeArrayMap       edgeMinWeightMap(mergeGraph.graph(),edgeMinWeightMapArray);
+
+
 
         return new DefaultClusterOperator(mergeGraph,
             edgeIndicatorMap,edgeSizeMap,

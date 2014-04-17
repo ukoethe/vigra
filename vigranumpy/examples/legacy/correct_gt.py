@@ -9,10 +9,27 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 import math
 import os
-import scipy.io as sio
 
 import numpy as np, h5py 
 
+
+
+
+def loadBSDGt(filename):
+    import scipy.io as sio
+    matContents = sio.loadmat(filename)
+    ngt = len(matContents['groundTruth'][0])
+    print "ngts",ngt
+    gts = []
+    for gti in range(ngt):
+        gt =  matContents['groundTruth'][0][gti][0]['Segmentation'][0]
+        gt = numpy.swapaxes(gt,0,1)
+        gt = gt.astype(numpy.uint32)
+        print gt.min(),gt.max()
+        gts.append(gt[:,:,None])
+    gtArray = numpy.concatenate(gts,axis=2)
+    print gtArray.shape
+    return gtArray
 
 def bImg(labels):
     crackedEdges = vigra.analysis.regionImageToCrackEdgeImage(labels)
@@ -39,21 +56,13 @@ for imgNr in imageFilesNumbers[40:50] :
     gtFile    = gtFolder+imgNr+'.mat'
 
     image=vigra.impex.readImage(imageFile)
-    matContents = sio.loadmat(gtFile)
+    gts = loadBSDGt(gtFile)
 
 
     gradmag = vigra.filters.gaussianGradientMagnitude(image,sigma)
 
-    #print matContents['groundTruth']
-
-    ngt = len(matContents['groundTruth'][0])
-    print "ngts",ngt
-
-    for gti in range(ngt):
-        gt =  matContents['groundTruth'][0][gti][0]['Segmentation'][0]
-        gt = numpy.swapaxes(gt,0,1)
-        gt = gt.astype(numpy.uint32)
-        print gt.min(),gt.max()
+    for gti in range(gts.shape[2]):
+        gt = gts[:,:,gti]
 
         print "shrink"
         seg,nseg =  vigra.analysis.watershedsReoptimization(gt,gradmag,10)

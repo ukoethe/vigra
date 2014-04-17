@@ -73,10 +73,6 @@ namespace cluster_operators{
         > SelfType;
     public:
 
-        static const size_t CHI_SQUARED_DISTANCE=0;
-        static const size_t NORM_SQUARED_DISTANCE=1;
-        static const size_t NORM_DISTANCE=2;
-        static const size_t L1_DISTANCE=3;
 
         typedef typename EDGE_INDICATOR_MAP::Value ValueType;
         typedef ValueType WeightType;
@@ -105,7 +101,7 @@ namespace cluster_operators{
             NODE_SIZE_MAP nodeSizeMap,
             MIN_WEIGHT_MAP minWeightEdgeMap,
             const ValueType beta,
-            const size_t nodeDistType,
+            const metrics::MetricType metricType,
             const ValueType wardness=1.0
         )
         :   mergeGraph_(mergeGraph),
@@ -116,13 +112,21 @@ namespace cluster_operators{
             minWeightEdgeMap_(minWeightEdgeMap),
             pq_(mergeGraph.maxEdgeId()+1),
             beta_(beta),
-            nodeDistType_(nodeDistType),
-            wardness_(wardness)
+            wardness_(wardness),
+            metric_(metricType)
         {
+            typedef typename MergeGraph::MergeNodeCallBackType MergeNodeCallBackType;
+            typedef typename MergeGraph::MergeEdgeCallBackType MergeEdgeCallBackType;
+            typedef typename MergeGraph::EraseEdgeCallBackType EraseEdgeCallBackType;
 
-            mergeGraph_.registerMergeNodeCallBack(*this,& SelfType::mergeNodes);
-            mergeGraph_.registerMergeEdgeCallBack(*this,& SelfType::mergeEdges);
-            mergeGraph_.registerEraseEdgeCallBack(*this,& SelfType::eraseEdge);
+
+            MergeNodeCallBackType cbMn(MergeNodeCallBackType:: template from_method<SelfType,&SelfType::mergeNodes>(this));
+            MergeEdgeCallBackType cbMe(MergeEdgeCallBackType:: template from_method<SelfType,&SelfType::mergeEdges>(this));
+            EraseEdgeCallBackType cbEe(EraseEdgeCallBackType:: template from_method<SelfType,&SelfType::eraseEdge>(this));
+
+            mergeGraph_.registerMergeNodeCallBack(cbMn);
+            mergeGraph_.registerMergeEdgeCallBack(cbMe);
+            mergeGraph_.registerEraseEdgeCallBack(cbEe);
 
 
             for(EdgeIt e(mergeGraph);e!=lemon::INVALID;++e){
@@ -252,27 +256,7 @@ namespace cluster_operators{
 
             //std::cout<<"4\n";
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
-            ValueType fromNodeDist;
-            if(nodeDistType_==NORM_DISTANCE){
-                metrics::Norm<ValueType> nodeDistFunctor;
-                fromNodeDist= nodeDistFunctor(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
-            }
-            else if(nodeDistType_==NORM_SQUARED_DISTANCE){
-                metrics::SquaredNorm<ValueType> nodeDistFunctor;
-                fromNodeDist= nodeDistFunctor(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
-            }
-            else if(nodeDistType_==CHI_SQUARED_DISTANCE){
-                metrics::ChiSquared<ValueType> nodeDistFunctor;
-                fromNodeDist= nodeDistFunctor(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
-            }
-            else if(nodeDistType_==L1_DISTANCE){
-                metrics::Manhattan<ValueType> nodeDistFunctor;
-                fromNodeDist= nodeDistFunctor(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
-            }
-            else{
-                throw std::runtime_error("wrong distance type");
-            }
-            //std::cout<<"5\n";
+            ValueType fromNodeDist = metric_(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
             return totalWeight;
         }
@@ -285,10 +269,10 @@ namespace cluster_operators{
         NODE_SIZE_MAP nodeSizeMap_;
         MIN_WEIGHT_MAP minWeightEdgeMap_;
         vigra::ChangeablePriorityQueue< ValueType > pq_;
-
         ValueType beta_;
-        size_t nodeDistType_;
         ValueType wardness_;
+
+        metrics::Metric<float> metric_;
     };
 } // end namespace cluster_operators
 

@@ -39,6 +39,8 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/graphs.hxx>
+#include <vigra/metrics.hxx>
+
 namespace python = boost::python;
 
 namespace vigra{
@@ -69,6 +71,16 @@ BOOST_PYTHON_MODULE_INIT(graphs)
 
     // all exporters needed for graph exporters (like lemon::INVALID)
     defineInvalid();
+
+    enum_<metrics::MetricType>("MetricType")
+        .value("chiSquared", metrics::ChiSquaredMetric)
+        .value("hellinger", metrics::HellingerMetric)
+        .value("squaredNorm", metrics::SquaredNormMetric)
+        .value("norm", metrics::NormMetric)
+        .value("manhattan", metrics::ManhattanMetric)
+        ;
+    
+
 
     // all graph classes itself (GridGraph , AdjacencyListGraph)
     defineAdjacencyListGraph();
