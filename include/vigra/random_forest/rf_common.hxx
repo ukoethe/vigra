@@ -822,6 +822,7 @@ public:
     template<class C_Iter>
     ProblemSpec & classes_(C_Iter begin, C_Iter end)
     {
+        classes.clear();
         int size = end-begin;
         for(int k=0; k<size; ++k, ++begin)
             classes.push_back(detail::RequiresExplicitCast<LabelType>::cast(*begin));
@@ -837,6 +838,7 @@ public:
     template<class W_Iter>
     ProblemSpec & class_weights(W_Iter begin, W_Iter end)
     {
+        class_weights_.clear();
         class_weights_.insert(class_weights_.end(), begin, end);
         is_weighted_ = true;
         return *this;

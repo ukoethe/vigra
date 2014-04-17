@@ -259,7 +259,6 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                         // if colors are equal
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            //currentIndex = label.makeUnion(label.getIndex(da(xd,*nc)), currentIndex);
                             currentIndex = label.makeUnion(da(xd,*nc), currentIndex);
                         }
                         ++nc;
@@ -272,16 +271,11 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
-                        /*
-                        SrcShape s(x,y,z), sn = s + *nc;
-                        
-                        if (sn[0]<0 || sn[0]>=w || sn[1]<0 || sn[1]>=h || sn[2]<0 || sn[2]>=d)
+                        int dummy = x+(*nc)[0];  // prevents an apparently incorrect optimization in gcc 4.8
+                        if (dummy<0)
                         {  
-                          std::cerr << "coordinate error at " << s << ", offset " << *nc << ", index " << (nc).direction() << " at border " <<
-                                                                                                                              atBorder << std::endl;
-                        
+                            std::cerr << "internal error " << dummy << std::endl;
                         }
-                        */
                         //   colors equal???
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
@@ -619,6 +613,11 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
+                        int dummy = x+(*nc)[0];  // prevents an apparently incorrect optimization in gcc 4.8
+                        if (dummy<0)
+                        {  
+                            std::cerr << "internal error " << dummy << std::endl;
+                        }
                         //   colors equal???
                         if(equal(sa(xs), sa(xs, *nc)))
                         {

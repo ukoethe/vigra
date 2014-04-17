@@ -201,6 +201,11 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
+                        int dummy = x+(*nc)[0];  // prevents an apparently incorrect optimization in gcc 4.8
+                        if (dummy<0)
+                        {  
+                            std::cerr << "internal error " << dummy << std::endl;
+                        }
                         //   Direction of NTraversr       Neighbor's direction bit is pointing
                         // = Direction of voxel           towards us?
                         if((sa(xs) & nc.directionBit()) || (sa(xs,*nc) & nc.oppositeDirectionBit()))
