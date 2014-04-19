@@ -3,11 +3,6 @@
 #define VIGRA_NEW_MERGE_GRAPH_HXX
 
 
-
-
-/* boost */
-#include <boost/iterator/iterator_facade.hpp>
-
 /* delegates / callbacks */
 #include "delegate/delegate.hxx"
 
@@ -26,6 +21,7 @@
 #include "graph_maps.hxx"
 #include "graph_item_impl.hxx"
 #include "random_access_set.hxx"
+#include "iteratoradapter.hxx"
 
 
 namespace vigra {
@@ -37,10 +33,10 @@ class IterablePartition;
 
 template<class T>
 struct  ConstRepIter
-:  public boost::iterator_facade<
+:  public ForwardIteratorFacade<
       ConstRepIter<T>,
       T const,
-      boost::bidirectional_traversal_tag
+      T
    >
 
 {
@@ -252,7 +248,7 @@ struct MergeGraphItemHelper<MG,typename MG::Node>{
 
 template<class MERGE_GRAPH>
 class MergeGraphNodeIt
-:   public boost::iterator_facade<MergeGraphNodeIt<MERGE_GRAPH>,const typename MERGE_GRAPH::Node,boost::forward_traversal_tag>{
+:   public ForwardIteratorFacade<MergeGraphNodeIt<MERGE_GRAPH>,const typename MERGE_GRAPH::Node,typename MERGE_GRAPH::Node>{
 public:
     typedef MERGE_GRAPH Graph;
     typedef typename Graph::Node Node;
@@ -280,8 +276,8 @@ public:
     bool isBegin()const{
         return graph_!=NULL && nodeIdIt_==graph_->nodeUfd_.begin();
     }
-private:
-    friend class boost::iterator_core_access;
+public:
+    //friend class boost::iterator_core_access;
     
     
     bool equal(const MergeGraphNodeIt<MERGE_GRAPH> & other)const{
@@ -300,7 +296,7 @@ private:
 
 template<class MERGE_GRAPH>
 class MergeGraphEdgeIt
-:   public boost::iterator_facade<MergeGraphEdgeIt<MERGE_GRAPH>,const typename MERGE_GRAPH::Edge,boost::forward_traversal_tag>{
+:   public ForwardIteratorFacade<MergeGraphEdgeIt<MERGE_GRAPH>,const typename MERGE_GRAPH::Edge, typename MERGE_GRAPH::Edge>{
 public:
     typedef MERGE_GRAPH Graph;
     typedef typename Graph::Edge Edge;
@@ -327,8 +323,8 @@ public:
     bool isBegin()const{
         return graph_!=NULL && edgeIdIt_==graph_->edgeUfd_.begin();
     }
-private:
-    friend class boost::iterator_core_access;
+public:
+    //friend class boost::iterator_core_access;
     
     
     bool equal(const MergeGraphEdgeIt<MERGE_GRAPH> & other)const{
@@ -349,10 +345,9 @@ private:
 
 template<class GRAPH>
 class MergeGraphArcIt
-: public boost::iterator_facade<
+: public ForwardIteratorFacade<
     MergeGraphArcIt<GRAPH>,
-    const typename GRAPH::Arc,
-    boost::forward_traversal_tag
+    const typename GRAPH::Arc,typename GRAPH::Arc
 >
 {
 public:
@@ -382,7 +377,7 @@ public:
         veryEnd_(false),
         arc_(){
     }
-private:
+public:
 
     bool isEnd()const{
         return veryEnd_ || graph_==NULL;
@@ -393,7 +388,7 @@ private:
     }
 
 
-    friend class boost::iterator_core_access;
+    //friend class boost::iterator_core_access;
 
     void increment() {
         if(inFirstHalf_){

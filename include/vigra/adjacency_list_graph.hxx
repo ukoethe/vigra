@@ -41,16 +41,14 @@
 #include <vector>
 #include  <set>
 
-/*boost*/
-#include <boost/iterator.hpp>
-
 /*vigra*/
-#include <vigra/multi_array.hxx>
-#include <vigra/multi_gridgraph.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/tinyvector.hxx>
-#include <vigra/random_access_set.hxx>
-#include <vigra/graph_maps.hxx>
+#include "multi_array.hxx"
+#include "multi_gridgraph.hxx"
+#include "graphs.hxx"
+#include "tinyvector.hxx"
+#include "random_access_set.hxx"
+#include "graph_maps.hxx"
+#include "iteratoradapter.hxx"
 
 
 #include <vigra/algorithm.hxx>
@@ -64,11 +62,16 @@ namespace vigra{
 
         template<class G,class ITEM>
         class ItemIter
-        : public boost::iterator_facade<
+         : public ForwardIteratorFacade<
             ItemIter<G,ITEM>,
             const ITEM,
-            boost::forward_traversal_tag
+            ITEM
         >
+        //: public boost::iterator_facade<
+        //    ItemIter<G,ITEM>,
+        //    const ITEM,
+        //    boost::forward_traversal_tag
+        //>
         {
 
             typedef vigra::GraphItemHelper<G,ITEM> ItemHelper;
@@ -101,9 +104,9 @@ namespace vigra{
 
             }
 
-        private:
+        public:
 
-            friend class boost::iterator_core_access;
+            //friend class boost::iterator_core_access;
             bool isEnd( )const{
                 return graph_==NULL ||  ItemHelper::itemNum(*graph_)==0 || id_>ItemHelper::maxItemId(*graph_);
             }
@@ -135,10 +138,10 @@ namespace vigra{
 
         template<class GRAPH>
         class ArcIt
-        : public boost::iterator_facade<
+        : public ForwardIteratorFacade<
             ArcIt<GRAPH>,
             const typename GRAPH::Arc,
-            boost::forward_traversal_tag
+            typename GRAPH::Arc
         >
         {
         public:
@@ -168,7 +171,7 @@ namespace vigra{
                 veryEnd_(false),
                 arc_(){
             }
-        private:
+        public:
 
             bool isEnd()const{
                 return veryEnd_ || graph_==NULL;
@@ -179,7 +182,7 @@ namespace vigra{
             }
 
 
-            friend class boost::iterator_core_access;
+            //friend class boost::iterator_core_access;
 
             void increment() {
                 if(inFirstHalf_){

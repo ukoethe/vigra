@@ -2,13 +2,13 @@
 #define VIGRA_NODE_IMPL_HXX
 
 /*boost*/
-#include <boost/iterator/iterator_facade.hpp>
+//#include <boost/iterator/iterator_facade.hpp>
 
 /*vigra*/
 #include "algorithm.hxx"
 #include "tinyvector.hxx"
 #include "random_access_set.hxx"
-
+#include "iteratoradapter.hxx"
 
 namespace vigra{
 
@@ -177,12 +177,17 @@ namespace vigra{
 
         template<class GRAPH,class NODE_IMPL,class FILTER>    
         class GenericIncEdgeIt
+        : public ForwardIteratorFacade<
+            GenericIncEdgeIt<GRAPH,NODE_IMPL,FILTER>,
+            typename FILTER::ResultType const,
+            typename FILTER::ResultType
+        >
 
-        :  public boost::iterator_facade<
-              GenericIncEdgeIt<GRAPH,NODE_IMPL,FILTER>,
-              typename FILTER::ResultType const,
-              boost::forward_traversal_tag
-           >
+        //      public boost::iterator_facade<
+        //      GenericIncEdgeIt<GRAPH,NODE_IMPL,FILTER>,
+        //      typename FILTER::ResultType const,
+        //      boost::forward_traversal_tag
+        //   >
         {
         public:
 
@@ -232,8 +237,8 @@ namespace vigra{
                 }
             }
 
-        private:
-            friend class boost::iterator_core_access;
+        public:
+            //friend class boost::iterator_core_access;
 
             typedef NODE_IMPL NodeImpl;
             typedef typename NodeImpl::AdjIt AdjIt;
