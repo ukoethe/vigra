@@ -51,6 +51,8 @@ struct  ConstRepIter
    {
    }
 
+private:
+  friend class vigra::IteratorFacadeCoreAccess;
 
 
    bool isBegin()const{
@@ -274,8 +276,8 @@ public:
     bool isBegin()const{
         return graph_!=NULL && nodeIdIt_==graph_->nodeUfd_.begin();
     }
-public:
-    //friend class boost::iterator_core_access;
+private:
+   friend class vigra::IteratorFacadeCoreAccess;
     
     
     bool equal(const MergeGraphNodeIt<MERGE_GRAPH> & other)const{
@@ -321,8 +323,8 @@ public:
     bool isBegin()const{
         return graph_!=NULL && edgeIdIt_==graph_->edgeUfd_.begin();
     }
-public:
-    //friend class boost::iterator_core_access;
+private:
+    friend class vigra::IteratorFacadeCoreAccess;
     
     
     bool equal(const MergeGraphEdgeIt<MERGE_GRAPH> & other)const{
@@ -374,8 +376,8 @@ public:
         veryEnd_(false),
         arc_(){
     }
-public:
-
+private:
+    friend class vigra::IteratorFacadeCoreAccess;
     bool isEnd()const{
         return veryEnd_ || graph_==NULL;
     }
@@ -383,9 +385,6 @@ public:
     bool isBegin()const{
         return graph_!=NULL &&  veryEnd_==false && pos_ == EdgeIt(*graph_);         
     }
-
-
-    //friend class boost::iterator_core_access;
 
     void increment() {
         if(inFirstHalf_){

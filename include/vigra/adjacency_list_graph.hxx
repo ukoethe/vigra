@@ -101,9 +101,9 @@ namespace vigra{
 
             }
 
-        public:
+        private:
 
-            //friend class boost::iterator_core_access;
+            friend class vigra::IteratorFacadeCoreAccess;
             bool isEnd( )const{
                 return graph_==NULL ||  ItemHelper::itemNum(*graph_)==0 || id_>ItemHelper::maxItemId(*graph_);
             }
@@ -167,8 +167,8 @@ namespace vigra{
                 veryEnd_(false),
                 arc_(){
             }
-        public:
-
+        private:
+            friend class vigra::IteratorFacadeCoreAccess;
             bool isEnd()const{
                 return veryEnd_ || graph_==NULL;
             }
@@ -176,10 +176,6 @@ namespace vigra{
             bool isBegin()const{
                 return graph_!=NULL &&  veryEnd_==false && pos_ == EdgeIt(*graph_);         
             }
-
-
-            //friend class boost::iterator_core_access;
-
             void increment() {
                 if(inFirstHalf_){
                     ++pos_;

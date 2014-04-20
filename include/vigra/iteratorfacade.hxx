@@ -39,10 +39,26 @@
 namespace vigra {
 
 
+class IteratorFacadeCoreAccess{
+public:
+    template<class F>
+    static bool equal(const F & fa,const F & fb){
+        return fa.equal(fb);
+    }
+
+    template<class F,class REFERENCE>
+    static REFERENCE dereference(const F & f){
+        return f.dereference();
+    }
+
+    template<class F>
+    static void increment(F & f){
+        f.increment();
+    }
+};
 
 
-
-
+// see boost iterator facade 
 template<class FACADE,class VALUE_TYPE,bool IS_CONST = true>
 class ForwardIteratorFacade{
 private:
@@ -58,30 +74,30 @@ public:
 
     FACADE & operator++()
     {
-        getF().increment();
+        IteratorFacadeCoreAccess::increment(getF());
         return getF();
     }
 
     FACADE operator++(int)
     {
         FACADE res(getF());
-        res.increment();
+        IteratorFacadeCoreAccess::increment(res);
         return res;
     }
 
     bool operator ==(const FACADE & f)const{
-        return getF().equal(f);
+        return IteratorFacadeCoreAccess::equal(getF(),f);
     }
     bool operator !=(const FACADE & f)const{
-        return !getF().equal(f);
+        return !IteratorFacadeCoreAccess::equal(getF(),f);
     }
 
     reference operator*()const{
-        return getF().dereference();
+        return IteratorFacadeCoreAccess:: template dereference<FACADE,reference>(getF());
     }
 
     pointer operator->()const{
-        return *getF().dereference();
+        return *IteratorFacadeCoreAccess:: template dereference<FACADE,reference>(getF());
     }
 
 private:

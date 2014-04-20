@@ -236,8 +236,8 @@ namespace vigra{
                 }
             }
 
-        public:
-            //friend class boost::iterator_core_access;
+        private:
+            friend class vigra::IteratorFacadeCoreAccess;
 
             typedef NODE_IMPL NodeImpl;
             typedef typename NodeImpl::AdjIt AdjIt;
