@@ -38,59 +38,6 @@
 
 namespace vigra {
 
-
-template<class FACADE,class RETURN_TYPE,class VALUE_TYPE>
-class ForwardIteratorFacade{
-public:
-
-    typedef std::forward_iterator_tag iterator_category;
-    typedef VALUE_TYPE value_type;
-    typedef Int64 difference_type;
-    typedef VALUE_TYPE * pointer;
-    typedef VALUE_TYPE & reference;
-
-    FACADE & operator++()
-    {
-        getF().increment();
-        return getF();
-    }
-
-    FACADE operator++(int)
-    {
-        FACADE res(getF());
-        res.increment();
-        return res;
-    }
-
-    bool operator ==(const FACADE & f)const{
-        return getF().equal(f);
-    }
-    bool operator !=(const FACADE & f)const{
-        return !getF().equal(f);
-    }
-
-    RETURN_TYPE operator*() const
-    {
-        return getF().dereference();
-    }
-
-private:
-
-
-    const FACADE & getF()const{
-        return *static_cast<FACADE const *>(this);
-    }
-    FACADE & getF(){
-        return *static_cast<FACADE *>(this);
-    }
-};
-
-
-
-
-
-
-
 /********************************************************/
 /*                                                      */
 /*                    IteratorAdaptor                   */

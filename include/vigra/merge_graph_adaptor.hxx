@@ -21,7 +21,7 @@
 #include "graph_maps.hxx"
 #include "graph_item_impl.hxx"
 #include "random_access_set.hxx"
-#include "iteratoradapter.hxx"
+#include "iteratorfacade.hxx"
 
 
 namespace vigra {
@@ -34,9 +34,7 @@ class IterablePartition;
 template<class T>
 struct  ConstRepIter
 :  public ForwardIteratorFacade<
-      ConstRepIter<T>,
-      T const,
-      T
+      ConstRepIter<T>,T,true
    >
 
 {
@@ -248,7 +246,7 @@ struct MergeGraphItemHelper<MG,typename MG::Node>{
 
 template<class MERGE_GRAPH>
 class MergeGraphNodeIt
-:   public ForwardIteratorFacade<MergeGraphNodeIt<MERGE_GRAPH>,const typename MERGE_GRAPH::Node,typename MERGE_GRAPH::Node>{
+:   public ForwardIteratorFacade<MergeGraphNodeIt<MERGE_GRAPH>,typename MERGE_GRAPH::Node,true>{
 public:
     typedef MERGE_GRAPH Graph;
     typedef typename Graph::Node Node;
@@ -296,7 +294,7 @@ public:
 
 template<class MERGE_GRAPH>
 class MergeGraphEdgeIt
-:   public ForwardIteratorFacade<MergeGraphEdgeIt<MERGE_GRAPH>,const typename MERGE_GRAPH::Edge, typename MERGE_GRAPH::Edge>{
+:   public ForwardIteratorFacade<MergeGraphEdgeIt<MERGE_GRAPH>,typename MERGE_GRAPH::Edge,true>{
 public:
     typedef MERGE_GRAPH Graph;
     typedef typename Graph::Edge Edge;
@@ -346,8 +344,7 @@ public:
 template<class GRAPH>
 class MergeGraphArcIt
 : public ForwardIteratorFacade<
-    MergeGraphArcIt<GRAPH>,
-    const typename GRAPH::Arc,typename GRAPH::Arc
+    MergeGraphArcIt<GRAPH>,typename GRAPH::Arc,true
 >
 {
 public:

@@ -8,7 +8,7 @@
 #include "algorithm.hxx"
 #include "tinyvector.hxx"
 #include "random_access_set.hxx"
-#include "iteratoradapter.hxx"
+#include "iteratorfacade.hxx"
 
 namespace vigra{
 
@@ -179,8 +179,7 @@ namespace vigra{
         class GenericIncEdgeIt
         : public ForwardIteratorFacade<
             GenericIncEdgeIt<GRAPH,NODE_IMPL,FILTER>,
-            typename FILTER::ResultType const,
-            typename FILTER::ResultType
+            typename FILTER::ResultType,true
         >
 
         //      public boost::iterator_facade<

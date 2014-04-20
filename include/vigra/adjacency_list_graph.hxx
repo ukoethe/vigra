@@ -48,11 +48,10 @@
 #include "tinyvector.hxx"
 #include "random_access_set.hxx"
 #include "graph_maps.hxx"
-#include "iteratoradapter.hxx"
+#include "iteratorfacade.hxx"
 
-
-#include <vigra/algorithm.hxx>
-#include <vigra/graph_item_impl.hxx>
+#include "algorithm.hxx"
+#include "graph_item_impl.hxx"
 
 
 namespace vigra{
@@ -63,9 +62,7 @@ namespace vigra{
         template<class G,class ITEM>
         class ItemIter
          : public ForwardIteratorFacade<
-            ItemIter<G,ITEM>,
-            const ITEM,
-            ITEM
+            ItemIter<G,ITEM>,ITEM,true
         >
         //: public boost::iterator_facade<
         //    ItemIter<G,ITEM>,
@@ -140,8 +137,7 @@ namespace vigra{
         class ArcIt
         : public ForwardIteratorFacade<
             ArcIt<GRAPH>,
-            const typename GRAPH::Arc,
-            typename GRAPH::Arc
+            typename GRAPH::Arc,true
         >
         {
         public:
