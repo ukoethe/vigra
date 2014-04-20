@@ -35,7 +35,10 @@
 #ifndef VIGRA_ITERATORFACADE_HXX
 #define VIGRA_ITERATORFACADE_HXX
 
+/*std*/
+#include <iterator> 
 
+/*vigra*/
 #include "metaprogramming.hxx"
 
 namespace vigra {
