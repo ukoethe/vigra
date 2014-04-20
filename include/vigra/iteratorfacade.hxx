@@ -36,9 +36,12 @@
 #define VIGRA_ITERATORFACADE_HXX
 
 
+#include "metaprogramming.hxx"
+
 namespace vigra {
 
-
+// facade needs to make this class 
+// a friend class
 class IteratorFacadeCoreAccess{
 public:
     template<class F>
@@ -110,18 +113,6 @@ private:
         return *static_cast<FACADE *>(this);
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 } // namespace vigra
 
