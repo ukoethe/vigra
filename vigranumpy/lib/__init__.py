@@ -920,10 +920,10 @@ def _genGraphConvenienceFunctions():
 
         def distances(self,out=None):
             """ return the full distance map"""
-            self.pathFinder.distances(out)
+            return self.pathFinder.distances(out)
         def predecessors(self,out=None):
             """ return the full predecessors map"""
-            self.pathFinder.predecessors(out)
+            return self.pathFinder.predecessors(out)
 
 
     ShortestPathPathDijkstra.__module__ = 'vigra.graphs'
