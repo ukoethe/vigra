@@ -46,7 +46,7 @@ using namespace vigra;
 
 
 
-struct AdjacencyListGraphOffTest{
+struct AdjacencyListGraphTest{
 
 
     typedef vigra::AdjacencyListGraph                     GraphType;
@@ -60,7 +60,7 @@ struct AdjacencyListGraphOffTest{
     typedef GraphType::InArcIt                   InArcIt;
     typedef GraphType::OutArcIt                  OutArcIt;
     typedef GraphType::NeighborNodeIt            NeighborNodeIt;
-    AdjacencyListGraphOffTest(){       
+    AdjacencyListGraphTest(){       
 
     }
 
@@ -1515,22 +1515,22 @@ struct AdjacencyListGraphTestSuite
         
 
 
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphSimpleTestStart0));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphSimpleTestStart1));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphNodeItTestStart0));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphNodeItTestStart1));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphEdgeItTestStart0));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphEdgeItTestStart1));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphFindEdgeTest));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphIncEdgeItTestStart0));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphIncEdgeItTestStart1));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphTestStart0));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphTestStart1));
+        add( testCase( &AdjacencyListGraphTest::adjGraphSimpleTestStart0));
+        add( testCase( &AdjacencyListGraphTest::adjGraphSimpleTestStart1));
+        add( testCase( &AdjacencyListGraphTest::adjGraphNodeItTestStart0));
+        add( testCase( &AdjacencyListGraphTest::adjGraphNodeItTestStart1));
+        add( testCase( &AdjacencyListGraphTest::adjGraphEdgeItTestStart0));
+        add( testCase( &AdjacencyListGraphTest::adjGraphEdgeItTestStart1));
+        add( testCase( &AdjacencyListGraphTest::adjGraphFindEdgeTest));
+        add( testCase( &AdjacencyListGraphTest::adjGraphIncEdgeItTestStart0));
+        add( testCase( &AdjacencyListGraphTest::adjGraphIncEdgeItTestStart1));
+        add( testCase( &AdjacencyListGraphTest::adjGraphTestStart0));
+        add( testCase( &AdjacencyListGraphTest::adjGraphTestStart1));
 
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphArcTest));
-        add( testCase( &AdjacencyListGraphOffTest::adjGraphArcItTest));
-        //add( testCase( &AdjacencyListGraphOffTest::adjGraphInArcItTest));
-        //add( testCase( &AdjacencyListGraphOffTest::adjGraphOutArcItTest));
+        add( testCase( &AdjacencyListGraphTest::adjGraphArcTest));
+        add( testCase( &AdjacencyListGraphTest::adjGraphArcItTest));
+        //add( testCase( &AdjacencyListGraphTest::adjGraphInArcItTest));
+        //add( testCase( &AdjacencyListGraphTest::adjGraphOutArcItTest));
 
 
     }
