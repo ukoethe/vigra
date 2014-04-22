@@ -233,13 +233,6 @@ public:
         const metrics::MetricType   nodeDistType,
         const float                 wardness 
     ){
-        typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicEdgeMapDimension,float>               EdgeFloatArray;
-        typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension,float>               NodeFloatArray;
-        typedef NumpyArray< IntrinsicGraphShape<GRAPH>::IntrinsicNodeMapDimension+1,Multiband<float> > NodeMultibandFloatArray;
-        typedef NumpyScalarEdgeMap<GRAPH,EdgeFloatArray>                EdgeFloatMap;
-        typedef NumpyScalarNodeMap<GRAPH,NodeFloatArray>                NodeFloatMap;
-        typedef NumpyMultibandNodeMap<GRAPH,NodeMultibandFloatArray>    NodeMultibandFloatMap;
-
 
         FloatEdgeArrayMap       edgeIndicatorMap(mergeGraph.graph(),edgeIndicatorMapArray);
         FloatEdgeArrayMap       edgeSizeMap(mergeGraph.graph(),edgeSizeMapArray);   
@@ -324,13 +317,8 @@ public:
         const HCLUSTER &            hcluster,
         const typename HCLUSTER::MergeGraphIndexType treeNodeId,
         NumpyArray<1,UInt32>  leafes  = NumpyArray<1,UInt32>()
-    ) {
-        typedef typename HCLUSTER::MergeTreeEncoding      MergeTreeEncoding;
-        typedef typename HCLUSTER::MergeGraphIndexType    MergeGraphIndexType;
-        typedef typename HCLUSTER::ValueType              ValueType;
-        
+    ) {        
         leafes.reshapeIfEmpty( typename NumpyArray<1,UInt32>::difference_type( hcluster.graph().nodeNum()) );
-
         if(leafes.shape(0)!=hcluster.graph().nodeNum()){
             throw std::runtime_error("out.shape(0) must be equal nodeNum");
         }

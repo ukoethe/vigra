@@ -56,10 +56,6 @@ namespace vigra{
     void defineAdjacencyListGraph(){
         
         typedef AdjacencyListGraph  Graph;
-        typedef EdgeHolder<Graph>   PyEdge;
-        typedef NodeHolder<Graph>   PyNode;
-        typedef  ArcHolder<Graph>   PyArc;
-
         // define graph itself
         const std::string clsName = "AdjacencyListGraph";
         python::class_<Graph>(clsName.c_str(),"undirected adjacency list graph",
