@@ -1010,7 +1010,7 @@ MergeGraphAdaptor<GRAPH>::nodeFromId(
     if(hasNodeId(index))
         return Node(index);
     else
-        return Node(-1);
+        return Node(lemon::INVALID);
 }
 
 template<class GRAPH>
