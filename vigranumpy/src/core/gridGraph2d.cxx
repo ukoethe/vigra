@@ -83,8 +83,6 @@ namespace vigra{
     void defineGridGraphT2d(const std::string & clsName){
 
         typedef GridGraph<DIM,boost::undirected_tag> Graph;
-        typedef typename Graph::Edge Edge;
-        typedef typename Graph::Node Node;
         typedef typename MultiArray<DIM,int>::difference_type ShapeType;
 
         

@@ -326,13 +326,6 @@ namespace vigra{
                 typedef typename IfBool<USE_STL_SET,StdSetType,RandAccessSet>::type SetType;
 
                 typedef typename SetType::const_iterator AdjIt;
-                
-
-
-            private:
-                //GenericNodeImpl();                               // non empty-construction
-                //GenericNodeImpl( const GenericNodeImpl& other );      // non construction-copyable
-                //GenericNodeImpl & operator=( const GenericNodeImpl& ); // non assignable
             public:
 
                 GenericNodeImpl(const lemon::Invalid iv=lemon::INVALID)
@@ -390,8 +383,6 @@ namespace vigra{
                     // edge id does not matter?
                     adjacency_.erase(AdjacencyElement(nodeId,0));
                 }
-
-            public:
 
                 SetType adjacency_;
                 index_type id_;

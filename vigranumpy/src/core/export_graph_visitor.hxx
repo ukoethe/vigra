@@ -346,7 +346,6 @@ public:
         NumpyArray<1,UInt32> edgeIds,
         NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() 
     ){
-        typedef GraphItemHelper<Graph,Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  edgeIds.shape(0)));
         for(MultiArrayIndex i=0; i<edgeIds.shape(0); ++i){
             const index_type edgeId=edgeIds(i);
@@ -362,7 +361,6 @@ public:
         NumpyArray<1,UInt32> edgeIds,
         NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() 
     ){
-        typedef GraphItemHelper<Graph,Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  edgeIds.shape(0)));
         for(MultiArrayIndex i=0; i<edgeIds.shape(0); ++i){
             const index_type edgeId=edgeIds(i);
@@ -379,7 +377,6 @@ public:
         NumpyArray<1,UInt32> edgeIds,
         NumpyArray<2,UInt32> out =NumpyArray<1,UInt32>() 
     ){
-        typedef GraphItemHelper<Graph,Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<2,UInt32>::difference_type(  edgeIds.shape(0) ,2 ));
         for(MultiArrayIndex i=0; i<edgeIds.shape(0); ++i){
             const index_type edgeId=edgeIds(i);

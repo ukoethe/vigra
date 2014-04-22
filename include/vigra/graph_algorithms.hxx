@@ -269,7 +269,6 @@ namespace vigra{
         const Int64   ignoreLabel=-1
     ){
         rag=AdjacencyListGraph();
-        typedef GRAPH_IN_NODE_LABEL_MAP LabelMap;
         typedef typename GraphMapTypeTraits<GRAPH_IN_NODE_LABEL_MAP>::Value LabelType;
         typedef GRAPH_IN GraphIn;
         typedef AdjacencyListGraph GraphOut;
@@ -278,10 +277,7 @@ namespace vigra{
         typedef typename GraphIn::NodeIt NodeItGraphIn;
         typedef typename GraphIn::EdgeIt EdgeItGraphIn;
 
-        typedef typename GraphOut::Edge   EdgeGraphOut;
-        // iterate over all labels in the node map to find min max
-        typedef NodeMapIteratorHelper<GraphIn,LabelMap> NodeIterHelper;
-        
+        typedef typename GraphOut::Edge   EdgeGraphOut; 
         for(NodeItGraphIn iter(graphIn);iter!=lemon::INVALID;++iter){
             const LabelType l=labels[*iter];
             if(ignoreLabel==-1 || static_cast<Int64>(l)!=ignoreLabel)
@@ -475,9 +471,6 @@ namespace vigra{
         typedef typename Graph::Node Node;
         typedef typename Graph::NodeIt NodeIt;
         typedef typename Graph::OutArcIt OutArcIt;
-
-
-        typedef typename WEIGHTS::value_type     WeightType;
         typedef typename DISTANCE::value_type    DistanceType;
 
         typename  GRAPH:: template NodeMap<bool> closedSet(graph);
@@ -574,17 +567,12 @@ namespace vigra{
         typedef GRAPH Graph;
         typedef typename Graph::Edge Edge;
         typedef typename Graph::Node Node;
-        typedef typename Graph::EdgeIt EdgeIt;
         typedef typename Graph::NodeIt NodeIt;
         typedef typename Graph::OutArcIt OutArcIt;
 
         typedef typename EDGE_WEIGHTS::Value WeightType;
-        typedef typename SEEDS::Value   SeedType;
         typedef typename LABELS::Value  LabelType;
         typedef typename Graph:: template NodeMap<bool>    NodeBoolMap;
-        typedef NodeMapIteratorHelper<Graph,NodeBoolMap  > InPQHelper;
-        typedef NodeMapIteratorHelper<Graph,SEEDS  >       SeedsHelper;
-        typedef NodeMapIteratorHelper<Graph,LABELS >       LabelsHelper;
         typedef PriorityQueue<Node,WeightType,true> PQ;
 
         PQ pq;
@@ -740,16 +728,11 @@ namespace vigra{
         typedef GRAPH Graph;
         typedef typename Graph::Edge Edge;
         typedef typename Graph::Node Node;
-        typedef typename Graph::NodeIt NodeIt;
 
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename EDGE_WEIGHTS::Value NodeSizeType;
         typedef typename Graph:: template NodeMap<WeightType>   NodeIntDiffMap;
         typedef typename Graph:: template NodeMap<NodeSizeType> NodeSizeAccMap;
-
-        typedef NodeMapIteratorHelper<GRAPH,NODE_SIZE  >      NodeSizeMapHelper;
-        typedef NodeMapIteratorHelper<GRAPH,NodeSizeAccMap  > NodeAccSizeMapHelper;
-        typedef NodeMapIteratorHelper<GRAPH,NodeIntDiffMap  > NodeIntDiffMapHelper;
 
         // initalize node size map  and internal diff map
         NodeIntDiffMap internalDiff(graph);
@@ -850,7 +833,6 @@ namespace vigra{
         typedef typename Graph::NodeIt NodeIt;
         typedef typename Graph::OutArcIt OutArcIt;
 
-        typedef typename NODE_FEATURES_IN::ConstReference NodeFeatureInConstRef;
         typedef typename NODE_FEATURES_IN::Value          NodeFeatureInValue;
         typedef typename NODE_FEATURES_OUT::Reference     NodeFeatureOutRef;
         typedef typename EDGE_WEIGHTS::ConstReference SmoothFactorType;

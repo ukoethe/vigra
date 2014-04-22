@@ -74,9 +74,6 @@ namespace vigra{
             binIndex -=minVals;
             binIndex /=maxVals;
             binIndex *=nBins;
-
-
-
             HistCoord histCoord;
             for(size_t d=0;d<DIM;++d){
                 histCoord[d]=node[d];
@@ -101,14 +98,31 @@ namespace vigra{
             MultiArrayView<DIM+1,T_HIST> histcBuffer = histogram.bindOuter(c);
 
             // convolve along all spatial axis and bin axis
+            // - refactor me
             if(DIM==2){
                 convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 0, gauss);
                 convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 1, gauss);
                 convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 2, gaussBin);
                 histc=histcBuffer;
             }
-
-
+            else if(DIM==3){
+                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 0, gauss);
+                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 1, gauss);
+                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 2, gauss);
+                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 3, gaussBin);
+                histc=histcBuffer;
+            }
+            else if(DIM==4){
+                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 0, gauss);
+                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 1, gauss);
+                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 2, gauss);
+                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 3, gauss);
+                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 4, gaussBin);
+                histc=histcBuffer;
+            }
+            else{
+                throw std::runtime_error("not yet implemented for arbitrary dimension");
+            }
         }
 
 

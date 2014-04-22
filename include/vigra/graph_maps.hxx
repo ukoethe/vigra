@@ -45,6 +45,8 @@
 
 namespace vigra{
 
+// base class for basic implementation
+// of a class for node,edge and arc maps.
 template<class T,class KEY,class REF,class CREF>
 class DenseReferenceMap
 : public MultiArray<1,T>
@@ -97,6 +99,8 @@ private:
 };
 
 
+// basic implementation
+// of a class for node,edge and arc maps.
 template<class GRAPH,class ITEM,class T,class REF,class CREF>
 class DenseGraphItemReferenceMap
 : public DenseReferenceMap<T,ITEM,REF,CREF>
@@ -125,7 +129,7 @@ public:
     }
 };
 
-
+// basic class for node-maps
 template<class GRAPH,class T,class REF= T & ,class CREF = const T & >
 class DenseNodeReferenceMap
 : public DenseGraphItemReferenceMap<GRAPH,typename GRAPH::Node,T,REF,CREF>
@@ -144,6 +148,7 @@ class DenseNodeReferenceMap
         }
 };
 
+// basic class for edge-maps
 template<class GRAPH,class T,class REF= T & ,class CREF = const T & >
 class DenseEdgeReferenceMap
 : public DenseGraphItemReferenceMap<GRAPH,typename GRAPH::Edge,T,REF,CREF>
@@ -162,6 +167,7 @@ class DenseEdgeReferenceMap
         }
 };
 
+// basic class for arc-maps
 template<class GRAPH,class T,class REF= T & ,class CREF = const T & >
 class DenseArcReferenceMap
 : public DenseGraphItemReferenceMap<GRAPH,typename GRAPH::Arc,T,REF,CREF>
@@ -180,7 +186,12 @@ class DenseArcReferenceMap
         }
 };
 
-
+// implicit edge map:
+// the values of a node map are converted
+// to an edge map.
+// FUNCTOR is used to convert the two
+// node map values corresponding to an edge to
+// an edge map value
 template<class G,class NODE_MAP,class FUNCTOR,class RESULT>
 class OnTheFlyEdgeMap{
 
@@ -222,6 +233,7 @@ private:
     FUNCTOR & f_;
 };
 
+// convert 2 edge maps with a functor into a single edge map
 template<class G,class EDGE_MAP_A,class EDGE_MAP_B,class FUNCTOR,class RESULT>
 class BinaryOpEdgeMap{
 public:
