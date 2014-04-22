@@ -651,9 +651,6 @@ class MergeGraphAdaptor
         IdType reprEdgeId(const IdType edgeIndex)const;
         IdType reprNodeId(const IdType nodeIndex)const;
         bool stateOfInitalEdge(const IdType initalEdge)const;
-        template<class OUT_ITER>
-        void stateOfInitalEdges(OUT_ITER begin,OUT_ITER end)const;
-
         // modification
         void contractEdge(const Edge & edge);
 
@@ -1082,23 +1079,9 @@ inline bool MergeGraphAdaptor<GRAPH>::stateOfInitalEdge(
 }
 
 template<class GRAPH>
-template<class OUT_ITER>
-void MergeGraphAdaptor<GRAPH>::stateOfInitalEdges(
-    OUT_ITER begin,
-    OUT_ITER end
-)const{
-    
-    throw std::runtime_error("REFACTORE ME");
-}
-
-
-
-template<class GRAPH>
 inline size_t MergeGraphAdaptor<GRAPH>::nodeNum()const{
     return nodeUfd_.numberOfSets();
 }
-
-
 
 template<class GRAPH>
 inline size_t MergeGraphAdaptor<GRAPH>::arcNum()const{
@@ -1107,11 +1090,8 @@ inline size_t MergeGraphAdaptor<GRAPH>::arcNum()const{
 
 template<class GRAPH>
 inline size_t MergeGraphAdaptor<GRAPH>::edgeNum()const{
-    //return dynamicEdges_.size();
     return edgeUfd_.numberOfSets();
 }
-
-
 
 template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::contractEdge(
