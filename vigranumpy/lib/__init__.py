@@ -573,6 +573,7 @@ _genFeaturConvenienceFunctions()
 del _genFeaturConvenienceFunctions
 
 
+MetricType = graphs.MetricType
 # define grid graph convenience functions
 # and extend grid graph classes
 def _genGridGraphConvenienceFunctions():
@@ -1500,7 +1501,7 @@ def _genGraphSegmentationFunctions():
         mg = graphs.mergeGraph(graph)
         clusterOp = graphs.minEdgeWeightNodeDist(mg,edgeWeights=edgeWeights,edgeLengths=edgeLengths,
                                                     nodeFeatures=nodeFeatures,nodeSizes=nodeSizes,
-                                                    beta=float(beta),nodeDistType=metric,wardness=wardness)
+                                                    beta=float(beta),metric=metric,wardness=wardness)
         #clusterOp.mg=mg
         #clusterOp.nodeSizes    = nodeSizes
         #clusterOp.edgeLengths  = edgeLengths
@@ -1520,7 +1521,7 @@ def _genGraphSegmentationFunctions():
 
 
     def minEdgeWeightNodeDist(mergeGraph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,outWeight=None,
-        beta=0.5,nodeDistType='squaredNorm',wardness=1.0):
+        beta=0.5,metric='squaredNorm',wardness=1.0):
             graph=mergeGraph.graph()
             assert edgeWeights is not None or nodeFeatures is not None
 
@@ -1541,16 +1542,18 @@ def _genGraphSegmentationFunctions():
                 outWeight=graphs.graphMap(graph,item='edge',dtype=numpy.float32)
 
 
-            if    nodeDistType=='squaredNorm':
+            if  metric=='squaredNorm':
                 nd=graphs.MetricType.squaredNorm
-            elif  nodeDistType=='norm':
+            elif  metric=='norm':
                 nd=graphs.MetricType.norm
-            elif  nodeDistType=='chiSquared':
+            elif  metric=='chiSquared':
                 nd=graphs.MetricType.chiSquared
-            elif nodeDistType in ('l1','manhattan'):
+            elif metric in ('l1','manhattan'):
                 nd=graphs.MetricType.manhattan
+            elif isinstance(metric,graphs.MetricType):
+                nd=metric
             else :
-                raise RuntimeError("'%s' is not a supported distance type"%str(nodeDistType))
+                raise RuntimeError("'%s' is not a supported distance type"%str(metric))
 
             # call unsave c++ function and make it sav
             op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,
