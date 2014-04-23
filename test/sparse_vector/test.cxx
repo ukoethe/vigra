@@ -44,6 +44,8 @@ using namespace vigra;
 
 struct SparseVectorTest{   
 
+
+
     typedef SparseMapVector<int> IntVec;
     typedef IntVec::value_type value_type;
     typedef IntVec::coordinate_value_pair coordinate_value_pair;
@@ -86,7 +88,7 @@ struct SparseVectorTest{
         shouldEqual(vec(50),10);
     }
     
-    #if 0
+
 
     void testProxy1(){
         IntVec vec(100);
@@ -232,6 +234,7 @@ struct SparseVectorTest{
             shouldEqual(vec[indices[i]],values[i]);
         }
     }
+
     void testBatchConstructor2(){
         coordinate_value_pair cv[5]={
             coordinate_value_pair(10,1),
@@ -247,7 +250,7 @@ struct SparseVectorTest{
             shouldEqual( vec[cv[i].first], cv[i].second );
         }
     }
-    #endif
+
 };
 
 
@@ -262,12 +265,12 @@ struct SparseArrayTestSuite
     : vigra::test_suite("SparseArrayTestSuite")
     {   
         add( testCase( &SparseVectorTest::testProxy0));
-        //add( testCase( &SparseVectorTest::testProxy1));
-        //add( testCase( &SparseVectorTest::testProxy2));
-        //add( testCase( &SparseVectorTest::testProxy3));
-        //add( testCase( &SparseVectorTest::testProxy4));
-        //add( testCase( &SparseVectorTest::testBatchConstructor1));
-        //add( testCase( &SparseVectorTest::testBatchConstructor2));
+        add( testCase( &SparseVectorTest::testProxy1));
+        add( testCase( &SparseVectorTest::testProxy2));
+        add( testCase( &SparseVectorTest::testProxy3));
+        add( testCase( &SparseVectorTest::testProxy4));
+        add( testCase( &SparseVectorTest::testBatchConstructor1));
+        add( testCase( &SparseVectorTest::testBatchConstructor2));
     }
 };
 

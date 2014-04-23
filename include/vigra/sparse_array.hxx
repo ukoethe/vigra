@@ -52,7 +52,8 @@ namespace vigra{
         typedef typename SA::value_type value_type;
         typedef value_type & reference;
         typedef typename SA::coordinate_value_pair coordinate_value_pair;
-
+        typedef typename SA::MapType MapType;
+        typedef typename SA::MapIter MapIter;
 
         SparseReturnProxy(SA * sa = NULL,const size_t index = 0):
         sa_(sa),
@@ -64,7 +65,12 @@ namespace vigra{
         // write access
         // - convert from value_type to proxy
         SparseReturnProxy & operator=( const value_type & value ) {
-            sa_->writableRef(index_)=value;
+
+            MapIter lb = sa_->storage_.lower_bound(index_); 
+            if(lb != sa_->storage_.end() && !(sa_->storage_.key_comp()(index_, lb->first)))
+                lb->second=value; 
+            else 
+                sa_->storage_.insert(lb, typename MapType::value_type(index_, value));
             return *this;
         }
 
@@ -77,8 +83,15 @@ namespace vigra{
         // +=  and  -=  are also generated
         #define VIGRA_SPARSE_MAKE_OP_MACRO(OP,OP_PRE,OP_POST,SIG) \
         SparseReturnProxy<SA> & operator OP (SIG){ \
-            reference val = sa_->writableRef(index_); \
-            OP_PRE val OP_POST; \
+            MapIter lb = sa_->storage_.lower_bound(index_); \
+            if(lb != sa_->storage_.end() && !(sa_->storage_.key_comp()(index_, lb->first))) \
+                OP_PRE lb->second OP_POST ; \
+            else \
+            { \
+                value_type val = sa_->zeroValue(); \
+                OP_PRE val OP_POST; \
+                sa_->storage_.insert(lb, typename MapType::value_type(index_, val)); \
+            } \
             return *this; \
         }  
         VIGRA_SPARSE_MAKE_OP_MACRO(++,++, , void)
@@ -87,91 +100,18 @@ namespace vigra{
         VIGRA_SPARSE_MAKE_OP_MACRO(--,  ,--,int)
         VIGRA_SPARSE_MAKE_OP_MACRO(+=, ,+=value, const value_type value)
         VIGRA_SPARSE_MAKE_OP_MACRO(-=, ,-=value, const value_type value)
-
         #undef VIGRA_SPARSE_MAKE_OP_MACRO
 
-
-
-
-        #if 0
-        SparseReturnProxy<SA> & operator ++ (){
-            MapIter iter = sa_->find(index_);
-            if(iter==sa_->storageEnd()){
-                value_type val(sa_->zeroValue());
-                ++val;
-                if(!sa_->eqComp_(val,sa_->zeroValue()))
-                    sa_->write(index_, val);
-            }
-            else
-                ++iter->second;
-            return *this;
-        }
-        SparseReturnProxy<SA> & operator ++ (int){
-            MapIter iter = sa_->storage_.find(index_);
-            if(iter==sa_->storage_.end()){
-                value_type val(sa_->zeroValue());
-                val++;
-                if(!sa_->eqComp_(val,sa_->zeroValue()))
-                    sa_->write(index_, val);
-            }
-            else
-                iter->second++;
-            return *this;
-        }
-
-
-        SparseReturnProxy<SA> & operator += (const value_type & value){
-            MapIter iter = sa_->storage_.find(index_);
-            if(iter==sa_->storage_.end()){
-                value_type val(sa_->zeroValue());
-                val+=value;
-                if(!sa_->eqComp_(val,sa_->zeroValue()))
-                    sa_->write(index_, val);
-            }
-            else
-                iter->second+=value;
-            return *this;
-        }
-        SparseReturnProxy<SA> & operator -= (const value_type & value){
-            MapIter iter = sa_->storage_.find(index_);
-            if(iter==sa_->storage_.end()){
-                value_type val(sa_->zeroValue());
-                val-=value;
-                if(!sa_->eqComp_(val,sa_->zeroValue()))
-                    sa_->write(index_, val);
-            }
-            else
-                iter->second-=value;
-            return *this;
-        }
-        SparseReturnProxy<SA> & operator *= (const value_type & value){
-            MapIter iter = sa_->storage_.find(index_);
-            if(iter==sa_->storage_.end()){
-                value_type val(sa_->zeroValue());
-                val*=value;
-                if(!sa_->eqComp_(val,sa_->zeroValue()))
-                    sa_->write(index_, val);
-            }
-            else
-                iter->second*=value;
-            return *this;
-        }
-
-        SparseReturnProxy<SA> & operator /= (const value_type & value){
-            MapIter iter = sa_->storage_.find(index_);
-            if(iter==sa_->storage_.end()){
-                value_type val(sa_->zeroValue());
-                val/=value;
-                if(!sa_->eqComp_(val,sa_->zeroValue()))
-                    sa_->write(index_, val);
-            }
-            else
-                iter->second/=value;
-            return *this;
-        }
-
-        #endif
-
+        #define VIGRA_SPARSE_MAKE_OP_MACRO(OP,OP_PRE,OP_POST,SIG) \
+        SparseReturnProxy<SA> & operator OP (SIG){ \
+            MapIter lb = sa_->storage_.lower_bound(index_); \ 
+            if(lb != sa_->storage_.end() && !(sa_->storage_.key_comp()(index_, lb->first))) \
+                OP_PRE lb->second OP_POST ; \
+            return *this; \
+        }  
+        VIGRA_SPARSE_MAKE_OP_MACRO(*=, ,*=value, const value_type value)
+        VIGRA_SPARSE_MAKE_OP_MACRO(/=, ,/=value, const value_type value)
+        #undef VIGRA_SPARSE_MAKE_OP_MACRO
     private:
         SA * sa_;
         size_t index_;
@@ -179,66 +119,9 @@ namespace vigra{
 
 
 
-    template<class SPARSE_VECTOR, class T,class C, class EQUAL_COMP>
-    class SparseVectorCrtpBase{
-    private:
-        friend class SparseReturnProxy< SPARSE_VECTOR >;
-        typedef SparseVectorCrtpBase<SPARSE_VECTOR,T,C,EQUAL_COMP> SelfType;
-        typedef SPARSE_VECTOR Child;
-    public:
-        typedef SparseReturnProxy<Child> Proxy;
-        typedef T value_type;
-        typedef const T & const_reference;
-        typedef std::pair<T,C> coordinate_value_pair;
-
-
-        Proxy operator()(const size_t index){
-            return Proxy(getPtr(),index);
-        }
-
-        Proxy operator[](const size_t index){
-            return Proxy(getPtr(),index);
-        }
-
-
-        const_reference operator()(const size_t index)const{
-            return getRef().read(index);
-        }
-
-        const_reference operator[](const size_t index)const{
-            return getRef().read(index);
-        }
-
-        const SelfType & asConst()const{
-            return *this;
-        }   
-
-
-
-
-    private:
-        const SPARSE_VECTOR * getPtr()const{
-            return static_cast<SPARSE_VECTOR const *>(this);
-        }
-        SPARSE_VECTOR * getPtr(){
-            return static_cast<SPARSE_VECTOR *>(this);
-        }
-
-        const SPARSE_VECTOR & getRef()const{
-            return *static_cast<SPARSE_VECTOR const *>(this);
-        }
-        SPARSE_VECTOR & getRef(){
-            return *static_cast<SPARSE_VECTOR *>(this);
-        }
-    };
-
 
     template<class T ,class EQUAL_COMP = std::equal_to<T> >
     class SparseMapVector
-
-    : public SparseVectorCrtpBase< SparseMapVector< T,EQUAL_COMP > ,
-                                   T,size_t,EQUAL_COMP >
-
     {
 
 
@@ -257,6 +140,33 @@ namespace vigra{
         typedef size_t coordinate_type;
         typedef T value_type;
         typedef const T & const_reference;
+
+
+
+        Proxy operator()(const size_t index){
+            return Proxy(this,index);
+        }
+
+        Proxy operator[](const size_t index){
+            return Proxy(this,index);
+        }
+
+
+        const_reference operator()(const size_t index)const{
+            return read(index);
+        }
+
+        const_reference operator[](const size_t index)const{
+            return read(index);
+        }
+
+        const SelfType & asConst()const{
+            return *this;
+        }   
+
+
+
+
 
         SparseMapVector(const size_t size=0, const T & zeroValue  = T(0),
                         const EqualCompare & eqComp = EqualCompare())
@@ -316,32 +226,6 @@ namespace vigra{
            return storage_.insert(coordinate_value_pair(index,zeroValue())).first->second;
         }
 
-
-        //template<class FUNCTOR>
-        //void manipulate(const size_t index ,const,FUNCTOR){
-        //    // http://stackoverflow.com/questions/97050/stdmap-insert-or-stdmap-find
-        //    MapIter lb = storage_.lower_bound(index);            
-        //    if(lb != storage_.end() && !(storage_.key_comp()(k, lb->first))){
-        //        // key already exists
-        //        // update lb->second 
-        //        fFound(lb->second);
-        //    }
-        //    else
-        //    {
-        //        // the key does not exist in the map
-        //        // add it to the map
-        //        mymap.insert(lb, MapType::value_type(k, v));    // Use lb as a hint to insert,
-        //                                                        // so it can avoid another lookup
-        //    }
-        //}
-//
-        //void write(const size_t index,const T & value){
-        //    std::pair<MapIter,bool> ret=storage_.insert(coordinate_value_pair(index,value));
-        //    if(ret.second==false){
-        //        ret.first->second=value;
-        //    }
-        //}
-//
         size_t size()const{
             return size_;
         }
