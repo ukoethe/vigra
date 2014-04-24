@@ -36,6 +36,12 @@
 #ifndef VIGRA_MEMORY_HXX
 #define VIGRA_MEMORY_HXX
 
+#ifdef _GLIBCXX_INCLUDE_AS_TR1
+#  include <tr1/memory>
+#else
+#  include <memory>
+#endif 
+
 #include <cstring>
 #include "metaprogramming.hxx"
 

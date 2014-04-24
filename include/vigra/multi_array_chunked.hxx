@@ -132,18 +132,19 @@
 #include <queue>
 #include <string>
 
+#include "memory.hxx"
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
 #include "threading.hxx"
 #include "hdf5impex.hxx"
 #include "compression.hxx"
 
-// FIXME: why is this needed when compiling the Python bindng,
-//        but not when compiling test_multiarray_chunked?
-#if defined(__GNUC__)
-#  define memory_order_release memory_order_seq_cst
-#  define memory_order_acquire memory_order_seq_cst
-#endif
+// // FIXME: why is this needed when compiling the Python bindng,
+// //        but not when compiling test_multiarray_chunked?
+// #if defined(__GNUC__)
+// #  define memory_order_release memory_order_seq_cst
+// #  define memory_order_acquire memory_order_seq_cst
+// #endif
 
 #ifdef _WIN32
 # include "windows.h"
@@ -1242,7 +1243,7 @@ class MultiArrayView<N, T_MaybeConst, ChunkedArrayTag>
     
     MultiArray<N, Chunk> chunks_;
     shape_type offset_, bits_, mask_;
-    std::shared_ptr<ChunkUnrefProxyBase> unref_;
+    VIGRA_SHARED_PTR<ChunkUnrefProxyBase> unref_;
 };
 
 template <unsigned int N, class T>
@@ -1882,7 +1883,7 @@ class ChunkedArray
         typedef typename View::UnrefProxy Unref;
         ChunkedArray* self = const_cast<ChunkedArray*>(this);
         Unref * unref = new Unref(view.chunks_.size(), self);
-        view.unref_ = std::shared_ptr<Unref>(unref);
+        view.unref_ = VIGRA_SHARED_PTR<Unref>(unref);
         
         MultiCoordinateIterator<N> i(chunk_start, chunk_stop),
                                    end(i.getEndIterator());
@@ -2097,7 +2098,7 @@ class ChunkedArray
     
     shape_type bits_, mask_;
     int cache_max_size_;
-    std::shared_ptr<threading::mutex> chunk_lock_;
+    VIGRA_SHARED_PTR<threading::mutex> chunk_lock_;
     CacheType cache_;
     Chunk fill_value_chunk_;
     Handle fill_value_handle_;
