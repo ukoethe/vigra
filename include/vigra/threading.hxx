@@ -56,10 +56,7 @@
 #endif
 
 #ifdef VIGRA_NO_STD_THREADING
-#  include <boost/thread/thread.hpp>
-#  include <boost/thread/mutex.hpp>
-// #  include <boost/thread/shared_mutex.hpp>
-#  include <boost/thread/locks.hpp>
+#  include <boost/thread.hpp>
 #  if BOOST_VERSION >= 105300
 #    include <boost/atomic.hpp>
 #    define VIGRA_HAS_ATOMIC 1
@@ -177,6 +174,24 @@ using VIGRA_THREADING_NAMESPACE::memory_order_seq_cst;
 using VIGRA_THREADING_NAMESPACE::atomic_thread_fence;
 using VIGRA_THREADING_NAMESPACE::atomic_signal_fence;
 
+// using VIGRA_THREADING_NAMESPACE::atomic_is_lock_free;
+// using VIGRA_THREADING_NAMESPACE::atomic_storeatomic_store_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_loadatomic_load_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_exchangeatomic_exchange_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_compare_exchange_weak;
+// using VIGRA_THREADING_NAMESPACE::atomic_compare_exchange_weak_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_compare_exchange_strong;
+// using VIGRA_THREADING_NAMESPACE::atomic_compare_exchange_strong_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_fetch_addatomic_fetch_add_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_fetch_subatomic_fetch_sub_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_fetch_andatomic_fetch_and_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_fetch_oratomic_fetch_or_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_fetch_xoratomic_fetch_xor_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_flag_test_and_setatomic_flag_test_and_set_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_flag_clearatomic_flag_clear_explicit;
+// using VIGRA_THREADING_NAMESPACE::atomic_init;
+// using VIGRA_THREADING_NAMESPACE::kill_dependency;
+	
 #else  // VIGRA_HAS_ATOMIC not defined
 
 enum memory_order {
@@ -351,25 +366,6 @@ struct atomic_long
 
 #endif // VIGRA_HAS_ATOMIC
 
-// not in boost (?)
-// using VIGRA_THREADING_NAMESPACE::atomic_is_lock_free;
-// using VIGRA_THREADING_NAMESPACE::atomic_storeatomic_store_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_loadatomic_load_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_exchangeatomic_exchange_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_compare_exchange_weak;
-// using VIGRA_THREADING_NAMESPACE::atomic_compare_exchange_weak_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_compare_exchange_strong;
-// using VIGRA_THREADING_NAMESPACE::atomic_compare_exchange_strong_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_fetch_addatomic_fetch_add_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_fetch_subatomic_fetch_sub_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_fetch_andatomic_fetch_and_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_fetch_oratomic_fetch_or_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_fetch_xoratomic_fetch_xor_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_flag_test_and_setatomic_flag_test_and_set_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_flag_clearatomic_flag_clear_explicit;
-// using VIGRA_THREADING_NAMESPACE::atomic_init;
-// using VIGRA_THREADING_NAMESPACE::kill_dependency;
-	
 }} // namespace vigra::threading
 
 #undef VIGRA_THREADING_NAMESPACE
