@@ -41,6 +41,7 @@
 
 
 namespace vigra{
+namespace sparse{
 
 
     template<class SA>
@@ -266,6 +267,8 @@ namespace vigra{
         EqualCompare eqComp_;
     };
 
-} // namespace vigra
+
+} // end name sparse
+} // end namespace vigra
 
 #endif /* VIGRA_SPARSE_ARRAY */

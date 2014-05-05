@@ -302,8 +302,10 @@ def imshow(image,show=True):
 
 
 def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False):
+
     labels = numpy.squeeze(labels)
-    crackedEdges = analysis.regionImageToCrackEdgeImage(labels)
+    crackedEdges = analysis.regionImageToCrackEdgeImage(labels).squeeze()
+    print "cracked shape",crackedEdges.shape
     whereEdge    =  numpy.where(crackedEdges==0)
     imgToDisplay = resize(img,numpy.squeeze(crackedEdges).shape)
     imgToDisplay-=imgToDisplay.min()
@@ -1650,7 +1652,7 @@ def _genGraphMiscFunctions():
             Returns :
                 edge indicator
         """
-        return graphs._nodeFeaturesToEdgeWeights(graph=graph,nodeFeatures=nodeFeatures,metric=metric,out=out)
+        return graphs._nodeFeatureDistToEdgeWeight(graph=graph,nodeFeatures=nodeFeatures,metric=metric,out=out)
 
     nodeFeaturesToEdgeWeights.__module__ = 'vigra.graphs'
     graphs.nodeFeaturesToEdgeWeights = nodeFeaturesToEdgeWeights

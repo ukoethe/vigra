@@ -128,6 +128,93 @@ namespace vigra{
 
     }
 
+    template< unsigned int DIM , class T_DATA, class T_HIST >
+    void multi_gaussian_co_histogram(
+        const MultiArrayView<DIM, T_DATA > & imageA,
+        const MultiArrayView<DIM, T_DATA > & imageB,
+        const TinyVector<T_DATA,2> & minVals,
+        const TinyVector<T_DATA,2> & maxVals,
+        const TinyVector<int,2> & nBins,
+        const TinyVector<float,3> & sigma,
+        MultiArrayView<DIM+2, T_HIST> histogram
+    ){
+        typedef vigra::GridGraph< DIM , boost::undirected_tag> Graph;
+        typedef typename Graph::NodeIt graph_scanner;
+        typedef typename Graph::Node   Node;
+        typedef T_HIST ValueType;
+        typedef typename MultiArrayView<DIM+2 , T_HIST>::difference_type HistCoord;
+        const Graph g(imageA.shape());
+         // define abreviations for the required iterators
+
+
+        std::fill(histogram.begin(),histogram.end(),0.0);
+        // iterate over all nodes (i.e. pixels)
+        for (graph_scanner n(g); n != lemon::INVALID; ++n){
+
+            const Node node(*n);
+            T_DATA  binIndexA = imageA[node];
+            T_DATA  binIndexB = imageA[node];
+
+            binIndexA -=minVals[0];
+            binIndexA /=maxVals[0];
+            binIndexA *=nBins[0];
+
+            binIndexB -=minVals[1];
+            binIndexB /=maxVals[1];
+            binIndexB *=nBins[1];
+
+            HistCoord histCoord;
+            for(size_t d=0;d<DIM;++d)
+                histCoord[d]=node[d];
+            
+            histCoord[DIM]=binIndexA;
+            histCoord[DIM+1]=binIndexB;
+
+            const float fiA = binIndexA;
+            const unsigned int biA = std::floor(fiA+0.5);
+            const float fiB = binIndexB;
+            const unsigned int biB = std::floor(fiA+0.5);
+            histCoord[DIM]=std::min(biA,static_cast<unsigned int>(nBins[0]-1));
+            histCoord[DIM+1]=std::min(biB,static_cast<unsigned int>(nBins[1]-1));
+            histogram[histCoord]+=1.0;
+            
+        }
+
+        MultiArray<DIM+2 , T_HIST>    histogramBuffer(histogram);
+        Kernel1D<float> gaussS,gaussA,gaussB;
+        gaussS.initGaussian(sigma[0]);
+        gaussA.initGaussian(sigma[1]);
+        gaussB.initGaussian(sigma[2]);
+
+        if(DIM==2){
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 0, gaussS);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 1, gaussS);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 2, gaussA);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 3, gaussB);
+        }
+        else if(DIM==3){
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 0, gaussS);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 1, gaussS);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 2, gaussS);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 3, gaussA);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 4, gaussB);
+            histogram=histogramBuffer;
+        }
+        else if(DIM==4){
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 0, gaussS);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 1, gaussS);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 2, gaussS);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 3, gaussS);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogram), destMultiArray(histogramBuffer), 4, gaussA);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(histogramBuffer), destMultiArray(histogram), 5, gaussA);
+        }
+        else{
+            throw std::runtime_error("not yet implemented for arbitrary dimension");
+        }
+
+
+
+    }
 
 }
 //end namespace vigra

@@ -33,9 +33,12 @@
 /*                                                                      */
 /************************************************************************/
 
+#include <map>
 #include <iostream>
 #include "vigra/unittest.hxx"
-#include "vigra/sparse_array.hxx"
+
+#include "vigra/tinyvector.hxx"
+#include "vigra/sparse_vector.hxx"
 
 using namespace vigra;
 
@@ -44,9 +47,10 @@ using namespace vigra;
 
 struct SparseVectorTest{   
 
+    typedef vigra::TinyVector<int,1> CoordinateType;
+    typedef std::map<int,int> MapType;
 
-
-    typedef SparseMapVector<int> IntVec;
+    typedef sparse::AssociativeContainerSparseVectorAdatpor<MapType> IntVec;
     typedef IntVec::value_type value_type;
     typedef IntVec::coordinate_value_pair coordinate_value_pair;
 
@@ -236,12 +240,13 @@ struct SparseVectorTest{
     }
 
     void testBatchConstructor2(){
-        coordinate_value_pair cv[5]={
-            coordinate_value_pair(10,1),
-            coordinate_value_pair(20,2),
-            coordinate_value_pair(30,3),
-            coordinate_value_pair(40,4),
-            coordinate_value_pair(50,5)
+        typedef std::pair<int,int> mypair;
+        mypair cv[5]={
+            mypair(10,1),
+            mypair(20,2),
+            mypair(30,3),
+            mypair(40,4),
+            mypair(50,5)
         };
 
         IntVec vec(100,cv,cv+5);
@@ -254,6 +259,88 @@ struct SparseVectorTest{
 };
 
 
+struct SparseSymmetricArray2dTest{   
+
+    typedef vigra::TinyVector<int,1> CoordinateType;
+    typedef std::map<int,int> MapType;
+    typedef sparse::AssociativeContainerSparseVectorAdatpor<MapType> IntVec;
+
+    typedef sparse::SparseSymmetricArray2d<IntVec>   SymArray;
+    typedef SymArray::difference_type Shape;
+   
+
+    
+    void test0(){
+
+        SymArray a(Shape(100,100));
+        a(1,2)=2;
+        shouldEqual(a(1,2),2);
+        shouldEqual(a(2,1),2);
+        shouldEqual(a.asConst()(1,2),2);
+        shouldEqual(a.asConst()(2,1),2);
+        shouldEqual(a(Shape(1,2)),2);
+        shouldEqual(a(Shape(2,1)),2);
+        shouldEqual(a.asConst()(Shape(1,2)),2);
+        shouldEqual(a.asConst()(Shape(2,1)),2);
+
+        shouldEqual(a(3,4),0);
+        shouldEqual(a(4,3),0);
+        shouldEqual(a.asConst()(3,4),0);
+        shouldEqual(a.asConst()(4,3),0);
+        shouldEqual(a(Shape(3,4)),0);
+        shouldEqual(a(Shape(4,3)),0);
+        shouldEqual(a.asConst()(Shape(3,4)),0);
+        shouldEqual(a.asConst()(Shape(4,3)),0);
+
+
+
+
+    }
+    void testToDense(){
+
+        SymArray a(Shape(100,100));
+        a(1,2)=2;
+        a(3,4)=4;
+        a(9,2)=9;
+            
+        MultiArray<2,int> da(TinyVector<int,2>(100,100));
+        sparse::toDense(a,da);
+
+        shouldEqual(da(1,2),2);
+        shouldEqual(da(3,4),4);
+        shouldEqual(da(9,2),9);
+        shouldEqual(da(2,1),2);
+        shouldEqual(da(4,3),4);
+        shouldEqual(da(2,9),9);
+
+        shouldEqual(da(1,20),0);
+        shouldEqual(da(33,4),0);
+        shouldEqual(da(9,24),0);
+        shouldEqual(da(24,9),0);
+
+        MultiArray<2,int> da2(TinyVector<int,2>(100,100));
+        std::fill(da2.begin(),da2.end(),0);
+        sparse::toDense(a,da2,true);
+
+        shouldEqual(da2(1,2),2);
+        shouldEqual(da2(3,4),4);
+        shouldEqual(da2(9,2),9);
+        shouldEqual(da2(2,1),2);
+        shouldEqual(da2(4,3),4);
+        shouldEqual(da2(2,9),9);
+
+        shouldEqual(da2(1,20),0);
+        shouldEqual(da2(33,4),0);
+        shouldEqual(da2(9,24),0);
+        shouldEqual(da2(24,9),0);
+
+    }
+    
+
+
+
+
+};
 
 
 
@@ -271,6 +358,9 @@ struct SparseArrayTestSuite
         add( testCase( &SparseVectorTest::testProxy4));
         add( testCase( &SparseVectorTest::testBatchConstructor1));
         add( testCase( &SparseVectorTest::testBatchConstructor2));
+
+        add( testCase( &SparseSymmetricArray2dTest::test0));
+        add( testCase( &SparseSymmetricArray2dTest::testToDense));
     }
 };
 

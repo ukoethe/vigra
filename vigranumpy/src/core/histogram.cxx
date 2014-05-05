@@ -66,8 +66,32 @@ namespace vigra{
         return histogram;
     }
 
+
+    template<unsigned int DIM>
+    NumpyAnyArray pyMultiGaussianCoHistogram(
+        NumpyArray<DIM,float > imageA,
+        NumpyArray<DIM,float > imageB,
+        const TinyVector<float,2> minVals,
+        const TinyVector<float,2> maxVals,
+        const TinyVector<int,2> bins,
+        const TinyVector<float,3> sigma,
+        NumpyArray<DIM+2,float> histogram = NumpyArray<DIM+2,float>()
+    ){
+        typename NumpyArray<DIM+2,float>::difference_type  outShape;
+        for(size_t d=0;d<DIM;++d){
+           outShape[d]=imageA.shape(d);
+        }
+        outShape[DIM]=bins[0];
+        outShape[DIM+1]=bins[1];
+        histogram.reshapeIfEmpty(outShape);
+        multi_gaussian_co_histogram<DIM,float,float>(imageA,imageB,minVals,maxVals,bins,
+           sigma,histogram);
+        return histogram;
+    }
+
     template<unsigned int DIM,unsigned int CHANNELS>
     void defineMultiGaussianHistogram(){
+
         python::def("gaussianHistogram",registerConverters(&pyMultiGaussianHistogram<DIM,CHANNELS>),
             (
                 python::arg("image"),
@@ -80,6 +104,24 @@ namespace vigra{
             )
         );
     }
+
+
+    template<unsigned int DIM>
+    void defineMultiGaussianCoHistogram(){
+
+        python::def("gaussianCoHistogram",registerConverters(&pyMultiGaussianCoHistogram<DIM>),
+            (
+                python::arg("imageA"),
+                python::arg("imageB"),
+                python::arg("minVals"),
+                python::arg("maxVals"),
+                python::arg("bins"),
+                python::arg("sigma"),
+                python::arg("out")=python::object()
+            )
+        );
+    }
+    
 
 
 } // namespace vigra
@@ -96,5 +138,8 @@ BOOST_PYTHON_MODULE_INIT(histogram)
 
     // all exporters needed for graph exporters (like lemon::INVALID)
     defineMultiGaussianHistogram<2,3>();
+    defineMultiGaussianHistogram<3,1>();
 
+    defineMultiGaussianCoHistogram<2>();
+    defineMultiGaussianCoHistogram<3>();
 }
