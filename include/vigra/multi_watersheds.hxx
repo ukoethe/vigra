@@ -160,9 +160,6 @@ generateWatershedSeeds(Graph const & g,
             "generateWatershedSeeds(): SeedOptions.levelSets() must be specified with threshold.");
     
         using namespace multi_math;
-        //minima = data <= DataType(options.thresh);
-
-
         for(typename Graph::NodeIt iter(g);iter!=lemon::INVALID;++iter){
             minima[*iter]= data[*iter] <= DataType(options.thresh);
         }

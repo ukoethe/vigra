@@ -404,7 +404,9 @@ class PriorityQueue<ValueType, unsigned short, Ascending>
 /** \brief Heap-based changable priority queue with a maximum number of elemements.
 
     This pq allows to change the priorities of elements in the queue
+
     <b>\#include</b> \<vigra/priority_queue.hxx\><br>
+    
     Namespace: vigra
 */
 template<class T,class COMPARE = std::less<T> >
