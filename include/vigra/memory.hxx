@@ -36,7 +36,10 @@
 #ifndef VIGRA_MEMORY_HXX
 #define VIGRA_MEMORY_HXX
 
-#if defined(__APPLE__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 6
+
+#include "config.hxx"
+
+#ifdef VIGRA_SHARED_PTR_IN_TR1
 #  include <tr1/memory>
 #else
 #  include <memory>

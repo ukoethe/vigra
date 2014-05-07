@@ -165,6 +165,9 @@
         #define VIGRA_HAS_UNIQUE_PTR
     #endif
 
+    #if defined(__APPLE__) && !defined(__clang_major__) && __GNUC__ == 4 && __GNUC_MINOR__ < 6
+        #define VIGRA_SHARED_PTR_IN_TR1
+    #endif
 #endif  // __GNUC__
 
 ///////////////////////////////////////////////////////////
@@ -251,7 +254,7 @@
 #  define VIGRA_UNIQUE_PTR  std::auto_ptr
 #endif
 
-#if defined(__APPLE__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 6
+#ifdef VIGRA_SHARED_PTR_IN_TR1
 #  define VIGRA_SHARED_PTR  std::tr1::shared_ptr
 #else
 #  define VIGRA_SHARED_PTR  std::shared_ptr
