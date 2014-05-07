@@ -28,9 +28,14 @@ namespace vigra {
 
 namespace merge_graph_detail {
 
+// ufd  data structure structure for merge graph
+// only useful for merge graphs internal usage
 template<class T>
 class IterablePartition;
 
+// representative element iterator
+// for IterablePartition
+// only useful for merge graphs internal usage
 template<class T>
 struct  ConstRepIter
 :  public ForwardIteratorFacade<
@@ -98,7 +103,8 @@ private:
 
 
 
-
+// ufd  data structure structure for merge graph
+// only useful for merge graphs internal usage
 /// Disjoint set data structure with path compression.
 /// \ingroup datastructures
 template<class T>
@@ -198,7 +204,9 @@ private:
 
 
 
-
+// helper classes to generalize
+// some functionality for 
+// nodes,edges and arcs 
 template<class GRAPH,class ITEM>
 struct MergeGraphItemHelper;
 
@@ -245,7 +253,7 @@ struct MergeGraphItemHelper<MG,typename MG::Node>{
     }
 };
 
-
+// merge graphs LEMON compatible iterator
 template<class MERGE_GRAPH>
 class MergeGraphNodeIt
 :   public ForwardIteratorFacade<MergeGraphNodeIt<MERGE_GRAPH>,typename MERGE_GRAPH::Node,true>{
@@ -294,6 +302,7 @@ private:
     mutable Node  node_;
 };
 
+// merge graphs LEMON compatible iterator
 template<class MERGE_GRAPH>
 class MergeGraphEdgeIt
 :   public ForwardIteratorFacade<MergeGraphEdgeIt<MERGE_GRAPH>,typename MERGE_GRAPH::Edge,true>{
@@ -343,6 +352,7 @@ private:
     mutable Edge  edge_;
 };
 
+// merge graphs LEMON compatible iterator
 template<class GRAPH>
 class MergeGraphArcIt
 : public ForwardIteratorFacade<
@@ -431,7 +441,8 @@ private:
 };
 
 
-
+// callbacks of merge graph 
+// to update node and edge maps w.r.t. edge contractions
 template<class NODE,class EDGE>
 class MergeGraphCallbacks{
     public:
@@ -473,7 +484,9 @@ class MergeGraphCallbacks{
 
 
 
-
+/** \brief undirected graph adaptor 
+      for edge contraction and feature merging
+    */
 template<class GRAPH>
 class MergeGraphAdaptor 
 :   public MergeGraphCallbacks<
@@ -642,11 +655,6 @@ class MergeGraphAdaptor
         }
 
 
-        
-
-
-
-
         // query (w.r.t. inital nodesIds/edgesIds)
         IdType reprEdgeId(const IdType edgeIndex)const;
         IdType reprNodeId(const IdType nodeIndex)const;
@@ -763,15 +771,6 @@ class MergeGraphAdaptor
         NodeStorage & nodeImpl(const Node & node){
             return nodeVector_[id(node)];
         }
-
-
-
-
-
-        //void combineDoubleEdges(const std::vector<IdType> & ,const IdType ,const IdType );
-        void searchLocalDoubleEdges(const NodeStorage & node);// , DoubleMap & doubleMap);
-
-
 
 
         const GRAPH & graph_;
