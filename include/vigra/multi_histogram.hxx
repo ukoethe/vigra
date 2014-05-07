@@ -63,10 +63,7 @@ namespace vigra{
         typedef typename MultiArrayView<DIM+2 , T_HIST>::difference_type HistCoord;
         const Graph g(image.shape());
         const ChannelsVals nBins(bins);
-         // define abreviations for the required iterators
-
-
-        std::fill(histogram.begin(),histogram.end(),0.0);
+        histogram.init(1.0);
         // iterate over all nodes (i.e. pixels)
         for (graph_scanner n(g); n != lemon::INVALID; ++n){
             const Node node(*n);
@@ -144,10 +141,7 @@ namespace vigra{
         typedef T_HIST ValueType;
         typedef typename MultiArrayView<DIM+2 , T_HIST>::difference_type HistCoord;
         const Graph g(imageA.shape());
-         // define abreviations for the required iterators
-
-
-        std::fill(histogram.begin(),histogram.end(),0.0);
+        histogram.init(0.0);
         // iterate over all nodes (i.e. pixels)
         for (graph_scanner n(g); n != lemon::INVALID; ++n){
 

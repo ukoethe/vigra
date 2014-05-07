@@ -787,12 +787,6 @@ class MergeGraphAdaptor
 };
 
 
-
-
-
-
-
-
 template<class GRAPH>
 MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
 :   MergeGraphCallbacks<Node,Edge >(),
