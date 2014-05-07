@@ -140,9 +140,7 @@ localMinMaxGraph(Graph const &g,
 
         if (!compare(current, threshold))
             continue;
-          
-        //if(!allowAtBorder && node.atBorder())
-        //    continue;
+        
         if(!allowAtBorder && vigra::detail_local_minima::NodeAtBorder<Graph>::atBorder(node))
             continue;
         
