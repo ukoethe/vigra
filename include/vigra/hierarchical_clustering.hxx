@@ -78,8 +78,8 @@ namespace cluster_operators{
         typedef ValueType WeightType;
         typedef MERGE_GRAPH MergeGraph;
         typedef typename MergeGraph::Graph Graph;
-        typedef typename Graph::Edge GraphEdge;
-        typedef typename Graph::Node GraphNode;
+        typedef typename Graph::Edge BaseGraphEdge;
+        typedef typename Graph::Node BaseGraphNode;
         typedef typename MergeGraph::Edge Edge;
         typedef typename MergeGraph::Node Node;
         typedef typename MergeGraph::EdgeIt EdgeIt;
@@ -131,7 +131,7 @@ namespace cluster_operators{
 
             for(EdgeIt e(mergeGraph);e!=lemon::INVALID;++e){
                 const Edge edge = *e;
-                const GraphEdge graphEdge=EdgeHelper::itemToGraphItem(mergeGraph_,edge);
+                const BaseGraphEdge graphEdge=EdgeHelper::itemToGraphItem(mergeGraph_,edge);
                 const index_type edgeId = mergeGraph_.id(edge);
                 const ValueType currentWeight = this->getEdgeWeight(edge);
                 pq_.push(edgeId,currentWeight);
@@ -142,8 +142,8 @@ namespace cluster_operators{
         /// \brief will be called via callbacks from mergegraph
         void mergeEdges(const Edge & a,const Edge & b){
             // update features / weigts etc
-            const GraphEdge aa=EdgeHelper::itemToGraphItem(mergeGraph_,a);
-            const GraphEdge bb=EdgeHelper::itemToGraphItem(mergeGraph_,b);
+            const BaseGraphEdge aa=EdgeHelper::itemToGraphItem(mergeGraph_,a);
+            const BaseGraphEdge bb=EdgeHelper::itemToGraphItem(mergeGraph_,b);
             EdgeIndicatorReference va=edgeIndicatorMap_[aa];
             EdgeIndicatorReference vb=edgeIndicatorMap_[bb];
             va*=edgeSizeMap_[aa];
@@ -158,8 +158,8 @@ namespace cluster_operators{
 
         /// \brief will be called via callbacks from mergegraph
         void mergeNodes(const Node & a,const Node & b){
-            const GraphNode aa=NodeHelper::itemToGraphItem(mergeGraph_,a);
-            const GraphNode bb=NodeHelper::itemToGraphItem(mergeGraph_,b);
+            const BaseGraphNode aa=NodeHelper::itemToGraphItem(mergeGraph_,a);
+            const BaseGraphNode bb=NodeHelper::itemToGraphItem(mergeGraph_,b);
             NodeFeatureReference va=nodeFeatureMap_[aa];
             NodeFeatureReference vb=nodeFeatureMap_[bb];
             va*=nodeSizeMap_[aa];
@@ -190,7 +190,7 @@ namespace cluster_operators{
                 const Edge incEdge(*e);
 
                 //std::cout<<"get inc graph edge\n";
-                const GraphEdge incGraphEdge = EdgeHelper::itemToGraphItem(mergeGraph_,incEdge);
+                const BaseGraphEdge incGraphEdge = EdgeHelper::itemToGraphItem(mergeGraph_,incEdge);
 
                 //std::cout<<"get inc edge weight"<<counter<<"\n";
                 // compute the new weight for this edge
@@ -237,24 +237,17 @@ namespace cluster_operators{
         }
     private:
         ValueType getEdgeWeight(const Edge & e){
-
-            //std::cout<<"raw id ?"<<e.id()<<"\n";
-            //std::cout<<"is E Invalid ?"<<bool(e==lemon::INVALID)<<"\n";
-            //std::cout<<"GET THE IEDGE WEIGHT for edge<<"<< mergeGraph_.id(e) <<"<<\n";
-            //std::cout<<"1\n";
+            
             const Node u = mergeGraph_.u(e);
             const Node v = mergeGraph_.v(e);
 
-            //std::cout<<"2\n";
-            const GraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
-            const GraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
-            const GraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
+            const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
+            const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
+            const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
-            //std::cout<<"3\n";
             const ValueType wardFacRaw = 1.0 / ( 1.0/std::log(nodeSizeMap_[uu]) + 1.0/std::log(nodeSizeMap_[vv]) );
             const ValueType wardFac = (wardFacRaw*wardness_) + (1.0-wardness_);
 
-            //std::cout<<"4\n";
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist = metric_(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
@@ -286,11 +279,10 @@ namespace cluster_operators{
         typedef CLUSTER_OPERATOR                        ClusterOperator;
         typedef typename ClusterOperator::MergeGraph    MergeGraph;
         typedef typename MergeGraph::Graph              Graph;
-        typedef typename Graph::Edge                    Edge;
-        typedef typename Graph::Node                    Node;
-        typedef typename Graph::EdgeIt                  EdgeIt;
-        typedef typename Graph::NodeIt                  NodeIt;
-        typedef typename MergeGraph::Edge               MergeGraphEdge;
+        typedef typename Graph::Edge                    BaseGraphEdge;
+        typedef typename Graph::Node                    BaseGraphNode;
+        typedef typename MergeGraph::Edge               Edge;
+        typedef typename MergeGraph::Node               Node;
         typedef typename CLUSTER_OPERATOR::WeightType   ValueType;
         typedef typename MergeGraph::index_type         MergeGraphIndexType;
 
@@ -357,7 +349,7 @@ namespace cluster_operators{
             while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0){
                 
 
-                const MergeGraphEdge edgeToRemove = clusterOperator_.contractionEdge();
+                const Edge edgeToRemove = clusterOperator_.contractionEdge();
                 if(param_.buildMergeTreeEncoding_){
                     const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove)); 
                     const MergeGraphIndexType vid = mergeGraph_.id(mergeGraph_.v(edgeToRemove));  
