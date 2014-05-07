@@ -2949,7 +2949,7 @@ prepareColumns(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> & re
                     MultiArrayView<2, T, C2> & res, 
                     MultiArrayView<2, T, C3> & offset, 
                     MultiArrayView<2, T, C4> & scaling, 
-                    DataPreparationGoals goals = ZeroMean | UnitVariance)�;
+                    DataPreparationGoals goals = ZeroMean | UnitVariance);
     } }
     \endcode
 
