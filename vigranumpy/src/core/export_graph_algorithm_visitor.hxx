@@ -545,15 +545,13 @@ public:
         MultiFloatNodeArray nodeFeaturesBufferArray,
         MultiFloatNodeArray nodeFeaturesOutArray
     ){
-
-        reshapeNodeMapIfEmpty(g,nodeFeaturesArray,nodeFeaturesBufferArray);
-        reshapeNodeMapIfEmpty(g,nodeFeaturesArray,nodeFeaturesOutArray);
-
-        // resize output ? 
-        //nodeFeaturesOutArray.reshapeIfEmpty( nodeFeaturesArray.taggedShape());
-
-        // resize buffer ? 
-        //nodeFeaturesBufferArray.reshapeIfEmpty( nodeFeaturesArray.taggedShape());
+        TaggedShape inShape  = nodeFeaturesArray.taggedShape();
+        TaggedShape outShape = TaggedGraphShape<Graph>::taggedNodeMapShape(g);
+        if(inShape.hasChannelAxis()){
+            outShape.setChannelCount(inShape.channelCount());
+        }
+        nodeFeaturesBufferArray.reshapeIfEmpty(outShape);
+        nodeFeaturesOutArray.reshapeIfEmpty(outShape);
 
         // numpy arrays => lemon maps
         MultiFloatNodeArrayMap nodeFeaturesArrayMap(g,nodeFeaturesArray);

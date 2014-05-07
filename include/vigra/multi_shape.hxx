@@ -73,6 +73,15 @@ struct Multiband  // the last axis is explicitly designated as channel axis
     typedef T value_type;
 };
 
+// check if a type is a multiband type
+template<class T>
+struct IsMultiband : VigraFalseType{
+};
+
+template<class T>
+struct IsMultiband<Multiband<T> > : VigraTrueType{
+};
+
 template<class T>
 struct NumericTraits<Singleband<T> >
 : public NumericTraits<T>

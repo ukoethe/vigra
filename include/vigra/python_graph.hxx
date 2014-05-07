@@ -312,16 +312,6 @@ struct IncEdgeIteratorHolder{
     Node node_;
 };
 
-template<class T>
-struct IsMultiband : VigraFalseType{
-};
-
-template<class T>
-struct IsMultiband<Multiband<T> > : VigraTrueType{
-};
-
-
-
 
 template<class G,class AV>
 class NumpyScalarEdgeMap{
@@ -576,7 +566,7 @@ VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO(4,"xyzt","xyzte","xyzte");
 #undef VIGRA_MAKE_TAGGED_GRAPH_SHAPE_MACRO
 
 
-
+/*
 // TODO ASK UKOETHE FOR HELP HERE
 template<unsigned int G_DIM ,class T,class G,unsigned int OG_DIM>
 void reshapeNodeMapIfEmpty(
@@ -609,7 +599,7 @@ void reshapeNodeMapIfEmpty(
         toReshapeArray.reshapeIfEmpty(outShape);
     }
 }
-
+*/
 
 
 
