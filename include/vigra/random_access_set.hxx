@@ -540,7 +540,7 @@ RandomAccessSet<Key,Compare,Alloc>::count
    const typename RandomAccessSet<Key,Compare,Alloc>::key_type&  value
 ) const
 {
-   return find(value) != end();
+   return find(value) != end() ? 1 : 0;
 }
 
 /// lower bound
