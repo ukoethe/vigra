@@ -2710,7 +2710,7 @@ void covarianceMatrixOfRows(MultiArrayView<2, T1, C1> const & features,
     covariance.init(NumericTraits<T2>::zero());
     for(MultiArrayIndex k=0; k<n; ++k)
         detail::updateCovarianceMatrix(columnVector(features, k), count, means, covariance);
-    covariance /= T2(m - 1);
+    covariance /= T2(n - 1);
 }
 
     /** \brief Compute the covariance matrix between the rows of a matrix \a features.
@@ -2949,7 +2949,7 @@ prepareColumns(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> & re
                     MultiArrayView<2, T, C2> & res, 
                     MultiArrayView<2, T, C3> & offset, 
                     MultiArrayView<2, T, C4> & scaling, 
-                    DataPreparationGoals goals = ZeroMean | UnitVariance)´;
+                    DataPreparationGoals goals = ZeroMean | UnitVariance)ï¿½;
     } }
     \endcode
 
