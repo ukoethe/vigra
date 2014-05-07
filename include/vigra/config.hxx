@@ -162,11 +162,19 @@
     #pragma GCC diagnostic ignored "-Wshadow"  
     
     #if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
-        #define VIGRA_HAS_UNIQUE_PTR
+        #if !defined(__APPLE__) || (defined(__clang_major__) && __clang_major__ > 4)
+            #define VIGRA_HAS_UNIQUE_PTR
+        #endif
+    #else
+        #if defined(__APPLE__) && defined(__clang_major__) &&  __clang_major__ <= 4
+            #define VIGRA_SHARED_PTR_IN_TR1
+        #endif        
     #endif
 
-    #if defined(__APPLE__) && !defined(__clang_major__) && __GNUC__ == 4 && __GNUC_MINOR__ < 6
-        #define VIGRA_SHARED_PTR_IN_TR1
+
+//    #if defined(__APPLE__) && !defined(__clang_major__) && __GNUC__ == 4 && __GNUC_MINOR__ < 6
+    #if !defined(__GXX_EXPERIMENTAL_CXX0X__) && __cplusplus < 201103L
+//        #define VIGRA_SHARED_PTR_IN_TR1
     #endif
 #endif  // __GNUC__
 
