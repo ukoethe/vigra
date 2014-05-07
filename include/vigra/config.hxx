@@ -251,7 +251,7 @@
 #  define VIGRA_UNIQUE_PTR  std::auto_ptr
 #endif
 
-#ifdef _GLIBCXX_INCLUDE_AS_TR1
+#if defined(__APPLE__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 6
 #  define VIGRA_SHARED_PTR  std::tr1::shared_ptr
 #else
 #  define VIGRA_SHARED_PTR  std::shared_ptr

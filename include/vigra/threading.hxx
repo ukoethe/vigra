@@ -41,18 +41,20 @@
 */
 
 
-#if defined(__clang__)
-# if (!__has_include(<thread>) || !__has_include(<mutex>) || !__has_include(<atomic>))
+#ifndef VIGRA_NO_STD_THREADING 
+# if defined(__clang__)
+#  if (!__has_include(<thread>) || !__has_include(<mutex>) || !__has_include(<atomic>))
 #    define VIGRA_NO_STD_THREADING
-# endif
-#else
+#  endif
+# else
 #  if defined(__GNUC__) && (!defined(_GLIBCXX_HAS_GTHREADS) || !defined(_GLIBCXX_USE_C99_STDINT_TR1))
 #    define VIGRA_NO_STD_THREADING
 #  endif
-#endif
+# endif
 
-#if defined(_MSC_VER) && _MSC_VER <= 1600
+# if defined(_MSC_VER) && _MSC_VER <= 1600
 #  define VIGRA_NO_STD_THREADING
+# endif
 #endif
 
 #ifdef VIGRA_NO_STD_THREADING
@@ -137,8 +139,8 @@ using VIGRA_THREADING_NAMESPACE::atomic_long;
 using VIGRA_THREADING_NAMESPACE::atomic_ulong;
 using VIGRA_THREADING_NAMESPACE::atomic_llong;
 using VIGRA_THREADING_NAMESPACE::atomic_ullong;
-using VIGRA_THREADING_NAMESPACE::atomic_char16_t;
-using VIGRA_THREADING_NAMESPACE::atomic_char32_t;
+// using VIGRA_THREADING_NAMESPACE::atomic_char16_t; // not in boost
+// using VIGRA_THREADING_NAMESPACE::atomic_char32_t; // not in boost
 using VIGRA_THREADING_NAMESPACE::atomic_wchar_t;
 using VIGRA_THREADING_NAMESPACE::atomic_int_least8_t;
 using VIGRA_THREADING_NAMESPACE::atomic_uint_least8_t;

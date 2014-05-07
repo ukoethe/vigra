@@ -742,11 +742,11 @@ void defineChunkedArray()
          "   ``Compression.ZLIB_FAST:``\n      ZLIB fast compression (level = 1)\n"
          "   ``Compression.ZLIB_BEST:``\n      ZLIB best compression (level = 9)\n"
          "   ``Compression.LZ4:``\n      LZ4 compression (very fast)\n\n")
-        .value("ZLIB", CompressionMethod::ZLIB)
-        .value("ZLIB_NONE", CompressionMethod::ZLIB_NONE)
-        .value("ZLIB_FAST", CompressionMethod::ZLIB_FAST)
-        .value("ZLIB_BEST", CompressionMethod::ZLIB_BEST)
-        .value("LZ4", CompressionMethod::LZ4)
+        .value("ZLIB", vigra::ZLIB)
+        .value("ZLIB_NONE", vigra::ZLIB_NONE)
+        .value("ZLIB_FAST", vigra::ZLIB_FAST)
+        .value("ZLIB_BEST", vigra::ZLIB_BEST)
+        .value("LZ4", vigra::LZ4)
     ;
 
 #ifdef HasHDF5

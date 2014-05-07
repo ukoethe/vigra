@@ -2,7 +2,11 @@ IF(MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 ENDIF()
 
-if(NOT MSVC)
+if(APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0" AND NOT WITH_BOOST_THREAD)
+    MESSAGE(FATAL_ERROR "cmake must be run with '-DWITH_BOOST_THREAD=1' in this toolset.")
+endif()
+
+if(NOT MSVC AND NOT (APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0") )
     IF (CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0")
         SET(CMAKE_CXX_FLAGS "-pthread -std=c++0x ${CMAKE_CXX_FLAGS}")
     elseif(CMAKE_COMPILER_IS_GNUCXX)
@@ -12,9 +16,10 @@ if(NOT MSVC)
     endif()
 endif()
 
-# if(APPLE)
-    # SET(CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
-# endif()
+if(WITH_BOOST_THREAD)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+    SET(VIGRANUMPY_CORE_LIBRARIES ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_DATE_TIME_LIBRARY} ${Boost_CHRONO_LIBRARY})
+endif()
 
 # note special treatment of target vigranumpy_core: 
 # module name is automatically changed into vigranumpycore
@@ -25,7 +30,7 @@ VIGRA_ADD_NUMPY_MODULE(core
     axistags.cxx
     multi_array_chunked.cxx
   LIBRARIES   
-    ${VIGRANUMPY_IMPEX_LIBRARIES}
+    ${VIGRANUMPY_IMPEX_LIBRARIES} ${VIGRANUMPY_CORE_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(impex 

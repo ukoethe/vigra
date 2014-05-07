@@ -36,7 +36,7 @@
 #ifndef VIGRA_MEMORY_HXX
 #define VIGRA_MEMORY_HXX
 
-#ifdef _GLIBCXX_INCLUDE_AS_TR1
+#if defined(__APPLE__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 6
 #  include <tr1/memory>
 #else
 #  include <memory>
