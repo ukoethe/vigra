@@ -30,6 +30,7 @@ VIGRA_ADD_NUMPY_MODULE(filters SOURCES
     filters.cxx
     tensors.cxx
     morphology.cxx
+    non_local_mean.cxx
   LIBRARIES 
     ${Boost_LIBRARIES}
   VIGRANUMPY)

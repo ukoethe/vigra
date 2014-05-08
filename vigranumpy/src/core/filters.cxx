@@ -40,7 +40,6 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/nonlineardiffusion.hxx>
 #include <vigra/symmetry.hxx>
-#include <vigra/non_local_mean.hxx>
 
 namespace python = boost::python;
 
@@ -112,78 +111,11 @@ void defineFilters2D()
         "For details see radialSymmetryTransform_ in the vigra C++ documentation.\n");
 }
 
-template<int DIM,class PIXEL_TYPE>
-NumpyAnyArray  pyNonLocalMean(
-    NumpyArray<DIM,PIXEL_TYPE> image,
-    const float sigma,
-    const int searchRadius,
-    const int patchRadius,
-    const bool gaussNoise,
-    const double sigmaMean,
-    const int nThreads,
-    const double epsilon,
-    const double mu1,
-    const double var1,
-    const int stepSize,
-    const bool verbose,
-    NumpyArray<DIM,PIXEL_TYPE> out = NumpyArray<DIM,PIXEL_TYPE>()
-){
-    NonLocalMeanParameter param;
-
-    param.sigma_=sigma;
-    param.searchRadius_=searchRadius;
-    param.patchRadius_=patchRadius;
-    param.gaussNoise_=gaussNoise;
-    param.sigmaMean_=sigmaMean;
-    param.nThreads_ = nThreads;
-    param.epsilon_=epsilon;
-    param.mu1_=mu1;
-    param.var1_=var1;
-    param.stepSize_=stepSize;
-    param.verbose_=verbose;
-    out.reshapeIfEmpty(image.shape());
-    nonLocalMean<DIM,PIXEL_TYPE>(image,param,out);
-    return out;
-}
-
-template<int DIM,class PIXEL_TYPE>
-void exportNonLocalMean(const std::string name){
-
-    // export the function to python
-    python::def(name.c_str(), registerConverters(&pyNonLocalMean<DIM,PIXEL_TYPE>) ,
-        (
-            python::arg("image"),
-            python::arg("sigma")=1.0,
-            python::arg("searchRadius")=3,
-            python::arg("patchRadius")=1,
-            python::arg("gaussNoise")=true,
-            python::arg("sigmaMean")=1.0,
-            python::arg("nThreads")=8,
-            python::arg("epsilon")=0.00001,
-            python::arg("mu1")=0.95,
-            python::arg("var1")=0.5,
-            python::arg("stepSize")=2,
-            python::arg("verbose")=true,
-            python::arg("out") = boost::python::object()
-        ),
-        "loop over an image and do something with each pixels\n\n"
-        "Args:\n\n"
-        "   image : input image\n\n"
-        "returns an an image with the same shape as the input image"
-    );
-}
-
-void defineNonLocalMean(){
-    exportNonLocalMean<2,vigra::TinyVector<float,3> >("nonLocalMean2d");
-    exportNonLocalMean<2,float>("nonLocalMean2d");
-    exportNonLocalMean<3,float>("nonLocalMean3d");
-    exportNonLocalMean<4,float>("nonLocalMean4d");
-}
-
 void defineKernels();
 void defineConvolutionFunctions();
 void defineMorphology();
 void defineTensor();
+void defineNonLocalMean();
 
 } // namespace vigra
 
