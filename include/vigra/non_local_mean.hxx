@@ -1,25 +1,52 @@
-/* Pierrick Coupe - pierrick.coupe@gmail.com                               */
-/* Jose V. Manjon - jmanjon@fis.upv.es                                     */
-/* Brain Imaging Center, Montreal Neurological Institute.                  */
-/* Mc Gill University                                                      */
-/*                                                                         */
-/* Copyright (C) 2008 Pierrick Coupe and Jose V. Manjon                    */
-
-/***************************************************************************
-*              3D Adaptive Multiresolution Non-Local Means Filter          *
-* Pierrick Coupe a, Jose V. Manjon, Montserrat Robles , D. Louis Collins   *
-***************************************************************************/
-
-
-/*                          Details on ONLM filter                        */
-/***************************************************************************
- *  The ONLM filter is described in:                                       *
- *                                                                         *
- *  P. Coup�, P. Yger, S. Prima, P. Hellier, C. Kervrann, C. Barillot.     *
- *  An Optimized Blockwise Non Local Means Denoising Filter for 3D Magnetic*
- *  Resonance Images. IEEE Transactions on Medical Imaging, 27(4):425-441, *
- *  Avril 2008                                                             *
- ***************************************************************************/
+/************************************************************************/
+/*                                                                      */
+/*     Copyright 2014 by Thorsten Beier and Ullrich Koethe              */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
+/* RE-IMPLEMENTAION OF THE WORK OF:                                     */
+/* Pierrick Coupe - pierrick.coupe@gmail.com                            */
+/* Jose V. Manjon - jmanjon@fis.upv.es                                  */
+/* Brain Imaging Center, Montreal Neurological Institute.               */
+/* Mc Gill University                                                   */
+/*                                                                      */
+/************************************************************************/
+/* The ONLM filter is described in:                                     */
+/*                                                                      */
+/* P. Coup�, P. Yger, S. Prima, P. Hellier, C. Kervrann, C. Barillot.   */
+/* An Optimized Blockwise Non Local Means Denoising Filter              */ 
+/* for 3D Magnetic Resonance Images                                     */
+/* . IEEE Transactions on Medical Imaging, 27(4):425-441,               */            
+/* Avril 2008                                                           */
+/************************************************************************/
 
 
 #ifndef VIGRA_NON_LOCAL_MEAN
@@ -43,13 +70,12 @@
 
 /*boost*/
 #include <boost/thread/thread.hpp>
-
+#include <boost/thread/mutex.hpp>
 
 /*vigra*/
 #include "multi_array.hxx"
 #include "multi_convolution.hxx"
 #include "error.hxx"
-
 
 namespace vigra{
 
@@ -220,39 +246,36 @@ public:
         // to give verbose information
         int threadIndex;
         vigra::MultiArrayView<1,double>   progress;
+
+        boost::mutex * estimateMutexPtr;
     };
 
 
-    struct ThreadHelper{
-        #ifdef _WIN32
-            typedef HANDLE HandleType; /* Handles to the worker threads*/
-
-            static HandleType * makeThreadArray(const size_t numThreads){
-                return (HandleType *)malloc(numThreads * sizeof( HandleType ));
-            }
-            static ThreadArguments * makeThreadArguments(const size_t numThreads){
-                return (ThreadArguments *) malloc( numThreads * sizeof(ThreadArguments));
-            }
-
-            static void close(HandleType & handle){
-                CloseHandle( handle );
-            }
-
-        #else
-            typedef pthread_t HandleType;
-
-            static HandleType * makeThreadArray(const size_t numThreads){
-                return (HandleType *)calloc(numThreads , sizeof( HandleType ));
-            }
-            static ThreadArguments * makeThreadArguments(const size_t numThreads){
-                return (ThreadArguments *) calloc(numThreads , sizeof(ThreadArguments));
-            }
-
-            static void close(HandleType & handle){
-                pthread_join(handle, NULL);
-            }
-        #endif
-    };
+    // struct ThreadHelper{
+    //     #ifdef _WIN32
+    //         typedef HANDLE HandleType; /* Handles to the worker threads*/
+    //         static HandleType * makeThreadArray(const size_t numThreads){
+    //             return (HandleType *)malloc(numThreads * sizeof( HandleType ));
+    //         }
+    //         static ThreadArguments * makeThreadArguments(const size_t numThreads){
+    //             return (ThreadArguments *) malloc( numThreads * sizeof(ThreadArguments));
+    //         }
+    //         static void close(HandleType & handle){
+    //             CloseHandle( handle );
+    //         }
+    //     #else
+    //         typedef pthread_t HandleType;
+    //         static HandleType * makeThreadArray(const size_t numThreads){
+    //             return (HandleType *)calloc(numThreads , sizeof( HandleType ));
+    //         }
+    //         static ThreadArguments * makeThreadArguments(const size_t numThreads){
+    //             return (ThreadArguments *) calloc(numThreads , sizeof(ThreadArguments));
+    //         }
+    //         static void close(HandleType & handle){
+    //             pthread_join(handle, NULL);
+    //         }
+    //     #endif
+    // };
 
 
 
@@ -292,24 +315,16 @@ public:
             // make estimageImage clean  again!
             // THIS IS IMPORTANT ! (must be zero initalized)
             estimageImage[scanOrderIndex]=RealPromotePixelType(0.0);
-        }
-
-        // THREADING
-        typename ThreadHelper::HandleType * threadArray =  ThreadHelper::makeThreadArray(parameter.nThreads_);
-        ThreadArguments *threadArgArray = ThreadHelper::makeThreadArguments(parameter.nThreads_);
+        }      
 
         // for verbose
+        boost::mutex estimateMutex;
+
         vigra::MultiArray<1,double> progress(typename vigra::MultiArray<1,double>::difference_type(parameter.nThreads_));
-
-
-
-        // NEW THREADING
         typedef boost::thread ThreadType;
+        std::vector<ThreadArguments> threadArgArray(parameter.nThreads_);
         std::vector<ThreadType *> threadVector(parameter.nThreads_);
-
-
         for (size_t i = 0; i < parameter.nThreads_; i++){
-
             threadArgArray[i].start = (i * image.shape(DIM-1)) / parameter.nThreads_;
             threadArgArray[i].end = ((i + 1) * image.shape(DIM-1)) / parameter.nThreads_;
             threadArgArray[i].param = parameter;
@@ -318,28 +333,21 @@ public:
             threadArgArray[i].variancesImage = variancesImage;;
             threadArgArray[i].estimateImage = estimageImage;
             threadArgArray[i].labelImage = labelImage;
-
             threadArgArray[i].threadIndex = i;
             threadArgArray[i].progress = progress;
-
+            threadArgArray[i].estimateMutexPtr = &estimateMutex;
             threadVector[i]= new ThreadType(&SelfType::runThread,&threadArgArray[i]);
+
         }
         for (size_t i = 0; i < parameter.nThreads_; i++){
             threadVector[i]->join();
         }
-
-        free(threadArgArray);
-        free(threadArray);
-
-
-        /* Aggregation of the estimators (i.e. means computation) */
         for(int scanOrderIndex=0; scanOrderIndex<labelImage.size(); ++scanOrderIndex){
             if (labelImage[scanOrderIndex] == 0)
                 outImage[scanOrderIndex]=image[scanOrderIndex];
             else
                 outImage[scanOrderIndex]=estimageImage[scanOrderIndex] / labelImage[scanOrderIndex];
         }
-
         for (size_t i = 0; i < parameter.nThreads_; i++){
             delete threadVector[i];
         }
@@ -530,7 +538,7 @@ private:
 
                 // this if seems total useless to me
                 if (totalweight != 0.0){
-                    SelfType::writePatchValues(arg.estimateImage, arg.labelImage, xyz, patchRadius, average, totalweight, bias,rician);
+                    SelfType::writePatchValues(arg.estimateImage, arg.labelImage, xyz, patchRadius, average, totalweight, bias,rician,arg.estimateMutexPtr);
                 }
 
             }
@@ -538,7 +546,7 @@ private:
                 const double wmax = 1.0;
                 SelfType::extractPatchValues(arg.inImage, xyz, patchRadius, average, wmax,rician);
                 totalweight += wmax;
-                SelfType::writePatchValues(arg.estimateImage, arg.labelImage, xyz, patchRadius, average, totalweight, bias,rician);
+                SelfType::writePatchValues(arg.estimateImage, arg.labelImage, xyz, patchRadius, average, totalweight, bias,rician,arg.estimateMutexPtr );
             }
     }
 
@@ -631,7 +639,7 @@ private:
     static void writePatchValues( RealPromotedArrayView & estimateImage, LabelArrayView & labelImage,
                             const Coordinate xyz, int neighborhoodsize, 
                             BlockAverageVector & average, const double global_sum, const double bias,
-                            const bool rician
+                            const bool rician, boost::mutex * mutexPtr
     ){
         Coordinate abc,xyzPos,nhSize(neighborhoodsize);        
         int count = 0 ;
@@ -640,19 +648,26 @@ private:
         #define VIGRA_NLM_IN_LOOP_CODE                                                      \
                 xyzPos = xyz + abc - nhSize;                                                \
                 if (isInsidePoint(estimateImage.shape(),xyzPos)){                           \
-                    RealPromotePixelType value = estimateImage[xyzPos];                     \
                     if(rician){                                                             \
+                        mutexPtr->lock();                                                   \
+                        RealPromotePixelType value = estimateImage[xyzPos];                 \
                         RealPromotePixelType denoisedValue =                                \
                             (average[count] / global_sum) -  RealPromotePixelType(bias);    \
                         makeNegtiveValuesZero(denoisedValue);                               \
                         denoisedValue=vigra::sqrt(denoisedValue);                           \
                         value += denoisedValue;                                             \
+                        estimateImage[xyzPos] = value;                                      \
+                        ++labelImage[xyzPos];                                               \
+                        mutexPtr->unlock();                                                 \
                     }                                                                       \
                     else{                                                                   \
+                        mutexPtr->lock();                                                   \
+                        RealPromotePixelType value = estimateImage[xyzPos];                 \
                         value += average[count] / global_sum;                               \
+                        estimateImage[xyzPos] = value;                                      \
+                        ++labelImage[xyzPos];                                               \
+                        mutexPtr->unlock();                                                 \
                     }                                                                       \
-                    estimateImage[xyzPos] = value;                                          \
-                    ++labelImage[xyzPos];                                                   \
                 }                                                                           \
                 count++
 
