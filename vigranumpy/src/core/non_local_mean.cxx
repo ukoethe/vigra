@@ -60,8 +60,8 @@ NumpyAnyArray  pyNonLocalMean(
     const double sigmaMean,
     const int nThreads,
     const double epsilon,
-    const double mu1,
-    const double var1,
+    const double meanRatio,
+    const double varRatio,
     const int stepSize,
     const bool verbose,
     NumpyArray<DIM,PIXEL_TYPE> out = NumpyArray<DIM,PIXEL_TYPE>()
@@ -75,8 +75,8 @@ NumpyAnyArray  pyNonLocalMean(
     param.sigmaMean_=sigmaMean;
     param.nThreads_ = nThreads;
     param.epsilon_=epsilon;
-    param.mu1_=mu1;
-    param.var1_=var1;
+    param.meanRatio_=meanRatio;
+    param.varRatio_=varRatio;
     param.stepSize_=stepSize;
     param.verbose_=verbose;
     out.reshapeIfEmpty(image.shape());
@@ -98,8 +98,8 @@ void exportNonLocalMean(const std::string name){
             python::arg("sigmaMean")=1.0,
             python::arg("nThreads")=8,
             python::arg("epsilon")=0.00001,
-            python::arg("mu1")=0.95,
-            python::arg("var1")=0.5,
+            python::arg("meanRatio")=0.95,
+            python::arg("varRatio")=0.5,
             python::arg("stepSize")=2,
             python::arg("verbose")=true,
             python::arg("out") = boost::python::object()

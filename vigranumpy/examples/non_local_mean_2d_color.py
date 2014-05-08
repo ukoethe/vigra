@@ -4,12 +4,12 @@ from matplotlib import pylab
 from time import time
 
 
-path = "12003.jpg"
+path = "100075.jpg"
 
 data = vigra.impex.readImage(path).astype(numpy.float32)
 
 t0 =time()
-res = vigra.filters.nonLocalMean2d(data, sigma=10.0,searchRadius=40,patchRadius=4,nThreads=2,stepSize=2,verbose=True)
+res = vigra.filters.nonLocalMean2d(data, sigma=10.0,searchRadius=10,patchRadius=2,nThreads=3,stepSize=2,verbose=True,sigmaMean=30.0)
 t1 = time()
 print t1-t0
 imgs  = [data,res]

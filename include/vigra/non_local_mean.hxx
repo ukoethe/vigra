@@ -78,8 +78,8 @@ struct NonLocalMeanParameter{
         const double sigmaMean = 1.0,
         const int nThreads = 8,
         const double epsilon = 0.00001,
-        const double mu1 = 0.95,
-        const double var1 = 0.5,
+        const double meanRatio = 0.95,
+        const double varRatio = 0.5,
         const int stepSize = 2,
         const bool verbose = true
     ):
@@ -90,8 +90,8 @@ struct NonLocalMeanParameter{
     sigmaMean_(sigmaMean),
     nThreads_(nThreads),
     epsilon_(epsilon),
-    mu1_(mu1),
-    var1_(var1),
+    meanRatio_(meanRatio),
+    varRatio_(varRatio),
     stepSize_(stepSize),
     verbose_(verbose)
     {
@@ -106,13 +106,14 @@ struct NonLocalMeanParameter{
 
 
     double epsilon_;
-    double mu1_;
-    double var1_;
+    double meanRatio_;
+    double varRatio_;
     int stepSize_;
     bool verbose_;
 };
 
-// move all of them to tiny vector ?
+// move all of them to tiny vector !
+// - rename few 
 
 template<int DIM, class C, class S>
 inline void mirrorIfIsOutsidePoint(
@@ -190,8 +191,6 @@ typename vigra::NumericTraits<T>::Promote  pixelSum(
     return a;
 }
 
-
-
 template<class T>
 struct PixelTypeLength{
     const static int Length=1;
@@ -266,14 +265,14 @@ public:
 
 
     void operator()();
+
+private:
     void processSinglePixel(const Coordinate & xyz);
     void processSinglePair( const Coordinate & xyz,const Coordinate & nxyz,RealPromoteScalarType & wmax,RealPromoteScalarType & totalweight);
     RealPromoteScalarType patchDistance(const Coordinate & xyz,const Coordinate & nxyz);
 
     void extractPatchValues(const Coordinate & xyz,const RealPromoteScalarType weight);
     void writePatchValues(const Coordinate & xyz,const RealPromoteScalarType globalSum);
-private:
-
 
     void progressPrinter(const int counter);
 
@@ -302,7 +301,7 @@ private:
 };
 
 template<int DIM,class PIXEL_TYPE_IN>
-void BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::progressPrinter(const int counter){
+inline void BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::progressPrinter(const int counter){
     progress_[threadIndex_] = counter;
     if(threadIndex_==nThreads_-1){
         if(counter%10 == 0){
@@ -447,7 +446,7 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::processSingleP
             // here we check if to patches fit to each other
             // one patch is around xyz 
             // other patch is arround nxyz                
-            if (t1 > param_.mu1_ && t1 < (1.0 / param_.mu1_) && t2 > param_.var1_ && t2 < (1.0 / param_.var1_)){
+            if (t1 > param_.meanRatio_ && t1 < (1.0 / param_.meanRatio_) && t2 > param_.varRatio_ && t2 < (1.0 / param_.varRatio_)){
                 const double d =this->patchDistance(xyz,nxyz);
                 const RealPromoteScalarType hh = param_.sigma_ * param_.sigma_; // store hh in param?
                 const RealPromoteScalarType w = exp(-d / (hh));
@@ -621,6 +620,44 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::writePatchValues(
     #undef VIGRA_NLM_IN_LOOP_CODE
 }
 
+
+template<int DIM,class PIXEL_TYPE_IN,class PIXEL_TYPE_OUT>
+inline void gaussianMeanAndVariance(
+    const vigra::MultiArrayView<DIM,PIXEL_TYPE_IN> & inArray,
+    const double sigma,
+    vigra::MultiArrayView<DIM,PIXEL_TYPE_OUT> & meanArray,
+    vigra::MultiArrayView<DIM,PIXEL_TYPE_OUT> & varArray,
+    vigra::MultiArrayView<DIM,PIXEL_TYPE_OUT> & tmpArray
+){
+
+    // compute mean and variance 
+    vigra::gaussianSmoothMultiArray(inArray, meanArray, sigma);
+    // square raw data (use estimate Image to store temp. results)
+    for(int scanOrderIndex=0;scanOrderIndex<inArray.size();++scanOrderIndex){
+        tmpArray[scanOrderIndex]=vigra::pow(inArray[scanOrderIndex],2);
+    }
+    vigra::gaussianSmoothMultiArray(tmpArray,varArray, sigma);
+    for(int scanOrderIndex=0;scanOrderIndex<inArray.size();++scanOrderIndex){
+        PIXEL_TYPE_OUT var = varArray[scanOrderIndex] - vigra::pow(meanArray[scanOrderIndex],2);
+        makeNegtiveValuesZero(var);  // callbyref
+        varArray[scanOrderIndex] = var;
+    }      
+}
+
+template<int DIM,class PIXEL_TYPE_IN,class PIXEL_TYPE_OUT>
+inline void gaussianMeanAndVariance(
+    const vigra::MultiArrayView<DIM,PIXEL_TYPE_IN> & inArray,
+    const double sigma,
+    vigra::MultiArrayView<DIM,PIXEL_TYPE_OUT> & meanArray,
+    vigra::MultiArrayView<DIM,PIXEL_TYPE_OUT> & varArray
+){
+    vigra::MultiArray<DIM,PIXEL_TYPE_OUT>  tmpArray(inArray.shape());
+    gaussianMeanAndVariance<DIM,PIXEL_TYPE_IN,PIXEL_TYPE_OUT>(inArray,sigma,meanArray,varArray,tmpArray);   
+}
+
+
+
+
 template<int DIM, class PIXEL_TYPE_IN,class PIXEL_TYPE_OUT>
 void nonLocalMean(
     const vigra::MultiArrayView<DIM,PIXEL_TYPE_IN> & image,
@@ -636,14 +673,10 @@ void nonLocalMean(
     typedef typename ThreadObjectType::LabelType LabelType;
 
     // inspect parameter
-    vigra_precondition(param.stepSize_>=1,
-        "NonLocalMean Parameter: \"stepSize>=1\" violated");
-    vigra_precondition(param.searchRadius_>=1,
-        "NonLocalMean Parameter: \"searchRadius >=1\" violated");
-    vigra_precondition(param.patchRadius_>=1,
-        "NonLocalMean Parameter: \"searchRadius >=1\" violated");
-    vigra_precondition(param.stepSize_-1<=param.patchRadius_,
-        "NonLocalMean Parameter: \"stepSize -1 <= patchRadius\"  violated");
+    vigra_precondition(param.stepSize_>=1,"NonLocalMean Parameter: \"stepSize>=1\" violated");
+    vigra_precondition(param.searchRadius_>=1, "NonLocalMean Parameter: \"searchRadius >=1\" violated");
+    vigra_precondition(param.patchRadius_>=1,"NonLocalMean Parameter: \"searchRadius >=1\" violated");
+    vigra_precondition(param.stepSize_-1<=param.patchRadius_,"NonLocalMean Parameter: \"stepSize -1 <= patchRadius\"  violated");
 
     // allocate arrays
     vigra::MultiArray<DIM,RealPromotePixelType> meanImage(image.shape());
@@ -651,36 +684,25 @@ void nonLocalMean(
     vigra::MultiArray<DIM,RealPromotePixelType> estimageImage(image.shape());
     vigra::MultiArray<DIM,LabelType> labelImage(image.shape());
 
-    labelImage = 0;
-
     // compute mean and variance 
-    vigra::gaussianSmoothMultiArray(image, meanImage, param.sigmaMean_);
-    // square raw data (use estimate Image to store temp. results)
-    for(int scanOrderIndex=0;scanOrderIndex<image.size();++scanOrderIndex){
-        //using namespace vigra::multi_math;
-        estimageImage[scanOrderIndex]=vigra::pow(image[scanOrderIndex],2);
-        labelImage[scanOrderIndex]=0;
-    }
-    vigra::gaussianSmoothMultiArray(estimageImage,varImage, param.sigmaMean_);
-    for(int scanOrderIndex=0;scanOrderIndex<image.size();++scanOrderIndex){
-        RealPromotePixelType var = varImage[scanOrderIndex] - vigra::pow(meanImage[scanOrderIndex],2);
-        makeNegtiveValuesZero(var);  // callbyref
-        varImage[scanOrderIndex] = var;
-        estimageImage[scanOrderIndex]=RealPromotePixelType(0.0); // clean estimate 
-    }      
+    // last argument is a "buffer" since within "gaussianMeanAndVariance" another array is needed
+    // ==> to avoid an unnecessary allocation we use the estimageImage as a buffer
+    //gaussianMeanAndVariance<DIM,PixelTypeIn,RealPromotePixelType>(image,param.sigmaMean_,meanImage,varImage,estimageImage);
+    gaussianMeanAndVariance<DIM,PixelTypeIn,RealPromotePixelType>(image,param.sigmaMean_,meanImage,varImage);
 
-   
+    // initialize
+    labelImage = 0;
+    estimageImage = RealPromotePixelType(0.0);
+
+    ///////////////////////////////////////////////////////////////
     {   // MULTI THREAD CODE STARTS HERE
 
         boost::mutex estimateMutex;
         typedef boost::thread ThreadType;
         const size_t nThreads =  param.nThreads_;
-
         MultiArray<1,int> progress = MultiArray<1,int>(typename  MultiArray<1,int>::difference_type(nThreads));
 
-
         // allocate all thread objects
-
         // each thread object works on a portion of the data
         std::vector<ThreadObjectType> threadObjects(nThreads, 
             ThreadObjectType(image, meanImage, varImage, estimageImage, labelImage, 
@@ -705,9 +727,10 @@ void nonLocalMean(
             delete threadPtrs[i];
 
     }   // MULTI THREAD CODE ENDS HERE
+    ///////////////////////////////////////////////////////////////
 
-
-    // combine result from different workers
+    // normalize estimates by the number of labels
+    // and write that in output
     for(int scanOrderIndex=0; scanOrderIndex<labelImage.size(); ++scanOrderIndex){
         if (labelImage[scanOrderIndex] == 0)
             outImage[scanOrderIndex]=image[scanOrderIndex];
