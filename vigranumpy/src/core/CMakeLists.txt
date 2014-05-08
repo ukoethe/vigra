@@ -22,13 +22,16 @@ VIGRA_ADD_NUMPY_MODULE(sampling
   SOURCES
     sampling.cxx
   VIGRANUMPY)
-   
+
+find_package(Boost COMPONENTS python thread REQUIRED)
 VIGRA_ADD_NUMPY_MODULE(filters SOURCES
     kernel.cxx
     convolution.cxx
     filters.cxx
     tensors.cxx
     morphology.cxx
+  LIBRARIES 
+    ${Boost_LIBRARIES}
   VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
