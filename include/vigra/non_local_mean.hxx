@@ -271,8 +271,8 @@ private:
     void processSinglePair( const Coordinate & xyz,const Coordinate & nxyz,RealPromoteScalarType & wmax,RealPromoteScalarType & totalweight);
     RealPromoteScalarType patchDistance(const Coordinate & xyz,const Coordinate & nxyz);
 
-    void extractPatchValues(const Coordinate & xyz,const RealPromoteScalarType weight);
-    void writePatchValues(const Coordinate & xyz,const RealPromoteScalarType globalSum);
+    void patchExtractAndAcc(const Coordinate & xyz,const RealPromoteScalarType weight);
+    void patchAccMeanToEstimate(const Coordinate & xyz,const RealPromoteScalarType globalSum);
 
     void progressPrinter(const int counter);
 
@@ -412,20 +412,20 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::processSingleP
             }
             // give pixel xyz  as much weight as
             // the maximum weighted other patch
-            this->extractPatchValues(xyz,wmax);
+            this->patchExtractAndAcc(xyz,wmax);
             totalweight += wmax;
 
             // this if seems total useless to me
             if (totalweight != 0.0){
-                this->writePatchValues(xyz,totalweight);
+                this->patchAccMeanToEstimate(xyz,totalweight);
             }
 
         }
         else{
             const double wmax = 1.0;
-            this->extractPatchValues(xyz,wmax);
+            this->patchExtractAndAcc(xyz,wmax);
             totalweight += wmax;
-            this->writePatchValues(xyz,totalweight);
+            this->patchAccMeanToEstimate(xyz,totalweight);
         }
 }
 
@@ -440,23 +440,24 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::processSingleP
         if( pixelSum(meanImage_[nxyz]) > param_.epsilon_  && pixelSum(varImage_[nxyz]) > param_.epsilon_){
 
             // Compute Ratios // TODO fix types
-            const double t1 = pixelSum(meanImage_[xyz]/meanImage_[nxyz])/ PixelTypeLength<RealPromotePixelType>::Length;
-            const double t2 = pixelSum(varImage_[xyz]/varImage_[nxyz])/ PixelTypeLength<RealPromotePixelType>::Length;
+            const double mRatio = pixelSum(meanImage_[xyz]/meanImage_[nxyz])/ PixelTypeLength<RealPromotePixelType>::Length;
+            const double vRatio = pixelSum(varImage_[xyz]/varImage_[nxyz])/ PixelTypeLength<RealPromotePixelType>::Length;
 
             // here we check if to patches fit to each other
             // one patch is around xyz 
             // other patch is arround nxyz                
-            if (t1 > param_.meanRatio_ && t1 < (1.0 / param_.meanRatio_) && t2 > param_.varRatio_ && t2 < (1.0 / param_.varRatio_)){
+            if (mRatio > param_.meanRatio_ && mRatio < (1.0 / param_.meanRatio_) && vRatio > param_.varRatio_ && vRatio < (1.0 / param_.varRatio_)){
                 const double d =this->patchDistance(xyz,nxyz);
                 const RealPromoteScalarType hh = param_.sigma_ * param_.sigma_; // store hh in param?
                 const RealPromoteScalarType w = exp(-d / (hh));
                 wmax = std::max(w,wmax);
-                this->extractPatchValues(nxyz,w);
+                this->patchExtractAndAcc(nxyz,w);
                 totalweight+=  w;
             }
         }
     }
 }
+
 
 template<int DIM,class PIXEL_TYPE_IN>
 inline typename BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::RealPromoteScalarType 
@@ -464,6 +465,8 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::patchDistance(
     const Coordinate & pA,
     const Coordinate & pB
 ){
+
+    // TODO : use a acculator like think to make this more beautiful ?
     const int f = param_.patchRadius_;
     Coordinate offset,nPa,nPb;
     RealPromoteScalarType acu = 0;
@@ -507,7 +510,7 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::patchDistance(
 
 template<int DIM,class PIXEL_TYPE_IN>
 inline void 
-BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::extractPatchValues(
+BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::patchExtractAndAcc(
     const Coordinate & xyz,
     const RealPromoteScalarType weight
 ){
@@ -561,7 +564,7 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::extractPatchValues(
 
 template<int DIM,class PIXEL_TYPE_IN>
 inline void 
-BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::writePatchValues(
+BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN>::patchAccMeanToEstimate(
     const Coordinate & xyz,
     const RealPromoteScalarType globalSum
 ){
@@ -718,7 +721,8 @@ void nonLocalMean(
             lastAxisRange[0]=(i * image.shape(DIM-1)) / nThreads;
             lastAxisRange[1]=((i+1) * image.shape(DIM-1)) / nThreads;
             threadObj.setRange(lastAxisRange);
-            // this will start the threads
+            // this will start the threads and cal operator() 
+            // of the threadObjects
             threadPtrs[i] = new ThreadType(boost::ref(threadObjects[i]));
         }
         for(size_t i=0; i<nThreads; ++i)
