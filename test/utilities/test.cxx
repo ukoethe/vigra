@@ -45,13 +45,11 @@
 #include "vigra/array_vector.hxx"
 #include "vigra/copyimage.hxx"
 #include "vigra/sized_int.hxx"
-<<<<<<< HEAD
+
 #include "vigra/priority_queue.hxx"
-=======
-#include "vigra/bucket_queue.hxx"
 #include "vigra/algorithm.hxx"
 #include "vigra/compression.hxx"
->>>>>>> e360aa31008fb0b75a199e54bb5f6b6812a6c241
+
 
 using namespace vigra;
 
