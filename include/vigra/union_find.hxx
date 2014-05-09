@@ -208,6 +208,7 @@ class UnionFindArray
         vigra_precondition(next_free_label <= LabelAccessor::max(),
            "UnionFindArray(): Need more labels than can be represented"
            "in the destination type.");
+        
         for(T k=0; k < next_free_label; ++k)
             labels_.push_back(LabelAccessor::toAnchor(k));
         labels_.push_back(LabelAccessor::toAnchor(next_free_label));
