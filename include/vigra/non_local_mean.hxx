@@ -115,11 +115,11 @@ struct NonLocalMeanParameter{
 template<class PIXEL_TYPE_IN>
 class SelectByRatio{
 public:
-    typedef NumericTraits<PIXEL_TYPE_IN>::RealPromote PixelType;
-    typedef NumericTraits<PIXEL_TYPE_IN>::ValueType   ValueType;
+    typedef typename NumericTraits<PIXEL_TYPE_IN>::RealPromote PixelType;
+    typedef typename NumericTraits<PIXEL_TYPE_IN>::ValueType   ValueType;
 
 
-    SelectByRatio(const ValueType & meanRatio &  const ValueType varRatio)
+    SelectByRatio(const ValueType  meanRatio,  const ValueType  varRatio)
     :   meanRatio_(meanRatio),
         varRatio_(varRatio){
 
@@ -132,7 +132,7 @@ public:
         // Compute mean ratio of mean and variance
         const ValueType m = mean(meanA/meanB);
         const ValueType v = mean(varA/varB);          
-        return (m > param_.meanRatio_ && m < (1.0 / meanRatio_) && v > varRatio_ && v < (1.0 / varRatio_));
+        return (m > meanRatio_ && m < (1.0 / meanRatio_) && v > varRatio_ && v < (1.0 / varRatio_));
     }
 
 private:
@@ -144,11 +144,11 @@ private:
 template<class PIXEL_TYPE_IN>
 class SelectByNorm{
 public:
-    typedef NumericTraits<PIXEL_TYPE_IN>::RealPromote PixelType;
-    typedef NumericTraits<PIXEL_TYPE_IN>::ValueType   ValueType;
+    typedef typename NumericTraits<PIXEL_TYPE_IN>::RealPromote PixelType;
+    typedef typename NumericTraits<PIXEL_TYPE_IN>::ValueType   ValueType;
 
 
-    SelectByNorm(const ValueType & meanNorm &  const ValueType varNorm)
+    SelectByNorm(const ValueType meanNorm,  const ValueType varNorm)
     :   meanNorm_(meanNorm),
         varNorm_(varNorm){
 
@@ -161,7 +161,7 @@ public:
         // Compute mean ratio of mean and variance
         const ValueType m = norm(meanA-meanB);
         const ValueType v = norm(varA-varB);
-        return (m<meanNorm_ && v<varNorm);
+        return (m<meanNorm_ && v<varNorm_);
     }
     
 private:
