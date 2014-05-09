@@ -110,6 +110,69 @@ struct NonLocalMeanParameter{
     bool verbose_;
 };
 
+
+
+template<class PIXEL_TYPE_IN>
+class SelectByRatio{
+public:
+    typedef NumericTraits<PIXEL_TYPE_IN>::RealPromote PixelType;
+    typedef NumericTraits<PIXEL_TYPE_IN>::ValueType   ValueType;
+
+
+    SelectByRatio(const ValueType & meanRatio &  const ValueType varRatio)
+    :   meanRatio_(meanRatio),
+        varRatio_(varRatio){
+
+    }
+
+    bool operator()(
+        const PixelType & meanA, const PixelType & varA,
+        const PixelType & meanB, const PixelType & varB
+    )const{
+        // Compute mean ratio of mean and variance
+        const ValueType m = mean(meanA/meanB);
+        const ValueType v = mean(varA/varB);          
+        return (m > param_.meanRatio_ && m < (1.0 / meanRatio_) && v > varRatio_ && v < (1.0 / varRatio_));
+    }
+
+private:
+    ValueType meanRatio_;
+    ValueType varRatio_;
+};
+
+
+template<class PIXEL_TYPE_IN>
+class SelectByNorm{
+public:
+    typedef NumericTraits<PIXEL_TYPE_IN>::RealPromote PixelType;
+    typedef NumericTraits<PIXEL_TYPE_IN>::ValueType   ValueType;
+
+
+    SelectByNorm(const ValueType & meanNorm &  const ValueType varNorm)
+    :   meanNorm_(meanNorm),
+        varNorm_(varNorm){
+
+    }
+
+    bool operator()(
+        const PixelType & meanA, const PixelType & varA,
+        const PixelType & meanB, const PixelType & varB
+    )const{
+        // Compute mean ratio of mean and variance
+        const ValueType m = norm(meanA-meanB);
+        const ValueType v = norm(varA-varB);
+        return (m<meanNorm_ && v<varNorm);
+    }
+    
+private:
+    ValueType meanNorm_;
+    ValueType varNorm_;
+};
+
+
+
+
+
 template<int DIM, class PIXEL_TYPE_IN>
 class BlockWiseNonLocalMeanThreadObject{
     typedef PIXEL_TYPE_IN       PixelTypeIn;
