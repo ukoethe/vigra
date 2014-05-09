@@ -1,12 +1,17 @@
-IF(JPEG_FOUND)
-  ADD_DEFINITIONS(-DHasJPEG)
-  INCLUDE_DIRECTORIES(${JPEG_INCLUDE_DIR})
-ENDIF(JPEG_FOUND)
+IF(ZLIB_FOUND)
+  ADD_DEFINITIONS(-DHasZLIB)
+  INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
+ENDIF(ZLIB_FOUND)
 
 IF(PNG_FOUND)
   ADD_DEFINITIONS(-DHasPNG)
   INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIR})
 ENDIF(PNG_FOUND)
+
+IF(JPEG_FOUND)
+  ADD_DEFINITIONS(-DHasJPEG)
+  INCLUDE_DIRECTORIES(${JPEG_INCLUDE_DIR})
+ENDIF(JPEG_FOUND)
 
 IF(TIFF_FOUND)
   ADD_DEFINITIONS(-DHasTIFF)
@@ -37,6 +42,7 @@ ADD_LIBRARY(vigraimpex ${LIBTYPE}
     bmp.cxx
     byteorder.cxx
     codecmanager.cxx
+    compression.cxx
     exr.cxx
     gif.cxx
     hdr.cxx
@@ -45,6 +51,7 @@ ADD_LIBRARY(vigraimpex ${LIBTYPE}
     iccjpeg.c
     imageinfo.cxx
     jpeg.cxx
+    lz4.c
     png.cxx
     pnm.cxx
     rgbe.c
@@ -54,7 +61,7 @@ ADD_LIBRARY(vigraimpex ${LIBTYPE}
     viff.cxx
     void_vector.cxx)
 
-set(SOVERSION 5)  # increment this after changing the vigraimpex library
+set(SOVERSION 6)  # increment this after changing the vigraimpex library
 IF(MACOSX)
     SET_TARGET_PROPERTIES(vigraimpex PROPERTIES VERSION ${SOVERSION}.${vigra_version} 
                          SOVERSION ${SOVERSION} INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")

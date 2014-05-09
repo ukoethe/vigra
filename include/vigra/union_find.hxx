@@ -203,11 +203,16 @@ class UnionFindArray
     mutable ArrayVector<T> labels_;
     
   public:
-    UnionFindArray(T next_free_index = 1)
+    UnionFindArray(T next_free_label = 1)
     {
-        for(T k=0; k <= next_free_index; ++k)
+        vigra_precondition(next_free_label <= LabelAccessor::max(),
+           "UnionFindArray(): Need more labels than can be represented"
+           "in the destination type.");
+        
+        for(T k=0; k < next_free_label; ++k)
             labels_.push_back(LabelAccessor::toAnchor(k));
-    }
+        labels_.push_back(LabelAccessor::toAnchor(next_free_label));
+    } 
     
     const_iterator begin(unsigned int start_at=0) const
     {

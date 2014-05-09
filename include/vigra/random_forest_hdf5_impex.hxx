@@ -246,7 +246,7 @@ void rf_export_HDF5(const RandomForest<T, Tag> & rf,
                     hid_t outf_id,
                     const std::string & pathname = "")
 {
-    HDF5Handle fileHandle(outf_id, NULL, "");
+    HDF5HandleShared fileHandle(outf_id, NULL, "");
     HDF5File h5context(fileHandle, pathname);
     rf_export_HDF5(rf, h5context);
 }
@@ -350,8 +350,8 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
                     hid_t inf_id,
                     const std::string & pathname = "")
 {
-    HDF5Handle fileHandle(inf_id, NULL, "");
-    HDF5File h5context(fileHandle, pathname);
+    HDF5HandleShared fileHandle(inf_id, NULL, "");
+    HDF5File h5context(fileHandle, pathname, true);
     return rf_import_HDF5(rf, h5context);
 }
 

@@ -275,8 +275,9 @@ public:
 
         vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
 
-        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum"),
-            "currently the accumulators are limited to mean and sum"
+        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") || 
+                           accumulator==std::string("min")  || accumulator==std::string("max"),
+            "currently the accumulators are limited to mean and sum and min and max"
         );
 
         // resize out
@@ -287,21 +288,55 @@ public:
         typename PyEdgeMapTraits<Graph   ,T >::Map edgeSizesArrayMap(graph,edgeSizesArray);
         typename PyEdgeMapTraits<RagGraph,T >::Map ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
 
-        const bool isMeanAcc= accumulator==std::string("mean");
-        for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
-            const RagEdge ragEdge = *iter;
-            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
-            float weightSum=0.0;
-            for(size_t i=0;i<affEdges.size();++i){
-                const float weight = edgeSizesArrayMap[affEdges[i]];
-                ragEdgeFeaturesArrayMap[ragEdge]+=weight*edgeFeaturesArrayMap[affEdges[i]];
-                weightSum+=weight;
-            }
-            if(isMeanAcc){
+
+        if(accumulator == std::string("mean") ){
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                float weightSum=0.0;
+                for(size_t i=0;i<affEdges.size();++i){
+                    const float weight = edgeSizesArrayMap[affEdges[i]];
+                    ragEdgeFeaturesArrayMap[ragEdge]+=weight*edgeFeaturesArrayMap[affEdges[i]];
+                    weightSum+=weight;
+                }
+
                 ragEdgeFeaturesArrayMap[ragEdge]/=weightSum;
             }
         }
-
+        else if( accumulator == std::string("sum")){
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                for(size_t i=0;i<affEdges.size();++i){
+                    ragEdgeFeaturesArrayMap[ragEdge]+=edgeFeaturesArrayMap[affEdges[i]];
+                }
+            }
+        }
+        else if(accumulator == std::string("min")){
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                float minVal=std::numeric_limits<float>::infinity();
+                for(size_t i=0;i<affEdges.size();++i){
+                    minVal  = std::min(minVal,edgeFeaturesArrayMap[affEdges[i]]);
+                }
+                ragEdgeFeaturesArrayMap[ragEdge]=minVal;
+            }
+        }
+        else if(accumulator == std::string("max")){
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                float maxVal=-1.0*std::numeric_limits<float>::infinity();
+                for(size_t i=0;i<affEdges.size();++i){
+                    maxVal  = std::max(maxVal,edgeFeaturesArrayMap[affEdges[i]]);
+                }
+                ragEdgeFeaturesArrayMap[ragEdge]=maxVal;
+            }
+        }
+        else{
+            throw std::runtime_error("not supported accumulator");
+        }
 
         return ragEdgeFeaturesArray;
     }
@@ -368,8 +403,9 @@ public:
         RagFloatNodeArray          ragNodeFeaturesArray=RagFloatNodeArray()
     ){
 
-        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum"),
-            "currently the accumulators are limited to mean and sum"
+        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") || 
+                           accumulator==std::string("min")  || accumulator==std::string("max"),
+            "currently the accumulators are limited to mean and sum and min and max "
         );
 
         // resize out
@@ -399,7 +435,7 @@ public:
                 ragNodeFeaturesArrayMap[ragNode]/=counting[ragNode];
             }
         }
-        else{
+        else if(accumulator == std::string("sum")){
             for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
                 UInt32 l = labelsArrayMap[*iter];
                 if(ignoreLabel==-1 || static_cast<Int32>(l)!=ignoreLabel){
@@ -407,6 +443,41 @@ public:
                     ragNodeFeaturesArrayMap[ragNode]+=nodeFeaturesArrayMap[*iter];
                 }
             }
+        }
+        else if(accumulator == std::string("min")){
+            for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
+                UInt32 l = labelsArrayMap[*iter];
+                if(ignoreLabel==-1 || static_cast<Int32>(l)!=ignoreLabel){
+                    const RagNode ragNode   = rag.nodeFromId(l);
+                    ragNodeFeaturesArrayMap[ragNode]=std::numeric_limits<float>::infinity();
+                }
+            }
+            for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
+                UInt32 l = labelsArrayMap[*iter];
+                if(ignoreLabel==-1 || static_cast<Int32>(l)!=ignoreLabel){
+                    const RagNode ragNode   = rag.nodeFromId(l);
+                    ragNodeFeaturesArrayMap[ragNode]=std::min(nodeFeaturesArrayMap[*iter],ragNodeFeaturesArrayMap[ragNode]);
+                }
+            }
+        }
+        else if(accumulator == std::string("max")){
+            for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
+                UInt32 l = labelsArrayMap[*iter];
+                if(ignoreLabel==-1 || static_cast<Int32>(l)!=ignoreLabel){
+                    const RagNode ragNode   = rag.nodeFromId(l);
+                    ragNodeFeaturesArrayMap[ragNode]= -1.0*std::numeric_limits<float>::infinity();
+                }
+            }
+            for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
+                UInt32 l = labelsArrayMap[*iter];
+                if(ignoreLabel==-1 || static_cast<Int32>(l)!=ignoreLabel){
+                    const RagNode ragNode   = rag.nodeFromId(l);
+                    ragNodeFeaturesArrayMap[ragNode]=std::max(nodeFeaturesArrayMap[*iter],ragNodeFeaturesArrayMap[ragNode]);
+                }
+            }
+        }
+        else{
+           
         }
         return ragNodeFeaturesArray;
     }

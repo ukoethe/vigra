@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2009 by Ullrich Koethe                     */
+/*               Copyright 2013-2014 by Ullrich Koethe                  */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -33,44 +33,41 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
 
-#include <Python.h>
-#include <vigra/config.hxx>
-#include <iostream>
-#include <boost/python.hpp>
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include <vigra/functorexpression.hxx>
-#include <vigra/mathutil.hxx>
-#include <vigra/utilities.hxx>
+#ifndef VIGRA_COMPRESSION_HXX
+#define VIGRA_COMPRESSION_HXX
+
+#include "config.hxx"
+#include "error.hxx"
+#include "array_vector.hxx"
 #include <vector>
-
-namespace python = boost::python;
 
 namespace vigra {
 
-UInt32 pychecksum(python::str const & s)
-{
-    unsigned int size = len(s);
-    return checksum(PyString_AsString(s.ptr()), size);
-}
+enum CompressionMethod {  DEFAULT_COMPRESSION=-2,  // use default method (depending on context)
+                          NO_COMPRESSION=-1,       // don't compress
+                          ZLIB_NONE=0, // no compression using zlib
+                          ZLIB_FAST=1, // fastest compression using zlib
+                          ZLIB=6,      // zlib default compression level
+                          ZLIB_BEST=9, // highest compression using zlib
+                          LZ4          // very fast LZ4 algorithm
+                       };
 
-void registerNumpyArrayConverters();
-void defineAxisTags();
-void defineChunkedArray();
+/** Compress the source buffer.
+
+    The destination array will be resized as required.
+*/
+VIGRA_EXPORT void compress(char const * source, std::size_t size, ArrayVector<char> & dest, CompressionMethod method);
+VIGRA_EXPORT void compress(char const * source, std::size_t size, std::vector<char> & dest, CompressionMethod method);
+
+/** Uncompress the source buffer when the uncompressed size is known.
+
+    The destination buffer must be allocated to the correct size.
+*/
+VIGRA_EXPORT void uncompress(char const * source, std::size_t srcSize, 
+                             char * dest, std::size_t destSize, CompressionMethod method);
+
 
 } // namespace vigra
 
-using namespace boost::python;
-using namespace vigra;
-
-BOOST_PYTHON_MODULE_INIT(vigranumpycore)
-{
-    import_array();
-    registerNumpyArrayConverters();
-    defineAxisTags();
-    defineChunkedArray();
-    
-    def("checksum", &pychecksum, args("data"));
-}
+#endif // VIGRA_COMPRESSION_HXX

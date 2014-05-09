@@ -153,6 +153,76 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init,
                python_ptr arraytype = python_ptr());
 
 /********************************************************/
+
+template <class Shape>
+void numpyParseSlicing(Shape const & shape, PyObject * idx, Shape & start, Shape & stop)
+{
+    int N = shape.size();
+    for(int k=0; k<N; ++k)
+    {
+        start[k] = 0;
+        stop[k] = shape[k];
+    }
+    
+    python_ptr index(idx);
+    if(!PySequence_Check(index))
+    {
+        index = python_ptr(PyTuple_Pack(1, index.ptr()), python_ptr::new_nonzero_reference);
+    }
+    int lindex = PyTuple_Size(index);
+    int kindex = 0;
+    for(; kindex<lindex; ++kindex)
+    {
+        if(PyTuple_GET_ITEM((PyTupleObject *)index.ptr(), kindex) == Py_Ellipsis)
+            break;
+    }
+    if(kindex == lindex && lindex < N)
+    {
+        python_ptr ellipsis = python_ptr(PyTuple_Pack(1, Py_Ellipsis), python_ptr::new_nonzero_reference);
+        index = python_ptr(PySequence_Concat(index, ellipsis), python_ptr::new_nonzero_reference);
+        ++lindex;
+    }
+    kindex = 0;
+    for(int k=0; k < N; ++k)
+    {
+        PyObject * item = PyTuple_GET_ITEM((PyTupleObject *)index.ptr(), kindex);
+        if(PyInt_Check(item))
+        {
+            MultiArrayIndex i = PyInt_AsLong(item);
+            start[k] = i;
+            if(start[k] < 0)
+                start[k] += shape[k];
+            stop[k] = start[k];
+            ++kindex;
+        }
+        else if(PySlice_Check(item))
+        {
+            Py_ssize_t sstart, sstop, step;
+            if(PySlice_GetIndices((PySliceObject *)item, shape[k], &sstart, &sstop, &step) != 0)
+                pythonToCppException(0);
+            vigra_precondition(step == 1,
+                "numpyParseSlicing(): only unit steps are supported.");
+            start[k] = sstart;
+            stop[k] = sstop;
+            ++kindex;
+        }
+        else if(item == Py_Ellipsis)
+        {
+            if(lindex == N)
+                ++kindex;
+            else
+                ++lindex;
+        }
+        else
+        {
+            vigra_precondition(false,
+                "numpyParseSlicing(): unsupported index object.");
+        }
+    }
+}
+
+
+/********************************************************/
 /*                                                      */
 /*                    NumpyAnyArray                     */
 /*                                                      */
@@ -400,6 +470,50 @@ class NumpyAnyArray
             return PyArray_DESCR(pyArray())->type_num;
         return -1;
     }
+    
+        /**
+         Constructs a slicing from the given shape objects and calls '__getitem__'.
+         */
+    template <class Shape>
+    NumpyAnyArray
+    getitem(Shape start, Shape stop) const
+    {
+        unsigned int size = ndim();
+        vigra_precondition(start.size() == size && stop.size() == size,
+            "NumpyAnyArray::getitem(): shape has wrong dimension.");
+        
+        difference_type s(this->shape());
+        
+        python_ptr index(PyTuple_New(size), python_ptr::new_nonzero_reference);
+        for(unsigned int k=0; k<size; ++k)
+        {
+            if(start[k] < 0)
+                start[k] += s[k];
+            if(stop[k] < 0)
+                stop[k] += s[k];
+            vigra_precondition(0 <= start[k] && start[k] <= stop[k] && stop[k] <= s[k],
+                "NumpyAnyArray::getitem(): slice out of bounds.");
+            PyObject * item = 0;
+            if(start[k] == stop[k])
+            {
+                item = PyInt_FromLong(start[k]);
+            }
+            else
+            {
+                python_ptr s0(PyInt_FromLong(start[k]), python_ptr::new_nonzero_reference);
+                python_ptr s1(PyInt_FromLong(stop[k]), python_ptr::new_nonzero_reference);
+                item = PySlice_New(s0, s1, 0);
+            }
+            pythonToCppException(item);
+            PyTuple_SET_ITEM((PyTupleObject *)index.ptr(), k, item); // steals reference to item
+        }
+        
+        python_ptr func(PyString_FromString("__getitem__"), python_ptr::new_nonzero_reference);
+        python_ptr res(PyObject_CallMethodObjArgs(pyObject(), func.ptr(), index.ptr(), NULL),
+                       python_ptr::new_nonzero_reference);
+        return NumpyAnyArray(res.ptr());
+    }
+
 
         /**
          * Return the AxisTags of this array or a NULL pointer when the attribute

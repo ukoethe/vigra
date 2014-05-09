@@ -355,6 +355,57 @@ class AxisTags
         push_back(i5);
     }
     
+    AxisTags(std::string const & tags)
+    {
+        for(int k=0; k<tags.size(); ++k)
+        {
+            switch(tags[k])
+            {
+              case 'x':
+                push_back(AxisInfo::x());
+                break;
+              case 'y':
+                push_back(AxisInfo::y());
+                break;
+              case 'z':
+                push_back(AxisInfo::z());
+                break;
+              case 't':
+                push_back(AxisInfo::t());
+                break;
+              case 'c':
+                push_back(AxisInfo::c());
+                break;
+              case 'f':
+                ++k;
+                vigra_precondition(k < tags.size(),
+                    "AxisTags(string): invalid input");
+                switch(tags[k])
+                {
+                  case 'x':
+                    push_back(AxisInfo::fx());
+                    break;
+                  case 'y':
+                    push_back(AxisInfo::fy());
+                    break;
+                  case 'z':
+                    push_back(AxisInfo::fz());
+                    break;
+                  case 't':
+                    push_back(AxisInfo::ft());
+                    break;
+                  default:
+                    vigra_precondition(false,
+                        "AxisTags(string): invalid input");
+                }
+                break;
+              default:
+                vigra_precondition(false,
+                    "AxisTags(string): invalid input");
+            }
+        }
+    }
+    
     // static AxisTags fromJSON(std::string const & repr);
 
     std::string toJSON() const
