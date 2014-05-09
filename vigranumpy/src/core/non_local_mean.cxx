@@ -116,8 +116,8 @@ void defineNonLocalMean(){
     docstring_options doc_options(true, true, false);
     exportNonLocalMean<2,vigra::TinyVector<float,3> >("nonLocalMean2d");
     exportNonLocalMean<2,float>("nonLocalMean2d");
-    //exportNonLocalMean<3,float>("nonLocalMean3d");
-    //exportNonLocalMean<4,float>("nonLocalMean4d");
+    exportNonLocalMean<3,float>("nonLocalMean3d");
+    exportNonLocalMean<4,float>("nonLocalMean4d");
 }
 
 
