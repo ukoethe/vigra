@@ -1,1 +1,7 @@
-VIGRA_ADD_TEST(test_utilities test.cxx)
+
+IF(ZLIB_FOUND)
+  ADD_DEFINITIONS(-DHasZLIB)
+ENDIF(ZLIB_FOUND)
+
+
+VIGRA_ADD_TEST(test_utilities test.cxx LIBRARIES vigraimpex)

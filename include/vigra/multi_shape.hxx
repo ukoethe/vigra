@@ -82,6 +82,12 @@ template<class T>
 struct IsMultiband<Multiband<T> > : VigraTrueType{
 };
 
+template <class T>
+struct ChunkedMemory  // the array is organised in chunks
+{
+    typedef T value_type;
+};
+
 template<class T>
 struct NumericTraits<Singleband<T> >
 : public NumericTraits<T>
@@ -174,7 +180,7 @@ defaultMultibandStride(const TinyVector <MultiArrayIndex, N> &shape)
 
 /********************************************************/
 /*                                                      */
-/*                  ResolveMultiband                    */
+/*       resolve Multiband and ChunkedMemory tags       */
 /*                                                      */
 /********************************************************/
 
@@ -223,6 +229,18 @@ struct ResolveMultiband<Multiband<T> >
     }
 };
 
+template <class T>
+struct ResolveChunkedMemory
+{
+    typedef T type;
+};
+
+template <class T>
+struct ResolveChunkedMemory<ChunkedMemory<T> >
+{
+    typedef T type;
+};
+
 } // namespace detail
 
 template <unsigned int N, class T, class C = StridedArrayTag>
@@ -251,6 +269,83 @@ typedef MultiArrayShape<2>::type Shape2; ///< shape type for MultiArray<2, T>
 typedef MultiArrayShape<3>::type Shape3; ///< shape type for MultiArray<3, T>
 typedef MultiArrayShape<4>::type Shape4; ///< shape type for MultiArray<4, T>
 typedef MultiArrayShape<5>::type Shape5; ///< shape type for MultiArray<5, T>
+
+namespace detail
+{
+
+/********************************************************/
+/*                                                      */
+/*                default chunk shapes                  */
+/*                                                      */
+/********************************************************/
+
+template <unsigned int N, class T = int>
+struct ChunkShape
+{
+    typedef typename MultiArrayShape<N>::type Shape;
+    static Shape defaultShape()
+    {
+        Shape res(1);
+        res.template subarray<0,5>() = ChunkShape<5,T>::defaultShape();
+        return res;
+    }
+};
+
+template <class T>
+struct ChunkShape<0, T>
+{
+    static Shape1 defaultShape()
+    {
+        return Shape1(1);
+    }
+};
+
+template <class T>
+struct ChunkShape<1, T>
+{
+    static Shape1 defaultShape()
+    {
+        return Shape1(1 << 18);
+    }
+};
+
+template <class T>
+struct ChunkShape<2, T>
+{
+    static Shape2 defaultShape()
+    {
+        return Shape2(1 << 9, 1 << 9);
+    }
+};
+
+template <class T>
+struct ChunkShape<3, T>
+{
+    static Shape3 defaultShape()
+    {
+        return Shape3(1 << 6, 1 << 6, 1 << 6);
+    }
+};
+
+template <class T>
+struct ChunkShape<4, T>
+{
+    static Shape4 defaultShape()
+    {
+        return Shape4(1 << 6, 1 << 6, 1 << 4, 1 << 2);
+    }
+};
+
+template <class T>
+struct ChunkShape<5, T>
+{
+    static Shape5 defaultShape()
+    {
+        return Shape5(1 << 6, 1 << 6, 1 << 4, 1 << 2, 1 << 2);
+    }
+};
+
+} // namespace detail
 
     /** \brief Choose the neighborhood system in a dimension-independent way.  
     

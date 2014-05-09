@@ -84,7 +84,7 @@ class python_ptr
     typedef PyObject & reference;
 
     enum refcount_policy { increment_count, borrowed_reference = increment_count,
-                           keep_count, new_reference = keep_count };
+                           keep_count, new_reference = keep_count, new_nonzero_reference };
 
     explicit python_ptr(pointer p = 0, refcount_policy rp = increment_count)
     : ptr_( p )
@@ -92,6 +92,10 @@ class python_ptr
         if(rp == increment_count)
         {
             Py_XINCREF(ptr_);
+        }
+        else if(rp == new_nonzero_reference)
+        {
+            pythonToCppException(p);
         }
     }
 
@@ -125,6 +129,10 @@ class python_ptr
         if(rp == increment_count)
         {
             Py_XINCREF(p);
+        }
+        else if(rp == new_nonzero_reference)
+        {
+            pythonToCppException(p);
         }
         Py_XDECREF(ptr_);
         ptr_ = p;

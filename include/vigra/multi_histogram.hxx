@@ -138,7 +138,6 @@ namespace vigra{
         typedef vigra::GridGraph< DIM , boost::undirected_tag> Graph;
         typedef typename Graph::NodeIt graph_scanner;
         typedef typename Graph::Node   Node;
-        typedef T_HIST ValueType;
         typedef typename MultiArrayView<DIM+2 , T_HIST>::difference_type HistCoord;
         const Graph g(imageA.shape());
         histogram.init(0.0);

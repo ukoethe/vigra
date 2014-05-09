@@ -49,12 +49,12 @@
   #include <vigra/windows.h>  // for GetCurrentProcessId() and GetCurrentThreadId()
 #endif
 
-#if __linux__
+#ifdef __linux__
   #include <unistd.h>       // for getpid()
   #include <sys/syscall.h>  // for SYS_gettid
 #endif
 
-#if __APPLE__
+#ifdef __APPLE__
   #include <unistd.h>               // for getpid()
   #include <sys/syscall.h>          // SYS_thread_selfid
   #include <AvailabilityMacros.h>   // to check if we are on MacOS 10.6 or later

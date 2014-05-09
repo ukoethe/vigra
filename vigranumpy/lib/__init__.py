@@ -134,6 +134,13 @@ from arraytypes import *
 standardArrayType = arraytypes.VigraArray 
 defaultAxistags = arraytypes.VigraArray.defaultAxistags
 
+from vigranumpycore import ChunkedArrayFull, ChunkedArrayLazy, ChunkedArrayCompressed, ChunkedArrayTmpFile, Compression
+try:
+    from vigranumpycore import ChunkedArrayHDF5, HDF5Mode
+except:
+    pass
+    
+
 from impex import readImage, readVolume
 
 def readHDF5(filenameOrGroup, pathInFile, order=None):

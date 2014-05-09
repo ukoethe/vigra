@@ -43,6 +43,7 @@
 #include "vigra/rgbvalue.hxx"
 #include "vigra/diff2d.hxx"
 #include "vigra/box.hxx"
+#include "vigra/algorithm.hxx"
 
 using namespace vigra;
 
@@ -179,9 +180,29 @@ struct TinyVectorTest
             should(!iv.any());
         }
 
+        IV seq = IV::linearSequence(), seq_ref;
+        linearSequence(seq_ref.begin(), seq_ref.end());
+        shouldEqual(seq, seq_ref);
+
+        seq = IV::linearSequence(2);
+        linearSequence(seq_ref.begin(), seq_ref.end(), 2);
+        shouldEqual(seq, seq_ref);
+
+        seq = IV::linearSequence(20, -1);
+        linearSequence(seq_ref.begin(), seq_ref.end(), 20, -1);
+        shouldEqual(seq, seq_ref);
+
         IV r = reverse(iv3);
         for(int k=0; k<SIZE; ++k)
             shouldEqual(iv3[k], r[SIZE-1-k]);
+
+        shouldEqual(transpose(r, IV::linearSequence(SIZE-1, -1)), iv3);
+
+        typedef TinyVector<typename FV::value_type, SIZE-1> FV1;
+        FV1 fv10(fv3.begin());
+        shouldEqual(fv10, fv3.dropIndex(SIZE-1));
+        FV1 fv11(fv3.begin()+1);
+        shouldEqual(fv11, fv3.dropIndex(0));
     }
 
     void testComparison()
@@ -199,6 +220,19 @@ struct TinyVectorTest
         should(iv3 == bv3);
         should(iv3 != fv3);
         should(fv3 != bv3);
+
+        should(bv0 < bv1);
+
+        should(allLess(bv0, bv1));
+        should(!allLess(bv1, bv3));
+        should(allGreater(bv1, bv0));
+        should(!allGreater(bv3, bv1));
+        should(allLessEqual(bv0, bv1));
+        should(allLessEqual(bv1, bv3));
+        should(!allLessEqual(bv3, bv1));
+        should(allGreaterEqual(bv1, bv0));
+        should(allGreaterEqual(bv3, bv1));
+        should(!allGreaterEqual(bv1, bv3));
 
         should(closeAtTolerance(fv3, fv3));
         

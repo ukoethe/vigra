@@ -45,7 +45,13 @@
 #include "vigra/array_vector.hxx"
 #include "vigra/copyimage.hxx"
 #include "vigra/sized_int.hxx"
+<<<<<<< HEAD
 #include "vigra/priority_queue.hxx"
+=======
+#include "vigra/bucket_queue.hxx"
+#include "vigra/algorithm.hxx"
+#include "vigra/compression.hxx"
+>>>>>>> e360aa31008fb0b75a199e54bb5f6b6812a6c241
 
 using namespace vigra;
 
@@ -1144,6 +1150,77 @@ void stringTest()
     shouldEqual(normalizeString("AluFr iNsta< Z89>"), "alufrinsta<z89>");
 }
 
+struct CompressionTest
+{
+    ArrayVector<char> data;
+    
+    CompressionTest()
+    : data(1000000)
+    {
+        linearSequence(data.begin(), data.end(), 0);
+    }
+    
+    void testZLIB()
+    {
+        ArrayVector<char> compressed;
+    #ifdef HasZLIB
+        compress(data.begin(), data.size(), compressed, ZLIB);
+        
+        shouldEqual(compressed.size(), 4206);
+        
+        ArrayVector<char> decompressed(data.size());
+        
+        uncompress(compressed.begin(), compressed.size(),
+                   decompressed.begin(), decompressed.size(), ZLIB);
+                   
+        shouldEqualSequence(data.begin(), data.end(), decompressed.begin());
+    #else
+        try
+        {
+            compress(data.begin(), data.size(), compressed, ZLIB);
+            failTest("missing ZLIB did not throw exception.");
+        }
+        catch(ContractViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\ncompress(): VIGRA was compiled without ZLIB compression.");
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
+        }
+        
+    #endif
+    }
+    
+    void testLZ4()
+    {
+        ArrayVector<char> compressed;
+        compress(data.begin(), data.size(), compressed, LZ4);
+        
+        shouldEqual(compressed.size(), 4187);
+        
+        ArrayVector<char> decompressed(data.size());
+        
+        uncompress(compressed.begin(), compressed.size(),
+                   decompressed.begin(), decompressed.size(), LZ4);
+                   
+        shouldEqualSequence(data.begin(), data.end(), decompressed.begin());
+    }
+    
+    void testNoCompression()
+    {
+        ArrayVector<char> compressed;
+        compress(data.begin(), data.size(), compressed, NO_COMPRESSION);
+        
+        shouldEqual(compressed.size(), data.size());
+        
+        ArrayVector<char> decompressed(data.size());
+        
+        uncompress(compressed.begin(), compressed.size(),
+                   decompressed.begin(), decompressed.size(), NO_COMPRESSION);
+                   
+        shouldEqualSequence(data.begin(), data.end(), decompressed.begin());
+    }
+};
+
 struct UtilitiesTestSuite
 : public vigra::test_suite
 {
@@ -1164,6 +1241,9 @@ struct UtilitiesTestSuite
         add( testCase( &MetaprogrammingTest::testLogic));
         add( testCase( &MetaprogrammingTest::testTypeTools));
         add( testCase( &stringTest));
+        add( testCase( &CompressionTest::testZLIB));
+        add( testCase( &CompressionTest::testLZ4));
+        add( testCase( &CompressionTest::testNoCompression));
     }
 };
 
