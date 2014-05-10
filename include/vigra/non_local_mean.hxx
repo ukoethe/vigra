@@ -61,32 +61,37 @@
 #include "multi_convolution.hxx"
 #include "error.hxx"
 #include "threading.hxx"
-
+#include "gaussians.hxx"
 
 namespace vigra{
 
 struct NonLocalMeanParameter{
 
     NonLocalMeanParameter(
+        const double sigmaSpatial = 2.0,
         const int searchRadius = 3,
         const int patchRadius = 1,
         const double sigmaMean = 1.0,
         const int stepSize = 2,
+        const int iterations=1,
         const int nThreads = 8,
         const bool verbose = true
     ):
+    sigmaSpatial_(sigmaSpatial),
     searchRadius_(searchRadius),
     patchRadius_(patchRadius),
     sigmaMean_(sigmaMean),
     stepSize_(stepSize),
+    iterations_(iterations),
     nThreads_(nThreads),
     verbose_(verbose){
     }
-
+    double sigmaSpatial_;
     int searchRadius_;
     int patchRadius_;
     double sigmaMean_;
     int stepSize_;
+    int iterations_;
     int nThreads_;
     bool verbose_;
 };
@@ -193,6 +198,54 @@ inline bool equal(const TinyVector<V,SIZE> & a,const TinyVector<V,SIZE> b){
 }
 
 
+
+template<int DIM, bool ALWAYS_INSIDE>
+struct BorderHelper;
+
+template< int DIM>
+struct BorderHelper<DIM,true>{
+    template<class COORD,class IMAGE>
+    static bool isInside(const COORD & ,const IMAGE &  ){
+        return true;
+    }
+    template<class COORD,class IMAGE>
+    static bool isOutside(const COORD & ,const IMAGE &  ){
+        return false;
+    }
+
+    template<class COORD,class IMAGE>
+    static void mirrorIfIsOutsidePoint(COORD & ,IMAGE & ){
+    }
+
+};
+
+template< int DIM>
+struct BorderHelper<DIM,false>{
+    template<class COORD,class IMAGE>
+    static bool isInside(const COORD & c,const IMAGE &  img){
+        return img.isInside(c);
+    }
+    template<class COORD,class IMAGE>
+    static bool isOutside(const COORD & c,const IMAGE &  img){
+        return img.isOutside(c);
+    }
+
+    template<class COORD,class IMAGE>
+    static void mirrorIfIsOutsidePoint(COORD & coord,const IMAGE & img){
+        for(int c=0;c<DIM;++c){
+            if(coord[c]<0)
+                coord[c]=-1*coord[c];
+            else if(coord[c]>= img.shape(c))
+                coord[c] = 2 * img.shape(c) - coord[c] - 1;
+        }
+    }
+};
+
+
+
+
+
+
 template<class PIXEL_TYPE_IN>
 class NormPolicy{
 
@@ -238,7 +291,7 @@ class NormPolicy{
 };
 
 
-
+// UnstridedArrayTag
 
 template<int DIM, class PIXEL_TYPE_IN, class SMOOTH_POLICY>
 class BlockWiseNonLocalMeanThreadObject{
@@ -251,14 +304,14 @@ class BlockWiseNonLocalMeanThreadObject{
 
 public:
     typedef void result_type;
-    typedef UInt32              LabelType;
-    typedef MultiArrayView<DIM,PixelTypeIn>          InArrayView;
-    typedef MultiArrayView<DIM,RealPromotePixelType> MeanArrayView;
-    typedef MultiArrayView<DIM,RealPromotePixelType> VarArrayView;
-    typedef MultiArrayView<DIM,RealPromotePixelType> EstimateArrayView;
-    typedef MultiArrayView<DIM,UInt32>               LabelArrayView;
-    typedef std::vector<RealPromotePixelType>        BlockAverageVectorType;
-    typedef SMOOTH_POLICY                            SmoothPolicyType;
+    typedef MultiArrayView<DIM,PixelTypeIn>           InArrayView;
+    typedef MultiArrayView<DIM,RealPromotePixelType>  MeanArrayView;
+    typedef MultiArrayView<DIM,RealPromotePixelType>  VarArrayView;
+    typedef MultiArrayView<DIM,RealPromotePixelType>  EstimateArrayView;
+    typedef MultiArrayView<DIM,RealPromoteScalarType> LabelArrayView;
+    typedef std::vector<RealPromotePixelType>         BlockAverageVectorType;
+    typedef std::vector<RealPromoteScalarType>        BlockGaussWeightVectorType;
+    typedef SMOOTH_POLICY                             SmoothPolicyType;
     // range type
     typedef TinyVector<int,2> RangeType;
     //typedef boost::mutex      MutexType;
@@ -292,6 +345,7 @@ public:
     estimateMutexPtr_(&estimateMutex),
     progress_(progress),
     average_(std::pow(2*param.patchRadius_+1,DIM)),
+    gaussWeight_(std::pow(2*param.patchRadius_+1,DIM)),
     shape_(inImage.shape()),
     totalSize_()
     {
@@ -328,18 +382,6 @@ private:
     void patchAccMeanToEstimate(const Coordinate & xyz,const RealPromoteScalarType globalSum);
 
 
-    template<bool ALWAYS_INSIDE>
-    void mirrorIfIsOutsidePoint(Coordinate & coord)const{
-        if(!ALWAYS_INSIDE)
-            for(int c=0;c<DIM;++c){
-                if(coord[c]<0)
-                    coord[c]=-1*coord[c];
-                else if(coord[c]>= inImage_.shape(c))
-                    coord[c] = 2 * inImage_.shape(c) - coord[c] - 1;
-            }
-    }
-
-
     bool isAlwaysInside(const Coordinate & coord)const{
         const Coordinate r = (Coordinate(param_.searchRadius_) + Coordinate(param_.patchRadius_) +1 );
         const Coordinate test1 = coord - r;
@@ -347,7 +389,7 @@ private:
         return inImage_.isInside(test1) && inImage_.isInside(test2);
     }
 
-
+    void initalizeGauss();
 
     void progressPrinter(const int counter);
 
@@ -375,9 +417,55 @@ private:
 
     // computations
     BlockAverageVectorType average_;
+    BlockGaussWeightVectorType gaussWeight_;
     Coordinate shape_;
     size_t totalSize_;
 };
+
+
+template<int DIM,class PIXEL_TYPE_IN, class SMOOTH_POLICY>
+inline void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>::initalizeGauss(){
+    Coordinate xyz;
+    const int pr = param_.patchRadius_;
+    Gaussian<RealPromoteScalarType> gaussian(param_.sigmaSpatial_);
+    int c=0;
+    RealPromoteScalarType sum = RealPromoteScalarType(0.0);
+    if(DIM==2){
+        for (xyz[1] = -pr; xyz[1]  <=pr; ++xyz[1])
+        for (xyz[0] = -pr; xyz[0]  <=pr; ++xyz[0],++c){
+            const RealPromoteScalarType distance = norm(xyz);
+            const RealPromoteScalarType w =gaussian(distance);
+            sum+=w;
+            gaussWeight_[c]=w;   
+        }
+    }
+    if(DIM==3){
+        for (xyz[2] = -pr; xyz[2]  <=pr; ++xyz[2])
+        for (xyz[1] = -pr; xyz[1]  <=pr; ++xyz[1])
+        for (xyz[0] = -pr; xyz[0]  <=pr; ++xyz[0],++c){
+            const RealPromoteScalarType distance = norm(xyz);
+            const RealPromoteScalarType w =gaussian(distance);
+            sum+=w;
+            gaussWeight_[c]=w;     
+        }
+    }
+    if(DIM==4){
+        for (xyz[3] = -pr; xyz[3]  <=pr; ++xyz[3])
+        for (xyz[2] = -pr; xyz[2]  <=pr; ++xyz[2])
+        for (xyz[1] = -pr; xyz[1]  <=pr; ++xyz[1])
+        for (xyz[0] = -pr; xyz[0]  <=pr; ++xyz[0],++c){
+            const RealPromoteScalarType distance = norm(xyz);
+            const RealPromoteScalarType w =gaussian(distance);
+            sum+=w;
+            gaussWeight_[c]=w;   
+        }
+    }
+    // normalize
+    for(size_t i=0;i<gaussWeight_.size();++i){
+        gaussWeight_[i]/=sum;
+    }
+}
+
 
 template<int DIM,class PIXEL_TYPE_IN, class SMOOTH_POLICY>
 inline void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>::progressPrinter(const int counter){
@@ -400,6 +488,8 @@ void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>::opera
     const int start = lastAxisRange_[0];
     const int end = lastAxisRange_[1];
     const int stepSize = param_.stepSize_;
+
+    this->initalizeGauss();
 
     Coordinate xyz; 
     int c=0;
@@ -532,7 +622,9 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>
     RealPromoteScalarType & wmax,
     RealPromoteScalarType & totalweight
 ){
-    if(ALWAYS_INSIDE || inImage_.isInside(nxyz)){
+    
+    if(BorderHelper<DIM,ALWAYS_INSIDE>::isInside(nxyz,inImage_)){
+    //if(ALWAYS_INSIDE || inImage_.isInside(nxyz)){
         if(smoothPolicy_.usePixel(meanImage_[nxyz],varImage_[nxyz])){
             // here we check if to patches fit to each other
             // one patch is around xyz 
@@ -563,35 +655,38 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN,SMOOTH_POLICY>::patchDistanc
     Coordinate offset(SkipInitialization),nPa(SkipInitialization),nPb(SkipInitialization);
     int acu = 0;
     RealPromoteScalarType distancetotal = 0;
-    
+    int c =0 ;
+    //this->mirrorIfIsOutsidePoint<ALWAYS_INSIDE>(nPa);       
+   // this->mirrorIfIsOutsidePoint<ALWAYS_INSIDE>(nPb);       
     #define VIGRA_NLM_IN_LOOP_CODE                              \
         nPa = pA+offset;                                        \
         nPb = pB+offset;                                        \
-        this->mirrorIfIsOutsidePoint<ALWAYS_INSIDE>(nPa);       \
-        this->mirrorIfIsOutsidePoint<ALWAYS_INSIDE>(nPb);       \
+        BorderHelper<DIM,ALWAYS_INSIDE>::mirrorIfIsOutsidePoint(nPa,inImage_); \
+        BorderHelper<DIM,ALWAYS_INSIDE>::mirrorIfIsOutsidePoint(nPb,inImage_); \
+        const RealPromoteScalarType gaussWeight = gaussWeight_[c]; \
         const RealPromotePixelType vA = inImage_[nPa];          \
         const RealPromotePixelType vB = inImage_[nPb];          \
-        distancetotal += vigra::sizeDividedSquaredNorm(vA-vB);  \
+        distancetotal += gaussWeight*vigra::sizeDividedSquaredNorm(vA-vB);  \
         ++acu;
 
     if(DIM==2){
-        for (offset[1] = -f; offset[1] <= f; offset[1]++)
-        for (offset[0] = -f; offset[0] <= f; offset[0]++){
+        for (offset[1] = -f; offset[1] <= f; ++offset[1])
+        for (offset[0] = -f; offset[0] <= f; ++offset[0],++c){
             VIGRA_NLM_IN_LOOP_CODE;
         }
     }
     else if(DIM==3){
-        for (offset[2] = -f; offset[2] <= f; offset[2]++)
-        for (offset[1] = -f; offset[1] <= f; offset[1]++)
-        for (offset[0] = -f; offset[0] <= f; offset[0]++){
+        for (offset[2] = -f; offset[2] <= f; ++offset[2])
+        for (offset[1] = -f; offset[1] <= f; ++offset[1])
+        for (offset[0] = -f; offset[0] <= f; ++offset[0],++c){
             VIGRA_NLM_IN_LOOP_CODE;
         }
     }
     else if(DIM==4){
-        for (offset[3] = -f; offset[3] <= f; offset[3]++)
-        for (offset[2] = -f; offset[2] <= f; offset[2]++)
-        for (offset[1] = -f; offset[1] <= f; offset[1]++)
-        for (offset[0] = -f; offset[0] <= f; offset[0]++){
+        for (offset[3] = -f; offset[3] <= f; ++offset[3])
+        for (offset[2] = -f; offset[2] <= f; ++offset[2])
+        for (offset[1] = -f; offset[1] <= f; ++offset[1])
+        for (offset[0] = -f; offset[0] <= f; ++offset[0],++c){
             VIGRA_NLM_IN_LOOP_CODE;
         }
     }
@@ -615,12 +710,12 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN,SMOOTH_POLICY>::patchExtract
 
     // todo: remove abc vector
 
-    #define VIGRA_NLM_IN_LOOP_CODE                           \
-        xyzPos = xyz + abc - nhSize3;                        \
-        if (!ALWAYS_INSIDE && inImage_.isOutside(xyzPos))    \
-            average_[count] += inImage_[xyz]* weight;        \
-        else                                                 \
-            average_[count] += inImage_[xyzPos]* weight;     \
+    #define VIGRA_NLM_IN_LOOP_CODE                                          \
+        xyzPos = xyz + abc - nhSize3;                                       \
+        if(BorderHelper<DIM,ALWAYS_INSIDE>::isOutside(xyzPos,inImage_))     \
+            average_[count] += inImage_[xyz]* weight;                       \
+        else                                                                \
+            average_[count] += inImage_[xyzPos]* weight;                    \
         count++
 
     if(DIM==2){
@@ -660,16 +755,19 @@ BlockWiseNonLocalMeanThreadObject<DIM,PIXEL_TYPE_IN,SMOOTH_POLICY>::patchAccMean
     int count = 0 ;
     const int ns = 2 * param_.patchRadius_ + 1;
 
-    #define VIGRA_NLM_IN_LOOP_CODE                                       \
-            xyzPos = xyz + abc - nhSize;                                 \
-            if(ALWAYS_INSIDE || inImage_.isInside(xyzPos)){              \
-                estimateMutexPtr_->lock();                               \
-                RealPromotePixelType value = estimageImage_[xyzPos];     \
-                value += average_[count] / globalSum;                    \
-                estimageImage_[xyzPos] = value;                          \
-                ++labelImage_[xyzPos];                                   \
-                estimateMutexPtr_->unlock();                             \
-            }                                                            \
+    #define VIGRA_NLM_IN_LOOP_CODE                                              \
+            xyzPos = xyz + abc - nhSize;                                        \
+            if(BorderHelper<DIM,ALWAYS_INSIDE>::isInside(xyzPos,inImage_)){     \
+                estimateMutexPtr_->lock();                                      \
+                RealPromotePixelType value = estimageImage_[xyzPos];            \
+                const RealPromoteScalarType gw = gaussWeight_[count];           \
+                RealPromotePixelType tmp =(average_[count] / globalSum);        \
+                tmp*=gw;                                                        \
+                value +=tmp;                                                    \
+                estimageImage_[xyzPos] = value;                                 \
+                labelImage_[xyzPos]+=gw;                                        \
+                estimateMutexPtr_->unlock();                                    \
+            }                                                                   \
             count++
 
     if(DIM==2){
@@ -733,8 +831,10 @@ inline void gaussianMeanAndVariance(
     gaussianMeanAndVariance<DIM,PIXEL_TYPE_IN,PIXEL_TYPE_OUT>(inArray,sigma,meanArray,varArray,tmpArray);   
 }
 
+namespace detail_non_local_means{
+
 template<int DIM, class PIXEL_TYPE_IN,class PIXEL_TYPE_OUT,class SMOOTH_POLICY>
-void nonLocalMean(
+void nonLocalMean1Run(
     const vigra::MultiArrayView<DIM,PIXEL_TYPE_IN> & image,
     const SMOOTH_POLICY & smoothPolicy,
     const NonLocalMeanParameter param,
@@ -742,11 +842,11 @@ void nonLocalMean(
 ){
 
     typedef PIXEL_TYPE_IN       PixelTypeIn;
-    typedef typename vigra::NumericTraits<PixelTypeIn>::RealPromote        RealPromotePixelType;  
+    typedef typename vigra::NumericTraits<PixelTypeIn>::RealPromote         RealPromotePixelType;  
+     typedef typename vigra::NumericTraits<RealPromotePixelType>::ValueType RealPromoteScalarType;  
     typedef SMOOTH_POLICY SmoothPolicyType;
 
     typedef BlockWiseNonLocalMeanThreadObject<DIM,PixelTypeIn,SmoothPolicyType> ThreadObjectType;
-    typedef typename ThreadObjectType::LabelType LabelType;
 
 
     // make the policy object
@@ -764,7 +864,7 @@ void nonLocalMean(
     vigra::MultiArray<DIM,RealPromotePixelType> meanImage(image.shape());
     vigra::MultiArray<DIM,RealPromotePixelType> varImage(image.shape());
     vigra::MultiArray<DIM,RealPromotePixelType> estimageImage(image.shape());
-    vigra::MultiArray<DIM,LabelType> labelImage(image.shape());
+    vigra::MultiArray<DIM,RealPromoteScalarType> labelImage(image.shape());
 
     // compute mean and variance 
     // last argument is a "buffer" since within "gaussianMeanAndVariance" another array is needed
@@ -773,7 +873,7 @@ void nonLocalMean(
     gaussianMeanAndVariance<DIM,PixelTypeIn,RealPromotePixelType>(image,param.sigmaMean_,meanImage,varImage);
 
     // initialize
-    labelImage = 0;
+    labelImage = RealPromoteScalarType(0.0);
     estimageImage = RealPromotePixelType(0.0);
 
     ///////////////////////////////////////////////////////////////
@@ -821,10 +921,30 @@ void nonLocalMean(
     // normalize estimates by the number of labels
     // and write that in output
     for(int scanOrderIndex=0; scanOrderIndex<labelImage.size(); ++scanOrderIndex){
-        if (labelImage[scanOrderIndex] == 0)
+        if (labelImage[scanOrderIndex] <= RealPromoteScalarType(0.00001))
             outImage[scanOrderIndex]=image[scanOrderIndex];
         else
             outImage[scanOrderIndex]=estimageImage[scanOrderIndex] / labelImage[scanOrderIndex];
+    }
+}
+
+}
+
+template<int DIM, class PIXEL_TYPE_IN,class PIXEL_TYPE_OUT,class SMOOTH_POLICY>
+void nonLocalMean(
+    const vigra::MultiArrayView<DIM,PIXEL_TYPE_IN> & image,
+    const SMOOTH_POLICY & smoothPolicy,
+    const NonLocalMeanParameter param,
+    vigra::MultiArrayView<DIM,PIXEL_TYPE_OUT> outImage
+){
+    detail_non_local_means::nonLocalMean1Run<DIM,PIXEL_TYPE_IN,PIXEL_TYPE_OUT,SMOOTH_POLICY>(image,smoothPolicy,param,outImage);
+    if(param.iterations_>1){
+
+        vigra::MultiArray<DIM,PIXEL_TYPE_OUT> tmp(outImage.shape());        
+        for(size_t i=0;i<param.iterations_-1;++i){
+            tmp=outImage;
+            detail_non_local_means::nonLocalMean1Run<DIM,PIXEL_TYPE_OUT,PIXEL_TYPE_OUT,SMOOTH_POLICY>(tmp,smoothPolicy,param,outImage);
+        }
     }
 }
 

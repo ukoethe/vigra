@@ -54,10 +54,12 @@ template<int DIM,class PIXEL_TYPE,class SMOOTH_POLICY>
 NumpyAnyArray  pyNonLocalMean(
     NumpyArray<DIM,PIXEL_TYPE> image,
     const typename SMOOTH_POLICY::ParameterType & policyParam,
+    const double sigmaSpatial,
     const int searchRadius,
     const int patchRadius,
     const double sigmaMean,
     const int stepSize,
+    const int iterations,
     const int nThreads,
     const bool verbose,
     NumpyArray<DIM,PIXEL_TYPE> out = NumpyArray<DIM,PIXEL_TYPE>()
@@ -65,10 +67,12 @@ NumpyAnyArray  pyNonLocalMean(
 
     SMOOTH_POLICY smoothPolicy(policyParam);
     NonLocalMeanParameter param;
+    param.sigmaSpatial_=sigmaSpatial;
     param.searchRadius_=searchRadius;
     param.patchRadius_=patchRadius;
     param.sigmaMean_=sigmaMean;
     param.stepSize_=stepSize;
+    param.iterations_=iterations;
     param.nThreads_ = nThreads;
     param.verbose_=verbose;
     out.reshapeIfEmpty(image.shape());
@@ -137,10 +141,12 @@ void exportNonLocalMean(const std::string name){
         (
             python::arg("image"),
             python::arg("policy"),
+            python::arg("sigmaSpatial")=2.0,
             python::arg("searchRadius")=3,
             python::arg("patchRadius")=1,
             python::arg("sigmaMean")=1.0,
             python::arg("stepSize")=2,
+            python::arg("iterations")=1,
             python::arg("nThreads")=8,
             python::arg("verbose")=true,
             python::arg("out") = boost::python::object()
