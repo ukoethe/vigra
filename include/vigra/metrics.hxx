@@ -129,7 +129,7 @@ namespace metrics{
                 const T aa=static_cast<T>(*iterA);
                 const T bb=static_cast<T>(*iterB);
                 const T diff = aa-bb;
-                res+= std::abs(std::pow(diff,NORM));  
+                res+= std::abs(std::pow((double)diff,(int)NORM));
                 ++iterA;
                 ++iterB;
             }

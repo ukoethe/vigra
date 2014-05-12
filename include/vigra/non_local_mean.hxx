@@ -41,7 +41,7 @@
 /************************************************************************/
 /* The ONLM filter is described in:                                     */
 /*                                                                      */
-/* P. Coup�, P. Yger, S. Prima, P. Hellier, C. Kervrann, C. Barillot.   */
+/* P. Coup���, P. Yger, S. Prima, P. Hellier, C. Kervrann, C. Barillot.   */
 /* An Optimized Blockwise Non Local Means Denoising Filter              */ 
 /* for 3D Magnetic Resonance Images                                     */
 /* . IEEE Transactions on Medical Imaging, 27(4):425-441,               */
@@ -344,8 +344,8 @@ public:
     nThreads_(nThreads),
     estimateMutexPtr_(&estimateMutex),
     progress_(progress),
-    average_(std::pow(2*param.patchRadius_+1,DIM)),
-    gaussWeight_(std::pow(2*param.patchRadius_+1,DIM)),
+    average_(std::pow( (double)(2*param.patchRadius_+1), DIM) ),
+    gaussWeight_(std::pow( (double)(2*param.patchRadius_+1), DIM) ),
     shape_(inImage.shape()),
     totalSize_()
     {

@@ -36,11 +36,14 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyutilities_PyArray_API
 //#define NO_IMPORT_ARRAY
 
-#include <string>
-
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/priority_queue.hxx>
+
+// Amazingly, the include order matters to Mac OS clang.
+// This line must come after the includes above.
+#include <string>
+
 namespace python = boost::python;
 
 namespace vigra{

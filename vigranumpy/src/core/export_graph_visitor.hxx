@@ -269,7 +269,7 @@ public:
     template<class ITEM,class ITEM_IT>
     static NumpyAnyArray dtypetest(   
         const Graph & g, 
-        NumpyArray<1,ITEM> out =NumpyArray<1,ITEM>() 
+        NumpyArray<1,ITEM> out = (NumpyArray<1,ITEM>())
     ){
         typedef GraphItemHelper<Graph,ITEM> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,ITEM>::difference_type(  ItemHelper::itemNum(g)  ));
@@ -286,7 +286,7 @@ public:
     static NumpyAnyArray findEdges(
         const Graph & g,
         NumpyArray<2,UInt32> nodeIdPairs, 
-        NumpyArray<1,Int32> out =NumpyArray<1,Int32>()  
+        NumpyArray<1,Int32> out =(NumpyArray<1,Int32>())
     ){
         out.reshapeIfEmpty(typename NumpyArray<1,Int32>::difference_type(  nodeIdPairs.shape(0)  ));
         for(MultiArrayIndex i=0; i<nodeIdPairs.shape(0); ++i){
@@ -308,7 +308,7 @@ public:
     }
 
 
-    static NumpyAnyArray uIds(const Graph & g, NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() ){
+    static NumpyAnyArray uIds(const Graph & g, NumpyArray<1,UInt32> out =(NumpyArray<1,UInt32>()) ){
         typedef GraphItemHelper<Graph,Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  ItemHelper::itemNum(g)  ));
         size_t  counter=0;
@@ -318,7 +318,7 @@ public:
         }
         return out;
     }
-    static NumpyAnyArray vIds(const Graph & g, NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() ){
+    static NumpyAnyArray vIds(const Graph & g, NumpyArray<1,UInt32> out =(NumpyArray<1,UInt32>()) ){
         typedef GraphItemHelper<Graph,Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  ItemHelper::itemNum(g)  ));
         size_t  counter=0;
@@ -329,7 +329,7 @@ public:
         return out;
     }
 
-    static NumpyAnyArray uvIds(const Graph & g, NumpyArray<2,UInt32> out =NumpyArray<1,UInt32>() ){
+    static NumpyAnyArray uvIds(const Graph & g, NumpyArray<2,UInt32> out =(NumpyArray<2,UInt32>()) ){
         typedef GraphItemHelper<Graph,Edge> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<2,UInt32>::difference_type(  ItemHelper::itemNum(g) ,2 ));
         size_t  counter=0;
@@ -344,7 +344,7 @@ public:
     static NumpyAnyArray uIdsSubset(
         const Graph & g, 
         NumpyArray<1,UInt32> edgeIds,
-        NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() 
+        NumpyArray<1,UInt32> out =(NumpyArray<1,UInt32>())
     ){
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  edgeIds.shape(0)));
         for(MultiArrayIndex i=0; i<edgeIds.shape(0); ++i){
@@ -359,7 +359,7 @@ public:
     static NumpyAnyArray vIdsSubset(
         const Graph & g, 
         NumpyArray<1,UInt32> edgeIds,
-        NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() 
+        NumpyArray<1,UInt32> out =(NumpyArray<1,UInt32>())
     ){
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  edgeIds.shape(0)));
         for(MultiArrayIndex i=0; i<edgeIds.shape(0); ++i){
@@ -375,7 +375,7 @@ public:
     static NumpyAnyArray uvIdsSubset(
         const Graph & g, 
         NumpyArray<1,UInt32> edgeIds,
-        NumpyArray<2,UInt32> out =NumpyArray<1,UInt32>() 
+        NumpyArray<2,UInt32> out =(NumpyArray<2,UInt32>())
     ){
         out.reshapeIfEmpty(typename NumpyArray<2,UInt32>::difference_type(  edgeIds.shape(0) ,2 ));
         for(MultiArrayIndex i=0; i<edgeIds.shape(0); ++i){
@@ -390,7 +390,7 @@ public:
     }
 
     template<class ITEM,class ITEM_IT>
-    static NumpyAnyArray validIds(const Graph & g, NumpyArray<1,bool> out =NumpyArray<1,UInt32>() ){
+    static NumpyAnyArray validIds(const Graph & g, NumpyArray<1,bool> out =(NumpyArray<1,bool>()) ){
         typedef GraphItemHelper<Graph,ITEM> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  ItemHelper::maxItemId(g)  ));
         std::fill(out.begin(),out.end(),false);
@@ -403,7 +403,7 @@ public:
     }
 
     template<class ITEM,class ITEM_IT>
-    static NumpyAnyArray itemIds(const Graph & g, NumpyArray<1,UInt32> out =NumpyArray<1,UInt32>() ){
+    static NumpyAnyArray itemIds(const Graph & g, NumpyArray<1,UInt32> out =(NumpyArray<1,UInt32>()) ){
         typedef GraphItemHelper<Graph,ITEM> ItemHelper;
         out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(  ItemHelper::itemNum(g)  ));
         size_t  counter=0;
@@ -566,7 +566,7 @@ public:
 
     static NumpyAnyArray addEdges(Graph & self,
         NumpyArray<2,UInt32> edges,
-        NumpyArray<1,UInt32> edgeIds  =NumpyArray<1,index_type>()
+        NumpyArray<1,UInt32> edgeIds  =(NumpyArray<1,UInt32>())
     ){
         edgeIds.reshapeIfEmpty(typename NumpyArray<1,index_type>::difference_type(edges.shape(0)));
         for(MultiArrayIndex i=0; i<edges.shape(0); ++i){
