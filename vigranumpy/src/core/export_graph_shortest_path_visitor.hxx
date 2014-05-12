@@ -240,7 +240,7 @@ public:
     static NumpyAnyArray makeNodeIdPath(
         const ShortestPathDijkstraType & sp,
         PyNode target,
-        NumpyArray<1,Singleband<UInt32> > nodeIdPath = NumpyArray<1,Singleband<UInt32> >()
+        NumpyArray<1,Singleband<UInt32> > nodeIdPath = (NumpyArray<1,Singleband<UInt32> >())
     ){
         typename  ShortestPathDijkstraType::PredecessorsMap predMap = sp.predecessors();
         const Node source = sp.source();
