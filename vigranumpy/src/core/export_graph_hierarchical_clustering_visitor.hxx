@@ -97,15 +97,15 @@ public:
     void exportMergeGraph()const{
         const std::string mgAdaptorClsName = clsName_ + std::string("MergeGraph");
         python::class_<MergeGraph,boost::noncopyable>(
-            mgAdaptorClsName.c_str(),python::init<const Graph &>()[python::with_custodian_and_ward<2 /*custodian == self*/, 1 /*ward == const InputLabelingView & */>()]
+            mgAdaptorClsName.c_str(),python::init<const Graph &>()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()]
         )
         .def(LemonUndirectedGraphCoreVisitor<MergeGraph>(mgAdaptorClsName))
         .def("inactiveEdgesNode",&pyInactiveEdgesNode)
         .def("graph",&pyMergeGraphsGraph, python::return_internal_reference<>())
         ;
 
-        python::def("__mergeGraph",&pyMergeGraphConstructor,
-            python::with_custodian_and_ward_postcall< 1,0 ,
+        python::def("__mergeGraph",&pyMergeGraphConstructor ,  
+            python::with_custodian_and_ward_postcall< 0,1 ,
                     python::return_value_policy<   python::manage_new_object      >  >()  
         );
     }
@@ -117,12 +117,12 @@ public:
             .def("__init__", python::make_constructor(&pyEdgeWeightNodeFeaturesConstructor))
             ;
             python::def("__minEdgeWeightNodeDistOperator",registerConverters(&pyEdgeWeightNodeFeaturesConstructor),
-                python::with_custodian_and_ward_postcall< 1,0 ,
-                    python::with_custodian_and_ward_postcall< 2 ,0,
-                        python::with_custodian_and_ward_postcall< 3 ,0,
-                            python::with_custodian_and_ward_postcall< 4 ,0,
-                                python::with_custodian_and_ward_postcall< 5 ,0,
-                                    python::with_custodian_and_ward_postcall< 6 ,0,
+                python::with_custodian_and_ward_postcall< 0,1 ,
+                    python::with_custodian_and_ward_postcall< 0 ,2,
+                        python::with_custodian_and_ward_postcall< 0 ,3,
+                            python::with_custodian_and_ward_postcall< 0 ,4,
+                                python::with_custodian_and_ward_postcall< 0 ,5,
+                                    python::with_custodian_and_ward_postcall< 0 ,6,
                                         python::return_value_policy<   python::manage_new_object      
 
                 >  >    >   >   >   >   >()  
@@ -137,8 +137,8 @@ public:
                 //python::return_value_policy<python::manage_new_object>() )
             ;
             python::def("__pythonClusterOperator",registerConverters(&pyPythonOperatorConstructor),
-                python::with_custodian_and_ward_postcall< 1,0 ,
-                    python::with_custodian_and_ward_postcall< 2,0 ,
+                python::with_custodian_and_ward_postcall< 0,1 ,
+                    python::with_custodian_and_ward_postcall< 0,2 ,
                         python::return_value_policy<   python::manage_new_object      >  >  >()  
             );
         }
@@ -164,7 +164,7 @@ public:
 
         // free function
         python::def("__hierarchicalClustering",registerConverters(&pyHierarchicalClusteringConstructor<ClusterOperator>),
-            python::with_custodian_and_ward_postcall< 1,0 ,
+            python::with_custodian_and_ward_postcall< 0,1 ,
                     python::return_value_policy<   python::manage_new_object      >  >()  
         );
     }
