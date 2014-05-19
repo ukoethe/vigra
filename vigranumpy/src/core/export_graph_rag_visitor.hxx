@@ -610,7 +610,7 @@ public:
         const typename PyNodeMapTraits<Graph,   UInt32>::Array & labelsWhichGeneratedRagArray,
         const typename PyNodeMapTraits<RagGraph,T     >::Array & ragNodeFeaturesArray,
         const Int32                                              ignoreLabel=-1,
-        typename PyNodeMapTraits<Graph,T>::Array                 graphNodeFeaturesArray=typename PyNodeMapTraits<Graph,T>::Array() // out
+        typename PyNodeMapTraits<Graph,T>::Array                 graphNodeFeaturesArray=(typename PyNodeMapTraits<Graph,T>::Array()) // out
     ){
 
         TaggedShape ragNodeFeaturesArrayShape = ragNodeFeaturesArray.taggedShape();

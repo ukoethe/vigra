@@ -316,7 +316,7 @@ public:
     static python::tuple leafNodeIdsAsNumpyArray(
         const HCLUSTER &            hcluster,
         const typename HCLUSTER::MergeGraphIndexType treeNodeId,
-        NumpyArray<1,UInt32>  leafes  = NumpyArray<1,UInt32>()
+        NumpyArray<1,UInt32>  leafes  = (NumpyArray<1,UInt32>())
     ) {        
         leafes.reshapeIfEmpty( typename NumpyArray<1,UInt32>::difference_type( hcluster.graph().nodeNum()) );
         if(leafes.shape(0)!=hcluster.graph().nodeNum()){
