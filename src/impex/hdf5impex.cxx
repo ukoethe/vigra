@@ -45,12 +45,12 @@ namespace vigra {
 
 HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
 {
-    m_file_handle = HDF5Handle(H5Fopen(filePath, H5F_ACC_RDONLY, H5P_DEFAULT),
-                               &H5Fclose, "HDF5ImportInfo(): Unable to open file.");
+    m_file_handle = HDF5HandleShared(H5Fopen(filePath, H5F_ACC_RDONLY, H5P_DEFAULT),
+                                     &H5Fclose, "HDF5ImportInfo(): Unable to open file.");
 
 
-    m_dataset_handle = HDF5Handle(H5Dopen(m_file_handle, pathInFile, H5P_DEFAULT),
-                                  &H5Dclose, "HDF5ImportInfo(): Unable to open dataset.");
+    m_dataset_handle = HDF5HandleShared(H5Dopen(m_file_handle, pathInFile, H5P_DEFAULT),
+                                        &H5Dclose, "HDF5ImportInfo(): Unable to open dataset.");
 
 
     //DataSet dset = m_file.openDataSet(datasetname);
@@ -194,9 +194,8 @@ void HDF5_ls_insert(void* operator_data, const std::string & x)
 {
     static_cast<HDF5File::ls_closure*>(operator_data)->insert(x);
 }
-// callback function for ls(), called via HDF5File::H5Literate()
-// see http://www.parashift.com/c++-faq-lite/pointers-to-members.html#faq-33.2
-// for as to why.
+
+// callback function for ls(), called via HDF5File::ls_H5Literate()
 extern "C"
 herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char* name,
                                  const H5L_info_t*, void* operator_data)
@@ -211,6 +210,15 @@ herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char* name,
     {
         HDF5_ls_insert(operator_data, name);
     }
+    return 0;
+}
+
+// callback function for listAttributes(), called via HDF5File::ls_H5Literate()
+extern "C"
+herr_t HDF5_listAttributes_inserter_callback(hid_t loc_id, const char* name,
+                                             const H5A_info_t*, void* operator_data)
+{
+    HDF5_ls_insert(operator_data, name);
     return 0;
 }
 

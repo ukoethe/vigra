@@ -37,7 +37,7 @@
 #ifndef VIGRA_CONFIG_HXX
 #define VIGRA_CONFIG_HXX
 
-#include "configVersion.hxx"
+#include "config_version.hxx"
 #include <stdexcept>
 
 ///////////////////////////////////////////////////////////
@@ -159,13 +159,23 @@
     #define HAS_HASH_CONTAINERS
     
     // these warnings produce too many false positives to be useful
-    #pragma GCC diagnostic ignored "-Wstrict-aliasing"  
     #pragma GCC diagnostic ignored "-Wshadow"  
     
     #if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
-        #define VIGRA_HAS_UNIQUE_PTR
+        #if !defined(__APPLE__) || (defined(__clang_major__) && __clang_major__ > 4)
+            #define VIGRA_HAS_UNIQUE_PTR
+        #endif
+    #else
+        #if defined(__APPLE__) && defined(__clang_major__) &&  __clang_major__ <= 4
+            #define VIGRA_SHARED_PTR_IN_TR1
+        #endif        
     #endif
 
+
+//    #if defined(__APPLE__) && !defined(__clang_major__) && __GNUC__ == 4 && __GNUC_MINOR__ < 6
+    #if !defined(__GXX_EXPERIMENTAL_CXX0X__) && __cplusplus < 201103L
+//        #define VIGRA_SHARED_PTR_IN_TR1
+    #endif
 #endif  // __GNUC__
 
 ///////////////////////////////////////////////////////////
@@ -243,9 +253,19 @@
 #endif
 
 #ifdef VIGRA_HAS_UNIQUE_PTR
-#  define VIGRA_UNIQUE_PTR  std::unique_ptr
+#  ifdef _GLIBCXX_INCLUDE_AS_TR1
+#    define VIGRA_UNIQUE_PTR  std::tr1::unique_ptr
+#  else
+#    define VIGRA_UNIQUE_PTR  std::unique_ptr
+#  endif
 #else
 #  define VIGRA_UNIQUE_PTR  std::auto_ptr
+#endif
+
+#ifdef VIGRA_SHARED_PTR_IN_TR1
+#  define VIGRA_SHARED_PTR  std::tr1::shared_ptr
+#else
+#  define VIGRA_SHARED_PTR  std::shared_ptr
 #endif
 
 #ifndef VIGRA_NO_THREADSAFE_STATIC_INIT    

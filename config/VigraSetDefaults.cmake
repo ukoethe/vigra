@@ -37,6 +37,8 @@ SET(WITH_HDF5 ${WITH_HDF5}
     
 OPTION(WITH_OPENEXR "Support for the OpenEXR graphics format" OFF)
 
+OPTION(WITH_BOOST_THREAD "Use boost::thread instead of std::thread" OFF)
+
 IF(NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()

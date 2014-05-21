@@ -256,18 +256,20 @@ class MultiCoordinateIterator
         <b>\#include</b> \<vigra/multi_iterator.hxx\><br/>
         Namespace: vigra
     */
-template <unsigned int N, class T, class REFERENCE, class POINTER>
+template <unsigned int N, class V, class REFERENCE, class POINTER>
 class StridedScanOrderIterator
-    : public CoupledIteratorType<N, T>::type
+    : public CoupledIteratorType<N, V>::type
 {
   public:
-    typedef typename CoupledIteratorType<N, T>::type  base_type;
+    typedef typename CoupledIteratorType<N, V>::type  base_type;
+    typedef typename base_type::value_type            handle_type;
 
     typedef typename base_type::shape_type         shape_type;
     typedef typename base_type::difference_type    difference_type;
-    typedef StridedScanOrderIterator              iterator;
+    typedef StridedScanOrderIterator               iterator;
     typedef std::random_access_iterator_tag        iterator_category;
 
+    typedef typename detail::ResolveChunkedMemory<V>::type T;
     typedef T                                      value_type;
     typedef REFERENCE                              reference;
     typedef T const &                              const_reference;
@@ -285,6 +287,10 @@ class StridedScanOrderIterator
 
     StridedScanOrderIterator(POINTER p, shape_type const & shape, shape_type const & strides) 
         : base_type(createCoupledIterator(MultiArrayView<N, T, StridedArrayTag>(shape, strides, const_cast<T *>(p))))
+    {}
+
+    StridedScanOrderIterator(handle_type const & handle) 
+        : base_type(handle)
     {}
 
     reference operator*()
@@ -398,6 +404,13 @@ class StridedScanOrderIterator
     MultiArrayIndex index() const
     {
         return this->scanOrderIndex();
+    }
+
+    StridedScanOrderIterator & 
+    restrictToSubarray(shape_type const & start, shape_type const & stop)
+    {
+        base_type::restrictToSubarray(start, stop);
+        return *this;
     }
     
   protected:

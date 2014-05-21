@@ -88,29 +88,36 @@ struct VigraFalseType
 
 /********************************************************/
 /*                                                      */
-/*                   StridedArrayTag                    */
+/*          tags for MultiArray memory layout           */
 /*                                                      */
 /********************************************************/
 
 /** tag for marking a MultiArray strided.
 
-    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    <b>\#include</b> \<vigra/metaprogramming.hxx\> <br/>
     Namespace: vigra
 */
 struct StridedArrayTag {};
 
-/********************************************************/
-/*                                                      */
-/*                  UnstridedArrayTag                   */
-/*                                                      */
-/********************************************************/
-
 /** tag for marking a MultiArray unstrided.
 
-    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    <b>\#include</b> \<vigra/metaprogramming.hxx\> <br/>
     Namespace: vigra
 */
 struct UnstridedArrayTag {};
+
+/** tag for marking a MultiArray chunked.
+
+    <b>\#include</b> \<vigra/metaprogramming.hxx\> <br/>
+    Namespace: vigra
+*/
+struct ChunkedArrayTag {};
+
+/********************************************************/
+/*                                                      */
+/*                      TypeTraits                      */
+/*                                                      */
+/********************************************************/
 
 template<class T>
 class TypeTraits
@@ -408,33 +415,47 @@ template <class T>
 struct UnqualifiedType
 {
     typedef T type;
+    static const bool isConst = false;
+    static const bool isReference = false;
+    static const bool isPointer = false;
 };
 
 template <class T>
 struct UnqualifiedType<T const>
 {
     typedef T type;
+    static const bool isConst = true;
+    static const bool isReference = false;
+    static const bool isPointer = false;
 };
 
 template <class T>
 struct UnqualifiedType<T &>
 : public UnqualifiedType<T>
-{};
+{
+    static const bool isReference = true;
+};
 
 template <class T>
 struct UnqualifiedType<T const &>
-: public UnqualifiedType<T>
-{};
+: public UnqualifiedType<T const>
+{
+    static const bool isReference = true;
+};
 
 template <class T>
 struct UnqualifiedType<T *>
 : public UnqualifiedType<T>
-{};
+{
+    static const bool isPointer = true;
+};
 
 template <class T>
 struct UnqualifiedType<T const *>
-: public UnqualifiedType<T>
-{};
+: public UnqualifiedType<T const>
+{
+    static const bool isPointer = true;
+};
 
 template <bool, class T = void>
 struct enable_if {};

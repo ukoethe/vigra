@@ -206,7 +206,7 @@ struct ExecLoop
     }
 
     template <class T1, class T2>
-    static bool less(T1 const * left, T2 const * right)
+    static bool lexicographicLessThan(T1 const * left, T2 const * right)
     {
         for(int i=0; i<LEVEL; ++i)
         {
@@ -490,13 +490,13 @@ struct UnrollLoop
     }
 
     template <class T1, class T2>
-    static bool less(T1 const * left, T2 const * right)
+    static bool lexicographicLessThan(T1 const * left, T2 const * right)
     {
         if(*left < *right)
             return true;
         if(*right < *left)
             return false;
-        return UnrollLoop<LEVEL - 1>::less(left+1, right+1);
+        return UnrollLoop<LEVEL - 1>::lexicographicLessThan(left+1, right+1);
     }
 
     template <class T>
@@ -582,7 +582,7 @@ struct UnrollLoop<0>
     template <class T1, class T2>
     static bool notEqual(T1, T2) { return false; }
     template <class T1, class T2>
-    static bool less(T1, T2) { return false; }
+    static bool lexicographicLessThan(T1, T2) { return false; }
     template <class T1, class T2>
     static void min(T1, T2) {}
     template <class T1, class T2>
@@ -883,6 +883,20 @@ class TinyVectorBase
 #endif
         return TinyVectorView<VALUETYPE, TO-FROM>(data_+FROM);
     }
+    
+    TinyVector<VALUETYPE, SIZE-1>
+    dropIndex(int m) const
+    {
+#ifdef VIGRA_CHECK_BOUNDS
+        vigra_precondition(0 <= m && m < SIZE, "Dimension out of bounds");
+#endif
+        TinyVector<VALUETYPE, SIZE-1> res(SkipInitialization);
+        for(int k=0; k<m; ++k)
+            res[k] = data_[k];
+        for(int k=m; k<SIZE-1; ++k)
+            res[k] = data_[k+1];
+        return res;
+    }
 
         /** Size of TinyVector vector always equals the template parameter SIZE.
         */
@@ -892,11 +906,25 @@ class TinyVectorBase
 
     const_pointer data() const { return data_; }
     
+        /** \brief Factory function for a unit vector for dimension \a k.
+        */
     static TinyVector<VALUETYPE, SIZE> unitVector(int k)
     {
         VIGRA_ASSERT_INSIDE(k);
         TinyVector<VALUETYPE, SIZE> ret;
         ret[k] = 1;
+        return ret;
+    }
+    
+        /** \brief Factory function for a linear sequence.
+        
+            The result will be initialized as <tt>res[k] = start + k*step</tt>.
+        */
+    static TinyVector<VALUETYPE, SIZE> linearSequence(VALUETYPE start=VALUETYPE(), VALUETYPE step=VALUETYPE(1))
+    {
+        TinyVector<VALUETYPE, SIZE> ret(SkipInitialization);
+        for(int k=0; k<SIZE; ++k, start+=step)
+            ret[k] = start;
         return ret;
     }
 
@@ -1291,10 +1319,59 @@ operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline bool
 operator<(TinyVectorBase<V1, SIZE, D1, D2> const & l,
-          TinyVectorBase<V2, SIZE, D3, D4> const & r)
+                      TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
-    return ltype::less(l.begin(), r.begin());
+    return ltype::lexicographicLessThan(l.begin(), r.begin());
+}
+
+
+    /// pointwise less-than
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline bool
+allLess(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+        TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    for(int k=0; k < SIZE; ++k)
+        if (l[k] >= r[k])
+            return false;
+    return true;
+}
+
+    /// pointwise greater-than
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline bool
+allGreater(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+           TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    for(int k=0; k < SIZE; ++k)
+        if(l[k] <= r[k])
+            return false;
+    return true;
+}
+
+    /// pointwise less-equal
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline bool
+allLessEqual(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+             TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    for(int k=0; k < SIZE; ++k)
+        if (l[k] > r[k])
+            return false;
+    return true;
+}
+
+    /// pointwise greater-equal
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline bool
+allGreaterEqual(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+                TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    for(int k=0; k < SIZE; ++k)
+        if (l[k] < r[k])
+            return false;
+    return true;
 }
 
 template <class V, int SIZE, class D1, class D2, class D3, class D4>
@@ -2106,6 +2183,24 @@ TinyVector<V, SIZE>
 reverse(TinyVector<V, SIZE> const & t)
 {
     return TinyVector<V, SIZE>(t.begin(), TinyVector<V, SIZE>::ReverseCopy);
+}
+
+    /** \brief transposed copy
+    
+        Elements are arranged such that <tt>res[k] = t[permutation[k]]</tt>.
+    */
+template <class V, int SIZE, class T>
+inline
+TinyVector<V, SIZE>
+transpose(TinyVector<V, SIZE> const & t, TinyVector<T, SIZE> const & permutation)
+{
+    TinyVector<V, SIZE> res(SkipInitialization);
+    for(int k=0; k<SIZE; ++k)
+    {
+        VIGRA_ASSERT_INSIDE(permutation[k]);
+        res[k] = t[permutation[k]];
+    }
+    return res;
 }
 
 //@}

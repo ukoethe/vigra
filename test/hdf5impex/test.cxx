@@ -37,6 +37,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <set>
 #include "vigra/stdimage.hxx"
 #include "vigra/unittest.hxx"
 #include "vigra/hdf5impex.hxx"
@@ -404,6 +405,7 @@ public:
 
         //create a file
         HDF5File file (file_name, HDF5File::New);
+        shouldEqual(file.file_use_count(), 1);
 
         //write one dataset in each group level
         file.write("/dataset",out_data_1);
@@ -413,10 +415,32 @@ public:
         file.mkdir("subgroup1");
         file.write("subgroup1/dataset",out_data_3);
         file.cd("..");
-        file.write("/dataset_rgb",out_data_4);
-        file.write("/atomicint", (int)-42);
-        file.write("/atomicuint", (unsigned int)42);
-        file.write("/atomicdouble", (double)3.1);
+
+        // continue writing on a copies of the file
+        HDF5File file_copy(file);
+        shouldEqual(file.file_use_count(), 2);
+        shouldEqual(file_copy.file_use_count(), 2);
+
+        file_copy.write("/dataset_rgb",out_data_4);
+        file_copy.write("/atomicint", (int)-42);
+
+        HDF5File file_copy2;
+        shouldEqual(file_copy2.file_use_count(), 0);
+        file_copy2 = file_copy;
+        shouldEqual(file.file_use_count(), 3);
+        shouldEqual(file_copy.file_use_count(), 3);
+        shouldEqual(file_copy2.file_use_count(), 3);
+
+        file_copy2.write("/atomicuint", (unsigned int)42);
+        file_copy2.write("/atomicdouble", (double)3.1);
+        file_copy2.close();
+        shouldEqual(file.file_use_count(), 2);
+        shouldEqual(file_copy.file_use_count(), 2);
+        shouldEqual(file_copy2.file_use_count(), 0);
+
+        file_copy.close();
+        shouldEqual(file.file_use_count(), 1);
+        shouldEqual(file_copy.file_use_count(), 0);
 
         //create a new dataset
         MultiArrayShape<3>::type shape (50,50,50);
@@ -710,6 +734,10 @@ public:
         file.writeAttribute("/string/dataset","tinyvector attribute", out_attr_3);
         file.writeAttribute("/string/dataset","rgb attribute", out_attr_4);
 
+        std::vector<std::string> attr = file.listAttributes("/double/dataset");
+        shouldEqual(attr.size(), 2);
+        shouldEqual(attr[0], "int attribute");
+        shouldEqual(attr[1], "string attribute");
 
         // read attributes
         MultiArray<2,int> in_attr_1(MultiArrayShape<2>::type(2,3));
@@ -751,6 +779,24 @@ public:
         file.writeAttribute("attrset","set_longdouble",(long double)3.);
         file.writeAttribute("attrset","set_string",std::string("abc").c_str());
         file.writeAttribute("attrset","set_string2",std::string("abcdef"));
+
+        std::set<std::string> many_attr;
+        file.listAttributes("attrset", many_attr);
+        shouldEqual(many_attr.size(), 14);
+        should(many_attr.find("set_char") != many_attr.end());
+        should(many_attr.find("set_int8") != many_attr.end());
+        should(many_attr.find("set_int16") != many_attr.end());
+        should(many_attr.find("set_int32") != many_attr.end());
+        should(many_attr.find("set_int64") != many_attr.end());
+        should(many_attr.find("set_uint8") != many_attr.end());
+        should(many_attr.find("set_uint16") != many_attr.end());
+        should(many_attr.find("set_uint32") != many_attr.end());
+        should(many_attr.find("set_uint64") != many_attr.end());
+        should(many_attr.find("set_float") != many_attr.end());
+        should(many_attr.find("set_double") != many_attr.end());
+        should(many_attr.find("set_longdouble") != many_attr.end());
+        should(many_attr.find("set_string") != many_attr.end());
+        should(many_attr.find("set_string2") != many_attr.end());
 
         char read_char = 0;
         file.readAttribute("attrset","set_char",read_char);

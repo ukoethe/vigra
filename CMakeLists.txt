@@ -8,8 +8,8 @@ cmake_minimum_required(VERSION 2.6)
 
 PROJECT(vigra)
 
-# read the current version from configVersion.hxx
-file(READ ${vigra_SOURCE_DIR}/include/vigra/configVersion.hxx VIGRA_VERSION_FILE)
+# read the current version from config_version.hxx
+file(READ ${vigra_SOURCE_DIR}/include/vigra/config_version.hxx VIGRA_VERSION_FILE)
 string(REGEX MATCH "VIGRA_VERSION_MAJOR[ \t\n]+[^ \t\n]+" VIGRA_VERSION_MAJOR ${VIGRA_VERSION_FILE})
 string(REGEX REPLACE "VIGRA_VERSION_MAJOR[ \t\n]" "" VIGRA_VERSION_MAJOR ${VIGRA_VERSION_MAJOR})
 string(REGEX MATCH "VIGRA_VERSION_MINOR[ \t\n]+[^ \t\n]+" VIGRA_VERSION_MINOR ${VIGRA_VERSION_FILE})
@@ -39,16 +39,24 @@ IF (MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
 ENDIF ()
 
-IF (CMAKE_COMPILER_IS_GNUCXX AND ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    EXEC_PROGRAM(
-        ${CMAKE_CXX_COMPILER}
-        ARGS                    --version
-        OUTPUT_VARIABLE _compiler_output)
-    STRING(REGEX REPLACE ".*([0-9]\\.[0-9]\\.[0-9]).*" "\\1"  gcc_compiler_version ${_compiler_output})
-    IF (gcc_compiler_version VERSION_LESS "4.4.0")
-        MESSAGE(WARNING "GNU c++ < 4.4 cannot build VIGRANumPy; disabling (found GCC ${gcc_compiler_version})")
-        SET(WITH_VIGRANUMPY 0)
-    ENDIF ()
+IF (CMAKE_COMPILER_IS_GNUCXX)
+    # ADD_DEFINITIONS(-std=c++0x)  # will be needed to enable native thread support
+    
+    IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        # As of cmake 2.8.10, there is a variable CMAKE_CXX_COMPILER_VERSION.
+        # Emulate it by a compiler call if not present.
+        IF(not CMAKE_CXX_COMPILER_VERSION)
+            EXEC_PROGRAM(
+                ${CMAKE_CXX_COMPILER}
+                ARGS                    --version
+                OUTPUT_VARIABLE _compiler_output)
+            STRING(REGEX REPLACE ".*([0-9]\\.[0-9]\\.[0-9]).*" "\\1"  CMAKE_CXX_COMPILER_VERSION ${_compiler_output})
+        ENDIF()
+        IF (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.4.0")
+            MESSAGE(WARNING "GNU c++ < 4.4 cannot build VIGRANumPy; disabling (found GCC ${CMAKE_CXX_COMPILER_VERSION})")
+            SET(WITH_VIGRANUMPY 0)
+        ENDIF ()
+    ENDIF()
 ENDIF ()
 
 IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
@@ -85,6 +93,7 @@ ENDIF()
 ##################################################
 
 INCLUDE(VigraFindPackage)
+VIGRA_FIND_PACKAGE(ZLIB)
 VIGRA_FIND_PACKAGE(TIFF NAMES libtiff)
 VIGRA_FIND_PACKAGE(JPEG NAMES libjpeg)
 VIGRA_FIND_PACKAGE(PNG)
@@ -99,11 +108,34 @@ IF(WITH_HDF5)
     VIGRA_FIND_PACKAGE(HDF5)
 ENDIF()
 
+set(WITH_BOOST "OFF")
+set(WITH_BOOST_COMPONENTS "")
+
 IF(WITH_BOOST_GRAPH)
-    IF(WITH_VIGRANUMPY)
-        VIGRA_FIND_PACKAGE( Boost 1.40.0 COMPONENTS python )
-    else()
-        VIGRA_FIND_PACKAGE( Boost 1.40.0 )
+    set(WITH_BOOST "ON")
+ENDIF()
+
+IF(WITH_VIGRANUMPY)
+    set(WITH_BOOST "ON")
+    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} python)
+ENDIF()
+
+IF(WITH_BOOST_THREAD)
+    set(WITH_BOOST "ON")
+    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
+    ADD_DEFINITIONS(-DVIGRA_NO_STD_THREADING)
+ENDIF()
+
+IF(WITH_BOOST)
+    VIGRA_FIND_PACKAGE( Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
+    
+    if(Boost_FOUND AND WITH_BOOST_COMPONENTS)
+        # configure boost's autolink magic to use the right library name
+        # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
+        if(("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib") OR
+           ("${Boost_SYSTEM_LIBRARY}" MATCHES "boost_system\\.lib"))
+            ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
+        endif()
     endif()
 ENDIF()
 
@@ -303,6 +335,18 @@ MESSAGE( STATUS "---------------------------------------------------------" )
 MESSAGE( STATUS "VIGRA configuration information:" )
 MESSAGE( STATUS "---------------------------------------------------------" )
 
+IF(ZLIB_FOUND)
+    MESSAGE( STATUS "  Using ZLIB  libraries: ${ZLIB_LIBRARIES}" )
+ELSE()
+    MESSAGE( STATUS "  ZLIB libraries not found (ZLIB support disabled)" )
+ENDIF()
+
+IF(PNG_FOUND)
+    MESSAGE( STATUS "  Using PNG  libraries: ${PNG_LIBRARIES}" )
+ELSE()
+    MESSAGE( STATUS "  PNG libraries not found (PNG support disabled)" )
+ENDIF()
+
 IF(TIFF_FOUND)
     MESSAGE( STATUS "  Using TIFF libraries: ${TIFF_LIBRARIES}" )
 ELSE()
@@ -313,12 +357,6 @@ IF(JPEG_FOUND)
     MESSAGE( STATUS "  Using JPEG libraries: ${JPEG_LIBRARIES}" )
 ELSE()
     MESSAGE( STATUS "  JPEG libraries not found (JPEG support disabled)" )
-ENDIF()
-
-IF(PNG_FOUND)
-    MESSAGE( STATUS "  Using PNG  libraries: ${PNG_LIBRARIES}" )
-ELSE()
-    MESSAGE( STATUS "  PNG libraries not found (PNG support disabled)" )
 ENDIF()
 
 IF(OPENEXR_FOUND)

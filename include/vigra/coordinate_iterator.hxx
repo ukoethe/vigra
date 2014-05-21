@@ -121,6 +121,7 @@ struct StridePair
     {
         return index;
     }
+    
     double & dim0()
     {
         return coord[0];
@@ -230,7 +231,7 @@ struct StridePairPointer : public StridePairCoord<N>
     {
         return index;
     }
-
+    
     void operator+=(stride_type x)
     {
         index += x.c;
