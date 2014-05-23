@@ -136,7 +136,6 @@
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
 #include "threading.hxx"
-#include "hdf5impex.hxx"
 #include "compression.hxx"
 
 // // FIXME: why is this needed when compiling the Python bindng,
