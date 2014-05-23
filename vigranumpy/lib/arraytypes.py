@@ -603,7 +603,7 @@ class VigraArray(numpy.ndarray):
         if ndim != 2:
             raise RuntimeError("VigraArray.show(): array must have 2 non-channel axes.")
 
-        return showImage(self, normalize)
+        return showImage(self.transposeToVigraOrder(), normalize)
 
     def qimage(self, normalize=True):
         '''
