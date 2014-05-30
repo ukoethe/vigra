@@ -39,6 +39,8 @@ OPTION(WITH_OPENEXR "Support for the OpenEXR graphics format" OFF)
 
 OPTION(WITH_BOOST_THREAD "Use boost::thread instead of std::thread" OFF)
 
+OPTION(WITH_OPENMP "Use OpenMP pragmas" OFF)
+
 IF(NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()

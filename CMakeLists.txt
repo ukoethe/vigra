@@ -155,6 +155,11 @@ IF(WITH_VALGRIND)
     FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)
 ENDIF()
 
+IF(WITH_OPENMP)
+    FIND_PACKAGE(OpenMP)
+    ADD_DEFINITIONS(${OpenMP_CXX_FLAGS})
+ENDIF()    
+
 ##################################################
 #
 #     setup testing environment
@@ -450,6 +455,12 @@ IF(WITH_VIGRANUMPY AND VIGRANUMPY_DEPENDENCIES_FOUND)
   ENDIF(PYTHON_SPHINX)
 ELSE()
   MESSAGE( STATUS "  vigranumpy will NOT be installed" )
+ENDIF()
+
+IF(OPENMP_FOUND)
+  MESSAGE( STATUS "  OpenMP flags will be added to the compiler: ${OpenMP_CXX_FLAGS}")
+ELSE()
+  MESSAGE( STATUS "  OpenMP is disabled or not found. No OpenMP flags will be added")    
 ENDIF()
 
 IF(NOT TIFF_FOUND OR NOT JPEG_FOUND OR NOT PNG_FOUND OR NOT FFTW3_FOUND OR
