@@ -36,3 +36,4 @@ Makefile
 /install/
 .cproject
 .project
+/.settings/
