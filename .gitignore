@@ -33,3 +33,6 @@ Makefile
 *.l[doa]
 *.loT
 *.orig
+/install/
+.cproject
+.project
