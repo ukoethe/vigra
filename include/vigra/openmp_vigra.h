@@ -34,8 +34,6 @@
 
 #include "openmp_def.h"
 
-#define OPENMP
-
 namespace vigra
 {
     namespace omp
