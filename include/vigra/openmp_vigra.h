@@ -34,6 +34,7 @@
 
 #include "openmp_def.h"
 
+
 namespace vigra
 {
     namespace omp
@@ -252,7 +253,7 @@ namespace vigra
 
                     int id() const {return 1;}
 
-                    void operator()(ValueType* d, const ValueType* f, int n) const
+                    void operator()(ValueType* /* RESTRICT */ d, const ValueType* /* RESTRICT */ f, int n) const
                     {
                         const ValueType one = static_cast<ValueType>(1);
 
@@ -276,7 +277,7 @@ namespace vigra
 
                     int id() const {return 2;}
 
-                    void operator()(ValueType* d, const ValueType* f, int n) const
+                    void operator()(ValueType* /* RESTRICT */ d, const ValueType* /* RESTRICT */ f, int n) const
                     {
                         typedef float math_t;
 
