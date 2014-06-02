@@ -48,6 +48,8 @@
 #include "multi_pointoperators.hxx"
 #include "functorexpression.hxx"
 
+#include "multi_gridgraph.hxx" 	//for boundary Graph & boundaryMultiDistance
+#include "union_find.hxx"		//for boundary Graph & boundaryMultiDistance
 namespace vigra
 {
 
@@ -655,6 +657,61 @@ separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
         "separableMultiDistance(): shape mismatch between input and output.");
     separableMultiDistance( srcMultiArrayRange(source),
                             destMultiArray(dest), background );
+}
+
+
+namespace lemon_graph { 
+
+template <class Graph, class T1Map, class T2Map>
+typename T2Map::value_type
+boundaryGraph(Graph const & g, 
+           T1Map const & labels,
+           T2Map & out)
+{
+    typedef typename Graph::NodeIt        graph_scanner;
+    typedef typename Graph::OutBackArcIt  neighbor_iterator;
+    typedef typename T2Map::value_type    LabelType;
+
+    vigra::detail::UnionFindArray<LabelType>  regions;
+
+	//find faces
+    for (graph_scanner node(g); node != INVALID; ++node) 
+    {
+        typename T1Map::value_type center = labels[*node];
+        
+        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+        {
+            // set adjacent nodes with different labels to 1
+            if(center != labels[g.target(*arc)])
+            {
+				out[*node] = 1;
+				out[g.target(*arc)] = 1;
+            }
+        }
+    }
+
+}
+
+} //-- namspace lemon_graph
+
+doxygen_overloaded_function(template <...> unsigned int boundaryMultiDistance)
+
+template <unsigned int N, class T, class S1,
+                          class Label, class S2>
+inline Label 
+boundaryMultiDistance(MultiArrayView<N, T, S1> const & labels,
+                MultiArrayView<N, Label, S2> out, bool background)
+{
+    vigra_precondition(labels.shape() == out.shape(),
+        "labelMultiArray(): shape mismatch between input and output.");
+
+	MultiArray<N, float> tmpArray(out.shape());     
+    GridGraph<N, undirected_tag> graph(labels.shape()); //no neighborhood !
+
+	lemon_graph::boundaryGraph(graph, labels, tmpArray);
+	separableMultiDistance(tmpArray, out, background);
+	for (int k = 0; k < out.size(); k++)
+		out(k) += 0.5;	//approximated distance correction
 }
 
 //@}
