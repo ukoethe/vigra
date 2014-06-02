@@ -27,9 +27,7 @@ MACRO(VIGRA_FIND_PACKAGE package)
         endif()
     endforeach(i)
 
-    foreach(name ${NAMES})
-        SET(${package}_NAMES ${package}_NAMES ${name})
-    endforeach(name)
+    SET(${package}_NAMES ${NAMES} ${${package}_NAMES})
 
     IF(DEFINED COMPONENTS)
         SET(COMPONENTS COMPONENTS ${COMPONENTS})

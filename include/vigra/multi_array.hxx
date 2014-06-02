@@ -204,8 +204,7 @@ template <class SrcIterator, class Shape, class DestIterator> \
 inline void \
 name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>) \
 {     \
-    SrcIterator send = s + shape[0]; \
-    for(; s < send; ++s, ++d) \
+    for(MultiArrayIndex i=0; i < shape[0]; ++i, ++s, ++d) \
     { \
         *d op detail::RequiresExplicitCast<typename DestIterator::value_type>::cast(*s); \
     } \
@@ -215,8 +214,8 @@ template <class Ref, class Ptr, class Shape, class DestIterator> \
 inline void \
 name##MultiArrayData(MultiIterator<1, UInt8, Ref, Ptr> si, Shape const & shape, DestIterator d, MetaInt<0>) \
 { \
-    Ptr s = &(*si), send = s + shape[0]; \
-    for(; s < send; ++s, ++d) \
+    Ptr s = &(*si); \
+    for(MultiArrayIndex i=0; i < shape[0]; ++i, ++s, ++d) \
     { \
         *d op detail::RequiresExplicitCast<typename DestIterator::value_type>::cast(*s); \
     } \
@@ -226,8 +225,7 @@ template <class SrcIterator, class Shape, class DestIterator, int N> \
 void \
 name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>) \
 { \
-    SrcIterator send = s + shape[N]; \
-    for(; s < send; ++s, ++d) \
+    for(MultiArrayIndex i=0; i < shape[N]; ++i, ++s, ++d) \
     { \
         name##MultiArrayData(s.begin(), shape, d.begin(), MetaInt<N-1>()); \
     } \
@@ -237,8 +235,7 @@ template <class DestIterator, class Shape, class T> \
 inline void \
 name##ScalarMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<0>) \
 {     \
-    DestIterator dend = d + shape[0]; \
-    for(; d < dend; ++d) \
+    for(MultiArrayIndex i=0; i < shape[0]; ++i, ++d) \
     { \
         *d op detail::RequiresExplicitCast<typename DestIterator::value_type>::cast(init); \
     } \
@@ -248,8 +245,7 @@ template <class DestIterator, class Shape, class T, int N> \
 void \
 name##ScalarMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<N>) \
 {     \
-    DestIterator dend = d + shape[N]; \
-    for(; d < dend; ++d) \
+    for(MultiArrayIndex i=0; i < shape[N]; ++i, ++d) \
     { \
         name##ScalarMultiArrayData(d.begin(), shape, init, MetaInt<N-1>()); \
     } \
@@ -1468,7 +1464,7 @@ public:
             typedef MultiArray<2, double>::difference_type Shape;
             MultiArray<2, double> array(10, 20);
 
-            MultiArray<2, double, StridedArrayTag> transposed = array.transpose();
+            MultiArrayView<2, double, StridedArrayTag> transposed = array.transpose();
 
             for(int i=0; i<array.shape(0), ++i)
                 for(int j=0; j<array.shape(1); ++j)
@@ -1494,7 +1490,7 @@ public:
             typedef MultiArray<2, double>::difference_type Shape;
             MultiArray<2, double> array(10, 20);
 
-            MultiArray<2, double, StridedArrayTag> transposed = array.transpose(Shape(1,0));
+            MultiArrayView<2, double, StridedArrayTag> transposed = array.transpose(Shape(1,0));
 
             for(int i=0; i<array.shape(0), ++i)
                 for(int j=0; j<array.shape(1); ++j)

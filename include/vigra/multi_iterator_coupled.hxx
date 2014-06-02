@@ -733,8 +733,7 @@ class CoupledScanOrderIterator
         base_type::operator++();
         if(this->point()[dimension-1] == this->shape()[dimension-1])
         {
-            base_type::reset();
-            this->handles_.template increment<dimension>();
+            resetAndIncrement();
         }
         return *this;
     }
@@ -763,8 +762,7 @@ class CoupledScanOrderIterator
         base_type::operator--();
         if(this->point()[dimension-1] == -1)
         {
-            base_type::inverseReset();
-            this->handles_.template decrement<dimension>();
+            resetAndDecrement();
         }
         return *this;
     }
@@ -842,6 +840,11 @@ class CoupledScanOrderIterator
 #endif
 
   protected:
+        // placing these functions out-of-line prevents MSVC
+        // from stupid optimizations
+    void resetAndIncrement();
+    void resetAndDecrement();
+
     void reset()
     {
         this->handles_.template decrement<dimension>(this->shape()[dimension]);
@@ -852,6 +855,20 @@ class CoupledScanOrderIterator
         this->handles_.template increment<dimension>(this->shape()[dimension]);
     }
 };
+
+template <unsigned int N, class HANDLES, int DIMENSION>
+void CoupledScanOrderIterator<N, HANDLES, DIMENSION>::resetAndIncrement()
+{
+    base_type::reset();
+    this->handles_.template increment<dimension>();
+}
+
+template <unsigned int N, class HANDLES, int DIMENSION>
+void CoupledScanOrderIterator<N, HANDLES, DIMENSION>::resetAndDecrement()
+{
+    base_type::inverseReset();
+    this->handles_.template decrement<dimension>();
+}
 
 template <unsigned int N, class HANDLES>
 class CoupledScanOrderIterator<N, HANDLES, 0>

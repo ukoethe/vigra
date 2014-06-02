@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2009 by Ullrich Koethe                     */
+/*                 Copyright 2014 by Ullrich Koethe                     */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -33,44 +33,62 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
+#ifndef VIGRA_CONSTRUCT_CUSTODIAN_FOR_HPP
+#define VIGRA_CONSTRUCT_CUSTODIAN_FOR_HPP
 
-#include <Python.h>
-#include <vigra/config.hxx>
-#include <iostream>
-#include <boost/python.hpp>
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include <vigra/functorexpression.hxx>
-#include <vigra/mathutil.hxx>
-#include <vigra/utilities.hxx>
-#include <vector>
+#include <boost/version.hpp>
 
-namespace python = boost::python;
+#if BOOST_VERSION <= 105500
 
-namespace vigra {
+#include <boost/python/with_custodian_and_ward.hpp>
 
-UInt32 pychecksum(python::str const & s)
+namespace boost { namespace python { 
+
+template <std::size_t ward>
+struct construct_custodian_for : default_call_policies
 {
-    unsigned int size = len(s);
-    return checksum(PyString_AsString(s.ptr()), size);
-}
-
-void registerNumpyArrayConverters();
-void defineAxisTags();
-void defineChunkedArray();
-
-} // namespace vigra
-
-using namespace boost::python;
-using namespace vigra;
-
-BOOST_PYTHON_MODULE_INIT(vigranumpycore)
-{
-    import_array();
-    registerNumpyArrayConverters();
-    defineAxisTags();
-    defineChunkedArray();
+    BOOST_STATIC_ASSERT(ward > 0);
     
-    def("checksum", &pychecksum, args("data"));
-}
+    template <class ArgumentPackage>
+    static PyObject* postcall(ArgumentPackage const& args_, PyObject* result)
+    {
+        std::size_t arity_ = detail::arity(args_);
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+        if (ward > arity_ )
+#else
+        // check if ward exceeds the arity
+        // (this weird formulation avoids "always false" warnings
+        // for arity_ = 0)
+        if ( (std::max<std::size_t>)(0, ward) > arity_ )
+#endif
+        {
+            PyErr_SetString(
+                PyExc_IndexError
+              , "boost::python::construct_custodian_for: argument index out of range"
+            );
+            return 0;
+        }
+        
+        PyObject* patient = detail::get_prev<ward>::execute(args_, result);
+        PyObject* nurse = detail::get_prev<1>::execute(args_.base);
+
+        if (nurse == 0) return 0;
+    
+        result = default_call_policies::postcall(args_, result);
+        if (result == 0)
+            return 0;
+            
+        if (python::objects::make_nurse_and_patient(nurse, patient) == 0)
+        {
+            Py_XDECREF(result);
+            return 0;
+        }
+        return result;
+    }
+};
+
+}} // namespace boost::python
+
+#  endif // BOOST_VERSION <= 105500
+
+#endif // VIGRA_CONSTRUCT_CUSTODIAN_FOR_HPP

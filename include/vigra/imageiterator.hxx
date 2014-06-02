@@ -387,8 +387,8 @@ class DirectionSelector<UnstridedArrayTag>
         void operator++(int) {++current_;}
         void operator--() {--current_;}
         void operator--(int) {--current_;}
-        void operator+=(int dx) {current_ += dx; }
-        void operator-=(int dx) {current_ -= dx; }
+        void operator+=(std::ptrdiff_t dx) {current_ += dx; }
+        void operator-=(std::ptrdiff_t dx) {current_ -= dx; }
 
         bool operator==(type const & rhs) const
          { return current_ == rhs.current_; }
@@ -408,13 +408,13 @@ class DirectionSelector<UnstridedArrayTag>
         bool operator>=(type const & rhs) const
          { return current_ >= rhs.current_; }
 
-        int operator-(type const & rhs) const
+        std::ptrdiff_t operator-(type const & rhs) const
          { return current_ - rhs.current_; }
 
         T operator()() const
         { return current_; }
 
-        T operator()(int d) const
+        T operator()(std::ptrdiff_t d) const
         { return current_ + d; }
 
         T current_;
@@ -430,7 +430,7 @@ class DirectionSelector<StridedArrayTag>
     class type
     {
       public:
-        type(int stride, T base = 0)
+        type(std::ptrdiff_t stride, T base = 0)
         : stride_(stride),
           current_(base)
         {}
@@ -451,8 +451,8 @@ class DirectionSelector<StridedArrayTag>
         void operator++(int) {current_ += stride_; }
         void operator--() {current_ -= stride_; }
         void operator--(int) {current_ -= stride_; }
-        void operator+=(int dy) {current_ += dy*stride_; }
-        void operator-=(int dy) {current_ -= dy*stride_; }
+        void operator+=(std::ptrdiff_t dy) {current_ += dy*stride_; }
+        void operator-=(std::ptrdiff_t dy) {current_ -= dy*stride_; }
 
         bool operator==(type const & rhs) const
          { return (current_ == rhs.current_); }
@@ -472,16 +472,16 @@ class DirectionSelector<StridedArrayTag>
         bool operator>=(type const & rhs) const
          { return (current_ >= rhs.current_); }
 
-        int operator-(type const & rhs) const
+        std::ptrdiff_t operator-(type const & rhs) const
          { return (current_ - rhs.current_) / stride_; }
 
         T operator()() const
         { return current_; }
 
-        T operator()(int d) const
+        T operator()(std::ptrdiff_t d) const
         { return current_ + d*stride_; }
 
-        int stride_;
+        std::ptrdiff_t stride_;
         T current_;
     };
 };
@@ -616,7 +616,7 @@ class ImageIteratorBase
         /** Let operations act in Y direction
         */
     typedef typename
-        vigra::detail::DirectionSelector<StridedArrayTag>::template type<int> MoveY;
+        vigra::detail::DirectionSelector<StridedArrayTag>::template type<std::ptrdiff_t> MoveY;
 
     /** @name Comparison of Iterators */
     //@{
@@ -680,7 +680,7 @@ class ImageIteratorBase
         must only be called for unstrided iterators
         (<tt>StridedOrUnstrided == UnstridedArrayTag</tt>)
         */
-    ImageIteratorBase(pointer base, int ystride)
+    ImageIteratorBase(pointer base, std::ptrdiff_t ystride)
     : x(base),
       y(ystride)
     {}
@@ -691,7 +691,7 @@ class ImageIteratorBase
         must only be called for strided iterators
         (<tt>StridedOrUnstrided == StridedArrayTag</tt>)
         */
-    ImageIteratorBase(pointer base, int xstride, int ystride)
+    ImageIteratorBase(pointer base, std::ptrdiff_t xstride, std::ptrdiff_t ystride)
     : x(xstride, base),
       y(ystride)
     {}
@@ -791,7 +791,7 @@ class ImageIteratorBase
         /** Access pixel at offset (dx, dy) from current location. <br>
             usage: <TT> SomePixelType value = iterator(dx, dy) </TT>
         */
-    index_reference operator()(int dx, int dy) const
+    index_reference operator()(std::ptrdiff_t dx, std::ptrdiff_t dy) const
     {
         return *current(dx, dy);
     }
@@ -800,7 +800,7 @@ class ImageIteratorBase
             Note that the 'x' index is the trailing index. <br>
             usage: <TT> SomePixelType value = iterator[dy][dx] </TT>
         */
-    pointer operator[](int dy) const
+    pointer operator[](std::ptrdiff_t dy) const
     {
         return x() + y(dy);
     }
@@ -821,7 +821,7 @@ class ImageIteratorBase
     pointer current() const
         { return x() + y(); }
 
-    pointer current(int dx, int dy) const
+    pointer current(std::ptrdiff_t dx, std::ptrdiff_t dy) const
         { return x(dx) + y(dy); }
 };
 
@@ -863,7 +863,7 @@ class ImageIterator
         object should have a factory function that constructs the
         iterator.
         */
-    ImageIterator(pointer base, int ystride)
+    ImageIterator(pointer base, std::ptrdiff_t ystride)
     : Base(base, ystride)
     {}
 
@@ -908,7 +908,7 @@ class ConstImageIterator
         object should have a factory function that constructs the
         iterator.
         */
-    ConstImageIterator(pointer base, int ystride)
+    ConstImageIterator(pointer base, std::ptrdiff_t ystride)
     : Base(base, ystride)
     {}
 
@@ -978,7 +978,7 @@ class StridedImageIterator
         jumping by <tt>xskip</tt> horizontally and <tt>yskip</tt> vertically.
         <tt>ystride</tt> must be the physical width (row length) of the image.
         */
-    StridedImageIterator(pointer base, int ystride, int xskip, int yskip)
+    StridedImageIterator(pointer base, std::ptrdiff_t ystride, std::ptrdiff_t xskip, std::ptrdiff_t yskip)
     : Base(base, xskip, ystride*yskip)
     {}
 
@@ -1040,7 +1040,7 @@ class ConstStridedImageIterator
         jumping by <tt>xskip</tt> horizontally and <tt>yskip</tt> vertically.
         <tt>ystride</tt> must be the physical width (row length) of the image.
         */
-    ConstStridedImageIterator(pointer base, int ystride, int xskip, int yskip)
+    ConstStridedImageIterator(pointer base, std::ptrdiff_t ystride, std::ptrdiff_t xskip, std::ptrdiff_t yskip)
     : Base(base, xskip, ystride*yskip)
     {}
 
@@ -1224,7 +1224,7 @@ class ConstValueIteratorPolicy
   public:
 
     typedef PIXELTYPE                       value_type;
-    typedef int                             difference_type;
+    typedef std::ptrdiff_t                  difference_type;
     typedef PIXELTYPE const &               reference;
     typedef PIXELTYPE const &               index_reference;
     typedef PIXELTYPE const *               pointer;
@@ -1232,12 +1232,12 @@ class ConstValueIteratorPolicy
 
     struct BaseType
     {
-        BaseType(PIXELTYPE const & v = PIXELTYPE(), int p = 0)
+        BaseType(PIXELTYPE const & v = PIXELTYPE(), std::ptrdiff_t p = 0)
         : value(v), pos(p)
         {}
 
         PIXELTYPE value;
-        int pos;
+        std::ptrdiff_t pos;
     };
 
     static void initialize(BaseType & d) {}
@@ -1327,11 +1327,11 @@ class ConstValueIterator
 
         /** Let operations act in X direction
         */
-    typedef int MoveX;
+    typedef std::ptrdiff_t MoveX;
 
         /** Let operations act in Y direction
         */
-    typedef int MoveY;
+    typedef std::ptrdiff_t MoveY;
 
         /** Default Constructor. (the constant is set to
         <TT>NumericTraits<PIXELTYPE>::zero()</TT> )
@@ -1438,7 +1438,7 @@ class ConstValueIterator
 
         /** Read pixel at a distance (return specified constant).
         */
-    index_reference operator()(int const &, int const &) const
+    index_reference operator()(std::ptrdiff_t const &, std::ptrdiff_t const &) const
     {
         return value_;
     }
@@ -1463,9 +1463,9 @@ class ConstValueIterator
     /** @name Specify coordinate direction for navigation commands */
     //@{
         /// refer to x coordinate
-    int x;
+    std::ptrdiff_t x;
         /// refer to y coordinate
-    int y;
+    std::ptrdiff_t y;
     //@}
 
   private:

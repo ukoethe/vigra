@@ -509,7 +509,7 @@ class VigraArray(numpy.ndarray):
     #                                                             #
     ###############################################################    
     
-    def writeImage(self, filename, dtype = '', compression = ''):
+    def writeImage(self, filename, dtype = '', compression = '', mode='w'):
         '''Write an image to a file. 
         Consult :func:`vigra.impex.writeImage` for detailed documentation'''
         import vigra.impex
@@ -520,7 +520,7 @@ class VigraArray(numpy.ndarray):
         if ndim != 2:
             raise RuntimeError("VigraArray.writeImage(): array must have 2 non-channel axes.")
 
-        vigra.impex.writeImage(self, filename, dtype, compression)
+        vigra.impex.writeImage(self, filename, dtype, compression, mode)
             
     def writeSlices(self, filename_base, filename_ext, dtype = '', compression = ''):
         '''Write a volume to a sequence of files.         
@@ -603,7 +603,7 @@ class VigraArray(numpy.ndarray):
         if ndim != 2:
             raise RuntimeError("VigraArray.show(): array must have 2 non-channel axes.")
 
-        return showImage(self, normalize)
+        return showImage(self.transposeToVigraOrder(), normalize)
 
     def qimage(self, normalize=True):
         '''
