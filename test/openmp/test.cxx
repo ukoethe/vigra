@@ -39,6 +39,7 @@
 #include "vigra/openmp_vigra.h"
 #include "vigra/multi_array.hxx"
 
+using namespace std;
 using namespace vigra;
 
 struct OpenMPWrapperTest
@@ -80,26 +81,25 @@ struct OpenMPWrapperTest
 
         std::plus<Image::value_type> add;
 
-        combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), add);
-        combineTwoImages(View(img), View(img), View(img2), add);
+        vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), add);
 
         using namespace functor;
+        //vigra::omp::combineThreeImages(srcImageRange(img), srcImage(img), srcImage(img1), srcImage(img3), Arg1() + Arg2() + Arg3());
+        //TODO: combineThreeImages does not run in parallel
         combineThreeImages(View(img), View(img), View(img1), View(img3), Arg1() + Arg2() + Arg3());
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i1 = img1.begin();
-        Image::ScanOrderIterator i2 = img2.begin();
         Image::ScanOrderIterator i3 = img3.begin();
         Image::Accessor acc = img.accessor();
 
-        for(; i != img.end(); ++i, ++i1, ++i2, ++i3)
+        for(; i != img.end(); ++i, ++i1, ++i3)
         {
             should(2.0*acc(i) == acc(i1));
-            should(2.0*acc(i) == acc(i2));
             should(4.0*acc(i) == acc(i3));
         }
+        std::cout << "Max threads: " << omp_get_max_threads() << std::endl;
     }
-
     Image img;
 };
 
@@ -110,7 +110,6 @@ struct OpenMPWrapperTestSuite
     : vigra::test_suite("OpenMPWrapperTestSuite")
     {
         add( testCase( &OpenMPWrapperTest::additionTest));
-       
     }
 };
 
