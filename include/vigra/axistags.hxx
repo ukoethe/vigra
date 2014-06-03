@@ -58,7 +58,8 @@ class AxisInfo
                     Angle = 4, 
                     Time = 8, 
                     Frequency = 16, 
-                    UnknownAxisType = 32, 
+                    Edge = 32,
+                    UnknownAxisType = 64, 
                     NonChannel = Space | Angle | Time | Frequency | UnknownAxisType,
                     AllAxes = 2*UnknownAxisType-1 };
 
@@ -125,6 +126,11 @@ class AxisInfo
     bool isFrequency() const
     {
         return isType(Frequency);
+    }
+
+    bool isEdge() const
+    {
+        return isType(Edge);
     }
     
     bool isAngular() const
@@ -255,7 +261,17 @@ class AxisInfo
     {
         return AxisInfo("z", Space, resolution, description);
     }
+
+    static AxisInfo n(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("n", Space, resolution, description);
+    }
     
+    static AxisInfo e(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("e", Edge, resolution, description);
+    }
+
     static AxisInfo t(double resolution = 0.0, std::string const & description = "")
     {
         return AxisInfo("t", Time, resolution, description);

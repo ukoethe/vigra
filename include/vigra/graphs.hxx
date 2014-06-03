@@ -276,6 +276,71 @@ inline bool operator!=(Invalid, T const & t)
 } // namespace lemon
 
 namespace vigra {
+
+
+template<class GRAPH,class ITEM>
+struct GraphItemHelper;
+
+template<class GRAPH>
+struct GraphItemHelper<GRAPH,typename GRAPH::Edge>{
+    typedef typename GRAPH::index_type index_type ;
+    typedef typename GRAPH::Edge Item;
+    typedef typename GRAPH::EdgeIt ItemIt;
+
+
+    static index_type maxItemId(const GRAPH & g){
+        return g.maxEdgeId();
+    }
+    static index_type itemNum(const GRAPH & g){
+        return g.edgeNum();
+    }
+    static Item itemFromId(const GRAPH & g,const index_type id){
+        return g.edgeFromId(id);
+    }
+
+};
+
+template<class GRAPH>
+struct GraphItemHelper<GRAPH,typename GRAPH::Node>{
+    typedef typename GRAPH::index_type index_type ;
+    typedef typename GRAPH::Node Item;
+    typedef typename GRAPH::NodeIt ItemIt;
+
+
+    static index_type maxItemId(const GRAPH & g){
+        return g.maxNodeId();
+    }
+    static index_type itemNum(const GRAPH & g){
+        return g.nodeNum();
+    }
+    static Item itemFromId(const GRAPH & g,const index_type id){
+        return g.nodeFromId(id);
+    }
+};
+
+
+template<class GRAPH>
+struct GraphItemHelper<GRAPH,typename GRAPH::Arc>{
+    typedef typename GRAPH::index_type index_type ;
+    typedef typename GRAPH::Arc Item;
+    typedef typename GRAPH::ArcIt ItemIt;
+
+
+    static index_type maxItemId(const GRAPH & g){
+        return g.maxArcId();
+    }
+    static index_type itemNum(const GRAPH & g){
+        return g.arcNum();
+    }
+    static Item itemFromId(const GRAPH & g,const index_type id){
+        return g.arcFromId(id);
+    }
+};
+
+
+
+
+
 namespace lemon_graph { 
 
 // vigra::lemon_graph contains algorithms that are compatible to the LEMON graph library

@@ -3,6 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
 Vigranumpy Reference
 ====================
 
@@ -524,7 +525,60 @@ method proposed by Foerstner.
 .. automodule:: vigra.noise
    :members:
 
-   
+
+Histogram and Channel Representation
+----------------------------------
+
+The module vigra.histogram provides histograms and channel representation
+
+.. automodule:: vigra.histogram
+   :members:
+
+
+
+Graphs and Algorithms on Graphs
+----------------------------------
+
+The module vigra.graphs provides graphs and graph algorithms
+
+.. automodule:: vigra.graphs
+   :members:
+
+.. autoclass:: vigra.graphs.GridGraphUndirected2d
+   :members:
+
+.. autoclass:: vigra.graphs.GridGraphUndirected3d
+   :members:
+
+.. autoclass:: vigra.graphs.AdjacencyListGraph
+    :members:
+
+.. autoclass:: vigra.graphs.RegionAdjacencyGraph
+    :members:
+
+.. autoclass:: vigra.graphs.GridRegionAdjacencyGraph
+    :members:
+
+
+.. autoclass:: vigra.graphs.ShortestPathPathDijkstra
+    :members:
+
+
+
+Utilities 
+----------------------------------
+
+The module vigra.utilities provides  utilities and tools
+like priority queues with changeable priorities
+
+.. automodule:: vigra.utilities
+   :members:
+    
+
+
+
+
+
 .. _sec-own-modules:
 
 Writing Your Own C++ Modules

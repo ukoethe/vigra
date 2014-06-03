@@ -36,6 +36,8 @@ SET(WITH_HDF5 ${WITH_HDF5}
     FORCE)
     
 OPTION(WITH_OPENEXR "Support for the OpenEXR graphics format" OFF)
+OPTION(WITH_LEMON "Support for the Lemon Graph library " OFF)
+OPTION(WITH_BOOST_GRAPH "Support for the BOOST Graph library " OFF)
 
 OPTION(WITH_BOOST_THREAD "Use boost::thread instead of std::thread" OFF)
 

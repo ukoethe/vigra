@@ -1,0 +1,1 @@
+VIGRA_ADD_TEST(test_adjacency_list_graph test.cxx)

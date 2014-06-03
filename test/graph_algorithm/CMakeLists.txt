@@ -1,0 +1,1 @@
+VIGRA_ADD_TEST(test_graph_algorithm test.cxx)

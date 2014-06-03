@@ -49,6 +49,8 @@
 #include <vigra/convolution.hxx>
 #include <vigra/multi_convolution.hxx>
 #include <vigra/slic.hxx>
+#include <vigra/seg_to_seeds.hxx>
+
 
 #include <string>
 #include <cmath>
@@ -1009,11 +1011,36 @@ pythonSlic3D(NumpyArray<3, PixelType > image,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pySlic3D, pythonSlic3D)
 
+
+template<unsigned int DIM>
+NumpyAnyArray  pythonShrinkLabels(
+    NumpyArray<DIM,npy_uint32> labels,
+    const size_t shrinkNpixels,
+    NumpyArray<DIM,Singleband<npy_uint32> > out = NumpyArray<DIM,Singleband<npy_uint32> >()
+){
+    out.reshapeIfEmpty(labels.shape());
+    shrinkLabels(labels,shrinkNpixels,out);
+    return out;
+}
+
+
+
+
 void defineSegmentation()
 {
     using namespace python;
     
     docstring_options doc_options(true, true, false);
+
+
+    python::def("segToSeeds", registerConverters(pythonShrinkLabels<2>),
+        (
+            python::arg("image"),
+            python::arg("shrinkN"),
+            python::arg("out")=python::object()
+        ),
+        "shrink / ungrow a labeling / segmentation"
+    );
 
     multidef("labelImage", pyLabelImage<npy_uint8, npy_uint32, float>(),
         (arg("image"), 

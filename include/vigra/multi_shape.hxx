@@ -73,6 +73,15 @@ struct Multiband  // the last axis is explicitly designated as channel axis
     typedef T value_type;
 };
 
+// check if a type is a multiband type
+template<class T>
+struct IsMultiband : VigraFalseType{
+};
+
+template<class T>
+struct IsMultiband<Multiband<T> > : VigraTrueType{
+};
+
 template <class T>
 struct ChunkedMemory  // the array is organised in chunks
 {
@@ -545,7 +554,7 @@ struct RelativeToAbsoluteCoordinate<0>
 template <unsigned int N, unsigned int DIMENSION=N-1>
 struct BorderTypeImpl
 {
-    typedef typename MultiArrayShape<N>::type shape_type;
+    typedef TinyVectorView<MultiArrayIndex, N> shape_type;
     
     static unsigned int exec(shape_type const & point, shape_type const & shape)
     {
@@ -561,7 +570,7 @@ struct BorderTypeImpl
 template <unsigned int N>
 struct BorderTypeImpl<N, 0>
 {
-    typedef typename MultiArrayShape<N>::type shape_type;
+    typedef TinyVectorView<MultiArrayIndex, N> shape_type;
     static const unsigned int DIMENSION = 0;
     
     static unsigned int exec(shape_type const & point, shape_type const & shape)

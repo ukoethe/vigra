@@ -118,6 +118,16 @@ AxisInfo AxisInfo_z()
     return AxisInfo::z();
 }
 
+AxisInfo AxisInfo_n()
+{
+    return AxisInfo::n();
+}
+
+AxisInfo AxisInfo_e()
+{
+    return AxisInfo::e();
+}
+
 AxisInfo AxisInfo_t()
 {
     return AxisInfo::t();
@@ -484,6 +494,7 @@ void defineAxisTags()
          ":class:`~vigra.AxisInfo` object. Possible values:\n\n"
          "   ``AxisType.Channels:``\n      a channel axis\n"
          "   ``AxisType.Space:``\n      a spatial axis\n"
+         "   ``AxisType.Edge:``\n      an edge axis\n"
          "   ``AxisType.Angle:``\n      an axis encoding angles (e.g. polar coordinates)\n"
          "   ``AxisType.Time:``\n      a temporal axis\n"
          "   ``AxisType.Frequency:``\n      an axis in the Fourier domain\n"
@@ -495,6 +506,7 @@ void defineAxisTags()
         .value("UnknownAxisType", AxisInfo::UnknownAxisType)
         .value("Channels", AxisInfo::Channels)
         .value("Space", AxisInfo::Space)
+        .value("Edge", AxisInfo::Edge)
         .value("Angle", AxisInfo::Angle)
         .value("Time", AxisInfo::Time)
         .value("Frequency", AxisInfo::Frequency)
@@ -526,6 +538,10 @@ void defineAxisTags()
          "        Factory for an axisinfo object describing the 'y' (spatial) axis.\n"
          "   ``AxisInfo.z`` or ``AxisInfo.z(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 'z' (spatial) axis.\n"
+         "   ``AxisInfo.z`` or ``AxisInfo.n(resolution=0.0, description='')``:\n"
+         "        Factory for an axisinfo object describing the 'n' (spatial) axis.\n"
+         "   ``AxisInfo.e`` or ``AxisInfo.e(resolution=0.0, description='')``:\n"
+         "        Factory for an axisinfo object describing the 'e' (edge) axis.\n"
          "   ``AxisInfo.t`` or ``AxisInfo.t(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 't' (time) axis.\n"
          "   ``AxisInfo.fx`` or ``AxisInfo.fx(resolution=0.0, description='')``:\n"
@@ -570,8 +586,11 @@ void defineAxisTags()
         .def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0, arg("sign") = 1))
         .def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
         .def("isSpatial", &AxisInfo::isSpatial, 
-             "\naxisinfo.isSSpactial() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
+             "\naxisinfo.isSpactial() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains AxisType.Space\n")
+        .def("isEdge", &AxisInfo::isEdge, 
+             "\naxisinfo.isEdge() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
+             "contains AxisType.Edge\n")
         .def("isTemporal", &AxisInfo::isTemporal, 
              "\naxisinfo.isTemporal() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
              "contains AxisType.Time\n")
@@ -603,6 +622,8 @@ void defineAxisTags()
         .add_static_property("x", &AxisInfo_x)
         .add_static_property("y", &AxisInfo_y)
         .add_static_property("z", &AxisInfo_z)
+        .add_static_property("n", &AxisInfo_n)
+        .add_static_property("e", &AxisInfo_e)
         .add_static_property("t", &AxisInfo_t)
         .add_static_property("fx", &AxisInfo_fx)
         .add_static_property("fy", &AxisInfo_fy)
