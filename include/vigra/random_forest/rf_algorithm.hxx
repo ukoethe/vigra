@@ -32,8 +32,9 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
+#ifndef VIGRA_RF_ALGORITHM_HXX
 #define VIGRA_RF_ALGORITHM_HXX
-
+#include <vigra/random_forest.hxx>
 #include <vector>
 #include "splices.hxx"
 #include <queue>
@@ -1337,3 +1338,4 @@ void get_ranking(Array1 const & in, Vector1 & out)
 }//namespace algorithms
 }//namespace rf
 }//namespace vigra
+#endif //VIGRA_RF_ALGORITHM_HXX
