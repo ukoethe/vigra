@@ -825,8 +825,8 @@ def _genGraphConvenienceFunctions():
         """
         #mg = graph.mergeGraph()
         mg = graphs.__mergeGraph(graph)
-        mg.__base_graph__=graph
-        return graph.mergeGraph()
+        #mg.__base_graph__=graph
+        return mg
 
     mergeGraph.__module__ = 'vigra.graphs'
     graphs.mergeGraph = mergeGraph
@@ -1507,10 +1507,25 @@ def _genGraphSegmentationFunctions():
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 
+
+        #import sys
+        #print "graph refcout", sys.getrefcount(graph)
         mg = graphs.mergeGraph(graph)
+        #print "graph refcout", sys.getrefcount(graph)
+        #mg = []
+        #del mg
+        #import gc
+        #gc.collect()
+
+        #print "graph refcout", sys.getrefcount(graph)
+        #sys.exit(0)
+
+
         clusterOp = graphs.minEdgeWeightNodeDist(mg,edgeWeights=edgeWeights,edgeLengths=edgeLengths,
                                                     nodeFeatures=nodeFeatures,nodeSizes=nodeSizes,
                                                     beta=float(beta),metric=metric,wardness=wardness)
+
+        
         #clusterOp.mg=mg
         #clusterOp.nodeSizes    = nodeSizes
         #clusterOp.edgeLengths  = edgeLengths
