@@ -37,6 +37,7 @@
 #define VIGRA_RF_PREPROCESSING_HXX
 
 #include <limits>
+#include <vigra/mathutil.hxx>
 #include "rf_common.hxx"
 
 namespace vigra
@@ -127,7 +128,7 @@ namespace detail
     bool contains_nan(MultiArrayView<N, T, C> const & in)
     {
         for(int ii = 0; ii < in.size(); ++ii)
-            if(in[ii] != in[ii])
+            if(isnan(in[ii]))
                 return true;
         return false; 
     }
@@ -140,7 +141,7 @@ namespace detail
          if(!std::numeric_limits<T>::has_infinity)
              return false;
          for(int ii = 0; ii < in.size(); ++ii)
-            if(in[ii] == std::numeric_limits<T>::infinity())
+            if(abs(in[ii]) == std::numeric_limits<T>::infinity())
                 return true;
          return false;
     }

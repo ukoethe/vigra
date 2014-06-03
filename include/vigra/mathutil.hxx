@@ -159,6 +159,27 @@ VIGRA_DEFINE_MISSING_ABS(signed long long)
 
 #undef VIGRA_DEFINE_MISSING_ABS
 
+#ifndef _MSC_VER
+
+using std::isinf;
+using std::isnan;
+
+#else
+
+template <class REAL>
+inline bool isinf(REAL v)
+{
+    return !_finite(v);
+}
+
+template <class REAL>
+inline bool isnan(REAL v)
+{
+    return _isnan(v);
+}
+
+#endif
+
 // scalar dot is needed for generic functions that should work with
 // scalars and vectors alike
 
@@ -1641,16 +1662,16 @@ inline bool closeAtTolerance(T1 l, T2 r)
     inline TYPE sum(const TYPE t){ \
         return t; \
     }\
-    inline typename NumericTraits<TYPE>::RealPromote mean(const TYPE t){ \
+    inline NumericTraits<TYPE>::RealPromote mean(const TYPE t){ \
         return t; \
     }\
     inline TYPE isZero(const TYPE t){ \
         return t==static_cast<TYPE>(0); \
     } \
-    inline typename NumericTraits<TYPE>::RealPromote sizeDividedSquaredNorm(const TYPE t){ \
+    inline NumericTraits<TYPE>::RealPromote sizeDividedSquaredNorm(const TYPE t){ \
         return  squaredNorm(t); \
     } \
-    inline typename NumericTraits<TYPE>::RealPromote sizeDividedNorm(const TYPE t){ \
+    inline NumericTraits<TYPE>::RealPromote sizeDividedNorm(const TYPE t){ \
         return  norm(t); \
     } 
 

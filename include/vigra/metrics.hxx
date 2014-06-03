@@ -186,7 +186,7 @@ namespace metrics{
                 const T bb=static_cast<T>(*iterB);
                 if(aa>static_cast<T>(0.0000001) && bb>static_cast<T>(0.0000001) ){
                     const T val = std::log(aa/bb)*aa + std::log(bb/aa)*bb;
-                    if(!std::isinf(val) && !std::isnan(val))
+                    if(!isinf(val) && !isnan(val))
                         res+=std::log(aa/bb)*aa + std::log(bb/aa)*bb;
                 }
                 ++iterA;
