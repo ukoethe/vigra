@@ -45,8 +45,6 @@
 #include <vector>
 #include <functional>
 
-/*boost*/
- #include <boost/iterator/transform_iterator.hpp>
 
 /*vigra*/
 #include "graphs.hxx"
@@ -108,145 +106,43 @@ namespace vigra{
         std::sort(sortedEdges.begin(),sortedEdges.end(),edgeComperator);
     }
 
-    /// \brief helper to make an iterator from a lemon edge map
-    template<class GRAPH,class MAP>
-    class EdgeMapIteratorHelper{
-        public:
-            typedef typename GraphMapTypeTraits<MAP>::Reference      Reference;
-            typedef typename GraphMapTypeTraits<MAP>::ConstReference ConstReference;
-            typedef typename GraphMapTypeTraits<MAP>::Value          Value;
-        private:
-            struct Transform{
-                
-                Transform(MAP & map)
-                : map_(&map){
-                }
-                template<class ITEM>
-                Reference operator()(const ITEM & item)const{
-                    return  map_->operator[](item);
-                }
-                mutable MAP * map_;
-            };  
-            struct ConstTransform{
-                
-                ConstTransform(const MAP & map)
-                : map_(&map){
-                }
-                template<class ITEM>
-                ConstReference operator()(const ITEM & item)const{
-                    return  map_->operator[](item);
-                }
-                const MAP * map_;
-            }; 
-        public:
-            typedef  boost::transform_iterator< Transform,      typename GRAPH::EdgeIt,Reference      ,Value> iterator;
-            typedef  boost::transform_iterator< ConstTransform, typename GRAPH::EdgeIt,ConstReference ,Value> const_iterator;
-            static iterator
-            begin(const GRAPH & g, MAP & map){
-                Transform f(map);
-                typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesBegin(g);
-                return iterator(iter,f);
-            }
-            static iterator
-            end(const GRAPH & g, MAP & map){
-                Transform f(map);
-                typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesEnd(g);
-                return iterator(iter,f);
-            }
-            static const_iterator
-            begin(const GRAPH & g, const MAP & map){
-                ConstTransform f(map);
-                typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesBegin(g);
-                return const_iterator(iter,f);
-            }
-            static const_iterator
-            end(const GRAPH & g,const MAP & map){
-                ConstTransform f(map);
-                typename  GRAPH::EdgeIt iter = GraphIteratorAccessor<GRAPH>::edgesEnd(g);
-                return const_iterator(iter,f);
-            }
-        private:
-    };
-
-    /// \brief helper to make an iterator from a lemon node map
-    template<class GRAPH,class MAP>
-    class NodeMapIteratorHelper{
-        public:
-            typedef typename GraphMapTypeTraits<MAP>::Reference      Reference;
-            typedef typename GraphMapTypeTraits<MAP>::ConstReference ConstReference;
-            typedef typename GraphMapTypeTraits<MAP>::Value          Value;
-        private:
-            struct Transform{
-                
-                Transform(MAP & map)
-                : map_(&map){
-                }
-                template<class ITEM>
-                Reference operator()(const ITEM & item)const{
-                    return  map_->operator[](item);
-                }
-                mutable MAP * map_;
-            };  
-            struct ConstTransform{
-                
-                ConstTransform(const MAP & map)
-                : map_(&map){
-                }
-                template<class ITEM>
-                ConstReference operator()(const ITEM & item)const{
-                    return  map_->operator[](item);
-                }
-                const MAP * map_;
-            }; 
-        public:
-            typedef  boost::transform_iterator< Transform,      typename GRAPH::NodeIt,Reference      ,Value> iterator;
-            typedef  boost::transform_iterator< ConstTransform, typename GRAPH::NodeIt,ConstReference ,Value> const_iterator;
-            static iterator
-            begin(const GRAPH & g, MAP & map){
-                Transform f(map);
-                typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesBegin(g);
-                return iterator(iter,f);
-            }
-            static iterator
-            end(const GRAPH & g, MAP & map){
-                Transform f(map);
-                typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesEnd(g);
-                return iterator(iter,f);
-            }
-            static const_iterator
-            begin(const GRAPH & g, const MAP & map){
-                ConstTransform f(map);
-                typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesBegin(g);
-                return const_iterator(iter,f);
-            }
-            static const_iterator
-            end(const GRAPH & g,const MAP & map){
-                ConstTransform f(map);
-                typename  GRAPH::NodeIt iter = GraphIteratorAccessor<GRAPH>::nodesEnd(g);
-                return const_iterator(iter,f);
-            }
-        private:
-    };
 
     /// \brief copy a lemon node map
     template<class G,class A,class B>
     void copyNodeMap(const G & g,const A & a ,B & b){
-        std::copy(NodeMapIteratorHelper<G,A>::begin(g,a),NodeMapIteratorHelper<G,A>::end(g,a), NodeMapIteratorHelper<G,B>::begin(g,b));
+        typename  G::NodeIt iter(g);
+        while(iter!=lemon::INVALID){
+            b[*iter]=a[*iter];
+            ++iter;
+        }
+
     }
     /// \brief copy a lemon edge map
     template<class G,class A,class B>
     void copyEdgeMap(const G & g,const A & a ,B & b){
-        std::copy(EdgeMapIteratorHelper<G,A>::begin(g,a),EdgeMapIteratorHelper<G,A>::end(g,a), EdgeMapIteratorHelper<G,B>::begin(g,b));
+        typename  G::EdgeIt iter(g);
+        while(iter!=lemon::INVALID){
+            b[*iter]=a[*iter];
+            ++iter;
+        }
     }
     /// \brief fill a lemon node map 
     template<class G,class A,class T>
     void fillNodeMap(const G & g, A & a, const T & value){
-        std::fill(NodeMapIteratorHelper<G,A>::begin(g,a),NodeMapIteratorHelper<G,A>::end(g,a), value);
+        typename  G::NodeIt iter(g);
+        while(iter!=lemon::INVALID){
+            a[*iter]=value;
+            ++iter;
+        }
     }
     /// \brief fill a lemon edge map
     template<class G,class A,class T>
     void fillEdgeMap(const G & g,A & a ,const T & value){
-        std::fill(EdgeMapIteratorHelper<G,A>::begin(g,a),EdgeMapIteratorHelper<G,A>::end(g,a), value);
+        typename  G::EdgeIt iter(g);
+        while(iter!=lemon::INVALID){
+            a[*iter]=value;
+            ++iter;
+        }
     }
 
     /// \brief make a region adjacency graph from a graph and labels w.r.t. that graph

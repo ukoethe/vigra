@@ -1,8 +1,7 @@
 #ifndef VIGRA_NODE_IMPL_HXX
 #define VIGRA_NODE_IMPL_HXX
 
-/*boost*/
-//#include <boost/iterator/iterator_facade.hpp>
+
 
 /*vigra*/
 #include "algorithm.hxx"

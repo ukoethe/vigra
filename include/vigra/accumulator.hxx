@@ -3839,6 +3839,8 @@ class PowerSum<1>
         
         void update(U const & t, double weight)
         {
+            using namespace multi_math;
+
             this->value_ += weight*t;
         }
     };
