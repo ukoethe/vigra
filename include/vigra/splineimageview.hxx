@@ -544,7 +544,7 @@ class SplineImageView
     InternalImage image_;
     Spline k_;
 #ifndef VIGRA_THREAD_SAFE
-    mutable double x_(-1.0), y_(-1.0), u_(-1.0), v_(-1.0), kx_[ksize_], ky_[ksize_];
+    mutable double x_, y_, u_, v_, kx_[ksize_], ky_[ksize_];
     mutable int ix_[ksize_], iy_[ksize_];
 #endif
 };
@@ -766,7 +766,7 @@ VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y,
                                                  unsigned int dx, unsigned int dy) const
 {
 #ifdef VIGRA_THREAD_SAFE
-    double x_, y_, u_, v_, kx_[ksize_], ky_[ksize_];
+    double x_(-1.0), y_(-1.0), u_(-1.0), v_(-1.0), kx_[ksize_], ky_[ksize_];
     int ix_[ksize_], iy_[ksize_];
     calculateIndices(x, y, x_, y_, u_, v_, kx_, ky_, ix_, iy_);
     derivCoefficients(u_, dx, kx_);
