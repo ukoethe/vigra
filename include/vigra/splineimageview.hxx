@@ -187,9 +187,12 @@ class SplineImageView
     SplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, bool skipPrefiltering = false)
     : w_(s.second.x - s.first.x), h_(s.second.y - s.first.y), w1_(w_-1), h1_(h_-1),
       x0_(kcenter_), x1_(w_ - kcenter_ - 2), y0_(kcenter_), y1_(h_ - kcenter_ - 2),
-      image_(w_, h_),
+      image_(w_, h_)
+#ifndef VIGRA_THREAD_SAFE
+      ,
       x_(-1.0), y_(-1.0),
       u_(-1.0), v_(-1.0)
+#endif
     {
         copyImage(srcIterRange(s.first, s.second, s.third), destImage(image_));
         if(!skipPrefiltering)
@@ -518,18 +521,32 @@ class SplineImageView
   protected:
 
     void init();
+    #ifdef VIGRA_THREAD_SAFE
+    void calculateIndices(double x, double y,
+        double & x_, double& y_, double &u_, double & v_, double * kx_, double * ky_, int*ix_, int*iy_
+        ) const;
+    #else
     void calculateIndices(double x, double y) const;
+    #endif
     void coefficients(double t, double * const & c) const;
     void derivCoefficients(double t, unsigned int d, double * const & c) const;
-    value_type convolve() const;
+    #ifdef VIGRA_THREAD_SAFE
+    VALUETYPE convolve(
+        double & x_, double& y_, double &u_, double & v_, double * kx_, double * ky_, int*ix_, int*iy_
+        ) const;
+    #else
+    VALUETYPE convolve() const; 
+    #endif
 
     unsigned int w_, h_;
     int w1_, h1_;
     double x0_, x1_, y0_, y1_;
     InternalImage image_;
     Spline k_;
-    mutable double x_, y_, u_, v_, kx_[ksize_], ky_[ksize_];
+#ifndef VIGRA_THREAD_SAFE
+    mutable double x_(-1.0), y_(-1.0), u_(-1.0), v_(-1.0), kx_[ksize_], ky_[ksize_];
     mutable int ix_[ksize_], iy_[ksize_];
+#endif
 };
 
 template <int ORDER, class VALUETYPE>
@@ -594,7 +611,13 @@ struct SplineImageViewUnrollLoop2<0, ValueType>
 
 template <int ORDER, class VALUETYPE>
 void
-SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
+    #ifdef VIGRA_THREAD_SAFE
+     SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y,
+        double & x_, double& y_, double &u_, double & v_, double * kx_, double * ky_, int*ix_, int*iy_
+        ) const
+    #else
+ SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
+    #endif
 {
     if(x == x_ && y == y_)
         return;   // still in cache
@@ -666,7 +689,13 @@ void SplineImageView<ORDER, VALUETYPE>::derivCoefficients(double t,
 }
 
 template <int ORDER, class VALUETYPE>
+#ifdef VIGRA_THREAD_SAFE
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::convolve(
+    double & x_, double& y_, double &u_, double & v_, double * kx_, double * ky_, int*ix_, int*iy_
+    ) const
+#else
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::convolve() const
+#endif
 {
     typedef typename NumericTraits<VALUETYPE>::RealPromote RealPromote;
     RealPromote sum;
@@ -714,24 +743,41 @@ SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array & 
         }
     }
 }
-
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y) const
 {
+#ifdef VIGRA_THREAD_SAFE
+    double x_, y_, u_, v_, kx_[ksize_], ky_[ksize_];
+    int ix_[ksize_], iy_[ksize_];
+    calculateIndices(x, y, x_, y_, u_, v_, kx_, ky_, ix_, iy_);
+    coefficients(u_, kx_);
+    coefficients(v_, ky_);
+    return convolve(x_, y_, u_, v_, kx_, ky_, ix_, iy_);
+#else
     calculateIndices(x, y);
     coefficients(u_, kx_);
     coefficients(v_, ky_);
     return convolve();
+#endif
 }
 
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y,
                                                  unsigned int dx, unsigned int dy) const
 {
+#ifdef VIGRA_THREAD_SAFE
+    double x_, y_, u_, v_, kx_[ksize_], ky_[ksize_];
+    int ix_[ksize_], iy_[ksize_];
+    calculateIndices(x, y, x_, y_, u_, v_, kx_, ky_, ix_, iy_);
+    derivCoefficients(u_, dx, kx_);
+    derivCoefficients(v_, dy, ky_);
+    return convolve(x_, y_, u_, v_, kx_, ky_, ix_, iy_);
+#else
     calculateIndices(x, y);
     derivCoefficients(u_, dx, kx_);
     derivCoefficients(v_, dy, ky_);
     return convolve();
+#endif
 }
 
 template <int ORDER, class VALUETYPE>
