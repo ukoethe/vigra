@@ -136,12 +136,28 @@ class MultiArrayNavigator
             ++this->i_.template dim<level>();
         }
     }
+    
+    void operator--()
+    {
+        base_type::operator--();
+        if(this->point_[level-1] == this->stop_[level-1])
+        {
+            base_type::reset();
+            --this->point_[level];
+            --this->i_.template dim<level>();
+        }
+    }
 
         /** Advance to next starting location.
          */
     void operator++(int)
     {
         ++*this;
+    }
+    
+    void operator--(int)
+    {
+        --*this;
     }
 
         /** true if there are more elements.
@@ -200,10 +216,21 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
         ++point_[level];
         ++i_.template dim<level>();
     }
+    
+    void operator--()
+    {
+        --point_[level];
+        --i_.template dim<level>();
+    }
 
     void operator++(int)
     {
         ++*this;
+    }
+    
+    void operator--(int)
+    {
+        --*this;
     }
 
     iterator begin() const

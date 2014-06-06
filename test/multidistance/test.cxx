@@ -40,7 +40,10 @@
 #include "vigra/unittest.hxx"
 
 #include "vigra/multi_distance.hxx"
+#include "vigra/vectorial_distance.hxx"
+#include "vigra/vectorial_boundary_distance.hxx"
 #include "vigra/distancetransform.hxx"
+#include "vigra/functorexpression.hxx"
 
 using namespace vigra;
 
@@ -997,11 +1000,38 @@ static double bndMltDst_ref[] = {
 6.500000, 6.576473, 6.800735, 7.158911, 7.632169, 8.200610, 8.500000, 8.558621, 8.732124, 8.500000, 7.500000, 6.500000, 5.500000, 4.500000, 3.500000, 2.500000, 1.500000, 0.500000, 0.500000, 1.118034, 1.802776, 2.500000, 3.201562, 2.500000, 1.500000, 0.500000, 0.500000, 1.500000, 2.500000, 3.201562, 4.031129, 4.924429, 5.852350, 6.800735, 7.632169, 8.500000, 9.394147, 10.259142, 11.011357, 11.800424, 12.619430, 13.462912, 14.326549, 15.206906, 16.101242, 17.007351, 17.923449, 18.848078, 19.602295, 20.155643, 
 7.500000, 7.566373, 7.762087, 8.077747, 8.500000, 9.013878, 9.500000, 9.552486, 9.500000, 8.500000, 7.500000, 6.500000, 5.500000, 4.500000, 3.500000, 2.500000, 1.500000, 0.500000, 0.500000, 1.500000, 2.500000, 3.201562, 3.500000, 2.500000, 1.500000, 0.500000, 0.500000, 1.500000, 2.500000, 3.500000, 4.500000, 5.408327, 6.264982, 7.158911, 8.077747, 9.013878, 9.861542, 10.735456, 11.629704, 12.419743, 13.200378, 14.008925, 14.840822, 15.692355, 16.560495, 17.442764, 18.337120, 19.241882, 20.155643, 21.005951
 };
+template<class IMG, class DESIRED>
+void testVectorialDist2SquaredDist(const IMG& img, const DESIRED& desired, bool invert,
+                                   ArrayVector<double> pixelPitch = ArrayVector<double>(), double epsilon = -1.0)
+{
+    if(pixelPitch.size() == 0) {
+        pixelPitch.resize(IMG::actual_dimension);
+        std::fill(pixelPitch.begin(), pixelPitch.end(), 1.0);
+    }
+    else if(pixelPitch.size() != IMG::actual_dimension) {
+        throw std::runtime_error("pixelPitch has wrong size");
+    }
+    using functor::Arg1;
+    typedef vigra::MultiArray<IMG::actual_dimension, vigra::TinyVector<double, IMG::actual_dimension> > VecImage;
+    VecImage vecImg(img.shape()); 
+    separableMultiVectorialDist(srcMultiArrayRange(img), destMultiArray(vecImg), invert, pixelPitch);
+    typename IMG::matrix_type distImg(img.shape());
+    transformMultiArray(srcMultiArrayRange(vecImg), destMultiArray(distImg), squaredNorm(Arg1()));
+    if(epsilon < 0) {
+        shouldEqualSequence(distImg.begin(),distImg.end(), desired.begin());
+    }
+    else {
+        shouldEqualSequenceTolerance(distImg.begin(),distImg.end(), desired.begin(), epsilon);
+    }
+}
 
-struct separableMultiDistanceTest
+struct MultiDistanceTest
 {
     typedef vigra::MultiArray<3,int> IntVolume;
+    typedef vigra::MultiArray<3,vigra::TinyVector<int,3> > IntVecVolume;
     typedef vigra::MultiArray<3,double> DoubleVolume; 
+    typedef vigra::MultiArray<3,vigra::TinyVector<int,3> > DoubleVecVolume; 
+    typedef vigra::MultiArray<2,vigra::TinyVector<int,2> > DoubleVecImage; 
     typedef vigra::MultiArray<2,double> Double2DArray;
     typedef vigra::DImage Image;
     typedef vigra::MultiArrayView<2,Image::value_type> ImageView;
@@ -1023,7 +1053,7 @@ struct separableMultiDistanceTest
     DoubleVolume volume;
     IntVolume shouldVol;
 
-    separableMultiDistanceTest()
+    MultiDistanceTest()
     : images(3, Image(7,7)), img2(Double2DArray::difference_type(7,1)),
       volume(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH)),
       shouldVol(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH))
@@ -1144,20 +1174,42 @@ struct separableMultiDistanceTest
             for(std::list<IntVec>::iterator iter=(*list_iter).begin(); iter!=(*list_iter).end(); ++iter){
                 *(volume.traverser_begin()+*iter)=1;
             }
-			
-			
-            separableMultiDistSquared(volume, volume, true);
-            shouldEqualSequence(volume.begin(),volume.end(),desired.begin());
+
+            DoubleVolume volumeWorkingCopy(volume);
+            
+            separableMultiDistSquared(srcMultiArrayRange(volumeWorkingCopy),
+                                      destMultiArray(volumeWorkingCopy),
+                                      true);
+            shouldEqualSequence(volumeWorkingCopy.begin(),volumeWorkingCopy.end(),desired.begin());
+          
+            {
+                //test vectorial distance
+                using functor::Arg1;
+                DoubleVecVolume vecVolume(volume.shape()); 
+                separableMultiVectorialDist(srcMultiArrayRange(volume), destMultiArray(vecVolume), true);
+                DoubleVolume distVolume(volume.shape());
+                transformMultiArray(srcMultiArrayRange(vecVolume), destMultiArray(distVolume), squaredNorm(Arg1()));
+                shouldEqualSequence(distVolume.begin(),distVolume.end(),desired.begin());
+            }
         }
 
         typedef MultiArrayShape<3>::type Shape;
         MultiArrayView<3, double> vol(Shape(12,10,35), volume_data);
-        
-        MultiArray<3, double> res(vol.shape());
-
-        separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res), false);
-                
-        shouldEqualSequence(res.data(), res.data()+res.elementCount(), ref_dist2);
+        {
+            //test squared distance
+            MultiArray<3, double> res(vol.shape());
+            separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res), false);
+            shouldEqualSequence(res.data(), res.data()+res.elementCount(), ref_dist2);
+        }
+        {
+            //test vectorial distance
+            using functor::Arg1;
+            DoubleVecVolume vecVolume(vol.shape()); 
+            separableMultiVectorialDist(srcMultiArrayRange(vol), destMultiArray(vecVolume), false);
+            DoubleVolume distVolume(vol.shape());
+            transformMultiArray(srcMultiArrayRange(vecVolume), destMultiArray(distVolume), squaredNorm(Arg1()));
+            shouldEqualSequence(distVolume.begin(),distVolume.end(),ref_dist2);
+        }
     }
 
     void testDistanceAxesPermutation()
@@ -1173,8 +1225,10 @@ struct separableMultiDistanceTest
                 
         shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
         
-        separableMultiDistSquared(vol, res1, false);
-        separableMultiDistSquared(pvol, pres2, false);
+        separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res1), false);
+        testVectorialDist2SquaredDist(vol, res1, false);
+        separableMultiDistSquared(srcMultiArrayRange(pvol), destMultiArray(pres2), false);
+        testVectorialDist2SquaredDist(pvol, pres2, false);
                 
         shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
     }
@@ -1211,9 +1265,16 @@ struct separableMultiDistanceTest
                     }
                 }
 
-
-            separableMultiDistSquared(volume, volume, true, pixelPitch);
+            DoubleVolume volumeCopy(volume);
+            separableMultiDistSquared(srcMultiArrayRange(volume),
+                                      destMultiArray(volume),
+                                      true, pixelPitch);
             shouldEqualSequenceTolerance(volume.begin(),volume.end(),desired.begin(), epsilon);
+            
+            ArrayVector<double> pixelPitchVector;
+            pixelPitchVector.resize(pixelPitch.size());
+            std::copy(pixelPitch.begin(), pixelPitch.end(), pixelPitchVector.begin());
+            testVectorialDist2SquaredDist(volumeCopy, desired, true, pixelPitchVector, epsilon);
         }
     }
 
@@ -1226,7 +1287,19 @@ struct separableMultiDistanceTest
 
             distanceTransform(srcImageRange(images[k]), destImage(res), 0.0, 2);
 
-            separableMultiDistance(img_array, img_array, true);
+            ImageView::matrix_type img_array_copy(img_array);
+            
+            separableMultiDistance(srcMultiArrayRange(img_array),
+                                   destMultiArray(img_array),
+                                   true);
+           
+            DoubleVecImage vec_image(img_array_copy.shape());
+            separableMultiVectorialDist(srcMultiArrayRange(img_array_copy),
+                                        destMultiArray(vec_image),
+                                        true);
+            vigra::MultiArray<2, double> img_array_dist(img_array_copy.shape());
+            using functor::Arg1;
+            transformMultiArray(srcMultiArrayRange(vec_image), destMultiArray(img_array_dist), norm(Arg1()));
 
             Image::Iterator i = res.upperLeft();
             Image::Accessor acc = res.accessor();
@@ -1240,6 +1313,7 @@ struct separableMultiDistanceTest
                     double dist_old = acc(i, vigra::Diff2D(x,y));
 
                     shouldEqualTolerance(dist_old, img_array(x,y), 1e-7);
+                    shouldEqualTolerance(dist_old, img_array_dist(x,y), 1e-7);
                 }
             }
         }
@@ -1252,6 +1326,10 @@ struct separableMultiDistanceTest
         static const int desired[] = {3, 2, 1, 0, 1, 2, 3};
         separableMultiDistance(img2, res, true);
         shouldEqualSequence(res.begin(), res.end(), desired);
+       
+        std::vector<int> desiredVector(7);
+        for(int i=0; i<7; ++i) { desiredVector[i] = desired[i]*desired[i]; };
+        testVectorialDist2SquaredDist(img2, desiredVector, true);
     }
 };
 
@@ -1413,14 +1491,13 @@ struct SimpleAnalysisTestSuite
     SimpleAnalysisTestSuite()
     : vigra::test_suite("SimpleAnalysisTestSuite")
     {
-        add( testCase( &separableMultiDistanceTest::testDistanceVolumes));
-        add( testCase( &separableMultiDistanceTest::testDistanceAxesPermutation));
-        add( testCase( &separableMultiDistanceTest::testDistanceVolumesAnisoptopic));
-        add( testCase( &separableMultiDistanceTest::distanceTransform2DCompare));
-        add( testCase( &separableMultiDistanceTest::distanceTest1D));
+        add( testCase( &MultiDistanceTest::testDistanceVolumes));
+        add( testCase( &MultiDistanceTest::testDistanceAxesPermutation));
+        add( testCase( &MultiDistanceTest::testDistanceVolumesAnisoptopic));
+        add( testCase( &MultiDistanceTest::distanceTransform2DCompare));
+        add( testCase( &MultiDistanceTest::distanceTest1D));
         add( testCase( &boundaryMultiDistanceTest::distanceTest1D));
         add( testCase( &boundaryMultiDistanceTest::testDistanceVolumes));
-
     }
 };
 

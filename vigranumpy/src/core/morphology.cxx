@@ -42,6 +42,8 @@
 #include <vigra/multi_morphology.hxx>
 #include <vigra/distancetransform.hxx>
 #include <vigra/multi_distance.hxx>
+#include <vigra/vectorial_distance.hxx>
+#include <vigra/vectorial_boundary_distance.hxx>
 
 namespace python = boost::python;
 
@@ -446,6 +448,37 @@ pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume,
     return res;
 }
 
+template < int N, class VoxelType >
+NumpyAnyArray 
+pythonVectorialDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume, 
+    bool background, 
+    NumpyArray<N, TinyVector<VoxelType, N> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.taggedShape(), 
+            "vectorialDistanceTransform(): Output array has wrong shape.");
+    
+    {
+        PyAllowThreads _pythread;
+        separableMultiVectorialDist(srcMultiArrayRange(volume), destMultiArray(res), background);
+    }
+    return res;
+}
+
+template < int N, class VoxelType >
+NumpyAnyArray 
+pythonVectorialBoundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume, 
+    NumpyArray<N, TinyVector<VoxelType, N> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.taggedShape(), 
+            "vectorialBoundaryDistanceTransform(): Output array has wrong shape.");
+    
+    {
+        PyAllowThreads _pythread;
+        separableMultiVectorialBoundaryDist(srcMultiArrayRange(volume), destMultiArray(res));
+    }
+    return res;
+}
+
 void defineMorphology()
 {
     using namespace python;
@@ -773,6 +806,20 @@ void defineMorphology()
         "given, the data is treated isotropically with unit distance between pixels.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+    
+    def("vectorialDistanceTransform",
+        registerConverters(&pythonVectorialDistanceTransform<2, double>),
+        (arg("array"), 
+         arg("background") = true, 
+         arg("out")=python::object()),
+        "TODO");
+    
+    //def("vectorialBoundaryDistanceTransform",
+    //    registerConverters(&pythonVectorialBoundaryDistanceTransform<2, double>),
+    //    (arg("array"), 
+    //     arg("out")=python::object()),
+    //    "TODO");
+        
 }
 
 } // namespace vigra
