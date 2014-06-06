@@ -1022,7 +1022,46 @@ namespace vigra{
     }
 
 
+    /// \brief create edge weights from an interpolated image
+    ///
+    /// \param g : input graph
+    /// \param interpolatedImage : interpolated image
+    /// \param[out] edgeWeights : edge weights
+    template<unsigned int N, class T, class EDGEMAP>
+    void edgeWeightsFromInterpolatedImage(const GridGraph<N, undirected_tag> & g, const MultiArray<N, T>  & interpolatedImage, EDGEMAP edgeWeights, bool euclidean = false) {
+        for (int d=0; d<N; ++d)
+        {
+            vigra_precondition(interpolatedImage.shape(d) == 2*g.shape()[d]-1, "interpolated shape must be shape*2-1");
+        }
 
+        typedef GridGraph<N, undirected_tag> Graph;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::EdgeIt EdgeIt;
+        typedef typename MultiArray<N, T>::difference_type CoordType;
+
+        for (EdgeIt iter(g); iter!=lemon::INVALID; ++iter)
+        {
+            const Edge edge(*iter);
+            const CoordType uCoord(g.u(edge));
+            const CoordType vCoord(g.v(edge));
+            const CoordType tCoord = uCoord+vCoord;
+            if (euclidean)
+            {
+                int diffCounter = 0;
+                for (int i=0; i<N; ++i)
+                {
+                    if (uCoord[i] != vCoord[i]) {
+                        diffCounter++;
+                    }
+                }
+                edgeWeights[edge] = sqrt(diffCounter) * interpolatedImage[tCoord];
+            }
+            else
+            {
+                edgeWeights[edge] = interpolatedImage[tCoord];
+            }
+        }
+    }
 
 
 } // namespace vigra
