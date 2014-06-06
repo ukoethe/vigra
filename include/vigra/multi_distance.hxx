@@ -672,7 +672,7 @@ boundaryGraph(Graph const & g,
     typedef typename Graph::OutBackArcIt  neighbor_iterator;
     typedef typename T2Map::value_type    LabelType;
 
-    vigra::detail::UnionFindArray<LabelType>  regions;
+    vigra::detail::UnionFindArray<LabelType>  regions; 
 
 	//find faces
     for (graph_scanner node(g); node != INVALID; ++node) 
@@ -705,8 +705,8 @@ boundaryMultiDistance(MultiArrayView<N, T, S1> const & labels,
     vigra_precondition(labels.shape() == out.shape(),
         "labelMultiArray(): shape mismatch between input and output.");
 
-	MultiArray<N, float> tmpArray(out.shape());     
-    GridGraph<N, undirected_tag> graph(labels.shape()); //no neighborhood !
+	MultiArray<N, unsigned int> tmpArray(out.shape());     
+    GridGraph<N, undirected_tag> graph(labels.shape());
 
 	lemon_graph::boundaryGraph(graph, labels, tmpArray);
 	separableMultiDistance(tmpArray, out, background);
