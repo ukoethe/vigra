@@ -44,6 +44,7 @@
 #include <algorithm>
 #include <vector>
 #include <functional>
+#include <set>
 
 /*boost*/
  #include <boost/iterator/transform_iterator.hpp>
@@ -452,7 +453,14 @@ namespace vigra{
         }
     }
 
+//    /// \brief Compute shortest path between each two vertices, find longest of those paths, return all vertices on that path.
+//    template<class GRAPH, class T>
+//    MultiArray<2, MultiArrayIndex> findLongestShortestPath(
+//            ShortestPathDijkstra<GRAPH, T> pathFinder,
+//            MultiArray<2, MultiArrayIndex> edges
+//    ){
 
+//    }
 
     /// \brief Astar Shortest path search
     template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE,class HEURSTIC>
@@ -1021,14 +1029,17 @@ namespace vigra{
         }
     }
 
-
     /// \brief create edge weights from an interpolated image
     ///
     /// \param g : input graph
     /// \param interpolatedImage : interpolated image
     /// \param[out] edgeWeights : edge weights
     template<unsigned int N, class T, class EDGEMAP>
-    void edgeWeightsFromInterpolatedImage(const GridGraph<N, undirected_tag> & g, const MultiArray<N, T>  & interpolatedImage, EDGEMAP edgeWeights, bool euclidean = false) {
+    void edgeWeightsFromInterpolatedImage(
+            const GridGraph<N, undirected_tag> & g,
+            const MultiArray<N, T>  & interpolatedImage,
+            EDGEMAP edgeWeights, bool euclidean = false
+    ){
         for (int d=0; d<N; ++d)
         {
             vigra_precondition(interpolatedImage.shape(d) == 2*g.shape()[d]-1, "interpolated shape must be shape*2-1");
@@ -1063,6 +1074,85 @@ namespace vigra{
         }
     }
 
+
+    /// \brief Find indices of points on the edges
+    ///
+    /// \param rag : Region adjacency graph of the labels array
+    /// \param g : Graph of labels array
+    /// \param affiliatedEdges : The affiliated edges of the region adjacency graph
+    /// \param labelsArray : The label image
+    /// \param node : The node (of the region adjacency graph), whose edges shall be found
+    template<class RAGGRAPH, class GRAPH, class RAGEDGES, unsigned int N, class T>
+    MultiArray<2, MultiArrayIndex> ragFindEdges(
+            const RAGGRAPH & rag,
+            const GRAPH & graph,
+            const RAGEDGES & affiliatedEdges,
+            MultiArrayView<N, T> labelsArray,
+            const typename RAGGRAPH::Node & node
+    ){
+        typedef typename GRAPH::Node Node;
+        typedef typename GRAPH::Edge Edge;
+        typedef typename RAGGRAPH::OutArcIt RagOutArcIt;
+        typedef typename RAGGRAPH::Edge RagEdge;
+        typedef typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicNodeMapShape NodeCoordinate;
+
+        T nodeLabel = rag.id(node);
+
+        // Get number of points.
+        int nPoints = 0;
+        for (RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
+        {
+            const RagEdge ragEdge(*iter);
+            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+            nPoints += affEdges.size();
+        }
+
+        // Find edges and write them into a set.
+        std::set< NodeCoordinate > edgeCoordinates;
+        for (RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
+        {
+            const RagEdge ragEdge(*iter);
+            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+            for (int i=0; i<affEdges.size(); ++i)
+            {
+                Node u = graph.u(affEdges[i]);
+                Node v = graph.v(affEdges[i]);
+                T uLabel = labelsArray[u];
+                T vLabel = labelsArray[v];
+
+                NodeCoordinate coords;
+                if (uLabel == nodeLabel)
+                {
+                    coords = GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(graph, u);
+                }
+                else if (vLabel == nodeLabel)
+                {
+                    coords = GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(graph, v);
+                }
+                else
+                {
+                    vigra_precondition(false, "You should not come to this part of the code.");
+                }
+                edgeCoordinates.insert(coords);
+            }
+        }
+
+        // Fill the return array.
+        MultiArray<2, MultiArrayIndex> edgePoints(Shape2(edgeCoordinates.size(), N));
+        edgePoints.init(0);
+        int next = 0;
+        typedef typename std::set< NodeCoordinate >::iterator setIter;
+        for (setIter iter = edgeCoordinates.begin(); iter!=edgeCoordinates.end(); ++iter)
+        {
+            NodeCoordinate coords = *iter;
+            for (int k=0; k<coords.size(); ++k)
+            {
+                edgePoints(next, k) = coords[k];
+            }
+            next++;
+        }
+        return edgePoints;
+    }
 
 } // namespace vigra
 
