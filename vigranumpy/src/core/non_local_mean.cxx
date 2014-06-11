@@ -135,7 +135,6 @@ template<int DIM,class PIXEL_TYPE, class POLICY>
 void exportNonLocalMean(const std::string name){
 
     typedef POLICY SmoothPolicyType;
-    typedef typename SmoothPolicyType::ParameterType SmoothPolicyParameterType;
     // export the function to python
     python::def(name.c_str(), registerConverters(&pyNonLocalMean<DIM,PIXEL_TYPE,SmoothPolicyType>) ,
         (
