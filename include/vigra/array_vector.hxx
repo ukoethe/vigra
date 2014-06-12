@@ -46,7 +46,7 @@
 #ifdef VIGRA_CHECK_BOUNDS
 #define VIGRA_ASSERT_INSIDE(diff) \
   vigra_precondition(diff >= 0, "Index out of bounds");\
-  vigra_precondition((unsigned int)diff < size_, "Index out of bounds");
+  vigra_precondition(diff < (difference_type)size_, "Index out of bounds");
 #else
 #define VIGRA_ASSERT_INSIDE(diff)
 #endif
@@ -387,7 +387,7 @@ bool ArrayVectorView<T>::operator==(ArrayVectorView<U> const & rhs) const
 {
     if(size() != rhs.size())
         return false;
-    for(unsigned int k=0; k<size(); ++k)
+    for(size_type k=0; k<size(); ++k)
         if(data_[k] != rhs[k])
             return false;
     return true;
@@ -433,7 +433,7 @@ ArrayVectorView <T>::swapDataImpl(const ArrayVectorView <U>& rhs)
     // check for overlap
     if(data_ + size_ <= rhs.data_ || rhs.data_ + size_ <= data_)
     {
-        for(unsigned int k=0; k<size_; ++k)
+        for(size_type k=0; k<size_; ++k)
             std::swap(data_[k], rhs.data_[k]);
     }
     else
@@ -672,7 +672,7 @@ inline void ArrayVector<T, Alloc>::push_back( value_type const & t )
 template <class T, class Alloc>
 inline void ArrayVector<T, Alloc>::clear()
 {
-    detail::destroy_n(this->data_, (int)this->size_);
+    detail::destroy_n(this->data_, this->size_);
     this->size_ = 0;
 }
 
@@ -881,7 +881,7 @@ ArrayVector<T, Alloc>::deallocate(pointer data, size_type size)
 {
     if(data)
     {
-        detail::destroy_n(data, (int)size);
+        detail::destroy_n(data, size);
         alloc_.deallocate(data, size);
     }
 }
@@ -905,7 +905,7 @@ namespace std {
 template <class T>
 ostream & operator<<(ostream & s, vigra::ArrayVectorView<T> const & a)
 {
-    for(int k=0; k<(int)a.size()-1; ++k)
+    for(std::size_t k=0; k<a.size()-1; ++k)
         s << a[k] << ", ";
     if(a.size())
             s << a.back();
