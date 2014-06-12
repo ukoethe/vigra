@@ -448,6 +448,20 @@ pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume,
     return res;
 }
 
+template < class PixelType, typename DestPixelType >
+NumpyAnyArray 
+pythonboundaryDistanceTransform(NumpyArray<2, Singleband<PixelType> > image,
+                          NumpyArray<2, Singleband<DestPixelType> > res = python::object())
+{
+    res.reshapeIfEmpty(image.taggedShape(), 
+            "boundaryDistanceTransform(): Output array has wrong shape.");
+   
+        boundaryMultiDistance(image, res);
+
+
+    return res;
+}
+
 template < int N, class VoxelType >
 NumpyAnyArray 
 pythonVectorialDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume, 
@@ -777,7 +791,7 @@ void defineMorphology()
         "\n"
         "For details see distanceTransform_ in the vigra C++ documentation.\n");
 
-        def("distanceTransform2D",
+     def("distanceTransform2D",
         registerConverters(&pythonDistanceTransform2D<UInt8,float>),
         (arg("image"), 
          arg("background")=true, 
@@ -804,6 +818,14 @@ void defineMorphology()
         "If 'pixel_pitch' is given, it must contain the pixel distance along the three axes.\n"
         "They are then used to compute the distance anisotropically. If no 'pixel_pitch' is\n"
         "given, the data is treated isotropically with unit distance between pixels.\n"
+        "\n"
+        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+
+    def("boundaryDistanceTransform",
+        registerConverters(&pythonboundaryDistanceTransform<UInt32, double>),
+        (arg("array"),  
+         arg("out")=python::object()),
+        "Compute the Euclidean distance transform of a 2D scalar label volume.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
     

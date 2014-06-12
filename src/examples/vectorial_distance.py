@@ -105,18 +105,18 @@ img = 255*img
 makePlotNew(a, img, fname="/tmp/A.png")
 
 #############
-
-a = vigra.filters.vectorialBoundaryDistanceTransform(seg.astype(numpy.float64))
-
-print seg
-
-for i in range(a.shape[0]):
-    for j in range(a.shape[1]):
-        sys.stdout.write("(%1.2f, %1.2f) " % (a[i,j,0], a[i,j,1]))
-    sys.stdout.write("\n")
-
-relabel = (255*numpy.random.random((seg.max()+1, 3))).astype(numpy.uint8)
-img = relabel[seg]
-makePlotNew(a, img, fname="/tmp/B.png")
+#
+#a = vigra.filters.vectorialBoundaryDistanceTransform(seg.astype(numpy.float64))
+#
+#print seg
+#
+#for i in range(a.shape[0]):
+#    for j in range(a.shape[1]):
+#        sys.stdout.write("(%1.2f, %1.2f) " % (a[i,j,0], a[i,j,1]))
+#    sys.stdout.write("\n")
+#
+#relabel = (255*numpy.random.random((seg.max()+1, 3))).astype(numpy.uint8)
+#img = relabel[seg]
+#makePlotNew(a, img, fname="/tmp/B.png")
 
 

@@ -659,7 +659,6 @@ separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
                             destMultiArray(dest), background );
 }
 
-
 namespace lemon_graph { 
 
 template <class Graph, class T1Map, class T2Map>
@@ -696,23 +695,117 @@ boundaryGraph(Graph const & g,
 
 doxygen_overloaded_function(template <...> unsigned int boundaryMultiDistance)
 
-template <unsigned int N, class T, class S1,
-                          class Label, class S2>
-inline Label 
-boundaryMultiDistance(MultiArrayView<N, T, S1> const & labels,
-                MultiArrayView<N, Label, S2> out, bool background)
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+boundaryMultiDistance(MultiArrayView<N, T1, S1> const & labels,
+                MultiArrayView<N, T2, S2> out)
 {
     vigra_precondition(labels.shape() == out.shape(),
         "labelMultiArray(): shape mismatch between input and output.");
 
-	MultiArray<N, unsigned int> tmpArray(out.shape());     
+	MultiArray<N, T1> tmpArray(out.shape());     
     GridGraph<N, undirected_tag> graph(labels.shape());
 
 	lemon_graph::boundaryGraph(graph, labels, tmpArray);
-	separableMultiDistance(tmpArray, out, background);
+	separableMultiDistance(tmpArray, out, true);
+	for (int k = 0; k < out.size(); k++)
+		out(k) += 0.5;	//approximated distance correction
+
+}
+
+/********************************************************/
+/*                                                      */
+/*                boundaryDistParabola                  */
+/*                                                      */
+/*  Version with sigma (parabola spread) for morphology */
+/*                                                      */
+/********************************************************/
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor >
+void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                  DestIterator id, DestAccessor da, double sigma )
+{
+    // We assume that the data in the input is distance squared and treat it as such
+    double w = iend - is;
+    if(w <= 0)
+        return;
+        
+    double sigma2 = sigma * sigma;
+    double sigma22 = 2.0 * sigma2;
+    
+    typedef typename SrcAccessor::value_type SrcType;
+    typedef detail::DistParabolaStackEntry<SrcType> Influence;
+    std::vector<Influence> _stack;
+    _stack.push_back(Influence(sa(is), 0.0, 0.0, w));
+    
+    ++is;
+    double current = 1.0;
+    while(current < w )
+    {
+        Influence & s = _stack.back();
+        double diff = current - s.center;
+        double intersection = current + (sa(is) - s.prevVal - sigma2*sq(diff)) / (sigma22 * diff);
+        
+        if( intersection < s.left) // previous point has no influence
+        {
+            _stack.pop_back();
+            if(_stack.empty())
+            {
+                _stack.push_back(Influence(sa(is), 0.0, current, w));
+            }
+            else
+            {
+                continue; // try new top of stack without advancing current
+            }
+        }
+        else if(intersection < s.right)
+        {
+            s.right = intersection;
+            _stack.push_back(Influence(sa(is), intersection, current, w));
+        }
+        ++is;
+        ++current;
+    }
+
+    // Now we have the stack indicating which rows are influenced by (and therefore
+    // closest to) which row. We can go through the stack and calculate the
+    // distance squared for each element of the column.
+    typename std::vector<Influence>::iterator it = _stack.begin();
+    for(current = 0.0; current < w; ++current, ++id)
+    {
+        while( current >= it->right) 
+            ++it; 
+        da.set(sigma2 * sq(current - it->center) + it->prevVal, id);
+    }
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void boundaryDistParabola(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest, double sigma)
+{
+    boundaryDistParabola(src.first, src.second, src.third,
+                 dest.first, dest.second, sigma);
+}
+
+doxygen_overloaded_function(template <...> unsigned int boundaryMultiDistance_new)
+
+template <unsigned int N, class T, class S1,
+                          class Label, class S2>
+inline Label 
+boundaryMultiDistance_new(MultiArrayView<N, T, S1> const & labels,
+                MultiArrayView<N, Label, S2> out)
+{
+    vigra_precondition(labels.shape() == out.shape(),
+        "labelMultiArray(): shape mismatch between input and output.");
+     
+	separableMultiDistance(labels, out, true);
 	for (int k = 0; k < out.size(); k++)
 		out(k) += 0.5;	//approximated distance correction
 }
+
 
 //@}
 
