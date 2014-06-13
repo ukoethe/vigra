@@ -849,11 +849,6 @@ void nonLocalMean1Run(
     typedef BlockWiseNonLocalMeanThreadObject<DIM,PixelTypeIn,SmoothPolicyType> ThreadObjectType;
 
 
-    // make the policy object
-    typedef typename SmoothPolicyType::ParameterType  PolicyParameterType;
-    //const PolicyParameterType policyParam(param.sigma_, param.meanRatio_, param.varRatio_);
-    //const SmoothPolicyType smoothPolicy(policyParam);
-
     // inspect parameter
     vigra_precondition(param.stepSize_>=1,"NonLocalMean Parameter: \"stepSize>=1\" violated");
     vigra_precondition(param.searchRadius_>=1, "NonLocalMean Parameter: \"searchRadius >=1\" violated");

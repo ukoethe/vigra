@@ -64,11 +64,6 @@ namespace vigra{
          : public ForwardIteratorFacade<
             ItemIter<G,ITEM>,ITEM,true
         >
-        //: public boost::iterator_facade<
-        //    ItemIter<G,ITEM>,
-        //    const ITEM,
-        //    boost::forward_traversal_tag
-        //>
         {
 
             typedef vigra::GraphItemHelper<G,ITEM> ItemHelper;

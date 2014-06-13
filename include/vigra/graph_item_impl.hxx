@@ -1,14 +1,17 @@
 #ifndef VIGRA_NODE_IMPL_HXX
 #define VIGRA_NODE_IMPL_HXX
 
-/*boost*/
-//#include <boost/iterator/iterator_facade.hpp>
+
 
 /*vigra*/
 #include "algorithm.hxx"
 #include "tinyvector.hxx"
 #include "random_access_set.hxx"
 #include "iteratorfacade.hxx"
+
+
+
+
 
 namespace vigra{
 
@@ -181,12 +184,6 @@ namespace vigra{
             GenericIncEdgeIt<GRAPH,NODE_IMPL,FILTER>,
             typename FILTER::ResultType,true
         >
-
-        //      public boost::iterator_facade<
-        //      GenericIncEdgeIt<GRAPH,NODE_IMPL,FILTER>,
-        //      typename FILTER::ResultType const,
-        //      boost::forward_traversal_tag
-        //   >
         {
         public:
 
@@ -249,7 +246,15 @@ namespace vigra{
                 return (nodeImpl_!=NULL &&  adjIter_==nodeImpl_->adjacencyBegin());
             }
             bool equal(const GenericIncEdgeIt<GRAPH,NODE_IMPL,FILTER> & other)const{
-                return (isEnd() && other.isEnd()) || /*(isBegin() && other.isBegin()) ||*/ ( adjIter_==other.adjIter_);
+                if(isEnd() && other.isEnd()){
+                    return true;
+                }
+                else if (isEnd() != other.isEnd()){
+                    return false;
+                }
+                else{
+                    return adjIter_==other.adjIter_;
+                }
             }
 
             void increment(){

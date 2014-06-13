@@ -139,6 +139,8 @@ BOOST_PYTHON_MODULE_INIT(histogram)
     // all exporters needed for graph exporters (like lemon::INVALID)
     defineMultiGaussianHistogram<2,3>();
     defineMultiGaussianHistogram<3,1>();
+    defineMultiGaussianHistogram<3,3>();
+    defineMultiGaussianHistogram<3,10>();
 
     defineMultiGaussianCoHistogram<2>();
     defineMultiGaussianCoHistogram<3>();

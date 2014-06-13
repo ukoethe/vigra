@@ -316,6 +316,9 @@ void registerNumpyShapeConvertersOneType()
     MultiArrayShapeConverter<5, T>();
     MultiArrayShapeConverter<6, T>();
     MultiArrayShapeConverter<7, T>();
+    MultiArrayShapeConverter<8, T>();
+    MultiArrayShapeConverter<9, T>();
+    MultiArrayShapeConverter<10, T>();
 }
 
 void registerNumpyShapeConvertersAllTypes()
