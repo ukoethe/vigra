@@ -2618,8 +2618,8 @@ void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
     // West's algorithm for incremental covariance matrix computation
     Matrix<T2> t = features - mean;
     ++count;
-    double f  = 1.0 / count,
-           f1 = 1.0 - f;
+    T2 f  = T2(1.0) / count,
+       f1 = T2(1.0) - f;
     mean += f*t;
     
     if(rowCount(features) == 1) // update column covariance from current row
