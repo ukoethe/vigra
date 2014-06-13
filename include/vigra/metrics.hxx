@@ -184,11 +184,9 @@ namespace metrics{
             while(iterA!=endA){
                 const T aa=static_cast<T>(*iterA);
                 const T bb=static_cast<T>(*iterB);
-                if(aa>static_cast<T>(0.0000001) && bb>static_cast<T>(0.0000001) ){
-                    const T val = std::log(aa/bb)*aa + std::log(bb/aa)*bb;
-                    if(!std::isinf(val) && !std::isnan(val))
-                        res+=std::log(aa/bb)*aa + std::log(bb/aa)*bb;
-                }
+                const T val = std::log(aa/bb)*(aa - bb);
+                if(!std::isinf(val) && !std::isnan(val))
+                    res+=val;
                 ++iterA;
                 ++iterB;
             }
