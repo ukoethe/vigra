@@ -1038,7 +1038,8 @@ namespace vigra{
     void edgeWeightsFromInterpolatedImage(
             const GridGraph<N, undirected_tag> & g,
             const MultiArray<N, T>  & interpolatedImage,
-            EDGEMAP edgeWeights, bool euclidean = false
+            EDGEMAP edgeWeights,
+            bool euclidean = false
     ){
         for (int d=0; d<N; ++d)
         {
@@ -1097,15 +1098,6 @@ namespace vigra{
         typedef typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicNodeMapShape NodeCoordinate;
 
         T nodeLabel = rag.id(node);
-
-        // Get number of points.
-        int nPoints = 0;
-        for (RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
-        {
-            const RagEdge ragEdge(*iter);
-            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
-            nPoints += affEdges.size();
-        }
 
         // Find edges and write them into a set.
         std::set< NodeCoordinate > edgeCoordinates;
