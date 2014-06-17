@@ -934,7 +934,7 @@ namespace vigra{
     void edgeWeightsFromInterpolatedImage(
             const GridGraph<N, undirected_tag> & g,
             const MultiArray<N, T>  & interpolatedImage,
-            EDGEMAP edgeWeights,
+            EDGEMAP & edgeWeights,
             bool euclidean = false
     ){
         for (int d=0; d<N; ++d)
@@ -970,7 +970,6 @@ namespace vigra{
             }
         }
     }
-
 
     /// \brief Find indices of points on the edges
     ///
