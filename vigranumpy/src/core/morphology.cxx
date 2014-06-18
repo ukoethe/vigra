@@ -448,15 +448,55 @@ pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume,
     return res;
 }
 
-template < class PixelType, typename DestPixelType >
+template < unsigned int N, class PixelType, typename DestPixelType >
 NumpyAnyArray 
-pythonboundaryDistanceTransform(NumpyArray<2, Singleband<PixelType> > image,
-                          NumpyArray<2, Singleband<DestPixelType> > res = python::object())
+pythonboundaryDistanceTransform_old(NumpyArray<N, Singleband<PixelType> > image,
+                          NumpyArray<N, Singleband<DestPixelType> > res = python::object())
 {
     res.reshapeIfEmpty(image.taggedShape(), 
             "boundaryDistanceTransform(): Output array has wrong shape.");
-   
-        boundaryMultiDistance(image, res);
+    {
+        PyAllowThreads _pythread;
+        boundaryMultiDistance_old(image, res);
+    }
+
+    return res;
+}
+
+template < unsigned int N, class VoxelType, class DestVoxelType >
+NumpyAnyArray
+pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
+                          ArrayVector<double> pixelPitch = ArrayVector<double>(),
+                          NumpyArray<N, Singleband<DestVoxelType> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.taggedShape(),
+            "distanceTransform(): Output array has wrong shape.");
+
+    if (pixelPitch.size() == 0)
+    {
+        pixelPitch = ArrayVector<double>(N, 1.0);
+    }
+    else
+    {
+        pixelPitch = volume.permuteLikewise(pixelPitch);
+    }
+
+    {
+        PyAllowThreads _pythread;
+        boundaryMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), pixelPitch);
+    }
+    return res;
+}
+
+template < unsigned int N, class PixelType, typename DestPixelType >
+NumpyAnyArray
+pythonboundaryMulti(NumpyArray<N, Singleband<PixelType> > image,
+                          NumpyArray<N, Singleband<DestPixelType> > res = python::object())
+{
+    res.reshapeIfEmpty(image.taggedShape(),
+            "boundaryDistanceTransform(): Output array has wrong shape.");
+//TODO: PyAllowThreads_pythread; // template with iterators
+        boundaryMulti(image, res);
 
 
     return res;
@@ -822,17 +862,59 @@ void defineMorphology()
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
     def("boundaryDistanceTransform",
-        registerConverters(&pythonboundaryDistanceTransform<UInt32, double>),
+       registerConverters(&pythonboundaryDistanceTransform<2, UInt32, float>),
+       (arg("image"),
+        arg("pixel_pitch") = ArrayVector<double>(),
+        arg("out")=python::object()),
+       "Likewise for a 2D uint32 input array.\n");
+
+   def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<3, UInt32, float>),
+       (arg("array"),
+        arg("pixel_pitch") = ArrayVector<double>(),
+        arg("out")=python::object()),
+       "Compute the Euclidean distance transform of a 3D scalar float volume of labeled data.\n"
+       "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+
+    def("boundaryDistanceTransform_old",
+        registerConverters(&pythonboundaryDistanceTransform_old<2, UInt32, float>),
         (arg("array"),  
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 2D scalar label volume.\n"
+        "Compute the Euclidean distance transform of a 2D scalar label array.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+
+    def("boundaryDistanceTransform_old",
+        registerConverters(&pythonboundaryDistanceTransform_old<3, UInt32, float>),
+        (arg("array"),
+         arg("out")=python::object()),
+        "Compute the Euclidean distance transform of a 3D scalar label volume.\n"
+        "\n"
+        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+
+    def("boundaryMulti",
+        registerConverters(&pythonboundaryMulti<2, UInt32, UInt8>),
+        (arg("array"),
+         arg("out")=python::object()),
+        "Converts label image into boundary image.\n");
+
+    def("boundaryMulti",
+        registerConverters(&pythonboundaryMulti<3, UInt32, UInt8>),
+        (arg("array"),
+         arg("out")=python::object()),
+        "Converts label volume into boundary volume.\n");
     
-    def("vectorialDistanceTransform",
-        registerConverters(&pythonVectorialDistanceTransform<2, double>),
+    def("vectorialDistanceTransform2D",
+        registerConverters(&pythonVectorialDistanceTransform<2, float>),
         (arg("array"), 
          arg("background") = true, 
+         arg("out")=python::object()),
+        "TODO");
+
+    def("vectorialDistanceTransform3D",
+        registerConverters(&pythonVectorialDistanceTransform<3, float>),
+        (arg("array"),
+         arg("background") = true,
          arg("out")=python::object()),
         "TODO");
     

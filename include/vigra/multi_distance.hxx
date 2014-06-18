@@ -100,13 +100,13 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         Influence & s = _stack.back();
         double diff = current - s.center;
         double intersection = current + (sa(is) - s.prevVal - sigma2*sq(diff)) / (sigma22 * diff);
-        
         if( intersection < s.left) // previous point has no influence
         {
             _stack.pop_back();
             if(_stack.empty())
             {
                 _stack.push_back(Influence(sa(is), 0.0, current, w));
+                std::cout << "value: " << sa(is) << " intersection: " << intersection << " current: " << current << " w: " << w << std::endl;
             }
             else
             {
@@ -117,6 +117,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         {
             s.right = intersection;
             _stack.push_back(Influence(sa(is), intersection, current, w));
+            std::cout << "value: " << sa(is) << " intersection: " << intersection << " current: " << current << " w: " << w << std::endl;
         }
         ++is;
         ++current;
@@ -659,11 +660,13 @@ separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
                             destMultiArray(dest), background );
 }
 
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NEW %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+//rewrite labeled data and work with separableMultiDist
 namespace lemon_graph { 
 
 template <class Graph, class T1Map, class T2Map>
-typename T2Map::value_type
-boundaryGraph(Graph const & g, 
+void boundaryGraph(Graph const & g,
            T1Map const & labels,
            T2Map & out)
 {
@@ -693,26 +696,43 @@ boundaryGraph(Graph const & g,
 
 } //-- namspace lemon_graph
 
-doxygen_overloaded_function(template <...> unsigned int boundaryMultiDistance)
+doxygen_overloaded_function(template <...> unsigned int boundaryMulti)
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2>
-inline void 
-boundaryMultiDistance(MultiArrayView<N, T1, S1> const & labels,
+inline void
+boundaryMulti(MultiArrayView<N, T1, S1> const & labels,
                 MultiArrayView<N, T2, S2> out)
 {
     vigra_precondition(labels.shape() == out.shape(),
         "labelMultiArray(): shape mismatch between input and output.");
 
-	MultiArray<N, T1> tmpArray(out.shape());     
     GridGraph<N, undirected_tag> graph(labels.shape());
 
-	lemon_graph::boundaryGraph(graph, labels, tmpArray);
-	separableMultiDistance(tmpArray, out, true);
+    lemon_graph::boundaryGraph(graph, labels, out);
+}
+
+doxygen_overloaded_function(template <...> unsigned int boundaryMultiDistance_old)
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+boundaryMultiDistance_old(MultiArrayView<N, T1, S1> const & labels,
+                MultiArrayView<N, T2, S2> out)
+{
+	MultiArray<N, T1> tmpArray(out.shape());     
+    boundaryMulti(labels, tmpArray);
+    separableMultiDistance(tmpArray, out, true);
 	for (int k = 0; k < out.size(); k++)
 		out(k) += 0.5;	//approximated distance correction
 
 }
+
+
+//MultiDistance which works directly on labeled data
+
+namespace detail
+{
 
 /********************************************************/
 /*                                                      */
@@ -725,85 +745,364 @@ boundaryMultiDistance(MultiArrayView<N, T1, S1> const & labels,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor >
 void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
-                  DestIterator id, DestAccessor da, double sigma )
-{
+                  DestIterator id, DestAccessor da, double sigma, double dmax )
+    {
     // We assume that the data in the input is distance squared and treat it as such
     double w = iend - is;
     if(w <= 0)
         return;
-        
+
     double sigma2 = sigma * sigma;
     double sigma22 = 2.0 * sigma2;
-    
+
     typedef typename SrcAccessor::value_type SrcType;
     typedef detail::DistParabolaStackEntry<SrcType> Influence;
     std::vector<Influence> _stack;
-    _stack.push_back(Influence(sa(is), 0.0, 0.0, w));
-    
+    if (sa(is) != sa(is+1)) (_stack.push_back(Influence(dmax, 0.0, 0.0, w)));
+    else  (_stack.push_back(Influence(0, 0.0, 0.0, w)));
+    SrcType label_check = sa(is);
+    int label_check2 = 0;
     ++is;
     double current = 1.0;
+    double value;
     while(current < w )
     {
+        if (label_check2 == 1){
+            label_check = sa(is-1);
+            current -= 2;
+            is -= 2;
+            label_check2 = 2;
+        }
+        else if (label_check == sa(is)){
+            label_check = sa(is);
+            if (label_check2 == 2){
+                value = dmax;
+                label_check2 = 0;
+            }
+            else (value = 0);
+        }
+        else if (label_check != sa(is)){
+            label_check = sa(is);
+            label_check2 = 1;
+            value = dmax;
+        }
+
         Influence & s = _stack.back();
         double diff = current - s.center;
-        double intersection = current + (sa(is) - s.prevVal - sigma2*sq(diff)) / (sigma22 * diff);
-        
+        double intersection = current + (value - s.prevVal - sigma2*sq(diff)) / (sigma22 * diff);
+        //std::cout << "sa(is): " << sa(is) << " value: " << value <<  std::endl;
+
         if( intersection < s.left) // previous point has no influence
-        {
+            {
             _stack.pop_back();
             if(_stack.empty())
-            {
-                _stack.push_back(Influence(sa(is), 0.0, current, w));
-            }
+                {
+                _stack.push_back(Influence(value, 0.0, current, w));
+                std::cout << "value: " << value << " intersection: " << intersection << " current: " << current << " w: " << w << std::endl;
+                }
             else
-            {
+                {
                 continue; // try new top of stack without advancing current
+                }
             }
-        }
         else if(intersection < s.right)
-        {
+            {
             s.right = intersection;
-            _stack.push_back(Influence(sa(is), intersection, current, w));
-        }
+            _stack.push_back(Influence(value, intersection, current, w));
+            std::cout << "value: " << value << " intersection: " << intersection << " current: " << current << " w: " << w << std::endl;
+            }
         ++is;
         ++current;
+        }
+        // Now we have the stack indicating which rows are influenced by (and therefore
+        // closest to) which row. We can go through the stack and calculate the
+        // distance squared for each element of the column.
+        typename std::vector<Influence>::iterator it = _stack.begin();
+        for(current = 0.0; current < w; ++current, ++id)
+        {
+            while( current >= it->right)
+                ++it;
+            da.set(sigma2 * sq(current - it->center) + it->prevVal, id);
+        }
     }
-
-    // Now we have the stack indicating which rows are influenced by (and therefore
-    // closest to) which row. We can go through the stack and calculate the
-    // distance squared for each element of the column.
-    typename std::vector<Influence>::iterator it = _stack.begin();
-    for(current = 0.0; current < w; ++current, ++id)
-    {
-        while( current >= it->right) 
-            ++it; 
-        da.set(sigma2 * sq(current - it->center) + it->prevVal, id);
-    }
-}
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void boundaryDistParabola(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                         pair<DestIterator, DestAccessor> dest, double sigma)
+                         pair<DestIterator, DestAccessor> dest, double sigma, double dmax)
 {
     boundaryDistParabola(src.first, src.second, src.third,
-                 dest.first, dest.second, sigma);
+                 dest.first, dest.second, sigma, dmax);
 }
 
-doxygen_overloaded_function(template <...> unsigned int boundaryMultiDistance_new)
+/********************************************************/
+/*                                                      */
+/*        internalBoundaryMultiArrayDistTmp             */
+/*                                                      */
+/********************************************************/
 
-template <unsigned int N, class T, class S1,
-                          class Label, class S2>
-inline Label 
-boundaryMultiDistance_new(MultiArrayView<N, T, S1> const & labels,
-                MultiArrayView<N, Label, S2> out)
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+void internalBoundaryMultiArrayDistTmp(
+                      SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                      DestIterator di, DestAccessor dest, Array const & sigmas, double dmax)
 {
-    vigra_precondition(labels.shape() == out.shape(),
-        "labelMultiArray(): shape mismatch between input and output.");
-     
-	separableMultiDistance(labels, out, true);
-	for (int k = 0; k < out.size(); k++)
-		out(k) += 0.5;	//approximated distance correction
+    // Sigma is the spread of the parabolas. It determines the structuring element size
+    // for ND morphology. When calculating the distance transforms, sigma is usually set to 1,
+    // unless one wants to account for anisotropic pixel pitch
+    enum { N =  SrcShape::static_size};
+
+    // we need the Promote type here if we want to invert the image (dilation)
+    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
+
+    // temporary array to hold the current line to enable in-place operation
+    ArrayVector<TmpType> tmp( shape[0] );
+
+    typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
+    typedef MultiArrayNavigator<DestIterator, N> DNavigator;
+
+
+    // only operate on first dimension here
+    SNavigator snav( si, shape, 0 );
+    DNavigator dnav( di, shape, 0 );
+
+    using namespace vigra::functor;
+
+    for( ; snav.hasMore(); snav++, dnav++ )
+    {
+            // first copy source to temp for maximum cache efficiency
+            copyLine( snav.begin(), snav.end(), src, tmp.begin(),
+                          typename AccessorTraits<TmpType>::default_accessor() );
+
+            detail::boundaryDistParabola( srcIterRange(tmp.begin(), tmp.end(),
+                          typename AccessorTraits<TmpType>::default_const_accessor()),
+                          destIter( dnav.begin(), dest ), sigmas[0], dmax );
+    }
+
+    // operate on further dimensions
+    for( int d = 1; d < N; ++d )
+    {
+        DNavigator dnav( di, shape, d );
+
+        tmp.resize( shape[d] );
+
+
+        for( ; dnav.hasMore(); dnav++ )
+        {
+             // first copy source to temp for maximum cache efficiency
+             copyLine( dnav.begin(), dnav.end(), dest,
+                       tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
+
+             detail::distParabola( srcIterRange(tmp.begin(), tmp.end(),
+                           typename AccessorTraits<TmpType>::default_const_accessor()),
+                           destIter( dnav.begin(), dest ), sigmas[d]);
+        }
+    }
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void internalBoundaryMultiArrayDistTmp( SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                                                DestIterator di, DestAccessor dest, double dmax)
+{
+    ArrayVector<double> sigmas(shape.size(), 1.0);
+    internalBoundaryMultiArrayDistTmp( si, shape, src, di, dest, sigmas, dmax );
+}
+
+} // namespace detail
+
+//@{
+
+/********************************************************/
+/*                                                      */
+/*             boundaryMultiDistSquared                 */
+/*                                                      */
+/********************************************************/
+
+/** \brief Euclidean distance squared on multi-dimensional arrays fo labeled data.
+
+    \see vigra::distanceTransform(), vigra::separableMultiDistance()
+*/
+doxygen_overloaded_function(template <...> void boundaryMultiDistSquared)
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+void boundaryMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest,
+                                Array const & pixelPitch)
+{
+    int N = shape.size();
+
+    typedef typename DestAccessor::value_type DestType;
+    typedef typename NumericTraits<DestType>::RealPromote Real;
+
+    double dmax = 0.0;
+    bool pixelPitchIsReal = false;
+    for( int k=0; k<N; ++k)
+    {
+        if(int(pixelPitch[k]) != pixelPitch[k])
+            pixelPitchIsReal = true;
+        dmax += sq(pixelPitch[k]*shape[k]);
+    }
+
+    using namespace vigra::functor;
+
+    if(dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max())
+       || pixelPitchIsReal) // need a temporary array to avoid overflows
+    {
+        MultiArray<SrcShape::static_size, Real> tmpArray(shape);
+        transformMultiArray( s, shape, src,
+                             tmpArray.traverser_begin(), typename AccessorTraits<Real>::default_accessor(),
+                             Arg1());
+        detail::internalBoundaryMultiArrayDistTmp( tmpArray.traverser_begin(),
+                shape, typename AccessorTraits<Real>::default_accessor(),
+                tmpArray.traverser_begin(),
+                typename AccessorTraits<Real>::default_accessor(), pixelPitch, dmax);
+
+        copyMultiArray(srcMultiArrayRange(tmpArray), destIter(d, dest));
+    }
+    else        // work directly on the destination array
+    {
+        detail::internalBoundaryMultiArrayDistTmp( s, shape, src, d, dest, pixelPitch, dmax);
+    }
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline
+void boundaryMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest)
+{
+    ArrayVector<double> pixelPitch(shape.size(), 1.0);
+    boundaryMultiDistSquared( s, shape, src, d, dest, pixelPitch );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+inline void boundaryMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                       pair<DestIterator, DestAccessor> const & dest,
+                                       Array const & pixelPitch)
+{
+    boundaryMultiDistSquared( source.first, source.second, source.third,
+                               dest.first, dest.second, pixelPitch );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void boundaryMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                       pair<DestIterator, DestAccessor> const & dest)
+{
+    boundaryMultiDistSquared( source.first, source.second, source.third,
+                               dest.first, dest.second);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2,
+          class Array>
+inline void
+boundaryMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, T2, S2> dest,
+                          Array const & pixelPitch)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "boundaryMultiDistSquared(): shape mismatch between input and output.");
+    boundaryMultiDistSquared( srcMultiArrayRange(source),
+                               destMultiArray(dest), pixelPitch );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+boundaryMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, T2, S2> dest)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "boundaryMultiDistSquared(): shape mismatch between input and output.");
+    boundaryMultiDistSquared( srcMultiArrayRange(source),
+                               destMultiArray(dest));
+}
+
+/********************************************************/
+/*                                                      */
+/*             boundaryMultiDistance                    */
+/*                                                      */
+/********************************************************/
+
+/** \brief Euclidean distance on multi-dimensional arrays of labeled data.
+
+    \see vigra::distanceTransform(), vigra::separableMultiDistSquared()
+*/
+doxygen_overloaded_function(template <...> void boundaryMultiDistance)
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+void boundaryMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                             DestIterator d, DestAccessor dest,
+                             Array const & pixelPitch)
+{
+    boundaryMultiDistSquared( s, shape, src, d, dest, pixelPitch);
+
+    // Finally, calculate the square root of the distances
+    using namespace vigra::functor;
+
+    transformMultiArray( d, shape, dest, d, dest, sqrt(Arg1()) );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void boundaryMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                             DestIterator d, DestAccessor dest)
+{
+    boundaryMultiDistSquared( s, shape, src, d, dest);
+
+    // Finally, calculate the square root of the distances
+    using namespace vigra::functor;
+
+    transformMultiArray( d, shape, dest, d, dest, sqrt(Arg1()) );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+inline void boundaryMultiDistance( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                    pair<DestIterator, DestAccessor> const & dest,
+                                    Array const & pixelPitch)
+{
+    boundaryMultiDistance( source.first, source.second, source.third,
+                            dest.first, dest.second, pixelPitch );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void boundaryMultiDistance( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                    pair<DestIterator, DestAccessor> const & dest)
+{
+    boundaryMultiDistance( source.first, source.second, source.third,
+                            dest.first, dest.second );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2, class Array>
+inline void
+boundaryMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest,
+                       Array const & pixelPitch)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "boundaryMultiDistance(): shape mismatch between input and output.");
+    boundaryMultiDistance( srcMultiArrayRange(source),
+                            destMultiArray(dest), pixelPitch );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+boundaryMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "boundaryMultiDistance(): shape mismatch between input and output.");
+    boundaryMultiDistance( srcMultiArrayRange(source),
+                            destMultiArray(dest));
 }
 
 
