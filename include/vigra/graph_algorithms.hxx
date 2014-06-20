@@ -349,15 +349,6 @@ namespace vigra{
         }
     }
 
-//    /// \brief Compute shortest path between each two vertices, find longest of those paths, return all vertices on that path.
-//    template<class GRAPH, class T>
-//    MultiArray<2, MultiArrayIndex> findLongestShortestPath(
-//            ShortestPathDijkstra<GRAPH, T> pathFinder,
-//            MultiArray<2, MultiArrayIndex> edges
-//    ){
-
-//    }
-
     /// \brief Astar Shortest path search
     template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE,class HEURSTIC>
     void shortestPathAStar(
