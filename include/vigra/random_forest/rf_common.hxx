@@ -774,7 +774,7 @@ public:
         PULL(precision_, double);
         PULL(response_size_, int);
         class_weights_ = in["class_weights_"];
-        #undef PUSH
+        #undef PULL
     }
     void make_map(map_type & in) const
     {
