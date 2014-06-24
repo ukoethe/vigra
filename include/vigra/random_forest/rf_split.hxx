@@ -165,10 +165,10 @@ class SplitBase
         the class histogram
     **/
     template<class T, class C, class T2,class C2, class Region, class Random>
-    int makeTerminalNode(MultiArrayView<2, T, C> features,
-                      MultiArrayView<2, T2, C2>  labels,
-                      Region &                   region,
-                      Random                     randint)
+    int makeTerminalNode(MultiArrayView<2, T, C>    /* features */,
+                         MultiArrayView<2, T2, C2>  /* labels */,
+                         Region &                   region,
+                         Random                     /* randint */)
     {
         Node<e_ConstProbNode> ret(t_data, p_data);
         node_ = ret;
