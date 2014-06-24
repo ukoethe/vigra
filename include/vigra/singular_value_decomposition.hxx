@@ -316,7 +316,7 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     Real eps = NumericTraits<Real>::epsilon()*2.0;
     while (p > 0)
     {
-        MultiArrayIndex k=0;
+        k=0;
         int kase=0;
 
         // Here is where a test for too many iterations would go.
@@ -546,7 +546,7 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     }
     Real tol = std::max(m,n)*s(0)*eps;
     unsigned int rank = 0;
-    for (MultiArrayIndex i = 0; i < n; ++i)
+    for (i = 0; i < n; ++i)
     {
         if (s(i) > tol)
         {
