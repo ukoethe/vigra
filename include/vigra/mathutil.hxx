@@ -393,7 +393,7 @@ struct power_static
 template <class V>
 struct power_static<V, 0>
 {
-    static V call(const V & x)
+    static V call(const V & /* x */)
     {
         return V(1);
     }

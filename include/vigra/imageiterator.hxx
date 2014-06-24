@@ -1240,7 +1240,7 @@ class ConstValueIteratorPolicy
         std::ptrdiff_t pos;
     };
 
-    static void initialize(BaseType & d) {}
+    static void initialize(BaseType & /* d */) {}
 
     static reference dereference(BaseType const & d)
         { return d.value; }
