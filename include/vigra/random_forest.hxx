@@ -749,7 +749,7 @@ void RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1
     //visitor.visit_at_beginning(*this, preprocessor);
 
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
-    for(int ii = 0; ii < (int)trees_.size(); ++ii)
+    for(int ii = 0; ii < static_cast<int>(trees_.size()); ++ii)
     {
         online_visitor_.tree_id=ii;
         poisson_sampler.sample();
@@ -1002,7 +1002,7 @@ void RandomForest<LabelType, PreprocessorTag>::
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     
-    for(int ii = 0; ii < (int)trees_.size(); ++ii)
+    for(int ii = 0; ii < static_cast<int>(trees_.size()); ++ii)
     {
         //initialize First region/node/stack entry
         sampler
@@ -1098,7 +1098,7 @@ void RandomForest<LabelType,PreprocessorTag>
       "RandomForestn::predictProbabilities():"
         " Too few columns in feature matrix.");
     vigra_precondition( columnCount(prob)
-                        == (MultiArrayIndex)ext_param_.class_count_,
+                        == static_cast<MultiArrayIndex>(ext_param_.class_count_),
       "RandomForestn::predictProbabilities():"
       " Probability matrix must have as many columns as there are classes.");
     prob.init(0.0);
@@ -1137,9 +1137,9 @@ void RandomForest<LabelType,PreprocessorTag>
                     //update votecount.
                     for(int l=0; l<ext_param_.class_count_; ++l)
                     {
-                        prob(predictionSet.indices[set_id][i], l) += (T2)weights[l];
+                        prob(predictionSet.indices[set_id][i], l) += static_cast<T2>(weights[l]);
                         //every weight in totalWeight.
-                        totalWeights[predictionSet.indices[set_id][i]] += (T1)weights[l];
+                        totalWeights[predictionSet.indices[set_id][i]] += static_cast<T1>(weights[l]);
                     }
                 }
             }
@@ -1241,7 +1241,7 @@ void RandomForest<LabelType, PreprocessorTag>
       "RandomForestn::predictProbabilities():"
         " Too few columns in feature matrix.");
     vigra_precondition( columnCount(prob)
-                        == (MultiArrayIndex)ext_param_.class_count_,
+                        == static_cast<MultiArrayIndex>(ext_param_.class_count_),
       "RandomForestn::predictProbabilities():"
       " Probability matrix must have as many columns as there are classes.");
 
@@ -1290,7 +1290,7 @@ void RandomForest<LabelType, PreprocessorTag>
             {
                 double cur_w = weights[l] * (weighted * (*(weights-1))
                                            + (1-weighted));
-                prob(row, l) += (T)cur_w;
+                prob(row, l) += static_cast<T>(cur_w);
                 //every weight in totalWeight.
                 totalWeight += cur_w;
             }
@@ -1331,7 +1331,7 @@ void RandomForest<LabelType, PreprocessorTag>
       "RandomForestn::predictProbabilities():"
         " Too few columns in feature matrix.");
     vigra_precondition( columnCount(prob)
-                        == (MultiArrayIndex)ext_param_.class_count_,
+                        == static_cast<MultiArrayIndex>(ext_param_.class_count_),
       "RandomForestn::predictProbabilities():"
       " Probability matrix must have as many columns as there are classes.");
 
@@ -1365,7 +1365,7 @@ void RandomForest<LabelType, PreprocessorTag>
             {
                 double cur_w = weights[l] * (weighted * (*(weights-1))
                                            + (1-weighted));
-                prob(row, l) += (T)cur_w;
+                prob(row, l) += static_cast<T>(cur_w);
                 //every weight in totalWeight.
                 totalWeight += cur_w;
             }

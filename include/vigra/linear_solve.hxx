@@ -162,7 +162,7 @@ qrGivensStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> r, MultiArrayView<2
                        "qrGivensStepImpl(): Matrix shape mismatch.");
 
     Matrix<T> givens(2,2);
-    for(int k=m-1; k>(int)i; --k)
+    for(int k=m-1; k>static_cast<int>(i); --k)
     {
         if(!givensReflectionMatrix(r(k-1,i), r(k,i), givens))
             continue; // r(k,i) was already zero
@@ -246,7 +246,7 @@ upperTriangularSwapColumns(MultiArrayIndex i, MultiArrayIndex j,
     std::swap(permutation[i], permutation[j]);
     
     Matrix<T> givens(2,2);
-    for(int k=m-1; k>(int)i; --k)
+    for(int k=m-1; k>static_cast<int>(i); --k)
     {
         if(!givensReflectionMatrix(r(k-1,i), r(k,i), givens))
             continue; // r(k,i) was already zero
@@ -427,7 +427,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
                        "qrTransformToTriangularImpl(): Householder matrix shape mismatch.");
                        
     bool pivoting = permutation.size() > 0;
-    vigra_precondition(!pivoting || n == (MultiArrayIndex)permutation.size(),
+    vigra_precondition(!pivoting || n == static_cast<MultiArrayIndex>(permutation.size()),
                        "qrTransformToTriangularImpl(): Permutation array size mismatch.");
 
     if(n == 0)
@@ -482,7 +482,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
             for(MultiArrayIndex l=k; l<n; ++l)
                 columnSquaredNorms[l] -= squaredNorm(r(k, l));
             int pivot = k + argMax(rowVector(columnSquaredNorms, Shape(0,k), n));
-            if(pivot != (int)k)
+            if(pivot != static_cast<int>(k))
             {
                 columnVector(r, k).swapData(columnVector(r, pivot));
                 std::swap(columnSquaredNorms[k], columnSquaredNorms[pivot]);
@@ -518,7 +518,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
         else
             pivoting = false; // matrix doesn't have full rank, triangulize the rest without pivoting
     }
-    return (unsigned int)rank;
+    return static_cast<unsigned int>(rank);
 }
 
 template <class T, class C1, class C2>
@@ -536,8 +536,8 @@ unsigned int
 qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, MultiArrayView<2, T, C3> & householderMatrix, 
                       double epsilon = 0.0)
 {
-    ArrayVector<MultiArrayIndex> permutation((unsigned int)rowCount(rhs));
-    for(MultiArrayIndex k=0; k<(MultiArrayIndex)permutation.size(); ++k)
+    ArrayVector<MultiArrayIndex> permutation(static_cast<unsigned int>(rowCount(rhs)));
+    for(MultiArrayIndex k=0; k<static_cast<MultiArrayIndex>(permutation.size()); ++k)
         permutation[k] = k;
     Matrix<T> dontTransformRHS; // intentionally empty
     MultiArrayView<2, T, StridedArrayTag> rt = transpose(r),
@@ -546,7 +546,7 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, 
     
     // apply row permutation to RHS
     Matrix<T> tempRHS(rhs);
-    for(MultiArrayIndex k=0; k<(MultiArrayIndex)permutation.size(); ++k)
+    for(MultiArrayIndex k=0; k<static_cast<MultiArrayIndex>(permutation.size()); ++k)
         rowVector(rhs, k) = rowVector(tempRHS, permutation[k]);
     return rank;
 }
@@ -560,7 +560,7 @@ qrTransformToUpperTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, 
     ArrayVector<MultiArrayIndex> noPivoting; // intentionally empty
     
     return (qrTransformToUpperTriangular(r, rhs, noPivoting, epsilon) == 
-            (unsigned int)columnCount(r));
+            static_cast<unsigned int>(columnCount(r)));
 }
 
 // QR algorithm without row pivoting
@@ -572,7 +572,7 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, 
     Matrix<T> noPivoting; // intentionally empty
     
     return (qrTransformToLowerTriangular(r, noPivoting, householder, epsilon) == 
-           (unsigned int)rowCount(r));
+           static_cast<unsigned int>(rowCount(r)));
 }
 
 // restore ordering of result vector elements after QR solution with column pivoting
@@ -632,7 +632,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         // minimum norm solution of underdetermined system
         Matrix<T> householderMatrix(n, m);
         MultiArrayView<2, T, StridedArrayTag> ht = transpose(householderMatrix);
-        rank = (MultiArrayIndex)detail::qrTransformToLowerTriangular(A, b, ht, epsilon);
+        rank = static_cast<MultiArrayIndex>(detail::qrTransformToLowerTriangular(A, b, ht, epsilon));
         res.subarray(Shape(rank,0), Shape(n, rhsCount)).init(NumericTraits<T>::zero());
         if(rank < m)
         {
@@ -655,11 +655,11 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
     else
     {
         // solution of well-determined or overdetermined system
-        ArrayVector<MultiArrayIndex> permutation((unsigned int)n);
+        ArrayVector<MultiArrayIndex> permutation(static_cast<unsigned int>(n));
         for(MultiArrayIndex k=0; k<n; ++k)
             permutation[k] = k;
 
-        rank = (MultiArrayIndex)detail::qrTransformToUpperTriangular(A, b, permutation, epsilon);
+        rank = static_cast<MultiArrayIndex>(detail::qrTransformToUpperTriangular(A, b, permutation, epsilon));
         
         Matrix<T> permutedSolution(n, rhsCount);
         if(rank < n)
@@ -683,7 +683,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         }
         detail::inverseRowPermutation(permutedSolution, res, permutation);
     }
-    return (unsigned int)rank;
+    return static_cast<unsigned int>(rank);
 }
 
 template <class T, class C1, class C2, class C3>
@@ -973,7 +973,7 @@ bool qrDecomposition(MultiArrayView<2, T, C1> const & a,
     MultiArrayView<2,T, StridedArrayTag> tq = transpose(q);
     r = a;
     ArrayVector<MultiArrayIndex> noPivoting; // intentionally empty
-    return ((MultiArrayIndex)detail::qrTransformToUpperTriangular(r, tq, noPivoting, epsilon) == std::min(m,n));
+    return (static_cast<MultiArrayIndex>(detail::qrTransformToUpperTriangular(r, tq, noPivoting, epsilon) == std::min(m,n)));
 }
 
     /** Deprecated, use \ref linearSolveUpperTriangular().
@@ -1217,7 +1217,7 @@ bool linearSolve(MultiArrayView<2, T, C1> const & A,
     }
     else if(method == "qr")
     {
-        return (MultiArrayIndex)linearSolveQR(A, b, res) == n;
+        return static_cast<MultiArrayIndex>(linearSolveQR(A, b, res)) == n;
     }
     else if(method == "ne")
     {
@@ -1228,7 +1228,7 @@ bool linearSolve(MultiArrayView<2, T, C1> const & A,
         MultiArrayIndex rhsCount = columnCount(b);
         Matrix<T> u(A.shape()), s(n, 1), v(n, n);
 
-        MultiArrayIndex rank = (MultiArrayIndex)singularValueDecomposition(A, u, s, v);
+        MultiArrayIndex rank = static_cast<MultiArrayIndex>(singularValueDecomposition(A, u, s, v));
 
         Matrix<T> t = transpose(u)*b;
         for(MultiArrayIndex l=0; l<rhsCount; ++l)

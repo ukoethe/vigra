@@ -96,8 +96,8 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     S.init(0.0);
     V.init(0.0);
 
-    ArrayVector<Real> e((unsigned int)n);
-    ArrayVector<Real> work((unsigned int)m);
+    ArrayVector<Real> e(static_cast<unsigned int>(n));
+    ArrayVector<Real> work(static_cast<unsigned int>(m));
     Matrix<Real> a(A);
     MultiArrayView<1, T, C3> s = S.bindOuter(0);
 
@@ -106,7 +106,7 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     // Reduce a to bidiagonal form, storing the diagonal elements
     // in s and the super-diagonal elements in e.
     MultiArrayIndex nct = std::min(m-1,n);
-    MultiArrayIndex nrt = std::max((MultiArrayIndex)0,n-2);
+    MultiArrayIndex nrt = std::max(static_cast<MultiArrayIndex>(0),n-2);
     for (k = 0; k < std::max(nct,nrt); ++k)
     {
         if (k < nct)

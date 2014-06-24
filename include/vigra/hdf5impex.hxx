@@ -1890,8 +1890,8 @@ class HDF5File
 
         // reshape target MultiArray
         typename MultiArrayShape<N>::type shape;
-        for(int k=0; k < (int)dimshape.size(); ++k)
-            shape[k] = (MultiArrayIndex)dimshape[k];
+        for(int k=0; k < static_cast<int>(dimshape.size()); ++k)
+            shape[k] = static_cast<MultiArrayIndex>(dimshape[k]);
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), 1);
@@ -2003,8 +2003,8 @@ class HDF5File
         
         // reshape target MultiArray
         typename MultiArrayShape<N>::type shape;
-        for(int k=1; k < (int)dimshape.size(); ++k)
-            shape[k-1] = (MultiArrayIndex)dimshape[k];
+        for(int k=1; k < static_cast<int>(dimshape.size()); ++k)
+            shape[k-1] = static_cast<MultiArrayIndex>(dimshape[k]);
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), SIZE);
@@ -2037,8 +2037,8 @@ class HDF5File
 
         // reshape target MultiArray
         typename MultiArrayShape<N>::type shape;
-        for(int k=1; k < (int)dimshape.size(); ++k)
-            shape[k-1] = (MultiArrayIndex)dimshape[k];
+        for(int k=1; k < static_cast<int>(dimshape.size()); ++k)
+            shape[k-1] = static_cast<MultiArrayIndex>(dimshape[k]);
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), 3);
@@ -2828,7 +2828,7 @@ void HDF5File::write_(std::string &datasetName,
         for(unsigned int k=offset; k<chunks.size(); ++k)
         {
             chunkMaxShape[k-offset] = chunks[k];
-            chunkCount[k-offset] = (MultiArrayIndex)std::ceil(double(shape[k]) / chunks[k]);
+            chunkCount[k-offset] = static_cast<MultiArrayIndex>(std::ceil(double(shape[k]) / chunks[k]));
         }
         
         typename CoupledIteratorType<N>::type chunkIter = createCoupledIterator(chunkCount),

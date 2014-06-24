@@ -1067,9 +1067,9 @@ void repeatMatrix(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, C2> &
     vigra_precondition(m*verticalCount == rowCount(r) && n*horizontalCount == columnCount(r),
         "repeatMatrix(): Shape mismatch.");
         
-    for(MultiArrayIndex l=0; l<(MultiArrayIndex)horizontalCount; ++l)
+    for(MultiArrayIndex l=0; l<static_cast<MultiArrayIndex>(horizontalCount); ++l)
     {
-        for(MultiArrayIndex k=0; k<(MultiArrayIndex)verticalCount; ++k)
+        for(MultiArrayIndex k=0; k<static_cast<MultiArrayIndex>(verticalCount); ++k)
         {
             r.subarray(Shape(k*m, l*n), Shape((k+1)*m, (l+1)*n)) = v;
         }
@@ -2124,7 +2124,7 @@ linalg::TemporaryMatrix<int> pow(MultiArrayView<2, int, C> const & v, int expone
 
     for(MultiArrayIndex i = 0; i < n; ++i)
         for(MultiArrayIndex j = 0; j < m; ++j)
-            t(j, i) = (int)vigra::pow((double)v(j, i), exponent);
+            t(j, i) = static_cast<int>(vigra::pow(static_cast<double>(v(j, i)), exponent));
     return t;
 }
 
@@ -2136,7 +2136,7 @@ linalg::TemporaryMatrix<int> pow(linalg::TemporaryMatrix<int> const & v, int exp
 
     for(MultiArrayIndex i = 0; i < n; ++i)
         for(MultiArrayIndex j = 0; j < m; ++j)
-            t(j, i) = (int)vigra::pow((double)t(j, i), exponent);
+            t(j, i) = static_cast<int>(vigra::pow(static_cast<double>(t(j, i)), exponent));
     return t;
 }
 
@@ -2389,7 +2389,7 @@ columnStatistics2PassImpl(MultiArrayView<2, T1, C1> const & A,
     {
         mean += rowVector(A, k);
     }
-    mean /= (double)m;
+    mean /= static_cast<double>(m);
     
     sumOfSquaredDifferences.init(NumericTraits<T3>::zero());
     for(MultiArrayIndex k=0; k<m; ++k)

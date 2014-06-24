@@ -364,7 +364,7 @@ class LeastAngleRegressionOptions
         */
     LeastAngleRegressionOptions & maxSolutionCount(unsigned int n)
     {
-        max_solution_count = (int)n;
+        max_solution_count = static_cast<int>(n);
         return *this;
     }
 
@@ -514,8 +514,8 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
     MultiArrayIndex currentSolutionCount = 0;
     while(currentSolutionCount < maxSolutionCount)
     {
-        //ColumnSet activeSet = d.columnPermutation.subarray(0, (unsigned int)d.activeSetSize);
-        ColumnSet inactiveSet = d.columnPermutation.subarray((unsigned int)d.activeSetSize, (unsigned int)cols);
+        //ColumnSet activeSet = d.columnPermutation.subarray(0, static_cast<unsigned int>(d.activeSetSize));
+        ColumnSet inactiveSet = d.columnPermutation.subarray(static_cast<unsigned int>(d.activeSetSize), static_cast<unsigned int>(cols));
 
         // find next dimension to be activated
         Matrix<T> cLARS = transpose(d.A) * (d.b - d.lars_prediction),      // correlation with LARS residual
@@ -604,7 +604,7 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
                 ArrayVector<ArrayVector<MultiArrayIndex> > nnactiveSets;
                 LarsData<T, C1, C2> nnd(d, d.activeSetSize);
 
-                leastAngleRegressionMainLoop(nnd, nnactiveSets, &nnresults, (Array3*)0,
+                leastAngleRegressionMainLoop(nnd, nnactiveSets, &nnresults, static_cast<Array3*>(0),
                                              LeastAngleRegressionOptions().leastSquaresSolutions(false).nnlasso());
                 //Matrix<T> nnlsq_solution(d.activeSetSize, 1);
                 typename Array2::value_type nnlsq_solution(Shape(d.activeSetSize, 1));
@@ -684,7 +684,7 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
             d.next_lsq_prediction += next_lsq_solution_view(k,0)*columnVector(d.A, d.columnPermutation[k]);
     }
 
-    return (unsigned int)currentSolutionCount;
+    return static_cast<unsigned int>(currentSolutionCount);
 }
 
 template <class T, class C1, class C2, class Array1, class Array2>
@@ -877,9 +877,9 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
                      LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions())
 {
     if(options.least_squares_solutions)
-        return detail::leastAngleRegressionImpl(A, b, activeSets, (Array2*)0, &solutions, options);
+        return detail::leastAngleRegressionImpl(A, b, activeSets, static_cast<Array2*>(0), &solutions, options);
     else
-        return detail::leastAngleRegressionImpl(A, b, activeSets, &solutions, (Array2*)0, options);
+        return detail::leastAngleRegressionImpl(A, b, activeSets, &solutions, static_cast<Array2*>(0), options);
 }
 
 template <class T, class C1, class C2, class Array1, class Array2>

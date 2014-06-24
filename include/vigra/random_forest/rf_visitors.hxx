@@ -825,7 +825,7 @@ public:
     void visit_at_end(RF & rf, PR & pr)
     {
         // do some normalisation
-        for(int l=0; l < (int)rf.ext_param_.row_count_; ++l)
+        for(int l=0; l < static_cast<int>(rf.ext_param_.row_count_); ++l)
         {
             if(oobCount[l])
             {
@@ -985,7 +985,7 @@ class OOB_Error : public VisitorBase
         // ullis original metric and breiman style stuff
         int totalOobCount =0;
         int breimanstyle = 0;
-        for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+        for(int ll=0; ll < static_cast<int>(rf.ext_param_.row_count_); ++ll)
         {
             if(oobCount[ll])
             {
@@ -1148,7 +1148,7 @@ class CompleteOOBInfo : public VisitorBase
         }
         int breimanstyle = 0;
         int totalOobCount = 0;
-        for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+        for(int ll=0; ll < static_cast<int>(rf.ext_param_.row_count_); ++ll)
         {
             if(oobCount[ll])
             {
@@ -1169,7 +1169,7 @@ class CompleteOOBInfo : public VisitorBase
                     = oobroc_per_tree.bindOuter(index);
             for(int gg = 0; gg < current_roc.shape(2); ++gg)
             {
-                for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+                for(int ll=0; ll < static_cast<int>(rf.ext_param_.row_count_); ++ll)
                 {
                     if(oobCount[ll])
                     {
@@ -1195,7 +1195,7 @@ class CompleteOOBInfo : public VisitorBase
         oob_per_tree2 = 0; 
         int totalOobCount =0;
         int breimanstyle = 0;
-        for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+        for(int ll=0; ll < static_cast<int>(rf.ext_param_.row_count_); ++ll)
         {
             if(oobCount[ll])
             {
