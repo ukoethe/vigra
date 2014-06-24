@@ -2141,20 +2141,20 @@ class HDF5File
         // return the part of the string before the delimiter
         std::string first(char delimiter = '/')
         {
-            size_t last = find_last_of(delimiter);
-            if(last == std::string::npos) // delimiter not found --> no first
+            size_t lastPos = find_last_of(delimiter);
+            if(lastPos == std::string::npos) // delimiter not found --> no first
                 return "";
 
-            return std::string(begin(), begin()+last+1);
+            return std::string(begin(), begin()+lastPos+1);
         }
 
         // return the part of the string after the delimiter
         std::string last(char delimiter = '/')
         {
-            size_t last = find_last_of(delimiter);
-            if(last == std::string::npos) // delimiter not found --> only last
+            size_t lastPos = find_last_of(delimiter);
+            if(lastPos == std::string::npos) // delimiter not found --> only last
                 return std::string(*this);
-            return std::string(begin()+last+1, end());
+            return std::string(begin()+lastPos+1, end());
         }
     };
     
@@ -2855,13 +2855,13 @@ void HDF5File::write_(std::string &datasetName,
             if(status < 0)
                 break;
                 
-            HDF5Handle dataspace(H5Screate_simple(count.size(), count.data(), NULL),
+            HDF5Handle dataspace2(H5Screate_simple(count.size(), count.data(), NULL),
                                  &H5Sclose, "HDF5File::write(): unable to create hyperslabs."); 
-            status = H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, null.data(), NULL, count.data(), NULL);
+            status = H5Sselect_hyperslab(dataspace2, H5S_SELECT_SET, null.data(), NULL, count.data(), NULL);
             if(status < 0)
                 break;
                 
-            status = H5Dwrite(datasetHandle, datatype, dataspace, filespace, H5P_DEFAULT, buffer.data());
+            status = H5Dwrite(datasetHandle, datatype, dataspace2, filespace, H5P_DEFAULT, buffer.data());
             if(status < 0)
                 break;
         }

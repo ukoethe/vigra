@@ -152,9 +152,9 @@ class Matrix
             <tt>difference_type(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    explicit Matrix(const difference_type &shape,
+    explicit Matrix(const difference_type &aShape,
                     ALLOC const & alloc = allocator_type())
-    : BaseType(shape, alloc)
+    : BaseType(aShape, alloc)
     {}
 
         /** construct with given shape and init all
@@ -172,9 +172,9 @@ class Matrix
             <tt>difference_type(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(const difference_type &shape, const_reference init,
+    Matrix(const difference_type &aShape, const_reference init,
            allocator_type const & alloc = allocator_type())
-    : BaseType(shape, init, alloc)
+    : BaseType(aShape, init, alloc)
     {}
 
         /** construct with given shape and init all
@@ -334,16 +334,16 @@ class Matrix
 
         /** reshape to the given shape and initialize with zero.
          */
-    void reshape(difference_type const & shape)
+    void reshape(difference_type const & newShape)
     {
-        BaseType::reshape(shape);
+        BaseType::reshape(newShape);
     }
 
         /** reshape to the given shape and initialize with \a init.
          */
-    void reshape(difference_type const & shape, const_reference init)
+    void reshape(difference_type const & newShape, const_reference init)
     {
-        BaseType::reshape(shape, init);
+        BaseType::reshape(newShape, init);
     }
 
         /** Create a matrix view that represents the row vector of row \a d.
