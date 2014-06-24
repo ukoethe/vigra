@@ -390,12 +390,13 @@ incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
         return;
     }
     
-    T yv = dot(columnVector(newColumn, Shape(0,0),n), columnVector(z, Shape(0,0),n));
+    T yv = dot(columnVector(newColumn, Shape(0,0), static_cast<int>(n)),
+               columnVector(z, Shape(0,0), static_cast<int>(n)));
     // use atan2 as it is robust against overflow/underflow
     T t = 0.5*std::atan2(T(-2.0*yv), T(squaredNorm(gamma / v) + squaredNorm(yv) - 1.0)),
       s = std::sin(t),
       c = std::cos(t);
-    columnVector(z, Shape(0,0),n) *= c;
+    columnVector(z, Shape(0,0), static_cast<int>(n)) *= c;
     z(n,0) = (s - c*yv) / gamma;
     v *= norm(gamma) / hypot(c*gamma, v*(s - c*yv));
 }

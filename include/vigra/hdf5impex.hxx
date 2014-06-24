@@ -1794,7 +1794,7 @@ class HDF5File
                       int compression = 0)
     {
         // convert to a (trivial) MultiArrayView and forward.
-        MultiArrayShape<1>::type shape(array.size());
+        MultiArrayShape<1>::type shape(static_cast<MultiArrayIndex>(array.size()));
         const MultiArrayView<1, T> m_array(shape, const_cast<T*>(array.data()));
         write(datasetName, m_array, compression);
     }
@@ -1931,7 +1931,7 @@ class HDF5File
         // resize target array vector
         array.resize((typename ArrayVector<T>::size_type)dimshape[0]);
         // convert to a (trivial) MultiArrayView and forward.
-        MultiArrayShape<1>::type shape(array.size());
+        MultiArrayShape<1>::type shape(static_cast<MultiArrayIndex>(array.size()));
         MultiArrayView<1, T> m_array(shape, (array.data()));
 
         read_(datasetName, m_array, detail::getH5DataType<T>(), 1);
@@ -2166,7 +2166,7 @@ class HDF5File
         {
             ArrayVector<hsize_t> res(chunks.begin(), chunks.end());
             if(numBands > 1)
-                res.insert(res.begin(), numBands);
+                res.insert(res.begin(), static_cast<hsize_t>(numBands));
             return res;
         }
         else if(compression > 0)
@@ -2175,7 +2175,7 @@ class HDF5File
             chunks = min(detail::ChunkShape<Shape::static_size>::defaultShape(), shape);
             ArrayVector<hsize_t> res(chunks.begin(), chunks.end());
             if(numBands > 1)
-                res.insert(res.begin(), numBands);
+                res.insert(res.begin(), static_cast<hsize_t>(numBands));
             return res;
         }
         else
@@ -3022,7 +3022,7 @@ void HDF5File::read_(std::string datasetName,
                     ? 1
                     : 0;
 
-    vigra_precondition((N + offset ) == MultiArrayIndex(dimshape.size()), 
+    vigra_precondition(MultiArrayIndex(N + offset) == MultiArrayIndex(dimshape.size()), 
         "HDF5File::read(): Array dimension disagrees with dataset dimension.");
 
     typename MultiArrayShape<N>::type shape;
@@ -3055,7 +3055,7 @@ void HDF5File::read_(std::string datasetName,
         if(H5D_CHUNKED == H5Pget_layout(properties))
         {
             // if the file is chunked, we use a buffer that matches the chunk size.
-            H5Pget_chunk(properties, chunks.size(), chunks.data());
+            H5Pget_chunk(properties, static_cast<int>(chunks.size()), chunks.data());
             std::reverse(chunks.begin(), chunks.end());
         }
         else
@@ -3072,7 +3072,7 @@ void HDF5File::read_(std::string datasetName,
             }
         }
         
-        count[N-1-offset] = numBandsOfType;
+        count[N-1-offset] = static_cast<hsize_t>(numBandsOfType);
         
         typedef typename MultiArrayShape<N>::type Shape;
         Shape chunkCount, chunkMaxShape;
@@ -3224,7 +3224,7 @@ void HDF5File::read_attribute_(std::string datasetName,
                     : 0;
     message = "HDF5File::readAttribute(): Array dimension disagrees with dataset dimension.";
     // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
-    vigra_precondition((N + offset) == MultiArrayIndex(dims), message);
+    vigra_precondition(MultiArrayIndex(N + offset) == MultiArrayIndex(dims), message);
 
     for(int k=offset; k < (int)dimshape.size(); ++k)
         vigra_precondition(array.shape()[k-offset] == (MultiArrayIndex)dimshape[k],
