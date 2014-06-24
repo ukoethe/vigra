@@ -1080,9 +1080,9 @@ public:
         /** Construct circulator with given <tt>center</tt> pixel, pointing to the neighbor
             at the given direction <tt>d</tt>.
         */
-    NeighborhoodCirculator(IMAGEITERATOR const & center = IMAGEITERATOR(),
+    NeighborhoodCirculator(IMAGEITERATOR const & aCenter = IMAGEITERATOR(),
                            Direction d = NEIGHBOROFFSETCIRCULATOR::InitialDirection)
-        : IMAGEITERATOR(center), neighborCode_(d)
+        : IMAGEITERATOR(aCenter), neighborCode_(d)
     {
         IMAGEITERATOR::operator+=(neighborCode_.diff());
     }

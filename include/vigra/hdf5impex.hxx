@@ -998,10 +998,10 @@ class HDF5File
         Note that the HDF5File class is not copyable (the copy constructor is 
         private to enforce this).
         */
-    HDF5File(std::string filename, OpenMode mode, bool track_creation_times = false)
+    HDF5File(std::string filePath, OpenMode mode, bool track_creation_times = false)
         : track_time(track_creation_times ? 1 : 0)
     {
-        open(filename, mode);
+        open(filePath, mode);
     }
 
         /** \brief Initialize an HDF5File object from HDF5 file handle
@@ -1110,12 +1110,12 @@ class HDF5File
         /** \brief Open or create the given file in the given mode and set the group to "/".
             If another file is currently open, it is first closed.
          */
-    void open(std::string filename, OpenMode mode)
+    void open(std::string filePath, OpenMode mode)
     {
         close();
         
-        std::string errorMessage = "HDF5File.open(): Could not open or create file '" + filename + "'.";
-        fileHandle_ = HDF5HandleShared(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
+        std::string errorMessage = "HDF5File.open(): Could not open or create file '" + filePath + "'.";
+        fileHandle_ = HDF5HandleShared(createFile_(filePath, mode), &H5Fclose, errorMessage.c_str());
         cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File.open(): Failed to open root group.");
         setReadOnly(mode == OpenReadOnly);
     }
