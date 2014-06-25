@@ -362,7 +362,7 @@ void separableMultiVectorialDist( SrcIterator s, SrcShape const & shape, SrcAcce
     typedef typename SrcAccessor::value_type SrcType;
     typedef typename DestAccessor::value_type DestType;
     typedef typename DestType::value_type DestPixelType;
-    typedef typename NumericTraits<DestType>::RealPromote Real;
+    //typedef typename NumericTraits<DestType>::RealPromote Real;
 
     SrcType zero = NumericTraits<SrcType>::zero();
 

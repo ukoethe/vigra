@@ -53,44 +53,44 @@ void example_vectorialDist(const IntImage& image, const std::string& fname = "")
     }
 }
 
-void example_vectorialBoundaryDist(const IntImage& image, const std::string& saveAs = "") {
+//void example_vectorialBoundaryDist(const IntImage& image, const std::string& saveAs = "") {
 
-    std::cout << "Input segmentation:" << std::endl; 
-    for(MultiArrayIndex i=0; i<image.shape(0); ++i) {
-        for(MultiArrayIndex j=0; j<image.shape(1); ++j) {
-            std::cout << std::setw(3) << image(i,j);
-            std::cout << " ";
-        }
-        std::cout << std::endl;
-    }
+//    std::cout << "Input segmentation:" << std::endl;
+//    for(MultiArrayIndex i=0; i<image.shape(0); ++i) {
+//        for(MultiArrayIndex j=0; j<image.shape(1); ++j) {
+//            std::cout << std::setw(3) << image(i,j);
+//            std::cout << " ";
+//        }
+//        std::cout << std::endl;
+//    }
     
-    std::pair<DoubleVectorImage, vigra::MultiArray<2, unsigned char> > p;
+//    std::pair<DoubleVectorImage, vigra::MultiArray<2, unsigned char> > p;
     
-    p = vigra::separableMultiVectorialBoundaryDist<2, int>(image);
+//    p = vigra::separableMultiVectorialBoundaryDist<2, int>(image);
     
-    DoubleVectorImage distImage = p.first;
-    vigra::MultiArray<2, unsigned char> cornersImage = p.second;
+//    DoubleVectorImage distImage = p.first;
+//    vigra::MultiArray<2, unsigned char> cornersImage = p.second;
     
-    for(MultiArrayIndex i=0; i<image.shape(0); ++i) {
-        for(MultiArrayIndex j=0; j<image.shape(1); ++j) {
-            std::cout << "(";
-            for(MultiArrayIndex k=0; k<2; ++k) {
-                std::cout << std::setprecision(3) << std::setw(4) << distImage(i,j)[k];
-                if(k<2-1) {
-                    std::cout << " ";
-                }
-            }
-            std::cout << ") ";
-        }
-        std::cout << std::endl;
-    }
+//    for(MultiArrayIndex i=0; i<image.shape(0); ++i) {
+//        for(MultiArrayIndex j=0; j<image.shape(1); ++j) {
+//            std::cout << "(";
+//            for(MultiArrayIndex k=0; k<2; ++k) {
+//                std::cout << std::setprecision(3) << std::setw(4) << distImage(i,j)[k];
+//                if(k<2-1) {
+//                    std::cout << " ";
+//                }
+//            }
+//            std::cout << ") ";
+//        }
+//        std::cout << std::endl;
+//    }
     
-    if(saveAs.size() > 0) {
-        VectorialDistancePlotter plotter(image, distImage);
-        plotter.setCornersImage(cornersImage);
-        plotter.plot(saveAs);
-    }
-}
+//    if(saveAs.size() > 0) {
+//        VectorialDistancePlotter plotter(image, distImage);
+//        plotter.setCornersImage(cornersImage);
+//        plotter.plot(saveAs);
+//    }
+//}
 
 void example_euclideanDist(const IntImage& image) {
     IntImage result(image.shape());
@@ -239,7 +239,7 @@ void example2d_seg_small_tiff() {
     plotter.plot("/tmp/D.png");
     
     example_vectorialDist(crackEdgeImage, "/tmp/A");
-    example_vectorialBoundaryDist(seg, "/tmp/B");
+//    example_vectorialBoundaryDist(seg, "/tmp/B");
 }
 
 int main() {

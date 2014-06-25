@@ -528,7 +528,7 @@ pythonVectorialBoundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > v
     
     {
         PyAllowThreads _pythread;
-        separableMultiVectorialBoundaryDist(srcMultiArrayRange(volume), destMultiArray(res));
+        boundaryMultiVectorialDist(srcMultiArrayRange(volume), destMultiArray(res));
     }
     return res;
 }
@@ -904,25 +904,25 @@ void defineMorphology()
          arg("out")=python::object()),
         "Converts label volume into boundary volume.\n");
     
-    def("vectorialDistanceTransform2D",
+    def("vectorialDistanceTransform",
         registerConverters(&pythonVectorialDistanceTransform<2, float>),
         (arg("array"), 
          arg("background") = true, 
          arg("out")=python::object()),
         "TODO");
 
-    def("vectorialDistanceTransform3D",
+    def("vectorialDistanceTransform",
         registerConverters(&pythonVectorialDistanceTransform<3, float>),
         (arg("array"),
          arg("background") = true,
          arg("out")=python::object()),
         "TODO");
     
-    //def("vectorialBoundaryDistanceTransform",
-    //    registerConverters(&pythonVectorialBoundaryDistanceTransform<2, double>),
-    //    (arg("array"), 
-    //     arg("out")=python::object()),
-    //    "TODO");
+    def("vectorialBoundaryDistanceTransform",
+        registerConverters(&pythonVectorialBoundaryDistanceTransform<2, float>),
+        (arg("array"),
+         arg("out")=python::object()),
+        "TODO");
         
 }
 

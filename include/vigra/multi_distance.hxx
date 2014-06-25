@@ -106,7 +106,6 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             if(_stack.empty())
             {
                 _stack.push_back(Influence(sa(is), 0.0, current, w));
-                std::cout << "value: " << sa(is) << " intersection: " << intersection << " current: " << current << " w: " << w << std::endl;
             }
             else
             {
@@ -117,7 +116,6 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         {
             s.right = intersection;
             _stack.push_back(Influence(sa(is), intersection, current, w));
-            std::cout << "value: " << sa(is) << " intersection: " << intersection << " current: " << current << " w: " << w << std::endl;
         }
         ++is;
         ++current;
@@ -738,8 +736,6 @@ namespace detail
 /*                                                      */
 /*                boundaryDistParabola                  */
 /*                                                      */
-/*  Version with sigma (parabola spread) for morphology */
-/*                                                      */
 /********************************************************/
 
 template <class SrcIterator, class SrcAccessor,
@@ -758,50 +754,74 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     typedef typename SrcAccessor::value_type SrcType;
     typedef detail::DistParabolaStackEntry<SrcType> Influence;
     std::vector<Influence> _stack;
-    if (sa(is) != sa(is+1)) (_stack.push_back(Influence(dmax, 0.0, 0.0, w)));
-    else  (_stack.push_back(Influence(0, 0.0, 0.0, w)));
+    bool label_check2 = false;
     SrcType label_check = sa(is);
-    int label_check2 = 0;
-    ++is;
-    double current = 1.0;
+    is++;
+//    if (sa(is) != sa(++is)) {
+//        _stack.push_back(Influence(0.0, 0.0, 0.0, w));
+//        label_check2 = true;
+//    }
+//    else  {
+//        _stack.push_back(Influence(dmax, 0.0, 0.0, w));
+//        label_check2 = false;
+//    }
+    _stack.push_back(Influence(dmax, 0.0, 0.0, w));
+    bool label_check3 = false;
+    double begin = 0.0;
     double value;
-    while(current < w )
-    {
-        if (label_check2 == 1){
-            label_check = sa(is-1);
-            current -= 2;
-            is -= 2;
-            label_check2 = 2;
-        }
-        else if (label_check == sa(is)){
-            label_check = sa(is);
-            if (label_check2 == 2){
-                value = dmax;
-                label_check2 = 0;
-            }
-            else (value = 0);
-        }
-        else if (label_check != sa(is)){
-            label_check = sa(is);
-            label_check2 = 1;
-            value = dmax;
-        }
+    double current = 1.0;
 
+    while(current < w )
+        {
+        if (label_check3 == true) (label_check3 = false);
+        else {
+            if (label_check2 == true){
+                // Now we have the stack indicating which rows are influenced by (and therefore
+                // closest to) which row. We can go through the stack and calculate the
+                // distance squared for each element of the column.
+                typename std::vector<Influence>::iterator it = _stack.begin();
+                //std::cout << "da.set: ";
+                for(float i = begin ; i < current; ++i, ++id)
+                {
+                    while( i >= it->right)
+                        ++it;
+                    da.set(sigma2 * sq(i - it->center) + it->prevVal, id );
+//                    if (sigma2 * sq(i - it->center) + it->prevVal == 0){
+//                        std::cout << "da.set: ";
+//                        std::cout << sigma2 * sq(i - it->center) + it->prevVal << " current " << i << " preV  " << it->prevVal << " center " << it->center << std::endl;
+//                    }
+                }
+                while (_stack.empty() == false) (_stack.pop_back());
+                _stack.push_back(Influence(0.0, current-1, current-1, w));
+                begin = current;
+                label_check = sa(is);
+                label_check2 = false;
+                value = dmax;
+            }
+            else if (label_check == sa(is)){
+                label_check = sa(is);
+                value = dmax;
+            }
+            else if (label_check != sa(is)){
+                label_check = sa(is);
+                label_check2 = true;
+                value = 0.0;
+            }
+        }
         Influence & s = _stack.back();
         double diff = current - s.center;
         double intersection = current + (value - s.prevVal - sigma2*sq(diff)) / (sigma22 * diff);
-        //std::cout << "sa(is): " << sa(is) << " value: " << value <<  std::endl;
-
+        //std::cout << "value: " << value << " intersection: " << intersection << " current: " << current << std::endl;
         if( intersection < s.left) // previous point has no influence
             {
             _stack.pop_back();
             if(_stack.empty())
                 {
-                _stack.push_back(Influence(value, 0.0, current, w));
-                std::cout << "value: " << value << " intersection: " << intersection << " current: " << current << " w: " << w << std::endl;
+                _stack.push_back(Influence(value, begin - 1, current, w));
                 }
             else
                 {
+                label_check3 = true;
                 continue; // try new top of stack without advancing current
                 }
             }
@@ -809,21 +829,23 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             {
             s.right = intersection;
             _stack.push_back(Influence(value, intersection, current, w));
-            std::cout << "value: " << value << " intersection: " << intersection << " current: " << current << " w: " << w << std::endl;
             }
-        ++is;
-        ++current;
-        }
-        // Now we have the stack indicating which rows are influenced by (and therefore
-        // closest to) which row. We can go through the stack and calculate the
-        // distance squared for each element of the column.
-        typename std::vector<Influence>::iterator it = _stack.begin();
-        for(current = 0.0; current < w; ++current, ++id)
+        if (label_check2 == false)
         {
-            while( current >= it->right)
-                ++it;
-            da.set(sigma2 * sq(current - it->center) + it->prevVal, id);
+            ++is;
+            ++current;
         }
+        }
+    typename std::vector<Influence>::iterator it = _stack.begin();
+    //std::cout << "da.set: ";
+    for(float i = begin ; i < w; ++i, ++id)
+        {
+        while( i >= it->right)
+            ++it;
+        da.set(sigma2 * sq(i - it->center) + it->prevVal, id );
+        //std::cout << sigma2 * sq(i - it->center) + it->prevVal << " ";
+        }
+    //std::cout << "\n";
     }
 
 template <class SrcIterator, class SrcAccessor,
@@ -1040,12 +1062,27 @@ void boundaryMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor s
                              DestIterator d, DestAccessor dest,
                              Array const & pixelPitch)
 {
-    boundaryMultiDistSquared( s, shape, src, d, dest, pixelPitch);
+    boundaryMultiDistSquared( s, shape, src, d, dest);
 
     // Finally, calculate the square root of the distances
     using namespace vigra::functor;
-
     transformMultiArray( d, shape, dest, d, dest, sqrt(Arg1()) );
+
+    enum { N =  SrcShape::static_size};
+    typedef MultiArrayNavigator<DestIterator, N> DNavigator;
+    for (int n = 0; n < 1; ++n)
+    {
+        DNavigator dnav( d, shape, n );
+        for ( ; dnav.hasMore(); ++dnav)
+        {
+            typename DNavigator::iterator iter = dnav.begin(), end = dnav.end();
+            for ( ; iter != end; ++iter)
+            {
+                dest.set(dest(iter) - 0.5, iter);
+            }
+          }
+      }
+    //std::cout << "shape size: " << shape.size() << " shape: " << " N: " << N << shape << std::endl;
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1057,8 +1094,24 @@ void boundaryMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor s
 
     // Finally, calculate the square root of the distances
     using namespace vigra::functor;
-
     transformMultiArray( d, shape, dest, d, dest, sqrt(Arg1()) );
+
+    enum { N =  SrcShape::static_size};
+    typedef MultiArrayNavigator<DestIterator, N> DNavigator;
+    unsigned int i;
+    for (int n = 0; n < 1; ++n)
+    {
+        DNavigator dnav( d, shape, n );
+        for ( ; dnav.hasMore(); ++dnav)
+        {
+            typename DNavigator::iterator iter = dnav.begin(), end = dnav.end();
+            for ( ; iter != end; ++iter)
+            {
+                dest.set(dest(iter) - 0.5, iter);
+            }
+          }
+      }
+//    std::cout << "shape size: " << shape.size() << " shape: " << " N: " << N << shape << std::endl;
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,

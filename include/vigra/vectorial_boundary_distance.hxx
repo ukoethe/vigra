@@ -37,6 +37,7 @@
 #ifndef VIGRA_VECTORIAL_BOUNDARY_DISTANCE_HXX
 #define VIGRA_VECTORIAL_BOUNDARY_DISTANCE_HXX
 
+
 #include <vector>
 #include <set>
 #include <functional>
@@ -54,418 +55,310 @@
 namespace vigra
 {
 
-namespace detail {
-    
-template <class Vector, class Value>
-struct VectorialBoundaryDistParabolaStackEntry
+namespace detail
 {
-    double left, center, right;
-    Value prevVal;
-    Vector prevVector;
-    bool boundary;
-    bool corner1;
-    bool corner2;
-    
-    VectorialBoundaryDistParabolaStackEntry(const Vector& vec, Value prev, double l, double c, double r, bool b, bool c1, bool c2)
-    : left(l), center(c), right(r), prevVal(prev), prevVector(vec), boundary(b), corner1(c1), corner2(c2)
-    {}
-};
-
-#ifdef VECTORIAL_BOUNDARY_DIST_DEBUG
-template <class Vector, class Value>
-std::ostream& operator<<(std::ostream&o, const VectorialBoundaryDistParabolaStackEntry<Vector, Value>& e) {
-    o << "l=" << e.left << ", c=" << e.center << ", r=" << e.right
-      << ", prevVal=" << e.prevVal
-      << ", prevVector=" << e.prevVector
-      << ", b=" << e.boundary
-      << ", c1=" << e.corner1
-      << ", c2=" << e.corner2;
-    return o;
-}
-#endif
 
 /********************************************************/
 /*                                                      */
-/*               vectorialBoundaryDistParabola          */
+/*               boundaryVectorialDistParabola          */
 /*                                                      */
 /********************************************************/
+
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class SegmentationIterator,
-          class CornersIterator>
-void vectorialBoundaryDistParabola(
-    MultiArrayIndex dimension,
-    size_t maxDist,
-    SrcIterator is, SrcIterator iend, SrcAccessor sa,
-    DestIterator id, DestAccessor da,
-    SegmentationIterator segIter,
-    CornersIterator cornersIter1,
-    CornersIterator cornersIter2
-) {
+          class DestIterator, class DestAccessor >
+void boundaryVectorialDistParabola(MultiArrayIndex dimension, double dmax,
+                  SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                  DestIterator id, DestAccessor da, double sigma )
+{
     typedef typename SrcAccessor::value_type SrcType;
     typedef typename DestAccessor::value_type DestType;
     typedef typename SrcType::value_type SrcPixelType;
-    typedef VectorialBoundaryDistParabolaStackEntry<DestType, SrcPixelType> Influence;
-    
+    typedef VectorialDistParabolaStackEntry<DestType, SrcPixelType> Influence;
+
+    double sigma2 = sq(sigma);
     double w = iend - is; //width of the scanline
-    
-    #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG
-    {
-        std::cout << "* vectorialBoundaryDistParabola (dim=" << dimension << ", width=" << w << ")" << std::endl;
-        
-        std::cout << "  source line: ";
-        SrcIterator is_copy(is);
-        for(; is != iend; ++is) {
-            std::cout << sa(is) << " ";
-        }
-        std::cout << std::endl;
-        is = is_copy; 
-        
-        std::cout << "  seg line:    " << std::endl;
-        SegmentationIterator segIter_copy(segIter);
-        CornersIterator cornersIter1_copy(cornersIter1);
-        CornersIterator cornersIter2_copy(cornersIter2);
-        
-        for(int i=0; i<w+1; ++i, ++cornersIter1) {
-            std::cout << (int)*(cornersIter1) << " ";
-        }
-        std::cout << std::endl;
-        std::cout << " ";
-        for(int i=0; i<w; ++i, ++segIter) {
-            std::cout << *segIter << " ";
-        }
-        std::cout << std::endl;
-        for(int i=0; i<w+1; ++i, ++cornersIter2) {
-            std::cout << (int)*(cornersIter2) << " ";
-        }
-        std::cout << std::endl;
-        segIter = segIter_copy;
-        cornersIter1 = cornersIter1_copy;
-        cornersIter2 = cornersIter2_copy;
-        
-    }
-    #endif
-    
+    if(w <= 0)
+        return;
+
     std::vector<Influence> _stack; //stack of influence parabolas
-    
-    //variables needed for loop
-    double psm = 0.0;
-    SrcType srcValue;
-    bool   boundary = true;
-    double current = 0.0;
-    double currentInterpixel = -0.5;
-   
-    srcValue = SrcType(static_cast<typename SrcType::value_type>(0));
-    srcValue[dimension] = 0.5;
-    
-    psm = partialSquaredMagnitude(srcValue, dimension+1);
-    _stack.push_back(Influence(srcValue, psm, currentInterpixel, currentInterpixel, w, true, *cornersIter1, *cornersIter2));
-    #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG 
-    std::cout << "  " << "pushed " << _stack.back() << " (before while)" << std::endl;
-    #endif
-    
-    ++cornersIter1, ++cornersIter2;
-    
+    double psm;
+    SrcType value;
+    SrcType label_check = sa(is);
+    bool label_check2;
+    if (sa(is) != sa(++is)) {
+        psm = partialSquaredMagnitude(SrcType(0.0), dimension+1);
+        _stack.push_back(Influence(SrcType(0.0), psm, 0.0, 0.0, w));
+        label_check2 = true;
+    }
+    else  {
+        psm = partialSquaredMagnitude(SrcType(dmax), dimension+1);
+        _stack.push_back(Influence(SrcType(dmax), psm, 0.0, 0.0, w));
+        label_check2 = false;
+    }
+
+
+    bool label_check3 = false;
+    double begin = 0.0, end;
+
+    double current = 1.0;
     while(current < w)
     {
-        srcValue = sa(is);
-        currentInterpixel = current+0.5;
-       
-        //determine if we have an implicit boundary on this line
-        if(current < w-1) {
-            boundary = (*segIter != *(segIter+1));
-        }
+        if (label_check3 == true) (label_check3 = false);
         else {
-            boundary = true; //implicit boundary at image edge
-        }
-        
-        //if we have an implicit boundary
-        if(boundary) {
-            srcValue = SrcType(static_cast<typename SrcType::value_type>(0));
-            srcValue[dimension] = 0.5;
-        }
-        else if(*cornersIter1 && !*cornersIter2) {
-            srcValue[dimension] = std::min(0.5, srcValue[dimension]);
-            if(dimension < 1) {
-                srcValue[dimension+1] = -0.5;
+            if (label_check2 == true){
+                current -= 1;
+                end = current;
+                // Now we have the stack indicating which rows are influenced by (and therefore
+                // closest to) which row. We can go through the stack and calculate the
+                // distance squared for each element of the column.
+                typename std::vector<Influence>::iterator it = _stack.begin();
+                for(float i = begin ; i < end; ++i, ++id)
+                {
+                    while( i >= it->right)
+                        ++it;
+                    da.set(it->prevVector, id);
+                    if( it->prevVector[dimension] == 0 ) {
+                    //if(it->prevVector != DestType(dmax)) {
+                    da.setComponent(sigma * (it->center - current) , id, dimension);
+                    }
+                }
+                while (_stack.empty() == false) (_stack.pop_back());
+                begin = current;
+                psm = partialSquaredMagnitude(SrcType(0.0), dimension+1);
+                _stack.push_back(Influence(SrcType(0.0), psm, begin-1, begin-1, w));
+                --is;
+                label_check2 = false;
+                value = dmax;
             }
-        }
-        else if(!*cornersIter1 && *cornersIter2) {
-            srcValue[dimension] = std::min(0.5, srcValue[dimension]);
-            if(dimension < 1) {
-                srcValue[dimension+1] = 0.5;
+            else if (label_check == sa(is)){
+                value = dmax;
             }
+            else if (label_check != sa(is)){
+                label_check2 = true;
+                value = 0.0;
+            }
+            label_check = sa(is);
+            psm = partialSquaredMagnitude(value, dimension+1);
         }
-        else if(*cornersIter1 && *cornersIter2) {
-            //this can occur:
-            //
-            // AABB
-            // CCCC
-            // BBAA
-            srcValue[dimension] = 0.5;
-            srcValue[dimension+1] = 0.5;
-        }
-        
-        SrcType xxx = srcValue;
-        xxx[dimension] = 0.0;
-        psm = partialSquaredMagnitude(xxx, dimension+1);
-        
         Influence & s = _stack.back();
         double diff = current - s.center;
         //Bailey 2004, eq. (14)
         //Compute the intersection of the two parabolas
-        double intersection = current + ( psm - s.prevVal - sq(diff) ) / (2.0* diff);
-        
-        #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG 
-        std::cout << "  "
-                  << "current=" << current
-                  << ", currentInterpixel=" << currentInterpixel
-                  << ", intersection=" << intersection
-                  << ", srcValue=" << srcValue
-                  << ", psm=" << psm
-                  << " | boundary=" << boundary
-                  << ", corner=" << (int)*cornersIter1
-                  << std::endl;
-        #endif
-        
+        double intersection = current + ( psm - s.prevVal - sq(sigma*diff) ) / (2.0*sigma2 * diff);
+
         if( intersection < s.left) // previous point has no influence
         {
             _stack.pop_back();
-            #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG 
-            std::cout << "  " << "popped " << _stack.back() << std::endl;
-            #endif
             if(_stack.empty())
             {
-                _stack.push_back(Influence(srcValue, psm, 0.0, currentInterpixel, w, boundary, *cornersIter1, *cornersIter2));
-                #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG 
-                std::cout << "  " << "pushed " << _stack.back() << std::endl;
-                #endif
+                _stack.push_back(Influence(value, psm, 0.0, current, w));
+
             }
             else
             {
+                label_check3 = true;
                 continue; // try new top of stack without advancing current
             }
         }
         else if(intersection < s.right)
         {
             s.right = intersection;
-            _stack.push_back(Influence(srcValue, psm, intersection, currentInterpixel, w, boundary, *cornersIter1, *cornersIter2));
-            #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG 
-            std::cout << "  " << "pushed " << _stack.back() << " reason 2 " << std::endl;
-            #endif
+            _stack.push_back(Influence(value, psm, intersection, current, w));
         }
-        ++is; ++segIter, ++cornersIter1, ++cornersIter2;
+        ++is;
         ++current;
     }
-   
-    #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG
-    std::cout << ">>> stack for dimension=" << dimension << std::endl;
-    for(int i=0; i<_stack.size(); ++i) {
-        std::cout << "    stack " << i << " = " << _stack[i] << std::endl;
-    }
-    std::cout << "    write line as " << std::endl;
-    #endif
-   
-    // Now we have the stack indicating which rows are influenced by (and therefore
-    // closest to) which row. We can go through the stack and calculate the
-    // distance squared for each element of the column.
     typename std::vector<Influence>::iterator it = _stack.begin();
-    int pos = 0;
-    for(current = 0.0; current < w; ++current, ++id, ++pos)
+    for(float i = 0.0; i < w; ++i, ++id)
     {
-        while( current >= it->right) 
-            ++it; 
-       
-        if( it->prevVector[dimension] < 1.0 ) {
-            DestType oldValue = da(id);
-           
-            
-            double thisWidth = it->center - current; //FIXME: take sigma into account
-            
-            #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG 
-            std::cout << "      current=" << current << ", it=" << *it << std::endl;
-            std::cout << "        thisWidth=" << thisWidth << std::endl;
-            std::cout << "        oldValue=" << oldValue << std::endl;
-            #endif
-          
-            DestType newValue = it->prevVector;
-            newValue[dimension] = std::min(thisWidth, oldValue[dimension]);
-          
-            /*
-            if(dimension > 0 && std::fabs(oldValue[dimension-1]) < 1.0) {
-                if(it->boundary) {
-                    newValue[dimension-1]= 0.0;
-                }
-                else if(it->corner2) {
-                    newValue[dimension-1] = 0.5;
-                }
-                else if(it->corner1) {
-                    newValue[dimension-1] = -0.5;
-                }
-            }
-            */
-            
-            #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG 
-            std::cout << "        newValue=" << newValue << std::endl;
-            #endif
-           
-            //if( partialSquaredMagnitude(newValue, dimension+1) < partialSquaredMagnitude(oldValue, dimension+1) ) {
-            da.set(newValue, id);
-            //}
-
+        while( i >= it->right) {
+            ++it;
         }
-        #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG 
-        std::cout << "  ==> " << da(id) << std::endl;
-        #endif
+        da.set(it->prevVector, id);
+        if( it->prevVector[dimension] == 0 ) {
+        //if(it->prevVector != DestType(dmax)) {
+        da.setComponent(sigma * (it->center - current) , id, dimension);
+        }
     }
-    #ifdef VECTORIAL_BOUNDARY_DIST_DEBUG 
-    std::cout << "<<<" << std::endl;
-    #endif
 }
-} /* namespace detail */
 
-/********************************************************/
-/*                                                      */
-/*      separableMultiVectorialBoundaryDist             */
-/*                                                      */
-/********************************************************/
-
-template<int N, class T>
-std::pair< vigra::MultiArray<N,  vigra::TinyVector<double, N> >, vigra::MultiArray<N, unsigned char> >
-separableMultiVectorialBoundaryDist(
-    const vigra::MultiArrayView<N, T>& segmentation
-)
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void boundaryVectorialDistParabola(MultiArrayIndex dimension, double dmax,
+                         triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest, double sigma)
 {
+    boundaryVectorialDistParabola(dimension, dmax,
+                 src.first, src.second, src.third,
+                 dest.first, dest.second, sigma);
+}
+
+
+/********************************************************/
+/*                                                      */
+/*      internalBoundaryMultiVectorialDistTmp           */
+/*                                                      */
+/********************************************************/
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+void internalBoundaryMultiVectorialDistTmp(
+                      double dmax,
+                      SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                      DestIterator di, DestAccessor dest, Array const & sigmas)
+{
+    // Sigma is the spread of the parabolas. It determines the structuring element size
+    // for ND morphology. When calculating the distance transforms, sigma is usually set to 1,
+    // unless one wants to account for anisotropic pixel pitch
+    enum { N =  SrcShape::static_size};
+
+    vigra_precondition(sigmas.size() == SrcShape::static_size, "sigmas has wrong length");
+    VIGRA_STATIC_ASSERT((error_wrong_pixel_type<SrcShape::static_size, typename DestAccessor::value_type>));
+
+    // we need the Promote type here if we want to invert the image (dilation)
+    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
+
+    // temporary array to hold the current line to enable in-place operation
+    ArrayVector<TmpType> tmp( shape[0] );
+
+    typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
+    typedef MultiArrayNavigator<DestIterator, N> DNavigator;
+
+    // only operate on first dimension here
+    SNavigator snav( si, shape, 0 );
+    DNavigator dnav( di, shape, 0 );
+
     using namespace vigra::functor;
-  
-    //input: a segmenation
-    typedef vigra::MultiArrayView<N, T> SegmentationType;
-    typedef typename SegmentationType::const_traverser SegmentationTraverser;
-    typedef MultiArrayNavigator<SegmentationTraverser, N> SegmentationNavigator;
-   
-    //output: a vector image/volume
-    typedef vigra::TinyVector<double, N> VectorType;
-    typedef vigra::MultiArrayView<N, VectorType> ResultType;
-    typedef typename ResultType::traverser ResultTraverser;
-    typedef MultiArrayNavigator<ResultTraverser,       N> ResultNavigator;
-    
-    //corners
-    typedef vigra::MultiArray<N, unsigned char> CornersType;
-    typedef typename CornersType::traverser CornersTraverser;
-    typedef MultiArrayNavigator<CornersTraverser, N> CornersNavigator;
-    
-    vigra::MultiArray<N, VectorType> result(segmentation.shape());
-   
-    //figure out the maximal value that the components of the distance vectors
-    //can obtain --> this number serves as a substitute for "infinity"
-    typename VectorType::value_type dmax = 0.0;
+
+    for( ; snav.hasMore(); snav++, dnav++ )
+    {
+            // first copy source to temp for maximum cache efficiency
+
+            copyLine( snav.begin(), snav.end(), src, tmp.begin(),
+                          typename AccessorTraits<TmpType>::default_accessor() );
+
+            detail::boundaryVectorialDistParabola(0 /*dimension*/, dmax,
+                          srcIterRange(tmp.begin(), tmp.end(),
+                          typename AccessorTraits<TmpType>::default_const_accessor()),
+                          destIter( dnav.begin(), dest ),
+
+                          sigmas[0] );
+    }
+
+    #if 1
+    // operate on further dimensions
+    for( int d = 1; d < N; ++d )
+    {
+        DNavigator dnav( di, shape, d );
+
+        tmp.resize( shape[d] );
+
+
+        for( ; dnav.hasMore(); dnav++ )
+        {
+             // first copy source to temp for maximum cache efficiency
+             copyLine( dnav.begin(), dnav.end(), dest,
+                       tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
+
+             detail::vectorialDistParabola(d, dmax,
+                           srcIterRange(tmp.begin(), tmp.end(),
+                           typename AccessorTraits<TmpType>::default_const_accessor()),
+                           destIter( dnav.begin(), dest ), sigmas[d] );
+        }
+    }
+    #endif
+
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void internalBoundaryMultiVectorialDistTmp(
+    double dmax,
+    SrcIterator si, SrcShape const & shape, SrcAccessor src,
+    DestIterator di, DestAccessor dest)
+{
+    ArrayVector<double> sigmas(shape.size(), 1.0);
+    internalBoundaryMultiVectorialDistTmp( dmax, si, shape, src, di, dest, sigmas);
+}
+
+} // namespace detail
+
+/********************************************************/
+/*                                                      */
+/*           boundaryMultiVectorialDist                 */
+/*                                                      */
+/********************************************************/
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+void boundaryMultiVectorialDist( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest,
+                                Array const & pixelPitch)
+{
+    int N = shape.size();
+
+    typedef typename DestAccessor::value_type DestType;
+    typedef typename NumericTraits<DestType>::RealPromote Real;
+
+    using namespace vigra::functor;
+
+    double dmax = 0.0;
+    bool pixelPitchIsReal = false;
     for( int k=0; k<N; ++k)
     {
-        dmax += segmentation.shape(k);
+        if(int(pixelPitch[k]) != pixelPitch[k])
+            pixelPitchIsReal = true;
+        dmax += sq(pixelPitch[k]*shape[k]);
     }
-   
-    //initialize the result array with "infinity" vectors
-    VectorType maxDist = VectorType(std::ceil(dmax));
-    initMultiArray(destMultiArrayRange(result), maxDist);
-    
-    //array with 'corners' marked 
-    typename MultiArrayShape<N>::type cShape;
-    for(int d=0; d<N; ++d) {
-        cShape[d] = segmentation.shape(d)+2;
-    }
-    CornersType corners(cShape);
-    for(MultiArrayIndex i=0; i<corners.shape(0); ++i) {
-        for(MultiArrayIndex j=0; j<corners.shape(1); ++j) {
-            T a1 = 0;
-            T a2 = 0;
-            T a3 = 0;
-            T a4 = 0;
-            
-            MultiArrayIndex I,J;
-            
-            I = i;
-            J = j;
-            if( I >= 0 && J >= 0 && I < segmentation.shape(0) && J < segmentation.shape(1) ) {
-                a1 = segmentation(I, J);
-            }
-            I = i;
-            J = j-1;
-            if( I >= 0 && J >= 0 && I < segmentation.shape(0) && J < segmentation.shape(1) ) {
-                a2 = segmentation(I, J);
-            }
-            I = i-1;
-            J = j-1;
-            if( I >= 0 && J >= 0 && I < segmentation.shape(0) && J < segmentation.shape(1) ) {
-                a3 = segmentation(I, J);
-            }
-            I = i-1;
-            J = j;
-            if( I >= 0 && J >= 0 && I < segmentation.shape(0) && J < segmentation.shape(1) ) {
-                a4 = segmentation(I, J);
-            }
-            
-            bool isCorner = true;
-           
-            if(a1 == a2 && a3 == a4) {
-                isCorner = false;
-            }
-            if(a2 == a3 && a1 == a4) {
-                isCorner = false;
-            }
-           
-            if(isCorner) {
-                corners(i,j) = 1;
-            }
-        }
-    }
+//    if(dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max())
+//       || pixelPitchIsReal) // need a temporary array to avoid overflows
+//    {
+//        MultiArray<SrcShape::static_size, Real> tmpArray(shape);
+//        transformMultiArray( s, shape, src,
+//                             tmpArray.traverser_begin(), typename AccessorTraits<Real>::default_accessor(),
+//                             Arg1());
+//        detail::internalBoundaryMultiVectorialDistTmp( dmax, tmpArray.traverser_begin(),
+//                shape, typename AccessorTraits<Real>::default_accessor(),
+//                tmpArray.traverser_begin(),
+//                typename AccessorTraits<Real>::default_accessor(), pixelPitch);
 
-    // temporary arrays to hold the current line to enable in-place operation
-    ArrayVector<VectorType> tmp;
-    ArrayVector<typename SegmentationType::value_type> segmentationLine;
-    ArrayVector<unsigned char> cornersLine1, cornersLine2;
-    
-    for( int d = 0; d < N; ++d )
-    {
-        ResultNavigator       resultNav      ( result.traverser_begin(),       result.shape(),       d );
-        SegmentationNavigator segmentationNav( segmentation.traverser_begin(), segmentation.shape(), d );
-        CornersNavigator      cornersNav(       corners.traverser_begin(),     corners.shape(),      d );
-        
-        tmp.resize( segmentation.shape(d) );
-        segmentationLine.resize( segmentation.shape(d) );
-        cornersLine1.resize( corners.shape(d) );
-        cornersLine2.resize( corners.shape(d) );
-        
-        for( ; segmentationNav.hasMore(); resultNav++, segmentationNav++, cornersNav++ )
-        {
-                // first copy source to temp for maximum cache efficiency
-                std::copy(resultNav.begin(), resultNav.end(), tmp.begin());
-                std::copy(segmentationNav.begin(), segmentationNav.end(), segmentationLine.begin());
-                std::copy(cornersNav.begin(), cornersNav.end(), cornersLine1.begin());
-                if(segmentationNav.hasMore()) {
-                    ++cornersNav;
-                    std::copy(cornersNav.begin(), cornersNav.end(), cornersLine2.begin());
-                    --cornersNav;
-                }
+//        copyMultiArray(srcMultiArrayRange(tmpArray), destIter(d, dest));
+//    }
+//    else        // work directly on the destination array
+//    {
+        detail::internalBoundaryMultiVectorialDistTmp( dmax, s, shape, src, d, dest, pixelPitch);
+//    }
+}
 
-                detail::vectorialBoundaryDistParabola(d /*dimension*/,
-                    dmax,
-                    tmp.begin(), tmp.end(), typename AccessorTraits<typename ResultType::value_type>::default_const_accessor(),
-                    resultNav.begin(), typename AccessorTraits<typename ResultType::value_type>::default_accessor(),
-                    segmentationLine.begin(),
-                    cornersLine1.begin(),
-                    cornersLine2.begin() 
-                );
-        }
-        
-        if(d == 0) {
-            break;
-        }
-    }
-    
-    return std::make_pair(result, corners);
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+inline void boundaryMultiVectorialDist( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                       pair<DestIterator, DestAccessor> const & dest,
+                                       Array const & pixelPitch)
+{
+    boundaryMultiVectorialDist( source.first, source.second, source.third,
+                               dest.first, dest.second, pixelPitch );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline
+void boundaryMultiVectorialDist( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest)
+{
+    ArrayVector<double> pixelPitch(shape.size(), 1.0);
+    boundaryMultiVectorialDist( s, shape, src, d, dest, pixelPitch );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void boundaryMultiVectorialDist( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                       pair<DestIterator, DestAccessor> const & dest)
+{
+    boundaryMultiVectorialDist( source.first, source.second, source.third,
+                               dest.first, dest.second);
 }
 
 } //-- namespace vigra
 
-
-#endif //-- VIGRA_VECTORIAL_BOUNDARY_DISTANCE_HXX
+#endif        //-- VIGRA_VECTORIAL_DISTANCE_HXX
