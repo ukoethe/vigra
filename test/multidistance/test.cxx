@@ -1001,41 +1001,6 @@ static double bndMltDst_ref[] = {
 7.500000, 7.566373, 7.762087, 8.077747, 8.500000, 9.013878, 9.500000, 9.552486, 9.500000, 8.500000, 7.500000, 6.500000, 5.500000, 4.500000, 3.500000, 2.500000, 1.500000, 0.500000, 0.500000, 1.500000, 2.500000, 3.201562, 3.500000, 2.500000, 1.500000, 0.500000, 0.500000, 1.500000, 2.500000, 3.500000, 4.500000, 5.408327, 6.264982, 7.158911, 8.077747, 9.013878, 9.861542, 10.735456, 11.629704, 12.419743, 13.200378, 14.008925, 14.840822, 15.692355, 16.560495, 17.442764, 18.337120, 19.241882, 20.155643, 21.005951
 };
 
-static double bndMltDst_data2[] = {
-116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 254, 254,
-116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 254, 254,
-116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 254, 254,
-116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 254, 254,
-116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 169, 254, 254,
-116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 169, 254, 254,
-116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 169, 169, 169, 254,
-116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 169, 169, 169, 169, 169,
-116, 116, 116, 116, 116, 116, 116, 116, 116, 116, 169, 169, 169, 169, 169,
-116, 116, 116, 116, 116, 116, 116, 116, 116, 169, 169, 169, 169, 169, 169,
-116, 116, 116, 116, 116, 116, 116, 116, 169, 169, 169, 169, 169, 169, 169,
-116, 116, 116, 116, 116, 116, 116, 169, 169, 169, 169, 169, 169, 169, 169,
-116, 116, 116, 116, 116, 169, 169, 169, 169, 169, 169, 169, 169, 169, 169,
-116, 116, 116, 116, 116, 169, 169, 169, 169, 169, 169, 169, 169, 169, 169,
-116, 116, 116, 169, 169, 169, 169, 169, 169, 169, 169, 169, 169, 169, 169
-};
-static double bndMltDst_ref2[] = {
-12.2066, 11.4018, 10.6301, 9.84886, 8.94427, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 1.0, 2.0,
-11.6619, 10.8167, 10.0, 9.21954, 8.48528, 7.61577, 6.7082, 5.83095, 5.0, 4.0, 3.0, 2.0, 1.0, 1.0, 2.0,
-11.1803, 10.2956, 9.43398, 8.60233, 7.81025, 7.07107, 6.32456, 5.38516, 4.47214, 3.60555, 2.82843, 2.0, 1.0, 1.0, 2.0,
-10.2956, 9.84886, 8.94427, 8.06226, 7.2111, 6.40312, 5.65685, 5.0, 4.12311, 3.16228, 2.23607, 1.41421, 1.0, 1.0, 2.0,
-9.43398, 8.94427, 8.48528, 7.61577, 6.7082, 5.83095, 5.0, 4.24264, 3.60555, 2.82843, 2.0, 1.0, 1.0, 1.0, 2.0,
-8.60233, 8.06226, 7.61577, 7.07107, 6.32456, 5.38516, 4.47214, 3.60555, 2.82843, 2.23607, 1.41421, 1.0, 1.0, 1.0, 1.0,
-7.81025, 7.2111, 6.7082, 6.32456, 5.65685, 5.0, 4.12311, 3.16228, 2.23607, 1.41421, 1.0, 1.0, 1.41421, 1.0, 0.0,
-7.07107, 6.40312, 5.83095, 5.38516, 5.0, 4.24264, 3.60555, 2.82843, 2.0, 1.0, 1.0, 1.41421, 2.23607, 1.41421, 1.0,
-6.40312, 5.65685, 5.0, 4.47214, 4.12311, 3.60555, 2.82843, 2.23607, 1.41421, 1.0, 1.0, 2.0, 2.82843, 2.23607, 2.0,
-5.83095, 5.0, 4.24264, 3.60555, 3.16228, 2.82843, 2.23607, 1.41421, 1.0, 1.0, 1.41421, 2.23607, 3.16228, 3.16228, 3.0,
-5.0, 4.47214, 3.60555, 2.82843, 2.23607, 2.23607, 1.41421, 1.0, 1.0, 1.41421, 2.23607, 2.82843, 3.60555, 4.12311, 4.0,
-4.24264, 3.60555, 3.16228, 2.23607, 1.41421, 1.41421, 1.0, 1.0, 1.41421, 2.23607, 2.82843, 3.60555, 4.24264, 5.0, 5.0,
-3.60555, 2.82843, 2.23607, 2.0, 1.0, 1.0, 1.41421, 1.41421, 2.23607, 2.82843, 3.60555, 4.24264, 5.0, 5.65685, 6.0,
-3.16228, 2.23607, 1.41421, 1.41421, 1.0, 1.0, 2.0, 2.23607, 2.82843, 3.60555, 4.24264, 5.0, 5.65685, 6.40312, 7.0,
-3.0, 2.0, 1.0, 1.0, 1.41421, 1.41421, 2.23607, 3.16228, 3.60555, 4.24264, 5.0, 5.65685, 6.40312, 7.07107, 7.81025
-};
-
 template<class IMG, class DESIRED>
 void testVectorialDist2SquaredDist(const IMG& img, const DESIRED& desired, bool invert,
                                    ArrayVector<double> pixelPitch = ArrayVector<double>(), double epsilon = -1.0)
@@ -1375,6 +1340,7 @@ struct boundaryMultiDistanceTest
     typedef vigra::MultiArray<3,int> IntVolume;
     typedef vigra::MultiArray<3,double> DoubleVolume; 
     typedef vigra::MultiArray<2,double> Double2DArray;
+    typedef vigra::MultiArray<1,double> Double1DArray;
     typedef vigra::DImage Image;
     typedef vigra::MultiArrayView<2,Image::value_type> ImageView;
     typedef vigra::TinyVector<int,3> IntVec;
@@ -1391,12 +1357,12 @@ struct boundaryMultiDistanceTest
 
     std::list<std::list<IntVec> > pointslists;
     std::vector<Image> images;
-    Double2DArray img2;
+    Double1DArray img2;
     DoubleVolume volume;
     IntVolume shouldVol;
 
     boundaryMultiDistanceTest()
-    : images(3, Image(7,7)), img2(Double2DArray::difference_type(7,1)),
+    : images(3, Image(7,7)), img2(Shape1(7)),
       volume(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH)),
       shouldVol(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH))
     {
@@ -1486,7 +1452,7 @@ struct boundaryMultiDistanceTest
 
         static const double in2d[] = {0, 0, 0, 1, 0, 0, 0};
         const double * p=in2d;
-        for(Double2DArray::iterator iter=img2.begin(); iter!=img2.end(); ++iter, ++p){
+        for(Double1DArray::iterator iter=img2.begin(); iter!=img2.end(); ++iter, ++p){
             *iter=*p;
         }
     }
@@ -1509,24 +1475,14 @@ struct boundaryMultiDistanceTest
         }
     }
 
-    void testDistanceApprox()
-    {
-        typedef MultiArrayShape<2>::type Shape;
-        MultiArrayView<2, double> vol(Shape(15,15), bndMltDst_data2), ref(Shape(15,15), bndMltDst_ref2);
-        MultiArray<2, double> res(vol.shape());
-
-        boundaryMultiDistance(vol, res);
-        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 0.5);
-
-    }
-
-
     void distanceTest1D()
     {
-        vigra::MultiArray<2,double> res(img2);
+        Double1DArray res(img2);
         
         static const float desired[] = {2.5, 1.5, 0.5, 0.5, 0.5, 1.5, 2.5};
         boundaryMultiDistance(img2, res);
+
+
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 };
@@ -1545,7 +1501,6 @@ struct SimpleAnalysisTestSuite
         add( testCase( &MultiDistanceTest::distanceTest1D));
         add( testCase( &boundaryMultiDistanceTest::distanceTest1D));
         add( testCase( &boundaryMultiDistanceTest::testDistanceVolumes));
-        add( testCase( &boundaryMultiDistanceTest::testDistanceApprox));
     }
 };
 

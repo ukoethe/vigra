@@ -181,7 +181,7 @@ void internalSeparableMultiArrayDistTmp(
             // Invert the values if necessary. Only needed for grayscale morphology
             if(invert)
                 transformLine( snav.begin(), snav.end(), src, tmp.begin(),
-                               typename AccessorTraits<TmpType>::default_accessor(), 
+                               typename AccessorTraits<TmpType>::default_accessor(),
                                Param(NumericTraits<TmpType>::zero())-Arg1());
             else
                 copyLine( snav.begin(), snav.end(), src, tmp.begin(),
@@ -739,9 +739,10 @@ namespace detail
 /********************************************************/
 
 template <class SrcIterator, class SrcAccessor,
+          class BufIterator, class BufAccessor,
           class DestIterator, class DestAccessor >
-void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
-                  DestIterator id, DestAccessor da, double sigma, double dmax )
+void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa, BufIterator bis, BufIterator biend,
+                  BufAccessor ba, DestIterator id, DestAccessor da, double sigma, double dmax )
     {
     // We assume that the data in the input is distance squared and treat it as such
     double w = iend - is;
@@ -756,21 +757,11 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     std::vector<Influence> _stack;
     bool label_check2 = false;
     SrcType label_check = sa(is);
-    is++;
-//    if (sa(is) != sa(++is)) {
-//        _stack.push_back(Influence(0.0, 0.0, 0.0, w));
-//        label_check2 = true;
-//    }
-//    else  {
-//        _stack.push_back(Influence(dmax, 0.0, 0.0, w));
-//        label_check2 = false;
-//    }
-    _stack.push_back(Influence(dmax, 0.0, 0.0, w));
+    _stack.push_back(Influence(ba(bis), 0.0, 0.0, w));
+    ++is;
+    ++bis;
     bool label_check3 = false;
-    double begin = 0.0;
-    double value;
-    double current = 1.0;
-
+    double begin = 0.0, value, current = 1.0;
     while(current < w )
         {
         if (label_check3 == true) (label_check3 = false);
@@ -796,11 +787,11 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                 begin = current;
                 label_check = sa(is);
                 label_check2 = false;
-                value = dmax;
+                value = ba(bis);
             }
             else if (label_check == sa(is)){
                 label_check = sa(is);
-                value = dmax;
+                value = ba(bis);
             }
             else if (label_check != sa(is)){
                 label_check = sa(is);
@@ -817,7 +808,7 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             _stack.pop_back();
             if(_stack.empty())
                 {
-                _stack.push_back(Influence(value, begin - 1, current, w));
+                _stack.push_back(Influence(value, begin, current, w));
                 }
             else
                 {
@@ -834,6 +825,7 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         {
             ++is;
             ++current;
+            ++bis;
         }
         }
     typename std::vector<Influence>::iterator it = _stack.begin();
@@ -849,12 +841,15 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     }
 
 template <class SrcIterator, class SrcAccessor,
+          class BufIterator, class BufAccessor,
           class DestIterator, class DestAccessor>
 inline void boundaryDistParabola(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                         pair<DestIterator, DestAccessor> dest, double sigma, double dmax)
+                         triple<BufIterator, BufIterator, BufAccessor> buffer,
+                         pair<DestIterator, DestAccessor> dest,
+                         double sigma, double dmax)
 {
-    boundaryDistParabola(src.first, src.second, src.third,
-                 dest.first, dest.second, sigma, dmax);
+    boundaryDistParabola(src.first, src.second, src.third, buffer.first, buffer.second,
+                         buffer.third, dest.first, dest.second, sigma, dmax);
 }
 
 /********************************************************/
@@ -879,10 +874,9 @@ void internalBoundaryMultiArrayDistTmp(
 
     // temporary array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
-
+    tmp.init(dmax);
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
     typedef MultiArrayNavigator<DestIterator, N> DNavigator;
-
 
     // only operate on first dimension here
     SNavigator snav( si, shape, 0 );
@@ -892,32 +886,30 @@ void internalBoundaryMultiArrayDistTmp(
 
     for( ; snav.hasMore(); snav++, dnav++ )
     {
-            // first copy source to temp for maximum cache efficiency
-            copyLine( snav.begin(), snav.end(), src, tmp.begin(),
-                          typename AccessorTraits<TmpType>::default_accessor() );
 
-            detail::boundaryDistParabola( srcIterRange(tmp.begin(), tmp.end(),
-                          typename AccessorTraits<TmpType>::default_const_accessor()),
-                          destIter( dnav.begin(), dest ), sigmas[0], dmax );
+            detail::boundaryDistParabola(srcIterRange(snav.begin(), snav.end(), src),
+                                         srcIterRange(tmp.begin(), tmp.end(),
+                                         typename AccessorTraits<TmpType>::default_const_accessor()),
+                                         destIter( dnav.begin(), dest ), sigmas[0], dmax );
     }
-
     // operate on further dimensions
     for( int d = 1; d < N; ++d )
     {
         DNavigator dnav( di, shape, d );
-
+        SNavigator snav( si, shape, d );
         tmp.resize( shape[d] );
 
 
-        for( ; dnav.hasMore(); dnav++ )
+        for( ; dnav.hasMore(); dnav++, snav++ )
         {
              // first copy source to temp for maximum cache efficiency
              copyLine( dnav.begin(), dnav.end(), dest,
                        tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
-             detail::distParabola( srcIterRange(tmp.begin(), tmp.end(),
-                           typename AccessorTraits<TmpType>::default_const_accessor()),
-                           destIter( dnav.begin(), dest ), sigmas[d]);
+             detail::boundaryDistParabola( srcIterRange(snav.begin(), snav.end(), src),
+                                           srcIterRange(tmp.begin(), tmp.end(),
+                                           typename AccessorTraits<TmpType>::default_const_accessor()),
+                                           destIter( dnav.begin(), dest ), sigmas[d], dmax);
         }
     }
 }
