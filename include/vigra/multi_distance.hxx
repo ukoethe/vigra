@@ -754,6 +754,7 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa, BufI
 
     typedef typename SrcAccessor::value_type SrcType;
     typedef detail::DistParabolaStackEntry<SrcType> Influence;
+
     std::vector<Influence> _stack;
     bool label_check2 = false;
     SrcType label_check = sa(is);
@@ -763,7 +764,7 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa, BufI
     bool label_check3 = false;
     double begin = 0.0, value, current = 1.0;
     while(current < w )
-        {
+    {
         if (label_check3 == true) (label_check3 = false);
         else {
             if (label_check2 == true){
