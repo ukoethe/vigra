@@ -3413,6 +3413,77 @@ class Weighted
     };
 };
 
+template<class TAG>
+class CenterWeighted {
+public:
+	typedef typename StandardizeTag<TAG>::type TargetTag;
+	typedef Select<RegionCenter, typename TargetTag::Dependencies> Dependencies;
+	//typedef typename TargetTag::Dependencies Dependencies;
+
+	static std::string name() {
+		return std::string("CenterWeighted<") + TargetTag::name() + " >";
+		// static const std::string n = std::string("Central<") + TargetTag::name() + " >";
+		// return n;
+	}
+
+	template<class IndexDefinition,
+			class TagFound = typename IndexDefinition::Tag>
+	struct CoordIndexSelector {
+		static const int value = 0; // default: CoupledHandle holds coordinates at index 0
+
+		template<class U, class NEXT>
+		static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference exec(
+				CoupledHandle<U, NEXT> const & t) {
+			return vigra::get<value>(t);
+		}
+	};
+
+	template<class IndexDefinition>
+	struct CoordIndexSelector<IndexDefinition, CoordArgTag> {
+		static const int value = IndexDefinition::value;
+
+		template<class U, class NEXT>
+		static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference exec(
+				CoupledHandle<U, NEXT> const & t) {
+			return vigra::get<value>(t);
+		}
+	};
+
+	template<class T, class BASE>
+	struct SelectInputType {
+		typedef typename LookupTag<CoordArgTag, BASE>::type FindDataIndex;
+		typedef CoordIndexSelector<FindDataIndex> CoordIndex;
+		typedef typename CoupledHandleCast<CoordIndex::value, T>::type::value_type type;
+		static const int size = type::static_size;
+	};
+
+	template<class U, class BASE>
+	struct Impl: public TargetTag::template Impl<
+			typename AccumulatorResultTraits<U>::SumType, BASE> {
+		typedef typename TargetTag::template Impl<
+				typename AccumulatorResultTraits<U>::SumType, BASE> ImplType;
+
+
+		static const unsigned int workInPass = 2;
+
+		typedef SelectInputType<U, BASE> InputTypeSelector;
+		typedef typename InputTypeSelector::CoordIndex CoordIndex;
+
+		void operator+=(Impl const & o) {
+			vigra_precondition(false,
+					"CenterWeighted<...>::operator+=(): not supported.");
+		}
+
+		template<class T>
+		void update(T const & t) {
+			double weight = (CoordIndex::exec(t)
+					- getDependency<RegionCenter>(*this)).magnitude();
+			ImplType::update(t, weight);
+		}
+	};
+};
+
+
 // Centralize by subtracting the mean and cache the result
 class Centralize
 {

@@ -134,6 +134,7 @@ template <class A> class Coord;           // use pixel coordinate instead of pix
 template <class A> class Weighted;        // use (value, weight) pairs (index 1 and 2 of CoupledHandle)
 template <class A> class CoordWeighted;   // use (coord, weight) pairs(index 0 and end of CoupledHandle)
 template <class A> class DataFromHandle;  // extract data from index 1 of a CoupledHandle
+template<class A> class CenterWeighted;
 
     // data preparation
 template <class A> class Central;    // subtract mean
@@ -285,6 +286,7 @@ struct ModifierPriority<MODIFIER<A> > \
 VIGRA_MODIFIER_PRIORITY(Global, GlobalPriority)
 
 VIGRA_MODIFIER_PRIORITY(Weighted, WeightingPriority)
+VIGRA_MODIFIER_PRIORITY(CenterWeighted, WeightingPriority) //Must be lower than AccessDataPriority
 
 VIGRA_MODIFIER_PRIORITY(Coord, AccessDataPriority)
 VIGRA_MODIFIER_PRIORITY(DataFromHandle, AccessDataPriority)
