@@ -47,7 +47,7 @@
 
 namespace omp
 {
-    inline static void* malloc(size_t) __attribute__((alloc_size(1), malloc));
+    //inline static void* malloc(size_t) __attribute__((alloc_size(1), malloc));
 
     inline static void*
     malloc(size_t size)
@@ -120,7 +120,7 @@ namespace omp
 inline static bool
 have_openmp_nested()
 {
-    const bool openmp_nested = omp_get_nested();
+    const bool openmp_nested = omp_get_nested() != 0;
     omp_set_nested(true);
     const bool result = omp_get_nested() != 0;
     omp_set_nested(openmp_nested);
@@ -133,7 +133,7 @@ have_openmp_nested()
 inline static bool
 have_openmp_dynamic()
 {
-    const bool openmp_dynamic = omp_get_dynamic();
+    const bool openmp_dynamic = omp_get_dynamic() != 0;
     omp_set_dynamic(true);
     const bool result = omp_get_dynamic() != 0;
     omp_set_dynamic(openmp_dynamic);
