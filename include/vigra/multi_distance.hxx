@@ -670,9 +670,6 @@ void boundaryGraph(Graph const & g,
 {
     typedef typename Graph::NodeIt        graph_scanner;
     typedef typename Graph::OutBackArcIt  neighbor_iterator;
-    typedef typename T2Map::value_type    LabelType;
-
-    vigra::detail::UnionFindArray<LabelType>  regions; 
 
 	//find faces
     for (graph_scanner node(g); node != INVALID; ++node) 

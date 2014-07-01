@@ -50,6 +50,9 @@
 #include "multi_pointoperators.hxx"
 #include "functorexpression.hxx"
 
+#include "multi_gridgraph.hxx" 	//boundaryMultiDistance
+#include "union_find.hxx"		//boundaryMultiDistance
+
 #undef VECTORIAL_BOUNDARY_DIST_DEBUG
 
 namespace vigra
@@ -170,7 +173,7 @@ void boundaryVectorialDistParabola(MultiArrayIndex dimension, double dmax,
         //if(it->prevVector != DestType(dmax)) {
         da.setComponent(sigma * (it->center - current) , id, dimension);
         }
-    }
+    }    
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -257,7 +260,6 @@ void internalBoundaryMultiVectorialDistTmp(
         }
     }
     #endif
-
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -271,6 +273,18 @@ inline void internalBoundaryMultiVectorialDistTmp(
     internalBoundaryMultiVectorialDistTmp( dmax, si, shape, src, di, dest, sigmas);
 }
 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+inline void internalBoundaryMultiVectorialDistTmp(
+                                       double dmax,
+                                       triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                       pair<DestIterator, DestAccessor> const & dest,
+                                       Array const & pixelPitch)
+{
+    internalBoundaryMultiVectorialDistTmp( dmax, source.first, source.second, source.third,
+                               dest.first, dest.second, pixelPitch );
+}
+
 } // namespace detail
 
 /********************************************************/
@@ -279,17 +293,14 @@ inline void internalBoundaryMultiVectorialDistTmp(
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Array>
-void boundaryMultiVectorialDist( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                                DestIterator d, DestAccessor dest,
-                                Array const & pixelPitch)
+template <unsigned int N, class T1, class S1,
+          class T2, class S2, class Array>
+void boundaryMultiVectorialDist( MultiArrayView<N, T1, S1> const & source,
+                                 MultiArrayView<N, T2, S2> dest,
+                                 Array const & pixelPitch)
 {
-    int N = shape.size();
-
-    typedef typename DestAccessor::value_type DestType;
+    typedef typename T2::value_type DestType;
     typedef typename NumericTraits<DestType>::RealPromote Real;
-
     using namespace vigra::functor;
 
     double dmax = 0.0;
@@ -298,55 +309,109 @@ void boundaryMultiVectorialDist( SrcIterator s, SrcShape const & shape, SrcAcces
     {
         if(int(pixelPitch[k]) != pixelPitch[k])
             pixelPitchIsReal = true;
-        dmax += sq(pixelPitch[k]*shape[k]);
+        dmax += sq(pixelPitch[k]*source.shape(k));
     }
 //    if(dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max())
 //       || pixelPitchIsReal) // need a temporary array to avoid overflows
 //    {
-//        MultiArray<SrcShape::static_size, Real> tmpArray(shape);
-//        transformMultiArray( s, shape, src,
-//                             tmpArray.traverser_begin(), typename AccessorTraits<Real>::default_accessor(),
-//                             Arg1());
+//        MultiArray<N, Real> tmpArray(source.shape());
+//        transformMultiArray( source, dest, Arg1());
 //        detail::internalBoundaryMultiVectorialDistTmp( dmax, tmpArray.traverser_begin(),
-//                shape, typename AccessorTraits<Real>::default_accessor(),
-//                tmpArray.traverser_begin(),
-//                typename AccessorTraits<Real>::default_accessor(), pixelPitch);
+//                                                       source.shape(), typename AccessorTraits<Real>::default_accessor(),
+//                                                       tmpArray.traverser_begin(),
+//                                                       typename AccessorTraits<Real>::default_accessor(), pixelPitch);
 
-//        copyMultiArray(srcMultiArrayRange(tmpArray), destIter(d, dest));
+//        copyMultiArray(srcMultiArrayRange(tmpArray), destIter(dest));
 //    }
 //    else        // work directly on the destination array
 //    {
-        detail::internalBoundaryMultiVectorialDistTmp( dmax, s, shape, src, d, dest, pixelPitch);
+        detail::internalBoundaryMultiVectorialDistTmp( dmax, srcMultiArrayRange(source), destMultiArray(dest), pixelPitch);
 //    }
+
+    typedef typename GridGraph<N, undirected_tag>::NodeIt        graph_scanner;
+    typedef typename GridGraph<N, undirected_tag>::OutArcIt  neighbor_iterator;
+
+    GridGraph<2, undirected_tag> g(source.shape());
+    double min_mag;
+    typename MultiArrayView<N, T2, S2>::value_type min_pos, min_vec, vec_to_pix;
+
+    //go over all vectors
+    for (graph_scanner node(g); node != lemon_graph::INVALID; ++node)
+    {
+        vec_to_pix = dest[*node];
+        min_mag = detail::partialSquaredMagnitude(source.shape(), N+1);
+        min_pos = *node;
+
+        //go to adjacent neighbour with different label of target pixel with smallest distance to origin pixel
+        for (neighbor_iterator arc(g, *node+vec_to_pix); arc != lemon_graph::INVALID; ++arc)
+        {
+                            if(source[*node+vec_to_pix] != source[g.target(*arc)])
+                            {
+                                if (min_mag > detail::partialSquaredMagnitude(vec_to_pix+(g.target(*arc)-*node-vec_to_pix),N+1))
+                                {
+                                    min_mag = detail::partialSquaredMagnitude(vec_to_pix+(g.target(*arc)-*node-vec_to_pix),N+1);
+                                    min_pos = g.target(*arc);
+                                 }
+                            }
+        }
+        //from this pixel look for the vector which points to the nearest interpixel between two label
+        min_mag = detail::partialSquaredMagnitude(source.shape(), N+1);
+        for (neighbor_iterator arc(g, min_pos); arc != lemon_graph::INVALID; ++arc)
+        {
+            if(source[min_pos] != source[g.target(*arc)])
+            {
+                if (min_mag > detail::partialSquaredMagnitude(vec_to_pix - (g.target(*arc) - min_pos)*0.5, N+1))
+                {
+                    min_vec = vec_to_pix - (g.target(*arc) - min_pos)*0.5;
+                    min_mag = detail::partialSquaredMagnitude(min_vec, N+1);
+                }
+            }
+        }
+    dest[*node] = min_vec;
+    }
+
+
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Array>
-inline void boundaryMultiVectorialDist( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                                       pair<DestIterator, DestAccessor> const & dest,
-                                       Array const & pixelPitch)
-{
-    boundaryMultiVectorialDist( source.first, source.second, source.third,
-                               dest.first, dest.second, pixelPitch );
-}
+//template <class SrcIterator, class SrcShape, class SrcAccessor,
+//          class DestIterator, class DestAccessor, class Array>
+//inline void boundaryMultiVectorialDist( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+//                                       pair<DestIterator, DestAccessor> const & dest,
+//                                       Array const & pixelPitch)
+//{
+//    boundaryMultiVectorialDist( source.first, source.second, source.third,
+//                               dest.first, dest.second, pixelPitch );
+//}
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-void boundaryMultiVectorialDist( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                                DestIterator d, DestAccessor dest)
-{
-    ArrayVector<double> pixelPitch(shape.size(), 1.0);
-    boundaryMultiVectorialDist( s, shape, src, d, dest, pixelPitch );
-}
+//template <class SrcIterator, class SrcShape, class SrcAccessor,
+//          class DestIterator, class DestAccessor>
+//inline
+//void boundaryMultiVectorialDist( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+//                                DestIterator d, DestAccessor dest)
+//{
+//    ArrayVector<double> pixelPitch(shape.size(), 1.0);
+//    boundaryMultiVectorialDist( s, shape, src, d, dest, pixelPitch );
+//}
 
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void boundaryMultiVectorialDist( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                                       pair<DestIterator, DestAccessor> const & dest)
+//template <class SrcIterator, class SrcShape, class SrcAccessor,
+//          class DestIterator, class DestAccessor>
+//inline void boundaryMultiVectorialDist( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+//                                       pair<DestIterator, DestAccessor> const & dest)
+//{
+//    boundaryMultiVectorialDist( source.first, source.second, source.third,
+//                               dest.first, dest.second);
+//}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+boundaryMultiVectorialDist(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest)
 {
-    boundaryMultiVectorialDist( source.first, source.second, source.third,
-                               dest.first, dest.second);
+    ArrayVector<double> pixelPitch(source.shape().size(), 1.0);
+    vigra_precondition(source.shape() == dest.shape(),
+        "boundaryMultiDistance(): shape mismatch between input and output.");
+    boundaryMultiVectorialDist( source, dest, pixelPitch );
 }
 
 } //-- namespace vigra

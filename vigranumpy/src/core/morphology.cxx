@@ -528,7 +528,7 @@ pythonVectorialBoundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > v
     
     {
         PyAllowThreads _pythread;
-        boundaryMultiVectorialDist(srcMultiArrayRange(volume), destMultiArray(res));
+        boundaryMultiVectorialDist(volume, res);
     }
     return res;
 }

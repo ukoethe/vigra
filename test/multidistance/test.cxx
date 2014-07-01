@@ -1191,6 +1191,13 @@ struct MultiDistanceTest
                 DoubleVolume distVolume(volume.shape());
                 transformMultiArray(srcMultiArrayRange(vecVolume), destMultiArray(distVolume), squaredNorm(Arg1()));
                 shouldEqualSequence(distVolume.begin(),distVolume.end(),desired.begin());
+                //test vectorial boundary distance
+                Double2DArray labels(Shape2(50,50), bndMltDst_data);
+                DoubleVecImage vecVolume2(labels.shape());
+                boundaryMultiVectorialDist(labels, vecVolume2);
+                Double2DArray distVolume2(labels.shape());
+                transformMultiArray(srcMultiArrayRange(vecVolume2), destMultiArray(distVolume2), sqrt(squaredNorm(Arg1())));
+                shouldEqualSequenceTolerance(distVolume2.begin(),distVolume2.end(),bndMltDst_ref, 0.6);
             }
         }
 
@@ -1470,7 +1477,7 @@ struct boundaryMultiDistanceTest
         {
             for(x=0; x<50; ++x)
             {
-               	shouldEqualTolerance(res(x,y), ref(x,y), 0.4);
+                shouldEqualTolerance(res(x,y), ref(x,y), 0.3);
             }
         }
     }
@@ -1485,6 +1492,7 @@ struct boundaryMultiDistanceTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
+
 };
 //
 
