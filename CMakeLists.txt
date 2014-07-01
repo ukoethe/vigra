@@ -45,7 +45,7 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
     IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         # As of cmake 2.8.10, there is a variable CMAKE_CXX_COMPILER_VERSION.
         # Emulate it by a compiler call if not present.
-        IF(not CMAKE_CXX_COMPILER_VERSION)
+        IF(NOT CMAKE_CXX_COMPILER_VERSION)
             EXEC_PROGRAM(
                 ${CMAKE_CXX_COMPILER}
                 ARGS                    --version
