@@ -427,6 +427,112 @@ namespace vigra{
         }
     }
     
+    template<
+    class GRAPH, 
+    class EDGE_WEIGHTS, 
+    class NODE_WEIGHTS,
+    class SEED_NODE_MAP,
+    class WEIGHT_TYPE
+    >
+    void shortestPathSegmentation(
+        const GRAPH & graph,
+        const EDGE_WEIGHTS & edgeWeights,
+        const NODE_WEIGHTS & nodeWeights,
+        SEED_NODE_MAP & seeds
+    ){
+
+        typedef GRAPH Graph;
+
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::OutArcIt OutArcIt;
+
+        typedef WEIGHT_TYPE WeightType;
+        typedef ChangeablePriorityQueue<WeightType>           PqType;
+        typedef typename Graph:: template NodeMap<Node>       PredecessorsMap;
+        typedef typename Graph:: template NodeMap<WeightType> DistanceMap;
+
+
+
+        // allocate maps
+        DistanceMap distMap(graph);
+        PredecessorsMap predMap(graph);
+        PqType pq(graph.maxNodeId()+1);
+
+
+        for(NodeIt n(graph);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            // not a seed
+            if(seeds[node]==0){
+                pq.push(graph.id(node),std::numeric_limits<WeightType>::infinity() );
+                distMap[node]=std::numeric_limits<WeightType>::infinity();
+                predMap[node]=lemon::INVALID;
+            }
+            // a seed
+            else{
+
+                // seeds are not added to pq
+                // but direct neighbors of seed which are not seeds
+                // will be added to the queue with their distance
+                for(OutArcIt oa(graph,node); oa!=lemon::INVALID; ++oa){
+                    Edge e(*oa);
+                    const Node nNode=graph.target(*oa);
+
+                    // check that other node is NOT a seed
+                    if(seeds[nNode]==0){
+                        
+                        // set starting distance
+                        const WeightType startDist = edgeWeights[e]+nodeWeights[nNode];
+                        pq.push(graph.id(node),startDist );
+                        distMap[nNode]=startDist;
+
+                        // make seed node the predecessors
+                        // of non seed direct neighbor
+                        predMap[nNode]=node;
+                    }
+                }
+            }
+        }
+
+
+        while(!pq.empty() ){ //&& !finished){
+            const Node topNode(graph.nodeFromId(pq.top()));
+            pq.pop();
+            // loop over all neigbours
+            for(OutArcIt outArcIt(graph,topNode);outArcIt!=lemon::INVALID;++outArcIt){
+                const Node otherNode = graph.target(*outArcIt);
+                const size_t otherNodeId = graph.id(otherNode);
+
+                if(pq.contains(otherNodeId)){
+                    const Edge edge(*outArcIt);
+                    const WeightType currentDist     = distMap[otherNode];
+                    const WeightType alternativeDist = distMap[topNode]+edgeWeights[edge]+nodeWeights[otherNode];
+                    if(alternativeDist<currentDist){
+                        pq.push(otherNodeId,alternativeDist);
+                        distMap[otherNode]=alternativeDist;
+                        predMap[otherNode]=topNode;
+                    }
+                }
+
+            }
+        }
+
+        // do the labeling
+        for(NodeIt n(graph);n!=lemon::INVALID;++n){
+            Node node(*n);
+            if(seeds[node]==0){
+                int label = 0 ;
+                Node pred=predMap[node];
+                while(seeds[pred]==0){
+                    pred=predMap[pred];
+                }
+                seeds[node]=seeds[pred];
+            }
+        }
+    }
+
+
 
     namespace detail_watersheds_segmentation{
 
