@@ -44,6 +44,7 @@
 #include <algorithm>
 #include <vector>
 #include <functional>
+#include <set>
 
 
 /*vigra*/
@@ -348,8 +349,6 @@ namespace vigra{
         }
     }
 
-
-
     /// \brief Astar Shortest path search
     template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE,class HEURSTIC>
     void shortestPathAStar(
@@ -428,6 +427,112 @@ namespace vigra{
         }
     }
     
+    template<
+    class GRAPH, 
+    class EDGE_WEIGHTS, 
+    class NODE_WEIGHTS,
+    class SEED_NODE_MAP,
+    class WEIGHT_TYPE
+    >
+    void shortestPathSegmentation(
+        const GRAPH & graph,
+        const EDGE_WEIGHTS & edgeWeights,
+        const NODE_WEIGHTS & nodeWeights,
+        SEED_NODE_MAP & seeds
+    ){
+
+        typedef GRAPH Graph;
+
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::OutArcIt OutArcIt;
+
+        typedef WEIGHT_TYPE WeightType;
+        typedef ChangeablePriorityQueue<WeightType>           PqType;
+        typedef typename Graph:: template NodeMap<Node>       PredecessorsMap;
+        typedef typename Graph:: template NodeMap<WeightType> DistanceMap;
+
+
+
+        // allocate maps
+        DistanceMap distMap(graph);
+        PredecessorsMap predMap(graph);
+        PqType pq(graph.maxNodeId()+1);
+
+
+        for(NodeIt n(graph);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            // not a seed
+            if(seeds[node]==0){
+                pq.push(graph.id(node),std::numeric_limits<WeightType>::infinity() );
+                distMap[node]=std::numeric_limits<WeightType>::infinity();
+                predMap[node]=lemon::INVALID;
+            }
+            // a seed
+            else{
+
+                // seeds are not added to pq
+                // but direct neighbors of seed which are not seeds
+                // will be added to the queue with their distance
+                for(OutArcIt oa(graph,node); oa!=lemon::INVALID; ++oa){
+                    Edge e(*oa);
+                    const Node nNode=graph.target(*oa);
+
+                    // check that other node is NOT a seed
+                    if(seeds[nNode]==0){
+                        
+                        // set starting distance
+                        const WeightType startDist = edgeWeights[e]+nodeWeights[nNode];
+                        pq.push(graph.id(node),startDist );
+                        distMap[nNode]=startDist;
+
+                        // make seed node the predecessors
+                        // of non seed direct neighbor
+                        predMap[nNode]=node;
+                    }
+                }
+            }
+        }
+
+
+        while(!pq.empty() ){ //&& !finished){
+            const Node topNode(graph.nodeFromId(pq.top()));
+            pq.pop();
+            // loop over all neigbours
+            for(OutArcIt outArcIt(graph,topNode);outArcIt!=lemon::INVALID;++outArcIt){
+                const Node otherNode = graph.target(*outArcIt);
+                const size_t otherNodeId = graph.id(otherNode);
+
+                if(pq.contains(otherNodeId)){
+                    const Edge edge(*outArcIt);
+                    const WeightType currentDist     = distMap[otherNode];
+                    const WeightType alternativeDist = distMap[topNode]+edgeWeights[edge]+nodeWeights[otherNode];
+                    if(alternativeDist<currentDist){
+                        pq.push(otherNodeId,alternativeDist);
+                        distMap[otherNode]=alternativeDist;
+                        predMap[otherNode]=topNode;
+                    }
+                }
+
+            }
+        }
+
+        // do the labeling
+        for(NodeIt n(graph);n!=lemon::INVALID;++n){
+            Node node(*n);
+            if(seeds[node]==0){
+                int label = 0 ;
+                Node pred=predMap[node];
+                while(seeds[pred]==0){
+                    pred=predMap[pred];
+                }
+                seeds[node]=seeds[pred];
+            }
+        }
+    }
+
+
 
     namespace detail_watersheds_segmentation{
 
@@ -917,9 +1022,121 @@ namespace vigra{
         }
     }
 
+    /// \brief create edge weights from an interpolated image
+    ///
+    /// \param g : input graph
+    /// \param interpolatedImage : interpolated image
+    /// \param[out] edgeWeights : edge weights
+    template<unsigned int N, class T, class EDGEMAP>
+    void edgeWeightsFromInterpolatedImage(
+            const GridGraph<N, undirected_tag> & g,
+            const MultiArray<N, T>  & interpolatedImage,
+            EDGEMAP & edgeWeights,
+            bool euclidean = false
+    ){
+        for (int d=0; d<N; ++d)
+        {
+            vigra_precondition(interpolatedImage.shape(d) == 2*g.shape()[d]-1, "interpolated shape must be shape*2-1");
+        }
 
+        typedef GridGraph<N, undirected_tag> Graph;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::EdgeIt EdgeIt;
+        typedef typename MultiArray<N, T>::difference_type CoordType;
 
+        for (EdgeIt iter(g); iter!=lemon::INVALID; ++iter)
+        {
+            const Edge edge(*iter);
+            const CoordType uCoord(g.u(edge));
+            const CoordType vCoord(g.v(edge));
+            const CoordType tCoord = uCoord+vCoord;
+            if (euclidean)
+            {
+                int diffCounter = 0;
+                for (int i=0; i<N; ++i)
+                {
+                    if (uCoord[i] != vCoord[i]) {
+                        diffCounter++;
+                    }
+                }
+                edgeWeights[edge] = sqrt(diffCounter) * interpolatedImage[tCoord];
+            }
+            else
+            {
+                edgeWeights[edge] = interpolatedImage[tCoord];
+            }
+        }
+    }
 
+    /// \brief Find indices of points on the edges
+    ///
+    /// \param rag : Region adjacency graph of the labels array
+    /// \param g : Graph of labels array
+    /// \param affiliatedEdges : The affiliated edges of the region adjacency graph
+    /// \param labelsArray : The label image
+    /// \param node : The node (of the region adjacency graph), whose edges shall be found
+    template<class RAGGRAPH, class GRAPH, class RAGEDGES, unsigned int N, class T>
+    MultiArray<2, MultiArrayIndex> ragFindEdges(
+            const RAGGRAPH & rag,
+            const GRAPH & graph,
+            const RAGEDGES & affiliatedEdges,
+            MultiArrayView<N, T> labelsArray,
+            const typename RAGGRAPH::Node & node
+    ){
+        typedef typename GRAPH::Node Node;
+        typedef typename GRAPH::Edge Edge;
+        typedef typename RAGGRAPH::OutArcIt RagOutArcIt;
+        typedef typename RAGGRAPH::Edge RagEdge;
+        typedef typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicNodeMapShape NodeCoordinate;
+
+        T nodeLabel = rag.id(node);
+
+        // Find edges and write them into a set.
+        std::set< NodeCoordinate > edgeCoordinates;
+        for (RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
+        {
+            const RagEdge ragEdge(*iter);
+            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+            for (int i=0; i<affEdges.size(); ++i)
+            {
+                Node u = graph.u(affEdges[i]);
+                Node v = graph.v(affEdges[i]);
+                T uLabel = labelsArray[u];
+                T vLabel = labelsArray[v];
+
+                NodeCoordinate coords;
+                if (uLabel == nodeLabel)
+                {
+                    coords = GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(graph, u);
+                }
+                else if (vLabel == nodeLabel)
+                {
+                    coords = GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(graph, v);
+                }
+                else
+                {
+                    vigra_precondition(false, "You should not come to this part of the code.");
+                }
+                edgeCoordinates.insert(coords);
+            }
+        }
+
+        // Fill the return array.
+        MultiArray<2, MultiArrayIndex> edgePoints(Shape2(edgeCoordinates.size(), N));
+        edgePoints.init(0);
+        int next = 0;
+        typedef typename std::set< NodeCoordinate >::iterator setIter;
+        for (setIter iter = edgeCoordinates.begin(); iter!=edgeCoordinates.end(); ++iter)
+        {
+            NodeCoordinate coords = *iter;
+            for (int k=0; k<coords.size(); ++k)
+            {
+                edgePoints(next, k) = coords[k];
+            }
+            next++;
+        }
+        return edgePoints;
+    }
 
 } // namespace vigra
 

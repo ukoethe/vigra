@@ -124,6 +124,19 @@ public:
             "Seeded watersheds on a edge weighted graph"
         );
 
+
+        python::def("_shortestPathSegmentation",registerConverters(&pyShortestPathSegmentation),
+            (
+                python::arg("graph"),
+                python::arg("edgeWeights"),
+                python::arg("nodeWeights"),
+                python::arg("seeds"),
+                python::arg("out")=python::object()
+            ),
+            "Seeded shorted path segmentation on a edge and node weighted graph"
+        );
+
+
         python::def("_felzenszwalbSegmentation",registerConverters(&pyFelzenszwalbSegmentation),
             (
                 python::arg("graph"),
@@ -466,6 +479,10 @@ public:
         return labelsArray;
     }
 
+
+
+
+
     static NumpyAnyArray pyNodeWeightedWatershedsSeeds(
         const Graph &       g,
         FloatNodeArray      nodeWeightsArray,
@@ -510,6 +527,35 @@ public:
         // retun labels
         return labelsArray;
     }
+
+    static NumpyAnyArray pyShortestPathSegmentation(
+        const Graph &       g,
+        FloatEdgeArray      edgeWeightsArray,
+        FloatNodeArray      nodeWeightsArray,
+        UInt32NodeArray     seedsArray,
+        UInt32NodeArray     labelsArray
+    ){
+
+        // resize output ? 
+        labelsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(g) );
+
+        // numpy arrays => lemon maps
+        FloatEdgeArrayMap  edgeWeightsArrayMap(g,edgeWeightsArray);
+        FloatNodeArrayMap  nodeWeightsArrayMap(g,nodeWeightsArray);
+        UInt32NodeArrayMap labelsArrayMap(g,labelsArray);
+
+
+
+        std::copy(seedsArray.begin(),seedsArray.end(),labelsArray.begin());
+
+        shortestPathSegmentation<
+            Graph,FloatEdgeArrayMap, FloatNodeArrayMap, UInt32NodeArrayMap, float
+        >(g, edgeWeightsArrayMap, nodeWeightsArrayMap, labelsArrayMap);
+     
+        
+        return labelsArray;
+    }
+
 
     static NumpyAnyArray pyFelzenszwalbSegmentation(
         const GRAPH & g,
