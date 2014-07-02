@@ -3233,24 +3233,11 @@ class DataFromHandle
     };
 };
 
-/** \brief Modifier. Compute statistic from pixel coordinates rather than from pixel values. 
-
-    AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
- */
-template <class TAG>
-class Coord
+    // helper classes to find the handle index that holds the coordinate
+    // default: 0, but may be overridden by the CoordArg tag
+class CoordSelector
 {
   public:
-    typedef typename StandardizeTag<TAG>::type   TargetTag;
-    typedef typename TargetTag::Dependencies     Dependencies;
-    
-    static std::string name() 
-    { 
-        return std::string("Coord<") + TargetTag::name() + " >";
-        // static const std::string n = std::string("Coord<") + TargetTag::name() + " >";
-        // return n;
-    }
-    
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct CoordIndexSelector
     {
@@ -3284,7 +3271,27 @@ class Coord
         typedef CoordIndexSelector<FindDataIndex> CoordIndex;
         typedef typename CoupledHandleCast<CoordIndex::value, T>::type::value_type type;
         static const int size = type::static_size;
-    };
+    };    
+};
+
+/** \brief Modifier. Compute statistic from pixel coordinates rather than from pixel values. 
+
+    AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
+ */
+template <class TAG>
+class Coord
+: public CoordSelector
+{
+  public:
+    typedef typename StandardizeTag<TAG>::type   TargetTag;
+    typedef typename TargetTag::Dependencies     Dependencies;
+    
+    static std::string name() 
+    { 
+        return std::string("Coord<") + TargetTag::name() + " >";
+        // static const std::string n = std::string("Coord<") + TargetTag::name() + " >";
+        // return n;
+    }
     
     template <class T, class BASE>
     struct Impl
@@ -3413,12 +3420,67 @@ class Weighted
     };
 };
 
+template <>
+class Coord<DistanceWeight>
+: public CoordSelector
+{
+public:
+	typedef Select<RegionCenter> Dependencies;
+
+	static std::string name() {
+		return std::string("Coord<DistanceWeight>");
+		// static const std::string n = std::string("Coord<DistanceWeight>");
+		// return n;
+	}
+
+	template<class T, class BASE>
+	struct Impl
+    : public BASE
+    {
+        typedef SelectInputType<T, BASE>                  InputTypeSelector;
+        typedef typename InputTypeSelector::CoordIndex    CoordIndex;
+        typedef double                                    value_type;
+        typedef value_type const &                        result_type;
+        
+		static const unsigned int workInPass = 2;
+        
+        MultiArrayIndex last_index_;
+        value_type weight_;
+        
+        Impl()
+        : last_index_(-1),
+          weight_(0.0)
+        {}
+        
+		void operator+=(Impl const & o) {
+			vigra_precondition(false,
+					"Coord<DistanceWeight>::operator+=(): not supported.");
+		}
+
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            if(last_index_ != t.scanOrderIndex())
+            {
+                last_index_ = t.scanOrderIndex();
+                weight_ = (CoordIndex::exec(t)
+					     - getDependency<RegionCenter>(*this)).magnitude();
+            }
+		}
+        
+        result_type operator()() const
+        {
+            return weight_;
+        }
+	};
+};
+
 template<class TAG>
-class CenterWeighted {
+class CenterWeighted 
+{
 public:
 	typedef typename StandardizeTag<TAG>::type TargetTag;
-	typedef Select<RegionCenter, typename TargetTag::Dependencies> Dependencies;
-	//typedef typename TargetTag::Dependencies Dependencies;
+	typedef Select<Coord<DistanceWeight>, typename TargetTag::Dependencies> Dependencies;
 
 	static std::string name() {
 		return std::string("CenterWeighted<") + TargetTag::name() + " >";
@@ -3426,59 +3488,28 @@ public:
 		// return n;
 	}
 
-	template<class IndexDefinition,
-			class TagFound = typename IndexDefinition::Tag>
-	struct CoordIndexSelector {
-		static const int value = 0; // default: CoupledHandle holds coordinates at index 0
-
-		template<class U, class NEXT>
-		static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference exec(
-				CoupledHandle<U, NEXT> const & t) {
-			return vigra::get<value>(t);
-		}
-	};
-
-	template<class IndexDefinition>
-	struct CoordIndexSelector<IndexDefinition, CoordArgTag> {
-		static const int value = IndexDefinition::value;
-
-		template<class U, class NEXT>
-		static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference exec(
-				CoupledHandle<U, NEXT> const & t) {
-			return vigra::get<value>(t);
-		}
-	};
 
 	template<class T, class BASE>
-	struct SelectInputType {
-		typedef typename LookupTag<CoordArgTag, BASE>::type FindDataIndex;
-		typedef CoordIndexSelector<FindDataIndex> CoordIndex;
-		typedef typename CoupledHandleCast<CoordIndex::value, T>::type::value_type type;
-		static const int size = type::static_size;
-	};
-
-	template<class U, class BASE>
-	struct Impl: public TargetTag::template Impl<
-			typename AccumulatorResultTraits<U>::SumType, BASE> {
-		typedef typename TargetTag::template Impl<
-				typename AccumulatorResultTraits<U>::SumType, BASE> ImplType;
-
+	struct Impl
+    : public TargetTag::template Impl<T, BASE>
+    {
+		typedef typename TargetTag::template Impl<T, BASE> ImplType;
 
 		static const unsigned int workInPass = 2;
-
-		typedef SelectInputType<U, BASE> InputTypeSelector;
-		typedef typename InputTypeSelector::CoordIndex CoordIndex;
-
+        
 		void operator+=(Impl const & o) {
 			vigra_precondition(false,
 					"CenterWeighted<...>::operator+=(): not supported.");
 		}
 
-		template<class T>
-		void update(T const & t) {
-			double weight = (CoordIndex::exec(t)
-					- getDependency<RegionCenter>(*this)).magnitude();
-			ImplType::update(t, weight);
+        void update(T const & t)
+        {
+			ImplType::update(t, getDependency<Coord<DistanceWeight> >(*this));
+		}
+
+        void update(T const & t, double weight)
+        {
+			ImplType::update(t, weight*getDependency<Coord<DistanceWeight> >(*this));
 		}
 	};
 };

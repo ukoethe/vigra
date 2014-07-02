@@ -88,6 +88,7 @@ class Centralize;                              // cache centralized values
 class PrincipalProjection;                     // cache values after principal projection
     // FIXME: not yet implemented
 class Whiten;                                  // cache values after whitening
+class DistanceWeight;                          // cache weight derived from distance computation
 class RangeMapping;                            // map value from [min, max] to another range and cache result (e.g. for histogram creation)
 
 template <int INDEX>  class DataArg;           // specifiy the index of the data member in a CoupledHandle
@@ -134,7 +135,7 @@ template <class A> class Coord;           // use pixel coordinate instead of pix
 template <class A> class Weighted;        // use (value, weight) pairs (index 1 and 2 of CoupledHandle)
 template <class A> class CoordWeighted;   // use (coord, weight) pairs(index 0 and end of CoupledHandle)
 template <class A> class DataFromHandle;  // extract data from index 1 of a CoupledHandle
-template<class A> class CenterWeighted;
+template <class A> class CenterWeighted;  // compute weight automatically from distance to object center
 
     // data preparation
 template <class A> class Central;    // subtract mean
@@ -662,6 +663,7 @@ VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<FlatScatterMatrix>, FlatScatterM
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<FlatScatterMatrix>, FlatScatterMatrix)
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<ScatterMatrixEigensystem>, ScatterMatrixEigensystem)
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<ScatterMatrixEigensystem>, ScatterMatrixEigensystem)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(CenterWeighted<Coord<DistanceWeight> >, Coord<DistanceWeight>)
 
 #undef VIGRA_DROP_DATA_PREPARATION_MODIFIERS
 
