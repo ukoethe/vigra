@@ -330,16 +330,13 @@ void boundaryMultiVectorialDist( MultiArrayView<N, T1, S1> const & source,
 
     typedef typename GridGraph<N, undirected_tag>::NodeIt        graph_scanner;
     typedef typename GridGraph<N, undirected_tag>::OutArcIt  neighbor_iterator;
-
-    GridGraph<2, undirected_tag> g(source.shape());
+    GridGraph<N, undirected_tag> g(source.shape());
     double min_mag;
     typename MultiArrayView<N, T2, S2>::value_type min_pos, min_vec, vec_to_pix;
-
-    //go over all vectors
     for (graph_scanner node(g); node != lemon_graph::INVALID; ++node)
     {
         vec_to_pix = dest[*node];
-        min_mag = detail::partialSquaredMagnitude(source.shape(), N+1);
+        min_mag = detail::partialSquaredMagnitude(source.shape(), N);
         min_pos = *node;
 
         //go to adjacent neighbour with different label of target pixel with smallest distance to origin pixel
@@ -347,23 +344,23 @@ void boundaryMultiVectorialDist( MultiArrayView<N, T1, S1> const & source,
         {
                             if(source[*node+vec_to_pix] != source[g.target(*arc)])
                             {
-                                if (min_mag > detail::partialSquaredMagnitude(vec_to_pix+(g.target(*arc)-*node-vec_to_pix),N+1))
+                                if (min_mag > detail::partialSquaredMagnitude(vec_to_pix+(g.target(*arc)-*node-vec_to_pix),N))
                                 {
-                                    min_mag = detail::partialSquaredMagnitude(vec_to_pix+(g.target(*arc)-*node-vec_to_pix),N+1);
+                                    min_mag = detail::partialSquaredMagnitude(vec_to_pix+(g.target(*arc)-*node-vec_to_pix),N);
                                     min_pos = g.target(*arc);
                                  }
                             }
         }
         //from this pixel look for the vector which points to the nearest interpixel between two label
-        min_mag = detail::partialSquaredMagnitude(source.shape(), N+1);
+        min_mag = detail::partialSquaredMagnitude(source.shape(), N);
         for (neighbor_iterator arc(g, min_pos); arc != lemon_graph::INVALID; ++arc)
         {
             if(source[min_pos] != source[g.target(*arc)])
             {
-                if (min_mag > detail::partialSquaredMagnitude(vec_to_pix - (g.target(*arc) - min_pos)*0.5, N+1))
+                if (min_mag > detail::partialSquaredMagnitude(vec_to_pix - (g.target(*arc) - min_pos)*0.5, N))
                 {
                     min_vec = vec_to_pix - (g.target(*arc) - min_pos)*0.5;
-                    min_mag = detail::partialSquaredMagnitude(min_vec, N+1);
+                    min_mag = detail::partialSquaredMagnitude(min_vec, N);
                 }
             }
         }

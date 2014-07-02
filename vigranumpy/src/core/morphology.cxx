@@ -506,7 +506,7 @@ template < int N, class VoxelType >
 NumpyAnyArray 
 pythonVectorialDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume, 
     bool background, 
-    NumpyArray<N, TinyVector<VoxelType, N> > res=python::object())
+    NumpyArray<N, TinyVector<float, N> > res=python::object())
 {
     res.reshapeIfEmpty(volume.taggedShape(), 
             "vectorialDistanceTransform(): Output array has wrong shape.");
@@ -521,7 +521,7 @@ pythonVectorialDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
 template < int N, class VoxelType >
 NumpyAnyArray 
 pythonVectorialBoundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume, 
-    NumpyArray<N, TinyVector<VoxelType, N> > res=python::object())
+    NumpyArray<N, TinyVector<float, N> > res=python::object())
 {
     res.reshapeIfEmpty(volume.taggedShape(), 
             "vectorialBoundaryDistanceTransform(): Output array has wrong shape.");
