@@ -40,7 +40,8 @@ IF (MSVC)
 ENDIF ()
 
 IF (CMAKE_COMPILER_IS_GNUCXX)
-    # ADD_DEFINITIONS(-std=c++0x)  # will be needed to enable native thread support
+    # needed to enable native thread support and to supply std::shared_ptr etc outside of tr1
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
     
     IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         # As of cmake 2.8.10, there is a variable CMAKE_CXX_COMPILER_VERSION.
