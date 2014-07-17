@@ -999,21 +999,32 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     - edgeFeatures : edge features of baseGraph
                     - acc : used accumulator (default: 'mean')
                         Currently only 'mean' and 'sum' are implemented
-                    - out :  preallocated edge map 
+                    - out :  preallocated edge map
 
-                Returns : 
+                Returns :
                     accumulated edge features
             """
-            if self.edgeNum == 0 :
-              raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")
             graph = self.baseGraph
             affiliatedEdges = self.affiliatedEdges
-            if acc == 'mean':
-              weights = self.baseGraph.edgeLengths()
-            else :
-              weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
-              weights[:]=1
-            return  graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
+
+            if isinstance(edgeFeatures, graphs.ImplicitMEanEdgeMap_3d_float_float):
+
+                if acc is not "mean":
+                    raise RuntimeError("for implicit edge maps only mean is supported")
+
+                if graphs.isGridGraph(graph)==False:
+                    raise RuntimeError("implicit edge maps are only implemented for grid graphs")
+
+                return graphs._ragEdgeFeatures(self, graph, affiliatedEdges, edgeFeatures, out)
+            else:
+                if self.edgeNum == 0:
+                    raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")
+                if acc == 'mean':
+                    weights = self.baseGraph.edgeLengths()
+                else:
+                    weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
+                    weights[:] = 1
+                return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
 
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
@@ -1422,6 +1433,31 @@ def _genGraphSegmentationFunctions():
 
     nodeWeightedWatershedsSeeds.__module__ = 'vigra.graphs'
     graphs.nodeWeightedWatershedsSeeds = nodeWeightedWatershedsSeeds
+
+
+    def shortestPathSegmentation(graph, edgeWeights, nodeWeights, seeds=None, out=None):
+        """ node weighted seeded watersheds
+
+        Keyword Arguments :
+
+            - graph : input graph
+
+            - edgeWeights : edge weight map 
+
+            - nodeWeights : node weight map
+
+            - seeds : node map with seeds (default: None)
+                If seeds are None, 'nodeWeightedWatershedsSeeds' will be called
+
+        """
+
+        if seeds  is None:
+            seeds = graphs.nodeWeightedWatershedsSeeds(graph=graph,nodeWeights=nodeWeights)
+        return graphs._shortestPathSegmentation(graph=graph, edgeWeights=edgeWeights, nodeWeights=nodeWeights,
+                                                seeds=seeds, out=out)
+
+    shortestPathSegmentation.__module__ = 'vigra.graphs'
+    graphs.shortestPathSegmentation = shortestPathSegmentation
 
     def nodeWeightedWatersheds(graph,nodeWeights,seeds=None,method='regionGrowing',out=None):
         """ node weighted seeded watersheds

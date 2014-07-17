@@ -38,6 +38,12 @@ rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 # accumulate edge weights from gradient magnitude
 ragEdgeIndicator = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
 
+
+pathFinder = graphs.ShortestPathPathDijkstra(rag)
+pathFinder.run(ragEdgeIndicator,)
+
+
+
 # get labels/segmentation for rag
 ragLabels = graphs.felzenszwalbSegmentation(rag, ragEdgeIndicator,
                                             k=10, nodeNumStop=1000)

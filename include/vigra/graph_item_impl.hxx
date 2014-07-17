@@ -352,6 +352,9 @@ namespace vigra{
                     adjacency_.insert(other.adjacency_.begin(),other.adjacency_.end());
                 }
 
+                void setId(const index_type id){
+                    id_=id;
+                }
                 
                 std::pair<index_type,bool> findEdge(const index_type nodeId)const{
                     AdjIt iter = adjacency_.find(AdjacencyElement(nodeId,0));

@@ -674,12 +674,12 @@ public:
     {   
 
         // - edge weights from interpolated image
-        exportMiscAlgorithms();
+        exportMiscAlgorithms(c);
 
     }
 
-
-    void exportMiscAlgorithms()const{
+    template <class classT>
+    void exportMiscAlgorithms(classT & c)const{
         
 
 
@@ -691,6 +691,25 @@ public:
             ),
             "convert an image with with shape = graph.shape *2 -1 to an edge weight array"
         );
+
+        python::def("edgeFeaturesFromImage",registerConverters(&pyEdgeWeightsFromImage),
+            (
+                python::arg("graph"),
+                python::arg("image"),
+                python::arg("out")=python::object()
+            ),
+            "convert an image with with shape = graph.shape OR shape = graph.shape *2 -1 to an edge weight array"
+        );
+
+
+        c
+        .def("affiliatedEdgesSerializationSize",&pyAffiliatedEdgesSerializationSize,
+            (
+                python::arg("rag"),
+                python::arg("affiliatedEdges")
+            )
+        );
+
 
         //'python::def("edgeFeaturesFromInterpolatedImageCorrected",registerConverters(&pyEdgeWeightsFromInterpolatedImageCorrected),
         //'    (
@@ -705,6 +724,46 @@ public:
 
 
 
+    static size_t pyAffiliatedEdgesSerializationSize(
+        const GRAPH & gridGraph,
+        const AdjacencyListGraph & rag,
+        const typename AdjacencyListGraph:: template EdgeMap< std::vector<Edge> > & affiliatedEdges
+    ){
+        return affiliatedEdgesSerializationSize(gridGraph, rag, affiliatedEdges);
+    }
+
+
+    static NumpyAnyArray pyEdgeWeightsFromImage(
+        const GRAPH & g,
+        const FloatNodeArray & image,
+        FloatEdgeArray edgeWeightsArray
+    ){
+
+        bool regularShape=true;
+        bool topologicalShape=true;
+
+        for(size_t d=0;d<NodeMapDim;++d){
+            if(image.shape(d)!=g.shape()[d]){
+                regularShape=false;
+            }
+            if(image.shape(d)!=2*g.shape()[d]-1){
+                topologicalShape=false;
+            }
+        }
+       
+        if(regularShape)
+            return pyEdgeWeightsFromOrginalSizeImage(g,image,edgeWeightsArray);
+        else if(topologicalShape)
+            return pyEdgeWeightsFromInterpolatedImage(g,image,edgeWeightsArray);
+        else{
+            vigra_precondition(false, "shape of edge image does not match graph shape");
+            // to avid no return warnings
+            return pyEdgeWeightsFromOrginalSizeImage(g,image,edgeWeightsArray);
+        }
+    }
+
+
+
     static NumpyAnyArray pyEdgeWeightsFromInterpolatedImage(
         const GRAPH & g,
         const FloatNodeArray & interpolatedImage,
@@ -715,8 +774,6 @@ public:
             //std::cout<<"is "<<interpolatedImage.shape(d)<<"gs "<<2*g.shape()[d]-1<<"\n";
             vigra_precondition(interpolatedImage.shape(d)==2*g.shape()[d]-1, "interpolated shape must be shape*2 -1");
         }
-
-
         edgeWeightsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g) );
 
         // numpy arrays => lemon maps
@@ -729,6 +786,31 @@ public:
             const CoordType vCoord(g.v(edge));
             const CoordType tCoord = uCoord+vCoord;
             edgeWeightsArrayMap[edge]=interpolatedImage[tCoord];
+        }
+        return edgeWeightsArray;
+    }
+
+    static NumpyAnyArray pyEdgeWeightsFromOrginalSizeImage(
+        const GRAPH & g,
+        const FloatNodeArray & image,
+        FloatEdgeArray edgeWeightsArray
+    ){
+
+        for(size_t d=0;d<NodeMapDim;++d){
+            //std::cout<<"is "<<image.shape(d)<<"gs "<<2*g.shape()[d]-1<<"\n";
+            vigra_precondition(image.shape(d)==g.shape()[d], "interpolated shape must be shape*2 -1");
+        }
+        edgeWeightsArray.reshapeIfEmpty( IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g) );
+
+        // numpy arrays => lemon maps
+        FloatEdgeArrayMap edgeWeightsArrayMap(g,edgeWeightsArray);
+        typedef typename FloatNodeArray::difference_type CoordType;
+        for(EdgeIt iter(g); iter!=lemon::INVALID; ++ iter){
+
+            const Edge edge(*iter);
+            const CoordType uCoord(g.u(edge));
+            const CoordType vCoord(g.v(edge));
+            edgeWeightsArrayMap[edge]=(image[uCoord]+image[vCoord])/2.0;
         }
         return edgeWeightsArray;
     }

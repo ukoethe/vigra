@@ -95,6 +95,7 @@ VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     adjacencyListGraph.cxx
     gridGraph2d.cxx
     gridGraph3d.cxx
+    grid_graph_implicit_edge_maps.cxx
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(histogram SOURCES

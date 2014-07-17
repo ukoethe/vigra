@@ -56,6 +56,7 @@ namespace vigra{
 	void defineAdjacencyListGraph();
 	void defineGridGraph2d();
     void defineGridGraph3d();
+    void defineGridGraphImplicitEdgeMap();
 } // namespace vigra
 
 using namespace vigra;
@@ -88,5 +89,8 @@ BOOST_PYTHON_MODULE_INIT(graphs)
     defineAdjacencyListGraph();
     defineGridGraph2d();
     defineGridGraph3d();
+
+    // implicit edge maps
+    defineGridGraphImplicitEdgeMap();
     
 }

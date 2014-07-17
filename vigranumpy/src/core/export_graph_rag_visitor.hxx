@@ -128,6 +128,38 @@ public:
             python::return_value_policy<  python::manage_new_object >()
         );
 
+
+
+        // on the fly rag edge mean 
+        {
+
+
+            typedef OnTheFlyEdgeMap2<
+                Graph, typename PyNodeMapTraits<Graph,float>::Map,
+                MeanFunctor<float>, float
+            > ImplicitEdgeMap;
+
+            
+            python::def("_ragEdgeFeatures",
+                registerConverters(
+                    &pyRagEdgeMeanFromImplicit< float, float, ImplicitEdgeMap >
+                ),
+                (
+                    python::arg("rag"),
+                    python::arg("graph"),
+                    python::arg("affiliatedEdges"),
+                    python::arg("edgeFeatures"),
+                    python::arg("out")=python::object()
+                )
+            );
+
+        }
+
+        
+
+
+
+        // explicit rag features
         python::def("_ragEdgeFeatures",registerConverters(&pyRagEdgeFeatures<Singleband<float> >),
             (
                 python::arg("rag"),
@@ -340,6 +372,49 @@ public:
 
         return ragEdgeFeaturesArray;
     }
+
+
+
+    template<class T_PIXEL, class T, class OTF_EDGES>
+    static NumpyAnyArray pyRagEdgeMeanFromImplicit(
+        const RagGraph &           rag,
+        const Graph &              graph,
+        const RagAffiliatedEdges & affiliatedEdges,
+        const OTF_EDGES & otfEdgeMap,
+        typename PyEdgeMapTraits<RagGraph,T >::Array ragEdgeFeaturesArray
+    ){
+
+        // preconditions
+        vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
+
+        // resize out
+        ragEdgeFeaturesArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedEdgeMapShape(rag));
+        std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
+
+
+        // numpy arrays => lemon maps
+        typename PyEdgeMapTraits<RagGraph,T >::Map ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
+
+
+
+        for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+            const RagEdge ragEdge = *iter;
+            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+            for(size_t i=0;i<affEdges.size();++i){
+                ragEdgeFeaturesArrayMap[ragEdge]+=otfEdgeMap[affEdges[i]];
+            }
+            ragEdgeFeaturesArrayMap[ragEdge]/=affEdges.size();
+        }
+        
+
+
+
+        // return 
+        return ragEdgeFeaturesArray;
+
+    }
+
+
 
 
     template<class T>

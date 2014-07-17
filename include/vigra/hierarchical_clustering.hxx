@@ -182,7 +182,7 @@ namespace cluster_operators{
             const Node newNode = mergeGraph_.inactiveEdgesNode(edge);
             //std::cout<<"new node "<<mergeGraph_.id(newNode)<<"\n";
 
-            size_t counter=0;
+
             // iterate over all edges of this node
             for (IncEdgeIt e(mergeGraph_,newNode);e!=lemon::INVALID;++e){
 
@@ -195,16 +195,15 @@ namespace cluster_operators{
                 //std::cout<<"get inc edge weight"<<counter<<"\n";
                 // compute the new weight for this edge
                 // (this should involve region differences)
-                const ValueType newWeight = getEdgeWeight(incEdge);
+                const ValueType newWeight =    getEdgeWeight(incEdge);
+
+
                 // change the weight in pq by repushing
 
                 //std::cout<<"push\n";
                 pq_.push(incEdge.id(),newWeight);
-                // remember edge weight
-
-                //std::cout<<"set new\n";
                 minWeightEdgeMap_[incGraphEdge]=newWeight;
-                ++counter;
+
             }
             //std::cout<<"done\n";
         }
@@ -241,6 +240,10 @@ namespace cluster_operators{
             const Node u = mergeGraph_.u(e);
             const Node v = mergeGraph_.v(e);
 
+            const size_t dU = mergeGraph_.degree(u);
+            const size_t dV = mergeGraph_.degree(u);
+            const size_t dMin = std::min(dU,dV);
+
             const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
@@ -251,7 +254,10 @@ namespace cluster_operators{
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist = metric_(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
-            return totalWeight;
+            if(dMin==1)
+                return totalWeight*0.2;
+            else
+                return totalWeight;
         }
 
 
@@ -367,7 +373,8 @@ namespace cluster_operators{
                     // do the merge 
                     mergeGraph_.contractEdge( edgeToRemove );
                 }
-                if(param_.verbose_ && mergeGraph_.nodeNum()%10==0)
+                if(mergeGraph_.nodeNum()%10==0)
+                //#if(param_.verbose_ && mergeGraph_.nodeNum()%10==0)
                     std::cout<<"\rNodes: "<<std::setw(10)<<mergeGraph_.nodeNum()<<std::flush;
                 
             }

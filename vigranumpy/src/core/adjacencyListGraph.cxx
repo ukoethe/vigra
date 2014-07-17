@@ -53,6 +53,26 @@ namespace python = boost::python;
 namespace vigra{
 
 
+
+    NumpyAnyArray pySerializeAdjacencyListGraph(
+        const AdjacencyListGraph & graph,
+        NumpyArray<1, UInt32> serialization 
+    ){
+        serialization.reshapeIfEmpty( NumpyArray<1, UInt32>::difference_type(graph.serializationSize()));
+        graph.serialize(serialization.begin());
+        return serialization;
+    }
+
+
+    void pyDeserializeAdjacencyListGraph(
+        AdjacencyListGraph & graph,
+        const NumpyArray<1, UInt32> & serialization 
+    ){
+        graph.clear();
+        graph.deserialize(serialization.begin(),serialization.end());
+    }
+
+
     void defineAdjacencyListGraph(){
         
         typedef AdjacencyListGraph  Graph;
@@ -67,6 +87,15 @@ namespace vigra{
         .def(LemonGraphShortestPathVisitor<Graph>(clsName))
         .def(LemonGraphRagVisitor<Graph>(clsName))
         .def(LemonGraphHierachicalClusteringVisitor<Graph>(clsName))
+
+        // serialization helper
+        .def("serializationSize",&Graph::serializationSize, "number of integers needed to serialize graph")
+        .def("serialize",registerConverters(&pySerializeAdjacencyListGraph),
+            (
+                python::arg("serialization")=python::object()
+            )
+        )
+        .def("deserialize",registerConverters(&pyDeserializeAdjacencyListGraph) )
         ;
     }
 } 

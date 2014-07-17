@@ -209,6 +209,85 @@ namespace vigra{
         }
     }
 
+
+    template<unsigned int DIM, class DTAG, class AFF_EDGES>
+    size_t affiliatedEdgesSerializationSize(
+        const GridGraph<DIM,DTAG> & gridGraph,
+        const AdjacencyListGraph & rag,
+        const AFF_EDGES & affEdges
+    ){
+        size_t size = 0;
+
+        typedef typename  AdjacencyListGraph::EdgeIt EdgeIt;
+        typedef typename  AdjacencyListGraph::Edge Edge;
+
+        for(EdgeIt iter(rag); iter!=lemon::INVALID; ++iter){
+            const Edge e(*iter);
+            size+=1;
+            size+=affEdges[e].size()*(DIM+1);
+        }
+        return size;
+    }
+
+    template<class OUT_ITER, int DIM, class DTAG, class AFF_EDGES>
+    void serializeAffiliatedEdges(
+        const GridGraph<DIM,DTAG> & gridGraph,
+        const AdjacencyListGraph & rag,
+        const AFF_EDGES & affEdges,
+        OUT_ITER outIter
+    ){
+      
+        typedef typename  AdjacencyListGraph::EdgeIt EdgeIt;
+        typedef typename  AdjacencyListGraph::Edge Edge;
+        typedef typename  GridGraph<DIM,DTAG>::Edge GEdge;
+
+        for(EdgeIt iter(rag); iter!=lemon::INVALID; ++iter){
+
+            const Edge edge = *iter;
+            const size_t numAffEdge = affEdges[edge].size();
+            *outIter = numAffEdge; ++outIter;
+
+            for(size_t i=0; i<numAffEdge; ++i){
+                const GEdge gEdge = affEdges[edge][i];
+                for(size_t d=0; d<DIM; ++d){
+                    *outIter = gEdge[d]; ++outIter;
+                }
+            }
+        }
+    }
+
+    template<class IN_ITER, int DIM, class DTAG, class AFF_EDGES>
+    void deserializeAffiliatedEdges(
+        AdjacencyListGraph & rag,
+        const GridGraph<DIM,DTAG> & gridGraph,
+        AFF_EDGES & affEdges,
+        IN_ITER begin,
+        IN_ITER end
+    ){
+      
+        typedef typename  AdjacencyListGraph::EdgeIt EdgeIt;
+        typedef typename  AdjacencyListGraph::Edge Edge;
+        typedef typename  GridGraph<DIM,DTAG>::Edge GEdge;
+
+        affEdges.assign(rag);
+
+        for(EdgeIt iter(rag); iter!=lemon::INVALID; ++iter){
+
+            const Edge edge = *iter;
+            const size_t numAffEdge = *begin; ++begin;
+
+            for(size_t i=0; i<numAffEdge; ++i){
+                const GEdge gEdge;
+                for(size_t d=0; d<DIM+1; ++d){
+                    gEdge[d]=*begin = ++begin;
+                }
+            }
+        }
+    }
+
+
+
+
     /// \brief shortest path computer
     template<class GRAPH,class WEIGHT_TYPE>
     class ShortestPathDijkstra{
