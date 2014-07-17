@@ -683,6 +683,7 @@ void boundaryGraph(Graph const & g,
             {
 				out[*node] = 1;
 				out[g.target(*arc)] = 1;
+                continue;
             }
         }
     }

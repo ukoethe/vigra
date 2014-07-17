@@ -1200,15 +1200,6 @@ struct MultiDistanceTest
                 boundaryMultiVectorialDist(labels, vecVolume2);
                 Double2DArray distVolume2(labels.shape());
                 transformMultiArray(srcMultiArrayRange(vecVolume2), destMultiArray(distVolume2), squaredNorm(Arg1()));
-                                for (int k = 0; k < labels.size(); k++)
-                                {
-                                    std::cout << distVolume2(k) << " ";
-                                    if (k%distVolume2.shape(0)==0)
-                                    {
-                                        std::cout << "\n";
-                                    }
-                                }
-                                std::cout << "\n";
                 for (int k = 0; k < labels.size(); k++)
                 {
                     shouldEqualTolerance(sqrt(distVolume2[k]) - bndMltDst_ref[k], 0.0, 0.15034);

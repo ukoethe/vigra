@@ -924,6 +924,11 @@ void defineMorphology()
          arg("out")=python::object()),
         "TODO");
         
+    def("vectorialBoundaryDistanceTransform",
+        registerConverters(&pythonVectorialBoundaryDistanceTransform<3, float>),
+        (arg("array"),
+         arg("out")=python::object()),
+        "TODO");
 }
 
 } // namespace vigra
