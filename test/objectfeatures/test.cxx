@@ -1433,6 +1433,50 @@ struct AccumulatorTest
             shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,3));
         }
     }
+    
+    void testPointWeighted()
+    {
+
+		using namespace vigra::acc;
+		typedef double DataType;
+		int size = 2;
+		vigra::MultiArray<2, DataType> data(vigra::Shape2(size, size));
+
+		MultiArray<2, double>::iterator i = data.begin();
+		AccessorTraits<double>::default_accessor acc;
+
+		acc.set(1.1, i);
+		++i;
+		acc.set(2.2, i);
+		++i;
+		acc.set(3.3, i);
+		++i;
+		acc.set(4.4, i);
+		++i;
+
+		TinyVector<double, 2> center(0.5, 0.5);
+
+
+		AccumulatorChain<CoupledArrays<2, double>, Select<DistanceWeighted<Mean> > > a;
+
+		AccumulatorChain<CoupledArrays<2, double>, Select<CenterWeighted<Mean> > > a1;
+
+		DistanceWeightedOptions<2> options;
+		options.point = center;
+		options.sigma = 1;
+		a.setDistanceWeightedOptions(options);
+
+		CenterWeightedOptions options1;
+		options1.sigma = 1;
+		a1.setCenterWeightedOptions(options1);
+
+		extractFeatures(data, a);
+
+		extractFeatures(data, a1);
+
+		shouldEqualTolerance(get<DistanceWeighted<Mean> >(a), 0.854416, 1e-6);
+		shouldEqualTolerance(get<CenterWeighted<Mean> >(a1), 0.854416, 1e-6);
+	}
 };
 
 struct FeaturesTestSuite : public vigra::test_suite
@@ -1449,6 +1493,7 @@ struct FeaturesTestSuite : public vigra::test_suite
         add(testCase(&AccumulatorTest::testHistogram));
         add(testCase(&AccumulatorTest::testLabelDispatch));
         add(testCase(&AccumulatorTest::testIndexSpecifiers));
+        add(testCase(&AccumulatorTest::testPointWeighted));
     }
 };
 
