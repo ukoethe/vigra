@@ -948,7 +948,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
     class RegionAdjacencyGraph(graphs.AdjacencyListGraph):
-        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
+        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
             """ Region adjacency graph
 
                 Keyword Arguments :
@@ -978,15 +978,30 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             """
             super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
 
-            if ignoreLabel is None:
-                ignoreLabel=-1
+            if ignoreLabel is None and isDense is not None and isDense == True:
+                if ignoreLabel is None:
+                    ignoreLabel=-1
 
-            self.labels          = labels
-            self.ignoreLabel     = ignoreLabel
-            self.baseGraphLabels = labels
-            self.baseGraph       = graph
-            # set up rag
-            self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
+                self.labels          = labels
+                self.ignoreLabel     = ignoreLabel
+                self.baseGraphLabels = labels
+                self.baseGraph       = graph
+                if maxLabel is None:
+                    maxLabel = int(numpy.max(labels))
+                # set up rag
+                self.affiliatedEdges = graphs._regionAdjacencyGraphFast(graph,labels,self,maxLabel,int(reserveEdges))
+
+            else:
+
+                if ignoreLabel is None:
+                    ignoreLabel=-1
+
+                self.labels          = labels
+                self.ignoreLabel     = ignoreLabel
+                self.baseGraphLabels = labels
+                self.baseGraph       = graph
+                # set up rag
+                self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
 
         def mergeGraph(self):
             return graphs.AdjacencyListGraphMergeGraph(self)
@@ -1121,7 +1136,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     graphs.RegionAdjacencyGraph = RegionAdjacencyGraph
 
     class GridRegionAdjacencyGraph(graphs.RegionAdjacencyGraph):
-        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
+        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
             """ Grid Region adjacency graph
 
                 A region adjaceny graph,where the base graph should be
@@ -1158,7 +1173,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             """
             if not (graphs.isGridGraph(graph) or  isinstance(graph,GridRegionAdjacencyGraph)):
                 raise RuntimeError("graph must be a GridGraph or a GridRegionAdjacencyGraph")
-            super(GridRegionAdjacencyGraph,self).__init__(graph,labels,ignoreLabel,reserveEdges)
+            super(GridRegionAdjacencyGraph, self).__init__(graph, labels, ignoreLabel, reserveEdges, maxLabel, isDense)
 
         @property
         def shape(self):
@@ -1265,7 +1280,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
 
-    def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0):
+    def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
         """ Return a region adjacency graph for a labeld graph.
 
             Parameters:
@@ -1282,15 +1297,22 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     Otherwise a RegionAdjacencyGraph will be returned
         """
         if isinstance(graph , graphs.GridRegionAdjacencyGraph) or graphs.isGridGraph(graph):
-            return GridRegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges)
+            return GridRegionAdjacencyGraph(graph=graph, labels=labels, ignoreLabel=ignoreLabel,
+                                            reserveEdges=reserveEdges, maxLabel=maxLabel, isDense=isDense)
         else:
-            return RegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges) 
+            return RegionAdjacencyGraph(graph=graph, labels=labels, ignoreLabel=ignoreLabel,
+                                        reserveEdges=reserveEdges, maxLabel=maxLabel, isDense=isDense)
 
 
     regionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.regionAdjacencyGraph = regionAdjacencyGraph
 
-    def gridRegionAdjacencyGraph(labels,ignoreLabel=None,reserveEdges=0):
+
+   
+
+
+
+    def gridRegionAdjacencyGraph(labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
         """ get a region adjacency graph and a grid graph from a labeling.
 
             This function will call 'graphs.gridGraph' and 'graphs.regionAdjacencyGraph'
@@ -1301,8 +1323,9 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 - reserveEdges : reserve a number of edges (default: 0)
         """
         _gridGraph=graphs.gridGraph(numpy.squeeze(labels).shape)
-        rag=graphs.regionAdjacencyGraph(_gridGraph,labels,ignoreLabel,reserveEdges)
-        return _gridGraph,rag
+        rag=graphs.regionAdjacencyGraph(graph=_gridGraph, labels=labels, ignoreLabel=ignoreLabel,
+                                        reserveEdges=reserveEdges, maxLabel=maxLabel, isDense=isDense)
+        return _gridGraph, rag
 
     gridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.gridRegionAdjacencyGraph = gridRegionAdjacencyGraph

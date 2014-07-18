@@ -55,7 +55,7 @@
 #include "union_find.hxx"
 #include "adjacency_list_graph.hxx"
 #include "graph_maps.hxx"
-
+#include "timing.hxx"
 
 
 
@@ -173,15 +173,23 @@ namespace vigra{
         typedef typename GraphIn::Edge   EdgeGraphIn;
         typedef typename GraphIn::NodeIt NodeItGraphIn;
         typedef typename GraphIn::EdgeIt EdgeItGraphIn;
-
         typedef typename GraphOut::Edge   EdgeGraphOut; 
+
+
+        USETICTOC;
+
+
+        std::cout<<"add nodes\n";
+        TIC;
         for(NodeItGraphIn iter(graphIn);iter!=lemon::INVALID;++iter){
             const LabelType l=labels[*iter];
             if(ignoreLabel==-1 || static_cast<Int64>(l)!=ignoreLabel)
                 rag.addNode(l);
         }
+        TOC;
 
-        // add al edges
+        std::cout<<"add edges\n";
+        TIC
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
@@ -191,6 +199,11 @@ namespace vigra{
                 rag.addEdge( rag.nodeFromId(lu),rag.nodeFromId(lv));
             }
         }
+        TOC
+
+
+        std::cout<<"setup hyper edges\n";
+        TIC
         // SET UP HYPEREDGES
         affiliatedEdges.assign(rag);
         // add edges
@@ -207,7 +220,11 @@ namespace vigra{
                 //std::cout<<"write done\n";
             }
         }
+        TOC
     }
+
+
+
 
 
     template<unsigned int DIM, class DTAG, class AFF_EDGES>

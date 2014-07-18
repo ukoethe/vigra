@@ -447,8 +447,13 @@ class GridGraphOutEdgeIterator
       edge_descriptor_(),
       index_(0)
     {
-        unsigned int nbtype = g.get_border_type(v);
-        init(&(*g.edgeIncrementArray())[nbtype], &(*g.neighborIndexArray(BackEdgesOnly))[nbtype], *v, opposite);
+        if(v.isValid()){
+            unsigned int nbtype = g.get_border_type(v);
+            init(&(*g.edgeIncrementArray())[nbtype], &(*g.neighborIndexArray(BackEdgesOnly))[nbtype], *v, opposite);
+        }
+        else{
+            index_ = (index_type)neighborIndices_->size();
+        }
     }
 
     template <class DirectedTag>
@@ -460,8 +465,13 @@ class GridGraphOutEdgeIterator
       edge_descriptor_(),
       index_(0)
     {
-        unsigned int nbtype = g.get_border_type(v);
-        init(&(*g.edgeIncrementArray())[nbtype], &(*g.neighborIndexArray(BackEdgesOnly))[nbtype], v, opposite);
+        if(isInside(g, v)){
+            unsigned int nbtype = g.get_border_type(v);
+            init(&(*g.edgeIncrementArray())[nbtype], &(*g.neighborIndexArray(BackEdgesOnly))[nbtype], v, opposite);
+        }
+        else{
+            index_ = (index_type)neighborIndices_->size();
+        }
     }
     
     GridGraphOutEdgeIterator & operator++()
@@ -772,6 +782,42 @@ public:
                 outEdgeIterator_ = out_edge_iterator(g, vertexIterator_);
         }
     }
+
+
+
+    template <class DirectedTag>
+    GridGraphEdgeIterator(GridGraph<N, DirectedTag> const & g, const typename  GridGraph<N, DirectedTag>::Edge & edge)
+    : neighborOffsets_(g.edgeIncrementArray()),
+      neighborIndices_(g.neighborIndexArray(BackEdgesOnly)),
+      vertexIterator_(g,g.u(edge)),
+      outEdgeIterator_(g, vertexIterator_)
+    {
+        if(vertexIterator_.isValid()){
+            // vigra_precondition(edge!=lemon::INVALID,"no invalid edges here");
+            // vigra_precondition( allLess(*vertexIterator_,g.shape()), "fixme1");
+            // vigra_precondition( allGreaterEqual(*vertexIterator_,shape_type() ), "fixme2");
+
+
+            if(edge[N] >= 0  && edge[N] < g.maxUniqueDegree( ) && 
+                (*( g.neighborExistsArray()))[vertexIterator_.borderType()][edge[N]] ){
+                while(*outEdgeIterator_!=edge){
+                    ++outEdgeIterator_;
+                }
+            }
+            else{
+                vertexIterator_ = vertexIterator_.getEndIterator();
+            }
+
+            // vigra_precondition(edge[N] >= 0 && edge[N] < g.maxUniqueDegree(),"fixme3");
+            // vigra_precondition(    ,"fixme4");
+            // vigra_precondition(!outEdgeIterator_.atEnd(),"fixme5");
+
+
+        }
+    }
+
+
+
 
     GridGraphEdgeIterator & operator++()
     {
@@ -1870,7 +1916,6 @@ public:
             return graph_.out_degree(key);
         }
         
-      protected:
       
         GridGraph const & graph_;
     };
@@ -2649,6 +2694,11 @@ public:
                    : &neighborIndices_;
     }
 
+    NeighborExistsArray const * neighborExistsArray() const
+    {
+        return &neighborExists_;
+    }
+
   protected:
     NeighborOffsetArray neighborOffsets_;
     NeighborExistsArray neighborExists_;
@@ -2659,6 +2709,15 @@ public:
     MultiArrayIndex num_vertices_, num_edges_, max_node_id_, max_arc_id_, max_edge_id_;
     NeighborhoodType neighborhoodType_;
 };
+
+template<unsigned int N, class DirectedTag>
+inline
+bool
+isInside(GridGraph<N, DirectedTag> const & g,
+         typename GridGraph<N, DirectedTag>::vertex_descriptor const & v) 
+{
+    return allLess(v, g.shape()) && allGreaterEqual(v, typename MultiArrayShape<N>::type());
+}
 
 //@}
 

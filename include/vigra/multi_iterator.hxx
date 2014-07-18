@@ -123,6 +123,19 @@ class MultiCoordinateIterator
        : base_type(handle_type(g.shape()))
     {}
 
+
+    template<class DirectedTag>
+    explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const & g, const typename  GridGraph<N, DirectedTag>::Node & node) 
+       : base_type(handle_type(g.shape()))
+    {
+        if( isInside(g,node))
+            (*this)+=node;
+        else
+            *this=this->getEndIterator();
+    }
+
+
+
     // dereferencing the iterator yields the coordinate object
     // (used as vertex_descriptor)
     reference operator*()

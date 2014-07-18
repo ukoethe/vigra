@@ -16,6 +16,7 @@
 #include <vigra/graph_maps.hxx>
 #include <vigra/python_graph.hxx>
 #include <vigra/graph_algorithms.hxx>
+#include <vigra/parallel_graph_algorithms.hxx>
 #include <vigra/metrics.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/error.hxx>
@@ -125,6 +126,11 @@ public:
 
         // make the region adjacency graph
         python::def("_regionAdjacencyGraph",registerConverters(&pyMakeRegionAdjacencyGraph),
+            python::return_value_policy<  python::manage_new_object >()
+        );
+
+        // make the region adjacency graph
+        python::def("_regionAdjacencyGraphFast",registerConverters(&pyMakeRegionAdjacencyGraphFast),
             python::return_value_policy<  python::manage_new_object >()
         );
 
@@ -289,6 +295,26 @@ public:
 
         // call algorithm itself
         makeRegionAdjacencyGraph(graph,labelsArrayMap,rag,*affiliatedEdges,ignoreLabel);
+
+        return affiliatedEdges;
+    }
+
+
+    static RagAffiliatedEdges * pyMakeRegionAdjacencyGraphFast(
+        const Graph &   graph,
+        UInt32NodeArray labelsArray,
+        RagGraph &      rag,
+        const UInt32 maxLabel,
+        const UInt32 reserveEdges
+    ){
+        // numpy arrays => lemon maps
+        UInt32NodeArrayMap labelsArrayMap(graph,labelsArray);
+
+        // allocate a new RagAffiliatedEdges
+        RagAffiliatedEdges * affiliatedEdges = new RagAffiliatedEdges(rag);
+
+        // call algorithm itself
+        makeRegionAdjacencyGraphFast(graph,labelsArrayMap,rag,*affiliatedEdges,maxLabel,reserveEdges);
 
         return affiliatedEdges;
     }

@@ -447,6 +447,15 @@ namespace vigra{
             new node will be added.
         */
         Node addNode(const index_type id);
+
+
+        /*  \brief this will remove any nodes if there are existing nodes (and edges)
+            and will add nodes in the range of ids , endId is not included!
+        */
+        void assignNodeRange(const index_type beginId, const index_type endId);
+
+
+
         /* \brief add an edge to the graph.
             If there is an other edge between u and v no new edge will be added.
         */
@@ -483,6 +492,18 @@ namespace vigra{
         static const bool is_directed = false;
 
     public:
+
+        void reserveMaxNodeId(const index_type mxid ){
+            if(nodeNum()==0 ||  mxid>maxNodeId())
+                nodes_.reserve(mxid+1);
+        }
+
+        void reserveEdges(const size_t size ){
+            if(size>nodeNum())
+                edges_.reserve(size);
+        }
+
+
         void clear(){
             nodeNum_=0;
             edgeNum_=0;
@@ -688,6 +709,20 @@ namespace vigra{
             return Node(id);
         }
     }
+
+
+    inline void 
+    AdjacencyListGraph::assignNodeRange(const AdjacencyListGraph::index_type beginId, const AdjacencyListGraph::index_type endId){
+        nodes_.clear();
+        edges_.clear();
+        edgeNum_=0;
+        nodeNum_ = endId - beginId;
+        nodes_.resize(endId);
+        for(index_type i=beginId; i<endId; ++i)
+            nodes_[i]=NodeStorage(i);
+    }
+
+
 
     inline AdjacencyListGraph::Edge 
     AdjacencyListGraph::addEdge(
