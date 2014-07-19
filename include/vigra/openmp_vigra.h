@@ -43,12 +43,14 @@ namespace vigra
         template <class SrcImageIterator1, class SrcAccessor1,
                   class SrcImageIterator2, class SrcAccessor2,
                   class DestImageIterator, class DestAccessor,
-                  class Functor>
+                  class Functor,
+                  class CountFunctor>
         inline void
         combineTwoImages(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                          SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                          DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                         const Functor& functor)
+                         const Functor& functor,
+                         CountFunctor& count_functor)
         {
 #pragma omp parallel
             {
@@ -65,6 +67,7 @@ namespace vigra
                                             src2_upperleft + begin, src2_acc,
                                             dest_upperleft + begin, dest_acc,
                                             f);
+                    count_functor();
                 }
             } // omp parallel
         }
@@ -123,6 +126,7 @@ namespace vigra
 #pragma omp for schedule(guided) nowait
                 for (int y = 0; y < size.y; ++y)
                 {
+                	std::cout << "My ID=" << omp_get_thread_num() << "\n" << std::endl;
                     const vigra::Diff2D begin(0, y);
                     const vigra::Diff2D end(size.x, y + 1);
 
@@ -137,10 +141,10 @@ namespace vigra
 
 
         template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor, class CountFunctor>
         inline void
         copyImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
-                  DestImageIterator dest_upperleft, DestAccessor dest_acc)
+                  DestImageIterator dest_upperleft, DestAccessor dest_acc, CountFunctor &count_functor)
         {
 #pragma omp parallel
             {
@@ -154,6 +158,7 @@ namespace vigra
 
                     vigra::copyImage(src_upperleft + begin, src_upperleft + end, src_acc,
                                      dest_upperleft + begin, dest_acc);
+                    count_functor();
                 }
             } // omp parallel
         }
@@ -181,6 +186,7 @@ namespace vigra
                     vigra::transformImage(src_upperleft + begin, src_upperleft + end, src_acc,
                                           dest_upperleft + begin, dest_acc,
                                           f);
+                    std::cout << "My id: " << omp_get_thread_num() << std::endl;
                 }
             } // omp parallel
         }
@@ -568,17 +574,20 @@ namespace vigra
         template <class SrcImageIterator1, class SrcAccessor1,
                   class SrcImageIterator2, class SrcAccessor2,
                   class DestImageIterator, class DestAccessor,
-                  class Functor>
+                  class Functor,
+                  class CountFunctor>
         inline void
         combineTwoImages(vigra::triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                          vigra::pair<SrcImageIterator2, SrcAccessor2> src2,
                          vigra::pair<DestImageIterator, DestAccessor> dest,
-                         const Functor& functor)
+                         const Functor& functor,
+                         CountFunctor& count_functor)
         {
             vigra::omp::combineTwoImages(src1.first, src1.second, src1.third,
                                          src2.first, src2.second,
                                          dest.first, dest.second,
-                                         functor);
+                                         functor,
+                                         count_functor);
         }
 
 
@@ -637,13 +646,13 @@ namespace vigra
 
 
         template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor, class Functor>
         inline void
         copyImage(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                  vigra::pair<DestImageIterator, DestAccessor> dest)
+                  vigra::pair<DestImageIterator, DestAccessor> dest, Functor& functor)
         {
             vigra::omp::copyImage(src.first, src.second, src.third,
-                                  dest.first, dest.second);
+                                  dest.first, dest.second, functor);
         }
 
 
