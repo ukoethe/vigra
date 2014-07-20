@@ -12,12 +12,12 @@ from vigra import Timer
 
 
 # input
-shape = [300, 100, 30]
+shape = [300, 10, 30]
 data = numpy.random.rand(*shape).astype(numpy.float32)
 
-with Timer("watershed"):
-    seg, nseg = vigra.analysis.watersheds(data)
-
+with Timer("get seg"):
+    seg = numpy.random.randint(5, size=shape[0]*shape[1]*shape[2])
+    seg = seg.reshape(shape).dtype(numpy.uin32)
 
 with Timer("labelVolume"):
     seg = vigra.analysis.labelVolume(seg)
