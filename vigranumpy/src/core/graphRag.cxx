@@ -34,67 +34,81 @@
 /************************************************************************/
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
+#define NO_IMPORT_ARRAY
+
+#define WITH_BOOST_GRAPH
+
+/*vigra*/
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/metrics.hxx>
+#include <vigra/multi_gridgraph.hxx>
+#include <vigra/adjacency_list_graph.hxx>
+#include <vigra/graph_algorithms.hxx>
+#include <vigra/python_graph.hxx>
+#include <vigra/graph_rag.hxx>
+
 
 namespace python = boost::python;
 
 namespace vigra{
 
 
+    void defineRagOptions();
 
 
 
-	void defineInvalid(){
-        python::class_<lemon::Invalid>("Invalid",python::init<>());
+    template<class GRAPH, class LABEL_TYPE>
+    typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType * pyMakeRag(
+        const GRAPH & graph,
+        typename PyNodeMapTraits<GRAPH,LABEL_TYPE >::Array labelArray,
+        AdjacencyListGraph & rag,
+        const RagOptions  & options
+    ){
+        // numpy to lemon map
+        typename PyNodeMapTraits<GRAPH ,LABEL_TYPE >::Map labelsMap(graph,labelArray);
+
+        typedef  typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType AffiliatedEdgesType;
+
+        AffiliatedEdgesType *  affiliatedEdges = new AffiliatedEdgesType();
+        makeRag(graph, labelsMap, rag, *affiliatedEdges, options);
+
+        return affiliatedEdges;
+
     }
 
-	void defineAdjacencyListGraph();
-	void defineGridGraph2d();
-    void defineGridGraph3d();
-    void defineGridGraphImplicitEdgeMap();
-    void defineNewRag();
-} // namespace vigra
+    template<class GRAPH, class LABEL_TYPE>
+    void defineMakeRagTemplate(){
 
-using namespace vigra;
-using namespace boost::python;
-
-
-
-BOOST_PYTHON_MODULE_INIT(graphs)
-{
-    import_vigranumpy();
-
-    python::docstring_options doc_options(true, true, false);
-
-    // all exporters needed for graph exporters (like lemon::INVALID)
-    defineInvalid();
-
-    enum_<metrics::MetricType>("MetricType")
-        .value("chiSquared", metrics::ChiSquaredMetric)
-        .value("hellinger", metrics::HellingerMetric)
-        .value("squaredNorm", metrics::SquaredNormMetric)
-        .value("norm", metrics::NormMetric)
-        .value("manhattan", metrics::ManhattanMetric)
-        .value("symetricKl", metrics::SymetricKlMetric)
-        .value("bhattacharya", metrics::BhattacharyaMetric)
+        python::def("_makeRag", registerConverters(&pyMakeRag<GRAPH, LABEL_TYPE>),
+            (
+                (
+                    python::arg("graph"),
+                    python::arg("labels"),
+                    python::arg("rag"),
+                    python::arg("options")= RagOptions()
+                )
+            ),
+            python::return_value_policy<python::manage_new_object>()
+        )
         ;
-    
+
+    }
+
+    void defineMakeRag(){
+
+        typedef GridGraph<3,boost::undirected_tag> GridGraph3d;
+
+        defineMakeRagTemplate<GridGraph3d, UInt32 >();
+
+    }
+
+    void defineNewRag(){
+        defineRagOptions();
+        defineMakeRag();
+    }
 
 
-    // all graph classes itself (GridGraph , AdjacencyListGraph)
-    defineAdjacencyListGraph();
-    defineGridGraph2d();
-    defineGridGraph3d();
+} 
 
-    // implicit edge maps
-    defineGridGraphImplicitEdgeMap();
 
-    // define new rag functions
-
-    defineNewRag();
-}

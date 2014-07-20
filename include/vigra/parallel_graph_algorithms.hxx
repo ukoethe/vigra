@@ -66,6 +66,7 @@
 namespace vigra{
 
 
+
 struct GraphEdgeLocking
 {
     GraphEdgeLocking(const size_t maxEdgeId)
@@ -187,7 +188,7 @@ struct FillAffEdges{
         rag=AdjacencyListGraph();
         typedef typename GraphMapTypeTraits<GRAPH_IN_NODE_LABEL_MAP>::Value LabelType;
         typedef GRAPH_IN GraphIn;
-        typedef AdjacencyListGraph GraphOut;
+        //typedef AdjacencyListGraph GraphOut;
 
         typedef typename GraphIn::Edge   EdgeGraphIn;
         //typedef typename GraphIn::NodeIt NodeItGraphIn;

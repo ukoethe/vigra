@@ -34,67 +34,48 @@
 /************************************************************************/
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
+#define NO_IMPORT_ARRAY
+
+#define WITH_BOOST_GRAPH
+
+/*vigra*/
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/metrics.hxx>
+#include <vigra/multi_gridgraph.hxx>
+#include <vigra/adjacency_list_graph.hxx>
+#include <vigra/graph_algorithms.hxx>
+#include <vigra/python_graph.hxx>
+#include <vigra/graph_rag.hxx>
+
 
 namespace python = boost::python;
 
 namespace vigra{
 
 
-
-
-
-	void defineInvalid(){
-        python::class_<lemon::Invalid>("Invalid",python::init<>());
+    void defineRagOptions(){
+        typedef vigra::RagOptions RagOptions;
+        python::class_<RagOptions>("RagOptions",
+            python::init<
+                const Int64, const Int64, const Int64,
+                const Int64, const Int64, const Int64,
+                const bool 
+            >(
+                (
+                    python::arg("minLabel")=-1,
+                    python::arg("maxLabel")=-1,
+                    python::arg("isDense")=-1,
+                    python::arg("ignoreLabel")=-1,
+                    python::arg("reserveEdg")=-1,
+                    python::arg("nThreads")=-1,
+                    python::arg("parallel")=false
+                )
+            ) 
+        )
+        ;
     }
 
-	void defineAdjacencyListGraph();
-	void defineGridGraph2d();
-    void defineGridGraph3d();
-    void defineGridGraphImplicitEdgeMap();
-    void defineNewRag();
-} // namespace vigra
-
-using namespace vigra;
-using namespace boost::python;
+} 
 
 
-
-BOOST_PYTHON_MODULE_INIT(graphs)
-{
-    import_vigranumpy();
-
-    python::docstring_options doc_options(true, true, false);
-
-    // all exporters needed for graph exporters (like lemon::INVALID)
-    defineInvalid();
-
-    enum_<metrics::MetricType>("MetricType")
-        .value("chiSquared", metrics::ChiSquaredMetric)
-        .value("hellinger", metrics::HellingerMetric)
-        .value("squaredNorm", metrics::SquaredNormMetric)
-        .value("norm", metrics::NormMetric)
-        .value("manhattan", metrics::ManhattanMetric)
-        .value("symetricKl", metrics::SymetricKlMetric)
-        .value("bhattacharya", metrics::BhattacharyaMetric)
-        ;
-    
-
-
-    // all graph classes itself (GridGraph , AdjacencyListGraph)
-    defineAdjacencyListGraph();
-    defineGridGraph2d();
-    defineGridGraph3d();
-
-    // implicit edge maps
-    defineGridGraphImplicitEdgeMap();
-
-    // define new rag functions
-
-    defineNewRag();
-}

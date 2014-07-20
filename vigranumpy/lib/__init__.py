@@ -33,7 +33,7 @@
 #
 #######################################################################
 
-import sys, os
+import sys, os, time
 
 _vigra_path = os.path.abspath(os.path.dirname(__file__))
 _vigra_doc_path = _vigra_path + '/doc/vigranumpy/index.html'
@@ -117,6 +117,31 @@ import graphs
 import utilities
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
+
+
+
+class Timer:    
+    def __init__(self, name, verbose=True):
+        self.name = name 
+        self.verbose = verbose
+
+    def __enter__(self):
+        if self.verbose:
+            print self.name, "..."
+        self.start = time.clock()
+        return self
+
+    def __exit__(self, *args):
+        self.end = time.clock()
+        self.interval = self.end - self.start
+        if self.verbose  :
+            print "... took ", self.interval, "sec"
+
+
+
+
+
+
 
 try:
     import fourier
