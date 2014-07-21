@@ -64,7 +64,7 @@
 
 
 
-
+#include "timing.hxx"
 
 
 
@@ -211,8 +211,6 @@ namespace vigra{
         RagOptions & optionsOut
     ){
         // process the options
-        std::cout<<"process the options \n";
-
         // check thread options
         if(optionsIn.nThreads_>1)
             optionsOut.parallel_=true;
@@ -233,7 +231,6 @@ namespace vigra{
         typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType & affiliatedEdges,
         const RagOptions & opt
     ){
-        std::cout<<"addNodes Serial \n";
 
         typedef typename GRAPH::NodeIt NodeIt;
         typedef typename LABEL_MAP::Value LabelType;
@@ -241,13 +238,11 @@ namespace vigra{
         //typedef typename LABEL_MAP::Value LabelType;
         // dense, no ignore label, min and max are known
         if(opt.isDense_ && opt.minLabel_!=-1 && opt.maxLabel_ != -1 && opt.ignoreLabel_==-1){
-            std::cout<<"addNodes batch \n";    
+  
             rag.assignNodeRange(opt.minLabel_,opt.maxLabel_+1);
         }
         else{
-            std::cout<<"addNodes explicit \n";    
             if(opt.maxLabel_>0){
-                std::cout<<"reserve max node id \n"; 
                 rag.reserveMaxNodeId(opt.maxLabel_);
             }
 
@@ -278,7 +273,6 @@ namespace vigra{
         typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType & affiliatedEdges,
         const RagOptions & opt
     ){
-        std::cout<<"addNodes Parallel (fallback serial)\n";
         addNodesSerial(g, labels, rag, affiliatedEdges, opt);
     }
 
@@ -312,7 +306,7 @@ namespace vigra{
         typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType & affiliatedEdges,
         const RagOptions & opt
     ){
-        std::cout<<"addEdges Serial \n";
+        std::cerr<<"addEdges Serial NON GRID GRAPH 3D\n";
         typedef typename LABEL_MAP::Value LabelType;
         typedef typename GRAPH::Edge Edge;
         typedef typename GRAPH::EdgeIt EdgeIt;
@@ -342,6 +336,48 @@ namespace vigra{
         }
     }
 
+
+    //template<class LABEL_MAP>
+    //void addEdgesSerial(
+    //    const GridGraph<3, boost::undirected_tag > & g, 
+    //    const LABEL_MAP & labels,
+    //    AdjacencyListGraph & rag,
+    //    typename AffiliatedEdgesHelper< GridGraph<3, boost::undirected_tag > >::AffiliatedEdgesType & affiliatedEdges,
+    //    const RagOptions & opt
+    //){
+    //    //vigra_precondition(false,"false");
+    //    //std::cerr<<"addEdges Serial GRID GRAPH 3D\n";
+    //    typedef typename LABEL_MAP::Value LabelType;
+    //    vigra::TinyVector<int, 3> shape =g.shape();
+    //    vigra::TinyVector<int, 3> coord;
+    //    
+    //    for(coord[2]=0; coord[2]<shape[2]; ++coord[2])
+    //    for(coord[1]=0; coord[1]<shape[1]; ++coord[1])
+    //    for(coord[0]=0; coord[0]<shape[0]; ++coord[0]){
+//
+    //        vigra::TinyVector<int, 3> otherCoord = coord;
+    //        const LabelType lu = labels[coord];
+    //        if(coord[0]+1 < shape[0]){
+    //            otherCoord[0]+=1;
+    //            const LabelType lv = labels[otherCoord];
+    //            if(lu != lv )
+    //                rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
+    //        }
+    //        if(coord[1]+1 < shape[1]){
+    //            otherCoord[1]+=1;
+    //            const LabelType lv = labels[otherCoord];
+    //            if(lu != lv )
+    //                rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
+    //        }
+    //        if(coord[2]+1 < shape[2]){
+    //            otherCoord[2]+=1;
+    //            const LabelType lv = labels[otherCoord];
+    //            if(lu != lv )
+    //                rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
+    //        }
+    //    }
+    //}
+
     template<class GRAPH,class LABEL_MAP>
     void addEdgesParallel(
         const GRAPH & g,  
@@ -350,7 +386,6 @@ namespace vigra{
         typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType & affiliatedEdges,
         const RagOptions & opt
     ){
-        std::cout<<"addEdges Parallel Serial Fallback\n";
         addEdgesSerial(g, labels, rag, affiliatedEdges, opt);
     }
 
@@ -362,7 +397,6 @@ namespace vigra{
         typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType & affiliatedEdges,
         const RagOptions & opt
     ){
-        std::cout<<"addEdges\n";
         if(opt.parallel_)
             addEdgesParallel(g, labels, rag, affiliatedEdges, opt);
         else
@@ -385,7 +419,6 @@ namespace vigra{
         typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType & affiliatedEdges,
         const RagOptions & opt
     ){
-        std::cout<<"setupAffiliatedEdges Serial \n";
 
         typedef typename LABEL_MAP::Value LabelType;
         typedef typename GRAPH::Edge Edge;
@@ -517,7 +550,7 @@ namespace vigra{
         typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType & affiliatedEdges,
         const RagOptions & opt
     ){
-        std::cout<<"setupAffiliatedEdges Parallel Serial Fallback \n";
+
         
         typedef typename MakeEdgeRangeVector<GRAPH>::EdgeRangeVector EdgeRangeVector;
         typedef typename GRAPH::Edge Edge;
@@ -532,7 +565,7 @@ namespace vigra{
         EdgeRangeVector edgeRangeVec;
 
 
-        edgeRanges(g, edgeRangeVec, 40);
+        edgeRanges(g, edgeRangeVec, opt.nThreads_*2);
 
 
 
@@ -572,7 +605,6 @@ namespace vigra{
         typename AffiliatedEdgesHelper<GRAPH>::AffiliatedEdgesType & affiliatedEdges,
         const RagOptions & opt
     ){
-        std::cout<<"setupAffiliatedEdges \n";
         if(opt.parallel_)
             setupAffiliatedEdgesParallel(g, labels, rag, affiliatedEdges, opt);
         else
@@ -598,16 +630,30 @@ namespace vigra{
 
         // check if input matches options
         // and get a new options object
-        rag_detail::preprocess(g, labels, rag, affiliatedEdges, options, opt);
+        USETICTOC;
 
+        std::cout<<"preprocess\n";
+        TIC;
+        rag_detail::preprocess(g, labels, rag, affiliatedEdges, options, opt);
+        TOC;
+
+        std::cout<<"add nodes\n";
+        TIC;
         // add nodes to the graph
         rag_detail::addNodes(g, labels, rag, affiliatedEdges, opt);
+        TOC;
 
+        std::cout<<"add edges\n";
+        TIC;
         // add edges to the graph
         rag_detail::addEdges(g, labels, rag, affiliatedEdges, opt);
+        TOC;
 
+        std::cout<<"setup aff edges\n";
+        TIC;
         // setup affiliated edges
         rag_detail::setupAffiliatedEdges(g, labels, rag, affiliatedEdges, opt);
+        TOC;
     }
 
 }   

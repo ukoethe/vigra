@@ -7,17 +7,17 @@ from vigra import Timer
 
 
 
-
+numpy.random.seed(42)
 
 
 
 # input
-shape = [300, 10, 30]
+shape = [300, 200, 100]
 data = numpy.random.rand(*shape).astype(numpy.float32)
 
 with Timer("get seg"):
     seg = numpy.random.randint(5, size=shape[0]*shape[1]*shape[2])
-    seg = seg.reshape(shape).dtype(numpy.uin32)
+    seg = seg.reshape(shape).astype(numpy.uint32)
 
 with Timer("labelVolume"):
     seg = vigra.analysis.labelVolume(seg)
@@ -29,7 +29,7 @@ with Timer("findMinMax"):
 
 with Timer("ragOptions"):
     ragOptions = graphs.RagOptions(minLabel=minLabel, maxLabel=maxLabel, isDense=True,
-                                   nThreads=3,  parallel=True)
+                                   nThreads=1,  parallel=False)
 
 with Timer("makeRAG"):
 
