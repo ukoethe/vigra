@@ -9,6 +9,7 @@ using namespace std;
 using namespace vigra;
 
 //#define PARA_CHECK;
+#ifdef OPENMP
 
 class ParallelTestFunctor
 {
@@ -39,6 +40,7 @@ public:
 	#pragma omp critical
 		iteration_num++;
 	}
+
 	unsigned int getIterationNum()
 	{
 		return iteration_num;
@@ -49,7 +51,7 @@ struct OpenMPWrapperTest {
 	typedef vigra::DImage Image;
 
 	OpenMPWrapperTest() :
-			img(1000, 100000), mask(Shape2(3, 3)) {
+			img(10000, 10000), mask(Shape2(10000, 10000)) {
 		Image::Accessor acc = img.accessor();
 		Image::ScanOrderIterator i = img.begin();
 
@@ -59,11 +61,11 @@ struct OpenMPWrapperTest {
 
 		mask.init(1);
 		mask.begin()[0] = 0;
-		mask.begin()[8] = 0;
+		mask.begin()[10000*10000-1] = 0;
 	}
 
 	void copyImageTest() {
-		Image img1(1000, 100000);
+		Image img1(10000, 10000);
 
 		CountIterationFunctor functor;
 
@@ -120,7 +122,7 @@ struct OpenMPWrapperTest {
 
 	void combineTwoImagesTest()
 	{
-		Image img1(1000, 100000);
+		Image img1(10000, 10000);
 
 		CountIterationFunctor iter_count;
 
@@ -144,14 +146,73 @@ struct OpenMPWrapperTest {
 
 	void combineTwoImagesIfTest()
 	{
+		Image img1(10000, 10000);
+		img1 = 27.0;
+
+		CountIterationFunctor iter_count;
+
+		std::plus<Image::value_type> add;
+
+		vigra::omp::combineTwoImagesIf(srcImageRange(img), srcImage(img), maskImage(mask), destImage(img1), add, iter_count);
+
+		using namespace functor; //TODO: For what?
+
+		Image::ScanOrderIterator i = img.begin();
+		Image::ScanOrderIterator i1 = img1.begin();
+		Image::ScanOrderIterator i1end = img1.end();
+		Image::Accessor acc = img.accessor();
+
+		should(acc(i1) == 27.0);
+
+			i++;
+			i1++;
+			i1end--;
+
+		should(acc(i1end) == 27.0);
+
+		for(; i1 != i1end; ++i, ++i1)
+		{
+			should(2.0*acc(i) == acc(i1));
+		}
+
+		should( iter_count.getIterationNum() == img.height());
 	}
 
 	void combineThreeImagesTest()
 	{
-		//TODO: combineThreeImages does not run in parallel
-				//vigra::omp::combineThreeImages(View(img), View(img), View(img1), View(img3), Arg1() + Arg2() + Arg3());
-				//vigra_precondition(View(img).shape() == View(img1).shape() && View(img).shape() == View(img3).shape() && View(img).shape() == View(img3).shape(),"combineThreeImages(): shape mismatch between inputs and/or output.");
-				//vigra::omp::combineThreeImages(srcImageRange(img), srcImage(img), srcImage(img1), destImage(img3), Arg1() + Arg2() + Arg3());
+		Image img1(10000, 10000);
+		Image img2(10000, 10000);
+
+		CountIterationFunctor iter_count;
+		CountIterationFunctor iter_count1;
+
+		std::plus<Image::value_type> add;
+
+		vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), add, iter_count);
+
+		Image::ScanOrderIterator i = img.begin();
+		Image::ScanOrderIterator i1 = img1.begin();
+		Image::Accessor acc = img.accessor();
+
+		for(; i != img.end(); ++i, ++i1)
+		{
+			should(2.0*acc(i) == acc(i1));
+		}
+
+		should( iter_count.getIterationNum() == img.height());
+
+		using namespace functor; //To get Arg1(), Arg2(), Arg3() ??
+		vigra::omp::combineThreeImages(srcImageRange(img), srcImage(img), srcImage(img1), destImage(img2), Arg1() + Arg2() + Arg3(), iter_count1);
+
+		i = img.begin();
+		Image::ScanOrderIterator i2 = img2.begin();
+
+		for(; i != img.end(); ++i, ++i2)
+		{
+			should(4.0*acc(i) == acc(i2));
+		}
+
+		should( iter_count1.getIterationNum() == img.height());
 	}
 
 	void combineThreeImagesIfTest()
@@ -159,140 +220,109 @@ struct OpenMPWrapperTest {
 
 	}
 
-
-	void copyTest()
-	{
-		Image source(3,3);
-		source = 9.9;
-		Image destination(3,3);
-		destination = 1.1;
-
-		Image::Iterator src_upperleft = source.upperLeft();
-		Image::Iterator src_lowerright = source.lowerRight();
-		Image::Accessor src_acc = source.accessor();
-
-		Image::Iterator dest_upperleft = destination.upperLeft();
-		Image::Accessor dest_acc = destination.accessor();
-
-		//vigra::omp::copyImage(src_upperleft,src_lowerright,src_acc,dest_upperleft, dest_acc);
-
-		Image::ScanOrderIterator src_iterator = source.begin();
-		Image::ScanOrderIterator dest_iterator = destination.begin();
-		Image::Accessor acc_1 = source.accessor();
-
-		for(; src_iterator != source.end(); ++src_iterator, ++dest_iterator)
-		{
-			should(acc_1(src_iterator) == acc_1(dest_iterator));
-		}
-		std::cout << "Done copyTest. Max threads: " << omp_get_max_threads() << std::endl;
-
-		//TODO: Print source, destination
-		src_iterator = source.begin();
-		for(; src_iterator != source.end(); ++src_iterator)
-		{
-			std::cout << acc_1(src_iterator) << " " << std::endl;
-		}
-
-		dest_iterator = destination.begin();
-		std::cout << "\nDestination\n" << std::endl;
-		for(; dest_iterator != destination.end(); ++dest_iterator)
-		{
-			std::cout << acc_1(dest_iterator)<< " " << std::endl;
-		}
-
-	}
-
 	void transformImageTest()
 	{
-		Image source(3,3);
-		source = 9;
-		Image destination(3,3);
-		destination = 1.1;
+		Image img1(10000, 10000);
 
-		Image::Iterator src_upperleft = source.upperLeft();
-		Image::Iterator src_lowerright = source.lowerRight();
-		Image::Accessor src_acc = source.accessor();
+		CountIterationFunctor iter_count;
 
-		Image::Iterator dest_upperleft = destination.upperLeft();
-		Image::Accessor dest_acc = destination.accessor();
+		vigra::omp::transformImage(srcImageRange(img), destImage(img1),
+				linearIntensityTransform<Image::value_type>(3.3), iter_count);
 
-		vigra::omp::transformImage(src_upperleft, src_lowerright, src_acc, dest_upperleft, dest_acc, (double(*)(double))&std::sqrt);
+		Image::ScanOrderIterator i = img.begin();
+		Image::ScanOrderIterator i1 = img1.begin();
+		Image::Accessor acc = img.accessor();
 
-		Image::ScanOrderIterator src_iterator = source.begin();
-		Image::ScanOrderIterator dest_iterator = destination.begin();
-		Image::Accessor acc_1 = source.accessor();
-		Image::Accessor acc_2 = source.accessor();
-
-		for(; src_iterator != source.end(); ++src_iterator, ++dest_iterator)
+		for(; i != img.end(); ++i, ++i1)
 		{
-			should(std::sqrt(acc_1(src_iterator)) == acc_2(dest_iterator));
-		}
-		std::cout << "Done Transform Test. Max threads: " << omp_get_max_threads() << std::endl;
-
-		//TODO: Print source, destination
-		src_iterator = source.begin();
-		for(; src_iterator != source.end(); ++src_iterator)
-		{
-			std::cout << acc_1(src_iterator) << " " << std::endl;
+			should(3.3*acc(i) == acc(i1));
 		}
 
-		dest_iterator = destination.begin();
-		std::cout << "\nDestination\n" << std::endl;
-		for(; dest_iterator != destination.end(); ++dest_iterator)
-		{
-			std::cout << acc_2(dest_iterator)<< " " << std::endl;
-		}
+		should( iter_count.getIterationNum() == img.height());
+
 	}
+
 	void transformImageIfTest()
 	{
-		Image source(3,3);
-		source = 9;
-		Image destination(3,3);
-		destination = 1.1;
+		Image img1(10000, 10000);
+		img1 = 27.0;
 
-		vigra::MultiArray<2, unsigned char> mask(Shape2(2,2)); // New api inside old api :D
-		mask.init(1);
-		mask.begin()[0] = 0;
-		mask.begin()[1] = 0;
+		CountIterationFunctor iter_count;
 
-		Image::Iterator src_upperleft = source.upperLeft();
-		Image::Iterator src_lowerright = source.lowerRight();
-		Image::Accessor src_acc = source.accessor();
+		vigra::omp::transformImageIf(srcImageRange(img), maskImage(mask), destImage(img1),
+				linearIntensityTransform<Image::value_type>(3.3), iter_count);
 
-		//Image::Iterator mask_upperleft = maskImage(mask).;
-		//Image::Accessor mask_acc = maskImage(mask).second;
+		Image::ScanOrderIterator i = img.begin();
+		Image::ScanOrderIterator i1 = img1.begin();
+		Image::ScanOrderIterator i1end = img1.end();
+		Image::Accessor acc = img.accessor();
 
-		Image::Iterator dest_upperleft = destination.upperLeft();
-		Image::Accessor dest_acc = destination.accessor();
+		should(acc(i1) == 27.0);
 
-		//vigra::omp::transformImageIf(src_upperleft, src_lowerright, src_acc, mask_upperleft, mask_acc,dest_upperleft, dest_acc, (double(*)(double))&std::sqrt);
-		vigra::omp::transformImageIf(srcImageRange(source), maskImage(mask), destImage(destination), (double(*)(double))&std::sqrt);
+		i++;
+		i1++;
+		i1end--;
 
-		Image::ScanOrderIterator src_iterator = source.begin();
-		Image::ScanOrderIterator dest_iterator = destination.begin();
-		Image::Accessor acc_1 = source.accessor();
-		Image::Accessor acc_2 = source.accessor();
+		should(acc(i1end) == 27.0);
 
-//		for(; src_iterator != source.end(); ++src_iterator, ++dest_iterator)
-//		{
-//			should(std::sqrt(acc_1(src_iterator)) == acc_2(dest_iterator));
-//		}
-//		std::cout << "Done Transform Test If. Max threads: " << omp_get_max_threads() << std::endl;
-
-		//TODO: Print source, destination
-		src_iterator = source.begin();
-		for(; src_iterator != source.end(); ++src_iterator)
+		for(; i1 != i1end; ++i, ++i1)
 		{
-			std::cout << acc_1(src_iterator) << " " << std::endl;
+			should(3.3*acc(i) == acc(i1));
 		}
 
-		dest_iterator = destination.begin();
-		std::cout << "\nDestination\n" << std::endl;
-		for(; dest_iterator != destination.end(); ++dest_iterator)
-		{
-			std::cout << acc_2(dest_iterator)<< " " << std::endl;
-		}
+		should( iter_count.getIterationNum() == img.height());
 	}
+
+//	void transformImageIfTest()
+//	{
+//		Image source(3,3);
+//		source = 9;
+//		Image destination(3,3);
+//		destination = 1.1;
+//
+//		vigra::MultiArray<2, unsigned char> mask(Shape2(2,2)); // New api inside old api :D
+//		mask.init(1);
+//		mask.begin()[0] = 0;
+//		mask.begin()[1] = 0;
+//
+//		Image::Iterator src_upperleft = source.upperLeft();
+//		Image::Iterator src_lowerright = source.lowerRight();
+//		Image::Accessor src_acc = source.accessor();
+//
+//		//Image::Iterator mask_upperleft = maskImage(mask).;
+//		//Image::Accessor mask_acc = maskImage(mask).second;
+//
+//		Image::Iterator dest_upperleft = destination.upperLeft();
+//		Image::Accessor dest_acc = destination.accessor();
+//
+//		//vigra::omp::transformImageIf(src_upperleft, src_lowerright, src_acc, mask_upperleft, mask_acc,dest_upperleft, dest_acc, (double(*)(double))&std::sqrt);
+//		vigra::omp::transformImageIf(srcImageRange(source), maskImage(mask), destImage(destination), (double(*)(double))&std::sqrt);
+//
+//		Image::ScanOrderIterator src_iterator = source.begin();
+//		Image::ScanOrderIterator dest_iterator = destination.begin();
+//		Image::Accessor acc_1 = source.accessor();
+//		Image::Accessor acc_2 = source.accessor();
+//
+////		for(; src_iterator != source.end(); ++src_iterator, ++dest_iterator)
+////		{
+////			should(std::sqrt(acc_1(src_iterator)) == acc_2(dest_iterator));
+////		}
+////		std::cout << "Done Transform Test If. Max threads: " << omp_get_max_threads() << std::endl;
+//
+//		//TODO: Print source, destination
+//		src_iterator = source.begin();
+//		for(; src_iterator != source.end(); ++src_iterator)
+//		{
+//			std::cout << acc_1(src_iterator) << " " << std::endl;
+//		}
+//
+//		dest_iterator = destination.begin();
+//		std::cout << "\nDestination\n" << std::endl;
+//		for(; dest_iterator != destination.end(); ++dest_iterator)
+//		{
+//			std::cout << acc_2(dest_iterator)<< " " << std::endl;
+//		}
+//	}
 
 	Image img;
 	vigra::MultiArray<2, unsigned char> mask;
@@ -305,10 +335,14 @@ struct OpenMPWrapperTestSuite: public vigra::test_suite {
 		add( testCase( &OpenMPWrapperTest::copyImageTest));
 		add( testCase( &OpenMPWrapperTest::combineTwoImagesTest));
 		add( testCase( &OpenMPWrapperTest::transformImageTest));
+		add( testCase( &OpenMPWrapperTest::combineThreeImagesTest));
+		add( testCase( &OpenMPWrapperTest::transformImageIfTest));
+		add( testCase( &OpenMPWrapperTest::combineTwoImagesIfTest));
 	}
 };
 
 int main(int argc, char ** argv) {
+
 	OpenMPWrapperTestSuite test;
 
 	int failed = test.run(vigra::testsToBeExecuted(argc, argv));
@@ -317,3 +351,5 @@ int main(int argc, char ** argv) {
 
 	return (failed != 0);
 }
+
+#endif //OpenMP
