@@ -482,13 +482,15 @@ namespace vigra
                   class SrcImageIterator2, class SrcAccessor2,
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor>
+                  class Functor,
+                  class CountFunctor>
         inline void
         combineTwoImagesIf(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                            SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                            MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
                            DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                           const Functor& func)
+                           const Functor& func,
+                           CountFunctor& count_functor)
         {
             vigra::combineTwoImagesIf(src1_upperleft, src1_lowerright, src1_acc,
                                       src2_upperleft, src2_acc,
@@ -502,13 +504,15 @@ namespace vigra
                   class SrcImageIterator2, class SrcAccessor2,
                   class SrcImageIterator3, class SrcAccessor3,
                   class DestImageIterator, class DestAccessor,
-                  class Functor>
+                  class Functor,
+                  class CountFunctor>
         inline void
         combineThreeImages(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                            SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                            SrcImageIterator3 src3_upperleft, SrcAccessor3 src3_acc,
                            DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                           const Functor& func)
+                           const Functor& func,
+                           CountFunctor& count_functor)
         {
             vigra::combineThreeImages(src1_upperleft, src1_lowerright, src1_acc,
                                       src2_upperleft, src2_acc,
@@ -519,10 +523,12 @@ namespace vigra
 
 
         template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor,
+                  class CountFunctor>
         inline void
         copyImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
-                  DestImageIterator dest_upperleft, DestAccessor dest_acc)
+                  DestImageIterator dest_upperleft, DestAccessor dest_acc,
+                  CountFunctor& count_functor)
         {
             vigra::copyImage(src_upperleft, src_lowerright, src_acc, dest_upperleft, dest_acc);
         }
@@ -530,11 +536,13 @@ namespace vigra
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor>
+                  class Functor,
+                  class CountFunctor>
         inline void
         transformImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                        DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                       const Functor& func)
+                       const Functor& func,
+                       CountFunctor& count_functor)
         {
             vigra::transformImage(src_upperleft, src_lowerright, src_acc,
                                   dest_upperleft, dest_acc,
@@ -545,12 +553,14 @@ namespace vigra
         template <class SrcImageIterator, class SrcAccessor,
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor>
+                  class Functor,
+                  class CountFunctor>
         inline void
         transformImageIf(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                          MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
                          DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                         const Functor& func)
+                         const Functor& func,
+                         CountFunctor& count_functor)
         {
             vigra::transformImageIf(src_upperleft, src_lowerright, src_acc,
                                     mask_upperleft, mask_acc,
@@ -626,7 +636,8 @@ namespace vigra
                   class SrcImageIterator2, class SrcAccessor2,
                   class SrcImageIterator3, class SrcAccessor3,
                   class DestImageIterator, class DestAccessor,
-                  class Functor, class CountFunctor>
+                  class Functor,
+                  class CountFunctor>
         inline void
         combineThreeImages(vigra::triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                            vigra::pair<SrcImageIterator2, SrcAccessor2> src2,
@@ -646,7 +657,8 @@ namespace vigra
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor, class CountFunctor>
+                  class Functor,
+                  class CountFunctor>
         inline void
         transformImage(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                        vigra::pair<DestImageIterator, DestAccessor> dest,
@@ -660,10 +672,12 @@ namespace vigra
 
 
         template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor, class CountFunctor>
+                  class DestImageIterator, class DestAccessor,
+                  class CountFunctor>
         inline void
         copyImage(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                  vigra::pair<DestImageIterator, DestAccessor> dest, CountFunctor& count_functor)
+                  vigra::pair<DestImageIterator, DestAccessor> dest,
+                  CountFunctor& count_functor)
         {
             vigra::omp::copyImage(src.first, src.second, src.third,
                                   dest.first, dest.second, count_functor);

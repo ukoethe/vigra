@@ -9,7 +9,7 @@ using namespace std;
 using namespace vigra;
 
 //#define PARA_CHECK;
-#ifdef OPENMP
+//#ifdef OPENMP
 
 class ParallelTestFunctor
 {
@@ -36,8 +36,9 @@ public:
 
 	void operator()()
 	{
-	//#pragma omp atomic update
-	#pragma omp critical
+#ifdef OPENMP
+	#pragma omp critical //#pragma omp atomic update
+#endif
 		iteration_num++;
 	}
 
@@ -74,8 +75,6 @@ struct OpenMPWrapperTest {
 		Image::ScanOrderIterator i = img.begin();
 		Image::ScanOrderIterator i1 = img1.begin();
 		Image::Accessor acc = img.accessor();
-
-		should(functor.getIterationNum() == img.height());
 
 #ifndef PARA_CHECK
 		for ( ; i != img.end(); ++i, ++i1)
@@ -118,6 +117,11 @@ struct OpenMPWrapperTest {
 			}
 		} //omp sections
 #endif //PARA_CHECK
+
+#ifdef OPENMP
+		should(functor.getIterationNum() == img.height());
+#endif
+
 	}
 
 	void combineTwoImagesTest()
@@ -141,7 +145,10 @@ struct OpenMPWrapperTest {
 			should(2.0*acc(i) == acc(i1));
 		}
 
+#ifdef OPENMP
 		should( iter_count.getIterationNum() == img.height());
+#endif
+
 	}
 
 	void combineTwoImagesIfTest()
@@ -175,7 +182,10 @@ struct OpenMPWrapperTest {
 			should(2.0*acc(i) == acc(i1));
 		}
 
+#ifdef OPENMP
 		should( iter_count.getIterationNum() == img.height());
+#endif
+
 	}
 
 	void combineThreeImagesTest()
@@ -199,7 +209,9 @@ struct OpenMPWrapperTest {
 			should(2.0*acc(i) == acc(i1));
 		}
 
+#ifdef OPENMP
 		should( iter_count.getIterationNum() == img.height());
+#endif
 
 		using namespace functor; //To get Arg1(), Arg2(), Arg3() ??
 		vigra::omp::combineThreeImages(srcImageRange(img), srcImage(img), srcImage(img1), destImage(img2), Arg1() + Arg2() + Arg3(), iter_count1);
@@ -212,11 +224,9 @@ struct OpenMPWrapperTest {
 			should(4.0*acc(i) == acc(i2));
 		}
 
+#ifdef OPENMP
 		should( iter_count1.getIterationNum() == img.height());
-	}
-
-	void combineThreeImagesIfTest()
-	{
+#endif
 
 	}
 
@@ -238,7 +248,9 @@ struct OpenMPWrapperTest {
 			should(3.3*acc(i) == acc(i1));
 		}
 
+#ifdef OPENMP
 		should( iter_count.getIterationNum() == img.height());
+#endif
 
 	}
 
@@ -270,59 +282,11 @@ struct OpenMPWrapperTest {
 			should(3.3*acc(i) == acc(i1));
 		}
 
+#ifdef OPENMP
 		should( iter_count.getIterationNum() == img.height());
-	}
+#endif
 
-//	void transformImageIfTest()
-//	{
-//		Image source(3,3);
-//		source = 9;
-//		Image destination(3,3);
-//		destination = 1.1;
-//
-//		vigra::MultiArray<2, unsigned char> mask(Shape2(2,2)); // New api inside old api :D
-//		mask.init(1);
-//		mask.begin()[0] = 0;
-//		mask.begin()[1] = 0;
-//
-//		Image::Iterator src_upperleft = source.upperLeft();
-//		Image::Iterator src_lowerright = source.lowerRight();
-//		Image::Accessor src_acc = source.accessor();
-//
-//		//Image::Iterator mask_upperleft = maskImage(mask).;
-//		//Image::Accessor mask_acc = maskImage(mask).second;
-//
-//		Image::Iterator dest_upperleft = destination.upperLeft();
-//		Image::Accessor dest_acc = destination.accessor();
-//
-//		//vigra::omp::transformImageIf(src_upperleft, src_lowerright, src_acc, mask_upperleft, mask_acc,dest_upperleft, dest_acc, (double(*)(double))&std::sqrt);
-//		vigra::omp::transformImageIf(srcImageRange(source), maskImage(mask), destImage(destination), (double(*)(double))&std::sqrt);
-//
-//		Image::ScanOrderIterator src_iterator = source.begin();
-//		Image::ScanOrderIterator dest_iterator = destination.begin();
-//		Image::Accessor acc_1 = source.accessor();
-//		Image::Accessor acc_2 = source.accessor();
-//
-////		for(; src_iterator != source.end(); ++src_iterator, ++dest_iterator)
-////		{
-////			should(std::sqrt(acc_1(src_iterator)) == acc_2(dest_iterator));
-////		}
-////		std::cout << "Done Transform Test If. Max threads: " << omp_get_max_threads() << std::endl;
-//
-//		//TODO: Print source, destination
-//		src_iterator = source.begin();
-//		for(; src_iterator != source.end(); ++src_iterator)
-//		{
-//			std::cout << acc_1(src_iterator) << " " << std::endl;
-//		}
-//
-//		dest_iterator = destination.begin();
-//		std::cout << "\nDestination\n" << std::endl;
-//		for(; dest_iterator != destination.end(); ++dest_iterator)
-//		{
-//			std::cout << acc_2(dest_iterator)<< " " << std::endl;
-//		}
-//	}
+	}
 
 	Image img;
 	vigra::MultiArray<2, unsigned char> mask;
@@ -352,4 +316,4 @@ int main(int argc, char ** argv) {
 	return (failed != 0);
 }
 
-#endif //OpenMP
+//#endif //OpenMP
