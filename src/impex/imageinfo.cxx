@@ -117,7 +117,7 @@ std::string trimString(const std::string &s)
 
 
 // find filenames matching the pattern "<path>/base[0-9]+ext"
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__GNUC__)
 void splitPathFromFilename(const std::string &pathAndName,
                            std::string &path, std::string &name)
 {

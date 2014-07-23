@@ -1564,7 +1564,7 @@ struct MultiImpexTest
         shouldEqual(result(0,1,2), 3);
         shouldEqual(result(0,1,3), 4);
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__GNUC__)
         exportVolume(array, VolumeExportInfo("impex\\test", ext2));
         
         importVolume(result, std::string("impex\\test"), std::string(ext2));
