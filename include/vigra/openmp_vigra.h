@@ -146,10 +146,12 @@ namespace vigra
 
 
         template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor, class CountFunctor>
+                  class DestImageIterator, class DestAccessor,
+                  class CountFunctor>
         inline void
         copyImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
-                  DestImageIterator dest_upperleft, DestAccessor dest_acc, CountFunctor &count_functor)
+                  DestImageIterator dest_upperleft, DestAccessor dest_acc,
+                  CountFunctor &count_functor)
         {
 #pragma omp parallel
             {
@@ -251,7 +253,7 @@ namespace vigra
 
                     int id() const {return 0;}
 
-                    void operator()(ValueType* /* RESTRICT d */, const ValueType* /* RESTRICT f */, int /* n */) const
+                    void operator()(ValueType* __restrict__ d, const ValueType* __restrict__ f, int n) const
                     {
                         vigra_fail("fh::detail::ChessboardTransform1D: not implemented");
                     }
@@ -265,7 +267,7 @@ namespace vigra
 
                     int id() const {return 1;}
 
-                    void operator()(ValueType* /* RESTRICT */ d, const ValueType* /* RESTRICT */ f, int n) const
+                    void operator()(ValueType* __restrict__ d, const ValueType* __restrict__ f, int n) const
                     {
                         const ValueType one = static_cast<ValueType>(1);
 
@@ -289,7 +291,7 @@ namespace vigra
 
                     int id() const {return 2;}
 
-                    void operator()(ValueType* /* RESTRICT */ d, const ValueType* /* RESTRICT */ f, int n) const
+                    void operator()(ValueType* __restrict__ d, const ValueType* __restrict__ f, int n) const
                     {
                         typedef float math_t;
 
@@ -342,11 +344,13 @@ namespace vigra
 
                 template <class SrcImageIterator, class SrcAccessor,
                           class DestImageIterator, class DestAccessor,
-                          class ValueType, class Transform1dFunctor>
+                          class ValueType, class Transform1dFunctor,
+                          class CountFunctor1, class CountFunctor2>
                 void
                 fhDistanceTransform(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor sa,
                                     DestImageIterator dest_upperleft, DestAccessor da,
-                                    ValueType background, Transform1dFunctor transform1d)
+                                    ValueType background, Transform1dFunctor transform1d,
+                                    CountFunctor1 &count_functor1, CountFunctor2 &count_functor2)
                 {
                     typedef typename Transform1dFunctor::value_type DistanceType;
                     typedef typename vigra::NumericTraits<DistanceType> DistanceTraits;
@@ -389,6 +393,7 @@ namespace vigra
                                 //     Prefetching about halves the number of stalls per instruction of this loop.
                                 HINTED_PREFETCH(ci.operator->(), PREPARE_FOR_WRITE, HIGH_TEMPORAL_LOCALITY);
                             }
+                            count_functor1();
                         }
 
 #pragma omp for nowait schedule(guided)
@@ -411,6 +416,7 @@ namespace vigra
                                     da.set(*pd, i);
                                 }
                             }
+                            count_functor2();
                         }
 
                         delete [] d;
@@ -423,11 +429,13 @@ namespace vigra
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class ValueType>
+                  class ValueType,
+                  class CountFunctor1, class CountFunctor2>
         void
         distanceTransform(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor sa,
                           DestImageIterator dest_upperleft, DestAccessor da,
-                          ValueType background, int norm)
+                          ValueType background, int norm,
+                          CountFunctor1 &count_functor1, CountFunctor2 &count_functor2)
         {
             switch (norm)
             {
@@ -435,14 +443,16 @@ namespace vigra
                 fh::detail::fhDistanceTransform(src_upperleft, src_lowerright, sa,
                                                 dest_upperleft, da,
                                                 background,
-                                                fh::detail::ChessboardTransform1D<float>());
+                                                fh::detail::ChessboardTransform1D<float>(),
+                                                count_functor1, count_functor2);
                 break;
 
             case 1:
                 fh::detail::fhDistanceTransform(src_upperleft, src_lowerright, sa,
                                                 dest_upperleft, da,
                                                 background,
-                                                fh::detail::ManhattanTransform1D<float>());
+                                                fh::detail::ManhattanTransform1D<float>(),
+                                                count_functor1, count_functor2);
                 break;
 
             case 2: // FALLTHROUGH
@@ -450,7 +460,8 @@ namespace vigra
                 fh::detail::fhDistanceTransform(src_upperleft, src_lowerright, sa,
                                                 dest_upperleft, da,
                                                 background,
-                                                fh::detail::EuclideanTransform1D<float>());
+                                                fh::detail::EuclideanTransform1D<float>(),
+                                                count_functor1, count_functor2);
             }
         }
 
@@ -571,11 +582,13 @@ namespace vigra
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class ValueType>
+                  class ValueType,
+                  class CountFunctor1, class CountFunctor2>
         void
         distanceTransform(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                           DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                          ValueType background, int norm)
+                          ValueType background, int norm,
+                          CountFunctor1& count_functor1, CountFunctor2& count_functor2)
         {
             vigra::distanceTransform(src_upperleft, src_lowerright, src_acc,
                                      dest_upperleft, dest_acc,
@@ -706,15 +719,18 @@ namespace vigra
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class ValueType>
+                  class ValueType,
+                  class CountFunctor1, class CountFunctor2>
         inline void
         distanceTransform(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                           vigra::pair<DestImageIterator, DestAccessor> dest,
-                          ValueType background, int norm)
+                          ValueType background, int norm,
+                          CountFunctor1& count_functor1, CountFunctor2& count_functor2)
         {
             vigra::omp::distanceTransform(src.first, src.second, src.third,
                                           dest.first, dest.second,
-                                          background, norm);
+                                          background, norm,
+                                          count_functor1, count_functor2);
         }
     } // namespace omp
 } // namespace vigra
