@@ -52,6 +52,7 @@ namespace vigra{
 
 namespace cluster_operators{
 
+
     /// \brief  get minimum edge weight from an edge indicator and difference of node features
     template<
         class MERGE_GRAPH,
@@ -254,10 +255,11 @@ namespace cluster_operators{
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist = metric_(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
-            if(dMin==1)
-                return totalWeight*0.2;
-            else
-                return totalWeight;
+            return totalWeight;
+            //if(dMin==1)
+            //    return totalWeight*0.2;
+            //else
+            //    return totalWeight;
         }
 
 
@@ -273,6 +275,8 @@ namespace cluster_operators{
 
         metrics::Metric<float> metric_;
     };
+
+
 } // end namespace cluster_operators
 
 

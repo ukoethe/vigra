@@ -973,7 +973,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
     class RegionAdjacencyGraph(graphs.AdjacencyListGraph):
-        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
+        def __init__(self,graph=None ,labels=None ,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
             """ Region adjacency graph
 
                 Keyword Arguments :
@@ -1001,32 +1001,35 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
             """
-            super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
+            if(graph is not None and labels is not None):
+                super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
 
-            if ignoreLabel is None and isDense is not None and isDense == True:
-                if ignoreLabel is None:
-                    ignoreLabel=-1
+                if ignoreLabel is None and isDense is not None and isDense == True:
+                    if ignoreLabel is None:
+                        ignoreLabel=-1
 
-                self.labels          = labels
-                self.ignoreLabel     = ignoreLabel
-                self.baseGraphLabels = labels
-                self.baseGraph       = graph
-                if maxLabel is None:
-                    maxLabel = int(numpy.max(labels))
-                # set up rag
-                self.affiliatedEdges = graphs._regionAdjacencyGraphFast(graph,labels,self,maxLabel,int(reserveEdges))
+                    self.labels          = labels
+                    self.ignoreLabel     = ignoreLabel
+                    self.baseGraphLabels = labels
+                    self.baseGraph       = graph
+                    if maxLabel is None:
+                        maxLabel = int(numpy.max(labels))
+                    # set up rag
+                    self.affiliatedEdges = graphs._regionAdjacencyGraphFast(graph,labels,self,maxLabel,int(reserveEdges))
 
-            else:
+                else:
 
-                if ignoreLabel is None:
-                    ignoreLabel=-1
+                    if ignoreLabel is None:
+                        ignoreLabel=-1
 
-                self.labels          = labels
-                self.ignoreLabel     = ignoreLabel
-                self.baseGraphLabels = labels
-                self.baseGraph       = graph
-                # set up rag
-                self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
+                    self.labels          = labels
+                    self.ignoreLabel     = ignoreLabel
+                    self.baseGraphLabels = labels
+                    self.baseGraph       = graph
+                    # set up rag
+                    self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
+            else :
+                super(RegionAdjacencyGraph,self).__init__()
 
         def mergeGraph(self):
             return graphs.AdjacencyListGraphMergeGraph(self)
@@ -1161,7 +1164,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     graphs.RegionAdjacencyGraph = RegionAdjacencyGraph
 
     class GridRegionAdjacencyGraph(graphs.RegionAdjacencyGraph):
-        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
+        def __init__(self,graph=None,labels=None,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
             """ Grid Region adjacency graph
 
                 A region adjaceny graph,where the base graph should be
@@ -1196,9 +1199,12 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
             """
-            if not (graphs.isGridGraph(graph) or  isinstance(graph,GridRegionAdjacencyGraph)):
-                raise RuntimeError("graph must be a GridGraph or a GridRegionAdjacencyGraph")
-            super(GridRegionAdjacencyGraph, self).__init__(graph, labels, ignoreLabel, reserveEdges, maxLabel, isDense)
+            if graph is not None and labels is not None:
+                if not (graphs.isGridGraph(graph) or  isinstance(graph,GridRegionAdjacencyGraph)):
+                    raise RuntimeError("graph must be a GridGraph or a GridRegionAdjacencyGraph")
+                super(GridRegionAdjacencyGraph, self).__init__(graph, labels, ignoreLabel, reserveEdges, maxLabel, isDense)
+            else:
+                super(GridRegionAdjacencyGraph, self).__init__()
 
         @property
         def shape(self):
@@ -1300,9 +1306,42 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             baseNodeSizes = self.baseGraph.edgeLengths()
             return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
 
+
+        def writeHdf5(self, filename, dset):
+            if(graphs.isGridGraph(self.baseGraph)):
+
+                sGraph    = self.serialize()
+                sAffEdges = graphs._serialzieGridGraphAffiliatedEdges(self.baseGraph, self, self.affiliatedEdges )
+                sLabels   = self.labels
+
+                writeHDF5(sLabels, filename, dset+'/labels')
+                writeHDF5(sGraph, filename, dset+'/graph')
+                writeHDF5(sAffEdges, filename, dset+'/affiliated_edges')
+                
+
+            else:
+                raise RuntimeError("only RAGs of Grid graph can be serialized")
+
+
+        def readHdf5(self, filename, dset):
+
+            labels = readHdf5(filename,  dset+'/labels')
+            shape = labels.shape
+
+            self.baseGraph  = graphs.gridGraph(shape)
+
+
+
     GridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
 
+
+    def readRagHdf5(filename , dset):
+
+
+
+    readRagHdf5.__module__ = 'vigra.graphs'
+    graphs.readRagHdf5 = readRagHdf5
 
 
     def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):

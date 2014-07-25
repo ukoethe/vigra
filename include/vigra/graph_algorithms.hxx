@@ -246,7 +246,7 @@ namespace vigra{
         return size;
     }
 
-    template<class OUT_ITER, int DIM, class DTAG, class AFF_EDGES>
+    template<class OUT_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
     void serializeAffiliatedEdges(
         const GridGraph<DIM,DTAG> & gridGraph,
         const AdjacencyListGraph & rag,
@@ -273,10 +273,10 @@ namespace vigra{
         }
     }
 
-    template<class IN_ITER, int DIM, class DTAG, class AFF_EDGES>
+    template<class IN_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
     void deserializeAffiliatedEdges(
-        AdjacencyListGraph & rag,
         const GridGraph<DIM,DTAG> & gridGraph,
+        const AdjacencyListGraph & rag,
         AFF_EDGES & affEdges,
         IN_ITER begin,
         IN_ITER end
@@ -294,9 +294,9 @@ namespace vigra{
             const size_t numAffEdge = *begin; ++begin;
 
             for(size_t i=0; i<numAffEdge; ++i){
-                const GEdge gEdge;
+                GEdge gEdge;
                 for(size_t d=0; d<DIM+1; ++d){
-                    gEdge[d]=*begin = ++begin;
+                    gEdge[d]=*begin; ++begin;
                 }
             }
         }

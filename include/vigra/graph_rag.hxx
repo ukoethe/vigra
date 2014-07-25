@@ -335,48 +335,49 @@ namespace vigra{
             }
         }
     }
+    
+    
+    template<class LABEL_MAP>
+    void addEdgesSerial(
+       const GridGraph<3, boost::undirected_tag > & g, 
+       const LABEL_MAP & labels,
+       AdjacencyListGraph & rag,
+       typename AffiliatedEdgesHelper< GridGraph<3, boost::undirected_tag > >::AffiliatedEdgesType & affiliatedEdges,
+       const RagOptions & opt
+    ){
+       //vigra_precondition(false,"false");
+       //std::cerr<<"addEdges Serial GRID GRAPH 3D\n";
+        std::cerr<<"addEdges Serial GRID GRAPH 3D\n";
+       typedef typename LABEL_MAP::Value LabelType;
+       vigra::TinyVector<int, 3> shape =g.shape();
+       vigra::TinyVector<int, 3> coord;
+       
+       for(coord[2]=0; coord[2]<shape[2]; ++coord[2])
+       for(coord[1]=0; coord[1]<shape[1]; ++coord[1])
+       for(coord[0]=0; coord[0]<shape[0]; ++coord[0]){
 
-
-    //template<class LABEL_MAP>
-    //void addEdgesSerial(
-    //    const GridGraph<3, boost::undirected_tag > & g, 
-    //    const LABEL_MAP & labels,
-    //    AdjacencyListGraph & rag,
-    //    typename AffiliatedEdgesHelper< GridGraph<3, boost::undirected_tag > >::AffiliatedEdgesType & affiliatedEdges,
-    //    const RagOptions & opt
-    //){
-    //    //vigra_precondition(false,"false");
-    //    //std::cerr<<"addEdges Serial GRID GRAPH 3D\n";
-    //    typedef typename LABEL_MAP::Value LabelType;
-    //    vigra::TinyVector<int, 3> shape =g.shape();
-    //    vigra::TinyVector<int, 3> coord;
-    //    
-    //    for(coord[2]=0; coord[2]<shape[2]; ++coord[2])
-    //    for(coord[1]=0; coord[1]<shape[1]; ++coord[1])
-    //    for(coord[0]=0; coord[0]<shape[0]; ++coord[0]){
-//
-    //        vigra::TinyVector<int, 3> otherCoord = coord;
-    //        const LabelType lu = labels[coord];
-    //        if(coord[0]+1 < shape[0]){
-    //            otherCoord[0]+=1;
-    //            const LabelType lv = labels[otherCoord];
-    //            if(lu != lv )
-    //                rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
-    //        }
-    //        if(coord[1]+1 < shape[1]){
-    //            otherCoord[1]+=1;
-    //            const LabelType lv = labels[otherCoord];
-    //            if(lu != lv )
-    //                rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
-    //        }
-    //        if(coord[2]+1 < shape[2]){
-    //            otherCoord[2]+=1;
-    //            const LabelType lv = labels[otherCoord];
-    //            if(lu != lv )
-    //                rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
-    //        }
-    //    }
-    //}
+           vigra::TinyVector<int, 3> otherCoord = coord;
+           const LabelType lu = labels[coord];
+           if(coord[0]+1 < shape[0]){
+               otherCoord[0]+=1;
+               const LabelType lv = labels[otherCoord];
+               if(lu != lv )
+                   rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
+           }
+           if(coord[1]+1 < shape[1]){
+               otherCoord[1]+=1;
+               const LabelType lv = labels[otherCoord];
+               if(lu != lv )
+                   rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
+           }
+           if(coord[2]+1 < shape[2]){
+               otherCoord[2]+=1;
+               const LabelType lv = labels[otherCoord];
+               if(lu != lv )
+                   rag.addEdge(rag.nodeFromId(lu),rag.nodeFromId(lv));
+           }
+       }
+    }
 
     template<class GRAPH,class LABEL_MAP>
     void addEdgesParallel(

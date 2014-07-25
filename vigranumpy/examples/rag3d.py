@@ -12,20 +12,20 @@ numpy.random.seed(42)
 
 
 # input
-shape = [300, 200, 100]
+shape = [100, 100, 100]
 data = numpy.random.rand(*shape).astype(numpy.float32)
 
-with Timer("get seg"):
-    seg = numpy.random.randint(5, size=shape[0]*shape[1]*shape[2])
-    seg = seg.reshape(shape).astype(numpy.uint32)
+with Timer("get labels"):
+    labels = numpy.random.randint(5, size=shape[0]*shape[1]*shape[2])
+    labels = labels.reshape(shape).astype(numpy.uint32)
 
 with Timer("labelVolume"):
-    seg = vigra.analysis.labelVolume(seg)
+    labels = vigra.analysis.labelVolume(labels)
 
 
 with Timer("findMinMax"):
-    minLabel = int(seg.min())
-    maxLabel = int(seg.max())
+    minLabel = int(labels.min())
+    maxLabel = int(labels.max())
 
 with Timer("ragOptions"):
     ragOptions = graphs.RagOptions(minLabel=minLabel, maxLabel=maxLabel, isDense=True,
@@ -37,4 +37,12 @@ with Timer("makeRAG"):
     gridGraph = graphs.gridGraph(shape)
 
 
-    affEdges = graphs._makeRag(graph=gridGraph, labels=seg, rag=adjListGraph, options=ragOptions)
+
+
+    rag = graphs.regionAdjacencyGraph(gridGraph, labels)
+
+    rag.writeHdf5("bla.h5", "dset")
+
+
+
+with Timer("readRag"):
