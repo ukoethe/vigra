@@ -1029,7 +1029,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     # set up rag
                     self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
             else :
-                super(RegionAdjacencyGraph,self).__init__()
+                super(RegionAdjacencyGraph,self).__init__(0,0)
 
         def mergeGraph(self):
             return graphs.AdjacencyListGraphMergeGraph(self)
@@ -1307,13 +1307,15 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
 
 
-        def writeHdf5(self, filename, dset):
+        def writeHDF5(self, filename, dset):
             if(graphs.isGridGraph(self.baseGraph)):
 
                 sGraph    = self.serialize()
                 sAffEdges = graphs._serialzieGridGraphAffiliatedEdges(self.baseGraph, self, self.affiliatedEdges )
                 sLabels   = self.labels
 
+
+                writeHDF5(numpy.array([self.ignoreLabel]), filename, dset+'/ignore_label')
                 writeHDF5(sLabels, filename, dset+'/labels')
                 writeHDF5(sGraph, filename, dset+'/graph')
                 writeHDF5(sAffEdges, filename, dset+'/affiliated_edges')
@@ -1323,12 +1325,10 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 raise RuntimeError("only RAGs of Grid graph can be serialized")
 
 
-        def readHdf5(self, filename, dset):
-
-            labels = readHdf5(filename,  dset+'/labels')
-            shape = labels.shape
-
-            self.baseGraph  = graphs.gridGraph(shape)
+        #def readHdf5(self, filename, dset):
+        #    labels = readHdf5(filename,  dset+'/labels')
+        #    shape = labels.shape
+        #    self.baseGraph  = graphs.gridGraph(shape)
 
 
 
@@ -1336,12 +1336,46 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
 
 
-    def readRagHdf5(filename , dset):
+    def loadGridRagHDF5(filename , dset):
+
+        #print "load labels and make grid graph"
+        labels = readHDF5(filename,  dset+'/labels')
+        shape = labels.shape
+        gridGraph = graphs.gridGraph(shape)
+        #print gridGraph
+
+
+        #print "load graph serialization"
+        graphSerialization = readHDF5(filename, dset+'/graph')
+
+        #print "make empty grid rag"
+        gridRag = GridRegionAdjacencyGraph()
+
+        #print "deserialize"
+        gridRag.deserialize(graphSerialization)
+
+
+        #print "load affiliatedEdges"
+        affEdgeSerialization = readHDF5(filename, dset+'/affiliated_edges')
+        #print "deserialize"
+        affiliatedEdges = graphs._deserialzieGridGraphAffiliatedEdges(gridGraph, gridRag, affEdgeSerialization)
+
+
+        ignoreLabel =  readHDF5(filename, dset+'/ignore_label')
+
+        gridRag.affiliatedEdges = affiliatedEdges
+        gridRag.labels          = labels
+        gridRag.ignoreLabel     = ignoreLabel
+        gridRag.baseGraphLabels = labels
+        gridRag.baseGraph       = gridGraph
+
+        return gridRag
 
 
 
-    readRagHdf5.__module__ = 'vigra.graphs'
-    graphs.readRagHdf5 = readRagHdf5
+
+    loadGridRagHDF5.__module__ = 'vigra.graphs'
+    graphs.loadGridRagHDF5 = loadGridRagHDF5
 
 
     def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
