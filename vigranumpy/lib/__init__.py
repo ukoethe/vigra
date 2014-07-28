@@ -1336,6 +1336,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
 
 
+
     def loadGridRagHDF5(filename , dset):
 
         #print "load labels and make grid graph"
@@ -1376,7 +1377,6 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
     loadGridRagHDF5.__module__ = 'vigra.graphs'
     graphs.loadGridRagHDF5 = loadGridRagHDF5
-
 
     def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
         """ Return a region adjacency graph for a labeld graph.

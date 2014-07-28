@@ -99,6 +99,7 @@ VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     grid_graph_implicit_edge_maps.cxx
     graphRagOptions.cxx
     graphRag.cxx
+    neuro_graph.cxx
   LIBRARIES
     ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)

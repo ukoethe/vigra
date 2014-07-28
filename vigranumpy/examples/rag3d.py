@@ -36,3 +36,4 @@ with Timer("saveRag"):
 
 with Timer("readRag"):
     rag2 = graphs.loadGridRagHDF5("bla.h5","dset")
+
