@@ -34,12 +34,25 @@
 /************************************************************************/
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
+#define NO_IMPORT_ARRAY
+
+#define WITH_BOOST_GRAPH
+
+/*vigra*/
+#include "export_graph_visitor.hxx"
+#include "export_graph_rag_visitor.hxx"
+#include "export_graph_algorithm_visitor.hxx"
+#include "export_graph_shortest_path_visitor.hxx"
+#include "export_graph_hierarchical_clustering_visitor.hxx"
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/metrics.hxx>
+#include <vigra/multi_gridgraph.hxx>
+#include <vigra/adjacency_list_graph.hxx>
+#include <vigra/graph_algorithms.hxx>
+#include <vigra/python_graph.hxx>
+#include <vigra/neuro_features.hxx>
+
 
 namespace python = boost::python;
 
@@ -48,56 +61,70 @@ namespace vigra{
 
 
 
+    // python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()
 
-	void defineInvalid(){
-        python::class_<lemon::Invalid>("Invalid",python::init<>());
+    template<class SELF>
+    void pyAssignEdgeCues(
+        SELF  & self,
+        const NumpyArray<2, float> & edgeCues
+    ){
+        self.assignEdgeCues(edgeCues);
     }
 
-	void defineAdjacencyListGraph();
-	void defineGridGraph2d();
-    void defineGridGraph3d();
-    void defineGridGraphImplicitEdgeMap();
-    void defineNewRag();
-    void defineNeuroGraph();
-} // namespace vigra
-
-using namespace vigra;
-using namespace boost::python;
+    template<class SELF>
+    void pyAssignNodeCues(
+        SELF  & self,
+        const NumpyArray<2, float> & nodeCues
+    ){
+        self.assignNodeCues(nodeCues);
+    }
 
 
+    template<class SELF>
+    void pyAssignEdgeSizes(
+        SELF  & self,
+        const NumpyArray<1, float> & edgeSizes
+    ){
+        self.assignEdgeSizes(edgeSizes);
+    }
 
-BOOST_PYTHON_MODULE_INIT(graphs)
-{
-    import_vigranumpy();
+    template<class SELF>
+    void pyAssignNodeSizes(
+        SELF  & self,
+        const NumpyArray<1, float> & nodeSizes
+    ){
+        self.assignNodeSizes(nodeSizes);
+    }
 
-    python::docstring_options doc_options(true, true, false);
 
-    // all exporters needed for graph exporters (like lemon::INVALID)
-    defineInvalid();
+    void defineNeuroGraph(){
 
-    enum_<metrics::MetricType>("MetricType")
-        .value("chiSquared", metrics::ChiSquaredMetric)
-        .value("hellinger", metrics::HellingerMetric)
-        .value("squaredNorm", metrics::SquaredNormMetric)
-        .value("norm", metrics::NormMetric)
-        .value("manhattan", metrics::ManhattanMetric)
-        .value("symetricKl", metrics::SymetricKlMetric)
-        .value("bhattacharya", metrics::BhattacharyaMetric)
+        typedef vigra::AdjacencyListGraph Graph;
+        typedef NeuroDynamicFeatures PyNeuroDynamicFeatures;
+        typedef PyNeuroDynamicFeatures::MergeGraph MergeGraph;
+
+        python::class_<PyNeuroDynamicFeatures>(
+            "NeuroDynamicFeatures", 
+            python::init<const Graph &, MergeGraph &>()
+            [
+                python::with_custodian_and_ward<1 , 2,
+                    python::with_custodian_and_ward<1 ,3 > 
+                >()
+            ]
+        )
+        .def("assignEdgeCues", pyAssignEdgeCues<PyNeuroDynamicFeatures> )
+        .def("assignNodeCues", pyAssignNodeCues<PyNeuroDynamicFeatures> )
+        .def("assignEdgeSizes", pyAssignEdgeSizes<PyNeuroDynamicFeatures> )
+        .def("assignNodeSizes", pyAssignNodeSizes<PyNeuroDynamicFeatures> )
+
+        .def("registerCallbacks", & PyNeuroDynamicFeatures::registerCallbacks)
         ;
-    
+        
 
 
-    // all graph classes itself (GridGraph , AdjacencyListGraph)
-    defineAdjacencyListGraph();
-    defineGridGraph2d();
-    defineGridGraph3d();
+    }
 
-    // implicit edge maps
-    defineGridGraphImplicitEdgeMap();
 
-    // define new rag functions
+} 
 
-    defineNewRag();
 
-    defineNeuroGraph();
-}

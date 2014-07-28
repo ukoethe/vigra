@@ -46,3 +46,5 @@ with Timer("makeRAG"):
 
 
 with Timer("readRag"):
+
+    rag = 

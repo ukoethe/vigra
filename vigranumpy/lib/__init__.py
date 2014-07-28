@@ -1336,12 +1336,11 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
 
 
-    def readRagHdf5(filename , dset):
 
 
 
-    readRagHdf5.__module__ = 'vigra.graphs'
-    graphs.readRagHdf5 = readRagHdf5
+    #readRagHdf5.__module__ = 'vigra.graphs'
+    #graphs.readRagHdf5 = readRagHdf5
 
 
     def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):

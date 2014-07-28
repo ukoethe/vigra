@@ -102,12 +102,15 @@ public:
         .def(LemonUndirectedGraphCoreVisitor<MergeGraph>(mgAdaptorClsName))
         .def("inactiveEdgesNode",&pyInactiveEdgesNode)
         .def("graph",&pyMergeGraphsGraph, python::return_internal_reference<>())
+        .def("contractEdge",&pyContractEdgeA)
+        .def("contractEdge",&pyContractEdgeB)
         ;
 
         python::def("__mergeGraph",&pyMergeGraphConstructor ,  
             python::with_custodian_and_ward_postcall< 0,1 ,
                     python::return_value_policy<   python::manage_new_object      >  >()  
-        );
+        )
+        ;
     }
 
     void exportHierarchicalClusteringOperators()const{
@@ -208,6 +211,21 @@ public:
         const EdgeHolder<MergeGraph> & edge
     ){
         return NodeHolder<MergeGraph>(mg,mg.inactiveEdgesNode(edge));
+    }
+
+
+    static void pyContractEdgeA(
+        MergeGraph & mg,
+        const EdgeHolder<MergeGraph> & edge
+    ){
+        mg.contractEdge(edge);
+    }
+
+    static void pyContractEdgeB(
+        MergeGraph & mg,
+        const EdgeHolder<Graph> & graphEdge
+    ){
+        mg.contractEdge(mg.reprEdge(graphEdge));
     }
 
 
