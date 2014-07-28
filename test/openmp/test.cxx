@@ -292,6 +292,102 @@ struct OpenMPWrapperTest {
 	vigra::MultiArray<2, unsigned char> mask;
 };
 
+struct DistanceTransformTest
+{
+    typedef vigra::DImage Image;
+
+    DistanceTransformTest()
+    : img(7,7)
+    {
+        static const double in[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator end = img.end();
+        Image::Accessor acc = img.accessor();
+        const double * p = in;
+
+        for(; i != end; ++i, ++p)
+        {
+            acc.set(*p, i);
+        }
+    }
+
+    void distanceTransformL1Test()
+    {
+        Image res(img);
+        Image res1(img);
+
+        CountIterationFunctor iter_count1, iter_count2;
+
+        vigra::omp::distanceTransform(srcImageRange(img), destImage(res), 0.0, 1, iter_count1, iter_count2);
+
+        Image::Iterator i = res.upperLeft();
+        Image::Accessor acc = res.accessor();
+        int x,y;
+
+        for(y=0; y<7; ++y)
+        {
+            for(x=0; x<7; ++x)
+            {
+                double dist = acc(i, vigra::Diff2D(x,y));
+                double dist1 = std::abs(2.0 - x) + std::abs(2.0 - y);
+                double dist2 = std::abs(5.0 - x) + std::abs(5.0 - y);
+                double desired = (dist1 < dist2) ? dist1 : dist2;
+
+                shouldEqualTolerance(dist, desired, 1e-14);
+            }
+        }
+
+#ifdef OPENMP
+        should( iter_count1.getIterationNum() == img.width());
+        should( iter_count2.getIterationNum() == img.height());
+#endif
+    }
+
+    void distanceTransformL2Test()
+    {
+
+        Image res(img);
+
+        CountIterationFunctor iter_count1, iter_count2;
+
+        vigra::omp::distanceTransform(srcImageRange(img), destImage(res), 0.0, 2, iter_count1, iter_count2);
+
+        Image::Iterator i = res.upperLeft();
+        Image::Accessor acc = res.accessor();
+        int x,y;
+
+        for(y=0; y<7; ++y)
+        {
+            for(x=0; x<7; ++x)
+            {
+                double dist = acc(i, vigra::Diff2D(x,y));
+                double dist1 = VIGRA_CSTD::sqrt((2.0 - x)*(2.0 - x) +
+                                         (2.0 - y)*(2.0 - y));
+                double dist2 = VIGRA_CSTD::sqrt((5.0 - x)*(5.0 - x) +
+                                         (5.0 - y)*(5.0 - y));
+                double desired = (dist1 < dist2) ? dist1 : dist2;
+
+                shouldEqualTolerance(dist, desired, 1e-7);
+            }
+        }
+
+#ifdef OPENMP
+        should( iter_count1.getIterationNum() == img.width());
+        should( iter_count2.getIterationNum() == img.height());
+#endif
+    }
+
+   Image img;
+};
+
 struct OpenMPWrapperTestSuite: public vigra::test_suite {
 	OpenMPWrapperTestSuite() :
 			vigra::test_suite("OpenMPWrapperTestSuite") {
@@ -302,6 +398,10 @@ struct OpenMPWrapperTestSuite: public vigra::test_suite {
 		add( testCase( &OpenMPWrapperTest::combineThreeImagesTest));
 		add( testCase( &OpenMPWrapperTest::transformImageIfTest));
 		add( testCase( &OpenMPWrapperTest::combineTwoImagesIfTest));
+
+		add( testCase( &DistanceTransformTest::distanceTransformL1Test));
+		add( testCase( &DistanceTransformTest::distanceTransformL2Test));
+//		add( testCase( &DistanceTransformTest::distanceTransformLInfTest));
 	}
 };
 
