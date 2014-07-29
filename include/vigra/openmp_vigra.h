@@ -164,11 +164,11 @@ namespace vigra
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor, class CountFunctor>
+                  class Functor>
         inline void
         transformImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                        DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                       const Functor& functor, CountFunctor &count_functor)
+                       const Functor& functor)
         {
 #pragma omp parallel
             {
@@ -184,7 +184,6 @@ namespace vigra
                     vigra::transformImage(src_upperleft + begin, src_upperleft + end, src_acc,
                                           dest_upperleft + begin, dest_acc,
                                           f);
-                    count_functor();
                 }
             } // omp parallel
         }
@@ -532,13 +531,11 @@ namespace vigra
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         transformImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                        DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                       const Functor& func,
-                       CountFunctor& count_functor)
+                       const Functor& func)
         {
             vigra::transformImage(src_upperleft, src_lowerright, src_acc,
                                   dest_upperleft, dest_acc,
@@ -646,17 +643,15 @@ namespace vigra
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         transformImage(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                        vigra::pair<DestImageIterator, DestAccessor> dest,
-                       const Functor& functor,
-                       CountFunctor& count_functor)
+                       const Functor& functor)
         {
             vigra::omp::transformImage(src.first, src.second, src.third,
                                        dest.first, dest.second,
-                                       functor, count_functor);
+                                       functor);
         }
 
 

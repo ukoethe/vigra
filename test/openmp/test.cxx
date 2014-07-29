@@ -36,6 +36,13 @@ class ParallelTestFunctor
 		}
 
 	template<class T>
+	T operator()(T const& arg1) const{
+		return std::cos(arg1) + num_threads;
+	}
+	//linearIntensityTransform<Image::value_type>(3.3)
+	//? bring this to template: Image::value_type
+
+	template<class T>
 	T operator()(T const& arg1, T const& arg2) const {
 		return arg1 + arg2 + num_threads;
 	}
@@ -239,24 +246,23 @@ struct OpenMPWrapperTest {
 	{
 		Image img1(10000, 10000);
 
-		CountIterationFunctor iter_count;
-
 		vigra::omp::transformImage(srcImageRange(img), destImage(img1),
-				linearIntensityTransform<Image::value_type>(3.3), iter_count);
+				ParallelTestFunctor());
 
 		Image::ScanOrderIterator i = img.begin();
 		Image::ScanOrderIterator i1 = img1.begin();
 		Image::Accessor acc = img.accessor();
 
+		int num_threads = acc(i1) - cos(acc(i));
+
 		for(; i != img.end(); ++i, ++i1)
 		{
-			should(3.3*acc(i) == acc(i1));
+			should(cos(acc(i)) + num_threads == acc(i1));
 		}
 
 #ifdef OPENMP
-		should( iter_count.getIterationNum() == img.height());
+		should( num_threads > 1 );
 #endif
-
 	}
 
 	void transformImageIfTest()
@@ -399,9 +405,9 @@ struct OpenMPWrapperTestSuite: public vigra::test_suite {
 
 //		add( testCase( &OpenMPWrapperTest::copyImageTest));
 		/*add( testCase( &OpenMPWrapperTest::combineTwoImagesTest));
-		add( testCase( &OpenMPWrapperTest::combineTwoImagesIfTest));*/
-		add( testCase( &OpenMPWrapperTest::combineThreeImagesTest));
-		//add( testCase( &OpenMPWrapperTest::transformImageTest));
+		add( testCase( &OpenMPWrapperTest::combineTwoImagesIfTest));
+		add( testCase( &OpenMPWrapperTest::combineThreeImagesTest));*/
+		add( testCase( &OpenMPWrapperTest::transformImageTest));
 
 //		add( testCase( &OpenMPWrapperTest::transformImageIfTest));
 
