@@ -145,9 +145,7 @@ struct OpenMPWrapperTest {
 	{
 		Image img1(10000, 10000);
 
-		CountIterationFunctor iter_count;
-
-		vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), ParallelTestFunctor(), iter_count);
+		vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), ParallelTestFunctor());
 
 		Image::ScanOrderIterator i = img.begin();
 		Image::ScanOrderIterator i1 = img1.begin();
@@ -155,20 +153,14 @@ struct OpenMPWrapperTest {
 
 		int num_threads = acc(i1) - 2*acc(i);
 
-		std::cout << "Max Number of threads " << omp_get_max_threads() << std::endl;
-		std::cout << "Used Number of threads " << num_threads << std::endl;
-		std::cout << "Image value samples " << acc(img.begin()+3) << "  " << acc(img1.begin()+3) << std::endl;
-
 		for(; i != img.end(); ++i, ++i1)
 		{
-			should(2.0*acc(i) + num_threads== acc(i1));
+			should( 2.0*acc(i) + num_threads == acc(i1) );
 		}
 
 #ifdef OPENMP
-		should( iter_count.getIterationNum() == img.height());
-		should( num_threads > 1);
+		should( num_threads > 1 );
 #endif
-
 	}
 
 	void combineTwoImagesIfTest()
@@ -208,47 +200,47 @@ struct OpenMPWrapperTest {
 
 	}
 
-	void combineThreeImagesTest()
-	{
-		Image img1(10000, 10000);
-		Image img2(10000, 10000);
-
-		CountIterationFunctor iter_count;
-		CountIterationFunctor iter_count1;
-
-		std::plus<Image::value_type> add;
-
-		vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), add, iter_count);
-
-		Image::ScanOrderIterator i = img.begin();
-		Image::ScanOrderIterator i1 = img1.begin();
-		Image::Accessor acc = img.accessor();
-
-		for(; i != img.end(); ++i, ++i1)
-		{
-			should(2.0*acc(i) == acc(i1));
-		}
-
-#ifdef OPENMP
-		should( iter_count.getIterationNum() == img.height());
-#endif
-
-		using namespace functor; //To get Arg1(), Arg2(), Arg3() ??
-		vigra::omp::combineThreeImages(srcImageRange(img), srcImage(img), srcImage(img1), destImage(img2), Arg1() + Arg2() + Arg3(), iter_count1);
-
-		i = img.begin();
-		Image::ScanOrderIterator i2 = img2.begin();
-
-		for(; i != img.end(); ++i, ++i2)
-		{
-			should(4.0*acc(i) == acc(i2));
-		}
-
-#ifdef OPENMP
-		should( iter_count1.getIterationNum() == img.height());
-#endif
-
-	}
+//	void combineThreeImagesTest()
+//	{
+//		Image img1(10000, 10000);
+//		Image img2(10000, 10000);
+//
+//		CountIterationFunctor iter_count;
+//		CountIterationFunctor iter_count1;
+//
+//		std::plus<Image::value_type> add;
+//
+//		vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), add);
+//
+//		Image::ScanOrderIterator i = img.begin();
+//		Image::ScanOrderIterator i1 = img1.begin();
+//		Image::Accessor acc = img.accessor();
+//
+//		for(; i != img.end(); ++i, ++i1)
+//		{
+//			should(2.0*acc(i) == acc(i1));
+//		}
+//
+//#ifdef OPENMP
+//		should( iter_count.getIterationNum() == img.height());
+//#endif
+//
+//		using namespace functor; //To get Arg1(), Arg2(), Arg3() ??
+//		vigra::omp::combineThreeImages(srcImageRange(img), srcImage(img), srcImage(img1), destImage(img2), Arg1() + Arg2() + Arg3(), iter_count1);
+//
+//		i = img.begin();
+//		Image::ScanOrderIterator i2 = img2.begin();
+//
+//		for(; i != img.end(); ++i, ++i2)
+//		{
+//			should(4.0*acc(i) == acc(i2));
+//		}
+//
+//#ifdef OPENMP
+//		should( iter_count1.getIterationNum() == img.height());
+//#endif
+//
+//	}
 
 	void transformImageTest()
 	{
@@ -419,8 +411,8 @@ struct OpenMPWrapperTestSuite: public vigra::test_suite {
 //		add( testCase( &OpenMPWrapperTest::transformImageIfTest));
 //		add( testCase( &OpenMPWrapperTest::combineTwoImagesIfTest));
 
-		add( testCase( &DistanceTransformTest::distanceTransformL1Test));
-		add( testCase( &DistanceTransformTest::distanceTransformL2Test));
+//		add( testCase( &DistanceTransformTest::distanceTransformL1Test));
+//		add( testCase( &DistanceTransformTest::distanceTransformL2Test));
 //		add( testCase( &DistanceTransformTest::distanceTransformLInfTest));
 	}
 };

@@ -43,14 +43,12 @@ namespace vigra
         template <class SrcImageIterator1, class SrcAccessor1,
                   class SrcImageIterator2, class SrcAccessor2,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         combineTwoImages(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                          SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                          DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                         const Functor& functor,
-                         CountFunctor& count_functor)
+                         const Functor& functor)
         {
 #pragma omp parallel
             {
@@ -67,7 +65,6 @@ namespace vigra
                                             src2_upperleft + begin, src2_acc,
                                             dest_upperleft + begin, dest_acc,
                                             f);
-                    count_functor();
                 }
             } // omp parallel
         }
@@ -472,15 +469,13 @@ namespace vigra
         template <class SrcImageIterator1, class SrcAccessor1,
                   class SrcImageIterator2, class SrcAccessor2,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         combineTwoImages(SrcImageIterator1 src1_upperleft,
                          SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                          SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                          DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                         const Functor& func,
-                         CountFunctor& count_functor)
+                         const Functor& func)
         {
             vigra::combineTwoImages(src1_upperleft, src1_lowerright, src1_acc,
                                     src2_upperleft, src2_acc,
@@ -605,20 +600,17 @@ namespace vigra
         template <class SrcImageIterator1, class SrcAccessor1,
                   class SrcImageIterator2, class SrcAccessor2,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         combineTwoImages(vigra::triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                          vigra::pair<SrcImageIterator2, SrcAccessor2> src2,
                          vigra::pair<DestImageIterator, DestAccessor> dest,
-                         const Functor& functor,
-                         CountFunctor& count_functor)
+                         const Functor& functor)
         {
             vigra::omp::combineTwoImages(src1.first, src1.second, src1.third,
                                          src2.first, src2.second,
                                          dest.first, dest.second,
-                                         functor,
-                                         count_functor);
+                                         functor);
         }
 
 
