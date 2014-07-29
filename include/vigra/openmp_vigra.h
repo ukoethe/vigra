@@ -74,15 +74,13 @@ namespace vigra
                   class SrcImageIterator2, class SrcAccessor2,
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         combineTwoImagesIf(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                            SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                            MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
                            DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                           const Functor& functor,
-                           CountFunctor& count_functor)
+                           const Functor& functor)
         {
 #pragma omp parallel
             {
@@ -100,7 +98,6 @@ namespace vigra
                                               mask_upperleft + begin, mask_acc,
                                               dest_upperleft + begin, dest_acc,
                                               f);
-                    count_functor();
                 }
             } // omp parallel
         }
@@ -488,15 +485,13 @@ namespace vigra
                   class SrcImageIterator2, class SrcAccessor2,
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         combineTwoImagesIf(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                            SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                            MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
                            DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                           const Functor& func,
-                           CountFunctor& count_functor)
+                           const Functor& func)
         {
             vigra::combineTwoImagesIf(src1_upperleft, src1_lowerright, src1_acc,
                                       src2_upperleft, src2_acc,
@@ -618,22 +613,19 @@ namespace vigra
                   class SrcImageIterator2, class SrcAccessor2,
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         combineTwoImagesIf(vigra::triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                            vigra::pair<SrcImageIterator2, SrcAccessor2> src2,
                            vigra::pair<MaskImageIterator, MaskAccessor> mask,
                            vigra::pair<DestImageIterator, DestAccessor> dest,
-                           const Functor& functor,
-                           CountFunctor& count_functor)
+                           const Functor& functor)
         {
             vigra::omp::combineTwoImagesIf(src1.first, src1.second, src1.third,
                                            src2.first, src2.second,
                                            mask.first, mask.second,
                                            dest.first, dest.second,
-                                           functor,
-                                           count_functor);
+                                           functor);
         }
 
 
