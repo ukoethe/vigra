@@ -268,12 +268,9 @@ struct OpenMPWrapperTest {
 	void transformImageIfTest()
 	{
 		Image img1(10000, 10000);
-		img1 = 27.0;
+		img1 = 27.0; //should be parallel?
 
-		CountIterationFunctor iter_count;
-
-		vigra::omp::transformImageIf(srcImageRange(img), maskImage(mask), destImage(img1),
-				linearIntensityTransform<Image::value_type>(3.3), iter_count);
+		vigra::omp::transformImageIf(srcImageRange(img), maskImage(mask), destImage(img1), ParallelTestFunctor());
 
 		Image::ScanOrderIterator i = img.begin();
 		Image::ScanOrderIterator i1 = img1.begin();
@@ -288,13 +285,15 @@ struct OpenMPWrapperTest {
 
 		should(acc(i1end) == 27.0);
 
+		int num_threads = acc(i1) - cos(acc(i));
+
 		for(; i1 != i1end; ++i, ++i1)
 		{
-			should(3.3*acc(i) == acc(i1));
+			should( cos(acc(i)) + num_threads == acc(i1));
 		}
 
 #ifdef OPENMP
-		should( iter_count.getIterationNum() == img.height());
+		should( num_threads > 1 );
 #endif
 
 	}
@@ -404,13 +403,11 @@ struct OpenMPWrapperTestSuite: public vigra::test_suite {
 			vigra::test_suite("OpenMPWrapperTestSuite") {
 
 //		add( testCase( &OpenMPWrapperTest::copyImageTest));
-		/*add( testCase( &OpenMPWrapperTest::combineTwoImagesTest));
+		add( testCase( &OpenMPWrapperTest::combineTwoImagesTest));
 		add( testCase( &OpenMPWrapperTest::combineTwoImagesIfTest));
-		add( testCase( &OpenMPWrapperTest::combineThreeImagesTest));*/
+		add( testCase( &OpenMPWrapperTest::combineThreeImagesTest));
 		add( testCase( &OpenMPWrapperTest::transformImageTest));
-
-//		add( testCase( &OpenMPWrapperTest::transformImageIfTest));
-
+		add( testCase( &OpenMPWrapperTest::transformImageIfTest));
 
 //		add( testCase( &DistanceTransformTest::distanceTransformL1Test));
 //		add( testCase( &DistanceTransformTest::distanceTransformL2Test));

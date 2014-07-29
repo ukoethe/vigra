@@ -192,12 +192,12 @@ namespace vigra
         template <class SrcImageIterator, class SrcAccessor,
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor, class CountFunctor>
+                  class Functor>
         inline void
         transformImageIf(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                          MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
                          DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                         const Functor& functor, CountFunctor &count_functor)
+                         const Functor& functor)
         {
 #pragma omp parallel
             {
@@ -214,7 +214,6 @@ namespace vigra
                                             mask_upperleft + begin, mask_acc,
                                             dest_upperleft + begin, dest_acc,
                                             f);
-                    count_functor();
                 }
             } // omp parallel
         }
@@ -546,14 +545,12 @@ namespace vigra
         template <class SrcImageIterator, class SrcAccessor,
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         transformImageIf(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                          MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
                          DestImageIterator dest_upperleft, DestAccessor dest_acc,
-                         const Functor& func,
-                         CountFunctor& count_functor)
+                         const Functor& func)
         {
             vigra::transformImageIf(src_upperleft, src_lowerright, src_acc,
                                     mask_upperleft, mask_acc,
@@ -671,20 +668,17 @@ namespace vigra
         template <class SrcImageIterator, class SrcAccessor,
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class Functor,
-                  class CountFunctor>
+                  class Functor>
         inline void
         transformImageIf(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                          vigra::pair<MaskImageIterator, MaskAccessor> mask,
                          vigra::pair<DestImageIterator, DestAccessor> dest,
-                         const Functor& functor,
-                         CountFunctor& count_functor)
+                         const Functor& functor)
         {
             vigra::omp::transformImageIf(src.first, src.second, src.third,
                                          mask.first, mask.second,
                                          dest.first, dest.second,
-                                         functor,
-                                         count_functor);
+                                         functor);
         }
 
 
