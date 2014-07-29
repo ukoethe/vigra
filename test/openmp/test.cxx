@@ -11,16 +11,33 @@ using namespace vigra;
 //#define PARA_CHECK;
 //#ifdef OPENMP
 
+//class ParallelTestFunctor
+//{
+//	int ID;
+//	ParallelTestFunctor(ParallelTestFunctor const&) :
+//			ID(omp_get_thread_num()) {
+//	}
+//
+//	template<class T>
+//	T operator()(T const& arg1, T const& arg2) const {
+//		return arg1 + arg2 + ID;
+//	}
+//};
+
 class ParallelTestFunctor
 {
-	int ID;
-	ParallelTestFunctor(ParallelTestFunctor const&) :
-			ID(omp_get_thread_num()) {
-	}
+	int num_threads;
+	public:
+		ParallelTestFunctor(){
+		}
+
+		ParallelTestFunctor(ParallelTestFunctor const&):
+			num_threads(omp_get_num_threads()) {
+		}
 
 	template<class T>
 	T operator()(T const& arg1, T const& arg2) const {
-		return arg1 + arg2 + ID;
+		return arg1 + arg2 + num_threads;
 	}
 };
 
@@ -130,23 +147,26 @@ struct OpenMPWrapperTest {
 
 		CountIterationFunctor iter_count;
 
-		std::plus<Image::value_type> add;
-
-		vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), add, iter_count);
-
-		using namespace functor; //TODO: For what?
+		vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), ParallelTestFunctor(), iter_count);
 
 		Image::ScanOrderIterator i = img.begin();
 		Image::ScanOrderIterator i1 = img1.begin();
 		Image::Accessor acc = img.accessor();
 
+		int num_threads = acc(i1) - 2*acc(i);
+
+		std::cout << "Max Number of threads " << omp_get_max_threads() << std::endl;
+		std::cout << "Used Number of threads " << num_threads << std::endl;
+		std::cout << "Image value samples " << acc(img.begin()+3) << "  " << acc(img1.begin()+3) << std::endl;
+
 		for(; i != img.end(); ++i, ++i1)
 		{
-			should(2.0*acc(i) == acc(i1));
+			should(2.0*acc(i) + num_threads== acc(i1));
 		}
 
 #ifdef OPENMP
 		should( iter_count.getIterationNum() == img.height());
+		should( num_threads > 1);
 #endif
 
 	}
@@ -392,12 +412,12 @@ struct OpenMPWrapperTestSuite: public vigra::test_suite {
 	OpenMPWrapperTestSuite() :
 			vigra::test_suite("OpenMPWrapperTestSuite") {
 
-		add( testCase( &OpenMPWrapperTest::copyImageTest));
+//		add( testCase( &OpenMPWrapperTest::copyImageTest));
 		add( testCase( &OpenMPWrapperTest::combineTwoImagesTest));
-		add( testCase( &OpenMPWrapperTest::transformImageTest));
-		add( testCase( &OpenMPWrapperTest::combineThreeImagesTest));
-		add( testCase( &OpenMPWrapperTest::transformImageIfTest));
-		add( testCase( &OpenMPWrapperTest::combineTwoImagesIfTest));
+//		add( testCase( &OpenMPWrapperTest::transformImageTest));
+//		add( testCase( &OpenMPWrapperTest::combineThreeImagesTest));
+//		add( testCase( &OpenMPWrapperTest::transformImageIfTest));
+//		add( testCase( &OpenMPWrapperTest::combineTwoImagesIfTest));
 
 		add( testCase( &DistanceTransformTest::distanceTransformL1Test));
 		add( testCase( &DistanceTransformTest::distanceTransformL2Test));
