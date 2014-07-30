@@ -945,15 +945,15 @@ void defineMorphology()
        "Compute the Euclidean distance transform of a 3D scalar float volume of labeled data.\n"
        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
-    def("boundaryDistanceTransform_old",
+    def("boundaryDistanceTransform_inner",
         registerConverters(&pythonboundaryDistanceTransform_old<2, UInt32, float>),
         (arg("array"),  
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 2D scalar label array.\n"
+        "Compute the Euclidean distance transform of a 2D scalar label array using inner boundary.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
-    def("boundaryDistanceTransform_old",
+    def("boundaryDistanceTransform_inner",
         registerConverters(&pythonboundaryDistanceTransform_old<3, UInt32, float>),
         (arg("array"),
          arg("out")=python::object()),
@@ -965,39 +965,39 @@ void defineMorphology()
         registerConverters(&pythonboundaryMulti<2, UInt32, UInt8>),
         (arg("array"),
          arg("out")=python::object()),
-        "Converts label image into boundary image.\n");
+        "Converts label image into boundary image Adjacent pixels with different labels will be transformed to 1, otherwise 0.\n");
 
     def("boundaryMulti",
         registerConverters(&pythonboundaryMulti<3, UInt32, UInt8>),
         (arg("array"),
          arg("out")=python::object()),
-        "Converts label volume into boundary volume.\n");
+        "Converts label image into boundary image Adjacent pixels with different labels will be transformed to 1, otherwise 0.\n");
     
     def("vectorialDistanceTransform",
         registerConverters(&pythonVectorialDistanceTransform<2, float>),
         (arg("array"), 
          arg("background") = true, 
          arg("out")=python::object()),
-        "TODO");
+        "Compute the Euclidean distance transform of a 2D scalar float image with vectorial output.");
 
     def("vectorialDistanceTransform",
         registerConverters(&pythonVectorialDistanceTransform<3, float>),
         (arg("array"),
          arg("background") = true,
          arg("out")=python::object()),
-        "TODO");
+        "Compute the Euclidean distance transform of a 3D scalar float volume with vectorial output.");
     
     def("vectorialBoundaryDistanceTransform",
         registerConverters(&pythonVectorialBoundaryDistanceTransform<2, float>),
         (arg("array"),
          arg("out")=python::object()),
-        "TODO");
+        "Compute the Euclidean distance transform of a 2D scalar float image of labeled data with vectorial output.");
         
     def("vectorialBoundaryDistanceTransform",
         registerConverters(&pythonVectorialBoundaryDistanceTransform<3, float>),
         (arg("array"),
          arg("out")=python::object()),
-        "TODO");
+        "Compute the Euclidean distance transform of a 3D scalar float volume of labeled data with vectorial output.");
 }
 
 } // namespace vigra
