@@ -658,7 +658,7 @@ separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
                             destMultiArray(dest), background );
 }
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NEW %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BoundaryDistanceTransform %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 //rewrite labeled data and work with separableMultiDist
 namespace lemon_graph { 
@@ -720,7 +720,7 @@ boundaryMultiDistance_old(MultiArrayView<N, T1, S1> const & labels,
     boundaryMulti(labels, tmpArray);
     separableMultiDistance(tmpArray, out, true);
 	for (int k = 0; k < out.size(); k++)
-		out(k) += 0.5;	//approximated distance correction
+        out(k) += 0.5;	//approximated distance correction with inner boundary
 
 }
 

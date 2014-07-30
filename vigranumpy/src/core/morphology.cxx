@@ -448,59 +448,6 @@ pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume,
     return res;
 }
 
-template < class PixelType, typename DestPixelType >
-NumpyAnyArray
-pythonDistanceTransform2Dsquare(NumpyArray<2, Singleband<PixelType> > image,
-                          bool background,
-                          ArrayVector<double> pixelPitch = ArrayVector<double>(),
-                          NumpyArray<2, Singleband<DestPixelType> > res = python::object())
-{
-    res.reshapeIfEmpty(image.taggedShape(),
-            "distanceTransform2D(): Output array has wrong shape.");
-
-    if (pixelPitch.size() == 0)
-    {
-        pixelPitch = ArrayVector<double>(2, 1.0);
-    }
-    else
-    {
-        pixelPitch = image.permuteLikewise(pixelPitch);
-    }
-    {
-
-        PyAllowThreads _pythread;
-        separableMultiDistSquared(srcMultiArrayRange(image), destMultiArray(res), background, pixelPitch);
-    }
-
-    return res;
-}
-
-template < class VoxelType >
-NumpyAnyArray
-pythonDistanceTransform3Dsquare(NumpyArray<3, Singleband<VoxelType> > volume,
-                          bool background,
-                          ArrayVector<double> pixelPitch = ArrayVector<double>(),
-                          NumpyArray<3, Singleband<float> > res=python::object())
-{
-    res.reshapeIfEmpty(volume.taggedShape(),
-            "distanceTransform3D(): Output array has wrong shape.");
-
-    if (pixelPitch.size() == 0)
-    {
-        pixelPitch = ArrayVector<double>(3, 1.0);
-    }
-    else
-    {
-        pixelPitch = volume.permuteLikewise(pixelPitch);
-    }
-
-    {
-        PyAllowThreads _pythread;
-        separableMultiDistSquared(srcMultiArrayRange(volume), destMultiArray(res), background, pixelPitch);
-    }
-    return res;
-}
-
 template < unsigned int N, class PixelType, typename DestPixelType >
 NumpyAnyArray 
 pythonboundaryDistanceTransform_old(NumpyArray<N, Singleband<PixelType> > image,
@@ -548,9 +495,11 @@ pythonboundaryMulti(NumpyArray<N, Singleband<PixelType> > image,
 {
     res.reshapeIfEmpty(image.taggedShape(),
             "boundaryDistanceTransform(): Output array has wrong shape.");
-//TODO: PyAllowThreads_pythread; // template with iterators
-        boundaryMulti(image, res);
 
+    {
+        PyAllowThreads _pythread;
+        boundaryMulti(image, res);
+    }
 
     return res;
 }
@@ -914,42 +863,26 @@ void defineMorphology()
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
-    def("distanceTransform2Dsquare",
-       registerConverters(&pythonDistanceTransform2Dsquare<UInt8,float>),
-       (arg("image"),
-        arg("background")=true,
-        arg("pixel_pitch") = ArrayVector<double>(),
-        arg("out")=python::object()),
-       "Likewise for a 2D uint8 input array.\n");
-
-   def("distanceTransform3Dsquare",
-       registerConverters(&pythonDistanceTransform3Dsquare<float>),
-       (arg("array"),
-        arg("background") = true,
-        arg("pixel_pitch") = ArrayVector<double>(),
-        arg("out")=python::object()),
-       "TODO");
-
     def("boundaryDistanceTransform",
        registerConverters(&pythonboundaryDistanceTransform<2, UInt32, float>),
        (arg("image"),
         arg("pixel_pitch") = ArrayVector<double>(),
         arg("out")=python::object()),
-       "Likewise for a 2D uint32 input array.\n");
+       "Compute the Euclidean distance transform of a 2D scalar Uint32 array of labeled data using outer boundary (more accurate than inner).\n");
 
    def("boundaryDistanceTransform",
        registerConverters(&pythonboundaryDistanceTransform<3, UInt32, float>),
        (arg("array"),
         arg("pixel_pitch") = ArrayVector<double>(),
         arg("out")=python::object()),
-       "Compute the Euclidean distance transform of a 3D scalar float volume of labeled data.\n"
+       "Compute the Euclidean distance transform of a 3D scalar Uint32 volume of labeled data using outer boundary (more accurate than inner).\n"
        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
     def("boundaryDistanceTransform_inner",
         registerConverters(&pythonboundaryDistanceTransform_old<2, UInt32, float>),
         (arg("array"),  
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 2D scalar label array using inner boundary.\n"
+        "Compute the Euclidean distance transform of a 2D scalar label array using inner boundary (less accurate than outer boundary used with boundaryDistanceTransform).\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
@@ -957,7 +890,7 @@ void defineMorphology()
         registerConverters(&pythonboundaryDistanceTransform_old<3, UInt32, float>),
         (arg("array"),
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 3D scalar label volume.\n"
+        "Compute the Euclidean distance transform of a 3D scalar label volume using inner boundary (less accurate than outer boundary used with boundaryDistanceTransform).\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
@@ -978,7 +911,7 @@ void defineMorphology()
         (arg("array"), 
          arg("background") = true, 
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 2D scalar float image with vectorial output.");
+        "Compute the Euclidean distance transform of a 2D scalar float array with vectorial output.");
 
     def("vectorialDistanceTransform",
         registerConverters(&pythonVectorialDistanceTransform<3, float>),
@@ -987,13 +920,13 @@ void defineMorphology()
          arg("out")=python::object()),
         "Compute the Euclidean distance transform of a 3D scalar float volume with vectorial output.");
     
-    def("vectorialBoundaryDistanceTransform",
+    def("boundaryVectorialDistanceTransform",
         registerConverters(&pythonVectorialBoundaryDistanceTransform<2, float>),
         (arg("array"),
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 2D scalar float image of labeled data with vectorial output.");
+        "Compute the Euclidean distance transform of a 2D scalar float array of labeled data with vectorial output.");
         
-    def("vectorialBoundaryDistanceTransform",
+    def("boundaryVectorialDistanceTransform",
         registerConverters(&pythonVectorialBoundaryDistanceTransform<3, float>),
         (arg("array"),
          arg("out")=python::object()),
