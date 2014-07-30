@@ -45,27 +45,6 @@ public:
     }
 };
 
-class CountIterationFunctor {
-private:
-    unsigned int iteration_num;
-
-public:
-    CountIterationFunctor() :
-            iteration_num(0) {
-    }
-
-    void operator()() {
-#ifdef OPENMP
-#pragma omp critical //#pragma omp atomic update
-#endif
-        iteration_num++;
-    }
-
-    unsigned int getIterationNum() {
-        return iteration_num;
-    }
-};
-
 struct OpenMPWrapperTest {
     typedef vigra::DImage Image;
 
@@ -87,59 +66,15 @@ struct OpenMPWrapperTest {
     void copyImageTest() {
         Image img1(10000, 10000);
 
-        CountIterationFunctor functor;
-
-        vigra::omp::copyImage(srcImageRange(img), destImage(img1), functor);
+        vigra::omp::copyImage(srcImageRange(img), destImage(img1));
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i1 = img1.begin();
         Image::Accessor acc = img.accessor();
 
-#ifndef PARA_CHECK
         for (; i != img.end(); ++i, ++i1) {
             should(acc(i) == acc(i1));
         }
-#else
-        int onetheard = (img1.width() * img1.height()) / 3;
-#pragma omp parallel sections
-        {
-#pragma omp section
-            {
-                i1 = img1.begin();
-                i = img.begin();
-                std::cout << "First id = " << omp_get_thread_num() << std::endl;
-                for (; i != img.begin() + onetheard; ++i, ++i1)
-                {
-                    should(acc(i) == acc(i1));
-                }
-            }
-#pragma omp section
-            {
-                i1 = img1.begin() + onetheard;
-                i = img.begin() + onetheard;
-                std::cout << "Second id = " << omp_get_thread_num() << std::endl;
-                for (; i != img.begin()+ 2*onetheard; ++i, ++i1)
-                {
-                    should(acc(i) == acc(i1));
-                }
-            }
-#pragma omp section
-            {
-                i1 = img1.begin() + 2 * onetheard;
-                i = img.begin() + 2 * onetheard;
-                std::cout << "Third id = " << omp_get_thread_num() << std::endl;
-                for (; i != img.end(); ++i, ++i1)
-                {
-                    should(acc(i) == acc(i1));
-                }
-            }
-        } //omp sections
-#endif //PARA_CHECK
-
-#ifdef OPENMP
-        should(functor.getIterationNum() == img.height());
-#endif
-
     }
 
     void combineTwoImagesTest()
@@ -318,10 +253,7 @@ struct DistanceTransformTest {
         Image res(img);
         Image res1(img);
 
-        CountIterationFunctor iter_count1, iter_count2;
-
-        vigra::omp::distanceTransform(srcImageRange(img), destImage(res), 0.0,
-                1, iter_count1, iter_count2);
+        vigra::omp::distanceTransform(srcImageRange(img), destImage(res), 0.0, 1);
 
         Image::Iterator i = res.upperLeft();
         Image::Accessor acc = res.accessor();
@@ -337,21 +269,13 @@ struct DistanceTransformTest {
                 shouldEqualTolerance(dist, desired, 1e-14);
             }
         }
-
-#ifdef OPENMP
-        should( iter_count1.getIterationNum() == img.width());
-        should( iter_count2.getIterationNum() == img.height());
-#endif
     }
 
     void distanceTransformL2Test() {
 
         Image res(img);
 
-        CountIterationFunctor iter_count1, iter_count2;
-
-        vigra::omp::distanceTransform(srcImageRange(img), destImage(res), 0.0,
-                2, iter_count1, iter_count2);
+        vigra::omp::distanceTransform(srcImageRange(img), destImage(res), 0.0, 2);
 
         Image::Iterator i = res.upperLeft();
         Image::Accessor acc = res.accessor();
@@ -369,11 +293,6 @@ struct DistanceTransformTest {
                 shouldEqualTolerance(dist, desired, 1e-7);
             }
         }
-
-#ifdef OPENMP
-        should( iter_count1.getIterationNum() == img.width());
-        should( iter_count2.getIterationNum() == img.height());
-#endif
     }
 
     Image img;
@@ -383,16 +302,15 @@ struct OpenMPWrapperTestSuite: public vigra::test_suite {
     OpenMPWrapperTestSuite() :
             vigra::test_suite("OpenMPWrapperTestSuite") {
 
-        add( testCase( &OpenMPWrapperTest::copyImageTest));
         add( testCase( &OpenMPWrapperTest::combineTwoImagesTest));
         add( testCase( &OpenMPWrapperTest::combineTwoImagesIfTest));
         add( testCase( &OpenMPWrapperTest::combineThreeImagesTest));
         add( testCase( &OpenMPWrapperTest::transformImageTest));
         add( testCase( &OpenMPWrapperTest::transformImageIfTest));
 
+//        add( testCase( &OpenMPWrapperTest::copyImageTest));
 //        add( testCase( &DistanceTransformTest::distanceTransformL1Test));
 //        add( testCase( &DistanceTransformTest::distanceTransformL2Test));
-//        add( testCase( &DistanceTransformTest::distanceTransformLInfTest));
     }
 };
 
