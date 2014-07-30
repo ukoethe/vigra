@@ -400,12 +400,12 @@ pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
         PyAllowThreads _pythread;
         if(background)
         {
-            distanceTransform(srcImageRange(image), destImage(res), 
+            distanceTransform(srcImageRange(image), destImage(res),
                               NumericTraits<PixelType>::zero(), norm);
         }
         else
         {
-            distanceTransform(srcImageRange(image, detail::IsBackgroundAccessor<PixelType>()), 
+            distanceTransform(srcImageRange(image, detail::IsBackgroundAccessor<PixelType>()),
                               destImage(res), false, norm);
         }
     }
@@ -427,7 +427,7 @@ NumpyAnyArray
 pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume, 
                           bool background, 
                           ArrayVector<double> pixelPitch = ArrayVector<double>(),
-                          NumpyArray<3, Singleband<VoxelType> > res=python::object())
+                          NumpyArray<3, Singleband<float> > res=python::object())
 {
     res.reshapeIfEmpty(volume.taggedShape(), 
             "distanceTransform3D(): Output array has wrong shape.");
@@ -444,6 +444,59 @@ pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume,
     {
         PyAllowThreads _pythread;
         separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background, pixelPitch);
+    }
+    return res;
+}
+
+template < class PixelType, typename DestPixelType >
+NumpyAnyArray
+pythonDistanceTransform2Dsquare(NumpyArray<2, Singleband<PixelType> > image,
+                          bool background,
+                          ArrayVector<double> pixelPitch = ArrayVector<double>(),
+                          NumpyArray<2, Singleband<DestPixelType> > res = python::object())
+{
+    res.reshapeIfEmpty(image.taggedShape(),
+            "distanceTransform2D(): Output array has wrong shape.");
+
+    if (pixelPitch.size() == 0)
+    {
+        pixelPitch = ArrayVector<double>(2, 1.0);
+    }
+    else
+    {
+        pixelPitch = image.permuteLikewise(pixelPitch);
+    }
+    {
+
+        PyAllowThreads _pythread;
+        separableMultiDistSquared(srcMultiArrayRange(image), destMultiArray(res), background, pixelPitch);
+    }
+
+    return res;
+}
+
+template < class VoxelType >
+NumpyAnyArray
+pythonDistanceTransform3Dsquare(NumpyArray<3, Singleband<VoxelType> > volume,
+                          bool background,
+                          ArrayVector<double> pixelPitch = ArrayVector<double>(),
+                          NumpyArray<3, Singleband<float> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.taggedShape(),
+            "distanceTransform3D(): Output array has wrong shape.");
+
+    if (pixelPitch.size() == 0)
+    {
+        pixelPitch = ArrayVector<double>(3, 1.0);
+    }
+    else
+    {
+        pixelPitch = volume.permuteLikewise(pixelPitch);
+    }
+
+    {
+        PyAllowThreads _pythread;
+        separableMultiDistSquared(srcMultiArrayRange(volume), destMultiArray(res), background, pixelPitch);
     }
     return res;
 }
@@ -860,6 +913,22 @@ void defineMorphology()
         "given, the data is treated isotropically with unit distance between pixels.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+
+    def("distanceTransform2Dsquare",
+       registerConverters(&pythonDistanceTransform2Dsquare<UInt8,float>),
+       (arg("image"),
+        arg("background")=true,
+        arg("pixel_pitch") = ArrayVector<double>(),
+        arg("out")=python::object()),
+       "Likewise for a 2D uint8 input array.\n");
+
+   def("distanceTransform3Dsquare",
+       registerConverters(&pythonDistanceTransform3Dsquare<float>),
+       (arg("array"),
+        arg("background") = true,
+        arg("pixel_pitch") = ArrayVector<double>(),
+        arg("out")=python::object()),
+       "TODO");
 
     def("boundaryDistanceTransform",
        registerConverters(&pythonboundaryDistanceTransform<2, UInt32, float>),

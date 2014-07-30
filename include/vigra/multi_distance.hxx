@@ -760,26 +760,20 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa, BufI
     ++is;
     ++bis;
     bool label_check3 = false;
-    double begin = 0.0, value, current = 1.0;
+    double begin = 0.0, value = 0.0, current = 1.0;
     while(current < w )
     {
         if (label_check3 == true) (label_check3 = false);
         else {
+            //one label has ended: the intra-label distances are calculated and the stack is emptied
+            //afterwards the last point of the old label is treated as background
             if (label_check2 == true){
-                // Now we have the stack indicating which rows are influenced by (and therefore
-                // closest to) which row. We can go through the stack and calculate the
-                // distance squared for each element of the column.
                 typename std::vector<Influence>::iterator it = _stack.begin();
-                //std::cout << "da.set: ";
                 for(float i = begin ; i < current; ++i, ++id)
                 {
                     while( i >= it->right)
                         ++it;
                     da.set(sigma2 * sq(i - it->center) + it->prevVal, id );
-//                    if (sigma2 * sq(i - it->center) + it->prevVal == 0){
-//                        std::cout << "da.set: ";
-//                        std::cout << sigma2 * sq(i - it->center) + it->prevVal << " current " << i << " preV  " << it->prevVal << " center " << it->center << std::endl;
-//                    }
                 }
                 while (_stack.empty() == false) (_stack.pop_back());
                 _stack.push_back(Influence(0.0, current-1, current-1, w));
@@ -788,10 +782,12 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa, BufI
                 label_check2 = false;
                 value = ba(bis);
             }
+            //the label is the same
             else if (label_check == sa(is)){
                 label_check = sa(is);
                 value = ba(bis);
             }
+            //the label changes: evaluate current point as background (offset = 0.0). current will not be increased afterwards
             else if (label_check != sa(is)){
                 label_check = sa(is);
                 label_check2 = true;
@@ -801,7 +797,6 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa, BufI
         Influence & s = _stack.back();
         double diff = current - s.center;
         double intersection = current + (value - s.prevVal - sigma2*sq(diff)) / (sigma22 * diff);
-        //std::cout << "value: " << value << " intersection: " << intersection << " current: " << current << std::endl;
         if( intersection < s.left) // previous point has no influence
             {
             _stack.pop_back();
@@ -828,15 +823,12 @@ void boundaryDistParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa, BufI
         }
         }
     typename std::vector<Influence>::iterator it = _stack.begin();
-    //std::cout << "da.set: ";
     for(float i = begin ; i < w; ++i, ++id)
         {
         while( i >= it->right)
             ++it;
         da.set(sigma2 * sq(i - it->center) + it->prevVal, id );
-        //std::cout << sigma2 * sq(i - it->center) + it->prevVal << " ";
         }
-    //std::cout << "\n";
     }
 
 template <class SrcIterator, class SrcAccessor,
@@ -1069,11 +1061,10 @@ void boundaryMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor s
             typename DNavigator::iterator iter = dnav.begin(), end = dnav.end();
             for ( ; iter != end; ++iter)
             {
-                dest.set(dest(iter) - 0.5, iter);
+                dest.set(dest(iter) - 0.5, iter); //outer boundary correction
             }
           }
       }
-    //std::cout << "shape size: " << shape.size() << " shape: " << " N: " << N << shape << std::endl;
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1098,11 +1089,10 @@ void boundaryMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor s
             typename DNavigator::iterator iter = dnav.begin(), end = dnav.end();
             for ( ; iter != end; ++iter)
             {
-                dest.set(dest(iter) - 0.5, iter);
+                dest.set(dest(iter) - 0.5, iter); //outer boundary correction
             }
           }
       }
-//    std::cout << "shape size: " << shape.size() << " shape: " << " N: " << N << shape << std::endl;
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
