@@ -14,7 +14,8 @@ VIGRA_ADD_TEST(test_multiarray test.cxx LIBRARIES vigraimpex)
 
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/impex)
 
-if(APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0" AND NOT WITH_BOOST_THREAD)
+if(((APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0") OR MINGW)
+     AND NOT WITH_BOOST_THREAD)
     MESSAGE(STATUS "** WARNING: test_multiarray_chunked will not be executed on this platform")
     MESSAGE(STATUS "**          unless cmake is run with '-DWITH_BOOST_THREAD=1'.")
 else()

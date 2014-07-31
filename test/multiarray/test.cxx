@@ -1564,7 +1564,7 @@ struct MultiImpexTest
         shouldEqual(result(0,1,2), 3);
         shouldEqual(result(0,1,3), 4);
 
-#ifdef _WIN32
+#ifdef _MSC_VER
         exportVolume(array, VolumeExportInfo("impex\\test", ext2));
         
         importVolume(result, std::string("impex\\test"), std::string(ext2));
@@ -1574,7 +1574,7 @@ struct MultiImpexTest
         shouldEqual(result(0,1,1), 2);
         shouldEqual(result(0,1,2), 3);
         shouldEqual(result(0,1,3), 4);
-#endif // _WIN32
+#endif // _MSC_VER
     }
 
 #if defined(HasTIFF)
