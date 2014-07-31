@@ -4,7 +4,6 @@
 #   OPENMP_FOUND - true if openmp is detected
 
 FIND_PACKAGE(OpenMP)
-ADD_DEFINITIONS(${OpenMP_CXX_FLAGS})
 
 # handle OPENMP flags
 IF(OPENMP_FOUND)

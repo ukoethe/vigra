@@ -156,7 +156,7 @@ IF(WITH_VALGRIND)
 ENDIF()
 
 IF(WITH_OPENMP)
-    INCLUDE(WHERE_IS_OpenMP)
+    INCLUDE(HandleOpenMPFlags)
 ENDIF()    
 
 ##################################################
