@@ -6,6 +6,7 @@ SET(TEST_SCRIPTS
     test1.py
     test2.py
     test3.py
+    test4.py
     test_color.py
     )
 

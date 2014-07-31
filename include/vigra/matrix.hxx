@@ -152,9 +152,9 @@ class Matrix
             <tt>difference_type(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    explicit Matrix(const difference_type &shape,
+    explicit Matrix(const difference_type &aShape,
                     ALLOC const & alloc = allocator_type())
-    : BaseType(shape, alloc)
+    : BaseType(aShape, alloc)
     {}
 
         /** construct with given shape and init all
@@ -172,9 +172,9 @@ class Matrix
             <tt>difference_type(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(const difference_type &shape, const_reference init,
+    Matrix(const difference_type &aShape, const_reference init,
            allocator_type const & alloc = allocator_type())
-    : BaseType(shape, init, alloc)
+    : BaseType(aShape, init, alloc)
     {}
 
         /** construct with given shape and init all
@@ -334,16 +334,16 @@ class Matrix
 
         /** reshape to the given shape and initialize with zero.
          */
-    void reshape(difference_type const & shape)
+    void reshape(difference_type const & newShape)
     {
-        BaseType::reshape(shape);
+        BaseType::reshape(newShape);
     }
 
         /** reshape to the given shape and initialize with \a init.
          */
-    void reshape(difference_type const & shape, const_reference init)
+    void reshape(difference_type const & newShape, const_reference init)
     {
-        BaseType::reshape(shape, init);
+        BaseType::reshape(newShape, init);
     }
 
         /** Create a matrix view that represents the row vector of row \a d.
@@ -1067,9 +1067,9 @@ void repeatMatrix(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, C2> &
     vigra_precondition(m*verticalCount == rowCount(r) && n*horizontalCount == columnCount(r),
         "repeatMatrix(): Shape mismatch.");
         
-    for(MultiArrayIndex l=0; l<(MultiArrayIndex)horizontalCount; ++l)
+    for(MultiArrayIndex l=0; l<static_cast<MultiArrayIndex>(horizontalCount); ++l)
     {
-        for(MultiArrayIndex k=0; k<(MultiArrayIndex)verticalCount; ++k)
+        for(MultiArrayIndex k=0; k<static_cast<MultiArrayIndex>(verticalCount); ++k)
         {
             r.subarray(Shape(k*m, l*n), Shape((k+1)*m, (l+1)*n)) = v;
         }
@@ -2124,7 +2124,7 @@ linalg::TemporaryMatrix<int> pow(MultiArrayView<2, int, C> const & v, int expone
 
     for(MultiArrayIndex i = 0; i < n; ++i)
         for(MultiArrayIndex j = 0; j < m; ++j)
-            t(j, i) = (int)vigra::pow((double)v(j, i), exponent);
+            t(j, i) = static_cast<int>(vigra::pow(static_cast<double>(v(j, i)), exponent));
     return t;
 }
 
@@ -2136,7 +2136,7 @@ linalg::TemporaryMatrix<int> pow(linalg::TemporaryMatrix<int> const & v, int exp
 
     for(MultiArrayIndex i = 0; i < n; ++i)
         for(MultiArrayIndex j = 0; j < m; ++j)
-            t(j, i) = (int)vigra::pow((double)t(j, i), exponent);
+            t(j, i) = static_cast<int>(vigra::pow(static_cast<double>(t(j, i)), exponent));
     return t;
 }
 
@@ -2389,7 +2389,7 @@ columnStatistics2PassImpl(MultiArrayView<2, T1, C1> const & A,
     {
         mean += rowVector(A, k);
     }
-    mean /= (double)m;
+    mean /= static_cast<double>(m);
     
     sumOfSquaredDifferences.init(NumericTraits<T3>::zero());
     for(MultiArrayIndex k=0; k<m; ++k)
@@ -2618,8 +2618,8 @@ void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
     // West's algorithm for incremental covariance matrix computation
     Matrix<T2> t = features - mean;
     ++count;
-    double f  = 1.0 / count,
-           f1 = 1.0 - f;
+    T2 f  = T2(1.0) / count,
+       f1 = T2(1.0) - f;
     mean += f*t;
     
     if(rowCount(features) == 1) // update column covariance from current row

@@ -32,10 +32,9 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
 /*                                                                      */
 /************************************************************************/
-
-
 #ifndef VIGRA_ITERATORADAPTER_HXX
 #define VIGRA_ITERATORADAPTER_HXX
+
 
 namespace vigra {
 
@@ -295,6 +294,27 @@ class IteratorAdaptor
 
     BaseType adaptee_;
 };
+
+
+
+
+
+
+
+
+namespace detail_iterator_facade{
+
+
+
+
+}
+
+
+
+
+
+
+
 
 } // namespace vigra
 

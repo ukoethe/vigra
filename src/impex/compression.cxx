@@ -122,7 +122,8 @@ void compress(char const * source, std::size_t size, ArrayVector<char> & dest, C
 {
     ArrayVector<char> buffer;
     std::size_t destSize = compressImpl(source, size, buffer, method);
-    dest.insert(dest.begin(), buffer.data(), buffer.data() + destSize);
+    dest.resize(destSize);
+    std::copy(buffer.data(), buffer.data() + destSize, dest.begin());
 }
 
 void compress(char const * source, std::size_t size, std::vector<char> & dest, CompressionMethod method)

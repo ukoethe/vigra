@@ -603,6 +603,12 @@ void defineConvolutionFunctions()
         "For details, see normalizedConvolveImage_ in the C++ documentation.\n");
 
     def("gaussianSmoothing",
+        registerConverters(&pythonGaussianSmoothing<float,2>),
+        (arg("array"), arg("sigma"), arg("out")=python::object(), 
+         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
+        "Smooth 1D sequence with Gaussian.\n");
+
+    def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,3>),
         (arg("array"), arg("sigma"), arg("out")=python::object(), 
          arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),

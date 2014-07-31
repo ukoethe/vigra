@@ -273,7 +273,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
         {    
             TempType f = TempType(b * old);
             old = as(is) + f;
-            double norm = (1.0 - b) / (1.0 + b - bleft - bright);
+            norm = (1.0 - b) / (1.0 + b - bleft - bright);
             bleft /= b;
             bright *= b;
             ad.set(norm * (line[x] + f), id);

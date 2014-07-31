@@ -39,26 +39,6 @@ IF (MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
 ENDIF ()
 
-IF (CMAKE_COMPILER_IS_GNUCXX)
-    # ADD_DEFINITIONS(-std=c++0x)  # will be needed to enable native thread support
-    
-    IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-        # As of cmake 2.8.10, there is a variable CMAKE_CXX_COMPILER_VERSION.
-        # Emulate it by a compiler call if not present.
-        IF(not CMAKE_CXX_COMPILER_VERSION)
-            EXEC_PROGRAM(
-                ${CMAKE_CXX_COMPILER}
-                ARGS                    --version
-                OUTPUT_VARIABLE _compiler_output)
-            STRING(REGEX REPLACE ".*([0-9]\\.[0-9]\\.[0-9]).*" "\\1"  CMAKE_CXX_COMPILER_VERSION ${_compiler_output})
-        ENDIF()
-        IF (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.4.0")
-            MESSAGE(WARNING "GNU c++ < 4.4 cannot build VIGRANumPy; disabling (found GCC ${CMAKE_CXX_COMPILER_VERSION})")
-            SET(WITH_VIGRANUMPY 0)
-        ENDIF ()
-    ENDIF()
-ENDIF ()
-
 IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
     set(SUFFICIENT_TEMPLATE_DEPTH FALSE)
     TRY_COMPILE(SUFFICIENT_TEMPLATE_DEPTH
@@ -68,23 +48,37 @@ IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
     IF(SUFFICIENT_TEMPLATE_DEPTH)
         MESSAGE(STATUS "Checking template recursion depth: ok")
     ELSE()
-        SET(CMAKE_CXX_FLAGS "-ftemplate-depth=900 ${CMAKE_CXX_FLAGS}" CACHE STRING  "Flags used by the compiler during all build types" FORCE)
-        MESSAGE(STATUS "Checking template recursion depth: using -ftemplate-depth=900")
+        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+            # As of cmake 2.8.10, there is a variable CMAKE_CXX_COMPILER_VERSION.
+            # Emulate it by a compiler call if not present.
+            IF(NOT CMAKE_CXX_COMPILER_VERSION)
+                exec_program(${CMAKE_CXX_COMPILER}
+                    ARGS ${CMAKE_CXX_COMPILER_ARG1} -dumpversion
+                    OUTPUT_VARIABLE CMAKE_CXX_COMPILER_VERSION)
+                string(REGEX REPLACE "([0-9])\\.([0-9])(\\.[0-9])?" "\\1.\\2"
+                      CMAKE_CXX_COMPILER_VERSION ${CMAKE_CXX_COMPILER_VERSION})
+            endif()
+
+            message ("Detected GCC version ${CMAKE_CXX_COMPILER_VERSION}")
+            if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.4.0")
+                MESSAGE(WARNING "GNU c++ < 4.4 cannot build VIGRANumPy; disabling (found GCC ${CMAKE_CXX_COMPILER_VERSION})")
+                SET(WITH_VIGRANUMPY 0)
+            elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.5.0")
+                # gcc 4.4.x syntax is -ftemplate-depth-900 (not =900)
+                SET(CMAKE_CXX_FLAGS "-ftemplate-depth-900 ${CMAKE_CXX_FLAGS}" CACHE STRING  "Flags used by the compiler during all build types" FORCE)        
+                MESSAGE(STATUS "Checking template recursion depth: using -ftemplate-depth-900")
+            else()
+                # new syntax is =900, not -900
+                SET(CMAKE_CXX_FLAGS "-ftemplate-depth=900 ${CMAKE_CXX_FLAGS}" CACHE STRING  "Flags used by the compiler during all build types" FORCE)        
+                MESSAGE(STATUS "Checking template recursion depth: using -ftemplate-depth=900")
+            endif()
+        else()
+            # clang uses newer gcc syntax
+            SET(CMAKE_CXX_FLAGS "-ftemplate-depth=900 ${CMAKE_CXX_FLAGS}" CACHE STRING  "Flags used by the compiler during all build types" FORCE)        
+            MESSAGE(STATUS "Checking template recursion depth: using -ftemplate-depth=900")
+        endif()
     ENDIF()
 ENDIF()
-
-# if(CMAKE_COMPILER_IS_GNUCXX)
-  # exec_program(
-      # ${CMAKE_CXX_COMPILER}
-      # ARGS                    --version
-      # OUTPUT_VARIABLE _compiler_output)
-  # string(REGEX REPLACE ".*([0-9]\\.[0-9]\\.[0-9]).*" "\\1"  gcc_compiler_version ${_compiler_output})
-  # if(gcc_compiler_version VERSION_LESS "4.4.0")
-      # message(FATAL_ERROR "VIGRA requires at least gcc 4.4")
-  # else()
-      # message(STATUS "Using gcc ${gcc_compiler_version} [${CMAKE_CXX_COMPILER}]")
-  # endif()
-# endif()
 
 ##################################################
 #
@@ -123,7 +117,7 @@ ENDIF()
 IF(WITH_BOOST_THREAD)
     set(WITH_BOOST "ON")
     set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
-    ADD_DEFINITIONS(-DVIGRA_NO_STD_THREADING)
+    ADD_DEFINITIONS(-DUSE_BOOST_THREAD)
 ENDIF()
 
 IF(WITH_BOOST)

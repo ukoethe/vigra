@@ -2203,6 +2203,91 @@ transpose(TinyVector<V, SIZE> const & t, TinyVector<T, SIZE> const & permutation
     return res;
 }
 
+    /** \brief transposed copy
+    
+        All elements smaller 0 are clipped to zero.
+    */
+template<class V,int SIZE>
+inline
+TinyVector<V, SIZE> clipLower(TinyVector<V, SIZE> const & t){
+    TinyVector<V, SIZE> res(SkipInitialization);
+    for(int k=0; k<SIZE; ++k){
+        res[k]=t[k]< static_cast<V>(0) ?  static_cast<V>(0) :  t[k];
+    }
+    return res;
+}
+
+    /** \brief transposed copy
+    
+        All elements smaller val are clipped to val.
+    */
+template<class V,int SIZE>
+inline
+TinyVector<V, SIZE> clipLower(TinyVector<V, SIZE> const & t,const V val){
+    TinyVector<V, SIZE> res(SkipInitialization);
+    for(int k=0; k<SIZE; ++k){
+        res[k]=t[k]< val ? val :  t[k];
+    }
+    return res;
+}
+    /** \brief transposed copy
+    
+        All elements bigger val are clipped to val.
+    */
+template<class V,int SIZE>
+inline
+TinyVector<V, SIZE> clipUpper(TinyVector<V, SIZE> const & t,const V val){
+    TinyVector<V, SIZE> res(SkipInitialization);
+    for(int k=0; k<SIZE; ++k){
+        res[k]=t[k]> val ? val :  t[k];
+    }
+    return res;
+}
+
+
+template<class V,int SIZE>
+inline
+TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,const V valLow,const V valUpper){
+    TinyVector<V, SIZE> res(SkipInitialization);
+    for(int k=0; k<SIZE; ++k){
+        res[k]=t[k]< valLow   ? valLow :  t[k];
+        res[k]=t[k]> valUpper ? valUpper :  t[k];
+    }
+    return res;
+}
+
+template<class V,int SIZE>
+inline
+bool isZero(TinyVector<V, SIZE> const & t){
+    for(int k=0; k<SIZE; ++k){
+        if(t[k]!=static_cast<V>(0))
+            return false;
+    }
+    return true;
+}
+
+template<class V,int SIZE>
+inline typename NumericTraits<V>::RealPromote
+mean(TinyVector<V, SIZE> const & t){
+    const V sumVal = sum(t);
+    return static_cast< typename NumericTraits<V>::RealPromote>(sumVal)/SIZE;
+}
+
+
+template<class V,int SIZE>
+inline typename NumericTraits<V>::RealPromote
+sizeDividedSquaredNorm(TinyVector<V, SIZE> const & t){
+    return squaredNorm(t)/SIZE;
+}
+
+template<class V,int SIZE>
+inline typename NumericTraits<V>::RealPromote
+sizeDividedNorm(TinyVector<V, SIZE> const & t){
+    return norm(t)/SIZE;
+}
+
+
+
 //@}
 
 // mask cl.exe shortcomings [end]

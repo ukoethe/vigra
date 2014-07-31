@@ -159,6 +159,27 @@ VIGRA_DEFINE_MISSING_ABS(signed long long)
 
 #undef VIGRA_DEFINE_MISSING_ABS
 
+#ifndef _MSC_VER
+
+using std::isinf;
+using std::isnan;
+
+#else
+
+template <class REAL>
+inline bool isinf(REAL v)
+{
+    return !_finite(v);
+}
+
+template <class REAL>
+inline bool isnan(REAL v)
+{
+    return _isnan(v);
+}
+
+#endif
+
 // scalar dot is needed for generic functions that should work with
 // scalars and vectors alike
 
@@ -372,7 +393,7 @@ struct power_static
 template <class V>
 struct power_static<V, 0>
 {
-    static V call(const V & x)
+    static V call(const V & /* x */)
     {
         return V(1);
     }
@@ -1619,6 +1640,60 @@ inline bool closeAtTolerance(T1 l, T2 r)
 }
 
 //@}
+
+#define VIGRA_MATH_FUNC_HELPER(TYPE) \
+    inline TYPE clipLower(const TYPE t){ \
+        return t < static_cast<TYPE>(0.0) ? static_cast<TYPE>(0.0) : t; \
+    } \
+    inline TYPE clipLower(const TYPE t,const TYPE valLow){ \
+        return t < static_cast<TYPE>(valLow) ? static_cast<TYPE>(valLow) : t; \
+    } \
+    inline TYPE clipUpper(const TYPE t,const TYPE valHigh){ \
+        return t > static_cast<TYPE>(valHigh) ? static_cast<TYPE>(valHigh) : t; \
+    } \
+    inline TYPE clip(const TYPE t,const TYPE valLow, const TYPE valHigh){ \
+        if(t<valLow) \
+            return valLow; \
+        else if(t>valHigh) \
+            return valHigh; \
+        else  \
+            return t; \
+    } \
+    inline TYPE sum(const TYPE t){ \
+        return t; \
+    }\
+    inline NumericTraits<TYPE>::RealPromote mean(const TYPE t){ \
+        return t; \
+    }\
+    inline TYPE isZero(const TYPE t){ \
+        return t==static_cast<TYPE>(0); \
+    } \
+    inline NumericTraits<TYPE>::RealPromote sizeDividedSquaredNorm(const TYPE t){ \
+        return  squaredNorm(t); \
+    } \
+    inline NumericTraits<TYPE>::RealPromote sizeDividedNorm(const TYPE t){ \
+        return  norm(t); \
+    } 
+
+
+VIGRA_MATH_FUNC_HELPER(unsigned char)
+VIGRA_MATH_FUNC_HELPER(unsigned short)
+VIGRA_MATH_FUNC_HELPER(unsigned int)
+VIGRA_MATH_FUNC_HELPER(unsigned long)
+VIGRA_MATH_FUNC_HELPER(unsigned long long)
+VIGRA_MATH_FUNC_HELPER(signed char)
+VIGRA_MATH_FUNC_HELPER(signed short)
+VIGRA_MATH_FUNC_HELPER(signed int)
+VIGRA_MATH_FUNC_HELPER(signed long)
+VIGRA_MATH_FUNC_HELPER(signed long long)
+VIGRA_MATH_FUNC_HELPER(float)
+VIGRA_MATH_FUNC_HELPER(double)
+VIGRA_MATH_FUNC_HELPER(long double)
+
+
+
+#undef VIGRA_MATH_FUNC_HELPER
+
 
 } // namespace vigra
 

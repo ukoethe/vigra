@@ -210,7 +210,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     int x,y,z;       
         
     // temporary image to store region labels
-    detail::UnionFindArray<LabelType>  label;
+    UnionFindArray<LabelType>  label;
         
     //Declare traversers for all three dims at target
     SrcIterator zs = s_Iter;
@@ -244,7 +244,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
 
             for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
-                LabelType currentLabel = label.nextFreeLabel();
+                LabelType currentIndex = label.nextFreeIndex();
 
                 //check whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
@@ -259,7 +259,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                         // if colors are equal
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            currentLabel = label.makeUnion(label[da(xd,*nc)], currentLabel);
+                            currentIndex = label.makeUnion(da(xd,*nc), currentIndex);
                         }
                         ++nc;
                     }
@@ -271,25 +271,20 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
-                        /*
-                        SrcShape s(x,y,z), sn = s + *nc;
-                        
-                        if (sn[0]<0 || sn[0]>=w || sn[1]<0 || sn[1]>=h || sn[2]<0 || sn[2]>=d)
+                        int dummy = x+(*nc)[0];  // prevents an apparently incorrect optimization in gcc 4.8
+                        if (dummy<0)
                         {  
-                          std::cerr << "coordinate error at " << s << ", offset " << *nc << ", index " << (nc).direction() << " at border " <<
-                                                                                                                              atBorder << std::endl;
-                        
+                            std::cerr << "internal error " << dummy << std::endl;
                         }
-                        */
                         //   colors equal???
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            currentLabel = label.makeUnion(label[da(xd,*nc)], currentLabel);
+                            currentIndex = label.makeUnion(da(xd,*nc), currentIndex);
                         }
                         nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
                     }
                 }
-                da.set(label.finalizeLabel(currentLabel), xd);
+                da.set(label.finalizeIndex(currentIndex), xd);
             }
         }
     }
@@ -309,7 +304,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
 
             for(x = 0; x != w; ++x, ++xd.dim0())
             {
-                da.set(label[da(xd)], xd);
+                da.set(label.findLabel(da(xd)), xd);
             }
         }
     }
@@ -550,7 +545,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
     int x,y,z;       
         
     // temporary image to store region labels
-    detail::UnionFindArray<LabelType>  label;
+    UnionFindArray<LabelType>  label;
         
     //Declare traversers for all three dims at target
     SrcIterator zs = s_Iter;
@@ -586,11 +581,12 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
             {
                 if(equal(sa(xs), backgroundValue))
                 {
-                    da.set(label[0], xd);
+                    //da.set(label.getIndex(0), xd);
+                    da.set(0, xd);
                     continue;
                 }
 
-                LabelType currentLabel = label.nextFreeLabel();
+                LabelType currentIndex = label.nextFreeIndex();
 
                 //check whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
@@ -605,7 +601,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                         // if colors are equal
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            currentLabel = label.makeUnion(label[da(xd,*nc)], currentLabel);
+                            currentIndex = label.makeUnion(da(xd,*nc), currentIndex);
                         }
                         ++nc;
                     }
@@ -617,15 +613,20 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
+                        int dummy = x+(*nc)[0];  // prevents an apparently incorrect optimization in gcc 4.8
+                        if (dummy<0)
+                        {  
+                            std::cerr << "internal error " << dummy << std::endl;
+                        }
                         //   colors equal???
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            currentLabel = label.makeUnion(label[da(xd,*nc)], currentLabel);
+                            currentIndex = label.makeUnion(da(xd,*nc), currentIndex);
                         }
                         nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
                     }
                 }
-                da.set(label.finalizeLabel(currentLabel), xd);
+                da.set(label.finalizeIndex(currentIndex), xd);
             }
         }
     }
@@ -645,7 +646,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
 
             for(x = 0; x != w; ++x, ++xd.dim0())
             {
-                da.set(label[da(xd)], xd);
+                da.set(label.findLabel(da(xd)), xd);
             }
         }
     }

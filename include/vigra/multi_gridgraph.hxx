@@ -45,6 +45,18 @@ struct NeighborhoodTests;
 
 namespace vigra {
 
+
+template<unsigned int N, class T, class Stride>
+inline
+typename vigra::MultiArrayView<N, T, Stride>::const_reference 
+get(vigra::MultiArrayView<N, T, Stride> const & pmap,
+    typename vigra::MultiArrayView<N, T, Stride>::difference_type const & k)
+{ 
+    return pmap[k]; 
+}
+
+
+
 /** \addtogroup GraphDataStructures Graph Data Structures
         
         A GridGraph class implementing the APIs of the <a href="http://www.boost.org/doc/libs/release/libs/graph/">boost::graph</a> and
@@ -1483,6 +1495,9 @@ public:
     typedef ArrayVector<NeighborOffsetArray>             RelativeNeighborOffsetsArray;
     typedef ArrayVector<ArrayVector<edge_descriptor> >   RelativeEdgeOffsetsArray;
     typedef ArrayVector<ArrayVector<MultiArrayIndex> >   IndexArray;
+    typedef ArrayVector<ArrayVector<bool> >              NeighborExistsArray;
+        
+
 
     ////////////////////////////////////////////////////////////////////
     
@@ -1864,6 +1879,9 @@ public:
     
         // dummy default constructor to satisfy adjacency_graph concept
     GridGraph()
+    : max_node_id_(-1), 
+      max_arc_id_(-1), 
+      max_edge_id_(-1)
     {}
         
         /** \brief Construct a grid graph with given \a shape and neighborhood type \a ntype.
@@ -1878,14 +1896,15 @@ public:
     : shape_(shape),
       num_vertices_(prod(shape)),
       num_edges_(gridGraphEdgeCount(shape, ntype, is_directed)), 
+      max_node_id_(num_vertices_ - 1), 
+      max_arc_id_(-2), 
+      max_edge_id_(-2), 
       neighborhoodType_(ntype)
     {
-        ArrayVector<ArrayVector<bool> > neighborExists;
-        
         // populate the neighborhood tables:
         // FIXME: this might be static (but make sure that it works with multi-threading)
-        detail::makeArrayNeighborhood(neighborOffsets_, neighborExists, neighborhoodType_);
-        detail::computeNeighborOffsets(neighborOffsets_, neighborExists, incrementalOffsets_, 
+        detail::makeArrayNeighborhood(neighborOffsets_, neighborExists_, neighborhoodType_);
+        detail::computeNeighborOffsets(neighborOffsets_, neighborExists_, incrementalOffsets_, 
                                        edgeDescriptorOffsets_, neighborIndices_, backIndices_, is_directed);
         
         // compute the neighbor offsets per neighborhood type
@@ -1915,9 +1934,14 @@ public:
     }
     
         /** \brief Get node descriptor for given node ID \a i (API: LEMON).
+        
+            Return <tt>Node(lemon::INVALID)</tt> when the ID does not exist in this graph.
         */
     Node nodeFromId(index_type i) const
     {
+        if(i < 0 || i > maxNodeId())
+            return Node(lemon::INVALID);
+        
         Node res(SkipInitialization);
         detail::ScanOrderToCoordinate<N>::exec(i, shape(), res);
         return res;
@@ -2043,25 +2067,61 @@ public:
     }
 
         /** \brief Get the edge descriptor for the given edge ID \a i (API: LEMON).
+        
+            Return <tt>Edge(lemon::INVALID)</tt> when the ID does not exist
+            in this graph. 
         */
     Edge edgeFromId(index_type i) const
     {
+        if(i < 0 || i > maxEdgeId())
+            return Edge(lemon::INVALID);
+        
         Edge res(SkipInitialization);
         detail::ScanOrderToCoordinate<N+1>::exec(i, edge_propmap_shape(), res);
-        return res;
+        
+        unsigned int b = detail::BorderTypeImpl<N>::exec(res.template subarray<0, N>(), shape());
+        if(neighborExists_[b][res[N]])
+            return res;
+        else
+            return Edge(lemon::INVALID);
     }
     
         /** \brief Get the maximum ID of any edge in this graph (API: LEMON).
         */
     index_type maxEdgeId() const
     {
-        if(is_directed)
-            return maxArcId();
+        if(max_edge_id_ == -2) // -2 means uninitialized
+            const_cast<GridGraph *>(this)->computeMaxEdgeAndArcId();
+        return max_edge_id_;
+    }
+    
+        /* Initial computation of the max_arc_id_ and max_edge_id_ (call in the constructor and
+           whenever the shape changes).
+        */
+    void computeMaxEdgeAndArcId()
+    {
         if(edgeNum() == 0)
-            return -1;
-        Node lastNode = shape() - shape_type(1);
-        Arc a(lastNode, backIndices_[get_border_type(lastNode)].back(), false);
-        return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a);
+        {
+            max_arc_id_ = -1;
+            max_edge_id_ = -1;
+        }
+        else
+        {
+            Node lastNode = shape() - shape_type(1);
+            index_type n = neighborIndices_[get_border_type(lastNode)][0];
+            Arc a(neighbor(lastNode, n), oppositeIndex(n), false);
+            max_arc_id_ = detail::CoordinateToScanOrder<N+1>::exec(arc_propmap_shape(), a);
+            
+            if(is_directed)
+            {
+                max_edge_id_ = max_arc_id_;
+            }
+            else
+            {
+                Arc a(lastNode, backIndices_[get_border_type(lastNode)].back(), false);
+                max_edge_id_ = detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a);
+            }
+        }
     }
     
         /** \brief Get the ID (i.e. scan-order index an an arc property map) for 
@@ -2088,24 +2148,31 @@ public:
     }
         
         /** \brief Get an arc descriptor for the given arc ID \a i (API: LEMON).
+        
+            Return <tt>Arc(lemon::INVALID)</tt> when the ID does not exist
+            in this graph. 
         */
     Arc arcFromId(index_type i) const
     {
+        if(i < 0 || i > maxArcId())
+            return Arc(lemon::INVALID);
+        
         Arc res;
         detail::ScanOrderToCoordinate<N+1>::exec(i, arc_propmap_shape(), res);
-        return undirectedArc(res);
+        unsigned int b = detail::BorderTypeImpl<N>::exec(res.template subarray<0, N>(), shape());
+        if(neighborExists_[b][res[N]])
+            return undirectedArc(res);
+        else
+            return Arc(lemon::INVALID);
     }
     
         /** \brief Get the maximal ID af any arc in this graph (API: LEMON).
         */
     index_type maxArcId() const
     {
-        if(edgeNum() == 0)
-            return -1;
-        Node lastNode = shape() - shape_type(1);
-        index_type n = neighborIndices_[get_border_type(lastNode)][0];
-        Arc a(neighbor(lastNode, n), oppositeIndex(n), false);
-        return detail::CoordinateToScanOrder<N+1>::exec(arc_propmap_shape(), a);
+        if(max_arc_id_ == -2) // -2 means uninitialized
+            const_cast<GridGraph *>(this)->computeMaxEdgeAndArcId();
+        return max_arc_id_;
     }
     
         /** \brief Return <tt>true</tt> when the arc is looking on the underlying
@@ -2166,6 +2233,8 @@ public:
     }
     
         // internal function
+        // transforms the arc into its directed form (i.e. a.isReversed() is 
+        // guaranteed to be false in the returned arc).
     Arc directedArc(Arc const & a) const
     {
         return a.isReversed()
@@ -2174,6 +2243,9 @@ public:
     }
     
         // internal function
+        // transforms the arc into its undirected form (i.e. a.isReversed() will 
+        // be true in the returned arc if this graph is undirected and the arc
+        // traverses the edge backwards).
     Arc undirectedArc(Arc const & a) const
     {
         return a.edgeIndex() < maxUniqueDegree() 
@@ -2579,11 +2651,12 @@ public:
 
   protected:
     NeighborOffsetArray neighborOffsets_;
+    NeighborExistsArray neighborExists_;
     IndexArray neighborIndices_, backIndices_;
     RelativeNeighborOffsetsArray incrementalOffsets_;
     RelativeEdgeOffsetsArray edgeDescriptorOffsets_;
     shape_type shape_;
-    MultiArrayIndex num_vertices_, num_edges_;
+    MultiArrayIndex num_vertices_, num_edges_, max_node_id_, max_arc_id_, max_edge_id_;
     NeighborhoodType neighborhoodType_;
 };
 
@@ -2853,14 +2926,16 @@ void put(vigra::MultiArrayView<N, T, Stride> & pmap,
 
     /** \brief Read the value at key \a k in property map \a pmap (API: boost).
     */
-template<unsigned int N, class T, class Stride>
-inline
-typename vigra::MultiArrayView<N, T, Stride>::const_reference 
-get(vigra::MultiArrayView<N, T, Stride> const & pmap,
-    typename vigra::MultiArrayView<N, T, Stride>::difference_type const & k)
-{ 
-    return pmap[k]; 
-}
+//template<unsigned int N, class T, class Stride>
+//inline
+//typename vigra::MultiArrayView<N, T, Stride>::const_reference 
+//get(vigra::MultiArrayView<N, T, Stride> const & pmap,
+//    typename vigra::MultiArrayView<N, T, Stride>::difference_type const & k)
+//{ 
+//    return pmap[k]; 
+//}
+
+
 
 #if 0
 
@@ -2969,7 +3044,7 @@ class OutDegMap<vigra::GridGraph<N, DirectedTag> >
 namespace vigra {
 namespace boost_graph { 
 
-using boost::get;
+//using boost::get;
 
 }} // namespace vigra::boost_graph
 

@@ -1149,7 +1149,7 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\> (or \<vigra/convolution.hxx\> to use the old API)<br/>
     Namespace: vigra
 
     \code

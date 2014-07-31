@@ -171,6 +171,7 @@ void defineKernels();
 void defineConvolutionFunctions();
 void defineMorphology();
 void defineTensor();
+void defineNonLocalMean();
 
 } // namespace vigra
 
@@ -185,4 +186,5 @@ BOOST_PYTHON_MODULE_INIT(filters)
     defineConvolutionFunctions();
     defineMorphology();
     defineTensor();
+    defineNonLocalMean();
 }

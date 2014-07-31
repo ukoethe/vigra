@@ -1629,6 +1629,15 @@ public:
                 return false;
         return true;
     }
+        /** check whether the given point is not in the array range.
+         */
+    bool isOutside (difference_type const & p) const
+    {
+        for(int d=0; d<actual_dimension; ++d)
+            if(p[d] < 0 || p[d] >= shape(d))
+                return true;
+        return false;
+    }
 
         /** Check if the array contains only non-zero elements (or if all elements
             are 'true' if the value type is 'bool').

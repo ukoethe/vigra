@@ -107,8 +107,8 @@
         #define VIGRA_NO_WORKING_STRINGSTREAM
     #endif
     
-    #if _MSC_VER >= 1600
-        #define VIGRA_HAS_UNIQUE_PTR
+    #if _MSC_VER < 1600
+        #define VIGRA_NO_UNIQUE_PTR
     #endif
     
     #define VIGRA_NEED_BIN_STREAMS
@@ -162,20 +162,17 @@
     #pragma GCC diagnostic ignored "-Wshadow"  
     
     #if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
-        #if !defined(__APPLE__) || (defined(__clang_major__) && __clang_major__ > 4)
-            #define VIGRA_HAS_UNIQUE_PTR
+        #if defined(__APPLE__) && !(defined(__clang_major__) && __clang_major__ > 4)
+            #define VIGRA_NO_UNIQUE_PTR
         #endif
     #else
         #if defined(__APPLE__) && defined(__clang_major__) &&  __clang_major__ <= 4
             #define VIGRA_SHARED_PTR_IN_TR1
-        #endif        
+        #endif
+        #define VIGRA_NO_UNIQUE_PTR        
     #endif
 
 
-//    #if defined(__APPLE__) && !defined(__clang_major__) && __GNUC__ == 4 && __GNUC_MINOR__ < 6
-    #if !defined(__GXX_EXPERIMENTAL_CXX0X__) && __cplusplus < 201103L
-//        #define VIGRA_SHARED_PTR_IN_TR1
-    #endif
 #endif  // __GNUC__
 
 ///////////////////////////////////////////////////////////
@@ -252,14 +249,14 @@
     #define VIGRA_EXPORT
 #endif
 
-#ifdef VIGRA_HAS_UNIQUE_PTR
+#ifdef VIGRA_NO_UNIQUE_PTR
+#  define VIGRA_UNIQUE_PTR  std::auto_ptr
+#else
 #  ifdef _GLIBCXX_INCLUDE_AS_TR1
 #    define VIGRA_UNIQUE_PTR  std::tr1::unique_ptr
 #  else
 #    define VIGRA_UNIQUE_PTR  std::unique_ptr
 #  endif
-#else
-#  define VIGRA_UNIQUE_PTR  std::auto_ptr
 #endif
 
 #ifdef VIGRA_SHARED_PTR_IN_TR1

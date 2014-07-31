@@ -57,13 +57,15 @@
 # endif
 #endif
 
-#ifdef VIGRA_NO_STD_THREADING
+#ifdef USE_BOOST_THREAD
 #  include <boost/thread.hpp>
 #  if BOOST_VERSION >= 105300
 #    include <boost/atomic.hpp>
 #    define VIGRA_HAS_ATOMIC 1
 #  endif
 #  define VIGRA_THREADING_NAMESPACE boost
+#elif defined(VIGRA_NO_STD_THREADING)
+#  error "Your compiler does not support std::thread. If the boost libraries are available, consider running cmake with -DWITH_BOOST_THREAD=1"
 #else
 #  include <thread>
 #  include <mutex>

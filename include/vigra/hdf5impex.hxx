@@ -998,10 +998,10 @@ class HDF5File
         Note that the HDF5File class is not copyable (the copy constructor is 
         private to enforce this).
         */
-    HDF5File(std::string filename, OpenMode mode, bool track_creation_times = false)
+    HDF5File(std::string filePath, OpenMode mode, bool track_creation_times = false)
         : track_time(track_creation_times ? 1 : 0)
     {
-        open(filename, mode);
+        open(filePath, mode);
     }
 
         /** \brief Initialize an HDF5File object from HDF5 file handle
@@ -1110,12 +1110,12 @@ class HDF5File
         /** \brief Open or create the given file in the given mode and set the group to "/".
             If another file is currently open, it is first closed.
          */
-    void open(std::string filename, OpenMode mode)
+    void open(std::string filePath, OpenMode mode)
     {
         close();
         
-        std::string errorMessage = "HDF5File.open(): Could not open or create file '" + filename + "'.";
-        fileHandle_ = HDF5HandleShared(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
+        std::string errorMessage = "HDF5File.open(): Could not open or create file '" + filePath + "'.";
+        fileHandle_ = HDF5HandleShared(createFile_(filePath, mode), &H5Fclose, errorMessage.c_str());
         cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File.open(): Failed to open root group.");
         setReadOnly(mode == OpenReadOnly);
     }
@@ -1794,7 +1794,7 @@ class HDF5File
                       int compression = 0)
     {
         // convert to a (trivial) MultiArrayView and forward.
-        MultiArrayShape<1>::type shape(array.size());
+        MultiArrayShape<1>::type shape(static_cast<MultiArrayIndex>(array.size()));
         const MultiArrayView<1, T> m_array(shape, const_cast<T*>(array.data()));
         write(datasetName, m_array, compression);
     }
@@ -1890,8 +1890,8 @@ class HDF5File
 
         // reshape target MultiArray
         typename MultiArrayShape<N>::type shape;
-        for(int k=0; k < (int)dimshape.size(); ++k)
-            shape[k] = (MultiArrayIndex)dimshape[k];
+        for(int k=0; k < static_cast<int>(dimshape.size()); ++k)
+            shape[k] = static_cast<MultiArrayIndex>(dimshape[k]);
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), 1);
@@ -1931,7 +1931,7 @@ class HDF5File
         // resize target array vector
         array.resize((typename ArrayVector<T>::size_type)dimshape[0]);
         // convert to a (trivial) MultiArrayView and forward.
-        MultiArrayShape<1>::type shape(array.size());
+        MultiArrayShape<1>::type shape(static_cast<MultiArrayIndex>(array.size()));
         MultiArrayView<1, T> m_array(shape, (array.data()));
 
         read_(datasetName, m_array, detail::getH5DataType<T>(), 1);
@@ -2003,8 +2003,8 @@ class HDF5File
         
         // reshape target MultiArray
         typename MultiArrayShape<N>::type shape;
-        for(int k=1; k < (int)dimshape.size(); ++k)
-            shape[k-1] = (MultiArrayIndex)dimshape[k];
+        for(int k=1; k < static_cast<int>(dimshape.size()); ++k)
+            shape[k-1] = static_cast<MultiArrayIndex>(dimshape[k]);
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), SIZE);
@@ -2037,8 +2037,8 @@ class HDF5File
 
         // reshape target MultiArray
         typename MultiArrayShape<N>::type shape;
-        for(int k=1; k < (int)dimshape.size(); ++k)
-            shape[k-1] = (MultiArrayIndex)dimshape[k];
+        for(int k=1; k < static_cast<int>(dimshape.size()); ++k)
+            shape[k-1] = static_cast<MultiArrayIndex>(dimshape[k]);
         array.reshape(shape);
 
         read_(datasetName, array, detail::getH5DataType<T>(), 3);
@@ -2141,20 +2141,20 @@ class HDF5File
         // return the part of the string before the delimiter
         std::string first(char delimiter = '/')
         {
-            size_t last = find_last_of(delimiter);
-            if(last == std::string::npos) // delimiter not found --> no first
+            size_t lastPos = find_last_of(delimiter);
+            if(lastPos == std::string::npos) // delimiter not found --> no first
                 return "";
 
-            return std::string(begin(), begin()+last+1);
+            return std::string(begin(), begin()+lastPos+1);
         }
 
         // return the part of the string after the delimiter
         std::string last(char delimiter = '/')
         {
-            size_t last = find_last_of(delimiter);
-            if(last == std::string::npos) // delimiter not found --> only last
+            size_t lastPos = find_last_of(delimiter);
+            if(lastPos == std::string::npos) // delimiter not found --> only last
                 return std::string(*this);
-            return std::string(begin()+last+1, end());
+            return std::string(begin()+lastPos+1, end());
         }
     };
     
@@ -2166,7 +2166,7 @@ class HDF5File
         {
             ArrayVector<hsize_t> res(chunks.begin(), chunks.end());
             if(numBands > 1)
-                res.insert(res.begin(), numBands);
+                res.insert(res.begin(), static_cast<hsize_t>(numBands));
             return res;
         }
         else if(compression > 0)
@@ -2175,7 +2175,7 @@ class HDF5File
             chunks = min(detail::ChunkShape<Shape::static_size>::defaultShape(), shape);
             ArrayVector<hsize_t> res(chunks.begin(), chunks.end());
             if(numBands > 1)
-                res.insert(res.begin(), numBands);
+                res.insert(res.begin(), static_cast<hsize_t>(numBands));
             return res;
         }
         else
@@ -2828,7 +2828,7 @@ void HDF5File::write_(std::string &datasetName,
         for(unsigned int k=offset; k<chunks.size(); ++k)
         {
             chunkMaxShape[k-offset] = chunks[k];
-            chunkCount[k-offset] = (MultiArrayIndex)std::ceil(double(shape[k]) / chunks[k]);
+            chunkCount[k-offset] = static_cast<MultiArrayIndex>(std::ceil(double(shape[k]) / chunks[k]));
         }
         
         typename CoupledIteratorType<N>::type chunkIter = createCoupledIterator(chunkCount),
@@ -2855,13 +2855,13 @@ void HDF5File::write_(std::string &datasetName,
             if(status < 0)
                 break;
                 
-            HDF5Handle dataspace(H5Screate_simple(count.size(), count.data(), NULL),
+            HDF5Handle dataspace2(H5Screate_simple(count.size(), count.data(), NULL),
                                  &H5Sclose, "HDF5File::write(): unable to create hyperslabs."); 
-            status = H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, null.data(), NULL, count.data(), NULL);
+            status = H5Sselect_hyperslab(dataspace2, H5S_SELECT_SET, null.data(), NULL, count.data(), NULL);
             if(status < 0)
                 break;
                 
-            status = H5Dwrite(datasetHandle, datatype, dataspace, filespace, H5P_DEFAULT, buffer.data());
+            status = H5Dwrite(datasetHandle, datatype, dataspace2, filespace, H5P_DEFAULT, buffer.data());
             if(status < 0)
                 break;
         }
@@ -3022,7 +3022,7 @@ void HDF5File::read_(std::string datasetName,
                     ? 1
                     : 0;
 
-    vigra_precondition((N + offset ) == MultiArrayIndex(dimshape.size()), 
+    vigra_precondition(MultiArrayIndex(N + offset) == MultiArrayIndex(dimshape.size()), 
         "HDF5File::read(): Array dimension disagrees with dataset dimension.");
 
     typename MultiArrayShape<N>::type shape;
@@ -3055,7 +3055,7 @@ void HDF5File::read_(std::string datasetName,
         if(H5D_CHUNKED == H5Pget_layout(properties))
         {
             // if the file is chunked, we use a buffer that matches the chunk size.
-            H5Pget_chunk(properties, chunks.size(), chunks.data());
+            H5Pget_chunk(properties, static_cast<int>(chunks.size()), chunks.data());
             std::reverse(chunks.begin(), chunks.end());
         }
         else
@@ -3072,7 +3072,7 @@ void HDF5File::read_(std::string datasetName,
             }
         }
         
-        count[N-1-offset] = numBandsOfType;
+        count[N-1-offset] = static_cast<hsize_t>(numBandsOfType);
         
         typedef typename MultiArrayShape<N>::type Shape;
         Shape chunkCount, chunkMaxShape;
@@ -3224,7 +3224,7 @@ void HDF5File::read_attribute_(std::string datasetName,
                     : 0;
     message = "HDF5File::readAttribute(): Array dimension disagrees with dataset dimension.";
     // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
-    vigra_precondition((N + offset) == MultiArrayIndex(dims), message);
+    vigra_precondition(MultiArrayIndex(N + offset) == MultiArrayIndex(dims), message);
 
     for(int k=offset; k < (int)dimshape.size(); ++k)
         vigra_precondition(array.shape()[k-offset] == (MultiArrayIndex)dimshape[k],
