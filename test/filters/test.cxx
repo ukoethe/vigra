@@ -5,6 +5,7 @@
 /************************************************************************/
 
 #include <iostream>
+#include <cstdio>
 
 #include "vigra/unittest.hxx"
 
@@ -24,9 +25,9 @@ void printBasicImage(const BasicImage<T> & img)
     {
         for (int x=0; x<img.width(); ++x)
         {
-            printf("img(%d,%d) = %10.3f; ", x , y , img(x,y));
+            std::printf("img(%d,%d) = %10.3f; ", x , y , img(x,y));
         }      
-        printf("\n");  
+        std::printf("\n");  
     }
 }
 
