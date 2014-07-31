@@ -51,7 +51,7 @@ class ParallelTestFunctor {
     int num_threads;
 public:
     ParallelTestFunctor() :
-            num_threads(0) {
+            num_threads(1) {
     }
 
     //This constructor is initialized per thread
@@ -62,8 +62,8 @@ public:
     template<class T>
     T operator()(T const& arg1) const {
 #ifdef OPENMP
-        vigra_precondition(num_threads > 0,
-                "The current team should not be empty");
+        vigra_precondition(num_threads > 1,
+                "The current team should contain at least two threads");
 #endif
         return std::cos(arg1) + num_threads;
     }
@@ -71,8 +71,8 @@ public:
     template<class T>
     T operator()(T const& arg1, T const& arg2) const {
 #ifdef OPENMP
-        vigra_precondition(num_threads > 0,
-                "The current team should not be empty");
+        vigra_precondition(num_threads > 1,
+                "The current team should contain at least two threads");
 #endif
         return arg1 + arg2 + num_threads;
     }
@@ -80,8 +80,8 @@ public:
     template<class T>
     T operator()(T const& arg1, T const& arg2, T const& arg3) const {
 #ifdef OPENMP
-        vigra_precondition(num_threads > 0,
-                "The current team should not be empty");
+        vigra_precondition(num_threads > 1,
+                "The current team should contain at least two threads");
 #endif
         return arg1 + arg2 + arg3 + num_threads;
     }
