@@ -256,9 +256,9 @@ struct ShockFilterTest
         img = 0;
         FImage result(img.size());
         
-        float sigma = 0.7;
-        float rho   = 3.0;
-        float upwind_factor_h = 0.3;
+        float sigma = 0.7f;
+        float rho   = 3.0f;
+        float upwind_factor_h = 0.3f;
         unsigned int iterations = 10;
         
         //Just test, if it's running with properly set parameters
@@ -294,7 +294,7 @@ struct SpeckleFilterTest
         img = 0;
         FImage result(img.size());
         
-        float k = 0.7;
+        float k = 0.7f;
         
         //Just test, if it's running with properly set parameters
         //1. BORDER_TREATMENT_AVOID

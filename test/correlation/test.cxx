@@ -200,11 +200,11 @@ struct FastNormalizedCrossCorrelationExactTest
                                                  srcImageRange(img),
                                                  destImage(result));
         
-        ref_img(1,1) = 0.2294157356; ref_img(2,1) = 0.0533001795; ref_img(3,1) = 0.0000000000; ref_img(4,1) = 0.0533001795; ref_img(5,1) = 0.2294157356;
-        ref_img(1,2) = 0.0533001795; ref_img(2,2) = 0.2294157356; ref_img(3,2) = 0.1250000009; ref_img(4,2) = 0.2294157356; ref_img(5,2) = 0.0533001795;
-        ref_img(1,3) = 0.0000000000; ref_img(2,3) = 0.1250000009; ref_img(3,3) = 1.0000000075; ref_img(4,3) = 0.1250000009; ref_img(5,3) = 0.0000000000;
-        ref_img(1,4) = 0.0533001795; ref_img(2,4) = 0.2294157356; ref_img(3,4) = 0.1250000009; ref_img(4,4) = 0.2294157356; ref_img(5,4) = 0.0533001795;
-        ref_img(1,5) = 0.2294157356; ref_img(2,5) = 0.0533001795; ref_img(3,5) = 0.0000000000; ref_img(4,5) = 0.0533001795; ref_img(5,5) = 0.2294157356;
+        ref_img(1,1) = 0.2294157356f; ref_img(2,1) = 0.0533001795f; ref_img(3,1) = 0.0000000000f; ref_img(4,1) = 0.0533001795f; ref_img(5,1) = 0.2294157356f;
+        ref_img(1,2) = 0.0533001795f; ref_img(2,2) = 0.2294157356f; ref_img(3,2) = 0.1250000009f; ref_img(4,2) = 0.2294157356f; ref_img(5,2) = 0.0533001795f;
+        ref_img(1,3) = 0.0000000000f; ref_img(2,3) = 0.1250000009f; ref_img(3,3) = 1.0000000075f; ref_img(4,3) = 0.1250000009f; ref_img(5,3) = 0.0000000000f;
+        ref_img(1,4) = 0.0533001795f; ref_img(2,4) = 0.2294157356f; ref_img(3,4) = 0.1250000009f; ref_img(4,4) = 0.2294157356f; ref_img(5,4) = 0.0533001795f;
+        ref_img(1,5) = 0.2294157356f; ref_img(2,5) = 0.0533001795f; ref_img(3,5) = 0.0000000000f; ref_img(4,5) = 0.0533001795f; ref_img(5,5) = 0.2294157356f;
         
         shouldEqualSequenceTolerance(result.begin(), result.end(), ref_img.begin(), test_epsilon);
     }
@@ -220,9 +220,9 @@ struct FastNormalizedCrossCorrelationExactTest
                                                  srcImageRange(img),
                                                  destImage(result));
         
-        ref_img(1,2) = -0.2539664209; ref_img(2,2) = -0.0834784210; ref_img(3,2) = -0.1410190463; ref_img(4,2) = -0.0834784210; ref_img(5,2) = 0.0923513919; 
-        ref_img(1,3) = -0.3225896060; ref_img(2,3) = -0.2017366886; ref_img(3,3) = 0.1494035274; ref_img(4,3) = 0.2305561155; ref_img(5,3) = 0.4218478799;
-        ref_img(1,4) = -0.2539664209; ref_img(2,4) = -0.0834784210; ref_img(3,4) = 0.1611645669; ref_img(4,4) = 0.5426095128; ref_img(5,4) = 0.4386692047; 
+        ref_img(1,2) = -0.2539664209f; ref_img(2,2) = -0.0834784210f; ref_img(3,2) = -0.1410190463f; ref_img(4,2) = -0.0834784210f; ref_img(5,2) = 0.0923513919f; 
+        ref_img(1,3) = -0.3225896060f; ref_img(2,3) = -0.2017366886f; ref_img(3,3) =  0.1494035274f; ref_img(4,3) =  0.2305561155f; ref_img(5,3) = 0.4218478799f;
+        ref_img(1,4) = -0.2539664209f; ref_img(2,4) = -0.0834784210f; ref_img(3,4) =  0.1611645669f; ref_img(4,4) =  0.5426095128f; ref_img(5,4) = 0.4386692047f; 
         
         shouldEqualSequenceTolerance(result.begin(), result.end(), ref_img.begin(), test_epsilon);
     }
@@ -238,11 +238,11 @@ struct FastNormalizedCrossCorrelationExactTest
                                                  srcImageRange(img),
                                                  destImage(result));
         
-        ref_img(2,1) = -0.2539664209; ref_img(3,1) = -0.3225896060; ref_img(4,1) = -0.2539664209; 
-        ref_img(2,2) = -0.0834784210; ref_img(3,2) = -0.2017366886; ref_img(4,2) = -0.0834784210; 
-        ref_img(2,3) = -0.1410190463; ref_img(3,3) = 0.1494035274; ref_img(4,3) = 0.1611645669;
-        ref_img(2,4) = -0.0834784210; ref_img(3,4) = 0.2305561155; ref_img(4,4) = 0.5426095128;
-        ref_img(2,5) = 0.0923513919; ref_img(3,5) = 0.4218478799; ref_img(4,5) = 0.4386692047;
+        ref_img(2,1) = -0.2539664209f; ref_img(3,1) = -0.3225896060f; ref_img(4,1) = -0.2539664209f; 
+        ref_img(2,2) = -0.0834784210f; ref_img(3,2) = -0.2017366886f; ref_img(4,2) = -0.0834784210f; 
+        ref_img(2,3) = -0.1410190463f; ref_img(3,3) =  0.1494035274f; ref_img(4,3) =  0.1611645669f;
+        ref_img(2,4) = -0.0834784210f; ref_img(3,4) =  0.2305561155f; ref_img(4,4) =  0.5426095128f;
+        ref_img(2,5) =  0.0923513919f; ref_img(3,5) =  0.4218478799f; ref_img(4,5) =  0.4386692047f;
         
         shouldEqualSequenceTolerance(result.begin(), result.end(), ref_img.begin(), test_epsilon);
     }
@@ -258,9 +258,9 @@ struct FastNormalizedCrossCorrelationExactTest
                                                  destImage(result));
         
         
-        ref_img(2,2) = -0.0089172045; ref_img(3,2) = -0.0510310352; ref_img(4,2) = -0.0089172045; 
-        ref_img(2,3) = -0.0510310352; ref_img(3,3) = 0.2165063461; ref_img(4,3) = 0.2041241407;
-        ref_img(2,4) = -0.0089172045; ref_img(3,4) = 0.2041241407; ref_img(4,4) = 0.4369430199;
+        ref_img(2,2) = -0.0089172045f; ref_img(3,2) = -0.0510310352f; ref_img(4,2) = -0.0089172045f; 
+        ref_img(2,3) = -0.0510310352f; ref_img(3,3) =  0.2165063461f; ref_img(4,3) =  0.2041241407f;
+        ref_img(2,4) = -0.0089172045f; ref_img(3,4) =  0.2041241407f; ref_img(4,4) =  0.4369430199f;
         
         shouldEqualSequenceTolerance(result.begin(), result.end(), ref_img.begin(), test_epsilon);
     }
