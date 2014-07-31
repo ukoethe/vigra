@@ -8,8 +8,9 @@
 using namespace std;
 using namespace vigra;
 
-//#define PARA_CHECK;
-//#ifdef OPENMP
+#define IMAGE_WIDTH 10000
+#define IMAGE_HEIGHT 10000
+#define DEFAULT_PIXEL_VALUE 27.0
 
 class ParallelTestFunctor {
     int num_threads;
@@ -18,29 +19,35 @@ public:
             num_threads(0) {
     }
 
-    //The copy constructor is initialized per thread
+    //This constructor is initialized per thread
     ParallelTestFunctor(ParallelTestFunctor const&) :
             num_threads(omp_get_num_threads()) {
     }
 
     template<class T>
     T operator()(T const& arg1) const {
+#ifdef OPENMP
         vigra_precondition(num_threads > 0,
-                "The current team should not empty");
+                "The current team should not be empty");
+#endif
         return std::cos(arg1) + num_threads;
     }
 
     template<class T>
     T operator()(T const& arg1, T const& arg2) const {
+#ifdef OPENMP
         vigra_precondition(num_threads > 0,
-                "The current team should not empty");
+                "The current team should not be empty");
+#endif
         return arg1 + arg2 + num_threads;
     }
 
     template<class T>
     T operator()(T const& arg1, T const& arg2, T const& arg3) const {
+#ifdef OPENMP
         vigra_precondition(num_threads > 0,
-                "The current team should not empty");
+                "The current team should not be empty");
+#endif
         return arg1 + arg2 + arg3 + num_threads;
     }
 };
@@ -49,7 +56,7 @@ struct OpenMPWrapperTest {
     typedef vigra::DImage Image;
 
     OpenMPWrapperTest() :
-            img(10000, 10000), mask(Shape2(10000, 10000)) {
+            img(IMAGE_WIDTH, IMAGE_HEIGHT), mask(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT)) {
         Image::Accessor acc = img.accessor();
         Image::ScanOrderIterator i = img.begin();
 
@@ -60,11 +67,11 @@ struct OpenMPWrapperTest {
         //First pixel and last pixel are not affected
         mask.init(1);
         mask.begin()[0] = 0;
-        mask.begin()[10000 * 10000 - 1] = 0;
+        mask.begin()[IMAGE_WIDTH * IMAGE_HEIGHT - 1] = 0;
     }
 
     void copyImageTest() {
-        Image img1(10000, 10000);
+        Image img1(IMAGE_WIDTH, IMAGE_HEIGHT);
 
         vigra::omp::copyImage(srcImageRange(img), destImage(img1));
 
@@ -79,7 +86,7 @@ struct OpenMPWrapperTest {
 
     void combineTwoImagesTest()
     {
-        Image img1(10000, 10000);
+        Image img1(IMAGE_WIDTH, IMAGE_HEIGHT);
 
         vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), ParallelTestFunctor());
 
@@ -101,8 +108,8 @@ struct OpenMPWrapperTest {
 
     void combineTwoImagesIfTest()
     {
-        Image img1(10000, 10000);
-        img1 = 27.0; //Could be parallel this !
+        Image img1(IMAGE_WIDTH, IMAGE_HEIGHT);
+        img1 = DEFAULT_PIXEL_VALUE;
 
         vigra::omp::combineTwoImagesIf(srcImageRange(img), srcImage(img), maskImage(mask), destImage(img1), ParallelTestFunctor());
 
@@ -111,14 +118,14 @@ struct OpenMPWrapperTest {
         Image::ScanOrderIterator i1end = img1.end();
         Image::Accessor acc = img.accessor();
 
-        //First pixel and last pixel are untouched
-        should(acc(i1) == 27.0);
+        //First pixel and last pixel are preserved
+        should(acc(i1) == DEFAULT_PIXEL_VALUE);
 
         i++;
         i1++;
         i1end--;
 
-        should(acc(i1end) == 27.0);
+        should(acc(i1end) == DEFAULT_PIXEL_VALUE);
 
         int num_threads = acc(i1) - 2*acc(i);
 
@@ -134,8 +141,8 @@ struct OpenMPWrapperTest {
 
     void combineThreeImagesTest()
     {
-        Image img1(10000, 10000);
-        Image img2(10000, 10000);
+        Image img1(IMAGE_WIDTH, IMAGE_HEIGHT);
+        Image img2(IMAGE_WIDTH, IMAGE_HEIGHT);
 
         std::plus<Image::value_type> add;
 
@@ -169,7 +176,7 @@ struct OpenMPWrapperTest {
 
     void transformImageTest()
     {
-        Image img1(10000, 10000);
+        Image img1(IMAGE_WIDTH, IMAGE_HEIGHT);
 
         vigra::omp::transformImage(srcImageRange(img), destImage(img1),
                 ParallelTestFunctor());
@@ -192,8 +199,8 @@ struct OpenMPWrapperTest {
 
     void transformImageIfTest()
     {
-        Image img1(10000, 10000);
-        img1 = 27.0; //should be parallel?
+        Image img1(IMAGE_WIDTH, IMAGE_HEIGHT);
+        img1 = DEFAULT_PIXEL_VALUE;
 
         vigra::omp::transformImageIf(srcImageRange(img), maskImage(mask), destImage(img1), ParallelTestFunctor());
 
@@ -202,14 +209,14 @@ struct OpenMPWrapperTest {
         Image::ScanOrderIterator i1end = img1.end();
         Image::Accessor acc = img.accessor();
 
-        //First pixel and last pixel are untouched
-        should(acc(i1) == 27.0);
+        //First pixel and last pixel are preserved
+        should(acc(i1) == DEFAULT_PIXEL_VALUE);
 
         i++;
         i1++;
         i1end--;
 
-        should(acc(i1end) == 27.0);
+        should(acc(i1end) == DEFAULT_PIXEL_VALUE);
 
         int num_threads = acc(i1) - cos(acc(i));
 
@@ -221,7 +228,6 @@ struct OpenMPWrapperTest {
 #ifdef OPENMP
         should( num_threads > 1 );
 #endif
-
     }
 
     Image img;
@@ -233,11 +239,14 @@ struct DistanceTransformTest {
 
     DistanceTransformTest() :
             img(7, 7) {
-        static const double in[] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0 };
+        static const double in[] = {
+        		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        		0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator end = img.end();
@@ -324,5 +333,3 @@ int main(int argc, char ** argv) {
 
     return (failed != 0);
 }
-
-//#endif //OpenMP
