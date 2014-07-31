@@ -8,8 +8,8 @@
 using namespace std;
 using namespace vigra;
 
-#define IMAGE_WIDTH 10000
-#define IMAGE_HEIGHT 10000
+#define IMAGE_WIDTH 1000
+#define IMAGE_HEIGHT 1000
 #define DEFAULT_PIXEL_VALUE 27.0
 
 class ParallelTestFunctor {
