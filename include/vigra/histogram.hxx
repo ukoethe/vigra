@@ -64,9 +64,9 @@ class HistogramOptions
     
     /** Initialize members with default values:
 
-	- minimum, maximum = 0.0
-	- binCount = 64
-	- local_auto_init = false
+    - minimum, maximum = 0.0
+    - binCount = 64
+    - local_auto_init = false
     */
     HistogramOptions()
     : minimum(0.0), maximum(0.0),
@@ -179,15 +179,15 @@ class HistogramView
         return *(bins_ + k*stride_);
     }
 
-	double mapItem(DataType const & d) const
-	{
-		return scale_ * (d - offset_);
-	}
+    double mapItem(DataType const & d) const
+    {
+        return scale_ * (d - offset_);
+    }
     
-	DataType mapItemInverse(double d) const
-	{
-		return DataType(d * scaleInverse_ + offset_);
-	}
+    DataType mapItemInverse(double d) const
+    {
+        return DataType(d * scaleInverse_ + offset_);
+    }
     
     void add(DataType const & d, BinType weight = NumericTraits<BinType>::one())
     {
@@ -196,14 +196,14 @@ class HistogramView
 
   protected:
 
-	BinType & get(int index)
-	{
+    BinType & get(int index)
+    {
         if(index < 0)
             index = 0;
         if(index >= size_)
             index = size_ - 1;
-		return *(bins_ + index*stride_);
-	}
+        return *(bins_ + index*stride_);
+    }
 };
 
 template <class T>
@@ -287,7 +287,7 @@ class KernelHistogramView
         for(int k=center+radius_; k>=center-radius_; --k, f += 1.0)
         {   
             this->get(k) += weight*kernel_[f];
-		}
+        }
     }
     
     DataType findMode() const

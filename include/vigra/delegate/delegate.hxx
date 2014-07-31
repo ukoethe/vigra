@@ -1,7 +1,7 @@
 /*
-	(c) Sergey Ryazanov (http://home.onego.ru/~ryazanov)
+    (c) Sergey Ryazanov (http://home.onego.ru/~ryazanov)
 
-	Fast delegate compatible with C++ Standard.
+    Fast delegate compatible with C++ Standard.
 */
 #ifndef VIGRA_DELEGATE_INCLUDED
 #define VIGRA_DELEGATE_INCLUDED
@@ -9,8 +9,8 @@
 namespace vigra
 {
 #ifdef VIGRA_DELEGATE_PREFERRED_SYNTAX
-	template <typename TSignature> class delegate;
-	template <typename TSignature> class delegate_invoker;
+    template <typename TSignature> class delegate;
+    template <typename TSignature> class delegate_invoker;
 #endif
 }
 

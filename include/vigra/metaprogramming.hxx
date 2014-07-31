@@ -680,7 +680,7 @@ struct MetaPow<X, 0>
 template<class HEAD, class TAIL=void>
 struct TypeList
 {
-	typedef TypeList<HEAD, TAIL> type;
+    typedef TypeList<HEAD, TAIL> type;
     typedef HEAD Head;
     typedef TAIL Tail;
 };

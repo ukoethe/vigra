@@ -195,7 +195,7 @@ using VIGRA_THREADING_NAMESPACE::atomic_signal_fence;
 // using VIGRA_THREADING_NAMESPACE::atomic_flag_clearatomic_flag_clear_explicit;
 // using VIGRA_THREADING_NAMESPACE::atomic_init;
 // using VIGRA_THREADING_NAMESPACE::kill_dependency;
-	
+    
 #else  // VIGRA_HAS_ATOMIC not defined
 
 enum memory_order {

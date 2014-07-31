@@ -83,11 +83,11 @@ public:
    /// size type
    typedef typename VectorType::size_type size_type;
    /// difference type
-   typedef typename VectorType::difference_type	difference_type;
+   typedef typename VectorType::difference_type difference_type;
    /// const pointer type
    typedef typename VectorType::const_pointer const_pointer;
    /// const reverse iterator
-   typedef typename VectorType::const_reverse_iterator	const_reverse_iterator;
+   typedef typename VectorType::const_reverse_iterator  const_reverse_iterator;
 
    // memeber functions:
    // constructor
