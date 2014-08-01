@@ -448,10 +448,10 @@ pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume,
     return res;
 }
 
-template < unsigned int N, class PixelType, typename DestPixelType >
+template < unsigned int N, class PixelType >
 NumpyAnyArray 
 pythonboundaryDistanceTransform_old(NumpyArray<N, Singleband<PixelType> > image,
-                          NumpyArray<N, Singleband<DestPixelType> > res = python::object())
+                          NumpyArray<N, Singleband<float> > res = python::object())
 {
     res.reshapeIfEmpty(image.taggedShape(), 
             "boundaryDistanceTransform(): Output array has wrong shape.");
@@ -463,11 +463,11 @@ pythonboundaryDistanceTransform_old(NumpyArray<N, Singleband<PixelType> > image,
     return res;
 }
 
-template < unsigned int N, class VoxelType, class DestVoxelType >
+template < unsigned int N, class VoxelType >
 NumpyAnyArray
 pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
                           ArrayVector<double> pixelPitch = ArrayVector<double>(),
-                          NumpyArray<N, Singleband<DestVoxelType> > res=python::object())
+                          NumpyArray<N, Singleband<float> > res=python::object())
 {
     res.reshapeIfEmpty(volume.taggedShape(),
             "distanceTransform(): Output array has wrong shape.");
@@ -809,7 +809,7 @@ void defineMorphology()
         (arg("image"), arg("sigma"), arg("out")=object()));
 
     def("distanceTransform2D",
-        registerConverters(&pythonDistanceTransform2D<float, float>),
+        registerConverters(&pythonDistanceTransform2D<UInt8, float>),
         (arg("image"), 
          arg("background")=true, 
          arg("norm")=2,
@@ -864,33 +864,33 @@ void defineMorphology()
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
     def("boundaryDistanceTransform",
-       registerConverters(&pythonboundaryDistanceTransform<2, UInt32, float>),
+       registerConverters(&pythonboundaryDistanceTransform<2, UInt32>),
        (arg("image"),
         arg("pixel_pitch") = ArrayVector<double>(),
         arg("out")=python::object()),
-       "Compute the Euclidean distance transform of a 2D scalar Uint32 array of labeled data using outer boundary (more accurate than inner).\n");
+       "Compute the Euclidean distance transform of a 2D scalar UInt32 array of labeled data using outer boundary (more accurate than inner).\n");
 
    def("boundaryDistanceTransform",
-       registerConverters(&pythonboundaryDistanceTransform<3, UInt32, float>),
+       registerConverters(&pythonboundaryDistanceTransform<3, UInt32>),
        (arg("array"),
         arg("pixel_pitch") = ArrayVector<double>(),
         arg("out")=python::object()),
-       "Compute the Euclidean distance transform of a 3D scalar Uint32 volume of labeled data using outer boundary (more accurate than inner).\n"
+       "Compute the Euclidean distance transform of a 3D scalar UInt32 volume of labeled data using outer boundary (more accurate than inner).\n"
        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
     def("boundaryDistanceTransform_inner",
-        registerConverters(&pythonboundaryDistanceTransform_old<2, UInt32, float>),
+        registerConverters(&pythonboundaryDistanceTransform_old<2, UInt32 >),
         (arg("array"),  
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 2D scalar label array using inner boundary (less accurate than outer boundary used with boundaryDistanceTransform).\n"
+        "Compute the Euclidean distance transform of a 2D scalar UInt32 array of labeled data using inner boundary (less accurate than outer boundary used with boundaryDistanceTransform).\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
     def("boundaryDistanceTransform_inner",
-        registerConverters(&pythonboundaryDistanceTransform_old<3, UInt32, float>),
+        registerConverters(&pythonboundaryDistanceTransform_old<3, UInt32 >),
         (arg("array"),
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 3D scalar label volume using inner boundary (less accurate than outer boundary used with boundaryDistanceTransform).\n"
+        "Compute the Euclidean distance transform of a 3D scalar UInt32 volume of labeled data using inner boundary (less accurate than outer boundary used with boundaryDistanceTransform).\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
@@ -898,39 +898,39 @@ void defineMorphology()
         registerConverters(&pythonboundaryMulti<2, UInt32, UInt8>),
         (arg("array"),
          arg("out")=python::object()),
-        "Converts label image into boundary image Adjacent pixels with different labels will be transformed to 1, otherwise 0.\n");
+        "Converts label, UInt32 image into boundary image. Adjacent pixels with different labels will be transformed to 1, otherwise 0.\n");
 
     def("boundaryMulti",
-        registerConverters(&pythonboundaryMulti<3, UInt32, UInt8>),
+        registerConverters(&pythonboundaryMulti<3, UInt32, UInt32>),
         (arg("array"),
          arg("out")=python::object()),
-        "Converts label image into boundary image Adjacent pixels with different labels will be transformed to 1, otherwise 0.\n");
+        "Converts label, UInt32 image into boundary image. Adjacent pixels with different labels will be transformed to 1, otherwise 0.\n");
     
     def("vectorialDistanceTransform",
-        registerConverters(&pythonVectorialDistanceTransform<2, float>),
+        registerConverters(&pythonVectorialDistanceTransform<2, UInt8>),
         (arg("array"), 
          arg("background") = true, 
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 2D scalar float array with vectorial output.");
+        "Compute the Euclidean distance transform of a 2D scalar UInt8 array with vectorial output.");
 
     def("vectorialDistanceTransform",
-        registerConverters(&pythonVectorialDistanceTransform<3, float>),
+        registerConverters(&pythonVectorialDistanceTransform<3, UInt8>),
         (arg("array"),
          arg("background") = true,
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 3D scalar float volume with vectorial output.");
+        "Compute the Euclidean distance transform of a 3D scalar UInt8 volume with vectorial output.");
     
     def("boundaryVectorialDistanceTransform",
-        registerConverters(&pythonVectorialBoundaryDistanceTransform<2, float>),
+        registerConverters(&pythonVectorialBoundaryDistanceTransform<2, UInt32>),
         (arg("array"),
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 2D scalar float array of labeled data with vectorial output.");
+        "Compute the Euclidean distance transform of a 2D scalar UInt32 array of labeled data with vectorial output.");
         
     def("boundaryVectorialDistanceTransform",
-        registerConverters(&pythonVectorialBoundaryDistanceTransform<3, float>),
+        registerConverters(&pythonVectorialBoundaryDistanceTransform<3, UInt32>),
         (arg("array"),
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 3D scalar float volume of labeled data with vectorial output.");
+        "Compute the Euclidean distance transform of a 3D scalar UInt32 volume of labeled data with vectorial output.");
 }
 
 } // namespace vigra

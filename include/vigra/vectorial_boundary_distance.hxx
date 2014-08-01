@@ -173,7 +173,7 @@ void boundaryVectorialDistParabola(MultiArrayIndex dimension, double dmax,
         //if(it->prevVector != DestType(dmax)) {
         da.setComponent(sigma * (it->center - current) , id, dimension);
         }
-    }    
+    }
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -304,11 +304,9 @@ void boundaryMultiVectorialDist( MultiArrayView<N, T1, S1> const & source,
     double dmax = 0.0;
     for( int k=0; k<N; ++k)
     {
-        if(int(pixelPitch[k]) != pixelPitch[k])
         dmax += sq(pixelPitch[k]*source.shape(k));
     }
-
-    detail::internalBoundaryMultiVectorialDistTmp( dmax, srcMultiArrayRange(source), destMultiArray(dest), pixelPitch);
+        detail::internalBoundaryMultiVectorialDistTmp( dmax, srcMultiArrayRange(source), destMultiArray(dest), pixelPitch);
 
     typedef typename GridGraph<N, undirected_tag>::NodeIt        graph_scanner;
     typedef typename GridGraph<N, undirected_tag>::OutArcIt  neighbor_iterator;
@@ -330,6 +328,8 @@ void boundaryMultiVectorialDist( MultiArrayView<N, T1, S1> const & source,
                                 {
                                     min_mag = detail::partialSquaredMagnitude(g.target(*arc)-*node,N);
                                     min_pos = g.target(*arc);
+                                    //std::cout << vec_to_pix - g.target(*arc)-*node << std::endl;
+                                    //std::cout << *node << " found smaller position with " << min_mag << " at " << g.target(*arc) << std::endl;
                                  }
                             }
         }
@@ -343,6 +343,7 @@ void boundaryMultiVectorialDist( MultiArrayView<N, T1, S1> const & source,
                 {
                     min_vec = vec_to_pix - (g.target(*arc) - min_pos)*0.5;
                     min_mag = detail::partialSquaredMagnitude(min_vec, N);
+                    //std::cout << *node << " found smaller vec with " << min_mag << " at " << g.target(*arc) << std::endl;
                 }
             }
         }
