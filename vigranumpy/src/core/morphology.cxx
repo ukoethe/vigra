@@ -809,7 +809,7 @@ void defineMorphology()
         (arg("image"), arg("sigma"), arg("out")=object()));
 
     def("distanceTransform2D",
-        registerConverters(&pythonDistanceTransform2D<UInt8, float>),
+        registerConverters(&pythonDistanceTransform2D<float, float>),
         (arg("image"), 
          arg("background")=true, 
          arg("norm")=2,
@@ -894,6 +894,37 @@ void defineMorphology()
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
+    def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<2, float>),
+       (arg("image"),
+        arg("pixel_pitch") = ArrayVector<double>(),
+        arg("out")=python::object()),
+       "Compute the Euclidean distance transform of a 2D scalar float array of labeled data using outer boundary (more accurate than inner).\n");
+
+   def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<3, float>),
+       (arg("array"),
+        arg("pixel_pitch") = ArrayVector<double>(),
+        arg("out")=python::object()),
+       "Compute the Euclidean distance transform of a 3D scalar float volume of labeled data using outer boundary (more accurate than inner).\n"
+       "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+
+    def("boundaryDistanceTransform_inner",
+        registerConverters(&pythonboundaryDistanceTransform_old<2, float >),
+        (arg("array"),
+         arg("out")=python::object()),
+        "Compute the Euclidean distance transform of a 2D scalar float array of labeled data using inner boundary (less accurate than outer boundary used with boundaryDistanceTransform).\n"
+        "\n"
+        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+
+    def("boundaryDistanceTransform_inner",
+        registerConverters(&pythonboundaryDistanceTransform_old<3, float >),
+        (arg("array"),
+         arg("out")=python::object()),
+        "Compute the Euclidean distance transform of a 3D scalar float volume of labeled data using inner boundary (less accurate than outer boundary used with boundaryDistanceTransform).\n"
+        "\n"
+        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+
     def("boundaryMulti",
         registerConverters(&pythonboundaryMulti<2, UInt32, UInt8>),
         (arg("array"),
@@ -931,6 +962,33 @@ void defineMorphology()
         (arg("array"),
          arg("out")=python::object()),
         "Compute the Euclidean distance transform of a 3D scalar UInt32 volume of labeled data with vectorial output.");
+
+    def("vectorialDistanceTransform",
+        registerConverters(&pythonVectorialDistanceTransform<2, float>),
+        (arg("array"),
+         arg("background") = true,
+         arg("out")=python::object()),
+        "Compute the Euclidean distance transform of a 2D scalar float array with vectorial output.");
+
+    def("vectorialDistanceTransform",
+        registerConverters(&pythonVectorialDistanceTransform<3, float>),
+        (arg("array"),
+         arg("background") = true,
+         arg("out")=python::object()),
+        "Compute the Euclidean distance transform of a 3D scalar float volume with vectorial output.");
+
+    def("boundaryVectorialDistanceTransform",
+        registerConverters(&pythonVectorialBoundaryDistanceTransform<2, float>),
+        (arg("array"),
+         arg("out")=python::object()),
+        "Compute the Euclidean distance transform of a 2D scalar float array of labeled data with vectorial output.");
+
+    def("boundaryVectorialDistanceTransform",
+        registerConverters(&pythonVectorialBoundaryDistanceTransform<3, float>),
+        (arg("array"),
+         arg("out")=python::object()),
+        "Compute the Euclidean distance transform of a 3D scalar float volume of labeled data with vectorial output.");
+
 }
 
 } // namespace vigra
