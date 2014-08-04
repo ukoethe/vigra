@@ -38,8 +38,10 @@
 
 #include "fftw3.hxx"
 #include "multi_array.hxx"
+#include "multi_math.hxx"
 #include "navigator.hxx"
 #include "copyimage.hxx"
+#include "threading.hxx"
 
 namespace vigra {
 
@@ -165,6 +167,37 @@ inline void moveDCToHalfspaceUpperLeft(MultiArrayView<N, T, C> a)
 
 namespace detail
 {
+
+#ifndef VIGRA_SINGLE_THREADED
+
+template <int DUMMY=0>
+class FFTWLock
+{
+  public:
+    threading::lock_guard<threading::mutex> guard_;
+    
+    FFTWLock()
+    : guard_(plan_mutex_)
+    {}
+    
+    static threading::mutex plan_mutex_;
+};
+
+template <int DUMMY>
+threading::mutex FFTWLock<DUMMY>::plan_mutex_;
+
+#else // VIGRA_SINGLE_THREADED
+
+template <int DUMMY=0>
+class FFTWLock
+{
+  public:
+    
+    FFTWLock()
+    {}
+};
+
+#endif // not VIGRA_SINGLE_THREADED
 
 inline fftw_plan 
 fftwPlanCreate(unsigned int N, int* shape, 
@@ -925,6 +958,7 @@ class FFTWPlan
         */
     ~FFTWPlan()
     {
+        detail::FFTWLock<> lock;
         detail::fftwPlanDestroy(plan);
     }
 
@@ -1077,12 +1111,16 @@ FFTWPlan<N, Real>::initImpl(MI ins, MO outs, int SIGN, unsigned int planner_flag
         ototal[j] = outs.stride(j-1) / outs.stride(j);
     }
     
-    PlanType newPlan = detail::fftwPlanCreate(N, newShape.begin(), 
-                                  ins.data(), itotal.begin(), ins.stride(N-1),
-                                  outs.data(), ototal.begin(), outs.stride(N-1),
-                                  SIGN, planner_flags);
-    detail::fftwPlanDestroy(plan);
-    plan = newPlan;
+    {
+        detail::FFTWLock<> lock;
+        PlanType newPlan = detail::fftwPlanCreate(N, newShape.begin(), 
+                                      ins.data(), itotal.begin(), ins.stride(N-1),
+                                      outs.data(), ototal.begin(), outs.stride(N-1),
+                                      SIGN, planner_flags);
+        detail::fftwPlanDestroy(plan);
+        plan = newPlan;
+    }
+    
     shape.swap(newShape);
     instrides.swap(newIStrides);
     outstrides.swap(newOStrides);
@@ -1417,7 +1455,10 @@ class FFTWConvolvePlan
     template <class C1, class C2, class C3>
     void execute(MultiArrayView<N, Real, C1> in, 
                  MultiArrayView<N, Real, C2> kernel,
-                 MultiArrayView<N, Real, C3> out);
+                 MultiArrayView<N, Real, C3> out)
+    {
+        executeImpl(in, kernel, out);
+    }
     
         /** \brief Execute a plan to convolve a real array with a complex kernel.
          
@@ -1485,7 +1526,7 @@ class FFTWConvolvePlan
         executeManyImpl(in, kernels, kernelsEnd, outs, UseFourierKernel());
     }
 
-  private:
+  protected:
   
     template <class KernelIterator, class OutIterator>
     Shape checkShapes(Shape in, 
@@ -1501,6 +1542,12 @@ class FFTWConvolvePlan
     Shape checkShapesComplex(Shape in, 
                              KernelIterator kernels, KernelIterator kernelsEnd,
                              OutIterator outs);
+    
+    template <class C1, class C2, class C3>
+    void executeImpl(MultiArrayView<N, Real, C1> in, 
+                     MultiArrayView<N, Real, C2> kernel,
+                     MultiArrayView<N, Real, C3> out,
+                     bool do_correlation=false);
     
     template <class C1, class KernelIterator, class OutIterator>
     void 
@@ -1610,9 +1657,10 @@ FFTWConvolvePlan<N, Real>::initComplex(Shape in, Shape kernel,
 template <unsigned int N, class Real>
 template <class C1, class C2, class C3>
 void 
-FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in, 
-                                    MultiArrayView<N, Real, C2> kernel,
-                                    MultiArrayView<N, Real, C3> out)
+FFTWConvolvePlan<N, Real>::executeImpl(MultiArrayView<N, Real, C1> in, 
+                                       MultiArrayView<N, Real, C2> kernel,
+                                       MultiArrayView<N, Real, C3> out,
+                                       bool do_correlation)
 {
     vigra_precondition(!useFourierKernel,
        "FFTWConvolvePlan::execute(): plan was generated for Fourier kernel, got spatial kernel.");
@@ -1634,8 +1682,16 @@ FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     detail::fftEmbedKernel(kernel, realKernel);
     forward_plan.execute(realKernel, fourierKernel);
     
-    fourierArray *= fourierKernel;
-    
+    if(do_correlation)
+    {
+        using namespace multi_math;
+        fourierArray *= conj(fourierKernel);
+    }
+    else
+    {
+        fourierArray *= fourierKernel;
+    }
+        
     backward_plan.execute(fourierArray, realArray);
     
     out = realArray.subarray(left, right);
@@ -1645,8 +1701,8 @@ template <unsigned int N, class Real>
 template <class C1, class C2, class C3>
 void 
 FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in, 
-                                    MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                                    MultiArrayView<N, Real, C3> out)
+                                   MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                                   MultiArrayView<N, Real, C3> out)
 {
     vigra_precondition(useFourierKernel,
        "FFTWConvolvePlan::execute(): plan was generated for spatial kernel, got Fourier kernel.");
@@ -1929,20 +1985,13 @@ FFTWConvolvePlan<N, Real>::checkShapesComplex(Shape in,
  
 /********************************************************/
 /*                                                      */
-/*                  FFTWCorrelatePlan                    */
+/*                  FFTWCorrelatePlan                   */
 /*                                                      */
 /********************************************************/
 
-/** C++ wrapper for a pair of FFTW plans used to perform FFT-based convolution.
+/** Like FFTWConvolvePlan, but performs correlation rather than convolution.
  
- The class encapsulates the calls to <tt>fftw_plan_dft_2d</tt>, <tt>fftw_execute</tt>, and
- <tt>fftw_destroy_plan</tt> (and their <tt>float</tt> and <tt>long double</tt> counterparts)
- in an easy-to-use interface. It always creates a pair of plans, one for the forward and one
- for the inverse transform required for convolution.
- 
- Usually, you use this class only indirectly via \ref convolveFFT() and its variants.
- You only need this class if you want to have more control about FFTW's planning process
- (by providing non-default planning flags) and/or want to re-use plans for several convolutions.
+ See \ref vigra::FFTWConvolvePlan for details.
  
  <b> Usage:</b>
  
@@ -1968,120 +2017,63 @@ FFTWConvolvePlan<N, Real>::checkShapesComplex(Shape in,
  */
 template <unsigned int N, class Real>
 class FFTWCorrelatePlan
+: private FFTWConvolvePlan<N, Real>
 {
-    typedef FFTWComplex<Real> Complex;
-    typedef MultiArrayView<N, Real, UnstridedArrayTag >     RArray;
-    typedef MultiArray<N, Complex, FFTWAllocator<Complex> > CArray;
-    
-    FFTWPlan<N, Real> forward_plan, backward_plan;
-    RArray realArray, realKernel;
-    CArray fourierArray, fourierKernel;
-    bool useFourierKernel;
-    
+    typedef FFTWConvolvePlan<N, Real> BaseType;
 public:
     
     typedef typename MultiArrayShape<N>::type Shape;
     
-    /** \brief Create an empty plan.
-     
-     The plan can be initialized later by one of the init() functions.
-     */
+        /** \brief Create an empty plan.
+         
+         The plan can be initialized later by one of the init() functions.
+         */
     FFTWCorrelatePlan()
-    : useFourierKernel(false)
+    : BaseType()
     {}
     
-    /** \brief Create a plan to correlate a real array with a real kernel.
-     
-     The kernel must be defined in the spatial domain.
-     See \ref convolveFFT() for detailed information on required shapes and internal padding.
-     
-     \arg planner_flags must be a combination of the
-     <a href="http://www.fftw.org/doc/Planner-Flags.html">planner
-     flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
-     optimal algorithm settings or read them from pre-loaded
-     <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
-     */
+        /** \brief Create a plan to correlate a real array with a real kernel.
+         
+         The kernel must be defined in the spatial domain.
+         See \ref correlateFFT() for detailed information on required shapes and internal padding.
+         
+         \arg planner_flags must be a combination of the
+         <a href="http://www.fftw.org/doc/Planner-Flags.html">planner
+         flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+         optimal algorithm settings or read them from pre-loaded
+         <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+         */
     template <class C1, class C2, class C3>
     FFTWCorrelatePlan(MultiArrayView<N, Real, C1> in,
-                     MultiArrayView<N, Real, C2> kernel,
-                     MultiArrayView<N, Real, C3> out,
-                     unsigned int planner_flags = FFTW_ESTIMATE)
-    : useFourierKernel(false)
-    {
-        init(in, kernel, out, planner_flags);
-    }
+                      MultiArrayView<N, Real, C2> kernel,
+                      MultiArrayView<N, Real, C3> out,
+                      unsigned int planner_flags = FFTW_ESTIMATE)
+    : BaseType(in, kernel, out, planner_flags)
+    {}
     
-    /** \brief Create a plan to correlate a real array with a complex kernel.
-     
-     The kernel must be defined in the Fourier domain, using the half-space format.
-     See \ref convolveFFT() for detailed information on required shapes and internal padding.
-     
-     \arg planner_flags must be a combination of the
-     <a href="http://www.fftw.org/doc/Planner-Flags.html">planner
-     flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
-     optimal algorithm settings or read them from pre-loaded
-     <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
-     */
-    template <class C1, class C2, class C3>
-    FFTWCorrelatePlan(MultiArrayView<N, Real, C1> in,
-                     MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                     MultiArrayView<N, Real, C3> out,
-                     unsigned int planner_flags = FFTW_ESTIMATE)
-    : useFourierKernel(true)
-    {
-        init(in, kernel, out, planner_flags);
-    }
-    
-    /** \brief Create a plan to corelate a complex array with a complex kernel.
-     
-     See \ref convolveFFT() for detailed information on required shapes and internal padding.
-     
-     \arg fourierDomainKernel determines if the kernel is defined in the spatial or
-     Fourier domain.
-     \arg planner_flags must be a combination of the
-     <a href="http://www.fftw.org/doc/Planner-Flags.html">planner
-     flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
-     optimal algorithm settings or read them from pre-loaded
-     <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
-     */
-    template <class C1, class C2, class C3>
-    FFTWCorrelatePlan(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-                     MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                     MultiArrayView<N, FFTWComplex<Real>, C3> out,
-                     bool fourierDomainKernel,
-                     unsigned int planner_flags = FFTW_ESTIMATE)
-    {
-        init(in, kernel, out, fourierDomainKernel, planner_flags);
-    }
-    
-    
-    /** \brief Create a plan from just the shape information.
-     
-     See \ref convolveFFT() for detailed information on required shapes and internal padding.
-     
-     \arg fourierDomainKernel determines if the kernel is defined in the spatial or
-     Fourier domain.
-     \arg planner_flags must be a combination of the
-     <a href="http://www.fftw.org/doc/Planner-Flags.html">planner
-     flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
-     optimal algorithm settings or read them from pre-loaded
-     <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
-     */
+        /** \brief Create a plan from just the shape information.
+         
+         See \ref convolveFFT() for detailed information on required shapes and internal padding.
+         
+         \arg fourierDomainKernel determines if the kernel is defined in the spatial or
+         Fourier domain.
+         \arg planner_flags must be a combination of the
+         <a href="http://www.fftw.org/doc/Planner-Flags.html">planner
+         flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+         optimal algorithm settings or read them from pre-loaded
+         <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+         */
     template <class C1, class C2, class C3>
     FFTWCorrelatePlan(Shape inOut, Shape kernel,
                      bool useFourierKernel = false,
                      unsigned int planner_flags = FFTW_ESTIMATE)
-    {
-        if(useFourierKernel)
-            init(inOut, kernel, planner_flags);
-        else
-            initFourierKernel(inOut, kernel, planner_flags);
-    }
+    : BaseType(inOut, kernel, false, planner_flags)
+    {}
     
-    /** \brief Init a plan to convolve a real array with a real kernel.
-     
-     See the constructor with the same signature for details.
-     */
+        /** \brief Init a plan to convolve a real array with a real kernel.
+         
+         See the constructor with the same signature for details.
+         */
     template <class C1, class C2, class C3>
     void init(MultiArrayView<N, Real, C1> in,
               MultiArrayView<N, Real, C2> kernel,
@@ -2090,289 +2082,24 @@ public:
     {
         vigra_precondition(in.shape() == out.shape(),
                            "FFTWCorrelatePlan::init(): input and output must have the same shape.");
-        init(in.shape(), kernel.shape(), planner_flags);
+        BaseType::init(in.shape(), kernel.shape(), planner_flags);
     }
     
-    /** \brief Init a plan to convolve a real array with a complex kernel.
-     
-     See the constructor with the same signature for details.
-     */
-    template <class C1, class C2, class C3>
-    void init(MultiArrayView<N, Real, C1> in,
-              MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-              MultiArrayView<N, Real, C3> out,
-              unsigned int planner_flags = FFTW_ESTIMATE)
-    {
-        vigra_precondition(in.shape() == out.shape(),
-                           "FFTWCorrelatePlan::init(): input and output must have the same shape.");
-        initFourierKernel(in.shape(), kernel.shape(), planner_flags);
-    }
-    
-    /** \brief Init a plan to convolve a complex array with a complex kernel.
-     
-     See the constructor with the same signature for details.
-     */
-    template <class C1, class C2, class C3>
-    void init(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-              MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-              MultiArrayView<N, FFTWComplex<Real>, C3> out,
-              bool fourierDomainKernel,
-              unsigned int planner_flags = FFTW_ESTIMATE)
-    {
-        vigra_precondition(in.shape() == out.shape(),
-                           "FFTWCorrelatePlan::init(): input and output must have the same shape.");
-        useFourierKernel = fourierDomainKernel;
-        initComplex(in.shape(), kernel.shape(), planner_flags);
-    }
-    
-    void init(Shape inOut, Shape kernel,
-              unsigned int planner_flags = FFTW_ESTIMATE);
-    
-    void initFourierKernel(Shape inOut, Shape kernel,
-                           unsigned int planner_flags = FFTW_ESTIMATE);
-    
-    void initComplex(Shape inOut, Shape kernel,
-                     unsigned int planner_flags = FFTW_ESTIMATE);
-    
-    /** \brief Execute a plan to convolve a real array with a real kernel.
-     
-     The array shapes must be the same as in the corresponding init function
-     or constructor. However, execute() can be called several times on
-     the same plan, even with different arrays, as long as they have the appropriate
-     shapes.
-     */
+        /** \brief Execute a plan to correlate a real array with a real kernel.
+         
+         The array shapes must be the same as in the corresponding init function
+         or constructor. However, execute() can be called several times on
+         the same plan, even with different arrays, as long as they have the appropriate
+         shapes.
+         */
     template <class C1, class C2, class C3>
     void execute(MultiArrayView<N, Real, C1> in,
                  MultiArrayView<N, Real, C2> kernel,
-                 MultiArrayView<N, Real, C3> out);
-    
-    /** \brief Execute a plan to convolve a real array with a complex kernel.
-     
-     The array shapes must be the same as in the corresponding init function
-     or constructor. However, execute() can be called several times on
-     the same plan, even with different arrays, as long as they have the appropriate
-     shapes.
-     */
-    template <class C1, class C2, class C3>
-    void execute(MultiArrayView<N, Real, C1> in,
-                 MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                 MultiArrayView<N, Real, C3> out);
-    
-    /** \brief Execute a plan to convolve a complex array with a complex kernel.
-     
-     The array shapes must be the same as in the corresponding init function
-     or constructor. However, execute() can be called several times on
-     the same plan, even with different arrays, as long as they have the appropriate
-     shapes.
-     */
-    template <class C1, class C2, class C3>
-    void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-                 MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                 MultiArrayView<N, FFTWComplex<Real>, C3> out);
+                 MultiArrayView<N, Real, C3> out)
+    {
+        BaseType::executeImpl(in, kernel, out, true);
+    }
 };
-
-template <unsigned int N, class Real>
-void
-FFTWCorrelatePlan<N, Real>::init(Shape in, Shape kernel,
-                                unsigned int planner_flags)
-{
-    Shape paddedShape = fftwBestPaddedShapeR2C(in + kernel - Shape(1)),
-    complexShape = fftwCorrespondingShapeR2C(paddedShape);
-    
-    CArray newFourierArray(complexShape), newFourierKernel(complexShape);
-    
-    Shape realStrides = 2*newFourierArray.stride();
-    realStrides[0] = 1;
-    RArray newRealArray(paddedShape, realStrides, (Real*)newFourierArray.data());
-    RArray newRealKernel(paddedShape, realStrides, (Real*)newFourierKernel.data());
-    
-    FFTWPlan<N, Real> fplan(newRealArray, newFourierArray, planner_flags);
-    FFTWPlan<N, Real> bplan(newFourierArray, newRealArray, planner_flags);
-    
-    forward_plan = fplan;
-    backward_plan = bplan;
-    realArray = newRealArray;
-    realKernel = newRealKernel;
-    fourierArray.swap(newFourierArray);
-    fourierKernel.swap(newFourierKernel);
-    useFourierKernel = false;
-}
-
-template <unsigned int N, class Real>
-void
-FFTWCorrelatePlan<N, Real>::initFourierKernel(Shape in, Shape kernel,
-                                             unsigned int planner_flags)
-{
-    Shape complexShape = kernel,
-    paddedShape  = fftwCorrespondingShapeC2R(complexShape);
-    
-    for(unsigned int k=0; k<N; ++k)
-        vigra_precondition(in[k] <= paddedShape[k],
-                           "FFTWCorrelatePlan::init(): kernel too small for given input.");
-    
-    CArray newFourierArray(complexShape), newFourierKernel(complexShape);
-    
-    Shape realStrides = 2*newFourierArray.stride();
-    realStrides[0] = 1;
-    RArray newRealArray(paddedShape, realStrides, (Real*)newFourierArray.data());
-    RArray newRealKernel(paddedShape, realStrides, (Real*)newFourierKernel.data());
-    
-    FFTWPlan<N, Real> fplan(newRealArray, newFourierArray, planner_flags);
-    FFTWPlan<N, Real> bplan(newFourierArray, newRealArray, planner_flags);
-    
-    forward_plan = fplan;
-    backward_plan = bplan;
-    realArray = newRealArray;
-    realKernel = newRealKernel;
-    fourierArray.swap(newFourierArray);
-    fourierKernel.swap(newFourierKernel);
-    useFourierKernel = true;
-}
-
-template <unsigned int N, class Real>
-void
-FFTWCorrelatePlan<N, Real>::initComplex(Shape in, Shape kernel,
-                                       unsigned int planner_flags)
-{
-    Shape paddedShape;
-    
-    if(useFourierKernel)
-    {
-        for(unsigned int k=0; k<N; ++k)
-            vigra_precondition(in[k] <= kernel[k],
-                               "FFTWCorrelatePlan::init(): kernel too small for given input.");
-        
-        paddedShape = kernel;
-    }
-    else
-    {
-        paddedShape  = fftwBestPaddedShape(in + kernel - Shape(1));
-    }
-    
-    CArray newFourierArray(paddedShape), newFourierKernel(paddedShape);
-    
-    FFTWPlan<N, Real> fplan(newFourierArray, newFourierArray, FFTW_FORWARD, planner_flags);
-    FFTWPlan<N, Real> bplan(newFourierArray, newFourierArray, FFTW_BACKWARD, planner_flags);
-    
-    forward_plan = fplan;
-    backward_plan = bplan;
-    fourierArray.swap(newFourierArray);
-    fourierKernel.swap(newFourierKernel);
-}
-
-#ifndef DOXYGEN // doxygen documents these functions as free functions
-
-template <unsigned int N, class Real>
-template <class C1, class C2, class C3>
-void
-FFTWCorrelatePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
-                                   MultiArrayView<N, Real, C2> kernel,
-                                   MultiArrayView<N, Real, C3> out)
-{
-    vigra_precondition(!useFourierKernel,
-                       "FFTWCorrelatePlan::execute(): plan was generated for Fourier kernel, got spatial kernel.");
-    
-    vigra_precondition(in.shape() == out.shape(),
-                       "FFTWCorrelatePlan::execute(): input and output must have the same shape.");
-    
-    Shape paddedShape = fftwBestPaddedShapeR2C(in.shape() + kernel.shape() - Shape(1)),
-    diff = paddedShape - in.shape(),
-    left = div(diff, MultiArrayIndex(2)),
-    right = in.shape() + left;
-    
-    vigra_precondition(paddedShape == realArray.shape(),
-                       "FFTWCorrelatePlan::execute(): shape mismatch between input and plan.");
-    
-    detail::fftEmbedArray(in, realArray);
-    forward_plan.execute(realArray, fourierArray);
-    
-    detail::fftEmbedKernel(kernel, realKernel);
-    forward_plan.execute(realKernel, fourierKernel);
-    
-    fourierArray *= multi_math::conj(fourierKernel);
-    
-    backward_plan.execute(fourierArray, realArray);
-    
-    out = realArray.subarray(left, right);
-}
-
-template <unsigned int N, class Real>
-template <class C1, class C2, class C3>
-void
-FFTWCorrelatePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
-                                   MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                                   MultiArrayView<N, Real, C3> out)
-{
-    vigra_precondition(useFourierKernel,
-                       "FFTWCorrelatePlan::execute(): plan was generated for spatial kernel, got Fourier kernel.");
-    
-    vigra_precondition(in.shape() == out.shape(),
-                       "FFTWCorrelatePlan::execute(): input and output must have the same shape.");
-    
-    vigra_precondition(kernel.shape() == fourierArray.shape(),
-                       "FFTWCorrelatePlan::execute(): shape mismatch between kernel and plan.");
-    
-    Shape paddedShape = fftwCorrespondingShapeC2R(kernel.shape(), odd(in.shape(0))),
-    diff = paddedShape - in.shape(),
-    left = div(diff, MultiArrayIndex(2)),
-    right = in.shape() + left;
-    
-    vigra_precondition(paddedShape == realArray.shape(),
-                       "FFTWCorrelatePlan::execute(): shape mismatch between input and plan.");
-    
-    detail::fftEmbedArray(in, realArray);
-    forward_plan.execute(realArray, fourierArray);
-    
-    fourierKernel = kernel;
-    moveDCToHalfspaceUpperLeft(fourierKernel);
-    
-    fourierArray *= multi_math::conj(fourierKernel);
-    
-    backward_plan.execute(fourierArray, realArray);
-    
-    out = realArray.subarray(left, right);
-}
-
-template <unsigned int N, class Real>
-template <class C1, class C2, class C3>
-void
-FFTWCorrelatePlan<N, Real>::execute(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-                                   MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                                   MultiArrayView<N, FFTWComplex<Real>, C3> out)
-{
-    vigra_precondition(in.shape() == out.shape(),
-                       "FFTWCorrelatePlan::execute(): input and output must have the same shape.");
-    
-    Shape paddedShape = fourierArray.shape(),
-    diff = paddedShape - in.shape(),
-    left = div(diff, MultiArrayIndex(2)),
-    right = in.shape() + left;
-    
-    if(useFourierKernel)
-    {
-        vigra_precondition(kernel.shape() == fourierArray.shape(),
-                           "FFTWCorrelatePlan::execute(): shape mismatch between kernel and plan.");
-        
-        fourierKernel = kernel;
-        moveDCToUpperLeft(fourierKernel);
-    }
-    else
-    {
-        detail::fftEmbedKernel(kernel, fourierKernel);
-        forward_plan.execute(fourierKernel, fourierKernel);
-    }
-    
-    detail::fftEmbedArray(in, fourierArray);
-    forward_plan.execute(fourierArray, fourierArray);
-    
-    fourierArray *= multi_math::conj(fourierKernel);
-    
-    backward_plan.execute(fourierArray, fourierArray);
-    
-    out = fourierArray.subarray(left, right);
-}
-
-#endif // DOXYGEN
 
 /********************************************************/
 /*                                                      */
@@ -2690,108 +2417,33 @@ convolveFFTComplexMany(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     
 /********************************************************/
 /*                                                      */
-/*                     correlateFFT                      */
+/*                     correlateFFT                     */
 /*                                                      */
 /********************************************************/
 
 /** \brief Correlate an array with a kernel by means of the Fourier transform.
  
- Thanks to the convolution theorem of Fourier theory, a correlation in the spatial domain
- is equivalent to a multiplication of the complex conjugate in the frequency domain. Thus, for
+ This function correlates a real-valued input array with a real-valued kernel 
+ such that the result is also real-valued. Thanks to the correlation theorem of 
+ Fourier theory, a correlation in the spatial domain is equivalent to a multiplication 
+ with the complex conjugate in the frequency domain. Thus, for
  certain kernels (especially large, non-separable ones), it is advantageous to perform the 
  correlation by first transforming both array and kernel to the frequency domain, multiplying
  the frequency representations, and transforming the result back into the spatial domain.
- Some kernels have a much simpler definition in the frequency domain, so that they are readily
- computed there directly, avoiding Fourier transformation of those kernels.
  
- The following functions implement various variants of FFT-based convolution:
- 
- <DL>
- <DT><b>correlateFFT</b><DD> Correlate a real-valued input array with a kernel such that the
- result is also real-valued. That is, the kernel is either provided
- as a real-valued array in the spatial domain, or as a
- complex-valued array in the Fourier domain, using the half-space format
- of the R2C Fourier transform (see below).
- <DT><b>correlateFFTMany</b><DD> Like <tt>correlateFFT</tt>, but you may provide many kernels at once
- (using an iterator pair specifying the kernel sequence).
- This has the advantage that the forward transform of the input array needs
- to be executed only once.
- <DT><b>correlateFFTComplex</b><DD> Correlate a complex-valued input array with a complex-valued kernel,
- resulting in a complex-valued output array. An additional flag is used to
- specify whether the kernel is defined in the spatial or frequency domain.
- <DT><b>correlateFFTComplexMany</b><DD> Like <tt>correlateFFTComplex</tt>, but you may provide many
- kernels at once (using an iterator pair specifying the kernel sequence).
- This has the advantage that the forward transform of the input array needs
- to be executed only once.
- </DL>
- 
- The output arrays must have the same shape as the input arrays. In the "Many" variants of the
- convolution functions, the kernels must all have the same shape.
+ The output arrays must have the same shape as the input arrays.
  
  See also \ref convolveFFT() for corresponding functionality.
  
  <b> Declarations:</b>
  
- Real-valued convolution with kernel in the spatial domain:
  \code
  namespace vigra {
- template <unsigned int N, class Real, class C1, class C2, class C3>
- void
- correlateFFT(MultiArrayView<N, Real, C1> in,
- MultiArrayView<N, Real, C2> kernel,
- MultiArrayView<N, Real, C3> out);
- }
- \endcode
- 
- Real-valued convolution with kernel in the Fourier domain (half-space format):
- \code
- namespace vigra {
- template <unsigned int N, class Real, class C1, class C2, class C3>
- void
- correlateFFT(MultiArrayView<N, Real, C1> in,
- MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
- MultiArrayView<N, Real, C3> out);
- }
- \endcode
- 
- Series of real-valued convolutions with kernels in the spatial or Fourier domain
- (the kernel and out sequences must have the same length):
- \code
- namespace vigra {
- template <unsigned int N, class Real, class C1,
- class KernelIterator, class OutIterator>
- void
- correlateFFTMany(MultiArrayView<N, Real, C1> in,
- KernelIterator kernels, KernelIterator kernelsEnd,
- OutIterator outs);
- }
- \endcode
- 
- Complex-valued convolution (parameter <tt>fourierDomainKernel</tt> determines if
- the kernel is defined in the spatial or Fourier domain):
- \code
- namespace vigra {
- template <unsigned int N, class Real, class C1, class C2, class C3>
- void
- correlateFFTComplex(MultiArrayView<N, FFTWComplex<Real>, C1> in,
- MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
- MultiArrayView<N, FFTWComplex<Real>, C3> out,
- bool fourierDomainKernel);
- }
- \endcode
- 
- Series of complex-valued convolutions (parameter <tt>fourierDomainKernel</tt>
- determines if the kernels are defined in the spatial or Fourier domain,
- the kernel and out sequences must have the same length):
- \code
- namespace vigra {
- template <unsigned int N, class Real, class C1,
- class KernelIterator, class OutIterator>
- void
- correlateFFTComplexMany(MultiArrayView<N, FFTWComplex<Real>, C1> in,
- KernelIterator kernels, KernelIterator kernelsEnd,
- OutIterator outs,
- bool fourierDomainKernel);
+     template <unsigned int N, class Real, class C1, class C2, class C3>
+     void
+     correlateFFT(MultiArrayView<N, Real, C1> in,
+                  MultiArrayView<N, Real, C2> kernel,
+                  MultiArrayView<N, Real, C3> out);
  }
  \endcode
  
@@ -2801,29 +2453,14 @@ convolveFFTComplexMany(MultiArrayView<N, FFTWComplex<Real>, C1> in,
  Namespace: vigra
  
  \code
- // correlate real array with a Gaussian (sigma=1) defined in the spatial domain
+ // correlate real array with a template to find best matches
  // (implicitly uses padding by at least 4 pixels)
- MultiArray<2, double> src(Shape2(w, h)), dest(Shape2(w,h));
+ MultiArray<2, double> src(Shape2(w, h)), dest(Shape2(w, h));
  
- MultiArray<2, double> spatial_kernel(Shape2(9, 9));
- Gaussian<double> gauss(1.0);
- 
- for(int y=0; y<9; ++y)
- for(int x=0; x<9; ++x)
- spatial_kernel(x, y) = gauss(x-4.0)*gauss(y-4.0);
- 
- correlateFFT(src, spatial_kernel, dest);
- 
- // correlate real array with a Gaussian (sigma=1) defined in the Fourier domain
- // (uses no padding, because the kernel size corresponds to the input size)
- MultiArray<2, FFTWComplex<double> > fourier_kernel(fftwCorrespondingShapeR2C(src.shape()));
- int y0 = h / 2;
- 
- for(int y=0; y<fourier_kernel.shape(1); ++y)
- for(int x=0; x<fourier_kernel.shape(0); ++x)
- fourier_kernel(x, y) = exp(-0.5*sq(x / double(w))) * exp(-0.5*sq((y-y0)/double(h)));
- 
- correlateFFT(src, fourier_kernel, dest);
+ MultiArray<2, double> template(Shape2(9, 9));
+ template = ...; 
+
+ correlateFFT(src, template, dest);
  \endcode
  */
 doxygen_overloaded_function(template <...> void correlateFFT)
@@ -2835,68 +2472,6 @@ correlateFFT(MultiArrayView<N, Real, C1> in,
             MultiArrayView<N, Real, C3> out)
 {
     FFTWCorrelatePlan<N, Real>(in, kernel, out).execute(in, kernel, out);
-}
-
-template <unsigned int N, class Real, class C1, class C2, class C3>
-void
-correlateFFT(MultiArrayView<N, Real, C1> in,
-            MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-            MultiArrayView<N, Real, C3> out)
-{
-    FFTWCorrelatePlan<N, Real>(in, kernel, out).execute(in, kernel, out);
-}
-
-/** \brief Correlate a complex-valued array by means of the Fourier transform.
- 
- See \ref correlateFFT() for details.
- */
-doxygen_overloaded_function(template <...> void correlateFFTComplex)
-
-template <unsigned int N, class Real, class C1, class C2, class C3>
-void
-correlateFFTComplex(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-                   MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                   MultiArrayView<N, FFTWComplex<Real>, C3> out,
-                   bool fourierDomainKernel)
-{
-    FFTWCorrelatePlan<N, Real>(in, kernel, out, fourierDomainKernel).execute(in, kernel, out);
-}
-
-/** \brief Correlate a real-valued array with a sequence of kernels by means of the Fourier transform.
- 
- See \ref correlateFFT() for details.
- */
-doxygen_overloaded_function(template <...> void correlateFFTMany)
-
-template <unsigned int N, class Real, class C1,
-class KernelIterator, class OutIterator>
-void
-correlateFFTMany(MultiArrayView<N, Real, C1> in,
-                KernelIterator kernels, KernelIterator kernelsEnd,
-                OutIterator outs)
-{
-    FFTWCorrelatePlan<N, Real> plan;
-    plan.initMany(in, kernels, kernelsEnd, outs);
-    plan.executeMany(in, kernels, kernelsEnd, outs);
-}
-
-/** \brief Correlate a complex-valued array with a sequence of kernels by means of the Fourier transform.
- 
- See \ref correlateFFT() for details.
- */
-doxygen_overloaded_function(template <...> void correlateFFTComplexMany)
-
-template <unsigned int N, class Real, class C1,
-class KernelIterator, class OutIterator>
-void
-correlateFFTComplexMany(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-                       KernelIterator kernels, KernelIterator kernelsEnd,
-                       OutIterator outs,
-                       bool fourierDomainKernel)
-{
-    FFTWCorrelatePlan<N, Real> plan;
-    plan.initMany(in, kernels, kernelsEnd, outs, fourierDomainKernel);
-    plan.executeMany(in, kernels, kernelsEnd, outs);
 }
 
 //@}
