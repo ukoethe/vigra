@@ -1,22 +1,38 @@
-/*
- * Copyright (C) 2013, 2014 Christoph L. Spiel
- *
- * This file is part of Enblend.
- *
- * Enblend is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * Enblend is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Enblend; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/************************************************************************/
+/*                                                                      */
+/*                 Copyright 2004 by Ullrich Koethe, Christoph L. Spiel */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
+
 #ifndef OPENMP_VIGRA_H_INCLUDED_
 #define OPENMP_VIGRA_H_INCLUDED_
 
@@ -123,7 +139,7 @@ namespace vigra
 #pragma omp for schedule(guided) nowait
                 for (int y = 0; y < size.y; ++y)
                 {
-                    const vigra::Diff2D begin(0, y);
+                	const vigra::Diff2D begin(0, y);
                     const vigra::Diff2D end(size.x, y + 1);
 
                     vigra::combineThreeImages(src1_upperleft + begin, src1_upperleft + end, src1_acc,
@@ -239,7 +255,7 @@ namespace vigra
 
                     int id() const {return 0;}
 
-                    void operator()(ValueType* /* RESTRICT d */, const ValueType* /* RESTRICT f */, int /* n */) const
+                    void operator()(ValueType* __restrict__ d, const ValueType* __restrict__ f, int n) const
                     {
                         vigra_fail("fh::detail::ChessboardTransform1D: not implemented");
                     }
@@ -253,7 +269,7 @@ namespace vigra
 
                     int id() const {return 1;}
 
-                    void operator()(ValueType* /* RESTRICT */ d, const ValueType* /* RESTRICT */ f, int n) const
+                    void operator()(ValueType* __restrict__ d, const ValueType* __restrict__ f, int n) const
                     {
                         const ValueType one = static_cast<ValueType>(1);
 
@@ -277,7 +293,7 @@ namespace vigra
 
                     int id() const {return 2;}
 
-                    void operator()(ValueType* /* RESTRICT */ d, const ValueType* /* RESTRICT */ f, int n) const
+                    void operator()(ValueType* __restrict__ d, const ValueType* __restrict__ f, int n) const
                     {
                         typedef float math_t;
 
