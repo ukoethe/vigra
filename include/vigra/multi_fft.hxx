@@ -2289,7 +2289,8 @@ FFTWCorrelatePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     detail::fftEmbedKernel(kernel, realKernel);
     forward_plan.execute(realKernel, fourierKernel);
     
-    fourierArray *=conj(fourierKernel);
+    using namespace vigra::multi_math;
+    fourierArray *= conj(fourierKernel);
     
     backward_plan.execute(fourierArray, realArray);
     
@@ -2326,7 +2327,8 @@ FFTWCorrelatePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     fourierKernel = kernel;
     moveDCToHalfspaceUpperLeft(fourierKernel);
     
-    fourierArray *=conj(fourierKernel);
+    using namespace vigra::multi_math;
+    fourierArray *= conj(fourierKernel);
     
     backward_plan.execute(fourierArray, realArray);
     
@@ -2365,7 +2367,8 @@ FFTWCorrelatePlan<N, Real>::execute(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     detail::fftEmbedArray(in, fourierArray);
     forward_plan.execute(fourierArray, fourierArray);
     
-    fourierArray *=conj(fourierKernel);
+    using namespace vigra::multi_math;
+    fourierArray *= conj(fourierKernel);
     
     backward_plan.execute(fourierArray, fourierArray);
     
