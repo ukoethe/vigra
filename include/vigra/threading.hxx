@@ -40,6 +40,8 @@
    when the compiler doesn't yet support C++11.
 */
 
+    // ignore all threading if VIGRA_SINGLE_THREADED is defined
+#ifndef VIGRA_SINGLE_THREADED
 
 #ifndef VIGRA_NO_STD_THREADING 
 # if defined(__clang__)
@@ -373,5 +375,7 @@ struct atomic_long
 }} // namespace vigra::threading
 
 #undef VIGRA_THREADING_NAMESPACE
+
+#endif // not VIGRA_SINGLE_THREADED
 
 #endif // VIGRA_THREADING_HXX
