@@ -25,6 +25,7 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
 include(VigraSetDefaults)
 include(VigraCMakeUtils)
+include(VigraConfigureThreading)
 
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
