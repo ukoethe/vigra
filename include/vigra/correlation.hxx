@@ -20,25 +20,6 @@
 
 namespace vigra
 {
-    namespace detail
-    {
-        template <class T, class S>
-        inline void setZeroBorders(MultiArrayView<2, T, S> arr, unsigned int c_w, unsigned int c_h)
-        {
-            unsigned int a_w = arr.width(),
-                         a_h = arr.height();
-            
-            //Upper
-            arr.subarray(Shape2(0,0),Shape2(a_w,c_h)) = vigra::NumericTraits<T>::zero();
-            //Lower
-            arr.subarray(Shape2(0,a_h-c_h),Shape2(a_w, a_h)) = vigra::NumericTraits<T>::zero();
-            //Middle left
-            arr.subarray(Shape2(0,c_h),Shape2(c_w, a_h-c_h)) = vigra::NumericTraits<T>::zero();
-            //Middle right
-            arr.subarray(Shape2(a_w-c_w,c_h),Shape2(a_w, a_h-c_h)) = vigra::NumericTraits<T>::zero();
-        }
-    }
-    
     
     /********************************************************/
     /*                                                      */
@@ -114,8 +95,10 @@ namespace vigra
         correlateFFT(in, mask, out);
         
         if(clearBorders)
-            detail::setZeroBorders(out, mask.width()/2,mask.height()/2);
-            
+        {
+            Shape2 border(mask.width()/2, mask.height()/2);
+            initMultiArrayBorder(out, border, border, T3());
+        }
     }
     
     
@@ -249,18 +232,18 @@ inline void fastNormalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
         MultiArray<2, double> sum_table(i_w+1,i_h+1),
                               sum_table2(i_w+1,i_h+1);
         
-        for(int v=0; v<i_h; v++)
+        for(unsigned int v=0; v<i_h; v++)
         {
-            for(int u=0; u<i_w; u++)
+            for(unsigned int u=0; u<i_w; u++)
             {
                 sum_table( u+1,v+1)  = in(u,v)         +  sum_table(u,v+1)  + sum_table(u+1,v)  -  sum_table(u,v);
                 sum_table2(u+1,v+1)  = in(u,v)*in(u,v) + sum_table2(u,v+1) + sum_table2(u+1,v)  - sum_table2(u,v);
             }
         }
         //calculate the result, use the sum tables for the denumerators
-        for(int v=m_h/2; v<i_h-m_h/2; v++)
+        for(unsigned int v=m_h/2; v<i_h-m_h/2; v++)
         {
-            for(int u=m_w/2; u<i_w-m_w/2; u++)
+            for(unsigned int u=m_w/2; u<i_w-m_w/2; u++)
             {
                 //calculate e(window) and e(window^2)
                 double e_uv   = sum_table( u+m_w/2+1, v+m_h/2+1) - sum_table( u-m_w/2, v+m_h/2+1) - sum_table( u+m_w/2+1, v-m_h/2)  + sum_table( u-m_w/2,v-m_h/2),
