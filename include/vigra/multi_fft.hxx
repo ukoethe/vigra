@@ -1990,7 +1990,7 @@ public:
     : useFourierKernel(false)
     {}
     
-    /** \brief Create a plan to convolve a real array with a real kernel.
+    /** \brief Create a plan to correlate a real array with a real kernel.
      
      The kernel must be defined in the spatial domain.
      See \ref convolveFFT() for detailed information on required shapes and internal padding.
@@ -2011,7 +2011,7 @@ public:
         init(in, kernel, out, planner_flags);
     }
     
-    /** \brief Create a plan to convolve a real array with a complex kernel.
+    /** \brief Create a plan to correlate a real array with a complex kernel.
      
      The kernel must be defined in the Fourier domain, using the half-space format.
      See \ref convolveFFT() for detailed information on required shapes and internal padding.
@@ -2032,7 +2032,7 @@ public:
         init(in, kernel, out, planner_flags);
     }
     
-    /** \brief Create a plan to convolve a complex array with a complex kernel.
+    /** \brief Create a plan to corelate a complex array with a complex kernel.
      
      See \ref convolveFFT() for detailed information on required shapes and internal padding.
      
@@ -2125,81 +2125,6 @@ public:
         initComplex(in.shape(), kernel.shape(), planner_flags);
     }
     
-    /** \brief Init a plan to convolve a real array with a sequence of kernels.
-     
-     The kernels can be either real or complex. The sequences \a kernels and \a outs
-     must have the same length. See the corresponding constructors
-     for single kernels for details.
-     */
-    template <class C1, class KernelIterator, class OutIterator>
-    void initMany(MultiArrayView<N, Real, C1> in,
-                  KernelIterator kernels, KernelIterator kernelsEnd,
-                  OutIterator outs, unsigned int planner_flags = FFTW_ESTIMATE)
-    {
-        typedef typename std::iterator_traits<KernelIterator>::value_type KernelArray;
-        typedef typename KernelArray::value_type KernelValue;
-        typedef typename std::iterator_traits<OutIterator>::value_type OutArray;
-        typedef typename OutArray::value_type OutValue;
-        
-        bool realKernel = IsSameType<KernelValue, Real>::value;
-        bool fourierKernel = IsSameType<KernelValue, Complex>::value;
-        
-        vigra_precondition(realKernel || fourierKernel,
-                           "FFTWCorrelatePlan::initMany(): kernels have unsuitable value_type.");
-        vigra_precondition((IsSameType<OutValue, Real>::value),
-                           "FFTWCorrelatePlan::initMany(): outputs have unsuitable value_type.");
-        
-        if(realKernel)
-        {
-            initMany(in.shape(), checkShapes(in.shape(), kernels, kernelsEnd, outs),
-                     planner_flags);
-        }
-        else
-        {
-            initFourierKernelMany(in.shape(),
-                                  checkShapesFourier(in.shape(), kernels, kernelsEnd, outs),
-                                  planner_flags);
-        }
-    }
-    
-    /** \brief Init a plan to convolve a complex array with a sequence of kernels.
-     
-     The kernels must be complex as well. The sequences \a kernels and \a outs
-     must have the same length. See the corresponding constructors
-     for single kernels for details.
-     */
-    template <class C1, class KernelIterator, class OutIterator>
-    void initMany(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-                  KernelIterator kernels, KernelIterator kernelsEnd,
-                  OutIterator outs,
-                  bool fourierDomainKernels,
-                  unsigned int planner_flags = FFTW_ESTIMATE)
-    {
-        typedef typename std::iterator_traits<KernelIterator>::value_type KernelArray;
-        typedef typename KernelArray::value_type KernelValue;
-        typedef typename std::iterator_traits<OutIterator>::value_type OutArray;
-        typedef typename OutArray::value_type OutValue;
-        
-        vigra_precondition((IsSameType<KernelValue, Complex>::value),
-                           "FFTWCorrelatePlan::initMany(): kernels have unsuitable value_type.");
-        vigra_precondition((IsSameType<OutValue, Complex>::value),
-                           "FFTWCorrelatePlan::initMany(): outputs have unsuitable value_type.");
-        
-        useFourierKernel = fourierDomainKernels;
-        
-        Shape paddedShape = checkShapesComplex(in.shape(), kernels, kernelsEnd, outs);
-        
-        CArray newFourierArray(paddedShape), newFourierKernel(paddedShape);
-        
-        FFTWPlan<N, Real> fplan(newFourierArray, newFourierArray, FFTW_FORWARD, planner_flags);
-        FFTWPlan<N, Real> bplan(newFourierArray, newFourierArray, FFTW_BACKWARD, planner_flags);
-        
-        forward_plan = fplan;
-        backward_plan = bplan;
-        fourierArray.swap(newFourierArray);
-        fourierKernel.swap(newFourierKernel);
-    }
-    
     void init(Shape inOut, Shape kernel,
               unsigned int planner_flags = FFTW_ESTIMATE);
     
@@ -2208,18 +2133,6 @@ public:
     
     void initComplex(Shape inOut, Shape kernel,
                      unsigned int planner_flags = FFTW_ESTIMATE);
-    
-    void initMany(Shape inOut, Shape maxKernel,
-                  unsigned int planner_flags = FFTW_ESTIMATE)
-    {
-        init(inOut, maxKernel, planner_flags);
-    }
-    
-    void initFourierKernelMany(Shape inOut, Shape kernels,
-                               unsigned int planner_flags = FFTW_ESTIMATE)
-    {
-        initFourierKernel(inOut, kernels, planner_flags);
-    }
     
     /** \brief Execute a plan to convolve a real array with a real kernel.
      
@@ -2256,78 +2169,6 @@ public:
     void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in,
                  MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
                  MultiArrayView<N, FFTWComplex<Real>, C3> out);
-    
-    
-    /** \brief Execute a plan to convolve a complex array with a sequence of kernels.
-     
-     The array shapes must be the same as in the corresponding init function
-     or constructor. However, executeMany() can be called several times on
-     the same plan, even with different arrays, as long as they have the appropriate
-     shapes.
-     */
-    template <class C1, class KernelIterator, class OutIterator>
-    void executeMany(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-                     KernelIterator kernels, KernelIterator kernelsEnd,
-                     OutIterator outs);
-    
-    /** \brief Execute a plan to convolve a real array with a sequence of kernels.
-     
-     The array shapes must be the same as in the corresponding init function
-     or constructor. However, executeMany() can be called several times on
-     the same plan, even with different arrays, as long as they have the appropriate
-     shapes.
-     */
-    template <class C1, class KernelIterator, class OutIterator>
-    void executeMany(MultiArrayView<N, Real, C1> in,
-                     KernelIterator kernels, KernelIterator kernelsEnd,
-                     OutIterator outs)
-    {
-        typedef typename std::iterator_traits<KernelIterator>::value_type KernelArray;
-        typedef typename KernelArray::value_type KernelValue;
-        typedef typename IsSameType<KernelValue, Complex>::type UseFourierKernel;
-        typedef typename std::iterator_traits<OutIterator>::value_type OutArray;
-        typedef typename OutArray::value_type OutValue;
-        
-        bool realKernel = IsSameType<KernelValue, Real>::value;
-        bool fourierKernel = IsSameType<KernelValue, Complex>::value;
-        
-        vigra_precondition(realKernel || fourierKernel,
-                           "FFTWCorrelatePlan::executeMany(): kernels have unsuitable value_type.");
-        vigra_precondition((IsSameType<OutValue, Real>::value),
-                           "FFTWCorrelatePlan::executeMany(): outputs have unsuitable value_type.");
-        
-        executeManyImpl(in, kernels, kernelsEnd, outs, UseFourierKernel());
-    }
-    
-private:
-    
-    template <class KernelIterator, class OutIterator>
-    Shape checkShapes(Shape in,
-                      KernelIterator kernels, KernelIterator kernelsEnd,
-                      OutIterator outs);
-    
-    template <class KernelIterator, class OutIterator>
-    Shape checkShapesFourier(Shape in,
-                             KernelIterator kernels, KernelIterator kernelsEnd,
-                             OutIterator outs);
-    
-    template <class KernelIterator, class OutIterator>
-    Shape checkShapesComplex(Shape in,
-                             KernelIterator kernels, KernelIterator kernelsEnd,
-                             OutIterator outs);
-    
-    template <class C1, class KernelIterator, class OutIterator>
-    void
-    executeManyImpl(MultiArrayView<N, Real, C1> in,
-                    KernelIterator kernels, KernelIterator kernelsEnd,
-                    OutIterator outs, VigraFalseType /* useFourierKernel*/);
-    
-    template <class C1, class KernelIterator, class OutIterator>
-    void
-    executeManyImpl(MultiArrayView<N, Real, C1> in,
-                    KernelIterator kernels, KernelIterator kernelsEnd,
-                    OutIterator outs, VigraTrueType /* useFourierKernel*/);
-    
 };
 
 template <unsigned int N, class Real>
@@ -2448,7 +2289,7 @@ FFTWCorrelatePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     detail::fftEmbedKernel(kernel, realKernel);
     forward_plan.execute(realKernel, fourierKernel);
     
-    fourierArray *= conj(fourierKernel);
+    fourierArray *= multi_math::conj(fourierKernel);
     
     backward_plan.execute(fourierArray, realArray);
     
@@ -2485,7 +2326,7 @@ FFTWCorrelatePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     fourierKernel = kernel;
     moveDCToHalfspaceUpperLeft(fourierKernel);
     
-    fourierArray *= conj(fourierKernel);
+    fourierArray *= multi_math::conj(fourierKernel);
     
     backward_plan.execute(fourierArray, realArray);
     
@@ -2524,222 +2365,14 @@ FFTWCorrelatePlan<N, Real>::execute(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     detail::fftEmbedArray(in, fourierArray);
     forward_plan.execute(fourierArray, fourierArray);
     
-    fourierArray *= conj(fourierKernel);
+    fourierArray *= multi_math::conj(fourierKernel);
     
     backward_plan.execute(fourierArray, fourierArray);
     
     out = fourierArray.subarray(left, right);
 }
 
-template <unsigned int N, class Real>
-template <class C1, class KernelIterator, class OutIterator>
-void
-FFTWCorrelatePlan<N, Real>::executeManyImpl(MultiArrayView<N, Real, C1> in,
-                                           KernelIterator kernels, KernelIterator kernelsEnd,
-                                           OutIterator outs, VigraFalseType /*useFourierKernel*/)
-{
-    vigra_precondition(!useFourierKernel,
-                       "FFTWCorrelatePlan::execute(): plan was generated for Fourier kernel, got spatial kernel.");
-    
-    Shape kernelMax = checkShapes(in.shape(), kernels, kernelsEnd, outs),
-    paddedShape = fftwBestPaddedShapeR2C(in.shape() + kernelMax - Shape(1)),
-    diff = paddedShape - in.shape(),
-    left = div(diff, MultiArrayIndex(2)),
-    right = in.shape() + left;
-    
-    vigra_precondition(paddedShape == realArray.shape(),
-                       "FFTWCorrelatePlan::executeMany(): shape mismatch between input and plan.");
-    
-    detail::fftEmbedArray(in, realArray);
-    forward_plan.execute(realArray, fourierArray);
-    
-    for(; kernels != kernelsEnd; ++kernels, ++outs)
-    {
-        detail::fftEmbedKernel(*kernels, realKernel);
-        forward_plan.execute(realKernel, fourierKernel);
-        
-        fourierKernel *= conj(fourierArray);
-        
-        backward_plan.execute(fourierKernel, realKernel);
-        
-        *outs = realKernel.subarray(left, right);
-    }
-}
-
-template <unsigned int N, class Real>
-template <class C1, class KernelIterator, class OutIterator>
-void
-FFTWCorrelatePlan<N, Real>::executeManyImpl(MultiArrayView<N, Real, C1> in,
-                                           KernelIterator kernels, KernelIterator kernelsEnd,
-                                           OutIterator outs, VigraTrueType /*useFourierKernel*/)
-{
-    vigra_precondition(useFourierKernel,
-                       "FFTWCorrelatePlan::execute(): plan was generated for spatial kernel, got Fourier kernel.");
-    
-    Shape complexShape = checkShapesFourier(in.shape(), kernels, kernelsEnd, outs),
-    paddedShape = fftwCorrespondingShapeC2R(complexShape, odd(in.shape(0))),
-    diff = paddedShape - in.shape(),
-    left = div(diff, MultiArrayIndex(2)),
-    right = in.shape() + left;
-    
-    vigra_precondition(complexShape == fourierArray.shape(),
-                       "FFTWCorrelatePlan::executeFourierKernelMany(): shape mismatch between kernels and plan.");
-    
-    vigra_precondition(paddedShape == realArray.shape(),
-                       "FFTWCorrelatePlan::executeFourierKernelMany(): shape mismatch between input and plan.");
-    
-    detail::fftEmbedArray(in, realArray);
-    forward_plan.execute(realArray, fourierArray);
-    
-    for(; kernels != kernelsEnd; ++kernels, ++outs)
-    {
-        fourierKernel = *kernels;
-        moveDCToHalfspaceUpperLeft(fourierKernel);
-        fourierKernel *= conj(fourierArray);
-        
-        backward_plan.execute(fourierKernel, realKernel);
-        
-        *outs = realKernel.subarray(left, right);
-    }
-}
-
-template <unsigned int N, class Real>
-template <class C1, class KernelIterator, class OutIterator>
-void
-FFTWCorrelatePlan<N, Real>::executeMany(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-                                       KernelIterator kernels, KernelIterator kernelsEnd,
-                                       OutIterator outs)
-{
-    typedef typename std::iterator_traits<KernelIterator>::value_type KernelArray;
-    typedef typename KernelArray::value_type KernelValue;
-    typedef typename std::iterator_traits<OutIterator>::value_type OutArray;
-    typedef typename OutArray::value_type OutValue;
-    
-    vigra_precondition((IsSameType<KernelValue, Complex>::value),
-                       "FFTWCorrelatePlan::executeMany(): kernels have unsuitable value_type.");
-    vigra_precondition((IsSameType<OutValue, Complex>::value),
-                       "FFTWCorrelatePlan::executeMany(): outputs have unsuitable value_type.");
-    
-    Shape paddedShape = checkShapesComplex(in.shape(), kernels, kernelsEnd, outs),
-    diff = paddedShape - in.shape(),
-    left = div(diff, MultiArrayIndex(2)),
-    right = in.shape() + left;
-    
-    detail::fftEmbedArray(in, fourierArray);
-    forward_plan.execute(fourierArray, fourierArray);
-    
-    for(; kernels != kernelsEnd; ++kernels, ++outs)
-    {
-        if(useFourierKernel)
-        {
-            fourierKernel = *kernels;
-            moveDCToUpperLeft(fourierKernel);
-        }
-        else
-        {
-            detail::fftEmbedKernel(*kernels, fourierKernel);
-            forward_plan.execute(fourierKernel, fourierKernel);
-        }
-        
-        fourierKernel *= conj(fourierArray);
-        
-        backward_plan.execute(fourierKernel, fourierKernel);
-        
-        *outs = fourierKernel.subarray(left, right);
-    }
-}
-
 #endif // DOXYGEN
-
-template <unsigned int N, class Real>
-template <class KernelIterator, class OutIterator>
-typename FFTWCorrelatePlan<N, Real>::Shape
-FFTWCorrelatePlan<N, Real>::checkShapes(Shape in,
-                                       KernelIterator kernels, KernelIterator kernelsEnd,
-                                       OutIterator outs)
-{
-    vigra_precondition(kernels != kernelsEnd,
-                       "FFTWCorrelatePlan::checkShapes(): empty kernel sequence.");
-    
-    Shape kernelMax;
-    for(; kernels != kernelsEnd; ++kernels, ++outs)
-    {
-        vigra_precondition(in == outs->shape(),
-                           "FFTWCorrelatePlan::checkShapes(): shape mismatch between input and (one) output.");
-        kernelMax = max(kernelMax, kernels->shape());
-    }
-    vigra_precondition(prod(kernelMax) > 0,
-                       "FFTWCorrelatePlan::checkShapes(): all kernels have size 0.");
-    return kernelMax;
-}
-
-template <unsigned int N, class Real>
-template <class KernelIterator, class OutIterator>
-typename FFTWCorrelatePlan<N, Real>::Shape 
-FFTWCorrelatePlan<N, Real>::checkShapesFourier(Shape in, 
-                                              KernelIterator kernels, KernelIterator kernelsEnd,
-                                              OutIterator outs)
-{
-    vigra_precondition(kernels != kernelsEnd,
-                       "FFTWCorrelatePlan::checkShapesFourier(): empty kernel sequence.");
-    
-    Shape complexShape = kernels->shape(),
-    paddedShape  = fftwCorrespondingShapeC2R(complexShape);
-    
-    for(unsigned int k=0; k<N; ++k)
-        vigra_precondition(in[k] <= paddedShape[k],
-                           "FFTWCorrelatePlan::checkShapesFourier(): kernels too small for given input.");
-    
-    for(; kernels != kernelsEnd; ++kernels, ++outs)
-    {
-        vigra_precondition(in == outs->shape(),
-                           "FFTWCorrelatePlan::checkShapesFourier(): shape mismatch between input and (one) output.");
-        vigra_precondition(complexShape == kernels->shape(),
-                           "FFTWCorrelatePlan::checkShapesFourier(): all kernels must have the same size.");
-    }
-    return complexShape;
-}
-
-template <unsigned int N, class Real>
-template <class KernelIterator, class OutIterator>
-typename FFTWCorrelatePlan<N, Real>::Shape 
-FFTWCorrelatePlan<N, Real>::checkShapesComplex(Shape in, 
-                                              KernelIterator kernels, KernelIterator kernelsEnd,
-                                              OutIterator outs)
-{
-    vigra_precondition(kernels != kernelsEnd,
-                       "FFTWCorrelatePlan::checkShapesComplex(): empty kernel sequence.");
-    
-    Shape kernelShape = kernels->shape();            
-    for(; kernels != kernelsEnd; ++kernels, ++outs)
-    {
-        vigra_precondition(in == outs->shape(),
-                           "FFTWCorrelatePlan::checkShapesComplex(): shape mismatch between input and (one) output.");
-        if(useFourierKernel)
-        {
-            vigra_precondition(kernelShape == kernels->shape(),
-                               "FFTWCorrelatePlan::checkShapesComplex(): Fourier domain kernels must have identical size.");
-        }
-        else
-        {
-            kernelShape = max(kernelShape, kernels->shape());
-        }
-    }
-    vigra_precondition(prod(kernelShape) > 0,
-                       "FFTWCorrelatePlan::checkShapesComplex(): all kernels have size 0.");
-    
-    if(useFourierKernel)
-    {
-        for(unsigned int k=0; k<N; ++k)
-            vigra_precondition(in[k] <= kernelShape[k],
-                               "FFTWCorrelatePlan::checkShapesComplex(): kernels too small for given input.");
-        return kernelShape;
-    }
-    else
-    {
-        return fftwBestPaddedShape(in + kernelShape - Shape(1));
-    }
-}
 
 /********************************************************/
 /*                                                      */

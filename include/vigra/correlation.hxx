@@ -11,7 +11,8 @@
 #include "stdimage.hxx"
 #include "inspectimage.hxx"
 #include "functorexpression.hxx"
-#include "fftw3.hxx"
+#include "multi_math.hxx"
+#include "multi_fft.hxx"
 
 // "slow" correlation algorithms are performed using the windowing filter env.
 #include "applywindowfunction.hxx"
@@ -19,28 +20,105 @@
 
 namespace vigra
 {
-
-namespace detail
-{
-
-struct FourierCorrelationFunctor
-{
-    FourierCorrelationFunctor(double normalization = 1.0)
-    : normalization_factor(normalization)
+    namespace detail
     {
-    }
-    template<class T>
-    FFTWComplex<T> operator()(FFTWComplex<T> const& u, FFTWComplex<T> const& v) const
-    {
-        return u*conj(v)/ normalization_factor;
+        template <class T, class S>
+        inline void setZeroBorders(MultiArrayView<2, T, S> arr, unsigned int c_w, unsigned int c_h)
+        {
+            unsigned int a_w = arr.width(),
+                         a_h = arr.height();
+            
+            //Upper
+            arr.subarray(Shape2(0,0),Shape2(a_w,c_h)) = vigra::NumericTraits<T>::zero();
+            //Lower
+            arr.subarray(Shape2(0,a_h-c_h),Shape2(a_w, a_h)) = vigra::NumericTraits<T>::zero();
+            //Middle left
+            arr.subarray(Shape2(0,c_h),Shape2(c_w, a_h-c_h)) = vigra::NumericTraits<T>::zero();
+            //Middle right
+            arr.subarray(Shape2(a_w-c_w,c_h),Shape2(a_w, a_h-c_h)) = vigra::NumericTraits<T>::zero();
+        }
     }
     
-    double normalization_factor;
-};
-
-} //End of namespace detail
-  
-
+    
+    /********************************************************/
+    /*                                                      */
+    /*    Fast cross correlation of an image w.r.t a mask   */
+    /*                                                      */
+    /********************************************************/
+    /**
+     This function performes a fast cross-correlation using the Fast Fourier Transform and
+     the dependency of the convolution and the correlation in Fourier space.
+     */
+    
+    /** \brief This function performes a fast cross-correlation
+     
+     This function performes a fast cross-correlation using the Fast Fourier Transform and
+     the dependency of the convolution and the correlation in Fourier space.
+     
+     The input pixel type <tt>T1</tt> must be a \ref LinearSpace "linear space" over
+     the window functions' value_type <tt>T</tt>, i.e. addition of source values, multiplication with functions' values,
+     and NumericTraits must be defined. The mask's value_type must be an \ref AlgebraicField "algebraic field",
+     i.e. the arithmetic operations (+, -, *, /) and NumericTraits must be defined.
+     
+     By default, the borders are filled with zeros. Use the clearBorders switch to change that behavior if you need to.
+     
+     <b> Declarations:</b>
+     
+     pass 2D array views:
+     \code
+     namespace vigra {
+       template <class T1, class S1,
+                class T2, class S2,
+                class T3, class S3>
+       void
+       fastCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
+                            MultiArrayView<2, T2, S2> const & mask,
+                            MultiArrayView<2, T3, S3> out,
+                            bool clearBorders=true);
+     
+     }
+     \endcode
+     
+     
+     <b> Usage:</b>
+     
+     <b>\#include</b> \<vigra/correlation.hxx\><br/>
+     Namespace: vigra
+     
+     \code
+     unsigned int m_w=51, m_h=51;
+     unsigned int w=1000, h=1000;
+     MultiArray<2, float> mask(m_w,m_h), src(w,h), dest(w,h);
+     ...
+     
+     //compute fast cross correlation of mask and image -> dest
+     fastCrossCorrelation(mask, src, dest);
+     \endcode
+     
+     <b> Preconditions:</b>
+     
+     The image must be larger than the size of the mask.
+     */
+    
+    doxygen_overloaded_function(template <...> void fastCrossCorrelation)
+    template <class T1, class S1,
+    class T2, class S2,
+    class T3, class S3>
+    inline void fastCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
+                                     MultiArrayView<2, T2, S2> const & mask,
+                                     MultiArrayView<2, T3, S3> out,
+                                     bool clearBorders=true)
+    {
+        vigra_precondition(in.shape() == out.shape(),
+                           "vigra::fastCrossCorrelation(): shape mismatch between input and output.");
+        correlateFFT(in, mask, out);
+        
+        if(clearBorders)
+            detail::setZeroBorders(out, mask.width()/2,mask.height()/2);
+            
+    }
+    
+    
 
 /********************************************************/
 /*                                                      */
@@ -66,6 +144,8 @@ struct FourierCorrelationFunctor
     and NumericTraits must be defined. The mask's value_type must be an \ref AlgebraicField "algebraic field",
     i.e. the arithmetic operations (+, -, *, /) and NumericTraits must be defined. 
     
+    By default, the borders are filled with zeros. Use the clearBorders switch to change that behavior if you need to.
+ 
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -75,38 +155,14 @@ struct FourierCorrelationFunctor
                   class T2, class S2,
                   class T3, class S3>
         void
-        fastNormalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & mask,
-                                       MultiArrayView<2, T2, S2> const & src,
-                                       MultiArrayView<2, T3, S3> dest);
+        fastNormalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
+                                       MultiArrayView<2, T2, S2> const & mask,
+                                       MultiArrayView<2, T3, S3> out,
+                                       bool clearBorders=true);
 
     }
     \endcode
 
-    \deprecatedAPI{fastNormalizedCrossCorrelation}
-    pass \ref ImageIterators and \ref DataAccessors :
-    \code
-    namespace vigra {
-        template <class MaskIterator, class MaskAccessor,
-                  class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void fastNormalizedCrossCorrelation(MaskIterator m_ul, MaskIterator m_lr, MaskAccessor m_acc,
-                                            SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,  
-                                            DestIterator d_ul, DestAccessor d_acc);
-    }
-    \endcode
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class MaskIterator, class MaskAccessor,
-                  class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void
-        fastNormalizedCrossCorrelation(triple<MaskIterator, MaskIterator, MaskAccessor> mask,
-                                       triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                       pair<DestIterator, DestAccessor> dest);
-    }
-    \endcode
-    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -128,361 +184,102 @@ struct FourierCorrelationFunctor
     The image must be larger than the size of the mask.
 */
 
-doxygen_overloaded_function(template <...> void fastNormalizedCrossCorrelation)
-
-template <class MaskIterator, class MaskAccessor,
-          class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void fastNormalizedCrossCorrelation(MaskIterator m_ul, MaskIterator m_lr, MaskAccessor m_acc,
-                                    SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,  
-                                    DestIterator d_ul, DestAccessor d_acc)
+template <class T1, class S1,
+          class T2, class S2, 
+          class T3, class S3>
+inline void fastNormalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
+                                           MultiArrayView<2, T2, S2> const & mask,
+                                           MultiArrayView<2, T3, S3> out,
+                                           bool clearBorders=true)
 {
     
-    using namespace vigra;
+    using namespace vigra::multi_math;
     
-    typedef typename MaskIterator::difference_type MaskDiffType;
-    typedef typename SrcIterator::difference_type  SrcDiffType;
-    typedef typename DestIterator::difference_type DestDiffType;
-    
-    MaskDiffType    mask_shape  = m_lr - m_ul;
-    SrcDiffType     image_shape = s_lr - s_ul;
-    
-    const int   s_w = image_shape.x,    //Image dimensions
-                s_h = image_shape.y,    //--
-    
-                m_w = mask_shape.x,     //Mask dimensions
-                m_h = mask_shape.y,     //--
-                m_total = m_w*m_h,
-    
-                padded_w = s_w+m_w,     //Padded dimensions
-                padded_h = s_h+m_h,     //--
-                padded_total = padded_w*padded_h;
+    vigra_precondition(in.shape() == out.shape(),
+                        "vigra::fastNormalizedCrossCorrelation(): shape mismatch between input and output.");
+
+    unsigned int m_w = mask.width(),
+                 m_h = mask.height(),
+                 m_total = m_w*m_h,
+                 i_w = in.width(),
+                 i_h = in.height();
     
     vigra_precondition( m_w % 2 == 1 , "vigra::fastNormalizedCrossCorrelation(): Mask width has to be of odd size!");
     vigra_precondition( m_h % 2 == 1 , "vigra::fastNormalizedCrossCorrelation(): Mask height has to be of odd size!");
     
-    vigra_precondition( m_w <= s_w && m_h <= s_h , "vigra::fastNormalizedCrossCorrelation(): Mask is larger than image!");
+    vigra_precondition( m_w <= i_w && m_h <= i_h , "vigra::fastNormalizedCrossCorrelation(): Mask is larger than image!");
     
-    //find mask mean
-    FindAverage<double> average;   
-    inspectImage(srcIterRange(m_ul, m_lr, m_acc), average);
-    
-    //find mask sum and mask^2 sum
+    //find mask sum and mask^2 sum and mask average
     double  mask_sum  = 0.0,
-    mask_sum2 = 0.0;    
+            mask_sum2 = 0.0,
+            mask_avg  = 0.0;
     
-    MaskIterator ym = m_ul;
-    MaskIterator xm = ym;
-    
-    for( ; ym.y != m_lr.y; ym.y++)
-    {   
-        for(xm = ym; xm.x != m_lr.x; xm.x++)
+    for(unsigned int y=0; y<m_h ;++y)
+    {
+        for(unsigned int x=0; x<m_w ;++x)
         {
-            mask_sum  += m_acc(xm);
-            mask_sum2 += m_acc(xm) * m_acc(xm);
+            //cache current value
+            mask_avg = mask(x,y);
+            
+            mask_sum  += mask_avg;
+            mask_sum2 += mask_avg*mask_avg;
         }
-    }       
+    }
+    
+    mask_avg = mask_sum/(m_total);
     
     //calculate the fix part of the denumerator
     double fix_denumerator = sqrt(m_total*mask_sum2 - mask_sum*mask_sum);
     
-    if (fix_denumerator == 0)
+    if(fix_denumerator == 0)
     {
-        //set correlation result d to zeros only...
-        DestIterator yd = d_ul;
-        DestIterator xd = yd;
-        DestIterator d_lr = d_ul + image_shape;
-        
-        for( ; yd.y != d_lr.y; yd.y++)
-        {   
-            for(xd = yd; xd.x != d_lr.x; xd.x++)
-            {
-                d_acc.set(0.0, xd);
-            }
-        }   
+        out = 0;
     }
     else
     {
-        //padding images to enable border cases
-        FImage   padded_mask(padded_w, padded_h),
-                 padded_image(padded_w, padded_h);
+        //pre-normalize the mask
+        MultiArray<2, T2> norm_mask(m_w,m_h);
+        norm_mask = mask - mask_avg;
         
-        
-        //fill padded mask  
-        transformImage(srcIterRange(m_ul, m_lr, m_acc), destImage(padded_mask), functor::Arg1() - functor::Param(average()));
-        
-        //fill padded image
-        copyImage(srcIterRange(s_ul, s_lr, s_acc), destImage(padded_image));
-        
-        
-        //calculate (unnormalized) numerator:
-        
-        //create fourier images
-        FFTWComplexImage fourier_image(padded_w,padded_h),
-        fourier_mask(padded_w,padded_h);
-        //transform both
-        fourierTransform(srcImageRange(padded_image), destImage(fourier_image));
-        fourierTransform(srcImageRange(padded_mask), destImage(fourier_mask));
-        
-        detail::FourierCorrelationFunctor corr(padded_total);
-        
-        //do the correlation in frequency space
-        combineTwoImages(srcImageRange(fourier_image), srcImage(fourier_mask), 
-                         destImage(fourier_image), 
-                         corr);
-        
-        //and go back to normal space
-        fourierTransformInverse(srcImageRange(fourier_image), destImage(fourier_mask));
-        
+        //calculate (semi-normalized) numerator:
+        MultiArray<2, T3> corr_result(i_w,i_h);
+        fastCrossCorrelation(in, norm_mask, corr_result,clearBorders);
         
         //Create fast sum tables for the variable denumerator
-        DImage sum_table(padded_w,padded_h),
-               sum_table2(padded_w,padded_h);
-        for(int u=0; u<padded_w-1; u++)
+        MultiArray<2, double> sum_table(i_w+1,i_h+1),
+                              sum_table2(i_w+1,i_h+1);
+        
+        for(int v=0; v<i_h; v++)
         {
-            for(int v=0; v<padded_h-1; v++)
+            for(int u=0; u<i_w; u++)
             {
-                sum_table( u+1,v+1)  = padded_image(u,v)                   + sum_table(u,v+1)  + sum_table(u+1,v)   - sum_table(u,v);
-                sum_table2(u+1,v+1)  = padded_image(u,v)*padded_image(u,v) + sum_table2(u,v+1) + sum_table2(u+1,v)  - sum_table2(u,v);
+                sum_table( u+1,v+1)  = in(u,v)         +  sum_table(u,v+1)  + sum_table(u+1,v)  -  sum_table(u,v);
+                sum_table2(u+1,v+1)  = in(u,v)*in(u,v) + sum_table2(u,v+1) + sum_table2(u+1,v)  - sum_table2(u,v);
             }
         }
-        
         //calculate the result, use the sum tables for the denumerators
-        for(int v=0; v<=s_h-m_h; v++)
+        for(int v=m_h/2; v<i_h-m_h/2; v++)
         {
-            for(int u=0; u<=s_w-m_w; u++)
+            for(int u=m_w/2; u<i_w-m_w/2; u++)
             {
                 //calculate e(window) and e(window^2)
-                double e_uv   = sum_table( u+m_w, v+m_h) - sum_table( u, v+m_h) - sum_table( u+m_w, v)  + sum_table( u,v),
-                       e_uv_2 = sum_table2(u+m_w, v+m_h) - sum_table2(u, v+m_h) - sum_table2(u+m_w, v)  + sum_table2(u,v),
+                double e_uv   = sum_table( u+m_w/2+1, v+m_h/2+1) - sum_table( u-m_w/2, v+m_h/2+1) - sum_table( u+m_w/2+1, v-m_h/2)  + sum_table( u-m_w/2,v-m_h/2),
+                       e_uv_2 = sum_table2(u+m_w/2+1, v+m_h/2+1) - sum_table2(u-m_w/2, v+m_h/2+1) - sum_table2(u+m_w/2+1, v-m_h/2)  + sum_table2(u-m_w/2,v-m_h/2),
                        var_denumerator = sqrt(m_total*e_uv_2 - e_uv*e_uv);
                 
                 //calclate overall result
                 if(var_denumerator == 0)
                 {
-                    d_acc.set(0.0, d_ul + DestDiffType(u+m_w/2,v+m_h/2));
+                    out(u,v) = 0;
                 }
                 else
-                {           
-                    d_acc.set( m_total*(fourier_mask(u,v)).re()/(var_denumerator*fix_denumerator),
-                              d_ul + DestDiffType(u+m_w/2,v+m_h/2));
+                {
+                    out(u,v) = m_total*corr_result(u,v)/(var_denumerator*fix_denumerator);
                 }
             }
         }
     }
 }
-
-template <class MaskIterator, class MaskAccessor,
-          class SrcIterator, class SrcAccessor, 
-          class DestIterator, class DestAccessor>
-inline void fastNormalizedCrossCorrelation(triple<MaskIterator, MaskIterator, MaskAccessor> mask,
-                                           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                           std::pair<DestIterator, DestAccessor> dest)
-{
-    fastNormalizedCrossCorrelation(mask.first, mask.second, mask.third, 
-                                   src.first, src.second, src.third, 
-                                   dest.first, dest.second);
-}
-
-template <class T1, class S1,
-          class T2, class S2, 
-          class T3, class S3>
-inline void fastNormalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & mask,
-                                           MultiArrayView<2, T2, S2> const & src,
-                                           MultiArrayView<2, T3, S3> dest)
-{   
-vigra_precondition(src.shape() == dest.shape(),
-                        "vigra::fastNormalizedCrossCorrelation(): shape mismatch between input and output.");
-    fastNormalizedCrossCorrelation(srcImageRange(mask), 
-                                   srcImageRange(src), 
-                                   destImage(dest));
-}
-
-
-
-/********************************************************/
-/*                                                      */
-/*        Fast cross correlation of mask to image       */
-/*                                                      */
-/********************************************************/
-/**
-    This function performes a fast cross-correlation using the Fast Fourier Transform and
-    the dependency of the convolution and the correlation in Fourier space.
- */
- 
-/** \brief This function performes a fast cross-correlation
-
-    This function performes a fast cross-correlation using the Fast Fourier Transform and
-    the dependency of the convolution and the correlation in Fourier space.
-
-    The input pixel type <tt>T1</tt> must be a \ref LinearSpace "linear space" over 
-    the window functions' value_type <tt>T</tt>, i.e. addition of source values, multiplication with functions' values,
-    and NumericTraits must be defined. The mask's value_type must be an \ref AlgebraicField "algebraic field",
-    i.e. the arithmetic operations (+, -, *, /) and NumericTraits must be defined. 
-    
-    <b> Declarations:</b>
-
-    pass 2D array views:
-    \code
-    namespace vigra {
-        template <class T1, class S1,
-                  class T2, class S2,
-                  class T3, class S3>
-        void
-        fastCrossCorrelation(MultiArrayView<2, T1, S1> const & mask,
-                             MultiArrayView<2, T2, S2> const & src,
-                             MultiArrayView<2, T3, S3> dest);
-
-    }
-    \endcode
-
-    \deprecatedAPI{fastCrossCorrelation}
-    pass \ref ImageIterators and \ref DataAccessors :
-    \code
-    namespace vigra {
-        template <class MaskIterator, class MaskAccessor,
-                  class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void fastCrossCorrelation(MaskIterator m_ul, MaskIterator m_lr, MaskAccessor m_acc,
-                                  SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,  
-                                  DestIterator d_ul, DestAccessor d_acc);
-    }
-    \endcode
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class MaskIterator, class MaskAccessor,
-                  class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void
-        fastCrossCorrelation(triple<MaskIterator, MaskIterator, MaskAccessor> mask,
-                             triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                             pair<DestIterator, DestAccessor> dest);
-    }
-    \endcode
-    \deprecatedEnd
-
-    <b> Usage:</b>
-
-    <b>\#include</b> \<vigra/correlation.hxx\><br/>
-    Namespace: vigra
-
-    \code
-    unsigned int m_w=51, m_h=51;
-    unsigned int w=1000, h=1000;
-    MultiArray<2, float> mask(m_w,m_h), src(w,h), dest(w,h);
-    ...
-    
-    //compute fast cross correlation of mask and image -> dest
-    fastCrossCorrelation(mask, src, dest);
-    \endcode
-    
-    <b> Preconditions:</b>
-
-    The image must be larger than the size of the mask.
-*/
-
-doxygen_overloaded_function(template <...> void fastCrossCorrelation)
-template <class MaskIterator, class MaskAccessor,
-          class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void fastCrossCorrelation(MaskIterator m_ul, MaskIterator m_lr, MaskAccessor m_acc,
-                          SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,  
-                          DestIterator d_ul, DestAccessor d_acc)
-{
-    
-    using namespace vigra;
-    
-    typedef typename MaskIterator::difference_type MaskDiffType;
-    typedef typename SrcIterator::difference_type  SrcDiffType;
-    typedef typename DestIterator::difference_type DestDiffType;
-    
-    MaskDiffType    mask_shape  = m_lr - m_ul;
-    SrcDiffType     image_shape = s_lr - s_ul;
-    
-    const int   s_w = image_shape.x,    //Image dimensions
-                s_h = image_shape.y,    //--
-    
-                m_w = mask_shape.x,     //Mask dimensions
-                m_h = mask_shape.y,     //--
-                m_total = m_w*m_h,
-    
-                padded_w = s_w+m_w,     //Padded dimensions
-                padded_h = s_h+m_h,     //--
-                padded_total = padded_w*padded_h;
-    
-    vigra_precondition( m_w % 2 == 1 , "vigra::fastCrossCorrelation(): Mask width has to be of odd size!");
-    vigra_precondition( m_h % 2 == 1 , "vigra::fastCrossCorrelation(): Mask height has to be of odd size!");
-    
-    vigra_precondition( m_w <= s_w && m_h <= s_h , "vigra::fastCrossCorrelation(): Mask is larger than image!");
-    
-    //padding images to enable border cases
-    FImage   padded_mask(padded_w, padded_h),
-             padded_image(padded_w, padded_h);
-  
-    
-    //fill padded mask  
-    copyImage(srcIterRange(m_ul, m_lr, m_acc), destImage(padded_mask));
-    
-    //fill padded image
-    copyImage(srcIterRange(s_ul, s_lr, s_acc), destImage(padded_image));
-    
-    
-    //create fourier images
-    FFTWComplexImage fourier_image(padded_w,padded_h),
-    fourier_mask(padded_w,padded_h);
-    
-    //transform both
-    fourierTransform(srcImageRange(padded_image), destImage(fourier_image));
-    fourierTransform(srcImageRange(padded_mask), destImage(fourier_mask));
-    
-    detail::FourierCorrelationFunctor corr(padded_total);
-    
-    //do the correlation in frequency space
-    combineTwoImages(srcImageRange(fourier_image), srcImage(fourier_mask), 
-                     destImage(fourier_image), 
-                     corr);
-    
-    //and go back to normal space
-    fourierTransformInverse(srcImageRange(fourier_image), destImage(fourier_mask));
-    
-    //calculate the result, use the sum tables for the denumerators
-    for(int v=0; v<=s_h-m_h; v++)
-    {
-        for(int u=0; u<=s_w-m_w; u++)
-        {
-            d_acc.set( (fourier_mask(u,v)).re(), d_ul + DestDiffType(u+m_w/2,v+m_h/2));
-        }
-    }
-}
-
-template <class MaskIterator, class MaskAccessor,
-          class SrcIterator, class SrcAccessor, 
-          class DestIterator, class DestAccessor>
-inline void fastCrossCorrelation(triple<MaskIterator, MaskIterator, MaskAccessor> mask,
-                                 triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                 std::pair<DestIterator, DestAccessor> dest)
-{
-    fastCrossCorrelation(mask.first, mask.second, mask.third, 
-                         src.first, src.second, src.third, 
-                         dest.first, dest.second);
-}
-
-template <class T1, class S1,
-          class T2, class S2, 
-          class T3, class S3>
-inline void fastCrossCorrelation(MultiArrayView<2, T1, S1> const & mask,
-                                 MultiArrayView<2, T2, S2> const & src,
-                                 MultiArrayView<2, T3, S3> dest)
-{   
-    vigra_precondition(src.shape() == dest.shape(),
-                        "vigra::fastCrossCorrelation(): shape mismatch between input and output.");
-    fastCrossCorrelation(srcImageRange(mask), 
-                         srcImageRange(src), 
-                         destImage(dest));
-}
-
-
 
 /********************************************************/
 /*                                                      */
@@ -515,9 +312,9 @@ inline void fastCrossCorrelation(MultiArrayView<2, T1, S1> const & mask,
                   class T2, class S2,
                   class T3, class S3>
         void
-        crossCorrelation(MultiArrayView<2, T1, S1> const & mask,
-                         MultiArrayView<2, T2, S2> const & src,
-                         MultiArrayView<2, T3, S3> dest);
+        crossCorrelation(MultiArrayView<2, T1, S1> const & in,
+                         MultiArrayView<2, T2, S2> const & mask,
+                         MultiArrayView<2, T3, S3> out);
 
     }
     \endcode
@@ -526,23 +323,23 @@ inline void fastCrossCorrelation(MultiArrayView<2, T1, S1> const & mask,
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
-        template <class MaskIterator, class MaskAccessor,
-                  class SrcIterator, class SrcAccessor,
+        template <class SrcIterator, class SrcAccessor,
+                  class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
-        void crossCorrelation(MaskIterator m_ul, MaskIterator m_lr, MaskAccessor m_acc,
-                              SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,  
+        void crossCorrelation(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
+                              MaskIterator m_ul, MaskIterator m_lr, MaskAccessor m_acc,
                               DestIterator d_ul, DestAccessor d_acc);
     }
     \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
-        template <class MaskIterator, class MaskAccessor,
-                  class SrcIterator, class SrcAccessor,
+        template <class SrcIterator, class SrcAccessor,
+                  class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
         void
-        crossCorrelation(triple<MaskIterator, MaskIterator, MaskAccessor> mask,
-                         triple<SrcIterator, SrcIterator, SrcAccessor> src,
+        crossCorrelation(triple<MaskIterator, MaskIterator, MaskAccessor> src,
+                         triple<SrcIterator, SrcIterator, SrcAccessor> mask,
                          pair<DestIterator, DestAccessor> dest);
     }
     \endcode
@@ -627,11 +424,11 @@ private:
 };
 
 
-template <class MaskIterator, class MaskAccessor, 
-          class SrcIterator, class SrcAccessor, 
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
-inline void crossCorrelation(MaskIterator m_ul,  MaskIterator m_lr,   MaskAccessor m_acc,
-                             SrcIterator s_ul,  SrcIterator s_lr,   SrcAccessor s_acc,
+inline void crossCorrelation(SrcIterator s_ul,  SrcIterator s_lr,   SrcAccessor s_acc,
+                             MaskIterator m_ul,  MaskIterator m_lr,   MaskAccessor m_acc,
                              DestIterator d_ul, DestAccessor d_acc,
                              BorderTreatmentMode border = BORDER_TREATMENT_AVOID)
 {
@@ -639,32 +436,32 @@ inline void crossCorrelation(MaskIterator m_ul,  MaskIterator m_lr,   MaskAccess
     applyWindowFunction(s_ul, s_lr, s_acc, d_ul, d_acc, func, border);
 }
 
-template <class MaskIterator, class MaskAccessor, 
-          class SrcIterator, class SrcAccessor, 
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
-inline void crossCorrelation(triple<MaskIterator, MaskIterator, MaskAccessor> m,
-                             triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                             pair<DestIterator, DestAccessor> d, 
+inline void crossCorrelation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                             triple<MaskIterator, MaskIterator, MaskAccessor> mask,
+                             pair<DestIterator, DestAccessor> dest,
                              BorderTreatmentMode border = BORDER_TREATMENT_AVOID)
 {
-    crossCorrelation(m.first, m.second, m.third,
-                     s.first, s.second, s.third,
-                     d.first, d.second, 
+    crossCorrelation(src.first, src.second, src.third,
+                     mask.first, mask.second, mask.third,
+                     dest.first, dest.second,
                      border);
 }
 
 template <class T1, class S1,
           class T2, class S2, 
           class T3, class S3>
-inline void crossCorrelation(MultiArrayView<2, T1, S1> const & mask,
-                             MultiArrayView<2, T2, S2> const & src,
-                             MultiArrayView<2, T3, S3> dest)
+inline void crossCorrelation(MultiArrayView<2, T1, S1> const & in,
+                             MultiArrayView<2, T2, S2> const & mask,
+                             MultiArrayView<2, T3, S3> out)
 {   
-    vigra_precondition(src.shape() == dest.shape(),
+    vigra_precondition(in.shape() == out.shape(),
                         "vigra::crossCorrelation(): shape mismatch between input and output.");
-    crossCorrelation(srcImageRange(mask), 
-                     srcImageRange(src), 
-                     destImage(dest));
+    crossCorrelation(srcImageRange(in),
+                     srcImageRange(mask),
+                     destImage(out));
 }
 
 
@@ -701,9 +498,9 @@ inline void crossCorrelation(MultiArrayView<2, T1, S1> const & mask,
                   class T2, class S2,
                   class T3, class S3>
         void
-        normalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & mask,
-                                   MultiArrayView<2, T2, S2> const & src,
-                                   MultiArrayView<2, T3, S3> dest);
+        normalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
+                                   MultiArrayView<2, T2, S2> const & mask,
+                                   MultiArrayView<2, T3, S3> out);
 
     }
     \endcode
@@ -712,23 +509,23 @@ inline void crossCorrelation(MultiArrayView<2, T1, S1> const & mask,
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
-        template <class MaskIterator, class MaskAccessor,
-                  class SrcIterator, class SrcAccessor,
+        template <class SrcIterator, class SrcAccessor,
+                  class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
-        void normalizedCrossCorrelation(MaskIterator m_ul, MaskIterator m_lr, MaskAccessor m_acc,
-                                        SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,  
+        void normalizedCrossCorrelation(SrcIterator s_ul, SrcIterator s_lr, SrcAccessor s_acc,
+                                        MaskIterator m_ul, MaskIterator m_lr, MaskAccessor m_acc,
                                         DestIterator d_ul, DestAccessor d_acc);
     }
     \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
-        template <class MaskIterator, class MaskAccessor,
-                  class SrcIterator, class SrcAccessor,
+        template <class SrcIterator, class SrcAccessor,
+                  class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
         void
-        normalizedCrossCorrelation(triple<MaskIterator, MaskIterator, MaskAccessor> mask,
-                                   triple<SrcIterator, SrcIterator, SrcAccessor> src,
+        normalizedCrossCorrelation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                   triple<MaskIterator, MaskIterator, MaskAccessor> mask,
                                    pair<DestIterator, DestAccessor> dest);
     }
     \endcode
@@ -768,10 +565,10 @@ public:
         init_s11();
     }
     
-    NormalizedCorrelationFunctor(triple<MaskIterator,MaskIterator,MaskAccessor> m)
-    : m_mask_ul(m.first),
-      m_mask_lr(m.second),
-      m_mask_acc(m.third),
+    NormalizedCorrelationFunctor(triple<MaskIterator,MaskIterator,MaskAccessor> mask)
+    : m_mask_ul(mask.first),
+      m_mask_lr(mask.second),
+      m_mask_acc(mask.third),
       m_s11(0.0),
       m_avg1(0.0)
     {
@@ -860,11 +657,11 @@ private:
 };
 
 
-template <class MaskIterator, class MaskAccessor, 
-          class SrcIterator, class SrcAccessor, 
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
-inline void normalizedCrossCorrelation(MaskIterator m_ul,  MaskIterator m_lr,   MaskAccessor m_acc,
-                                       SrcIterator s_ul,  SrcIterator s_lr,   SrcAccessor s_acc,
+inline void normalizedCrossCorrelation(SrcIterator s_ul,  SrcIterator s_lr,   SrcAccessor s_acc,
+                                       MaskIterator m_ul,  MaskIterator m_lr,   MaskAccessor m_acc,
                                        DestIterator d_ul, DestAccessor d_acc,
                                        BorderTreatmentMode border = BORDER_TREATMENT_AVOID)
 {
@@ -872,32 +669,32 @@ inline void normalizedCrossCorrelation(MaskIterator m_ul,  MaskIterator m_lr,   
     applyWindowFunction(s_ul, s_lr, s_acc, d_ul, d_acc, func, border);
 }
 
-template <class MaskIterator, class MaskAccessor, 
-          class SrcIterator, class SrcAccessor, 
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
-inline void normalizedCrossCorrelation(triple<MaskIterator, MaskIterator, MaskAccessor> m,
-                                       triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                                       pair<DestIterator, DestAccessor> d, 
+inline void normalizedCrossCorrelation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                       triple<MaskIterator, MaskIterator, MaskAccessor> mask,
+                                       pair<DestIterator, DestAccessor> dest,
                                        BorderTreatmentMode border = BORDER_TREATMENT_AVOID)
 {
-    normalizedCrossCorrelation(m.first, m.second, m.third,
-                               s.first, s.second, s.third,
-                               d.first, d.second, 
+    normalizedCrossCorrelation(src.first, src.second, src.third,
+                               mask.first, mask.second, mask.third,
+                               dest.first, dest.second,
                                border);
 }
     
 template <class T1, class S1,
           class T2, class S2, 
           class T3, class S3>
-inline void normalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & mask,
-                                       MultiArrayView<2, T2, S2> const & src,
-                                       MultiArrayView<2, T3, S3> dest)
+inline void normalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
+                                       MultiArrayView<2, T2, S2> const & mask,
+                                       MultiArrayView<2, T3, S3> out)
 {   
-    vigra_precondition(src.shape() == dest.shape(),
+    vigra_precondition(in.shape() == out.shape(),
                         "vigra::normalizedCrossCorrelation(): shape mismatch between input and output.");
-    normalizedCrossCorrelation(srcImageRange(mask), 
-                               srcImageRange(src), 
-                               destImage(dest));
+    normalizedCrossCorrelation(srcImageRange(in),
+                               srcImageRange(mask),
+                               destImage(out));
 }
     
 //@}
