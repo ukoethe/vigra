@@ -2239,6 +2239,15 @@ struct MultiArrayPointoperatorsTest
         initMultiArrayBorder(vol2, 9, 0);
         shouldEqualSequence(vol2.begin(), vol2.end(), desired_vol2);
 
+        const int desired_asym_img[] ={  0, 0, 0, 0, 0, 0,
+                                         0, 0, 5, 5, 5, 0,
+                                         0, 0, 5, 5, 5, 0,
+                                         0, 0, 5, 5, 5, 0,
+                                         0, 0, 0, 0, 0, 0,
+                                         0, 0, 0, 0, 0, 0};
+        img = 5;
+        initMultiArrayBorder(img, Shape2(2,1), Shape2(1,2), 0);
+        shouldEqualSequence(img.begin(), img.end(), desired_asym_img);
     }
 
     void testInspect()
