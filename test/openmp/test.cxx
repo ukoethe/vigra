@@ -51,38 +51,35 @@ using namespace vigra;
 
 class ParallelTestFunctor 
 {
-    int num_threads, thread_id;
+    int thread_id;
 public:
     ParallelTestFunctor() 
-    : num_threads(1)
-    , thread_id(0)
-    {
-    }
+    : thread_id(0)
+    {}
 
 #ifdef OPENMP
     //This constructor is initialized per thread
     ParallelTestFunctor(ParallelTestFunctor const&) 
-    : num_threads(omp_get_num_threads())
-    , thread_id(omp_get_thread_num())
+    : thread_id(omp_get_thread_num())
     {}
 #endif
 
     template<class T>
-    TinyVector<T, 3> operator()(T const& arg1) const 
+    TinyVector<T, 2> operator()(T const& arg1) const 
     {
-        return TinyVector<T, 3>(std::cos(arg1), num_threads, thread_id);
+        return TinyVector<T, 2>(std::cos(arg1), thread_id);
     }
 
     template<class T>
-    TinyVector<T, 3> operator()(T const& arg1, T const& arg2) const 
+    TinyVector<T, 2> operator()(T const& arg1, T const& arg2) const 
     {
-        return TinyVector<T, 3>(arg1 + arg2, num_threads, thread_id);
+        return TinyVector<T, 2>(arg1 + arg2, thread_id);
     }
 
     template<class T>
-    TinyVector<T, 3> operator()(T const& arg1, T const& arg2, T const& arg3) const
+    TinyVector<T, 2> operator()(T const& arg1, T const& arg2, T const& arg3) const
     {
-        return TinyVector<T, 3>(arg1 + arg2 + arg3, num_threads, thread_id);
+        return TinyVector<T, 2>(arg1 + arg2 + arg3, thread_id);
     }
 };
 
@@ -93,7 +90,7 @@ struct OpenMPWrapperTest {
     : img(IMAGE_WIDTH, IMAGE_HEIGHT)
     , mask(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT))
 #ifdef OPENMP
-    , max_threads(omp_get_num_procs() / 2)
+    , max_threads(std::max(omp_get_num_procs() / 2, 2))
 #else
     , max_threads(1)
 #endif
@@ -136,7 +133,7 @@ struct OpenMPWrapperTest {
 
     void combineTwoImagesTest()
     {
-        typedef MultiArray<2, TinyVector<double, 3> > Image2;
+        typedef MultiArray<2, TinyVector<double, 2> > Image2;
         Image2 img1(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT));
 
         int num_threads = vigra::omp::combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), ParallelTestFunctor());
@@ -155,8 +152,7 @@ struct OpenMPWrapperTest {
         for(; i1 != i1end; ++i, ++i1)
         {
             shouldEqual( (*i)*2.0, (*i1)[0]);
-            shouldEqual( (double)num_threads, (*i1)[1]);
-            ++count_per_thread[int((*i1)[2])];
+            ++count_per_thread[int((*i1)[1])];
         }
 
         int active_threads = 0, count = 0, 
@@ -177,8 +173,8 @@ struct OpenMPWrapperTest {
 
     void combineTwoImagesIfTest()
     {
-        typedef MultiArray<2, TinyVector<double, 3> > Image2;
-        Image2 img1(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT), TinyVector<double, 3>(DEFAULT_PIXEL_VALUE));
+        typedef MultiArray<2, TinyVector<double, 2> > Image2;
+        Image2 img1(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT), TinyVector<double, 2>(DEFAULT_PIXEL_VALUE));
 
         int num_threads = vigra::omp::combineTwoImagesIf(srcImageRange(img), srcImage(img), maskImage(mask), destImage(img1), ParallelTestFunctor());
 
@@ -206,8 +202,7 @@ struct OpenMPWrapperTest {
         for(; i1 != i1end; ++i, ++i1)
         {
             shouldEqual( (*i)*2.0, (*i1)[0]);
-            shouldEqual( (double)num_threads, (*i1)[1]);
-            ++count_per_thread[int((*i1)[2])];
+            ++count_per_thread[int((*i1)[1])];
         }
 
         int active_threads = 0, count = 0, 
@@ -228,8 +223,8 @@ struct OpenMPWrapperTest {
 
     void combineThreeImagesTest()
     {
-        typedef MultiArray<2, TinyVector<double, 3> > Image2;
-        Image2 img1(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT), TinyVector<double, 3>(DEFAULT_PIXEL_VALUE));
+        typedef MultiArray<2, TinyVector<double, 2> > Image2;
+        Image2 img1(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT), TinyVector<double, 2>(DEFAULT_PIXEL_VALUE));
 
         int num_threads = vigra::omp::combineThreeImages(srcImageRange(img), srcImage(img), srcImage(img), destImage(img1), ParallelTestFunctor());
 
@@ -245,8 +240,7 @@ struct OpenMPWrapperTest {
         for(; i != img.end(); ++i, ++i1)
         {
             shouldEqual( (*i)*3.0, (*i1)[0]);
-            shouldEqual( (double)num_threads, (*i1)[1]);
-            ++count_per_thread[int((*i1)[2])];
+            ++count_per_thread[int((*i1)[1])];
         }
 
         int active_threads = 0, count = 0, 
@@ -267,7 +261,7 @@ struct OpenMPWrapperTest {
 
     void transformImageTest()
     {
-        typedef MultiArray<2, TinyVector<double, 3> > Image2;
+        typedef MultiArray<2, TinyVector<double, 2> > Image2;
         Image2 img1(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT));
 
         int num_threads = vigra::omp::transformImage(srcImageRange(img), destImage(img1), ParallelTestFunctor());
@@ -286,8 +280,7 @@ struct OpenMPWrapperTest {
         for(; i != img.end(); ++i, ++i1)
         {
             shouldEqual( cos(*i), (*i1)[0]);
-            shouldEqual( (double)num_threads, (*i1)[1]);
-            ++count_per_thread[int((*i1)[2])];
+            ++count_per_thread[int((*i1)[1])];
         }
 
         int active_threads = 0, count = 0, 
@@ -308,8 +301,8 @@ struct OpenMPWrapperTest {
 
     void transformImageIfTest()
     {
-        typedef MultiArray<2, TinyVector<double, 3> > Image2;
-        Image2 img1(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT), TinyVector<double, 3>(DEFAULT_PIXEL_VALUE));
+        typedef MultiArray<2, TinyVector<double, 2> > Image2;
+        Image2 img1(Shape2(IMAGE_WIDTH, IMAGE_HEIGHT), TinyVector<double, 2>(DEFAULT_PIXEL_VALUE));
 
         int num_threads = vigra::omp::transformImageIf(srcImageRange(img), maskImage(mask), destImage(img1), ParallelTestFunctor());
 
@@ -337,8 +330,7 @@ struct OpenMPWrapperTest {
         for(; i1 != i1end; ++i, ++i1)
         {
             shouldEqual( cos(*i), (*i1)[0]);
-            shouldEqual( (double)num_threads, (*i1)[1]);
-            ++count_per_thread[int((*i1)[2])];
+            ++count_per_thread[int((*i1)[1])];
         }
 
         int active_threads = 0, count = 0, 
@@ -368,7 +360,7 @@ struct DistanceTransformTest {
     DistanceTransformTest() 
     : img(7, 7) 
 #ifdef OPENMP
-    , max_threads(omp_get_num_procs() / 2)
+    , max_threads(std::max(omp_get_num_procs() / 2, 2))
 #else
     , max_threads(1)
 #endif
