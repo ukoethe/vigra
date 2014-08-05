@@ -13,6 +13,7 @@
 #include "functorexpression.hxx"
 #include "multi_math.hxx"
 #include "multi_fft.hxx"
+#include "integral_image.hxx"
 
 // "slow" correlation algorithms are performed using the windowing filter env.
 #include "applywindowfunction.hxx"
@@ -50,11 +51,12 @@ namespace vigra
      namespace vigra {
        template <class T1, class S1,
                 class T2, class S2,
-                class T3, class S3>
+                class T3, class S3,
+                unsigned int N>
        void
-       fastCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
-                            MultiArrayView<2, T2, S2> const & mask,
-                            MultiArrayView<2, T3, S3> out,
+       fastCrossCorrelation(MultiArrayView<N, T1, S1> const & in,
+                            MultiArrayView<N, T2, S2> const & mask,
+                            MultiArrayView<N, T3, S3> out,
                             bool clearBorders=true);
      
      }
@@ -80,14 +82,14 @@ namespace vigra
      
      The image must be larger than the size of the mask.
      */
-    
     doxygen_overloaded_function(template <...> void fastCrossCorrelation)
     template <class T1, class S1,
     class T2, class S2,
-    class T3, class S3>
-    inline void fastCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
-                                     MultiArrayView<2, T2, S2> const & mask,
-                                     MultiArrayView<2, T3, S3> out,
+    class T3, class S3,
+    unsigned int N>
+    inline void fastCrossCorrelation(MultiArrayView<N, T1, S1> const & in,
+                                     MultiArrayView<N, T2, S2> const & mask,
+                                     MultiArrayView<N, T3, S3> out,
                                      bool clearBorders=true)
     {
         vigra_precondition(in.shape() == out.shape(),
@@ -96,8 +98,7 @@ namespace vigra
         
         if(clearBorders)
         {
-            Shape2 border(mask.width()/2, mask.height()/2);
-            initMultiArrayBorder(out, border, border, T3());
+            initMultiArrayBorder(out, mask.shape()/2-1, mask.shape()/2-1, T3());
         }
     }
     
@@ -166,53 +167,65 @@ namespace vigra
 
     The image must be larger than the size of the mask.
 */
-
+namespace detail
+{
+    template<class T1, class S1>
+    inline double integralMultiArrayWindowMean(MultiArrayView<1, T1, S1> const & in,
+                                               typename MultiArrayView<1, T1, S1>::difference_type const & left,
+                                               typename MultiArrayView<1, T1, S1>::difference_type const & right)
+    {
+        return in[right]-in[left];
+    }
+    
+    template<class T1, class S1>
+    inline double integralMultiArrayWindowMean(MultiArrayView<2, T1, S1> const & in,
+                                               typename MultiArrayView<2, T1, S1>::difference_type const & ul,
+                                               typename MultiArrayView<2, T1, S1>::difference_type const & lr)
+    {
+        return in[lr] - in(lr[0],ul[1]) - in(ul[0],lr[1]) + in[ul];
+    }
+    
+    template<class T1, class S1>
+    inline double integralMultiArrayWindowMean(MultiArrayView<3, T1, S1> const & in,
+                                               typename MultiArrayView<3, T1, S1>::difference_type const & ul,
+                                               typename MultiArrayView<3, T1, S1>::difference_type const & lr)
+    {
+        return (in[lr]                - in(lr[0],ul[1],lr[2]) - in(ul[0],lr[1],lr[2]) + in(ul[0],ul[1],lr[2]))
+             - (in(lr[0],lr[1],ul[2]) - in(lr[0],ul[1],ul[2]) - in(ul[0],lr[1],ul[2]) + in[ul]);
+    }
+}
+    
 template <class T1, class S1,
           class T2, class S2, 
-          class T3, class S3>
-inline void fastNormalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
-                                           MultiArrayView<2, T2, S2> const & mask,
-                                           MultiArrayView<2, T3, S3> out,
+          class T3, class S3,
+          unsigned int N>
+inline void fastNormalizedCrossCorrelation(MultiArrayView<N, T1, S1> const & in,
+                                           MultiArrayView<N, T2, S2> const & mask,
+                                           MultiArrayView<N, T3, S3> out,
                                            bool clearBorders=true)
 {
-    
     using namespace vigra::multi_math;
     
     vigra_precondition(in.shape() == out.shape(),
-                        "vigra::fastNormalizedCrossCorrelation(): shape mismatch between input and output.");
-
-    unsigned int m_w = mask.width(),
-                 m_h = mask.height(),
-                 m_total = m_w*m_h,
-                 i_w = in.width(),
-                 i_h = in.height();
+                       "vigra::fastNormalizedCrossCorrelation(): shape mismatch between input and output.");
     
-    vigra_precondition( m_w % 2 == 1 , "vigra::fastNormalizedCrossCorrelation(): Mask width has to be of odd size!");
-    vigra_precondition( m_h % 2 == 1 , "vigra::fastNormalizedCrossCorrelation(): Mask height has to be of odd size!");
+    vigra_precondition(N>0 && N<=3,
+                       "vigra::fastNormalizedCrossCorrelation(): only implemented for arrays of 1, 2 or 3 dimensions.");
     
-    vigra_precondition( m_w <= i_w && m_h <= i_h , "vigra::fastNormalizedCrossCorrelation(): Mask is larger than image!");
-    
-    //find mask sum and mask^2 sum and mask average
-    double  mask_sum  = 0.0,
-            mask_sum2 = 0.0,
-            mask_avg  = 0.0;
-    
-    for(unsigned int y=0; y<m_h ;++y)
+    for(unsigned int dim=0; dim<N; dim++)
     {
-        for(unsigned int x=0; x<m_w ;++x)
-        {
-            //cache current value
-            mask_avg = mask(x,y);
-            
-            mask_sum  += mask_avg;
-            mask_sum2 += mask_avg*mask_avg;
-        }
+        vigra_precondition(mask.shape()[dim] % 2 == 1, "vigra::fastNormalizedCrossCorrelation(): Mask width has to be of odd size!");
+        vigra_precondition(in.shape()[dim] >= mask.shape()[dim] , "vigra::fastNormalizedCrossCorrelation(): Mask is larger than image!");
     }
     
-    mask_avg = mask_sum/(m_total);
+    //find mask mean and variance
+    double mask_mean = 0.0,
+           mask_var  = 0.0,
+           mask_size = prod(mask.shape());
+    mask.meanVariance(&mask_mean, &mask_var);
     
-    //calculate the fix part of the denumerator
-    double fix_denumerator = sqrt(m_total*mask_sum2 - mask_sum*mask_sum);
+    //calculate the fix part of the denumerator a.k.a. the mask std. deviation
+    double fix_denumerator = mask_size*sqrt(mask_var);
     
     if(fix_denumerator == 0)
     {
@@ -221,44 +234,45 @@ inline void fastNormalizedCrossCorrelation(MultiArrayView<2, T1, S1> const & in,
     else
     {
         //pre-normalize the mask
-        MultiArray<2, T2> norm_mask(m_w,m_h);
-        norm_mask = mask - mask_avg;
+        MultiArray<N, double> norm_mask(mask.shape());
+        norm_mask = mask;
+        norm_mask -= mask_mean;
         
         //calculate (semi-normalized) numerator:
-        MultiArray<2, T3> corr_result(i_w,i_h);
-        fastCrossCorrelation(in, norm_mask, corr_result,clearBorders);
+        MultiArray<N, double> corr_result(in.shape());
+        
+        corr_result=in;
+        fastCrossCorrelation(corr_result, norm_mask, corr_result, clearBorders);
+        
         
         //Create fast sum tables for the variable denumerator
-        MultiArray<2, double> sum_table(i_w+1,i_h+1),
-                              sum_table2(i_w+1,i_h+1);
+        MultiArray<N, double> sum_table(in.shape()+1),
+                              sum_table2(in.shape()+1);
         
-        for(unsigned int v=0; v<i_h; v++)
+        typename MultiArray<N, double>::difference_type zero_diff;
+        
+        // now finally fill the sum tables
+        // keep a zero line/coloum at the beginning to avoid border computations and conditionals
+        integralMultiArray(in,sum_table.subarray(zero_diff+1, in.shape()+1));
+        integralMultiArraySquared(in, sum_table2.subarray(zero_diff+1, in.shape()+1));
+        
+        MultiCoordinateIterator<N> i(in.shape()-mask.shape()+1), end = i.getEndIterator();
+        
+        for(; i != end; ++i)
         {
-            for(unsigned int u=0; u<i_w; u++)
+            //calculate e(window) and e(window^2)
+            double window_mean         = detail::integralMultiArrayWindowMean(sum_table,  *i, *i+mask.shape()),
+                   window_squared_mean = detail::integralMultiArrayWindowMean(sum_table2, *i, *i+mask.shape()),
+                   var_denumerator = sqrt(mask_size*window_squared_mean - window_mean*window_mean);
+            
+            //calculate overall result
+            if(var_denumerator == 0)
             {
-                sum_table( u+1,v+1)  = in(u,v)         +  sum_table(u,v+1)  + sum_table(u+1,v)  -  sum_table(u,v);
-                sum_table2(u+1,v+1)  = in(u,v)*in(u,v) + sum_table2(u,v+1) + sum_table2(u+1,v)  - sum_table2(u,v);
+                out[*i+mask.shape()/2-1] = 0;
             }
-        }
-        //calculate the result, use the sum tables for the denumerators
-        for(unsigned int v=m_h/2; v<i_h-m_h/2; v++)
-        {
-            for(unsigned int u=m_w/2; u<i_w-m_w/2; u++)
+            else
             {
-                //calculate e(window) and e(window^2)
-                double e_uv   = sum_table( u+m_w/2+1, v+m_h/2+1) - sum_table( u-m_w/2, v+m_h/2+1) - sum_table( u+m_w/2+1, v-m_h/2)  + sum_table( u-m_w/2,v-m_h/2),
-                       e_uv_2 = sum_table2(u+m_w/2+1, v+m_h/2+1) - sum_table2(u-m_w/2, v+m_h/2+1) - sum_table2(u+m_w/2+1, v-m_h/2)  + sum_table2(u-m_w/2,v-m_h/2),
-                       var_denumerator = sqrt(m_total*e_uv_2 - e_uv*e_uv);
-                
-                //calclate overall result
-                if(var_denumerator == 0)
-                {
-                    out(u,v) = 0;
-                }
-                else
-                {
-                    out(u,v) = m_total*corr_result(u,v)/(var_denumerator*fix_denumerator);
-                }
+                out[*i+mask.shape()/2-1] = mask_size*corr_result[*i+mask.shape()/2-1]/(var_denumerator*fix_denumerator);
             }
         }
     }

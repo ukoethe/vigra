@@ -90,6 +90,7 @@ struct FastVsSlowCorrelationTest
             fastNormalizedCrossCorrelation(img,
                                            img.subarray(Shape2(0,0),Shape2(mask_size,mask_size)),
                                            result_fast);
+            
             result_slow=0;
             normalizedCrossCorrelation(img,
                                        img.subarray(Shape2(0,0),Shape2(mask_size,mask_size)),

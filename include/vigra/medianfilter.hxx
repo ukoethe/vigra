@@ -121,7 +121,8 @@ public:
         SrcIterator ys = s_ul;
         SrcIterator xs = ys;
         
-        typename std::vector<VALUETYPE>::iterator iter = m_buffer.begin();
+        typename std::vector<VALUETYPE>::iterator iter = m_buffer.begin(),
+                                                  median_iter = m_buffer.begin()+m_buffer.size()/2;
         
         for( ; ys.y != s_lr.y; ys.y++)
         {   
@@ -131,8 +132,8 @@ public:
             }       
         }
         
-        std::sort(m_buffer.begin(), m_buffer.end());
-        d_acc.set(m_buffer[m_buffer.size()/2],d);
+        std::nth_element(m_buffer.begin(), median_iter, m_buffer.end());
+        d_acc.set(*median_iter,d);
     }
     
     Diff2D windowShape() const
