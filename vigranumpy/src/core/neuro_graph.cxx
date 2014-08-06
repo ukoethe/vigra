@@ -97,6 +97,18 @@ namespace vigra{
     }
 
 
+    template<class SELF>
+    NumpyAnyArray pyComputeFeature(
+        SELF  & self,
+        const EdgeHolder< typename SELF::MergeGraph> & edge,
+        NumpyArray<1, float>  out
+    ){
+        const size_t nFeat = self.numberOfFeatures();
+        out.reshapeIfEmpty(typename  NumpyArray<1, float>::difference_type(nFeat));
+        self.computeFeature(edge,out);
+        return out;
+    }
+
     void defineNeuroGraph(){
 
         typedef vigra::AdjacencyListGraph Graph;
@@ -118,6 +130,13 @@ namespace vigra{
         .def("assignNodeSizes", pyAssignNodeSizes<PyNeuroDynamicFeatures> )
 
         .def("registerCallbacks", & PyNeuroDynamicFeatures::registerCallbacks)
+        .def("numberOfFeatures",& PyNeuroDynamicFeatures::numberOfFeatures)
+        .def("getFeatures", &pyComputeFeature<PyNeuroDynamicFeatures>,
+            (
+                python::arg("edge"),
+                python::arg("out")=python::object()
+            )
+        )
         ;
         
 

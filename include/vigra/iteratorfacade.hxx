@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2002 by Ullrich Koethe                  */
+/*               Copyright 2014 by Thorsten Beier                       */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */

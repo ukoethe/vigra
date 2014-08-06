@@ -1089,10 +1089,13 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             labels = self.baseGraphLabels
             ignoreLabel = self.ignoreLabel
             if acc == 'mean':
+              #print "get node size..."
               weights = self.baseGraph.nodeSize()
+              #print "weights == ", weights
             else :
               weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
               weights[:]=1
+
             return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,weights,acc,ignoreLabel,out)
 
         def projectNodeFeatureToBaseGraph(self,features,out=None):
@@ -1365,9 +1368,9 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
         ignoreLabel =  readHDF5(filename, dset+'/ignore_label')
 
         gridRag.affiliatedEdges = affiliatedEdges
-        gridRag.labels          = labels
-        gridRag.ignoreLabel     = ignoreLabel
-        gridRag.baseGraphLabels = labels
+        gridRag.labels          = taggedView(labels,"xyz")
+        gridRag.ignoreLabel     = int(ignoreLabel[0])
+        gridRag.baseGraphLabels = taggedView(labels,"xyz")
         gridRag.baseGraph       = gridGraph
 
         return gridRag

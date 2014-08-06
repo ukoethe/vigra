@@ -266,7 +266,7 @@ namespace vigra{
 
             for(size_t i=0; i<numAffEdge; ++i){
                 const GEdge gEdge = affEdges[edge][i];
-                for(size_t d=0; d<DIM; ++d){
+                for(size_t d=0; d<DIM+1; ++d){
                     *outIter = gEdge[d]; ++outIter;
                 }
             }
@@ -298,6 +298,7 @@ namespace vigra{
                 for(size_t d=0; d<DIM+1; ++d){
                     gEdge[d]=*begin; ++begin;
                 }
+                affEdges[edge].push_back(gEdge);
             }
         }
     }
