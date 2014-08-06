@@ -48,6 +48,7 @@
 #include "multi_resize.hxx"
 #include "graph_algorithms.hxx"
 
+
 namespace vigra
 {
 
@@ -146,14 +147,14 @@ namespace vigra
         }
     }
 
-    // TODO: Maybe change return type to std::vector< TinyVector<MultiArrayIndex, N> >.
     /// \brief Finds the eccentricity center for each region in the source image (first column will be empty, since labels start with 1).
     ///
     /// \param src : labeled image
+    /// \param centers [out] : eccentricity centers
     template <unsigned int N, class T>
-    MultiArray<2, MultiArrayIndex>
-    findEccentricityCenters(
-            const MultiArrayView<N, T> & src
+    void findEccentricityCenters(
+            const MultiArrayView<N, T> & src,
+            MultiArray<2, MultiArrayIndex> & centers
     ){
         using namespace acc;
 
@@ -169,8 +170,8 @@ namespace vigra
         extractFeatures(data, src, a);
         T maxLabel = get< Global< Maximum > >(a);
 
-        // Create and fill the return array.
-        MultiArray<2, MultiArrayIndex> centers(Shape2(maxLabel+1, N));
+        // Fill the array.
+        centers = MultiArray<2, MultiArrayIndex>(Shape2(maxLabel+1, N));
         for (int d=0; d<N; ++d)
         {
             centers(0, d) = 0;
@@ -188,8 +189,6 @@ namespace vigra
                 centers(i,d) = center[d] + topLeftBB[d];
             }
         }
-
-        return centers;
     }
 
     /// \brief Finds the the eccentricity center for a single region.
@@ -264,7 +263,8 @@ namespace vigra
         MultiArray<2, MultiArrayIndex> edges = ragFindEdges(rag, gGraph, affEdges, bigLblImg, node);
 
         // Get the diameter (path) of the object.
-        MultiArray<2, MultiArrayIndex> diameter = findLongestShortestPath(pathFinder, edgeWeights, edges);
+        MultiArray<2, MultiArrayIndex> diameter;
+        findLongestShortestPath(pathFinder, edgeWeights, edges, diameter);
 
         // Find euclidean length of the diameter (unweighted edges).
         double diameterLength = 0;
@@ -372,12 +372,14 @@ namespace vigra
     /// \param pathFinder : dijkstra path finder
     /// \param edgeWeights : edge weights for dijkstra shortest path algorithm
     /// \param edges : edges of the given object
+    /// \param shortestPath [out] : shortest path between each two vertices
     /// \param maxIterations : optional number of iterations for the approximation
     template<class GRAPH, class T, class EDGEMAP>
-    MultiArray<2, MultiArrayIndex> findLongestShortestPath(
+    void findLongestShortestPath(
             ShortestPathDijkstra<GRAPH, T> & pathFinder,
             const EDGEMAP & edgeWeights,
             const MultiArray<2, MultiArrayIndex> & edges,
+            MultiArray<2, MultiArrayIndex> & shortestPath,
             unsigned int maxIterations = 4
     ){
         typedef typename GRAPH::Node Node;
@@ -390,9 +392,9 @@ namespace vigra
         // This makes sure, that our path later on consists of at least 2 points.
         if (nEdges == 1)
         {
-            MultiArray<2, MultiArrayIndex> path(edges.shape());
-            std::copy(edges.begin(), edges.end(), path.begin());
-            return path;
+            shortestPath = MultiArray<2, MultiArrayIndex>(edges.shape());
+            std::copy(edges.begin(), edges.end(), shortestPath.begin());
+            return;
         }
 
         PredecessorsMap predecessors;
@@ -447,7 +449,7 @@ namespace vigra
 
         // Write the predecessors map into the MultiArray.
         int len = pathLength(srcOfMaxPath, tarOfMaxPath, predecessors);
-        MultiArray<2, MultiArrayIndex> shortestPath(Shape2(len, N));
+        shortestPath = MultiArray<2, MultiArrayIndex>(Shape2(len, N));
         int k=0;
         Node currentNode = tarOfMaxPath;
         while(currentNode != srcOfMaxPath)
@@ -463,7 +465,6 @@ namespace vigra
         {
             shortestPath(k, d) = srcOfMaxPath[d];
         }
-        return shortestPath;
     }
 
 } // namespace vigra
