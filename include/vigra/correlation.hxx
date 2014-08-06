@@ -98,7 +98,9 @@ namespace vigra
         
         if(clearBorders)
         {
-            initMultiArrayBorder(out, mask.shape()/2-1, mask.shape()/2-1, T3());
+            typedef typename MultiArrayShape<N>::type Shape;
+            Shape maskRadius(floor(mask.shape()/2));
+            initMultiArrayBorder(out, maskRadius, maskRadius, T3());
         }
     }
     
@@ -205,6 +207,7 @@ inline void fastNormalizedCrossCorrelation(MultiArrayView<N, T1, S1> const & in,
                                            bool clearBorders=true)
 {
     using namespace vigra::multi_math;
+    typedef typename MultiArrayShape<N>::type Shape;
     
     vigra_precondition(in.shape() == out.shape(),
                        "vigra::fastNormalizedCrossCorrelation(): shape mismatch between input and output.");
@@ -258,6 +261,7 @@ inline void fastNormalizedCrossCorrelation(MultiArrayView<N, T1, S1> const & in,
         
         MultiCoordinateIterator<N> i(in.shape()-mask.shape()+1), end = i.getEndIterator();
         
+        Shape maskRadius(floor(mask.shape()/2));
         for(; i != end; ++i)
         {
             //calculate e(window) and e(window^2)
@@ -268,11 +272,11 @@ inline void fastNormalizedCrossCorrelation(MultiArrayView<N, T1, S1> const & in,
             //calculate overall result
             if(var_denumerator == 0)
             {
-                out[*i+mask.shape()/2-1] = 0;
+                out[*i+maskRadius] = 0;
             }
             else
             {
-                out[*i+mask.shape()/2-1] = mask_size*corr_result[*i+mask.shape()/2-1]/(var_denumerator*fix_denumerator);
+                out[*i+maskRadius] = mask_size*corr_result[*i+maskRadius]/(var_denumerator*fix_denumerator);
             }
         }
     }
