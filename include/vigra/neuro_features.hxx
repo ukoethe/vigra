@@ -348,9 +348,11 @@ namespace vigra{
         const float sizeB
     ){
         const float sizeAB = sizeA + sizeB;
-        const float newMean = (sizeA*meanA + sizeB*meanB)/sizeAB
-        varA = 1.0/(sizeAB - 1) * (sizeA * std::pow(meanA - mean, 2) + sizeB * std::pow(meanB - mean, 2)   
-                                   +  (sizeA-1)*varA + (sizeB-1)*varB );
+        const float newMean = (sizeA*meanA + sizeB*meanB)/sizeAB;
+
+        const float  fac =  1.0/(sizeAB - 1);
+
+        varA = fac * (sizeA * std::pow(meanA - newMean, 2) + sizeB * std::pow(meanB - newMean, 2)   +  (sizeA-1)*varA + (sizeB-1)*varB );
         meanA = newMean;
     }  
  
