@@ -13,6 +13,7 @@
 
 #include <vigra/affine_registration.hxx>
 #include <vigra/projective_registration.hxx>
+#include <vigra/polynomial_registration.hxx>
 
 using namespace vigra;
 
@@ -366,6 +367,185 @@ struct ProjectiveRegistrationTestSuite
         add( testCase( &ProjectiveRegistrationTest::testInit));
    }
 };
+struct PolynomialIdentityTest
+{
+    std::vector<TinyVector<double,2> > s_points;
+    
+    PolynomialIdentityTest()
+    : s_points(srcPoints())
+    {
+    }
+    
+    void testInit()
+    {
+        /**
+         * First test: If point sets are equal -> identity w.r.t polynom matrix representation should be the result!
+         */
+        Matrix<double> identity = polynomialMatrix2DFromCorrespondingPoints<3>(s_points.begin(), s_points.end(), s_points.begin());
+        
+        /** 
+         * Estimated result:
+         *
+         * Simple polygon: x -> (0 + 1*x + 0*y + 0*x^2 + 0*x*y + 0*y^2 + 0*x^3 + 0*x^2*y + 0*x*y^2 + 0*y^3)
+         *                 y -> (0 + 0*x + 1*y + 0*x^2 + 0*x*y + 0*y^2 + 0*x^3 + 0*x^2*y + 0*x*y^2 + 0*y^3)
+         *
+         * In matrix notation: [0.00, 0.00]
+         *                     [1.00, 0.00] x^1 , y^0  
+         *                     [0.00, 1.00] x^0 , y^1 
+         *                     [0.00, 0.00] x^2 , y^0  
+         *                     [0.00, 0.00] x^1 , y^1 
+         *                     [0.00, 0.00] x^0 , y^2  
+         *                     [0.00, 0.00] x^3 , y^0  
+         *                     [0.00, 0.00] x^2 , y^1  
+         *                     [0.00, 0.00] x^1 , y^2  
+         *                     [0.00, 0.00] x^0 , y^3 
+         */
+         
+        Matrix<double> reference(10,2, 0.0);
+        reference(1,0) = 1.0; reference(2,1) = 1.0;
+        shouldEqualToleranceMatrices(identity, reference, test_epsilon);
+    }
+};
+        
+        
+struct PolynomialRegistrationTest
+{
+    BImage s_img;
+    BImage d_img;
+    
+    std::vector<TinyVector<double,2> > s_points;
+    std::vector<TinyVector<double,2> > d_points;
+    
+    PolynomialRegistrationTest()
+    : s_points(srcPoints()),
+      d_points(destPoints())
+    {
+        ImageImportInfo info1("nuernberg-1991.png");
+        s_img.resize(info1.width(), info1.height());
+        importImage(info1, destImage(s_img));
+        
+        ImageImportInfo info2("nuernberg-1995.png");
+        d_img.resize(info2.width(), info2.height());
+        importImage(info2, destImage(d_img));
+    }
+    
+    void testDegree0()
+    {                
+        /**
+         * Test with well-known point sets and a known result matrix
+         */
+        Matrix<double> poly = polynomialMatrix2DFromCorrespondingPoints<0>(s_points.begin(), s_points.end(), d_points.begin());
+        
+        /** 
+         * Estimated result:
+         */        
+        Matrix<double> reference(1,2);
+        reference(0,0) =  571.1969696970; reference(0,1) = 313.2727272727; 
+        
+        shouldEqualToleranceMatrices(poly, reference, test_epsilon);
+    }
+    
+    void testDegree1()
+    {                
+        /**
+         * Test with well-known point sets and a known result matrix
+         */
+        Matrix<double> poly = polynomialMatrix2DFromCorrespondingPoints<1>(s_points.begin(), s_points.end(), d_points.begin());
+        
+        /** 
+         * Estimated result:
+         */        
+        Matrix<double> reference(3,2);
+        reference(0,0) =  -824.6829238728; reference(0,1) = -431.5519142745; 
+        reference(1,0) =     1.4856474242; reference(1,1) =   -0.0376429179;
+        reference(2,0) =     0.0350960498; reference(2,1) =    1.2727692988;  
+        
+        shouldEqualToleranceMatrices(poly, reference, test_epsilon);
+        
+        /**
+         * visual interpretation by means of the warped image:
+         */
+        BImage temp = d_img;
+        polynomialWarpImage<1>(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), poly);
+        exportImage(srcImageRange(temp), ImageExportInfo("res-poly<1>.png"));
+    }
+    
+    void testDegree2()
+    {                
+        /**
+         * Test with well-known point sets and a known result matrix
+         */
+        Matrix<double> poly = polynomialMatrix2DFromCorrespondingPoints<2>(s_points.begin(), s_points.end(), d_points.begin());
+        
+        /** 
+         * Estimated result:
+         */        
+        Matrix<double> reference(6,2);
+        reference(0,0) =  -929.9603797537; reference(0,1) = 62.7580017829; 
+        reference(1,0) =     1.7368027425; reference(1,1) =  0.1279186082;
+        reference(2,0) =     0.0013088970; reference(2,1) = -1.0443071694; 
+        reference(3,0) =    -0.0001356183; reference(3,1) = -0.0000165442;
+        reference(4,0) =    -0.0000115962; reference(4,1) = -0.0001563045; 
+        reference(5,0) =     0.0000516651; reference(5,1) =  0.0022927547; 
+        
+        shouldEqualToleranceMatrices(poly, reference, test_epsilon);
+        
+        /**
+         * visual interpretation by means of the warped image:
+         */
+        BImage temp = d_img;
+        polynomialWarpImage<2>(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), poly);
+        exportImage(srcImageRange(temp), ImageExportInfo("res-poly<2>.png"));
+    }
+    
+    void testDegree3()
+    {                
+        /**
+         * Test with well-known point sets and a known result matrix
+         */
+        Matrix<double> poly = polynomialMatrix2DFromCorrespondingPoints<3>(s_points.begin(), s_points.end(), d_points.begin());
+        
+        /** 
+         * Estimated result:
+         */        
+        Matrix<double> reference(10,2);
+        reference(0,0) =  -694.265682659954450; reference(0,1) = -762.451820047407978; 
+        reference(1,0) =     0.931229115560906; reference(1,1) =   -0.268572962775846;
+        reference(2,0) =     0.048740058262766; reference(2,1) =    4.944397113671227; 
+        reference(3,0) =     0.000541326855916; reference(3,1) =   -0.000071716238508;
+        reference(4,0) =     0.000742558256144; reference(4,1) =    0.001026085249118; 
+        reference(5,0) =    -0.000725321990759; reference(5,1) =   -0.010416513068178; 
+        reference(6,0) =    -0.000000240139823; reference(6,1) =    0.000000135932974; 
+        reference(7,0) =    -0.000000079399077; reference(7,1) =   -0.000000426260228;
+        reference(8,0) =    -0.000000502113506; reference(8,1) =   -0.000000232882327; 
+        reference(9,0) =     0.000000746973881; reference(9,1) =    0.000008095034260;  
+        
+        shouldEqualToleranceMatrices(poly, reference, test_epsilon);
+        
+        /**
+         * visual interpretation by means of the warped image:
+         */
+        BImage temp = d_img;
+        polynomialWarpImage<3>(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), poly);
+        exportImage(srcImageRange(temp), ImageExportInfo("res-poly<3>.png"));
+    }
+};
+
+struct PolynomialRegistrationTestSuite
+: public test_suite
+{
+    PolynomialRegistrationTestSuite()
+    : test_suite("PolynomialRegistrationTestSuite")
+    {
+        add( testCase( &PolynomialIdentityTest::testInit));
+        add( testCase( &PolynomialRegistrationTest::testDegree0));
+        add( testCase( &PolynomialRegistrationTest::testDegree1));
+        add( testCase( &PolynomialRegistrationTest::testDegree2));
+        add( testCase( &PolynomialRegistrationTest::testDegree3));
+    }
+};
+
+
 
 struct RegistrationTestCollection
 : public test_suite
@@ -375,6 +555,7 @@ struct RegistrationTestCollection
     {
         add( new EstimateGlobalRotationTranslationTestSuite);
         add( new ProjectiveRegistrationTestSuite);
+        add( new PolynomialRegistrationTestSuite);
    }
 };
 
