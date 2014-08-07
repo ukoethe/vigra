@@ -560,6 +560,11 @@ void defineConvolutionFunctions()
         (arg("volume"), arg("dim"), arg("kernel"), arg("out")=python::object()), 
         "Likewise for a 3D scalar or multiband volume.\n");
 
+    def("convolveOneDimension",
+        registerConverters(&pythonConvolveOneDimensionND<float,5>),
+        (arg("volume"), arg("dim"), arg("kernel"), arg("out")=python::object()), 
+        "Likewise for a 4D scalar or multiband volume.\n");
+
     def("convolve", registerConverters(&pythonSeparableConvolveND_1Kernel<float,3>),
         (arg("image"), arg("kernel"), arg("out")=python::object()),
         "Convolve an image with the given 'kernel' (or kernels).\n"
