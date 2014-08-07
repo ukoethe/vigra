@@ -12,8 +12,8 @@
 #include <vigra/impex.hxx>
 
 #include <vigra/affine_registration.hxx>
+#include <vigra/projective_registration.hxx>
 
-using vigra::Diff2D;
 using namespace vigra;
 
 static int pointdata[] = {
@@ -90,9 +90,9 @@ static int point_count = 66;
 static int pointdata_size = point_count*4;
 static double test_epsilon = 1.0e-5;
 
-static std::vector<vigra::TinyVector<double,2> > srcPoints()
+static std::vector<TinyVector<double,2> > srcPoints()
 {
-    std::vector<vigra::TinyVector<double,2> >  result(point_count);
+    std::vector<TinyVector<double,2> >  result(point_count);
     
     for (int i=0; i<pointdata_size; i+=4)
     {
@@ -103,9 +103,9 @@ static std::vector<vigra::TinyVector<double,2> > srcPoints()
     return result;
 }
 
-static std::vector<vigra::TinyVector<double,2> > destPoints()
+static std::vector<TinyVector<double,2> > destPoints()
 {
-    std::vector<vigra::TinyVector<double,2> >  result(point_count);
+    std::vector<TinyVector<double,2> >  result(point_count);
     
     for (int i=0; i<pointdata_size; i+=4)
     {
@@ -148,8 +148,8 @@ struct EstimateGlobalRotationTranslationTest
     unsigned int fill_size_h;
     unsigned int fill_size_v;
     
-    vigra::BImage s_img;
-    vigra::BImage d_img;
+    BImage s_img;
+    BImage d_img;
     
     EstimateGlobalRotationTranslationTest()
     : size(200),
@@ -207,11 +207,11 @@ struct EstimateGlobalRotationTranslationTest
 };
 struct EstimateGlobalRotationTranslationRealImageTest
 {    
-    vigra::BImage s_img;
-    vigra::BImage d_img;
+    BImage s_img;
+    BImage d_img;
     
     double rotation;
-    vigra::TinyVector<double,2> translation;
+    TinyVector<double,2> translation;
     
     Diff2D border;
     
@@ -271,23 +271,110 @@ struct EstimateGlobalRotationTranslationRealImageTest
 };
 
 struct EstimateGlobalRotationTranslationTestSuite
-: public vigra::test_suite
+: public test_suite
 {
     EstimateGlobalRotationTranslationTestSuite()
-    : vigra::test_suite("EstimateGlobalRotationTranslationTestSuite")
+    : test_suite("EstimateGlobalRotationTranslationTestSuite")
     {
         add( testCase( &EstimateGlobalRotationTranslationTest::testInit));
         add( testCase( &EstimateGlobalRotationTranslationRealImageTest::testInit));
     }
 };
 
+struct ProjectiveIdentityTest
+{
+    std::vector<TinyVector<double,2> > s_points;
+    
+    ProjectiveIdentityTest()
+    : s_points(srcPoints())
+    {
+    }
+    
+    void testInit()
+    {
+        /**
+         * First test: If point sets are equal -> identity matrix should be the result!
+         */
+        Matrix<double> identity = projectiveMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), s_points.begin());
+        
+        shouldEqualToleranceMatrices(identity, linalg::identityMatrix<double>(3), test_epsilon);
+    }
+    
+};
+
+struct ProjectiveRegistrationTest
+{
+    BImage s_img;
+    BImage d_img;
+    
+    std::vector<TinyVector<double,2> > s_points;
+    std::vector<TinyVector<double,2> > d_points;
+    
+    ProjectiveRegistrationTest()
+    : s_points(srcPoints()),
+      d_points(destPoints())
+    {
+		ImageImportInfo info1("nuernberg-1991.png");
+		s_img.resize(info1.width(), info1.height());
+		importImage(info1, destImage(s_img));
+		
+		ImageImportInfo info2("nuernberg-1995.png");
+		d_img.resize(info2.width(), info2.height());
+		importImage(info2, destImage(d_img));
+    }
+    
+    void testInit()
+    {        
+        /**
+         * Test with well-known point sets and a known result matrix
+         */
+        Matrix<double> proj = projectiveMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), d_points.begin());
+        
+        /** 
+         * Estimated result:
+         *
+         *  0.7908564596 -0.2771243619 -246.1575689662 
+         * -0.0156283750  0.6189887443 -195.9746959403 
+         * -0.0000258457 -0.0006847562    1.0000000000 
+         */
+        
+        Matrix<double> reference(3,3);
+        reference(0,0) =  0.7908564596; reference(0,1) = -0.2771243619; reference(0,2) = -246.1575689662; 
+        reference(1,0) = -0.0156283750; reference(1,1) =  0.6189887443; reference(1,2) = -195.9746959403; 
+        reference(2,0) = -0.0000258457; reference(2,1) = -0.0006847562; reference(2,2) =    1.000000; 
+        
+        shouldEqualToleranceMatrices(proj, reference, test_epsilon);
+        
+        /**
+         * visual interpretation by means of the warped image:
+         */
+        
+         BImage temp = d_img;
+         projectiveWarpImage(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), proj);
+         exportImage(srcImageRange(temp), ImageExportInfo("res-proj.png"));
+         
+    }
+    
+};
+struct ProjectiveRegistrationTestSuite
+: public test_suite
+{
+    ProjectiveRegistrationTestSuite()
+    : test_suite("ProjectiveRegistrationTestSuite")
+    {
+        add( testCase( &ProjectiveIdentityTest::testInit));
+        add( testCase( &ProjectiveRegistrationTest::testInit));
+   }
+};
+
 struct RegistrationTestCollection
-: public vigra::test_suite
+: public test_suite
 {
     RegistrationTestCollection()
-    : vigra::test_suite("RegistrationTestCollection")
+    : test_suite("RegistrationTestCollection")
     {
         add( new EstimateGlobalRotationTranslationTestSuite);
+        add( new ProjectiveRegistrationTestSuite);
    }
 };
 
@@ -295,7 +382,7 @@ int main(int argc, char ** argv)
 {
     RegistrationTestCollection test;
  
-    int failed = test.run(vigra::testsToBeExecuted(argc, argv));
+    int failed = test.run(testsToBeExecuted(argc, argv));
 
     std::cout << test.report() << std::endl;
 
