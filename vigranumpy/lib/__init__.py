@@ -1839,6 +1839,20 @@ def _genGraphMiscFunctions():
     nodeFeaturesToEdgeWeights.__module__ = 'vigra.graphs'
     graphs.nodeFeaturesToEdgeWeights = nodeFeaturesToEdgeWeights
 
+    def eccentricityTransform(labels, out=None):
+        """ compute eccentricity transform on labeled image .
+
+            Keyword Arguments :
+                - labels : input image (labeled)
+
+            Returns :
+                eccentricity transform
+        """
+        return graphs._eccentricityTransform(labels=labels, out=out)
+
+    eccentricityTransform.__module__ = 'vigra.graphs'
+    graphs.eccentricityTransform = eccentricityTransform
+
 _genGraphMiscFunctions()
 del _genGraphMiscFunctions
 

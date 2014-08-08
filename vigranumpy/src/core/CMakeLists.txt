@@ -100,6 +100,7 @@ VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     graphRagOptions.cxx
     graphRag.cxx
     neuro_graph.cxx
+    eccentricity.cxx
   LIBRARIES
     ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
