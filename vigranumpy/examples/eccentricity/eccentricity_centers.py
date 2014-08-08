@@ -14,6 +14,17 @@ def shuffleColors(labels):
     mp[keys] = vals
     return mp[labels]
 
+def drawX(img, pos, color):
+    img[pos] = color
+    if pos[0] > 0 and pos[1] > 0:
+        img[pos[0]-1, pos[1]-1] = color
+    if pos[0] > 0 and pos[1] < img.shape[1]-1:
+        img[pos[0]-1, pos[1]+1] = color
+    if pos[0] < img.shape[0]-1 and pos[1] > 0:
+        img[pos[0]+1, pos[1]-1] = color
+    if pos[0] < img.shape[0]-1 and pos[1] < img.shape[1]-1:
+        img[pos[0]+1, pos[1]+1] = color
+
 # Find the eccentricity centers of each connected component.
 img = numpy.squeeze(vigra.readImage(f))
 lbl = numpy.array(vigra.analysis.labelImage(img))
@@ -25,8 +36,10 @@ maxLabel = centers.shape[0]
 for i in range(centers.shape[0]):
     coords = tuple(centers[i, :])
     if centerImg[coords] < maxLabel/2:
-        centerImg[coords] = maxLabel
+        drawX(centerImg, coords, maxLabel)
+        # centerImg[coords] = maxLabel
     else:
-        centerImg[coords] = 0
+        drawX(centerImg, coords, 0)
+        # centerImg[coords] = 0
 vigra.imshow(numpy.swapaxes(centerImg, 1, 0))
 vigra.show()
