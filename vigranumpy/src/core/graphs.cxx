@@ -59,6 +59,7 @@ namespace vigra{
     void defineGridGraphImplicitEdgeMap();
     void defineNewRag();
     void defineNeuroGraph();
+    void defineEccentricity();
 } // namespace vigra
 
 using namespace vigra;
@@ -100,4 +101,6 @@ BOOST_PYTHON_MODULE_INIT(graphs)
     defineNewRag();
 
     defineNeuroGraph();
+
+    defineEccentricity();
 }
