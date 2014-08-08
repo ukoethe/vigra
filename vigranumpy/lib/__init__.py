@@ -1840,7 +1840,7 @@ def _genGraphMiscFunctions():
     graphs.nodeFeaturesToEdgeWeights = nodeFeaturesToEdgeWeights
 
     def eccentricityTransform(labels, out=None):
-        """ compute eccentricity transform on labeled image .
+        """ compute eccentricity transform on labeled image.
 
             Keyword Arguments :
                 - labels : input image (labeled)
@@ -1852,6 +1852,22 @@ def _genGraphMiscFunctions():
 
     eccentricityTransform.__module__ = 'vigra.graphs'
     graphs.eccentricityTransform = eccentricityTransform
+
+    def eccentricityCenters(labels, out=None):
+        """ Compute eccentricity centers on labeled image.
+            Output is of shape (m, N), where m is the largest label in labels and N is the dimension.
+            Since labels start with 1, column i of the output contains the center of the region with label i+1.
+
+            Keyword Arguments :
+                - labels : input image (labeled)
+
+            Returns :
+                centers of the labeled regions
+        """
+        return graphs._eccentricityCenters(labels=labels, out=out)
+
+    eccentricityCenters.__module__ = 'vigra.graphs'
+    graphs.eccentricityCenters = eccentricityCenters
 
 _genGraphMiscFunctions()
 del _genGraphMiscFunctions

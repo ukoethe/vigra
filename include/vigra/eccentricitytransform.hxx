@@ -427,39 +427,40 @@ namespace vigra
     ///
     /// \param src : labeled image
     /// \param centers [out] : eccentricity centers
+    /// \param maxLabel : largest value in src
     template <unsigned int N, class T>
     void findEccentricityCenters(
             const MultiArrayView<N, T> & src,
-            MultiArray<2, MultiArrayIndex> & centers
+            MultiArrayView<2, MultiArrayIndex> & centers,
+            T maxLabel = 0
     ){
         using namespace acc;
 
         typedef typename MultiArrayShape<N>::type Shape;
 
-        // Extract bounding boxes and maximum label.
+        if (maxLabel == 0)
+        {
+            maxLabel = *std::max_element(src.begin(), src.end());
+        }
+        vigra_precondition(centers.shape() == Shape2(maxLabel, N), "Input array must have the shape (maxLabel, N).");
+
+        // Extract bounding boxes.
         MultiArray<N, T> data(src);
         AccumulatorChainArray<CoupledArrays<N, T, T>,
                 Select< DataArg<1>, LabelArg<2>,
-                    Global< Maximum >,
                     Coord< Minimum >,
                     Coord< Maximum > > > a;
         extractFeatures(data, src, a);
-        T maxLabel = get< Global< Maximum > >(a);
 
         // Fill the array.
-        centers = MultiArray<2, MultiArrayIndex>(Shape2(maxLabel+1, N));
-        for (int d=0; d<N; ++d)
+        for (T i=0; i<maxLabel; ++i)
         {
-            centers(0, d) = 0;
-        }
-        for (T i=1; i<=maxLabel; ++i)
-        {
-            Shape topLeftBB = get< Coord< Minimum > >(a, i);
-            Shape bottomRightBB = get< Coord< Maximum > >(a, i)+1;
+            Shape topLeftBB = get< Coord< Minimum > >(a, i+1);
+            Shape bottomRightBB = get< Coord< Maximum > >(a, i+1)+1;
             MultiArrayView<N, T> region = src.subarray(topLeftBB, bottomRightBB);
 
             // Call the function for a single region.
-            TinyVector<MultiArrayIndex, N> center = findEccentricityCenterSingleRegion(region, i);
+            TinyVector<MultiArrayIndex, N> center = findEccentricityCenterSingleRegion< N, T, float >(region, i+1);
             for (int d=0; d<N; ++d)
             {
                 centers(i,d) = center[d] + topLeftBB[d];
