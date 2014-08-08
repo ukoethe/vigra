@@ -10,29 +10,80 @@ namespace omp
 {
 #ifdef OPENMP
 
-template <unsigned int N, class T1, class S1,
-class T2, class S2>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline void
-copyMultiArray(MultiArrayView<N, T1, S1> const & source,
-		MultiArrayView<N, T2, S2> dest)
+copyMultiArray(SrcIterator s,
+               SrcShape const & shape, SrcAccessor src,
+               DestIterator d, DestAccessor dest)
 {
 #pragma omp parallel
 	{
-#pragma omp for schedule(guided) nowait
-		for(int y = 0; y < source.size(0); y++ )
+		//Compute size
+		shape.size() //?
+#pragma omp for scheduled(guided) nowait
+		for ()
 		{
-			vigra::copyMultiArray(source.bind<0>(y), dest-iter);
+			//For each thread: compute its reponsible ROI
+			vigra::copyMultiArray(s+begin, shape, src, d+begin, dest);
 		}
-	} // omp parallel
+	}//omp parallel
 }
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor>
+void
+copyMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+               DestIterator d, DestShape const & dshape, DestAccessor dest)
+{
+
+}
+
 #else
-template<unsigned int N, class T1, class S1, class T2, class S2>
-inline void copyMultiArray(MultiArrayView<N, T1, S1> const & source,
-		MultiArrayView<N, T2, S2> dest) {
-	vigra::copyMultiArray(source, dest);
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+copyMultiArray(SrcIterator s,
+               SrcShape const & shape, SrcAccessor src,
+               DestIterator d, DestAccessor dest)
+{
+    vigra::copyMultiArray(s, shape, src, d, dest);
 }
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor>
+void
+copyMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+               DestIterator d, DestShape const & dshape, DestAccessor dest)
+{
+    vigra::copyMultiArray(s, sshape, src, d, dshape, dest);
 }
 #endif //OPENMP
+
+//
+// Argument Object Factory versions
+//
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
+               pair<DestIterator, DestAccessor> const & dest)
+{
+
+	vigra::omp::copyMultiArray(src.first, src.second, src.third, dest.first, dest.second);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor>
+inline void
+copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
+               triple<DestIterator, DestShape, DestAccessor> const & dest)
+{
+
+	vigra::omp::copyMultiArray(src.first, src.second, src.third, dest.first, dest.second, dest.third);
+}
+
 } //namespace omp
 } //namespace vigra
 
