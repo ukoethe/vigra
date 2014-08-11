@@ -355,6 +355,39 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     }
 }
     
+#ifdef OPENMP
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor, int N>
+void
+copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+                   DestIterator d, DestShape const & dshape, DestAccessor dest, MetaInt<N>)
+{
+    DestIterator dend = d + dshape[N];
+    if(sshape[N] == 1)
+    {
+        for(; d < dend; ++d)
+        {
+            copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
+        }
+    }
+    else
+    {
+        #pragma omp parallel
+        #pragma omp single
+        {
+        for(; d < dend; ++s, ++d)
+        {
+            #pragma omp task shared(sshape, dshape, src, dest), firstprivate(s, d)
+            copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
+            #pragma omp taskwait
+        }
+        }
+    }
+}
+
+#else
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor, int N>
 void
@@ -377,6 +410,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
         }
     }
 }
+#endif // #ifdef OPENMP
     
 /** \brief Copy a multi-dimensional array.
 
