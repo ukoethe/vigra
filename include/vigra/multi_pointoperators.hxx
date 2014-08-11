@@ -373,7 +373,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     }
     else
     {
-        if(N > 3){
+        if(N > 1){
             #pragma omp parallel
             #pragma omp single
             {
@@ -381,8 +381,8 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                 {
                    #pragma omp task shared(sshape, dshape, src, dest), firstprivate(s, d)
                    copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
-                   #pragma omp taskwait
                 }
+                #pragma omp taskwait
             }
         }else{
             for(; d < dend; ++s, ++d)
