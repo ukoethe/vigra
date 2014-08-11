@@ -90,8 +90,11 @@ namespace vigra
     void defineEccentricity()
     {
         defineEcc< 2, UInt32, float >();
+        defineEcc< 3, UInt32, float >();
         defineCenters< 2, UInt32 >();
+        defineCenters< 3, UInt32 >();
         defineEccWithCenters< 2, UInt32, float >();
+        defineEccWithCenters< 3, UInt32, float >();
     }
 
 }
