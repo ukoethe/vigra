@@ -373,16 +373,24 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     }
     else
     {
-        #pragma omp parallel
-        #pragma omp single
-        {
-        for(; d < dend; ++s, ++d)
-        {
-            #pragma omp task shared(sshape, dshape, src, dest), firstprivate(s, d)
-            copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
-            #pragma omp taskwait
+        if(N > 3){
+            #pragma omp parallel
+            #pragma omp single
+            {
+                for(; d < dend; ++s, ++d)
+                {
+                   #pragma omp task shared(sshape, dshape, src, dest), firstprivate(s, d)
+                   copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
+                   #pragma omp taskwait
+                }
+            }
+        }else{
+            for(; d < dend; ++s, ++d)
+            {
+                copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
+            }
         }
-        }
+
     }
 }
 
