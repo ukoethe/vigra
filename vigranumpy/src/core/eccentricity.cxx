@@ -31,10 +31,26 @@ namespace vigra
             NumpyArray< 2, MultiArrayIndex > centers
     ){
         T maxLabel = *std::max_element(src.begin(), src.end());
-        centers.reshapeIfEmpty(Shape2(maxLabel, 2),
+        centers.reshapeIfEmpty(Shape2(maxLabel, N),
                                "eccentricityCenters(): Output has wrong dimensions");
         findEccentricityCenters(src, centers, maxLabel);
         return centers;
+    }
+
+    template< int N, class T, class S >
+    python::tuple
+    pythonEccentricityTransformWithCenters(
+            const NumpyArray< N, T > & src,
+            NumpyArray< N, S > dest,
+            NumpyArray< 2, MultiArrayIndex > centers
+    ){
+        dest.reshapeIfEmpty(src.taggedShape(),
+                            "eccentricityTransformWithCenters(): Output (dest) has wrong dimensions");
+        T maxLabel = *std::max_element(src.begin(), src.end());
+        centers.reshapeIfEmpty(Shape2(maxLabel, N),
+                               "eccentricityTransformWithCenters(): Output (centers) has wrong dimensions");
+        eccentricityTransformOnLabels(src, dest, centers);
+        return python::make_tuple(dest, centers);
     }
 
     template< int N, class T, class S >
@@ -49,7 +65,7 @@ namespace vigra
     }
 
     template< int N, class T >
-    void defineEccCenters()
+    void defineCenters()
     {
         python::def("_eccentricityCenters",registerConverters(&pythonEccentricityCenters< N, T >),
                     (
@@ -59,10 +75,23 @@ namespace vigra
         );
     }
 
+    template< int N, class T, class S >
+    void defineEccWithCenters()
+    {
+        python::def("_eccentricityTransformWithCenters",registerConverters(&pythonEccentricityTransformWithCenters<N, T, S >),
+                    (
+                        python::arg("labels"),
+                        python::arg("ecc")=python::object(),
+                        python::arg("centers")=python::object()
+                    )
+        );
+    }
+
     void defineEccentricity()
     {
         defineEcc< 2, UInt32, float >();
-        defineEccCenters< 2, UInt32 >();
+        defineCenters< 2, UInt32 >();
+        defineEccWithCenters< 2, UInt32, float >();
     }
 
 }

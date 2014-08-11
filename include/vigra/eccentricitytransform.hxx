@@ -328,47 +328,6 @@ namespace vigra
         return midpoint;
     }
 
-    /// \brief Computes the eccentricity transform (approximation) on each region of a labeled image.
-    ///
-    /// \param src : labeled image
-    /// \param dest[out] : eccentricity transform of src
-    template <unsigned int N, class T, class S>
-    void eccentricityTransformOnLabels(
-            const MultiArrayView<N, T> & src,
-            MultiArrayView<N, S> & dest
-    ){
-        using namespace acc;
-
-        typedef typename MultiArrayShape<N>::type Shape;
-
-        // Check if the image size is correct.
-        for (int d=0; d<N; ++d)
-        {
-            vigra_precondition(src.shape()[d] == dest.shape()[d], "Image sizes must match.");
-        }
-
-        // Extract bounding boxes and maximum label.
-        MultiArray<N, T> data(src);
-        AccumulatorChainArray<CoupledArrays<N, T, T>,
-                Select< DataArg<1>, LabelArg<2>,
-                    Global< Maximum >,
-                    Coord< Minimum >,
-                    Coord< Maximum > > > a;
-        extractFeatures(data, src, a);
-        T maxLabel = get< Global< Maximum > >(a);
-
-        // Cut out the bounding boxes and compute the eccentricity transform.
-        for (T i=1; i<=maxLabel; ++i)
-        {
-            Shape topLeftBB = get< Coord< Minimum > >(a, i);
-            Shape bottomRightBB = get< Coord< Maximum > >(a, i)+1;
-            MultiArrayView<N, T> srcRegion = src.subarray(topLeftBB, bottomRightBB);
-            MultiArrayView<N, S> destRegion = dest.subarray(topLeftBB, bottomRightBB);
-            eccentricityTransform(srcRegion, destRegion, i);
-        }
-
-    }
-
     /// \brief Computes the eccentricity transform (approximation). In dest, only pixels of the region with the given label are touched.
     ///
     /// \param src : labeled image
@@ -379,6 +338,23 @@ namespace vigra
             const MultiArrayView<N, T> & src,
             MultiArrayView<N, S> & dest,
             const T & label
+    ) {
+        TinyVector<MultiArrayIndex, N> center;
+        eccentricityTransform<N, T, S>(src, dest, label, center);
+    }
+
+    /// \brief Computes the eccentricity transform (approximation). In dest, only pixels of the region with the given label are touched.
+    ///
+    /// \param src : labeled image
+    /// \param dest[out] : eccentricity transform of the region "label" in src
+    /// \param label : label of the region
+    /// \param center[out] : eccentricity center
+    template <unsigned int N, class T, class S>
+    void eccentricityTransform(
+            const MultiArrayView<N, T> & src,
+            MultiArrayView<N, S> & dest,
+            const T & label,
+            TinyVector<MultiArrayIndex, N> & center
     ){
         typedef typename MultiArrayShape<N>::type Shape;
         typedef GridGraph<N, undirected_tag> Graph;
@@ -409,7 +385,11 @@ namespace vigra
         edgeWeightsFromInterpolatedImage(gGraph, interpolatedImage, edgeWeights, true);
 
         // Run dijkstra from the eccentricity center.
-        TinyVector<MultiArrayIndex, N> center = findEccentricityCenterSingleRegion< N, T, S >(src, label);
+        TinyVector<MultiArrayIndex, N> eccCenter = findEccentricityCenterSingleRegion< N, T, S >(src, label);
+        for (int i=0; i<N; ++i)
+        {
+            center[i] = eccCenter[i];
+        }
         ShortestPathDijkstra< Graph , S > pathFinder(gGraph);
         pathFinder.run(edgeWeights, center);
 
@@ -419,6 +399,66 @@ namespace vigra
             if (src[i] == label)
             {
                 dest[i] = pathFinder.distances()[i];
+            }
+        }
+    }
+
+    /// \brief Computes the eccentricity transform (approximation) on each region of a labeled image.
+    ///
+    /// \param src : labeled image
+    /// \param dest[out] : eccentricity transform of src
+    template <unsigned int N, class T, class S>
+    void eccentricityTransformOnLabels(
+            const MultiArrayView<N, T> & src,
+            MultiArrayView<N, S> & dest
+    ){
+        T maxLabel = *std::max_element(src.begin(), src.end());
+        MultiArray<2, MultiArrayIndex> centers(Shape2(maxLabel, N));
+        eccentricityTransformOnLabels<N, T, S>(src, dest, centers);
+    }
+
+    /// \brief Computes the eccentricity transform (approximation) on each region of a labeled image.
+    ///
+    /// \param src : labeled image
+    /// \param dest[out] : eccentricity transform of src
+    template <unsigned int N, class T, class S>
+    void eccentricityTransformOnLabels(
+            const MultiArrayView<N, T> & src,
+            MultiArrayView<N, S> & dest,
+            MultiArrayView<2, MultiArrayIndex> & centers
+    ){
+        using namespace acc;
+
+        typedef typename MultiArrayShape<N>::type Shape;
+
+        // Check if the image size is correct.
+        for (int d=0; d<N; ++d)
+        {
+            vigra_precondition(src.shape()[d] == dest.shape()[d], "Image sizes must match.");
+        }
+
+        // Extract bounding boxes and maximum label.
+        MultiArray<N, T> data(src);
+        AccumulatorChainArray<CoupledArrays<N, T, T>,
+                Select< DataArg<1>, LabelArg<2>,
+                    Global< Maximum >,
+                    Coord< Minimum >,
+                    Coord< Maximum > > > a;
+        extractFeatures(data, src, a);
+        T maxLabel = get< Global< Maximum > >(a);
+
+        // Cut out the bounding boxes and compute the eccentricity transform.
+        for (T i=1; i<=maxLabel; ++i)
+        {
+            Shape topLeftBB = get< Coord< Minimum > >(a, i);
+            Shape bottomRightBB = get< Coord< Maximum > >(a, i)+1;
+            MultiArrayView<N, T> srcRegion = src.subarray(topLeftBB, bottomRightBB);
+            MultiArrayView<N, S> destRegion = dest.subarray(topLeftBB, bottomRightBB);
+            TinyVector<MultiArrayIndex, N> center;
+            eccentricityTransform<N, T, S>(srcRegion, destRegion, i, center);
+            for (int d=0; d<N; ++d)
+            {
+                centers(i-1, d) = center[d] + topLeftBB[d];
             }
         }
     }
