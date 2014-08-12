@@ -5,7 +5,7 @@ import pylab
 # parameter
 filepath = '12003.jpg'  # input image path
 sigmaGradMag = 2.0      # sigma Gaussian gradient
-superpixelDiameter = 3  # super-pixel size
+superpixelDiameter = 10 # super-pixel size
 slicWeight = 10.0       # SLIC color - spatial weight
 beta = 0.5              # node vs edge weight
 nodeNumStop = 50        # desired num. nodes in result
@@ -47,7 +47,7 @@ labels = graphs.agglomerativeClustering(graph=rag, edgeWeights=edgeWeights,
 # show result
 f = pylab.figure()
 ax1 = f.add_subplot(2, 2, 1)
-vigra.imshow(img,show=False)
+vigra.imshow(gradMag,show=False)
 ax1.set_title("Input Image")
 pylab.axis('off')
 

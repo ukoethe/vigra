@@ -1649,25 +1649,36 @@ def _genGraphSegmentationFunctions():
             A node labele map encoding the segmentation
 
         """
+
         assert edgeWeights is not None or nodeFeatures is not None
+
+        print "prepare "
 
         if nodeNumStop is None:
             nodeNumStop = max(graph.nodeNum/2,min(graph.nodeNum,2))
 
+        
         if edgeLengths is None :
+            print "get edge length"
             edgeLengths = graphs.getEdgeLengths(graph)
+
+        
         if nodeSizes is None:
+            print "get node size"
             nodeSizes = graphs.getNodeSizes(graph)
 
+        
         if edgeWeights is None :
+            print "get wegihts length"
             edgeWeights = graphs.graphMap(graph,'edge')
             edgeWeights[:]=0
 
         if nodeFeatures is None :
+            print "get node feat"
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 
-
+        print "make mg"
         #import sys
         #print "graph refcout", sys.getrefcount(graph)
         mg = graphs.mergeGraph(graph)
@@ -1680,23 +1691,23 @@ def _genGraphSegmentationFunctions():
         #print "graph refcout", sys.getrefcount(graph)
         #sys.exit(0)
 
+        print "make cluster op"
 
         clusterOp = graphs.minEdgeWeightNodeDist(mg,edgeWeights=edgeWeights,edgeLengths=edgeLengths,
                                                     nodeFeatures=nodeFeatures,nodeSizes=nodeSizes,
                                                     beta=float(beta),metric=metric,wardness=wardness)
 
         
-        #clusterOp.mg=mg
-        #clusterOp.nodeSizes    = nodeSizes
-        #clusterOp.edgeLengths  = edgeLengths
-        #clusterOp.nodeFeatures = nodeFeatures
-        #clusterOp.edgeWeights  = edgeWeights        
-        hc = graphs.hierarchicalClustering(clusterOp,nodeNumStopCond=nodeNumStop)
+        print "make hc  obj" 
+        hc = graphs.hierarchicalClustering(clusterOp, nodeNumStopCond=nodeNumStop,
+                                           buildMergeTreeEncoding=False)
+        print "start"
         hc.cluster()
+        print "get result labels"
         labels = hc.resultLabels(out=out)
-        del hc
-        del clusterOp
-        del mg
+        #del hc
+        #del clusterOp
+        #del mg
         return labels
 
 
@@ -1765,9 +1776,9 @@ def _genGraphSegmentationFunctions():
     pythonClusterOperator.__module__ = 'vigra.graphs'
     graphs.pythonClusterOperator = pythonClusterOperator    
 
-    def hierarchicalClustering(clusterOperator,nodeNumStopCond):
+    def hierarchicalClustering(clusterOperator,nodeNumStopCond,buildMergeTreeEncoding=True):
         # call unsave c++ function and make it save
-        hc = graphs.__hierarchicalClustering(clusterOperator,long(nodeNumStopCond))
+        hc = graphs.__hierarchicalClustering(clusterOperator,long(nodeNumStopCond),bool(buildMergeTreeEncoding))
         #hc.__dict__['__base_object__']=clusterOperator
         hc.__base_object__ = clusterOperator
         return hc
