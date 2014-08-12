@@ -14,6 +14,7 @@
 #include <vigra/affine_registration.hxx>
 #include <vigra/projective_registration.hxx>
 #include <vigra/polynomial_registration.hxx>
+#include <vigra/rbf_registration.hxx>
 
 using namespace vigra;
 
@@ -90,6 +91,7 @@ static int pointdata[] = {
 static int point_count = 66;
 static int pointdata_size = point_count*4;
 static double test_epsilon = 1.0e-5;
+static double rbf_test_epsilon = 1.0e-2;
 
 static std::vector<TinyVector<double,2> > srcPoints()
 {
@@ -546,6 +548,235 @@ struct PolynomialRegistrationTestSuite
 };
 
 
+template<class RBF>
+struct RBFNameTraits
+{
+    static std::string name() { return "unknown"; }
+};
+
+template<>
+struct RBFNameTraits<ThinPlateSplineFunctor>
+{
+    static std::string name() { return "tps"; }
+};
+
+template<int N>
+struct RBFNameTraits<DistancePowerFunctor<N> >
+{
+    static std::string name() 
+    {
+        char num_string[16];
+        sprintf ( num_string, "%d", N );
+        return std::string("dist<") + std::string(num_string) + std::string(">"); 
+    }
+};
+
+        
+        
+template<class RadialBasisFunctor>
+struct RadialBasisRegistrationTest
+{
+    BImage s_img;
+    BImage d_img;
+    
+    std::vector<TinyVector<double,2> > s_points;
+    std::vector<TinyVector<double,2> > d_points;
+    
+    RadialBasisRegistrationTest()
+    : s_points(srcPoints()),
+    d_points(destPoints())
+    {
+        ImageImportInfo info1("nuernberg-1991.png");
+        s_img.resize(info1.width(), info1.height());
+        importImage(info1, destImage(s_img));
+        
+        ImageImportInfo info2("nuernberg-1995.png");
+        d_img.resize(info2.width(), info2.height());
+        importImage(info2, destImage(d_img));
+    }   
+    
+    void testIdentity()
+    {
+        /**
+         * First test: If point sets are equal -> identity matrix should be the result!
+         */
+        RadialBasisFunctor rbf;
+        Matrix<double> identity_weight_matrix = rbfMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), s_points.begin(),rbf);
+        
+        //Reference
+        Matrix<double> m(69, 2, 0.0);
+        
+        m(67,0) = 1;  
+        m(68,1) = 1;
+        shouldEqualToleranceMatrices(identity_weight_matrix, m, rbf_test_epsilon);
+    }
+    
+    void testEssential()
+    {
+        /**
+         * First test: If point sets are equal -> identity matrix should be the result!
+         */
+        RadialBasisFunctor rbf;
+        Matrix<double> weight_matrix = rbfMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), d_points.begin(),rbf);
+        
+        for(int j=0; j< d_points.size(); j++)
+        {
+            double x = d_points[j][0];
+            double y = d_points[j][1];
+            //Affine part		
+            double	sx = weight_matrix(point_count,0)+weight_matrix(point_count+1,0)*x+ weight_matrix(point_count+2,0)*y,
+                    sy = weight_matrix(point_count,1)+weight_matrix(point_count+1,1)*x+ weight_matrix(point_count+2,1)*y;
+            
+            //RBS part
+            for(int i=0; i<d_points.size(); i++)
+            {
+                double weight = rbf(d_points[i], d_points[j]);
+                sx += weight_matrix(i,0)*weight;
+                sy += weight_matrix(i,1)*weight;
+            }
+            shouldEqualTolerance(sx, s_points[j][0], rbf_test_epsilon);
+            shouldEqualTolerance(sy, s_points[j][1], rbf_test_epsilon);
+        }
+        
+        /**
+         * visual interpretation by means of the warped image: 
+         */
+        BImage temp = d_img;
+        rbfWarpImage(SplineImageView<2,unsigned char>(srcImageRange(s_img)), 
+                                        destImageRange(temp), 
+                                        d_points.begin(), d_points.end(),
+                                        weight_matrix,
+                                        rbf);
+        std::string filename = std::string("res-rbf(") + RBFNameTraits<RadialBasisFunctor>::name() + std::string(").png");
+        exportImage(srcImageRange(temp), ImageExportInfo(filename.c_str()));
+    }
+};
+
+struct ThinPlateSplineRegistrationTest
+{
+    BImage s_img;
+    BImage d_img;
+    
+    std::vector<TinyVector<double,2> > s_points;
+    std::vector<TinyVector<double,2> > d_points;
+    
+    ThinPlateSplineRegistrationTest()
+    : s_points(srcPoints()),
+      d_points(destPoints())
+    {
+        ImageImportInfo info1("nuernberg-1991.png");
+        s_img.resize(info1.width(), info1.height());
+        importImage(info1, destImage(s_img));
+        
+        ImageImportInfo info2("nuernberg-1995.png");
+        d_img.resize(info2.width(), info2.height());
+        importImage(info2, destImage(d_img));
+    }   
+    
+    void testInit()
+    {
+        /**
+         * First test: If point sets are equal -> identity matrix should be the result!
+         */
+        ThinPlateSplineFunctor rbf;
+        Matrix<double> weight_matrix = rbfMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), d_points.begin(),rbf);
+        
+        //Reference
+        Matrix<double> m(69,2);
+        m(0,0)  = -0.001377498384002;        m(0,1)  =  0.009226600866451;
+        m(1,0)  =  0.000032503339089;        m(1,1)  = -0.001509720626847;
+        m(2,0)  =  0.000349849805277;        m(2,1)  =  0.001938153880867;
+        m(3,0)  = -0.001340286960980;        m(3,1)  =  0.000001064271251;
+        m(4,0)  =  0.000539325657797;        m(4,1)  = -0.000543378211795;
+        m(5,0)  =  0.000348484938355;        m(5,1)  = -0.000915966809432;
+        m(6,0)  =  0.000554791916605;        m(6,1)  =  0.001775753335912;
+        m(7,0)  = -0.000365505447921;        m(7,1)  = -0.001756188922282;
+        m(8,0)  =  0.000099526739683;        m(8,1)  = -0.003328881346579;
+        m(9,0)  = -0.000855945840757;        m(9,1)  =  0.003122855949267;
+        m(10,0) = -0.000273792030977;        m(10,1) =  0.000917143372878;
+        m(11,0) =  0.002653140382189;        m(11,1) = -0.000731506595669;
+        m(12,0) = -0.000069457355061;        m(12,1) = -0.003435613347967;
+        m(13,0) =  0.001058065031450;        m(13,1) =  0.004231105333029;
+        m(14,0) = -0.000424334717220;        m(14,1) =  0.052130535965185;
+        m(15,0) = -0.000981691205091;        m(15,1) = -0.020823555463346;
+        m(16,0) = -0.000678829351729;        m(16,1) = -0.003871154682503;
+        m(17,0) =  0.001657429743661;        m(17,1) = -0.004684537034900;
+        m(18,0) =  0.001836431431159;        m(18,1) = -0.035442938589403;
+        m(19,0) = -0.000251036604155;        m(19,1) =  0.000423307680013;
+        m(20,0) = -0.000458224650186;        m(20,1) = -0.001421408760879;
+        m(21,0) =  0.000713493348626;        m(21,1) = -0.000687257870581;
+        m(22,0) = -0.001296157341485;        m(22,1) =  0.001729551998941;
+        m(23,0) =  0.000179155018211;        m(23,1) =  0.002047551397835;
+        m(24,0) = -0.001276131259978;        m(24,1) = -0.006769539699348;
+        m(25,0) = -0.001669855759675;        m(25,1) = -0.001840405300212;
+        m(26,0) =  0.006625210595690;        m(26,1) =  0.004544925562541;
+        m(27,0) =  0.005061616020780;        m(27,1) = -0.000998799955481;
+        m(28,0) = -0.004699886019629;        m(28,1) = -0.001953236466070;
+        m(29,0) = -0.006707966667593;        m(29,1) = -0.005335617405465;
+        m(30,0) = -0.000008995171240;        m(30,1) =  0.003085439002388;
+        m(31,0) = -0.003332042704579;        m(31,1) =  0.007086300850810;
+        m(32,0) =  0.000931177328601;        m(32,1) = -0.002990278471355;
+        m(33,0) =  0.002247575545516;        m(33,1) =  0.003224790578197;
+        m(34,0) = -0.003940778852971;        m(34,1) = -0.002643673196841;
+        m(35,0) =  0.003378921135544;        m(35,1) =  0.005651350720849;
+        m(36,0) = -0.003256131814242;        m(36,1) = -0.004754825881629;
+        m(37,0) =  0.006689872663251;        m(37,1) =  0.004849334797544;
+        m(38,0) = -0.005304870007691;        m(38,1) = -0.008107337815761;
+        m(39,0) =  0.004746451338148;        m(39,1) =  0.000065750506455;
+        m(40,0) = -0.002867905561383;        m(40,1) =  0.003350233719098;
+        m(41,0) = -0.001059664485314;        m(41,1) = -0.002596464294288;
+        m(42,0) =  0.004792819318783;        m(42,1) = -0.000662922218361;
+        m(43,0) = -0.003831224776921;        m(43,1) =  0.002107270860370;
+        m(44,0) = -0.000170035532265;        m(44,1) =  0.000071254611424;
+        m(45,0) =  0.000293692366501;        m(45,1) = -0.000242570567639;
+        m(46,0) =  0.000812835564245;        m(46,1) =  0.000188878966033;
+        m(47,0) = -0.000365508959215;        m(47,1) =  0.000248625368764;
+        m(48,0) =  0.000059556845286;        m(48,1) =  0.000423880323634;
+        m(49,0) =  0.000006617506705;        m(49,1) =  0.000937127030016;
+        m(50,0) =  0.000260640568960;        m(50,1) =  0.001410021894571;
+        m(51,0) =  0.000022519101131;        m(51,1) = -0.000395009938888;
+        m(52,0) = -0.000695392842208;        m(52,1) = -0.000444357574640;
+        m(53,0) = -0.000497156317044;        m(53,1) =  0.001898946517854;
+        m(54,0) =  0.000233316447714;        m(54,1) = -0.002215381428407;
+        m(55,0) =  0.001607979140179;        m(55,1) = -0.001191652089368;
+        m(56,0) = -0.001806711090928;        m(56,1) = -0.000974487074949;
+        m(57,0) =  0.001122008742798;        m(57,1) = -0.003154750122584;
+        m(58,0) =  0.000000977433459;        m(58,1) =  0.001396272823941;
+        m(59,0) = -0.000271382198722;        m(59,1) =  0.001355857463705;
+        m(60,0) =  0.000417816858966;        m(60,1) =  0.000776812795073;
+        m(61,0) = -0.000050555955893;        m(61,1) =  0.002676273718959;
+        m(62,0) =  0.001117169088679;        m(62,1) =  0.003193743999999;
+        m(63,0) = -0.000317593888323;        m(63,1) = -0.004971039750199;
+        m(64,0) = -0.000544110734374;        m(64,1) =  0.002762020120260;
+        m(65,0) =  0.000616392901421;        m(65,1) =  0.002574136813928;
+        m(66,0) =  0.000539075187236;        m(66,1) =  0.000035460307110;
+        m(67,0) =  1.033807852169952;        m(67,1) = -0.676702412782481;
+        m(68,0) = -0.260446157273618;        m(68,1) =  1.130619201887931;
+        
+        shouldEqualToleranceMatrices(weight_matrix, m, test_epsilon);
+    }
+};
+
+
+struct RadialBasisRegistrationTestSuite
+: public test_suite
+{
+    RadialBasisRegistrationTestSuite()
+    : test_suite("RadialBasisRegistrationTestSuite")
+    {
+        //TPS warping
+        add( testCase( &RadialBasisRegistrationTest<ThinPlateSplineFunctor>::testIdentity));
+        add( testCase( &RadialBasisRegistrationTest<ThinPlateSplineFunctor>::testEssential));
+        add( testCase( &ThinPlateSplineRegistrationTest::testInit));
+        //DistancePowerFunctor warping
+        add( testCase( &RadialBasisRegistrationTest<DistancePowerFunctor<1> >::testIdentity));
+        add( testCase( &RadialBasisRegistrationTest<DistancePowerFunctor<1> >::testEssential));
+        add( testCase( &RadialBasisRegistrationTest<DistancePowerFunctor<3> >::testIdentity));
+        add( testCase( &RadialBasisRegistrationTest<DistancePowerFunctor<3> >::testEssential));        
+    }
+};
+
+
 
 struct RegistrationTestCollection
 : public test_suite
@@ -556,6 +787,7 @@ struct RegistrationTestCollection
         add( new EstimateGlobalRotationTranslationTestSuite);
         add( new ProjectiveRegistrationTestSuite);
         add( new PolynomialRegistrationTestSuite);
+        add( new RadialBasisRegistrationTestSuite);
    }
 };
 

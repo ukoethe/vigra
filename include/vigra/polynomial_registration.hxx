@@ -149,7 +149,7 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
 	}
 	\endcode
 
-	\deprecatedAPI{projectiveWarpImage}
+	\deprecatedAPI{polynomialWarpImage}
 	
     pass arguments explicitly:
     \code
