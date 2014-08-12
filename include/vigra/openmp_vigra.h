@@ -50,6 +50,12 @@
 
 #include "openmp_def.h"
 
+#ifdef _MSC_VER
+#  define VIGRA_RESTRICT __restrict
+#else
+#  define VIGRA_RESTRICT __restrict__
+#endif
+
 
 namespace vigra
 {
@@ -60,14 +66,16 @@ namespace vigra
                   class SrcImageIterator2, class SrcAccessor2,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         combineTwoImages(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                          SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                          DestImageIterator dest_upperleft, DestAccessor dest_acc,
                          const Functor& functor)
         {
+            int num_threads = 1;
 #pragma omp parallel
             {
+                num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src1_lowerright - src1_upperleft);
                 Functor f(functor);
 
@@ -83,6 +91,7 @@ namespace vigra
                                             f);
                 }
             } // omp parallel
+            return num_threads;
         }
 
 
@@ -91,15 +100,17 @@ namespace vigra
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         combineTwoImagesIf(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                            SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                            MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
                            DestImageIterator dest_upperleft, DestAccessor dest_acc,
                            const Functor& functor)
         {
+            int num_threads = 1;
 #pragma omp parallel
             {
+                num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src1_lowerright - src1_upperleft);
                 Functor f(functor);
 
@@ -116,6 +127,7 @@ namespace vigra
                                               f);
                 }
             } // omp parallel
+            return num_threads;
         }
 
 
@@ -124,15 +136,17 @@ namespace vigra
                   class SrcImageIterator3, class SrcAccessor3,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         combineThreeImages(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                            SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                            SrcImageIterator3 src3_upperleft, SrcAccessor3 src3_acc,
                            DestImageIterator dest_upperleft, DestAccessor dest_acc,
                            const Functor& functor)
         {
+            int num_threads = 1;
 #pragma omp parallel
             {
+                num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src1_lowerright - src1_upperleft);
                 Functor f(functor);
 
@@ -149,17 +163,20 @@ namespace vigra
                                               f);
                 }
             } // omp parallel
+            return num_threads;
         }
 
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor>
-        inline void
+        inline int
         copyImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                   DestImageIterator dest_upperleft, DestAccessor dest_acc)
         {
+            int num_threads = 1;
 #pragma omp parallel
             {
+                num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src_lowerright - src_upperleft);
 
 #pragma omp for schedule(guided) nowait
@@ -172,19 +189,22 @@ namespace vigra
                                      dest_upperleft + begin, dest_acc);
                 }
             } // omp parallel
+            return num_threads;
         }
 
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         transformImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                        DestImageIterator dest_upperleft, DestAccessor dest_acc,
                        const Functor& functor)
         {
+            int num_threads = 1;
 #pragma omp parallel
             {
+                num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src_lowerright - src_upperleft);
                 Functor f(functor);
 
@@ -199,6 +219,7 @@ namespace vigra
                                           f);
                 }
             } // omp parallel
+            return num_threads;
         }
 
 
@@ -206,14 +227,16 @@ namespace vigra
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         transformImageIf(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                          MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
                          DestImageIterator dest_upperleft, DestAccessor dest_acc,
                          const Functor& functor)
         {
+            int num_threads = 1;
 #pragma omp parallel
             {
+                num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src_lowerright - src_upperleft);
                 Functor f(functor);
 
@@ -229,6 +252,7 @@ namespace vigra
                                             f);
                 }
             } // omp parallel
+            return num_threads;
         }
 
 
@@ -255,7 +279,7 @@ namespace vigra
 
                     int id() const {return 0;}
 
-                    void operator()(ValueType* __restrict__ d, const ValueType* __restrict__ f, int n) const
+                    void operator()(ValueType* VIGRA_RESTRICT d, const ValueType* VIGRA_RESTRICT f, int n) const
                     {
                         vigra_fail("fh::detail::ChessboardTransform1D: not implemented");
                     }
@@ -269,7 +293,7 @@ namespace vigra
 
                     int id() const {return 1;}
 
-                    void operator()(ValueType* __restrict__ d, const ValueType* __restrict__ f, int n) const
+                    void operator()(ValueType* VIGRA_RESTRICT d, const ValueType* VIGRA_RESTRICT f, int n) const
                     {
                         const ValueType one = static_cast<ValueType>(1);
 
@@ -293,7 +317,7 @@ namespace vigra
 
                     int id() const {return 2;}
 
-                    void operator()(ValueType* __restrict__ d, const ValueType* __restrict__ f, int n) const
+                    void operator()(ValueType* VIGRA_RESTRICT d, const ValueType* VIGRA_RESTRICT f, int n) const
                     {
                         typedef float math_t;
 
@@ -347,7 +371,7 @@ namespace vigra
                 template <class SrcImageIterator, class SrcAccessor,
                           class DestImageIterator, class DestAccessor,
                           class ValueType, class Transform1dFunctor>
-                void
+                int
                 fhDistanceTransform(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor sa,
                                     DestImageIterator dest_upperleft, DestAccessor da,
                                     ValueType background, Transform1dFunctor transform1d)
@@ -360,8 +384,10 @@ namespace vigra
                     const int greatest_length = std::max(size.x, size.y);
                     DistanceImageType intermediate(size, vigra::SkipInitialization);
 
+                    int num_threads = 1;
 #pragma omp parallel
                     {
+                        num_threads = omp_get_num_threads();
                         DistanceType* const f = new DistanceType[greatest_length];
                         DistanceType* const d = new DistanceType[greatest_length];
 
@@ -420,6 +446,7 @@ namespace vigra
                         delete [] d;
                         delete [] f;
                     } // omp parallel
+                    return num_threads;
                 }
             } // namespace detail
         } // namespace fh
@@ -428,7 +455,7 @@ namespace vigra
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
                   class ValueType>
-        void
+        int
         distanceTransform(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor sa,
                           DestImageIterator dest_upperleft, DestAccessor da,
                           ValueType background, int norm)
@@ -436,25 +463,25 @@ namespace vigra
             switch (norm)
             {
             case 0:
-                fh::detail::fhDistanceTransform(src_upperleft, src_lowerright, sa,
-                                                dest_upperleft, da,
-                                                background,
-                                                fh::detail::ChessboardTransform1D<float>());
+                return fh::detail::fhDistanceTransform(src_upperleft, src_lowerright, sa,
+                                                       dest_upperleft, da,
+                                                       background,
+                                                       fh::detail::ChessboardTransform1D<float>());
                 break;
 
             case 1:
-                fh::detail::fhDistanceTransform(src_upperleft, src_lowerright, sa,
-                                                dest_upperleft, da,
-                                                background,
-                                                fh::detail::ManhattanTransform1D<float>());
+                return fh::detail::fhDistanceTransform(src_upperleft, src_lowerright, sa,
+                                                       dest_upperleft, da,
+                                                       background,
+                                                       fh::detail::ManhattanTransform1D<float>());
                 break;
 
             case 2: // FALLTHROUGH
             default:
-                fh::detail::fhDistanceTransform(src_upperleft, src_lowerright, sa,
-                                                dest_upperleft, da,
-                                                background,
-                                                fh::detail::EuclideanTransform1D<float>());
+                return fh::detail::fhDistanceTransform(src_upperleft, src_lowerright, sa,
+                                                       dest_upperleft, da,
+                                                       background,
+                                                       fh::detail::EuclideanTransform1D<float>());
             }
         }
 
@@ -466,7 +493,7 @@ namespace vigra
                   class SrcImageIterator2, class SrcAccessor2,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         combineTwoImages(SrcImageIterator1 src1_upperleft,
                          SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                          SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
@@ -477,6 +504,7 @@ namespace vigra
                                     src2_upperleft, src2_acc,
                                     dest_upperleft, dest_acc,
                                     func);
+            return 1;
         }
 
 
@@ -485,7 +513,7 @@ namespace vigra
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         combineTwoImagesIf(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                            SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                            MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
@@ -497,6 +525,7 @@ namespace vigra
                                       mask_upperleft, mask_acc,
                                       dest_upperleft, dest_acc,
                                       func);
+            return 1;
         }
 
 
@@ -505,7 +534,7 @@ namespace vigra
                   class SrcImageIterator3, class SrcAccessor3,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         combineThreeImages(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 src1_acc,
                            SrcImageIterator2 src2_upperleft, SrcAccessor2 src2_acc,
                            SrcImageIterator3 src3_upperleft, SrcAccessor3 src3_acc,
@@ -517,23 +546,25 @@ namespace vigra
                                       src3_upperleft, src3_acc,
                                       dest_upperleft, dest_acc,
                                       func);
+            return 1;
         }
 
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor>
-        inline void
+        inline int
         copyImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                   DestImageIterator dest_upperleft, DestAccessor dest_acc)
         {
             vigra::copyImage(src_upperleft, src_lowerright, src_acc, dest_upperleft, dest_acc);
+            return 1;
         }
 
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         transformImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                        DestImageIterator dest_upperleft, DestAccessor dest_acc,
                        const Functor& func)
@@ -541,6 +572,7 @@ namespace vigra
             vigra::transformImage(src_upperleft, src_lowerright, src_acc,
                                   dest_upperleft, dest_acc,
                                   func);
+            return 1;
         }
 
 
@@ -548,7 +580,7 @@ namespace vigra
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         transformImageIf(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                          MaskImageIterator mask_upperleft, MaskAccessor mask_acc,
                          DestImageIterator dest_upperleft, DestAccessor dest_acc,
@@ -558,13 +590,14 @@ namespace vigra
                                     mask_upperleft, mask_acc,
                                     dest_upperleft, dest_acc,
                                     func);
+            return 1;
         }
 
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
                   class ValueType>
-        void
+        int
         distanceTransform(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor src_acc,
                           DestImageIterator dest_upperleft, DestAccessor dest_acc,
                           ValueType background, int norm)
@@ -572,6 +605,7 @@ namespace vigra
             vigra::distanceTransform(src_upperleft, src_lowerright, src_acc,
                                      dest_upperleft, dest_acc,
                                      background, norm);
+            return 1;
         }
 
 #endif // OPENMP
@@ -585,16 +619,16 @@ namespace vigra
                   class SrcImageIterator2, class SrcAccessor2,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         combineTwoImages(vigra::triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                          vigra::pair<SrcImageIterator2, SrcAccessor2> src2,
                          vigra::pair<DestImageIterator, DestAccessor> dest,
                          const Functor& functor)
         {
-            vigra::omp::combineTwoImages(src1.first, src1.second, src1.third,
-                                         src2.first, src2.second,
-                                         dest.first, dest.second,
-                                         functor);
+            return vigra::omp::combineTwoImages(src1.first, src1.second, src1.third,
+                                                src2.first, src2.second,
+                                                dest.first, dest.second,
+                                                functor);
         }
 
 
@@ -603,19 +637,19 @@ namespace vigra
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         combineTwoImagesIf(vigra::triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                            vigra::pair<SrcImageIterator2, SrcAccessor2> src2,
                            vigra::pair<MaskImageIterator, MaskAccessor> mask,
                            vigra::pair<DestImageIterator, DestAccessor> dest,
                            const Functor& functor)
         {
-            vigra::omp::combineTwoImagesIf(src1.first, src1.second, src1.third,
-                                           src2.first, src2.second,
-                                           mask.first, mask.second,
-                                           dest.first, dest.second,
-                                           functor);
-        }
+            return vigra::omp::combineTwoImagesIf(src1.first, src1.second, src1.third,
+                                                  src2.first, src2.second,
+                                                  mask.first, mask.second,
+                                                  dest.first, dest.second,
+                                                  functor);
+        }                                         
 
 
         template <class SrcImageIterator1, class SrcAccessor1,
@@ -623,43 +657,43 @@ namespace vigra
                   class SrcImageIterator3, class SrcAccessor3,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         combineThreeImages(vigra::triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                            vigra::pair<SrcImageIterator2, SrcAccessor2> src2,
                            vigra::pair<SrcImageIterator3, SrcAccessor3> src3,
                            vigra::pair<DestImageIterator, DestAccessor> dest,
                            const Functor& functor)
         {
-            vigra::omp::combineThreeImages(src1.first, src1.second, src1.third,
-                                           src2.first, src2.second,
-                                           src3.first, src3.second,
-                                           dest.first, dest.second,
-                                           functor);
+            return vigra::omp::combineThreeImages(src1.first, src1.second, src1.third,
+                                                  src2.first, src2.second,
+                                                  src3.first, src3.second,
+                                                  dest.first, dest.second,
+                                                  functor);
         }
 
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int
         transformImage(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                        vigra::pair<DestImageIterator, DestAccessor> dest,
                        const Functor& functor)
         {
-            vigra::omp::transformImage(src.first, src.second, src.third,
-                                       dest.first, dest.second,
-                                       functor);
+            return vigra::omp::transformImage(src.first, src.second, src.third,
+                                              dest.first, dest.second,
+                                              functor);
         }
 
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor>
-        inline void
+        inline int
         copyImage(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                   vigra::pair<DestImageIterator, DestAccessor> dest)
         {
-            vigra::omp::copyImage(src.first, src.second, src.third,
-                                  dest.first, dest.second);
+            return vigra::omp::copyImage(src.first, src.second, src.third,
+                                         dest.first, dest.second);
         }
 
 
@@ -667,30 +701,30 @@ namespace vigra
                   class MaskImageIterator, class MaskAccessor,
                   class DestImageIterator, class DestAccessor,
                   class Functor>
-        inline void
+        inline int 
         transformImageIf(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                          vigra::pair<MaskImageIterator, MaskAccessor> mask,
                          vigra::pair<DestImageIterator, DestAccessor> dest,
                          const Functor& functor)
         {
-            vigra::omp::transformImageIf(src.first, src.second, src.third,
-                                         mask.first, mask.second,
-                                         dest.first, dest.second,
-                                         functor);
+            return vigra::omp::transformImageIf(src.first, src.second, src.third,
+                                                mask.first, mask.second,
+                                                dest.first, dest.second,
+                                                functor);
         }
 
 
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor,
                   class ValueType>
-        inline void
+        inline int
         distanceTransform(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                           vigra::pair<DestImageIterator, DestAccessor> dest,
                           ValueType background, int norm)
         {
-            vigra::omp::distanceTransform(src.first, src.second, src.third,
-                                          dest.first, dest.second,
-                                          background, norm);
+            return vigra::omp::distanceTransform(src.first, src.second, src.third,
+                                                 dest.first, dest.second,
+                                                 background, norm);
         }
     } // namespace omp
 } // namespace vigra

@@ -108,17 +108,17 @@
     vigra::detail::checkpoint_impl(message, __FILE__, __LINE__)
 
 #define VIGRA_ASSERT(predicate) \
-    vigra::detail::should_impl((predicate), #predicate, __FILE__, __LINE__)
+    if(predicate) {} else vigra::detail::should_impl(false, #predicate, __FILE__, __LINE__)
 
 #define VIGRA_ASSERT_NOT(predicate) \
-    vigra::detail::should_impl(!(predicate), "!(" #predicate ")", __FILE__, __LINE__)
+    if(!(predicate)) {} else vigra::detail::should_impl(false, "!(" #predicate ")", __FILE__, __LINE__)
 
 #define should VIGRA_ASSERT
 
 #define shouldNot VIGRA_ASSERT_NOT
 
 #define VIGRA_ASSERT_MESSAGE(predicate, message) \
-    vigra::detail::should_impl((predicate), message, __FILE__, __LINE__)
+    if(predicate) {} else vigra::detail::should_impl(false, message, __FILE__, __LINE__)
 
 #define shouldMsg VIGRA_ASSERT_MESSAGE
 
@@ -604,13 +604,15 @@ void
 tolerance_equal_impl(T1 left, T2 right, T3 epsilon, 
                      const char * message, const char * file, int line, ScalarType)
 {
-    detail::errstream buf;
-    buf << message << " [" << left << " != " << right << "]";
 
     close_at_tolerance<T3> fcomparator( epsilon );
     bool compare = fcomparator ( (T3)left , (T3)right );
-    should_impl(compare, buf.str().c_str(), file, line);
-
+    if(!compare)
+    {
+        detail::errstream buf;
+        buf << message << " [" << left << " != " << right << "]";
+        should_impl(false, buf.str().c_str(), file, line);
+    }
 }
 
 template <class T1, class T2, class T3>
@@ -618,16 +620,18 @@ void
 tolerance_equal_impl(T1 left, T2 right, T3 epsilon, 
                      const char * message, const char * file, int line, VectorType)
 {
-    detail::errstream buf;
-    buf << message << " [" << left << " != " << right << "]";
-
     bool compare = true;
     for(unsigned int i=0; i<epsilon.size(); ++i)
     {
         close_at_tolerance<typename T3::value_type> fcomparator( epsilon[i] );
         compare = compare && fcomparator ( left[i] , right[i] );
     }
-    should_impl(compare, buf.str().c_str(), file, line);
+    if(!compare)
+    {
+        detail::errstream buf;
+        buf << message << " [" << left << " != " << right << "]";
+        should_impl(false, buf.str().c_str(), file, line);
+    }
 }
 
 template <class T1, class T2, class T3>
@@ -651,21 +655,27 @@ sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const c
 }
 
 template <class Left, class Right>
-void
+inline void
 equal_impl(Left left, Right right, const char * message, const char * file, int line)
 {
-    detail::errstream buf;
-    buf << message << " [" << left << " != " << right << "]";
-    should_impl(left == right, buf.str().c_str(), file, line);
+    if(left != right)
+    {
+        detail::errstream buf;
+        buf << message << " [" << left << " != " << right << "]";
+        should_impl(false, buf.str().c_str(), file, line);
+    }
 }
 
 template <class Left, class Right>
-void
+inline void
 equal_impl(Left * left, Right * right, const char * message, const char * file, int line)
 {
-    detail::errstream buf;
-    buf << message << " [" << (void*)left << " != " << (void*)right << "]";
-    should_impl(left == right, buf.str().c_str(), file, line);
+    if(left != right)
+    {
+        detail::errstream buf;
+        buf << message << " [" << (void*)left << " != " << (void*)right << "]";
+        should_impl(false, buf.str().c_str(), file, line);
+    }
 }
 
 inline void
