@@ -39,62 +39,56 @@
 #include "vigra/multi_pointoperators.hxx"
 #include "vigra/error.hxx"
 #include "vigra/openmp_vigra.h"
+#include "vigra/timing.hxx"
 
 using namespace std;
 using namespace vigra;
 
 struct MultiArrayPointoperatorsTest {
-	typedef float PixelType;
-	typedef MultiArray<5, PixelType> Image5D;
-	typedef MultiArrayView<5, PixelType> View5D;
-	typedef Image5D::difference_type Size5;
-	Image5D img;
-	MultiArrayPointoperatorsTest() :
-			img(Size5( 60, 60, 60, 60, 60)) {
-		int i;
-		PixelType c = 0.1f;
-		for (i = 0; i < img.elementCount(); ++i, ++c)
-			img.data()[i] = c;
-	}
-	void testCopy() {
-		Image5D res(img.shape(), 1.0);
-		double start_time = omp_get_wtime();
-		vigra::copyMultiArray(srcMultiArrayRange(img), destMultiArray(res));
-		double end_time = omp_get_wtime();
-		std::cout << "Time " << (end_time-start_time)*1000 << "ms" << std::endl;
-		//vigra::copyMultiArray(img, res1);
+    typedef float PixelType;
+    typedef MultiArray<5, PixelType> Image5D;
+    typedef Image5D::difference_type Size5;
+    Image5D img;
+    int max_threads;
 
-//        int x,y,z,k;
-//        std::cout << "res1=" << std::endl;
-//        for(k=0; k<res1.shape(3); ++k)
-//        	for(z=0; z<res1.shape(2); ++z)
-//        		for(y=0; y<res1.shape(1); ++y)
-//        			for(x=0; x<res1.shape(0); ++x)
-//        				std::cout << res1(x,y,z,k) << " ";
-//        std::cout << std::endl;
-//        std::cout << "img=" << std::endl;
-//        for(k=0; k<img.shape(3); ++k)
-//        	for(z=0; z<img.shape(2); ++z)
-//                for(y=0; y<img.shape(1); ++y)
-//                    for(x=0; x<img.shape(0); ++x)
-//                        std::cout << img(x,y,z,k) << " ";
+    MultiArrayPointoperatorsTest() :
+        img(Size5( 60, 60, 60, 60, 60))
+#ifdef OPENMP
+        , max_threads(std::max(omp_get_num_procs() / 2, 2))
+#else
+        , max_threads(1)
+#endif
+    {
+#ifdef OPENMP
+        omp_set_num_threads(max_threads);
+#endif
+        int i;
+        PixelType c = 0.1f;
+        for (i = 0; i < img.elementCount(); ++i, ++c)
+            img.data()[i] = c;
+    }
 
-		should(img == res);
-		//should(img == res1);
-	}
+    void testCopy() {
+        USETICTOC
+        Image5D res(img.shape(), 1.0);
+        TIC
+        vigra::copyMultiArray(img, res);
+        TOC
+        should(img == res);
+    }
 };
+
 struct MultiArrayPointOperatorsTestSuite: public vigra::test_suite {
-	MultiArrayPointOperatorsTestSuite() :
-			vigra::test_suite("MultiArrayPointOperatorsTestSuite") {
-		add( testCase( &MultiArrayPointoperatorsTest::testCopy ));
-	}
+    MultiArrayPointOperatorsTestSuite() :
+        vigra::test_suite("MultiArrayPointOperatorsTestSuite") {
+        add( testCase( &MultiArrayPointoperatorsTest::testCopy ));
+    }
 };
 
 int main(int argc, char ** argv) {
+    MultiArrayPointOperatorsTestSuite test;
+    int failed =  test.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test.report() << std::endl;
 
-	MultiArrayPointOperatorsTestSuite test2;
-	int failed =  test2.run(vigra::testsToBeExecuted(argc, argv));
-	std::cout << test2.report() << std::endl;
-
-	return (failed != 0);
+    return (failed != 0);
 }
