@@ -45,7 +45,7 @@
 #include "multi_array.hxx"
 #include "metaprogramming.hxx"
 #include "inspector_passes.hxx"
-
+#include "openmp_def.h"
 
 
 namespace vigra
@@ -373,7 +373,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     }
     else
     {
-        if(N > 1){
+        if(N > 2){
             #pragma omp parallel
             #pragma omp single
             {
@@ -382,7 +382,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                    #pragma omp task shared(sshape, dshape, src, dest), firstprivate(s, d)
                    copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
                 }
-                #pragma omp taskwait
+                //No need task wait because parent task does not depend on child task's result
             }
         }else{
             for(; d < dend; ++s, ++d)
@@ -390,7 +390,6 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                 copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
             }
         }
-
     }
 }
 
