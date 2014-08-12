@@ -73,30 +73,22 @@ struct OpenMPMultiArrayPointOperatorsTest {
     }
 
 
-//TODO: test function returns number of threads involved. Ref: Ulli's refactoried test functions
+//TODO: test function returns number of threads involved in parallel region
+//TODO: Meaningful runtime.
     void testInit()
         {
             Image5D res(img.shape());
             const Image5D::value_type ini = 1.1f;
+
             should(res.shape() == Size5( DIMENSION_LENGTH, DIMENSION_LENGTH,
                                          DIMENSION_LENGTH, DIMENSION_LENGTH,
                                          DIMENSION_LENGTH ));
 
             USETICTOC
             TIC
-            initMultiArray(destMultiArrayRange(res), ini);
+            initMultiArray(res, ini);
             TOC
 
-//#ifdef OPENMP
-//            int x,y,z,k,t;
-//#pragma omp parallel for private(t, k, z, y, x)
-//            for(t=0; t<img.shape(4); ++t)
-//                for(k=0; k<img.shape(3); ++k)
-//                    for(z=0; z<img.shape(2); ++z)
-//                        for(y=0; y<img.shape(1); ++y)
-//                            for(x=0; x<img.shape(0); ++x)
-//                                shouldEqual(res(x,y,z,k,t), ini);
-//#endif //#ifdef OPENMP
             using namespace multi_math;
             should(all(res == ini));
 
@@ -112,12 +104,53 @@ struct OpenMPMultiArrayPointOperatorsTest {
 
 
     void testCopy() {
-        USETICTOC
+
         Image5D res(img.shape(), 1.0);
+
+        USETICTOC
         TIC
         vigra::copyMultiArray(img, res);
         TOC
+
         should(img == res);
+    }
+
+
+    void testTransform()
+    {
+        using namespace vigra::functor;
+
+        Image5D res(img.shape());
+
+        USETICTOC
+        TIC
+        transformMultiArray(img, res, Arg1() + Arg1());
+        TOC
+
+        using namespace multi_math;
+        should(all(2.0*img == res));
+    }
+
+
+    void testTransformOuterExpand()
+    {
+        using namespace functor;
+
+        Image5D res(img.shape());
+
+        USETICTOC
+        TIC
+        transformMultiArray(img.subarray(Size5(0,0,0,0,0), Size5(DIMENSION_LENGTH,1,1,1,1)), res,
+                                Arg1() + Arg1());
+        TOC
+
+        int x,y,z,t,k;
+        for(k=0; k<img.shape(4); ++k)
+            for(t=0; t<img.shape(3); ++t)
+                for(z=0; z<img.shape(2); ++z)
+                    for(y=0; y<img.shape(1); ++y)
+                        for(x=0; x<img.shape(0); ++x)
+                            shouldEqual(res(x,y,z,t,k), 2.0*img(x,0,0,0,0));
     }
 };
 
@@ -126,7 +159,8 @@ struct MultiArrayPointOperatorsTestSuite: public vigra::test_suite {
         vigra::test_suite("MultiArrayPointOperatorsTestSuite") {
         add( testCase( &OpenMPMultiArrayPointOperatorsTest::testInit ) );
         add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCopy ));
-//        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testTransform ) );
+        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testTransform ) );
+        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testTransformOuterExpand ) );
 //        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCombine2 ) );
 //        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCombine3 ) );
 //        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testInspect ) );

@@ -736,7 +736,53 @@ transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccesso
         transformLine(s, s + sshape[0], src, d, dest, f);
     }
 }
-    
+
+#ifdef OPENMP
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor,
+          class Functor, int N>
+void
+transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+                   DestIterator d, DestShape const & dshape, DestAccessor dest,
+                   Functor const & f, MetaInt<N>)
+{
+    DestIterator dend = d + dshape[N];
+    if(sshape[N] == 1)
+    {
+        for(; d < dend; ++d)
+        {
+            transformMultiArrayExpandImpl(s.begin(), sshape, src, d.begin(), dshape, dest,
+                                          f, MetaInt<N-1>());
+        }
+    }
+    else
+    {
+        if(N > 2){
+            #pragma omp parallel
+            #pragma omp single
+            {
+                for(; d < dend; ++s, ++d)
+                {
+                    #pragma omp task shared(sshape, dshape, src, dest), firstprivate(s, d)
+                    transformMultiArrayExpandImpl(s.begin(), sshape, src,
+                                                  d.begin(), dshape, dest,
+                                                  f, MetaInt<N-1>());
+                }
+            }
+        }else{
+            for(; d < dend; ++s, ++d)
+            {
+                transformMultiArrayExpandImpl(s.begin(), sshape, src,
+                                              d.begin(), dshape, dest,
+                                                  f, MetaInt<N-1>());
+            }
+        }
+    }
+}
+
+#else
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor, 
           class Functor, int N>
@@ -763,6 +809,7 @@ transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccesso
         }
     }
 }
+#endif //#ifdef OPENMP
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor, 
