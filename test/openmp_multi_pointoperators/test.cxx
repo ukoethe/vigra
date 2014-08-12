@@ -35,24 +35,28 @@
 
 #include <functional>
 #include "vigra/unittest.hxx"
+#include "vigra/error.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_pointoperators.hxx"
-#include "vigra/error.hxx"
+#include "vigra/multi_math.hxx"
 #include "vigra/openmp_vigra.h"
 #include "vigra/timing.hxx"
 
 using namespace std;
 using namespace vigra;
 
-struct MultiArrayPointoperatorsTest {
+#define DIMENSION_LENGTH 60
+
+struct OpenMPMultiArrayPointOperatorsTest {
     typedef float PixelType;
     typedef MultiArray<5, PixelType> Image5D;
     typedef Image5D::difference_type Size5;
     Image5D img;
     int max_threads;
 
-    MultiArrayPointoperatorsTest() :
-        img(Size5( 60, 60, 60, 60, 60))
+    OpenMPMultiArrayPointOperatorsTest() :
+        img(Size5( DIMENSION_LENGTH, DIMENSION_LENGTH,
+                   DIMENSION_LENGTH, DIMENSION_LENGTH, DIMENSION_LENGTH))
 #ifdef OPENMP
         , max_threads(std::max(omp_get_num_procs() / 2, 2))
 #else
@@ -68,6 +72,45 @@ struct MultiArrayPointoperatorsTest {
             img.data()[i] = c;
     }
 
+
+//TODO: test function returns number of threads involved. Ref: Ulli's refactoried test functions
+    void testInit()
+        {
+            Image5D res(img.shape());
+            const Image5D::value_type ini = 1.1f;
+            should(res.shape() == Size5( DIMENSION_LENGTH, DIMENSION_LENGTH,
+                                         DIMENSION_LENGTH, DIMENSION_LENGTH,
+                                         DIMENSION_LENGTH ));
+
+            USETICTOC
+            TIC
+            initMultiArray(destMultiArrayRange(res), ini);
+            TOC
+
+//#ifdef OPENMP
+//            int x,y,z,k,t;
+//#pragma omp parallel for private(t, k, z, y, x)
+//            for(t=0; t<img.shape(4); ++t)
+//                for(k=0; k<img.shape(3); ++k)
+//                    for(z=0; z<img.shape(2); ++z)
+//                        for(y=0; y<img.shape(1); ++y)
+//                            for(x=0; x<img.shape(0); ++x)
+//                                shouldEqual(res(x,y,z,k,t), ini);
+//#endif //#ifdef OPENMP
+            using namespace multi_math;
+            should(all(res == ini));
+
+            initMultiArray(res, 2.2f);
+            should(all(res == 2.2f));
+
+            res = 3.3f;
+            should(all(res == 3.3f));
+
+            res.init(4.4f);
+            should(all(res == 4.4f));
+        }
+
+
     void testCopy() {
         USETICTOC
         Image5D res(img.shape(), 1.0);
@@ -81,7 +124,12 @@ struct MultiArrayPointoperatorsTest {
 struct MultiArrayPointOperatorsTestSuite: public vigra::test_suite {
     MultiArrayPointOperatorsTestSuite() :
         vigra::test_suite("MultiArrayPointOperatorsTestSuite") {
-        add( testCase( &MultiArrayPointoperatorsTest::testCopy ));
+        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testInit ) );
+        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCopy ));
+//        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testTransform ) );
+//        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCombine2 ) );
+//        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCombine3 ) );
+//        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testInspect ) );
     }
 };
 

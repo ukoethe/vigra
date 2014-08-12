@@ -77,10 +77,41 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  VALUETYPE const
     initLine(s, s + shape[0], a, v);
 }
     
+#ifdef OPENMP
+
 template <class Iterator, class Shape, class Accessor, 
           class VALUETYPE, int N>
 void
 initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  
+                   VALUETYPE const & v, MetaInt<N>)
+{
+    Iterator send = s + shape[N];
+
+    if(N > 2){
+        #pragma omp parallel
+        #pragma omp single
+        {
+            for(; s < send; ++s)
+            {
+                #pragma omp task shared(shape, a, v), firstprivate(s)
+                initMultiArrayImpl(s.begin(), shape, a, v, MetaInt<N-1>());
+            }
+        }
+    }
+    else{
+        for(; s < send; ++s)
+        {
+            initMultiArrayImpl(s.begin(), shape, a, v, MetaInt<N-1>());
+        }
+    }
+}
+
+#else
+
+template <class Iterator, class Shape, class Accessor,
+          class VALUETYPE, int N>
+void
+initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
                    VALUETYPE const & v, MetaInt<N>)
 {
     Iterator send = s + shape[N];
@@ -89,6 +120,8 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
         initMultiArrayImpl(s.begin(), shape, a, v, MetaInt<N-1>());
     }
 }
+
+#endif //#ifdef OPENMP
     
 /** \brief Write a value to every element in a multi-dimensional array.
 
