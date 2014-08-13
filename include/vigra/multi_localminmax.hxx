@@ -44,6 +44,7 @@
 #include "multi_gridgraph.hxx"
 #include "multi_labeling.hxx"
 #include "metaprogramming.hxx"
+#include "openmp_def.h"
 
 namespace vigra {
 
@@ -99,6 +100,61 @@ localMinMaxGraph(Graph const &g,
 
 namespace lemon_graph { 
 
+#ifdef OPENMP
+
+template <class Graph, class T1Map, class T2Map, class Compare>
+unsigned int
+localMinMaxGraph(Graph const &g,
+                 T1Map const &src,
+                 T2Map &dest,
+                 typename T2Map::value_type marker,
+                 typename T1Map::value_type threshold,
+                 Compare const &compare,
+                 bool allowAtBorder = true)
+{
+    typedef typename Graph::NodeIt    graph_scanner;
+    typedef typename Graph::OutArcIt  neighbor_iterator;
+
+    unsigned int count = 0;
+
+    #pragma omp parallel
+    {
+        #pragma omp single
+        for (graph_scanner node(g); node != INVALID; ++node)
+        {
+            #pragma omp task firstprivate(node)
+            {
+                typename T1Map::value_type current = src[*node];
+
+                if (!compare(current, threshold))
+                {
+                    #pragma omp taskyield
+                }
+
+                if(!allowAtBorder && node.atBorder())
+                {
+                    #pragma omp taskyield
+                }
+
+                neighbor_iterator arc(g, node);
+                for (; arc != INVALID; ++arc)
+                    if (!compare(current, src[g.target(*arc)]))
+                        break;
+
+                if (arc == INVALID)
+                {
+                    dest[*node] = marker;
+                    #pragma omp atomic
+                    ++count;
+                }
+            }
+        }
+    }
+    return count;
+}
+
+#else
+
 template <class Graph, class T1Map, class T2Map, class Compare>
 unsigned int
 localMinMaxGraph(Graph const &g, 
@@ -136,6 +192,9 @@ localMinMaxGraph(Graph const &g,
     }
     return count;
 }
+
+#endif //#ifdef OPENMP
+
 
 template <class Graph, class T1Map, class T2Map, class Compare, class Equal>
 unsigned int
