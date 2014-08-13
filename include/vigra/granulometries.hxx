@@ -174,7 +174,7 @@ int getSEArea(structuringElement2D SE) {
  */
 void granulometries(MultiArray<2, int> const &inputImage, int radius, int count,
         std::vector<double> &granulometricCurve,
-        std::vector<double> &axisAreas) {
+        std::vector<int> &axisAreas) {
 
     std::vector<structuringElement2D> SEs;
     std::vector<double> areaRatios;
@@ -202,7 +202,7 @@ void granulometries(MultiArray<2, int> const &inputImage, int radius, int count,
  */
 void granulometries(MultiArray<2, int> const &inputImage, structuringElement2D const &SE,
         int count, std::vector<double> &granulometricCurve,
-        std::vector<double> &axisAreas) {
+        std::vector<int> &axisAreas) {
     std::vector<structuringElement2D> SEs;
     std::vector<double> areaRatios;
     createSEPyramid(SE, SEs, count);
