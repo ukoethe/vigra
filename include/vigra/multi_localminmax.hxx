@@ -153,7 +153,78 @@ localMinMaxGraph(Graph const &g,
     return count;
 }
 
-#else
+
+template <class Graph, class T1Map, class T2Map, class Compare, class Equal>
+unsigned int
+extendedLocalMinMaxGraph(Graph const &g,
+                         T1Map const &src,
+                         T2Map &dest,
+                         typename T2Map::value_type marker,
+                         typename T1Map::value_type threshold,
+                         Compare const &compare,
+                         Equal const &equal,
+                         bool allowAtBorder = true)
+{
+    typename Graph::template NodeMap<unsigned int> regions(g);
+
+    int max_region_label = labelGraph(g, src, regions, equal);
+
+    // assume that a region is a extremum until the opposite is proved
+    std::vector<unsigned char> isExtremum(max_region_label+1, (unsigned char)1);
+
+    typedef typename Graph::NodeIt    graph_scanner;
+    typedef typename Graph::OutArcIt  neighbor_iterator;
+
+    unsigned int count = max_region_label;
+
+    #pragma omp parallel
+    {
+        #pragma omp single
+        for (graph_scanner node(g); node != INVALID; ++node)
+        {
+            unsigned int label = regions[*node];
+            #pragma omp task firstprivate(node, label)
+            {
+                if(!isExtremum[label])
+                {
+                    #pragma omp taskyield
+                }
+                typename T1Map::value_type current = src[*node];
+
+                if (!compare(current, threshold) ||
+                        (!allowAtBorder && node.atBorder()))
+                {
+                    isExtremum[label] = 0;
+                    #pragma omp atomic
+                    --count;
+                    {
+                        #pragma omp taskyield
+                    }
+                }
+
+                for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+                {
+                    if (label != regions[g.target(*arc)] && compare(src[g.target(*arc)], current))
+                    {
+                        isExtremum[label] = 0;
+                        #pragma omp atomic
+                        --count;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    for (graph_scanner node(g); node != INVALID; ++node)
+    {
+        if(isExtremum[regions[*node]])
+            dest[*node] = marker;
+    }
+    return count;
+}
+
+#else //#ifndef OPENMP
 
 template <class Graph, class T1Map, class T2Map, class Compare>
 unsigned int
@@ -192,8 +263,6 @@ localMinMaxGraph(Graph const &g,
     }
     return count;
 }
-
-#endif //#ifdef OPENMP
 
 
 template <class Graph, class T1Map, class T2Map, class Compare, class Equal>
@@ -252,6 +321,8 @@ extendedLocalMinMaxGraph(Graph const &g,
     }
     return count;
 }
+
+#endif //#ifdef OPENMP
 
 } // namespace lemon_graph
 
