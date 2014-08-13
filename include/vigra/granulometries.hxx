@@ -220,66 +220,6 @@ void granulometries(MultiArray<2, int> const &inputImage, structuringElement2D c
 
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////
-//
-//  Granulometries:
-//    Provide either a radius or an structuring element to perform the calculation.
-//    The output will be a granulometric curve expressed as
-//    the normalized areas of the elements covered by the structuring element.
-//    And the size of the structuring element at each point of the curve.
-//
-////////////////////////////////////////////////////////////////////////////////////////////
-
-/*
- * Disk shaped granulometries.
- */
-void granulometries(MultiArray<2, int> inputImage, int radius, int count,
-        std::vector<double> &granulometricCurve,
-        std::vector<int> &axisAreas) {
-
-    std::vector<structuringElement2D> SEs;
-    std::vector<double> areaRatios;
-
-    createSEPyramid(radius, SEs, count);
-
-    granulometricOpening(inputImage, SEs, areaRatios);
-
-    granulometricCurve.push_back(areaRatios[0]);
-
-    for (std::vector<structuringElement2D>::iterator it = SEs.begin();
-            it != SEs.end(); ++it) {
-        axisAreas.push_back(getSEArea(*it));
-    }
-
-    for (unsigned i = 1; i < areaRatios.size(); ++i) {
-        granulometricCurve.push_back(areaRatios[i] - areaRatios[i - 1]);
-    }
-
-}
-
-/*
- * General granulometries.
- * The provided structuring element will be dilated to get bigger versions.
- */
-void granulometries(MultiArray<2, int> inputImage, structuringElement2D SE,
-        int count, std::vector<double> &granulometricCurve,
-        std::vector<int> &axisAreas) {
-    std::vector<structuringElement2D> SEs;
-    std::vector<double> areaRatios;
-    createSEPyramid(SE, SEs, count);
-    granulometricOpening(inputImage, SEs, areaRatios);
-    granulometricCurve.push_back(areaRatios[0]);
-
-    for (std::vector<structuringElement2D>::iterator it = SEs.begin();
-            it != SEs.end(); ++it) {
-        axisAreas.push_back(getSEArea(*it));
-    }
-
-    for (unsigned i = 1; i < areaRatios.size(); ++i) {
-        granulometricCurve.push_back(areaRatios[i] - areaRatios[i - 1]);
-    }
-
-}
 
 } // namespace morpho
 
