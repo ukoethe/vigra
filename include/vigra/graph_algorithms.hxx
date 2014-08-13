@@ -45,7 +45,7 @@
 #include <vector>
 #include <functional>
 #include <set>
-
+#include <iomanip>
 
 /*vigra*/
 #include "graphs.hxx"
@@ -1058,6 +1058,40 @@ namespace vigra{
         }
     }
 
+
+    template<class GRAPH, class NODE_MAP, class EDGE_MAP>
+    void nodeGtToEdgeGt(
+        const GRAPH & g,
+        const NODE_MAP & nodeGt,
+        const Int64 ignoreLabel,
+        EDGE_MAP & edgeGt
+    ){
+        typedef typename  GRAPH::Node Node;
+        typedef typename  GRAPH::EdgeIt EdgeIt;
+        typedef typename  GRAPH::Edge Edge;
+
+        for(EdgeIt edgeIt(g); edgeIt!=lemon::INVALID; ++edgeIt){
+            const Edge edge(*edgeIt);
+            const Node u = g.u(edge);
+            const Node v = g.v(edge);
+
+            const Int64 lU = static_cast<Int64>(nodeGt[u]);
+            const Int64 lV = static_cast<Int64>(nodeGt[v]);
+
+            if(ignoreLabel==-1 || (lU!=ignoreLabel && lV!=ignoreLabel)){
+                edgeGt[edge] = lU == lV ? 0 : 1;
+            }
+            else{
+                edgeGt[edge] = 2;
+            }
+        }
+    }
+
+
+
+
+
+
     /// project ground truth from a base graph, to a region adjacency graph.
     ///     
     ///
@@ -1086,8 +1120,14 @@ namespace vigra{
         typedef typename MapType::const_iterator MapIter;
         typedef typename  RAG:: template NodeMap<MapType> Overlap;
         Overlap overlap(rag);
+        
+        size_t i=0;
+        std::cout<<"\n"; 
+        for(BaseGraphNodeIt baseNodeIter(baseGraph); baseNodeIter!=lemon::INVALID; ++baseNodeIter , ++i ){
 
-        for(BaseGraphNodeIt baseNodeIter(baseGraph); baseNodeIter!=lemon::INVALID; ++baseNodeIter ){
+            if (i%2000 == 0){
+                std::cout<<"\r"<<std::setw(10)<< float(i)/float(baseGraph.nodeNum())<<std::flush;
+            }
 
             const BaseGraphNode baseNode = *baseNodeIter;
 
@@ -1102,7 +1142,7 @@ namespace vigra{
             // fill overlap 
             overlap[ragNode][gtLabel]+=1;
         }
-
+        std::cout<<"\n"; 
         // select label with max overlap
         for(RagNodeIt ragNodeIter(rag); ragNodeIter!=lemon::INVALID; ++ragNodeIter ){
             const RagNode  ragNode = *ragNodeIter;

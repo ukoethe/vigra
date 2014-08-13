@@ -1091,7 +1091,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             if acc == 'mean':
               #print "get node size..."
               weights = self.baseGraph.nodeSize()
-              #print "weights == ", weights
+              print "weights == ", weights
             else :
               weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
               weights[:]=1
@@ -1157,8 +1157,9 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             return self.projectNodeFeatureToBaseGraph(features=labels)
 
         def projectBaseGraphGt(self, baseGraphGt, gt=None, gtQuality=None):
+            bggt = numpy.require(baseGraphGt,dtype=numpy.uint32)
             gt, gtQuality = graphs._ragProjectGroundTruth(rag=self, graph=self.baseGraph,
-                                                          labels=self.baseGraphLabels, gt=baseGraphGt,
+                                                          labels=self.baseGraphLabels, gt=bggt,
                                                           ragGt=gt, ragGtQuality=gtQuality)
             return gt, gtQuality
 

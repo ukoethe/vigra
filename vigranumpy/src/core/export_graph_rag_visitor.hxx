@@ -632,7 +632,7 @@ public:
                 ragNodeFeaturesArrayMap[ragNode]/=counting[ragNode];
             }
         }
-        else{
+        else if(accumulator == std::string("sum")){
             for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
                 UInt32 l = labelsArrayMap[*iter];
                 if(ignoreLabel==-1 || static_cast<Int32>(l)!=ignoreLabel){
@@ -640,6 +640,9 @@ public:
                     ragNodeFeaturesArrayMap[ragNode]+=nodeFeaturesArrayMap[*iter];
                 }
             }
+        }
+        else{
+            throw std::runtime_error("for multiband only mean and sum is implemented");
         }
         return ragNodeFeaturesArray;
     }

@@ -58,12 +58,16 @@ public:
     const static unsigned int NodeMapDim = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension;
 
     typedef NumpyArray<EdgeMapDim,   Singleband<float > > FloatEdgeArray;
+    typedef NumpyArray<EdgeMapDim,   Singleband<UInt32> > UInt32EdgeArray;
+    typedef NumpyArray<EdgeMapDim,   Singleband<Int32 > > Int32EdgeArray;
     typedef NumpyArray<NodeMapDim,   Singleband<float > > FloatNodeArray;
     typedef NumpyArray<NodeMapDim,   Singleband<UInt32> > UInt32NodeArray;
     typedef NumpyArray<NodeMapDim,   Singleband<Int32 > > Int32NodeArray;
     typedef NumpyArray<NodeMapDim +1,Multiband <float > > MultiFloatNodeArray;
 
     typedef NumpyScalarEdgeMap<Graph,FloatEdgeArray>         FloatEdgeArrayMap;
+    typedef NumpyScalarEdgeMap<Graph,UInt32EdgeArray>        UInt32EdgeArrayMap;
+    typedef NumpyScalarEdgeMap<Graph,Int32EdgeArray>         Int32EdgeArrayMap;
     typedef NumpyScalarNodeMap<Graph,FloatNodeArray>         FloatNodeArrayMap;
     typedef NumpyScalarNodeMap<Graph,UInt32NodeArray>        UInt32NodeArrayMap;
     typedef NumpyScalarNodeMap<Graph,Int32NodeArray>         Int32NodeArrayMap;
@@ -176,6 +180,18 @@ public:
                 python::arg("edgeWeights")
             )
         );
+
+        
+
+        python::def("nodeGtToEdgeGt",registerConverters(&pyNodeGtToEdgeGt),
+            (
+                python::arg("graph"),
+                python::arg("nodeGt"),
+                python::arg("ignoreLabel"),
+                python::arg("out")=python::object()
+            )
+        );
+
         python::def("_opengmArgToLabeling",registerConverters(&pyMulticutArgToLabeling),
             (
                 python::arg("graph"),
@@ -289,6 +305,24 @@ public:
         return python::make_tuple(vis,weights);
 
     }
+
+
+    static NumpyAnyArray pyNodeGtToEdgeGt(
+        const Graph &           g,
+        const UInt32NodeArray & nodeGt,
+        const Int64 ignoreLabel,
+        UInt32EdgeArray edgeGt
+    ){
+        edgeGt.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicEdgeMapShape(g));
+
+        // numpy arrays => lemon maps
+        UInt32NodeArrayMap nodeGtMap(g,nodeGt);
+        UInt32EdgeArrayMap  edgeGtMap(g,edgeGt);
+        nodeGtToEdgeGt(g, nodeGtMap, ignoreLabel, edgeGtMap);
+        return edgeGt;
+    }
+
+
 
     static NumpyAnyArray pyMulticutArgToLabeling(
         const Graph &              g,
