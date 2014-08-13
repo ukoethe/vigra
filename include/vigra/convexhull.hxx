@@ -2,10 +2,10 @@
 #ifndef VIGRA_CONVEXHULL_HXX
 #define VIGRA_CONVEXHULL_HXX
 
-#include <vigra/multi_array.hxx>
-#include <vigra/accumulator.hxx>
-#include <vigra/polygon.hxx>
-#include <vigra/labelimage.hxx>
+#include "multi_array.hxx"
+#include "accumulator.hxx"
+#include "polygon.hxx"
+#include "labelimage.hxx"
 
 namespace vigra {
 

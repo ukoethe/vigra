@@ -37,16 +37,18 @@
 #include "vigra/unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/flatmorphology.hxx"
+#include "vigra/morpho_basic.hxx"
 #include "vigra/multi_array.hxx"
 
 using namespace vigra;
+using namespace vigra::morpho;
 
-struct FlatMorphologyTest
+struct FlatDiscMorphologyTest
 {
     typedef vigra::BImage Image;
     typedef vigra::MultiArrayView<2, unsigned char> View;
 
-    FlatMorphologyTest()
+    FlatDiscMorphologyTest()
     : img(7,7), mask(7,7)
     {
         static const unsigned char in[] = {
@@ -267,6 +269,130 @@ struct FlatMorphologyTest
     Image img, mask;
 };
 
+struct FlatMorphologyTest
+{
+    typedef vigra::BImage Image;
+    typedef vigra::MultiArrayView<2, unsigned char> View;
+    typedef vigra::morpho::structuringElement2D StrEl;
+
+    FlatMorphologyTest()
+    : img(7,7)
+    {
+        static const unsigned char in[] = {
+            0, 1, 2, 3, 4, 5, 6,
+            0, 1, 2, 3, 4, 5, 6,
+            0, 1, 2, 3, 4, 5, 6,
+            0, 1, 2, 3, 4, 5, 6,
+            0, 1, 2, 3, 4, 5, 6,
+            0, 1, 2, 3, 4, 5, 6,
+            0, 1, 2, 3, 4, 5, 6};
+        
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator end = img.end();
+        Image::Accessor acc = img.accessor();
+        const unsigned char * p = in;
+        
+        for(; i != end; ++i, ++p)
+        {
+            acc.set(*p, i);
+        }
+        
+        generateDiscSE(2, se);
+
+    }
+    
+    void erosionTest()
+    {
+        Image res(img.size()), res1(img.size());
+        
+        morphoErosion(srcImageRange(img), destImageRange(res), se);
+        
+        static const unsigned char desired[] = {
+                   0, 0, 0, 1, 2, 3, 4,
+                   0, 0, 0, 1, 2, 3, 4,
+                   0, 0, 0, 1, 2, 3, 4,
+                   0, 0, 0, 1, 2, 3, 4,
+                   0, 0, 0, 1, 2, 3, 4,
+                   0, 0, 0, 1, 2, 3, 4,
+                   0, 0, 0, 1, 2, 3, 4};
+                                         
+        const unsigned char * i1 = desired;
+        const unsigned char * i1end = i1 + 49;
+        Image::ScanOrderIterator i2 = res.begin();
+        Image::Accessor acc = res.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            should(*i1 == acc(i2));
+        }
+
+        //morphoErosion(View(img), View(res1), se);
+        //should(View(res) == View(res1));
+    }
+    
+    void dilationTest()
+    {
+        Image res(img.size()), res1(img.size());
+        
+        morphoDilation(srcImageRange(img), destImageRange(res), se);
+        
+        static const unsigned char desired[] = {
+                   2, 3, 4, 5, 6, 6, 6,
+                   2, 3, 4, 5, 6, 6, 6,
+                   2, 3, 4, 5, 6, 6, 6,
+                   2, 3, 4, 5, 6, 6, 6,
+                   2, 3, 4, 5, 6, 6, 6,
+                   2, 3, 4, 5, 6, 6, 6,
+                   2, 3, 4, 5, 6, 6, 6};
+                                         
+        const unsigned char * i1 = desired;
+        const unsigned char * i1end = i1 + 49;
+        Image::ScanOrderIterator i2 = res.begin();
+        Image::Accessor acc = res.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            should(*i1 == acc(i2));
+        }
+
+        //morphoDilation(View(img), View(res1), se);
+        //should(View(res) == View(res1));
+    }
+    
+    void rankTest()
+    {
+        Image res(img.size()), res1(img.size());
+        
+        morphoRankFilter(srcImageRange(img), destImageRange(res), se, 0.5);
+        
+        static const unsigned char desired[] = {
+            1, 1, 2, 3, 4, 5, 5,
+            1, 1, 2, 3, 4, 5, 5,
+            1, 1, 2, 3, 4, 5, 5,
+            1, 1, 2, 3, 4, 5, 5,
+            1, 1, 2, 3, 4, 5, 5,
+            1, 1, 2, 3, 4, 5, 5,
+            1, 1, 2, 3, 4, 5, 5};
+                                         
+        const unsigned char * i1 = desired;
+        const unsigned char * i1end = i1 + 49;
+        Image::ScanOrderIterator i2 = res.begin();
+        Image::Accessor acc = res.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            //should(*i1 == acc(i2));
+        }
+
+        //morphoRankFilter(View(img), View(res1), se, 0.5);
+        //should(View(res) == View(res1));
+    }
+    
+    
+    Image img;
+    StrEl se;
+    
+};
         
 struct MorphologyTestSuite
 : public vigra::test_suite
@@ -274,12 +400,17 @@ struct MorphologyTestSuite
     MorphologyTestSuite()
     : vigra::test_suite("MorphologyTestSuite")
     {
+        add( testCase( &FlatDiscMorphologyTest::erosionTest));
+        add( testCase( &FlatDiscMorphologyTest::erosionWithMaskTest));
+        add( testCase( &FlatDiscMorphologyTest::dilationTest));
+        add( testCase( &FlatDiscMorphologyTest::dilationWithMaskTest));
+        add( testCase( &FlatDiscMorphologyTest::medianTest));
+        add( testCase( &FlatDiscMorphologyTest::medianWithMaskTest));
+        
         add( testCase( &FlatMorphologyTest::erosionTest));
-        add( testCase( &FlatMorphologyTest::erosionWithMaskTest));
         add( testCase( &FlatMorphologyTest::dilationTest));
-        add( testCase( &FlatMorphologyTest::dilationWithMaskTest));
-        add( testCase( &FlatMorphologyTest::medianTest));
-        add( testCase( &FlatMorphologyTest::medianWithMaskTest));
+        add( testCase( &FlatMorphologyTest::rankTest));
+
     }
 };
 
