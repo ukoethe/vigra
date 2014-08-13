@@ -1,0 +1,1 @@
+VIGRA_ADD_TEST(test_openmp_multi_pointoperators test.cxx)
