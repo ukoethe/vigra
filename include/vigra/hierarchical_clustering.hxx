@@ -129,6 +129,7 @@ namespace cluster_operators{
             mergeGraph_.registerMergeEdgeCallBack(cbMe);
             mergeGraph_.registerEraseEdgeCallBack(cbEe);
 
+            std::cout<<"insert in indexedMinMap\n";
 
             for(EdgeIt e(mergeGraph);e!=lemon::INVALID;++e){
                 const Edge edge = *e;
@@ -138,6 +139,7 @@ namespace cluster_operators{
                 pq_.push(edgeId,currentWeight);
                 minWeightEdgeMap_[graphEdge]=currentWeight;
             }
+            std::cout<<"insert in indexedMinMap done\n";
         }
 
         /// \brief will be called via callbacks from mergegraph
@@ -249,17 +251,20 @@ namespace cluster_operators{
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
-            const ValueType wardFacRaw = 1.0 / ( 1.0/std::log(nodeSizeMap_[uu]) + 1.0/std::log(nodeSizeMap_[vv]) );
+            const float sizeU = std::min(nodeSizeMap_[uu] , float(std::pow(50,3)));
+            const float sizeV = std::min(nodeSizeMap_[vv] , float(std::pow(50,3)));
+
+            const ValueType wardFacRaw = 1.0 / ( 1.0/std::sqrt(sizeU) + 1.0/std::sqrt(sizeV) );
             const ValueType wardFac = (wardFacRaw*wardness_) + (1.0-wardness_);
 
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist = metric_(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
-            return totalWeight;
-            //if(dMin==1)
-            //    return totalWeight*0.2;
-            //else
-            //    return totalWeight;
+            //return totalWeight;
+            if(dMin==1)
+                return totalWeight*0.2;
+            else
+                return totalWeight;
         }
 
 
@@ -339,17 +344,23 @@ namespace cluster_operators{
             mergeGraph_(clusterOperator_.mergeGraph()),
             graph_(mergeGraph_.graph()),
             timestamp_(graph_.maxNodeId()+1),
-            toTimeStamp_(graph_.maxNodeId()+1),
-            timeStampIndexToMergeIndex_(graph_.maxNodeId()+1),
+            toTimeStamp_(),
+            timeStampIndexToMergeIndex_(),
             mergeTreeEndcoding_()
         {
-            // this can be be made smater since user can pass
-            // stoping condition based on nodeNum
-            mergeTreeEndcoding_.reserve(graph_.nodeNum()*2);
-
-            for(MergeGraphIndexType nodeId=0;nodeId<=mergeGraph_.maxNodeId();++nodeId){
-                toTimeStamp_[nodeId]=nodeId;
+            if(param_.buildMergeTreeEncoding_){
+                // this can be be made smater since user can pass
+                // stoping condition based on nodeNum
+                mergeTreeEndcoding_.reserve(graph_.nodeNum()*2);
+                toTimeStamp_.resize(graph_.maxNodeId()+1);
+                timeStampIndexToMergeIndex_.resize(graph_.maxNodeId()+1);
+                for(MergeGraphIndexType nodeId=0;nodeId<=mergeGraph_.maxNodeId();++nodeId){
+                    toTimeStamp_[nodeId]=nodeId;
+                }
             }
+
+
+
         }
 
         /// \brief start the clustering
@@ -374,12 +385,13 @@ namespace cluster_operators{
                     timestamp_+=1;
                 }
                 else{
+                    //std::cout<<"constract\n";
                     // do the merge 
                     mergeGraph_.contractEdge( edgeToRemove );
                 }
-                if(mergeGraph_.nodeNum()%10==0)
-                //#if(param_.verbose_ && mergeGraph_.nodeNum()%10==0)
+                if(param_.verbose_ && mergeGraph_.nodeNum()%10==0){
                     std::cout<<"\rNodes: "<<std::setw(10)<<mergeGraph_.nodeNum()<<std::flush;
+                }
                 
             }
             if(param_.verbose_)

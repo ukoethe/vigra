@@ -21,7 +21,7 @@
 #include <vigra/error.hxx>
 #include <vigra/merge_graph_adaptor.hxx>
 #include <vigra/hierarchical_clustering.hxx>
-
+#include <vigra/timing.hxx>
 namespace python = boost::python;
 
 namespace vigra{
@@ -230,9 +230,17 @@ public:
 
 
     template<class CLUSTER_OP>
-    static HierarchicalClustering<CLUSTER_OP> * pyHierarchicalClusteringConstructor(CLUSTER_OP & clusterOp,const size_t nodeNumStopCond){
+    static HierarchicalClustering<CLUSTER_OP> * pyHierarchicalClusteringConstructor(
+        CLUSTER_OP & clusterOp,
+        const size_t nodeNumStopCond,
+        const bool buildMergeTreeEncoding
+
+
+    ){
         typename HierarchicalClustering<CLUSTER_OP>::Parameter param;
         param.nodeNumStopCond_=nodeNumStopCond;
+        param.buildMergeTreeEncoding_=buildMergeTreeEncoding;
+        param.verbose_=true;
         return new  HierarchicalClustering<CLUSTER_OP>(clusterOp,param);
     }
 
@@ -303,10 +311,15 @@ public:
         resultArray.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(hcluster.graph()));
 
         UInt32NodeArrayMap resultArrayMap(hcluster.graph(),resultArray);
+        std::cout<<"find result labels\n";
 
+        USETICTOC;
+
+        TIC;
         for(NodeIt iter(hcluster.graph());iter!=lemon::INVALID;++iter ){
             resultArrayMap[*iter]=hcluster.mergeGraph().reprNodeId(hcluster.graph().id(*iter));
         }
+        TOC;
         return resultArray;
     }
 
