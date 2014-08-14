@@ -1,1 +1,2 @@
 VIGRA_ADD_TEST(test_openmp test.cxx)
+VIGRA_ADD_TEST(test_omp_multi_localminmax test_omp_multi_localminmax.cxx)
