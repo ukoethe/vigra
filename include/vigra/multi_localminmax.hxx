@@ -118,25 +118,22 @@ localMinMaxGraph(Graph const &g,
     unsigned int count = 0;
 
     #pragma omp parallel
+    #pragma omp single
     {
-        #pragma omp single
         for (graph_scanner node(g); node != INVALID; ++node)
         {
-            #pragma omp task firstprivate(node)
+            typename T1Map::value_type current = src[*node];
+
+            if (!compare(current, threshold))
+                continue;
+
+            if(!allowAtBorder && node.atBorder())
+                continue;
+
+            #pragma omp task firstprivate(node, current)
             {
-                typename T1Map::value_type current = src[*node];
-
-                if (!compare(current, threshold))
-                {
-                    #pragma omp taskyield
-                }
-
-                if(!allowAtBorder && node.atBorder())
-                {
-                    #pragma omp taskyield
-                }
-
                 neighbor_iterator arc(g, node);
+
                 for (; arc != INVALID; ++arc)
                     if (!compare(current, src[g.target(*arc)]))
                         break;
@@ -153,6 +150,8 @@ localMinMaxGraph(Graph const &g,
     return count;
 }
 
+//TODO: Chuyen task xuong duoi, qua continue. Vi ko can thiet phai tao task ma de bi yield.
+//TODO: Make pull request, and ask Burcin necessary to parallelize namespace boost_graph
 
 template <class Graph, class T1Map, class T2Map, class Compare, class Equal>
 unsigned int
@@ -178,41 +177,38 @@ extendedLocalMinMaxGraph(Graph const &g,
     unsigned int count = max_region_label;
 
     #pragma omp parallel
+    #pragma omp single
     {
-        #pragma omp single
         for (graph_scanner node(g); node != INVALID; ++node)
         {
             unsigned int label = regions[*node];
-            #pragma omp task firstprivate(node, label)
+
+            if(!isExtremum[label])
+                continue;
+
+            typename T1Map::value_type current = src[*node];
+
+            if (!compare(current, threshold) ||
+                (!allowAtBorder && node.atBorder()))
             {
-                if(!isExtremum[label])
-                {
-                    #pragma omp taskyield
-                }
-                typename T1Map::value_type current = src[*node];
-
-                if (!compare(current, threshold) ||
-                        (!allowAtBorder && node.atBorder()))
-                {
-                    isExtremum[label] = 0;
-                    #pragma omp atomic
-                    --count;
-                    {
-                        #pragma omp taskyield
-                    }
-                }
-
-                for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
-                {
-                    if (label != regions[g.target(*arc)] && compare(src[g.target(*arc)], current))
-                    {
-                        isExtremum[label] = 0;
-                        #pragma omp atomic
-                        --count;
-                        break;
-                    }
-                }
+               isExtremum[label] = 0;
+               --count;
+               continue;
             }
+
+           #pragma omp task firstprivate(node, label, current)
+           {
+               for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+               {
+                   if (label != regions[g.target(*arc)] && compare(src[g.target(*arc)], current))
+                   {
+                       isExtremum[label] = 0;
+                       #pragma omp atomic
+                       --count;
+                       break;
+                   }
+               }
+           }
         }
     }
 
