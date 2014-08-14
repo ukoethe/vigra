@@ -50,51 +50,116 @@ namespace vigra {
 
 namespace boost_graph {
 
-  // Attempt without LValue propmaps, using only the free functions
-  // to access ReadablePropertyMap (input) and WritablePropertyMap (label)
+#ifdef OPENMP
+
+//TODO: Get rid of break statement inside the parallel region?
+
+// Attempt without LValue propmaps, using only the free functions
+// to access ReadablePropertyMap (input) and WritablePropertyMap (label)
+template <class Graph, class T1Map, class T2Map, class Compare>
+unsigned int
+localMinMaxGraph(Graph const &g,
+               T1Map const &src,
+               T2Map &dest,
+               typename property_traits<T2Map>::value_type marker,
+               typename property_traits<T1Map const>::value_type threshold,
+               Compare const &compare,
+               bool allowAtBorder = true)
+{
+  typedef typename graph_traits<Graph>::vertex_iterator graph_scanner;
+  typedef typename graph_traits<Graph>::adjacency_iterator neighbor_iterator;
+
+  typedef typename property_traits<T1Map const>::value_type T1;
+
+  graph_scanner node, srcend;
+  neighbor_iterator arc, nbend;
+
+  unsigned int count = 0;
+
+  #pragma omp parallel shared(count)
+  #pragma omp single
+  {
+      tie(node, srcend) = vertices(g);
+
+      for (; node != srcend; ++node)
+      {
+          const T1 current = get(src, *node);
+
+          if (!compare(current, threshold))
+              continue;
+
+          if(!allowAtBorder && node.atBorder())
+              continue;
+
+          tie(arc, nbend) = adjacent_vertices(*node, g);
+
+          #pragma omp task firstprivate(node, current, arc, nbend)
+          {
+              for (;arc != nbend; ++arc)
+                  if (!compare(current, get(src, *arc)))
+                      break;
+
+              if (arc == nbend)
+              {
+                  put(dest, *node, marker);
+                  #pragma omp atomic
+                  ++count;
+              }
+          }
+      }
+  }
+  return count;
+}
+
+#else //#ifndef OPENMP
+
+// Attempt without LValue propmaps, using only the free functions
+// to access ReadablePropertyMap (input) and WritablePropertyMap (label)
 template <class Graph, class T1Map, class T2Map, class Compare>
 unsigned int
 localMinMaxGraph(Graph const &g, 
-                 T1Map const &src,
-                 T2Map &dest,
-                 typename property_traits<T2Map>::value_type marker,
-                 typename property_traits<T1Map const>::value_type threshold,
-                 Compare const &compare,
-                 bool allowAtBorder = true)
+               T1Map const &src,
+               T2Map &dest,
+               typename property_traits<T2Map>::value_type marker,
+               typename property_traits<T1Map const>::value_type threshold,
+               Compare const &compare,
+               bool allowAtBorder = true)
 {
-    typedef typename graph_traits<Graph>::vertex_iterator graph_scanner;
-    typedef typename graph_traits<Graph>::adjacency_iterator neighbor_iterator;
+  typedef typename graph_traits<Graph>::vertex_iterator graph_scanner;
+  typedef typename graph_traits<Graph>::adjacency_iterator neighbor_iterator;
 
-    typedef typename property_traits<T1Map const>::value_type T1;
+  typedef typename property_traits<T1Map const>::value_type T1;
 
-    graph_scanner node, srcend;
-    neighbor_iterator arc, nbend;
+  graph_scanner node, srcend;
+  neighbor_iterator arc, nbend;
 
-    unsigned int count = 0;
-    tie(node, srcend) = vertices(g);
-    for (; node != srcend; ++node) 
-    {
-        const T1 current = get(src, *node);
+  unsigned int count = 0;
+  tie(node, srcend) = vertices(g);
+  for (; node != srcend; ++node)
+  {
+      const T1 current = get(src, *node);
 
-        if (!compare(current, threshold))
-            continue;
-          
-        if(!allowAtBorder && node.atBorder())
-            continue;
+      if (!compare(current, threshold))
+          continue;
         
-        tie(arc, nbend) = adjacent_vertices(*node, g);
-        for (;arc != nbend; ++arc) 
-            if (!compare(current, get(src, *arc))) 
-                break;
-                
-        if (arc == nbend)
-        {
-            put(dest, *node, marker);
-            ++count;
-        }
-    }
-    return count;
+      if(!allowAtBorder && node.atBorder())
+          continue;
+
+      tie(arc, nbend) = adjacent_vertices(*node, g);
+      for (;arc != nbend; ++arc)
+          if (!compare(current, get(src, *arc)))
+              break;
+
+      if (arc == nbend)
+      {
+          put(dest, *node, marker);
+          ++count;
+      }
+  }
+  return count;
 }
+
+#endif //#ifdef OPENMP
 
 } // namespace boost_graph
 
@@ -102,6 +167,7 @@ namespace lemon_graph {
 
 #ifdef OPENMP
 
+//TODO: Get rid of break statement inside the parallel region?
 template <class Graph, class T1Map, class T2Map, class Compare>
 unsigned int
 localMinMaxGraph(Graph const &g,
@@ -150,9 +216,8 @@ localMinMaxGraph(Graph const &g,
     return count;
 }
 
-//TODO: Chuyen task xuong duoi, qua continue. Vi ko can thiet phai tao task ma de bi yield.
-//TODO: Make pull request, and ask Burcin necessary to parallelize namespace boost_graph
 
+//TODO: Get rid of break statement inside the parallel region?
 template <class Graph, class T1Map, class T2Map, class Compare, class Equal>
 unsigned int
 extendedLocalMinMaxGraph(Graph const &g,
@@ -176,7 +241,7 @@ extendedLocalMinMaxGraph(Graph const &g,
 
     unsigned int count = max_region_label;
 
-    #pragma omp parallel
+    #pragma omp parallel shared(count)
     #pragma omp single
     {
         for (graph_scanner node(g); node != INVALID; ++node)
