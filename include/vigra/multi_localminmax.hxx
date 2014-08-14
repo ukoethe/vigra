@@ -117,7 +117,7 @@ localMinMaxGraph(Graph const &g,
 
     unsigned int count = 0;
 
-    #pragma omp parallel
+    #pragma omp parallel shared(count)
     #pragma omp single
     {
         for (graph_scanner node(g); node != INVALID; ++node)
