@@ -45,7 +45,7 @@
 using namespace std;
 using namespace vigra;
 
-#define DIMENSION_LENGTH 60
+#define DIMENSION_LENGTH 10
 
 struct OpenMPMultiArrayPointOperatorsTest {
     typedef float PixelType;
