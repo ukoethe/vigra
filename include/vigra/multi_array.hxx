@@ -241,33 +241,54 @@ VIGRA_COPY_MULTI_ARRAY_DATA(copyDiv, /=)
 #undef VIGRA_COPY_MULTI_ARRAY_DATA
 
 #ifdef OPENMP
+#define DIMENSION_RANK 2
 
 #define VIGRA_COPY_MULTI_ARRAY_DATA(name, op) \
 template <class SrcIterator, class Shape, class DestIterator, int N> \
 void \
 name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>) \
 { \
-    _Pragma("omp parallel") \
-    _Pragma("omp single") \
+    if(N > DIMENSION_RANK) \
+    { \
+        _Pragma("omp parallel") \
+        _Pragma("omp single") \
+        { \
+            for(MultiArrayIndex i=0; i < shape[N]; ++i, ++s, ++d) \
+            { \
+                _Pragma("omp task shared(shape), firstprivate(s, d)") \
+                name##MultiArrayData(s.begin(), shape, d.begin(), MetaInt<N-1>()); \
+            } \
+        } \
+    } \
+    else \
     { \
         for(MultiArrayIndex i=0; i < shape[N]; ++i, ++s, ++d) \
         { \
-            _Pragma("omp task firstprivate(s, d)") \
             name##MultiArrayData(s.begin(), shape, d.begin(), MetaInt<N-1>()); \
         } \
-    }\
+    } \
 } \
 \
 template <class DestIterator, class Shape, class T, int N> \
 void \
 name##ScalarMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<N>) \
 { \
-    _Pragma("omp parallel") \
-    _Pragma("omp single") \
+    if(N > DIMENSION_RANK) \
+    { \
+        _Pragma("omp parallel") \
+        _Pragma("omp single") \
+        { \
+            for(MultiArrayIndex i=0; i < shape[N]; ++i, ++d) \
+            { \
+                _Pragma("omp task shared(shape), firstprivate(d)") \
+                name##ScalarMultiArrayData(d.begin(), shape, init, MetaInt<N-1>()); \
+            } \
+        } \
+    } \
+    else \
     { \
         for(MultiArrayIndex i=0; i < shape[N]; ++i, ++d) \
         { \
-            _Pragma("omp task firstprivate(d)") \
             name##ScalarMultiArrayData(d.begin(), shape, init, MetaInt<N-1>()); \
         } \
     } \
@@ -280,6 +301,7 @@ VIGRA_COPY_MULTI_ARRAY_DATA(copyMul, *=)
 VIGRA_COPY_MULTI_ARRAY_DATA(copyDiv, /=)
 
 #undef VIGRA_COPY_MULTI_ARRAY_DATA
+#undef DIMENSION_RANK
 
 #else //#ifndef OPENMP
 
