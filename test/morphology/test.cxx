@@ -1,6 +1,8 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2004 by Ullrich Koethe                     */
+/*               Copyright 1998-2014 by                                 */
+/*               Ullrich Koethe,                                        */
+/*               Esteban Pardo                                          */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -29,7 +31,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -273,7 +275,7 @@ struct FlatMorphologyTest
 {
     typedef vigra::BImage Image;
     typedef vigra::MultiArrayView<2, unsigned char> View;
-    typedef vigra::morpho::structuringElement2D StrEl;
+    typedef vigra::morpho::StructuringElement2D StrEl;
 
     FlatMorphologyTest()
     : img(7,7)
@@ -326,8 +328,12 @@ struct FlatMorphologyTest
             should(*i1 == acc(i2));
         }
 
-        //morphoErosion(View(img), View(res1), se);
-        //should(View(res) == View(res1));
+        View imI = View(img);
+        View imR = View(res);
+        View imR1 = View(res1);
+        
+        morphoErosion(imI, imR1, se);
+        should(imR == imR1);
     }
     
     void dilationTest()
@@ -355,8 +361,12 @@ struct FlatMorphologyTest
             should(*i1 == acc(i2));
         }
 
-        //morphoDilation(View(img), View(res1), se);
-        //should(View(res) == View(res1));
+        View imI = View(img);
+        View imR = View(res);
+        View imR1 = View(res1);
+        
+        morphoDilation(imI, imR1, se);
+        should(imR == imR1);
     }
     
     void rankTest()
@@ -366,13 +376,13 @@ struct FlatMorphologyTest
         morphoRankFilter(srcImageRange(img), destImageRange(res), se, 0.5);
         
         static const unsigned char desired[] = {
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5};
+                0, 1, 2, 3, 4, 5, 5,
+                0, 1, 2, 3, 4, 5, 5,
+                0, 1, 2, 3, 4, 5, 6,
+                0, 1, 2, 3, 4, 5, 6,
+                0, 1, 2, 3, 4, 5, 6,
+                0, 1, 2, 3, 4, 5, 5,
+                0, 1, 2, 3, 4, 5, 5};
                                          
         const unsigned char * i1 = desired;
         const unsigned char * i1end = i1 + 49;
@@ -381,16 +391,128 @@ struct FlatMorphologyTest
         
         for(; i1 != i1end; ++i1, ++i2)
         {
-            //should(*i1 == acc(i2));
+            should(*i1 == acc(i2));
         }
 
-        //morphoRankFilter(View(img), View(res1), se, 0.5);
-        //should(View(res) == View(res1));
+        View imI = View(img);
+        View imR = View(res);
+        View imR1 = View(res1);
+        
+        morphoRankFilter(imI, imR1, se, 0.5);
+        should(imR == imR1);
     }
     
     
     Image img;
     StrEl se;
+    
+};
+
+
+struct SEMorphologyTest
+{
+    typedef vigra::BImage Image;
+    typedef vigra::MultiArrayView<2, unsigned char> View;
+    typedef vigra::morpho::StructuringElement2D StrEl;
+
+    SEMorphologyTest()
+    {
+        
+        std::vector<Diff2D> strElCoordinates;
+
+        strElCoordinates.push_back(Diff2D(0, -1));
+        strElCoordinates.push_back(Diff2D(-1, 0));
+        strElCoordinates.push_back(Diff2D(0, 0));
+        strElCoordinates.push_back(Diff2D(1, 0));
+        strElCoordinates.push_back(Diff2D(0, 1));
+
+        SE = StructuringElement2D(strElCoordinates);
+
+        strElCoordinates.clear();
+
+        strElCoordinates.push_back(Diff2D(-1, -1));
+        strElCoordinates.push_back(Diff2D(0, -1));
+        strElCoordinates.push_back(Diff2D(1, -1));
+        strElCoordinates.push_back(Diff2D(-1, 0));
+        strElCoordinates.push_back(Diff2D(0, 0));
+        strElCoordinates.push_back(Diff2D(1, 0));
+        strElCoordinates.push_back(Diff2D(-1, 1));
+        strElCoordinates.push_back(Diff2D(0, 1));
+        strElCoordinates.push_back(Diff2D(1, 1));
+        
+        inputSE = StructuringElement2D(strElCoordinates);
+
+    }
+    
+    void erosionTest()
+    {
+
+        StructuringElement2D res;
+        
+        static const Diff2D desired[] = {
+            Diff2D(0, 0)
+        };
+        
+        const Diff2D *i1 = desired;
+
+        erodeSE(inputSE, SE, res);
+        
+        int resSize = std::distance(res.begin(), res.end());
+        should(resSize == 1);
+
+        for (std::vector<Diff2D>::const_iterator it = res.begin();
+                it != res.end(); ++it, ++i1) {
+            should(*it == *i1);
+        }
+
+    }
+    
+    void dilationTest()
+    {
+    
+        StructuringElement2D res;
+
+        static const Diff2D desired[] = {
+            Diff2D(-1, -2),
+            Diff2D(0, -2),
+            Diff2D(1, -2),
+            Diff2D(-2, -1),
+            Diff2D(-1, -1),
+            Diff2D(0, -1),
+            Diff2D(1, -1),
+            Diff2D(2, -1),
+            Diff2D(-2, 0),
+            Diff2D(-1, 0),
+            Diff2D(0, 0),
+            Diff2D(1, 0),
+            Diff2D(2, 0),
+            Diff2D(-2, 1),
+            Diff2D(-1, 1),
+            Diff2D(0, 1),
+            Diff2D(1, 1),
+            Diff2D(2, 1),
+            Diff2D(-1, 2),
+            Diff2D(0, 2),
+            Diff2D(1, 2)
+        };
+        
+        const Diff2D *i1 = desired;
+
+        dilateSE(inputSE, SE, res);
+        
+        int resSize = std::distance(res.begin(), res.end());
+        should(resSize == 21);
+
+        for (std::vector<Diff2D>::const_iterator it = res.begin();
+                it != res.end(); ++it, ++i1) {
+            should(*it == *i1);
+        }
+        
+    }    
+    
+    StrEl inputSE;
+    StrEl SE; // the one performing the morphological operation
+    StrEl targetSE;
     
 };
         
@@ -410,6 +532,9 @@ struct MorphologyTestSuite
         add( testCase( &FlatMorphologyTest::erosionTest));
         add( testCase( &FlatMorphologyTest::dilationTest));
         add( testCase( &FlatMorphologyTest::rankTest));
+        
+        add( testCase( &SEMorphologyTest::erosionTest));
+        add( testCase( &SEMorphologyTest::dilationTest));
 
     }
 };

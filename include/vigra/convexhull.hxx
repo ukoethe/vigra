@@ -1,3 +1,39 @@
+/************************************************************************/
+/*                                                                      */
+/*               Copyright 1998-2014 by                                 */
+/*               Ullrich Koethe,                                        */
+/*               Esteban Pardo                                          */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
 
 #ifndef VIGRA_CONVEXHULL_HXX
 #define VIGRA_CONVEXHULL_HXX
@@ -6,88 +42,11 @@
 #include "accumulator.hxx"
 #include "polygon.hxx"
 #include "labelimage.hxx"
+#include "pointOrdering.hxx"
 
 namespace vigra {
 
 namespace detail {
-
-static const bool ASCENDING = false;
-static const bool DESCENDING = true;
-
-/*
- * functor to order Points by x-coordinate
- */
-template<typename T, bool DESCENDING>
-class PointXOrdering {
-public:
-    inline
-    bool operator()(TinyVector<T, 2> const &a,
-            TinyVector<T, 2> const &b) const {
-        return (DESCENDING) ? !(a[0] < b[0]) : (a[0] < b[0]);
-    }
-};
-
-/*
- * functor to order Points by y-coordinate
- */
-template<typename T, bool DESCENDING>
-class PointYOrdering {
-public:
-    inline
-    bool operator()(TinyVector<T, 2> const &a,
-            TinyVector<T, 2> const &b) const {
-        return (DESCENDING) ? !(a[1] < b[1]) : (a[1] < b[1]);
-    }
-};
-
-/*
- * functor to order Points by yx-coordinates (y first, x after)
- */
-template<typename T, bool DESCENDING>
-class PointYXOrdering {
-public:
-    inline
-    bool operator()(TinyVector<T, 2> const &a,
-            TinyVector<T, 2> const &b) const {
-        if (a[1] == b[1])
-            return PointXOrdering<T, DESCENDING>()(a, b);
-        else
-            return PointYOrdering<T, DESCENDING>()(a, b);
-    }
-};
-
-/*
- * functor to order Points by xy-coordinates (x first, y after)
- */
-template<typename T, bool DESCENDING>
-class PointXYOrdering {
-public:
-    inline
-    bool operator()(TinyVector<T, 2> const &a,
-            TinyVector<T, 2> const &b) const {
-        if (a[0] == b[0])
-            return PointYOrdering<T, DESCENDING>()(a, b);
-        else
-            return PointXOrdering<T, DESCENDING>()(a, b);
-    }
-};
-
-/*
- * This is used to get the area of an image
- */
-template<typename T>
-int countNonZero(MultiArray<2, T> const &array) {
-
-    using namespace vigra::acc;
-
-    vigra::MultiArray<2, double> data(array.width(), array.height());
-    AccumulatorChainArray<CoupledArrays<2, double, T>,
-            Select<LabelArg<2>, Count> > a;
-    extractFeatures(data, array, a);
-
-    int nonZero = array.width() * array.height() -  get<Count>(a, 0);
-    return nonZero;
-}
 
 /*
  * Puts all the points of the line between p1 and p2
@@ -155,7 +114,7 @@ void fillPolygon(std::vector<TinyVector<float, 2> > const &p,
     pushLinePoints(p.back(), p.front(), contour_points);
 
     sort(contour_points.begin(), contour_points.end(),
-            PointYXOrdering<float, ASCENDING>());
+            PointYXOrdering<ASCENDING>());
 
     std::vector<TinyVector<float, 2> >::iterator points_iterator =
             contour_points.begin();
@@ -311,6 +270,9 @@ bool findAnchorPoint(IMAGE_TYPE const &input_image,
     return false;
 }
 
+/*
+ * Calculates some features from the relation between a polygon, and its convex hull.
+ */
 template<class IMAGE_TYPE>
 class ConvexHullFeatures {
 public:

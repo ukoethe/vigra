@@ -1,3 +1,39 @@
+/************************************************************************/
+/*                                                                      */
+/*               Copyright 1998-2014 by                                 */
+/*               Ullrich Koethe,                                        */
+/*               Esteban Pardo                                          */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
 
 #include "multi_array.hxx"
 #include "accumulator.hxx"
@@ -9,21 +45,8 @@ namespace morpho {
 
 using namespace vigra::acc;
 
-
-template<typename T>
-int countNonZero(MultiArray<2, T> const &array) {
-
-    vigra::MultiArray<2, double> data(array.width(), array.height());
-    AccumulatorChainArray<CoupledArrays<2, double, int>,
-            Select<LabelArg<2>, Count> > a;
-    extractFeatures(data, array, a);
-
-    int nonZero = array.width() * array.height() - get<Count>(a, 0);
-    return nonZero;
-}
-
 void granulometricOpening(MultiArray<2, int> const &inputImage,
-        std::vector<structuringElement2D> const &SEs,
+        std::vector<StructuringElement2D> const &SEs,
         std::vector<double> &areas) {
 
     if (SEs.size() < 1) {
@@ -36,7 +59,7 @@ void granulometricOpening(MultiArray<2, int> const &inputImage,
 
     int inputArea = countNonZero(inputImage);
 
-    std::vector<structuringElement2D>::const_iterator it;
+    std::vector<StructuringElement2D>::const_iterator it;
     for (it = SEs.begin(); it != SEs.end(); ++it) {
         morphoOpening(inputImage, openImage, *it);
         int openArea = countNonZero(openImage);
@@ -47,73 +70,7 @@ void granulometricOpening(MultiArray<2, int> const &inputImage,
 
 }
 
-/*
- * Generates image from SE
- */
-void renderSE(structuringElement2D SE, MultiArray<2, int> &outputImage,
-        Diff2D center) {
-
-    std::vector<Diff2D>::const_iterator it;
-
-    for (int y = 0; y < outputImage.height(); ++y) {
-        for (int x = 0; x < outputImage.width(); ++x) {
-            int posX = x - center.x;
-            int posY = y - center.y;
-            it = find(SE.begin(), SE.end(), Diff2D(posX, posY));
-            if (it != SE.end()) {
-                outputImage(x, y) = 1;
-            }
-
-        }
-    }
-}
-
-/*
- * Generates SE from image
- */
-void generateSE(MultiArray<2, int> seImage, structuringElement2D &se,
-        Diff2D center) {
-
-    std::vector<Diff2D> strElCoordinates;
-
-    for (int y = 0; y < seImage.height(); ++y) {
-        for (int x = 0; x < seImage.width(); ++x) {
-            if (seImage(x, y) != 0) {
-                int posX = x - center.x;
-                int posY = y - center.y;
-                strElCoordinates.push_back(Diff2D(posX, posY));
-            }
-
-        }
-    }
-
-    se = structuringElement2D(strElCoordinates);
-}
-
-/*
- * Dilates inputSE using SE as structuring element
- */
-void dilateSE(structuringElement2D inputSE, structuringElement2D SE,
-        structuringElement2D &outputSE) {
-
-    int extensionY;
-    int extensionX;
-
-    extensionY = inputSE.maxOffset().y - inputSE.minOffset().y + 2;
-    extensionX = inputSE.maxOffset().x - inputSE.minOffset().x + 2;
-
-    MultiArray<2, int> SERender(extensionX * 2, extensionY * 2);
-    MultiArray<2, int> SERenderDilated(extensionX * 2, extensionY * 2);
-    Diff2D center(extensionX - 1, extensionY - 1);
-    renderSE(inputSE, SERender, center);
-
-    morphoDilation(SERender, SERenderDilated, SE);
-
-    generateSE(SERenderDilated, outputSE, center);
-
-}
-
-void createSEPyramid(int radius, std::vector<structuringElement2D> &SEs,
+void createSEPyramid(int radius, std::vector<StructuringElement2D> &SEs,
         int count) {
 
     if (count < 1) {
@@ -125,7 +82,7 @@ void createSEPyramid(int radius, std::vector<structuringElement2D> &SEs,
     int currentRadius = radius;
 
     for (int i = 0; i < count; ++i) {
-        structuringElement2D SE;
+        StructuringElement2D SE;
         generateDiscSE(currentRadius, SE);
         SEs.push_back(SE);
         currentRadius += radius;
@@ -133,8 +90,8 @@ void createSEPyramid(int radius, std::vector<structuringElement2D> &SEs,
 
 }
 
-void createSEPyramid(structuringElement2D const &SE,
-        std::vector<structuringElement2D> &SEs, int count) {
+void createSEPyramid(StructuringElement2D const &SE,
+        std::vector<StructuringElement2D> &SEs, int count) {
 
     if (count < 1) {
         return;
@@ -144,10 +101,10 @@ void createSEPyramid(structuringElement2D const &SE,
 
     SEs.push_back(SE);
 
-    structuringElement2D dilatedSE = SE;
+    StructuringElement2D dilatedSE = SE;
 
     for (int i = 1; i < count; ++i) {
-        structuringElement2D tmp;
+        StructuringElement2D tmp;
         dilateSE(dilatedSE, SE, tmp);
         SEs.push_back(tmp);
         dilatedSE = tmp;
@@ -155,7 +112,7 @@ void createSEPyramid(structuringElement2D const &SE,
 
 }
 
-int getSEArea(structuringElement2D SE) {
+int getSEArea(StructuringElement2D SE) {
     return std::distance(SE.begin(), SE.end());
 }
 
@@ -176,7 +133,7 @@ void granulometries(MultiArray<2, int> const &inputImage, int radius, int count,
         std::vector<double> &granulometricCurve,
         std::vector<int> &axisAreas) {
 
-    std::vector<structuringElement2D> SEs;
+    std::vector<StructuringElement2D> SEs;
     std::vector<double> areaRatios;
 
     createSEPyramid(radius, SEs, count);
@@ -185,7 +142,7 @@ void granulometries(MultiArray<2, int> const &inputImage, int radius, int count,
 
     granulometricCurve.push_back(areaRatios[0]);
 
-    for (std::vector<structuringElement2D>::iterator it = SEs.begin();
+    for (std::vector<StructuringElement2D>::iterator it = SEs.begin();
             it != SEs.end(); ++it) {
         axisAreas.push_back(getSEArea(*it));
     }
@@ -200,16 +157,16 @@ void granulometries(MultiArray<2, int> const &inputImage, int radius, int count,
  * General granulometries.
  * The provided structuring element will be dilated to get bigger versions.
  */
-void granulometries(MultiArray<2, int> const &inputImage, structuringElement2D const &SE,
+void granulometries(MultiArray<2, int> const &inputImage, StructuringElement2D const &SE,
         int count, std::vector<double> &granulometricCurve,
         std::vector<int> &axisAreas) {
-    std::vector<structuringElement2D> SEs;
+    std::vector<StructuringElement2D> SEs;
     std::vector<double> areaRatios;
     createSEPyramid(SE, SEs, count);
     granulometricOpening(inputImage, SEs, areaRatios);
     granulometricCurve.push_back(areaRatios[0]);
 
-    for (std::vector<structuringElement2D>::iterator it = SEs.begin();
+    for (std::vector<StructuringElement2D>::iterator it = SEs.begin();
             it != SEs.end(); ++it) {
         axisAreas.push_back(getSEArea(*it));
     }

@@ -1,7 +1,40 @@
-// Author(s): Thomas Walter, Esteban Pardo
-// $Date$
-// $Rev$
-// $URL$
+/************************************************************************/
+/*                                                                      */
+/*               Copyright 1998-2014 by                                 */
+/*               Ullrich Koethe,                                        */
+/*               Thomas Walter,                                         */
+/*               Esteban Pardo                                          */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
 
 #ifndef MORPHO_BASIC_HXX_
 #define MORPHO_BASIC_HXX_
@@ -9,15 +42,141 @@
 #include "morpho_utilities.hxx"
 #include "copyimage.hxx"
 #include "combineimages.hxx"
+#include "pointOrdering.hxx"
 
 namespace vigra {
 namespace morpho {
+
+/*
+ * Structuring element erosion.
+ */
+template<class SElement>
+void erodeSE(SElement inputSE, SElement SE, SElement &outputSE) {
+
+    using namespace std;
+    using namespace vigra::detail;
+
+    std::vector<Diff2D> outputSECoordinates;
+    int xMin = inputSE.minOffset().x;
+    int xMax = inputSE.maxOffset().x;
+    int yMin = inputSE.minOffset().y;
+    int yMax = inputSE.maxOffset().y;
+
+    std::vector<Diff2D> inputSECoordinates(
+            distance(inputSE.begin(), inputSE.end()));
+    std::copy(inputSE.begin(), inputSE.end(), inputSECoordinates.begin());
+    sort(inputSECoordinates.begin(), inputSECoordinates.end(),
+            PointYXOrdering<ASCENDING>());
+    inputSECoordinates.erase(
+            unique(inputSECoordinates.begin(), inputSECoordinates.end()),
+            inputSECoordinates.end());
+
+    std::vector<Diff2D> SECoordinates(distance(SE.begin(), SE.end()));
+    std::copy(SE.begin(), SE.end(), SECoordinates.begin());
+    sort(SECoordinates.begin(), SECoordinates.end(),
+            PointYXOrdering<ASCENDING>());
+    SECoordinates.erase(unique(SECoordinates.begin(), SECoordinates.end()),
+            SECoordinates.end());
+
+    for (int y = yMin; y <= yMax; ++y) {
+        for (int x = xMin; x <= xMax; ++x) {
+            std::vector<Diff2D>::const_iterator itSE = SECoordinates.begin();
+            std::vector<Diff2D>::const_iterator itInputSE;
+            Diff2D neighbour(x + itSE->x, y + itSE->y);
+            itInputSE = find(inputSECoordinates.begin(),
+                    inputSECoordinates.end(), neighbour);
+
+            while (itSE != SECoordinates.end()
+                    && itInputSE != inputSECoordinates.end()) {
+                neighbour = Diff2D(x + itSE->x, y + itSE->y);
+                while (neighbour != *itInputSE
+                        && itInputSE != inputSECoordinates.end()) {
+                    itInputSE++;
+                }
+                if (neighbour == *itInputSE) {
+                    itSE++;
+                }
+            }
+
+            if (itSE == SECoordinates.end()) {
+                outputSECoordinates.push_back(Diff2D(x, y));
+            }
+        }
+    }
+
+    outputSE = StructuringElement2D(outputSECoordinates);
+}
+
+/*
+ * Structuring element dilation.
+ */
+template<class SElement>
+void dilateSE(SElement inputSE, SElement SE, SElement &outputSE) {
+
+    using namespace std;
+    using namespace vigra::detail;
+
+    std::vector<Diff2D> outputSECoordinates;
+    int xMin = inputSE.minOffset().x + SE.minOffset().x;
+    int xMax = inputSE.maxOffset().x + SE.maxOffset().x;
+    int yMin = inputSE.minOffset().y + SE.minOffset().y;
+    int yMax = inputSE.maxOffset().y + SE.maxOffset().y;
+
+    std::vector<Diff2D> inputSECoordinates(
+            distance(inputSE.begin(), inputSE.end()));
+    std::copy(inputSE.begin(), inputSE.end(), inputSECoordinates.begin());
+    sort(inputSECoordinates.begin(), inputSECoordinates.end(),
+            PointYXOrdering<ASCENDING>());
+    inputSECoordinates.erase(
+            unique(inputSECoordinates.begin(), inputSECoordinates.end()),
+            inputSECoordinates.end());
+
+    std::vector<Diff2D> SECoordinates(distance(SE.begin(), SE.end()));
+    std::copy(SE.begin(), SE.end(), SECoordinates.begin());
+    sort(SECoordinates.begin(), SECoordinates.end(),
+            PointYXOrdering<ASCENDING>());
+    SECoordinates.erase(unique(SECoordinates.begin(), SECoordinates.end()),
+            SECoordinates.end());
+
+    for (int y = yMin; y <= yMax; ++y) {
+        for (int x = xMin; x <= xMax; ++x) {
+            std::vector<Diff2D>::const_iterator itSE = SECoordinates.begin();
+
+            for (itSE = SECoordinates.begin(); itSE != SECoordinates.end();
+                    ++itSE) {
+                Diff2D neighbour(x + itSE->x, y + itSE->y);
+                std::vector<Diff2D>::const_iterator itInputSE = find(
+                        inputSECoordinates.begin(), inputSECoordinates.end(),
+                        neighbour);
+
+                if (std::binary_search(inputSECoordinates.begin(),
+                        inputSECoordinates.end(), neighbour,
+                        PointYXOrdering<ASCENDING>())) {
+                    break;
+                }
+            }
+
+            if (itSE != SECoordinates.end()) {
+                outputSECoordinates.push_back(Diff2D(x, y));
+            }
+        }
+    }
+
+    outputSE = StructuringElement2D(outputSECoordinates);
+}
 
 /*
  *  Structuring element operation.
  *  By providing a functor you can achieve erosion, dilation,
  *  rank filtering or any other morphological operation you
  *  can express with this kind of functors.
+ */
+/*
+ * This code is less efficient than discRankOrderFilter.
+ * That may be because discRankOrderFilter doesn't iterate over the elements
+ * of an structuring element.
+ * If that's true, the efficiency of this function could be improved processing
+ * the structuring element in chunks.
  */
 template<class Iterator1, class Accessor1, class Iterator2, class Accessor2,
         class SElement, class Functor>
@@ -42,8 +201,7 @@ void morphoBasicSEOperation(Iterator1 srcUpperLeft, Iterator1 srcLowerRight,
      */
     bool seExceedsImage = (maxOffset.x - minOffset.x)
             > (srcLowerRight.x - srcUpperLeft.x)
-            || (maxOffset.y - minOffset.y)
-                    > (srcLowerRight.y - srcUpperLeft.y);
+            || (maxOffset.y - minOffset.y) > (srcLowerRight.y - srcUpperLeft.y);
 
     if (seExceedsImage) {
 
@@ -56,11 +214,12 @@ void morphoBasicSEOperation(Iterator1 srcUpperLeft, Iterator1 srcLowerRight,
                 f.reset();
                 for (typename SElement::ITERATORTYPE iter = se.begin();
                         iter != se.end(); ++iter) {
-                    if (((scurrent + *iter).y >= upperLeftCorner.y)
-                            && ((scurrent + *iter).y < lowerRightCorner.y)
-                            && ((scurrent + *iter).x >= upperLeftCorner.x)
-                            && ((scurrent + *iter).x < lowerRightCorner.x))
-                        f(srca(scurrent + *iter));
+                    Iterator1 neighbour = scurrent + *iter;
+                    if ((neighbour.y >= upperLeftCorner.y)
+                            && (neighbour.y < lowerRightCorner.y)
+                            && (neighbour.x >= upperLeftCorner.x)
+                            && (neighbour.x < lowerRightCorner.x))
+                        f(srca(neighbour));
                 }
                 desta.set(f(), dcurrent);
             } // end of x loop
@@ -81,12 +240,13 @@ void morphoBasicSEOperation(Iterator1 srcUpperLeft, Iterator1 srcLowerRight,
 
             for (; scurrent.x < srcLowerRight.x; ++scurrent.x, ++dcurrent.x) {
                 f.reset();
-                for (typename SElement::ITERATORTYPE iter = se.begin();
+                for (typename SElement::CONST_ITERATORTYPE iter = se.begin();
                         iter != se.end(); ++iter) {
-                    if (((scurrent + *iter).y >= upperLeftCorner.y)
-                            && ((scurrent + *iter).x >= upperLeftCorner.x)
-                            && ((scurrent + *iter).x < lowerRightCorner.x))
-                        f(srca(scurrent + *iter));
+                    Iterator1 neighbour = scurrent + *iter;
+                    if ((neighbour.y >= upperLeftCorner.y)
+                            && (neighbour.x >= upperLeftCorner.x)
+                            && (neighbour.x < lowerRightCorner.x))
+                        f(srca(neighbour));
                 }
                 desta.set(f(), dcurrent);
             } // end of x loop
@@ -101,10 +261,11 @@ void morphoBasicSEOperation(Iterator1 srcUpperLeft, Iterator1 srcLowerRight,
             for (; scurrent.x < upperLeftCritical.x;
                     ++scurrent.x, ++dcurrent.x) {
                 f.reset();
-                for (typename SElement::ITERATORTYPE iter = se.begin();
+                for (typename SElement::CONST_ITERATORTYPE iter = se.begin();
                         iter != se.end(); ++iter) {
-                    if ((scurrent + *iter).x >= upperLeftCorner.x)
-                        f(srca(scurrent + *iter));
+                    Iterator1 neighbour = scurrent + *iter;
+                    if (neighbour.x >= upperLeftCorner.x)
+                        f(srca(neighbour));
                 }
                 desta.set(f(), dcurrent);
             } // end of x loop (left)
@@ -112,9 +273,10 @@ void morphoBasicSEOperation(Iterator1 srcUpperLeft, Iterator1 srcLowerRight,
             for (; scurrent.x < lowerRightCritical.x;
                     ++scurrent.x, ++dcurrent.x) {
                 f.reset();
-                for (typename SElement::ITERATORTYPE iter = se.begin();
+                for (typename SElement::CONST_ITERATORTYPE iter = se.begin();
                         iter != se.end(); ++iter) {
-                    f(srca(scurrent + *iter));
+                    Iterator1 neighbour = scurrent + *iter;
+                    f(srca(neighbour));
                 }
                 desta.set(f(), dcurrent);
             } // end of the middle x loop
@@ -122,10 +284,11 @@ void morphoBasicSEOperation(Iterator1 srcUpperLeft, Iterator1 srcLowerRight,
             // the right side
             for (; scurrent.x < srcLowerRight.x; ++scurrent.x, ++dcurrent.x) {
                 f.reset();
-                for (typename SElement::ITERATORTYPE iter = se.begin();
+                for (typename SElement::CONST_ITERATORTYPE iter = se.begin();
                         iter != se.end(); ++iter) {
-                    if ((scurrent + *iter).x < lowerRightCorner.x)
-                        f(srca(scurrent + *iter));
+                    Iterator1 neighbour = scurrent + *iter;
+                    if (neighbour.x < lowerRightCorner.x)
+                        f(srca(neighbour));
                 }
                 desta.set(f(), dcurrent);
             } // end of the right x loop
@@ -139,12 +302,13 @@ void morphoBasicSEOperation(Iterator1 srcUpperLeft, Iterator1 srcLowerRight,
 
             for (; scurrent.x < srcLowerRight.x; ++scurrent.x, ++dcurrent.x) {
                 f.reset();
-                for (typename SElement::ITERATORTYPE iter = se.begin();
+                for (typename SElement::CONST_ITERATORTYPE iter = se.begin();
                         iter != se.end(); ++iter) {
-                    if (((scurrent + *iter).y < lowerRightCorner.y)
-                            && ((scurrent + *iter).x < lowerRightCorner.x)
-                            && ((scurrent + *iter).x >= upperLeftCorner.x))
-                        f(srca(scurrent + *iter));
+                    Iterator1 neighbour = scurrent + *iter;
+                    if ((neighbour.y < lowerRightCorner.y)
+                            && (neighbour.x < lowerRightCorner.x)
+                            && (neighbour.x >= upperLeftCorner.x))
+                        f(srca(neighbour));
                 }
                 desta.set(f(), dcurrent);
             } // end of x loop
@@ -152,6 +316,45 @@ void morphoBasicSEOperation(Iterator1 srcUpperLeft, Iterator1 srcLowerRight,
 
     }
 } // end of morphoBasicSEOperation
+
+/*
+ * Perform the morphological operation as many times as
+ * the structuring element needs reading sizeMultiplier
+ */
+template<class Iterator1, class Accessor1, class Iterator2, class Accessor2,
+        class SElement, class Functor>
+void runPasses(vigra::triple<Iterator1, Iterator1, Accessor1> src,
+        vigra::triple<Iterator2, Iterator2, Accessor2> dest, SElement se,
+        Functor f) {
+
+    vigra_precondition(se.sizeMultiplier > 0,
+            "Structuring element size multiplier must be higher than 0.");
+
+    morphoBasicSEOperation(src.first, src.second, src.third, dest.first,
+            dest.third, se, f);
+
+    if (se.sizeMultiplier > 1) {
+
+        vigra::BasicImage<typename Accessor2::value_type> temp(
+                dest.second - dest.first);
+
+        // a morphological rank filtering with se of size n
+        // corresponds to n morphological filterings with size 1.
+        for (int i = 1; i < se.sizeMultiplier; i++) {
+            if (i % 2 == 0)
+                morphoBasicSEOperation(temp.upperLeft(), temp.lowerRight(),
+                        temp.accessor(), dest.first, dest.third, se, f);
+            else
+                morphoBasicSEOperation(dest.first, dest.second, dest.third,
+                        temp.upperLeft(), temp.accessor(), se, f);
+        }
+
+        if (se.sizeMultiplier % 2 == 0)
+            vigra::copyImage(temp.upperLeft(), temp.lowerRight(),
+                    temp.accessor(), dest.first, dest.third);
+    }
+
+}
 
 /////////////////////////////////////////////////////////////////////////
 // RANK FILTER
@@ -161,29 +364,9 @@ template<class Iterator1, class Accessor1, class Iterator2, class Accessor2,
 void morphoRankFilter(vigra::triple<Iterator1, Iterator1, Accessor1> src,
         vigra::triple<Iterator2, Iterator2, Accessor2> dest, SElement se,
         double rank) {
-    vigra::BasicImage<typename Accessor2::value_type> temp(
-            dest.second - dest.first);
 
-    if (se.size > 0)
-        morphoBasicSEOperation(src.first, src.second, src.third, dest.first,
-                dest.third, se, Rank<typename Accessor1::value_type>(rank));
+    runPasses(src, dest, se, Rank<typename Accessor1::value_type>(rank));
 
-    // a morphological rank filtering with se of size n
-    // corresponds to n morphological filterings with size 1.
-    for (int i = 1; i < se.size; i++) {
-        if (i % 2 == 0)
-            morphoBasicSEOperation(temp.upperLeft(), temp.lowerRight(),
-                    temp.accessor(), dest.first, dest.third, se,
-                    Rank<typename Accessor1::value_type>(rank));
-        else
-            morphoBasicSEOperation(dest.first, dest.second, dest.third,
-                    temp.upperLeft(), temp.accessor(), se,
-                    Rank<typename Accessor1::value_type>(rank));
-    }
-
-    if (se.size % 2 == 0)
-        vigra::copyImage(temp.upperLeft(), temp.lowerRight(), temp.accessor(),
-                dest.first, dest.third);
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -195,29 +378,8 @@ template<class Iterator1, class Accessor1, class Iterator2, class Accessor2,
         class SElement>
 void morphoDilation(vigra::triple<Iterator1, Iterator1, Accessor1> src,
         vigra::triple<Iterator2, Iterator2, Accessor2> dest, SElement se) {
-    vigra::BasicImage<typename Accessor2::value_type> temp(
-            dest.second - dest.first);
 
-    if (se.size > 0)
-        morphoBasicSEOperation(src.first, src.second, src.third, dest.first,
-                dest.third, se, Max<typename Accessor1::value_type>());
-
-    // a morphological dilation with se of size n
-    // corresponds to n morphological dilations with size 1.
-    for (int i = 1; i < se.size; i++) {
-        if (i % 2 == 0)
-            morphoBasicSEOperation(temp.upperLeft(), temp.lowerRight(),
-                    temp.accessor(), dest.first, dest.third, se,
-                    Max<typename Accessor1::value_type>());
-        else
-            morphoBasicSEOperation(dest.first, dest.second, dest.third,
-                    temp.upperLeft(), temp.accessor(), se,
-                    Max<typename Accessor1::value_type>());
-    }
-
-    if (se.size % 2 == 0)
-        vigra::copyImage(temp.upperLeft(), temp.lowerRight(), temp.accessor(),
-                dest.first, dest.third);
+    runPasses(src, dest, se, Max<typename Accessor1::value_type>());
 } // end of dilation
 
 // Morphological erosion
@@ -226,29 +388,7 @@ template<class Iterator1, class Accessor1, class Iterator2, class Accessor2,
 void morphoErosion(vigra::triple<Iterator1, Iterator1, Accessor1> src,
         vigra::triple<Iterator2, Iterator2, Accessor2> dest, SElement se) {
 
-    vigra::BasicImage<typename Accessor2::value_type> temp(
-            dest.second - dest.first);
-
-    if (se.size > 0)
-        morphoBasicSEOperation(src.first, src.second, src.third, dest.first,
-                dest.third, se, Min<typename Accessor1::value_type>());
-
-    // a morphological erosion with se of size n
-    // corresponds to n morphological erosions with size 1.
-    for (int i = 1; i < se.size; i++) {
-        if (i % 2 == 0)
-            morphoBasicSEOperation(temp.upperLeft(), temp.lowerRight(),
-                    temp.accessor(), dest.first, dest.third, se,
-                    Min<typename Accessor1::value_type>());
-        else
-            morphoBasicSEOperation(dest.first, dest.second, dest.third,
-                    temp.upperLeft(), temp.accessor(), se,
-                    Min<typename Accessor1::value_type>());
-    }
-
-    if (se.size % 2 == 0)
-        vigra::copyImage(temp.upperLeft(), temp.lowerRight(), temp.accessor(),
-                dest.first, dest.third);
+    runPasses(src, dest, se, Min<typename Accessor1::value_type>());
 
 } // end of erosion
 

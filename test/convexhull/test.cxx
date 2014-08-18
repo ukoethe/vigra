@@ -1,6 +1,8 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2004 by Ullrich Koethe                     */
+/*               Copyright 1998-2014 by                                 */
+/*               Ullrich Koethe,                                        */
+/*               Esteban Pardo                                          */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -29,399 +31,166 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
-#include "vigra/unittest.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/flatmorphology.hxx"
-#include "vigra/morpho_basic.hxx"
-#include "vigra/multi_array.hxx"
+#include <vigra/unittest.hxx>
+#include <vigra/multi_array.hxx>
+#include <vigra/convexhull.hxx>
+
 
 using namespace vigra;
-using namespace vigra::morpho;
+using namespace vigra::detail;
 
-struct FlatDiscMorphologyTest
+struct ConvexHullTest
 {
-    typedef vigra::BImage Image;
-    typedef vigra::MultiArrayView<2, unsigned char> View;
 
-    FlatDiscMorphologyTest()
-    : img(7,7), mask(7,7)
+    MultiArray<2, int> mask;
+    
+    ConvexHullTest()
     {
-        static const unsigned char in[] = {
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6};
-        
-        Image::ScanOrderIterator i = img.begin();
-        Image::ScanOrderIterator end = img.end();
-        Image::Accessor acc = img.accessor();
-        const unsigned char * p = in;
-        
-        for(; i != end; ++i, ++p)
-        {
-            acc.set(*p, i);
-        }
+    
+        int size = 6;
+        mask = MultiArray<2, int> (Shape2(size, size));
 
-        static const unsigned char in1[] = {
-            1, 1, 1, 1, 1, 1, 1,
-            0, 1, 1, 1, 1, 1, 0,
-            0, 1, 1, 1, 1, 1, 0,
-            0, 1, 1, 1, 1, 1, 0,
-            0, 1, 1, 1, 1, 1, 0,
-            0, 1, 1, 1, 1, 1, 0,
-            1, 1, 1, 1, 1, 1, 1};
-        
-        i = mask.begin();
-        end = mask.end();
-        p = in1;
-        
-        for(; i != end; ++i, ++p)
-        {
-            acc.set(*p, i);
-        }
+        mask(1, 1) = 1;
+        mask(1, 2) = 1;
+        mask(2, 2) = 1;
+        mask(3, 2) = 1;
+        mask(3, 1) = 1;
+        mask(1, 3) = 1;
+        mask(3, 3) = 1;
+        mask(1, 4) = 1;
+        mask(3, 4) = 1;
+    
     }
     
-    void erosionTest()
+    void testPushLinePoints()
     {
-        Image res(img.size()), res1(img.size());
+        using namespace std;
+
+        std::vector<TinyVector<float, 2> > middle_points;
+        TinyVector<float, 2> a(0, 0);
+        TinyVector<float, 2> b(2, 0.5);
+        pushLinePoints(a, b, middle_points);
         
-        discErosion(srcImageRange(img), destImage(res), 2);
+        TinyVector<float, 2> real_middle_points[] = {
+        TinyVector<float, 2>(1, 0.25)
+        };
         
-        static const unsigned char desired[] = {
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4};
-                                         
-        const unsigned char * i1 = desired;
-        const unsigned char * i1end = i1 + 49;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
-        
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
+        for (int i = 0; i < 1; ++i) {
+            shouldEqualTolerance(middle_points[i][0], real_middle_points[i][0], 1e-2);
+            shouldEqualTolerance(middle_points[i][1], real_middle_points[i][1], 1e-2);
         }
 
-        discErosion(View(img), View(res1), 2);
-        should(View(res) == View(res1));
     }
     
-    void erosionWithMaskTest()
+    void testExtractContour()
     {
-        Image res(img.size(), 9), res1(img.size(), 9);
+        using namespace std;
+
+        TinyVector<int, 2> anchor_point;
+        findAnchorPoint(mask, anchor_point);
+        vector<TinyVector<float, 2> > contour_points;
+
+        extractContour(mask, anchor_point, contour_points);
         
-        discErosionWithMask(srcImageRange(img), maskImage(mask),
-                            destImage(res), 2);
+        TinyVector<float, 2> real_contour_points[] = {
+        TinyVector<float, 2>(1, 0.5),
+        TinyVector<float, 2>(0.5, 1),
+        TinyVector<float, 2>(0.5, 2),
+        TinyVector<float, 2>(0.5, 3),
+        TinyVector<float, 2>(0.5, 4),
+        TinyVector<float, 2>(1, 4.5),
+        TinyVector<float, 2>(1.5, 4),
+        TinyVector<float, 2>(1.5, 3),
+        TinyVector<float, 2>(2, 2.5),
+        TinyVector<float, 2>(2.5, 3),
+        TinyVector<float, 2>(2.5, 4),
+        TinyVector<float, 2>(3, 4.5),
+        TinyVector<float, 2>(3.5, 4),
+        TinyVector<float, 2>(3.5, 3),
+        TinyVector<float, 2>(3.5, 2),
+        TinyVector<float, 2>(3.5, 1),
+        TinyVector<float, 2>(3, 0.5),
+        TinyVector<float, 2>(2.5, 1),
+        TinyVector<float, 2>(2, 1.5),
+        TinyVector<float, 2>(1.5, 1),
+        };
         
-        static const unsigned char desired[] = {
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 1, 1, 2, 3, 4,
-                   1, 1, 1, 1, 2, 3, 4,
-                   0, 0, 1, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4};
-                                         
-        const unsigned char * i1 = desired;
-        const unsigned char * i1end = i1 + 49;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
-        
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
+        for (int i = 0; i < 20; ++i) {
+            shouldEqualTolerance(contour_points[i][0], real_contour_points[i][0], 1e-2);
+            shouldEqualTolerance(contour_points[i][1], real_contour_points[i][1], 1e-2);
         }
 
-        discErosionWithMask(View(img), View(mask), View(res1), 2);
-        should(View(res) == View(res1));
     }
     
-    void dilationTest()
+    void testConvexHullFeatures()
     {
-        Image res(img.size()), res1(img.size());
-        
-        discDilation(srcImageRange(img), destImage(res), 2);
-        
-        static const unsigned char desired[] = {
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6};
-                                         
-        const unsigned char * i1 = desired;
-        const unsigned char * i1end = i1 + 49;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
-        
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
+        using namespace vigra::acc;
+        using namespace std;
 
-        discDilation(View(img), View(res1), 2);
-        should(View(res) == View(res1));
-    }
-    
-    void dilationWithMaskTest()
-    {
-        Image res(img.size(), 9), res1(img.size(), 9);
-        
-        discDilationWithMask(srcImageRange(img), maskImage(mask),
-                            destImage(res), 2);
-        
-        static const unsigned char desired[] = {
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 5, 6, 6,
-                   2, 3, 4, 5, 5, 5, 5,
-                   2, 3, 4, 5, 5, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6};
-                                         
-        const unsigned char * i1 = desired;
-        const unsigned char * i1end = i1 + 49;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
-        
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
+        int size = 6;
+        MultiArray<2, int> mask(vigra::Shape2(size, size));
 
-        discDilationWithMask(View(img), View(mask), View(res1), 2);
-        should(View(res) == View(res1));
-    }
-    
-    void medianTest()
-    {
-        Image res(img.size()), res1(img.size());
-        
-        discMedian(srcImageRange(img), destImage(res), 2);
-        
-        static const unsigned char desired[] = {
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5};
-                                         
-        const unsigned char * i1 = desired;
-        const unsigned char * i1end = i1 + 49;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
-        
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
+        mask(1, 1) = 1;
+        mask(2, 1) = 1;
+        mask(2, 2) = 1;
+        mask(2, 3) = 1;
+        mask(1, 3) = 1;
+        mask(3, 1) = 1;
+        mask(3, 3) = 1;
+        mask(4, 1) = 1;
+        mask(4, 3) = 1;
 
-        discMedian(View(img), View(res1), 2);
-        should(View(res) == View(res1));
-    }
-    
-    void medianWithMaskTest()
-    {
-        Image res(img.size(), 9), res1(img.size(), 9);
-        
-        discMedianWithMask(srcImageRange(img), maskImage(mask),
-                            destImage(res), 2);
-        
-        static const unsigned char desired[] = {
-                   1, 2, 2, 3, 4, 4, 5,
-                   1, 2, 2, 3, 4, 4, 5,
-                   1, 2, 2, 3, 4, 4, 5,
-                   1, 2, 2, 3, 4, 4, 5,
-                   1, 2, 2, 3, 4, 4, 5,
-                   1, 2, 2, 3, 4, 4, 5,
-                   1, 2, 2, 3, 4, 4, 5};
-                                         
-        const unsigned char * i1 = desired;
-        const unsigned char * i1end = i1 + 49;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
-        
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
+        ConvexHullFeatures<MultiArray<2, int> > chf(mask);
 
-        discMedianWithMask(View(img), View(mask), View(res1), 2);
-        should(View(res) == View(res1));
+        shouldEqual(chf.getInputArea(), 9);
+
+        shouldEqual(chf.getConvexHullArea(), 12);
+
+
+        shouldEqualTolerance(chf.getConvexity(), 0.75, 1e-2);
+
+        shouldEqual(chf.getConvexityDefectCount(), 2);
+
+        shouldEqualTolerance(chf.getConvexityDefectAreaMean(), 1.5, 1e-1);
+
+        shouldEqualTolerance(chf.getConvexityDefectAreaVariance(), 0.25, 1e-2);
+
+        shouldEqualTolerance(chf.getConvexityDefectAreaSkewness(), 0.0, 1e-1);
+
+        shouldEqualTolerance(chf.getConvexityDefectAreaKurtosis(), -2.0, 1e-1);
+
+        shouldEqual(chf.getInputPerimeter(), 20);
+
+        shouldEqual(chf.getConvexHullPerimeter(), 14);
+
+        shouldEqualTolerance(chf.getRugosity(), 1.428571, 1e-6);
     }
-    
-    Image img, mask;
+
 };
 
-struct FlatMorphologyTest
+struct ConvexHullTestSuite : public vigra::test_suite
 {
-    typedef vigra::BImage Image;
-    typedef vigra::MultiArrayView<2, unsigned char> View;
-    typedef vigra::morpho::structuringElement2D StrEl;
-
-    FlatMorphologyTest()
-    : img(7,7)
+    ConvexHullTestSuite()
+        : vigra::test_suite("ConvexHullTestSuite")
     {
-        static const unsigned char in[] = {
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6,
-            0, 1, 2, 3, 4, 5, 6};
+        add(testCase(&ConvexHullTest::testConvexHullFeatures));
         
-        Image::ScanOrderIterator i = img.begin();
-        Image::ScanOrderIterator end = img.end();
-        Image::Accessor acc = img.accessor();
-        const unsigned char * p = in;
+        add(testCase(&ConvexHullTest::testExtractContour));
         
-        for(; i != end; ++i, ++p)
-        {
-            acc.set(*p, i);
-        }
-        
-        generateDiscSE(2, se);
-
-    }
-    
-    void erosionTest()
-    {
-        Image res(img.size()), res1(img.size());
-        
-        morphoErosion(srcImageRange(img), destImageRange(res), se);
-        
-        static const unsigned char desired[] = {
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4,
-                   0, 0, 0, 1, 2, 3, 4};
-                                         
-        const unsigned char * i1 = desired;
-        const unsigned char * i1end = i1 + 49;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
-        
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
-
-        //morphoErosion(View(img), View(res1), se);
-        //should(View(res) == View(res1));
-    }
-    
-    void dilationTest()
-    {
-        Image res(img.size()), res1(img.size());
-        
-        morphoDilation(srcImageRange(img), destImageRange(res), se);
-        
-        static const unsigned char desired[] = {
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6,
-                   2, 3, 4, 5, 6, 6, 6};
-                                         
-        const unsigned char * i1 = desired;
-        const unsigned char * i1end = i1 + 49;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
-        
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
-
-        //morphoDilation(View(img), View(res1), se);
-        //should(View(res) == View(res1));
-    }
-    
-    void rankTest()
-    {
-        Image res(img.size()), res1(img.size());
-        
-        morphoRankFilter(srcImageRange(img), destImageRange(res), se, 0.5);
-        
-        static const unsigned char desired[] = {
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5,
-            1, 1, 2, 3, 4, 5, 5};
-                                         
-        const unsigned char * i1 = desired;
-        const unsigned char * i1end = i1 + 49;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
-        
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            //should(*i1 == acc(i2));
-        }
-
-        //morphoRankFilter(View(img), View(res1), se, 0.5);
-        //should(View(res) == View(res1));
-    }
-    
-    
-    Image img;
-    StrEl se;
-    
-};
-        
-struct MorphologyTestSuite
-: public vigra::test_suite
-{
-    MorphologyTestSuite()
-    : vigra::test_suite("MorphologyTestSuite")
-    {
-        add( testCase( &FlatDiscMorphologyTest::erosionTest));
-        add( testCase( &FlatDiscMorphologyTest::erosionWithMaskTest));
-        add( testCase( &FlatDiscMorphologyTest::dilationTest));
-        add( testCase( &FlatDiscMorphologyTest::dilationWithMaskTest));
-        add( testCase( &FlatDiscMorphologyTest::medianTest));
-        add( testCase( &FlatDiscMorphologyTest::medianWithMaskTest));
-        
-        add( testCase( &FlatMorphologyTest::erosionTest));
-        add( testCase( &FlatMorphologyTest::dilationTest));
-        add( testCase( &FlatMorphologyTest::rankTest));
-
+        add(testCase(&ConvexHullTest::testPushLinePoints));
     }
 };
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
-    MorphologyTestSuite test;
-
-    int failed = test.run(vigra::testsToBeExecuted(argc, argv));
-
+    ConvexHullTestSuite test;
+    const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
-    return (failed != 0);
+    return failed != 0;
 }
 

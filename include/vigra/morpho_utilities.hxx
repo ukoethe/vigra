@@ -1,7 +1,40 @@
-// Author(s): Thomas Walter, Esteban Pardo
-// $Date$
-// $Rev$
-// $URL$
+/************************************************************************/
+/*                                                                      */
+/*               Copyright 1998-2014 by                                 */
+/*               Ullrich Koethe,                                        */
+/*               Thomas Walter,                                         */
+/*               Esteban Pardo                                          */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
 
 #ifndef MORPHO_UTILITIES_HXX_
 #define MORPHO_UTILITIES_HXX_
@@ -10,16 +43,25 @@
 #include <iostream>
 #include <algorithm>
 
-#include "diff2d.hxx"
-#include "inspectimage.hxx"
+#include <vigra/diff2d.hxx>
+#include <vigra/inspectimage.hxx>
 
 namespace vigra {
 namespace morpho {
 
 /*
  * Morphological functors
+ * These functors operate like the ones used by inspectImage.
+ * For each neightbour in the structuring element
+ * operator()(argument_type const & v) is called.
+ * Then operator()() is called to get the final morphology result for that
+ * neighborhood
  */
 
+/*
+ * Max operator, calculates the maximum value.
+ * This will be used in the dilation.
+ */
 template<class VALUETYPE>
 class Max {
 public:
@@ -66,6 +108,10 @@ public:
 
 };
 
+/*
+ * Min operator, calculates the minimum value.
+ * This will be used in the erosion.
+ */
 template<class VALUETYPE>
 class Min {
 public:
@@ -112,6 +158,13 @@ public:
 
 };
 
+/*
+ * Rank operator, calculates the value in a certain rank.
+ * It works by building an histogram and returning
+ * the pixel intensity at a certain normalized rank.
+ * A particular case is the call morphoRankFilter with rank = 0.5
+ * which will perform a mean filtering.
+ */
 template<class VALUETYPE>
 class Rank {
 public:
@@ -183,6 +236,7 @@ public:
 };
 
 // HELP FUNCTORS
+
 template<class T, class S>
 struct IsGreaterEqual {
     IsGreaterEqual() {
@@ -345,7 +399,7 @@ struct PriorityBottomUp {
 
 using vigra::Diff2D;
 
-// The following definitions are used by the class neighborhood2D
+// The following definitions are used by the class Neighborhood2D
 const Diff2D NB8_WC[9] = { Diff2D(0, 0), Diff2D(1, 0), Diff2D(1, 1), Diff2D(0,
         1), Diff2D(-1, 1), Diff2D(-1, 0), Diff2D(-1, -1), Diff2D(0, -1), Diff2D(
         1, -1) };
@@ -382,10 +436,13 @@ const NeighborDefinition WITHOUTCENTER4(NB4, 4);
 const NeighborDefinition XSEGMENT(SEG_X, 3);
 const NeighborDefinition YSEGMENT(SEG_Y, 3);
 
-// neighborPixels handles the list of 2D neighbors.
-// it also calculates the maximal extension of the neighborhood in x- and y-direction
-// and
-class neighborPixels {
+/*
+ * NeighborPixels handles the list of 2D neighbors.
+ * It also calculates the maximal extension of the neighborhood in x- and y-direction.
+ * minOffset and maxOffset don't return coordinates. They return a Diff2D object
+ * containing the maximum or minimum x and y positions.
+ */
+class NeighborPixels {
 protected:
     std::vector<Diff2D> support;
     unsigned long nbPixels_;
@@ -396,42 +453,45 @@ protected:
 
 public:
     typedef std::vector<Diff2D>::iterator ITERATORTYPE;
+    typedef std::vector<Diff2D>::const_iterator CONST_ITERATORTYPE;
     typedef std::vector<Diff2D>::size_type SIZETYPE;
 
     // Constructors:
-    neighborPixels() :
+    NeighborPixels() :
             nbPixels_(0) {
     }
 
-    neighborPixels(std::vector<Diff2D> supportParam) :
+    NeighborPixels(std::vector<Diff2D> supportParam) :
             support(supportParam), nbPixels_(supportParam.size()) {
         CalculateExtension();
     }
 
-    neighborPixels(const Diff2D *beg, const Diff2D *end) :
+    NeighborPixels(const Diff2D *beg, const Diff2D *end) :
             support(beg, end), nbPixels_(end - beg) {
         CalculateExtension();
     }
 
-    neighborPixels(const Diff2D *beg, int nbPixels) :
+    NeighborPixels(const Diff2D *beg, int nbPixels) :
             support(beg, beg + nbPixels), nbPixels_(nbPixels) {
         CalculateExtension();
     }
 
-    neighborPixels(const NeighborDefinition &nd) :
+    NeighborPixels(const NeighborDefinition &nd) :
             support(nd.nbList, nd.nbList + nd.nbPixels), nbPixels_(nd.nbPixels) {
         CalculateExtension();
     }
 
-    Diff2D minOffset() {
+    Diff2D minOffset() const {
         return (minOffset_);
     }
 
-    Diff2D maxOffset() {
+    Diff2D maxOffset() const {
         return (maxOffset_);
     }
 
-    // Calculate the maximal extensions of the structuring element.
+    /*
+     * Calculate the maximal extensions of the structuring element.
+     */
     void CalculateExtension() {
         if (!support.empty()) {
             minOffset_ = *(support.begin());
@@ -451,7 +511,15 @@ public:
         return (support.begin());
     }
 
+    const CONST_ITERATORTYPE begin() const {
+        return (support.begin());
+    }
+
     ITERATORTYPE end() {
+        return (support.end());
+    }
+
+    const CONST_ITERATORTYPE end() const {
         return (support.end());
     }
 
@@ -481,21 +549,24 @@ public:
 
 };
 
-// The class structuringElement2D inherits from neighborPixels
-// and contains an additional size parameter. This parameter is used in erosions and
-// dilations for iteration.
-// The point (0,0) is assumed to be the center of the structuring element.
-// The center of the structuring element does not have to belong to it.
-class structuringElement2D: public neighborPixels {
+/*
+ * This class holds the structuring element that will be used in morphological operations.
+ * It is basically a vector that contains the neighbor coordinates.
+ * The point (0,0) is assumed to be the center of the structuring element.
+ * The center of the structuring element does not have to belong to it.
+ * sizeMultiplier default value is 1. This parameter will be used to determine
+ * how many times a morphological erosion or dilation will be performed.
+ */
+class StructuringElement2D: public NeighborPixels {
 
 public:
 
     // default constructor
-    structuringElement2D() :
-            size(0) {
+    StructuringElement2D() :
+            sizeMultiplier(1) {
     }
 
-//    structuringElement2D(std::vector<int[2]> supportParam, int sizeParam = 1):
+//    StructuringElement2D(std::vector<int[2]> supportParam, int sizeParam = 1):
 //                         size(sizeParam)
 //    {
 //        for(std::vector<int[2]>::iterator iter = supportParam.begin();
@@ -506,7 +577,7 @@ public:
 //        }
 //    }
 
-//    structuringElement2D(std::vector<float[2]> supportParam, int sizeParam = 1):
+//    StructuringElement2D(std::vector<float[2]> supportParam, int sizeParam = 1):
 //                         size(sizeParam)
 //    {
 //        for(std::vector<int[2]>::iterator iter = supportParam.begin();
@@ -517,21 +588,21 @@ public:
 //        }
 //    }
 
-    structuringElement2D(std::vector<Diff2D> supportParam, int sizeParam = 1) :
-            neighborPixels(supportParam), size(sizeParam) {
+    StructuringElement2D(std::vector<Diff2D> supportParam, int sizeParam = 1) :
+            NeighborPixels(supportParam), sizeMultiplier(sizeParam) {
     }
 
-    structuringElement2D(const Diff2D *beg, const Diff2D *end,
+    StructuringElement2D(const Diff2D *beg, const Diff2D *end,
             int sizeParam = 1) :
-            neighborPixels(beg, end), size(sizeParam) {
+            NeighborPixels(beg, end), sizeMultiplier(sizeParam) {
     }
 
-    structuringElement2D(const Diff2D *beg, int nbPixels, int sizeParam = 1) :
-            neighborPixels(beg, nbPixels), size(sizeParam) {
+    StructuringElement2D(const Diff2D *beg, int nbPixels, int sizeParam = 1) :
+            NeighborPixels(beg, nbPixels), sizeMultiplier(sizeParam) {
     }
 
-    structuringElement2D(const NeighborDefinition &nd, int sizeParam = 1) :
-            neighborPixels(nd), size(sizeParam) {
+    StructuringElement2D(const NeighborDefinition &nd, int sizeParam = 1) :
+            NeighborPixels(nd), sizeMultiplier(sizeParam) {
     }
 
     void transpose() {
@@ -543,37 +614,43 @@ public:
         CalculateExtension();
     }
 
-    int size;
+    /*
+     * How many times this structuring element will go over
+     * the image.
+     */
+    int sizeMultiplier;
 };
 
-// The class neighborhood2D inherits from class neighborPixels
-// and has also its border treatment.
-class neighborhood2D: public neighborPixels {
+/*
+ * This class defines a neighborhood (vector of neighbor coordinates)
+ * and adds some functionality such as border treatment.
+ */
+class Neighborhood2D: public NeighborPixels {
 public:
 
-    neighborhood2D(std::vector<Diff2D> supportParam, Diff2D imageSize) :
-            neighborPixels(supportParam), imageSize_(imageSize) {
+    Neighborhood2D(std::vector<Diff2D> supportParam, Diff2D imageSize) :
+            NeighborPixels(supportParam), imageSize_(imageSize) {
     }
 
-    neighborhood2D(const Diff2D *beg, const Diff2D *end,
+    Neighborhood2D(const Diff2D *beg, const Diff2D *end,
             const Diff2D &imageSize) :
-            neighborPixels(beg, end), imageSize_(imageSize) {
+            NeighborPixels(beg, end), imageSize_(imageSize) {
     }
 
-    neighborhood2D(const Diff2D *beg, int nbPixels, const Diff2D &imageSize) :
-            neighborPixels(beg, nbPixels), imageSize_(imageSize) {
+    Neighborhood2D(const Diff2D *beg, int nbPixels, const Diff2D &imageSize) :
+            NeighborPixels(beg, nbPixels), imageSize_(imageSize) {
     }
 
-    neighborhood2D(const NeighborDefinition &nd, const Diff2D &imageSize) :
-            neighborPixels(nd), imageSize_(imageSize) {
+    Neighborhood2D(const NeighborDefinition &nd, const Diff2D &imageSize) :
+            NeighborPixels(nd), imageSize_(imageSize) {
     }
 
-    neighborhood2D(const NeighborDefinition &nd, const Size2D &imageSize) :
-            neighborPixels(nd), imageSize_(imageSize) {
+    Neighborhood2D(const NeighborDefinition &nd, const Size2D &imageSize) :
+            NeighborPixels(nd), imageSize_(imageSize) {
     }
 
-    neighborhood2D(const NeighborDefinition &nd, Size2D &imageSize) :
-            neighborPixels(nd), imageSize_(imageSize) {
+    Neighborhood2D(const NeighborDefinition &nd, Size2D &imageSize) :
+            NeighborPixels(nd), imageSize_(imageSize) {
     }
 
     bool isBorderPixel(const Diff2D &pixel) {
@@ -598,9 +675,11 @@ private:
 };
 
 /*
- * Creates a disc structuring element
+ * Creates a disc structuring element.
+ * It uses the center of the pixel as the coordinate,
+ * so a N unit radius disc will be N + 1 pixels wide.
  */
-void generateDiscSE(int radius, structuringElement2D &SE) {
+void generateDiscSE(int radius, StructuringElement2D &SE) {
 
     std::vector<Diff2D> strElCoordinates;
 
@@ -614,7 +693,7 @@ void generateDiscSE(int radius, structuringElement2D &SE) {
         }
     }
 
-    SE = structuringElement2D(strElCoordinates);
+    SE = StructuringElement2D(strElCoordinates);
 }
 
 }
