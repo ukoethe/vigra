@@ -3029,25 +3029,25 @@ struct MultiArrayPointOperatorsTestSuite
 
 int main(int argc, char ** argv)
 {
-//    // run the multi-array testsuite
-//    MultiArrayTestSuite test1;
-//    int failed = test1.run(vigra::testsToBeExecuted(argc, argv));
-//    std::cout << test1.report() << std::endl;
+    // run the multi-array testsuite
+    MultiArrayTestSuite test1;
+    int failed = test1.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test1.report() << std::endl;
 
     // run the multi-array data-testsuite
     MultiArrayDataTestSuite test1a;
-    int failed = test1a.run(vigra::testsToBeExecuted(argc, argv));
+    failed += test1a.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test1a.report() << std::endl;
 
-//    // run the image testsuite
-//    ImageViewTestSuite test2;
-//    failed += test2.run(vigra::testsToBeExecuted(argc, argv));
-//    std::cout << test2.report() << std::endl;
-//
-//    // run the multi-array point operator test suite
-//    MultiArrayPointOperatorsTestSuite test3;
-//    failed += test3.run(vigra::testsToBeExecuted(argc, argv));
-//    std::cout << test3.report() << std::endl;
+    // run the image testsuite
+    ImageViewTestSuite test2;
+    failed += test2.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test2.report() << std::endl;
+
+    // run the multi-array point operator test suite
+    MultiArrayPointOperatorsTestSuite test3;
+    failed += test3.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test3.report() << std::endl;
     
     return (failed != 0);
 }
