@@ -1,6 +1,8 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2011-2012 by Ullrich Koethe                  */
+/*               Copyright 2011-2014 by                                 */
+/*               Ullrich Koethe                                         */
+/*               Esteban Pardo                                          */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -52,8 +54,8 @@ namespace acc {
 /*                      irreducible basic accumulators                    */
 /*                                                                        */
 /**************************************************************************/
-    
-   
+
+
 class CoordinateSystem;                        // returns an identity matrix of appropriate size
 
 template <unsigned N> class PowerSum;          // sum over powers of values
@@ -74,7 +76,7 @@ template <int BinCount> class GlobalRangeHistogram;  // like AutoRangeHistogram,
 
 class Minimum;                                 // minimum
 class Maximum;                                 // maximum
-template <class Hist> class StandardQuantiles; // compute (min, 10%, 25%, 50%, 75%, 90%, max) quantiles from 
+template <class Hist> class StandardQuantiles; // compute (min, 10%, 25%, 50%, 75%, 90%, max) quantiles from
                                                // min/max accumulators and given histogram
 
 class ArgMinWeight;                            // store the value (or coordinate) where weight was minimal
@@ -88,6 +90,7 @@ class Centralize;                              // cache centralized values
 class PrincipalProjection;                     // cache values after principal projection
     // FIXME: not yet implemented
 class Whiten;                                  // cache values after whitening
+class CenterWeightedImpl;                          // cache weight derived from distance computation
 class RangeMapping;                            // map value from [min, max] to another range and cache result (e.g. for histogram creation)
 
 template <int INDEX>  class DataArg;           // specifiy the index of the data member in a CoupledHandle
@@ -95,23 +98,23 @@ template <int INDEX>  class WeightArg;         // specifiy the index of the weig
 template <int INDEX>  class LabelArg;          // specifiy the index of the label member in a CoupledHandle
 template <int INDEX>  class CoordArg;          // specifiy the index of the coord member in a CoupledHandle
 
-/* 
+/*
 Quantiles other than minimum and maximum require more thought:
 --------------------------------------------------------------
  * Exact quantiles can be found in time O(n) using recursive partitioning (quickselect),
    but this requires the data (or an auxiliary index array) to be re-arranged.
  * Exact quantiles can be found in time O(k*n) using recursive histogram refinement,
-   were k = O(log(n)/log(BinCount)) is the expected number of required passes over the 
+   were k = O(log(n)/log(BinCount)) is the expected number of required passes over the
    data, provided that bins are filled approximately evenly. If data can be re-arranged,
-   such that we remember the items corresponding to each bin, running time reduces to O(n) 
+   such that we remember the items corresponding to each bin, running time reduces to O(n)
    (this is Tibshirani's 'binmedian' algorithm). For the median, Tibshirani proves that
    the initial histogram only needs to cover the interval [Mean-StdDev, Mean+StdDev].
- * Both strategies can be combined: perform k passes to reduce bin size to about 
-   n/(BinCount)^k, and then perform quickselect on an auxiliary array of size 
+ * Both strategies can be combined: perform k passes to reduce bin size to about
+   n/(BinCount)^k, and then perform quickselect on an auxiliary array of size
    O(n/(BinCount)^k) which has been filled during the final pass.
  * Good approximate results can be obtained by early stopping of histogram refinement
    (Tibshirani's 'binapprox' algorithm). A 2-pass algorithm for the median achieves
-   accuracy of StdDev/BinCount: Mean and StdDev are computed during pass 1, 
+   accuracy of StdDev/BinCount: Mean and StdDev are computed during pass 1,
    and a histogram over [Mean-StdDev, Mean+StdDev] during pass 2.
  * A 1-pass approximation method is described in Chen et al. However, it assumes that
    samples arrive in random order which is usually not true in image data.
@@ -126,7 +129,7 @@ Quantiles other than minimum and maximum require more thought:
    // data normalization w.r.t. number of samples
 template <class A>    class DivideByCount;       //  A / count
 template <class A>    class RootDivideByCount;   //  sqrt(A / count)
-template <class A>    class DivideUnbiased;      //  A / (count - 1)  
+template <class A>    class DivideUnbiased;      //  A / (count - 1)
 template <class A>    class RootDivideUnbiased;  //  sqrt(A / (count - 1))
 
     // data access
@@ -134,6 +137,9 @@ template <class A> class Coord;           // use pixel coordinate instead of pix
 template <class A> class Weighted;        // use (value, weight) pairs (index 1 and 2 of CoupledHandle)
 template <class A> class CoordWeighted;   // use (coord, weight) pairs(index 0 and end of CoupledHandle)
 template <class A> class DataFromHandle;  // extract data from index 1 of a CoupledHandle
+template <class A> class CenterWeighted;  // compute weight automatically from distance to object center
+template<class A> class DistanceWeighted; // compute weight using the distance to a point
+
 
     // data preparation
 template <class A> class Central;    // subtract mean
@@ -164,15 +170,15 @@ typedef RootDivideByCount<SumOfSquares>             RootMeanSquares;
 
 // desired pseudocode (unfortunately not legal in C++)
 //
-//     template <unsigned N> 
+//     template <unsigned N>
 //     typedef DivideByCount<PowerSum<N> >          Moment;
 //
 // actual definition (desired behavior is realised by rules below)
 //
 /** \brief Alias. Moment<N>. */
-template <unsigned N> class                         Moment;  
+template <unsigned N> class                         Moment;
 /** \brief Alias. CentralMoment<N>. */
-template <unsigned N> class                         CentralMoment;  
+template <unsigned N> class                         CentralMoment;
 
 /** \brief Alias. Sum of squared differences. */
 typedef Central<PowerSum<2> >                       SumOfSquaredDifferences;
@@ -249,7 +255,7 @@ struct StandardizeTag<A, A>
     typedef A type;
 };
 
-    // ... or fail when the tag spec was non-conforming 
+    // ... or fail when the tag spec was non-conforming
 template <class A, class B>
 struct StandardizeTag<A, Error___Tag_modifiers_of_same_kind_must_not_be_combined<B> >
     : public Error___Tag_modifiers_of_same_kind_must_not_be_combined<B>
@@ -259,7 +265,7 @@ namespace acc_detail {
 
     // Assign priorities to modifiers to determine their standard order (by ascending priority).
     // SubstitutionMask determines which modifiers must be automatically transferred to dependencies.
-enum { MinPriority = 1, 
+enum { MinPriority = 1,
        AccumulatorPriority = 32,
        PrepareDataPriority = 16,
        NormalizePriority = 8,
@@ -285,6 +291,8 @@ struct ModifierPriority<MODIFIER<A> > \
 VIGRA_MODIFIER_PRIORITY(Global, GlobalPriority)
 
 VIGRA_MODIFIER_PRIORITY(Weighted, WeightingPriority)
+VIGRA_MODIFIER_PRIORITY(DistanceWeighted, WeightingPriority)
+VIGRA_MODIFIER_PRIORITY(CenterWeighted, WeightingPriority) //Must be lower than AccessDataPriority
 
 VIGRA_MODIFIER_PRIORITY(Coord, AccessDataPriority)
 VIGRA_MODIFIER_PRIORITY(DataFromHandle, AccessDataPriority)
@@ -330,13 +338,13 @@ struct HasModifierPriority<B<A>, TARGET_PRIORITY, TARGET_PRIORITY>
     static const bool value = true;
 };
 
-    // three-way compare 
+    // three-way compare
 template <class A, class B>
 struct ModifierCompare
 {
     static const int p1 = ModifierPriority<A>::value;
     static const int p2 = ModifierPriority<B>::value;
-    static const int value = p1 < p2 
+    static const int value = p1 < p2
                                 ? -1
                                 : p2 < p1
                                      ? 1
@@ -660,6 +668,7 @@ VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<FlatScatterMatrix>, FlatScatterM
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<FlatScatterMatrix>, FlatScatterMatrix)
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<ScatterMatrixEigensystem>, ScatterMatrixEigensystem)
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<ScatterMatrixEigensystem>, ScatterMatrixEigensystem)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(CenterWeighted<Coord<CenterWeightedImpl> >, Coord<CenterWeightedImpl>)
 
 #undef VIGRA_DROP_DATA_PREPARATION_MODIFIERS
 
@@ -669,7 +678,7 @@ struct CheckSubstitutionFlag
     static const bool value = (ModifierPriority<A>::value & SubstitutionMask) != 0;
 };
 
-template <class A, class B, 
+template <class A, class B,
           bool substitute=CheckSubstitutionFlag<A>::value>
 struct SubstituteModifiers;
 
