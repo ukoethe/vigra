@@ -66,7 +66,7 @@ namespace vigra{
     template<class SELF>
     void pyAssignEdgeCues(
         SELF  & self,
-        const NumpyArray<2, float> & edgeCues
+        const NumpyArray<3, float> & edgeCues
     ){
         self.assignEdgeCues(edgeCues);
     }
@@ -74,7 +74,7 @@ namespace vigra{
     template<class SELF>
     void pyAssignNodeCues(
         SELF  & self,
-        const NumpyArray<2, float> & nodeCues
+        const NumpyArray<3, float> & nodeCues
     ){
         self.assignNodeCues(nodeCues);
     }
@@ -96,6 +96,14 @@ namespace vigra{
         self.assignNodeSizes(nodeSizes);
     }
 
+    template<class SELF>
+    void pyAssignLabels(
+        SELF  & self,
+        const NumpyArray<1, UInt32> & labels
+    ){
+        self.assignLabels(labels);
+    }
+
 
     template<class SELF>
     NumpyAnyArray pyComputeFeature(
@@ -109,9 +117,43 @@ namespace vigra{
         return out;
     }
 
+
+    template<class SELF>
+    python::tuple pyComputeInitalTrainingSet(
+        SELF  & self,
+        NumpyArray<2, float>  features,
+        NumpyArray<2, UInt32> labels
+    ){
+
+        size_t iSize = self.initalTrainignSetSize();
+        size_t nFeat = self.numberOfFeatures();
+
+        typename NumpyArray<2, float >::difference_type fShape(iSize, nFeat);
+        typename NumpyArray<2, UInt32>::difference_type lShape(iSize, 1);
+
+        features.reshapeIfEmpty(fShape);
+        labels.reshapeIfEmpty(lShape);
+
+        self.computeInitalTrainingSet(features, labels);
+        return python::make_tuple(features, labels);
+    }
+
+
+    template<class SELF>
+    float pyTrainCurrentRf(
+        SELF  & self,
+        const NumpyArray<2, float>  & features,
+        const NumpyArray<2, UInt32> & labels
+    ){
+
+        self.trainCurrentRf(features, labels);
+    }
+
+
+
     void defineNeuroGraph(){
 
-        typedef vigra::AdjacencyListGraph Graph;
+        typedef AdjacencyListGraph Graph;
         typedef NeuroDynamicFeatures PyNeuroDynamicFeatures;
         typedef PyNeuroDynamicFeatures::MergeGraph MergeGraph;
 
@@ -124,19 +166,28 @@ namespace vigra{
                 >()
             ]
         )
+        .def("initalTrainignSetSize",&PyNeuroDynamicFeatures::initalTrainignSetSize)
         .def("assignEdgeCues", pyAssignEdgeCues<PyNeuroDynamicFeatures> )
         .def("assignNodeCues", pyAssignNodeCues<PyNeuroDynamicFeatures> )
         .def("assignEdgeSizes", pyAssignEdgeSizes<PyNeuroDynamicFeatures> )
         .def("assignNodeSizes", pyAssignNodeSizes<PyNeuroDynamicFeatures> )
-
+        .def("assignLabels", pyAssignLabels<PyNeuroDynamicFeatures> )
         .def("registerCallbacks", & PyNeuroDynamicFeatures::registerCallbacks)
         .def("numberOfFeatures",& PyNeuroDynamicFeatures::numberOfFeatures)
+
+        .def("computeInitalTrainingSet",registerConverters(& pyComputeInitalTrainingSet<PyNeuroDynamicFeatures>),
+            (
+                python::arg("features")=python::object(),
+                python::arg("labels")=python::object()
+            )
+        )
         .def("getFeatures", &pyComputeFeature<PyNeuroDynamicFeatures>,
             (
                 python::arg("edge"),
                 python::arg("out")=python::object()
             )
         )
+        .def("trainCurrentRf",registerConverters(& pyTrainCurrentRf<PyNeuroDynamicFeatures>))
         ;
         
 

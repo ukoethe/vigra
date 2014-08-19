@@ -50,6 +50,8 @@
 #include "metrics.hxx" 
 #include "merge_graph_adaptor.hxx"
 #include "adjacency_list_graph.hxx"
+#include "random_forest.hxx"
+#include "random_forest/rf_visitors.hxx"
 
 namespace vigra{      
 
@@ -79,15 +81,78 @@ namespace vigra{
         NeuroDynamicFeatures(const Graph & graph, MergeGraph & mergeGraph)
         :   graph_(&graph),
             mergeGraph_(&mergeGraph){
-
+                currentRf_ = NULL;
         }
 
+        void trainCurrentRf(
+            MultiArrayView<2, float> f,
+            MultiArrayView<2, UInt32> l
+        ){
+            if(currentRf_ != NULL){
+                delete currentRf_;
+            }
 
+            currentRf_ = new RandomForest<UInt32>();
+            // construct visitor to calculate out-of-bag error
+            rf::visitors::OOB_Error oob_v;
+            // perform training
+            currentRf_->learn(f, l, rf::visitors::create_visitor(oob_v));
+            std::cout << "the out-of-bag error is: " << oob_v.oob_breiman << "\n";
+        }
 
-        void assignEdgeCues(const  MultiArrayView<2, float> & edgeCues ){
+        size_t initalTrainignSetSize(){
+            size_t nl0=0;
+            size_t nl1=0;
+            size_t nl2=0;
+
+            // count how many edges have labels
+            for(size_t ei=0; ei< graph_->edgeNum(); ++ei){
+                if(edgeLabelProb_(ei,0)>=0.5){
+                   ++nl0;
+                }
+                else if(edgeLabelProb_(ei,1)>=0.5){
+                   ++nl1;
+                }
+                else if(edgeLabelProb_(ei,2)>=0.5){
+                   ++nl2;
+                }
+            }
+            return nl0 + nl1;
+        }
+
+        void computeInitalTrainingSet(
+            MultiArrayView<2, float> features,
+            MultiArrayView<2, UInt32> labels
+        ){
+            size_t c=0;
+            for(size_t ei=0; ei< graph_->edgeNum(); ++ei){
+
+                //std::cout<<ei<<"/ "<<graph_->edgeNum()<<"\n";
+                size_t l = 2;
+                if(edgeLabelProb_(ei,0)>=0.5){
+                   l=0;
+                }
+                else if(edgeLabelProb_(ei,1)>=0.5){
+                   l=1;
+                }
+
+                // compute features only for instances with labels
+                if(l != 2){
+
+                    // get features
+                    MultiArrayView<1,float> sampleFeat = features.bindInner(c);
+                    computeFeature(graph_->edgeFromId(ei), sampleFeat);
+                    // write labels
+                    labels(c,0) = l;
+                    ++c;
+                }
+            }
+        }
+
+        void assignEdgeCues(const  MultiArrayView<3, float> & edgeCues ){
             edgeCues_= edgeCues;
         }
-        void assignNodeCues(const  MultiArrayView<2, float> & nodeCues ){
+        void assignNodeCues(const  MultiArrayView<3, float> & nodeCues ){
             nodeCues_ = nodeCues;
         }
         void assignEdgeSizes(const MultiArrayView<1, float> & edgeSizes){
@@ -131,13 +196,33 @@ namespace vigra{
             const float sizeA = nodeSizes_[idA];
             const float sizeB = nodeSizes_[idB];
             const float sizeAB = sizeA + sizeB;
-
             nodeSizes_[idA] = sizeAB;
 
-            // merge node cues
-            for(size_t f=0; f<nodeCues_.shape(1); ++f){
-                nodeCues_(idA, f) = (sizeA*nodeCues_(idA, f) + sizeB*nodeCues_(idB, f))/sizeAB;
+
+
+            const size_t nCueTypes = nodeCues_.shape(1);
+            for(size_t c=0; c<nCueTypes; ++c){
+
+                const float meanA = nodeCues_(idA,c,0);
+                const float meanB = nodeCues_(idA,c,0);
+                const float varA  = nodeCues_(idA,c,1);
+                const float varB  = nodeCues_(idA,c,1);
+               
+
+                // merge mean and variance
+                const float  fac =  1.0/(sizeAB - 1);
+                const float meanAB = (sizeA*meanA + sizeB*meanB)/sizeAB;
+                const float varAB = fac * (sizeA * std::pow(meanA - meanAB, 2) + sizeB * std::pow(meanB - meanAB, 2)   +  (sizeA-1)*varA + (sizeB-1)*varB );
+
+                nodeCues_(idA, c, 0) = meanAB;
+                nodeCues_(idA, c, 1) = varAB;
+
+                // merge the histograms
+                for(size_t hb=2 ;hb<nodeCues_.shape(2); ++hb){
+                    nodeCues_(idA, c, hb)  = (sizeA*nodeCues_(idA, c, hb) + sizeB*nodeCues_(idB, c, hb))/sizeAB;
+                }
             }
+            
 
         }   
         void mergeEdges(const MgEdge & edgeA, const MgEdge & edgeB){
@@ -149,14 +234,32 @@ namespace vigra{
             const float sizeA = edgeSizes_[idA];
             const float sizeB = edgeSizes_[idB];
             const float sizeAB = sizeA + sizeB;
-
             edgeSizes_[idA] = sizeAB;
 
-            // merge edge cues
-            for(size_t f=0; f<edgeCues_.shape(1); ++f){
-                edgeCues_(idA, f) = (sizeA*edgeCues_(idA, f) + sizeB*edgeCues_(idB, f))/sizeAB;
-            }
+            const size_t nCueTypes = edgeCues_.shape(1);
+            for(size_t c=0; c<nCueTypes; ++c){
 
+                const float meanA = edgeCues_(idA,c,0);
+                const float meanB = edgeCues_(idA,c,0);
+                const float varA  = edgeCues_(idA,c,1);
+                const float varB  = edgeCues_(idA,c,1);
+               
+
+                // merge mean and variance
+                const float  fac =  1.0/(sizeAB - 1);
+                const float meanAB = (sizeA*meanA + sizeB*meanB)/sizeAB;
+                const float varAB = fac * (sizeA * std::pow(meanA - meanAB, 2) + sizeB * std::pow(meanB - meanAB, 2)   +  (sizeA-1)*varA + (sizeB-1)*varB );
+
+                edgeCues_(idA, c, 0) = meanAB;
+                edgeCues_(idA, c, 1) = varAB;
+
+                // merge the histograms
+                for(size_t hb=2 ;hb<edgeCues_.shape(2); ++hb){
+                    edgeCues_(idA, c, hb)  = (sizeA*edgeCues_(idA, c, hb) + sizeB*edgeCues_(idB, c, hb))/sizeAB;
+                }
+            }
+            
+            // merge labels????
             if(edgeLabelProb_.size()>0){
                 edgeLabelProb_(idA,0) = (sizeA*edgeLabelProb_(idA,0) + sizeB*edgeLabelProb_(idB,0))/sizeAB;
                 edgeLabelProb_(idA,1) = (sizeA*edgeLabelProb_(idA,1) + sizeB*edgeLabelProb_(idB,1))/sizeAB;
@@ -184,10 +287,11 @@ namespace vigra{
 
 
         size_t numberOfFeatures()const{
-            const size_t nMeanEdgeCues = edgeCues_.shape(1);
+            const size_t nEdgeCueFeatures = edgeCues_.shape(1)*edgeCues_.shape(2);
+            const size_t nNodeDiffFeatures = nodeCues_.shape(1)*2;
             const size_t nDegreeFeatures = 5;
             const size_t nSizeFeatures = 24;
-            return  nMeanEdgeCues + nDegreeFeatures + nSizeFeatures;
+            return  nEdgeCueFeatures + nNodeDiffFeatures + nDegreeFeatures + nSizeFeatures;
         }
 
 
@@ -197,20 +301,42 @@ namespace vigra{
         ){
             size_t featureIndex = 0;
 
-            meanEdgeCues(edge, features, featureIndex);
+            edgeCueFeatures(edge, features, featureIndex);
+            nodeDiffFeatures(edge, features, featureIndex);
             degreeFeatures(edge, features, featureIndex);
             sizeFeatures(edge, features, featureIndex);
         }
 
 
-        void meanEdgeCues(
+        void nodeDiffFeatures(
             const MgEdge & edge, 
             MultiArrayView<1, float> & feature,
             size_t & featureIndex
         ){
             const int edgeId = mergeGraph_->id(edge);
-            for (int i = 0; i < edgeCues_.shape(1); ++i){
-                feature[featureIndex++] = edgeCues_(edgeId, i);
+            const Node u = mergeGraph_->u(edge);
+            const Node v = mergeGraph_->v(edge);
+
+            const int uId = mergeGraph_->id(u);
+            const int vId = mergeGraph_->id(v);
+
+            for (int qtype = 0;  qtype  < edgeCues_.shape(1); ++qtype){
+
+                feature[featureIndex++] = std::abs(nodeCues_(uId, qtype, 0) - nodeCues_(vId, qtype, 0));
+                feature[featureIndex++] = std::abs(nodeCues_(uId, qtype, 1) - nodeCues_(vId, qtype, 1));
+            }
+        }
+
+        void edgeCueFeatures(
+            const MgEdge & edge, 
+            MultiArrayView<1, float> & feature,
+            size_t & featureIndex
+        ){
+            const int edgeId = mergeGraph_->id(edge);
+
+            for (int i = 0; i < edgeCues_.shape(1); ++i)
+            for (int j = 0; j < edgeCues_.shape(2); ++j){
+                feature[featureIndex++] = edgeCues_(edgeId, i, j);
             }
         }
 
@@ -317,44 +443,15 @@ namespace vigra{
         MultiArray<1, float> edgeSizes_;
         MultiArray<1, float> nodeSizes_;
 
-        MultiArray<2, float> edgeCues_;
-        MultiArray<2, float> nodeCues_;
-
-
-        // raw histogram and pmap histogram
-
-        std::vector < MultiArray<2, float>  > edgeHistograms_;
-        std::vector < MultiArray<2, float>  > nodeHistograms_;
-
-
-
-
+        MultiArray<3, float> edgeCues_;
+        MultiArray<3, float> nodeCues_;
 
 
 
         MultiArray<2, float> edgeLabelProb_;
 
-
+        RandomForest<UInt32> * currentRf_;
     };
-
-
-
-    void mergeMeanAndVariance(
-        float & meanA,
-        float & varA,
-        const float sizeA,
-        const float meanB,
-        const float varB,
-        const float sizeB
-    ){
-        const float sizeAB = sizeA + sizeB;
-        const float newMean = (sizeA*meanA + sizeB*meanB)/sizeAB;
-
-        const float  fac =  1.0/(sizeAB - 1);
-
-        varA = fac * (sizeA * std::pow(meanA - newMean, 2) + sizeB * std::pow(meanB - newMean, 2)   +  (sizeA-1)*varA + (sizeB-1)*varB );
-        meanA = newMean;
-    }  
  
 }
 
