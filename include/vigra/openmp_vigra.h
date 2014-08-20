@@ -75,7 +75,8 @@ namespace vigra
             int num_threads = 1;
 #pragma omp parallel
             {
-                num_threads = omp_get_num_threads();
+                if(omp_get_thread_num() == 0)
+                    num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src1_lowerright - src1_upperleft);
                 Functor f(functor);
 
@@ -110,7 +111,8 @@ namespace vigra
             int num_threads = 1;
 #pragma omp parallel
             {
-                num_threads = omp_get_num_threads();
+                if(omp_get_thread_num() == 0)
+                    num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src1_lowerright - src1_upperleft);
                 Functor f(functor);
 
@@ -146,7 +148,8 @@ namespace vigra
             int num_threads = 1;
 #pragma omp parallel
             {
-                num_threads = omp_get_num_threads();
+                if(omp_get_thread_num() == 0)
+                    num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src1_lowerright - src1_upperleft);
                 Functor f(functor);
 
@@ -176,7 +179,8 @@ namespace vigra
             int num_threads = 1;
 #pragma omp parallel
             {
-                num_threads = omp_get_num_threads();
+                if(omp_get_thread_num() == 0)
+                    num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src_lowerright - src_upperleft);
 
 #pragma omp for schedule(guided) nowait
@@ -204,7 +208,8 @@ namespace vigra
             int num_threads = 1;
 #pragma omp parallel
             {
-                num_threads = omp_get_num_threads();
+                if(omp_get_thread_num() == 0)
+                    num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src_lowerright - src_upperleft);
                 Functor f(functor);
 
@@ -236,7 +241,8 @@ namespace vigra
             int num_threads = 1;
 #pragma omp parallel
             {
-                num_threads = omp_get_num_threads();
+                if(omp_get_thread_num() == 0)
+                    num_threads = omp_get_num_threads();
                 const vigra::Size2D size(src_lowerright - src_upperleft);
                 Functor f(functor);
 
@@ -387,7 +393,8 @@ namespace vigra
                     int num_threads = 1;
 #pragma omp parallel
                     {
-                        num_threads = omp_get_num_threads();
+                        if(omp_get_thread_num() == 0)
+                            num_threads = omp_get_num_threads();
                         DistanceType* const f = new DistanceType[greatest_length];
                         DistanceType* const d = new DistanceType[greatest_length];
 

@@ -45,7 +45,7 @@
 #include "multi_array.hxx"
 #include "metaprogramming.hxx"
 #include "inspector_passes.hxx"
-
+#include "openmp_def.h"
 
 
 namespace vigra
@@ -77,10 +77,41 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  VALUETYPE const
     initLine(s, s + shape[0], a, v);
 }
     
+#ifdef OPENMP
+
 template <class Iterator, class Shape, class Accessor, 
           class VALUETYPE, int N>
 void
 initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  
+                   VALUETYPE const & v, MetaInt<N>)
+{
+    Iterator send = s + shape[N];
+
+    if(N > 2){
+        #pragma omp parallel
+        #pragma omp single
+        {
+            for(; s < send; ++s)
+            {
+                #pragma omp task shared(shape, a, v), firstprivate(s)
+                initMultiArrayImpl(s.begin(), shape, a, v, MetaInt<N-1>());
+            }
+        }
+    }
+    else{
+        for(; s < send; ++s)
+        {
+            initMultiArrayImpl(s.begin(), shape, a, v, MetaInt<N-1>());
+        }
+    }
+}
+
+#else
+
+template <class Iterator, class Shape, class Accessor,
+          class VALUETYPE, int N>
+void
+initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
                    VALUETYPE const & v, MetaInt<N>)
 {
     Iterator send = s + shape[N];
@@ -89,6 +120,8 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
         initMultiArrayImpl(s.begin(), shape, a, v, MetaInt<N-1>());
     }
 }
+
+#endif //#ifdef OPENMP
     
 /** \brief Write a value to every element in a multi-dimensional array.
 
@@ -355,6 +388,46 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     }
 }
     
+#ifdef OPENMP
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor, int N>
+void
+copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+                   DestIterator d, DestShape const & dshape, DestAccessor dest, MetaInt<N>)
+{
+    DestIterator dend = d + dshape[N];
+    if(sshape[N] == 1)
+    {
+        for(; d < dend; ++d)
+        {
+            copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
+        }
+    }
+    else
+    {
+        if(N > 2){
+            #pragma omp parallel
+            #pragma omp single
+            {
+                for(; d < dend; ++s, ++d)
+                {
+                   #pragma omp task shared(sshape, dshape, src, dest), firstprivate(s, d)
+                   copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
+                }
+                //No need task wait because parent task does not depend on child task's result
+            }
+        }else{
+            for(; d < dend; ++s, ++d)
+            {
+                copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
+            }
+        }
+    }
+}
+
+#else
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor, int N>
 void
@@ -377,6 +450,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
         }
     }
 }
+#endif // #ifdef OPENMP
     
 /** \brief Copy a multi-dimensional array.
 
@@ -662,7 +736,53 @@ transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccesso
         transformLine(s, s + sshape[0], src, d, dest, f);
     }
 }
-    
+
+#ifdef OPENMP
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor,
+          class Functor, int N>
+void
+transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+                   DestIterator d, DestShape const & dshape, DestAccessor dest,
+                   Functor const & f, MetaInt<N>)
+{
+    DestIterator dend = d + dshape[N];
+    if(sshape[N] == 1)
+    {
+        for(; d < dend; ++d)
+        {
+            transformMultiArrayExpandImpl(s.begin(), sshape, src, d.begin(), dshape, dest,
+                                          f, MetaInt<N-1>());
+        }
+    }
+    else
+    {
+        if(N > 2){
+            #pragma omp parallel
+            #pragma omp single
+            {
+                for(; d < dend; ++s, ++d)
+                {
+                    #pragma omp task shared(sshape, dshape, src, dest), firstprivate(s, d)
+                    transformMultiArrayExpandImpl(s.begin(), sshape, src,
+                                                  d.begin(), dshape, dest,
+                                                  f, MetaInt<N-1>());
+                }
+            }
+        }else{
+            for(; d < dend; ++s, ++d)
+            {
+                transformMultiArrayExpandImpl(s.begin(), sshape, src,
+                                              d.begin(), dshape, dest,
+                                                  f, MetaInt<N-1>());
+            }
+        }
+    }
+}
+
+#else
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor, 
           class Functor, int N>
@@ -689,6 +809,7 @@ transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccesso
         }
     }
 }
+#endif //#ifdef OPENMP
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor, 
