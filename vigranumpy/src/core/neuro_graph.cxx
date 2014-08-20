@@ -139,16 +139,46 @@ namespace vigra{
     }
 
 
+
+
     template<class SELF>
-    float pyTrainCurrentRf(
+    python::tuple pyGetNewFeatureByClustering(
         SELF  & self,
-        const NumpyArray<2, float>  & features,
-        const NumpyArray<2, UInt32> & labels
+        const RandomForest<unsigned int> & rf,
+        NumpyArray<2, float>  features,
+        NumpyArray<2, UInt32> labels
     ){
 
-        self.trainCurrentRf(features, labels);
+                
+        typename NumpyArray<2, UInt32>::difference_type lShape(self.edgeNum(),1);
+        typename NumpyArray<2, float>::difference_type fShape(self.edgeNum(),self.numberOfFeatures());
+
+        labels.reshapeIfEmpty(lShape);
+        features.reshapeIfEmpty(fShape);
+
+        size_t nNew = self.getNewFeatureByClustering(rf, features, labels);
+
+        if(nNew  == 0)
+            return python::make_tuple(nNew);
+        return python::make_tuple(nNew, features, labels);
     }
 
+
+
+    template<class SELF>
+    NumpyAnyArray pyPredict(
+        SELF  & self,
+        const RandomForest<unsigned int> & rf,
+        const float stopProb,
+        NumpyArray<1, UInt32> segLabels
+    ){
+        typename NumpyArray<1, float>::difference_type sShape(self.maxNodeId()+1);
+        segLabels.reshapeIfEmpty(sShape);
+
+        self.predict(rf, stopProb, segLabels);
+
+        return segLabels;
+    }
 
 
     void defineNeuroGraph(){
@@ -187,9 +217,22 @@ namespace vigra{
                 python::arg("out")=python::object()
             )
         )
-        .def("trainCurrentRf",registerConverters(& pyTrainCurrentRf<PyNeuroDynamicFeatures>))
+        .def("getNewFeatureByClustering",
+            registerConverters(&pyGetNewFeatureByClustering<PyNeuroDynamicFeatures>),
+            (
+                python::arg("rf"),
+                python::arg("features")=python::object(),
+                python::arg("labels")=python::object()
+            )
+        )
+        .def("predict", &pyPredict<PyNeuroDynamicFeatures>,
+            (
+                python::arg("rf"),
+                python::arg("stopProb"),
+                python::arg("segLabels")=python::object()
+            )
+        )
         ;
-        
 
 
     }

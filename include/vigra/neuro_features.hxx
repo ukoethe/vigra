@@ -46,7 +46,6 @@
 
 /*vigra*/
 #include "priority_queue.hxx"
-#include "priority_queue.hxx"
 #include "metrics.hxx" 
 #include "merge_graph_adaptor.hxx"
 #include "adjacency_list_graph.hxx"
@@ -81,23 +80,7 @@ namespace vigra{
         NeuroDynamicFeatures(const Graph & graph, MergeGraph & mergeGraph)
         :   graph_(&graph),
             mergeGraph_(&mergeGraph){
-                currentRf_ = NULL;
-        }
-
-        void trainCurrentRf(
-            MultiArrayView<2, float> f,
-            MultiArrayView<2, UInt32> l
-        ){
-            if(currentRf_ != NULL){
-                delete currentRf_;
-            }
-
-            currentRf_ = new RandomForest<UInt32>();
-            // construct visitor to calculate out-of-bag error
-            rf::visitors::OOB_Error oob_v;
-            // perform training
-            currentRf_->learn(f, l, rf::visitors::create_visitor(oob_v));
-            std::cout << "the out-of-bag error is: " << oob_v.oob_breiman << "\n";
+                rf_ = NULL;
         }
 
         size_t initalTrainignSetSize(){
@@ -157,6 +140,8 @@ namespace vigra{
         }
         void assignEdgeSizes(const MultiArrayView<1, float> & edgeSizes){
             edgeSizes_ = edgeSizes;
+            edgeElements_.reshape(edgeSizes_.shape());
+            edgeElements_ = 1;
         }
         void assignNodeSizes(const MultiArrayView<1, float> & nodeSizes){
             nodeSizes_ = nodeSizes;
@@ -187,10 +172,154 @@ namespace vigra{
         }
 
 
+
+        size_t getNewFeatureByClustering(
+            const RandomForest<unsigned int> & rf,
+            MultiArrayView<2, float> features,
+            MultiArrayView<2, UInt32> labels
+        ){
+            rf_ = &rf;
+            std::cout<<"getNewFeatureByClustering\n";
+            ChangeablePriorityQueue< float > pq(graph_->edgeNum());
+            pq_ = &pq;
+            vigra::MultiArray<1, float> feat = vigra::MultiArray<1, float>(vigra::MultiArray<1, float>::difference_type(numberOfFeatures()));
+            vigra::MultiArray<2, float> probs(vigra::MultiArray<2, float>::difference_type(1, 2));
+
+            std::cout<<"fill inital priority queue\n";
+            for(size_t eId=0; eId< graph_->edgeNum(); ++eId){
+
+                computeFeature(mergeGraph_->edgeFromId(eId), feat);
+                rf.predictProbabilities(feat.insertSingletonDimension(0), probs);
+                const float edgeProb = probs[1];
+                //std::cout<<"edgeProb "<<edgeProb<<"\n";
+
+                pq_->push(eId, edgeProb);
+            }       
+
+            size_t newFeatCount=0;
+            size_t nDisagree=0;
+            while(mergeGraph_->edgeNum()>0){
+
+                if(mergeGraph_->edgeNum()%500==0)
+                    std::cout<<"number of edges: "<<mergeGraph_->edgeNum()<<"\n";
+                if(pq_->topPriority()<=1.0001){
+                    size_t minId = pq_->top();
+                    while(mergeGraph_->hasEdgeId(minId)==false){
+                        pq_->deleteItem(minId);
+                        minId = pq_->top();
+                    }
+                    if(pq_->topPriority()>1.001){
+                        std::cout<<"ONLY DISAGREEMENT NODES LEFT\n";
+                        break;
+                    }
+
+                    size_t l=2;
+                    // get the label of the edge
+                    if(edgeLabelProb_(minId,0)>0.9){
+                        //std::cout<<"AGREEMENT\n";
+                        l=0;
+                        if(edgeElements_(minId)>1){
+
+                            computeFeature(mergeGraph_->edgeFromId(minId), feat);
+                            features.bindInner(newFeatCount)=feat;
+                            //std::cout<<"newFeatCount "<<newFeatCount<<"\n";
+                            //std::cout<<"labels.shape() "<<labels.shape(0)<<"\n";
+                            labels(newFeatCount++)=l;
+                        }
+                        mergeGraph_->contractEdge(mergeGraph_->edgeFromId(minId));
+                    }
+                    else if(edgeLabelProb_(minId,1)>0.9){
+                        ++nDisagree;
+                        l=1;
+                        if(edgeElements_(minId)>1){
+                            // recompute
+                            computeFeature(mergeGraph_->edgeFromId(minId), feat);
+                            features.bindInner(newFeatCount)=feat;
+                            labels(newFeatCount++)=l;   
+                        }
+                        pq_->push(minId,2.0);
+                    }
+                    else{
+                        //std::cout<<"UNKNOWN\n";
+                        mergeGraph_->contractEdge(mergeGraph_->edgeFromId(minId));
+                    }
+                }
+                else{
+                    std::cout<<"ONLY DISAGREEMENT NODES LEFT\n";
+                    break;
+                }
+
+
+
+            }
+            std::cout<<"nDisagrees "<<nDisagree<<"\n";
+
+            std::cout<<"delete stuff\n";
+
+            return newFeatCount;
+
+        }
+
+        size_t maxNodeId()const{
+            return graph_->maxNodeId();
+        }
+
+        void predict(
+            const RandomForest<unsigned int> & rf,
+            const float stopProb,
+            MultiArrayView<1, UInt32 > & nodeLabels
+        ){
+            std::cout<<"predict\n";
+            ChangeablePriorityQueue< float > pq(graph_->edgeNum());
+            rf_ = &rf;
+            pq_ = &pq;
+            vigra::MultiArray<1, float> feat = vigra::MultiArray<1, float>(vigra::MultiArray<1, float>::difference_type(numberOfFeatures()));
+            vigra::MultiArray<2, float> probs(vigra::MultiArray<2, float>::difference_type(1, 2));
+
+            std::cout<<"fill inital priority queue\n";
+            for(size_t eId=0; eId< graph_->edgeNum(); ++eId){
+
+                computeFeature(mergeGraph_->edgeFromId(eId), feat);
+                rf.predictProbabilities(feat.insertSingletonDimension(0), probs);
+                const float edgeProb = probs[1];
+                pq_->push(eId, edgeProb);
+            }
+
+            while(pq_->topPriority()<stopProb){
+
+                if(mergeGraph_->edgeNum()%500==0){
+                    std::cout<<"#edges: "<<mergeGraph_->edgeNum()<<"  ";
+                    std::cout<<" prob : "<< pq_->topPriority() <<"\n";
+                }
+                size_t minId = pq_->top();
+                bool exitIt=false;
+                while(mergeGraph_->hasEdgeId(minId)==false){
+                    pq_->deleteItem(minId);
+                    minId = pq_->top();
+                    if(pq_->topPriority()>=stopProb){
+                        std::cout<<"exit it\n";
+                        exitIt=true;
+                        break;
+                    }
+                }
+                if(exitIt)
+                    break;
+                mergeGraph_->contractEdge(mergeGraph_->edgeFromId(minId));
+            }       
+            std::cout<<"done with contraction\n";
+            for(size_t nid=0; nid<=graph_->maxNodeId(); ++nid){
+                if(graph_->nodeFromId(nid)!=lemon::INVALID){
+                    nodeLabels[nid]=mergeGraph_->reprNodeId(nid);
+                }
+            }
+        }
+
+
+
         void mergeNodes(const MgNode & nodeA, const MgNode & nodeB){
             const index_type idA  = mergeGraph_->id(nodeA);
             const index_type idB  = mergeGraph_->id(nodeB);
-            std::cout<<"merge nodes "<<idA<<" "<<idB<<"\n";
+            //std::cout<<"merge nodes "<<idA<<" "<<idB<<"\n";
 
             // merge node sizes
             const float sizeA = nodeSizes_[idA];
@@ -228,13 +357,16 @@ namespace vigra{
         void mergeEdges(const MgEdge & edgeA, const MgEdge & edgeB){
             const index_type idA  = mergeGraph_->id(edgeA);
             const index_type idB  = mergeGraph_->id(edgeB);
-            std::cout<<"merge edges "<<idA<<" "<<idB<<"\n";
+            //std::cout<<"    merge edges "<<idA<<" "<<idB<<"\n";
 
             // merge edge sizes
             const float sizeA = edgeSizes_[idA];
             const float sizeB = edgeSizes_[idB];
             const float sizeAB = sizeA + sizeB;
             edgeSizes_[idA] = sizeAB;
+
+
+            edgeElements_[idA]+=edgeElements_[idB];
 
             const size_t nCueTypes = edgeCues_.shape(1);
             for(size_t c=0; c<nCueTypes; ++c){
@@ -269,8 +401,23 @@ namespace vigra{
         
 
         void eraseEdge(const MgEdge & edge){
+
             const index_type id  = mergeGraph_->id(edge);
-            std::cout<<"erase edge "<<id<<"\n";
+            //std::cout<<"    erase edge "<<id<<"\n";
+            pq_->deleteItem(edge.id());
+            const MgNode newNode = mergeGraph_->inactiveEdgesNode(edge);
+
+            vigra::MultiArray<1, float> feat = vigra::MultiArray<1, float>(vigra::MultiArray<1, float>::difference_type(numberOfFeatures()));
+            vigra::MultiArray<2, float> probs(vigra::MultiArray<2, float>::difference_type(1, 2));
+
+
+            for (MergeGraph::IncEdgeIt e(*mergeGraph_,newNode); e!=lemon::INVALID; ++e){
+                const MgEdge incEdge(*e);
+                computeFeature(incEdge, feat);
+                rf_->predictProbabilities(feat.insertSingletonDimension(0), probs);
+                //std::cout<<"new predicted prob "<<probs[1]<< "old "<<pq_->priority(incEdge.id())<<"\n";
+                pq_->push(incEdge.id(),probs[1]);
+            }
         }
 
 
@@ -294,6 +441,9 @@ namespace vigra{
             return  nEdgeCueFeatures + nNodeDiffFeatures + nDegreeFeatures + nSizeFeatures;
         }
 
+        size_t edgeNum()const{
+            return graph_->edgeNum();
+        }
 
         void computeFeature(
             const MgEdge & edge, 
@@ -440,6 +590,8 @@ namespace vigra{
         const Graph * graph_;
         MergeGraph * mergeGraph_;
 
+
+        MultiArray<1, UInt32> edgeElements_;
         MultiArray<1, float> edgeSizes_;
         MultiArray<1, float> nodeSizes_;
 
@@ -450,7 +602,10 @@ namespace vigra{
 
         MultiArray<2, float> edgeLabelProb_;
 
-        RandomForest<UInt32> * currentRf_;
+        const RandomForest<UInt32> * rf_;
+
+
+        ChangeablePriorityQueue< float > * pq_;
     };
  
 }
