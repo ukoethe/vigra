@@ -20,6 +20,7 @@
 #include <vigra/metrics.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/error.hxx>
+#include <vigra/graph_rag_project_back.hxx>
 namespace python = boost::python;
 
 namespace vigra{
@@ -731,6 +732,14 @@ public:
         typename PyNodeMapTraits<Graph,   UInt32>::Map labelsWhichGeneratedRagArrayMap(graph, labelsWhichGeneratedRagArray);
         typename PyNodeMapTraits<RagGraph,T     >::Map ragNodeFeaturesArrayMap(rag,ragNodeFeaturesArray);
         typename PyNodeMapTraits<Graph,   T     >::Map graphNodeFeaturesArrayMap(graph,graphNodeFeaturesArray);
+        
+
+        projectBack(rag, graph, ignoreLabel, labelsWhichGeneratedRagArrayMap, 
+                    ragNodeFeaturesArrayMap, graphNodeFeaturesArrayMap);
+
+
+        /*
+
         // run algorithm
         for(typename Graph::NodeIt iter(graph);iter!=lemon::INVALID;++iter){
             if(ignoreLabel==-1 || static_cast<Int32>(labelsWhichGeneratedRagArrayMap[*iter])!=ignoreLabel)
@@ -739,12 +748,16 @@ public:
                 // do nothing
             }
         }
+        */
         return graphNodeFeaturesArray; // out
+        
     }
 
 private:
     std::string clsName_;
 };
+
+
 
 
 

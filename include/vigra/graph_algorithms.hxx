@@ -56,7 +56,7 @@
 #include "adjacency_list_graph.hxx"
 #include "graph_maps.hxx"
 #include "timing.hxx"
-
+//#include "openmp_helper.hxx"
 
 
 
@@ -189,7 +189,7 @@ namespace vigra{
         TOC;
 
         std::cout<<"add edges\n";
-        TIC
+        TIC;       
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
@@ -199,14 +199,14 @@ namespace vigra{
                 rag.addEdge( rag.nodeFromId(lu),rag.nodeFromId(lv));
             }
         }
-        TOC
+        TOC;
 
 
         std::cout<<"setup hyper edges\n";
         TIC
-        // SET UP HYPEREDGES
+        //SET UP HYPEREDGES
+
         affiliatedEdges.assign(rag);
-        // add edges
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
@@ -220,7 +220,7 @@ namespace vigra{
                 //std::cout<<"write done\n";
             }
         }
-        TOC
+        TOC;
     }
 
 
