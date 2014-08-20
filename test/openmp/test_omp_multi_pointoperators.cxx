@@ -44,13 +44,18 @@
 
 using namespace std;
 using namespace vigra;
+using namespace vigra::functor;
 
 #define DIMENSION_LENGTH 10
 
-struct OpenMPMultiArrayPointOperatorsTest {
+struct OpenMPMultiArrayPointOperatorsTest
+{
     typedef float PixelType;
     typedef MultiArray<5, PixelType> Image5D;
     typedef Image5D::difference_type Size5;
+    typedef MultiArray<1,PixelType> Image1D;
+    typedef Image1D::difference_type Size1;
+
     Image5D img;
     int max_threads;
 
@@ -76,7 +81,7 @@ struct OpenMPMultiArrayPointOperatorsTest {
 //TODO: test function returns number of threads involved in parallel region
 //TODO: Meaningful runtime.
     void testInit()
-        {
+    {
             Image5D res(img.shape());
             const Image5D::value_type ini = 1.1f;
 
@@ -103,8 +108,8 @@ struct OpenMPMultiArrayPointOperatorsTest {
         }
 
 
-    void testCopy() {
-
+    void testCopy()
+    {
         Image5D res(img.shape(), 1.0);
 
         USETICTOC
@@ -116,10 +121,40 @@ struct OpenMPMultiArrayPointOperatorsTest {
     }
 
 
+    void testCopyOuterExpansion()
+    {
+        Image5D res(img.shape());
+
+        copyMultiArray(img.subarray(Size5(0,0,0,0,0), Size5(DIMENSION_LENGTH,1,1,1,1)), res);
+
+        int x,y,z,t,k;
+        for(k=0; k<img.shape(4); ++k)
+            for(t=0; t<img.shape(3); ++t)
+                for(z=0; z<img.shape(2); ++z)
+                    for(y=0; y<img.shape(1); ++y)
+                        for(x=0; x<img.shape(0); ++x)
+                            shouldEqual(res(x,y,z,t,k), img(x,0,0,0,0));
+    }
+
+
+    void testCopyInnerExpansion()
+    {
+        Image5D res(img.shape());
+
+        copyMultiArray(img.subarray(Size5(0,0,0,0,0), Size5(1,1,1,1,DIMENSION_LENGTH)), res);
+
+        int x,y,z,t,k;
+        for(k=0; k<img.shape(4); ++k)
+            for(t=0; t<img.shape(3); ++t)
+                for(z=0; z<img.shape(2); ++z)
+                    for(y=0; y<img.shape(1); ++y)
+                        for(x=0; x<img.shape(0); ++x)
+                            shouldEqual(res(x,y,z,t,k), img(0,0,0,0,k));
+    }
+
+
     void testTransform()
     {
-        using namespace vigra::functor;
-
         Image5D res(img.shape());
 
         USETICTOC
@@ -134,8 +169,6 @@ struct OpenMPMultiArrayPointOperatorsTest {
 
     void testTransformOuterExpand()
     {
-        using namespace functor;
-
         Image5D res(img.shape());
 
         USETICTOC
@@ -152,6 +185,23 @@ struct OpenMPMultiArrayPointOperatorsTest {
                         for(x=0; x<img.shape(0); ++x)
                             shouldEqual(res(x,y,z,t,k), 2.0*img(x,0,0,0,0));
     }
+
+
+    void testTransformInnerExpand()
+    {
+        Image5D res(img.shape());
+
+        transformMultiArray(img.subarray(Size5(0,0,0,0,0), Size5(1,1,1,1,DIMENSION_LENGTH)), res,
+                            Arg1() + Arg1());
+
+        int x,y,z,t,k;
+        for(k=0; k<img.shape(4); ++k)
+            for(t=0; t<img.shape(3); ++t)
+                for(z=0; z<img.shape(2); ++z)
+                    for(y=0; y<img.shape(1); ++y)
+                        for(x=0; x<img.shape(0); ++x)
+                            shouldEqual(res(x,y,z,t,k), 2.0*img(0,0,0,0,k));
+    }
 };
 
 struct MultiArrayPointOperatorsTestSuite: public vigra::test_suite {
@@ -159,8 +209,14 @@ struct MultiArrayPointOperatorsTestSuite: public vigra::test_suite {
         vigra::test_suite("MultiArrayPointOperatorsTestSuite") {
         add( testCase( &OpenMPMultiArrayPointOperatorsTest::testInit ) );
         add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCopy ));
+        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCopyOuterExpansion ) );
+        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCopyInnerExpansion ) );
         add( testCase( &OpenMPMultiArrayPointOperatorsTest::testTransform ) );
         add( testCase( &OpenMPMultiArrayPointOperatorsTest::testTransformOuterExpand ) );
+        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testTransformInnerExpand ) );
+//        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testTransformOuterReduce ) );
+//        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testTransformInnerReduce ) );
+
 //        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCombine2 ) );
 //        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testCombine3 ) );
 //        add( testCase( &OpenMPMultiArrayPointOperatorsTest::testInspect ) );
