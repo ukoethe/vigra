@@ -145,6 +145,8 @@ namespace vigra{
     python::tuple pyGetNewFeatureByClustering(
         SELF  & self,
         const RandomForest<unsigned int> & rf,
+        const float noiseMagnitude,
+        const UInt32 seed,
         NumpyArray<2, float>  features,
         NumpyArray<2, UInt32> labels
     ){
@@ -156,7 +158,8 @@ namespace vigra{
         labels.reshapeIfEmpty(lShape);
         features.reshapeIfEmpty(fShape);
 
-        size_t nNew = self.getNewFeatureByClustering(rf, features, labels);
+        size_t nNew = self.getNewFeatureByClustering(rf, noiseMagnitude, seed, features, labels);
+                                                     ;
 
         if(nNew  == 0)
             return python::make_tuple(nNew);
@@ -221,6 +224,8 @@ namespace vigra{
             registerConverters(&pyGetNewFeatureByClustering<PyNeuroDynamicFeatures>),
             (
                 python::arg("rf"),
+                python::arg("noiseMagnitude")=0.0001,
+                python::arg("seed")=42,
                 python::arg("features")=python::object(),
                 python::arg("labels")=python::object()
             )

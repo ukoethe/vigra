@@ -52,6 +52,8 @@
 #include "random_forest.hxx"
 #include "random_forest/rf_visitors.hxx"
 
+#include "random.hxx"
+
 namespace vigra{      
 
 
@@ -173,11 +175,18 @@ namespace vigra{
 
 
 
+
+
+
         size_t getNewFeatureByClustering(
             const RandomForest<unsigned int> & rf,
+            const float noiseMagnitude,
+            const UInt32 seed,
             MultiArrayView<2, float> features,
             MultiArrayView<2, UInt32> labels
         ){
+
+
             rf_ = &rf;
             std::cout<<"getNewFeatureByClustering\n";
             ChangeablePriorityQueue< float > pq(graph_->edgeNum());
@@ -185,15 +194,20 @@ namespace vigra{
             vigra::MultiArray<1, float> feat = vigra::MultiArray<1, float>(vigra::MultiArray<1, float>::difference_type(numberOfFeatures()));
             vigra::MultiArray<2, float> probs(vigra::MultiArray<2, float>::difference_type(1, 2));
 
+            // rand gen
+
+            RandomNumberGenerator<>  randGen = RandomNumberGenerator<>(seed);
+            randGen_ = &randGen;
+            noiseMagnitude_ = noiseMagnitude;
+
             std::cout<<"fill inital priority queue\n";
             for(size_t eId=0; eId< graph_->edgeNum(); ++eId){
 
                 computeFeature(mergeGraph_->edgeFromId(eId), feat);
                 rf.predictProbabilities(feat.insertSingletonDimension(0), probs);
                 const float edgeProb = probs[1];
-                //std::cout<<"edgeProb "<<edgeProb<<"\n";
-
-                pq_->push(eId, edgeProb);
+                const float noise = randGen_->uniform(-1.0*noiseMagnitude_, noiseMagnitude_);
+                pq_->push(eId, edgeProb+noise);
             }       
 
             size_t newFeatCount=0;
@@ -269,6 +283,8 @@ namespace vigra{
             const float stopProb,
             MultiArrayView<1, UInt32 > & nodeLabels
         ){
+            randGen_ = NULL;
+
             std::cout<<"predict\n";
             ChangeablePriorityQueue< float > pq(graph_->edgeNum());
             rf_ = &rf;
@@ -415,8 +431,15 @@ namespace vigra{
                 const MgEdge incEdge(*e);
                 computeFeature(incEdge, feat);
                 rf_->predictProbabilities(feat.insertSingletonDimension(0), probs);
-                //std::cout<<"new predicted prob "<<probs[1]<< "old "<<pq_->priority(incEdge.id())<<"\n";
-                pq_->push(incEdge.id(),probs[1]);
+                const float prob = probs[1];
+
+                if(randGen_!=NULL){
+                    const float noise = randGen_->uniform(-1.0*noiseMagnitude_, noiseMagnitude_);
+                    pq_->push(incEdge.id(),prob+noise);
+                }
+                else{
+                    pq_->push(incEdge.id(),prob);
+                }
             }
         }
 
@@ -533,7 +556,7 @@ namespace vigra{
             const float sizeSurfRatioV = std::pow(sizeV, 1.0/3.0) / std::sqrt(surfSizeV);
             const float sizeSurfRatioUV = std::pow(sizeUV, 1.0/3.0) / std::sqrt(surfSizeUV-2.0*edgeSize);
 
-            // node size
+            // node sizeand
             feature[featureIndex++] = sizeUV;
             feature[featureIndex++] = maxSize;
             feature[featureIndex++] = minSize;
@@ -600,12 +623,15 @@ namespace vigra{
 
 
 
+        ChangeablePriorityQueue< float > * pq_;
         MultiArray<2, float> edgeLabelProb_;
 
         const RandomForest<UInt32> * rf_;
 
 
-        ChangeablePriorityQueue< float > * pq_;
+
+        RandomNumberGenerator<> * randGen_;
+        float noiseMagnitude_;
     };
  
 }
