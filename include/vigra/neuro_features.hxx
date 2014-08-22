@@ -51,11 +51,42 @@
 #include "adjacency_list_graph.hxx"
 #include "random_forest.hxx"
 #include "random_forest/rf_visitors.hxx"
-
+#include "openmp_helper.hxx"
 #include "random.hxx"
-
+#include <omp.h>
 namespace vigra{      
 
+
+
+    inline float bhattacharyyaSimple(const float m1,float v1, const float m2, float v2){
+        v1 = std::max(v1, 0.00001f);
+        v2 = std::max(v2, 0.00001f);
+
+        const float vv1 = v1*v1;
+        const float vv2 = v2*v2;
+        const float mm12 = std::pow(m1-m2   , 2);
+
+        return 0.25 * std::log(0.25*( vv1/v2 + vv2/v1 +2.0f  )) + 0.25*(mm12/(vv1+vv2));
+    }
+
+
+    template<class ARRAY_3>
+    inline float chiSquaredDist(
+        const ARRAY_3 & arrayA, const ARRAY_3 & arrayB, 
+        const size_t ia, const size_t ib,
+        const size_t c, const size_t start, const size_t end
+    ){
+        float res=0.0;
+        for(size_t i=start; i<end; ++i){
+            const float aa  = arrayA(ia,c,i);
+            const float bb  = arrayA(ib,c,i);
+            const float sum  = aa + bb;
+            const float diff = aa - bb;
+            if(sum > 0.000001f)
+                res+=(diff*diff)/sum;
+        }
+        return res*0.5f;
+    }
 
 
 
@@ -214,8 +245,8 @@ namespace vigra{
             size_t nDisagree=0;
             while(mergeGraph_->edgeNum()>0){
 
-                if(mergeGraph_->edgeNum()%500==0)
-                    std::cout<<"number of edges: "<<mergeGraph_->edgeNum()<<"\n";
+                if(mergeGraph_->edgeNum()%200==0)
+                    std::cout<<"#edges: "<<mergeGraph_->edgeNum()<<" "<<pq_->topPriority()<<"\n";
                 if(pq_->topPriority()<=1.0001){
                     size_t minId = pq_->top();
                     while(mergeGraph_->hasEdgeId(minId)==false){
@@ -289,21 +320,57 @@ namespace vigra{
             ChangeablePriorityQueue< float > pq(graph_->edgeNum());
             rf_ = &rf;
             pq_ = &pq;
-            vigra::MultiArray<1, float> feat = vigra::MultiArray<1, float>(vigra::MultiArray<1, float>::difference_type(numberOfFeatures()));
-            vigra::MultiArray<2, float> probs(vigra::MultiArray<2, float>::difference_type(1, 2));
+
+
+
 
             std::cout<<"fill inital priority queue\n";
-            for(size_t eId=0; eId< graph_->edgeNum(); ++eId){
+            {
+                vigra::MultiArray<2, float> aFeat = vigra::MultiArray<2, float>(vigra::MultiArray<2, float>::difference_type(
+                   graph_->edgeNum(), numberOfFeatures())
+                );
+                vigra::MultiArray<2, float> aProbs(vigra::MultiArray<2, float>::difference_type(graph_->edgeNum(), 2));
 
-                computeFeature(mergeGraph_->edgeFromId(eId), feat);
-                rf.predictProbabilities(feat.insertSingletonDimension(0), probs);
-                const float edgeProb = probs[1];
-                pq_->push(eId, edgeProb);
+                //openmp::Lock lock;
+                //lock.init();
+
+                omp_lock_t lock_;
+                omp_init_lock(&lock_);
+
+                size_t pCounter=0;
+
+
+
+                #pragma omp parallel for  reduction(+:pCounter)
+                for(size_t eId=0; eId< graph_->edgeNum(); ++eId){
+
+                    if(eId%5000==0){
+                        //lock.lock();
+                        omp_set_lock(&lock_);
+                        std::cout<<"#edges: "<< pCounter<<" / "<<graph_->edgeNum()<<"\n";
+                        omp_unset_lock(&lock_);
+                        //lock.unlock();
+                    }
+                    MultiArrayView<1, float> feat  = aFeat.bindInner(eId);
+                    MultiArrayView<1, float> probs = aProbs.bindInner(eId);
+
+                    MultiArrayView<2, float> feat2  = feat.insertSingletonDimension(0);
+                    MultiArrayView<2, float> probs2 = probs.insertSingletonDimension(0);
+
+                    computeFeature(mergeGraph_->edgeFromId(eId), feat);
+                    rf.predictProbabilities(feat2,probs2);
+                    #pragma omp atomic
+                        pCounter += 1;
+                }
+                std::cout<<"write from buffer..\n";
+                for(size_t eId=0; eId< graph_->edgeNum(); ++eId){
+                    pq_->push(eId, aProbs(eId,1));
+                }
+                std::cout<<"write from buffer DONE\n";
             }
-
             while(pq_->topPriority()<stopProb){
 
-                if(mergeGraph_->edgeNum()%500==0){
+                if(mergeGraph_->edgeNum()%100==0){
                     std::cout<<"#edges: "<<mergeGraph_->edgeNum()<<"  ";
                     std::cout<<" prob : "<< pq_->topPriority() <<"\n";
                 }
@@ -346,6 +413,8 @@ namespace vigra{
 
 
             const size_t nCueTypes = nodeCues_.shape(1);
+
+            #pragma omp parallel for
             for(size_t c=0; c<nCueTypes; ++c){
 
                 const float meanA = nodeCues_(idA,c,0);
@@ -385,6 +454,7 @@ namespace vigra{
             edgeElements_[idA]+=edgeElements_[idB];
 
             const size_t nCueTypes = edgeCues_.shape(1);
+            #pragma omp parallel for
             for(size_t c=0; c<nCueTypes; ++c){
 
                 const float meanA = edgeCues_(idA,c,0);
@@ -493,12 +563,65 @@ namespace vigra{
             const int uId = mergeGraph_->id(u);
             const int vId = mergeGraph_->id(v);
 
+            //#pragma omp parallel for
+            for (int qtype = 0;  qtype  < nodeCues_.shape(1); ++qtype){
+
+                feature[featureIndex+2*qtype] = std::abs(nodeCues_(uId, qtype, 0) - nodeCues_(vId, qtype, 0));
+                feature[featureIndex+2*qtype+1] = std::abs(nodeCues_(uId, qtype, 1) - nodeCues_(vId, qtype, 1));
+            }
+
+            featureIndex += (2*nodeCues_.shape(1));
+        }
+
+
+
+        void nodeDiffFeaturesNew(
+            const MgEdge & edge, 
+            MultiArrayView<1, float> & feature,
+            size_t & featureIndex
+        ){
+            const int eId = mergeGraph_->id(edge);
+            const Node u = mergeGraph_->u(edge);
+            const Node v = mergeGraph_->v(edge);
+            const int uId = mergeGraph_->id(u);
+            const int vId = mergeGraph_->id(v);
+
             for (int qtype = 0;  qtype  < edgeCues_.shape(1); ++qtype){
 
+                const float mU = nodeCues_(uId, qtype, 0);
+                const float mV = nodeCues_(vId, qtype, 0);
+                const float mE = edgeCues_(eId, qtype, 0);
+
+                const float vU = nodeCues_(uId, qtype, 1);
+                const float vV = nodeCues_(vId, qtype, 1);
+                const float vE = edgeCues_(eId, qtype, 1);
+
+                {
+                    // abs mean differences
+                    const float dUV = std::abs(mU-mV);
+                    const float dEV = std::abs(mU-mE);
+                    const float dEU = std::abs(mU-mE);
+                    const float minDEUV = std::min(dEV,dEU);
+                    const float maxDEUV = std::max(dEV,dEU);
+
+                    feature[featureIndex++] = dUV;
+                    feature[featureIndex++] = minDEUV;
+                    feature[featureIndex++] = maxDEUV;
+                }
+
+
+                // abs diff mean UV
                 feature[featureIndex++] = std::abs(nodeCues_(uId, qtype, 0) - nodeCues_(vId, qtype, 0));
+                // abs variance diff
                 feature[featureIndex++] = std::abs(nodeCues_(uId, qtype, 1) - nodeCues_(vId, qtype, 1));
+
+
+                //feature[featureIndex++]  = bhattacharyyaSimple()
             }
         }
+
+
+
 
         void edgeCueFeatures(
             const MgEdge & edge, 
@@ -507,10 +630,14 @@ namespace vigra{
         ){
             const int edgeId = mergeGraph_->id(edge);
 
-            for (int i = 0; i < edgeCues_.shape(1); ++i)
-            for (int j = 0; j < edgeCues_.shape(2); ++j){
-                feature[featureIndex++] = edgeCues_(edgeId, i, j);
+            #pragma omp parallel for
+            for (int i = 0; i < edgeCues_.shape(1); ++i){
+                for (int j = 0; j < edgeCues_.shape(2); ++j){
+                    const size_t fId = featureIndex + i*edgeCues_.shape(2) +j;
+                    feature[fId] = edgeCues_(edgeId, i, j);
+                }
             }
+            featureIndex+=(edgeCues_.shape(1)*edgeCues_.shape(2));
         }
 
         void degreeFeatures(

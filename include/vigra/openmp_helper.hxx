@@ -84,8 +84,8 @@ namespace vigra{
             class LockArray{
             private:
                 LockArray();
-                LockArray( const Foo& other ); // non construction-copyable
-                LockArray& operator=( const Foo& ); // non copyable
+                LockArray( const LockArray & other ); // non construction-copyable
+                LockArray& operator=( const LockArray & ); // non copyable
             public:
                 LockArray(const size_t size)
                 : size_(size){
@@ -119,8 +119,8 @@ namespace vigra{
             class LockArray{
             private:
                 LockArray();
-                LockArray( const Foo& other ); // non construction-copyable
-                LockArray& operator=( const Foo& ); // non copyable
+                LockArray( const LockArray& other ); // non construction-copyable
+                LockArray& operator=( const LockArray& ); // non copyable
             public:
                 LockArray(const size_t ){
                 }
@@ -139,4 +139,4 @@ namespace vigra{
 }
 
 
-#endif VIGRA_OPENMP_HELPER_HXX
+#endif // VIGRA_OPENMP_HELPER_HXX
