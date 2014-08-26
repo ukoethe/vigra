@@ -1,6 +1,8 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2011-2012 by Ullrich Koethe                  */
+/*               Copyright 2011-2014 by                                 */
+/*               Ullrich Koethe                                         */
+/*               Esteban Pardo                                          */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -6145,6 +6147,18 @@ class StandardQuantiles
         }
     };
 };
+
+template<typename T>
+int countNonZero(MultiArray<2, T> const &array) {
+
+    vigra::MultiArray<2, double> data(array.shape());
+    AccumulatorChainArray<CoupledArrays<2, double, int>,
+            Select<LabelArg<2>, Count> > a;
+    extractFeatures(data, array, a);
+
+    int nonZero = array.size() - get<Count>(a, 0);
+    return nonZero;
+}
 
 }} // namespace vigra::acc
 
