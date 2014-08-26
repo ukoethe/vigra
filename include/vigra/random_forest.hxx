@@ -1013,7 +1013,7 @@ void RandomForest<LabelType, PreprocessorTag>::
     #pragma omp parallel for shared(doneCounter)
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
-        Random_t myRandom(ii);
+        Random_t myRandom(RandomSeed);
         Sampler<Random_t > sampler(preprocessor.strata().begin(),
                            preprocessor.strata().end(),
                            detail::make_sampler_opt(options_)
@@ -1041,6 +1041,7 @@ void RandomForest<LabelType, PreprocessorTag>::
                                 stop,
                                 visitor,
                                 randint);
+        omp_set_lock(&printLock);
         visitor
             .visit_after_tree(  *this,
                                 preprocessor,
@@ -1051,7 +1052,7 @@ void RandomForest<LabelType, PreprocessorTag>::
         //#pragma omp atomic
         //doneCounter++;
 
-        omp_set_lock(&printLock);
+        
         doneCounter++;
         std::cout<<"done with tree "<<doneCounter<<" / "<<trees_.size()<<" \n";
         omp_unset_lock(&printLock);
