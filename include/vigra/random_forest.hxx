@@ -37,6 +37,11 @@
 #ifndef VIGRA_RANDOM_FOREST_HXX
 #define VIGRA_RANDOM_FOREST_HXX
 
+
+ #include <omp.h>
+
+
+
 #include <iostream>
 #include <algorithm>
 #include <map>
@@ -751,6 +756,7 @@ void RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
+        std::cout<<" train tree "<<ii<<"\n";
         online_visitor_.tree_id=ii;
         poisson_sampler.sample();
         std::map<int,int> leaf_parents;
@@ -814,6 +820,7 @@ void RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1
                                 poisson_sampler,
                                 stack_entry,
                                 ii);*/
+        std::cout<<" train tree "<<ii<<" done\n";
     }
 
     //visitor.visit_at_end(*this, preprocessor);
@@ -975,7 +982,7 @@ void RandomForest<LabelType, PreprocessorTag>::
 
 
     // Make stl compatible random functor.
-    RandFunctor_t           randint     ( random);
+    //RandFunctor_t           randint     ( random);
 
 
     // Preprocess the data to get something the split functor can work
@@ -993,17 +1000,29 @@ void RandomForest<LabelType, PreprocessorTag>::
     //initialize trees.
     trees_.resize(options_.tree_count_  , DecisionTree_t(ext_param_));
 
-    Sampler<Random_t > sampler(preprocessor.strata().begin(),
-                               preprocessor.strata().end(),
-                               detail::make_sampler_opt(options_)
-                                        .sampleSize(ext_param().actual_msample_),
-                               &random);
+
 
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     
+    omp_lock_t printLock;
+    omp_init_lock(&printLock);
+
+    size_t doneCounter = 0;
+
+    #pragma omp parallel for shared(doneCounter)
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
+        Random_t myRandom(ii);
+        Sampler<Random_t > sampler(preprocessor.strata().begin(),
+                           preprocessor.strata().end(),
+                           detail::make_sampler_opt(options_)
+                                    .sampleSize(ext_param().actual_msample_),
+                           &myRandom);
+        RandFunctor_t           randint     ( myRandom);
+
+
+
         //initialize First region/node/stack entry
         sampler
             .sample();  
@@ -1028,6 +1047,16 @@ void RandomForest<LabelType, PreprocessorTag>::
                                 sampler,
                                 first_stack_entry,
                                 ii);
+
+        //#pragma omp atomic
+        //doneCounter++;
+
+        omp_set_lock(&printLock);
+        doneCounter++;
+        std::cout<<"done with tree "<<doneCounter<<" / "<<trees_.size()<<" \n";
+        omp_unset_lock(&printLock);
+
+        
     }
 
     visitor.visit_at_end(*this, preprocessor);
