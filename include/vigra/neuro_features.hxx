@@ -30,7 +30,8 @@
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
-/*                                                                      */
+/*                     tbeier@birdofprey:/mnt/CLAWS1/tbeier/data/knott1000_results/train/activeRf$ ls
+                                                 */
 /************************************************************************/
 
 
@@ -236,6 +237,8 @@ namespace vigra{
         }
         void assignNodeSizes(const MultiArrayView<1, float> & nodeSizes){
             nodeSizes_ = nodeSizes;
+            nodeElements_.reshape(nodeSizes_.shape());
+            nodeElements_ = 1;
         }
 
         void assignLabels(const MultiArrayView<1, UInt32> & edgeLabels){
@@ -321,7 +324,10 @@ namespace vigra{
                     if(edgeLabelProb_(minId,0)>0.9){
                         //std::cout<<"AGREEMENT\n";
                         l=0;
-                        if(edgeElements_(minId)>1){
+
+                        const size_t mUid = mergeGraph_->id( mergeGraph_->u(mergeGraph_->edgeFromId(minId)) );
+                        const size_t mVid = mergeGraph_->id( mergeGraph_->v(mergeGraph_->edgeFromId(minId)) );
+                        if(edgeElements_(minId) > 1 ||nodeElements_(mUid)  > 1 || nodeElements_(mVid)  > 1 ){
 
                             computeFeature(mergeGraph_->edgeFromId(minId), feat);
                             features.bindInner(newFeatCount)=feat;
@@ -467,7 +473,7 @@ namespace vigra{
             const float sizeB = nodeSizes_[idB];
             const float sizeAB = sizeA + sizeB;
             nodeSizes_[idA] = sizeAB;
-
+            nodeElements_[idA]+=nodeElements_[idB];
 
 
             const size_t nCueTypes = nodeCues_.shape(1);
@@ -476,9 +482,9 @@ namespace vigra{
             for(size_t c=0; c<nCueTypes; ++c){
 
                 const float meanA = nodeCues_(idA,c,0);
-                const float meanB = nodeCues_(idA,c,0);
+                const float meanB = nodeCues_(idB,c,0);
                 const float varA  = nodeCues_(idA,c,1);
-                const float varB  = nodeCues_(idA,c,1);
+                const float varB  = nodeCues_(idB,c,1);
                
 
                 // merge mean and variance
@@ -516,9 +522,9 @@ namespace vigra{
             for(size_t c=0; c<nCueTypes; ++c){
 
                 const float meanA = edgeCues_(idA,c,0);
-                const float meanB = edgeCues_(idA,c,0);
+                const float meanB = edgeCues_(idB,c,0);
                 const float varA  = edgeCues_(idA,c,1);
-                const float varB  = edgeCues_(idA,c,1);
+                const float varB  = edgeCues_(idB,c,1);
                
 
                 // merge mean and variance
@@ -644,7 +650,7 @@ namespace vigra{
             const int uId = mergeGraph_->id(u);
             const int vId = mergeGraph_->id(v);
 
-            for (int qtype = 0;  qtype  < edgeCues_.shape(1); ++qtype){
+            for (int qtype = 0;  qtype  < nodeCues_.shape(1); ++qtype){
 
                 const float mU = nodeCues_(uId, qtype, 0);
                 const float mV = nodeCues_(vId, qtype, 0);
@@ -688,7 +694,7 @@ namespace vigra{
                 {   
                     const float dUV chiSquaredDist(nodeCues_, nodeCues_, uId, vId, qtype, 2, nodeCues_.shape(2));
                     const float dEV chiSquaredDist(edgeCues_, nodeCues_, eId, vId, qtype, 2, nodeCues_.shape(2));
-                    const float dEU chiSquaredDist(edgeCues_, nodeCues_, eId, vId, qtype, 2, nodeCues_.shape(2));
+                    const float dEU chiSquaredDist(edgeCues_, nodeCues_, eId, uId, qtype, 2, nodeCues_.shape(2));
                     const float minDEUV = std::min(dEV,dEU);
                     const float maxDEUV = std::max(dEV,dEU);
                     feature[featureIndex++] = dUV;
@@ -823,6 +829,7 @@ namespace vigra{
 
 
         MultiArray<1, UInt32> edgeElements_;
+        MultiArray<1, UInt32> nodeElements_;
         MultiArray<1, float> edgeSizes_;
         MultiArray<1, float> nodeSizes_;
 
