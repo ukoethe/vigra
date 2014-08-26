@@ -90,6 +90,64 @@ namespace vigra{
 
 
 
+    template<class T,class RES>
+    void quantiles(
+        const vigra::MultiArrayView<1, T> & histogram,
+        const RES & quantiles
+    ){
+        MultiArray<1,T> csum(histogram.shape()+1);
+        csum[0]=0;
+
+        for(size_t i=1; i<histogram.size(); ++i){
+            csum[i] = histogram[i-1]+csum[i-1];
+        }
+        for(size_t i=0; i<histogram.size(); ++i){
+            csum[i]/=csum[csum.size()];
+        }
+
+
+        const float qs[3]={0.1, 0.5, 0.9};
+        size_t ii=0;
+        for(size_t qi=0; qi<3; ++qi){
+
+            const float q=qs[qi];
+
+            for(size_t i=ii; i<csum.size()-1; ++i){
+
+                if( std::abs(csum[i]-q)  < 0.0000001){
+                    quantiles[qi]=float(i);
+                    ii=i;
+                    break;
+                }
+                else if( std::abs(csum[i+1]-q) < 0.0000001){
+                    quantiles[qi]=float(i+1);
+                    ii=i;
+                    break;
+                }
+                else if(cum[i]<q && csum[i]>q){
+                    const float y0 = cum[i],y1 = cum[i+1];
+                    const float x0 = float(i), x1 = float(i+1);
+                    const float m = (y0 - y1)/(x0 - x1);
+                    const float c = y0 - m*x0;
+                    ii=i;
+                    quantiles[qi] = (q-c)/m;
+                    break;
+                }
+                else if(i==histogram.size()){
+                    std::cout<<"should not be here\n";
+                    throw std::runtime_error("should not be here");
+                    quantiles[qi]=float(i);
+                    ii=i;
+                    break;
+                }
+            }
+        }
+
+    }
+
+
+
+
     class NeuroDynamicFeatures{
     public:
         typedef NeuroDynamicFeatures SelfType;
@@ -596,8 +654,9 @@ namespace vigra{
                 const float vV = nodeCues_(vId, qtype, 1);
                 const float vE = edgeCues_(eId, qtype, 1);
 
+
+                // simple mean difference
                 {
-                    // abs mean differences
                     const float dUV = std::abs(mU-mV);
                     const float dEV = std::abs(mU-mE);
                     const float dEU = std::abs(mU-mE);
@@ -607,16 +666,38 @@ namespace vigra{
                     feature[featureIndex++] = dUV;
                     feature[featureIndex++] = minDEUV;
                     feature[featureIndex++] = maxDEUV;
+                    feature[featureIndex++] = dEV+dEU;
+                }
+
+                // bhattacharyya (for given mean and variance)
+                // (assuming gaussians)
+                {   
+                    const float dUV = bhattacharyyaSimple(mU, vU, mV, vV);
+                    const float dEV = bhattacharyyaSimple(mV, vV, mE, vE);
+                    const float dEU = bhattacharyyaSimple(mU, vU, mE, vE);
+                    const float minDEUV = std::min(dEV,dEU);
+                    const float maxDEUV = std::max(dEV,dEU);
+
+                    feature[featureIndex++] = dUV;
+                    feature[featureIndex++] = minDEUV;
+                    feature[featureIndex++] = maxDEUV;
+                    feature[featureIndex++] = dEV+dEU;
+                }
+
+                // CHI2
+                {   
+                    const float dUV chiSquaredDist(nodeCues_, nodeCues_, uId, vId, qtype, 2, nodeCues_.shape(2));
+                    const float dEV chiSquaredDist(edgeCues_, nodeCues_, eId, vId, qtype, 2, nodeCues_.shape(2));
+                    const float dEU chiSquaredDist(edgeCues_, nodeCues_, eId, vId, qtype, 2, nodeCues_.shape(2));
+                    const float minDEUV = std::min(dEV,dEU);
+                    const float maxDEUV = std::max(dEV,dEU);
+                    feature[featureIndex++] = dUV;
+                    feature[featureIndex++] = minDEUV;
+                    feature[featureIndex++] = maxDEUV;
+                    feature[featureIndex++] = dEV+dEU;
                 }
 
 
-                // abs diff mean UV
-                feature[featureIndex++] = std::abs(nodeCues_(uId, qtype, 0) - nodeCues_(vId, qtype, 0));
-                // abs variance diff
-                feature[featureIndex++] = std::abs(nodeCues_(uId, qtype, 1) - nodeCues_(vId, qtype, 1));
-
-
-                //feature[featureIndex++]  = bhattacharyyaSimple()
             }
         }
 
