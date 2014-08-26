@@ -172,13 +172,14 @@ namespace vigra{
     NumpyAnyArray pyPredict(
         SELF  & self,
         const RandomForest<unsigned int> & rf,
-        const float stopProb,
-        NumpyArray<1, UInt32> segLabels
+        NumpyArray<1, float> stopProbs,
+        const float damping,
+        NumpyArray<2, UInt32> segLabels
     ){
-        typename NumpyArray<1, float>::difference_type sShape(self.maxNodeId()+1);
+        typename NumpyArray<2, float>::difference_type sShape(stopProbs.shape()[0],self.maxNodeId()+1);
         segLabels.reshapeIfEmpty(sShape);
 
-        self.predict(rf, stopProb, segLabels);
+        self.predict(rf, stopProbs,damping, segLabels);
 
         return segLabels;
     }
@@ -233,7 +234,8 @@ namespace vigra{
         .def("predict", &pyPredict<PyNeuroDynamicFeatures>,
             (
                 python::arg("rf"),
-                python::arg("stopProb"),
+                python::arg("stopProbs"),
+                python::arg("damping"),
                 python::arg("segLabels")=python::object()
             )
         )

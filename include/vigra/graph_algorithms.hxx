@@ -1078,7 +1078,7 @@ namespace vigra{
             const Int64 lU = static_cast<Int64>(nodeGt[u]);
             const Int64 lV = static_cast<Int64>(nodeGt[v]);
 
-            if(ignoreLabel==-1 || (lU!=ignoreLabel && lV!=ignoreLabel)){
+            if(ignoreLabel==-1 || (lU!=ignoreLabel || lV!=ignoreLabel)){
                 edgeGt[edge] = lU == lV ? 0 : 1;
             }
             else{

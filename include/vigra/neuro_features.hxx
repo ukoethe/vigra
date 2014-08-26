@@ -114,6 +114,8 @@ namespace vigra{
         :   graph_(&graph),
             mergeGraph_(&mergeGraph){
                 rf_ = NULL;
+
+            omp_set_nested(0);
         }
 
         size_t initalTrainignSetSize(){
@@ -311,9 +313,11 @@ namespace vigra{
 
         void predict(
             const RandomForest<unsigned int> & rf,
-            const float stopProb,
-            MultiArrayView<1, UInt32 > & nodeLabels
+            const MultiArrayView<1, float> stopProbs,
+            const float damping,
+            MultiArrayView<2, UInt32 > & nodeLabels
         ){
+            omp_set_nested(0);
             randGen_ = NULL;
 
             std::cout<<"predict\n";
@@ -321,8 +325,9 @@ namespace vigra{
             rf_ = &rf;
             pq_ = &pq;
 
+            damping_ = damping;
 
-
+            probBuffer_.resize(graph_->edgeNum());
 
             std::cout<<"fill inital priority queue\n";
             {
@@ -365,31 +370,50 @@ namespace vigra{
                 std::cout<<"write from buffer..\n";
                 for(size_t eId=0; eId< graph_->edgeNum(); ++eId){
                     pq_->push(eId, aProbs(eId,1));
+                    probBuffer_[eId] = aProbs(eId,1);
                 }
                 std::cout<<"write from buffer DONE\n";
             }
-            while(pq_->topPriority()<stopProb){
 
-                if(mergeGraph_->edgeNum()%100==0){
-                    std::cout<<"#edges: "<<mergeGraph_->edgeNum()<<"  ";
-                    std::cout<<" prob : "<< pq_->topPriority() <<"\n";
-                }
-                size_t minId = pq_->top();
-                bool exitIt=false;
-                while(mergeGraph_->hasEdgeId(minId)==false){
-                    pq_->deleteItem(minId);
-                    minId = pq_->top();
-                    if(pq_->topPriority()>=stopProb){
-                        std::cout<<"exit it\n";
-                        exitIt=true;
+
+            
+            size_t pIndex = 0;  
+
+            while(pIndex<stopProbs.shape(0)){
+                float stopProb = stopProbs[pIndex];
+                while(pq_->topPriority()<stopProb){
+
+                    if(mergeGraph_->edgeNum()%100==0){
+                        std::cout<<"#edges: "<<mergeGraph_->edgeNum()<<"  ";
+                        std::cout<<" prob : "<< pq_->topPriority() <<"\n";
+                    }
+                    size_t minId = pq_->top();
+                    bool exitIt=false;
+                    while(mergeGraph_->hasEdgeId(minId)==false){
+                        pq_->deleteItem(minId);
+                        minId = pq_->top();
+                        if(pq_->topPriority()>=stopProb){
+                            std::cout<<"exit it\n";
+                            exitIt=true;
+                            break;
+                        }
+                    }
+                    if(exitIt)
                         break;
+                    mergeGraph_->contractEdge(mergeGraph_->edgeFromId(minId));
+                }       
+                std::cout<<"done with contraction at threshold "<<stopProb<<"\n";
+                for(size_t nid=0; nid<=graph_->maxNodeId(); ++nid){
+                    if(graph_->nodeFromId(nid)!=lemon::INVALID){
+                        nodeLabels(pIndex, nid) = mergeGraph_->reprNodeId(nid);
                     }
                 }
-                if(exitIt)
-                    break;
-                mergeGraph_->contractEdge(mergeGraph_->edgeFromId(minId));
-            }       
-            std::cout<<"done with contraction\n";
+                ++pIndex;
+            }
+        }
+
+
+        void writeSnapshot(MultiArrayView<1, UInt32> nodeLabels){
             for(size_t nid=0; nid<=graph_->maxNodeId(); ++nid){
                 if(graph_->nodeFromId(nid)!=lemon::INVALID){
                     nodeLabels[nid]=mergeGraph_->reprNodeId(nid);
@@ -436,7 +460,9 @@ namespace vigra{
                     nodeCues_(idA, c, hb)  = (sizeA*nodeCues_(idA, c, hb) + sizeB*nodeCues_(idB, c, hb))/sizeAB;
                 }
             }
-            
+            if(probBuffer_.size()==graph_->edgeNum()){
+                probBuffer_[idA]  = (sizeA*probBuffer_[idA]  + sizeB*probBuffer_[idB] )/sizeAB;
+            }
 
         }   
         void mergeEdges(const MgEdge & edgeA, const MgEdge & edgeB){
@@ -493,24 +519,66 @@ namespace vigra{
             pq_->deleteItem(edge.id());
             const MgNode newNode = mergeGraph_->inactiveEdgesNode(edge);
 
-            vigra::MultiArray<1, float> feat = vigra::MultiArray<1, float>(vigra::MultiArray<1, float>::difference_type(numberOfFeatures()));
-            vigra::MultiArray<2, float> probs(vigra::MultiArray<2, float>::difference_type(1, 2));
 
 
+
+
+            std::vector<size_t> incEdgeIds;
             for (MergeGraph::IncEdgeIt e(*mergeGraph_,newNode); e!=lemon::INVALID; ++e){
                 const MgEdge incEdge(*e);
-                computeFeature(incEdge, feat);
-                rf_->predictProbabilities(feat.insertSingletonDimension(0), probs);
-                const float prob = probs[1];
+                incEdgeIds.push_back(incEdge.id());
+            }
 
+            size_t nIncEdges = incEdgeIds.size();
+
+            vigra::MultiArray<2, float> aFeat(vigra::MultiArray<2, float>::difference_type(nIncEdges,numberOfFeatures()));
+            vigra::MultiArray<2, float> aProbs(vigra::MultiArray<2, float>::difference_type(nIncEdges, 2));
+
+
+
+            //std::cout<<"incEdgeSize = "<<nIncEdges<<"\n";
+
+            #pragma omp parallel for
+            for (size_t i=0; i< incEdgeIds.size(); ++ i){
+                MultiArrayView<1, float> feat = aFeat.bindInner(i);
+                MultiArrayView<1, float> probs = aProbs.bindInner(i);
+                MultiArrayView<2, float> feat2  = feat.insertSingletonDimension(0);
+                MultiArrayView<2, float> probs2 = probs.insertSingletonDimension(0);
+
+
+                const MgEdge incEdge = mergeGraph_->edgeFromId(incEdgeIds[i]);
+                computeFeature(incEdge, feat);
+                rf_->predictProbabilities(feat2, probs2);
+                const float prob = probs[1];
+            }
+
+            for (size_t i=0; i< incEdgeIds.size(); ++ i){
+                const float prob = aProbs(i,1);
+                const size_t eId = incEdgeIds[i];
+                // only in train modus
                 if(randGen_!=NULL){
                     const float noise = randGen_->uniform(-1.0*noiseMagnitude_, noiseMagnitude_);
-                    pq_->push(incEdge.id(),prob+noise);
+                    pq_->push(eId,prob+noise);
                 }
+                // test modus
                 else{
-                    pq_->push(incEdge.id(),prob);
+                    // with damping
+                    if(probBuffer_.size() == graph_->edgeNum()){
+                        const float oldProb = probBuffer_[eId];
+                        probBuffer_[eId] = prob;
+                        const float mixedProb  = (1.0 - damping_)*prob + damping_*oldProb;
+
+                        //std::cout<<"old "<<oldProb<<" new "<<prob<<" mixed "<<mixedProb<<"\n";
+
+                        pq_->push(eId,mixedProb);
+                    }
+                    else{
+                        pq_->push(eId,prob);
+                    }
                 }
             }
+
+
         }
 
 
@@ -759,6 +827,8 @@ namespace vigra{
 
         RandomNumberGenerator<> * randGen_;
         float noiseMagnitude_;
+        float damping_;
+        std::vector<float> probBuffer_;
     };
  
 }
