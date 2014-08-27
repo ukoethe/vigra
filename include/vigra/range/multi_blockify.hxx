@@ -39,23 +39,29 @@ public:
         return result;
     }
     
-    template <unsigned int n = N - 1>
     void pop_front(size_type i = 1)
     {
-        vigra_assert(n == N - 1, "");
-        //cout << "pop_front " << n << endl;
+        static const int n = dimension - 1;
+        pop_front_dim<n>(i);
+    }
+    
+    template <unsigned int n>
+    void pop_front_dim(size_type i)
+    {
+        //cout << "pop_front_dim " << n << endl;
         //cout << "length before: " << multi_length(range) << endl;
-        range. template pop_front<n>(std::min<size_type>(multi_length(range)[n], block_shape[n] * i));
+        range. template pop_front_dim<n>(std::min<size_type>(multi_length(range)[n], block_shape[n] * i));
         //cout << "length after: " << multi_length(range) << endl;
         //print_range(range);
     }
-    template <unsigned int n = N - 1>
+
+    template <unsigned int n>
     void take_front(size_type i = 1)
     {
         range. template take_front<n>(std::min<size_type>(multi_length(range)[n], block_shape[n] * i));
     }
     
-    template <unsigned int n = N - 1>
+    template <unsigned int n>
     void pop_back(size_type i = 1)
     {
         size_type last_size = multi_length(range)[n] % (block_shape[n]);
@@ -69,7 +75,8 @@ public:
             range. template pop_back<n>(block_shape[n] * i );
         }
     }
-    template <unsigned int n = N - 1>
+
+    template <unsigned int n>
     void take_back(size_type i = 1)
     {
         size_type last_size = multi_length(range)[n] % (block_shape[n]);
@@ -92,12 +99,16 @@ public:
     using typename base_type::size_type;
     typedef BlockifiedMultiRangeImpl<Range, N - 1, Shape> value_type;
     
-    using base_type::base_type;
+    //using base_type::base_type;
+
+    BlockifiedMultiRangeImpl(Range const & range, const Shape& block_shape)
+    : base_type(range, block_shape)
+    {}
 
     value_type front() const
     {
         value_type result(this->range, this->block_shape);
-        result.range.template take_front<N - 1>(std::min<size_type>(multi_length(this->range)[N - 1], this->block_shape[N - 1]));
+        result.range.template take_front_dim<N - 1>(std::min<size_type>(multi_length(this->range)[N - 1], this->block_shape[N - 1]));
         //cout << "front, length: " << multi_length(result.range) << endl;
         return result;
     }
@@ -122,12 +133,15 @@ public:
     using typename base_type::size_type;
     typedef Range value_type;
 
-    using base_type::base_type;
+    //using base_type::base_type;
+    BlockifiedMultiRangeImpl(Range const & range, const Shape& block_shape)
+    : base_type(range, block_shape)
+    {}
     
     value_type front() const
     {
         Range result = this->range;
-        result.template take_front<0>(std::min<size_type>(this->block_shape[0], multi_length(result)[0]));
+        result.template take_front_dim<0>(std::min<size_type>(this->block_shape[0], multi_length(result)[0]));
         //cout << "end front, length: " << multi_length(result) << endl;
         return result;
     }
@@ -151,16 +165,22 @@ class BlockifiedMultiRange
 private:
     typedef multi_blockify_detail::BlockifiedMultiRangeImpl<Range, Range::dimension, Shape> base_type;
 public:
+    BlockifiedMultiRange(Range const & range, const Shape& block_shape)
+    : base_type(range, block_shape)
+    {}
+
     using base_type::value_type;
-    using base_type::dimension;
+    //using base_type::dimension;
+    enum {dimension = base_type::dimension };
     using base_type::size_type;
 
-    using base_type::base_type;
+    //using base_type::base_type;
     using base_type::empty;
     using base_type::length;
     
     using base_type::front;
     using base_type::pop_front;
+    using base_type::pop_front_dim;
     using base_type::take_front;
 
     using base_type::back;

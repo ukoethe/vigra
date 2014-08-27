@@ -1,7 +1,7 @@
 #include <vigra/multi_array.hxx>
 #include <vigra/range/multi_range.hxx>
 
-#include <label_multi_range_blockwise.hxx>
+#include <vigra/label_multi_range_blockwise.hxx>
 
 #include <vigra/range/multi_blockify.hxx>
 #include <vigra/range/multi_range.hxx>
@@ -11,6 +11,7 @@
 #include <vigra/error.hxx>
 #include <vigra/multi_labeling.hxx>
 
+#include <iostream>
 #include <vector>
 
 using namespace vigra;
@@ -48,6 +49,7 @@ bool equivalent_labels(LabelRange1 range1, LabelRange2 range2)
 
 int main()
 {
+  try {
     typedef MultiArray<2, size_t> Array;
     typedef Array::difference_type Shape;
 
@@ -79,5 +81,10 @@ int main()
     size_t count = labelMultiArray(data, labels, neighborhood, equal);
     size_t blockwise_count = label_multi_range_blockwise(data_blocks_range, label_blocks_range, neighborhood, equal);
     vigra_assert(count == blockwise_count, "");
-    vigra_assert(equivalent_labels(multi_range(labels), multi_range(blockwise_labels)), "");
+    vigra_assert(equivalent_labels(multi_range(labels), multi_range(blockwise_labels)), "labelings differ");
+  }
+  catch(std::exception & e)
+  {
+      std::cerr << "Program failed:\n" << e.what() << "\n";
+  }
 }

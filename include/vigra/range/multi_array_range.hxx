@@ -9,7 +9,7 @@ namespace vigra
 template <class ArrayType>
 StridedPtrRange<typename ArrayType::value_type, typename ArrayType::difference_type> multi_range(ArrayType& array)
 {
-    return { array.data(), array.stride(), array.shape() };
+    return StridedPtrRange<typename ArrayType::value_type, typename ArrayType::difference_type>(array.data(), array.stride(), array.shape());
 }
 
 }

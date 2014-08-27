@@ -44,47 +44,55 @@ struct StridedPtrRangeImplCommon
         return (end - begin) / strides[dimension - 1];
     }
     
-    template <unsigned int n=dimension - 1>
-    void pop_front()
+    void pop_front(size_type i = 1)
     {
-        begin += strides[n];
-        --shape[n];
-        if(n != dimension - 1)
-            end += strides[n];
+        static const int n = dimension-1;
+        pop_front_dim<n>(i);
     }
-    template <unsigned int n=dimension - 1>
-    void pop_front(size_type i)
+
+    template <unsigned int n>
+    void pop_front_dim(size_type i)
     {
         begin += i * strides[n];
         shape[n] -= i;
         if(n != dimension - 1)
             end += i * strides[n];
     }
-    template <unsigned int n=dimension - 1>
+
     void take_front(size_type i)
+    {
+        static const int n = dimension - 1;
+        take_front_dim<n>(i);
+    }
+    
+    template <unsigned int n>
+    void take_front_dim(size_type i)
     {
         shape[n] = i;
         if(n == dimension - 1)
             end = begin + i * strides[n];
     }
     
-    template <unsigned int n=dimension - 1>
+    //template <unsigned int n>
     void pop_back()
     {
+        static const int n = dimension - 1;
         --shape[n];
         if(n == dimension - 1)
             end -= strides[n];
     }
-    template <unsigned int n=dimension - 1>
+
+    template <unsigned int n>
     void pop_back(size_type i)
     {
         shape[n] -= i;
         if(n == dimension - 1)
             end -= i * strides[n];
     }
-    template <unsigned int n=dimension - 1>
+    //template <unsigned int n>
     void take_back(size_type i)
     {
+        static const int n = dimension - 1;
         begin += (shape[n] - i) * strides[n];
         if(n != dimension - 1)
             end += (shape[n] - i) * strides[n];
@@ -115,7 +123,15 @@ struct StridedPtrRangeImpl
     
     typedef StridedPtrRangeImpl<T, Shape, N - 1> value_type;
     
-    using base_type::base_type;
+//    using base_type::base_type;
+    StridedPtrRangeImpl()
+    : base_type()
+    {}
+
+    StridedPtrRangeImpl(T* begin, const Shape& strides, const Shape& shape)
+    : base_type(begin, strides, shape)
+    {}
+
 /*    
     value_type&& take_front_before(value_type&& r) const
     {
@@ -140,7 +156,14 @@ struct StridedPtrRangeImpl<T, Shape, 1>
     
     typedef T& value_type;
     
-    using base_type::base_type;
+    //using base_type::base_type;
+    StridedPtrRangeImpl()
+    : base_type()
+    {}
+
+    StridedPtrRangeImpl(T* begin, const Shape& strides, const Shape& shape)
+    : base_type(begin, strides, shape)
+    {}
 
     value_type front() const
     {
@@ -160,7 +183,8 @@ Shape multiply_shape(Shape shape, size_t multiplier)
     return shape;
 }
 */
-}
+
+} // strided_ptr_range_detail
 
 template <class T, class Shape>
 class StridedPtrRange
@@ -170,10 +194,19 @@ private:
     typedef strided_ptr_range_detail::StridedPtrRangeImpl<T, Shape, TinyVectorSize<Shape>::value> base_type;
 public:
     using typename base_type::value_type;
-    using base_type::dimension;
+    //using base_type::dimension;
+    enum { dimension = base_type::dimension };
     using typename base_type::size_type;
 
-    using base_type::base_type;
+    //using base_type::base_type;
+    StridedPtrRange()
+    : base_type()
+    {}
+
+    StridedPtrRange(T* begin, const Shape& strides, const Shape& shape)
+    : base_type(begin, strides, shape)
+    {}
+
     /*
     StridedPtrRange(T* begin, T* end, const Shape& shape)
       : base_type(begin, end, strided_ptr_range_detail::multiply_shape(shape, sizeof(T)))
@@ -186,7 +219,9 @@ public:
 
     using base_type::front;
     using base_type::pop_front;
+    using base_type::pop_front_dim;
     using base_type::take_front;
+    using base_type::take_front_dim;
 
     using base_type::back;
     using base_type::pop_back;

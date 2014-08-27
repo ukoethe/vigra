@@ -28,7 +28,8 @@ void forEachDirectNeighbor(Range1 u, Range2 v, Visitor visitor)
 {
     assertNonEmptyEqualLength(u, v);
     auto zipped = zip(u, v);
-    typedef typename decltype(zipped)::value_type pair_type;
+    typedef decltype(zipped) zipped_type;
+    typedef typename zipped_type::value_type pair_type;
     for_each(zip(u, v), [&visitor](pair_type p)
     {
         visitor(p.first, p.second);
