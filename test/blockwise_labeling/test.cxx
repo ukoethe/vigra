@@ -12,12 +12,13 @@
 
 #include <vector>
 #include <utility>
+#include <functional>
 
 using namespace vigra;
 using namespace std;
 
 template <class Iterator1,class Iterator2>
-bool equivalent_labels(Iterator1 begin1, Iterator1 end1,
+bool equivalentLabels(Iterator1 begin1, Iterator1 end1,
                        Iterator2 begin2, Iterator2 end2)
 {
     if(end1 - begin1 != end2 - begin2)
@@ -27,12 +28,12 @@ bool equivalent_labels(Iterator1 begin1, Iterator1 end1,
     LabelMap mapping; //from range 1 to range 2
     for( ; begin1 != end1; ++begin1, ++begin2)
     {
-        if(mapping.size() <= *begin)
-            mapping.resize(*begin + 1, -1);
+        if(mapping.size() <= *begin1)
+            mapping.resize(*begin1 + 1, -1);
 
-        if(left_to_right[*begin1] == -1)
-            left_to_right[*begin1] = *begin2;
-        else if(left_to_right[*begin1] != *begin2)
+        if(mapping[*begin1] == -1)
+            mapping[*begin1] = *begin2;
+        else if(mapping[*begin1] != *begin2)
             return false;
     }
     
@@ -74,12 +75,12 @@ void set_within(typename MultiArrayShape<N>::type& coordinates, typename MultiAr
     for(int i = 0; i != N; ++i)
     {
         coordinates[i] = max(coordinates[i], 0);
-        coorindates[i] = min(coordinates[i], bounds[i] - 1);
+        coordinates[i] = min(coordinates[i], bounds[i] - 1);
     }
 }
 
 template <unsigned int N, class S>
-void create_random_path(MultiArrayView<N, int, S> view, NeihgborhoodType neighborhood, unsigned int length, int value)
+void create_random_path(MultiArrayView<N, int, S> view, NeighborhoodType neighborhood, unsigned int length, int value)
 {
     typedef typename MultiArrayShape<N>::type Shape;
     
@@ -87,8 +88,8 @@ void create_random_path(MultiArrayView<N, int, S> view, NeihgborhoodType neighbo
     for(unsigned int i = 0; i != length; ++i)
     {
         view[path] = value;
-        start += random_neighbor_offset(neighborhood);
-        set_within(start);
+        path += random_neighbor_offset<N>(neighborhood);
+        set_within(path);
     }
 }
 
@@ -100,46 +101,52 @@ void fill_random(Iterator begin, Iterator end, int maximum)
 }
 
 template <unsigned int N, class T, class S, class LabelFunctor1, class LabelFunctor2>
-bool equivalentFunctors(LabelFunctor1 functor1, LabelFunctor2 functor2)
+bool equivalentFunctors(MultiArrayView<N, T, S> data, LabelFunctor1 functor1, LabelFunctor2 functor2)
 {
-    MultiArray<N, T> first_labels(view.shape());
-    functor1(data, labels);
+    MultiArray<N, T> first_labels(data.shape());
+    functor1(data, first_labels);
 
-    MultiArray<N, T> second_labels(view.shape());
+    MultiArray<N, T> second_labels(data.shape());
     functor2(data, second_labels);
     
     return equivalent_labels(first_labels.begin(), first_labels.end(),
                              second_labels.begin(), second_labels.end());
 }
 
-template <class ArraysIterator, class ShapesIterator>
-bool test_on_data(ArraysIterator arrays_begin, ArraysIterator arrays_end,
+template <class DatasIterator, class ShapesIterator>
+void test_on_data(DatasIterator datas_begin, DatasIterator datas_end,
                ShapesIterator shapes_begin, ShapesIterator shapes_end)
 {
-    typedef typename ArraysIterator::reference ArrayRef;
-    std::for_each(arrays_begin, arrays_end, [](ArrayRef array)
+    typedef typename DatasIterator::reference DataRef;
+    std::for_each(datas_begin, datas_end, [&](DataRef data)
     {
         typedef typename ShapesIterator::reference ShapeRef;
-        std::for_each(shapes_begin, shapes_end, [&array](ShapeRef shape)
+        std::for_each(shapes_begin, shapes_end, [&](ShapeRef shape)
         {
             vector<NeighborhoodType> neighborhoods;
             neighborhoods.push_back(DirectNeighborhood);
             neighborhoods.push_back(IndirectNeighborhood);
             std::for_each(neighborhoods.begin(), neighborhoods.end(), [&](NeighborhoodType neighborhood)
             {
-                typedef typename ArraysIterator::value_type::view_type View;
-                auto correct_functor = [&](View labels)
+                typedef typename DatasIterator::value_type Data;
+                
+                Data correct_labels(data.shape());
+                int correct_label_number = labelMultiArray(data, correct_labels, neighborhood);
+                
+                Data tested_labels(data.shape());
+                auto data_blocks = multi_blockify(multi_range(data), shape);
+                auto tested_labels_blocks = multi_blockify(multi_range(tested_labels), shape);
+                int tested_label_number = label_multi_range_blockwise(data_blocks, tested_labels_blocks, neighborhood, std::equal_to<int>());
+                if(!equivalentLabels(correct_labels.begin(), correct_labels.end(),
+                                     tested_labels.begin(), tested_labels.end()) ||
+                   correct_label_number != tested_label_number)
                 {
-                    labelMultiArray(data, labels, neighborhood);
-                };
-                auto tested_functor = [&](View labels)
-                {
-                    auto data_blocks = blockify(multi_range(data), shape);
-                    auto label_blocks = blockify(multi_range(labels), shape);
-
-                    label_multi_range_blockwise(data_blocks, label_blocks, neighborhood);
-                };
-                shouldEqual(equivalentFunctors(correct_functor, tested_functor), true);
+                    std::ostringstream oss;
+                    oss << "labeling not equivalent" << endl;
+                    oss << "array shape: " << data.shape() << endl;
+                    oss << "block shape: " << shape << endl;
+                    failTest(oss.str().c_str());
+                }
             });
         });
     });
@@ -166,18 +173,17 @@ struct BlockwiseLabelingTest
     BlockwiseLabelingTest()
     {
         array_fives.push_back(Array5(Shape5(1)));
-        array_fives.push_back(Array5(Shape5(1,2,3,4,5)));
-        array_fives.push_back(Array5(Shape5(5,6,3,2,3)));
-        std::for_each(array_fives, [](Array5& arr)
+        array_fives.push_back(Array5(Shape5(2,2,3,4,3)));
+        //array_fives.push_back(Array5(Shape5(5,6,3,2,3)));
+        std::for_each(array_fives.begin(), array_fives.end(), [](Array5& arr)
         {
             fill_random(arr.begin(), arr.end(), 3);
-            arr.
         });
 
         array_fours.push_back(Array4(Shape4(1)));
         array_fours.push_back(Array4(Shape4(1,2,3,4)));
-        array_fours.push_back(Array4(Shape4(6,12,8,7)));
-        std::for_each(array_fours, [](Array4& arr)
+        array_fours.push_back(Array4(Shape4(6,10,8,7)));
+        std::for_each(array_fours.begin(), array_fours.end(), [](Array4& arr)
         {
             fill_random(arr.begin(), arr.end(), 3);
         });
@@ -186,7 +192,8 @@ struct BlockwiseLabelingTest
         array_ones.push_back(Array1(Shape1(2)));
         array_ones.push_back(Array1(Shape1(47)));
         array_ones.push_back(Array1(Shape1(81)));
-        std::for_each(array_ones, [](Array1& arr)
+        
+        std::for_each(array_ones.begin(), array_ones.end(), [](Array1& arr)
         {
             fill_random(arr.begin(), arr.end(), 3);
         });
@@ -208,10 +215,58 @@ struct BlockwiseLabelingTest
         shape_ones.push_back(Shape1(213));
     }
     
+    void debug_test()
+    {
+        typedef MultiArray<2, size_t> Array;
+        typedef Array::difference_type Shape;
+
+        Shape shape = Shape(4);
+        Array data(shape);
+
+        data(0,0) = 1;
+        data(1,1) = 2;
+        data(2,1) = 2;
+        data(2,2) = 2;
+        data(3,3) = 3;
+        data(3,2) = 3;
+
+        auto data_range = multi_range(data);
+        Array blockwise_labels(shape);
+        auto label_range = multi_range(blockwise_labels);
+    
+        Shape block_shape(2, 2);
+        auto data_blocks_range = multi_blockify(data_range, block_shape);
+        auto label_blocks_range = multi_blockify(label_range, block_shape);
+
+        NeighborhoodType neighborhood = IndirectNeighborhood;
+        auto equal = [](size_t a, size_t b)
+        {
+            return a == b;
+        };
+    
+        Array labels(shape);
+        size_t count = labelMultiArray(data, labels, neighborhood, equal);
+        size_t blockwise_count = label_multi_range_blockwise(data_blocks_range, label_blocks_range, neighborhood, equal);
+        shouldEqual(count, blockwise_count);
+        shouldEqual(equivalentLabels(labels.begin(), labels.end(),
+                                     blockwise_labels.begin(), blockwise_labels.end()),
+                    true);
+    }
+
     void five_dimensional_test()
     {
         test_on_data(array_fives.begin(), array_fives.end(),
                      shape_fives.begin(), shape_fives.end());
+    }
+    void four_dimensional_test()
+    {
+        test_on_data(array_fours.begin(), array_fours.end(),
+                     shape_fours.begin(), shape_fours.end());
+    }
+    void one_dimensional_test()
+    {
+        test_on_data(array_ones.begin(), array_ones.end(),
+                     shape_ones.begin(), shape_ones.end());
     }
 };
 
@@ -221,11 +276,14 @@ struct BlockwiseLabelingTestSuite
     BlockwiseLabelingTestSuite()
       : test_suite("blockwise labeling test")
     {
-        add(testCase(&BlockwiseLabeling::five_dimensional_test));
+        add(testCase(&BlockwiseLabelingTest::five_dimensional_test));
+        add(testCase(&BlockwiseLabelingTest::four_dimensional_test));
+        add(testCase(&BlockwiseLabelingTest::one_dimensional_test));
+        add(testCase(&BlockwiseLabelingTest::debug_test));
     }
 };
 
-int main()
+int main(int argc, char** argv)
 {
     BlockwiseLabelingTestSuite test;
 
@@ -265,6 +323,6 @@ int main()
     Array labels(shape);
     size_t count = labelMultiArray(data, labels, neighborhood, equal);
     size_t blockwise_count = label_multi_range_blockwise(data_blocks_range, label_blocks_range, neighborhood, equal);
-    vigra_assert(count == blockwise_count, "");
-    vigra_assert(equivalent_labels(multi_range(labels), multi_range(blockwise_labels)), "");
+    //vigra_assert(count == blockwise_count, "");
+    //vigra_assert(equivalent_labels(multi_range(labels), multi_range(blockwise_labels)), "");
 }
