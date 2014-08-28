@@ -67,12 +67,10 @@ public:
     {}
 
     //using Range::Range;
-
-    template <class T1, class T2, class T3>
-    MultiMappedRange(T1 t1, T2 t2, T3 t3)
-    : base_type(t1, t2, t3)
-    {}
-
+    //template <class T1, class T2, class T3>
+    //MultiMappedRange(T1 t1, T2 t2, T3 t3)
+    //: base_type(t1, t2, t3)
+    //{}
 
     value_type front() const
     {
