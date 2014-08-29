@@ -1075,16 +1075,21 @@ public:
         Iterator0 i0 = createCoupledIterator(Shape1(4));
         Iterator1 it = createCoupledIterator(vi, vd),
                   end = it.getEndIterator();
+        Iterator1 iz = zip(vi.begin(), vd.begin());
 
         count = 0;
-        for(; it < end; ++it, ++i0, ++count)
+        for(; count < 4; ++iz, ++it, ++i0, ++count)
         {
             shouldEqual(i0.get<0>(), Shape1(count));
             shouldEqual(it.get<0>(), Shape1(count));
             shouldEqual(it.get<1>(), count+10);
             shouldEqual(it.get<2>(), count+20.0);
+            shouldEqual(iz.get<0>(), Shape1(count));
+            shouldEqual(iz.get<1>(), count+10);
+            shouldEqual(iz.get<2>(), count+20.0);
         }
-        shouldEqual(count, 4);
+        shouldEqual(it, end);
+        shouldEqual(iz, end);
 
         // test multiband
         MultiArrayView<3, scalar_type, StridedArrayTag> at = a3.transpose();
