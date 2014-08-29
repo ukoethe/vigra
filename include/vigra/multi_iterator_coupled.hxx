@@ -72,6 +72,13 @@ public:
       strides_()
     {}
 
+    template <class NEXT1>
+    CoupledHandle(CoupledHandle<T, NEXT1> const & h, NEXT const & next)
+    : base_type(next),
+      pointer_(h.pointer_), 
+      strides_(h.strides_)
+    {}
+
     CoupledHandle(const_pointer p, shape_type const & strides, NEXT const & next)
     : base_type(next),
       pointer_(const_cast<pointer>(p)), 
@@ -366,6 +373,13 @@ public:
     : base_type(),
       view_(), 
       strides_()
+    {}
+    
+    template <class NEXT1>
+    CoupledHandle(CoupledHandle<Multiband<T>, NEXT1> const & h, NEXT const & next)
+    : base_type(next),
+      view_(h.view_), 
+      strides_(h.strides_)
     {}
 
     CoupledHandle(const_reference p, shape_type const & strides, NEXT const & next)
@@ -1379,6 +1393,44 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
                         P2(m2, 
                         P1(m1, 
                         P0(m1.shape())))))));
+}
+
+template <class A, class B>
+struct ZipCoupledHandles;
+
+template <class A, class Head, class Tail>
+struct ZipCoupledHandles<A, CoupledHandle<Head, Tail> >
+{
+    typedef typename ZipCoupledHandles<A, Tail>::type Next;
+    typedef CoupledHandle<Head, Next> type;
+    
+    static type construct(A const & a, CoupledHandle<Head, Tail> const & h)
+    {
+        return type(h, ZipCoupledHandles<A, Tail>::construct(a, (Tail const &)h));
+    }
+};
+
+template <class A, class Shape>
+struct ZipCoupledHandles<A, CoupledHandle<Shape, void> >
+{
+    typedef A type;
+    
+    static type construct(A const & a, CoupledHandle<Shape, void> const &)
+    {
+        return a;
+    }
+};
+
+template <unsigned int N, class A, class B>
+CoupledScanOrderIterator<N, typename ZipCoupledHandles<A, B>::type>
+zip(CoupledScanOrderIterator<N, A> const & a, CoupledScanOrderIterator<N, B> const & b)
+{
+    vigra_precondition(a.shape() == b.shape() && a.scanOrderIndex() == b.scanOrderIndex(),
+         "zip(CoupledScanOrderIterator): iterators must have identical shape and position.");
+         
+    typedef typename ZipCoupledHandles<A, B>::type Handle;
+    typedef CoupledScanOrderIterator<N, Handle> IteratorType;
+    return IteratorType(ZipCoupledHandles<A, B>::construct(*a, *b));
 }
 
 //@}
