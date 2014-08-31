@@ -169,13 +169,13 @@ using std::isnan;
 template <class REAL>
 inline bool isinf(REAL v)
 {
-    return !_finite(v);
+    return _finite(v) == 0;
 }
 
 template <class REAL>
 inline bool isnan(REAL v)
 {
-    return _isnan(v);
+    return _isnan(v) != 0;
 }
 
 #endif
