@@ -350,14 +350,14 @@ class HierarchicalIterator<N, HANDLES, 0>
     typename CoupledHandleCast<TARGET_INDEX, HANDLES>::reference
     get()
     {
-        return handles_.get<TARGET_INDEX>();
+        return handles_.template get<TARGET_INDEX>();
     }
     
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, HANDLES>::const_reference
     get() const
     {
-        return handles_.get<TARGET_INDEX>();
+        return handles_.template get<TARGET_INDEX>();
     }
 
     pointer operator->()
