@@ -132,9 +132,11 @@
 #include <queue>
 #include <string>
 
+#include "multi_fwd.hxx"
+#include "multi_handle.hxx"
+#include "multi_array.hxx"
 #include "memory.hxx"
 #include "metaprogramming.hxx"
-#include "multi_array.hxx"
 #include "threading.hxx"
 #include "compression.hxx"
 
@@ -231,12 +233,6 @@ std::size_t mmap_alignment = sysconf(_SC_PAGE_SIZE);
 #endif
 
 } // anonymous namespace
-
-template <class T>
-struct ChunkedMemory;
-
-template <unsigned int N, class T>
-class ChunkedArray;
 
 template <unsigned int N, class T>
 class IteratorChunkHandle;
@@ -390,9 +386,6 @@ class SharedChunkHandle
   private:
     SharedChunkHandle & operator=(SharedChunkHandle const & rhs);
 };
-
-template<unsigned int N, class T>
-class ChunkIterator;
 
 template <unsigned int N, class T>
 class ChunkedArrayBase
@@ -2785,261 +2778,6 @@ class ChunkedArrayTmpFile
   #endif
     FileHandle file_, mappedFile_;  // the file back-end
     std::size_t file_size_, file_capacity_;
-};
-
-template <unsigned int N, class T>
-class IteratorChunkHandle
-{
-  public:
-    typedef ChunkedArray<N, T>             array_type;
-    typedef typename MultiArrayShape<N>::type  shape_type;
-    
-    IteratorChunkHandle()
-    : offset_(),
-      chunk_(0)
-    {}
-    
-    IteratorChunkHandle(shape_type const & offset)
-    : offset_(offset),
-      chunk_(0)
-    {}
-    
-    IteratorChunkHandle(IteratorChunkHandle const & other)
-    : offset_(other.offset_),
-      chunk_(0)
-    {}
-    
-    IteratorChunkHandle & operator=(IteratorChunkHandle const & other)
-    {
-        offset_ = other.offset_;
-        chunk_ = 0;
-        return *this;
-    }
-    
-    shape_type offset_;
-    SharedChunkHandle<N, T> * chunk_;
-};
-
-    /*
-        The handle must store a pointer to a chunk because the chunk knows 
-        about memory menagement, and to an array view because it knows about
-        subarrays and slices.
-        
-        Perhaps we can reduce this to a single pointer or otherwise reduce 
-        the handle memory to make it faster?
-    */
-template <class U, class NEXT>
-class CoupledHandle<ChunkedMemory<U>, NEXT>
-: public NEXT,
-  public IteratorChunkHandle<NEXT::dimensions, typename UnqualifiedType<U>::type>
-{
-public:
-    typedef typename UnqualifiedType<U>::type     T;
-    typedef NEXT                                  base_type;
-    typedef IteratorChunkHandle<NEXT::dimensions, T>    base_type2;
-    typedef CoupledHandle<ChunkedMemory<U>, NEXT> self_type;
-    
-    static const int index =                      NEXT::index + 1;    // index of this member of the chain
-    static const unsigned int dimensions =        NEXT::dimensions;
-
-    typedef typename IfBool<UnqualifiedType<U>::isConst,
-          ChunkedArrayBase<dimensions, T> const,
-          ChunkedArrayBase<dimensions, T> >::type array_type;
-    typedef detail::ChunkShape<dimensions, T>     chunk_shape;
-    typedef T                                     value_type;
-    typedef U *                                   pointer;
-    typedef value_type const *                    const_pointer;
-    typedef U &                                   reference;
-    typedef value_type const &                    const_reference;
-    typedef typename base_type::shape_type        shape_type;
-    
-    CoupledHandle()
-    : base_type(),
-      base_type2(),
-      pointer_(), 
-      strides_(),
-      upper_bound_(),
-      array_()
-    {}
-
-    CoupledHandle(CoupledHandle const & other)
-    : base_type(other),
-      base_type2(other),
-      pointer_(other.pointer_),
-      strides_(other.strides_),
-      upper_bound_(other.upper_bound_),
-      array_(other.array_)
-    {
-        if(array_)
-            pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-    }
-
-    CoupledHandle(array_type const & array, NEXT const & next)
-    : base_type(next),
-      base_type2(),
-      pointer_(), 
-      array_(const_cast<array_type*>(&array))
-    {
-        if(array_)
-            pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-    }
-
-    ~CoupledHandle()
-    {
-        // deref the present chunk
-        if(array_)
-            array_->unrefChunk(this);
-    }
-
-    CoupledHandle & operator=(CoupledHandle const & other)
-    {
-        if(this != &other)
-        {
-            // deref the present chunk
-            if(array_)
-                array_->unrefChunk(this);
-            base_type::operator=(other);
-            base_type2::operator=(other);
-            array_ = other.array_;
-            if(array_)
-            {
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-            }
-            else
-            {
-                pointer_ = other.pointer_;
-                strides_ = other.strides_;
-                upper_bound_ = other.upper_bound_;
-            }
-        }
-        return *this;
-    }
-    
-    using base_type::point;
-    using base_type::shape;
-
-    inline void incDim(int dim) 
-    {
-        base_type::incDim(dim);
-        pointer_ += strides_[dim];
-        if(point()[dim] == upper_bound_[dim])
-        {
-            // if(point()[dim] < shape()[dim])
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-        }
-    }
-
-    inline void decDim(int dim) 
-    {
-        base_type::decDim(dim);
-        pointer_ -= strides_[dim];
-        if(point()[dim] < upper_bound_[dim] - array_->chunk_shape_[dim])
-        {
-            // if(point()[dim] >= 0)
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-        }
-    }
-
-    inline void addDim(int dim, MultiArrayIndex d) 
-    {
-        base_type::addDim(dim, d);
-        if(point()[dim] < shape()[dim] && point()[dim] >= 0)
-            pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-    }
-
-    inline void add(shape_type const & d) 
-    {
-        base_type::add(d);
-        pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-    }
-    
-    template<int DIMENSION>
-    inline void increment() 
-    {
-        // incDim(DIMENSION);
-        base_type::template increment<DIMENSION>();
-        pointer_ += strides_[DIMENSION];
-        if(point()[DIMENSION] == upper_bound_[DIMENSION])
-        {
-            if(point()[DIMENSION] > shape()[DIMENSION])
-                // this invariant check prevents the compiler from optimizing stupidly
-                // (it makes a difference of a factor of 2!)                
-                vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
-            else 
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-        }
-    }
-    
-    template<int DIMENSION>
-    inline void decrement() 
-    {
-        // decDim(DIMENSION);
-        base_type::template decrement<DIMENSION>();
-        pointer_ -= strides_[DIMENSION];
-        if(point()[DIMENSION] < upper_bound_[DIMENSION] - array_->chunk_shape_[DIMENSION])
-        {
-            if(point()[DIMENSION] < -1)
-                // this invariant check prevents the compiler from optimizing stupidly
-                // (it makes a difference of a factor of 2!)                
-                vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
-            else
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-        }
-    }
-    
-    template<int DIMENSION>
-    inline void increment(MultiArrayIndex d) 
-    {
-        addDim(DIMENSION, d);
-    }
-    
-    template<int DIMENSION>
-    inline void decrement(MultiArrayIndex d) 
-    {
-        addDim(DIMENSION, -d);
-    }
-    
-    void restrictToSubarray(shape_type const & start, shape_type const & end)
-    {
-        base_type::restrictToSubarray(start, end);
-        this->offset_ += start;
-        pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
-    }
-
-    // ptr access
-    reference operator*()
-    {
-        return *pointer_;
-    }
-
-    const_reference operator*() const
-    {
-        return *pointer_;
-    }
-
-    pointer operator->()
-    {
-        return pointer_;
-    }
-
-    const_pointer operator->() const
-    {
-        return pointer_;
-    }
-
-    pointer ptr()
-    {
-        return pointer_;
-    }
-
-    const_pointer ptr() const
-    {
-        return pointer_;
-    }
-
-    pointer pointer_;
-    shape_type strides_, upper_bound_;
-    array_type * array_;
 };
 
 template<unsigned int N, class U>

@@ -36,6 +36,7 @@
 #ifndef VIGRA_MULTI_GRIDGRAPH_HXX
 #define VIGRA_MULTI_GRIDGRAPH_HXX
 
+#include "multi_fwd.hxx"
 #include "multi_iterator.hxx"
 #include "multi_array.hxx"
 #include "graphs.hxx"
@@ -45,7 +46,6 @@ struct NeighborhoodTests;
 
 namespace vigra {
 
-
 template<unsigned int N, class T, class Stride>
 inline
 typename vigra::MultiArrayView<N, T, Stride>::const_reference 
@@ -54,8 +54,6 @@ get(vigra::MultiArrayView<N, T, Stride> const & pmap,
 { 
     return pmap[k]; 
 }
-
-
 
 /** \addtogroup GraphDataStructures Graph Data Structures
         
@@ -259,7 +257,7 @@ computeNeighborOffsets(ArrayVector<Shape> const & neighborOffsets,
 
 } // namespace detail
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly>
 class GridGraphNeighborIterator
 {
 public:
@@ -412,9 +410,6 @@ public:
 };
 
 template<unsigned int N, bool BackEdgesOnly>
-class GridGraphEdgeIterator;
-
-template<unsigned int N, bool BackEdgesOnly=false>
 class GridGraphOutEdgeIterator
 {
   public:
@@ -579,7 +574,7 @@ class GridGraphOutEdgeIterator
     index_type index_;
 };
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly>
 class GridGraphOutArcIterator
 : public GridGraphOutEdgeIterator<N, BackEdgesOnly>
 {
@@ -660,7 +655,7 @@ class GridGraphOutArcIterator
     {}
 };
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly>
 class GridGraphInArcIterator
 : public GridGraphOutEdgeIterator<N, BackEdgesOnly>
 {

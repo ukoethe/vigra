@@ -36,6 +36,7 @@
 #ifndef VIGRA_MULTI_SHAPE_HXX
 #define VIGRA_MULTI_SHAPE_HXX
 
+#include "multi_fwd.hxx"
 #include <sys/types.h>
 #include "tinyvector.hxx"
 #include "array_vector.hxx"
@@ -43,16 +44,9 @@
 
 namespace vigra {
 
-/** \addtogroup MultiIteratorGroup  Multi-dimensional Shapes and Array Iterators
-
-    \brief Shape objects and general iterators for arrays of arbitrary dimension.
+/** \addtogroup MultiIteratorGroup
 */
 //@{
-
-    /** Index type for a single dimension of a MultiArrayView or
-        MultiArray.
-    */
-typedef std::ptrdiff_t MultiArrayIndex;
 
 /********************************************************/
 /*                                                      */
@@ -243,14 +237,6 @@ struct ResolveChunkedMemory<ChunkedMemory<T> >
 
 } // namespace detail
 
-template <unsigned int N, class T, class C = StridedArrayTag>
-class MultiArrayView;
-
-template <unsigned int N, class T, 
-          class A = std::allocator<typename vigra::detail::ResolveMultiband<T>::type> >
-class MultiArray;
-
-
     /** Traits class for the difference type of all MultiIterator, MultiArrayView, and
         MultiArray variants.
     */
@@ -346,17 +332,6 @@ struct ChunkShape<5, T>
 };
 
 } // namespace detail
-
-    /** \brief Choose the neighborhood system in a dimension-independent way.  
-    
-        DirectNeighborhood corresponds to 4-neighborhood in 2D and 6-neighborhood in 3D, whereas
-        IndirectNeighborhood means 8-neighborhood in 2D and 26-neighborhood in 3D. The general
-        formula for N dimensions are 2*N for direct neighborhood and 3^N-1 for indirect neighborhood. 
-    */
-enum NeighborhoodType { 
-        DirectNeighborhood=0,   ///< use only direct neighbors
-        IndirectNeighborhood=1  ///< use direct and indirect neighbors
-};
 
 // Helper functions
 

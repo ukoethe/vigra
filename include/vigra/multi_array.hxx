@@ -1901,6 +1901,17 @@ public:
     }
 };
 
+template <unsigned int N, class T, class StrideTag>
+class MultiArrayView<N, Multiband<T>, StrideTag>
+: public MultiArrayView<N, T, StrideTag>
+{
+  public:
+    MultiArrayView(MultiArrayView<N, T, StrideTag> const & v)
+    : MultiArrayView<N, T, StrideTag>(v)
+    {}
+};
+
+
 template <unsigned int N, class T, class Stride1>
 template <class Stride2>
 void

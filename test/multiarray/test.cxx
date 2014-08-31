@@ -36,6 +36,7 @@
 #include "vigra/unittest.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_iterator_coupled.hxx"
+#include "vigra/multi_hierarchical_iterator.hxx"
 #include "vigra/multi_impex.hxx"
 #include "vigra/basicimageview.hxx"
 #include "vigra/navigator.hxx"
@@ -1075,16 +1076,21 @@ public:
         Iterator0 i0 = createCoupledIterator(Shape1(4));
         Iterator1 it = createCoupledIterator(vi, vd),
                   end = it.getEndIterator();
+        Iterator1 iz = zip(vi.begin(), vd.begin());
 
         count = 0;
-        for(; it < end; ++it, ++i0, ++count)
+        for(; count < 4; ++iz, ++it, ++i0, ++count)
         {
             shouldEqual(i0.get<0>(), Shape1(count));
             shouldEqual(it.get<0>(), Shape1(count));
             shouldEqual(it.get<1>(), count+10);
             shouldEqual(it.get<2>(), count+20.0);
+            shouldEqual(iz.get<0>(), Shape1(count));
+            shouldEqual(iz.get<1>(), count+10);
+            shouldEqual(iz.get<2>(), count+20.0);
         }
-        shouldEqual(count, 4);
+        shouldEqual(it, end);
+        shouldEqual(iz, end);
 
         // test multiband
         MultiArrayView<3, scalar_type, StridedArrayTag> at = a3.transpose();
@@ -1227,6 +1233,81 @@ public:
 
         shouldEqual(&i3[shape3_t(2,3,4)], &a3[shape3_t(2,3,4)]);
         shouldEqual(&*(i3+shape3_t(2,3,4)), &i3[shape3_t(2,3,4)]);
+    }
+
+    void test_hierarchical ()
+    {
+        // test hierarchical navigation and 
+        auto i3_f = createHierarchicalIterator(a3),
+             i3_l = i3_f.getEndIterator();
+        auto i3_c = zip(i3_f, i3_f);
+        array3_t::iterator seqi = a3.begin();
+
+        int countx = 0, county = 0, countz = 0;
+
+        // iterate over the third dimension
+        for (int z=0; i3_f != i3_l; ++i3_f, ++i3_c, ++z) 
+        {
+            auto i2_f = i3_f.begin ();
+            auto i2_c = i3_c.begin ();
+            auto i2_l = i3_f.end ();
+            // iterate over the second dimension
+            for (int y=0; i2_f != i2_l; ++i2_f, ++i2_c, ++y) 
+            {
+                auto i1_f = i2_f.begin ();
+                auto i1_c = i2_c.begin ();
+                auto i1_l = i2_f.end ();
+                // iterate over the first dimension
+                for (int x=0; i1_f != i1_l; ++i1_f, ++i1_c, ++x, ++seqi)
+                {
+                    ++countx;
+                    shouldEqual(&*seqi, &a3(x,y,z));
+                    shouldEqual(i1_f.point(), Shape3(x,y,z));
+                    shouldEqual(&*i1_f, &a3(x,y,z));
+                    shouldEqual(i1_c->get<0>(), Shape3(x,y,z));
+                    shouldEqual(&i1_c->get<1>(), &a3(x,y,z));
+                    shouldEqual(&i1_c->get<2>(), &a3(x,y,z));
+                    shouldEqual(&get<1>(*i1_c), &a3(x,y,z));
+                    shouldEqual(&get<2>(*i1_c), &a3(x,y,z));
+                }
+                ++county;
+            }
+            ++countz;
+        }
+
+        shouldEqual (countx, 30);
+        shouldEqual (county, 15);
+        shouldEqual (countz, 5);
+        shouldEqual (seqi, a3.end());
+        //
+        //// test direct navigation
+        //traverser3_t i3 = a3.traverser_begin();
+        //shouldEqual(&*i3, &a3[shape3_t(0,0,0)]);
+
+        //i3.dim<2>()++;
+        //i3.dim<1>()++;
+        //i3.dim<0>()++;        
+        //shouldEqual(&*i3, &a3[shape3_t(1,1,1)]);
+
+        //i3.dim<2>()+= 3;
+        //i3.dim<1>()+= 2;
+        //i3.dim<0>()+= 1;        
+        //shouldEqual(&*i3, &a3[shape3_t(2,3,4)]);
+        //shouldEqual(&i3[shape3_t(-2,-3,-4)], &a3[shape3_t(0,0,0)]);
+        //shouldEqual(&*(i3-shape3_t(2,3,4)), &a3[shape3_t(0,0,0)]);
+
+        //i3.dim<2>()--;
+        //i3.dim<1>()--;
+        //i3.dim<0>()--;        
+        //shouldEqual(&*i3, &a3[shape3_t(1,2,3)]);
+
+        //i3.dim<2>()-= 3;
+        //i3.dim<1>()-= 2;
+        //i3.dim<0>()-= 1;        
+        //shouldEqual(&*i3, &a3[shape3_t(0,0,0)]);
+
+        //shouldEqual(&i3[shape3_t(2,3,4)], &a3[shape3_t(2,3,4)]);
+        //shouldEqual(&*(i3+shape3_t(2,3,4)), &i3[shape3_t(2,3,4)]);
     }
 
     void test_bindOuter ()
@@ -2934,6 +3015,7 @@ struct MultiArrayTestSuite
         add( testCase( &MultiArrayTest::test_coupled_iterator ) );
         add( testCase( &MultiArrayTest::test_traverser ) );
         add( testCase( &MultiArrayTest::test_const_traverser ) );
+        add( testCase( &MultiArrayTest::test_hierarchical ) );
         add( testCase( &MultiArrayTest::test_bindOuter ) );
         add( testCase( &MultiArrayTest::test_bindInner ) );
         add( testCase( &MultiArrayTest::test_bindInnerAll ) );
