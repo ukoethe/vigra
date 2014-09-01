@@ -56,6 +56,43 @@ namespace lemon_graph {
 
 namespace graph_detail {
 
+template <class Graph>
+struct NeighborIndexFunctor
+{
+    typedef typename Graph::index_type index_type;
+    
+    template <class NodeIter, class ArcIter>
+    static index_type get(Graph const & g, NodeIter const &, ArcIter const & a)
+    {
+        return g.id(g.target(*a));
+    }
+    
+    template <class NodeIter, class ArcIter>
+    static index_type getOpposite(Graph const & g, NodeIter const & n, ArcIter const &)
+    {
+        return g.id(*n);
+    }
+};
+
+template<unsigned int N, class DirectedTag>
+struct NeighborIndexFunctor<GridGraph<N, DirectedTag> >
+{
+    typedef GridGraph<N, DirectedTag> Graph;
+    typedef UInt16 index_type;
+    
+    template <class NodeIter, class ArcIter>
+    static index_type get(Graph const & g, NodeIter const &, ArcIter const & a)
+    {
+        return a.neighborIndex();
+    }
+    
+    template <class NodeIter, class ArcIter>
+    static index_type getOpposite(Graph const & g, NodeIter const &, ArcIter const & a)
+    {
+        return g.oppositeIndex(a.neighborIndex());
+    }
+};
+
 template <class Graph, class T1Map, class T2Map>
 void
 prepareWatersheds(Graph const & g, 
@@ -64,6 +101,7 @@ prepareWatersheds(Graph const & g,
 {
     typedef typename Graph::NodeIt    graph_scanner;
     typedef typename Graph::OutArcIt  neighbor_iterator;
+    typedef NeighborIndexFunctor<Graph> IndexFunctor;
 
     for (graph_scanner node(g); node != INVALID; ++node) 
     {
@@ -75,7 +113,7 @@ prepareWatersheds(Graph const & g,
             if(data[g.target(*arc)] <= lowestValue)
             {
                 lowestValue = data[g.target(*arc)];
-                lowestIndex = arc.neighborIndex();
+                lowestIndex = IndexFunctor::get(g, node, arc);
             }
         }
         lowestNeighborIndex[*node] = lowestIndex;
@@ -93,6 +131,7 @@ unionFindWatersheds(Graph const & g,
     typedef typename Graph::NodeIt        graph_scanner;
     typedef typename Graph::OutBackArcIt  neighbor_iterator;
     typedef typename T3Map::value_type    LabelType;
+    typedef NeighborIndexFunctor<Graph> IndexFunctor;
 
     vigra::UnionFindArray<LabelType>  regions;
 
@@ -106,8 +145,8 @@ unionFindWatersheds(Graph const & g,
         for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if current target is center's lowest neighbor or vice versa
-            if(lowestNeighborIndex[*node] == arc.neighborIndex() || 
-               lowestNeighborIndex[g.target(*arc)] == g.oppositeIndex(arc.neighborIndex()))
+            if(lowestNeighborIndex[*node] == IndexFunctor::get(g, node, arc) || 
+               lowestNeighborIndex[g.target(*arc)] == IndexFunctor::getOpposite(g, node, arc))
             {
                 if(data[*node] == data[g.target(*arc)])
                     hasPlateauNeighbor = true;
@@ -294,10 +333,12 @@ watershedsGraph(Graph const & g,
 {
     if(options.method == WatershedOptions::UnionFind)
     {
-        vigra_precondition(g.maxDegree() <= NumericTraits<UInt16>::max(),
+        typedef typename graph_detail::NeighborIndexFunctor<Graph>::index_type index_type;
+        
+        vigra_precondition(g.maxDegree() <= NumericTraits<index_type>::max(),
             "watershedsGraph(): cannot handle nodes with degree > 65535.");
             
-        typename Graph::template NodeMap<UInt16>  lowestNeighborIndex(g);
+        typename Graph::template NodeMap<index_type>  lowestNeighborIndex(g);
         
         graph_detail::prepareWatersheds(g, data, lowestNeighborIndex);
         return graph_detail::unionFindWatersheds(g, data, lowestNeighborIndex, labels);
