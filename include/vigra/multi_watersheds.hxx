@@ -68,15 +68,14 @@ prepareWatersheds(Graph const & g,
     for (graph_scanner node(g); node != INVALID; ++node) 
     {
         typename T1Map::value_type lowestValue  = data[*node];
-        typename T2Map::value_type lowestIndex  = -1;
+        typename T2Map::value_type lowestIndex  = NumericTraits<typename T2Map::value_type>::max();
 
         for(neighbor_iterator arc(g, *node); arc != INVALID; ++arc) 
         {
             if(data[g.target(*arc)] <= lowestValue)
             {
                 lowestValue = data[g.target(*arc)];
-                //lowestIndex = arc.neighborIndex();
-                lowestIndex   = g.id(g.target(*arc));
+                lowestIndex = arc.neighborIndex();
             }
         }
         lowestNeighborIndex[*node] = lowestIndex;
@@ -107,8 +106,8 @@ unionFindWatersheds(Graph const & g,
         for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if current target is center's lowest neighbor or vice versa
-            if(lowestNeighborIndex[*node] == g.id(g.target( *arc ))|| 
-               lowestNeighborIndex[g.target(*arc)] ==g.id(*node) )
+            if(lowestNeighborIndex[*node] == arc.neighborIndex() || 
+               lowestNeighborIndex[g.target(*arc)] == g.oppositeIndex(arc.neighborIndex()))
             {
                 if(data[*node] == data[g.target(*arc)])
                     hasPlateauNeighbor = true;
@@ -295,10 +294,10 @@ watershedsGraph(Graph const & g,
 {
     if(options.method == WatershedOptions::UnionFind)
     {
-        vigra_precondition(g.maxDegree() <= NumericTraits<unsigned short>::max(),
+        vigra_precondition(g.maxDegree() <= NumericTraits<UInt16>::max(),
             "watershedsGraph(): cannot handle nodes with degree > 65535.");
             
-        typename Graph::template NodeMap<unsigned int>  lowestNeighborIndex(g);
+        typename Graph::template NodeMap<UInt16>  lowestNeighborIndex(g);
         
         graph_detail::prepareWatersheds(g, data, lowestNeighborIndex);
         return graph_detail::unionFindWatersheds(g, data, lowestNeighborIndex, labels);
