@@ -50,12 +50,13 @@ namespace vigra {
 */
 //@{
 
+
 namespace detail {
 
 template < class Point >    
 bool sortPoints(Point const & p1, Point const & p2) 
 {
-    return (p1[0]<p2[0]) || (p1[0] == p2[0] && p1[1] < p2[1]);
+    return (p1[1]<p2[1]) || (p1[1] == p2[1] && p1[0] < p2[0]);
 }
 
 template < class Point >    
@@ -65,7 +66,6 @@ bool orderedClockwise(const Point &O, const Point &A, const Point &B)
 }
 
 } // namespace detail
-
 
 /** \brief Compute convex hull of a 2D polygon.
 
@@ -89,12 +89,15 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
     
     typedef typename PointArray1::value_type Point;
     
-    ArrayVector<Point> ordered(points.begin(), points.end());
+    auto begin = points.begin();
+    if(points.front() == points.back()) // closed polygon
+        ++begin;                        // => remove redundant start point
+    ArrayVector<Point> ordered(begin, points.end());
     std::sort(ordered.begin(), ordered.end(), detail::sortPoints<Point>);
     
     ArrayVector<Point> H;
     
-    int n = points.size(), k=0;
+    int n = ordered.size(), k=0;
     
     // Build lower hull
     for (int i = 0; i < n; i++) 
@@ -120,7 +123,8 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
         ++k;
     }
     
-    std::copy(H.begin(), H.begin()+k, std::back_inserter(convex_hull));
+    for(int i=k-1; i>=0; --i)
+        convex_hull.push_back(H[i]);
 }
 
 //@}

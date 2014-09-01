@@ -8,8 +8,6 @@
 /*    Please direct questions, bug reports, and contributions to        */
 /*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
 /*        vigra@informatik.uni-hamburg.de                               */
-/*                                                                      */
-/*    Permission is hereby granted, free of charge, to any person       */
 /*    obtaining a copy of this software and associated documentation    */
 /*    files (the "Software"), to deal in the Software without           */
 /*    restriction, including without limitation the rights to use,      */
@@ -2875,13 +2873,21 @@ struct PolygonTest
         points.push_back(Point(-2.0, -1.0));
         points.push_back(Point(0.0, -2.0));
 
-        reference.push_back(Point(-2.0, -1.0));
+        //reference.push_back(Point(-2.0, -1.0));
+        //reference.push_back(Point(0.0, -2.0));
+        //reference.push_back(Point(2.0, -1.0));
+        //reference.push_back(Point(2.0, 1.0));
+        //reference.push_back(Point(0.0, 2.0));
+        //reference.push_back(Point(-2.0, 1.0));
+        //reference.push_back(Point(-2.0, -1.0));
+        
         reference.push_back(Point(0.0, -2.0));
-        reference.push_back(Point(2.0, -1.0));
-        reference.push_back(Point(2.0, 1.0));
-        reference.push_back(Point(0.0, 2.0));
-        reference.push_back(Point(-2.0, 1.0));
         reference.push_back(Point(-2.0, -1.0));
+        reference.push_back(Point(-2.0, 1.0));
+        reference.push_back(Point(0.0, 2.0));
+        reference.push_back(Point(2.0, 1.0));
+        reference.push_back(Point(2.0, -1.0));
+        reference.push_back(Point(0.0, -2.0));
         
         vigra::convexHull(points, hull);
 
@@ -2947,9 +2953,17 @@ struct PolygonTest
                   P(203.0, 626.0), P(478.0, 415.0), P(315.0, 825.0), P(335.0, 875.0), 
                   P(373.0, 160.0), P(834.0, 71.0), P(488.0, 298.0) };
                   
-        P ref[10] = { P(0.0, 0.0), P(597.0, 22.0), P(925.0, 73.0), P(959.0, 192.0), 
-                    P(987.0, 291.0), P(996.0, 943.0), P(882.0, 999.0), P(54.0, 1000.0),
-                    P(4.0, 870.0), P(0.0, 0.0) };
+        P ref[10] = { P(0.0, 0.0), 
+                      P(4.0, 870.0),
+                      P(54.0, 1000.0),
+                      P(882.0, 999.0),
+                      P(996.0, 943.0),
+                      P(987.0, 291.0),
+                      P(959.0, 192.0), 
+                      P(925.0, 73.0),
+                      P(597.0, 22.0), 
+                      P(0.0, 0.0) };
+
         points = vigra::ArrayVector<Point>(p, p+200);
         hull.clear();
         
