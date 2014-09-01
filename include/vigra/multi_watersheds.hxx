@@ -56,6 +56,8 @@ namespace lemon_graph {
 
 namespace graph_detail {
 
+    // select the neighbor ID for union-find watersheds
+    // standard behavior: use global node ID
 template <class Graph>
 struct NeighborIndexFunctor
 {
@@ -74,6 +76,8 @@ struct NeighborIndexFunctor
     }
 };
 
+    // select the neighbor ID for union-find watersheds
+    // GridGraph optimization: use local neighbor index (needs only 1/4 of the memory)
 template<unsigned int N, class DirectedTag>
 struct NeighborIndexFunctor<GridGraph<N, DirectedTag> >
 {
