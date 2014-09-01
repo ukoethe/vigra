@@ -1126,13 +1126,13 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
             typedef Shape2 V;
 
-            typedef Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum> >, LabelArg<1>, DataArg<1> > Selected;
+            typedef Select<Count, RegionAnchor, Coord<Sum>, Global<Count>, Global<Coord<Minimum> >, LabelArg<1>, DataArg<1> > Selected;
             typedef AccumulatorChainArray<Handle, Selected> A;
 
             should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::GlobalTags, 
                                TypeList<Count,TypeList<Coord<Minimum>,TypeList<DataArg<1>, TypeList<LabelArg<1>, void> > > > >::value));
             should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::RegionTags, 
-                               TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
+                               TypeList<RegionAnchor,TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
             typedef LookupDependency<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
@@ -1168,9 +1168,18 @@ struct AccumulatorTest
             shouldEqual(2, get<Count>(a, 1));
             shouldEqual(6, get<Global<Count> >(a));
 
+            shouldEqual(Shape2(0,0), get<RegionAnchor>(a, 0));
+            shouldEqual(Shape2(2,0), get<RegionAnchor>(a, 1));
+
             shouldEqual(V(2,2), get<Coord<Sum> >(a, 0));
             shouldEqual(V(4,1), get<Coord<Sum> >(a, 1));
             shouldEqual(V(0,0), get<Global<Coord<Minimum> > >(a));
+
+            a.merge(1, 0);
+
+            shouldEqual(6, get<Count>(a, 1));
+            shouldEqual(Shape2(0,0), get<RegionAnchor>(a, 1));
+            shouldEqual(V(6,3), get<Coord<Sum> >(a, 1));
 
             A aa;
             aa.setMaxRegionLabel(1);

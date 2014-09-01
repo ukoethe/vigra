@@ -5136,6 +5136,73 @@ class Maximum
     };
 };
 
+/** \brief Basic statistic. First data value seen of the object. 
+
+    Usually used as <tt>Coord<FirstSeen></tt> which provides a 
+    well-defined anchor point for the region.
+*/
+class FirstSeen
+{
+  public:
+    typedef Select<Count> Dependencies;
+    
+    static std::string name() 
+    { 
+        return "FirstSeen";
+        // static const std::string n("FirstSeen");
+        // return n;
+    }
+    
+    template <class U, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename AccumulatorResultTraits<U>::element_type element_type;
+        typedef typename AccumulatorResultTraits<U>::MinmaxType   value_type;
+        typedef value_type const &                                result_type;
+
+        value_type value_;
+        
+        Impl()
+        : value_()
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            acc_detail::reshapeImpl(value_, s);
+        }
+        
+        void operator+=(Impl const & o)
+        {
+            // FIXME: only works for Coord<FirstSeen>
+            if(reverse(o.value_) < reverse(value_))
+                value_ = o.value_;
+        }
+    
+        void update(U const & t)
+        {
+            if(getDependency<Count>(*this) == 1)
+                value_ = t;
+        }
+        
+        void update(U const & t, double weight)
+        {
+            update(t);
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
 /** \brief Basic statistic. Data value where weight assumes its minimal value. 
 
     Weights must be given. Coord<ArgMinWeight> gives coordinate where weight assumes its minimal value. Works in pass 1, %operator+=() supported (merging supported).

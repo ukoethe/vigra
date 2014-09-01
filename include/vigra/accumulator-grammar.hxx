@@ -72,6 +72,7 @@ template <int BinCount> class UserRangeHistogram;    // set min/max explicitly a
 template <int BinCount> class AutoRangeHistogram;    // get min/max from accumulators
 template <int BinCount> class GlobalRangeHistogram;  // like AutoRangeHistogram, but use global min/max rather than region min/max
 
+class FirstSeen;                               // remember the first value seen
 class Minimum;                                 // minimum
 class Maximum;                                 // maximum
 template <class Hist> class StandardQuantiles; // compute (min, 10%, 25%, 50%, 75%, 90%, max) quantiles from 
@@ -201,6 +202,9 @@ typedef AbsPowerSum<1>                              AbsSum;
 typedef Central<AbsSum>                             SumOfAbsDifferences;
 /** \brief Alias. Mean absolute deviation. */
 typedef DivideByCount<SumOfAbsDifferences>          MeanAbsoluteDeviation;
+
+/** \brief Alias. Anchor point (first point of the region seen by scan-order traversal. */
+typedef Coord<FirstSeen>                            RegionAnchor;
 
 /** \brief Alias. Region center. */
 typedef Coord<Mean>                                 RegionCenter;
