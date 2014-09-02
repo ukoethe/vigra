@@ -61,25 +61,489 @@ struct ConvexHullTest
         mask(4, 1) = 1;
         mask(4, 3) = 1;
     }
-    
-    void testPushLinePoints()
+
+    void print(MultiArray<2, int> const & a)
     {
-        using namespace std;
-
-        std::vector<TinyVector<float, 2> > middle_points;
-        TinyVector<float, 2> a(0, 0);
-        TinyVector<float, 2> b(2, 0.5);
-        pushLinePoints(a, b, middle_points);
-        
-        TinyVector<float, 2> real_middle_points[] = {
-        TinyVector<float, 2>(1, 0.25)
-        };
-        
-        for (int i = 0; i < 1; ++i) {
-            shouldEqualTolerance(middle_points[i][0], real_middle_points[i][0], 1e-2);
-            shouldEqualTolerance(middle_points[i][1], real_middle_points[i][1], 1e-2);
+        for(auto i = a.begin(); i != a.end(); ++i)
+        {
+            std::cerr << (char)*i;
+            if(i.point()[0] == a.shape(0)-1)
+                std::cerr << "\n";
         }
+    }
 
+    void testFillPolygon()
+    {
+        typedef TinyVector<double, 2> P;
+        typedef vigra::Polygon<P> Poly;
+
+        {
+            // triangle in general position
+            P p[] = { P(0.5, 0.5), P(1.5, 4.1), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+4);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            for(auto i=mask.begin(); i != mask.end(); ++i)
+                if(*i == ' ')
+                    should(!poly.contains(i.point()));
+                else
+                    should(poly.contains(i.point()));
+        }
+        {
+            // triangle, lower knot on scanline
+            P p[] = { P(0.5, 0.5), P(1.5, 4.0), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+4);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // triangle, lower knot on pixel
+            P p[] = { P(0.5, 0.5), P(1.0, 4.0), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+4);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " *        "
+                " *        "
+                " *        "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // triangle, all knots on scanlines
+            P p[] = { P(0.5, 1.0), P(1.5, 4.0), P(2.5, 1.0), P(0.5, 1.0) };
+            Poly poly(p, p+4);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // triangle, all knots on scanlines
+            P p[] = { P(0.5, 1.0), P(1.5, 4.0), P(2.5, 1.0), P(2.2, 1.0), P(0.5, 1.0) };
+            Poly poly(p, p+5);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // quadrilateral in general position
+            P p[] = { P(0.5, 0.5), P(0.9, 2.5), P(1.5, 4.1), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+5);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            for(auto i=mask.begin(); i != mask.end(); ++i)
+                if(*i == ' ')
+                    should(!poly.contains(i.point()));
+                else
+                    should(poly.contains(i.point()));
+        }
+        {
+            // quadrilateral, one knot on scanline
+            P p[] = { P(0.5, 0.5), P(0.9, 2.0), P(1.5, 4.1), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+5);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // quadrilateral, two knots on scanline
+            P p[] = { P(0.5, 0.5), P(0.9, 2.0), P(1.5, 4.0), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+5);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // quadrilateral, one knot on scanline, one knot on pixel
+            P p[] = { P(0.5, 0.5), P(0.9, 2.0), P(1.0, 4.0), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+5);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " *        "
+                " *        "
+                " *        "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave pentagon in general position
+            P p[] = { P(0.5, 0.5), P(0.9, 2.5), P(1.2, 2.5), P(1.5, 4.1), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+6);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            for(auto i=mask.begin(); i != mask.end(); ++i)
+                if(*i == ' ')
+                    should(!poly.contains(i.point()));
+                else
+                    should(poly.contains(i.point()));
+        }
+        {
+            // concave pentagon, two knots on scanline
+            P p[] = { P(0.5, 0.5), P(0.9, 2.0), P(1.2, 2.0), P(1.5, 4.1), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+6);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave pentagon, three knots on scanline
+            P p[] = { P(0.5, 0.5), P(0.9, 2.0), P(1.2, 2.0), P(1.5, 4.0), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+6);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "          "
+                "          "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave pentagon, two knots on scanline, one knot on pixel
+            P p[] = { P(0.5, 0.5), P(0.9, 2.0), P(1.2, 2.0), P(2.0, 4.0), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+6);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "  *       "
+                "  *       "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave hexagon, three knots on scanline, one knot on pixel
+            P p[] = { P(0.5, 0.5), P(0.9, 2.0), P(1.1, 2.0), P(1.3, 2.0), P(2.0, 4.0), P(2.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+7);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " **       "
+                " **       "
+                "  *       "
+                "  *       "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave pentagon in general position
+            P p[] = { P(0.5, 0.5), P(1.0, 4.1), P(2.0, 2.9), P(3.0, 4.1), P(3.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+6);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ***      "
+                " ***      "
+                " * *      "
+                " * *      "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            for(auto i=mask.begin(); i != mask.end(); ++i)
+                if(*i == ' ')
+                    should(!poly.contains(i.point()));
+                else
+                    should(poly.contains(i.point()));
+        }
+        {
+            // concave pentagon, one knot on scanline
+            P p[] = { P(0.5, 0.5), P(1.0, 4.1), P(1.9, 2.0), P(3.0, 4.1), P(3.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+6);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ***      "
+                " ***      "
+                " * *      "
+                " * *      "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave pentagon, one knot on pixel
+            P p[] = { P(0.5, 0.5), P(1.0, 4.1), P(2.0, 2.0), P(3.0, 4.1), P(3.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+6);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ***      "
+                " ***      "
+                " * *      "
+                " * *      "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave pentagon, three knots on pixel
+            P p[] = { P(0.5, 0.5), P(1.0, 4.0), P(2.0, 2.0), P(3.0, 4.0), P(3.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+6);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ***      "
+                " ***      "
+                " * *      "
+                " * *      "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave pentagon, all knots on pixel
+            P p[] = { P(1.0, 1.0), P(1.0, 4.0), P(2.0, 2.0), P(3.0, 4.0), P(3.0, 1.0), P(1.0, 1.0) };
+            Poly poly(p, p+6);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ***      "
+                " ***      "
+                " * *      "
+                " * *      "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave hexagon in general position
+            P p[] = { P(0.5, 0.5), P(1.0, 4.1), P(1.9, 2.9), P(2.1, 2.9), P(3.0, 4.1), P(3.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+7);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ***      "
+                " ***      "
+                " * *      "
+                " * *      "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            for(auto i=mask.begin(); i != mask.end(); ++i)
+                if(*i == ' ')
+                    should(!poly.contains(i.point()));
+                else
+                    should(poly.contains(i.point()));
+        }
+        {
+            // concave hexagon, two knots on scanline
+            P p[] = { P(0.5, 0.5), P(1.0, 4.1), P(1.9, 2.0), P(2.1, 2.0), P(3.0, 4.1), P(3.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+7);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ***      "
+                " ***      "
+                " * *      "
+                " * *      "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave hexagon, four knots on scanline
+            P p[] = { P(0.5, 0.5), P(1.0, 4.0), P(1.9, 2.0), P(2.1, 2.0), P(3.0, 4.0), P(3.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+7);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ***      "
+                " ***      "
+                " * *      "
+                " * *      "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave hexagon, four knots on scanline
+            P p[] = { P(0.5, 0.5), P(1.0, 4.0), P(1.9, 2.0), P(3.1, 2.0), P(4.0, 4.0), P(4.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+7);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ****     "
+                " ****     "
+                " *  *     "
+                " *  *     "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave hexagon, four knots on scanline
+            P p[] = { P(0.5, 0.5), P(1.0, 4.0), P(1.9, 2.0), P(3.1, 2.0), P(4.0, 2.0), P(4.5, 0.5), P(0.5, 0.5) };
+            Poly poly(p, p+7);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ****     "
+                " ****     "
+                " *        "
+                " *        "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave hexagon, all knots on scanline
+            P p[] = { P(0.5, 1.0), P(1.0, 4.0), P(1.9, 2.0), P(3.1, 2.0), P(4.0, 2.0), P(4.5, 1.0), P(0.5, 1.0) };
+            Poly poly(p, p+7);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ****     "
+                " ****     "
+                " *        "
+                " *        "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
+        {
+            // concave heptagon, all knots on scanline
+            P p[] = { P(0.5, 1.0), P(1.0, 4.0), P(1.9, 2.0), P(3.1, 2.0), P(4.0, 2.0), P(4.5, 1.0), P(3.2, 1.0), P(0.5, 1.0) };
+            Poly poly(p, p+8);
+            MultiArray<2, int> mask(Shape2(10,6), ' ');
+            fillPolygon(poly, mask, int('*'));
+
+            std::string ref =
+                "          "
+                " ****     "
+                " ****     "
+                " *        "
+                " *        "
+                "          "
+            ;
+            shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+        }
     }
     
     void testExtractContour()
@@ -120,33 +584,13 @@ struct ConvexHullTest
             Point(1, 0.5),
         };
 
-        //Point real_contour_points[] = {
-        //    Point(1, 0.5),
-        //    Point(0.5, 1),
-        //    Point(1, 1.5),
-        //    Point(1.5, 2),
-        //    Point(1, 2.5),
-        //    Point(0.5, 3),
-        //    Point(1, 3.5),
-        //    Point(2, 3.5),
-        //    Point(3, 3.5),
-        //    Point(4, 3.5),
-        //    Point(4.5, 3),
-        //    Point(4, 2.5),
-        //    Point(3, 2.5),
-        //    Point(2.5, 2),
-        //    Point(3, 1.5),
-        //    Point(4, 1.5),
-        //    Point(4.5, 1),
-        //    Point(4, 0.5),
-        //    Point(3, 0.5),
-        //    Point(2, 0.5),
-        //    Point(1, 0.5),
-        //};
-
         shouldEqual(23, contour_points.size());
-        //shouldEqual(21, contour_points.size());
         shouldEqualSequence(contour_points.begin(), contour_points.end(), real_contour_points);
+
+        MultiArray<2, int> render(mask.shape());
+        fillPolygon(contour_points, render, 1);
+
+        shouldEqualSequence(mask.begin(), mask.end(), render.begin());
     }
     
     void testConvexHullFeatures()
@@ -207,11 +651,9 @@ struct ConvexHullTestSuite : public vigra::test_suite
     ConvexHullTestSuite()
         : vigra::test_suite("ConvexHullTestSuite")
     {
-        add(testCase(&ConvexHullTest::testConvexHullFeatures));
-        
+        add(testCase(&ConvexHullTest::testFillPolygon));
         add(testCase(&ConvexHullTest::testExtractContour));
-        
-        add(testCase(&ConvexHullTest::testPushLinePoints));
+        add(testCase(&ConvexHullTest::testConvexHullFeatures));
     }
 };
 
@@ -219,7 +661,7 @@ int main(int argc, char** argv)
 {
     ConvexHullTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
-    std::cout << test.report() << std::endl;
+    std::cerr << test.report() << std::endl;
 
     return failed != 0;
 }

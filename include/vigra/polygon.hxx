@@ -146,6 +146,16 @@ class Polygon
         return size() > 0 && back() == front();
     }
 
+        /** Linearly interpolate at <tt>offset</tt> between knots 
+            <tt>index</tt> and <tt>index+1</tt>.
+            
+            Preconditions: <tt>0 <= index < size()-1</tt> and <tt>0 <= offset <= 1</tt>.
+        */
+    Point interpolate(unsigned int index, double offset) const
+    {
+        return (1.0 - offset) * (*this)[index] + offset * (*this)[index+1];
+    }
+
         /**
          * Tests whether the given point lies within this polygon.
          * Requires that this polygon is closed.
@@ -154,7 +164,8 @@ class Polygon
          * polylines (or are incident with the support points) is
          * undefined.  (ATM, the implementation uses half-open
          * intervals, so points on the left/top border are included,
-         * in contrast to the ones on the right/bottom.)
+         * in contrast to the ones on the right/bottom. FIXME: this is 
+         * inconsistent with fillPolygon() which uses closed intervals.)
          */
     bool contains(const_reference point) const
     {
@@ -332,6 +343,23 @@ class Polygon
 
     POINT nearestPoint(const_reference p) const;
 
+
+    Polygon operator*(double scale) const
+    {
+        Polygon result(size());
+        for(unsigned int i = 0; i < size(); ++i)
+            result[i] = (*this)[i] * scale;
+        return result;
+    }
+
+    Polygon operator+(const Point &offset) const
+    {
+        Polygon result(size());
+        for(unsigned int i = 0; i < size(); ++i)
+            result[i] = (*this)[i] + offset;
+        return result;
+    }
+    
   protected:
   
     Base & points()
@@ -394,26 +422,46 @@ POINT Polygon<POINT>::nearestPoint(const_reference p) const
     return r;
 }
 
+template <class POINT>
+Polygon<Shape2> roundi(Polygon<POINT> const & p) 
+{
+    Polygon<Shape2> result(p.size());
+    for(unsigned int i = 0; i < p.size(); ++i)
+    {
+        result[i] = round(p[i]);
+    }
+    return result;
+}
+
+} // namespace vigra
+
 /********************************************************************/
+
+namespace std {
+
+template<class T>
+void swap(vigra::Polygon<T> &a, vigra::Polygon<T> &b)
+{
+    a.swap(b);
+}
+
+} // namespace std
+
+/********************************************************************/
+
+namespace vigra {
 
 /** \brief Create a polygon from the interpixel contour of a labeled region.
 
-    The input array \a points contains a (not necessarily ordered) set of 2D points
-    whose convex hull is to be computed. The array's <tt>value_type</tt> (i.e. the point type)
-    must be compatible with std::vector (in particular, it must support indexing, 
-    copying, and have <tt>size() == 2</tt>). The points of the convex hull will be appended
-    to the output array \a convex_hull (which must support <tt>std::back_inserter(convex_hull)</tt>). 
-    Since the convex hull is a closed polygon, the first and last point of the output will 
-    be the same (i.e. the first point will simply be inserted at the end again). The points
-    of the convex hull will be ordered counter-clockwise, starting with the leftmost point
-    of the input. The function implements Andrew's Monotone Chain algorithm.
+    The point \a anchor_point must be in the region whose contour we want to extract,
+    and must be adjacent to the contour. The algorithm uses the 'left hand on the wall'
+    algorithm to trace the connected component whose label equals the label of the
+    \a anchor_point. The contour is returned in \a countour_points as a closed polygon 
+    that circles the region counter-clockwise in the image coordinate system (i.e. the
+    coordinate system where x points to the right and y points downwards). Since the
+    resulting polygon represents the interpixel contour, all points will have one integer 
+    and one half-integer coordinate.
 */
-/*
- * Left hand on the wall contour extraction
- * the label of the anchor point marks object, everything else is background
- * anchor_point is the first point inside the object when traversing in scan-order
- * contour_points contains a half-integer point for each section of the wall
- */
 template<class T, class S, class PointArray>
 void 
 extractContour(MultiArrayView<2, T, S> const &label_image,
@@ -551,71 +599,134 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
         convex_hull.push_back(H[i]);
 }
 
+/********************************************************************/
+/*                                                                  */
+/*                         polygon drawing                          */
+/*                                                                  */
+/********************************************************************/
+
+namespace detail {
+
 /*
- * Scan line filling, works on both convex and non convex polygons
- * The contour points are outside the region to draw
- * Adjacent polygon points must be next to each other in p too.
+ * Find and sort all intersection points of the polygon with scanlines.
+ * Polygons are considered as closed set, i.e. pixels on the polygon 
+ * contour are included. The function handles degenerate cases (i.e.
+ * knots on scanlines) correctly.
  */
-template<class PointArray, class T, class S>
-void fillPolygon(PointArray const &p,
+template<class Point, class Array>
+void createScanIntervals(Polygon<Point> const &p, Array & result) 
+{
+    bool drop_next_start_point = false;
+    int n = p.size();
+    for(int k=0; k<n-1; ++k)
+    {
+        Point const & p1 = p[k];
+        Point const & p2 = p[k+1];
+        
+        if(p1[1] == p2[1]) // ignore horizontal lines
+            continue;
+
+        double t = (p2[0] - p1[0]) / (p2[1] - p1[1]);
+        double y, yend, dy;
+        if(p1[1] < p2[1])
+        {
+            y = ceil(p1[1]);
+            yend = floor(p2[1]);
+            dy = 1.0;
+        }
+        else
+        {
+            y = floor(p1[1]);
+            yend = ceil(p2[1]);
+            dy = -1.0;
+        }
+        if(yend != p2[1]) // in general don't include the segment's endpoint
+            yend += dy;   // (since it is also the start point of the next segment)
+        if(drop_next_start_point) // handle degeneracy from previous iteration
+        {
+            y += dy;
+            drop_next_start_point = false;
+        }
+        for(; (y-yend)*dy < 0.0; y += dy)  // compute scanline intersections
+        {
+            double x = p1[0] + (y - p1[1])*t;
+            result.push_back(Point(x,y));
+        }
+        if(yend == p2[1]) // degenerate case: p2 is exactly on a scanline (yend is integer)
+        {
+            int j = (k+2)%n;
+            bool convex = detail::orderedClockwise(p1, p2, p[j]);
+            if(convex) // include the segment's endpoint p2 when it is a convex knot
+            {
+                result.push_back(p2);
+            }
+            for(; j != k+1; j = (j+1)%n)
+            {
+                double bend = dy*(p[j][1] - yend);
+                if(bend == 0.0)
+                    continue;
+                // Drop startpoint of next segment when the polygon after a convex 
+                // degenerate knot eventually crosses the scanline, or when it 
+                // returns to the original side of the scanline after a concave 
+                // degenerate knot.
+                if((convex && bend > 0.0) || (!convex && bend < 0.0))
+                    drop_next_start_point = true;
+                break;
+            }
+        }
+    }
+    
+    if(drop_next_start_point)
+        result.erase(result.begin());
+    
+    vigra_invariant((result.size() & 1) == 0,
+        "createScanIntervals(): internal error - should return an even number of points.");
+    sort(result.begin(), result.end(), pointYXOrdering<Point>);
+}
+
+
+} // namespace detail
+
+/** \brief Render closed polygon \a p into the image \a output_image. 
+
+    All pixels on the polygon's contour and in its interior are 
+    set to the given \a value. Parts of the polygon outside the image
+    region are clipped. The function uses a robust X-intersection array 
+    algorithm that is able to handle all corner cases (concave and 
+    self-intersecting polygons, knots on integer coordinates).
+ */
+template<class Point, class T, class S>
+void fillPolygon(Polygon<Point> const &p,
                  MultiArrayView<2, T, S> &output_image, 
                  T value) 
 {
-    typedef typename PointArray::value_type Point;
-    
-    std::vector<Point> contour_points;
+    vigra_precondition(p.closed(),
+        "fillPolygon(): polygon must be closed (i.e. first point == last point).");
+        
+    std::vector<Point> scan_intervals;
+    detail::createScanIntervals(p, scan_intervals);
 
-    auto ip = p.begin();
-
-    for (; ip < p.end() - 1; ++ip) {
-        contour_points.push_back(*ip);
-        pushLinePoints(*ip, *(ip + 1), contour_points);
-    }
-    contour_points.push_back(*(p.end() - 1));
-    pushLinePoints(p.back(), p.front(), contour_points);
-
-    sort(contour_points.begin(), contour_points.end(), detail::pointYXOrdering<Point>);
-
-    auto points_iterator = contour_points.begin();
-
-    float min_y = (contour_points.front())[1];
-    float max_y = (contour_points.back())[1];
-
-    while (points_iterator != contour_points.end()) {
-        float y = (*points_iterator)[1];
-        if ((y > min_y) && (y < max_y)) { // We are inside the polygon
-            Point current = *points_iterator;
-            float min_x = current[0];
-            current[0] = ceil(current[0]);
-            current[1] = ceil(current[1]);
-
-            bool drawing = true;
-
-            while ((*points_iterator)[1] == y) {
-                ++points_iterator;
-
-                Point endPoint = *points_iterator;
-                float max_x = endPoint[0];
-
-                // Draw the scan line
-
-                for (; current[0] < endPoint[0]; ++current[0]) {
-                    if ((current[0] > min_x) && (current[0] < max_x)) {
-                        if (drawing) {
-                            output_image(current[0], current[1]) = value;
-                        }
-                    }
-                }
-
-                drawing = !drawing;
-            }
-
-        } else { // We are on an edge, just continue
-            ++points_iterator;
-        }
+    for(unsigned int k=0; k < scan_intervals.size(); k+=2)
+    {
+        MultiArrayIndex x    = (MultiArrayIndex)ceil(scan_intervals[k][0]),
+                        y    = (MultiArrayIndex)scan_intervals[k][1],
+                        xend = (MultiArrayIndex)floor(scan_intervals[k+1][0]) + 1;
+        vigra_invariant(y == scan_intervals[k+1][1],
+            "fillPolygon(): internal error - scan interval should have same y value.");
+        // clipping
+        if(y < 0)
+            continue;
+        if(y >= output_image.shape(1))
+            break;
+        if(x < 0)
+            x = 0;
+        if(xend > output_image.shape(0))
+            xend = output_image.shape(0);
+        // drawing
+        for(; x < xend; ++x)
+            output_image(x,y) = value;
     }
 }
-
 
 //@}
 

@@ -55,7 +55,7 @@ namespace detail {
  * and when working with floating point coordinates.
  */
 template<typename T>
-void pushLinePoints(TinyVector<T, 2> const &p1, TinyVector<T, 2> const &p2,
+void pushLinePoints2(TinyVector<T, 2> const &p1, TinyVector<T, 2> const &p2,
         std::vector<TinyVector<T, 2> > &result) {
 
     TinyVector<T, 2> ps, diff = p2 - p1;
