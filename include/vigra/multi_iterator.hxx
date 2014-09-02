@@ -321,6 +321,16 @@ class StridedScanOrderIterator
         return *(StridedScanOrderIterator(*this) += i);
     }
 
+    reference operator[](const shape_type& coordOffset)
+    {
+        return *(StridedScanOrderIterator(*this) += coordOffset);
+    }
+
+    const_reference operator[](const shape_type& coordOffset) const
+    {
+        return *(StridedScanOrderIterator(*this) += coordOffset);
+    }
+
     StridedScanOrderIterator & operator++()
     {
         base_type::operator++();
