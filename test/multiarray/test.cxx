@@ -631,6 +631,14 @@ public:
         shouldEqual(&i1[7], &a3(1,0,1));
         shouldEqual(&i1[9], &a3(1,1,1));
 
+        shouldEqual(&i1[Shape3(0,0,0)], &a3(0,0,0));
+        shouldEqual(&i1[Shape3(1,0,0)], &a3(1,0,0));
+        shouldEqual(&i1[Shape3(0,1,0)], &a3(0,1,0));
+        shouldEqual(&i1[Shape3(1,1,0)], &a3(1,1,0));
+        shouldEqual(&i1[Shape3(0,0,1)], &a3(0,0,1));
+        shouldEqual(&i1[Shape3(1,0,1)], &a3(1,0,1));
+        shouldEqual(&i1[Shape3(1,1,1)], &a3(1,1,1));
+
         shouldEqual(&*(i1+0), &a3(0,0,0));
         shouldEqual(&*(i1+1), &a3(1,0,0));
         shouldEqual(&*(i1+2), &a3(0,1,0));
@@ -691,6 +699,14 @@ public:
         shouldEqual(&*(i3-shape3_t(1,0,1)), &a3(0,2,3));
         shouldEqual(&*(i3-shape3_t(1,1,1)), &a3(0,1,3));
 
+        shouldEqual(&i3[-shape3_t(0,0,0)], &a3(1,2,4));
+        shouldEqual(&i3[-shape3_t(1,0,0)], &a3(0,2,4));
+        shouldEqual(&i3[-shape3_t(0,1,0)], &a3(1,1,4));
+        shouldEqual(&i3[-shape3_t(1,1,0)], &a3(0,1,4));
+        shouldEqual(&i3[-shape3_t(0,0,1)], &a3(1,2,3));
+        shouldEqual(&i3[-shape3_t(1,0,1)], &a3(0,2,3));
+        shouldEqual(&i3[-shape3_t(1,1,1)], &a3(0,1,3));
+        
         shouldEqual(&iend[-1], &a3(1,2,4));
         shouldEqual(&iend[-2], &a3(0,2,4));
         shouldEqual(&iend[-3], &a3(1,1,4));
@@ -961,6 +977,14 @@ public:
         shouldEqual(&get<1>(*(i1+shape3_t(0,0,1))), &a3(0,0,1));
         shouldEqual(&get<1>(*(i1+shape3_t(1,0,1))), &a3(1,0,1));
         shouldEqual(&get<1>(*(i1+shape3_t(1,1,1))), &a3(1,1,1));
+
+        shouldEqual(&get<1>(i1[shape3_t(0,0,0)]), &a3(0,0,0));
+        shouldEqual(&get<1>(i1[shape3_t(1,0,0)]), &a3(1,0,0));
+        shouldEqual(&get<1>(i1[shape3_t(0,1,0)]), &a3(0,1,0));
+        shouldEqual(&get<1>(i1[shape3_t(1,1,0)]), &a3(1,1,0));
+        shouldEqual(&get<1>(i1[shape3_t(0,0,1)]), &a3(0,0,1));
+        shouldEqual(&get<1>(i1[shape3_t(1,0,1)]), &a3(1,0,1));
+        shouldEqual(&get<1>(i1[shape3_t(1,1,1)]), &a3(1,1,1));
 
         shouldEqual(&get<1>(*(iend-1)), &a3(1,2,4));
         shouldEqual(&get<1>(*(iend-2)), &a3(0,2,4));
