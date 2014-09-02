@@ -108,7 +108,7 @@ class CoupledDimensionProxy
     
     value_type operator[](MultiArrayIndex d) const
     {
-        *(CoupledDimensionProxy(*this) += d);
+        return *(CoupledDimensionProxy(*this) += d);
     }
     
     CoupledDimensionProxy & operator=(MultiArrayIndex d)
@@ -495,6 +495,11 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     value_type operator[](MultiArrayIndex i) const
     {
         return *(CoupledScanOrderIterator(*this) += i);
+    }
+
+    value_type operator[](const shape_type& coordOffset) const
+    {
+        return *(CoupledScanOrderIterator(*this) += coordOffset);
     }
 
     CoupledScanOrderIterator
