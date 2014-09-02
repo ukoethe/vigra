@@ -2,7 +2,6 @@
 #include <vigra/blockify.hxx>
 
 using namespace vigra;
-using namespace blockwise_labeling_detail;
 
 class BlockwiseLabelingTest
 {
@@ -21,13 +20,7 @@ public:
         Array labels(Shape(4));
         Blocks label_blocks = blockify(labels, block_shape);
         
-        //label_blocks.begin()[Shape(1,1)];
-        /*
-        Shape blocks_shape = data_blocks.shape();
-        int l = blockwiseLabeling(data_blocks.begin(), data_blocks.end(),
-                                  label_blocks.begin(), label_blocks.end(),
-                                  DirectNeighborhood, std::equal_to<int>(), blocks_shape);
-        */
+        int l = labelMultiArrayBlockwise(data, labels);
     }
 };
 
