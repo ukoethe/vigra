@@ -106,10 +106,11 @@ class CoupledDimensionProxy
         return *this;
     }
     
-    value_type operator[](MultiArrayIndex d) const
-    {
-        *(CoupledDimensionProxy(*this) += d);
-    }
+    // something is wrong here (missing return, very likely wrong return type)
+    //value_type operator[](MultiArrayIndex d) const
+    //{
+    //    *(CoupledDimensionProxy(*this) += d);
+    //}
     
     CoupledDimensionProxy & operator=(MultiArrayIndex d)
     {
@@ -491,10 +492,19 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     {
         return operator+=(-coordOffset);
     }
-
+    
+    // FIXME:
+    // according to http://en.cppreference.com/w/cpp/concept/RandomAccessIterator,
+    // the return type of operator[] has to be convertible to "reference",
+    // but "reference" is "value_type&"
     value_type operator[](MultiArrayIndex i) const
     {
         return *(CoupledScanOrderIterator(*this) += i);
+    }
+    // FIXME: return type, see above
+    value_type operator[](const shape_type& coordOffset) const
+    {
+        return *(*this + coordOffset);
     }
 
     CoupledScanOrderIterator
@@ -599,7 +609,10 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     {
         return handles_.shape()[dim];
     }
-
+    
+    // FIXME:
+    // const is usually not transitive for iterators in c++,
+    // i.e. you can modify the value a const iterator is refering to
     reference operator*()
     {
         return handles_;
