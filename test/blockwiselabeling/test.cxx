@@ -44,14 +44,14 @@ bool equivalentLabels(Iterator1 begin1, Iterator1 end1,
 }
 
 template <class Iterator>
-void fill_random(Iterator begin, Iterator end, int maximum)
+void fillRandom(Iterator begin, Iterator end, int maximum)
 {
     for( ; begin != end; ++begin)
         *begin = rand() % maximum;
 }
 
 template <class DatasIterator, class ShapesIterator>
-void test_on_data(DatasIterator datas_begin, DatasIterator datas_end,
+void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                   ShapesIterator shapes_begin, ShapesIterator shapes_end)
 {
     for(DatasIterator datas_it = datas_begin ; datas_it != datas_end; ++datas_it)
@@ -154,7 +154,7 @@ struct BlockwiseLabelingTest
         array_fives.push_back(Array5(Shape5(5,6,2,2,3)));
         for(int i = 0; i != array_fives.size(); ++i)
         {
-            fill_random(array_fives[i].begin(), array_fives[i].end(), 3);
+            fillRandom(array_fives[i].begin(), array_fives[i].end(), 3);
         }
 
         array_twos.push_back(Array2(Shape2(1)));
@@ -166,7 +166,7 @@ struct BlockwiseLabelingTest
 
         for(int i = 0; i != array_twos.size(); ++i)
         {
-            fill_random(array_twos[i].begin(), array_twos[i].end(), 3);
+            fillRandom(array_twos[i].begin(), array_twos[i].end(), 3);
         }
         
         array_ones.push_back(Array1(Shape1(1)));
@@ -177,7 +177,7 @@ struct BlockwiseLabelingTest
         
         for(int i = 0; i != array_ones.size(); ++i)
         {
-            fill_random(array_ones[i].begin(), array_ones[i].end(), 3);
+            fillRandom(array_ones[i].begin(), array_ones[i].end(), 3);
         }
 
         shape_fives.push_back(Shape5(1));
@@ -197,7 +197,7 @@ struct BlockwiseLabelingTest
         shape_ones.push_back(Shape1(213));
     }
     
-    void debug_test()
+    void debugTest()
     {
         typedef MultiArray<2, int> Array;
         typedef Array::difference_type Shape;
@@ -225,19 +225,19 @@ struct BlockwiseLabelingTest
                     true);
     }
 
-    void five_dimensional_test()
+    void fiveDimensionalRandomTest()
     {
-        test_on_data(array_fives.begin(), array_fives.end(),
+        testOnData(array_fives.begin(), array_fives.end(),
                      shape_fives.begin(), shape_fives.end());
     }
-    void two_dimensional_test()
+    void twoDimensionalRandomTest()
     {
-        test_on_data(array_twos.begin(), array_twos.end(),
+        testOnData(array_twos.begin(), array_twos.end(),
                      shape_twos.begin(), shape_twos.end());
     }
-    void one_dimensional_test()
+    void oneDimensionalRandomTest()
     {
-        test_on_data(array_ones.begin(), array_ones.end(),
+        testOnData(array_ones.begin(), array_ones.end(),
                      shape_ones.begin(), shape_ones.end());
     }
 };
@@ -248,10 +248,10 @@ struct BlockwiseLabelingTestSuite
     BlockwiseLabelingTestSuite()
       : test_suite("blockwise labeling test")
     {
-        add(testCase(&BlockwiseLabelingTest::five_dimensional_test));
-        add(testCase(&BlockwiseLabelingTest::two_dimensional_test));
-        add(testCase(&BlockwiseLabelingTest::one_dimensional_test));
-        add(testCase(&BlockwiseLabelingTest::debug_test));
+        add(testCase(&BlockwiseLabelingTest::fiveDimensionalRandomTest));
+        add(testCase(&BlockwiseLabelingTest::twoDimensionalRandomTest));
+        add(testCase(&BlockwiseLabelingTest::oneDimensionalRandomTest));
+        add(testCase(&BlockwiseLabelingTest::debugTest));
     }
 };
 
