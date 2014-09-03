@@ -35,7 +35,7 @@ struct visit_border_impl
             MultiArrayIndex data_last = u_data.shape(D) - 1;
             MultiArrayIndex labels_last = u_labels.shape(D) - 1;
             next::exec(u_data.bindAt(D, data_last), u_labels.bindAt(D, labels_last),
-                       v_data.bindAt(D, 0), v_data.bindAt(D, 0),
+                       v_data.bindAt(D, 0), v_labels.bindAt(D, 0),
                        difference, neighborhood, visitor);
         }
         else if(difference[D] == 0)
@@ -63,7 +63,7 @@ struct visit_border_impl<0>
                      const MultiArrayView<0, Data, S1>& v_data, MultiArrayView<0, Label, S2> v_labels,
                      const Shape& difference, NeighborhoodType neighborhood, Visitor visitor)
     {
-        visitor(u_data[0], u_labels[0], v_data[0], v_labels[0]);
+        visitor(u_data(0), u_labels(0), v_data(0), v_labels(0));
     }
     template <unsigned int N, class Data, class S1,
                               class Label, class S2,

@@ -35,7 +35,7 @@ struct BorderVisitor
 template <class DataBlocksIterator, class LabelBlocksIterator, class Equal>
 typename LabelBlocksIterator::value_type::value_type
 blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_blocks_end,
-                  LabelBlocksIterator label_blocks_begin, DataBlocksIterator label_blocks_end,
+                  LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
                   NeighborhoodType neighborhood, Equal equal,
                   bool with_background, typename DataBlocksIterator::value_type::value_type background_value)
 {
@@ -74,6 +74,7 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         if(!with_background)
             ++unmerged_label_number;
     }
+    
     // reduce stage: merge adjacent labels if the region overlaps
     UnionFindArray<Label> global_unions(unmerged_label_number);
     if(with_background)
@@ -89,19 +90,16 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
     
     typedef GridGraph<Dimensions, undirected_tag> Graph;
     typedef typename Graph::edge_iterator EdgeIterator;
-    Graph blocks_graph(blocks_shape);
+    Graph blocks_graph(blocks_shape, neighborhood);
     for(EdgeIterator it = blocks_graph.get_edge_iterator(); it != blocks_graph.get_edge_end_iterator(); ++it)
     {
         Shape u = blocks_graph.u(*it);
         Shape v = blocks_graph.v(*it);
         Shape difference = v - u;
         
-        Label u_label_offset = label_offsets[u];
-        Label v_label_offset = label_offsets[v];
-
         BorderVisitor<Equal, Label> border_visitor;
-        border_visitor.u_label_offset = u_label_offset;
-        border_visitor.v_label_offset = v_label_offset;
+        border_visitor.u_label_offset = label_offsets[u];
+        border_visitor.v_label_offset = label_offsets[v];
         border_visitor.global_unions = &global_unions;
         border_visitor.equal = &equal;
         visitBorder(data_blocks_begin[u], label_blocks_begin[u],
