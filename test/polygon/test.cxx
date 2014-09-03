@@ -66,7 +66,7 @@ struct PolygonTest
 
     void print(MultiArray<2, int> const & a)
     {
-        for(auto i = a.begin(); i != a.end(); ++i)
+        for(MultiArray<2, int>::const_iterator i = a.begin(); i != a.end(); ++i)
         {
             std::cerr << (char)*i;
             if(i.point()[0] == a.shape(0)-1)
@@ -75,7 +75,7 @@ struct PolygonTest
     }
 
     #define CHECK_IS_INSIDE(img, poly) \
-            for(auto i=img.begin(); i != img.end(); ++i) \
+            for(MultiArray<2, int>::iterator i=img.begin(); i != img.end(); ++i) \
                 if(*i == ' ') \
                     shouldMessage(!poly.contains(i.point()), std::string("contains failed at ") << i.point()); \
                 else \

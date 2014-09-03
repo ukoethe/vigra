@@ -47,6 +47,23 @@
 
 namespace vigra {
 
+namespace detail {
+
+template < class Point >    
+bool pointYXOrdering(Point const & p1, Point const & p2) 
+{
+    return (p1[1]<p2[1]) || (p1[1] == p2[1] && p1[0] < p2[0]);
+}
+
+template < class Point >    
+bool orderedClockwise(const Point &O, const Point &A, const Point &B)
+{
+    return (A[0] - O[0]) * (B[1] - O[1]) - (A[1] - O[1]) * (B[0] - O[0]) <= 0;
+}
+
+} // namespace detail
+
+
 /** \addtogroup MathFunctions
 */
 //@{
@@ -59,7 +76,7 @@ class Polygon
   public:
     typedef ArrayVector<POINT> Base;
 
-    typedef typename POINT                        Point;
+    typedef POINT                                 Point;
     typedef typename Base::value_type             value_type;
     typedef typename Base::reference              reference;
     typedef typename Base::const_reference        const_reference;
@@ -603,22 +620,6 @@ extractContour(MultiArrayView<2, T, S> const &label_image,
     contour_points.push_back(contour_points.front()); // make it a closed polygon
 }
 
-namespace detail {
-
-template < class Point >    
-bool pointYXOrdering(Point const & p1, Point const & p2) 
-{
-    return (p1[1]<p2[1]) || (p1[1] == p2[1] && p1[0] < p2[0]);
-}
-
-template < class Point >    
-bool orderedClockwise(const Point &O, const Point &A, const Point &B)
-{
-    return (A[0] - O[0]) * (B[1] - O[1]) - (A[1] - O[1]) * (B[0] - O[0]) <= 0;
-}
-
-} // namespace detail
-
 /** \brief Compute convex hull of a 2D polygon.
 
     The input array \a points contains a (not necessarily ordered) set of 2D points
@@ -641,7 +642,7 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
     
     typedef typename PointArray1::value_type Point;
     
-    auto begin = points.begin();
+    typename PointArray1::const_iterator begin = points.begin();
     if(points.front() == points.back()) // closed polygon
         ++begin;                        // => remove redundant start point
     ArrayVector<Point> ordered(begin, points.end());

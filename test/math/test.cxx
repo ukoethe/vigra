@@ -58,7 +58,6 @@
 #include "vigra/regression.hxx"
 #include "vigra/random.hxx"
 #include "vigra/tinyvector.hxx"
-#include "vigra/polygon.hxx"
 #include "vigra/quaternion.hxx"
 #include "vigra/clebsch-gordan.hxx"
 #include "vigra/bessel.hxx"
