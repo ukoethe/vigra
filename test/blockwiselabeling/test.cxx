@@ -195,7 +195,7 @@ struct BlockwiseLabelingTest
     
     void debug_test()
     {
-        typedef MultiArray<2, unsigned int> Array;
+        typedef MultiArray<2, int> Array;
         typedef Array::difference_type Shape;
 
         Shape shape = Shape(4);
@@ -216,7 +216,7 @@ struct BlockwiseLabelingTest
         NeighborhoodType neighborhood = IndirectNeighborhood;
     
         size_t count = labelMultiArrayWithBackground(data, labels, neighborhood);
-        size_t blockwise_count = labelMultiArrayWithBackgroundBlockwise(data, blockwise_labels, neighborhood, 0u, block_shape);
+        size_t blockwise_count = labelMultiArrayWithBackgroundBlockwise(data, blockwise_labels, neighborhood, 0, block_shape);
         shouldEqual(count, blockwise_count);
         shouldEqual(equivalentLabels(labels.begin(), labels.end(),
                                      blockwise_labels.begin(), blockwise_labels.end()),
