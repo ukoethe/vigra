@@ -74,7 +74,6 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         if(!with_background)
             ++unmerged_label_number;
     }
-
     // reduce stage: merge adjacent labels if the region overlaps
     UnionFindArray<Label> global_unions(unmerged_label_number);
     if(with_background)
@@ -109,7 +108,6 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
                     data_blocks_begin[v], label_blocks_begin[v],
                     difference, neighborhood, border_visitor);
     }
-    
     // write global labels in each block
     Label last_label = global_unions.makeContiguous();
     {
@@ -128,7 +126,6 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
             }
         }
     }
-
     return last_label; 
 }
 
@@ -159,9 +156,8 @@ template <unsigned int N, class T, class S1,
 Label labelMultiArrayBlockwise(const MultiArrayView<N, T, S1>& data,
                                MultiArrayView<N, Label, S2> labels,
                                NeighborhoodType neighborhood,
-                               Equal equal,
-                               const typename MultiArrayView<N, T, S1>::difference_type& block_shape
-                                       = typename MultiArrayView<N, T, S1>::difference_type(blockwise_labeling_detail::default_block_side_length))
+                               const typename MultiArrayView<N, T, S1>::difference_type& block_shape,
+                               Equal equal)
 
 {
     MultiArray<N, MultiArrayView<N, T, S1> > data_blocks = blockify(data, block_shape);
@@ -198,9 +194,8 @@ Label labelMultiArrayWithBackgroundBlockwise(const MultiArrayView<N, T, S1>& dat
                                              MultiArrayView<N, Label, S2> labels,
                                              NeighborhoodType neighborhood,
                                              T background_value,
-                                             Equal equal,
-                                             const typename MultiArrayView<N, T, S1>::difference_type& block_shape
-                                                     = typename MultiArrayView<N, T, S1>::difference_type(blockwise_labeling_detail::default_block_side_length))
+                                             const typename MultiArrayView<N, T, S1>::difference_type& block_shape,
+                                             Equal equal)
 {
     MultiArray<N, MultiArrayView<N, T, S1> > data_blocks = blockify(data, block_shape);
     MultiArray<N, MultiArrayView<N, Label, S2> > label_blocks = blockify(labels, block_shape);
