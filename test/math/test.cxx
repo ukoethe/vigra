@@ -539,18 +539,34 @@ struct FunctionsTest
     {
         double a = 0.0, b = vigra::NumericTraits<double>::epsilon(), c = 1000.0, d = 1000.1;
 
-        using vigra::closeAtTolerance;
+        using namespace vigra;
         should(closeAtTolerance(a, b));
         should(closeAtTolerance(c, c + b));
-        should(closeAtTolerance(c, d, 1.0));
+        should(!closeAtTolerance(c, d));
+        should(closeAtTolerance(c, d, 0.01));
         should(closeAtTolerance(-a, -b));
         should(closeAtTolerance(-c, -c + b));
-        should(closeAtTolerance(-c, -d, 1.0));
+        should(!closeAtTolerance(-c, -d));
+        should(closeAtTolerance(-c, -d, 0.01));
         should(!closeAtTolerance(c, -c));
         should(!closeAtTolerance(a, c));
         should(!closeAtTolerance(c, d));
         should(!closeAtTolerance(-a, -c));
         should(!closeAtTolerance(-c, -d));
+
+        should(lessEqualAtTolerance(a, c));
+        should(lessEqualAtTolerance(c, c));
+        should(lessEqualAtTolerance(c, c-b));
+        should(lessEqualAtTolerance(c, d));
+        should(!lessEqualAtTolerance(d, c));
+        should(lessEqualAtTolerance(d, c, 0.01));
+
+        should(greaterEqualAtTolerance(c, a));
+        should(greaterEqualAtTolerance(c, c));
+        should(greaterEqualAtTolerance(c-b, c));
+        should(greaterEqualAtTolerance(d, c));
+        should(!greaterEqualAtTolerance(c, d));
+        should(greaterEqualAtTolerance(c, d, 0.01));
     }
 
     void testArgMinMax()
