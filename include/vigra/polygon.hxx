@@ -71,6 +71,7 @@ class Polygon
     typedef typename Base::const_reverse_iterator const_reverse_iterator;
     typedef typename Base::size_type              size_type;
     typedef typename Base::difference_type        difference_type;
+    typedef typename POINT::value_type            coordinate_type;
     
     using Base::size;
     using Base::empty;
@@ -160,37 +161,13 @@ class Polygon
          * Tests whether the given point lies within this polygon.
          * Requires that this polygon is closed.
 
-         * The result of testing points which lie directly on the
-         * polylines (or are incident with the support points) is
-         * undefined.  (ATM, the implementation uses half-open
-         * intervals, so points on the left/top border are included,
-         * in contrast to the ones on the right/bottom. FIXME: this is 
-         * inconsistent with fillPolygon() which uses closed intervals.)
+         * Points which lie directly on the polylines or coincide with a knot
+         * are considered inside (this behavior is consistent with fillPolygon()).
+         * Parameter \a tolerance (interpreted as an absolute error bound)
+         * controls the numerical accuracy of this test.
          */
-    bool contains(const_reference point) const
-    {
-        vigra_precondition(closed(),
-                           "Polygon::contains() requires polygon to be closed!");
-        int result = 0;
-        bool above = (*this)[0][1] < point[1];
-        for(unsigned int i = 1; i < size(); ++i)
-        {
-            bool now = (*this)[i][1] < point[1];
-            if(now != above)
-            {
-                typename Point::value_type intersectX =
-                    (*this)[i-1][0] +
-                    ((*this)[i][0] - (*this)[i-1][0]) *
-                    (point[1]      - (*this)[i-1][1]) /
-                    ((*this)[i][1] - (*this)[i-1][1]);
-                if(intersectX < point[0])
-                    ++result;
-
-                above = now;
-            }
-        }
-        return (result % 2) != 0;
-    }
+    bool contains(const_reference point, 
+                  coordinate_type tolerance=2.0*NumericTraits<coordinate_type>::epsilon()) const;
 
     void push_back(const_reference v)
     {
@@ -343,20 +320,24 @@ class Polygon
 
     POINT nearestPoint(const_reference p) const;
 
+    Polygon operator+(const Point &offset) const
+    {
+        Polygon result(size());
+        for(unsigned int i = 0; i < size(); ++i)
+            result[i] = (*this)[i] + offset;
+        return result;
+    }
+
+    Polygon operator-(const Point &offset) const
+    {
+        return operator+(-offset);
+    }
 
     Polygon operator*(double scale) const
     {
         Polygon result(size());
         for(unsigned int i = 0; i < size(); ++i)
             result[i] = (*this)[i] * scale;
-        return result;
-    }
-
-    Polygon operator+(const Point &offset) const
-    {
-        Polygon result(size());
-        for(unsigned int i = 0; i < size(); ++i)
-            result[i] = (*this)[i] + offset;
         return result;
     }
     
@@ -420,6 +401,105 @@ POINT Polygon<POINT>::nearestPoint(const_reference p) const
         }
     }
     return r;
+}
+
+template <class POINT>
+bool 
+Polygon<POINT>::contains(const_reference point, 
+                         coordinate_type tolerance) const
+{
+    vigra_precondition(closed(),
+                       "Polygon::contains() requires polygon to be closed!");
+    
+    // NOTE: the following code is very similar to detail::createScanIntervals()
+    //       to ensure consistent results.
+    
+    Polygon p = (*this) - point; // shift the polygon so that we only need to test
+                                 // for intersections with scanline 0
+    int n = p.size();
+    for(int k=0; k<n; ++k)
+        if(closeAtTolerance(p[k][1], 0.0, tolerance))
+            p[k][1] = 0.0;
+        
+    int result = 0;
+    bool drop_next_start_point = false;
+    int first_point_maybe_dropped = -1;
+    for(int k=0; k<n-1; ++k)
+    {
+        Point const & p1 = p[k];
+        Point const & p2 = p[k+1];
+        
+        if(p1[1] == p2[1]) // ignore horizontal lines
+            continue;
+
+        double t = (p2[0] - p1[0]) / (p2[1] - p1[1]);
+        double y, yend, dy;
+        if(p1[1] < p2[1])
+        {
+            y = ceil(p1[1]);
+            yend = floor(p2[1]);
+            dy = 1.0;
+        }
+        else
+        {
+            y = floor(p1[1]);
+            yend = ceil(p2[1]);
+            dy = -1.0;
+        }
+        if(yend != p2[1])
+            yend += dy;
+        if(drop_next_start_point)
+        {
+            y += dy;
+            drop_next_start_point = false;
+        }
+        if(first_point_maybe_dropped == -1)
+        {
+            if(y == 0.0 && p1[0] - p1[1]*t < 0.0)
+                first_point_maybe_dropped = 1;
+            else
+                first_point_maybe_dropped = 0;
+        }
+        if(y*dy <= 0.0 && yend*dy > 0.0)  // intersects scanline 0
+        {
+            double x = p1[0] - p1[1]*t;
+            if(closeAtTolerance(x, 0.0, tolerance))
+                return true;
+            if(x < 0.0)
+                ++result;
+        }
+        else if(p2[1] == 0.0) // degenerate case
+        {
+            int j = (k+2)%n;
+            bool convex = detail::orderedClockwise(p1, p2, p[j]);
+            if(convex) 
+            {
+                double x = p2[0] - p2[1]*t;
+                if(closeAtTolerance(x, 0.0, tolerance))
+                    return true;
+                if(x < 0.0)
+                    ++result;
+            }
+            for(; j != k+1; j = (j+1)%n)
+            {
+                double bend = dy*(p[j][1] - yend);
+                if(bend == 0.0)
+                    continue;
+                // Drop startpoint of next segment when the polygon after a convex 
+                // degenerate knot eventually crosses the scanline, or when it 
+                // returns to the original side of the scanline after a concave 
+                // degenerate knot.
+                if((convex && bend > 0.0) || (!convex && bend < 0.0))
+                    drop_next_start_point = true;
+                break;
+            }
+        }
+    }
+    
+    if(drop_next_start_point && first_point_maybe_dropped == 1)
+        --result;
+
+    return (result % 2) != 0;
 }
 
 template <class POINT>

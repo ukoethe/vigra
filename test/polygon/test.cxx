@@ -74,6 +74,13 @@ struct PolygonTest
         }
     }
 
+    #define CHECK_IS_INSIDE(img, poly) \
+            for(auto i=img.begin(); i != img.end(); ++i) \
+                if(*i == ' ') \
+                    shouldMessage(!poly.contains(i.point()), std::string("contains failed at ") << i.point()); \
+                else \
+                    shouldMessage(poly.contains(i.point()), std::string("contains failed at ") << i.point())
+
     void testFillPolygon()
     {
         typedef TinyVector<double, 2> P;
@@ -95,11 +102,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
-            for(auto i=mask.begin(); i != mask.end(); ++i)
-                if(*i == ' ')
-                    should(!poly.contains(i.point()));
-                else
-                    should(poly.contains(i.point()));
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // triangle, lower knot on scanline
@@ -117,6 +120,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // triangle, lower knot on pixel
@@ -134,6 +138,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // triangle, all knots on scanlines
@@ -151,6 +156,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // triangle, all knots on scanlines
@@ -168,6 +174,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // quadrilateral in general position
@@ -185,11 +192,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
-            for(auto i=mask.begin(); i != mask.end(); ++i)
-                if(*i == ' ')
-                    should(!poly.contains(i.point()));
-                else
-                    should(poly.contains(i.point()));
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // quadrilateral, one knot on scanline
@@ -207,6 +210,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // quadrilateral, two knots on scanline
@@ -224,6 +228,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // quadrilateral, one knot on scanline, one knot on pixel
@@ -241,6 +246,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave pentagon in general position
@@ -258,11 +264,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
-            for(auto i=mask.begin(); i != mask.end(); ++i)
-                if(*i == ' ')
-                    should(!poly.contains(i.point()));
-                else
-                    should(poly.contains(i.point()));
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave pentagon, two knots on scanline
@@ -280,6 +282,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave pentagon, three knots on scanline
@@ -297,6 +300,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave pentagon, two knots on scanline, one knot on pixel
@@ -314,6 +318,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave hexagon, three knots on scanline, one knot on pixel
@@ -331,6 +336,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave pentagon in general position
@@ -348,11 +354,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
-            for(auto i=mask.begin(); i != mask.end(); ++i)
-                if(*i == ' ')
-                    should(!poly.contains(i.point()));
-                else
-                    should(poly.contains(i.point()));
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave pentagon, one knot on scanline
@@ -370,6 +372,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave pentagon, one knot on pixel
@@ -387,6 +390,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave pentagon, three knots on pixel
@@ -404,6 +408,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave pentagon, all knots on pixel
@@ -421,6 +426,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave hexagon in general position
@@ -438,11 +444,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
-            for(auto i=mask.begin(); i != mask.end(); ++i)
-                if(*i == ' ')
-                    should(!poly.contains(i.point()));
-                else
-                    should(poly.contains(i.point()));
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave hexagon, two knots on scanline
@@ -460,6 +462,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave hexagon, four knots on scanline
@@ -477,6 +480,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave hexagon, four knots on scanline
@@ -494,6 +498,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave hexagon, four knots on scanline
@@ -511,6 +516,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave hexagon, all knots on scanline
@@ -528,6 +534,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
         {
             // concave heptagon, all knots on scanline
@@ -545,6 +552,7 @@ struct PolygonTest
                 "          "
             ;
             shouldEqualSequence(mask.begin(), mask.end(), ref.begin());
+            CHECK_IS_INSIDE(mask, poly);
         }
     }
     
