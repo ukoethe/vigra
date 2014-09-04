@@ -114,7 +114,7 @@ class Polygon
     {}
 
     Polygon(size_type n)
-    : Base(n),
+    : Base(n, Point()),
       lengthValid_(false),
       partialAreaValid_(false)
     {}
@@ -152,10 +152,17 @@ class Polygon
             for(unsigned int i = 1; i < size(); ++i)
                 partialArea_ += ((*this)[i][0]*(*this)[i-1][1] -
                                  (*this)[i][1]*(*this)[i-1][0]);
-            partialArea_ /= 2.0;
+            partialArea_ *= 0.5;
             partialAreaValid_ = true;
         }
         return partialArea_;
+    }
+
+    double area() const
+    {
+        vigra_precondition(closed(),
+                           "Polygon::area() requires polygon to be closed!");
+        return abs(partialArea());
     }
 
         /// Returns true iff the last and first points are equal.
@@ -183,9 +190,13 @@ class Polygon
          * Parameter \a tolerance (interpreted as an absolute error bound)
          * controls the numerical accuracy of this test.
          */
-    bool contains(const_reference point, 
-                  coordinate_type tolerance=2.0*NumericTraits<coordinate_type>::epsilon()) const;
+    bool contains(const_reference point, coordinate_type tolerance) const;
 
+    bool contains(const_reference point) const
+    {
+        return contains(point, 2.0*NumericTraits<coordinate_type>::epsilon());
+    }
+    
     void push_back(const_reference v)
     {
         if(size())
@@ -193,7 +204,7 @@ class Polygon
             if(lengthValid_)
                 length_ += (v - back()).magnitude();
             if(partialAreaValid_)
-                partialArea_ += (v[0]*back()[1] - v[1]*back()[0]);
+                partialArea_ += 0.5*(v[0]*back()[1] - v[1]*back()[0]);
         }
         Base::push_back(v);
     }
@@ -229,21 +240,8 @@ class Polygon
 
     void setPoint(unsigned int pos, const_reference x)
     {
-        if(lengthValid_)
-        {
-            if(pos > 0)
-            {
-                length_ += (x - (*this)[pos-1]).magnitude() -
-                           ((*this)[pos] - (*this)[pos-1]).magnitude();
-            }
-            if(pos < size() - 1)
-            {
-                length_ += (x - (*this)[pos+1]).magnitude() -
-                           ((*this)[pos] - (*this)[pos+1]).magnitude();
-            }
-        }
-        partialAreaValid_ = false;
-        (*this)[pos] = x;
+        invalidateProperties();
+        this->Base::operator[](pos) = x;
     }
 
     void erase(iterator pos)
@@ -252,58 +250,37 @@ class Polygon
         Base::erase(pos);
     }
 
+    void erase(iterator pos, iterator end)
+    {
+        invalidateProperties();
+        Base::erase(pos, end);
+    }
+
     iterator insert(iterator pos, const_reference x)
     {
-        if(lengthValid_)
-        {
-            if(pos > begin())
-                length_ += (x - pos[-1]).magnitude();
-            if(end() - pos >= 1)
-            {
-                length_ += (x - *pos).magnitude();
-                if(pos > begin())
-                    length_ -= (*pos - pos[-1]).magnitude();
-            }
-        }
-        partialAreaValid_ = false;
+        invalidateProperties();
         return Base::insert(pos, x);
     }
 
     template <class InputIterator>
     iterator insert(iterator pos, InputIterator i, InputIterator end)
     {
-        partialAreaValid_ = false;
-        lengthValid_ = false;
+        invalidateProperties();
         return Base::insert(pos, i, end);
     }
 
     Polygon split(unsigned int pos)
     {
+        Polygon result;
         if(pos == 0)
         {
-            Polygon result(1);
-            result[0] = (*this)[0];
             swap(result);
-            return result;
         }
-
-        Polygon result(begin() + pos, end());
-        Base::erase(begin() + pos + 1, end());
-
-#if 0 // FIXME: somehow this does not work!
-        if(pos > size() * 2 / 3)
+        else if(pos < size())
         {
-             // heuristic: when splitting off only a "small part",
-             // re-use existing information
-            if(lengthValid_)
-                length_ -= result.length();
-            if(partialAreaValid_)
-                partialArea_ -= result.partialArea();
+            result.insert(result.begin(), begin() + pos, end());
+            erase(begin() + pos, end());
         }
-        else
-#endif
-            invalidateProperties();
-
         return result;
     }
 
@@ -330,36 +307,66 @@ class Polygon
 
     void reverse()
     {
-        Base::reverse();
+        std::reverse(begin(), end());
         if(partialAreaValid_)
             partialArea_ = -partialArea_;
     }
 
     POINT nearestPoint(const_reference p) const;
-
-    Polygon operator+(const Point &offset) const
+    
+    Polygon & operator+=(POINT const & offset)
     {
-        Polygon result(size());
+        if(!closed())
+            partialAreaValid_ = false;
         for(unsigned int i = 0; i < size(); ++i)
-            result[i] = (*this)[i] + offset;
-        return result;
+            (*this)[i] += offset;
+        return *this;
     }
 
-    Polygon operator-(const Point &offset) const
+    Polygon & operator-=(POINT const & offset)
     {
-        return operator+(-offset);
+        if(!closed())
+            partialAreaValid_ = false;
+        for(unsigned int i = 0; i < size(); ++i)
+            (*this)[i] -= offset;
+        return *this;
     }
 
-    Polygon operator*(double scale) const
+    Polygon & operator*=(double scale)
     {
-        Polygon result(size());
+        partialArea_ *= sq(scale);
+        length_ *= scale;
         for(unsigned int i = 0; i < size(); ++i)
-            result[i] = (*this)[i] * scale;
-        return result;
+            (*this)[i] *= scale;
+        return *this;
+    }
+
+    Polygon & operator/=(double scale)
+    {
+        partialArea_ /= sq(scale);
+        length_ /= scale;
+        for(unsigned int i = 0; i < size(); ++i)
+            (*this)[i] /= scale;
+        return *this;
+    }
+
+    bool operator==(Polygon const & rhs) const
+    {
+        if(size() != rhs.size())
+            return false;
+        for(size_type k=0; k<size(); ++k)
+            if((*this)[k] != rhs[k])
+                return false;
+        return true;
+    }
+
+    bool operator!=(Polygon const & rhs) const
+    {
+        return !((*this) == rhs);
     }
     
   protected:
-  
+
     Base & points()
     {
         return (Base &)*this;
@@ -520,15 +527,94 @@ Polygon<POINT>::contains(const_reference point,
 }
 
 template <class POINT>
-Polygon<Shape2> roundi(Polygon<POINT> const & p) 
+inline Polygon<POINT> round(Polygon<POINT> const & p) 
 {
-    Polygon<Shape2> result(p.size());
+    Polygon<POINT> result(p.size());
     for(unsigned int i = 0; i < p.size(); ++i)
     {
         result[i] = round(p[i]);
     }
     return result;
 }
+
+template <class POINT>
+inline Polygon<Shape2> roundi(Polygon<POINT> const & p) 
+{
+    Polygon<Shape2> result(p.size());
+    for(unsigned int i = 0; i < p.size(); ++i)
+    {
+        result[i][0] = roundi(p[i][0]);
+        result[i][1] = roundi(p[i][1]);
+    }
+    return result;
+}
+
+template <class POINT>
+inline Polygon<POINT> 
+operator+(Polygon<POINT> const & p, POINT const & offset)
+{
+    return Polygon<POINT>(p) += offset;
+}
+
+template <class POINT>
+inline Polygon<POINT> 
+operator+(POINT const & offset, Polygon<POINT> const & p)
+{
+    return Polygon<POINT>(p) += offset;
+}
+
+template <class POINT>
+inline Polygon<POINT> 
+operator-(Polygon<POINT> const & p)
+{
+    Polygon<POINT> result(p.size());
+    for(unsigned int i = 0; i < p.size(); ++i)
+        result[i] = -p[i];
+    return result;
+}
+
+template <class POINT>
+inline Polygon<POINT> 
+operator-(Polygon<POINT> const & p, POINT const & offset)
+{
+    return Polygon<POINT>(p) -= offset;
+}
+
+template <class POINT>
+inline Polygon<POINT> 
+operator*(Polygon<POINT> const & p, double scale)
+{
+    return Polygon<POINT>(p) *= scale;
+}
+
+template <class POINT>
+inline Polygon<POINT> 
+operator*(double scale, Polygon<POINT> const & p)
+{
+    return Polygon<POINT>(p) *= scale;
+}
+
+
+template <class POINT>
+inline Polygon<POINT> 
+operator/(Polygon<POINT> const & p, double scale)
+{
+    return Polygon<POINT>(p) /= scale;
+}
+
+template <class POINT>
+inline Polygon<POINT> 
+transpose(Polygon<POINT> const & p)
+{
+    Polygon<POINT> result(p.size());
+    for(unsigned int i = 0; i < p.size(); ++i)
+    {
+        result[i][0] = p[i][1];
+        result[i][1] = p[i][0];
+    }
+    return result;
+}
+
 
 } // namespace vigra
 

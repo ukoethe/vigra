@@ -74,6 +74,167 @@ struct PolygonTest
         }
     }
 
+    void testBasics()
+    {
+        typedef TinyVector<double, 2> P;
+        typedef vigra::Polygon<P> Poly;
+
+        P points[] = { P(1.0,1.0), P(4.0, 1.0), P(4.0, 5.0) };
+        Poly p(points, points+3);
+
+        shouldEqual(p.size(), 3);
+        shouldEqualSequence(p.begin(), p.end(), points);
+        shouldEqual(p.length(), 7.0);
+        shouldEqual(p.partialArea(), -6.5);
+        should(!p.closed());
+        shouldEqual(p.interpolate(0, 0.0), P(1.0, 1.0));
+        shouldEqual(p.interpolate(1, 0.25), P(4.0, 2.0));
+        shouldEqual(p.interpolate(1, 0.5), P(4.0, 3.0));
+        shouldEqual(p.interpolate(1, 0.75), P(4.0, 4.0));
+        shouldEqual(p.interpolate(1, 1.0), P(4.0, 5.0));
+        shouldEqual(p.nearestPoint(P(0.0, 0.0)), P(1.0, 1.0));
+        shouldEqualTolerance(p.nearestPoint(P(2.0, 0.0)), P(2.0, 1.0), P(1e-15));
+        shouldEqualTolerance(p.nearestPoint(P(3.5, 2.0)), P(4.0, 2.0), P(1e-15));
+
+        Poly p2(2);
+        p2.setPoint(0, P(4.0, 5.0));
+        p2.setPoint(1, P(1.0, 1.0));
+        shouldEqual(p2.size(), 2);
+        shouldEqual(p2.length(), 5.0);
+        shouldEqual(p2.partialArea(), 0.5);
+        should(!p2.closed());
+
+        p.extend(p2);
+        shouldEqual(p.size(), 4);
+        should(p.closed());
+        shouldEqual(p.length(), 12.0);
+        shouldEqual(p.partialArea(), -6.0);
+        shouldEqual(p.area(), 6.0);
+        ArrayVector<double> arcLengthList;
+        p.arcLengthList(arcLengthList);
+        shouldEqual(arcLengthList.size(), 4);
+        double arcLengthRef[] = { 0.0, 3.0, 7.0, 12.0 };
+        shouldEqualSequence(arcLengthList.begin(), arcLengthList.end(), arcLengthRef);
+
+        p.reverse();
+        shouldEqual(p.size(), 4);
+        P ref[] = { P(1.0,1.0), P(4.0, 5.0), P(4.0, 1.0), P(1.0, 1.0) };
+        shouldEqualSequence(p.begin(), p.end(), ref);
+        should(p.closed());
+        shouldEqual(p.length(), 12.0);
+        shouldEqual(p.partialArea(), 6.0);
+        shouldEqual(p.area(), 6.0);
+
+        p2.push_back(P(4.0, 5.0));
+        p2.insert(p2.begin()+2, p.begin()+2, p.begin()+3);
+        shouldEqual(p2.size(), 4);
+        should(p2.closed());
+        shouldEqual(p2.length(), 12.0);
+        shouldEqual(p2.partialArea(), -6.0);
+        shouldEqual(p2.area(), 6.0);
+
+        p.setPoint(1, P(5.0, 4.0));
+        p.setPoint(2, P(1.0, 4.0));
+        shouldEqual(p.size(), 4);
+        P ref1[] = { P(1.0,1.0), P(5.0, 4.0), P(1.0, 4.0), P(1.0, 1.0) };
+        shouldEqualSequence(p.begin(), p.end(), ref1);
+        should(p.closed());
+        shouldEqual(p.length(), 12.0);
+        shouldEqual(p.partialArea(), -6.0);
+        shouldEqual(p.area(), 6.0);
+
+        p.insert(p.begin()+1, P(5.0, 1.0));
+        shouldEqual(p.size(), 5);
+        P ref2[] = { P(1.0,1.0), P(5.0, 1.0), P(5.0, 4.0), P(1.0, 4.0), P(1.0, 1.0) };
+        shouldEqualSequence(p.begin(), p.end(), ref2);
+        should(p.closed());
+        shouldEqual(p.length(), 14.0);
+        shouldEqual(p.partialArea(), -12.0);
+        shouldEqual(p.area(), 12.0);
+
+        p.erase(p.begin()+3);
+        shouldEqual(p.size(), 4);
+        P ref3[] = { P(1.0,1.0), P(5.0, 1.0), P(5.0, 4.0), P(1.0, 1.0) };
+        shouldEqualSequence(p.begin(), p.end(), ref3);
+        should(p.closed());
+        shouldEqual(p.length(), 12.0);
+        shouldEqual(p.partialArea(), -6.0);
+        shouldEqual(p.area(), 6.0);
+
+        p2 = p;
+        should(p2 == p);
+        shouldEqualSequence(p2.begin(), p2.end(), round(p2 + P(0.3, -0.2)).begin());
+        shouldEqualSequence(p2.begin(), p2.end(), roundi(p2 + P(0.3, -0.2)).begin());
+
+        p2 *= 2.0;
+        shouldEqual(p2.size(), 4);
+        P ref4[] = { P(2.0,2.0), P(10.0, 2.0), P(10.0, 8.0), P(2.0, 2.0) };
+        shouldEqualSequence(p2.begin(), p2.end(), ref4);
+        should(p2.closed());
+        shouldEqual(p2.length(), 24.0);
+        shouldEqual(p2.partialArea(), -24.0);
+        shouldEqual(p2.area(), 24.0);
+        should(p2 == p * 2.0);
+        should(p2 == 2.0 * p);
+        should(p2 / 2.0 == p);
+
+        p2 /= 2.0;
+        shouldEqual(p2.size(), 4);
+        shouldEqualSequence(p2.begin(), p2.end(), ref3);
+        should(p2.closed());
+        shouldEqual(p2.length(), 12.0);
+        shouldEqual(p2.partialArea(), -6.0);
+        shouldEqual(p2.area(), 6.0);
+
+        p2 += P(1.0, 2.0);
+        shouldEqual(p2.size(), 4);
+        P ref5[] = { P(2.0, 3.0), P(6.0, 3.0), P(6.0, 6.0), P(2.0, 3.0) };
+        shouldEqualSequence(p2.begin(), p2.end(), ref5);
+        should(p2.closed());
+        shouldEqual(p2.length(), 12.0);
+        shouldEqual(p2.area(), 6.0);
+        should(p2 == p + P(1.0, 2.0));
+        should(p2 == P(1.0, 2.0) + p);
+        should(p2 - P(1.0, 2.0) == p);
+
+        p2 -= P(2.0, 1.0);
+        shouldEqual(p2.size(), 4);
+        P ref6[] = { P(0.0, 2.0), P(4.0, 2.0), P(4.0, 5.0), P(0.0, 2.0) };
+        shouldEqualSequence(p2.begin(), p2.end(), ref6);
+        should(p2.closed());
+        shouldEqual(p2.length(), 12.0);
+        shouldEqual(p2.area(), 6.0);
+
+        p2 = -p2;
+        shouldEqual(p2.size(), 4);
+        P ref7[] = { P(0.0, -2.0), P(-4.0, -2.0), P(-4.0, -5.0), P(0.0, -2.0) };
+        shouldEqualSequence(p2.begin(), p2.end(), ref7);
+
+        p2 = transpose(-p2);
+        shouldEqual(p2.size(), 4);
+        P ref8[] = { P(2.0, 0.0), P(2.0, 4.0), P(5.0, 4.0), P(2.0, 0.0) };
+        shouldEqualSequence(p2.begin(), p2.end(), ref8);
+
+        p2 = p;
+        shouldEqual(p2.size(), 4);
+        shouldEqualSequence(p2.begin(), p2.end(), ref3);
+        p2.erase(p2.begin(), p2.begin()+2);
+        shouldEqual(p2.size(), 2);
+        shouldEqualSequence(p2.begin(), p2.end(), ref3+2);
+        shouldEqual(p2.length(), 5.0);
+        shouldEqual(p2.partialArea(), -0.5);
+
+        p2 = p.split(3);
+        shouldEqual(p.size(), 3);
+        shouldEqualSequence(p.begin(), p.end(), ref3);
+        should(!p.closed());
+        shouldEqual(p.length(), 7.0);
+        shouldEqual(p.partialArea(), -5.5);
+        shouldEqual(p2.size(), 1);
+        shouldEqual(p2[0], ref3[3]);
+        should(p2.closed());
+    }
+
     #define CHECK_IS_INSIDE(img, poly) \
             for(MultiArray<2, int>::iterator i=img.begin(); i != img.end(); ++i) \
                 if(*i == ' ') \
@@ -81,7 +242,7 @@ struct PolygonTest
                 else \
                     shouldMessage(poly.contains(i.point()), std::string("contains failed at ") << i.point())
 
-    void testFillPolygon()
+    void testFillAndContains()
     {
         typedef TinyVector<double, 2> P;
         typedef vigra::Polygon<P> Poly;
@@ -774,7 +935,8 @@ struct PolygonTestSuite : public vigra::test_suite
     PolygonTestSuite()
         : vigra::test_suite("PolygonTestSuite")
     {
-        add(testCase(&PolygonTest::testFillPolygon));
+        add(testCase(&PolygonTest::testBasics));
+        add(testCase(&PolygonTest::testFillAndContains));
         add(testCase(&PolygonTest::testExtractContour));
         add(testCase(&PolygonTest::testConvexHull));
         add(testCase(&PolygonTest::testConvexHullFeatures));
