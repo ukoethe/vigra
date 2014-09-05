@@ -35,8 +35,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef VIGRA_CONVEXHULL_HXX
-#define VIGRA_CONVEXHULL_HXX
+#ifndef VIGRA_CONVEX_HULL_FEATURES_HXX
+#define VIGRA_CONVEX_HULL_FEATURES_HXX
 
 #include "multi_array.hxx"
 #include "accumulator.hxx"
@@ -47,52 +47,6 @@
 namespace vigra {
 
 namespace detail {
-
-/*
- * Puts all the points of the line between p1 and p2
- * to the point-vector result.
- * Works either when working with discrete pixel coordinates
- * and when working with floating point coordinates.
- */
-template<typename T>
-void pushLinePoints2(TinyVector<T, 2> const &p1, TinyVector<T, 2> const &p2,
-        std::vector<TinyVector<T, 2> > &result) {
-
-    TinyVector<T, 2> ps, diff = p2 - p1;
-    bool yLonger = false;
-    int incVal, endVal;
-    float shortLen = diff[1];
-    float longLen = diff[0];
-
-    if (abs(shortLen) > abs(longLen)) {
-        std::swap(shortLen, longLen);
-        yLonger = true;
-    }
-    endVal = longLen;
-    if (longLen < 0) {
-        incVal = -1;
-        longLen = -longLen;
-    } else
-        incVal = 1;
-    float decInc;
-    if (longLen == 0)
-        decInc = 0;
-    else
-        decInc = shortLen / longLen;
-    if (yLonger) {
-        int i = incVal;
-        float j = decInc;
-        for (; abs(i) < abs(endVal); i += incVal, j += decInc)
-            result.push_back(TinyVector<T, 2>(p1[0] + j, p1[1] + i));
-    } else {
-        int i = incVal;
-        float j = decInc;
-        for (; abs(i) < abs(endVal); i += incVal, j += decInc)
-            result.push_back(TinyVector<T, 2>(p1[0] + i, p1[1] + j));
-    }
-
-}
-
 
 template<typename T>
 int countNonZero(MultiArray<2, T> const &array) {
@@ -105,62 +59,6 @@ int countNonZero(MultiArray<2, T> const &array) {
 
     int nonZero = array.size() - get<Count>(a, 0);
     return nonZero;
-}
-
-
-/*
- * Left hand on the wall contour extraction
- * the label of the anchor point marks object, everything else is background
- * anchor_point is the first point inside the object when traversing in scan-order
- * contour_points contains a half-integer point for each section of the wall
- */
-template<class T, class S, class PointArray>
-void 
-extractContour2(MultiArrayView<2, T, S> const &label_image,
-               Shape2 const & anchor_point,
-               PointArray & contour_points) 
-{
-    typedef typename PointArray::value_type Point;
-    
-    Shape2 step[4] = { Shape2(-1, 0), Shape2(0, -1), Shape2(1, 0), Shape2(0, 1) };
-    Point contour_offsets[4] = { Point(0, 0.5), Point(-0.5, 0), Point(0, -0.5), Point(0.5, 0) };
-    
-    T foreground = label_image[anchor_point];
-
-    int direction = 3, 
-        initial_direction = direction;
-    // position outside the object from which we place the hand:
-    Shape2 position = anchor_point + step[0], 
-           initial_position = position;
-
-    // go around the object
-    do 
-    {
-        contour_points.push_back(position + contour_offsets[direction]);
-
-        Shape2 next_position = position + step[direction];
-
-        if(label_image.isInside(next_position) && 
-           label_image[next_position] == foreground)
-        {
-            // we have bumped into a wall => turn right to touch the wall again
-            direction = (direction + 1) % 4;
-        }
-        else
-        {
-            position = next_position;
-            int next_direction = (direction + 3) % 4;
-            next_position += step[next_direction];
-            if(!label_image.isInside(next_position) || 
-               label_image[next_position] != foreground)
-            {
-                // we have lost the wall => turn left and move forward to touch the wall again
-                direction = next_direction;
-                position = next_position;
-            }
-        }
-    } 
-    while (position != initial_position || direction != initial_direction);
 }
 
 /*
@@ -192,6 +90,8 @@ bool findAnchorPoint(IMAGE_TYPE const &input_image,
     return false;
 }
 
+} // namespace detail
+
 /*
  * Calculates some features from the relation between a polygon, and its convex hull.
  */
@@ -210,7 +110,7 @@ public:
         using namespace vigra::acc;
 
         TinyVector<int, 2> anchor_point;
-        findAnchorPoint(input_image, anchor_point);
+        detail::findAnchorPoint(input_image, anchor_point);
 
         std::vector<TinyVector<float, 2> > contour_points;
 
@@ -244,7 +144,7 @@ public:
 
         std::vector<TinyVector<float, 2> > convex_hull_contour_points;
 
-        findAnchorPoint(convex_hull_image, anchor_point);
+        detail::findAnchorPoint(convex_hull_image, anchor_point);
         extractContour(convex_hull_image, anchor_point,
                        convex_hull_contour_points);
 
@@ -265,10 +165,10 @@ public:
         convexityDefectCount = labelImageWithBackground(diff_image, labels,
                 false, 0);
 
-        convexHullArea = countNonZero(convex_hull_image);
+        convexHullArea = detail::countNonZero(convex_hull_image);
 
 
-        inputArea = countNonZero(input_image);
+        inputArea = detail::countNonZero(input_image);
         convexity = (double) inputArea / (double) convexHullArea;
 
         AccumulatorChainArray<CoupledArrays<2, double, int>,
@@ -421,8 +321,73 @@ private:
 
 };
 
+namespace acc {
+
+// template <class ITERATOR, class ACCUMULATOR>
+// void extractConvexHullFeatures(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
+// {
+    // for(unsigned int k=1; k <= a.passesRequired(); ++k)
+        // for(ITERATOR i=start; i < end; ++i)
+            // a.updatePassN(*i, k);
+// }
+
+
+template <class T1, class S1,
+          class T2, class S2,
+          class ACCUMULATOR,
+          class CONVEX_HULL_ACCUMULATOR>
+void extractConvexHullFeatures(MultiArrayView<2, T1, S1> const & data, 
+                               MultiArrayView<2, T2, S2> const & labels, 
+                               ACCUMULATOR const & regions,
+                               CONVEX_HULL_ACCUMULATOR & a)
+{
+    typedef typename LookupTag<RegionContour, ACCUMULATOR>::value_type Poly;
+    typedef typename Poly::value_type Point;
+    
+    MultiArrayIndex ignored_label = a.ignoredLabel();
+    MultiArrayIndex max_label = regions.maxRegionLabel();
+    
+    a.setMaxRegionLabel(max_label);
+    a.ignoreLabel(max_label+1);
+    for(MultiArrayIndex k=0; k <= max_label; ++k)
+    {
+        if(get<Count>(regions, k) == 0 || k == ignored_label)
+            continue;
+            
+        Shape2 start = get<Coord<Minimum> >(regions, k),
+               stop  = get<Coord<Maximum> >(regions, k) + Shape2(1);
+        Point offset(start);
+        a.setCoordinateOffset(k, start);
+        
+        Poly convex_hull;
+        convexHull(get<RegionContour>(regions, k), convex_hull);
+        convex_hull -= offset;
+        
+        MultiArray<2, T2> convex_hull_image(stop-start, max_label+1);
+        fillPolygon(convex_hull, convex_hull_image, k);
+        
+        extractFeatures(data.subimage(start, stop), convex_hull_image, a);
+    }
+    a.ignoreLabel(ignored_label);
 }
 
+template <class T1, class S1,
+          class T2, class S2,
+          class CONVEX_HULL_ACCUMULATOR>
+void extractConvexHullFeatures(MultiArrayView<2, T1, S1> const & data, 
+                               MultiArrayView<2, T2, S2> const & labels, 
+                               CONVEX_HULL_ACCUMULATOR & a)
+{
+    AccumulatorChainArray<CoupledArrays<2, T1, T2>,
+                          Select<DataArg<1>, LabelArg<2>,
+                                 Count, BoundingBox, RegionPerimeter> > regions;
+    regions.ignoreLabel(a.ignoredLabel());
+    extractFeatures(data, labels, regions);
+    extractConvexHullFeatures(data, labels, regions, a);
 }
 
-#endif
+} // namespace acc
+
+} // namespace vigra
+
+#endif // VIGRA_CONVEX_HULL_FEATURES_HXX

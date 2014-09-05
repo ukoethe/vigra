@@ -38,12 +38,11 @@
 #include <vigra/unittest.hxx>
 #include <vigra/multi_array.hxx>
 #include <vigra/polygon.hxx>
-#include <vigra/convexhull.hxx>
+#include <vigra/convex_hull_features.hxx>
 #include "convex_hull_test.hxx"
 
 
 using namespace vigra;
-using namespace vigra::detail;
 
 struct PolygonTest
 {
@@ -725,7 +724,7 @@ struct PolygonTest
         mask(3,0) = 1; // have the object touch the image border
 
         TinyVector<int, 2> anchor_point;
-        findAnchorPoint(mask, anchor_point);
+        detail::findAnchorPoint(mask, anchor_point);
         vigra::Polygon<Point> contour_points;
 
         extractContour(mask, anchor_point, contour_points);
