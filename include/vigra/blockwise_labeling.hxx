@@ -22,8 +22,8 @@ struct BorderVisitor
     UnionFindArray<Label>* global_unions;
     Equal* equal;
     
-    template <class Data>
-    void operator()(const Data& u_data, Label& u_label, const Data& v_data, Label& v_label)
+    template <class Data, class Shape>
+    void operator()(const Data& u_data, Label& u_label, const Data& v_data, Label& v_label, const Shape&)
     {
         if((*equal)(u_data, v_data))
         {
