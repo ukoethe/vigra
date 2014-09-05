@@ -206,7 +206,7 @@ public:
     MultiArrayView<dimensions, T>
     arrayView() const
     {
-        return MultiArrayView<dimensions, T>(shape(), strides(), ptr() - dot(point(), strides()));
+        return MultiArrayView<dimensions, T>(this->shape(), strides(), ptr() - dot(this->point(), strides()));
     }
     
     template <unsigned int TARGET_INDEX>
@@ -537,11 +537,11 @@ public:
     {
         typedef MultiArrayView<dimensions+1, T> View;
         typename View::difference_type vshape(SkipInitialization), vstride(SkipInitialization);
-        vshape.template subarray<0, dimensions>() = shape();
+        vshape.template subarray<0, dimensions>() = this->shape();
         vstride.template subarray<0, dimensions>() = strides();
         vshape[dimensions] = view_.shape(0);
         vstride[dimensions] = view_.stride(0);
-        return View(vshape, vstride, view_.data() - dot(point(), strides())).multiband();
+        return View(vshape, vstride, view_.data() - dot(this->point(), strides())).multiband();
     }
     
     template <unsigned int TARGET_INDEX>
