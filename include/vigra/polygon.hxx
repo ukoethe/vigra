@@ -131,6 +131,12 @@ class Polygon
       lengthValid_(false),
       partialAreaValid_(false)
     {}
+    
+    void clear()
+    {
+        invalidateProperties();
+        Base::clear();
+    }
 
     void invalidateProperties()
     {
@@ -767,7 +773,8 @@ extractContour(MultiArrayView<2, T, S> const &label_image,
     } 
     while (position != initial_position || direction != initial_direction);
     
-    contour_points.push_back(contour_points.front()); // make it a closed polygon
+    Point first = contour_points.front();
+    contour_points.push_back(first); // make it a closed polygon
 }
 
 /** \brief Compute convex hull of a 2D polygon.
