@@ -246,6 +246,20 @@ public:
         return data() + size();
     }
 
+        /** Get const iterator referring to the first array element.
+        */
+    inline const_iterator cbegin() const
+    {
+        return data();
+    }
+
+        /** Get const iterator pointing beyond the last array element.
+        */
+    inline const_iterator cend() const
+    {
+        return data() + size();
+    }
+
         /** Get reverse iterator referring to the last array element.
         */
     inline reverse_iterator rbegin()
@@ -270,6 +284,20 @@ public:
         /** Get const reverse iterator pointing before the first array element.
         */
     inline const_reverse_iterator rend() const
+    {
+        return (const_reverse_iterator(begin()));
+    }
+
+        /** Get const reverse iterator referring to the last array element.
+        */
+    inline const_reverse_iterator crbegin() const
+    {
+        return (const_reverse_iterator(end()));
+    }
+
+        /** Get const reverse iterator pointing before the first array element.
+        */
+    inline const_reverse_iterator crend() const
     {
         return (const_reverse_iterator(begin()));
     }
