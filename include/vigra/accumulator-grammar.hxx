@@ -75,6 +75,7 @@ template <int BinCount> class GlobalRangeHistogram;  // like AutoRangeHistogram,
 class FirstSeen;                               // remember the first value seen
 class Minimum;                                 // minimum
 class Maximum;                                 // maximum
+class Range;                                   // minimum and maximum as a <tt>std::pair</tt>
 template <class Hist> class StandardQuantiles; // compute (min, 10%, 25%, 50%, 75%, 90%, max) quantiles from 
                                                // min/max accumulators and given histogram
 
@@ -95,6 +96,11 @@ template <int INDEX>  class DataArg;           // specifiy the index of the data
 template <int INDEX>  class WeightArg;         // specifiy the index of the weight member in a CoupledHandle
 template <int INDEX>  class LabelArg;          // specifiy the index of the label member in a CoupledHandle
 template <int INDEX>  class CoordArg;          // specifiy the index of the coord member in a CoupledHandle
+
+class RegionContour;                           // compute the contour of a 2D region
+class RegionPerimeter;                         // compute the perimeter of a 2D region
+class RegionCircularity;                       // compare perimeter of a 2D region with a circle of same area
+class RegionEccentricity;                      // ecentricity of a 2D region from major and minor axis
 
 /* 
 Quantiles other than minimum and maximum require more thought:
@@ -203,6 +209,8 @@ typedef Central<AbsSum>                             SumOfAbsDifferences;
 /** \brief Alias. Mean absolute deviation. */
 typedef DivideByCount<SumOfAbsDifferences>          MeanAbsoluteDeviation;
 
+/** \brief Alias. Rectangle enclosing the region, as a <tt>std::pair</tt> of coordinates. */
+typedef Coord<Range>                                BoundingBox;
 /** \brief Alias. Anchor point (first point of the region seen by scan-order traversal. */
 typedef Coord<FirstSeen>                            RegionAnchor;
 
@@ -472,6 +480,12 @@ VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<Centralize>, Whiten)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Principal<PrincipalProjection>, PrincipalProjection)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<PrincipalProjection>, Whiten)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<Whiten>, Whiten)
+
+    // ignore all modifiers of RegionContour and related features
+VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionContour>, RegionContour)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionPerimeter>, RegionPerimeter)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionCircularity>, RegionCircularity)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionEccentricity>, RegionEccentricity)
 
     // reduce even absolute powers to plain powers
 template <unsigned N>

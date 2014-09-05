@@ -244,6 +244,16 @@ struct AccumulatorTest
             // nested Select
         should((IsSameType<Select<Count, Mean, Select<Sum, Minimum>, Variance>::type,
                            Select<Count, Mean, Sum, Minimum, Variance>::type>::value));
+
+            // RegionContour
+        should((IsSameType<StandardizeTag<RegionContour>::type,
+                           RegionContour >::value));
+        should((IsSameType<StandardizeTag<DataFromHandle<RegionContour> >::type,
+                           RegionContour >::value));
+        should((IsSameType<StandardizeTag<Coord<RegionContour> >::type,
+                           RegionContour >::value));
+        should((IsSameType<StandardizeTag<Weighted<Coord<RegionContour> > >::type,
+                           RegionContour >::value));
     }
 
     template <class SOURCE, class REFERENCE>
@@ -734,7 +744,7 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
             typedef Shape3 V;
 
-            typedef AccumulatorChain<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, Coord<StdDev>, Coord<Covariance>,
+            typedef AccumulatorChain<Handle, Select<Coord<Maximum>, Coord<Minimum>, BoundingBox, Coord<Mean>, Coord<StdDev>, Coord<Covariance>,
                                                Coord<Principal<Variance> >, Coord<Principal<CoordinateSystem> >,
                                                Coord<AbsSum>, Coord<MeanAbsoluteDeviation>, Coord<CovarianceEigensystem>
                                           > > A;
@@ -757,6 +767,8 @@ struct AccumulatorTest
             shouldEqual(get<Count>(a), 3.0);
             shouldEqual(get<Coord<Minimum> >(a), V(1));
             shouldEqual(get<Coord<Maximum> >(a), V(3));
+            shouldEqual(get<BoundingBox>(a).first, V(1));
+            shouldEqual(get<BoundingBox>(a).second, V(3));
             shouldEqual(get<Coord<Sum> >(a), W(6.0));
             shouldEqual(get<Coord<AbsSum> >(a), W(6.0));
             shouldEqual(get<Coord<Mean> >(a), W(2.0));
@@ -1118,7 +1130,7 @@ struct AccumulatorTest
         return acc::acc_detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
     }
 
-    void testLabelDispatch()
+    void testRegionAccumulators()
     {
         using namespace vigra::acc;
         {
@@ -1196,6 +1208,23 @@ struct AccumulatorTest
             shouldEqual(V(8,-1), get<Coord<Sum> >(aa, 1));
             shouldEqual(V(2,-1), get<Global<Coord<Minimum> > >(aa));
 
+            A ab;
+            ab.setMaxRegionLabel(1);
+            ab.setCoordinateOffset(V(2, -1));
+            ab.setCoordinateOffset(0, V(-1,1));
+            ab.setCoordinateOffset(1, V(1,-2));
+
+            for(i = start; i < end; ++i)
+                ab(*i);
+            
+            shouldEqual(4, get<Count>(ab, 0));
+            shouldEqual(2, get<Count>(ab, 1));
+            shouldEqual(6, get<Global<Count> >(ab));
+
+            shouldEqual(V(-2,6), get<Coord<Sum> >(ab, 0));
+            shouldEqual(V(6,-3), get<Coord<Sum> >(ab, 1));
+            shouldEqual(V(2,-1), get<Global<Coord<Minimum> > >(ab));
+
             A b;
             b.ignoreLabel(0);
 
@@ -1217,7 +1246,8 @@ struct AccumulatorTest
             typedef CoupledIteratorType<2, double, int>::type Iterator;
             typedef Iterator::value_type Handle;
 
-            typedef AccumulatorChainArray<Handle, Select<Count, AutoRangeHistogram<3>, GlobalRangeHistogram<3>,
+            typedef AccumulatorChainArray<Handle, Select<Count, RegionPerimeter, RegionCircularity, RegionEccentricity, 
+                                                         AutoRangeHistogram<3>, GlobalRangeHistogram<3>,
                                                          Global<Count>, Global<AutoRangeHistogram<3> >, DataArg<1>, LabelArg<2>
                                           > > A;
 
@@ -1267,6 +1297,25 @@ struct AccumulatorTest
             shouldEqual(V(3,1,0), get<GlobalRangeHistogram<3> >(a, 0));
             shouldEqual(V(0,1,1), get<GlobalRangeHistogram<3> >(a, 1));
             shouldEqual(V(3,2,1), get<Global<AutoRangeHistogram<3> > >(a));
+
+            typedef LookupTag<RegionContour, A>::value_type::const_iterator PolyIter;
+            typedef LookupTag<RegionContour, A>::value_type::value_type Point;
+
+            Point ref0[] = { Point(0, -0.5), Point(-0.5, 0), Point(-0.5, 1), Point(0, 1.5), Point(1, 1.5), 
+                             Point(1.5, 1), Point(1.5, 0), Point(1, -0.5), Point(0.0, -0.5) };
+            shouldEqual(get<RegionContour>(a, 0).size(), 9);
+            shouldEqualSequence(get<RegionContour>(a, 0).cbegin(), get<RegionContour>(a, 0).cend(), ref0);
+            shouldEqualTolerance(get<RegionPerimeter>(a, 0), 4.0 + 2.0*M_SQRT2, 1e-15);
+            shouldEqualTolerance(get<RegionCircularity>(a, 0), 0.9712214720608953, 1e-15);
+            shouldEqualTolerance(get<RegionEccentricity>(a, 0), 0.0, 1e-15);
+ 
+            Point ref1[] = { Point(2, -0.5), Point(1.5, 0), Point(1.5, 1), Point(2, 1.5), 
+                             Point(2.5, 1), Point(2.5, 0), Point(2, -0.5) };
+            shouldEqual(get<RegionContour>(a, 1).size(), 7);
+            shouldEqualSequence(get<RegionContour>(a, 1).cbegin(), get<RegionContour>(a, 1).cend(), ref1);
+            shouldEqualTolerance(get<RegionPerimeter>(a, 1), 2.0 + 2.0*M_SQRT2, 1e-15);
+            shouldEqualTolerance(get<RegionCircularity>(a, 1), 0.8991763601646624, 1e-15);
+            shouldEqualTolerance(get<RegionEccentricity>(a, 1), 1.0, 1e-15);
         }
 
         {
@@ -1456,7 +1505,7 @@ struct FeaturesTestSuite : public vigra::test_suite
         add(testCase(&AccumulatorTest::testMerge));
         add(testCase(&AccumulatorTest::testCoordAccess));
         add(testCase(&AccumulatorTest::testHistogram));
-        add(testCase(&AccumulatorTest::testLabelDispatch));
+        add(testCase(&AccumulatorTest::testRegionAccumulators));
         add(testCase(&AccumulatorTest::testIndexSpecifiers));
     }
 };

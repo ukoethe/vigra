@@ -52,6 +52,7 @@
 #include "multi_math.hxx"
 #include "eigensystem.hxx"
 #include "histogram.hxx"
+#include "polygon.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -1362,12 +1363,18 @@ struct LabelDispatch
         ignore_label_ = l;
     }
     
+    MultiArrayIndex ignoredLabel() const
+    {
+        return ignore_label_;
+    }
+    
     void applyHistogramOptions(HistogramOptions const & options)
     {
         applyHistogramOptions(options, options);
     }
     
-    void applyHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions)
+    void applyHistogramOptions(HistogramOptions const & regionoptions, 
+                               HistogramOptions const & globaloptions)
     {
         region_histogram_options_ = regionoptions;
         for(unsigned int k=0; k<regions_.size(); ++k)
@@ -1385,6 +1392,13 @@ struct LabelDispatch
             regions_[k].setCoordinateOffsetImpl(coordinateOffset_);
         }
         next_.setCoordinateOffsetImpl(coordinateOffset_);
+    }
+    
+    void setCoordinateOffsetImpl(MultiArrayIndex k, CoordinateType const & offset)
+    {
+        vigra_precondition(0 <= k && k < (MultiArrayIndex)regions_.size(),
+             "Accumulator::setCoordinateOffset(k, offset): region k does not exist.");
+        regions_[k].setCoordinateOffsetImpl(offset);
     }
     
     template <class U>
@@ -2264,6 +2278,7 @@ class AccumulatorChainArray
 #endif
 {
   public:
+    typedef AccumulatorChainImpl<T, typename acc_detail::ConfigureAccumulatorChainArray<T, Selected, dynamic>::type> base_type;
     typedef typename acc_detail::ConfigureAccumulatorChainArray<T, Selected, dynamic> Creator;
     typedef typename Creator::TagList AccumulatorTags;
     typedef typename Creator::GlobalTags GlobalTags;
@@ -2276,6 +2291,13 @@ class AccumulatorChainArray
         this->next_.ignoreLabel(l);
     }
     
+    /** Ask for a label to be ignored. Default: -1 (meaning that no label is ignored).
+    */
+    MultiArrayIndex ignoredLabel() const
+    {
+        return this->next_.ignoredLabel();
+    }
+    
     /** Set the maximum region label (e.g. for merging two accumulator chains).
     */
     void setMaxRegionLabel(unsigned label)
@@ -2283,7 +2305,7 @@ class AccumulatorChainArray
         this->next_.setMaxRegionLabel(label);
     }
     
-    /** %Maximum region label. (equal to regionCount() - 1)
+    /** Maximum region label. (equal to regionCount() - 1)
     */
     MultiArrayIndex maxRegionLabel() const
     {
@@ -2342,6 +2364,19 @@ class AccumulatorChainArray
         return n;
     }
 
+    using base_type::setCoordinateOffset;
+    
+    /** Set an offset for <tt>Coord<...></tt> statistics for region \a k.
+    
+        If the offset is non-zero, coordinate statistics such as <tt>RegionCenter</tt> are computed
+        in the global coordinate system defined by the \a offset. Without an offset, these statistics
+        are computed in the local coordinate system of the current region of interest.
+    */    
+    template <class SHAPE>
+    void setCoordinateOffset(MultiArrayIndex k, SHAPE const & offset)
+    {
+        this->next_.setCoordinateOffsetImpl(k, offset);
+    }
 
 #ifdef DOXYGEN // hide AccumulatorChainImpl from documentation
 
@@ -5138,8 +5173,8 @@ class Maximum
 
 /** \brief Basic statistic. First data value seen of the object. 
 
-    Usually used as <tt>Coord<FirstSeen></tt> which provides a 
-    well-defined anchor point for the region.
+    Usually used as <tt>Coord<FirstSeen></tt> (alias <tt>RegionAnchor</tt>) 
+    which provides a well-defined anchor point for the region.
 */
 class FirstSeen
 {
@@ -5199,6 +5234,39 @@ class FirstSeen
         result_type operator()() const
         {
             return value_;
+        }
+    };
+};
+
+/** \brief Return both the minimum and maximum in <tt>std::pair</tt>. 
+
+    Usually used as <tt>Coord<Range></tt> (alias <tt>BoundingBox</tt>).
+    Note that <tt>Range</tt> returns a closed interval, i.e. the upper
+    limit is part of the range.
+*/
+class Range
+{
+  public:
+    typedef Select<Minimum, Maximum> Dependencies;
+    
+    static std::string name() 
+    { 
+        return "Range";
+        // static const std::string n("Range");
+        // return n;
+    }
+    
+    template <class U, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename AccumulatorResultTraits<U>::MinmaxType   minmax_type;
+        typedef std::pair<minmax_type, minmax_type>               value_type;
+        typedef value_type                                        result_type;
+
+        result_type operator()() const
+        {
+            return value_type(getDependency<Minimum>(*this), getDependency<Maximum>(*this));
         }
     };
 };
@@ -5909,6 +5977,198 @@ class StandardQuantiles
                 this->setClean();
             }
             return this->value_;
+        }
+    };
+};
+
+
+/** \brief Compute the contour of a 2D region. 
+
+    AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
+ */
+class RegionContour
+{
+  public:
+    typedef Select<Count> Dependencies;
+    
+    static std::string name() 
+    { 
+        return std::string("RegionContour");
+        // static const std::string n = std::string("RegionContour");
+        // return n;
+    }
+    
+    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
+    struct LabelIndexSelector
+    {
+        static const int value = 2; // default: CoupledHandle holds labels at index 2
+
+        template <class U, class NEXT>
+        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type const & 
+        exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return vigra::cast<value>(t);
+        }
+    };
+    
+    template <class IndexDefinition>
+    struct LabelIndexSelector<IndexDefinition, LabelArgTag>
+    {
+        static const int value = IndexDefinition::value;
+
+        template <class U, class NEXT>
+        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type const & 
+        exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return vigra::cast<value>(t);
+        }
+    };
+     
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename LookupTag<CoordArgTag, BASE>::type           FindDataIndex;
+        typedef LabelIndexSelector<FindDataIndex>                     LabelIndex;
+        typedef TinyVector<double, 2>                                 input_type;
+        typedef input_type const &                                    argument_type;
+        typedef argument_type                                         first_argument_type;
+        typedef Polygon<input_type>                                   value_type;
+        typedef value_type const &                                    result_type;
+        
+        input_type offset_;
+        value_type contour_;
+        
+        Impl()
+        : offset_()
+        , contour_()
+        {}
+        
+        void setCoordinateOffset(input_type const & offset)
+        {
+            offset_ = offset;
+        }
+                
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            if(getDependency<Count>(*this) == 1)
+            {
+                contour_.clear();
+                extractContour(LabelIndex::exec(t).arrayView(), t.point(), contour_);
+                contour_ += offset_;
+            }
+        }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t, double weight)
+        {
+            update(t);
+        }
+        
+        result_type operator()() const
+        {
+            return contour_;
+        }
+    };
+};
+
+
+/** \brief Compute the perimeter of a 2D region. 
+
+    This is the length of the polygon returned by RegionContour.
+
+    AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
+ */
+class RegionPerimeter
+{
+  public:
+    typedef Select<RegionContour> Dependencies;
+    
+    static std::string name() 
+    { 
+        return std::string("RegionPerimeter");
+        // static const std::string n = std::string("RegionPerimeter");
+        // return n;
+    }
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef double       value_type;
+        typedef value_type   result_type;
+        
+        result_type operator()() const
+        {
+            return getDependency<RegionContour>(*this).length();
+        }
+    };
+};
+
+/** \brief Compute the circularity of a 2D region. 
+
+    The is the ratio between the perimeter of a circle with the same area as the 
+    present region and the perimeter of the region, i.e. \f[c = \frac{2 \sqrt{\pi a}{p} \f], where a and p are the area and length of the polygon returned by RegionContour.
+    
+    AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
+ */
+class RegionCircularity
+{
+  public:
+    typedef Select<Count, RegionContour> Dependencies;
+    
+    static std::string name() 
+    { 
+        return std::string("RegionCircularity");
+        // static const std::string n = std::string("RegionCircularity");
+        // return n;
+    }
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef double       value_type;
+        typedef value_type   result_type;
+        
+        result_type operator()() const
+        {
+            return 2.0*sqrt(M_PI*getDependency<RegionContour>(*this).area()) / getDependency<RegionContour>(*this).length();
+        }
+    };
+};
+
+/** \brief Compute the eccentricity of a 2D region in terms of its prinipal radii. 
+
+    Formula: \f[ e = \sqrt{1 - m^2 / M^2 } \f], where m and M are the minor and major principal radius.
+
+    AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
+ */
+class RegionEccentricity
+{
+  public:
+    typedef Select<RegionRadii> Dependencies;
+    
+    static std::string name() 
+    { 
+        return std::string("RegionEccentricity");
+        // static const std::string n = std::string("RegionEccentricity");
+        // return n;
+    }
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef double       value_type;
+        typedef value_type   result_type;
+        
+        result_type operator()() const
+        {
+            double M = getDependency<RegionRadii>(*this).front(),
+                   m = getDependency<RegionRadii>(*this).back();
+            return sqrt(1.0 - sq(m/M));
         }
     };
 };
