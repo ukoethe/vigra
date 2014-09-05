@@ -119,14 +119,14 @@ struct PolygonTest
         p.reverse();
         shouldEqual(p.size(), 4);
         P ref[] = { P(1.0,1.0), P(4.0, 5.0), P(4.0, 1.0), P(1.0, 1.0) };
-        shouldEqualSequence(p.begin(), p.end(), ref);
+        shouldEqualSequence(p.cbegin(), p.cend(), ref);
         should(p.closed());
         shouldEqual(p.length(), 12.0);
         shouldEqual(p.partialArea(), 6.0);
         shouldEqual(p.area(), 6.0);
 
         p2.push_back(P(4.0, 5.0));
-        p2.insert(p2.begin()+2, p.begin()+2, p.begin()+3);
+        p2.insert(p2.begin()+2, p.cbegin()+2, p.cbegin()+3);
         shouldEqual(p2.size(), 4);
         should(p2.closed());
         shouldEqual(p2.length(), 12.0);
@@ -137,7 +137,7 @@ struct PolygonTest
         p.setPoint(2, P(1.0, 4.0));
         shouldEqual(p.size(), 4);
         P ref1[] = { P(1.0,1.0), P(5.0, 4.0), P(1.0, 4.0), P(1.0, 1.0) };
-        shouldEqualSequence(p.begin(), p.end(), ref1);
+        shouldEqualSequence(p.cbegin(), p.cend(), ref1);
         should(p.closed());
         shouldEqual(p.length(), 12.0);
         shouldEqual(p.partialArea(), -6.0);
@@ -146,16 +146,17 @@ struct PolygonTest
         p.insert(p.begin()+1, P(5.0, 1.0));
         shouldEqual(p.size(), 5);
         P ref2[] = { P(1.0,1.0), P(5.0, 1.0), P(5.0, 4.0), P(1.0, 4.0), P(1.0, 1.0) };
-        shouldEqualSequence(p.begin(), p.end(), ref2);
+        shouldEqualSequence(p.cbegin(), p.cend(), ref2);
         should(p.closed());
         shouldEqual(p.length(), 14.0);
         shouldEqual(p.partialArea(), -12.0);
         shouldEqual(p.area(), 12.0);
+        shouldEqual(centroid(p), P(3.0, 2.5));
 
         p.erase(p.begin()+3);
         shouldEqual(p.size(), 4);
         P ref3[] = { P(1.0,1.0), P(5.0, 1.0), P(5.0, 4.0), P(1.0, 1.0) };
-        shouldEqualSequence(p.begin(), p.end(), ref3);
+        shouldEqualSequence(p.cbegin(), p.cend(), ref3);
         should(p.closed());
         shouldEqual(p.length(), 12.0);
         shouldEqual(p.partialArea(), -6.0);
@@ -163,13 +164,13 @@ struct PolygonTest
 
         p2 = p;
         should(p2 == p);
-        shouldEqualSequence(p2.begin(), p2.end(), round(p2 + P(0.3, -0.2)).begin());
-        shouldEqualSequence(p2.begin(), p2.end(), roundi(p2 + P(0.3, -0.2)).begin());
+        shouldEqualSequence(p2.cbegin(), p2.cend(), round(p2 + P(0.3, -0.2)).begin());
+        shouldEqualSequence(p2.cbegin(), p2.cend(), roundi(p2 + P(0.3, -0.2)).begin());
 
         p2 *= 2.0;
         shouldEqual(p2.size(), 4);
         P ref4[] = { P(2.0,2.0), P(10.0, 2.0), P(10.0, 8.0), P(2.0, 2.0) };
-        shouldEqualSequence(p2.begin(), p2.end(), ref4);
+        shouldEqualSequence(p2.cbegin(), p2.cend(), ref4);
         should(p2.closed());
         shouldEqual(p2.length(), 24.0);
         shouldEqual(p2.partialArea(), -24.0);
@@ -180,7 +181,7 @@ struct PolygonTest
 
         p2 /= 2.0;
         shouldEqual(p2.size(), 4);
-        shouldEqualSequence(p2.begin(), p2.end(), ref3);
+        shouldEqualSequence(p2.cbegin(), p2.cend(), ref3);
         should(p2.closed());
         shouldEqual(p2.length(), 12.0);
         shouldEqual(p2.partialArea(), -6.0);
@@ -189,7 +190,7 @@ struct PolygonTest
         p2 += P(1.0, 2.0);
         shouldEqual(p2.size(), 4);
         P ref5[] = { P(2.0, 3.0), P(6.0, 3.0), P(6.0, 6.0), P(2.0, 3.0) };
-        shouldEqualSequence(p2.begin(), p2.end(), ref5);
+        shouldEqualSequence(p2.cbegin(), p2.cend(), ref5);
         should(p2.closed());
         shouldEqual(p2.length(), 12.0);
         shouldEqual(p2.area(), 6.0);
@@ -200,7 +201,7 @@ struct PolygonTest
         p2 -= P(2.0, 1.0);
         shouldEqual(p2.size(), 4);
         P ref6[] = { P(0.0, 2.0), P(4.0, 2.0), P(4.0, 5.0), P(0.0, 2.0) };
-        shouldEqualSequence(p2.begin(), p2.end(), ref6);
+        shouldEqualSequence(p2.cbegin(), p2.cend(), ref6);
         should(p2.closed());
         shouldEqual(p2.length(), 12.0);
         shouldEqual(p2.area(), 6.0);
@@ -208,25 +209,25 @@ struct PolygonTest
         p2 = -p2;
         shouldEqual(p2.size(), 4);
         P ref7[] = { P(0.0, -2.0), P(-4.0, -2.0), P(-4.0, -5.0), P(0.0, -2.0) };
-        shouldEqualSequence(p2.begin(), p2.end(), ref7);
+        shouldEqualSequence(p2.cbegin(), p2.cend(), ref7);
 
         p2 = transpose(-p2);
         shouldEqual(p2.size(), 4);
         P ref8[] = { P(2.0, 0.0), P(2.0, 4.0), P(5.0, 4.0), P(2.0, 0.0) };
-        shouldEqualSequence(p2.begin(), p2.end(), ref8);
+        shouldEqualSequence(p2.cbegin(), p2.cend(), ref8);
 
         p2 = p;
         shouldEqual(p2.size(), 4);
-        shouldEqualSequence(p2.begin(), p2.end(), ref3);
+        shouldEqualSequence(p2.cbegin(), p2.cend(), ref3);
         p2.erase(p2.begin(), p2.begin()+2);
         shouldEqual(p2.size(), 2);
-        shouldEqualSequence(p2.begin(), p2.end(), ref3+2);
+        shouldEqualSequence(p2.cbegin(), p2.cend(), ref3+2);
         shouldEqual(p2.length(), 5.0);
         shouldEqual(p2.partialArea(), -0.5);
 
         p2 = p.split(3);
         shouldEqual(p.size(), 3);
-        shouldEqualSequence(p.begin(), p.end(), ref3);
+        shouldEqualSequence(p.cbegin(), p.cend(), ref3);
         should(!p.closed());
         shouldEqual(p.length(), 7.0);
         shouldEqual(p.partialArea(), -5.5);
