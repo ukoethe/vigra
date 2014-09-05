@@ -203,6 +203,12 @@ public:
         return strides_;
     }
     
+    MultiArrayView<dimensions, T>
+    arrayView() const
+    {
+        return MultiArrayView<dimensions, T>(shape(), strides(), ptr() - dot(point(), strides()));
+    }
+    
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, CoupledHandle, index>::reference
     get()
@@ -526,6 +532,18 @@ public:
         return strides_;
     }
     
+    MultiArrayView<dimensions+1, Multiband<T> >
+    arrayView() const
+    {
+        typedef MultiArrayView<dimensions+1, T> View;
+        typename View::difference_type vshape(SkipInitialization), vstride(SkipInitialization);
+        vshape.template subarray<0, dimensions>() = shape();
+        vstride.template subarray<0, dimensions>() = strides();
+        vshape[dimensions] = view_.shape(0);
+        vstride[dimensions] = view_.stride(0);
+        return View(vshape, vstride, view_.data() - dot(point(), strides())).multiband();
+    }
+    
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, CoupledHandle, index>::reference
     get()
@@ -794,6 +812,12 @@ public:
     const_pointer ptr() const
     {
         return pointer_;
+    }
+    
+    array_type const &
+    arrayView() const
+    {
+        return *array_;
     }
 
     template <unsigned int TARGET_INDEX>
