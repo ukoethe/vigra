@@ -594,12 +594,12 @@ inline Polygon<POINT> round(Polygon<POINT> const & p)
 }
 
 template <class POINT>
-inline Polygon<Shape2> roundi(Polygon<POINT> const & p) 
+inline Polygon<TinyVector<std::ptrdiff_t, 2> > roundi(Polygon<POINT> const & p) 
 {
-    Polygon<Shape2> result(p.size());
+    Polygon<TinyVector<std::ptrdiff_t, 2> > result(p.size());
     for(unsigned int i = 0; i < p.size(); ++i)
     {
-        result.setPointUnsafe(i, Shape2(roundi(p[i][0]), roundi(p[i][1])));
+        result.setPointUnsafe(i,roundi(p[i]));
     }
     return result;
 }
@@ -773,8 +773,7 @@ extractContour(MultiArrayView<2, T, S> const &label_image,
     } 
     while (position != initial_position || direction != initial_direction);
     
-    Point first = contour_points.front();
-    contour_points.push_back(first); // make it a closed polygon
+    contour_points.push_back(contour_points.front()); // make it a closed polygon
 }
 
 /** \brief Compute convex hull of a 2D polygon.
