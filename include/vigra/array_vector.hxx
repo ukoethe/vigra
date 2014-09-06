@@ -629,9 +629,19 @@ public:
 
     void clear();
 
-    void reserve( size_type new_capacity );
+    pointer reserveImpl( bool dealloc, size_type new_capacity );
 
-    void reserve();
+    pointer reserveImpl( bool dealloc);
+
+    void reserve()
+    {
+        reserveImpl(true);
+    }
+
+    void reserve( size_type new_capacity )
+    {
+        reserveImpl(true, new_capacity);
+    }
 
     void resize( size_type new_size, value_type const & initial );
 
@@ -692,8 +702,11 @@ inline void ArrayVector<T, Alloc>::pop_back()
 template <class T, class Alloc>
 inline void ArrayVector<T, Alloc>::push_back( value_type const & t )
 {
-    reserve();
+    pointer old_data = reserveImpl(false);
     alloc_.construct(this->data_ + this->size_, t);
+    // deallocate old data _after_ construction of new element, so that
+    // 't' can refer to the old data as in 'push_back(front())'
+    deallocate(old_data, this->size_);
     ++this->size_;
 }
 
@@ -836,27 +849,33 @@ ArrayVector<T, Alloc>::erase(iterator p, iterator q)
 }
 
 template <class T, class Alloc>
-inline void
-ArrayVector<T, Alloc>::reserve( size_type new_capacity )
+typename ArrayVector<T, Alloc>::pointer
+ArrayVector<T, Alloc>::reserveImpl( bool dealloc, size_type new_capacity)
 {
     if(new_capacity <= capacity_)
-        return;
-    pointer new_data = reserve_raw(new_capacity);
+        return 0;
+    pointer new_data = reserve_raw(new_capacity),
+            old_data = this->data_;
     if(this->size_ > 0)
-        std::uninitialized_copy(this->data_, this->data_+this->size_, new_data);
-    deallocate(this->data_, this->size_);
+        std::uninitialized_copy(old_data, old_data+this->size_, new_data);
     this->data_ = new_data;
     capacity_ = new_capacity;
+    if(!dealloc)
+        return old_data;
+    deallocate(old_data, this->size_);
+    return 0;
 }
 
 template <class T, class Alloc>
-inline void
-ArrayVector<T, Alloc>::reserve()
+inline typename ArrayVector<T, Alloc>::pointer
+ArrayVector<T, Alloc>::reserveImpl(bool dealloc)
 {
     if(capacity_ == 0)
-        reserve(minimumCapacity);
+        return reserveImpl(dealloc, minimumCapacity);
     else if(this->size_ == capacity_)
-        reserve(resizeFactor*capacity_);
+        return reserveImpl(dealloc, resizeFactor*capacity_);
+    else
+        return 0;
 }
 
 template <class T, class Alloc>
