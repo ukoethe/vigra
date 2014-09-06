@@ -53,6 +53,8 @@
 #include "eigensystem.hxx"
 #include "histogram.hxx"
 #include "polygon.hxx"
+#include "functorexpression.hxx"
+#include "labelimage.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -444,6 +446,9 @@ struct LabelArgTag;
 struct CoordArgTag;
 struct LabelDispatchTag;
 
+template <class T, class TAG, class CHAIN>
+struct HandleArgSelector;  // find the correct handle in a CoupledHandle
+
 struct Error__Global_statistics_are_only_defined_for_AccumulatorChainArray;
 
 /** \brief Specifies index of labels in CoupledHandle. 
@@ -653,7 +658,7 @@ template <int INDEX, class TAIL>
 struct SeparateGlobalAndRegionTags<TypeList<LabelArg<INDEX>, TAIL> >
 {
     typedef SeparateGlobalAndRegionTags<TAIL>           Inner;
-    typedef typename Inner::RegionTags                  RegionTags;
+    typedef TypeList<LabelArg<INDEX>, typename Inner::RegionTags>  RegionTags;
     typedef TypeList<LabelArg<INDEX>, typename Inner::GlobalTags>  GlobalTags;
 };
 
@@ -1245,30 +1250,6 @@ struct LabelDispatch
     ActiveFlagsType active_region_accumulators_;
     CoordinateType coordinateOffset_;
     
-    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
-    struct LabelIndexSelector
-    {
-        static const int value = 2; // default: CoupledHandle holds labels at index 2
-
-        template <class U, class NEXT>
-        static MultiArrayIndex exec(CoupledHandle<U, NEXT> const & t)
-        {
-            return (MultiArrayIndex)get<value>(t); 
-        }
-    };
-    
-    template <class IndexDefinition>
-    struct LabelIndexSelector<IndexDefinition, LabelArgTag>
-    {
-        static const int value = IndexDefinition::value;
-
-        template <class U, class NEXT>
-        static MultiArrayIndex exec(CoupledHandle<U, NEXT> const & t)
-        {
-            return (MultiArrayIndex)get<value>(t);
-        }
-    };
-    
     template <class TAG>
     struct ActivateImpl
     {
@@ -1314,8 +1295,6 @@ struct LabelDispatch
             return getAccumulator<LabelArg<INDEX> >(globals).isActive();
         }
     };
-    
-    typedef typename LookupTag<LabelArgTag, GlobalAccumulatorChain>::type FindLabelIndex;
     
     LabelDispatch()
     : next_(),
@@ -1406,11 +1385,11 @@ struct LabelDispatch
     {
         if(regions_.size() == 0)
         {
-            static const int labelIndex = LabelIndexSelector<FindLabelIndex>::value;
-            typedef typename CoupledHandleCast<labelIndex, T>::type LabelHandle;
+            typedef HandleArgSelector<U, LabelArgTag, GlobalAccumulatorChain> LabelHandle;
             typedef typename LabelHandle::value_type LabelType;
-            typedef MultiArrayView<LabelHandle::dimensions, LabelType, StridedArrayTag> LabelArray;
-            LabelArray labelArray(t.shape(), cast<labelIndex>(t).strides(), const_cast<LabelType *>(cast<labelIndex>(t).ptr()));
+            typedef MultiArrayView<LabelHandle::size, LabelType, StridedArrayTag> LabelArray;
+            LabelArray labelArray(t.shape(), LabelHandle::getHandle(t).strides(), 
+                                  const_cast<LabelType *>(LabelHandle::getHandle(t).ptr()));
             
             LabelType minimum, maximum;
             labelArray.minmax(&minimum, &maximum);
@@ -1425,20 +1404,22 @@ struct LabelDispatch
     template <unsigned N>
     void pass(T const & t)
     {
-        if(LabelIndexSelector<FindLabelIndex>::exec(t) != ignore_label_)
+        typedef HandleArgSelector<T, LabelArgTag, GlobalAccumulatorChain> LabelHandle;
+        if(LabelHandle::getValue(t) != ignore_label_)
         {
             next_.template pass<N>(t);
-            regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].template pass<N>(t);
+            regions_[LabelHandle::getValue(t)].template pass<N>(t);
         }
     }
     
     template <unsigned N>
     void pass(T const & t, double weight)
     {
-        if(LabelIndexSelector<FindLabelIndex>::exec(t) != ignore_label_)
+        typedef HandleArgSelector<T, LabelArgTag, GlobalAccumulatorChain> LabelHandle;
+        if(LabelHandle::getValue(t) != ignore_label_)
         {
             next_.template pass<N>(t, weight);
-            regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].template pass<N>(t, weight);
+            regions_[LabelHandle::getValue(t)].template pass<N>(t, weight);
         }
     }
     
@@ -3185,6 +3166,79 @@ class DataArg
     };
 };
 
+namespace acc_detail {
+
+template <class T, int DEFAULT, class TAG, class IndexDefinition, 
+          class TagFound=typename IndexDefinition::Tag>
+struct HandleArgSelectorImpl
+{
+    static const int value = DEFAULT;
+    typedef typename CoupledHandleCast<value, T>::type type;
+    typedef typename CoupledHandleCast<value, T>::value_type value_type;
+    static const int size = type::dimensions;
+    
+    template <class U, class NEXT>
+    static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type const & 
+    getHandle(CoupledHandle<U, NEXT> const & t)
+    {
+        return vigra::cast<value>(t);
+    }
+    
+    template <class U, class NEXT>
+    static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference 
+    getValue(CoupledHandle<U, NEXT> const & t)
+    {
+        return vigra::get<value>(t);
+    }
+};
+
+template <class T, int DEFAULT, class TAG, class IndexDefinition>
+struct HandleArgSelectorImpl<T, DEFAULT, TAG, IndexDefinition, TAG>
+{
+    static const int value = IndexDefinition::value;
+    typedef typename CoupledHandleCast<value, T>::type type;
+    typedef typename CoupledHandleCast<value, T>::value_type value_type;
+    static const int size = type::dimensions;
+    
+    template <class U, class NEXT>
+    static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type const & 
+    getHandle(CoupledHandle<U, NEXT> const & t)
+    {
+        return vigra::cast<value>(t);
+    }
+    
+    template <class U, class NEXT>
+    static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference 
+    getValue(CoupledHandle<U, NEXT> const & t)
+    {
+        return vigra::get<value>(t);
+    }
+};
+
+} // namespace acc_detail
+
+template <class T, class CHAIN>
+struct HandleArgSelector<T, LabelArgTag, CHAIN>
+: public acc_detail::HandleArgSelectorImpl<T, 2, LabelArgTag,
+                                           typename LookupTag<LabelArgTag, CHAIN>::type>
+{};
+
+template <class T, class CHAIN>
+struct HandleArgSelector<T, DataArgTag, CHAIN>
+: public acc_detail::HandleArgSelectorImpl<T, 1, DataArgTag,
+                                           typename LookupTag<DataArgTag, CHAIN>::type>
+{};
+
+template <class T, class CHAIN>
+struct HandleArgSelector<T, CoordArgTag, CHAIN>
+: public acc_detail::HandleArgSelectorImpl<T, 0, CoordArgTag,
+                                           typename LookupTag<CoordArgTag, CHAIN>::type>
+{
+    typedef acc_detail::HandleArgSelectorImpl<T, 0, CoordArgTag,
+                         typename LookupTag<CoordArgTag, CHAIN>::type> base_type;
+    typedef TinyVector<double, base_type::size> value_type;
+};
+
 // Tags are automatically wrapped with DataFromHandle if CoupledHandle used
 template <class TAG>
 class DataFromHandle
@@ -3200,49 +3254,14 @@ class DataFromHandle
         // return n;
     }
     
-    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
-    struct DataIndexSelector
-    {
-        static const int value = 1; // default: CoupledHandle holds data at index 1 
-        
-        template <class U, class NEXT>
-        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference 
-        exec(CoupledHandle<U, NEXT> const & t)
-        {
-            return vigra::get<value>(t);
-        }
-    };
-    
-    template <class IndexDefinition>
-    struct DataIndexSelector<IndexDefinition, DataArgTag>
-    {
-        static const int value = IndexDefinition::value;
-        
-        template <class U, class NEXT>
-        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference
-        exec(CoupledHandle<U, NEXT> const & t)
-        {
-            return vigra::get<value>(t);
-        }
-    };
-    
-    template <class T, class BASE>
-    struct SelectInputType
-    {
-        typedef typename LookupTag<DataArgTag, BASE>::type FindDataIndex;
-        typedef DataIndexSelector<FindDataIndex> DataIndex;
-        typedef typename CoupledHandleCast<DataIndex::value, T>::type::value_type type;
-    };
-    
     template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename SelectInputType<T, BASE>::type, BASE>
+    : public TargetTag::template Impl<typename HandleArgSelector<T, DataArgTag, BASE>::value_type, BASE>
     {
-        typedef SelectInputType<T, BASE>                InputTypeSelector;
-        typedef typename InputTypeSelector::DataIndex   DataIndex;
-        typedef typename InputTypeSelector::type        input_type;
-        typedef input_type const &                      argument_type;
-        typedef argument_type                           first_argument_type;
+        typedef HandleArgSelector<T, DataArgTag, BASE>   DataHandle;
+        typedef typename DataHandle::value_type          input_type;
+        typedef input_type const &                       argument_type;
+        typedef argument_type                            first_argument_type;
         
         typedef typename TargetTag::template Impl<input_type, BASE> ImplType;
         
@@ -3251,19 +3270,19 @@ class DataFromHandle
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(acc_detail::shapeOf(DataIndex::exec(t)));
+            ImplType::reshape(acc_detail::shapeOf(DataHandle::getValue(t)));
         }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::update(DataIndex::exec(t));
+            ImplType::update(DataHandle::getValue(t));
         }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t, double weight)
         {
-            ImplType::update(DataIndex::exec(t), weight);
+            ImplType::update(DataHandle::getValue(t), weight);
         }
     };
 };
@@ -3285,51 +3304,15 @@ class Coord
         // static const std::string n = std::string("Coord<") + TargetTag::name() + " >";
         // return n;
     }
-    
-    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
-    struct CoordIndexSelector
-    {
-        static const int value = 0; // default: CoupledHandle holds coordinates at index 0 
         
-        template <class U, class NEXT>
-        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference 
-        exec(CoupledHandle<U, NEXT> const & t)
-        {
-            return vigra::get<value>(t);
-        }
-    };
-    
-    template <class IndexDefinition>
-    struct CoordIndexSelector<IndexDefinition, CoordArgTag>
-    {
-        static const int value = IndexDefinition::value;
-        
-        template <class U, class NEXT>
-        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference
-        exec(CoupledHandle<U, NEXT> const & t)
-        {
-            return vigra::get<value>(t);
-        }
-    };
-     
-    template <class T, class BASE>
-    struct SelectInputType
-    {
-        typedef typename LookupTag<CoordArgTag, BASE>::type FindDataIndex;
-        typedef CoordIndexSelector<FindDataIndex> CoordIndex;
-        typedef typename CoupledHandleCast<CoordIndex::value, T>::type::value_type type;
-        static const int size = type::static_size;
-    };
-    
     template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<TinyVector<double, SelectInputType<T, BASE>::size>, BASE>
+    : public TargetTag::template Impl<typename HandleArgSelector<T, CoordArgTag, BASE>::value_type, BASE>
     {
-        typedef SelectInputType<T, BASE>                              InputTypeSelector;
-        typedef typename InputTypeSelector::CoordIndex                CoordIndex;
-        typedef TinyVector<double, SelectInputType<T, BASE>::size>    input_type;
-        typedef input_type const &                                    argument_type;
-        typedef argument_type                                         first_argument_type;
+        typedef HandleArgSelector<T, CoordArgTag, BASE>   CoordHandle;
+        typedef typename CoordHandle::value_type          input_type;
+        typedef input_type const &                        argument_type;
+        typedef argument_type                             first_argument_type;
         
         typedef typename TargetTag::template Impl<input_type, BASE> ImplType;
         
@@ -3349,19 +3332,19 @@ class Coord
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(acc_detail::shapeOf(CoordIndex::exec(t)));
+            ImplType::reshape(acc_detail::shapeOf(CoordHandle::getValue(t)));
         }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::update(CoordIndex::exec(t)+offset_);
+            ImplType::update(CoordHandle::getValue(t)+offset_);
         }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t, double weight)
         {
-            ImplType::update(CoordIndex::exec(t)+offset_, weight);
+            ImplType::update(CoordHandle::getValue(t)+offset_, weight);
         }
     };
 };
@@ -4362,7 +4345,7 @@ class Skewness
             typedef Central<PowerSum<3> > Sum3;
             typedef Central<PowerSum<2> > Sum2;
         
-                        using namespace multi_math;
+            using namespace multi_math;
             return sqrt(getDependency<Count>(*this)) * getDependency<Sum3>(*this) / pow(getDependency<Sum2>(*this), 1.5);
         }
     };
@@ -4395,7 +4378,7 @@ class UnbiasedSkewness
 
         result_type operator()() const
         {
-                        using namespace multi_math;
+            using namespace multi_math;
             double n = getDependency<Count>(*this);
             return sqrt(n*(n-1.0)) / (n - 2.0) * getDependency<Skewness>(*this);
         }
@@ -5981,6 +5964,10 @@ class StandardQuantiles
     };
 };
 
+template <int N>
+struct feature_RegionContour_can_only_be_computed_for_2D_arrays
+: vigra::staticAssert::AssertBool<N==2>
+{};
 
 /** \brief Compute the contour of a 2D region. 
 
@@ -5998,45 +5985,16 @@ class RegionContour
         // return n;
     }
     
-    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
-    struct LabelIndexSelector
-    {
-        static const int value = 2; // default: CoupledHandle holds labels at index 2
-
-        template <class U, class NEXT>
-        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type const & 
-        exec(CoupledHandle<U, NEXT> const & t)
-        {
-            return vigra::cast<value>(t);
-        }
-    };
-    
-    template <class IndexDefinition>
-    struct LabelIndexSelector<IndexDefinition, LabelArgTag>
-    {
-        static const int value = IndexDefinition::value;
-
-        template <class U, class NEXT>
-        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type const & 
-        exec(CoupledHandle<U, NEXT> const & t)
-        {
-            return vigra::cast<value>(t);
-        }
-    };
-     
     template <class T, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename LookupTag<CoordArgTag, BASE>::type           FindDataIndex;
-        typedef LabelIndexSelector<FindDataIndex>                     LabelIndex;
-        typedef TinyVector<double, 2>                                 input_type;
-        typedef input_type const &                                    argument_type;
-        typedef argument_type                                         first_argument_type;
-        typedef Polygon<input_type>                                   value_type;
+        typedef HandleArgSelector<T, LabelArgTag, BASE>               LabelHandle;
+        typedef TinyVector<double, 2>                                 point_type;
+        typedef Polygon<point_type>                                   value_type;
         typedef value_type const &                                    result_type;
         
-        input_type offset_;
+        point_type offset_;
         value_type contour_;
         
         Impl()
@@ -6044,7 +6002,7 @@ class RegionContour
         , contour_()
         {}
         
-        void setCoordinateOffset(input_type const & offset)
+        void setCoordinateOffset(point_type const & offset)
         {
             offset_ = offset;
         }
@@ -6052,10 +6010,12 @@ class RegionContour
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
+            VIGRA_STATIC_ASSERT((feature_RegionContour_can_only_be_computed_for_2D_arrays<
+                                 CoupledHandle<U, NEXT>::dimensions>));
             if(getDependency<Count>(*this) == 1)
             {
                 contour_.clear();
-                extractContour(LabelIndex::exec(t).arrayView(), t.point(), contour_);
+                extractContour(LabelHandle::getHandle(t).arrayView(), t.point(), contour_);
                 contour_ += offset_;
             }
         }
@@ -6064,6 +6024,12 @@ class RegionContour
         void update(CoupledHandle<U, NEXT> const & t, double weight)
         {
             update(t);
+        }
+        
+        void operator+=(Impl const & o)
+        {
+            vigra_precondition(false,
+                "RegionContour::operator+=(): RegionContour cannot be merged.");
         }
         
         result_type operator()() const
@@ -6172,6 +6138,317 @@ class RegionEccentricity
         }
     };
 };
+
+template <int N>
+struct feature_ConvexHull_can_only_be_computed_for_2D_arrays
+: vigra::staticAssert::AssertBool<N==2>
+{};
+
+/** \brief Compute the contour of a 2D region. 
+
+    AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
+ */
+class ConvexHull
+{
+  public:
+    typedef Select<BoundingBox, RegionContour, RegionCenter> Dependencies;
+    
+    static std::string name() 
+    { 
+        return std::string("ConvexHull");
+        // static const std::string n = std::string("ConvexHull");
+        // return n;
+    }
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        static const unsigned int            workInPass = 2;
+        
+        typedef HandleArgSelector<T, LabelArgTag, BASE>               LabelHandle;
+        typedef TinyVector<double, 2>                                 point_type;
+        typedef Polygon<point_type>                                   polygon_type;
+        typedef Impl                                                  value_type;
+        typedef value_type const &                                    result_type;
+        
+        polygon_type convex_hull_;
+        point_type input_center_, convex_hull_center_, defect_center_;
+        double convexity_, rugosity_, mean_defect_displacement_,
+               defect_area_mean_, defect_area_variance_, defect_area_skewness_, defect_area_kurtosis_;
+        int convexity_defect_count_;
+        ArrayVector<MultiArrayIndex> convexity_defect_area_;
+        bool features_computed_;
+        
+        Impl()
+        : features_computed_(false)
+        {}
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            VIGRA_STATIC_ASSERT((feature_ConvexHull_can_only_be_computed_for_2D_arrays<
+                                  CoupledHandle<U, NEXT>::dimensions>));
+            if(!features_computed_)
+            {
+                using namespace functor;
+                Shape2 start = getDependency<Coord<Minimum> >(*this),
+                       stop  = getDependency<Coord<Maximum> >(*this) + Shape2(1);
+                point_type offset(start);
+                input_center_ = getDependency<RegionCenter>(*this);
+                MultiArrayIndex label = LabelHandle::getValue(t);
+                
+                convex_hull_.clear();
+                convexHull(getDependency<RegionContour>(*this), convex_hull_);
+                convex_hull_center_ = centroid(convex_hull_);
+                
+                convexity_ = getDependency<RegionContour>(*this).area() / convex_hull_.area();
+                rugosity_ = getDependency<RegionContour>(*this).length() / convex_hull_.length();
+                
+                MultiArray<2, UInt8> convex_hull_difference(stop-start);
+                fillPolygon(convex_hull_ - offset, convex_hull_difference, 1);
+                combineTwoMultiArrays(convex_hull_difference, 
+                                      LabelHandle::getHandle(t).arrayView().subarray(start, stop),
+                                      convex_hull_difference,
+                                      ifThenElse(Arg2() == Param(label), Param(0), Arg1()));
+                                      
+                MultiArray<2, UInt32> convexity_defects(stop-start);
+                convexity_defect_count_ = 
+                   labelImageWithBackground(convex_hull_difference, convexity_defects, false, 0);
+                
+                AccumulatorChainArray<CoupledArrays<2, UInt32>,
+                        Select<LabelArg<1>, Count, RegionCenter> > convexity_defects_stats;
+                convexity_defects_stats.ignoreLabel(0);
+                extractFeatures(convexity_defects, convexity_defects_stats);
+                
+                double total_defect_area = 0.0;
+                mean_defect_displacement_ = 0.0;
+                defect_center_ = point_type();
+                for (int k = 1; k <= convexity_defect_count_; ++k) 
+                {
+                    double area = get<Count>(convexity_defects_stats, k);
+                    point_type center = get<RegionCenter>(convexity_defects_stats, k) + offset;
+                    
+                    convexity_defect_area_.push_back(area);
+                    total_defect_area += area;
+                    defect_center_ += area*center;
+                    mean_defect_displacement_ += area*norm(input_center_ - center);
+                }
+                sort(convexity_defect_area_.begin(), convexity_defect_area_.end(), 
+                     std::greater<MultiArrayIndex>());
+                mean_defect_displacement_ /= total_defect_area;
+                defect_center_ /= total_defect_area;
+                
+                AccumulatorChain<MultiArrayIndex, 
+                                 Select<Mean, UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis> > defect_area_stats;
+                extractFeatures(convexity_defect_area_.begin(),
+                                convexity_defect_area_.end(), defect_area_stats);
+
+                defect_area_mean_ = convexity_defect_count_ > 0 
+                                        ? get<Mean>(defect_area_stats)
+                                        : 0.0;
+                defect_area_variance_ = convexity_defect_count_ > 1 
+                                        ? get<UnbiasedVariance>(defect_area_stats)
+                                        : 0.0;
+                defect_area_skewness_ = convexity_defect_count_ > 2 
+                                        ? get<UnbiasedSkewness>(defect_area_stats)
+                                        : 0.0;
+                defect_area_kurtosis_ = convexity_defect_count_ > 3 
+                                        ? get<UnbiasedKurtosis>(defect_area_stats)
+                                        : 0.0;
+                
+                /**********************************************/
+                features_computed_ = true;
+            }
+        }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t, double weight)
+        {
+            update(t);
+        }
+        
+        void operator+=(Impl const & o)
+        {
+            vigra_precondition(false,
+                "ConvexHull::operator+=(): ConvexHull features cannot be merged.");
+        }
+        
+        result_type operator()() const
+        {
+            return *this;
+        }
+        
+        /*
+         * Returns the convex hull polygon.
+         */
+        polygon_type const & hull() const
+        {
+            return convex_hull_;
+        }
+
+        /*
+         * Returns the area enclosed by the input polygon.
+         */
+        double inputArea() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return getDependency<RegionContour>(*this).area();
+        }
+        
+        /*
+         * Returns the area enclosed by the convex hull polygon.
+         */
+        double hullArea() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return convex_hull_.area();
+        }
+
+        /*
+         * Returns the perimeter of the input polygon.
+         */
+        double inputPerimeter() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return getDependency<RegionContour>(*this).length();
+        }
+
+        /*
+         * Returns the perimeter of the convex hull polygon.
+         */
+        double hullPerimeter() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return convex_hull_.length();
+        }
+        
+        /*
+         * Center of the original region.
+         */
+        point_type const & inputCenter() const
+        {
+            return input_center_;
+        }
+        
+        /*
+         * Center of the region enclosed by the convex hull.
+         */
+        point_type const & hullCenter() const
+        {
+            return convex_hull_center_;
+        }
+        
+        /*
+         * Center of difference between the convex hull and the original region.
+         */
+        point_type const & convexityDefectCenter() const
+        {
+            return defect_center_;
+        }
+
+        /*
+         * Returns the ratio between the input area and the convex hull area.
+         * This is always <tt><= 1</tt>, and the smaller the value is, 
+         * the less convex is the input polygon.
+         */
+        double convexity() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return convexity_;
+        }
+
+        /*
+         * Returns the ratio between the input perimeter and the convex perimeter.
+         * This is always <tt>>= 1</tt>, and the higher the value is, the less 
+         * convex is the input polygon.
+         */
+        double rugosity() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return rugosity_;
+        }
+
+        /*
+         * Returns the number of convexity defects (i.e. number of connected components
+         * of the difference between convex hull and input region).
+         */
+        int convexityDefectCount() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return convexity_defect_count_;
+        }
+
+        /*
+         * Returns the mean area of the convexity defects.
+         */
+        double convexityDefectAreaMean() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return defect_area_mean_;
+        }
+
+        /*
+         * Returns the variance of the convexity defect areas.
+         */
+        double convexityDefectAreaVariance() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return defect_area_variance_;
+        }
+
+        /*
+         * Returns the skewness of the convexity defect areas.
+         */
+        double convexityDefectAreaSkewness() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return defect_area_skewness_;
+        }
+
+        /*
+         * Returns the kurtosis of the convexity defect areas.
+         */
+        double convexityDefectAreaKurtosis() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return defect_area_kurtosis_;
+        }
+
+        /*
+         * Returns the mean distance between the defect areas and the center of 
+         * the input region, weighted by the area of each defect region.
+         */
+        double meanDefectDisplacement() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return mean_defect_displacement_;
+        }
+
+        /*
+         * Returns the areas of the convexity defect regions (ordered descending).
+         */
+        ArrayVector<MultiArrayIndex> const & defectAreaList() const
+        {
+            vigra_precondition(features_computed_,
+                    "ConvexHull: features must be calculated first.");
+            return convexity_defect_area_;
+        }
+    };
+};
+
 
 }} // namespace vigra::acc
 

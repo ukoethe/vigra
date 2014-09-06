@@ -932,10 +932,10 @@ void createScanIntervals(Polygon<Point> const &p, Array & result)
     algorithm that is able to handle all corner cases (concave and 
     self-intersecting polygons, knots on integer coordinates).
  */
-template<class Point, class T, class S>
+template<class Point, class T, class S, class Value>
 void fillPolygon(Polygon<Point> const &p,
                  MultiArrayView<2, T, S> &output_image, 
-                 T value) 
+                 Value value) 
 {
     vigra_precondition(p.closed(),
         "fillPolygon(): polygon must be closed (i.e. first point == last point).");

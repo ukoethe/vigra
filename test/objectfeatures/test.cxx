@@ -1144,7 +1144,7 @@ struct AccumulatorTest
             should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::GlobalTags, 
                                TypeList<Count,TypeList<Coord<Minimum>,TypeList<DataArg<1>, TypeList<LabelArg<1>, void> > > > >::value));
             should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::RegionTags, 
-                               TypeList<RegionAnchor,TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > > >::value));
+                               TypeList<RegionAnchor,TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, TypeList<LabelArg<1>, void> > > > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
             typedef LookupDependency<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
@@ -1491,6 +1491,65 @@ struct AccumulatorTest
             shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,3));
         }
     }
+
+    void testConvexHullFeatures()
+    {
+        using namespace vigra::acc;
+
+        int size = 6;
+        MultiArray<2, int> mask(vigra::Shape2(size, size));
+
+        mask(1, 1) = 1;
+        mask(2, 1) = 1;
+        mask(2, 2) = 1;
+        mask(2, 3) = 1;
+        mask(1, 3) = 1;
+        mask(3, 1) = 1;
+        mask(3, 3) = 1;
+        mask(4, 1) = 1;
+        mask(4, 3) = 1;
+
+        //for(auto i = mask.begin(); i != mask.end(); ++i)
+        //{
+        //    std::cerr << (*i ? "*" : " ");
+        //    if(i.point()[0] == mask.shape(0)-1)
+        //        std::cerr << "\n";
+        //}
+
+        AccumulatorChainArray<CoupledArrays<2, int>, 
+                              Select<LabelArg<1>, ConvexHull> > chf;
+        chf.ignoreLabel(0);
+        extractFeatures(mask, chf);
+
+        shouldEqual(getAccumulator<ConvexHull>(chf, 1).inputArea(), 8.5);
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).inputPerimeter(), 8.0 + 6.0*M_SQRT2, 1e-15);
+
+        typedef TinyVector<double, 2> P;
+        P ref[] = { P(1.0, 0.5), P(0.5, 1.0), P(0.5, 3.0), P(1.0, 3.5), P(4.0, 3.5), 
+                    P(4.5, 3.0), P(4.5, 1.0), P(4.0, 0.5),  P(1.0, 0.5) };
+        shouldEqual(getAccumulator<ConvexHull>(chf, 1).hull().size(), 9);
+        shouldEqualSequence(ref, ref+9, getAccumulator<ConvexHull>(chf, 1).hull().begin());
+        shouldEqual(getAccumulator<ConvexHull>(chf, 1).hullArea(), 11.5);
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).hullPerimeter(), 10.0 + 2.0*M_SQRT2, 1e-15);
+
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexity(), 8.5 / 11.5, 1e-15);
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).rugosity(),  1.2850586602653933, 1e-15);
+
+        shouldEqual(getAccumulator<ConvexHull>(chf, 1).convexityDefectCount(), 2);
+        shouldEqual(getAccumulator<ConvexHull>(chf, 1).defectAreaList().size(), 2);
+        shouldEqual(getAccumulator<ConvexHull>(chf, 1).defectAreaList()[0], 2);
+        shouldEqual(getAccumulator<ConvexHull>(chf, 1).defectAreaList()[1], 1);
+
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexityDefectAreaMean(), 1.5, 1e-15);
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexityDefectAreaVariance(), 0.5, 1e-15);
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexityDefectAreaSkewness(), 0.0, 1e-15);
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexityDefectAreaKurtosis(), 0.0, 1e-15);
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).meanDefectDisplacement(), 1.185185185185185, 1e-15);
+
+        shouldEqualTolerance(P(2.4444444444444444, 2.0), getAccumulator<ConvexHull>(chf, 1).inputCenter(), P(1e-15));
+        shouldEqualTolerance(P(2.5, 2.0), getAccumulator<ConvexHull>(chf, 1).hullCenter(), P(1e-15));
+        shouldEqualTolerance(P(2.6666666666666667, 2.0), getAccumulator<ConvexHull>(chf, 1).convexityDefectCenter(), P(1e-15));
+    }
 };
 
 struct FeaturesTestSuite : public vigra::test_suite
@@ -1507,6 +1566,7 @@ struct FeaturesTestSuite : public vigra::test_suite
         add(testCase(&AccumulatorTest::testHistogram));
         add(testCase(&AccumulatorTest::testRegionAccumulators));
         add(testCase(&AccumulatorTest::testIndexSpecifiers));
+        add(testCase(&AccumulatorTest::testConvexHullFeatures));
     }
 };
 
