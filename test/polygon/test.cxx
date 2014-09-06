@@ -38,7 +38,6 @@
 #include <vigra/unittest.hxx>
 #include <vigra/multi_array.hxx>
 #include <vigra/polygon.hxx>
-#include <vigra/convex_hull_features.hxx>
 #include "convex_hull_test.hxx"
 
 
@@ -723,8 +722,7 @@ struct PolygonTest
 
         mask(3,0) = 1; // have the object touch the image border
 
-        TinyVector<int, 2> anchor_point;
-        detail::findAnchorPoint(mask, anchor_point);
+        TinyVector<int, 2> anchor_point(1,1);
         vigra::Polygon<Point> contour_points;
 
         extractContour(mask, anchor_point, contour_points);
@@ -876,58 +874,6 @@ struct PolygonTest
         shouldEqual(17u, hull.size());
         shouldEqualSequence(convexHullReference, convexHullReference+17, hull.begin());
     }
-
-    void testConvexHullFeatures()
-    {
-        using namespace vigra::acc;
-        using namespace std;
-
-        int size = 6;
-        MultiArray<2, int> mask(vigra::Shape2(size, size));
-
-        mask(1, 1) = 1;
-        mask(2, 1) = 1;
-        mask(2, 2) = 1;
-        mask(2, 3) = 1;
-        mask(1, 3) = 1;
-        mask(3, 1) = 1;
-        mask(3, 3) = 1;
-        mask(4, 1) = 1;
-        mask(4, 3) = 1;
-
-        //for(auto i = mask.begin(); i != mask.end(); ++i)
-        //{
-        //    std::cerr << (*i ? "*" : " ");
-        //    if(i.point()[0] == mask.shape(0)-1)
-        //        std::cerr << "\n";
-        //}
-
-        ConvexHullFeatures<MultiArray<2, int> > chf(mask);
-
-        shouldEqual(chf.getInputArea(), 9);
-
-        shouldEqual(chf.getConvexHullArea(), 12);
-
-
-        shouldEqualTolerance(chf.getConvexity(), 0.75, 1e-2);
-
-        shouldEqual(chf.getConvexityDefectCount(), 2);
-
-        shouldEqualTolerance(chf.getConvexityDefectAreaMean(), 1.5, 1e-1);
-
-        shouldEqualTolerance(chf.getConvexityDefectAreaVariance(), 0.25, 1e-2);
-
-        shouldEqualTolerance(chf.getConvexityDefectAreaSkewness(), 0.0, 1e-1);
-
-        shouldEqualTolerance(chf.getConvexityDefectAreaKurtosis(), -2.0, 1e-1);
-
-        shouldEqual(chf.getInputPerimeter(), 20);
-
-        shouldEqual(chf.getConvexHullPerimeter(), 14);
-
-        shouldEqualTolerance(chf.getRugosity(), 1.428571, 1e-6);
-    }
-
 };
 
 struct PolygonTestSuite : public vigra::test_suite
@@ -939,7 +885,6 @@ struct PolygonTestSuite : public vigra::test_suite
         add(testCase(&PolygonTest::testFillAndContains));
         add(testCase(&PolygonTest::testExtractContour));
         add(testCase(&PolygonTest::testConvexHull));
-        add(testCase(&PolygonTest::testConvexHullFeatures));
     }
 };
 
