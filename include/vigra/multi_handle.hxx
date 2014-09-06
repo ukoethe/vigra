@@ -849,6 +849,7 @@ template <unsigned TARGET_INDEX, class Handle, bool isValid, unsigned int INDEX=
 struct CoupledHandleCastImpl
 {
     typedef typename CoupledHandleCastImpl<TARGET_INDEX, typename Handle::base_type, isValid>::type type;
+    typedef typename type::value_type value_type;
     typedef typename type::reference reference;
     typedef typename type::const_reference const_reference;
 };
@@ -857,6 +858,7 @@ template <unsigned TARGET_INDEX, class Handle, unsigned int INDEX>
 struct CoupledHandleCastImpl<TARGET_INDEX, Handle, false, INDEX>
 {
     typedef Error__CoupledHandle_index_out_of_range<TARGET_INDEX> type;
+    typedef Error__CoupledHandle_index_out_of_range<TARGET_INDEX> value_type;
     typedef Error__CoupledHandle_index_out_of_range<TARGET_INDEX> reference;
     typedef Error__CoupledHandle_index_out_of_range<TARGET_INDEX> const_reference;
 };
@@ -865,6 +867,7 @@ template <unsigned TARGET_INDEX, class Handle>
 struct CoupledHandleCastImpl<TARGET_INDEX, Handle, true, TARGET_INDEX>
 {
     typedef Handle type;
+    typedef typename type::value_type value_type;
     typedef typename type::reference reference;
     typedef typename type::const_reference const_reference;
 };
