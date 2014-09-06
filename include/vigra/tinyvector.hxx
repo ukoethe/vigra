@@ -1985,6 +1985,19 @@ round(TinyVectorBase<V, SIZE, D1, D2> const & v)
     return res;
 }
 
+    /** Apply roundi() function to each vector component, i.e. return an integer vector.
+    */
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<std::ptrdiff_t, SIZE>
+roundi(TinyVectorBase<V, SIZE, D1, D2> const & v)
+{
+    TinyVector<V, SIZE> res(detail::dontInit());
+    for(int k=0; k<SIZE; ++k)
+        res[k] = roundi(v[k]);
+    return res;
+}
+
     /** Apply sqrt() function to each vector component.
     */
 template <class V, int SIZE, class D1, class D2>
