@@ -223,8 +223,12 @@ typedef Coord<Principal<CoordinateSystem> >         RegionAxes;
 
 /** \brief Alias. Center of mass. */
 typedef Weighted<RegionCenter>                      CenterOfMass;
+/** \brief Alias. Region center weighted by the region intensity (center of mass). */
+typedef Weighted<RegionCenter>                      WeightedRegionCenter;
 /** \brief Alias. Moments of inertia. */
 typedef Weighted<Coord<Principal<Variance> > >      MomentsOfInertia;
+/** \brief Alias. Region radius weighted by region intensity (square root of the moments of inertia). */
+typedef Weighted<RegionRadii>                       WeightedRegionRadii;
 /** \brief Alias. Axes of inertia. */
 typedef Weighted<RegionAxes>                        AxesOfInertia;
 
@@ -486,6 +490,7 @@ VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionContour>, RegionContour)
 VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionPerimeter>, RegionPerimeter)
 VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionCircularity>, RegionCircularity)
 VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionEccentricity>, RegionEccentricity)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Weighted<RegionEccentricity>, Weighted<RegionEccentricity>)
 
     // reduce even absolute powers to plain powers
 template <unsigned N>
