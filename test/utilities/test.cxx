@@ -1137,7 +1137,7 @@ struct MetaprogrammingTest
 void stringTest()
 {
     std::string s;
-    s << "Hallo " << 1 << " " << 2.0 << " " << false;
+    s = s << "Hallo " << 1 << " " << 2.0 << " " << false;
     shouldEqual(s, std::string("Hallo 1 2 0"));
 
     shouldEqual(asString(1), "1");

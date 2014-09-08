@@ -1606,7 +1606,7 @@ FPT safeFloatDivision( FPT f1, FPT f2 )
 
 } // namespace detail
     
-    /** \brief Tolerance based floating-point comparison.
+    /** \brief Tolerance based floating-point equality.
 
         Check whether two floating point numbers are equal within the given tolerance.
         This is useful because floating point numbers that should be equal in theory are
@@ -1637,6 +1637,56 @@ inline bool closeAtTolerance(T1 l, T2 r)
 {
     typedef typename PromoteTraits<T1, T2>::Promote T;
     return closeAtTolerance(l, r, T(2.0) * NumericTraits<T>::epsilon());
+}
+    
+    /** \brief Tolerance based floating-point less-or-equal.
+
+        Check whether two floating point numbers are less or equal within the given tolerance.
+        That is, \a l can actually be greater than \a r within the given \a epsilon.
+        This is useful because floating point numbers that should be equal in theory are
+        rarely exactly equal in practice. If the tolerance \a epsilon is not given,
+        twice the machine epsilon is used.
+
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
+        Namespace: vigra
+    */
+template <class T1, class T2>
+inline bool 
+lessEqualAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
+{
+    return l < r || closeAtTolerance(l, r, epsilon);
+}
+
+template <class T1, class T2>
+inline bool lessEqualAtTolerance(T1 l, T2 r)
+{
+    typedef typename PromoteTraits<T1, T2>::Promote T;
+    return lessEqualAtTolerance(l, r, T(2.0) * NumericTraits<T>::epsilon());
+}
+    
+    /** \brief Tolerance based floating-point greater-or-equal.
+
+        Check whether two floating point numbers are greater or equal within the given tolerance.
+        That is, \a l can actually be less than \a r within the given \a epsilon.
+        This is useful because floating point numbers that should be equal in theory are
+        rarely exactly equal in practice. If the tolerance \a epsilon is not given,
+        twice the machine epsilon is used.
+
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
+        Namespace: vigra
+    */
+template <class T1, class T2>
+inline bool 
+greaterEqualAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
+{
+    return r < l || closeAtTolerance(l, r, epsilon);
+}
+
+template <class T1, class T2>
+inline bool greaterEqualAtTolerance(T1 l, T2 r)
+{
+    typedef typename PromoteTraits<T1, T2>::Promote T;
+    return greaterEqualAtTolerance(l, r, T(2.0) * NumericTraits<T>::epsilon());
 }
 
 //@}

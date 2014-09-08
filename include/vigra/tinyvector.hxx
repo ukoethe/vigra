@@ -868,6 +868,14 @@ class TinyVectorBase
         /** Get const random access iterator past-the-end of vector.
         */
     const_iterator end() const { return data_ + SIZE; }
+
+        /** Get const random access iterator to begin of vector.
+        */
+    const_iterator cbegin() const { return data_; }
+
+        /** Get const random access iterator past-the-end of vector.
+        */
+    const_iterator cend() const { return data_ + SIZE; }
     
         /** Get a view to the subarray with length <tt>(TO-FROM)</tt> starting at <tt>FROM</tt>.
             The bounds must fullfill <tt>0 <= FROM < TO <= SIZE</tt>, but this is only
@@ -905,6 +913,26 @@ class TinyVectorBase
     pointer data() { return data_; }
 
     const_pointer data() const { return data_; }
+    
+    reference front()
+    {
+        return data_[0];
+    }
+    
+    const_reference front() const
+    {
+        return data_[0];
+    }
+    
+    reference back()
+    {
+        return data_[SIZE-1];
+    }
+    
+    const_reference back() const
+    {
+        return data_[SIZE-1];
+    }
     
         /** \brief Factory function for a unit vector for dimension \a k.
         */
@@ -1954,6 +1982,19 @@ round(TinyVectorBase<V, SIZE, D1, D2> const & v)
     TinyVector<V, SIZE> res(detail::dontInit());
     typedef typename detail::LoopType<SIZE>::type ltype;
     ltype::round(res.begin(), v.begin());
+    return res;
+}
+
+    /** Apply roundi() function to each vector component, i.e. return an integer vector.
+    */
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<std::ptrdiff_t, SIZE>
+roundi(TinyVectorBase<V, SIZE, D1, D2> const & v)
+{
+    TinyVector<V, SIZE> res(detail::dontInit());
+    for(int k=0; k<SIZE; ++k)
+        res[k] = roundi(v[k]);
     return res;
 }
 

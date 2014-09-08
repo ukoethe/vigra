@@ -993,6 +993,8 @@ public:
         shouldEqual(&get<1>(*(iend-8)), &a3(0,2,3));
         shouldEqual(&get<1>(*(iend-10)), &a3(0,1,3));
 
+        should(cast<1>(*i1).arrayView() == a3);
+
         i3 = iend-1;
         shouldEqual(&get<1>(*(i3-shape3_t(0,0,0))), &a3(1,2,4));
         shouldEqual(&get<1>(*(i3-shape3_t(1,0,0))), &a3(0,2,4));
@@ -1040,6 +1042,8 @@ public:
                     shouldEqual(i2.get<0>(), p);
                     shouldEqual(i1.scanOrderIndex(), count);
                     shouldEqual(i2.scanOrderIndex(), count);
+
+                    should(cast<1>(*i1).arrayView() == a3);
 
                     should(i1 != iend);
                     should(!(i1 == iend));
@@ -1129,6 +1133,7 @@ public:
             shouldEqual(im.get<1>().shape(), Shape1(2));
             shouldEqual(&(im.get<1>()[0]), &(im.get<2>()));
             shouldEqual(&(im.get<1>()[1]), &(im.get<3>()));
+            should(cast<1>(*im).arrayView() == at);
         }
         shouldEqual(count, 15);
     }
