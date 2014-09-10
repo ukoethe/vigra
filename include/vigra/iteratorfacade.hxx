@@ -87,7 +87,7 @@ public:
     FACADE operator++(int)
     {
         FACADE res(getF());
-        IteratorFacadeCoreAccess::increment(res);
+        IteratorFacadeCoreAccess::increment(getF());
         return res;
     }
 
