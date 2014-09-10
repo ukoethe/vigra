@@ -558,6 +558,11 @@ public:
         shouldEqual(a(0), 2);
         shouldEqual(a(1), 2);
         should(a == array1_t(shape1_t(2), 4).init(2));
+
+        array1_t b(Shape1(5), LinearSequence);
+        shouldEqual (b.shape (0), 5);
+        int ref[] = { 0, 1, 2, 3, 4 };
+        shouldEqualSequence(b.begin(), b.end(), ref);
     }
 
     void test_assignment ()

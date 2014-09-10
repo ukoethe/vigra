@@ -94,6 +94,19 @@ struct ResolveChunkedMemory;
 
 /********************************************************/
 /*                                                      */
+/*                    constructor tag                   */
+/*                                                      */
+/********************************************************/
+
+    /** \brief Initialize a MultiArray in a standard way.  
+    
+    */
+enum MultiArrayInitializationTag {
+    LinearSequence ///< Initialize array by a linear sequence in scan order
+};
+
+/********************************************************/
+/*                                                      */
 /*                   element handles                    */
 /*                                                      */
 /********************************************************/
