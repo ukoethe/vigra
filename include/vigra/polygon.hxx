@@ -218,6 +218,11 @@ class Polygon
             if(partialAreaValid_)
                 partialArea_ += 0.5*(v[0]*back()[1] - v[1]*back()[0]);
         }
+        push_back_unsafe(v);
+    }
+    
+    void push_back_unsafe(const_reference v)
+    {
         Base::push_back(v);
     }
 
@@ -1844,5 +1849,19 @@ void polygonSplineControlPoints(
 //@}
 
 } // namespace vigra
+
+namespace std {
+
+template <class T>
+ostream & operator<<(ostream & s, vigra::Polygon<T> const & a)
+{
+    for(std::size_t k=0; k<a.size()-1; ++k)
+        s << a[k] << ", ";
+    if(a.size())
+            s << a.back();
+    return s;
+}
+
+} // namespace std
 
 #endif /* VIGRA_POLYGON_HXX */
