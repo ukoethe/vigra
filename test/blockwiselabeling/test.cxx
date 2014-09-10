@@ -2,6 +2,7 @@
 
 
 #include <vigra/multi_array.hxx>
+#include <vigra/multi_array_chunked.hxx>
 #include <vigra/multi_labeling.hxx>
 #include <vigra/unittest.hxx>
 
@@ -86,18 +87,23 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                     Data correct_labels(data.shape());
                     Data tested_labels(data.shape());
                     
+                    LabelOptions options;
+                    options.neighborhood(neighborhood);
+                    options.blockShape(shape);
+                    
                     int correct_label_number;
                     int tested_label_number;
                     if(with_background)
                     {
                         correct_label_number = labelMultiArrayWithBackground(data, correct_labels, neighborhood, 1u);
-                        tested_label_number = labelMultiArrayWithBackgroundBlockwise(data, tested_labels, neighborhood, 1u, shape);
+                        options.background(1u);
                     }
                     else
                     {
                         correct_label_number = labelMultiArray(data, correct_labels, neighborhood);
-                        tested_label_number = labelMultiArrayBlockwise(data, tested_labels, neighborhood, shape);
                     }
+                    
+                    tested_label_number = labelMultiArrayBlockwise(data, tested_labels, options);
 
                     if(!equivalentLabels(correct_labels.begin(), correct_labels.end(),
                                 tested_labels.begin(), tested_labels.end()) ||
@@ -163,7 +169,6 @@ struct BlockwiseLabelingTest
         array_twos.push_back(Array2(Shape2(4,4)));
         array_twos.push_back(Array2(Shape2(6,10)));
         array_twos.push_back(Array2(Shape2(19,25)));
-
         for(int i = 0; i != array_twos.size(); ++i)
         {
             fillRandom(array_twos[i].begin(), array_twos[i].end(), 3);
@@ -174,7 +179,6 @@ struct BlockwiseLabelingTest
         array_ones.push_back(Array1(Shape1(47)));
         array_ones.push_back(Array1(Shape1(81)));
         array_ones.push_back(Array1(Shape1(997)));
-        
         for(int i = 0; i != array_ones.size(); ++i)
         {
             fillRandom(array_ones[i].begin(), array_ones[i].end(), 3);
@@ -214,15 +218,30 @@ struct BlockwiseLabelingTest
         MultiArray<2, size_t> labels(shape);
     
         Shape block_shape(1, 1);
+        //TinyVector<MultiArrayIndex, 3> block_shape(1, 1, 1);
 
         NeighborhoodType neighborhood = IndirectNeighborhood;
     
         size_t count = labelMultiArrayWithBackground(data, labels, neighborhood, 1);
-        size_t blockwise_count = labelMultiArrayWithBackgroundBlockwise(data, blockwise_labels, neighborhood, 1, block_shape);
+        size_t blockwise_count = labelMultiArrayBlockwise(data, blockwise_labels, 
+                                                          LabelOptions().neighborhood(neighborhood).background(1).blockShape(block_shape));
         shouldEqual(count, blockwise_count);
         shouldEqual(equivalentLabels(labels.begin(), labels.end(),
                                      blockwise_labels.begin(), blockwise_labels.end()),
                     true);
+    }
+    void chunkedArrayTest()
+    {
+        typedef ChunkedArrayFull<2, int> DataArray;
+        typedef ChunkedArrayFull<2, size_t> LabelArray;
+        typedef DataArray::shape_type Shape;
+
+        DataArray data(Shape(4));
+        fillRandom(data.begin(), data.end(), 3);
+        LabelArray labels(Shape(4));
+        
+        MultiArray<2, std::vector<size_t> > mapping(Shape(1));
+        labelMultiArrayBlockwise(data, labels, LabelOptions(), std::equal_to<int>(), mapping);
     }
 
     void fiveDimensionalRandomTest()
@@ -252,6 +271,7 @@ struct BlockwiseLabelingTestSuite
         add(testCase(&BlockwiseLabelingTest::twoDimensionalRandomTest));
         add(testCase(&BlockwiseLabelingTest::oneDimensionalRandomTest));
         add(testCase(&BlockwiseLabelingTest::debugTest));
+        add(testCase(&BlockwiseLabelingTest::chunkedArrayTest));
     }
 };
 
