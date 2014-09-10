@@ -1180,7 +1180,7 @@ struct GridGraphBase<N, undirected_tag>
 
     Another choice to be made at compile time is whether the graph should be directed 
     or undirected. This is defined via the <tt>DirectedTag</tt> template parameter
-    which can take the values <tt>directed_tag</tt> or <tt>undirected_tag</tt>.
+    which can take the values <tt>directed_tag</tt> or <tt>undirected_tag</tt> (default).
     
     The main difficulty in a grid graph is to skip the missing neighbors
     of the pixels near the grid's border. For example, the upper left pixel in a 
@@ -1368,7 +1368,7 @@ struct GridGraphBase<N, undirected_tag>
     A slightly enhanced version of this code is actually used to implement this
     functionality in VIGRA.
 */
-template<unsigned int N, class DirectedTag>
+template<unsigned int N, class DirectedTag=undirected_tag>
 class GridGraph
 : public detail::GridGraphBase<N, DirectedTag>
 {
