@@ -81,11 +81,11 @@ VIGRA_AS_STRING(void *)
 #undef VIGRA_AS_STRING
 
 template <class T>
-std::string & operator<<(std::string & s, T const & t)
+std::string operator<<(std::string const & s, T const & t)
 {
     std::stringstream ss;
     ss << t; 
-    return s += ss.str();
+    return s + ss.str();
 }
 
     /** Convert string to lower case.
