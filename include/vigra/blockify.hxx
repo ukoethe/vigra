@@ -1,9 +1,10 @@
-#ifndef ARRAY_BLOCKIFY_HXX_
-#define ARRAY_BLOCKIFY_HXX_
+#ifndef VIGRA_BLOCKIFY_HXX_
+#define VIGRA_BLOCKIFY_HXX_
 
 #include <vigra/multi_array.hxx>
 
-using namespace vigra;
+namespace vigra
+{
 
 namespace blockify_detail
 {
@@ -78,6 +79,8 @@ blockify(MultiArrayView<N, T, S> source, typename MultiArrayView<N, T, S>::diffe
     Shape c;
     blockify_impl<N>::make(source, blocks, a, b, c, block_shape);
     return blocks;
+}
+
 }
 
 #endif
