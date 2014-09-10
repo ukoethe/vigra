@@ -1527,28 +1527,28 @@ struct AccumulatorTest
         typedef TinyVector<double, 2> P;
         P ref[] = { P(1.0, 0.5), P(0.5, 1.0), P(0.5, 3.0), P(1.0, 3.5), P(4.0, 3.5), 
                     P(4.5, 3.0), P(4.5, 1.0), P(4.0, 0.5),  P(1.0, 0.5) };
-        shouldEqual(getAccumulator<ConvexHull>(chf, 1).hull().size(), 9);
-        shouldEqualSequence(ref, ref+9, getAccumulator<ConvexHull>(chf, 1).hull().begin());
-        shouldEqual(getAccumulator<ConvexHull>(chf, 1).hullArea(), 11.5);
-        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).hullPerimeter(), 10.0 + 2.0*M_SQRT2, 1e-15);
+        shouldEqual(get<ConvexHull>(chf, 1).hull().size(), 9);
+        shouldEqualSequence(ref, ref+9, get<ConvexHull>(chf, 1).hull().begin());
+        shouldEqual(get<ConvexHull>(chf, 1).hullArea(), 11.5);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).hullPerimeter(), 10.0 + 2.0*M_SQRT2, 1e-15);
 
-        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexity(), 8.5 / 11.5, 1e-15);
-        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).rugosity(),  1.2850586602653933, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexity(), 8.5 / 11.5, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).rugosity(),  1.2850586602653933, 1e-15);
 
-        shouldEqual(getAccumulator<ConvexHull>(chf, 1).convexityDefectCount(), 2);
-        shouldEqual(getAccumulator<ConvexHull>(chf, 1).defectAreaList().size(), 2);
-        shouldEqual(getAccumulator<ConvexHull>(chf, 1).defectAreaList()[0], 2);
-        shouldEqual(getAccumulator<ConvexHull>(chf, 1).defectAreaList()[1], 1);
+        shouldEqual(get<ConvexHull>(chf, 1).convexityDefectCount(), 2);
+        shouldEqual(get<ConvexHull>(chf, 1).defectAreaList().size(), 2);
+        shouldEqual(get<ConvexHull>(chf, 1).defectAreaList()[0], 2);
+        shouldEqual(get<ConvexHull>(chf, 1).defectAreaList()[1], 1);
 
-        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexityDefectAreaMean(), 1.5, 1e-15);
-        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexityDefectAreaVariance(), 0.5, 1e-15);
-        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexityDefectAreaSkewness(), 0.0, 1e-15);
-        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).convexityDefectAreaKurtosis(), 0.0, 1e-15);
-        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).meanDefectDisplacement(), 1.185185185185185, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaMean(), 1.5, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaVariance(), 0.5, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaSkewness(), 0.0, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaKurtosis(), 0.0, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).meanDefectDisplacement(), 1.185185185185185, 1e-15);
 
-        shouldEqualTolerance(P(2.4444444444444444, 2.0), getAccumulator<ConvexHull>(chf, 1).inputCenter(), P(1e-15));
-        shouldEqualTolerance(P(2.5, 2.0), getAccumulator<ConvexHull>(chf, 1).hullCenter(), P(1e-15));
-        shouldEqualTolerance(P(2.6666666666666667, 2.0), getAccumulator<ConvexHull>(chf, 1).convexityDefectCenter(), P(1e-15));
+        shouldEqualTolerance(P(2.4444444444444444, 2.0), get<ConvexHull>(chf, 1).inputCenter(), P(1e-15));
+        shouldEqualTolerance(P(2.5, 2.0), get<ConvexHull>(chf, 1).hullCenter(), P(1e-15));
+        shouldEqualTolerance(P(2.6666666666666667, 2.0), get<ConvexHull>(chf, 1).convexityDefectCenter(), P(1e-15));
     }
 };
 
