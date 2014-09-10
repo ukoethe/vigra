@@ -85,7 +85,7 @@ struct GraphAlgorithmTest{
         const Edge e24= g.findEdge(n2,n4);
         const Edge e34= g.findEdge(n3,n4);
 
-        typename Graph::EdgeMap<float> ew(g);
+        typename Graph::template EdgeMap<float> ew(g);
         ew[e12]=10.0;
         ew[e13]=2.0;
         ew[e24]=3.0;
