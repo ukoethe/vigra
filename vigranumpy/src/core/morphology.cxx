@@ -446,6 +446,22 @@ pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume,
     return res;
 }
 
+template < unsigned int N, class VoxelType >
+NumpyAnyArray
+pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
+                                bool array_border_is_active,
+                                NumpyArray<N, Singleband<float> > res)
+{
+    res.reshapeIfEmpty(volume.taggedShape(),
+            "boundaryDistanceTransform(): Output array has wrong shape.");
+
+    {
+        PyAllowThreads _pythread;
+        boundaryMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), array_border_is_active);
+    }
+    return res;
+}
+
 void defineMorphology()
 {
     using namespace python;
@@ -773,6 +789,36 @@ void defineMorphology()
         "given, the data is treated isotropically with unit distance between pixels.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+        
+    def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<2, npy_uint32>),
+       (arg("image"),
+        arg("array_border_is_active") = false,
+        arg("out")=python::object()),
+       "Compute the Euclidean distance transform of a 2D or 3D label array with\n"
+        "respect to its interpixel boundary. If 'array_border_is_active=True',\n"
+        "the outer border of the array (i.e. the interpixel border between the array\n"
+        "and the infinite region) is also used. Otherwise (the default), regions\n"
+        "touching the array border are treated as if they extended to infinity.\n\n"
+        "For more details see boundaryDistanceTransform_ in the vigra C++ documentation.\n");
+
+    def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<3, npy_uint32>),
+       (arg("volume"),
+        arg("array_border_is_active") = false,
+        arg("out")=python::object()));
+
+    def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<2, float>),
+       (arg("image"),
+        arg("array_border_is_active") = false,
+        arg("out")=python::object()));
+
+    def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<3, float>),
+       (arg("volume"),
+        arg("array_border_is_active") = false,
+        arg("out")=python::object()));
 }
 
 } // namespace vigra
