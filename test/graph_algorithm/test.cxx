@@ -152,10 +152,10 @@ struct GraphAlgorithmTest{
         const Node n2=g.addNode(2);
         const Node n3=g.addNode(3);
         const Node n4=g.addNode(4);
-        const Edge e12= g.addEdge(n1,n2);
-        const Edge e13= g.addEdge(n1,n3);
-        const Edge e24= g.addEdge(n2,n4);
-        const Edge e34= g.addEdge(n3,n4);
+        g.addEdge(n1,n2);
+        g.addEdge(n1,n3);
+        g.addEdge(n2,n4);
+        g.addEdge(n3,n4);
 
         testShortestPathImpl(g);
     }
