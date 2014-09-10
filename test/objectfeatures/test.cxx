@@ -1298,7 +1298,6 @@ struct AccumulatorTest
             shouldEqual(V(0,1,1), get<GlobalRangeHistogram<3> >(a, 1));
             shouldEqual(V(3,2,1), get<Global<AutoRangeHistogram<3> > >(a));
 
-            typedef LookupTag<RegionContour, A>::value_type::const_iterator PolyIter;
             typedef LookupTag<RegionContour, A>::value_type::value_type Point;
 
             Point ref0[] = { Point(0, -0.5), Point(-0.5, 0), Point(-0.5, 1), Point(0, 1.5), Point(1, 1.5), 

@@ -565,7 +565,6 @@ namespace vigra
         using namespace acc;
         typedef typename MultiArrayShape<N>::type Shape;
         typedef typename Graph::Node Node;
-        typedef typename Graph::Edge Edge;
         typedef typename Graph::EdgeIt EdgeIt;
         typedef float WeightType;
         
@@ -666,7 +665,6 @@ namespace vigra
         typedef typename MultiArrayShape<N>::type Shape;
         typedef GridGraph<N> Graph;
         typedef typename Graph::Node Node;
-        typedef typename Graph::Edge Edge;
         typedef typename Graph::EdgeIt EdgeIt;
         typedef float WeightType;
         
