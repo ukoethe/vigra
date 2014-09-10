@@ -41,6 +41,7 @@
 
 #include <vigra/multi_distance.hxx>
 #include <vigra/distancetransform.hxx>
+#include <vigra/eccentricitytransform.hxx>
 #include <vigra/impex.hxx>
 
 #include "test_data.hxx"
@@ -452,7 +453,75 @@ struct BoundaryMultiDistanceTest
 
         shouldEqualSequence(res.begin(), res.end(), desired2);
     }
+};
 
+struct EccentricityTest
+{
+    void testEccentricityCenters()
+    {
+        typedef TinyVector<float, 2> Point;
+        {
+            MultiArray<2, int> labels(Shape2(4,2), 1);
+            labels.subarray(Shape2(2,0), Shape2(4,2)) = 2;
+
+            ArrayVector<Point> centers;
+            MultiArray<2, float> distances(labels.shape());
+            eccentricityTransformOnLabels(labels, distances, centers);
+
+            shouldEqual(centers.size(), 3);
+            shouldEqual(centers[1], Point(0.5, 0.5));
+            shouldEqual(centers[2], Point(2.5, 0.5));
+
+            float ref[] = {1.41421f, 1, 1.41421f, 1, 1, 0, 1, 0 };
+            shouldEqualSequenceTolerance(distances.begin(), distances.end(), ref, 1e-5f);
+        }
+        {
+            int image_data_small[100] = {
+                1, 2, 3, 3, 3, 3, 2, 2, 4, 4,
+                2, 2, 2, 3, 3, 3, 2, 2, 2, 4,
+                5, 2, 2, 2, 2, 2, 2, 6, 2, 2,
+                5, 5, 2, 2, 2, 2, 6, 6, 2, 2,
+                5, 5, 5, 5, 6, 2, 6, 2, 2, 2,
+                5, 5, 5, 5, 6, 6, 6, 2, 2, 7,
+                5, 5, 2, 2, 6, 6, 2, 2, 2, 7,
+                5, 5, 2, 2, 2, 2, 2, 2, 2, 7,
+                5, 5, 2, 2, 2, 2, 2, 7, 7, 7,
+                5, 5, 2, 2, 7, 7, 7, 7, 7, 7
+            };
+            MultiArrayView<2, int> labels(Shape2(10,10), image_data_small);
+
+            ArrayVector<Point> centers;
+            MultiArray<2, float> distances(labels.shape());
+            eccentricityTransformOnLabels(labels, distances, centers);
+
+            shouldEqual(centers.size(), 8);
+
+            Point centers_ref[] = {
+                Point(0, 0),
+                Point(8, 2.41421f),
+                Point(3.29289f, 1),
+                Point(8.5f, 0.5f),
+                Point(1, 5.29289f),
+                Point(5.85355f, 4.14645f),
+                Point(7.64645f, 8.35355f)
+            };
+            shouldEqualSequenceTolerance(centers.begin()+1, centers.end(), centers_ref, Point(1e-5f));
+
+            float dist_ref[] = {
+                0.000000f, 8.656855f, 1.414214f, 1.000000f, 1.414214f, 2.414214f, 2.828427f, 2.414214f, 1.414214f, 1.000000f, 
+                9.242640f, 8.242640f, 7.242641f, 0.000000f, 1.000000f, 2.000000f, 2.414214f, 1.414214f, 1.000000f, 0.000000f, 
+                3.414214f, 7.828427f, 6.828427f, 5.828427f, 4.828427f, 3.828427f, 2.828427f, 2.414214f, 0.000000f, 1.000000f, 
+                2.414214f, 2.000000f, 7.242640f, 6.242640f, 5.242640f, 4.242640f, 1.000000f, 1.414214f, 1.000000f, 1.414214f, 
+                1.414214f, 1.000000f, 1.414214f, 2.414214f, 2.828427f, 5.242640f, 0.000000f, 2.414214f, 2.000000f, 2.414214f, 
+                1.000000f, 0.000000f, 1.000000f, 2.000000f, 2.414214f, 1.414214f, 1.000000f, 3.414214f, 3.000000f, 3.414214f, 
+                1.414214f, 1.000000f, 9.656855f, 8.656855f, 2.828427f, 2.414214f, 4.828427f, 4.414214f, 4.000000f, 2.414214f, 
+                2.414214f, 2.000000f, 9.242641f, 8.242641f, 7.242641f, 6.242641f, 5.828427f, 5.414214f, 5.000000f, 1.414214f, 
+                3.414214f, 3.000000f, 9.656855f, 8.656855f, 7.656855f, 7.242641f, 6.828427f, 1.000000f, 0.000000f, 1.000000f, 
+                4.414214f, 4.000000f, 10.071068f, 9.071068f, 4.414214f, 3.414214f, 2.414214f, 1.414214f, 1.000000f, 1.414214f, 
+            };
+            shouldEqualSequenceTolerance(distances.begin(), distances.end(), dist_ref, 1e-5f);
+        }
+    }
 };
 
 
@@ -469,6 +538,7 @@ struct DistanceTransformTestSuite
         add( testCase( &MultiDistanceTest::distanceTest1D));
         add( testCase( &BoundaryMultiDistanceTest::distanceTest1D));
         add( testCase( &BoundaryMultiDistanceTest::testDistanceVolumes));
+        add( testCase( &EccentricityTest::testEccentricityCenters));
     }
 };
 
