@@ -239,7 +239,7 @@ namespace vigra{
                  WeightType maxDistance=NumericTraits<WeightType>::max())
         {
             this->initializeMaps(source);
-            runImpl(weights, source, target, maxDistance);
+            runImpl(weights, target, maxDistance);
         }
 
         // when we know that all paths from source to the border of the ROI are more
@@ -256,9 +256,18 @@ namespace vigra{
                                (allLessEqual(start, target) && allLess(target, stop)),
                 "ShortestPathDijkstra::run(): target is not within ROI");
             this->initializeMaps(source, start, stop);
-            runImpl(weights, source, target, maxDistance);
+            runImpl(weights, target, maxDistance);
         }
 
+        template<class WEIGHTS, class ITER>
+        void 
+        runMultiSource(const WEIGHTS & weights, ITER source_begin, ITER source_end,
+                 const Node & target = lemon::INVALID, 
+                 WeightType maxDistance=NumericTraits<WeightType>::max())
+        {
+            this->initializeMaps(source_begin, source_end);
+            runImpl(weights, target, maxDistance);
+        }
 
         /// \brief get the graph
         const Graph & graph()const{
@@ -295,13 +304,12 @@ namespace vigra{
     private:
 
         template<class WEIGHTS>
-        void runImpl(const WEIGHTS & weights,const Node & source,
+        void runImpl(const WEIGHTS & weights,
                      const Node & target = lemon::INVALID, 
                      WeightType maxDistance=NumericTraits<WeightType>::max())
         {
-            source_=source;
-            target_=lemon::INVALID;
-            Node lastNode = source;
+            target_ = lemon::INVALID;
+            Node lastNode = lemon::INVALID;
             while(!pq_.empty() ){ //&& !finished){
                 const Node topNode(graph_.nodeFromId(pq_.top()));
                 if(distMap_[topNode] > maxDistance)
@@ -352,6 +360,22 @@ namespace vigra{
             distMap_[source]=static_cast<WeightType>(0.0);
             predMap_[source]=source;
             pq_.push(graph_.id(source),0.0);
+            source_=source;
+        }
+
+        template <class ITER>
+        void initializeMaps(ITER source, ITER source_end){
+            for(NodeIt n(graph_); n!=lemon::INVALID; ++n){
+                const Node node(*n);
+                predMap_[node]=lemon::INVALID;
+            }
+            for( ; source != source_end; ++source)
+            {
+                distMap_[*source]=static_cast<WeightType>(0.0);
+                predMap_[*source]=*source;
+                pq_.push(graph_.id(*source),0.0);
+            }
+            source_=lemon::INVALID;
         }
 
         void initializeMaps(Node const & source,
@@ -369,6 +393,7 @@ namespace vigra{
             distMap_[source]=static_cast<WeightType>(0.0);
             predMap_[source]=source;
             pq_.push(graph_.id(source),0.0);
+            source_=source;
         }
 
         const Graph  & graph_;
