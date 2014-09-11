@@ -83,82 +83,56 @@ std::ostream& operator<<(std::ostream&o, const VectorialDistParabolaStackEntry<V
 /*                                                      */
 /********************************************************/
 
-template <class VEC>
-inline double partialSquaredMagnitude(const VEC& vec, MultiArrayIndex dim)
+template <class VEC, class ARRAY>
+inline double 
+partialSquaredMagnitude(const VEC& vec, MultiArrayIndex dim, ARRAY const & pixel_pitch)
 {
     //computes the squared magnitude of vec
     //considering only the first dim dimensions
     double sqMag = 0.0; 
     for(MultiArrayIndex i=0; i<dim; ++i)
     {
-        sqMag += vec[i]*vec[i];
+        sqMag += sq(pixel_pitch[i]*vec[i]);
     }
     return sqMag;
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor >
-void vectorialDistParabola(MultiArrayIndex dimension, double dmax,
-                  SrcIterator is, SrcIterator iend, SrcAccessor sa,
-                  DestIterator id, DestAccessor da, double sigma )
+          class DestIterator, class DestAccessor,
+          class Array>
+void 
+vectorialDistParabola(MultiArrayIndex dimension,
+                      SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                      DestIterator id, DestAccessor da, 
+                      Array const & pixel_pitch )
 {
     typedef typename SrcAccessor::value_type SrcType;
     typedef typename DestAccessor::value_type DestType;
     typedef typename SrcType::value_type SrcPixelType;
     typedef VectorialDistParabolaStackEntry<DestType, SrcPixelType> Influence;
     
-    double sigma2 = sq(sigma);
+    double sigma = pixel_pitch[dimension],
+           sigma2 = sq(sigma);
     double w = iend - is; //width of the scanline
    
-    #ifdef VECTORIAL_DIST_DEBUG
-    {
-        std::cout << "* dim=" << dimension << ", w=" << w << std::endl;
-        
-        std::cout << "  source line: ";
-        SrcIterator is_copy(is);
-        for(; is != iend; ++is) {
-            std::cout << sa(is) << " ";
-        }
-        std::cout << std::endl;
-        is = is_copy; 
-    }
-    #endif
-    
     std::vector<Influence> _stack; //stack of influence parabolas
-   
-    
-   
-    double psm = partialSquaredMagnitude(sa(is), dimension+1);
+    double psm = partialSquaredMagnitude(sa(is), dimension+1, pixel_pitch);
     _stack.push_back(Influence(sa(is), psm, 0.0, 0.0, w));
-    #ifdef VECTORIAL_DIST_DEBUG
-    std::cout << "  building stack:" << std::endl;
-    std::cout << "    +stack @[0] " << _stack.back() << std::endl;
-    #endif
-    
     ++is;
-    psm = partialSquaredMagnitude(sa(is), dimension+1);
-    
+    psm = partialSquaredMagnitude(sa(is), dimension+1, pixel_pitch);
     double current = 1.0;
     while(current < w)
     {
         Influence & s = _stack.back();
         double diff = current - s.center;
-        //Bailey 2004, eq. (14)
-        //Compute the intersection of the two parabolas
         double intersection = current + ( psm - s.prevVal - sq(sigma*diff) ) / (2.0*sigma2 * diff);
         
         if( intersection < s.left) // previous point has no influence
         {
-            #ifdef VECTORIAL_DIST_DEBUG
-            std::cout << "    -stack @[" << current << "] " << _stack.back() << std::endl;
-            #endif
             _stack.pop_back();
             if(_stack.empty())
             {
                 _stack.push_back(Influence(sa(is), psm, 0.0, current, w));
-                #ifdef VECTORIAL_DIST_DEBUG
-                std::cout << "    +stack @[" << current << "] " << _stack.back() << std::endl;
-                #endif
             }
             else
             {
@@ -169,69 +143,40 @@ void vectorialDistParabola(MultiArrayIndex dimension, double dmax,
         {
             s.right = intersection;
             _stack.push_back(Influence(sa(is), psm, intersection, current, w));
-            #ifdef VECTORIAL_DIST_DEBUG
-            std::cout << "    +stack @[" << current << "] " << _stack.back() << std::endl;
-            #endif
         }
         else {
         }
         ++is;
-        psm = partialSquaredMagnitude(sa(is), dimension+1);
+        psm = partialSquaredMagnitude(sa(is), dimension+1, pixel_pitch);
         ++current;
     }
    
     // Now we have the stack indicating which rows are influenced by (and therefore
     // closest to) which row. We can go through the stack and calculate the
     // distance squared for each element of the column.
-    #ifdef VECTORIAL_DIST_DEBUG
-    std::cout << "  stack:" << std::endl;
-    for(int i=0; i<_stack.size(); ++i) {
-        std::cout << "    " << _stack[i] << std::endl;
-    }
-    #endif
-    
-    #ifdef VECTORIAL_DIST_DEBUG
-    std::cout << "  writing line: " << std::endl;
-    #endif
     typename std::vector<Influence>::iterator it = _stack.begin();
     for(current = 0.0; current < w; ++current, ++id)
     {
         while( current >= it->right) {
-            #ifdef VECTORIAL_DIST_DEBUG
-            std::cout << "    -stack: " << *it << " (current=" << current << " >= it->right=" << it->right << ")" << std::endl;
-            #endif
             ++it; 
         }
         
         da.set(it->prevVector, id);
-        
-        if( it->prevVector[dimension] == 0 ) {
-        //if(it->prevVector != DestType(dmax)) {
-            da.setComponent(sigma * (it->center - current) , id, dimension);
-            #ifdef VECTORIAL_DIST_DEBUG
-            std::cout << "  [" << current << "] = " << da(id) << " (prevVector=" << it->prevVector << ", set @[" << dimension << "]=" << sigma*(it->center - current) << std::endl;
-            #endif
-        }
-        else {
-            #ifdef VECTORIAL_DIST_DEBUG
-            std::cout << "  [" << current << "] = " << da(id) << " (old value)" << std::endl;
-            #endif
-        }
+        da.setComponent((it->center - current) , id, dimension);
     }
-    #ifdef VECTORIAL_DIST_DEBUG
-    std::cout << std::endl;
-    #endif
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void vectorialDistParabola(MultiArrayIndex dimension, double dmax,
+          class DestIterator, class DestAccessor,
+          class Array>
+inline void vectorialDistParabola(MultiArrayIndex dimension,
                          triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                         pair<DestIterator, DestAccessor> dest, double sigma)
+                         pair<DestIterator, DestAccessor> dest,
+                         Array const & pixel_pitch)
 {
-    vectorialDistParabola(dimension, dmax,
+    vectorialDistParabola(dimension,
                  src.first, src.second, src.third,
-                 dest.first, dest.second, sigma);
+                 dest.first, dest.second, pixel_pitch);
 }
 
 /********************************************************/
@@ -287,12 +232,11 @@ void internalSeparableMultiVectorialDistTmp(
                 copyLine( snav.begin(), snav.end(), src, tmp.begin(),
                           typename AccessorTraits<TmpType>::default_accessor() );
 
-            detail::vectorialDistParabola(0 /*dimension*/, dmax,
+            detail::vectorialDistParabola(0 /*dimension*/, 
                           srcIterRange(tmp.begin(), tmp.end(),
                           typename AccessorTraits<TmpType>::default_const_accessor()),
                           destIter( dnav.begin(), dest ),
-                           
-                          sigmas[0] );
+                          sigmas);
     }
     
     #if 1
@@ -310,10 +254,10 @@ void internalSeparableMultiVectorialDistTmp(
              copyLine( dnav.begin(), dnav.end(), dest,
                        tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
-             detail::vectorialDistParabola(d, dmax,
+             detail::vectorialDistParabola(d, 
                            srcIterRange(tmp.begin(), tmp.end(),
                            typename AccessorTraits<TmpType>::default_const_accessor()),
-                           destIter( dnav.begin(), dest ), sigmas[d] );
+                           destIter( dnav.begin(), dest ), sigmas );
         }
     }
     #endif

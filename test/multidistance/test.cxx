@@ -306,9 +306,7 @@ struct MultiDistanceTest
                 DoubleVecVolume vecVolume(volume.shape()); 
                 separableVectorDistance(volume, vecVolume, true, pixelPitch);
                 DoubleVolume distVolume(volume.shape());
-                // FIXME: the distance vectors should not include the pixel pitch
-                //transformMultiArray(vecVolume, distVolume, squaredNorm(Param(pixelPitch)*Arg1()));
-                transformMultiArray(vecVolume, distVolume, squaredNorm(Arg1()));
+                transformMultiArray(vecVolume, distVolume, squaredNorm(Param(pixelPitch)*Arg1()));
                 shouldEqualSequenceTolerance(distVolume.begin(), distVolume.end(), desired.begin(), epsilon);
             }
         }
