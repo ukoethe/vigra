@@ -459,7 +459,7 @@ struct EccentricityTest
 {
     void testEccentricityCenters()
     {
-        typedef TinyVector<float, 2> Point;
+        typedef Shape2 Point;
         {
             MultiArray<2, int> labels(Shape2(4,2), 1);
             labels.subarray(Shape2(2,0), Shape2(4,2)) = 2;
@@ -469,8 +469,8 @@ struct EccentricityTest
             eccentricityTransformOnLabels(labels, distances, centers);
 
             shouldEqual(centers.size(), 3);
-            shouldEqual(centers[1], Point(0.5, 0.5));
-            shouldEqual(centers[2], Point(2.5, 0.5));
+            shouldEqual(centers[1], Point(1,1));
+            shouldEqual(centers[2], Point(3,1));
 
             float ref[] = {1.41421f, 1, 1.41421f, 1, 1, 0, 1, 0 };
             shouldEqualSequenceTolerance(distances.begin(), distances.end(), ref, 1e-5f);
@@ -498,14 +498,14 @@ struct EccentricityTest
 
             Point centers_ref[] = {
                 Point(0, 0),
-                Point(8, 2.41421f),
-                Point(3.29289f, 1),
-                Point(8.5f, 0.5f),
-                Point(1, 5.29289f),
-                Point(5.85355f, 4.14645f),
-                Point(7.64645f, 8.35355f)
+                Point(8, 2),
+                Point(3, 1),
+                Point(9, 1),
+                Point(1, 5),
+                Point(6, 4),
+                Point(8, 8)
             };
-            shouldEqualSequenceTolerance(centers.begin()+1, centers.end(), centers_ref, Point(1e-5f));
+            shouldEqualSequence(centers.begin()+1, centers.end(), centers_ref);
 
             float dist_ref[] = {
                 0.000000f, 8.656855f, 1.414214f, 1.000000f, 1.414214f, 2.414214f, 2.828427f, 2.414214f, 1.414214f, 1.000000f, 

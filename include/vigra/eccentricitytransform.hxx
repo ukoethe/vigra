@@ -523,7 +523,7 @@ namespace vigra
 
     template <class Graph, class WeightType, 
               class EdgeMap, class Shape>
-    TinyVector<float, Shape::static_size> 
+    TinyVector<MultiArrayIndex, Shape::static_size> 
     eccentricityCentersOneRegionImpl(ShortestPathDijkstra<Graph, WeightType> & pathFinder,
                             const EdgeMap & weights, WeightType maxWeight,
                             Shape anchor, Shape const & start, Shape const & stop)
@@ -540,17 +540,7 @@ namespace vigra
         path.push_back_unsafe(anchor);
         while(pathFinder.predecessors()[path.back()] != path.back())
             path.push_back_unsafe(pathFinder.predecessors()[path.back()]);
-        if(path.size() == 1)
-            return TinyVector<float, Shape::static_size>(anchor);
-        ArrayVector<double> arcLength;
-        path.arcLengthList(arcLength);
-        double halfLength = 0.5*arcLength.back();
-        unsigned int k=0;
-        for(; k<arcLength.size(); ++k)
-            if(arcLength[k] >= halfLength)
-                break;
-        double fraction = (halfLength - arcLength[k-1]) / (arcLength[k] - arcLength[k-1]);
-        return path.interpolate(k-1, fraction);
+        return path[roundi(path.arcLengthQuantile(0.5))];
     }
 
     template <unsigned int N, class T, class S, class Graph,
@@ -644,7 +634,7 @@ namespace vigra
             const MultiArrayView<N, T> & src,
             MultiArrayView<N, S> & dest
     ){
-        ArrayVector<TinyVector<float, N> > centers;
+        ArrayVector<TinyVector<MultiArrayIndex, N> > centers;
         eccentricityTransformOnLabels(src, dest, centers);
     }
 
@@ -671,13 +661,10 @@ namespace vigra
         vigra_precondition(src.shape() == dest.shape(), 
             "eccentricityTransformOnLabels(): Shape mismatch between src and dest.");
             
-        using namespace acc;
-        typedef GridGraph<N> Graph;
-        typedef float WeightType;
-        
         Graph g(src.shape(), IndirectNeighborhood);
         ShortestPathDijkstra<Graph, WeightType> pathFinder(g);
 
+        using namespace acc;        
         AccumulatorChainArray<CoupledArrays<N, T>,
                               Select< DataArg<1>, LabelArg<1>,
                                       Count, BoundingBox, RegionAnchor> > a;
@@ -691,35 +678,16 @@ namespace vigra
             const Node u(g.u(*edge)), v(g.v(*edge));
             const T label = src[u];
             if(label != src[v])
-            {
                 weights[*edge] = NumericTraits<WeightType>::max();
-            }
             else
-            {
                 weights[*edge] = norm(u - v);
-            }
         }
-        WeightType maxWeight = M_SQRT2*src.size();
-        T maxLabel = a.maxRegionLabel();
-
-        for (T i=0; i <= maxLabel; ++i)
-        {
-            if(get<Count>(a, i) == 0)
-                continue;
-            Shape center = roundi(centers[i]),
-                  start = get<Coord<Minimum> >(a, i),
-                  stop  = get<Coord<Maximum> >(a, i) + Shape(1);
-            vigra_invariant(src[center] == i,
-                "eccentricityTransformOnLabels(): internal error -- center rounding failed");
-            pathFinder.run(weights, center, lemon::INVALID, maxWeight, start, stop);
-            
-            typename CoupledIteratorType<N, T, WeightType, S>::type j = 
-                createCoupledIterator(src, pathFinder.distances(), dest);
-            j.restrictToSubarray(start, stop);
-            for( ; j.isValid(); ++j)
-                if(get<1>(*j) == i)
-                    get<3>(*j) = get<2>(*j);
-        }
+        ArrayVector<Shape> filtered_centers;
+        for (T i=0; i <= a.maxRegionLabel(); ++i)
+            if(get<Count>(a, i) > 0)
+                filtered_centers.push_back(centers[i]);
+        pathFinder.runMultiSource(weights, filtered_centers.begin(), filtered_centers.end());
+        dest = pathFinder.distances();
     }
 
 } // namespace vigra
