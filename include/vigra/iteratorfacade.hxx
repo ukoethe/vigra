@@ -103,7 +103,7 @@ public:
     }
 
     pointer operator->()const{
-        return *IteratorFacadeCoreAccess:: template dereference<FACADE,reference>(getF());
+        return &IteratorFacadeCoreAccess:: template dereference<FACADE,reference>(getF());
     }
 
 private:
