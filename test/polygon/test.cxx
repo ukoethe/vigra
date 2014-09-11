@@ -93,6 +93,9 @@ struct PolygonTest
         shouldEqual(p.nearestPoint(P(0.0, 0.0)), P(1.0, 1.0));
         shouldEqualTolerance(p.nearestPoint(P(2.0, 0.0)), P(2.0, 1.0), P(1e-15));
         shouldEqualTolerance(p.nearestPoint(P(3.5, 2.0)), P(4.0, 2.0), P(1e-15));
+        shouldEqual(p.arcLengthQuantile(0.0), 0.0);
+        shouldEqual(p.arcLengthQuantile(1.0), 2.0);
+        shouldEqual(p.arcLengthQuantile(0.5), 1.125);
 
         Poly p2(2);
         p2.setPoint(0, P(4.0, 5.0));

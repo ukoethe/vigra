@@ -190,7 +190,10 @@ class Polygon
         */
     Point interpolate(unsigned int index, double offset) const
     {
-        return (1.0 - offset) * (*this)[index] + offset * (*this)[index+1];
+        if(index < size() - 1)
+            return (1.0 - offset) * (*this)[index] + offset * (*this)[index+1];
+        else
+            return (*this)[index];
     }
 
         /**
@@ -364,6 +367,39 @@ class Polygon
             length += ((*this)[i] - (*this)[i-1]).magnitude();
             arcLengths.push_back(length);
         }
+    }
+    
+        /** Find the point on the polygon that corresponds to the given quantile.
+        
+            \a quantile must be in <tt>[0.0, 1.0]</tt>. The result of this function
+            can be used as input to <tt>interpolate()</tt>. For example,
+            the following code computes the point in the middle of the polygon:
+            
+            \code
+            double c = poly.arcLengthQuantile(0.5);
+            Point center = poly.interpolate((int)floor(c), c - floor(c));
+            \endcode
+        */
+    double arcLengthQuantile(double quantile) const
+    {
+        vigra_precondition(this->size() > 0,
+            "Polygon:.arcLengthQuantile(): polygon is empty.");
+        if(quantile == 0.0 || this->size() == 1)
+            return 0.0;
+        if(quantile == 1.0)
+            return this->size() - 1.0;
+        vigra_precondition(0.0 < quantile && quantile < 1.0,
+            "Polygon:.arcLengthQuantile(): quantile must be between 0 and 1.");
+        ArrayVector<double> arcLength;
+        arcLength.reserve(this->size());
+        arcLengthList(arcLength);
+        double length = quantile*arcLength.back();
+        unsigned int k=0;
+        for(; k<this->size(); ++k)
+            if(arcLength[k] >= length)
+                break;
+        --k;
+        return k + (length - arcLength[k]) / (arcLength[k+1] - arcLength[k]);
     }
 
     void swap(Polygon &rhs)
