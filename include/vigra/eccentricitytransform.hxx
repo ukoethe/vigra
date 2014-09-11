@@ -559,7 +559,8 @@ namespace vigra
         typedef float WeightType;
         
         typename Graph::template EdgeMap<WeightType> weights(g);
-        WeightType maxWeight = 0.0;
+        WeightType maxWeight = 0.0,
+                   minWeight = N;
         {
             AccumulatorChainArray<CoupledArrays<N, WeightType, T>,
                                   Select< DataArg<1>, LabelArg<2>, Maximum> > a;
@@ -578,7 +579,7 @@ namespace vigra
                 else
                 {
                     WeightType weight = norm(u - v) * 
-                                      (get<Maximum>(a, label) + 10.0 - 0.5*(distances[u] + distances[v]));
+                                      (get<Maximum>(a, label) + minWeight - 0.5*(distances[u] + distances[v]));
                     weights[*edge] = weight;
                     maxWeight = std::max(weight, maxWeight);
                 }
@@ -603,7 +604,7 @@ namespace vigra
     /// \brief Find the (approximate) eccentricitycenter in each region of a labeled image.
     ///
     /// \param src : labeled array
-    /// \param centers[out] : list of eccentricity centers (<tt>centers[k] = TinyVector<float, N>()</tt>
+    /// \param centers[out] : list of eccentricity centers (<tt>centers[k] = TinyVector<int, N>()</tt>
     ///                        must be supported)    
     template <unsigned int N, class T, class S, class Array>
     void 
@@ -642,7 +643,7 @@ namespace vigra
     ///
     /// \param src : labeled array
     /// \param dest[out] : eccentricity transform of src
-    /// \param centers[out] : list of eccentricity centers (<tt>centers[k] = TinyVector<float, N>()</tt>
+    /// \param centers[out] : list of eccentricity centers (<tt>centers[k] = TinyVector<int, N>()</tt>
     ///                        must be supported)    
     template <unsigned int N, class T, class S, class Array>
     void 
