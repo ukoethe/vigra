@@ -710,23 +710,6 @@ markRegionBoundaries(MultiArrayView<N, T1, S1> const & labels,
     lemon_graph::markRegionBoundaries(graph, labels, out);
 }
 
-doxygen_overloaded_function(template <...> unsigned int boundaryMultiDistance_old)
-
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
-inline void 
-boundaryMultiDistance_old(MultiArrayView<N, T1, S1> const & labels,
-                MultiArrayView<N, T2, S2> out)
-{
-    MultiArray<N, T1> tmpArray(out.shape());     
-    boundaryMulti(labels, tmpArray);
-    separableMultiDistance(tmpArray, out, true);
-    for (int k = 0; k < out.size(); k++)
-        out(k) += 0.5;    //approximated distance correction with inner boundary
-
-}
-
-
 //MultiDistance which works directly on labeled data
 
 namespace detail

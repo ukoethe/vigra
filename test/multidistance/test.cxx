@@ -43,6 +43,8 @@
 #include <vigra/distancetransform.hxx>
 #include <vigra/eccentricitytransform.hxx>
 #include <vigra/impex.hxx>
+#include <vigra/vectorial_distance.hxx>
+
 
 #include "test_data.hxx"
 
@@ -56,6 +58,10 @@ struct MultiDistanceTest
     typedef vigra::DImage Image;
     typedef vigra::MultiArrayView<2,Image::value_type> ImageView;
     typedef vigra::TinyVector<int,3> IntVec;
+    typedef vigra::MultiArray<3,vigra::TinyVector<int,3> > IntVecVolume;
+    typedef vigra::MultiArray<3,vigra::TinyVector<double,3> > DoubleVecVolume;
+    typedef vigra::MultiArray<2,vigra::TinyVector<double,2> > DoubleVecImage;
+
 
 #if 1
     enum { WIDTH    =   15,  // 
@@ -67,7 +73,7 @@ struct MultiDistanceTest
            DEPTH    =   1}; //
 #endif
 
-    std::list<std::list<IntVec> > pointslists;
+    std::vector<std::vector<IntVec> > pointslists;
     std::vector<Image> images;
     Double2DArray img2;
     DoubleVolume volume;
@@ -78,7 +84,7 @@ struct MultiDistanceTest
       volume(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH)),
       shouldVol(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH))
     {
-        std::list<IntVec> temp;
+        std::vector<IntVec> temp;
         temp.push_back(IntVec(      0,        0,       0));
         temp.push_back(IntVec(WIDTH-1,        0,       0));
         temp.push_back(IntVec(      0, HEIGHT-1,       0));
@@ -171,32 +177,46 @@ struct MultiDistanceTest
 
     void testDistanceVolumes()
     {    
-        DoubleVolume desired(volume);
-        for(std::list<std::list<IntVec> >::iterator list_iter=pointslists.begin(); 
-                                          list_iter!=pointslists.end(); ++list_iter)
+        DoubleVolume dt(volume.shape()), desired(volume.shape());
+        DoubleVecVolume vecDesired(volume.shape()); 
+        for(unsigned k = 0; k<pointslists.size(); ++k)
         {
-            IntVec temp;
-            for(int z=0; z<DEPTH; ++z)
-                for(int y=0; y<HEIGHT; ++y)
-                    for(int x=0; x<WIDTH; ++x){
-                        temp = IntVec(x,y,z);
-                        int tempVal=10000000;
-                        for(std::list<IntVec>::iterator iter=(*list_iter).begin(); iter!=(*list_iter).end(); ++iter){
-                            if((temp-*iter).squaredMagnitude()<tempVal){
-                                tempVal = (temp-*iter).squaredMagnitude();
-                            }
-                        }
-                        desired(x,y,z)=tempVal;
+            DoubleVolume::iterator i = desired.begin();
+            for(; i.isValid(); ++i)
+            {
+                UInt64 minDist = NumericTraits<UInt64>::max();
+                int nearest = -1;
+                for(unsigned j=0; j<pointslists[k].size(); ++j)
+                {
+                    UInt64 dist = squaredNorm(pointslists[k][j] - i.point());
+                    if(dist < minDist)
+                    {
+                        minDist = dist;
+                        nearest = j;
                     }
-
-            for(DoubleVolume::iterator vol_iter = volume.begin(); vol_iter != volume.end(); ++vol_iter)
-                *vol_iter=0;
-            for(std::list<IntVec>::iterator iter=(*list_iter).begin(); iter!=(*list_iter).end(); ++iter){
-                *(volume.traverser_begin()+*iter)=1;
+                }
+                *i = minDist;
+                vecDesired[i.point()] = pointslists[k][nearest] - i.point();
             }
 
-            separableMultiDistSquared(volume, volume, true);
-            shouldEqualSequence(volume.begin(),volume.end(),desired.begin());
+            volume = 0.0;
+            for(unsigned j=0; j<pointslists[k].size(); ++j)
+                volume[pointslists[k][j]] = 1;
+
+            separableMultiDistSquared(volume, dt, true);
+            shouldEqualSequence(dt.begin(), dt.end(), desired.begin());
+
+            {
+                //test vectorial distance
+                using functor::Arg1;
+                DoubleVecVolume vecVolume(volume.shape()); 
+                separableVectorDistance(volume, vecVolume, true);
+                DoubleVolume distVolume(volume.shape());
+                transformMultiArray(vecVolume, distVolume, squaredNorm(Arg1()));
+                shouldEqualSequence(distVolume.begin(), distVolume.end(), desired.begin());
+                // FIXME: this test fails because the nearest point may be ambiguous
+                //shouldEqualSequence(vecVolume.begin(), vecVolume.end(), vecDesired.begin());
+            }
         }
 
         typedef MultiArrayShape<3>::type Shape;
@@ -204,65 +224,93 @@ struct MultiDistanceTest
         
         MultiArray<3, double> res(vol.shape());
 
-        separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res), false);
+        separableMultiDistSquared(vol, res, false);
                 
         shouldEqualSequence(res.data(), res.data()+res.elementCount(), ref_dist2);
+
+        {
+            //test vectorial distance
+            using functor::Arg1;
+            DoubleVecVolume vecVolume(vol.shape()); 
+            separableVectorDistance(vol, vecVolume, false);
+            DoubleVolume distVolume(vol.shape());
+            transformMultiArray(vecVolume, distVolume, squaredNorm(Arg1()));
+            shouldEqualSequence(distVolume.begin(), distVolume.end(), ref_dist2);
+        }
     }
 
     void testDistanceAxesPermutation()
     {
+        using namespace vigra::functor;
         typedef MultiArrayShape<3>::type Shape;
         MultiArrayView<3, double> vol(Shape(12,10,35), volume_data);
         
         MultiArray<3, double> res1(vol.shape()), res2(vol.shape());
-        MultiArrayView<3, double, StridedArrayTag> pvol(vol.transpose()), pres2(res2.transpose());
+        DoubleVecVolume vecVolume(reverse(vol.shape())); 
         
         separableMultiDistSquared(vol, res1, true);
-        separableMultiDistSquared(pvol, pres2, true);
-                
+        separableMultiDistSquared(vol.transpose(), res2.transpose(), true);
         shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
-        
-        separableMultiDistSquared(vol, res1, false);
-        separableMultiDistSquared(pvol, pres2, false);
-                
-        shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
-    }
 
-    void testDistanceVolumesAnisoptopic()
+        res2 = 0.0;
+        separableVectorDistance(vol.transpose(), vecVolume, true);
+        transformMultiArray(vecVolume, res2.transpose(), squaredNorm(Arg1()));
+        shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
+
+        separableMultiDistSquared(vol, res1, false);
+        separableMultiDistSquared(vol.transpose(), res2.transpose(), false);
+        shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
+
+        res2 = 0.0;
+        separableVectorDistance(vol.transpose(), vecVolume, false);
+        transformMultiArray(vecVolume, res2.transpose(), squaredNorm(Arg1()));
+        shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
+     }
+
+    void testDistanceVolumesAnisotropic()
     {    
         double epsilon = 1e-14;
         TinyVector<double, 3> pixelPitch(1.2, 1.0, 2.4);
         
-        DoubleVolume desired(volume);
-        for(std::list<std::list<IntVec> >::iterator list_iter=pointslists.begin(); 
-                                          list_iter!=pointslists.end(); ++list_iter){
-
-            for(DoubleVolume::iterator vol_iter = volume.begin(); vol_iter != volume.end(); ++vol_iter)
-                *vol_iter=0;
-            for(std::list<IntVec>::iterator iter=(*list_iter).begin(); iter!=(*list_iter).end(); ++iter)
-                *(volume.traverser_begin()+*iter)=1;
-
-            IntVec temp;
-            for(int z=0; z<DEPTH; ++z)
-                for(int y=0; y<HEIGHT; ++y)
+        DoubleVolume res(volume.shape()), desired(volume.shape());
+        for(unsigned k = 0; k<pointslists.size(); ++k)
+        {
+            DoubleVolume::iterator i = desired.begin();
+            for(; i.isValid(); ++i)
+            {
+                double minDist = NumericTraits<double>::max();
+                int nearest = -1;
+                for(unsigned j=0; j<pointslists[k].size(); ++j)
                 {
-                    for(int x=0; x<WIDTH; ++x)
+                    double dist = squaredNorm(pixelPitch*(pointslists[k][j] - i.point()));
+                    if(dist < minDist)
                     {
-                        temp = IntVec(x,y,z);
-                        double tempVal=10000000.0;
-                        for(std::list<IntVec>::iterator iter=(*list_iter).begin(); iter!=(*list_iter).end(); ++iter){
-                            double squaredMag = (pixelPitch*(temp-*iter)).squaredMagnitude();
-                            if(squaredMag<tempVal){
-                                tempVal = squaredMag;
-                            }
-                        }
-                        desired(x,y,z)=tempVal;
+                        minDist = dist;
+                        nearest = j;
                     }
                 }
+                *i = minDist;
+                //vecDesired[i.point()] = pointslists[k][nearest] - i.point();
+            }
 
+            volume = 0.0;
+            for(unsigned j=0; j<pointslists[k].size(); ++j)
+                volume[pointslists[k][j]] = 1;
 
-            separableMultiDistSquared(volume, volume, true, pixelPitch);
-            shouldEqualSequenceTolerance(volume.begin(),volume.end(),desired.begin(), epsilon);
+            separableMultiDistSquared(volume, res, true, pixelPitch);
+            shouldEqualSequenceTolerance(res.begin(), res.end(), desired.begin(), epsilon);
+
+            {
+                //test vectorial distance
+                using namespace functor;
+                DoubleVecVolume vecVolume(volume.shape()); 
+                separableVectorDistance(volume, vecVolume, true, pixelPitch);
+                DoubleVolume distVolume(volume.shape());
+                // FIXME: the distance vectors should not include the pixel pitch
+                //transformMultiArray(vecVolume, distVolume, squaredNorm(Param(pixelPitch)*Arg1()));
+                transformMultiArray(vecVolume, distVolume, squaredNorm(Arg1()));
+                shouldEqualSequenceTolerance(distVolume.begin(), distVolume.end(), desired.begin(), epsilon);
+            }
         }
     }
 
@@ -270,27 +318,21 @@ struct MultiDistanceTest
     {
         for(unsigned int k=0; k<images.size(); ++k)
         {
-            Image res(images[k]);
-            ImageView img_array(ImageView::difference_type(images[k].width(), images[k].height()), &images[k](0,0));
+            Image res_old(images[k]);
+            ImageView img_array(Shape2(images[k].width(), images[k].height()), &images[k](0,0));
+            MultiArray<2, Image::value_type> res_new(img_array.shape());
 
-            distanceTransform(srcImageRange(images[k]), destImage(res), 0.0, 2);
+            distanceTransform(srcImageRange(images[k]), destImage(res_old), 0.0, 2);
 
-            separableMultiDistance(img_array, img_array, true);
+            separableMultiDistance(img_array, res_new, true);
+            shouldEqualSequenceTolerance(res_new.begin(), res_new.end(), res_old.data(), 1e-7);
 
-            Image::Iterator i = res.upperLeft();
-            Image::Accessor acc = res.accessor();
-
-            int x,y;
-
-            for(y=0; y<7; ++y)
-            {
-                for(x=0; x<7; ++x)
-                {
-                    double dist_old = acc(i, vigra::Diff2D(x,y));
-
-                    shouldEqualTolerance(dist_old, img_array(x,y), 1e-7);
-                }
-            }
+            DoubleVecImage vec_image(img_array.shape());
+            separableVectorDistance(img_array, vec_image, true);
+            MultiArray<2, double> img_array_dist(img_array.shape());
+            using namespace functor;
+            transformMultiArray(vec_image, img_array_dist, norm(Arg1()));
+            shouldEqualSequenceTolerance(img_array_dist.begin(), img_array_dist.end(), res_old.data(), 1e-7);
         }
     }
 
@@ -324,7 +366,7 @@ struct BoundaryMultiDistanceTest
            DEPTH    =   1}; //
 #endif
 
-    std::list<std::list<IntVec> > pointslists;
+    std::vector<std::vector<IntVec> > pointslists;
     std::vector<Image> images;
     Double1DArray img2;
     DoubleVolume volume;
@@ -335,7 +377,7 @@ struct BoundaryMultiDistanceTest
       volume(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH)),
       shouldVol(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH))
     {
-        std::list<IntVec> temp;
+        std::vector<IntVec> temp;
         temp.push_back(IntVec(      0,        0,       0));
         temp.push_back(IntVec(WIDTH-1,        0,       0));
         temp.push_back(IntVec(      0, HEIGHT-1,       0));
@@ -533,7 +575,7 @@ struct DistanceTransformTestSuite
     {
         add( testCase( &MultiDistanceTest::testDistanceVolumes));
         add( testCase( &MultiDistanceTest::testDistanceAxesPermutation));
-        add( testCase( &MultiDistanceTest::testDistanceVolumesAnisoptopic));
+        add( testCase( &MultiDistanceTest::testDistanceVolumesAnisotropic));
         add( testCase( &MultiDistanceTest::distanceTransform2DCompare));
         add( testCase( &MultiDistanceTest::distanceTest1D));
         add( testCase( &BoundaryMultiDistanceTest::distanceTest1D));
