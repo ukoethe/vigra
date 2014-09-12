@@ -468,6 +468,7 @@ struct BoundaryMultiDistanceTest
 
     void testDistanceVolumes()
     {    
+        using namespace multi_math;
         MultiArrayView<2, double> vol(Shape2(50,50), bndMltDst_data);    
         MultiArray<2, double> res(vol.shape());
 
@@ -477,7 +478,41 @@ struct BoundaryMultiDistanceTest
         boundaryMultiDistance(vol, res, true);
         shouldEqualSequenceTolerance(res.begin(), res.end(), bndMltDstArrayBorder_ref, 1e-6);
 
-        // FIXME: add tests for alternative boundary definitions
+        
+        MultiArray<2, double> res2(vol.shape());
+        MultiArray<2, TinyVector<double, 2> > res_vec(vol.shape());
+
+        boundaryMultiDistance(vol, res, false, InterpixelBoundary);
+        boundaryVectorDistance(vol, res_vec, false, InterpixelBoundary);
+        res2 = norm(res_vec);
+        shouldEqualSequenceTolerance(res.begin(), res.end(), res2.begin(), 0.25); // FIXME: check this -- 0.25 is a lot
+            
+        boundaryMultiDistance(vol, res, false, OuterBoundary);
+        boundaryVectorDistance(vol, res_vec, false, OuterBoundary);
+        res2 = norm(res_vec);
+        shouldEqualSequenceTolerance(res.begin(), res.end(), res2.begin(), 1e-15);
+            
+        boundaryMultiDistance(vol, res, false, InnerBoundary);
+        boundaryVectorDistance(vol, res_vec, false, InnerBoundary);
+        res2 = norm(res_vec);
+        shouldEqualSequenceTolerance(res.begin(), res.end(), res2.begin(), 1e-15);
+
+        boundaryMultiDistance(vol, res, true, InterpixelBoundary);
+        boundaryVectorDistance(vol, res_vec, true, InterpixelBoundary);
+        res2 = norm(res_vec);
+        shouldEqualSequenceTolerance(res.begin(), res.end(), res2.begin(), 0.25); // FIXME: check this -- 0.25 is a lot
+
+        boundaryMultiDistance(vol, res, true, OuterBoundary);
+        boundaryVectorDistance(vol, res_vec, true, OuterBoundary);
+        res2 = norm(res_vec);
+        shouldEqualSequenceTolerance(res.begin(), res.end(), res2.begin(), 1e-15);
+            
+        boundaryMultiDistance(vol, res, true, InnerBoundary);
+        boundaryVectorDistance(vol, res_vec, true, InnerBoundary);
+        res2 = norm(res_vec);
+        shouldEqualSequenceTolerance(res.begin(), res.end(), res2.begin(), 1e-15);
+            
+            // FIXME: add tests for alternative boundary definitions
     }
 
     void distanceTest1D()
