@@ -42,6 +42,7 @@
 #include <vigra/multi_morphology.hxx>
 #include <vigra/distancetransform.hxx>
 #include <vigra/multi_distance.hxx>
+#include <vigra/eccentricitytransform.hxx>
 
 namespace python = boost::python;
 
@@ -462,6 +463,17 @@ pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
     return res;
 }
 
+template < unsigned int N, class T, class S >
+NumpyAnyArray
+pythonEccentricityTransform(const NumpyArray<N, T > & image,
+                            NumpyArray<N, S > res)
+{
+    res.reshapeIfEmpty(image.taggedShape(),
+                       "eccentricityTransform(): Output array has wrong shape.");
+    eccentricityTransformOnLabels(image, res);
+    return res;
+}
+
 void defineMorphology()
 {
     using namespace python;
@@ -819,6 +831,26 @@ void defineMorphology()
        (arg("volume"),
         arg("array_border_is_active") = false,
         arg("out")=python::object()));
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<2, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()));
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<2, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()));
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<3, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()));
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<3, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()));
 }
 
 } // namespace vigra
