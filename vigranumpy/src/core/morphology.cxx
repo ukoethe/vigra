@@ -42,6 +42,7 @@
 #include <vigra/multi_morphology.hxx>
 #include <vigra/distancetransform.hxx>
 #include <vigra/multi_distance.hxx>
+#include <vigra/eccentricitytransform.hxx>
 
 namespace python = boost::python;
 
@@ -463,6 +464,50 @@ pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
     return res;
 }
 
+template < unsigned int N, class T, class S >
+NumpyAnyArray
+pythonEccentricityTransform(const NumpyArray<N, T> & image,
+                            NumpyArray<N, S> res)
+{
+    res.reshapeIfEmpty(image.taggedShape(),
+                       "eccentricityTransform(): Output array has wrong shape.");
+    eccentricityTransformOnLabels(image, res);
+    return res;
+}
+
+template < unsigned int N, class T >
+python::list
+pythonEccentricityCenters(const NumpyArray<N, T> & image)
+{
+    typedef typename MultiArrayShape<N>::type Point;
+    ArrayVector<Point> centers;
+    eccentricityCenters(image, centers);
+
+    python::list centerlist = python::list();
+    for (int i=0; i<centers.size(); ++i) {
+        centerlist.append(centers[i]);
+    }
+    return centerlist;
+}
+
+template < unsigned int N, class T, class S >
+python::tuple
+pythonEccentricityTransformWithCenters(const NumpyArray<N, T> & image,
+                                       NumpyArray<N, S> res)
+{
+    typedef typename MultiArrayShape<N>::type Point;
+    res.reshapeIfEmpty(image.taggedShape(),
+                       "eccentricityTransformWithCenters(): Output array has wrong shape.");
+    ArrayVector<Point> centers;
+    eccentricityTransformOnLabels(image, res, centers);
+
+    python::list centerlist = python::list();
+    for (int i=0; i<centers.size(); ++i) {
+        centerlist.append(centers[i]);
+    }
+    return python::make_tuple(res, centerlist);
+}
+
 void defineMorphology()
 {
     using namespace python;
@@ -831,6 +876,76 @@ void defineMorphology()
         arg("array_border_is_active") = false,
         arg("boundary") = InterpixelBoundary,
         arg("out")=python::object()));
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<2, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+        "Compute the eccentricity transform of a 2D label array.\n");
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<2, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 2D uint8 input array.\n");
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<3, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 3D label array.\n");
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<3, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 3D uint8 input array.\n");
+
+    def("eccentricityCenters",
+        registerConverters(&pythonEccentricityCenters<2, UInt32>),
+        (arg("image")),
+         "Compute the eccentricity centers for a 2D label array.\n");
+
+    def("eccentricityCenters",
+        registerConverters(&pythonEccentricityCenters<2, UInt8>),
+        (arg("image")),
+         "Likewise for a 2D uint8 input array.\n");
+
+    def("eccentricityCenters",
+        registerConverters(&pythonEccentricityCenters<3, UInt32>),
+        (arg("image")),
+         "Likewise for a 3D label array.\n");
+
+    def("eccentricityCenters",
+        registerConverters(&pythonEccentricityCenters<3, UInt8>),
+        (arg("image")),
+         "Likewise for a 3D uint8 array.\n");
+
+    def("eccentricityTransformWithCenters",
+        registerConverters(&pythonEccentricityTransformWithCenters<2, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Compute the eccentricity transform and eccentricity centers of a 2D label array.\n"
+         "\n"
+         "Returns the tuple (ecc_image, centers).\n");
+
+    def("eccentricityTransformWithCenters",
+        registerConverters(&pythonEccentricityTransformWithCenters<2, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 2D uint8 input array.\n");
+
+    def("eccentricityTransformWithCenters",
+        registerConverters(&pythonEccentricityTransformWithCenters<3, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 3D label array.\n");
+
+    def("eccentricityTransformWithCenters",
+        registerConverters(&pythonEccentricityTransformWithCenters<3, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 2D uint8 input array.\n");
 }
 
 } // namespace vigra
