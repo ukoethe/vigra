@@ -460,6 +460,7 @@ struct EccentricityTest
     void testEccentricityCenters()
     {
         typedef Shape2 Point;
+        typedef Shape3 Point3;
         {
             MultiArray<2, int> labels(Shape2(4,2), 1);
             labels.subarray(Shape2(2,0), Shape2(4,2)) = 2;
@@ -508,18 +509,52 @@ struct EccentricityTest
             shouldEqualSequence(centers.begin()+1, centers.end(), centers_ref);
 
             float dist_ref[] = {
-                0.000000f, 8.656855f, 1.414214f, 1.000000f, 1.414214f, 2.414214f, 2.828427f, 2.414214f, 1.414214f, 1.000000f, 
-                9.242640f, 8.242640f, 7.242641f, 0.000000f, 1.000000f, 2.000000f, 2.414214f, 1.414214f, 1.000000f, 0.000000f, 
-                3.414214f, 7.828427f, 6.828427f, 5.828427f, 4.828427f, 3.828427f, 2.828427f, 2.414214f, 0.000000f, 1.000000f, 
-                2.414214f, 2.000000f, 7.242640f, 6.242640f, 5.242640f, 4.242640f, 1.000000f, 1.414214f, 1.000000f, 1.414214f, 
-                1.414214f, 1.000000f, 1.414214f, 2.414214f, 2.828427f, 5.242640f, 0.000000f, 2.414214f, 2.000000f, 2.414214f, 
-                1.000000f, 0.000000f, 1.000000f, 2.000000f, 2.414214f, 1.414214f, 1.000000f, 3.414214f, 3.000000f, 3.414214f, 
-                1.414214f, 1.000000f, 9.656855f, 8.656855f, 2.828427f, 2.414214f, 4.828427f, 4.414214f, 4.000000f, 2.414214f, 
-                2.414214f, 2.000000f, 9.242641f, 8.242641f, 7.242641f, 6.242641f, 5.828427f, 5.414214f, 5.000000f, 1.414214f, 
-                3.414214f, 3.000000f, 9.656855f, 8.656855f, 7.656855f, 7.242641f, 6.828427f, 1.000000f, 0.000000f, 1.000000f, 
-                4.414214f, 4.000000f, 10.071068f, 9.071068f, 4.414214f, 3.414214f, 2.414214f, 1.414214f, 1.000000f, 1.414214f, 
+                0.000000f, 8.656855f, 1.414214f, 1.000000f, 1.414214f, 2.414214f, 2.828427f, 2.414214f, 1.414214f, 1.000000f,
+                9.242640f, 8.242640f, 7.242641f, 0.000000f, 1.000000f, 2.000000f, 2.414214f, 1.414214f, 1.000000f, 0.000000f,
+                3.414214f, 7.828427f, 6.828427f, 5.828427f, 4.828427f, 3.828427f, 2.828427f, 2.414214f, 0.000000f, 1.000000f,
+                2.414214f, 2.000000f, 7.242640f, 6.242640f, 5.242640f, 4.242640f, 1.000000f, 1.414214f, 1.000000f, 1.414214f,
+                1.414214f, 1.000000f, 1.414214f, 2.414214f, 2.828427f, 5.242640f, 0.000000f, 2.414214f, 2.000000f, 2.414214f,
+                1.000000f, 0.000000f, 1.000000f, 2.000000f, 2.414214f, 1.414214f, 1.000000f, 3.414214f, 3.000000f, 3.414214f,
+                1.414214f, 1.000000f, 9.656855f, 8.656855f, 2.828427f, 2.414214f, 4.828427f, 4.414214f, 4.000000f, 2.414214f,
+                2.414214f, 2.000000f, 9.242641f, 8.242641f, 7.242641f, 6.242641f, 5.828427f, 5.414214f, 5.000000f, 1.414214f,
+                3.414214f, 3.000000f, 9.656855f, 8.656855f, 7.656855f, 7.242641f, 6.828427f, 1.000000f, 0.000000f, 1.000000f,
+                4.414214f, 4.000000f, 10.071068f, 9.071068f, 4.414214f, 3.414214f, 2.414214f, 1.414214f, 1.000000f, 1.414214f,
             };
             shouldEqualSequenceTolerance(distances.begin(), distances.end(), dist_ref, 1e-5f);
+        }
+        {
+            MultiArrayView<2, unsigned int> labels(Shape2(100, 100), eccTrafo_data);
+
+            ArrayVector<Point> centers;
+            MultiArray<2, float> distances(labels.shape());
+            eccentricityTransformOnLabels(labels, distances, centers);
+
+            shouldEqual(centers.size(), 98);
+
+            Point centers_ref[98];
+            for (int i=0; i<98; ++i) {
+                centers_ref[i] = Point(eccTrafo_centers[2*i], eccTrafo_centers[2*i+1]);
+            }
+            shouldEqualSequence(centers.begin(), centers.end(), centers_ref);
+
+            shouldEqualSequenceTolerance(distances.begin(), distances.end(), eccTrafo_ref, 1e-5f);
+        }
+        {
+            MultiArrayView<3, unsigned int> labels(Shape3(40, 40, 40), eccTrafo_volume);
+
+            ArrayVector<Point3> centers;
+            MultiArray<3, float> distances(labels.shape());
+            eccentricityTransformOnLabels(labels, distances, centers);
+
+            shouldEqual(centers.size(), 221);
+
+            Point3 centers_ref[221];
+            for (int i=0; i<221; ++i) {
+                centers_ref[i] = Point3(eccTrafo_volume_centers[3*i], eccTrafo_volume_centers[3*i+1], eccTrafo_volume_centers[3*i+2]);
+            }
+            shouldEqualSequence(centers.begin(), centers.end(), centers_ref);
+
+            shouldEqualSequenceTolerance(distances.begin(), distances.end(), eccTrafo_volume_ref, 1e-5f);
         }
     }
 };
