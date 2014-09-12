@@ -4,6 +4,7 @@ INCLUDE(VigraAddTest)
 
 ADD_SUBDIRECTORY(adjacency_list_graph)
 ADD_SUBDIRECTORY(blockwiselabeling)
+ADD_SUBDIRECTORY(blockwisewatersheds)
 ADD_SUBDIRECTORY(classifier)
 ADD_SUBDIRECTORY(colorspaces)
 ADD_SUBDIRECTORY(convolution)
