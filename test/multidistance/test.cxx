@@ -665,18 +665,15 @@ struct DistanceTransformTestSuite
     DistanceTransformTestSuite()
     : vigra::test_suite("DistanceTransformTestSuite")
     {
-        //add( testCase( &MultiDistanceTest::testDistanceVolumes));
-        //add( testCase( &MultiDistanceTest::testDistanceAxesPermutation));
-        //add( testCase( &MultiDistanceTest::testDistanceVolumesAnisotropic));
-        //add( testCase( &MultiDistanceTest::distanceTransform2DCompare));
-        //add( testCase( &MultiDistanceTest::distanceTest1D));
-        //add( testCase( &BoundaryMultiDistanceTest::distanceTest1D));
-        //add( testCase( &BoundaryMultiDistanceTest::testDistanceVolumes));
-        //add( testCase( &BoundaryMultiDistanceTest::vectorDistanceTest1D));
-        //add( testCase( &EccentricityTest::testEccentricityCenters));
-
-
+        add( testCase( &MultiDistanceTest::testDistanceVolumes));
+        add( testCase( &MultiDistanceTest::testDistanceAxesPermutation));
+        add( testCase( &MultiDistanceTest::testDistanceVolumesAnisotropic));
+        add( testCase( &MultiDistanceTest::distanceTransform2DCompare));
+        add( testCase( &MultiDistanceTest::distanceTest1D));
+        add( testCase( &BoundaryMultiDistanceTest::distanceTest1D));
+        add( testCase( &BoundaryMultiDistanceTest::testDistanceVolumes));
         add( testCase( &BoundaryMultiDistanceTest::vectorDistanceTest1D));
+        add( testCase( &EccentricityTest::testEccentricityCenters));
     }
 };
 

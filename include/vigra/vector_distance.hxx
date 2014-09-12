@@ -270,7 +270,7 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
             {
                 if(label == labels[g.target(*arc)])
                 {
-                    double dist = squaredNorm(g.target(*arc) - point);
+                    double dist = squaredNorm(pixelPitch*(g.target(*arc) - point));
                     if (dist < min_dist)
                     {
                         min_dist = dist;
@@ -286,7 +286,7 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
         {
             min_pos = clip(boundary, Shape(0), labels.shape()-Shape(1));
             min_diff = 0.5*(boundary + min_pos) - point;
-            min_dist = squaredNorm(min_diff);
+            min_dist = squaredNorm(pixelPitch*min_diff);
         }
         
         //from this pixel look for the vector which points to the nearest interpixel between two label
@@ -295,7 +295,7 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
             if(label != labels[g.target(*arc)])
             {
                 T2 diff = 0.5*(g.target(*arc) + min_pos) - point;
-                double dist = squaredNorm(diff);
+                double dist = squaredNorm(pixelPitch*diff);
                 if (dist < min_dist)
                 {
                     min_dist = dist;
