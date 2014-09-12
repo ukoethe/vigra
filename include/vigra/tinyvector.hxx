@@ -2251,11 +2251,7 @@ transpose(TinyVector<V, SIZE> const & t, TinyVector<T, SIZE> const & permutation
 template<class V,int SIZE>
 inline
 TinyVector<V, SIZE> clipLower(TinyVector<V, SIZE> const & t){
-    TinyVector<V, SIZE> res(SkipInitialization);
-    for(int k=0; k<SIZE; ++k){
-        res[k]=t[k]< static_cast<V>(0) ?  static_cast<V>(0) :  t[k];
-    }
-    return res;
+    return clipLower(t, V(0));
 }
 
     /** \brief Clip values below a threshold.
@@ -2296,8 +2292,33 @@ inline
 TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,const V valLower, const V valUpper){
     TinyVector<V, SIZE> res(SkipInitialization);
     for(int k=0; k<SIZE; ++k){
-        res[k]=t[k]< valLower ? valLower :  t[k];
-        res[k]=t[k]> valUpper ? valUpper :  t[k];
+        res[k] =  (t[k] < valLower)
+                       ? valLower 
+                       : (t[k] > valUpper)
+                             ? valUpper
+                             : t[k];
+    }
+    return res;
+}
+
+    /** \brief Clip values to a vector of intervals.
+    
+        All elements less than \a valLower are set to \a valLower, all elements
+        bigger than \a valUpper are set to \a valUpper.
+    */
+template<class V,int SIZE>
+inline
+TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,
+                         TinyVector<V, SIZE> const & valLower, 
+                         TinyVector<V, SIZE> const & valUpper)
+{
+    TinyVector<V, SIZE> res(SkipInitialization);
+    for(int k=0; k<SIZE; ++k){
+        res[k] =  (t[k] < valLower[k])
+                       ? valLower[k] 
+                       : (t[k] > valUpper[k])
+                             ? valUpper[k] 
+                             : t[k];
     }
     return res;
 }
