@@ -341,8 +341,8 @@ Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
 
 
 template <unsigned int N, class Data, class Label, class Equal, class S3>
-Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, ChunkedArrayTag>& data,
-                               MultiArrayView<N, Label, ChunkedArrayTag> labels,
+Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
+                               ChunkedArray<N, Label>& labels,
                                const LabelOptions& options,
                                Equal equal, MultiArrayView<N, std::vector<Label>, S3>& mapping)
 {    
@@ -350,13 +350,13 @@ Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, ChunkedArrayTag>& d
     const TinyVector<MultiArrayIndex, N>* options_block_shape = getBlockShape<TinyVector<MultiArrayIndex, N> >(options);
     vigra_precondition(options_block_shape == 0, "block shape not supported for chunked arrays, uses chunk size per default");
     
-    typedef typename MultiArrayView<N, Data, ChunkedArrayTag>::difference_type Shape;
+    typedef typename ChunkedArray<N, Data>::shape_type Shape;
 
     const Data* background_value = getBackground<Data>(options);
     NeighborhoodType neighborhood = getNeighborhood(options);
     
-    typedef typename MultiArrayView<N, Data, ChunkedArrayTag>::iterator DataChunkIterator;
-    typedef typename MultiArrayView<N, Label, ChunkedArrayTag>::iterator LabelChunkIterator;
+    typedef typename ChunkedArray<N, Data>::chunk_const_iterator DataChunkIterator;
+    typedef typename ChunkedArray<N, Label>::chunk_iterator LabelChunkIterator;
 
     DataChunkIterator data_chunks_begin = data.chunk_begin(Shape(0), data.shape());
     LabelChunkIterator label_chunks_begin = labels.chunk_begin(Shape(0), labels.shape());
@@ -366,18 +366,20 @@ Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, ChunkedArrayTag>& d
                              neighborhood, equal, background_value, mapping);
 }
 template <unsigned int N, class Data, class Label, class Equal>
-Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, ChunkedArrayTag>& data,
-                               MultiArrayView<N, Label, ChunkedArrayTag> labels,
+Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
+                               ChunkedArray<N, Label>& labels,
                                const LabelOptions& options, Equal equal)
-{    
+{   
+    using namespace blockwise_labeling_detail;
     MultiArray<N, std::vector<Label> > mapping(data.chunkArrayShape());
     Label result = labelMultiArrayBlockwise(data, labels, options, equal, mapping);
-    toGlobalLabels(labels.chunk_begin(), labels.chunk_end(), mapping.begin(), mapping.end());
+    typedef typename ChunkedArray<N, Data>::shape_type Shape;
+    toGlobalLabels(labels.chunk_begin(Shape(0), data.shape()), labels.chunk_end(Shape(0), data.shape()), mapping.begin(), mapping.end());
     return result;
 }
-template <unsigned int N, class Data, class Label, class Equal>
-Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, ChunkedArrayTag>& data,
-                               MultiArrayView<N, Label, ChunkedArrayTag> labels,
+template <unsigned int N, class Data, class Label>
+Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
+                               ChunkedArray<N, Label>& labels,
                                const LabelOptions& options = LabelOptions())
 {
     return labelMultiArrayBlockwise(data, labels, options, std::equal_to<Data>());

@@ -106,8 +106,8 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                     tested_label_number = labelMultiArrayBlockwise(data, tested_labels, options);
 
                     if(!equivalentLabels(correct_labels.begin(), correct_labels.end(),
-                                tested_labels.begin(), tested_labels.end()) ||
-                            correct_label_number != tested_label_number)
+                                         tested_labels.begin(), tested_labels.end()) ||
+                       correct_label_number != tested_label_number)
                     {
                         std::ostringstream oss;
                         oss << "labeling not equivalent" << endl;
@@ -232,16 +232,34 @@ struct BlockwiseLabelingTest
     }
     void chunkedArrayTest()
     {
-        typedef ChunkedArrayFull<2, int> DataArray;
-        typedef ChunkedArrayFull<2, size_t> LabelArray;
+        typedef ChunkedArrayLazy<3, int> DataArray;
+        typedef ChunkedArrayLazy<3, size_t> LabelArray;
         typedef DataArray::shape_type Shape;
-
-        DataArray data(Shape(4));
-        fillRandom(data.begin(), data.end(), 3);
-        LabelArray labels(Shape(4));
         
-        MultiArray<2, std::vector<size_t> > mapping(Shape(1));
-        labelMultiArrayBlockwise(data, labels, LabelOptions(), std::equal_to<int>(), mapping);
+        Shape shape = Shape(100, 200, 300);
+        Shape chunk_shape = Shape(32);
+
+        DataArray data(shape, chunk_shape);
+        fillRandom(data.begin(), data.end(), 3);
+        LabelArray labels(shape, chunk_shape);
+        
+        LabelOptions options;
+        options.neighborhood(IndirectNeighborhood).background(1);
+
+        size_t tested_label_number = labelMultiArrayBlockwise(data, labels, options);
+        MultiArray<3, size_t> checked_out_labels(shape);
+        labels.checkoutSubarray(Shape(0), checked_out_labels);
+        
+        MultiArray<3, int> oldschool_data_array(shape);
+        MultiArray<3, size_t> oldschool_label_array(shape);
+        
+        data.checkoutSubarray(Shape(0), oldschool_data_array);
+        size_t actual_label_number = labelMultiArrayWithBackground(oldschool_data_array, oldschool_label_array,
+                                                                   IndirectNeighborhood, 1);
+        
+        shouldEqual(tested_label_number, actual_label_number);
+        shouldEqual(equivalentLabels(checked_out_labels.begin(), checked_out_labels.end(),
+                                     oldschool_label_array.begin(), oldschool_label_array.end()), true);
     }
 
     void fiveDimensionalRandomTest()
