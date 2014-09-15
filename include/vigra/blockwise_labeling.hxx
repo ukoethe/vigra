@@ -5,6 +5,7 @@
 #include <vigra/multi_labeling.hxx>
 #include <vigra/union_find.hxx>
 #include <vigra/multi_array_chunked.hxx>
+#include <vigra/metaprogramming.hxx>
 
 #include <vigra/visit_border.hxx>
 #include <vigra/blockify.hxx>
@@ -26,9 +27,9 @@ struct BorderVisitor
     Equal* equal;
     
     template <class Data, class Shape>
-    void operator()(const Data& u_data, Label& u_label, const Data& v_data, Label& v_label, const Shape&)
+    void operator()(const Data& u_data, Label& u_label, const Data& v_data, Label& v_label, const Shape& diff)
     {
-        if((*equal)(u_data, v_data))
+        if(labeling_equality::callEqual(*equal, u_data, v_data, diff))
         {
             global_unions->makeUnion(u_label + u_label_offset, v_label + v_label_offset);       
         }
