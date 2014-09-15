@@ -4,6 +4,7 @@
 #include <vigra/multi_array.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/blockify.hxx>
+#include <vigra/blockwise_labeling.hxx>
 
 #include <limits>
 
@@ -98,41 +99,11 @@ public:
     }
 };
 
-template <class T>
-struct FlaggedUnsigned
-{
-    typedef T DataType;
-    static const T max_label = std::numeric_limits<T>::max() >> 1;
-    static const T flag_bit = ~max_label;
-    static const int flag_shift_bytes = std::numeric_limits<T>::digits - 1;
-    
-    T data;
-    
-    static T max()
-    {
-        return max_label;
-    }
-    static FlaggedUnsigned construct(T data, bool flag)
-    {
-        vigra_assert(flag <= 1, "flag out of bounds");
-        vigra_assert(data <= max_label, "data out of bounds");
-        return FlaggedUnsigned{data | (static_cast<T>(flag) << flag_shift_bytes)};
-    }
-    
-    bool getFlag() const
-    {
-        return (data & flag_bit) != 0;
-    }
-    T getData() const
-    {
-        return data & max_label;
-    }
-};
-
 template <unsigned int N, class T, class S,
           class DirectionsBlocksIterator>
 void prepareBlockwiseWatersheds(OverlapsGenerator<N, T, S> overlaps,
-                                DirectionsBlocksIterator directions_blocks_begin)
+                                DirectionsBlocksIterator directions_blocks_begin,
+                                NeighborhoodType neighborhood)
 {
     typedef typename MultiArrayShape<N>::type Shape;
     typedef typename DirectionsBlocksIterator::value_type DirectionsBlock;
@@ -150,7 +121,7 @@ void prepareBlockwiseWatersheds(OverlapsGenerator<N, T, S> overlaps,
         typedef typename Graph::NodeIt GraphScanner;
         typedef typename Graph::OutArcIt NeighborIterator;
         
-        Graph graph(data_block.block.shape());
+        Graph graph(data_block.block.shape(), neighborhood);
         for(GraphScanner node(graph); node != lemon::INVALID; ++node)
         {
             if(within(*node, data_block.inner_bounds))
@@ -175,6 +146,47 @@ void prepareBlockwiseWatersheds(OverlapsGenerator<N, T, S> overlaps,
             }
         }
     }
+}
+
+template <unsigned int N>
+struct UnionFindWatershedEquality
+{
+    GridGraph<N, undirected_tag>* graph;
+    
+    template <class Shape>
+    bool operator()(unsigned short u, const unsigned short v, const Shape& diff) const
+    {
+        return (u == graph->maxDegree() && v == graph->maxDegree()) ||
+               (u != graph->maxDegree() && graph->neighborOffset(u) == diff) ||
+               (v != graph->maxDegree() && graph->neighborOffset(graph->oppositeIndex(v)) == diff);
+    }
+
+    struct WithDiffTag
+    {};
+};
+
+template <unsigned int N, class Data, class S1,
+                          class Label, class S2>
+void unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
+                                 MultiArrayView<N, Label, S2> labels,
+                                 NeighborhoodType neighborhood,
+                                 const typename MultiArrayView<N, Data, S1>::difference_type& block_shape)
+{
+    using namespace blockwise_watersheds_detail;
+
+    typedef typename MultiArrayView<N, Data, S1>::difference_type Shape;
+    Shape shape = data.shape();
+    vigra_precondition(shape == labels.shape(), "shapes of data and labels do not match");
+    
+    MultiArray<N, unsigned short> directions(shape);
+    
+    MultiArray<N, MultiArrayView<N, unsigned short> > directions_blocks = blockify(directions, block_shape);
+
+    OverlapsGenerator<N, Data, S1> overlaps(data, block_shape);
+    prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), neighborhood);
+    GridGraph<N, undirected_tag> graph(data.shape(), neighborhood);
+    UnionFindWatershedEquality<N> equal = {&graph};
+    labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood), equal);
 }
 
 }
