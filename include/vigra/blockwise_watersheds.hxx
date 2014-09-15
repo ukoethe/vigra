@@ -1,6 +1,9 @@
 #ifndef VIGRA_BLOCKWISE_WATERSHEDS_HXX_
 #define VIGRA_BLOCKWISE_WATERSHEDS_HXX_
 
+#include <iostream>
+using namespace std;
+
 #include <vigra/multi_array.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/blockify.hxx>
@@ -14,15 +17,6 @@ namespace vigra
 namespace blockwise_watersheds_detail
 {
 
-template <unsigned int N, class T, class S>
-struct OverlappingBlock
-{
-    typedef typename MultiArrayView<N, T, S>::difference_type Shape;
-    
-    MultiArrayView<N, T, S> block;
-    std::pair<Shape, Shape> inner_bounds;
-};
-
 template <class Shape>
 bool within(const Shape& coordinates, const std::pair<Shape, Shape>& bounds)
 {
@@ -34,6 +28,60 @@ bool within(const Shape& coordinates, const std::pair<Shape, Shape>& bounds)
     return true;
 }
 
+template <class Shape>
+std::pair<Shape, Shape> blockBoundsAt(const Shape& coordinates, const Shape& global_shape, const Shape& block_shape)
+{
+    Shape block_begin;
+    for(int i = 0; i != Shape::static_size; ++i)
+    {
+        block_begin[i] = coordinates[i] * block_shape[i];
+        vigra_assert(block_begin[i] < global_shape[i], "block coordinates out of bounds");
+    }
+    Shape block_end;
+    for(int i = 0; i != Shape::static_size; ++i)
+    {
+        block_end[i] = std::min(block_begin[i] + block_shape[i], global_shape[i]);
+    }
+    return std::make_pair(block_begin, block_end);
+}
+template <class Shape>
+std::pair<Shape, Shape> overlapBoundsAt(const std::pair<Shape, Shape>& block_bounds, const Shape& global_shape)
+{
+    Shape overlapped_block_begin = block_bounds.first;
+    Shape overlapped_block_end = block_bounds.second;
+    for(int i = 0; i != Shape::static_size; ++i)
+    {
+        if(overlapped_block_begin[i] != 0)
+            --overlapped_block_begin[i];
+        if(overlapped_block_end[i] != global_shape[i])
+            ++overlapped_block_end[i];
+    }
+    return std::make_pair(overlapped_block_begin, overlapped_block_end);
+}
+template <class Shape>
+Shape blocksShape(const Shape& global_shape, const Shape& block_shape)
+{
+    Shape result;
+    for(int i = 0; i != Shape::static_size; ++i)
+    {
+        result[i] = global_shape[i] / block_shape[i];
+        if(block_shape[i] * result[i] != global_shape[i])
+            ++result[i];
+    }
+    return result;
+
+}
+
+
+template <unsigned int N, class T, class S>
+struct OverlappingBlock
+{
+    typedef typename MultiArrayView<N, T, S>::difference_type Shape;
+    
+    MultiArrayView<N, T, S> block;
+    std::pair<Shape, Shape> inner_bounds;
+};
+
 template <unsigned int N, class T, class S>
 class OverlapsGenerator
 {
@@ -42,35 +90,6 @@ private:
 
     MultiArrayView<N, T, S> arr;
     Shape block_shape;
-    
-    std::pair<Shape, Shape> blockBoundsAt(const Shape& coordinates) const
-    {
-        Shape block_begin;
-        for(int i = 0; i != N; ++i)
-        {
-            block_begin[i] = coordinates[i] * block_shape[i];
-            vigra_assert(block_begin[i] < arr.shape(i), "block coordinates out of bounds");
-        }
-        Shape block_end;
-        for(int i = 0; i != N; ++i)
-        {
-            block_end[i] = std::min(block_begin[i] + block_shape[i], arr.shape(i));
-        }
-        return std::make_pair(block_begin, block_end);
-    }
-    std::pair<Shape, Shape> overlapBoundsAt(const std::pair<Shape, Shape>& block_bounds) const
-    {
-        Shape overlapped_block_begin = block_bounds.first;
-        Shape overlapped_block_end = block_bounds.second;
-        for(int i = 0; i != N; ++i)
-        {
-            if(overlapped_block_begin[i] != 0)
-                --overlapped_block_begin[i];
-            if(overlapped_block_end[i] != arr.shape(i))
-                ++overlapped_block_end[i];
-        }
-        return std::make_pair(overlapped_block_begin, overlapped_block_end);
-    }
 public:
     OverlapsGenerator(MultiArrayView<N, T, S> arr, const Shape& block_shape)
       : arr(arr),
@@ -78,8 +97,8 @@ public:
     {}
     OverlappingBlock<N, T, S> operator[](const Shape& coordinates) const
     {
-        std::pair<Shape, Shape> block_bounds = blockBoundsAt(coordinates);
-        std::pair<Shape, Shape> overlap_bounds = overlapBoundsAt(block_bounds);
+        std::pair<Shape, Shape> block_bounds = blockBoundsAt(coordinates, arr.shape(), block_shape);
+        std::pair<Shape, Shape> overlap_bounds = overlapBoundsAt(block_bounds, arr.shape());
         
         OverlappingBlock<N, T, S> result;
         result.block = arr.subarray(overlap_bounds.first, overlap_bounds.second);
@@ -88,14 +107,47 @@ public:
     }
     Shape shape() const
     {
-        Shape result;
-        for(int i = 0; i != N; ++i)
-        {
-            result[i] = arr.shape(i) / block_shape[i];
-            if(block_shape[i] * result[i] != arr.shape(i))
-                ++result[i];
-        }
+        return blocksShape(arr.shape(), block_shape);
+    }
+};
+
+template <unsigned int N, class T>
+struct OverlappingBlock<N, T, ChunkedArrayTag>
+{
+    typedef typename MultiArrayShape<N>::type Shape;
+    
+    MultiArray<N, T> block; // not a view, overlaps are checked out
+    std::pair<Shape, Shape> inner_bounds;
+};
+
+template <unsigned int N, class T>
+class OverlapsGenerator<N, T, ChunkedArrayTag>
+{
+private:
+    typedef typename MultiArrayView<N, T, ChunkedArrayTag>::difference_type Shape;
+
+    MultiArrayView<N, T, ChunkedArrayTag> arr;
+    Shape block_shape;
+public:
+    OverlapsGenerator(MultiArrayView<N, T, ChunkedArrayTag> arr, const Shape& block_shape)
+      : arr(arr),
+        block_shape(block_shape)
+    {}
+    OverlappingBlock<N, T, ChunkedArrayTag> operator[](const Shape& coordinates) const
+    {
+        cout << "chunked" << endl;
+        std::pair<Shape, Shape> block_bounds = blockBoundsAt(coordinates, arr.shape(), block_shape);
+        std::pair<Shape, Shape> overlap_bounds = overlapBoundsAt(block_bounds, arr.shape());
+        
+        OverlappingBlock<N, T, ChunkedArrayTag> result;
+        result.block.reshape(overlap_bounds.second - overlap_bounds.first);
+        arr.checkoutSubarray(overlap_bounds.first, result.block);
+        result.inner_bounds = std::make_pair(block_bounds.first - overlap_bounds.first, block_bounds.second - overlap_bounds.first);
         return result;
+    }
+    Shape shape() const
+    {
+        return blocksShape(arr.shape(), block_shape);
     }
 };
 
@@ -186,7 +238,7 @@ void unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
     prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), neighborhood);
     GridGraph<N, undirected_tag> graph(data.shape(), neighborhood);
     UnionFindWatershedEquality<N> equal = {&graph};
-    labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood), equal);
+    labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood).blockShape(block_shape), equal);
 }
 
 }

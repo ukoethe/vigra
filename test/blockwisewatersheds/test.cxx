@@ -14,8 +14,8 @@ using namespace blockwise_watersheds_detail;
 
 int main()
 {
-    typedef MultiArray<2, int> Array;
-    typedef MultiArray<2, int> DirectionsArray;
+    typedef ChunkedArrayFull<2, int> Array;
+    typedef ChunkedArrayFull<2, int> DirectionsArray;
     typedef Array::difference_type Shape;
 
     Shape shape(4);
