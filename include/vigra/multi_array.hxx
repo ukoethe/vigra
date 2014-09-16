@@ -1896,7 +1896,7 @@ public:
         return ret;
     }
 
-    view_type view ()
+    view_type view () const
     {
         return *this;
     }
