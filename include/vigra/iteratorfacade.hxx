@@ -117,6 +117,57 @@ private:
     }
 };
 
+template<class MAP>
+class MapKeyIterator
+ : public ForwardIteratorFacade<MapKeyIterator<MAP>,typename MAP::key_type,true>
+{
+
+public:
+    typedef ForwardIteratorFacade<MapKeyIterator<MAP>,typename MAP::key_type,true> BaseType;
+    typedef typename MAP::const_iterator InternalIterator;
+    typedef typename BaseType::value_type value_type;
+    typedef typename BaseType::reference reference;
+    typedef typename BaseType::pointer pointer;
+    
+    MapKeyIterator(InternalIterator i)
+    : iter_(i)
+    {}
+
+  private:
+
+    friend class IteratorFacadeCoreAccess;
+    
+    bool equal(const MapKeyIterator & other) const{
+        return iter_ == other.iter_;
+    }
+
+    void increment(){
+        ++iter_;
+    }
+    
+    reference dereference()const{
+        return iter_->first;
+    }
+    
+    InternalIterator iter_;
+};
+
+template <class MAP>
+inline MapKeyIterator<MAP>
+key_begin(MAP const & m)
+{
+    return MapKeyIterator<MAP>(m.begin());
+
+}
+
+template <class MAP>
+inline MapKeyIterator<MAP>
+key_end(MAP const & m)
+{
+    return MapKeyIterator<MAP>(m.end());
+
+}
+
 } // namespace vigra
 
 
