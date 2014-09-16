@@ -552,6 +552,15 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
 // a truly reliable skeleton is only possible by considering the 
 // interpixel boundaries between the voronoi regions of the 
 // vector distance transform
+//
+// FIXME:
+// * The raw skeleton may not be connected (due to spurious Voronoi regions).
+//   There is no guarantee that the anchor belongs to the main part.
+// * Holes in the shape are not handled correctly.
+// * Thin shapes (one pixel wide) have not been tried.
+// * Voronoi regions are determined with an equality predicate that considers
+//   support points equivaent when they are adjacent. This is probably too simplistic.
+// * The distance on interpixel points is interpolated by nearest-neighbor method.
 template <class T1, class S1,
           class T2, class S2>
 void
@@ -566,32 +575,34 @@ skeletonizeInterpixel(MultiArrayView<2, T1, S1> const & labels,
     typedef typename Graph::Node               Node;
     typedef typename Graph::NodeIt             NodeIt;
     typedef typename Graph::EdgeIt             EdgeIt;
-    typedef typename Graph::OutBackArcIt       neighbor_iterator;
+    typedef typename Graph::OutArcIt           ArcIt;
+    typedef typename Graph::OutBackArcIt       BackArcIt;
     typedef double                             WeightType;
     typedef detail::SkeletonNode<Node>         SNode;
     typedef std::map<Node, SNode>              Skeleton;
     
-    vigra_precondition(labels.shape() == dest.shape(),
+    Shape shape = labels.shape();
+    vigra_precondition(2*shape - Shape(1) == dest.shape(),
         "skeleton(): shape mismatch between input and output.");
         
-    MultiArray<N, Shape> vectors(labels.shape());
+    MultiArray<N, Shape> vectors(shape);
     boundaryVectorDistance(labels, vectors, false, OuterBoundary);
     
-    MultiArray<N, Shape> vectors2(labels.shape());
-    for(auto it = createCoupledIterator(vectors, vectors2, labels); it.isValid(); ++it)
-        get<2>(*it) = get<3>(*it) > 0
-                         ? get<1>(*it) + get<0>(*it)
-                         : Shape(lemon::INVALID);
-    MultiArray<N, UInt32> voronoi(labels.shape());
-    labelMultiArrayWithBackground(vectors2, voronoi, IndirectNeighborhood, Shape(lemon::INVALID),
-                                  [](Node const & p, Node const & q) {return max(abs(p-q)) <= 1; });
-    exportImage(voronoi, "voronoi.tif");
-    
-    dest = 0;
     T1 maxLabel = 0;
+    dest = 0;
     // find skeleton points
     {
-        Graph g(labels.shape());
+        MultiArray<N, Shape> support_points(shape);
+        Shape background(-2);
+        for(auto it = createCoupledIterator(support_points, vectors, labels); it.isValid(); ++it)
+            get<1>(it) = get<3>(it) > 0
+                             ? get<2>(it) + get<0>(it)
+                             : background;
+        MultiArray<N, UInt32> voronoi(shape);
+        labelMultiArrayWithBackground(support_points, voronoi, IndirectNeighborhood, background,
+                                      [](Node const & p, Node const & q) {return max(abs(p-q)) <= 1; });
+                                      
+        Graph g(shape);
         for (EdgeIt edge(g); edge != lemon::INVALID; ++edge)
         {
             Node p1 = g.u(*edge),
@@ -599,71 +610,40 @@ skeletonizeInterpixel(MultiArrayView<2, T1, S1> const & labels,
             T1 l1 = labels[p1], 
                l2 = labels[p2];
             maxLabel = max(maxLabel, max(l1, l2));
-            if(l1 == l2)
-            {
-                if(l1 <= 0)  // only consider positive labels
-                    continue;
-                
-                Node b1 = vectors[p1] + p1,
-                     b2 = vectors[p2] + p2,
-                     diff = b2 - b1;
-                if(max(abs(diff)) <= 1) // points whose support points are equal or adjacent
-                    continue;           // don't belong to the skeleton
-                MultiArrayIndex d = squaredNorm(diff);
-                MultiArrayIndex d1 = abs(2*dot(diff, p1) - d),
-                                d2 = abs(2*dot(diff, p2) - d);
-                if(d1 <= d2) // the point closer to the bisector of b1 and b2 belongs to the skeleton
-                    dest[p1] = l1;
-                else
-                    dest[p2] = l2;
-                
-                // Node b1 = vectors[p1] + p1,
-                     // b2 = vectors[p2] + p2,
-                     // dp = p2 - p1,
-                     // db = b2 - b1;
-                // if(max(abs(db)) <= 1) // points whose support points are equal or adjacent
-                    // continue;           // don't belong to the skeleton
-                // // if(squaredNorm(db) <= 1) // points whose support points are equal or adjacent
-                    // // continue;           // don't belong to the skeleton
-                
-                // MultiArrayIndex bp = dot(db, dp),
-                                // d  = dot(db, vectors[p1]+vectors[p2]);
-                // if(d*bp <= 0)
-                    // dest[p1] = l1;
-                // else
-                    // dest[p2] = l2;
-            }
-            else
-            {
-                if(l1 > 0 && 
-                   max(abs(vectors[p1] + p1 - p2)) > 1)
-                        dest[p1] = l1;
-                if(l2 > 0 &&
-                   max(abs(vectors[p2] + p2 - p1)) > 1)
-                        dest[p2] = l2;
-
-                // if(l1 > 0 && 
-                  // squaredNorm(vectors[p1] + p1 - p2) > 1)
-                        // dest[p1] = l1;
-                // if(l2 > 0 &&
-                   // squaredNorm(vectors[p2] + p2 - p1) > 1)
-                        // dest[p2] = l2;
-            }
+            if(l1 == l2 && l1 > 0 &&
+               voronoi[p1] != voronoi[p2])
+                dest[p1+p2] = l1;
         }
     }
     
     {
-        using namespace multi_math;
-        MultiArray<2, int> dist = squaredNorm(vectors);
-        Graph g(labels.shape(), IndirectNeighborhood);
-        detail::skeletonThinning(g, dist, dest);
+        MultiCoordinateIterator<N> p(shape - Shape(1));
+        Graph g(dest.shape());
+        for (; p.isValid(); ++p)
+        {
+            Node p1 = 2*(*p) + Shape(1);
+            T2 label = 0;
+            unsigned int v = 0;
+            for (ArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
+            {
+                Node p2 = g.target(*arc);
+                v <<= 1;
+                if(dest[p2] > 0)
+                {
+                    v |= 1;
+                    label = dest[p2];
+                }
+            }
+            if(v > 0 && v != 3 && v != 5 && v != 10 && v != 12)
+                dest[p1] = label;
+        }
     }
     
     if(options.mode == SkeletonOptions::DontPrune)
         return;
         
     ArrayVector<detail::SkeletonRegion<Node> > regions((size_t)maxLabel + 1);
-    Graph g(labels.shape(), IndirectNeighborhood);
+    Graph g(dest.shape(), IndirectNeighborhood);
     typename Graph::template EdgeMap<WeightType> weights(g);
     for (NodeIt node(g); node != lemon::INVALID; ++node)
     {
@@ -672,7 +652,7 @@ skeletonizeInterpixel(MultiArrayView<2, T1, S1> const & labels,
         if(label > 0)
             regions[(size_t)label].addNode(p1);
 
-        for (neighbor_iterator arc(g, p1); arc != lemon::INVALID; ++arc)
+        for (BackArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
         {
             Node p2 = g.target(*arc);
             if(label > 0 && dest[p2] == label)
@@ -729,7 +709,7 @@ skeletonizeInterpixel(MultiArrayView<2, T1, S1> const & labels,
             WeightType l = n1.length + norm(p1-p2);
             if(!compute_salience)
             {
-                n1.salience = n1.length;
+                n1.salience = 0.5*n1.length;
                 // propagate length to parent if this is the longest subtree
                 if(n2.length < l)
                 {
@@ -739,7 +719,7 @@ skeletonizeInterpixel(MultiArrayView<2, T1, S1> const & labels,
             }
             else 
             {
-                const double min_length = 4.0; // salience is meaningless for shorter segments due
+                const double min_length = 6.0; // salience is meaningless for shorter segments due
                                                // to quantization noise (staircasing) of the boundary
                 // propagate length to parent if this is the longest subtree
                 if(n2.length < l)
@@ -751,7 +731,8 @@ skeletonizeInterpixel(MultiArrayView<2, T1, S1> const & labels,
                 // compute salience
                 if(n1.length >= min_length)
                 {
-                    n1.salience = max(n1.salience, (n1.length + 0.5) / norm(vectors[p1]));
+                    Shape q = p1 / 2; // FIXME: use better interpolation for the distance
+                    n1.salience = max(n1.salience, (n1.length + 1.0) / (2.0*norm(vectors[q])));
                 
                     // propagate salience to parent if this is the most salient subtree
                     if(n2.salience < n1.salience)

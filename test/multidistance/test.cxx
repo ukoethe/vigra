@@ -739,11 +739,39 @@ struct SkeletonTest
         MultiArray<2, double> data, skel;
         importImage("blatt.png", data);
 
-        skel.reshape(data.shape());
+        skel.reshape(2*data.shape()-Shape2(1));
 
-        skeletonize(data, skel,
+        skeletonizeInterpixel(data, skel,
                     SkeletonOptions().dontPrune());
         exportImage(skel, "skeleton0.tif");
+
+        //skeletonizeInterpixel(data, skel,
+        //            SkeletonOptions().returnLength());
+        //exportImage(skel, "skeleton1.tif");
+
+        //skeletonizeInterpixel(data, skel,
+        //            SkeletonOptions().pruneLength(100.0));
+        //exportImage(skel, "skeleton2.tif");
+
+        //skeletonizeInterpixel(data, skel,
+        //            SkeletonOptions().pruneLengthRelative(0.5));
+        //exportImage(skel, "skeleton3.tif");
+
+        skeletonizeInterpixel(data, skel,
+                    SkeletonOptions().returnSalience());
+        exportImage(skel, "skeleton1.tif");
+
+        skeletonizeInterpixel(data, skel,
+                    SkeletonOptions().pruneSalience(20.0));
+        exportImage(skel, "skeleton2.tif");
+
+        skeletonizeInterpixel(data, skel,
+                    SkeletonOptions().pruneSalienceRelative(0.6));
+        exportImage(skel, "skeleton3.tif");
+
+        //skeletonize(data, skel,
+        //            SkeletonOptions().dontPrune());
+        //exportImage(skel, "skeleton0.tif");
 
         //skeletonize(data, skel,
         //            SkeletonOptions().returnLength());
