@@ -55,6 +55,7 @@
 #include "adjacency_list_graph.hxx"
 #include "graph_maps.hxx"
 #include "functorexpression.hxx"
+#include "array_vector.hxx"
 
 namespace vigra{
 
@@ -217,6 +218,7 @@ namespace vigra{
         typedef ChangeablePriorityQueue<WeightType>           PqType;
         typedef typename Graph:: template NodeMap<Node>       PredecessorsMap;
         typedef typename Graph:: template NodeMap<WeightType> DistanceMap;
+        typedef ArrayVector<Node>                             DiscoveryOrder;
             
         /// \ brief constructor from graph
         ShortestPathDijkstra(const Graph & g)
@@ -287,14 +289,21 @@ namespace vigra{
             return target_!=lemon::INVALID;
         }
 
+        /// \brief get an array with all visited nodes, sorted by distance from source
+        const DiscoveryOrder & discoveryOrder() const{
+            return discoveryOrder_;
+        }
+
         /// \brief get the predecessors node map (after a call of run)
         const PredecessorsMap & predecessors()const{
             return predMap_;
         }
+        
         /// \brief get the distances node map (after a call of run)
         const DistanceMap & distances()const{
             return distMap_;
         }
+        
         /// \brief get the distance to a rarget node (after a call of run)
         WeightType distance(const Node & target)const{
             return distMap_[target];
@@ -309,13 +318,12 @@ namespace vigra{
                      WeightType maxDistance=NumericTraits<WeightType>::max())
         {
             target_ = lemon::INVALID;
-            Node lastNode = lemon::INVALID;
             while(!pq_.empty() ){ //&& !finished){
                 const Node topNode(graph_.nodeFromId(pq_.top()));
                 if(distMap_[topNode] > maxDistance)
                     break; // distance threshold exceeded
                 pq_.pop();
-                lastNode = topNode;
+                discoveryOrder_.push_back(topNode);
                 if(topNode == target)
                     break;
                 // loop over all neigbours
@@ -347,9 +355,9 @@ namespace vigra{
                 predMap_[topNode]=lemon::INVALID;
                 pq_.pop();
             }
-            if(target == lemon::INVALID || lastNode == target)
-                target_ = lastNode; // Means that target was reached. If, to the contrary, target 
-                                    // was unreachable within maxDistance, target_ remains INVALID.
+            if(target == lemon::INVALID || discoveryOrder_.back() == target)
+                target_ = discoveryOrder_.back(); // Means that target was reached. If, to the contrary, target 
+                                                  // was unreachable within maxDistance, target_ remains INVALID.
         }
 
         void initializeMaps(Node const & source){
@@ -359,6 +367,7 @@ namespace vigra{
             }
             distMap_[source]=static_cast<WeightType>(0.0);
             predMap_[source]=source;
+            DiscoveryOrder(1, source).swap(discoveryOrder_);
             pq_.push(graph_.id(source),0.0);
             source_=source;
         }
@@ -369,6 +378,7 @@ namespace vigra{
                 const Node node(*n);
                 predMap_[node]=lemon::INVALID;
             }
+            DiscoveryOrder(source, source_end).swap(discoveryOrder_);
             for( ; source != source_end; ++source)
             {
                 distMap_[*source]=static_cast<WeightType>(0.0);
@@ -392,6 +402,7 @@ namespace vigra{
             }
             distMap_[source]=static_cast<WeightType>(0.0);
             predMap_[source]=source;
+            DiscoveryOrder(1, source).swap(discoveryOrder_);
             pq_.push(graph_.id(source),0.0);
             source_=source;
         }
@@ -400,6 +411,7 @@ namespace vigra{
         PqType  pq_;
         PredecessorsMap predMap_;
         DistanceMap     distMap_;
+        DiscoveryOrder  discoveryOrder_;
 
         Node source_;
         Node target_;
