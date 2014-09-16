@@ -44,11 +44,14 @@
 #include <vigra/eccentricitytransform.hxx>
 #include <vigra/impex.hxx>
 #include <vigra/vector_distance.hxx>
+#include <vigra/skeleton.hxx>
 
 
 #include "test_data.hxx"
 
 using namespace vigra;
+
+#if 0
 
 struct MultiDistanceTest
 {
@@ -727,6 +730,46 @@ struct EccentricityTest
         }
     }
 };
+#endif
+
+struct SkeletonTest
+{
+    void testSkeleton()
+    {
+        MultiArray<2, double> data, skel;
+        importImage("blatt.png", data);
+
+        skel.reshape(data.shape());
+
+        skeletonize(data, skel,
+                    SkeletonOptions().dontPrune());
+        exportImage(skel, "skeleton0.tif");
+
+        //skeletonize(data, skel,
+        //            SkeletonOptions().returnLength());
+        //exportImage(skel, "skeleton1.tif");
+
+        //skeletonize(data, skel,
+        //            SkeletonOptions().pruneLength(100.0));
+        //exportImage(skel, "skeleton2.tif");
+
+        //skeletonize(data, skel,
+        //            SkeletonOptions().pruneLengthRelative(0.5));
+        //exportImage(skel, "skeleton3.tif");
+
+        //skeletonize(data, skel,
+        //            SkeletonOptions().returnSalience());
+        //exportImage(skel, "skeleton1.tif");
+
+        //skeletonize(data, skel,
+        //            SkeletonOptions().pruneSalience(20.0));
+        //exportImage(skel, "skeleton2.tif");
+
+        //skeletonize(data, skel,
+        //            SkeletonOptions().pruneSalienceRelative(0.6));
+        //exportImage(skel, "skeleton3.tif");
+    }
+};
 
 
 struct DistanceTransformTestSuite
@@ -735,15 +778,16 @@ struct DistanceTransformTestSuite
     DistanceTransformTestSuite()
     : vigra::test_suite("DistanceTransformTestSuite")
     {
-        add( testCase( &MultiDistanceTest::testDistanceVolumes));
-        add( testCase( &MultiDistanceTest::testDistanceAxesPermutation));
-        add( testCase( &MultiDistanceTest::testDistanceVolumesAnisotropic));
-        add( testCase( &MultiDistanceTest::distanceTransform2DCompare));
-        add( testCase( &MultiDistanceTest::distanceTest1D));
-        add( testCase( &BoundaryMultiDistanceTest::distanceTest1D));
-        add( testCase( &BoundaryMultiDistanceTest::testDistanceVolumes));
-        add( testCase( &BoundaryMultiDistanceTest::vectorDistanceTest1D));
-        add( testCase( &EccentricityTest::testEccentricityCenters));
+        //add( testCase( &MultiDistanceTest::testDistanceVolumes));
+        //add( testCase( &MultiDistanceTest::testDistanceAxesPermutation));
+        //add( testCase( &MultiDistanceTest::testDistanceVolumesAnisotropic));
+        //add( testCase( &MultiDistanceTest::distanceTransform2DCompare));
+        //add( testCase( &MultiDistanceTest::distanceTest1D));
+        //add( testCase( &BoundaryMultiDistanceTest::distanceTest1D));
+        //add( testCase( &BoundaryMultiDistanceTest::testDistanceVolumes));
+        //add( testCase( &BoundaryMultiDistanceTest::vectorDistanceTest1D));
+        //add( testCase( &EccentricityTest::testEccentricityCenters));
+        add( testCase( &SkeletonTest::testSkeleton));
     }
 };
 
