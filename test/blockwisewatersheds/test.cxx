@@ -14,29 +14,32 @@ using namespace blockwise_watersheds_detail;
 
 int main()
 {
-    typedef ChunkedArrayFull<2, int> Array;
-    typedef ChunkedArrayFull<2, int> DirectionsArray;
-    typedef Array::difference_type Shape;
+    typedef ChunkedArrayLazy<2, int> Array;
+    typedef ChunkedArrayLazy<2, unsigned short> DirectionsArray;
+    typedef Array::shape_type Shape;
 
     Shape shape(4);
     Shape block_shape(2);
     
-    Array data(shape);
-    Array labels(shape);
+    Array data(shape, block_shape);
+    Array labels(shape, block_shape);
+    
+    MultiArray<2, int> oldschool_data_array(shape);
 
-    data(0,0) = 0;
-    data(1,0) = 1;
-    data(2,0) = 2;
-    data(3,0) = 3;
-    data(0,1) = 10;
-    data(1,1) = 10;
-    data(2,1) = 10;
-    data(3,1) = 10;
 
-    DirectionsArray directions(shape);
-    MultiArray<2, DirectionsArray::view_type> directions_blocks = blockify(directions, block_shape);
-    prepareBlockwiseWatersheds(OverlapsGenerator<2, int, StridedArrayTag>(data, block_shape), directions_blocks.begin(), DirectNeighborhood);
-    unionFindWatershedBlockwise(data, labels, DirectNeighborhood, block_shape);
+    oldschool_data_array(0,0) = 0;
+    oldschool_data_array(1,0) = 1;
+    oldschool_data_array(2,0) = 2;
+    oldschool_data_array(3,0) = 3;
+    oldschool_data_array(0,1) = 10;
+    oldschool_data_array(1,1) = 10;
+    oldschool_data_array(2,1) = 10;
+    oldschool_data_array(3,1) = 10;
+    
+    data.commitSubarray(Shape(0), oldschool_data_array);
+
+    DirectionsArray directions(shape, block_shape);
+    unionFindWatershedBlockwise(data, labels, DirectNeighborhood, directions);
 
     for(auto it = directions.begin(); it != directions.end(); ++it)
         cout << *it << " ";

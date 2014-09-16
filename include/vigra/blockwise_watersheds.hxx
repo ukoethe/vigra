@@ -1,9 +1,6 @@
 #ifndef VIGRA_BLOCKWISE_WATERSHEDS_HXX_
 #define VIGRA_BLOCKWISE_WATERSHEDS_HXX_
 
-#include <iostream>
-using namespace std;
-
 #include <vigra/multi_array.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/blockify.hxx>
@@ -125,17 +122,16 @@ class OverlapsGenerator<N, T, ChunkedArrayTag>
 {
 private:
     typedef typename MultiArrayView<N, T, ChunkedArrayTag>::difference_type Shape;
-
-    MultiArrayView<N, T, ChunkedArrayTag> arr;
+    
+    const ChunkedArray<N, T>& arr;
     Shape block_shape;
 public:
-    OverlapsGenerator(MultiArrayView<N, T, ChunkedArrayTag> arr, const Shape& block_shape)
-      : arr(arr),
+    OverlapsGenerator(const ChunkedArray<N, T>& array, const Shape& block_shape)
+      : arr(array),
         block_shape(block_shape)
     {}
     OverlappingBlock<N, T, ChunkedArrayTag> operator[](const Shape& coordinates) const
     {
-        cout << "chunked" << endl;
         std::pair<Shape, Shape> block_bounds = blockBoundsAt(coordinates, arr.shape(), block_shape);
         std::pair<Shape, Shape> overlap_bounds = overlapBoundsAt(block_bounds, arr.shape());
         
@@ -217,12 +213,15 @@ struct UnionFindWatershedEquality
     {};
 };
 
+}
+
 template <unsigned int N, class Data, class S1,
                           class Label, class S2>
-void unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
-                                 MultiArrayView<N, Label, S2> labels,
-                                 NeighborhoodType neighborhood,
-                                 const typename MultiArrayView<N, Data, S1>::difference_type& block_shape)
+Label unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
+                                  MultiArrayView<N, Label, S2> labels,
+                                  NeighborhoodType neighborhood = DirectNeighborhood,
+                                  const typename MultiArrayView<N, Data, S1>::difference_type& block_shape = 
+                                          typename MultiArrayView<N, Data, S1>::difference_type(128))
 {
     using namespace blockwise_watersheds_detail;
 
@@ -238,9 +237,40 @@ void unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
     prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), neighborhood);
     GridGraph<N, undirected_tag> graph(data.shape(), neighborhood);
     UnionFindWatershedEquality<N> equal = {&graph};
-    labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood).blockShape(block_shape), equal);
+    return labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood).blockShape(block_shape), equal);
 }
 
+template <unsigned int N, class Data,
+                          class Label>
+Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
+                                  ChunkedArray<N, Label>& labels,
+                                  NeighborhoodType neighborhood,
+                                  ChunkedArray<N, unsigned short>& directions)
+{
+    using namespace blockwise_watersheds_detail;
+    
+    typedef typename ChunkedArray<N, Data>::shape_type Shape;
+    Shape shape = data.shape();
+    vigra_precondition(shape == labels.shape() && shape == directions.shape(), "shapes of data and labels do not match");
+    Shape chunk_shape = data.chunkShape();
+    vigra_precondition(chunk_shape == labels.chunkShape() && chunk_shape == directions.chunkShape(), "chunk shapes do not match");
+    
+    OverlapsGenerator<N, Data, ChunkedArrayTag> overlaps(data, chunk_shape);
+    
+    prepareBlockwiseWatersheds(overlaps, directions.chunk_begin(Shape(0), shape), neighborhood);
+    
+    GridGraph<N, undirected_tag> graph(shape, neighborhood);
+    UnionFindWatershedEquality<N> equal = {&graph};
+    return labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood), equal);
+}
+template <unsigned int N, class Data,
+                          class Label>
+Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
+                                  ChunkedArray<N, Label>& labels,
+                                  NeighborhoodType neighborhood)
+{
+    ChunkedArrayLazy<N, unsigned short> directions(data.shape(), data.chunk_shape());
+    return unionFindWatershedBlockwise(data, labels, neighborhood, directions);
 }
 
 }
