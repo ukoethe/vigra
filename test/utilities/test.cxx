@@ -1132,6 +1132,45 @@ struct MetaprogrammingTest
         should(typeid(UnqualifiedType<int*&>::type) == typeid(int));
         should(typeid(UnqualifiedType<const int*&>::type) == typeid(int));
     }
+
+    struct FinallyTester
+    {
+        mutable int & v_;
+
+        FinallyTester(int & v)
+            : v_(v)
+        {}
+        
+        void sq() const
+        {
+            v_ = v_*v_;
+        }
+    };
+
+    void testFinally()
+    {
+        int v = 0;
+        {
+            FinallyTester finally_tester(v);
+            VIGRA_FINALLY(finally_tester.sq());
+
+            VIGRA_FINALLY({ 
+                v = 3;
+            });
+            shouldEqual(v, 0);
+        }
+        shouldEqual(v, 9);
+
+        try {
+            VIGRA_FINALLY(v = 2);
+
+            throw std::runtime_error("");
+
+            VIGRA_FINALLY(v = 3);
+        }
+        catch(std::runtime_error &) {}
+        shouldEqual(v, 2);
+    }
 };
 
 void stringTest()
@@ -1238,6 +1277,7 @@ struct UtilitiesTestSuite
         add( testCase( &MetaprogrammingTest::testInt));
         add( testCase( &MetaprogrammingTest::testLogic));
         add( testCase( &MetaprogrammingTest::testTypeTools));
+        add( testCase( &MetaprogrammingTest::testFinally));
         add( testCase( &stringTest));
         add( testCase( &CompressionTest::testZLIB));
         add( testCase( &CompressionTest::testLZ4));
