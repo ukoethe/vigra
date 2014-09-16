@@ -1037,6 +1037,8 @@ public:
                 {
                     shouldEqual(&get<1>(*i1), &a3[p]);
                     shouldEqual(&get<1>(*i2), &a3[p]);
+                    shouldEqual(&get<1>(i1), &a3[p]);
+                    shouldEqual(&get<1>(i2), &a3[p]);
                     shouldEqual(&i1.get<1>(), &a3[p]);
                     shouldEqual(&i2.get<1>(), &a3[p]);
                     //shouldEqual(i1.operator->(), &a3[p]);
@@ -1045,6 +1047,8 @@ public:
                     shouldEqual(i2.point(), p);
                     shouldEqual(i1.get<0>(), p);
                     shouldEqual(i2.get<0>(), p);
+                    shouldEqual(get<0>(i1), p);
+                    shouldEqual(get<0>(i2), p);
                     shouldEqual(i1.scanOrderIndex(), count);
                     shouldEqual(i2.scanOrderIndex(), count);
 

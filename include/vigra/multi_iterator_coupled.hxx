@@ -380,7 +380,19 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     typedef CoupledScanOrderIterator                 iterator;
     typedef std::random_access_iterator_tag          iterator_category;
     typedef CoupledDimensionProxy<iterator>          dimension_proxy;
-
+    
+    template <unsigned int TARGET_INDEX>
+    struct Reference
+    {
+        typedef typename CoupledHandleCast<TARGET_INDEX, HANDLES>::reference type;
+    };
+    
+    template <unsigned int TARGET_INDEX>
+    struct ConstReference
+    {
+        typedef typename CoupledHandleCast<TARGET_INDEX, HANDLES>::const_reference type;
+    };
+    
     explicit CoupledScanOrderIterator(value_type const & handles = value_type())
     : handles_(handles),
       strides_(detail::defaultStride(handles_.shape()))
@@ -640,14 +652,14 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     }
 
     template<unsigned int TARGET_INDEX> 
-    typename CoupledHandleCast<TARGET_INDEX, value_type>::reference
+    typename Reference<TARGET_INDEX>::type
     get() 
     {
         return vigra::get<TARGET_INDEX>(handles_);
     }
 
     template<unsigned int TARGET_INDEX> 
-    typename CoupledHandleCast<TARGET_INDEX, value_type>::const_reference
+    typename ConstReference<TARGET_INDEX>::type
     get() const
     {
         return vigra::get<TARGET_INDEX>(handles_);
@@ -677,6 +689,26 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     value_type handles_;
     shape_type strides_;
 };
+
+template <unsigned int TARGET_INDEX, 
+          unsigned int N,
+          class HANDLES,
+          int DIM>
+typename CoupledScanOrderIterator<N, HANDLES, DIM>::template Reference<TARGET_INDEX>::type
+get(CoupledScanOrderIterator<N, HANDLES, DIM> & i)
+{
+    return vigra::get<TARGET_INDEX>(*i);
+}
+
+template <unsigned int TARGET_INDEX, 
+          unsigned int N,
+          class HANDLES,
+          int DIM>
+typename CoupledScanOrderIterator<N, HANDLES, DIM>::template ConstReference<TARGET_INDEX>::type
+get(CoupledScanOrderIterator<N, HANDLES, DIM> const & i)
+{
+    return vigra::get<TARGET_INDEX>(*i);
+}
 
 /** Helper class to easliy get the type of a CoupledScanOrderIterator (and corresponding CoupledHandle) for up to five arrays of dimension N with element types T1,...,T5.
  */
