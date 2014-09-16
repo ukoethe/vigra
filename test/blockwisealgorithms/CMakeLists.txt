@@ -1,0 +1,3 @@
+VIGRA_CONFIGURE_THREADING()
+VIGRA_ADD_TEST(test_blockwiselabeling test_labeling.cxx)
+VIGRA_ADD_TEST(test_blockwisewatershed test_watershed.cxx)
