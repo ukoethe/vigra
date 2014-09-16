@@ -737,7 +737,7 @@ struct SkeletonTest
     void testSkeleton()
     {
         MultiArray<2, double> data, skel;
-        importImage("blatt.png", data);
+        importImage("blatt.xv", data);
 
         skel.reshape(2*data.shape()-Shape2(1));
 
