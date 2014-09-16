@@ -48,6 +48,7 @@
 #include "metaprogramming.hxx"
 #include "multi_pointoperators.hxx"
 #include "functorexpression.hxx"
+#include "multi_distance.hxx"
 
 #undef VECTORIAL_DIST_DEBUG 
 
@@ -263,7 +264,6 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
         T2 min_diff;
 
         //go to adjacent neighbour with same label as origin pixel with smallest distance
-        // FIXME: handle the case when boundary is outside
         if(labels.isInside(boundary))
         {
             for (neighbor_iterator arc(g, boundary); arc != lemon_graph::INVALID; ++arc)
