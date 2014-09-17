@@ -267,9 +267,9 @@ template <unsigned int N, class Data,
                           class Label>
 Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
                                   ChunkedArray<N, Label>& labels,
-                                  NeighborhoodType neighborhood)
+                                  NeighborhoodType neighborhood = DirectNeighborhood)
 {
-    ChunkedArrayLazy<N, unsigned short> directions(data.shape(), data.chunk_shape());
+    ChunkedArrayLazy<N, unsigned short> directions(data.shape(), data.chunkShape());
     return unionFindWatershedBlockwise(data, labels, neighborhood, directions);
 }
 
