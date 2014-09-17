@@ -105,6 +105,12 @@ struct GraphAlgorithmTest{
             should(pmap[n3]==n1);
             should(pmap[n1]==n1);
 
+            shouldEqual(pf.discoveryOrder().size(), 4);
+            shouldEqual(pf.discoveryOrder()[0], n1);
+            shouldEqual(pf.discoveryOrder()[1], n3);
+            shouldEqual(pf.discoveryOrder()[2], n4);
+            shouldEqual(pf.discoveryOrder()[3], n2);
+
             shouldEqualTolerance(dmap[n1],0.0f , 0.00001);
             shouldEqualTolerance(dmap[n3],2.0f , 0.00001);
             shouldEqualTolerance(dmap[n4],6.0f , 0.00001);
@@ -114,6 +120,11 @@ struct GraphAlgorithmTest{
 
             should(pf.source() == n1);
             should(pf.target() == lemon::INVALID);
+
+            shouldEqual(pf.discoveryOrder().size(), 3);
+            shouldEqual(pf.discoveryOrder()[0], n1);
+            shouldEqual(pf.discoveryOrder()[1], n3);
+            shouldEqual(pf.discoveryOrder()[2], n4);
         }
         {
             Sp pf(g);
@@ -128,6 +139,13 @@ struct GraphAlgorithmTest{
             should(pmap[n2]==n4);
             should(pmap[n4]==n3);
             should(pmap[n3]==n1);
+            should(pmap[n1]==n1);
+
+            shouldEqual(pf.discoveryOrder().size(), 4);
+            shouldEqual(pf.discoveryOrder()[0], n1);
+            shouldEqual(pf.discoveryOrder()[1], n3);
+            shouldEqual(pf.discoveryOrder()[2], n4);
+            shouldEqual(pf.discoveryOrder()[3], n2);
 
             shouldEqualTolerance(dmap[n1],0.0f , 0.00001);
             shouldEqualTolerance(dmap[n3],2.0f , 0.00001);
@@ -142,6 +160,125 @@ struct GraphAlgorithmTest{
             should(pmap[n2]==lemon::INVALID);
             should(pmap[n4]==n3);
             should(pmap[n3]==n1);
+            should(pmap[n1]==n1);
+
+            shouldEqual(pf.discoveryOrder().size(), 3);
+            shouldEqual(pf.discoveryOrder()[0], n1);
+            shouldEqual(pf.discoveryOrder()[1], n3);
+            shouldEqual(pf.discoveryOrder()[2], n4);
+        }
+    }
+
+    template <class Graph>
+    void testShortestPathWithROIImpl(Graph const & g)
+    {
+        typedef ShortestPathDijkstra<Graph,float> Sp;
+        typedef typename Sp::PredecessorsMap PredMap;
+        typedef typename Sp::DistanceMap     DistMap;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::Edge Edge;
+
+        //   1 | 2
+        //   _   _ 
+        //   3 | 4 
+        
+        typename Graph::NodeIt node(g);
+        const Node n1=*node++;
+        const Node n2=*node++;
+        const Node n3=*node++;
+        const Node n4=*node;
+        const Edge e12= g.findEdge(n1,n2);
+        const Edge e13= g.findEdge(n1,n3);
+        const Edge e24= g.findEdge(n2,n4);
+        const Edge e34= g.findEdge(n3,n4);
+
+        typename Graph::template EdgeMap<float> ew(g);
+        ew[e12]=10.0;
+        ew[e13]=2.0;
+        ew[e24]=3.0;
+        ew[e34]=4.0;
+        {
+            Sp pf(g);
+
+            // ROI = entire graph
+            pf.run(ew,n1,n2,100.0, Node(0), g.shape());
+
+            should(pf.source() == n1);
+            should(pf.target() == n2);
+
+            const PredMap & pmap = pf.predecessors();
+            const DistMap & dmap = pf.distances();
+
+            should(pmap[n2]==n4);
+            should(pmap[n4]==n3);
+            should(pmap[n3]==n1);
+            should(pmap[n1]==n1);
+
+            shouldEqual(pf.discoveryOrder().size(), 4);
+            shouldEqual(pf.discoveryOrder()[0], n1);
+            shouldEqual(pf.discoveryOrder()[1], n3);
+            shouldEqual(pf.discoveryOrder()[2], n4);
+            shouldEqual(pf.discoveryOrder()[3], n2);
+
+            shouldEqualTolerance(dmap[n1],0.0f , 0.00001);
+            shouldEqualTolerance(dmap[n3],2.0f , 0.00001);
+            shouldEqualTolerance(dmap[n4],6.0f , 0.00001);
+            shouldEqualTolerance(dmap[n2],9.0f , 0.00001);
+
+            // ROI = top half
+            pf.run(ew, n1, n2, 100.0, n1, n2+Node(1));
+
+            should(pf.source() == n1);
+            should(pf.target() == n2);
+
+            should(pmap[n2]==n1);
+            should(pmap[n1]==n1);
+
+            shouldEqual(pf.discoveryOrder().size(), 2);
+            shouldEqual(pf.discoveryOrder()[0], n1);
+            shouldEqual(pf.discoveryOrder()[1], n2);
+
+            shouldEqualTolerance(dmap[n1],0.0f , 0.00001);
+            shouldEqualTolerance(dmap[n2],10.0f , 0.00001);
+
+            // ROI = top half, maxWeight less then weight of e12
+            pf.run(ew,n1,n2, 8.0f, n1, n2+Node(1));
+
+            should(pf.source() == n1);
+            should(pf.target() == lemon::INVALID);
+
+            shouldEqual(pf.discoveryOrder().size(), 1);
+            shouldEqual(pf.discoveryOrder()[0], n1);
+        }
+        {
+            Sp pf(g);
+            // ROI = bottom half
+            pf.run(ew, n4, n3, 100.0, n3, g.shape());
+
+            should(pf.source() == n4);
+            should(pf.target() == n3);
+
+            const PredMap & pmap = pf.predecessors();
+            const DistMap & dmap = pf.distances();
+
+            should(pmap[n3]==n4);
+            should(pmap[n4]==n4);
+
+            shouldEqual(pf.discoveryOrder().size(), 2);
+            shouldEqual(pf.discoveryOrder()[0], n4);
+            shouldEqual(pf.discoveryOrder()[1], n3);
+
+            shouldEqualTolerance(dmap[n4],0.0f , 0.00001);
+            shouldEqualTolerance(dmap[n3],4.0f , 0.00001);
+
+            // ROI = bottom half, maxWeight less then weight of e34
+            pf.run(ew, n4, n3, 2.0, n3, g.shape());
+
+            should(pf.source() == n4);
+            should(pf.target() == lemon::INVALID);
+
+            shouldEqual(pf.discoveryOrder().size(), 1);
+            shouldEqual(pf.discoveryOrder()[0], n4);
         }
     }
 
@@ -165,6 +302,7 @@ struct GraphAlgorithmTest{
         GridGraph<2> g(Shape2(2,2), DirectNeighborhood);
 
         testShortestPathImpl(g);
+        testShortestPathWithROIImpl(g);
     }
 
     void testRegionAdjacencyGraph(){

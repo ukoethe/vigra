@@ -1380,6 +1380,10 @@ public:
     typedef detail::GridGraphBase<N, DirectedTag>   base_type;
     typedef GridGraph<N, DirectedTag>               self_type;
     
+        /** \brief Dimension of the grid.
+        */
+    static const unsigned int dimension = N;
+    
         /** \brief Shape type of the graph and a node property map.
         */
     typedef typename MultiArrayShape<N>::type       shape_type;

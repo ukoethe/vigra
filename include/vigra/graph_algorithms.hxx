@@ -233,8 +233,14 @@ namespace vigra{
         ///
         /// \param weights : edge weights encoding the distance between adjacent nodes (must be non-negative) 
         /// \param source  : source node where shortest path should start
-        /// \param target  : target node where shortest path should stop. If target is not given,
-        ///     the shortest path from source to all reachable nodes is computed
+        /// \param target  : target node where shortest path should stop. If target is not given
+        ///                  or <tt>INVALID</tt>, the shortest path from source to all reachable nodes is computed
+        /// \param maxDistance  : path search is terminated when the path length exceeds <tt>maxDistance</tt>
+        ///
+        /// When a valid \a target is unreachable from \a source (either because the graph is disconnected 
+        /// or \a maxDistance is exceeded), it is set to <tt>lemon::INVALID</tt>. In contrast, if \a target
+        /// was <tt>lemon::INVALID</tt> at the beginning, it will always be set to the last node 
+        /// visited in the search.
         template<class WEIGHTS>
         void run(const WEIGHTS & weights, const Node & source,
                  const Node & target = lemon::INVALID, 
@@ -367,7 +373,7 @@ namespace vigra{
             }
             distMap_[source]=static_cast<WeightType>(0.0);
             predMap_[source]=source;
-            DiscoveryOrder(1, source).swap(discoveryOrder_);
+            discoveryOrder_.clear();
             pq_.push(graph_.id(source),0.0);
             source_=source;
         }
@@ -378,7 +384,7 @@ namespace vigra{
                 const Node node(*n);
                 predMap_[node]=lemon::INVALID;
             }
-            DiscoveryOrder(source, source_end).swap(discoveryOrder_);
+            discoveryOrder_.clear();
             for( ; source != source_end; ++source)
             {
                 distMap_[*source]=static_cast<WeightType>(0.0);
@@ -389,20 +395,19 @@ namespace vigra{
         }
 
         void initializeMaps(Node const & source,
-                            Node start, Node stop)
+                            Node const & start, Node const & stop)
         {
-            start = max(start-Node(1), Node(0));
-            stop = min(stop+Node(1), predMap_.shape());
-            NodeIt n(graph_);
-            n.restrictToSubarray(start, stop);
-            typename PredecessorsMap::view_type predSubarray = predMap_.subarray(start, stop);
-            for(; n!=lemon::INVALID; ++n){
-                const Node node(*n);
-                predSubarray[node]=lemon::INVALID;
-            }
-            distMap_[source]=static_cast<WeightType>(0.0);
+            Node left_border  = min(start, Node(1)),
+                 right_border = min(predMap_.shape()-stop, Node(1)),
+                 DONT_TOUCH   = Node(lemon::INVALID) - Node(1);
+            
+            initMultiArrayBorder(predMap_.subarray(start-left_border, stop+right_border),
+                                 left_border, right_border, DONT_TOUCH);
+            predMap_.subarray(start, stop) = lemon::INVALID;
             predMap_[source]=source;
-            DiscoveryOrder(1, source).swap(discoveryOrder_);
+            
+            distMap_[source]=static_cast<WeightType>(0.0);
+            discoveryOrder_.clear();
             pq_.push(graph_.id(source),0.0);
             source_=source;
         }
