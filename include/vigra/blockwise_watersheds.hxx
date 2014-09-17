@@ -178,7 +178,7 @@ void prepareBlockwiseWatersheds(OverlapsGenerator<N, T, S> overlaps,
                 Data lowest_neighbor = data_block.block[*node];
                 
                 typedef typename DirectionsBlock::value_type Direction;
-                Direction lowest_neighbor_direction = graph.maxDegree();
+                Direction lowest_neighbor_direction = std::numeric_limits<unsigned short>::max();
                 
                 for(NeighborIterator arc(graph, *node); arc != lemon::INVALID; ++arc)
                 {
@@ -200,13 +200,14 @@ template <unsigned int N>
 struct UnionFindWatershedEquality
 {
     GridGraph<N, undirected_tag>* graph;
-    
+
     template <class Shape>
     bool operator()(unsigned short u, const unsigned short v, const Shape& diff) const
     {
-        return (u == graph->maxDegree() && v == graph->maxDegree()) ||
-               (u != graph->maxDegree() && graph->neighborOffset(u) == diff) ||
-               (v != graph->maxDegree() && graph->neighborOffset(graph->oppositeIndex(v)) == diff);
+        static const unsigned short plateau_id = std::numeric_limits<unsigned short>::max();
+        return (u == plateau_id && v == plateau_id) ||
+               (u != plateau_id && graph->neighborOffset(u) == diff) ||
+               (v != plateau_id && graph->neighborOffset(graph->oppositeIndex(v)) == diff);
     }
 
     struct WithDiffTag

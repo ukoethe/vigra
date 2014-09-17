@@ -103,7 +103,7 @@ struct NeighborIndexFunctor<GridGraph<N, DirectedTag> >
     }
     static index_type invalidIndex(Graph const & g)
     {
-        return g.maxDegree();
+        return std::numeric_limits<index_type>::max();
     }
 };
 
