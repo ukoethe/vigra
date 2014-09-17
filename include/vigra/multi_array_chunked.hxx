@@ -391,6 +391,7 @@ template <unsigned int N, class T>
 class ChunkedArrayBase
 {
   public:
+    enum ActualDimension{ actual_dimension = (N == 0) ? 1 : N };
     typedef typename MultiArrayShape<N>::type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;
@@ -2783,7 +2784,7 @@ class ChunkedArrayTmpFile
 template<unsigned int N, class U>
 class ChunkIterator
 : public MultiCoordinateIterator<N>
-, public MultiArrayView<N, typename UnqualifiedType<U>::type>
+, private MultiArrayView<N, typename UnqualifiedType<U>::type>
 {
   public:
     typedef typename UnqualifiedType<U>::type      T;
@@ -2984,8 +2985,14 @@ class ChunkIterator
         return base_type::operator-(other);
     }
     
+    reference operator[](const shape_type &coordOffset) const
+    {
+        return *(*this + coordOffset);
+    }
+    
     using base_type::operator==;
     using base_type::operator!=;
+    using base_type::shape;
     
     array_type * array_;
     Chunk chunk_;
