@@ -199,6 +199,8 @@ void prepareBlockwiseWatersheds(OverlapsGenerator<N, T, S> overlaps,
 template <unsigned int N>
 struct UnionFindWatershedEquality
 {
+    // FIXME: this graph object shouldn't be necessary, most functions (and state) of graph are not used
+    // this probably needs some refactoring in GridGraph
     GridGraph<N, undirected_tag>* graph;
 
     template <class Shape>
