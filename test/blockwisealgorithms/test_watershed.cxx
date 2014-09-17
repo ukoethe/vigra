@@ -5,45 +5,185 @@
 
 #include <vigra/multi_array.hxx>
 #include <vigra/multi_gridgraph.hxx>
+#include <vigra/unittest.hxx>
+#include <vigra/multi_watersheds.hxx>
 
 #include <iostream>
+#include <sstream>
+
+#include "utils.hxx"
 
 using namespace std;
 using namespace vigra;
 using namespace blockwise_watersheds_detail;
 
-int main()
+struct BlockwiseWatershedTest
 {
-    typedef ChunkedArrayLazy<2, int> Array;
-    typedef ChunkedArrayLazy<2, unsigned short> DirectionsArray;
-    typedef Array::shape_type Shape;
+    void oneDimensionalTest()
+    {
+        typedef MultiArray<1, unsigned int> Array;
+        typedef Array::difference_type Shape;
 
-    Shape shape(4);
-    Shape block_shape(2);
-    
-    Array data(shape, block_shape);
-    Array labels(shape, block_shape);
-    
-    MultiArray<2, int> oldschool_data_array(shape);
+        vector<Array> data_sets;
+        data_sets.push_back(Array(Shape(1)));
+        data_sets.push_back(Array(Shape(5)));
+        data_sets.push_back(Array(Shape(997)));
+        data_sets.push_back(Array(Shape(10000)));
+        for(int i = 0; i != data_sets.size(); ++i)
+        {
+            fillRandom(data_sets[i].begin(), data_sets[i].end(), 3);
+        }
+        
+        for(int i = 0; i != data_sets.size(); ++i)
+        {
+            const Array& data = data_sets[i];
+            
+            NeighborhoodType neighborhood = DirectNeighborhood;
+            Shape block_shape(1);
 
 
-    oldschool_data_array(0,0) = 0;
-    oldschool_data_array(1,0) = 1;
-    oldschool_data_array(2,0) = 2;
-    oldschool_data_array(3,0) = 3;
-    oldschool_data_array(0,1) = 10;
-    oldschool_data_array(1,1) = 10;
-    oldschool_data_array(2,1) = 10;
-    oldschool_data_array(3,1) = 10;
-    
-    data.commitSubarray(Shape(0), oldschool_data_array);
+            typedef MultiArray<1, size_t> LabelArray;
+            
+            LabelArray tested_labels(data.shape());
+            size_t tested_label_number = unionFindWatershedBlockwise(data, tested_labels, neighborhood, block_shape);
+            
+            LabelArray correct_labels(data.shape());
+            size_t correct_label_number = watershedsMultiArray(data, correct_labels, neighborhood,
+                                                               WatershedOptions().unionFind());
+            if(tested_label_number != correct_label_number ||
+               !equivalentLabels(tested_labels.begin(), tested_labels.end(),
+                                 correct_labels.begin(), correct_labels.end()))
+            {
+                ostringstream oss;
+                oss << "labeling not equivalent" << endl;
+                oss << "shape: " << data.shape() << endl;
+                failTest(oss.str().c_str());
+            }
+        }
+    }
+    void fourDimensionalRandomTest()
+    {
+        typedef MultiArray<4, unsigned int> Array;
+        typedef MultiArray<4, size_t> LabelArray;
+        typedef Array::difference_type Shape;
+        
+        vector<Array> data_sets;
+        data_sets.push_back(Array(Shape(1)));
+        data_sets.push_back(Array(Shape(2)));
+        data_sets.push_back(Array(Shape(4, 2, 1, 5)));
+        data_sets.push_back(Array(Shape(4, 5, 7, 3)));
+        data_sets.push_back(Array(Shape(6)));
+        data_sets.push_back(Array(Shape(1, 10, 100, 1)));
 
-    DirectionsArray directions(shape, block_shape);
-    unionFindWatershedBlockwise(data, labels, DirectNeighborhood, directions);
+        for(int i = 0; i != data_sets.size(); ++i)
+        {
+            fillRandom(data_sets[i].begin(), data_sets[i].end(), 3);
+        }
 
-    for(auto it = directions.begin(); it != directions.end(); ++it)
-        cout << *it << " ";
-    cout << endl;
-    for(auto it = labels.begin(); it != labels.end(); ++it)
-        cout << *it << " ";
+        vector<Shape> block_shapes;
+        block_shapes.push_back(Shape(1));
+        block_shapes.push_back(Shape(2));
+        block_shapes.push_back(Shape(1,10,10));
+        block_shapes.push_back(Shape(1000000));
+        block_shapes.push_back(Shape(4,3,10));
+        
+        vector<NeighborhoodType> neighborhoods;
+        neighborhoods.push_back(DirectNeighborhood);
+        neighborhoods.push_back(IndirectNeighborhood);
+
+        for(int i = 0; i != data_sets.size(); ++i)
+        {
+            const Array& data = data_sets[i];
+            for(int j = 0; j != block_shapes.size(); ++j)
+            {
+                const Shape& block_shape = block_shapes[j];
+                for(int k = 0; k != neighborhoods.size(); ++k)
+                {
+                    NeighborhoodType neighborhood = neighborhoods[k];
+                    
+                    LabelArray tested_labels(data.shape());
+                    size_t tested_label_number = unionFindWatershedBlockwise(data, tested_labels, neighborhood, block_shape);
+
+                    LabelArray correct_labels(data.shape());
+                    size_t correct_label_number = watershedsMultiArray(data, correct_labels, neighborhood,
+                                                                       WatershedOptions().unionFind());
+                    if(tested_label_number != correct_label_number ||
+                       !equivalentLabels(tested_labels.begin(), tested_labels.end(),
+                                         correct_labels.begin(), correct_labels.end()))
+                    {
+                        ostringstream oss;
+                        oss << "labeling not equivalent" << endl;
+                        oss << "array shape: " << data.shape() << endl;
+                        oss << "block shape: " << block_shape << endl;
+                        oss << "neighborhood: " << neighborhood << endl;
+                        oss << "data:" << endl;
+                        for(int i = 0; i != data.size(); ++i)
+                            oss << data[i] << " ";
+                        oss << endl;
+                        oss << "expected labels:" << endl;
+                        for(int i = 0; i != correct_labels.size(); ++i)
+                            oss << correct_labels[i] << " ";
+                        oss << endl;
+                        oss << "got" << endl;
+                        for(int i = 0; i != tested_labels.size(); ++i)
+                            oss << tested_labels[i] << " ";
+                        oss << endl;
+                        failTest(oss.str().c_str());
+                    }
+                }
+            }
+        }
+    }
+    void chunkedTest()
+    {
+        typedef MultiArray<3, int> OldschoolArray;
+        typedef MultiArray<3, size_t> OldschoolLabelArray;
+
+        typedef ChunkedArrayLazy<3, int> Array;
+        typedef ChunkedArrayLazy<3, size_t> LabelArray;
+        
+        typedef OldschoolArray::difference_type Shape;
+        
+        Shape shape(20, 30, 10);
+        Shape chunk_shape(20, 30, 10);
+        NeighborhoodType neighborhood = IndirectNeighborhood;
+
+        OldschoolArray oldschool_data(shape);
+
+        fillRandom(oldschool_data.begin(), oldschool_data.end(), 3);
+        OldschoolLabelArray correct_labels(shape);
+        size_t correct_label_number = watershedsMultiArray(oldschool_data, correct_labels, neighborhood,
+                                                           WatershedOptions().unionFind());
+        
+        Array data(shape);
+        data.commitSubarray(Shape(0), oldschool_data);
+        LabelArray tested_labels(shape);
+        size_t tested_label_number = unionFindWatershedBlockwise(data, tested_labels, neighborhood);
+        shouldEqual(correct_label_number, tested_label_number);
+        shouldEqual(equivalentLabels(tested_labels.begin(), tested_labels.end(),
+                                     correct_labels.begin(), correct_labels.end()),
+                    true);
+    }
+};
+
+struct BlockwiseWatershedTestSuite
+  : public test_suite
+{
+    BlockwiseWatershedTestSuite()
+      : test_suite("blockwise watershed test")
+    {
+        add(testCase(&BlockwiseWatershedTest::fourDimensionalRandomTest));
+        add(testCase(&BlockwiseWatershedTest::oneDimensionalTest));
+        add(testCase(&BlockwiseWatershedTest::chunkedTest));
+    }
+};
+
+int main(int argc, char** argv)
+{
+    BlockwiseWatershedTestSuite test;
+    int failed = test.run(testsToBeExecuted(argc, argv));
+
+    cout << test.report() << endl;
+
+    return failed != 0;
 }
