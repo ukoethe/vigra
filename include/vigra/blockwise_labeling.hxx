@@ -35,12 +35,12 @@ struct BorderVisitor
     }
 };
 
-template <class DataBlocksIterator, class LabelBlocksIterator, class Equal, class Mapping>
+template <class DataBlocksIterator, class LabelBlocksIterator, class Equal, class Value, class Mapping>
 typename LabelBlocksIterator::value_type::value_type
 blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_blocks_end,
                   LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
                   NeighborhoodType neighborhood, Equal equal,
-                  const typename DataBlocksIterator::value_type::value_type* background_value,
+                  const Value* background_value,
                   Mapping& mapping)
 {
     typedef typename LabelBlocksIterator::value_type::value_type Label;
