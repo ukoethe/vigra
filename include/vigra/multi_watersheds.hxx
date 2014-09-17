@@ -37,6 +37,7 @@
 #define VIGRA_MULTI_WATERSHEDS_HXX
 
 #include <functional>
+#include <limits>
 #include "mathutil.hxx"
 #include "multi_array.hxx"
 #include "multi_math.hxx"
@@ -74,6 +75,11 @@ struct NeighborIndexFunctor
     {
         return g.id(*n);
     }
+
+    static index_type invalidIndex(Graph const & g)
+    {
+        return std::numeric_limits<index_type>::max();
+    }
 };
 
     // select the neighbor ID for union-find watersheds
@@ -95,6 +101,10 @@ struct NeighborIndexFunctor<GridGraph<N, DirectedTag> >
     {
         return g.oppositeIndex(a.neighborIndex());
     }
+    static index_type invalidIndex(Graph const & g)
+    {
+        return g.maxDegree();
+    }
 };
 
 template <class Graph, class T1Map, class T2Map>
@@ -110,11 +120,11 @@ prepareWatersheds(Graph const & g,
     for (graph_scanner node(g); node != INVALID; ++node) 
     {
         typename T1Map::value_type lowestValue  = data[*node];
-        typename T2Map::value_type lowestIndex  = NumericTraits<typename T2Map::value_type>::max();
+        typename T2Map::value_type lowestIndex  = IndexFunctor::invalidIndex(g);
 
         for(neighbor_iterator arc(g, *node); arc != INVALID; ++arc) 
         {
-            if(data[g.target(*arc)] <= lowestValue)
+            if(data[g.target(*arc)] < lowestValue)
             {
                 lowestValue = data[g.target(*arc)];
                 lowestIndex = IndexFunctor::get(g, node, arc);
@@ -132,10 +142,10 @@ unionFindWatersheds(Graph const & g,
                     T2Map const & lowestNeighborIndex,
                     T3Map & labels)
 {
-    typedef typename Graph::NodeIt        graph_scanner;
-    typedef typename Graph::OutBackArcIt  neighbor_iterator;
-    typedef typename T3Map::value_type    LabelType;
-    typedef NeighborIndexFunctor<Graph> IndexFunctor;
+    typedef typename Graph::NodeIt       graph_scanner;
+    typedef typename Graph::OutBackArcIt neighbor_iterator;
+    typedef typename T3Map::value_type   LabelType;
+    typedef NeighborIndexFunctor<Graph>  IndexFunctor;
 
     vigra::UnionFindArray<LabelType>  regions;
 
@@ -144,29 +154,16 @@ unionFindWatersheds(Graph const & g,
     {
         // define tentative label for current node
         LabelType currentIndex = regions.nextFreeIndex();
-        bool hasPlateauNeighbor = false;
         
         for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if current target is center's lowest neighbor or vice versa
-            if(lowestNeighborIndex[*node] == IndexFunctor::get(g, node, arc) || 
-               lowestNeighborIndex[g.target(*arc)] == IndexFunctor::getOpposite(g, node, arc))
+            if((lowestNeighborIndex[*node] == IndexFunctor::invalidIndex(g) && 
+                lowestNeighborIndex[g.target(*arc)] == IndexFunctor::invalidIndex(g)) ||
+               (lowestNeighborIndex[*node] == IndexFunctor::get(g, node, arc)) ||
+               (lowestNeighborIndex[g.target(*arc)] == IndexFunctor::getOpposite(g, node, arc)))
             {
-                if(data[*node] == data[g.target(*arc)])
-                    hasPlateauNeighbor = true;
                 currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
-            }
-        }
-        
-        if(hasPlateauNeighbor)
-        {
-            // we are on a plateau => link all plateau points
-            for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
-            {
-                if(data[*node] == data[g.target(*arc)])
-                {
-                    currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
-                }
             }
         }
         
