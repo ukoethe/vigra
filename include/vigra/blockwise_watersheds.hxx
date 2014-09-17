@@ -15,17 +15,6 @@ namespace vigra
 namespace blockwise_watersheds_detail
 {
 
-template <class Shape>
-bool within(const Shape& coordinates, const std::pair<Shape, Shape>& bounds)
-{
-    for(unsigned int i = 0; i != Shape::static_size; ++i)
-    {
-        if(coordinates[i] < bounds.first[i] || coordinates[i] >= bounds.second[i])
-            return false;
-    }
-    return true;
-}
-
 template <class DataArray, class DirectionsBlocksIterator>
 void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                                 DirectionsBlocksIterator directions_blocks_begin,

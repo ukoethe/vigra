@@ -63,6 +63,17 @@ Shape blocksShape(const Shape& global_shape, const Shape& block_shape)
 
 }
 
+template <class Shape>
+bool within(const Shape& coordinates, const std::pair<Shape, Shape>& bounds)
+{
+    for(unsigned int i = 0; i != Shape::static_size; ++i)
+    {
+        if(coordinates[i] < bounds.first[i] || coordinates[i] >= bounds.second[i])
+            return false;
+    }
+    return true;
+}
+
 template <class ArrayType>
 struct OverlappingBlock;
 
