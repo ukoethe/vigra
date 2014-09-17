@@ -129,7 +129,7 @@ namespace cluster_operators{
             mergeGraph_.registerMergeEdgeCallBack(cbMe);
             mergeGraph_.registerEraseEdgeCallBack(cbEe);
 
-            std::cout<<"insert in indexedMinMap\n";
+          
 
             for(EdgeIt e(mergeGraph);e!=lemon::INVALID;++e){
                 const Edge edge = *e;
@@ -139,7 +139,7 @@ namespace cluster_operators{
                 pq_.push(edgeId,currentWeight);
                 minWeightEdgeMap_[graphEdge]=currentWeight;
             }
-            std::cout<<"insert in indexedMinMap done\n";
+
         }
 
         /// \brief will be called via callbacks from mergegraph
@@ -237,6 +237,11 @@ namespace cluster_operators{
         MergeGraph & mergeGraph(){
             return mergeGraph_;
         }
+
+        bool done(){
+            return false;
+        }
+
     private:
         ValueType getEdgeWeight(const Edge & e){
             
@@ -245,8 +250,6 @@ namespace cluster_operators{
 
             const size_t dU = mergeGraph_.degree(u);
             const size_t dV = mergeGraph_.degree(u);
-            const size_t dMin = std::min(dU,dV);
-
             const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
@@ -260,11 +263,7 @@ namespace cluster_operators{
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist = metric_(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
             const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
-            //return totalWeight;
-            if(dMin==1)
-                return totalWeight*0.2;
-            else
-                return totalWeight;
+            return totalWeight;
         }
 
 
@@ -367,7 +366,7 @@ namespace cluster_operators{
         void cluster(){
             if(param_.verbose_)
                 std::cout<<"\n"; 
-            while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0){
+            while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0 && !clusterOperator_.done()){
                 
 
                 const Edge edgeToRemove = clusterOperator_.contractionEdge();
@@ -389,7 +388,7 @@ namespace cluster_operators{
                     // do the merge 
                     mergeGraph_.contractEdge( edgeToRemove );
                 }
-                if(param_.verbose_ && mergeGraph_.nodeNum()%10==0){
+                if(param_.verbose_ && mergeGraph_.nodeNum()%1==0){
                     std::cout<<"\rNodes: "<<std::setw(10)<<mergeGraph_.nodeNum()<<std::flush;
                 }
                 

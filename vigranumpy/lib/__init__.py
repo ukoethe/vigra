@@ -333,12 +333,20 @@ def imshow(image,show=True):
         raise RuntimeError("vigra.imshow(): Image must have 1 or 3 channels.")
 
 
-def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False):
+def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False,r=0):
 
     labels = numpy.squeeze(labels)
     crackedEdges = analysis.regionImageToCrackEdgeImage(labels).squeeze()
     print "cracked shape",crackedEdges.shape
     whereEdge    =  numpy.where(crackedEdges==0)
+    whereNoEdge  =  numpy.where(crackedEdges!=0)
+    crackedEdges[whereEdge] = 1
+    crackedEdges[whereNoEdge] = 0
+
+    if r>0 :
+        res = filters.discDilation(crackedEdges.astype(numpy.uint8),int(r) )
+        whereEdge  =  numpy.where(res==1)
+
     imgToDisplay = resize(img,numpy.squeeze(crackedEdges).shape)
     imgToDisplay-=imgToDisplay.min()
     imgToDisplay/=imgToDisplay.max()

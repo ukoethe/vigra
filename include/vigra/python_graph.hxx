@@ -743,7 +743,9 @@ public:
         }
 
     }
-
+    bool done(){
+        return false;
+    }
     void mergeEdges(const Edge & a,const Edge & b){
         const EdgeHolderType aa(mergeGraph_,a);
         const EdgeHolderType bb(mergeGraph_,b);
