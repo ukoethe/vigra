@@ -250,13 +250,24 @@ namespace vigra{
             runImpl(weights, target, maxDistance);
         }
 
-        // when we know that all paths from source to the border of the ROI are more
-        // expensive than maxDistance, we only need to call initializeMap() for the ROI
+        /// \brief run shortest path in a region of interest of a \ref GridGraph.
+        ///
+        /// \param start : first point in the desired ROI.
+        /// \param stop  : beyond the last point in the desired ROI (i.e. exclusive)
+        /// \param weights : edge weights encoding the distance between adjacent nodes (must be non-negative) 
+        /// \param source  : source node where shortest path should start
+        /// \param target  : target node where shortest path should stop. If target is not given
+        ///                  or <tt>INVALID</tt>, the shortest path from source to all reachable nodes is computed
+        /// \param maxDistance  : path search is terminated when the path length exceeds <tt>maxDistance</tt>
+        ///
+        /// This version of run restricts the path search to the ROI <tt>[start, stop)</tt> and only
+        /// works for instances of \ref GridGraph. Otherwise, it is identical to the standard <tt>run()</tt> 
+        /// function.
         template<class WEIGHTS>
-        void run(const WEIGHTS & weights, const Node & source,
-                 const Node & target, 
-                 WeightType maxDistance,
-                 Node const & start, Node const & stop)
+        void run(Node const & start, Node const & stop,
+                 const WEIGHTS & weights, const Node & source,
+                 const Node & target = lemon::INVALID, 
+                 WeightType maxDistance=NumericTraits<WeightType>::max())
         {
             vigra_precondition(allLessEqual(start, source) && allLess(source, stop),
                 "ShortestPathDijkstra::run(): source is not within ROI");

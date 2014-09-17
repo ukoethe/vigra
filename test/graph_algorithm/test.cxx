@@ -201,7 +201,7 @@ struct GraphAlgorithmTest{
             Sp pf(g);
 
             // ROI = entire graph
-            pf.run(ew,n1,n2,100.0, Node(0), g.shape());
+            pf.run(Node(0), g.shape(), ew, n1, n2);
 
             should(pf.source() == n1);
             should(pf.target() == n2);
@@ -226,7 +226,7 @@ struct GraphAlgorithmTest{
             shouldEqualTolerance(dmap[n2],9.0f , 0.00001);
 
             // ROI = top half
-            pf.run(ew, n1, n2, 100.0, n1, n2+Node(1));
+            pf.run(n1, n2+Node(1), ew, n1, n2);
 
             should(pf.source() == n1);
             should(pf.target() == n2);
@@ -242,7 +242,7 @@ struct GraphAlgorithmTest{
             shouldEqualTolerance(dmap[n2],10.0f , 0.00001);
 
             // ROI = top half, maxWeight less then weight of e12
-            pf.run(ew,n1,n2, 8.0f, n1, n2+Node(1));
+            pf.run(n1, n2+Node(1), ew, n1, n2, 8.0f);
 
             should(pf.source() == n1);
             should(pf.target() == lemon::INVALID);
@@ -253,7 +253,7 @@ struct GraphAlgorithmTest{
         {
             Sp pf(g);
             // ROI = bottom half
-            pf.run(ew, n4, n3, 100.0, n3, g.shape());
+            pf.run(n3, g.shape(), ew, n4, n3);
 
             should(pf.source() == n4);
             should(pf.target() == n3);
@@ -272,7 +272,7 @@ struct GraphAlgorithmTest{
             shouldEqualTolerance(dmap[n3],4.0f , 0.00001);
 
             // ROI = bottom half, maxWeight less then weight of e34
-            pf.run(ew, n4, n3, 2.0, n3, g.shape());
+            pf.run(n3, g.shape(), ew, n4, n3, 2.0);
 
             should(pf.source() == n4);
             should(pf.target() == lemon::INVALID);

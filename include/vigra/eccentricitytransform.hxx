@@ -62,7 +62,7 @@ eccentricityCentersOneRegionImpl(ShortestPathDijkstra<Graph, WeightType> & pathF
     int maxIterations = 4;
     for(int k=0; k < maxIterations; ++k)
     {
-        pathFinder.run(weights, anchor, lemon::INVALID, maxWeight, start, stop);
+        pathFinder.run(start, stop, weights, anchor, lemon::INVALID, maxWeight);
         anchor = pathFinder.target();
         // FIXME: implement early stopping when source and target don't change anymore
     }
