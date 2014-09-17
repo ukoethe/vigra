@@ -804,6 +804,12 @@ public:
     {
         return outEdgeIterator_.operator->();
     }
+    
+    MultiArrayIndex neighborIndex() const
+    {
+        return outEdgeIterator_.neighborIndex();
+    }
+
 
     bool operator==(GridGraphEdgeIterator const & other) const
     {
