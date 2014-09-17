@@ -391,6 +391,7 @@ template <unsigned int N, class T>
 class ChunkedArrayBase
 {
   public:
+    enum ActualDimension{ actual_dimension = (N == 0) ? 1 : N };
     typedef typename MultiArrayShape<N>::type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;

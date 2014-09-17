@@ -5,6 +5,7 @@
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/blockify.hxx>
 #include <vigra/blockwise_labeling.hxx>
+#include <vigra/overlapped_blocks.hxx>
 
 #include <limits>
 
@@ -25,134 +26,12 @@ bool within(const Shape& coordinates, const std::pair<Shape, Shape>& bounds)
     return true;
 }
 
-template <class Shape>
-std::pair<Shape, Shape> blockBoundsAt(const Shape& coordinates, const Shape& global_shape, const Shape& block_shape)
-{
-    Shape block_begin;
-    for(int i = 0; i != Shape::static_size; ++i)
-    {
-        block_begin[i] = coordinates[i] * block_shape[i];
-        vigra_assert(block_begin[i] < global_shape[i], "block coordinates out of bounds");
-    }
-    Shape block_end;
-    for(int i = 0; i != Shape::static_size; ++i)
-    {
-        block_end[i] = std::min(block_begin[i] + block_shape[i], global_shape[i]);
-    }
-    return std::make_pair(block_begin, block_end);
-}
-template <class Shape>
-std::pair<Shape, Shape> overlapBoundsAt(const std::pair<Shape, Shape>& block_bounds, const Shape& global_shape)
-{
-    Shape overlapped_block_begin = block_bounds.first;
-    Shape overlapped_block_end = block_bounds.second;
-    for(int i = 0; i != Shape::static_size; ++i)
-    {
-        if(overlapped_block_begin[i] != 0)
-            --overlapped_block_begin[i];
-        if(overlapped_block_end[i] != global_shape[i])
-            ++overlapped_block_end[i];
-    }
-    return std::make_pair(overlapped_block_begin, overlapped_block_end);
-}
-template <class Shape>
-Shape blocksShape(const Shape& global_shape, const Shape& block_shape)
-{
-    Shape result;
-    for(int i = 0; i != Shape::static_size; ++i)
-    {
-        result[i] = global_shape[i] / block_shape[i];
-        if(block_shape[i] * result[i] != global_shape[i])
-            ++result[i];
-    }
-    return result;
-
-}
-
-
-template <unsigned int N, class T, class S>
-struct OverlappingBlock
-{
-    typedef typename MultiArrayView<N, T, S>::difference_type Shape;
-    
-    MultiArrayView<N, T, S> block;
-    std::pair<Shape, Shape> inner_bounds;
-};
-
-template <unsigned int N, class T, class S>
-class OverlapsGenerator
-{
-private:
-    typedef typename MultiArrayView<N, T, S>::difference_type Shape;
-
-    MultiArrayView<N, T, S> arr;
-    Shape block_shape;
-public:
-    OverlapsGenerator(MultiArrayView<N, T, S> arr, const Shape& block_shape)
-      : arr(arr),
-        block_shape(block_shape)
-    {}
-    OverlappingBlock<N, T, S> operator[](const Shape& coordinates) const
-    {
-        std::pair<Shape, Shape> block_bounds = blockBoundsAt(coordinates, arr.shape(), block_shape);
-        std::pair<Shape, Shape> overlap_bounds = overlapBoundsAt(block_bounds, arr.shape());
-        
-        OverlappingBlock<N, T, S> result;
-        result.block = arr.subarray(overlap_bounds.first, overlap_bounds.second);
-        result.inner_bounds = std::make_pair(block_bounds.first - overlap_bounds.first, block_bounds.second - overlap_bounds.first);
-        return result;
-    }
-    Shape shape() const
-    {
-        return blocksShape(arr.shape(), block_shape);
-    }
-};
-
-template <unsigned int N, class T>
-struct OverlappingBlock<N, T, ChunkedArrayTag>
-{
-    typedef typename MultiArrayShape<N>::type Shape;
-    
-    MultiArray<N, T> block; // not a view, overlaps are checked out
-    std::pair<Shape, Shape> inner_bounds;
-};
-
-template <unsigned int N, class T>
-class OverlapsGenerator<N, T, ChunkedArrayTag>
-{
-private:
-    typedef typename MultiArrayView<N, T, ChunkedArrayTag>::difference_type Shape;
-    
-    const ChunkedArray<N, T>& arr;
-    Shape block_shape;
-public:
-    OverlapsGenerator(const ChunkedArray<N, T>& array, const Shape& block_shape)
-      : arr(array),
-        block_shape(block_shape)
-    {}
-    OverlappingBlock<N, T, ChunkedArrayTag> operator[](const Shape& coordinates) const
-    {
-        std::pair<Shape, Shape> block_bounds = blockBoundsAt(coordinates, arr.shape(), block_shape);
-        std::pair<Shape, Shape> overlap_bounds = overlapBoundsAt(block_bounds, arr.shape());
-        
-        OverlappingBlock<N, T, ChunkedArrayTag> result;
-        result.block.reshape(overlap_bounds.second - overlap_bounds.first);
-        arr.checkoutSubarray(overlap_bounds.first, result.block);
-        result.inner_bounds = std::make_pair(block_bounds.first - overlap_bounds.first, block_bounds.second - overlap_bounds.first);
-        return result;
-    }
-    Shape shape() const
-    {
-        return blocksShape(arr.shape(), block_shape);
-    }
-};
-
-template <unsigned int N, class T, class S,
-          class DirectionsBlocksIterator>
-void prepareBlockwiseWatersheds(OverlapsGenerator<N, T, S> overlaps,
+template <class DataArray, class DirectionsBlocksIterator>
+void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                                 DirectionsBlocksIterator directions_blocks_begin,
                                 NeighborhoodType neighborhood)
 {
+    static const unsigned int N = DataArray::actual_dimension;
     typedef typename MultiArrayShape<N>::type Shape;
     typedef typename DirectionsBlocksIterator::value_type DirectionsBlock;
     Shape shape = overlaps.shape();
@@ -163,7 +42,7 @@ void prepareBlockwiseWatersheds(OverlapsGenerator<N, T, S> overlaps,
     for( ; it != end; ++it)
     {
         DirectionsBlock directions_block = directions_blocks_begin[*it];
-        OverlappingBlock<N, T, S> data_block = overlaps[*it];
+        OverlappingBlock<DataArray> data_block = overlaps[*it];
         
         typedef GridGraph<N, undirected_tag> Graph;
         typedef typename Graph::NodeIt GraphScanner;
@@ -174,7 +53,7 @@ void prepareBlockwiseWatersheds(OverlapsGenerator<N, T, S> overlaps,
         {
             if(within(*node, data_block.inner_bounds))
             {
-                typedef typename MultiArrayView<N, T, S>::value_type Data;
+                typedef typename DataArray::value_type Data;
                 Data lowest_neighbor = data_block.block[*node];
                 
                 typedef typename DirectionsBlock::value_type Direction;
@@ -182,7 +61,7 @@ void prepareBlockwiseWatersheds(OverlapsGenerator<N, T, S> overlaps,
                 
                 for(NeighborIterator arc(graph, *node); arc != lemon::INVALID; ++arc)
                 {
-                    const Shape& neighbor_coordinates = graph.target(*arc);
+                    Shape neighbor_coordinates = graph.target(*arc);
                     Data neighbor_data = data_block.block[neighbor_coordinates];
                     if(neighbor_data < lowest_neighbor)
                     {
@@ -236,7 +115,7 @@ Label unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
     
     MultiArray<N, MultiArrayView<N, unsigned short> > directions_blocks = blockify(directions, block_shape);
 
-    OverlapsGenerator<N, Data, S1> overlaps(data, block_shape);
+    Overlaps<MultiArrayView<N, Data, S1> > overlaps(data, block_shape, Shape(1), Shape(1));
     prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), neighborhood);
     GridGraph<N, undirected_tag> graph(data.shape(), neighborhood);
     UnionFindWatershedEquality<N> equal = {&graph};
@@ -258,7 +137,7 @@ Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
     Shape chunk_shape = data.chunkShape();
     vigra_precondition(chunk_shape == labels.chunkShape() && chunk_shape == directions.chunkShape(), "chunk shapes do not match");
     
-    OverlapsGenerator<N, Data, ChunkedArrayTag> overlaps(data, chunk_shape);
+    Overlaps<ChunkedArray<N, Data> > overlaps(data, data.chunkShape(), Shape(1), Shape(1));
     
     prepareBlockwiseWatersheds(overlaps, directions.chunk_begin(Shape(0), shape), neighborhood);
     
