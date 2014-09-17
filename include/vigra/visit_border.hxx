@@ -114,7 +114,7 @@ struct visit_border_impl<0>
                 for(NeighborIterator arc(graph, *node); arc != lemon::INVALID; ++arc)
                 {
                     for(int i = 0; i != N; ++i)
-                        pixel_difference[dim_mapping[i]] = graph.target(*arc)[i];
+                        pixel_difference[dim_mapping[i]] = graph.target(*arc)[i] - (*node)[i];
                     visitor(u_data[*node], u_labels[*node], v_data[graph.target(*arc)], v_labels[graph.target(*arc)], pixel_difference);
                 }
             }
