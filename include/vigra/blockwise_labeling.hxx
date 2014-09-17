@@ -36,8 +36,15 @@ struct BorderVisitor
     }
 };
 
+// needed by MSVC
+template <class LabelBlocksIterator>
+struct BlockwiseLabelingResult           
+{
+    typedef typename LabelBlocksIterator::value_type::value_type type;
+};
+
 template <class DataBlocksIterator, class LabelBlocksIterator, class Equal, class Value, class Mapping>
-typename LabelBlocksIterator::value_type::value_type
+typename BlockwiseLabelingResult<LabelBlocksIterator>::type
 blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_blocks_end,
                   LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
                   NeighborhoodType neighborhood, Equal equal,
