@@ -1,3 +1,5 @@
+#define VIGRA_CHECK_BOUNDS
+
 #include <vigra/blockwise_labeling.hxx>
 #include <vigra/blockwise_labeling.hxx>
 
