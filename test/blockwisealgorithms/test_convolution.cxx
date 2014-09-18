@@ -26,13 +26,12 @@ struct BlockwiseConvolutionTest
 
         Kernel1D<double> kernel;
         kernel.initAveraging(3, 2);
-        std::vector<Kernel1D<double> > kernels(2, kernel);
 
         Array correct_output(shape);
-        separableConvolveMultiArray(data, correct_output, kernels.begin());
+        separableConvolveMultiArray(data, correct_output, kernel);
         
         Array tested_output(shape);
-        separableConvolveBlockwise(data, tested_output, kernels.begin(), block_shape);
+        separableConvolveBlockwise(data, tested_output, kernel, block_shape);
         
 
         for(int i = 0; i != data.size(); ++i)

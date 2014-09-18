@@ -71,6 +71,16 @@ void separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView
     
     convolveImpl(overlaps, destination_blocks.begin(), kit);
 }
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2,
+          class T3>
+void separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView<N, T2, S2> dest, const Kernel1D<T3>& kernel,
+                                const typename MultiArrayView<N, T1, S1>::difference_type& block_shape =
+                                     typename MultiArrayView<N, T1, S1>::difference_type(128))
+{
+    std::vector<Kernel1D<T3> > kernels(N, kernel);
+    separableConvolveBlockwise(source, dest, kernels.begin(), block_shape);
+}
 template <unsigned int N, class T1, class T2, class KernelIterator>
 void separableConvolveBlockwise(const ChunkedArray<N, T1>& source, ChunkedArray<N, T2>& destination, KernelIterator kit)
 {
@@ -88,6 +98,13 @@ void separableConvolveBlockwise(const ChunkedArray<N, T1>& source, ChunkedArray<
     
     convolveImpl(overlaps, destination.chunk_begin(Shape(0), shape), kit);
 }
+template <unsigned int N, class T1, class T2, class T>
+void separableConvolveBlockwise(const ChunkedArray<N, T1>& source, ChunkedArray<N, T2>& destination, const Kernel1D<T>& kernel)
+{
+    std::vector<Kernel1D<T> > kernels(N, kernel);
+    separableConvolveBlockse(source, destination, kernels.begin());
+}
+
 
 }
 
