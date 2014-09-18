@@ -797,6 +797,13 @@ struct SkeletonTest
             importImage("skeleton_topology.xv", desired);
             should(skel == desired);
         }
+        {
+            skeletonize(data, skel,
+                        SkeletonOptions().pruneTopology(false));
+            //exportImage(skel, "skeleton_topology_without_center.tif");
+            importImage("skeleton_topology_without_center.xv", desired);
+            should(skel == desired);
+        }
     }
 };
 

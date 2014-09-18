@@ -10,4 +10,5 @@ VIGRA_COPY_TEST_DATA(
     skeleton_salience_greater_20.xv
     skeleton_salience_greater_60_percent.xv
     skeleton_topology.xv
+    skeleton_topology_without_center.xv
 )

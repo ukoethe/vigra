@@ -138,7 +138,8 @@ struct SkeletonSimplePoint
 
 template <class CostMap, class LabelMap>
 void
-skeletonThinning(CostMap const & cost, LabelMap & labels)
+skeletonThinning(CostMap const & cost, LabelMap & labels,
+                 bool preserve_endpoints=true)
 {
     typedef GridGraph<CostMap::actual_dimension> Graph;
     typedef typename Graph::Node           Node;
@@ -152,7 +153,21 @@ skeletonThinning(CostMap const & cost, LabelMap & labels)
     std::priority_queue<SP, std::vector<SP>, std::greater<SP> >  pqueue;
     // std::priority_queue<SP>  pqueue;
     
-    bool isSimplePoint[256] = {
+    bool isSimpleStrong[256] = {
+        0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 
+        0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 
+        1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 
+        1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 
+        1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 
+        1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 
+        1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 
+        1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 
+    };
+    
+    bool isSimplePreserveEndPoints[256] = {
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -165,6 +180,10 @@ skeletonThinning(CostMap const & cost, LabelMap & labels)
         0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 
         1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
+    
+    bool * isSimplePoint = preserve_endpoints
+                               ? isSimplePreserveEndPoints
+                               : isSimpleStrong;
     
     int max_degree = g.maxDegree();
     for (NodeIt node(g); node != lemon::INVALID; ++node)
@@ -293,9 +312,12 @@ struct SkeletonOptions
         return *this;
     }
     
-    SkeletonOptions & pruneTopology()
+    SkeletonOptions & pruneTopology(bool preserve_center=true)
     {
-        mode = PruneTopology;
+        if(preserve_center)
+            mode = PruneTopology;
+        else
+            mode = Prune;
         return *this;
     }
 };
@@ -541,6 +563,10 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             n1.partial_area = n2.partial_area + (p1[0]*p2[1] - p1[1]*p2[0]);
         }
                 
+        // always treat eccentricity center as a loop, so that it cannot be pruned 
+        // away unless (options.mode & PreserveTopology) is false.
+        skeleton[center].is_loop = true;
+        
         // from periphery to center: * find and propagate loops
         //                           * delete branches not reaching the boundary
         for(int k=raw_skeleton.size()-1; k >= 0; --k)
@@ -586,24 +612,22 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
         }
         
         bool dont_prune = (options.mode & SkeletonOptions::Prune) == 0;
-        bool preserve_topology = (options.mode & SkeletonOptions::PreserveTopology) != 0;
+        bool preserve_topology = (options.mode & SkeletonOptions::PreserveTopology) != 0 ||
+                                 options.mode == SkeletonOptions::Prune;
         bool relative_pruning = (options.mode & SkeletonOptions::Relative) != 0;
-        WeightType threshold = (options.mode == SkeletonOptions::PruneTopology)
+        WeightType threshold = (options.mode == SkeletonOptions::PruneTopology ||
+                                options.mode == SkeletonOptions::Prune)
                                    ? NumericTraits<WeightType>::max()
                                    : relative_pruning
                                        ? options.pruning_threshold*skeleton[center].salience
                                        : options.pruning_threshold;
-        // from center to periphery: propagate salience
+        // from center to periphery: write result
         for(int k=0; k < (int)raw_skeleton.size(); ++k)
         {
             Node p1 = raw_skeleton[k];
             SNode & n1 = skeleton[p1];
             Node p2 = n1.parent;
             SNode & n2 = skeleton[p2];
-            // if(dont_prune)
-                // dest[p1] = n1.salience;
-            // else if(n1.salience < threshold && !(preserve_topology && n1.is_loop))
-                // dest[p1] = 0;
             if(dont_prune)
                 dest[p1] = n1.salience;
             else if(preserve_topology)
@@ -615,6 +639,9 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                 dest[p1] = 0;
         }
     }
+        
+    if(options.mode == SkeletonOptions::Prune)
+        detail::skeletonThinning(squared_distance, dest, false);
 }
 
 } //-- namespace vigra
