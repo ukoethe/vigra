@@ -52,7 +52,8 @@ template <class Node>
 struct SkeletonNode
 {
     Node parent, principal_child;
-    double length, salience, partial_area;
+    double length, salience;
+    MultiArrayIndex partial_area;
     bool is_loop;
     
     SkeletonNode()
@@ -210,14 +211,18 @@ skeletonThinning(CostMap const & cost, LabelMap & labels)
 struct SkeletonOptions
 {
     enum SkeletonMode {
-         DontPrune,
-         PruneCenterLine,
-         PruneLength,
-         PruneLengthRelative,
-         ReturnLength,
-         PruneSalience,
-         PruneSalienceRelative,
-         ReturnSalience
+         DontPrune = 0,
+         Prune = 1,
+         Relative = 2,
+         PreserveTopology = 4,
+         Length = 8,
+         Salience = 16,
+         PruneCenterLine = 32,
+         PruneLength = Length + Prune,
+         PruneLengthRelative = PruneLength + Relative,
+         PruneSalience = Salience + Prune,
+         PruneSalienceRelative = PruneSalience + Relative,
+         PruneTopology = PreserveTopology + Prune
     };
     
     SkeletonMode mode;
@@ -240,67 +245,58 @@ struct SkeletonOptions
         return *this;
     }
     
-    SkeletonOptions & pruneLength(double threshold)
+    SkeletonOptions & pruneLength(double threshold, bool preserve_topology=true)
     {
         mode = PruneLength;
+        if(preserve_topology)
+            mode = SkeletonMode(mode | PreserveTopology);
         pruning_threshold = threshold;
         return *this;
     }
     
-    SkeletonOptions & pruneLengthRelative(double threshold)
+    SkeletonOptions & pruneLengthRelative(double threshold, bool preserve_topology=true)
     {
         mode = PruneLengthRelative;
+        if(preserve_topology)
+            mode = SkeletonMode(mode | PreserveTopology);
         pruning_threshold = threshold;
         return *this;
     }
     
     SkeletonOptions & returnLength()
     {
-        mode = ReturnLength;
+        mode = Length;
         return *this;
     }
     
-    SkeletonOptions & pruneSalience(double threshold)
+    SkeletonOptions & pruneSalience(double threshold, bool preserve_topology=true)
     {
         mode = PruneSalience;
+        if(preserve_topology)
+            mode = SkeletonMode(mode | PreserveTopology);
         pruning_threshold = threshold;
         return *this;
     }
     
-    SkeletonOptions & pruneSalienceRelative(double threshold)
+    SkeletonOptions & pruneSalienceRelative(double threshold, bool preserve_topology=true)
     {
         mode = PruneSalienceRelative;
+        if(preserve_topology)
+            mode = SkeletonMode(mode | PreserveTopology);
         pruning_threshold = threshold;
         return *this;
     }
     
     SkeletonOptions & returnSalience()
     {
-        mode = ReturnSalience;
+        mode = Salience;
         return *this;
     }
     
-    bool isLengthMode() const
+    SkeletonOptions & pruneTopology()
     {
-        return mode == PruneLength ||
-               mode == PruneLengthRelative ||
-               mode == ReturnLength;
-
-    }
-    
-    bool isSalienceMode() const
-    {
-        return mode == PruneSalience ||
-               mode == PruneSalienceRelative ||
-               mode == ReturnSalience;
-
-    }
-    
-    bool isRelativePruning() const
-    {
-        return mode == PruneLengthRelative ||
-               mode == PruneSalienceRelative;
-
+        mode = PruneTopology;
+        return *this;
     }
 };
 
@@ -345,9 +341,13 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
     T1 maxLabel = 0;
     // find skeleton points
     {
+        using namespace multi_math;
+        
         MultiArray<N, Shape> vectors(labels.shape());
         boundaryVectorDistance(labels, vectors, false, OuterBoundary);
+        squared_distance = squaredNorm(vectors);
     
+        ArrayVector<Node> ends_to_be_checked;
         Graph g(labels.shape());
         for (EdgeIt edge(g); edge != lemon::INVALID; ++edge)
         {
@@ -373,9 +373,17 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                 const MultiArrayIndex d1 = dot(dv, dp),
                                       d2 = dot(dv, v1+v2);
                 if(d1*d2 <= 0)
+                {
                     dest[p1] = l1;
+                    if(squared_distance[p1] == 4)
+                        ends_to_be_checked.push_back(p1);
+                }
                 else
+                {
                     dest[p2] = l2;
+                    if(squared_distance[p2] == 4)
+                        ends_to_be_checked.push_back(p2);
+                }
             }
             else
             {
@@ -388,19 +396,16 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             }
         }
         
-        using namespace multi_math;
-        squared_distance = squaredNorm(vectors);
         
         // add a point when a skeleton line stops short of the shape boundary
         // FIXME: can the be solved during the initial detection above?
         Graph g8(labels.shape(), IndirectNeighborhood);
-        for (NodeIt node(g8); node != lemon::INVALID; ++node)
+        for (unsigned k=0; k<ends_to_be_checked.size(); ++k)
         {
-            Node p1 = *node;
+            // The phenomenon only occurs at points whose distance from the background is 2.
+            // We've put these points into ends_to_be_checked. 
+            Node p1 = ends_to_be_checked[k];
             T2 label = dest[p1];
-            // the phenomenon only occurs at points whose distance from the background is 2
-            if(label <= 0 || squared_distance[p1] != 4)
-                continue;
             int count = 0;
             for (ArcIt arc(g8, p1); arc != lemon::INVALID; ++arc)
             {
@@ -484,7 +489,7 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
         Node center = center_line[roundi(center_line.arcLengthQuantile(0.5))];
         pathFinder.run(lower, upper, weights, center, lemon::INVALID, maxWeight);
         
-        bool compute_salience = options.isSalienceMode();
+        bool compute_salience = (options.mode & SkeletonOptions::Salience) != 0;
         ArrayVector<Node> const & raw_skeleton = pathFinder.discoveryOrder();
         // from periphery to center: create skeleton tree and compute salience
         for(int k=raw_skeleton.size()-1; k >= 0; --k)
@@ -496,27 +501,15 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             n1.parent = p2;
 
             WeightType l = n1.length + norm(p1-p2);
-            if(!compute_salience)
+            // propagate length to parent if this is the longest subtree
+            if(n2.length < l)
             {
-                if(options.mode == SkeletonOptions::DontPrune)
-                    n1.salience = dest[p1];
-                else
-                    n1.salience = n1.length;
-                // propagate length to parent if this is the longest subtree
-                if(n2.length < l)
-                {
-                    n2.length = l;
-                    n2.principal_child = p1;
-                }
+                n2.length = l;
+                n2.principal_child = p1;
             }
-            else 
+            
+            if(compute_salience)
             {
-                // propagate length to parent if this is the longest subtree
-                if(n2.length < l)
-                {
-                    n2.length = l;
-                    n2.principal_child = p1;
-                }
                 // compute salience
                 const double min_length = 4.0; // salience is meaningless for shorter segments due
                                                // to quantization noise (staircasing) of the boundary
@@ -529,9 +522,13 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                         n2.salience = n1.salience;
                 }
             }
+            else if(options.mode == SkeletonOptions::DontPrune)
+                n1.salience = dest[p1];
+            else
+                n1.salience = n1.length;
         }
         
-        // from center to periphery: compute partial area
+        // from center to periphery: propagate salience and compute twice the partial area
         for(int k=0; k < (int)raw_skeleton.size(); ++k)
         {
             Node p1 = raw_skeleton[k];
@@ -539,10 +536,13 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             Node p2 = n1.parent;
             SNode & n2 = skeleton[p2];
             
-            n1.partial_area = n2.partial_area + 0.5*(p1[0]*p2[1] - p1[1]*p2[0]);
+            if(p1 == n2.principal_child)
+                n1.salience = n2.salience;
+            n1.partial_area = n2.partial_area + (p1[0]*p2[1] - p1[1]*p2[0]);
         }
                 
-        // from periphery to center: find and propagate loops, delete branches not reaching the boundary
+        // from periphery to center: * find and propagate loops
+        //                           * delete branches not reaching the boundary
         for(int k=raw_skeleton.size()-1; k >= 0; --k)
         {
             Node p1 = raw_skeleton[k];
@@ -551,14 +551,23 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             {
                 for (ArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
                 {
-                    Node p = g.target(*arc);
-                    if(dest[p] == label && skeleton[p].principal_child == lemon::INVALID)
+                    Node p2 = g.target(*arc);
+                    SNode * n2 = &skeleton[p2];
+                    if(dest[p2] == label && n2->principal_child == lemon::INVALID)
                     {
-                        double area = abs(n1.partial_area -0.5*(p1[0]*p[1] - p1[1]*p[0]) - skeleton[p].partial_area);
-                        // FIXME: replace the magic number 4 by a true containment test
+                        MultiArrayIndex area = abs(n1.partial_area - (p1[0]*p2[1] - p1[1]*p2[0]) - n2->partial_area);
+                        // FIXME: replace the magic number 8 by a true containment test
                         //        e.g. by labeling the BG of the skeleton
-                        if(area > 4)
+                        if(area > 8)
+                        {
                             n1.is_loop = true;
+                            while(n2->salience < n1.salience)
+                            {
+                                n2->salience = n1.salience;
+                                n2 = &skeleton[n2->parent];
+                            }
+                            break;
+                        }
                     }
                 }
                 if(!n1.is_loop && squared_distance[p1] >= 4)
@@ -576,12 +585,14 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                 skeleton[n1.parent].is_loop = true;
         }
         
-        bool dont_prune = options.mode == SkeletonOptions::DontPrune ||
-                          options.mode == SkeletonOptions::ReturnLength ||
-                          options.mode == SkeletonOptions::ReturnSalience;
-        WeightType threshold = options.isRelativePruning()
-                                   ? options.pruning_threshold*skeleton[center].salience
-                                   : options.pruning_threshold;
+        bool dont_prune = (options.mode & SkeletonOptions::Prune) == 0;
+        bool preserve_topology = (options.mode & SkeletonOptions::PreserveTopology) != 0;
+        bool relative_pruning = (options.mode & SkeletonOptions::Relative) != 0;
+        WeightType threshold = (options.mode == SkeletonOptions::PruneTopology)
+                                   ? NumericTraits<WeightType>::max()
+                                   : relative_pruning
+                                       ? options.pruning_threshold*skeleton[center].salience
+                                       : options.pruning_threshold;
         // from center to periphery: propagate salience
         for(int k=0; k < (int)raw_skeleton.size(); ++k)
         {
@@ -589,11 +600,18 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             SNode & n1 = skeleton[p1];
             Node p2 = n1.parent;
             SNode & n2 = skeleton[p2];
-            if(p1 == n2.principal_child)
-                n1.salience = n2.salience;
+            // if(dont_prune)
+                // dest[p1] = n1.salience;
+            // else if(n1.salience < threshold && !(preserve_topology && n1.is_loop))
+                // dest[p1] = 0;
             if(dont_prune)
                 dest[p1] = n1.salience;
-            else if(n1.salience < threshold && !n1.is_loop)
+            else if(preserve_topology)
+            {
+                if(!n1.is_loop && n1.salience < threshold)
+                    dest[p1] = 0;
+            }
+            else if(n1.salience < threshold)
                 dest[p1] = 0;
         }
     }

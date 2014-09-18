@@ -51,8 +51,6 @@
 
 using namespace vigra;
 
-#if 0
-
 struct MultiDistanceTest
 {
     typedef vigra::MultiArray<3,int> IntVolume;
@@ -730,72 +728,75 @@ struct EccentricityTest
         }
     }
 };
-#endif
 
 struct SkeletonTest
 {
     void testSkeleton()
     {
-        MultiArray<2, double> data, skel;
+        MultiArray<2, UInt8> data;
         importImage("blatt.xv", data);
 
-        skel.reshape(2*data.shape()-Shape2(1));
+        MultiArray<2, UInt8> skel(data.shape());
+        MultiArray<2, double> desired(data.shape());
 
-        skeletonizeInterpixel(data, skel,
-                    SkeletonOptions().dontPrune());
-        exportImage(skel, "skeleton0.tif");
-
-        //skeletonizeInterpixel(data, skel,
-        //            SkeletonOptions().returnLength());
-        //exportImage(skel, "skeleton1.tif");
-
-        //skeletonizeInterpixel(data, skel,
-        //            SkeletonOptions().pruneLength(100.0));
-        //exportImage(skel, "skeleton2.tif");
-
-        //skeletonizeInterpixel(data, skel,
-        //            SkeletonOptions().pruneLengthRelative(0.5));
-        //exportImage(skel, "skeleton3.tif");
-
-        skeletonizeInterpixel(data, skel,
-                    SkeletonOptions().returnSalience());
-        exportImage(skel, "skeleton1.tif");
-
-        skeletonizeInterpixel(data, skel,
-                    SkeletonOptions().pruneSalience(20.0));
-        exportImage(skel, "skeleton2.tif");
-
-        skeletonizeInterpixel(data, skel,
-                    SkeletonOptions().pruneSalienceRelative(0.6));
-        exportImage(skel, "skeleton3.tif");
-
-        //skeletonize(data, skel,
-        //            SkeletonOptions().dontPrune());
-        //exportImage(skel, "skeleton0.tif");
-
-        //skeletonize(data, skel,
-        //            SkeletonOptions().returnLength());
-        //exportImage(skel, "skeleton1.tif");
-
-        //skeletonize(data, skel,
-        //            SkeletonOptions().pruneLength(100.0));
-        //exportImage(skel, "skeleton2.tif");
-
-        //skeletonize(data, skel,
-        //            SkeletonOptions().pruneLengthRelative(0.5));
-        //exportImage(skel, "skeleton3.tif");
-
-        //skeletonize(data, skel,
-        //            SkeletonOptions().returnSalience());
-        //exportImage(skel, "skeleton1.tif");
-
-        //skeletonize(data, skel,
-        //            SkeletonOptions().pruneSalience(20.0));
-        //exportImage(skel, "skeleton2.tif");
-
-        //skeletonize(data, skel,
-        //            SkeletonOptions().pruneSalienceRelative(0.6));
-        //exportImage(skel, "skeleton3.tif");
+        {
+            skeletonize(data, skel,
+                        SkeletonOptions().dontPrune());
+            //exportImage(skel, "raw_skeleton.tif");
+            importImage("raw_skeleton.xv", desired);
+            should(skel == desired);
+        }
+        {
+            MultiArray<2, double> skel(data.shape());
+            skeletonize(data, skel,
+                        SkeletonOptions().returnLength());
+            //exportImage(skel, "skeleton_length.tif");
+            importImage("skeleton_length.xv", desired);
+            should(skel == desired);
+        }
+        {
+            skeletonize(data, skel,
+                        SkeletonOptions().pruneLength(100.0));
+            //exportImage(skel, "skeleton_length_greater_100.tif");
+            importImage("skeleton_length_greater_100.xv", desired);
+            should(skel == desired);
+        }
+        {
+            skeletonize(data, skel,
+                        SkeletonOptions().pruneLengthRelative(0.5));
+            //exportImage(skel, "skeleton_length_greater_50_percent.tif");
+            importImage("skeleton_length_greater_50_percent.xv", desired);
+            should(skel == desired);
+        }
+        {
+            MultiArray<2, double> skel(data.shape());
+            skeletonize(data, skel,
+                        SkeletonOptions().returnSalience());
+            //exportImage(skel, "skeleton_salience.tif");
+            importImage("skeleton_salience.xv", desired);
+            should(skel == desired);
+        }
+        {
+            skeletonize(data, skel,
+                        SkeletonOptions().pruneSalience(20.0));
+            //exportImage(skel, "skeleton_salience_greater_20.tif");
+            importImage("skeleton_salience_greater_20.xv", desired);
+            should(skel == desired);
+        }
+        {
+            skeletonize(data, skel,
+                        SkeletonOptions().pruneSalienceRelative(0.6));
+            //exportImage(skel, "skeleton_salience_greater_60_percent.tif");
+            importImage("skeleton_salience_greater_60_percent.xv", desired);
+            should(skel == desired);
+        }
+        {
+            skeletonize(data, skel,
+                        SkeletonOptions().pruneTopology());
+            //exportImage(skel, "skeleton_topology.tif");
+            importImage("skeleton_topology.xv", desired);
+            should(skel == desired);
+        }
     }
 };
 
@@ -806,15 +807,15 @@ struct DistanceTransformTestSuite
     DistanceTransformTestSuite()
     : vigra::test_suite("DistanceTransformTestSuite")
     {
-        //add( testCase( &MultiDistanceTest::testDistanceVolumes));
-        //add( testCase( &MultiDistanceTest::testDistanceAxesPermutation));
-        //add( testCase( &MultiDistanceTest::testDistanceVolumesAnisotropic));
-        //add( testCase( &MultiDistanceTest::distanceTransform2DCompare));
-        //add( testCase( &MultiDistanceTest::distanceTest1D));
-        //add( testCase( &BoundaryMultiDistanceTest::distanceTest1D));
-        //add( testCase( &BoundaryMultiDistanceTest::testDistanceVolumes));
-        //add( testCase( &BoundaryMultiDistanceTest::vectorDistanceTest1D));
-        //add( testCase( &EccentricityTest::testEccentricityCenters));
+        add( testCase( &MultiDistanceTest::testDistanceVolumes));
+        add( testCase( &MultiDistanceTest::testDistanceAxesPermutation));
+        add( testCase( &MultiDistanceTest::testDistanceVolumesAnisotropic));
+        add( testCase( &MultiDistanceTest::distanceTransform2DCompare));
+        add( testCase( &MultiDistanceTest::distanceTest1D));
+        add( testCase( &BoundaryMultiDistanceTest::distanceTest1D));
+        add( testCase( &BoundaryMultiDistanceTest::testDistanceVolumes));
+        add( testCase( &BoundaryMultiDistanceTest::vectorDistanceTest1D));
+        add( testCase( &EccentricityTest::testEccentricityCenters));
         add( testCase( &SkeletonTest::testSkeleton));
     }
 };
