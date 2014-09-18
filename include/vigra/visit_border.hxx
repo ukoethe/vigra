@@ -163,8 +163,8 @@ template <unsigned int N, class Data, class S1,
                           class Label, class S2,
           class Shape, class Visitor>
 inline void 
-visitBorder(const MultiArrayView<N, Data, S1>& u_data, MultiArrayView<N, Label, S2>& u_labels,
-            const MultiArrayView<N, Data, S1>& v_data, MultiArrayView<N, Label, S2>& v_labels,
+visitBorder(const MultiArrayView<N, Data, S1>& u_data, MultiArrayView<N, Label, S2> u_labels,
+            const MultiArrayView<N, Data, S1>& v_data, MultiArrayView<N, Label, S2> v_labels,
             const Shape& difference, NeighborhoodType neighborhood, Visitor visitor)
 {
     vigra_precondition(u_data.shape() == u_labels.shape() && v_data.shape() == v_labels.shape(),
