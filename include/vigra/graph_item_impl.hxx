@@ -383,13 +383,16 @@ namespace vigra{
                 index_type id()const{
                     return id_;
                 }
-                void clear(){
-                    adjacency_.clear();
-                }
+
 
                 void eraseFromAdjacency(const index_type nodeId){
                     // edge id does not matter?
                     adjacency_.erase(AdjacencyElement(nodeId,0));
+                }
+
+                void clear(){
+                    adjacency_.clear();
+                    id_=-1;
                 }
 
                 SetType adjacency_;
