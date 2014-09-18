@@ -2,6 +2,7 @@
 #define VIGRA_OVERLAPPED_BLOCKS_HXX_
 
 #include <utility>
+#include <algoirthm>
 
 namespace vigra
 {
