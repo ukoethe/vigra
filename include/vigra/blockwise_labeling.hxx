@@ -422,8 +422,8 @@ Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
     }
     \endcode
 
-    The resulting labeling is equivalent to a labeling by labelMultiArray, that is, the connected components are the same but may have different ids.
-    <tt>NeighborhoodType</tt> and background value (if any) can be specified with the LabelOptions object.
+    The resulting labeling is equivalent to a labeling by \ref labelMultiArray, that is, the connected components are the same but may have different ids.
+    \ref NeighborhoodType and background value (if any) can be specified with the LabelOptions object.
     If the \a mapping parameter is provided, each chunk is labeled seperately and contiguously (starting at one, zero for background),
     with \a mapping containing a mapping of local labels to global labels for each chunk.
     Thus, the shape of 'mapping' has to be large enough to hold each chunk coordinate.
