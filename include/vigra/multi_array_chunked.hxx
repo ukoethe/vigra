@@ -2878,6 +2878,11 @@ class ChunkIterator
     {
         return *(ChunkIterator(*this) += i);
     }
+    
+    value_type operator[](const shape_type &coordOffset) const
+    {
+        return *(ChunkIterator(*this) += coordOffset);
+    }
 
     void getChunk()
     {
@@ -2983,11 +2988,6 @@ class ChunkIterator
     MultiArrayIndex operator-(const ChunkIterator & other) const
     {
         return base_type::operator-(other);
-    }
-    
-    reference operator[](const shape_type &coordOffset) const
-    {
-        return *(*this + coordOffset);
     }
     
     using base_type::operator==;

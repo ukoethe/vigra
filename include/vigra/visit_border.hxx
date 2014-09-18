@@ -1,7 +1,42 @@
-#ifndef VIGRA_VISIT_BORDER_HXX_
-#define VIGRA_VISIT_BORDER_HXX_
+/************************************************************************/
+/*                                                                      */
+/*     Copyright 2013-2014 by Martin Bidlingmaier and Ullrich Koethe    */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
 
-#include <vigra/multi_array.hxx>
+#ifndef VIGRA_VISIT_BORDER_HXX
+#define VIGRA_VISIT_BORDER_HXX
+
+#include "multi_array.hxx"
 
 namespace vigra
 {
@@ -122,13 +157,15 @@ struct visit_border_impl<0>
     }
 };
 
-}
+} // namespace visit_border_detail
+
 template <unsigned int N, class Data, class S1,
                           class Label, class S2,
           class Shape, class Visitor>
-void visitBorder(const MultiArrayView<N, Data, S1>& u_data, MultiArrayView<N, Label, S2>& u_labels,
-                 const MultiArrayView<N, Data, S1>& v_data, MultiArrayView<N, Label, S2>& v_labels,
-                 const Shape& difference, NeighborhoodType neighborhood, Visitor visitor)
+inline void 
+visitBorder(const MultiArrayView<N, Data, S1>& u_data, MultiArrayView<N, Label, S2> u_labels,
+            const MultiArrayView<N, Data, S1>& v_data, MultiArrayView<N, Label, S2> v_labels,
+            const Shape& difference, NeighborhoodType neighborhood, Visitor visitor)
 {
     vigra_precondition(u_data.shape() == u_labels.shape() && v_data.shape() == v_labels.shape(),
                        "differing block shapes");
@@ -137,7 +174,6 @@ void visitBorder(const MultiArrayView<N, Data, S1>& u_data, MultiArrayView<N, La
                                                     difference, neighborhood, visitor);
 }
 
-}
+} // namespace vigra
 
-#endif
-
+#endif // VIGRA_VISIT_BORDER_HXX
