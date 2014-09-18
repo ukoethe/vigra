@@ -47,6 +47,10 @@
 namespace vigra
 {
 
+/** \addtogroup SeededRegionGrowing
+*/
+//@{
+
 namespace blockwise_watersheds_detail
 {
 
@@ -146,8 +150,60 @@ Label unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
     return labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood).blockShape(block_shape), equal);
 }
 
-template <unsigned int N, class Data,
-                          class Label>
+/*************************************************************/
+/*                                                           */
+/*                      unionFindWatershedBlockwise          */
+/*                                                           */
+/*************************************************************/
+
+/** \brief Blockise union-find watershed transform for ChunkedArrays.
+    
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        
+        template <unsigned int N, class Data, class Label>
+        Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
+                                          ChunkedArray<N, Label>& labels,
+                                          NeighborhoodType neighborhood = DirectNeighborhood);
+
+        // provide temporary directions storage
+        template <unsigned int N, class Data, class Label>
+        Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
+                                          ChunkedArray<N, Label>& labels,
+                                          NeighborhoodType neighborhood,
+                                          ChunkedArray<N, unsigned short>& temporary_storage);
+    
+    }
+    \endcode
+    
+    The resulting labeling is equivalent to a labeling by \ref watershedsUnionFind, that is,
+    the components are the same but may have different ids.
+    If \a temporary_storage is provided, this array is used for intermediate result storage.
+    Otherwise, a newly created \ref ChunkedArrayLazy is used.
+
+    Return: the number of labels assigned (=largest label, because labels start at one)
+    
+    <b> Usage: </b>
+
+    <b>\#include </b> \<vigra/blockwise_labeling.hxx\><br>
+    Namespace: vigra
+
+    \code
+    Shape3 shape = Shape3(10);
+    Shape3 chunk_shape = Shape3(4);
+    ChunkedArrayLazy<3, int> data(shape, chunk_shape);
+    // fill data ...
+    
+    ChunkedArrayLazy<3, size_t> labels(shape, chunk_shape);
+    
+    unionFindWatershedBlockwise(data, labels, IndirectNeighborhood);
+    \endcode
+    */
+doxygen_overloaded_function(template <...> unsigned int unionFindWatershedBlockwise)
+
+template <unsigned int N, class Data, class Label>
 Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
                                   ChunkedArray<N, Label>& labels,
                                   NeighborhoodType neighborhood,
@@ -180,6 +236,8 @@ unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
     ChunkedArrayLazy<N, unsigned short> directions(data.shape(), data.chunkShape());
     return unionFindWatershedBlockwise(data, labels, neighborhood, directions);
 }
+
+//@}
 
 } // namespace vigra
 
