@@ -1,14 +1,49 @@
-#ifndef VIGRA_BLOCKWISE_LABELING_HXX_
-#define VIGRA_BLOCKWISE_LABELING_HXX_
+/************************************************************************/
+/*                                                                      */
+/*     Copyright 2013-2014 by Martin Bidlingmaier and Ullrich Koethe    */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
 
-#include <vigra/multi_gridgraph.hxx>
-#include <vigra/multi_labeling.hxx>
-#include <vigra/union_find.hxx>
-#include <vigra/multi_array_chunked.hxx>
-#include <vigra/metaprogramming.hxx>
+#ifndef VIGRA_BLOCKWISE_LABELING_HXX
+#define VIGRA_BLOCKWISE_LABELING_HXX
 
-#include <vigra/visit_border.hxx>
-#include <vigra/blockify.hxx>
+#include "multi_gridgraph.hxx"
+#include "multi_labeling.hxx"
+#include "union_find.hxx"
+#include "multi_array_chunked.hxx"
+#include "metaprogramming.hxx"
+
+#include "visit_border.hxx"
+#include "blockify.hxx"
 
 namespace vigra
 {
@@ -192,7 +227,7 @@ void toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator 
 }
 
 
-const MultiArrayIndex default_block_side_length = 128;
+static const MultiArrayIndex default_block_side_length = 128;
 
 template <class T>
 const T* getBackground(const LabelOptions& options);
@@ -200,7 +235,7 @@ template <class T>
 const T* getBlockShape(const LabelOptions& options);
 NeighborhoodType getNeighborhood(const LabelOptions& options);
 
-}
+} // namespace blockwise_labeling_detail
 
 class LabelOptions
 {
@@ -283,7 +318,8 @@ const T* getBlockShape(const LabelOptions& options)
     vigra_precondition(block_shape != 0, "shape type has invalid dimension");
     return &block_shape->obj;
 }
-NeighborhoodType getNeighborhood(const LabelOptions& options)
+
+inline NeighborhoodType getNeighborhood(const LabelOptions& options)
 {
     return options.neighborhood_;
 }
@@ -393,7 +429,6 @@ Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
 }
  
     
-}
+} // namespace vigra
 
-#endif
-
+#endif // VIGRA_BLOCKWISE_LABELING_HXX
