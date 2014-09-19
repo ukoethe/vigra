@@ -81,6 +81,32 @@ void separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView
     std::vector<Kernel1D<T3> > kernels(N, kernel);
     separableConvolveBlockwise(source, dest, kernels.begin(), block_shape);
 }
+
+
+/*******************************************************/
+/*                                                     */
+/*              seperableConvolveBlockwse              */
+/*                                                     */
+/*******************************************************/
+
+/** \brief Seperated convolution on ChunkedArrays.
+
+    <b> Declarations:</b>
+
+    \code
+    namespace vigra {
+        // apply each kernel from the sequence 'kernels' in turn
+        template <unsigned int N, class T1, class T2, class KernelIterator>
+        void separableConvolveBlockwise(const ChunkedArra<N, T1>& source, ChunkedArray<N, T2>& destination, KernelIterator kernels);
+        // apply the same kernel to all dimensions
+        template <unsigned int N, class T1, class T2, class T3>
+        void separableConvolveBlockwise(const ChunkedArra<N, T1>& source, ChunkedArray<N, T2>& destination, Kernel1D<T3> const & kernel);
+    }
+    \endcode
+
+    This function computes a separated convolution for a given \ref ChunkedArray. For infinite precision T1, this is equivalent to
+    \ref separableConvolveMultiArray. In practice, floating point inaccuracies will make the result differ slightly.
+*/
 template <unsigned int N, class T1, class T2, class KernelIterator>
 void separableConvolveBlockwise(const ChunkedArray<N, T1>& source, ChunkedArray<N, T2>& destination, KernelIterator kit)
 {
