@@ -85,11 +85,11 @@ void separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView
 
 /*******************************************************/
 /*                                                     */
-/*              seperableConvolveBlockwse              */
+/*              separableConvolveBlockwise             */
 /*                                                     */
 /*******************************************************/
 
-/** \brief Seperated convolution on ChunkedArrays.
+/** \brief Separated convolution on ChunkedArrays.
 
     <b> Declarations:</b>
 
@@ -107,6 +107,8 @@ void separableConvolveBlockwise(MultiArrayView<N, T1, S1> source, MultiArrayView
     This function computes a separated convolution for a given \ref ChunkedArray. For infinite precision T1, this is equivalent to
     \ref separableConvolveMultiArray. In practice, floating point inaccuracies will make the result differ slightly.
 */
+doxygen_overloaded_function(template <...> void separableConvolveBlockwise)
+
 template <unsigned int N, class T1, class T2, class KernelIterator>
 void separableConvolveBlockwise(const ChunkedArray<N, T1>& source, ChunkedArray<N, T2>& destination, KernelIterator kit)
 {
