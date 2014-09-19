@@ -79,7 +79,7 @@ struct BlockwiseWatershedTest
             typedef MultiArray<1, size_t> LabelArray;
             
             LabelArray tested_labels(data.shape());
-            size_t tested_label_number = unionFindWatershedBlockwise(data, tested_labels, neighborhood, block_shape);
+            size_t tested_label_number = unionFindWatershedsBlockwise(data, tested_labels, neighborhood, block_shape);
             
             LabelArray correct_labels(data.shape());
             size_t correct_label_number = watershedsMultiArray(data, correct_labels, neighborhood,
@@ -136,7 +136,7 @@ struct BlockwiseWatershedTest
                     NeighborhoodType neighborhood = neighborhoods[k];
                     
                     LabelArray tested_labels(data.shape());
-                    size_t tested_label_number = unionFindWatershedBlockwise(data, tested_labels, neighborhood, block_shape);
+                    size_t tested_label_number = unionFindWatershedsBlockwise(data, tested_labels, neighborhood, block_shape);
 
                     LabelArray correct_labels(data.shape());
                     size_t correct_label_number = watershedsMultiArray(data, correct_labels, neighborhood,
@@ -192,7 +192,7 @@ struct BlockwiseWatershedTest
         Array data(shape);
         data.commitSubarray(Shape(0), oldschool_data);
         LabelArray tested_labels(shape);
-        size_t tested_label_number = unionFindWatershedBlockwise(data, tested_labels, neighborhood);
+        size_t tested_label_number = unionFindWatershedsBlockwise(data, tested_labels, neighborhood);
         shouldEqual(correct_label_number, tested_label_number);
         shouldEqual(equivalentLabels(tested_labels.begin(), tested_labels.end(),
                                      correct_labels.begin(), correct_labels.end()),

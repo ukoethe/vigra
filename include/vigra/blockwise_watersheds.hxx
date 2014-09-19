@@ -104,7 +104,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
 }
 
 template <unsigned int N>
-struct UnionFindWatershedEquality
+struct UnionFindWatershedsEquality
 {
     // FIXME: this graph object shouldn't be necessary, most functions (and state) of graph are not used
     // this probably needs some refactoring in GridGraph
@@ -127,11 +127,11 @@ struct UnionFindWatershedEquality
 
 template <unsigned int N, class Data, class S1,
                           class Label, class S2>
-Label unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
-                                  MultiArrayView<N, Label, S2> labels,
-                                  NeighborhoodType neighborhood = DirectNeighborhood,
-                                  const typename MultiArrayView<N, Data, S1>::difference_type& block_shape = 
-                                          typename MultiArrayView<N, Data, S1>::difference_type(128))
+Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
+                                   MultiArrayView<N, Label, S2> labels,
+                                   NeighborhoodType neighborhood = DirectNeighborhood,
+                                   const typename MultiArrayView<N, Data, S1>::difference_type& block_shape = 
+                                           typename MultiArrayView<N, Data, S1>::difference_type(128))
 {
     using namespace blockwise_watersheds_detail;
 
@@ -146,7 +146,7 @@ Label unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
     Overlaps<MultiArrayView<N, Data, S1> > overlaps(data, block_shape, Shape(1), Shape(1));
     prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), neighborhood);
     GridGraph<N, undirected_tag> graph(data.shape(), neighborhood);
-    UnionFindWatershedEquality<N> equal = {&graph};
+    UnionFindWatershedsEquality<N> equal = {&graph};
     return labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood).blockShape(block_shape), equal);
 }
 
@@ -204,10 +204,10 @@ Label unionFindWatershedBlockwise(MultiArrayView<N, Data, S1> data,
 doxygen_overloaded_function(template <...> unsigned int unionFindWatershedBlockwise)
 
 template <unsigned int N, class Data, class Label>
-Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
-                                  ChunkedArray<N, Label>& labels,
-                                  NeighborhoodType neighborhood,
-                                  ChunkedArray<N, unsigned short>& directions)
+Label unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
+                                   ChunkedArray<N, Label>& labels,
+                                   NeighborhoodType neighborhood,
+                                   ChunkedArray<N, unsigned short>& directions)
 {
     using namespace blockwise_watersheds_detail;
     
@@ -222,19 +222,19 @@ Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
     prepareBlockwiseWatersheds(overlaps, directions.chunk_begin(Shape(0), shape), neighborhood);
     
     GridGraph<N, undirected_tag> graph(shape, neighborhood);
-    UnionFindWatershedEquality<N> equal = {&graph};
+    UnionFindWatershedsEquality<N> equal = {&graph};
     return labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood), equal);
 }
 
 template <unsigned int N, class Data,
                           class Label>
 inline Label 
-unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
-                                  ChunkedArray<N, Label>& labels,
-                                  NeighborhoodType neighborhood = DirectNeighborhood)
+unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
+                                   ChunkedArray<N, Label>& labels,
+                                   NeighborhoodType neighborhood = DirectNeighborhood)
 {
     ChunkedArrayLazy<N, unsigned short> directions(data.shape(), data.chunkShape());
-    return unionFindWatershedBlockwise(data, labels, neighborhood, directions);
+    return unionFindWatershedsBlockwise(data, labels, neighborhood, directions);
 }
 
 //@}
