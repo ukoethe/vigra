@@ -710,6 +710,15 @@ transpose(Polygon<POINT> const & p)
     return result;
 }
 
+template <class POINT>
+inline Polygon<POINT> 
+reverse(Polygon<POINT> const & p)
+{
+    Polygon<POINT> result(p);
+    result.reverse();
+    return result;
+}
+
 template<class Point>
 Point centroid(const Polygon<Point> &polygon)
 {
