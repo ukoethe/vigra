@@ -152,29 +152,27 @@ Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
 
 /*************************************************************/
 /*                                                           */
-/*                      unionFindWatershedBlockwise          */
+/*                      unionFindWatershedsBlockwise         */
 /*                                                           */
 /*************************************************************/
 
-/** \brief Blockise union-find watershed transform for ChunkedArrays.
+/** \brief Blockise union-find watersheds transform for ChunkedArrays.
     
     <b> Declaration:</b>
     
     \code
     namespace vigra {
-        
         template <unsigned int N, class Data, class Label>
-        Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
+        Label unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
                                           ChunkedArray<N, Label>& labels,
                                           NeighborhoodType neighborhood = DirectNeighborhood);
 
         // provide temporary directions storage
         template <unsigned int N, class Data, class Label>
-        Label unionFindWatershedBlockwise(const ChunkedArray<N, Data>& data,
+        Label unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
                                           ChunkedArray<N, Label>& labels,
                                           NeighborhoodType neighborhood,
                                           ChunkedArray<N, unsigned short>& temporary_storage);
-    
     }
     \endcode
     
@@ -187,7 +185,7 @@ Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
     
     <b> Usage: </b>
 
-    <b>\#include </b> \<vigra/blockwise_labeling.hxx\><br>
+    <b>\#include </b> \<vigra/blockwise_watersheds.hxx\><br>
     Namespace: vigra
 
     \code
@@ -198,10 +196,10 @@ Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
     
     ChunkedArrayLazy<3, size_t> labels(shape, chunk_shape);
     
-    unionFindWatershedBlockwise(data, labels, IndirectNeighborhood);
+    unionFindWatershedsBlockwise(data, labels, IndirectNeighborhood);
     \endcode
     */
-doxygen_overloaded_function(template <...> unsigned int unionFindWatershedBlockwise)
+doxygen_overloaded_function(template <...> unsigned int unionFindWatershedsBlockwise)
 
 template <unsigned int N, class Data, class Label>
 Label unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,

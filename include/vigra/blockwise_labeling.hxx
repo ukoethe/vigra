@@ -401,7 +401,6 @@ Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
     
     \code
     namespace vigra {
-        
         // assign local labels and generate mapping (local labels) -> (global labels) for each chunk
         template <unsigned int N, class T, class S1,
                                   class Label, class S2,
