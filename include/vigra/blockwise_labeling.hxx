@@ -397,7 +397,7 @@ Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
 
 /** \brief Connected components labeling for ChunkedArrays.
     
-    <b> Declaration:</b>
+    <b> Declarations:</b>
     
     \code
     namespace vigra {
