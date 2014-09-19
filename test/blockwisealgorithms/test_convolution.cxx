@@ -15,7 +15,7 @@ struct BlockwiseConvolutionTest
 {
     void simpleTest()
     {
-        typedef MultiArray<2, int> Array;
+        typedef MultiArray<2, double> Array;
         typedef Array::difference_type Shape;
  
         Shape shape(40);
@@ -33,12 +33,9 @@ struct BlockwiseConvolutionTest
         Array tested_output(shape);
         separableConvolveBlockwise(data, tested_output, kernel, block_shape);
         
-
-        for(int i = 0; i != data.size(); ++i)
-        {
-            shouldEqual(correct_output[i], tested_output[i]);
-        }
+        shouldEqualSequenceTolerance(correct_output.begin(), correct_output.end(), tested_output.begin(), 1e-14);
     }
+
     void chunkedTest()
     {
         static const int N = 3;
