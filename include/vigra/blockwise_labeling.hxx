@@ -48,6 +48,10 @@
 namespace vigra
 {
 
+/** \addtogroup Labeling
+*/
+//@{
+
 class LabelOptions;
 
 namespace blockwise_labeling_detail
@@ -326,6 +330,8 @@ inline NeighborhoodType getNeighborhood(const LabelOptions& options)
 
 }
 
+
+
 template <unsigned int N, class Data, class S1,
                           class Label, class S2,
           class Equal, class S3>
@@ -383,11 +389,87 @@ Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
 
 
 
+/*************************************************************/
+/*                                                           */
+/*                      labelMultiArrayBlockwise             */
+/*                                                           */
+/*************************************************************/
+
+/** \brief Connected components labeling for ChunkedArrays.
+    
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        
+        // assign local labels and generate mapping (local labels) -> (global labels) for each chunk
+        template <unsigned int N, class T, class S1,
+                                  class Label, class S2,
+                  class EqualityFunctor>
+        Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
+                                       ChunkedArray<N, Label>& labels,
+                                       const LabelOptions& options,
+                                       Equal equal,
+                                       MultiArrayView<N, std::vector<Label>, S3>& mapping);
+        // assign global labels
+        template <unsigned int N, class T, class S1,
+                                  class Label, class S2,
+                  class EqualityFunctor = std::equal_to<T> >
+        Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
+                                       ChunkedArray<N, Label>& labels,
+                                       const LabelOptions& options = LabelOptions(),
+                                       Equal equal = std::equal_to<T>());
+    }
+    \endcode
+
+    The resulting labeling is equivalent to a labeling by \ref labelMultiArray, that is, the connected components are the same but may have different ids.
+    \ref NeighborhoodType and background value (if any) can be specified with the LabelOptions object.
+    If the \a mapping parameter is provided, each chunk is labeled seperately and contiguously (starting at one, zero for background),
+    with \a mapping containing a mapping of local labels to global labels for each chunk.
+    Thus, the shape of 'mapping' has to be large enough to hold each chunk coordinate.
+    
+    Return: the number of regions found (=largest global region label)
+    
+    <b> Usage: </b>
+
+    <b>\#include </b> \<vigra/blockwise_labeling.hxx\><br>
+    Namespace: vigra
+
+    \code
+    Shape3 shape = Shape3(10);
+    Shape3 chunk_shape = Shape3(4);
+    ChunkedArrayLazy<3, int> data(shape, chunk_shape);
+    // fill data ...
+    
+    ChunkedArrayLazy<3, size_t> labels(shape, chunk_shape);
+    
+    MultiArray<3, std::vector<size_t> > mapping(Shape3(3)); // there are 3 chunks in each dimension
+
+    labelMultiArrayBlockwise(data, labels, LabelOptions().neighborhood(DirectNeighborhood).background(0),
+                             std::equal_to<int>(), mapping);
+    
+    // check out chunk in the middle
+    MultiArray<3, size_t> middle_chunk(Shape3(4));
+    labels.checkoutSubarray(Shape3(4), middle_chunk);
+    
+    // print number of non-background labels assigned in middle_chunk
+    cout << mapping[Shape3(1)].size() << endl;
+
+    // get local label for voxel 
+    // this may be the same value assigned to different component in another chunk
+    size_t local_label = middle_chunk[Shape3(2)];
+    // get global label for voxel
+    // if another voxel has the same label, they are in the same connected component albeit they may be in different chunks
+    size_t global_label = mapping[Shape3(1)][local_label
+    \endcode
+    */
+doxygen_overloaded_function(template <...> unsigned int labelMultiArrayBlockwise)
+
 template <unsigned int N, class Data, class Label, class Equal, class S3>
 Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
                                ChunkedArray<N, Label>& labels,
                                const LabelOptions& options,
-                               Equal equal, MultiArrayView<N, std::vector<Label>, S3>& mapping)
+                               Equal equal, MultiArrayView<N, std::vector<Label>, S3> mapping)
 {    
     using namespace blockwise_labeling_detail;
     const TinyVector<MultiArrayIndex, N>* options_block_shape = getBlockShape<TinyVector<MultiArrayIndex, N> >(options);
@@ -427,7 +509,8 @@ Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
 {
     return labelMultiArrayBlockwise(data, labels, options, std::equal_to<Data>());
 }
- 
+
+//@}
     
 } // namespace vigra
 
