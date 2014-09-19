@@ -39,6 +39,9 @@
 #include <utility>
 #include <algorithm>
 
+#include <vigra/multi_array.hxx>
+#include <vigra/multi_array_chunked.hxx>
+
 namespace vigra
 {
 
