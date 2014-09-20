@@ -106,17 +106,13 @@ class Polygon
     using Base::crbegin;
     using Base::crend;
 
-    Polygon(Polygon const & points)
-    : Base(points),
-      lengthValid_(false),
-      partialAreaValid_(false)
-    {}
+    // use default copy constructor
 
     Polygon()
     : length_(0.0),
-      lengthValid_(true),
+      lengthValid_(false),
       partialArea_(0.0),
-      partialAreaValid_(true)
+      partialAreaValid_(false)
     {}
 
     Polygon(size_type n)
@@ -177,10 +173,10 @@ class Polygon
         return abs(partialArea());
     }
 
-        /// Returns true iff the last and first points are equal.
+        /// Returns true iff the last and first points are equal or the polygon is empty.
     bool closed() const
     {
-        return size() > 0 && back() == front();
+        return size() <= 1 || back() == front();
     }
 
         /** Linearly interpolate at <tt>offset</tt> between knots 
@@ -973,6 +969,29 @@ void createScanIntervals(Polygon<Point> const &p, Array & result)
 
 
 } // namespace detail
+
+template<class Point, class FUNCTOR>
+bool
+inspectPolygon(Polygon<Point> const &p,
+               FUNCTOR const & f) 
+{
+    vigra_precondition(p.closed(),
+        "inspectPolygon(): polygon must be closed (i.e. first point == last point).");
+        
+    std::vector<Point> scan_intervals;
+    detail::createScanIntervals(p, scan_intervals);
+
+    for(unsigned int k=0; k < scan_intervals.size(); k+=2)
+    {
+        Shape2 p((MultiArrayIndex)ceil(scan_intervals[k][0]),
+                 (MultiArrayIndex)scan_intervals[k][1]);
+        MultiArrayIndex xend = (MultiArrayIndex)floor(scan_intervals[k+1][0]) + 1;
+        for(; p[0] < xend; ++p[0])
+            if(!f(p))
+                return false;
+    }
+    return true;
+}
 
 /** \brief Render closed polygon \a p into the image \a output_image. 
 
