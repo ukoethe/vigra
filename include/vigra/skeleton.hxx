@@ -223,6 +223,24 @@ skeletonThinning(CostMap const & cost, LabelMap & labels,
     }
 }
 
+template <class Label, class Labels>
+struct CheckForHole
+{
+    Label label;
+    Labels const & labels;
+    
+    CheckForHole(Label l, Labels const & ls)
+    : label(l)
+    , labels(ls)
+    {}
+    
+    template <class Node>
+    bool operator()(Node const & n) const
+    {
+        return labels[n] == label;
+    }
+};
+
 } // namespace detail 
 
 // FIXME: support pruneTopology()
@@ -248,7 +266,7 @@ struct SkeletonOptions
     double pruning_threshold;
     
     SkeletonOptions()
-    : mode(PruneSalienceRelative)
+    : mode(SkeletonMode(PruneSalienceRelative | PreserveTopology))
     , pruning_threshold(0.2)
     {}
     
@@ -420,7 +438,7 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
         
         
         // add a point when a skeleton line stops short of the shape boundary
-        // FIXME: can the be solved during the initial detection above?
+        // FIXME: can this be solved during the initial detection above?
         Graph g8(labels.shape(), IndirectNeighborhood);
         for (unsigned k=0; k<ends_to_be_checked.size(); ++k)
         {
@@ -479,7 +497,7 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
     ShortestPathDijkstra<Graph, WeightType> pathFinder(g);
     WeightType maxWeight = g.edgeNum()*sqrt(N);
     // Handle the skeleton of each region individually.
-    for(unsigned int label=1; label < regions.size(); ++label)
+    for(std::size_t label=1; label < regions.size(); ++label)
     {
         Skeleton & skeleton = regions[label].skeleton;
         if(skeleton.size() == 0) // label doesn't exist
@@ -512,7 +530,7 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
         pathFinder.run(lower, upper, weights, center, lemon::INVALID, maxWeight);
         
         bool compute_salience = (options.mode & SkeletonOptions::Salience) != 0;
-        ArrayVector<Node> const & raw_skeleton = pathFinder.discoveryOrder();
+        ArrayVector<Node> raw_skeleton(pathFinder.discoveryOrder());
         // from periphery to center: create skeleton tree and compute salience
         for(int k=raw_skeleton.size()-1; k >= 0; --k)
         {
@@ -521,6 +539,17 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             SNode & n1 = skeleton[p1];
             SNode & n2 = skeleton[p2];
             n1.parent = p2;
+
+            for (BackArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
+            {
+                Node p = g.target(*arc);
+                if(p == p2 || skeleton[p].parent == p1)
+                    continue; // edge belongs to the tree
+                if(n1.principal_child == lemon::INVALID || 
+                   skeleton[p].principal_child == lemon::INVALID)
+                    continue; // edge may belong to a loop
+                weights[*arc] = NumericTraits<WeightType>::max();
+            }
 
             WeightType l = n1.length + norm(p1-p2);
             // propagate length to parent if this is the longest subtree
@@ -562,37 +591,59 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                 n1.salience = n2.salience;
             n1.partial_area = n2.partial_area + (p1[0]*p2[1] - p1[1]*p2[0]);
         }
-                
+
         // always treat eccentricity center as a loop, so that it cannot be pruned 
         // away unless (options.mode & PreserveTopology) is false.
         skeleton[center].is_loop = true;
         
         // from periphery to center: * find and propagate loops
         //                           * delete branches not reaching the boundary
+        detail::CheckForHole<std::size_t, MultiArrayView<2, T1, S1> > hasNoHole(label, labels);
         for(int k=raw_skeleton.size()-1; k >= 0; --k)
         {
             Node p1 = raw_skeleton[k];
             SNode & n1 = skeleton[p1];
+
             if(n1.principal_child == lemon::INVALID)
             {
                 for (ArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
                 {
                     Node p2 = g.target(*arc);
                     SNode * n2 = &skeleton[p2];
-                    if(dest[p2] == label && n2->principal_child == lemon::INVALID)
+                    
+                    if(n1.parent == p2)
+                        continue; // going back to the parent can't result in a loop
+                    if(weights[*arc] == NumericTraits<WeightType>::max())
+                        continue; // p2 is not in the tree or the loop has already been handled
+                    MultiArrayIndex area = abs(n1.partial_area - (p1[0]*p2[1] - p1[1]*p2[0]) - n2->partial_area);
+                    if(area <= 3) // the area is too small to enclose a hole
+                        continue;
+                    
+                    // use Dijkstra to find the loop
+                    weights[*arc] = NumericTraits<WeightType>::max();
+                    pathFinder.run(lower, upper, weights, p1, p2);
+                    Polygon<Shape2> poly;
                     {
-                        MultiArrayIndex area = abs(n1.partial_area - (p1[0]*p2[1] - p1[1]*p2[0]) - n2->partial_area);
-                        // FIXME: replace the magic number 8 by a true containment test
-                        //        e.g. by labeling the BG of the skeleton
-                        if(area > 8)
+                        poly.push_back_unsafe(p1);
+                        poly.push_back_unsafe(p2);
+                        Node p = p2;
+                        do 
                         {
-                            n1.is_loop = true;
-                            while(n2->salience < n1.salience)
-                            {
-                                n2->salience = n1.salience;
-                                n2 = &skeleton[n2->parent];
-                            }
-                            break;
+                            p = pathFinder.predecessors()[p];
+                            poly.push_back_unsafe(p);
+                        }
+                        while(p != pathFinder.predecessors()[p]);
+                    }
+                    // check if the loop contains a hole or is just a discretization artifact
+                    if(!inspectPolygon(poly, hasNoHole))
+                    {
+                        // it's a genuine loop => mark it and propagate salience
+                        double max_salience = max(n1.salience, n2->salience);
+                        for(int p=1; p<poly.size(); ++p)
+                        {
+                            SNode & n = skeleton[poly[p]];
+                            n.is_loop = true;
+                            n.salience = max(n.salience, max_salience);
                         }
                     }
                 }

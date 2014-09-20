@@ -45,6 +45,7 @@
 #include <vigra/impex.hxx>
 #include <vigra/vector_distance.hxx>
 #include <vigra/skeleton.hxx>
+#include <vigra/timing.hxx>
 
 
 #include "test_data.hxx"
@@ -729,15 +730,15 @@ struct EccentricityTest
     }
 };
 
+
 struct SkeletonTest
 {
     void testSkeleton()
     {
         MultiArray<2, UInt8> data;
         importImage("blatt.xv", data);
-
         MultiArray<2, UInt8> skel(data.shape());
-        MultiArray<2, double> desired(data.shape());
+        MultiArray<2, float> desired(data.shape());
 
         {
             skeletonize(data, skel,
@@ -747,7 +748,7 @@ struct SkeletonTest
             should(skel == desired);
         }
         {
-            MultiArray<2, double> skel(data.shape());
+            MultiArray<2, float> skel(data.shape());
             skeletonize(data, skel,
                         SkeletonOptions().returnLength());
             //exportImage(skel, "skeleton_length.tif");
@@ -769,7 +770,7 @@ struct SkeletonTest
             should(skel == desired);
         }
         {
-            MultiArray<2, double> skel(data.shape());
+            MultiArray<2, float> skel(data.shape());
             skeletonize(data, skel,
                         SkeletonOptions().returnSalience());
             //exportImage(skel, "skeleton_salience.tif");
@@ -804,6 +805,20 @@ struct SkeletonTest
             importImage("skeleton_topology_without_center.xv", desired);
             should(skel == desired);
         }
+        //{
+        //    importImage("horse.xv", data);
+
+        //    MultiArray<2, UInt8> skel(data.shape());
+
+        //    {
+        //        //skeletonize(data, skel,
+        //        //            SkeletonOptions().dontPrune());
+        //        //skeletonize(data, skel,
+        //        //            SkeletonOptions().pruneTopology());
+        //        skeletonize(data, skel);
+        //        exportImage(skel, "horse_skeleton.tif");
+        //    }
+        //}
     }
 };
 
