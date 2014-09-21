@@ -132,11 +132,42 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
     }
 }
 
-/// \brief Find the (approximate) eccentricitycenter in each region of a labeled image.
-///
-/// \param src : labeled array
-/// \param centers[out] : list of eccentricity centers (<tt>centers[k] = TinyVector<int, N>()</tt>
-///                        must be supported)    
+/** \addtogroup MultiArrayDistanceTransform
+*/
+//@{
+
+    /** \brief Find the (approximate) eccentricity center in each region of a labeled image.
+        
+        <b> Declarations:</b>
+
+        pass arbitrary-dimensional array views:
+        \code
+        namespace vigra {
+            template <unsigned int N, class T, class S, class Array>
+            void 
+            eccentricityCenters(MultiArrayView<N, T, S> const & src,
+                                Array & centers);
+        }
+        \endcode
+        
+        \param src : labeled array
+        \param centers[out] : list of eccentricity centers (required interface: 
+                               <tt>centers[k] = TinyVector<int, N>()</tt> must be supported)    
+                               
+        <b> Usage:</b>
+
+        <b>\#include</b> \<vigra/eccentricitytransform.hxx\><br/>
+        Namespace: vigra
+
+        \code
+        Shape3 shape(width, height, depth);
+        MultiArray<3, UInt32> labels(shape);
+        ArrayVector<TinyVector<Int32, N> > centers;
+        ...
+
+        eccentricityCenters(labels, centers);
+        \endcode
+    */
 template <unsigned int N, class T, class S, class Array>
 void 
 eccentricityCenters(const MultiArrayView<N, T, S> & src,
@@ -157,31 +188,53 @@ eccentricityCenters(const MultiArrayView<N, T, S> & src,
     eccentricityCentersImpl(src, g, a, pathFinder, centers);
 }
 
-/// \brief Computes the eccentricity transform (approximation) on each region of a labeled image.
-///
-/// \param src : labeled array
-/// \param dest[out] : eccentricity transform of src
-template <unsigned int N, class T, class S>
-void eccentricityTransformOnLabels(
-        const MultiArrayView<N, T> & src,
-        MultiArrayView<N, S> & dest
-){
-    ArrayVector<TinyVector<MultiArrayIndex, N> > centers;
-    eccentricityTransformOnLabels(src, dest, centers);
-}
+    /** \brief Computes the (approximate) eccentricity transform on each region of a labeled image.
+        
+        <b> Declarations:</b>
 
-/// \brief Computes the eccentricity transform (approximation) on each region of a labeled image.
-///
-/// \param src : labeled array
-/// \param dest[out] : eccentricity transform of src
-/// \param centers[out] : list of eccentricity centers (<tt>centers[k] = TinyVector<int, N>()</tt>
-///                        must be supported)    
+        pass arbitrary-dimensional array views:
+        \code
+        namespace vigra {
+            // compute only the accentricity transform
+            template <unsigned int N, class T, class S>
+            void 
+            eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
+                                          MultiArrayView<N, S> dest);
+            
+            // also return the eccentricity center of each region
+            template <unsigned int N, class T, class S, class Array>
+            void 
+            eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
+                                          MultiArrayView<N, S> dest,
+                                          Array & centers);
+        }
+        \endcode
+        
+        \param src : labeled array
+        \param dest[out] : eccentricity transform of src
+        \param centers[out] : (optional) list of eccentricity centers (required interface: 
+                               <tt>centers[k] = TinyVector<int, N>()</tt> must be supported)    
+                               
+        <b> Usage:</b>
+
+        <b>\#include</b> \<vigra/eccentricitytransform.hxx\><br/>
+        Namespace: vigra
+
+        \code
+        Shape3 shape(width, height, depth);
+        MultiArray<3, UInt32> labels(shape);
+        MultiArray<3, float> dest(shape);
+        ArrayVector<TinyVector<Int32, N> > centers;
+        ...
+
+        eccentricityTransformOnLabels(labels, dest, centers);
+        \endcode
+    */
 template <unsigned int N, class T, class S, class Array>
 void 
-eccentricityTransformOnLabels(
-        const MultiArrayView<N, T> & src,
-        MultiArrayView<N, S> & dest,
-        Array & centers)
+eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
+                              MultiArrayView<N, S> dest,
+                              Array & centers)
 {
     using namespace acc;
     typedef typename MultiArrayShape<N>::type Shape;
@@ -221,6 +274,17 @@ eccentricityTransformOnLabels(
     pathFinder.runMultiSource(weights, filtered_centers.begin(), filtered_centers.end());
     dest = pathFinder.distances();
 }
+
+template <unsigned int N, class T, class S>
+inline void 
+eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
+                              MultiArrayView<N, S> dest)
+{
+    ArrayVector<TinyVector<MultiArrayIndex, N> > centers;
+    eccentricityTransformOnLabels(src, dest, centers);
+}
+
+//@}
 
 } // namespace vigra
 

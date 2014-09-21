@@ -309,6 +309,10 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
 
 } // namespace detail
 
+/** \addtogroup MultiArrayDistanceTransform
+*/
+//@{
+
 template<bool PRED>
 struct Error_output_pixel_type_must_be_TinyVector_of_appropriate_length 
 : vigra::staticAssert::AssertBool<PRED> {};
@@ -318,6 +322,45 @@ struct Error_output_pixel_type_must_be_TinyVector_of_appropriate_length
 /*               separableVectorDistance                */
 /*                                                      */
 /********************************************************/
+
+    /** \brief Compute the vector distance transform of a N-dimensional binary array.
+
+        <b> Declarations:</b>
+
+        \code
+        namespace vigra {
+            template <unsigned int N, class T1, class S1,
+                      class T2, class S2, class Array>
+            void 
+            separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest, 
+                                    bool background,
+                                    Array const & pixelPitch=TinyVector<double, N>(1));
+        }
+        \endcode
+
+        This function works like \ref separableMultiDistance() (see there for details),
+        but returns in each pixel the <i>vector</i> to the nearest background pixel 
+        rather than the scalar distance. This enables much more powerful applications.
+
+        <b> Usage:</b>
+
+        <b>\#include</b> \<vigra/vector_distance.hxx\><br/>
+        Namespace: vigra
+
+        \code
+        Shape3 shape(width, height, depth);
+        MultiArray<3, unsigned char> source(shape);
+        MultiArray<3, Shape3> dest(shape);
+        ...
+
+        // For each background pixel, find the vector to the nearest foreground pixel.
+        separableVectorDistance(source, dest, true);
+        \endcode
+
+        \see vigra::separableMultiDistance(), vigra::boundaryVectorDistance()
+    */
+doxygen_overloaded_function(template <...> void separableVectorDistance)
 
 template <unsigned int N, class T1, class S1,
           class T2, class S2, class Array>
@@ -366,6 +409,51 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
     separableVectorDistance(source, dest, background, pixelPitch);
 }
 
+
+    /** \brief Compute the vector distance transform to the implicit boundaries of a 
+               multi-dimensional label array.
+
+        <b> Declarations:</b>
+
+        \code
+        namespace vigra {
+            template <unsigned int N, class T1, class S1,
+                                      class T2, class S2,
+                      class Array>
+            void
+            boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
+                                   MultiArrayView<N, T2, S2> dest,
+                                   bool array_border_is_active=false,
+                                   BoundaryDistanceTag boundary=OuterBoundary,
+                                   Array const & pixelPitch=TinyVector<double, N>(1));
+        }
+        \endcode
+
+        This function works like \ref boundaryMultiDistance() (see there for details),
+        but returns in each pixel the <i>vector</i> to the nearest boundary pixel 
+        rather than the scalar distance. This enables much more powerful applications.
+        Additionally, it support a <tt>pixelPitch</tt> parameter which allows to adjust
+        the distance calculations for anisotropic grid resolution.
+
+        <b> Usage:</b>
+
+        <b>\#include</b> \<vigra/vector_distance.hxx\><br/>
+        Namespace: vigra
+
+        \code
+        Shape3 shape(width, height, depth);
+        MultiArray<3, UInt32> labels(shape);
+        MultiArray<3, Shape3> dest(shape);
+        ...
+
+        // For each region, find the vectors to the nearest boundary pixel, including the 
+        // outer border of the array.
+        boundaryVectorDistance(labels, dest, true);
+        \endcode
+
+        \see vigra::boundaryMultiDistance(), vigra::separableVectorDistance()
+    */
+doxygen_overloaded_function(template <...> void boundaryVectorDistance)
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
@@ -439,6 +527,8 @@ boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
     TinyVector<double, N> pixelPitch(1.0);
     boundaryVectorDistance(labels, dest, array_border_is_active, boundary, pixelPitch);
 }
+
+//@}
 
 } //-- namespace vigra
 

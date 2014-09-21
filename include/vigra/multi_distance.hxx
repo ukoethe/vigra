@@ -577,7 +577,7 @@ separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
     MultiArray<3, float> dest(shape);
     ...
 
-    // Calculate Euclidean distance squared for all background pixels 
+    // Calculate Euclidean distance for all background pixels 
     separableMultiDistance(source, dest, true);
     \endcode
 
@@ -798,7 +798,7 @@ boundaryDistParabola(DestIterator is, DestIterator iend,
 
 /********************************************************/
 /*                                                      */
-/*        internalBoundaryMultiArrayDist             */
+/*           internalBoundaryMultiArrayDist             */
 /*                                                      */
 /********************************************************/
 
@@ -847,7 +847,7 @@ enum BoundaryDistanceTag {
 /*                                                      */
 /********************************************************/
 
-/** \brief Euclidean distance on multi-dimensional arrays of labeled data.
+/** \brief Euclidean distance to the implicit boundaries of a multi-dimensional label array.
 
 
     <b> Declarations:</b>
@@ -865,10 +865,21 @@ enum BoundaryDistanceTag {
     }
     \endcode
     
-    The function computes the distance of each pixel to the nearest interpixel 
-    boundary between labeled regions. For example, pixels adjacent to another 
-    region have distance 1/2. If <tt>array_border_is_active=true</tt>, the 
-    outer border of the array (i.e. the interpixel border between the array 
+    This function computes the distance transform of a labeled image <i>simultaneously</i>
+    for all regions. Depending on the requested type of \a boundary, three modes
+    are supported:
+    <ul>
+    <li><tt>OuterBoundary</tt>: In each region, compute the distance to the nearest pixel not
+               belonging to that regions. This is the same as if a normal distance transform
+               where applied to a binary image containing just this region.</li>
+    <li><tt>InterpixelBoundary</tt> (default): Like <tt>OuterBoundary</tt>, but shift the distance
+               to the interpixel boundary by subtractiong 1/2. This make the distences consistent
+               accross boundaries.</li>
+    <li><tt>InnerBoundary</tt>: In each region, compute the distance to the nearest pixel in the 
+               region which is adjacent to the boundary. </li>
+    </ul>
+    If <tt>array_border_is_active=true</tt>, the 
+    outer border of the array (i.e. the interpixel boundary between the array 
     and the infinite region) is also used. Otherwise (the default), regions 
     touching the array border are treated as if they extended to infinity.
     
