@@ -260,7 +260,7 @@ namespace vigra{
         ///                  or <tt>INVALID</tt>, the shortest path from source to all reachable nodes is computed
         /// \param maxDistance  : path search is terminated when the path length exceeds <tt>maxDistance</tt>
         ///
-        /// This version of run restricts the path search to the ROI <tt>[start, stop)</tt> and only
+        /// This version of <tt>run()</tt> restricts the path search to the ROI <tt>[start, stop)</tt> and only
         /// works for instances of \ref GridGraph. Otherwise, it is identical to the standard <tt>run()</tt> 
         /// function.
         template<class WEIGHTS>
@@ -278,13 +278,32 @@ namespace vigra{
             runImpl(weights, target, maxDistance);
         }
 
+        /// \brief run shortest path again with given edge weights
+        ///
+        /// This only differs from standard <tt>run()</tt> by initialization: Instead of resetting 
+        /// the entire graph, this only resets the nodes that have been visited in the 
+        /// previous run, i.e. the contents of the array <tt>discoveryOrder()</tt>.
+        /// This will be much faster if only a small fraction of the nodes has to be reset.
+        template<class WEIGHTS>
+        void reRun(const WEIGHTS & weights, const Node & source,
+                   const Node & target = lemon::INVALID, 
+                   WeightType maxDistance=NumericTraits<WeightType>::max())
+        {
+            this->reInitializeMaps(source);
+            runImpl(weights, target, maxDistance);
+        }
+
+        /// \brief run shortest path with given edge weights from multiple sources.
+        ///
+        /// This is otherwise identical to standard <tt>run()</tt>, except that 
+        /// <tt>source()</tt> returns <tt>lemon::INVALID</tt> after path search finishes.
         template<class WEIGHTS, class ITER>
         void 
         runMultiSource(const WEIGHTS & weights, ITER source_begin, ITER source_end,
                  const Node & target = lemon::INVALID, 
                  WeightType maxDistance=NumericTraits<WeightType>::max())
         {
-            this->initializeMaps(source_begin, source_end);
+            this->initializeMapsMultiSource(source_begin, source_end);
             runImpl(weights, target, maxDistance);
         }
 
@@ -361,9 +380,12 @@ namespace vigra{
                     else if(predMap_[otherNode]==lemon::INVALID){
                         const Edge edge(*outArcIt);
                         const WeightType initialDist = distMap_[topNode]+weights[edge];
-                        pq_.push(otherNodeId,initialDist);
-                        distMap_[otherNode]=initialDist;
-                        predMap_[otherNode]=topNode;
+                        if(initialDist<=maxDistance)
+                        {
+                            pq_.push(otherNodeId,initialDist);
+                            distMap_[otherNode]=initialDist;
+                            predMap_[otherNode]=topNode;
+                        }
                     }
                 }
             }
@@ -389,8 +411,26 @@ namespace vigra{
             source_=source;
         }
 
+        void initializeMaps(Node const & source,
+                            Node const & start, Node const & stop)
+        {
+            Node left_border  = min(start, Node(1)),
+                 right_border = min(predMap_.shape()-stop, Node(1)),
+                 DONT_TOUCH   = Node(lemon::INVALID) - Node(1);
+            
+            initMultiArrayBorder(predMap_.subarray(start-left_border, stop+right_border),
+                                 left_border, right_border, DONT_TOUCH);
+            predMap_.subarray(start, stop) = lemon::INVALID;
+            predMap_[source]=source;
+            
+            distMap_[source]=static_cast<WeightType>(0.0);
+            discoveryOrder_.clear();
+            pq_.push(graph_.id(source),0.0);
+            source_=source;
+        }
+
         template <class ITER>
-        void initializeMaps(ITER source, ITER source_end){
+        void initializeMapsMultiSource(ITER source, ITER source_end){
             for(NodeIt n(graph_); n!=lemon::INVALID; ++n){
                 const Node node(*n);
                 predMap_[node]=lemon::INVALID;
@@ -405,19 +445,12 @@ namespace vigra{
             source_=lemon::INVALID;
         }
 
-        void initializeMaps(Node const & source,
-                            Node const & start, Node const & stop)
-        {
-            Node left_border  = min(start, Node(1)),
-                 right_border = min(predMap_.shape()-stop, Node(1)),
-                 DONT_TOUCH   = Node(lemon::INVALID) - Node(1);
-            
-            initMultiArrayBorder(predMap_.subarray(start-left_border, stop+right_border),
-                                 left_border, right_border, DONT_TOUCH);
-            predMap_.subarray(start, stop) = lemon::INVALID;
-            predMap_[source]=source;
-            
+        void reInitializeMaps(Node const & source){
+            for(unsigned int n=0; n<discoveryOrder_.size(); ++n){
+                predMap_[discoveryOrder_[n]]=lemon::INVALID;
+            }
             distMap_[source]=static_cast<WeightType>(0.0);
+            predMap_[source]=source;
             discoveryOrder_.clear();
             pq_.push(graph_.id(source),0.0);
             source_=source;
