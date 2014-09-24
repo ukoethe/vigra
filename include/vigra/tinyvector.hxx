@@ -795,15 +795,16 @@ class TinyVectorBase
         return static_cast<DERIVED &>(*this);
     }
 
-        /** Calculate magnitude.
-        */
+        /** Calculate magnitude (i.e. 2-norm / Euclidean norm / length).
+         * \see squaredMagnitude()
+         */
     NormType magnitude() const
     {
          return sqrt(static_cast<typename
               SquareRootTraits<SquaredNormType>::SquareRootArgument>(squaredMagnitude()));
     }
 
-        /** Calculate squared magnitude.
+        /** Calculate squared magnitude (i.e. sum of squared elements).
         */
     SquaredNormType squaredMagnitude() const
     {
