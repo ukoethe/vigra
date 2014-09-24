@@ -391,6 +391,25 @@ struct SkeletonOptions
 /*                                                      */
 /********************************************************/
 
+    /*
+    To compute the skeleton reliably in higher dimensions, we have to work on 
+    a topological grid. The tricks to work with rounded skeletons on the 
+    pixel grid probably don't generalize from 2D to 3D and higher. Specifically:
+    
+    * Compute Voronoi regions of the vector distance transformation according to
+      identical support point to make sure that disconnected Voronoi regions
+      still get only a single label.
+    * Merge Voronoi regions whose support points are adjacent.
+    * Mark skeleton candidates on the interpixel grid after the basic merge.
+    * Detect skeleton segments simply by connected components labeling in the interpixel grid.
+    * Skeleton segments form hyperplanes => use this property to compute segment 
+      attributes.
+    * Detect holes (and therefore, skeleton segments that are critical for topology)
+      by computing the depth of each region/surface in the homotopy tree.
+    * Add a pruning mode where holes are only preserved if their size exceeds a threshold. 
+    
+    To implement this cleanly, we first need a good implementation of the topological grid graph.
+    */
 // template <unsigned int N, class T1, class S1,
                           // class T2, class S2>
 // void
@@ -418,8 +437,8 @@ struct SkeletonOptions
         and paints the results into the result image \a dest. Input label 
         <tt>0</tt> is interpreted as background and therefore ignored. Skeletons will be 
         marked with the same label as the corresponding region (unless options 
-        <tt>returnLength()</tt> or <tt>returnSalience()</tt> are selected, see below), 
-        non-skeleton pixels will receive label <tt>0</tt>.
+        <tt>returnLength()</tt> or <tt>returnSalience()</tt> are selected, see below). 
+        Non-skeleton pixels will receive label <tt>0</tt>.
 
         For each region, the algorithm proceeds in the following steps:
         <ol>
@@ -438,10 +457,12 @@ struct SkeletonOptions
             and <tt>salience >= 1.0</tt>.</li>
         <li>Detect skeleton branching points and define <i>skeleton segments</i> as maximal connected pieces 
             without branching points.</li>
-        <li>Compute <tt>length</tt> and <tt>salience</tt> of the segments by the maximum values of these
-            attributes among the pixels in each segment. When options <tt>returnLength()</tt> or 
-            <tt>returnSalience()</tt> are selected, return the requested segment attribute and
-            skip the remaining steps.</li>
+        <li>Compute <tt>length</tt> and <tt>salience</tt> of each segment as the maximum of these
+            attributes among the pixels in the segment. When options <tt>returnLength()</tt> or 
+            <tt>returnSalience()</tt> are selected, skip the remaining steps and return the 
+            requested segment attribute in <tt>dest</tt>. In this case, <tt>dest</tt>'s 
+            <tt>value_type</tt> should be a floating point type to exactly accomodate the 
+            attribute values.</li>
         <li>Detect minimal cycles in the raw skeleton that enclose holes in the region (if any) and mark
             the corresponding pixels as critical for skeleton topology.</li>
         <li>Prune skeleton segments according to the selected pruning strategy and return the result. 
@@ -463,14 +484,26 @@ struct SkeletonOptions
                             the present region.</li>
             <li><tt>pruneTopology(preserve_center)</tt>: Retain only segments that are essential for the region's
                             topology. If <tt>preserve_center</tt> is true (the default), the eccentricity
-                            center is also preserved, even if it is not essential. Otherwise, it may be removed
-                            as well. The eccentricity center is always the only remaining point when
+                            center is also preserved, even if it is not essential. Otherwise, it might be 
+                            removed. The eccentricity center is always the only remaining point when
                             the region has no holes.</li>
             </ul></li>
         </ol>
         
-        Remark: If you have an application where the skeleton tree/graph were more useful
-        than a skeleton image, this function would be easy to change/extend.
+        The skeleton has the following properties:
+        <ul>
+        <li>It is 8-connected and thin (except when two independent branches happen to run alongside 
+            before they divert). Skeleton points are defined by rounding the exact Euclidean skeleton
+            locations to the nearest pixel.</li>
+        <li>Skeleton branches terminate either at the region boundary or at a cycle. There are no branch 
+            end points in the region interior.</li>
+        <li>The salience threshold acts as a scale parameter: Large thresholds only retain skeleton 
+            branches characterizing the general region shape. When the threshold gets smaller, ever
+            more detailed boundary bulges will be represented by a skeleton branch.</li>
+        </ul>
+        
+        Remark: If you have an application where a skeleton graph would be more useful
+        than a skeleton image, function <tt>skeletonize()</tt> can be changed/extended easily.
 
         <b> Usage:</b>
 
@@ -623,6 +656,7 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
         if(label <= 0)
             continue;
             
+        // FIXME: consider using an AdjacencyListGraph from here on
         regions[(size_t)label].addNode(p1);
 
         for (ArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
@@ -687,10 +721,10 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                 if(weights[*arc] == infiniteWeight)
                     continue; // edge never was in the graph
                 if(p == p2 || pathFinder.predecessors()[p] == p1)
-                    continue; // edge belongs to the tree
+                    continue; // edge belongs to the skeleton
                 if(n1.principal_child == lemon::INVALID || 
                    skeleton[p].principal_child == lemon::INVALID)
-                    continue; // edge may belong to a loop
+                    continue; // edge may belong to a loop => test later
                 weights[*arc] = infiniteWeight;
             }
 
