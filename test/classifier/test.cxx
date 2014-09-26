@@ -867,6 +867,29 @@ struct ClassifierTest
             }
             std::cerr << "done!\n";
     }
+
+    void HDF5InvalidImportTest()
+    {
+        // at the very least, this should not crash (regression test)
+        RandomForest<> rf;
+        try {
+            bool emptyLoaded = rf_import_HDF5(rf, "data/empty.hdf5");
+            shouldNot(emptyLoaded);
+            failTest("rf_import_HDF5() didn't throw on 0-byte file.");
+        }
+		catch( std::runtime_error const & )
+        {
+        }
+
+        try {
+            bool bareHDF5Loaded = rf_import_HDF5(rf, "data/bare.hdf5");
+            shouldNot(bareHDF5Loaded);
+            failTest("rf_import_HDF5() didn't throw on empty, but valid HDF5 file.");
+        }
+		catch( PreconditionViolation const & )
+        {
+        }
+    }
 #endif
 //};
 
@@ -1025,6 +1048,7 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFSplitFunctorTest));
 #ifdef HasHDF5
         add( testCase( &ClassifierTest::HDF5ImpexTest));
+        add( testCase( &ClassifierTest::HDF5InvalidImportTest));
 #endif
          
     }
