@@ -259,8 +259,8 @@ private:
         T obj;
     };
     
-    std::auto_ptr<type_erasure_base> background_value_;
-    std::auto_ptr<type_erasure_base> block_shape_;
+    VIGRA_UNIQUE_PTR<type_erasure_base> background_value_;
+    VIGRA_UNIQUE_PTR<type_erasure_base> block_shape_;
     NeighborhoodType neighborhood_;
 public:
     LabelOptions()
@@ -274,14 +274,14 @@ public:
     LabelOptions& background(const T& background_value)
     {
         vigra_precondition(background_value_.get() == 0, "background set twice");
-        background_value_ = std::auto_ptr<type_erasure_base>(new type_erasure<T>(background_value));
+        background_value_ = VIGRA_UNIQUE_PTR<type_erasure_base>(new type_erasure<T>(background_value));
         return *this;
     }
     template <int N>
     LabelOptions& blockShape(const TinyVector<MultiArrayIndex, N>& block_shape)
     {
         vigra_precondition(block_shape_.get() == 0, "block shape set twice");
-        block_shape_ = std::auto_ptr<type_erasure_base>(new type_erasure<TinyVector<MultiArrayIndex, N> >(block_shape));
+        block_shape_ = VIGRA_UNIQUE_PTR<type_erasure_base>(new type_erasure<TinyVector<MultiArrayIndex, N> >(block_shape));
         return *this;
     }
 
