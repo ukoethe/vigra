@@ -6075,7 +6075,7 @@ class RegionPerimeter
 /** \brief Compute the circularity of a 2D region. 
 
     The is the ratio between the perimeter of a circle with the same area as the 
-    present region and the perimeter of the region, i.e. \f[c = \frac{2 \sqrt{\pi a}{p} \f], where a and p are the area and length of the polygon returned by RegionContour.
+    present region and the perimeter of the region, i.e. \f[c = \frac{2 \sqrt{\pi a}}{p} \f], where a and p are the area and length of the polygon returned by RegionContour.
     
     AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
  */
