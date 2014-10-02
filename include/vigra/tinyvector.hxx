@@ -54,6 +54,7 @@ struct Invalid;
 #include "memory.hxx"
 #include "mathutil.hxx"
 #include "diff2d.hxx"
+#include "static_assert.hxx"
 
 #ifdef VIGRA_CHECK_BOUNDS
 #define VIGRA_ASSERT_INSIDE(diff) \
@@ -962,6 +963,15 @@ class TinyVectorBase
     DATA data_;
 };
 
+#ifndef DOXYGEN
+
+template <int SIZE, int DESIRED_SIZE>
+struct TinyVector_constructor_has_wrong_number_of_arguments
+: staticAssert::AssertBool<SIZE == DESIRED_SIZE>
+{};
+
+#endif /* DOXYGEN */
+
 /** \brief Class for fixed size vectors.
     \ingroup RangesAndPoints
 
@@ -1051,6 +1061,7 @@ class TinyVector
     TinyVector(value_type const & i1, value_type const & i2)
     : BaseType()
     {
+        VIGRA_STATIC_ASSERT((TinyVector_constructor_has_wrong_number_of_arguments<SIZE, 2>));
         BaseType::data_[0] = i1;
         BaseType::data_[1] = i2;
     }
@@ -1061,6 +1072,7 @@ class TinyVector
     TinyVector(value_type const & i1, value_type const & i2, value_type const & i3)
     : BaseType()
     {
+        VIGRA_STATIC_ASSERT((TinyVector_constructor_has_wrong_number_of_arguments<SIZE, 3>));
         BaseType::data_[0] = i1;
         BaseType::data_[1] = i2;
         BaseType::data_[2] = i3;
@@ -1073,6 +1085,7 @@ class TinyVector
                value_type const & i3, value_type const & i4)
     : BaseType()
     {
+        VIGRA_STATIC_ASSERT((TinyVector_constructor_has_wrong_number_of_arguments<SIZE, 4>));
         BaseType::data_[0] = i1;
         BaseType::data_[1] = i2;
         BaseType::data_[2] = i3;
@@ -1087,6 +1100,7 @@ class TinyVector
                value_type const & i5)
     : BaseType()
     {
+        VIGRA_STATIC_ASSERT((TinyVector_constructor_has_wrong_number_of_arguments<SIZE, 5>));
         BaseType::data_[0] = i1;
         BaseType::data_[1] = i2;
         BaseType::data_[2] = i3;

@@ -117,9 +117,9 @@ struct BlockwiseWatershedTest
         vector<Shape> block_shapes;
         block_shapes.push_back(Shape(1));
         block_shapes.push_back(Shape(2));
-        block_shapes.push_back(Shape(1,10,10));
+        block_shapes.push_back(Shape(1,10,10,2));
         block_shapes.push_back(Shape(1000000));
-        block_shapes.push_back(Shape(4,3,10));
+        block_shapes.push_back(Shape(4,3,10,1000));
         
         vector<NeighborhoodType> neighborhoods;
         neighborhoods.push_back(DirectNeighborhood);
