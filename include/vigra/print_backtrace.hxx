@@ -50,7 +50,7 @@
    int main(int argc, char** argv)
    {
        program_name = argv[0];
-       signal(SIGFPE, &vigra_print_stack_trace);  // catch the desired signal
+       signal(SIGSEGV, &vigra_print_backtrace);  // catch the desired signal
        
        run_buggy_code();
    }   
@@ -70,12 +70,14 @@ static int vigra_addr2line(void const * const addr)
     return system(addr2line_cmd);
 }
 
-static void vigra_print_stack_trace(int)
+static void vigra_print_backtrace(int sig)
 {
     int i, trace_size = 0;
     char **messages = (char **)NULL;
     static const int BACKTRACE_SIZE = 100;
     void *stack_traces[BACKTRACE_SIZE];
+    
+    fprintf(stderr, "caught signal %d, printing backtrace\n\n", sig);
 
     trace_size = backtrace(stack_traces, BACKTRACE_SIZE);
     messages = backtrace_symbols(stack_traces, trace_size);
@@ -84,7 +86,7 @@ static void vigra_print_stack_trace(int)
     {
         if (vigra_addr2line(stack_traces[i]) != 0)
         {
-            printf("  error determining line # for: %sn", messages[i]);
+            fprintf(stderr, "  error determining line # for: %sn", messages[i]);
         }
     }
     if (messages) { free(messages); }
