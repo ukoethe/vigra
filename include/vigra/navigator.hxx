@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -119,7 +119,7 @@ class MultiArrayNavigator
     : base_type(i, shape, inner_dimension)
     {}
 
-    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & start, shape_type const & stop, 
+    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & start, shape_type const & stop,
                         unsigned int inner_dimension)
     : base_type(i, start, stop, inner_dimension)
     {}
@@ -137,11 +137,27 @@ class MultiArrayNavigator
         }
     }
 
+    void operator--()
+    {
+        base_type::operator--();
+        if(this->point_[level-1] == this->stop_[level-1])
+        {
+            base_type::reset();
+            --this->point_[level];
+            --this->i_.template dim<level>();
+        }
+    }
+
         /** Advance to next starting location.
          */
     void operator++(int)
     {
         ++*this;
+    }
+
+    void operator--(int)
+    {
+        --*this;
     }
 
         /** true if there are more elements.
@@ -184,7 +200,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
             stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
-    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & start, shape_type const & stop, 
+    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & start, shape_type const & stop,
                         unsigned int inner_dimension)
     : start_(start), stop_(stop), point_(start_),
       inner_dimension_(inner_dimension),
@@ -201,9 +217,20 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
         ++i_.template dim<level>();
     }
 
+    void operator--()
+    {
+        --point_[level];
+        --i_.template dim<level>();
+    }
+
     void operator++(int)
     {
         ++*this;
+    }
+
+    void operator--(int)
+    {
+        --*this;
     }
 
     iterator begin() const
@@ -225,7 +252,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
     {
         return point_[level] >= stop_[level];
     }
-    
+
     shape_type const & point() const
     {
         return point_;
@@ -252,7 +279,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
 /** \brief A navigator that provides access to the 1D subranges of an
     n-dimensional range given by an nD shape.
 
-    This class works similarly to \ref MultiArrayNavigator, but instead of a 
+    This class works similarly to \ref MultiArrayNavigator, but instead of a
     1-dimensional iterator pair, it returns a pair of shapes whose difference
     specifies a 1-dimensional range along the desired dimension. That is, when
     the navigator refers to dimension <tt>d</tt>, the difference between
@@ -343,8 +370,8 @@ class MultiCoordinateNavigator
          */
     bool hasMore() const
     {
-        return this->inner_dimension_ == level 
-                     ? base_type::hasMore() 
+        return this->inner_dimension_ == level
+                     ? base_type::hasMore()
                      : this->i_[level] < this->end_[level];
     }
 
@@ -353,7 +380,7 @@ class MultiCoordinateNavigator
     bool atEnd() const
     {
         return !hasMore();
-        // return this->inner_dimension_ == level 
+        // return this->inner_dimension_ == level
                      // ? base_type::atEnd()
                      // : !(this->i_[level] < this->end_[level]);
     }
@@ -375,7 +402,7 @@ class MultiCoordinateNavigator<Dimensions, 1>
   public:
     enum { level = 0 };
     typedef typename MultiArrayShape<Dimensions>::type value_type;
- 
+
     MultiCoordinateNavigator(value_type const & shape, unsigned int inner_dimension)
     : shape_(shape),
       inner_dimension_(inner_dimension)
