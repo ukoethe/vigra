@@ -39,8 +39,11 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/nonlineardiffusion.hxx>
+#include <vigra/rank_filter.hxx>
 #include <vigra/symmetry.hxx>
 #include <vigra/tv_filter.hxx>
+
+#include <utility>
 
 namespace python = boost::python;
 
@@ -130,6 +133,32 @@ pythonRadialSymmetryTransform2D(NumpyArray<2, Singleband<SrcPixelType> > image,
 }
 
 
+template < unsigned int N, class SrcPixelType >
+NumpyAnyArray pythonLineRankOrderFilter(const NumpyArray< N, Singleband<SrcPixelType> > & image,
+        unsigned long half_length, double rank, unsigned int axis = N - 1,
+        NumpyArray< N, Singleband<SrcPixelType> > res = python::object())
+{
+    std::string description("rank order filter over 1-Dimension, axis=");
+    description += asString(axis);
+
+    vigra_precondition((2*half_length + 1) <= image.shape(axis),
+            "lineRankOrderFilter(): Window must be no bigger than the image.");
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "lineRankOrderFilter(): Output array has wrong shape.");
+
+    {
+        PyAllowThreads _pythread;
+
+        MultiArrayView<N, SrcPixelType, StridedArrayTag> image_view = image;
+        MultiArrayView<N, SrcPixelType, StridedArrayTag> res_view = res;
+        lineRankOrderFilter(image_view, res_view, half_length, rank, axis);
+    }
+    return res;
+}
+
+
+
 void defineFilters2D()
 {
     using namespace python;
@@ -167,6 +196,94 @@ void defineFilters2D()
         "For details see radialSymmetryTransform_ in the vigra C++ documentation.\n");
 }
 
+
+void defineRankFilter()
+{
+    using namespace python;
+
+    docstring_options doc_options(true, true, false);
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<1, float>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(1-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<2, float>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(2-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<3, float>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(3-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<4, float>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(4-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<5, float>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(5-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<1, double>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(1-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<2, double>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(2-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<3, double>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(3-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<4, double>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(4-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+
+    def("lineRankOrderFilter",
+            registerConverters(&pythonLineRankOrderFilter<5, double>),
+            (arg("image"), arg("half_length"), arg("rank"), arg("axis")=(5-1), arg("out")=python::object()),
+            "Convolution along a single dimension of a 2D scalar or multiband image. "
+                    "'kernel' must be an instance of Kernel1D.\n"
+                    "\n"
+                    "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
+}
+
 void defineKernels();
 void defineConvolutionFunctions();
 void defineMorphology();
@@ -184,6 +301,7 @@ BOOST_PYTHON_MODULE_INIT(filters)
     defineFilters2D();
     defineKernels();
     defineConvolutionFunctions();
+    defineRankFilter();
     defineMorphology();
     defineTensor();
     defineNonLocalMean();
