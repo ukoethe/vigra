@@ -789,7 +789,7 @@ namespace vigra
 
             encoder->setPixelType(pixel_type);
 
-            vigra_precondition(isBandNumberSupported(encoder->getFileType(), image_accessor.size(image_upper_left)),
+            vigra_precondition(isBandNumberSupported(encoder->getFileType(), image_accessor.size(image_upper_left) + 1U),
                                "exportImageAlpha(): file format does not support requested number of bands (color channels)");
 
             const range_t image_source_range(find_source_value_range(export_info,
