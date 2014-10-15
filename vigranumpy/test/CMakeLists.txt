@@ -8,6 +8,7 @@ SET(TEST_SCRIPTS
     test3.py
     test4.py
     test_color.py
+    test_segmentation.py
     )
 
 # setup the file 'testsuccess.cxx' which will become out-of-date when the
