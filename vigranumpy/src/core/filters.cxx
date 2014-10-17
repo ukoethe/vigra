@@ -141,7 +141,7 @@ NumpyAnyArray pythonLineRankOrderFilter(const NumpyArray< N, Singleband<SrcPixel
     std::string description("rank order filter over 1-Dimension, axis=");
     description += asString(axis);
 
-    vigra_precondition((2*half_length + 1) <= image.shape(axis),
+    vigra_precondition((half_length + 1) <= image.shape(axis),
             "lineRankOrderFilter(): Window must be no bigger than the image.");
 
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
