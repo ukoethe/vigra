@@ -2692,6 +2692,33 @@ public:
 
         should(expected_result_2 == result_2);
     };
+
+    void test_rank_filter_17()
+    {
+        expected_result_2 = reverse_array_2;
+        expected_result_2.bindOuter(0) = expected_result_2.bindOuter(1);
+        expected_result_2.bindOuter(expected_result_2.shape(0) - 1) = expected_result_2.bindOuter(expected_result_2.shape(0) - 2);
+
+        result_2 = reverse_array_2;
+
+        lineRankOrderFilter(result_2, result_2, 1, 0.5, 1);
+
+        should(expected_result_2 == result_2);
+    };
+
+    void test_rank_filter_18()
+    {
+        for (size_t i = 0; i < array_1.size(); i++)
+        {
+            expected_result_1[i] = (i < 5) ? array_1[5] : array_1[4];
+        }
+
+        result_1 = 0;
+
+        lineRankOrderFilter(array_1, result_1, size - 1, 0.5, 1);
+
+        should(expected_result_1 == result_1);
+    };
 };
 
 struct RankFilterTestSuite
@@ -2716,6 +2743,8 @@ struct RankFilterTestSuite
         add( testCase( &RankFilterTest::test_rank_filter_14 ) );
         add( testCase( &RankFilterTest::test_rank_filter_15 ) );
         add( testCase( &RankFilterTest::test_rank_filter_16 ) );
+        add( testCase( &RankFilterTest::test_rank_filter_17 ) );
+        add( testCase( &RankFilterTest::test_rank_filter_18 ) );
     }
 }; // struct RankFilterTestSuite
 
@@ -2809,6 +2838,8 @@ struct ConvolutionTestSuite
         add( testCase( &RankFilterTest::test_rank_filter_14 ) );
         add( testCase( &RankFilterTest::test_rank_filter_15 ) );
         add( testCase( &RankFilterTest::test_rank_filter_16 ) );
+        add( testCase( &RankFilterTest::test_rank_filter_17 ) );
+        add( testCase( &RankFilterTest::test_rank_filter_18 ) );
 #endif
     }
 };
