@@ -150,9 +150,7 @@ NumpyAnyArray pythonLineRankOrderFilter(const NumpyArray< N, Singleband<SrcPixel
     {
         PyAllowThreads _pythread;
 
-        MultiArrayView<N, SrcPixelType, StridedArrayTag> image_view = image;
-        MultiArrayView<N, SrcPixelType, StridedArrayTag> res_view = res;
-        lineRankOrderFilter(image_view, res_view, half_length, rank, axis);
+        lineRankOrderFilter(image, res, half_length, rank, axis);
     }
     return res;
 }
