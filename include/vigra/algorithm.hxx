@@ -179,7 +179,8 @@ Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
     /** \brief Fill an array with a sequence of numbers.
     
         The sequence starts at \a start and is incremented with \a step. Default start
-        and stepsize are 0 and 1 respectively.
+        and stepsize are 0 and 1 respectively. This is a generalization of function
+        <tt>std::iota()</tt> in C++11.
         
         <b> Declaration:</b>
 
@@ -290,13 +291,13 @@ inspectSequence(InputIterator first, InputIterator last, Functor & f)
    
 namespace detail {
 
-template <class Iterator, class Compare>
+template <class ArrayLike, class Compare>
 struct IndexCompare
 {
-    Iterator i_;
+    ArrayLike i_;
     Compare c_;
     
-    IndexCompare(Iterator i, Compare c)
+    IndexCompare(ArrayLike i, Compare c)
     : i_(i),
       c_(c)
     {}
@@ -310,10 +311,79 @@ struct IndexCompare
 
 } // namespace detail
 
+    /** \brief Create a compare functor for indirect sort.
+    
+        Indirect sorting refers to the situation where you have an array holding
+        data and another array holding indices referencing the first array,
+        and you want to sort the index array according to some property of
+        the data array without changing the data array itself. The factory
+        function <tt>makeIndexComparator()</tt> creates a sorting predicate
+        for this task, given a sorting predicate for the data array.
+        
+        \see vigra::indexSort(), vigra::applyPermutation()
+        
+        <b>Usage:</b>
+
+        <b>\#include</b> \<vigra/algorithm.hxx\><br>
+        Namespace: vigra
+        
+        \code
+        const std:vector<double> data(...);  // data is immutable
+        
+        std::vector<int> index(data.size());
+        std::iota(index.begin(), index.end());
+        
+        // sort the indices such that data[index[k]] is an ascending sequence in k
+        std::sort(index.begin(), index.end(), makeIndexComparator(data));
+        \endcode
+        
+        <b>Declarations:</b>
+
+        \code
+        namespace vigra {
+            // compare using std::less
+            template <class ArrayLike>
+            auto makeIndexComparator(ArrayLike a);
+
+            // compare using functor Compare
+            template <class ArrayLike, class Compare>
+            auto makeIndexComparator(ArrayLike a, Compare c);
+        }
+        \endcode
+    */
+template <class ArrayLike, class Compare>
+inline detail::IndexCompare<ArrayLike, Compare>
+makeIndexComparator(ArrayLike a, Compare c)
+{
+    return detail::IndexCompare<ArrayLike, Compare>(a, c);
+}
+
+template <class ArrayLike>
+inline detail::IndexCompare<ArrayLike, std::less<typename ArrayLike::value_type> >
+makeIndexComparator(ArrayLike a)
+{
+    typedef std::less<typename ArrayLike::value_type> Compare;
+    return detail::IndexCompare<ArrayLike, Compare>(a, Compare());
+}
+
     /** \brief Return the index permutation that would sort the input array.
     
         To actually sort an array according to the ordering thus determined, use 
         \ref applyPermutation().
+        
+        <b>Usage:</b>
+
+        <b>\#include</b> \<vigra/algorithm.hxx\><br>
+        Namespace: vigra
+        
+        \code
+        const std:vector<double> data(...);  // data is immutable
+        
+        std::vector<int> index(data.size());
+        
+        // arrange indices such that data[index[k]] is an ascending sequence in k
+        indexSort(data.begin(), data.end(), index.begin());
+        \endcode
         
         <b> Declarations:</b>
 
@@ -345,8 +415,7 @@ void indexSort(Iterator first, Iterator last, IndexIterator index_first, Compare
 {
     int size = last - first;
     linearSequence(index_first, index_first+size);
-    std::sort(index_first, index_first+size, 
-              detail::IndexCompare<Iterator, Compare>(first, c));
+    std::sort(index_first, index_first+size, makeIndexComparator(first, c));
 }
 
 template <class Iterator, class IndexIterator>
