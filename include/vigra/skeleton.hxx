@@ -42,6 +42,7 @@
 #include "vector_distance.hxx"
 #include "iteratorfacade.hxx"
 #include "pixelneighborhood.hxx"
+#include "graph_algorithms.hxx"
 
 namespace vigra
 {
@@ -59,7 +60,7 @@ struct SkeletonNode
     SkeletonNode()
     : parent(lemon::INVALID)
     , principal_child(lemon::INVALID)
-    , length(0.5)
+    , length(0.0)
     , salience(1.0)
     , partial_area(0)
     , is_loop(false)
@@ -68,7 +69,7 @@ struct SkeletonNode
     SkeletonNode(Node const & s)
     : parent(s)
     , principal_child(lemon::INVALID)
-    , length(0.5)
+    , length(0.0)
     , salience(1.0)
     , partial_area(0)
     , is_loop(false)
@@ -385,153 +386,14 @@ struct SkeletonOptions
     }
 };
 
-/********************************************************/
-/*                                                      */
-/*                     skeletonize                      */
-/*                                                      */
-/********************************************************/
-
-    /*
-    To compute the skeleton reliably in higher dimensions, we have to work on 
-    a topological grid. The tricks to work with rounded skeletons on the 
-    pixel grid probably don't generalize from 2D to 3D and higher. Specifically:
-    
-    * Compute Voronoi regions of the vector distance transformation according to
-      identical support point to make sure that disconnected Voronoi regions
-      still get only a single label.
-    * Merge Voronoi regions whose support points are adjacent.
-    * Mark skeleton candidates on the interpixel grid after the basic merge.
-    * Detect skeleton segments simply by connected components labeling in the interpixel grid.
-    * Skeleton segments form hyperplanes => use this property to compute segment 
-      attributes.
-    * Detect holes (and therefore, skeleton segments that are critical for topology)
-      by computing the depth of each region/surface in the homotopy tree.
-    * Add a pruning mode where holes are only preserved if their size exceeds a threshold. 
-    
-    To implement this cleanly, we first need a good implementation of the topological grid graph.
-    */
-// template <unsigned int N, class T1, class S1,
-                          // class T2, class S2>
-// void
-// skeletonize(MultiArrayView<N, T1, S1> const & labels,
-            // MultiArrayView<N, T2, S2> dest,
-            // SkeletonOptions const & options = SkeletonOptions())
-// {
-
-    /** \brief Skeletonization of all regions in a labeled 2D image.
-
-        <b> Declarations:</b>
-
-        \code
-        namespace vigra {
-            template <class T1, class S1,
-                      class T2, class S2>
-            void
-            skeletonize(MultiArrayView<2, T1, S1> const & labels,
-                        MultiArrayView<2, T2, S2> dest,
-                        SkeletonOptions const & options = SkeletonOptions());
-        }
-        \endcode
-
-        This function computes the skeleton for each region in the 2D label image \a labels 
-        and paints the results into the result image \a dest. Input label 
-        <tt>0</tt> is interpreted as background and therefore ignored. Skeletons will be 
-        marked with the same label as the corresponding region (unless options 
-        <tt>returnLength()</tt> or <tt>returnSalience()</tt> are selected, see below). 
-        Non-skeleton pixels will receive label <tt>0</tt>.
-
-        For each region, the algorithm proceeds in the following steps:
-        <ol>
-        <li>Compute the \ref boundaryVectorDistance() relative to the \ref OuterBoundary of the region.</li>
-        <li>Mark the raw skeleton: find 4-adjacent pixel pairs whose nearest boundary points are neither equal 
-            nor adjacent and mark one pixel of the pair as a skeleton candidate. The resulting raw skeleton
-            is 8-connected and thin. Skip the remaining steps when option <tt>dontPrune()</tt> is selected.</li>
-        <li>Compute the eccentricity transform of the raw skeleton and turn the skeleton into a tree 
-            whose root is the eccentricity center. When option <tt>pruneCenterLine()</tt> is selected,
-            delete all skeleton points that do not belong to the two longest tree branches and 
-            skip the remaining steps.</li>
-        <li>For each pixel on the skeleton, compute its <tt>length</tt> attribute as the depth of the
-            pixel's longest subtree. Compute its <tt>salience</tt> attribute as the ratio between 
-            <tt>length</tt> and <tt>distance</tt>, where <tt>distance</tt> is the pixel's distance to 
-            the nearest boundary point according to the distance transform. It holds that <tt>length >= 0.5</tt>
-            and <tt>salience >= 1.0</tt>.</li>
-        <li>Detect skeleton branching points and define <i>skeleton segments</i> as maximal connected pieces 
-            without branching points.</li>
-        <li>Compute <tt>length</tt> and <tt>salience</tt> of each segment as the maximum of these
-            attributes among the pixels in the segment. When options <tt>returnLength()</tt> or 
-            <tt>returnSalience()</tt> are selected, skip the remaining steps and return the 
-            requested segment attribute in <tt>dest</tt>. In this case, <tt>dest</tt>'s 
-            <tt>value_type</tt> should be a floating point type to exactly accomodate the 
-            attribute values.</li>
-        <li>Detect minimal cycles in the raw skeleton that enclose holes in the region (if any) and mark
-            the corresponding pixels as critical for skeleton topology.</li>
-        <li>Prune skeleton segments according to the selected pruning strategy and return the result. 
-            The following pruning strategies are available:
-            <ul>
-            <li><tt>pruneLength(threshold, preserve_topology)</tt>: Retain only segments whose length attribute
-                            exceeds the given <tt>threshold</tt>. When <tt>preserve_topology</tt> is true
-                            (the defult), cycles around holes are preserved regardless of their length.
-                            Otherwise, they are pruned as well.</li>
-            <li><tt>pruneLengthRelative(threshold, preserve_topology)</tt>: Like <tt>pruneLength()</tt>,
-                            but the threshold is specified as a fraction of the maximum segment length in  
-                            the present region.</li>
-            <li><tt>pruneSalience(threshold, preserve_topology)</tt>: Retain only segments whose salience attribute
-                            exceeds the given <tt>threshold</tt>. When <tt>preserve_topology</tt> is true
-                            (the defult), cycles around holes are preserved regardless of their salience.
-                            Otherwise, they are pruned as well.</li>
-            <li><tt>pruneSalienceRelative(threshold, preserve_topology)</tt>: Like <tt>pruneSalience()</tt>,
-                            but the threshold is specified as a fraction of the maximum segment salience in 
-                            the present region.</li>
-            <li><tt>pruneTopology(preserve_center)</tt>: Retain only segments that are essential for the region's
-                            topology. If <tt>preserve_center</tt> is true (the default), the eccentricity
-                            center is also preserved, even if it is not essential. Otherwise, it might be 
-                            removed. The eccentricity center is always the only remaining point when
-                            the region has no holes.</li>
-            </ul></li>
-        </ol>
-        
-        The skeleton has the following properties:
-        <ul>
-        <li>It is 8-connected and thin (except when two independent branches happen to run alongside 
-            before they divert). Skeleton points are defined by rounding the exact Euclidean skeleton
-            locations to the nearest pixel.</li>
-        <li>Skeleton branches terminate either at the region boundary or at a cycle. There are no branch 
-            end points in the region interior.</li>
-        <li>The salience threshold acts as a scale parameter: Large thresholds only retain skeleton 
-            branches characterizing the general region shape. When the threshold gets smaller, ever
-            more detailed boundary bulges will be represented by a skeleton branch.</li>
-        </ul>
-        
-        Remark: If you have an application where a skeleton graph would be more useful
-        than a skeleton image, function <tt>skeletonize()</tt> can be changed/extended easily.
-
-        <b> Usage:</b>
-
-        <b>\#include</b> \<vigra/skeleton.hxx\><br/>
-        Namespace: vigra
-
-        \code
-        Shape2 shape(width, height);
-        MultiArray<2, UInt32> source(shape);
-        MultiArray<2, UInt32> dest(shape);
-        ...
-
-        // Skeletonize and keep only those segments that are at least 10% of the maximum
-        // length (the maximum length is half the skeleton diameter).
-        skeletonize(source, dest, 
-                    SkeletonOptions().pruneLengthRelative(0.1));
-        \endcode
-
-        \see vigra::boundaryVectorDistance()
-    */
-doxygen_overloaded_function(template <...> void skeletonize)
-
 template <class T1, class S1,
-          class T2, class S2>
+          class T2, class S2,
+          class ArrayLike>
 void
-skeletonize(MultiArrayView<2, T1, S1> const & labels,
-            MultiArrayView<2, T2, S2> dest,
-            SkeletonOptions const & options = SkeletonOptions())
+skeletonizeImpl(MultiArrayView<2, T1, S1> const & labels,
+                MultiArrayView<2, T2, S2> dest,
+                ArrayLike * features,
+                SkeletonOptions const & options)
 {
     static const unsigned int N = 2;
     typedef typename MultiArrayShape<N>::type  Shape;
@@ -644,6 +506,8 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
         
     // Reduce the full grid graph to a skeleton graph by inserting infinite
     // edge weights between skeleton pixels and non-skeleton pixels.
+    if(features)
+        features->resize((size_t)maxLabel + 1);
     ArrayVector<detail::SkeletonRegion<Node> > regions((size_t)maxLabel + 1);
     Graph g(labels.shape(), IndirectNeighborhood);
     WeightType maxWeight = g.edgeNum()*sqrt(N),
@@ -713,6 +577,7 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             SNode & n1 = skeleton[p1];
             SNode & n2 = skeleton[p2];
             n1.parent = p2;
+            
 
             // remove non-skeleton edges (i.e. set weight = infiniteWeight)
             for (BackArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
@@ -720,7 +585,9 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                 Node p = g.target(*arc);
                 if(weights[*arc] == infiniteWeight)
                     continue; // edge never was in the graph
-                if(p == p2 || pathFinder.predecessors()[p] == p1)
+                if(p == p2)
+                    continue; // edge belongs to the skeleton
+                if(pathFinder.predecessors()[p] == p1)
                     continue; // edge belongs to the skeleton
                 if(n1.principal_child == lemon::INVALID || 
                    skeleton[p].principal_child == lemon::INVALID)
@@ -764,7 +631,14 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             SNode & n2 = skeleton[p2];
             
             if(p1 == n2.principal_child)
+            {
+                n1.length = n2.length;
                 n1.salience = n2.salience;
+            }
+            else
+            {
+                n1.length += norm(p2-p1);
+            }
             n1.partial_area = n2.partial_area + (p1[0]*p2[1] - p1[1]*p2[0]);
         }
 
@@ -775,6 +649,8 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
         // from periphery to center: * find and propagate loops
         //                           * delete branches not reaching the boundary
         detail::CheckForHole<std::size_t, MultiArrayView<2, T1, S1> > hasNoHole(label, labels);
+        int hole_count = 0;
+        double total_length = 0.0;
         for(int k=raw_skeleton.size()-1; k >= 0; --k)
         {
             Node p1 = raw_skeleton[k];
@@ -797,6 +673,7 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                         continue;
                     
                     // use Dijkstra to find the loop
+                    WeightType edge_length = weights[*arc];
                     weights[*arc] = infiniteWeight;
                     pathFinder.reRun(weights, p1, p2);
                     Polygon<Shape2> poly;
@@ -815,6 +692,8 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                     if(!inspectPolygon(poly, hasNoHole))
                     {
                         // it's a genuine loop => mark it and propagate salience
+                        ++hole_count;
+                        total_length += n1.length + n2->length;
                         double max_salience = max(n1.salience, n2->salience);
                         for(int p=1; p<poly.size(); ++p)
                         {
@@ -834,7 +713,9 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                         n->salience = 0;
                         // remove all of p1's edges
                         for(ArcIt arc(g, p1); arc != lemon::INVALID; ++arc)
+                        {
                             weights[*arc] = infiniteWeight;
+                        }
                         if(skeleton[n->parent].principal_child != p1)
                             break;
                         p1 = n->parent;
@@ -858,12 +739,22 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
                                        ? options.pruning_threshold*skeleton[center].salience
                                        : options.pruning_threshold;
         // from center to periphery: write result
+        int branch_count = 0;
+        double average_length = 0;
         for(int k=0; k < (int)raw_skeleton.size(); ++k)
         {
             Node p1 = raw_skeleton[k];
             SNode & n1 = skeleton[p1];
             Node p2 = n1.parent;
             SNode & n2 = skeleton[p2];
+            if(n1.principal_child == lemon::INVALID && 
+               n1.salience >= threshold && 
+               !n1.is_loop)
+            {
+                ++branch_count;
+                average_length += n1.length;
+                total_length += n1.length;
+            }
             if(dont_prune)
                 dest[p1] = n1.salience;
             else if(preserve_topology)
@@ -874,10 +765,203 @@ skeletonize(MultiArrayView<2, T1, S1> const & labels,
             else if(p1 != center && n1.salience < threshold)
                 dest[p1] = 0;
         }
+        if(branch_count > 0)
+            average_length /= branch_count;
+        
+        if(features)
+        {
+            (*features)[label].diameter = center_line.length();
+            (*features)[label].total_length = total_length;
+            (*features)[label].average_length = average_length;
+            (*features)[label].branch_count = branch_count;
+            (*features)[label].hole_count = hole_count;
+            (*features)[label].center = center;
+            (*features)[label].terminal1 = center_line.front();
+            (*features)[label].terminal2 = center_line.back();
+            (*features)[label].euclidean_diameter = norm(center_line.back()-center_line.front());
+        }
     }
         
     if(options.mode == SkeletonOptions::Prune)
         detail::skeletonThinning(squared_distance, dest, false);
+}
+
+class SkeletonFeatures
+{
+  public:
+    double diameter, total_length, average_length, euclidean_diameter;
+    UInt32 branch_count, hole_count;
+    Shape2 center, terminal1, terminal2;
+    
+    SkeletonFeatures()
+    : diameter(0)
+    , total_length(0)
+    , average_length(0)
+    , euclidean_diameter(0)
+    , branch_count(0)
+    , hole_count(0)
+    {}
+};
+
+/********************************************************/
+/*                                                      */
+/*                     skeletonize                      */
+/*                                                      */
+/********************************************************/
+
+    /*
+    To compute the skeleton reliably in higher dimensions, we have to work on 
+    a topological grid. The tricks to work with rounded skeletons on the 
+    pixel grid probably don't generalize from 2D to 3D and higher. Specifically:
+    
+    * Compute Voronoi regions of the vector distance transformation according to
+      identical support point to make sure that disconnected Voronoi regions
+      still get only a single label.
+    * Merge Voronoi regions whose support points are adjacent.
+    * Mark skeleton candidates on the interpixel grid after the basic merge.
+    * Detect skeleton segments simply by connected components labeling in the interpixel grid.
+    * Skeleton segments form hyperplanes => use this property to compute segment 
+      attributes.
+    * Detect holes (and therefore, skeleton segments that are critical for topology)
+      by computing the depth of each region/surface in the homotopy tree.
+    * Add a pruning mode where holes are only preserved if their size exceeds a threshold. 
+    
+    To implement this cleanly, we first need a good implementation of the topological grid graph.
+    */
+// template <unsigned int N, class T1, class S1,
+                          // class T2, class S2>
+// void
+// skeletonize(MultiArrayView<N, T1, S1> const & labels,
+            // MultiArrayView<N, T2, S2> dest,
+            // SkeletonOptions const & options = SkeletonOptions())
+// {
+
+    /** \brief Skeletonization of all regions in a labeled 2D image.
+
+        <b> Declarations:</b>
+
+        \code
+        namespace vigra {
+            template <class T1, class S1,
+                      class T2, class S2>
+            void
+            skeletonize(MultiArrayView<2, T1, S1> const & labels,
+                        MultiArrayView<2, T2, S2> dest,
+                        SkeletonOptions const & options = SkeletonOptions());
+        }
+        \endcode
+
+        This function computes the skeleton for each region in the 2D label image \a labels 
+        and paints the results into the result image \a dest. Input label 
+        <tt>0</tt> is interpreted as background and always ignored. Skeletons will be 
+        marked with the same label as the corresponding region (unless options 
+        <tt>returnLength()</tt> or <tt>returnSalience()</tt> are selected, see below). 
+        Non-skeleton pixels will receive label <tt>0</tt>.
+
+        For each region, the algorithm proceeds in the following steps:
+        <ol>
+        <li>Compute the \ref boundaryVectorDistance() relative to the \ref OuterBoundary of the region.</li>
+        <li>Mark the raw skeleton: find 4-adjacent pixel pairs whose nearest boundary points are neither equal 
+            nor adjacent and mark one pixel of the pair as a skeleton candidate. The resulting raw skeleton
+            is 8-connected and thin. Skip the remaining steps when option <tt>dontPrune()</tt> is selected.</li>
+        <li>Compute the eccentricity transform of the raw skeleton and turn the skeleton into a tree 
+            whose root is the eccentricity center. When option <tt>pruneCenterLine()</tt> is selected,
+            delete all skeleton points that do not belong to the two longest tree branches and 
+            skip the remaining steps.</li>
+        <li>For each pixel on the skeleton, compute its <tt>length</tt> attribute as the depth of the
+            pixel's longest subtree. Compute its <tt>salience</tt> attribute as the ratio between 
+            <tt>length</tt> and <tt>distance</tt>, where <tt>distance</tt> is the pixel's distance to 
+            the nearest boundary point according to the distance transform. It holds that <tt>length >= 0.5</tt>
+            and <tt>salience >= 1.0</tt>.</li>
+        <li>Detect skeleton branching points and define <i>skeleton segments</i> as maximal connected pieces 
+            without branching points.</li>
+        <li>Compute <tt>length</tt> and <tt>salience</tt> of each segment as the maximum of these
+            attributes among the pixels in the segment. When options <tt>returnLength()</tt> or 
+            <tt>returnSalience()</tt> are selected, skip the remaining steps and return the 
+            requested segment attribute in <tt>dest</tt>. In this case, <tt>dest</tt>'s 
+            <tt>value_type</tt> should be a floating point type to exactly accomodate the 
+            attribute values.</li>
+        <li>Detect minimal cycles in the raw skeleton that enclose holes in the region (if any) and mark
+            the corresponding pixels as critical for skeleton topology.</li>
+        <li>Prune skeleton segments according to the selected pruning strategy and return the result. 
+            The following pruning strategies are available:
+            <ul>
+            <li><tt>pruneLength(threshold, preserve_topology)</tt>: Retain only segments whose length attribute
+                            exceeds the given <tt>threshold</tt>. When <tt>preserve_topology</tt> is true
+                            (the defult), cycles around holes are preserved regardless of their length.
+                            Otherwise, they are pruned as well.</li>
+            <li><tt>pruneLengthRelative(threshold, preserve_topology)</tt>: Like <tt>pruneLength()</tt>,
+                            but the threshold is specified as a fraction of the maximum segment length in  
+                            the present region.</li>
+            <li><tt>pruneSalience(threshold, preserve_topology)</tt>: Retain only segments whose salience attribute
+                            exceeds the given <tt>threshold</tt>. When <tt>preserve_topology</tt> is true
+                            (the defult), cycles around holes are preserved regardless of their salience.
+                            Otherwise, they are pruned as well.</li>
+            <li><tt>pruneSalienceRelative(threshold, preserve_topology)</tt>: Like <tt>pruneSalience()</tt>,
+                            but the threshold is specified as a fraction of the maximum segment salience in 
+                            the present region.</li>
+            <li><tt>pruneTopology(preserve_center)</tt>: Retain only segments that are essential for the region's
+                            topology. If <tt>preserve_center</tt> is true (the default), the eccentricity
+                            center is also preserved, even if it is not essential. Otherwise, it might be 
+                            removed. The eccentricity center is always the only remaining point when
+                            the region has no holes.</li>
+            </ul></li>
+        </ol>
+        
+        The skeleton has the following properties:
+        <ul>
+        <li>It is 8-connected and thin (except when two independent branches happen to run alongside 
+            before they divert). Skeleton points are defined by rounding the exact Euclidean skeleton
+            locations to the nearest pixel.</li>
+        <li>Skeleton branches terminate either at the region boundary or at a cycle. There are no branch 
+            end points in the region interior.</li>
+        <li>The salience threshold acts as a scale parameter: Large thresholds only retain skeleton 
+            branches characterizing the general region shape. When the threshold gets smaller, ever
+            more detailed boundary bulges will be represented by a skeleton branch.</li>
+        </ul>
+        
+        Remark: If you have an application where a skeleton graph would be more useful
+        than a skeleton image, function <tt>skeletonize()</tt> can be changed/extended easily.
+
+        <b> Usage:</b>
+
+        <b>\#include</b> \<vigra/skeleton.hxx\><br/>
+        Namespace: vigra
+
+        \code
+        Shape2 shape(width, height);
+        MultiArray<2, UInt32> source(shape);
+        MultiArray<2, UInt32> dest(shape);
+        ...
+
+        // Skeletonize and keep only those segments that are at least 10% of the maximum
+        // length (the maximum length is half the skeleton diameter).
+        skeletonize(source, dest, 
+                    SkeletonOptions().pruneLengthRelative(0.1));
+        \endcode
+
+        \see vigra::boundaryVectorDistance()
+    */
+doxygen_overloaded_function(template <...> void skeletonize)
+
+template <class T1, class S1,
+          class T2, class S2>
+void
+skeletonize(MultiArrayView<2, T1, S1> const & labels,
+            MultiArrayView<2, T2, S2> dest,
+            SkeletonOptions const & options = SkeletonOptions())
+{
+    skeletonizeImpl(labels, dest, (ArrayVector<SkeletonFeatures>*)0, options);
+}
+
+template <class T, class S>
+void
+extractSkeletonFeatures(MultiArrayView<2, T, S> const & labels, 
+                        ArrayVector<SkeletonFeatures> & features,
+                        SkeletonOptions const & options = SkeletonOptions())
+{
+    MultiArray<2, float> skeleton(labels.shape());
+    skeletonizeImpl(labels, skeleton, &features, options);
 }
 
 //@}

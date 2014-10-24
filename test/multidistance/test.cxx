@@ -740,9 +740,12 @@ struct SkeletonTest
         MultiArray<2, UInt8> skel(data.shape());
         MultiArray<2, float> desired(data.shape());
 
+        //USETICTOC;
         {
+            //TIC;
             skeletonize(data, skel,
                         SkeletonOptions().dontPrune());
+            //TOC;
             //exportImage(skel, "raw_skeleton.tif");
             importImage("raw_skeleton.xv", desired);
             should(skel == desired);
@@ -779,9 +782,9 @@ struct SkeletonTest
         }
         {
             skeletonize(data, skel,
-                        SkeletonOptions().pruneSalience(20.0));
-            //exportImage(skel, "skeleton_salience_greater_20.tif");
-            importImage("skeleton_salience_greater_20.xv", desired);
+                        SkeletonOptions().pruneSalience(10.0));
+            //exportImage(skel, "skeleton_salience_greater_10.tif");
+            importImage("skeleton_salience_greater_10.xv", desired);
             should(skel == desired);
         }
         {
@@ -805,20 +808,27 @@ struct SkeletonTest
             importImage("skeleton_topology_without_center.xv", desired);
             should(skel == desired);
         }
-        //{
-        //    importImage("horse.xv", data);
+    }
 
-        //    MultiArray<2, UInt8> skel(data.shape());
+    void testSkeletonFeatures()
+    {
+        MultiArray<2, UInt8> data;
+        importImage("blatt.xv", data);
+        ArrayVector<SkeletonFeatures> features;
 
-        //    {
-        //        //skeletonize(data, skel,
-        //        //            SkeletonOptions().dontPrune());
-        //        //skeletonize(data, skel,
-        //        //            SkeletonOptions().pruneTopology());
-        //        skeletonize(data, skel);
-        //        exportImage(skel, "horse_skeleton.tif");
-        //    }
-        //}
+        {
+            extractSkeletonFeatures(data, features);
+            int label=255;
+            shouldEqual(features[label].center, Shape2(255, 255));
+            shouldEqualTolerance(features[label].diameter, 545.4823227814104, 1e-15);
+            shouldEqualTolerance(features[label].euclidean_diameter, 501.86551983574248, 1e-15);
+            shouldEqualTolerance(features[label].total_length, 1650.0012254892786, 1e-15);
+            shouldEqualTolerance(features[label].average_length, 268.45282570696946, 1e-15);
+            shouldEqual(features[label].branch_count, 6);
+            shouldEqual(features[label].hole_count, 1);
+            shouldEqual(features[label].terminal1, Shape2(133, 472));
+            shouldEqual(features[label].terminal2, Shape2(378, 34));
+        }
     }
 };
 
@@ -839,6 +849,7 @@ struct DistanceTransformTestSuite
         add( testCase( &BoundaryMultiDistanceTest::vectorDistanceTest1D));
         add( testCase( &EccentricityTest::testEccentricityCenters));
         add( testCase( &SkeletonTest::testSkeleton));
+        add( testCase( &SkeletonTest::testSkeletonFeatures));
     }
 };
 
