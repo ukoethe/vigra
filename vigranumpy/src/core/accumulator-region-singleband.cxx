@@ -37,6 +37,7 @@
 #define NO_IMPORT_ARRAY
 
 #include "pythonaccumulator.hxx"
+#include <vigra/skeleton.hxx>
 
 namespace python = boost::python;
 
@@ -161,6 +162,65 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels, python::
     return res;
 }
 
+template <unsigned int N, class T>
+python::dict
+pyExtractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
+                            double pruning_threshold)
+{
+    using namespace vigra::acc;
+
+    TinyVector<npy_intp, N> permutation = labels.template permuteLikewise<N>();
+    ArrayVector<SkeletonFeatures> features;
+
+    {
+        PyAllowThreads _pythread;
+        
+        extractSkeletonFeatures(labels, features, 
+                                SkeletonOptions().pruneSalienceRelative(pruning_threshold));
+    }
+    
+    int size = features.size();
+    python::dict res;
+    
+    #define VIGRA_SKELETON_FEATURE(TYPE, NAME, ATTRIBUTE) \
+    { \
+        NumpyArray<1, TYPE> array((Shape1(size))); \
+        for(int k=0; k<size; ++k) \
+        { \
+            array(k) = features[k].ATTRIBUTE; \
+        } \
+        res[#NAME] = array; \
+    }
+    
+    VIGRA_SKELETON_FEATURE(double, Diameter, diameter)
+    VIGRA_SKELETON_FEATURE(double, EuclideanDiameter, euclidean_diameter)
+    VIGRA_SKELETON_FEATURE(double, TotalLength, total_length)
+    VIGRA_SKELETON_FEATURE(double, AverageLength, average_length)
+    VIGRA_SKELETON_FEATURE(npy_uint32, BranchCount, branch_count)
+    VIGRA_SKELETON_FEATURE(npy_uint32, HoleCount, hole_count)
+    
+    #undef VIGRA_SKELETON_FEATURE
+        
+    #define VIGRA_SKELETON_VECTOR_FEATURE(NAME, ATTRIBUTE) \
+    { \
+        NumpyArray<2, double> array(Shape2(size, N)); \
+        for(int k=0; k<size; ++k) \
+        { \
+            for(int j=0; j<N; ++j) \
+                array(k, permutation[j]) = features[k].ATTRIBUTE[j]; \
+        } \
+        res[#NAME] = array; \
+    }
+    
+    VIGRA_SKELETON_VECTOR_FEATURE(Center, center)
+    VIGRA_SKELETON_VECTOR_FEATURE(Terminal1, terminal1)
+    VIGRA_SKELETON_VECTOR_FEATURE(Terminal2, terminal2)
+    
+    #undef VIGRA_SKELETON_VECTOR_FEATURE
+
+    return res;
+}
+
 void defineSinglebandRegionAccumulators()
 {
     using namespace python;
@@ -211,6 +271,27 @@ void defineSinglebandRegionAccumulators()
             "   - 'DefectAreaSkewness':  skewness of the convexity defect areas\n\n"
             "   - 'DefectAreaKurtosis':  kurtosis of the convexity defect areas\n\n"
             "   - 'Polygon':  the convex hull polygon\n\n");
+    
+    def("extractSkeletonFeatures", 
+         registerConverters(&pyExtractConvexHullFeatures<2, npy_uint32>),
+         (arg("labels"),
+          arg("pruning_threshold")=0.2),
+            "\nExtract skeleton features for each region of a labeled 2D image\n"
+            "(with dtype=numpy.uint32) and return a dictionary holding the\n"
+            "resulting feature arrays. Label 0 is always considered background\n"
+            "and therefore skipped. The skeleton is computed using mode\n"
+            "'PruneSalienceRelative' with the given 'pruning_threshold'.\n\n"
+            "The result dictionary holds the following keys:\n\n"
+            "   - 'Diameter':  the longest path between two terminals of the skeleton\n\n"
+            "   - 'Center':  the center point of this path\n\n"
+            "   - 'Terminal1':  first end point of this path\n\n"
+            "   - 'Terminal2':  second end point of this path\n\n"
+            "   - 'EuclideanDiameter':  the Euclidean distance between Terminal1 and Terminal2\n\n"
+            "   - 'TotalLength':  total length of the (pruned) skeleton\n\n"
+            "   - 'AverageLength':  the average length of the skeleton's branches after pruning\n\n"
+            "   - 'BranchCount':  the number of skeleton branches (i.e. end points after pruning)\n\n"
+            "   - 'HoleCount':  the number of cycles in the skeleton\n"
+            "                  (i.e. the number of cavities in the region)\n\n");
 }
 
 } // namespace vigra

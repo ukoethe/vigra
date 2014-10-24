@@ -43,6 +43,7 @@
 #include <vigra/distancetransform.hxx>
 #include <vigra/multi_distance.hxx>
 #include <vigra/eccentricitytransform.hxx>
+#include <vigra/skeleton.hxx>
 
 namespace python = boost::python;
 
@@ -451,15 +452,26 @@ template < unsigned int N, class VoxelType >
 NumpyAnyArray
 pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
                                 bool array_border_is_active,
-                                BoundaryDistanceTag boundary,
+                                std::string boundary,
                                 NumpyArray<N, Singleband<float> > res)
 {
     res.reshapeIfEmpty(volume.taggedShape(),
             "boundaryDistanceTransform(): Output array has wrong shape.");
-
+            
+    boundary = tolower(boundary);
+    BoundaryDistanceTag boundary_tag;
+    if(boundary == "outerboundary")
+        boundary_tag = OuterBoundary;
+    else if(boundary == "interpixelboundary" || boundary == "")
+        boundary_tag = InterpixelBoundary;
+    else if(boundary == "innerboundary")
+        boundary_tag = InnerBoundary;
+    else
+        vigra_precondition(false, 
+                           "boundaryDistanceTransform(): invalid 'boundary' specification.");
     {
         PyAllowThreads _pythread;
-        boundaryMultiDistance(volume, res, array_border_is_active, boundary);
+        boundaryMultiDistance(volume, res, array_border_is_active, boundary_tag);
     }
     return res;
 }
@@ -506,6 +518,85 @@ pythonEccentricityTransformWithCenters(const NumpyArray<N, T> & image,
         centerlist.append(centers[i]);
     }
     return python::make_tuple(res, centerlist);
+}
+
+template <unsigned int N, class T>
+NumpyAnyArray
+pySkeletonize(NumpyArray<N, Singleband<T> > const & labels,
+              std::string mode,
+              double pruning_threshold)
+{
+    mode = tolower(mode);
+    SkeletonOptions options;
+    bool returnFloat = false;
+    
+    if(mode == "dontprune")
+    {
+        options.dontPrune();
+    }
+    else if(mode == "returnlength")
+    {
+        options.returnLength();
+        returnFloat = true;
+    }
+    else if(mode == "prunelength")
+    {
+        options.pruneLength(pruning_threshold);
+    }
+    else if(mode == "prunelengthrelative")
+    {
+        options.pruneLengthRelative(pruning_threshold);
+    }
+    else if(mode == "returnsalience")
+    {
+        options.returnSalience();
+        returnFloat = true;
+    }
+    else if(mode == "pruneasalience")
+    {
+        options.pruneSalience(pruning_threshold);
+    }
+    else if(mode == "prunesaliencerelative" || mode == "")
+    {
+        options.pruneSalienceRelative(pruning_threshold);
+    }
+    else if(mode == "prunetopology")
+    {
+        options.pruneTopology();
+    }
+    else if(mode == "pruneaggressive")
+    {
+        options.pruneTopology(false);
+    }
+    else
+    {
+        vigra_precondition(false, "skeletonize(): invalid mode.");
+    }
+    
+    if(returnFloat)
+    {
+        NumpyArray<N, Singleband<float> > res(labels.taggedShape());
+        
+        {
+            PyAllowThreads _pythread;
+            
+            skeletonize(labels, res, options);
+        }
+        
+        return res;
+    }
+    else
+    {
+        NumpyArray<N, Singleband<T> > res(labels.taggedShape());
+        
+        {
+            PyAllowThreads _pythread;
+            
+            skeletonize(labels, res, options);
+        }
+        
+        return res;
+    }
 }
 
 void defineMorphology()
@@ -806,7 +897,7 @@ void defineMorphology()
         "\n"
         "For details see distanceTransform_ in the vigra C++ documentation.\n");
 
-        def("distanceTransform2D",
+    def("distanceTransform2D",
         registerConverters(&pythonDistanceTransform2D<UInt8,float>),
         (arg("image"), 
          arg("background")=true, 
@@ -836,22 +927,22 @@ void defineMorphology()
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
         
-    enum_<BoundaryDistanceTag>("BoundaryDistanceTag")
-        .value("OuterBoundary", OuterBoundary)
-        .value("InterpixelBoundary", InterpixelBoundary)
-        .value("InnerBoundary", InnerBoundary)
-        ;
-
     def("boundaryDistanceTransform",
        registerConverters(&pythonboundaryDistanceTransform<2, npy_uint32>),
        (arg("image"),
         arg("array_border_is_active") = false,
-        arg("boundary") = InterpixelBoundary,
+        arg("boundary") = "InterpixelBoundary",
         arg("out")=python::object()),
-       "Compute the Euclidean distance transform of a 2D or 3D label array with\n"
-        "respect to its interpixel boundary. If 'array_border_is_active=True',\n"
-        "the outer border of the array (i.e. the interpixel border between the array\n"
-        "and the infinite region) is also used. Otherwise (the default), regions\n"
+        "Compute the Euclidean distance transform of all regions in a 2D or 3D label\n"
+        "array with respect to the region boundaries. The 'boundary' parameter must be\n"
+        "one of the following strings:\n\n"
+        "   - 'OuterBoundary':  compute distance relative to outer regin boundaries\n\n"
+        "   - 'InterpixelBoundary':  compute distance relative to interpixel boundaries (default)\n\n"
+        "   - 'InnerBoundary':  compute distance relative to inner region boundaries\n\n"
+        "where the outer boundary consists of the pixels touching a given region from the\n"
+        "outside and the inner boundary are the pixels adjacent to the region's complement.\n"
+        "If 'array_border_is_active=True', the external border of the array (i.e. the border\n"
+        "between the image and the infinite region) is also used. Otherwise (default), regions\n"
         "touching the array border are treated as if they extended to infinity.\n"
         "\n"
         "For more details see boundaryDistanceTransform_ in the vigra C++ documentation.\n");
@@ -860,28 +951,32 @@ void defineMorphology()
        registerConverters(&pythonboundaryDistanceTransform<3, npy_uint32>),
        (arg("volume"),
         arg("array_border_is_active") = false,
-        arg("boundary") = InterpixelBoundary,
-        arg("out")=python::object()));
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+         "Likewise for a 3D uint32 input array.\n");
 
     def("boundaryDistanceTransform",
        registerConverters(&pythonboundaryDistanceTransform<2, float>),
        (arg("image"),
         arg("array_border_is_active") = false,
-        arg("boundary") = InterpixelBoundary,
-        arg("out")=python::object()));
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+         "Likewise for a 2D float32 input array.\n");
 
     def("boundaryDistanceTransform",
        registerConverters(&pythonboundaryDistanceTransform<3, float>),
        (arg("volume"),
         arg("array_border_is_active") = false,
-        arg("boundary") = InterpixelBoundary,
-        arg("out")=python::object()));
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+         "Likewise for a 3D float32 input array.\n");
 
     def("eccentricityTransform",
         registerConverters(&pythonEccentricityTransform<2, UInt32, float>),
         (arg("image"),
          arg("out")=python::object()),
-        "Compute the eccentricity transform of a 2D label array.\n");
+        "Compute the eccentricity transform of a 2D uint32 label array.\n\n"
+        "For more details see eccentricityTransform_ in the vigra C++ documentation.\n");
 
     def("eccentricityTransform",
         registerConverters(&pythonEccentricityTransform<2, UInt8, float>),
@@ -893,7 +988,7 @@ void defineMorphology()
         registerConverters(&pythonEccentricityTransform<3, UInt32, float>),
         (arg("image"),
          arg("out")=python::object()),
-         "Likewise for a 3D label array.\n");
+         "Likewise for a 3D uint32 label array.\n");
 
     def("eccentricityTransform",
         registerConverters(&pythonEccentricityTransform<3, UInt8, float>),
@@ -904,7 +999,9 @@ void defineMorphology()
     def("eccentricityCenters",
         registerConverters(&pythonEccentricityCenters<2, UInt32>),
         (arg("image")),
-         "Compute the eccentricity centers for a 2D label array.\n");
+         "Compute a list holding the eccentricity center of each region in\n"
+         "a 2D uint32 label array.\n\n"
+         "For more details see eccentricityTransform_ in the vigra C++ documentation.\n");
 
     def("eccentricityCenters",
         registerConverters(&pythonEccentricityCenters<2, UInt8>),
@@ -914,7 +1011,7 @@ void defineMorphology()
     def("eccentricityCenters",
         registerConverters(&pythonEccentricityCenters<3, UInt32>),
         (arg("image")),
-         "Likewise for a 3D label array.\n");
+         "Likewise for a 3D uint32 label array.\n");
 
     def("eccentricityCenters",
         registerConverters(&pythonEccentricityCenters<3, UInt8>),
@@ -925,7 +1022,7 @@ void defineMorphology()
         registerConverters(&pythonEccentricityTransformWithCenters<2, UInt32, float>),
         (arg("image"),
          arg("out")=python::object()),
-         "Compute the eccentricity transform and eccentricity centers of a 2D label array.\n"
+         "Compute the eccentricity transform and eccentricity centers of a 2D uint32 label array.\n"
          "\n"
          "Returns the tuple (ecc_image, centers).\n");
 
@@ -939,13 +1036,41 @@ void defineMorphology()
         registerConverters(&pythonEccentricityTransformWithCenters<3, UInt32, float>),
         (arg("image"),
          arg("out")=python::object()),
-         "Likewise for a 3D label array.\n");
+         "Likewise for a 3D uint32 label array.\n");
 
     def("eccentricityTransformWithCenters",
         registerConverters(&pythonEccentricityTransformWithCenters<3, UInt8, float>),
         (arg("image"),
          arg("out")=python::object()),
          "Likewise for a 2D uint8 input array.\n");
+
+    def("skeletonize",
+        registerConverters(&pySkeletonize<2, UInt32>),
+        (arg("labels"),
+         arg("mode")="PruneSalienceRelative",
+         arg("pruning_threshold")=0.2),
+         "Skeletonize all regions in the given label image. Each skeleton receives\n"
+         "the label of the corresponding region, unless 'length' or 'salience' are\n"
+         "requested, in which case the skeleton points hold real numbers. Non-skeleton\n"
+         "points always have the value zero. When the input image contains label zero,\n"
+         "it is always considered background and therefore ignored.\n"
+         "The 'mode' must be one of the following strings:\n\n"
+            "   - 'DontPrune':  don't remove any branches\n\n"
+            "   - 'ReturnLength':  mark each pixel with the length of the longest branch\n"
+            "                      it belongs to\n\n"
+            "   - 'PruneLength':  remove all branches that are shorter than the given\n" "                     'pruning_threshold'\n\n"
+            "   - 'PruneLengthRelative':  remove all branches that are shorter than the\n" "                             fraction specified in 'pruning_threshold' of the\n"
+            "                             longest branch in the present region\n\n"
+            "   - 'ReturnSalience':  mark each pixel with the salience of the longest branch\n"
+            "                        it belongs to\n\n"
+            "   - 'PruneSalience':  remove all branches whose salience is less than the given\n" "                       'pruning_threshold'\n\n"
+            "   - 'PruneSalienceRelative':  remove all branches whose salience is less than the\n" "                               fraction specified in 'pruning_threshold' of the\n"
+            "                               most salient branch in the present region\n"
+            "                               (default with pruning_threshold=0.2)\n\n"
+            "   - 'PruneTopology':  prune all branches that are not essential for the topology,\n"
+            "                       but keep the skeleton center\n\n"
+            "   - 'PruneAggressive':  like 'PruneTopology', but don't necessarily preserve the center\n\n"
+            "For details see skeletonize_ in the vigra C++ documentation.\n");
 }
 
 } // namespace vigra
