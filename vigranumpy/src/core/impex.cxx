@@ -536,8 +536,9 @@ void defineImpexFunctions()
         "   SUN:\n"
         "       SUN Rasterfile (pixel types: UINT8 as gray and RGB).\n"
         "   TIFF:\n"
-        "       Tagged Image File Format (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE\n"
-        "       with up to 4 channels). Only available if libtiff is installed.\n"
+        "       Tagged Image File Format (pixel types: INT8, UINT8, INT16, UINT16,\n"
+        "       INT32, UINT32, FLOAT, DOUBLE with up to 4 channels). Only available\n"
+        "       if libtiff is installed.\n"
         "   VIFF:\n"
         "       Khoros Visualization image file (pixel types: UINT8, INT16\n"
         "       INT32, FLOAT, DOUBLE with arbitrary many channels).\n\n");
