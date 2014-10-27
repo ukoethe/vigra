@@ -496,7 +496,7 @@ struct ClassifierTest
      */
     void RFresponseTest()
     {
-        int ii = 1;
+        int ii = 2;
         // learn on glass data set and predict: 
         // this is interesting because there is no label with number 4
         // in this dataset.
@@ -505,10 +505,6 @@ struct ClassifierTest
         std::cerr << "RFresponseTest(): Learning on Datasets\n";
         vigra::RandomForest<>
             RF(vigra::RandomForestOptions().tree_count(2)); 
-
-
-
-
 
         RF.learn( data.features(ii),
                   data.labels(ii),
@@ -586,9 +582,8 @@ struct ClassifierTest
      */
     void RFDepthAndSizeEarlyStopTest()
     {
-    	std::cerr << "RFDepthAndSizeEarlyStopTest(): Learning on Datasets\n";
+        std::cerr << "RFDepthAndSizeEarlyStopTest(): Learning on Datasets\n";
         int ii = 2;
-
 
         vigra::RandomForest<>
             RF(vigra::RandomForestOptions().tree_count(2));
