@@ -496,7 +496,7 @@ struct ClassifierTest
      */
     void RFresponseTest()
     {
-        int ii = 2; 
+        int ii = 1;
         // learn on glass data set and predict: 
         // this is interesting because there is no label with number 4
         // in this dataset.
@@ -505,6 +505,10 @@ struct ClassifierTest
         std::cerr << "RFresponseTest(): Learning on Datasets\n";
         vigra::RandomForest<>
             RF(vigra::RandomForestOptions().tree_count(2)); 
+
+
+
+
 
         RF.learn( data.features(ii),
                   data.labels(ii),
@@ -575,6 +579,34 @@ struct ClassifierTest
         }
         std::cerr << "done \n";
     }
+
+    /*
+     * Check weather the new implemented depth and size stop criterion compiles
+     * if the condition is not met the criterion will throw internally an error
+     */
+    void RFDepthAndSizeEarlyStopTest()
+    {
+    	std::cerr << "RFDepthAndSizeEarlyStopTest(): Learning on Datasets\n";
+        int ii = 2;
+
+
+        vigra::RandomForest<>
+            RF(vigra::RandomForestOptions().tree_count(2));
+
+        int maxdepth=1;
+        DepthAndSizeStopping early_depth(maxdepth,10);
+
+        RF.learn( data.features(ii),
+                  data.labels(ii),
+                  rf_default(),
+                  rf_default(),
+                  early_depth,
+                  vigra::RandomMT19937(1));
+
+    }
+
+
+
 
 /** Learns The Refactored Random Forest with 100 trees 10 times and
  *  calulates the mean oob error. The distribution of the oob error
@@ -1043,7 +1075,8 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RF_AlgorithmTest));
 #endif
         add( testCase( &ClassifierTest::RFresponseTest));
-        
+        add( testCase( &ClassifierTest::RFDepthAndSizeEarlyStopTest));
+
         add( testCase( &ClassifierTest::RFridgeRegressionTest));
         add( testCase( &ClassifierTest::RFSplitFunctorTest));
 #ifdef HasHDF5
