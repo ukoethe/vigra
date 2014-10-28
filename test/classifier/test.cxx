@@ -898,6 +898,7 @@ struct ClassifierTest
     void HDF5InvalidImportTest()
     {
         // at the very least, this should not crash (regression test)
+        HDF5DisableErrorOutput hdf5DisableErrorOutput;
         RandomForest<> rf;
         try {
             bool emptyLoaded = rf_import_HDF5(rf, "data/empty.hdf5");
