@@ -66,6 +66,7 @@ RandomForest<LabelType>*
 pythonConstructRandomForest(int treeCount,
                             int mtry,
                             int min_split_node_size,
+                            int max_tree_depth,
                             int training_set_size,
                             float training_set_proportions,
                             bool sample_with_replacement,
@@ -79,7 +80,8 @@ pythonConstructRandomForest(int treeCount,
     options .sample_with_replacement(sample_with_replacement)
             .tree_count(treeCount)
             .prepare_online_learning(prepare_online)
-            .min_split_node_size(min_split_node_size);
+            .min_split_node_size(min_split_node_size)
+            .max_tree_depth(max_tree_depth);
 
 
     if(mtry  > 0)
@@ -359,6 +361,7 @@ void defineRandomForest()
                                                  ( arg("treeCount")=255,
                                                    arg("mtry")= -1,
                                                    arg("min_split_node_size")=1,
+                                                   arg("max_tree_depth")=0,
                                                    arg("training_set_size")=0,
                                                    arg("training_set_proportions")=1.0,
                                                    arg("sample_with_replacement")=true,
@@ -366,7 +369,7 @@ void defineRandomForest()
                                                    arg("prepare_online_learning")=false,
                                                    arg("labels")=python::list())),
              "Constructor::\n\n"
-             "  RandomForest(treeCount = 255, mtry=RF_SQRT, min_split_node_size=1,\n"
+             "  RandomForest(treeCount = 255, mtry=RF_SQRT, min_split_node_size=1,max_tree_depth=0,\n"
              "               training_set_size=0, training_set_proportions=1.0,\n"
              "               sample_with_replacement=True, sample_classes_individually=False,\n"
              "               prepare_online_learning=False)\n\n"
