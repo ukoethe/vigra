@@ -146,7 +146,6 @@ skeletonThinning(CostMap const & cost, LabelMap & labels,
     typedef typename Graph::Node           Node;
     typedef typename Graph::NodeIt         NodeIt;
     typedef typename Graph::OutArcIt       ArcIt;
-    typedef typename LabelMap::value_type  LabelType;
 
     Graph g(labels.shape(), IndirectNeighborhood);
     typedef SkeletonSimplePoint<Node, double> SP;
@@ -187,6 +186,7 @@ skeletonThinning(CostMap const & cost, LabelMap & labels,
                                : isSimpleStrong;
     
     int max_degree = g.maxDegree();
+    double epsilon = 0.5/labels.size(), offset = 0;
     for (NodeIt node(g); node != lemon::INVALID; ++node)
     {
         Node p = *node;
@@ -194,7 +194,8 @@ skeletonThinning(CostMap const & cost, LabelMap & labels,
            labels[p] > 0 &&
            isSimplePoint[neighborhoodConfiguration(g, p, labels)])
         {
-            pqueue.push(SP(p, cost[p]));
+            pqueue.push(SP(p, cost[p]+offset));
+	    offset += epsilon;
         }
     }
 
@@ -218,7 +219,8 @@ skeletonThinning(CostMap const & cost, LabelMap & labels,
                labels[q] > 0 &&
                isSimplePoint[neighborhoodConfiguration(g, q, labels)])
             {
-                pqueue.push(SP(q, cost[q]));
+                pqueue.push(SP(q, cost[q]+offset));
+		offset += epsilon;
             }
         }
     }
@@ -248,7 +250,7 @@ struct CheckForHole
 */
 //@{
 
-    /** \brief Option object for \ref skeletonize()
+    /** \brief Option object for \ref skeletonizeImage()
     */
 struct SkeletonOptions
 {
@@ -390,7 +392,7 @@ template <class T1, class S1,
           class T2, class S2,
           class ArrayLike>
 void
-skeletonizeImpl(MultiArrayView<2, T1, S1> const & labels,
+skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
                 MultiArrayView<2, T2, S2> dest,
                 ArrayLike * features,
                 SkeletonOptions const & options)
@@ -805,7 +807,7 @@ class SkeletonFeatures
 
 /********************************************************/
 /*                                                      */
-/*                     skeletonize                      */
+/*                     skeletonizeImage                      */
 /*                                                      */
 /********************************************************/
 
@@ -831,7 +833,7 @@ class SkeletonFeatures
 // template <unsigned int N, class T1, class S1,
                           // class T2, class S2>
 // void
-// skeletonize(MultiArrayView<N, T1, S1> const & labels,
+// skeletonizeImage(MultiArrayView<N, T1, S1> const & labels,
             // MultiArrayView<N, T2, S2> dest,
             // SkeletonOptions const & options = SkeletonOptions())
 // {
@@ -845,7 +847,7 @@ class SkeletonFeatures
             template <class T1, class S1,
                       class T2, class S2>
             void
-            skeletonize(MultiArrayView<2, T1, S1> const & labels,
+            skeletonizeImage(MultiArrayView<2, T1, S1> const & labels,
                         MultiArrayView<2, T2, S2> dest,
                         SkeletonOptions const & options = SkeletonOptions());
         }
@@ -921,7 +923,7 @@ class SkeletonFeatures
         </ul>
         
         Remark: If you have an application where a skeleton graph would be more useful
-        than a skeleton image, function <tt>skeletonize()</tt> can be changed/extended easily.
+        than a skeleton image, function <tt>skeletonizeImage()</tt> can be changed/extended easily.
 
         <b> Usage:</b>
 
@@ -936,22 +938,22 @@ class SkeletonFeatures
 
         // Skeletonize and keep only those segments that are at least 10% of the maximum
         // length (the maximum length is half the skeleton diameter).
-        skeletonize(source, dest, 
+        skeletonizeImage(source, dest,
                     SkeletonOptions().pruneLengthRelative(0.1));
         \endcode
 
         \see vigra::boundaryVectorDistance()
     */
-doxygen_overloaded_function(template <...> void skeletonize)
+doxygen_overloaded_function(template <...> void skeletonizeImage)
 
 template <class T1, class S1,
           class T2, class S2>
 void
-skeletonize(MultiArrayView<2, T1, S1> const & labels,
+skeletonizeImage(MultiArrayView<2, T1, S1> const & labels,
             MultiArrayView<2, T2, S2> dest,
             SkeletonOptions const & options = SkeletonOptions())
 {
-    skeletonizeImpl(labels, dest, (ArrayVector<SkeletonFeatures>*)0, options);
+    skeletonizeImageImpl(labels, dest, (ArrayVector<SkeletonFeatures>*)0, options);
 }
 
 template <class T, class S>
@@ -961,7 +963,7 @@ extractSkeletonFeatures(MultiArrayView<2, T, S> const & labels,
                         SkeletonOptions const & options = SkeletonOptions())
 {
     MultiArray<2, float> skeleton(labels.shape());
-    skeletonizeImpl(labels, skeleton, &features, options);
+    skeletonizeImageImpl(labels, skeleton, &features, options);
 }
 
 //@}

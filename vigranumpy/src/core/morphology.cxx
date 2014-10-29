@@ -522,7 +522,7 @@ pythonEccentricityTransformWithCenters(const NumpyArray<N, T> & image,
 
 template <unsigned int N, class T>
 NumpyAnyArray
-pySkeletonize(NumpyArray<N, Singleband<T> > const & labels,
+pySkeletonizeImage(NumpyArray<N, Singleband<T> > const & labels,
               std::string mode,
               double pruning_threshold)
 {
@@ -570,7 +570,7 @@ pySkeletonize(NumpyArray<N, Singleband<T> > const & labels,
     }
     else
     {
-        vigra_precondition(false, "skeletonize(): invalid mode.");
+        vigra_precondition(false, "skeletonizeImage(): invalid mode.");
     }
     
     if(returnFloat)
@@ -580,7 +580,7 @@ pySkeletonize(NumpyArray<N, Singleband<T> > const & labels,
         {
             PyAllowThreads _pythread;
             
-            skeletonize(labels, res, options);
+            skeletonizeImage(labels, res, options);
         }
         
         return res;
@@ -592,7 +592,7 @@ pySkeletonize(NumpyArray<N, Singleband<T> > const & labels,
         {
             PyAllowThreads _pythread;
             
-            skeletonize(labels, res, options);
+            skeletonizeImage(labels, res, options);
         }
         
         return res;
@@ -1044,8 +1044,8 @@ void defineMorphology()
          arg("out")=python::object()),
          "Likewise for a 2D uint8 input array.\n");
 
-    def("skeletonize",
-        registerConverters(&pySkeletonize<2, UInt32>),
+    def("skeletonizeImage",
+        registerConverters(&pySkeletonizeImage<2, UInt32>),
         (arg("labels"),
          arg("mode")="PruneSalienceRelative",
          arg("pruning_threshold")=0.2),
@@ -1070,7 +1070,7 @@ void defineMorphology()
             "   - 'PruneTopology':  prune all branches that are not essential for the topology,\n"
             "                       but keep the skeleton center\n\n"
             "   - 'PruneAggressive':  like 'PruneTopology', but don't necessarily preserve the center\n\n"
-            "For details see skeletonize_ in the vigra C++ documentation.\n");
+            "For details see skeletonizeImage_ in the vigra C++ documentation.\n");
 }
 
 } // namespace vigra

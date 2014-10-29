@@ -281,14 +281,14 @@ struct MultiDistanceTest
             for(; i.isValid(); ++i)
             {
                 double minDist = NumericTraits<double>::max();
-                int nearest = -1;
+                //int nearest = -1;
                 for(unsigned j=0; j<pointslists[k].size(); ++j)
                 {
                     double dist = squaredNorm(pixelPitch*(pointslists[k][j] - i.point()));
                     if(dist < minDist)
                     {
                         minDist = dist;
-                        nearest = j;
+                        //nearest = j;
                     }
                 }
                 *i = minDist;
@@ -743,7 +743,7 @@ struct SkeletonTest
         //USETICTOC;
         {
             //TIC;
-            skeletonize(data, skel,
+            skeletonizeImage(data, skel,
                         SkeletonOptions().dontPrune());
             //TOC;
             //exportImage(skel, "raw_skeleton.tif");
@@ -752,21 +752,21 @@ struct SkeletonTest
         }
         {
             MultiArray<2, float> skel(data.shape());
-            skeletonize(data, skel,
+            skeletonizeImage(data, skel,
                         SkeletonOptions().returnLength());
             //exportImage(skel, "skeleton_length.tif");
             importImage("skeleton_length.xv", desired);
             should(skel == desired);
         }
         {
-            skeletonize(data, skel,
+            skeletonizeImage(data, skel,
                         SkeletonOptions().pruneLength(100.0));
             //exportImage(skel, "skeleton_length_greater_100.tif");
             importImage("skeleton_length_greater_100.xv", desired);
             should(skel == desired);
         }
         {
-            skeletonize(data, skel,
+            skeletonizeImage(data, skel,
                         SkeletonOptions().pruneLengthRelative(0.5));
             //exportImage(skel, "skeleton_length_greater_50_percent.tif");
             importImage("skeleton_length_greater_50_percent.xv", desired);
@@ -774,35 +774,35 @@ struct SkeletonTest
         }
         {
             MultiArray<2, float> skel(data.shape());
-            skeletonize(data, skel,
+            skeletonizeImage(data, skel,
                         SkeletonOptions().returnSalience());
             //exportImage(skel, "skeleton_salience.tif");
             importImage("skeleton_salience.xv", desired);
             should(skel == desired);
         }
         {
-            skeletonize(data, skel,
+            skeletonizeImage(data, skel,
                         SkeletonOptions().pruneSalience(10.0));
             //exportImage(skel, "skeleton_salience_greater_10.tif");
             importImage("skeleton_salience_greater_10.xv", desired);
             should(skel == desired);
         }
         {
-            skeletonize(data, skel,
+            skeletonizeImage(data, skel,
                         SkeletonOptions().pruneSalienceRelative(0.6));
             //exportImage(skel, "skeleton_salience_greater_60_percent.tif");
             importImage("skeleton_salience_greater_60_percent.xv", desired);
             should(skel == desired);
         }
         {
-            skeletonize(data, skel,
+            skeletonizeImage(data, skel,
                         SkeletonOptions().pruneTopology());
             //exportImage(skel, "skeleton_topology.tif");
             importImage("skeleton_topology.xv", desired);
             should(skel == desired);
         }
         {
-            skeletonize(data, skel,
+            skeletonizeImage(data, skel,
                         SkeletonOptions().pruneTopology(false));
             //exportImage(skel, "skeleton_topology_without_center.tif");
             importImage("skeleton_topology_without_center.xv", desired);
