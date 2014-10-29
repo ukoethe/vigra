@@ -3,6 +3,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 INCLUDE(VigraAddTest)
 
 ADD_SUBDIRECTORY(adjacency_list_graph)
+ADD_SUBDIRECTORY(blockwisealgorithms)
 ADD_SUBDIRECTORY(classifier)
 ADD_SUBDIRECTORY(colorspaces)
 ADD_SUBDIRECTORY(convolution)

@@ -496,7 +496,7 @@ struct ClassifierTest
      */
     void RFresponseTest()
     {
-        int ii = 2; 
+        int ii = 2;
         // learn on glass data set and predict: 
         // this is interesting because there is no label with number 4
         // in this dataset.
@@ -575,6 +575,33 @@ struct ClassifierTest
         }
         std::cerr << "done \n";
     }
+
+    /*
+     * Check weather the new implemented depth and size stop criterion compiles
+     * if the condition is not met the criterion will throw internally an error
+     */
+    void RFDepthAndSizeEarlyStopTest()
+    {
+        std::cerr << "RFDepthAndSizeEarlyStopTest(): Learning on Datasets\n";
+        int ii = 2;
+
+        vigra::RandomForest<>
+            RF(vigra::RandomForestOptions().tree_count(2));
+
+        int maxdepth=1;
+        DepthAndSizeStopping early_depth(maxdepth,10);
+
+        RF.learn( data.features(ii),
+                  data.labels(ii),
+                  rf_default(),
+                  rf_default(),
+                  early_depth,
+                  vigra::RandomMT19937(1));
+
+    }
+
+
+
 
 /** Learns The Refactored Random Forest with 100 trees 10 times and
  *  calulates the mean oob error. The distribution of the oob error
@@ -867,6 +894,30 @@ struct ClassifierTest
             }
             std::cerr << "done!\n";
     }
+
+    void HDF5InvalidImportTest()
+    {
+        // at the very least, this should not crash (regression test)
+        HDF5DisableErrorOutput hdf5DisableErrorOutput;
+        RandomForest<> rf;
+        try {
+            bool emptyLoaded = rf_import_HDF5(rf, "data/empty.hdf5");
+            shouldNot(emptyLoaded);
+            failTest("rf_import_HDF5() didn't throw on 0-byte file.");
+        }
+		catch( std::runtime_error const & )
+        {
+        }
+
+        try {
+            bool bareHDF5Loaded = rf_import_HDF5(rf, "data/bare.hdf5");
+            shouldNot(bareHDF5Loaded);
+            failTest("rf_import_HDF5() didn't throw on empty, but valid HDF5 file.");
+        }
+		catch( PreconditionViolation const & )
+        {
+        }
+    }
 #endif
 //};
 
@@ -1020,11 +1071,13 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RF_AlgorithmTest));
 #endif
         add( testCase( &ClassifierTest::RFresponseTest));
-        
+        add( testCase( &ClassifierTest::RFDepthAndSizeEarlyStopTest));
+
         add( testCase( &ClassifierTest::RFridgeRegressionTest));
         add( testCase( &ClassifierTest::RFSplitFunctorTest));
 #ifdef HasHDF5
         add( testCase( &ClassifierTest::HDF5ImpexTest));
+        add( testCase( &ClassifierTest::HDF5InvalidImportTest));
 #endif
          
     }
