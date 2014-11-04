@@ -426,7 +426,8 @@ public:
 
     int max_depth_reached; //for debug maximum reached depth
 
-    DepthAndSizeStopping() : max_depth_(-1), min_size_(0)
+    DepthAndSizeStopping()
+        : max_depth_(NumericTraits<int>::max()), min_size_(0)
     {}
 
     /** Constructor DepthAndSize Criterion
@@ -436,21 +437,22 @@ public:
      */
 
     DepthAndSizeStopping(int depth, int size) :
-        max_depth_(depth), min_size_(size)
+        max_depth_(depth <= 0 ? NumericTraits<int>::max() : depth),
+        min_size_(size)
     {}
 
     template<class T>
-    void set_external_parameters(ProblemSpec<T> const &, int
-     tree_count = 0, bool /* is_weighted_ */= false)
+    void set_external_parameters(ProblemSpec<T> const &,
+            int tree_count = 0, bool /* is_weighted_ */= false)
     {}
 
     template<class Region>
     bool operator()(Region& region)
     {
-        if (region.depth() > max_depth_ + 1)
+        if (region.depth() > max_depth_)
            throw std::runtime_error("violation in the stopping criterion");
 
-        return (region.depth() > max_depth_) || (region.size() < min_size_) ;
+        return (region.depth() >= max_depth_) || (region.size() < min_size_) ;
     }
 
     template<class WeightIter, class T, class C>
