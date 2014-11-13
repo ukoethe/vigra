@@ -44,11 +44,66 @@ namespace python = boost::python;
 namespace vigra
 {
 
+// Helper functions for stringification of macro string constants
+#define STR(s) #s
+#define XSTR(s) s
+
 template <unsigned int N, class T>
-python::dict
-extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels, python::object ignore_label)
+python::object
+extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
+			  python::object ignore_label,
+                          bool list_features_only=false)
 {
     using namespace vigra::acc;
+
+    #define VIGRA_CONVEX_HULL_FEATURE_INPUT_COUNT "Input Count"
+    #define VIGRA_CONVEX_HULL_FEATURE_INPUT_PERIMETER "Input Perimeter"
+    #define VIGRA_CONVEX_HULL_FEATURE_INPUT_AREA "Input Area"
+    #define VIGRA_CONVEX_HULL_FEATURE_AREA "Area"
+    #define VIGRA_CONVEX_HULL_FEATURE_PERIMETER "Perimeter"
+    #define VIGRA_CONVEX_HULL_FEATURE_RUGOSITY "Rugosity"
+    #define VIGRA_CONVEX_HULL_FEATURE_CONVEXITY "Convexity"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_COUNT "Defect Count"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_MEAN_DISPLACEMENT "Defect Mean Displacement"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_LIST "Defect Area List"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_MEAN "Defect Area Mean"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_VARIANCE "Defect Area Variance"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_SKEWNESS "Defect Area Skewness"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_KURTOSIS "Defect Area Kurtosis"
+    #define VIGRA_CONVEX_HULL_FEATURE_POLYGON "Polygon"
+
+    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_INPUT_CENTER "Input Center"
+    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_CENTER "Center"
+    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_DEFECT_CENTER "Defect Center"
+
+    if(list_features_only)
+    {
+
+        python::list res;
+	res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_INPUT_COUNT));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_INPUT_PERIMETER));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_INPUT_AREA));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_AREA));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_PERIMETER));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_RUGOSITY));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_CONVEXITY));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_POLYGON));
+
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_DEFECT_COUNT));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_DEFECT_MEAN_DISPLACEMENT));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_LIST));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_MEAN));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_VARIANCE));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_SKEWNESS));
+        res.append(XSTR(VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_KURTOSIS));
+
+        res.append(XSTR(VIGRA_CONVEX_HULL_VECTOR_FEATURE_INPUT_CENTER));
+        res.append(XSTR(VIGRA_CONVEX_HULL_VECTOR_FEATURE_CENTER));
+
+        res.append(XSTR(VIGRA_CONVEX_HULL_VECTOR_FEATURE_DEFECT_CENTER));
+
+        return res;
+    }
 
     TinyVector<npy_intp, N> permutation = labels.template permuteLikewise<N>();
 
@@ -56,9 +111,13 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels, python::
                           Select<ConvexHull, DataArg<1>, LabelArg<1> >
                          > acc;
 
+    MultiArrayIndex ignored_label = -1;
     if(ignore_label != python::object())
-        acc.ignoreLabel(python::extract<MultiArrayIndex>(ignore_label)());
-        
+    {
+        ignored_label = python::extract<MultiArrayIndex>(ignore_label)();
+        acc.ignoreLabel(ignored_label);
+    }
+
     {
         PyAllowThreads _pythread;
         
@@ -71,35 +130,50 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels, python::
         NumpyArray<1, npy_uint32> array((Shape1(size)));
         for(int k=0; k<size; ++k)
         {
+            if(k == ignored_label)
+                continue;
             array(k) = get<Count>(acc, k);
         }
-        res["InputCount"] = array;
+	res[XSTR(VIGRA_CONVEX_HULL_FEATURE_INPUT_COUNT)] = array;
     }
     
     #define VIGRA_CONVEX_HULL_FEATURE(TYPE, NAME, FUNCTION) \
     { \
-        NumpyArray<1, TYPE> array((Shape1(size))); \
+        NumpyArray<1, TYPE> array((Shape1(size)));	\
         for(int k=0; k<size; ++k) \
         { \
-            if(get<Count>(acc, k) == 0) \
+            if(k == ignored_label || get<Count>(acc, k) == 0) \
                 continue; \
             array(k) = get<ConvexHull>(acc, k).FUNCTION(); \
         } \
-        res[#NAME] = array; \
+	res[XSTR(NAME)] = array;			\
     }
     
-    VIGRA_CONVEX_HULL_FEATURE(double, InputPerimeter, inputPerimeter)
-    VIGRA_CONVEX_HULL_FEATURE(double, InputArea, inputArea)
-    VIGRA_CONVEX_HULL_FEATURE(double, Perimeter, hullPerimeter)
-    VIGRA_CONVEX_HULL_FEATURE(double, Area, hullArea)
-    VIGRA_CONVEX_HULL_FEATURE(double, Convexity, convexity)
-    VIGRA_CONVEX_HULL_FEATURE(double, Rugosity, rugosity)
-    VIGRA_CONVEX_HULL_FEATURE(npy_uint32, DefectCount, convexityDefectCount)
-    VIGRA_CONVEX_HULL_FEATURE(double, DefectAreaMean, convexityDefectAreaMean)
-    VIGRA_CONVEX_HULL_FEATURE(double, DefectAreaVariance, convexityDefectAreaVariance)
-    VIGRA_CONVEX_HULL_FEATURE(double, DefectAreaSkewness, convexityDefectAreaSkewness)
-    VIGRA_CONVEX_HULL_FEATURE(double, DefectAreaKurtosis, convexityDefectAreaKurtosis)
-    VIGRA_CONVEX_HULL_FEATURE(double, MeanDefectDisplacement, meanDefectDisplacement)
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT(TYPE, NAME, FUNCTION) \
+    { \
+        NumpyArray<1, double> array((Shape1(size)));	\
+        for(int k=0; k<size; ++k) \
+        { \
+	    if(k == ignored_label || get<Count>(acc, k) == 0) \
+	      continue; \
+	    array(k) = get<ConvexHull>(acc, k).meanDefectDisplacement(); \
+        } \
+	res[XSTR(NAME)] = array;			\
+    }
+
+    VIGRA_CONVEX_HULL_FEATURE(double, VIGRA_CONVEX_HULL_FEATURE_INPUT_PERIMETER, inputPerimeter)
+    VIGRA_CONVEX_HULL_FEATURE(double, VIGRA_CONVEX_HULL_FEATURE_INPUT_AREA, inputArea)
+    VIGRA_CONVEX_HULL_FEATURE(double, VIGRA_CONVEX_HULL_FEATURE_PERIMETER, hullPerimeter)
+    VIGRA_CONVEX_HULL_FEATURE(double, VIGRA_CONVEX_HULL_FEATURE_AREA, hullArea)
+    VIGRA_CONVEX_HULL_FEATURE(double, VIGRA_CONVEX_HULL_FEATURE_CONVEXITY, convexity)
+    VIGRA_CONVEX_HULL_FEATURE(double, VIGRA_CONVEX_HULL_FEATURE_RUGOSITY, rugosity)
+    VIGRA_CONVEX_HULL_FEATURE(npy_uint32, VIGRA_CONVEX_HULL_FEATURE_DEFECT_COUNT, convexityDefectCount)
+
+    VIGRA_CONVEX_HULL_FEATURE_DEFECT(double, VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_MEAN, convexityDefectAreaMean)
+    VIGRA_CONVEX_HULL_FEATURE_DEFECT(double, VIGRA_CONVEX_HULL_FEATURE_DEFECT_MEAN_DISPLACEMENT, meanDefectDisplacement)
+    VIGRA_CONVEX_HULL_FEATURE_DEFECT(double, VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_VARIANCE, convexityDefectAreaVariance)
+    VIGRA_CONVEX_HULL_FEATURE_DEFECT(double, VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_SKEWNESS, convexityDefectAreaSkewness)
+    VIGRA_CONVEX_HULL_FEATURE_DEFECT(double, VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_KURTOSIS, convexityDefectAreaKurtosis)
     
     #undef VIGRA_CONVEX_HULL_FEATURE
     
@@ -107,7 +181,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels, python::
         python::list hulls;
         for(int k=0; k<size; ++k)
         {
-            if(get<Count>(acc, k) == 0)
+            if(k == ignored_label || get<Count>(acc, k) == 0)
             {
                 hulls.append(python::object());
                 continue;
@@ -124,20 +198,20 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels, python::
             }
             hulls.append(array);
         }
-        res["Polygon"] = hulls;
+	res[XSTR(VIGRA_CONVEX_HULL_FEATURE_POLYGON)] = hulls;
     }
     
     {
         NumpyArray<2, double> array(Shape2(size, 3));
         for(int k=0; k<size; ++k)
         {
-            if(get<Count>(acc, k) == 0)
+            if(k == ignored_label || get<Count>(acc, k) == 0)
                 continue;
             int defects = min<int>(3, get<ConvexHull>(acc, k).convexityDefectCount());
             for(int j=0; j<defects; ++j)
                 array(k, j) = get<ConvexHull>(acc, k).defectAreaList()[j];
         }
-        res["DefectAreaList"] = array;
+        res[XSTR(VIGRA_CONVEX_HULL_FEATURE_DEFECT_AREA_LIST)] = array;
     }
     
     #define VIGRA_CONVEX_HULL_VECTOR_FEATURE(NAME, FUNCTION) \
@@ -145,29 +219,71 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels, python::
         NumpyArray<2, double> array(Shape2(size, N)); \
         for(int k=0; k<size; ++k) \
         { \
-            if(get<Count>(acc, k) == 0) \
-                continue; \
+	    if(k == ignored_label || get<Count>(acc, k) == 0)	\
+	        continue; \
             for(int j=0; j<N; ++j) \
-                array(k, permutation[j]) = get<ConvexHull>(acc, k).FUNCTION()[j]; \
+		array(k, permutation[j]) = get<ConvexHull>(acc, k).FUNCTION()[j]; \
         } \
-        res[#NAME] = array; \
+	res[XSTR(NAME)] = array; \
     }
     
-    VIGRA_CONVEX_HULL_VECTOR_FEATURE(InputCenter, inputCenter)
-    VIGRA_CONVEX_HULL_VECTOR_FEATURE(Center, hullCenter)
-    VIGRA_CONVEX_HULL_VECTOR_FEATURE(DefectCenter, convexityDefectCenter)
+    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_DEFECT(NAME, FUNCTION) \
+    { \
+        NumpyArray<2, double> array(Shape2(size, N)); \
+        for(int k=0; k<size; ++k) \
+        { \
+	    if(k == ignored_label || get<Count>(acc, k) == 0)	\
+	        continue; \
+            for(int j=0; j<N; ++j) \
+		array(k, permutation[j]) = get<ConvexHull>(acc, k).FUNCTION()[j]; \
+        } \
+	res[XSTR(NAME)] = array; \
+    }
     
+    VIGRA_CONVEX_HULL_VECTOR_FEATURE(VIGRA_CONVEX_HULL_VECTOR_FEATURE_INPUT_CENTER, inputCenter)
+    VIGRA_CONVEX_HULL_VECTOR_FEATURE(VIGRA_CONVEX_HULL_VECTOR_FEATURE_CENTER, hullCenter)
+
+    VIGRA_CONVEX_HULL_VECTOR_FEATURE_DEFECT(VIGRA_CONVEX_HULL_VECTOR_FEATURE_DEFECT_CENTER, convexityDefectCenter)
+
     #undef VIGRA_CONVEX_HULL_VECTOR_FEATURE
 
     return res;
 }
 
 template <unsigned int N, class T>
-python::dict
-pyExtractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
-                            double pruning_threshold)
+python::object
+pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T> > const & labels,
+			  double pruning_threshold,
+			  bool list_features_only=false)
 {
     using namespace vigra::acc;
+
+    #define VIGRA_SKELETON_FEATURE_DIAMETER "Diameter"
+    #define VIGRA_SKELETON_FEATURE_EUCLIDEAN_DIAMETER "Euclidean Diameter"
+    #define VIGRA_SKELETON_FEATURE_TOTAL_LENGTH "Total Length"
+    #define VIGRA_SKELETON_FEATURE_AVERAGE_LENGTH "Average Length"
+    #define VIGRA_SKELETON_FEATURE_BRANCH_COUNT "Branch Count"
+    #define VIGRA_SKELETON_FEATURE_HOLE_COUNT "Hole Count"
+    #define VIGRA_SKELETON_VECTOR_FEATURE_CENTER "Center"
+    #define VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_1 "Terminal 1"
+    #define VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_2 "Terminal 2"
+
+    if(list_features_only)
+    {
+
+        python::list res;
+        res.append(XSTR(VIGRA_SKELETON_FEATURE_DIAMETER));
+        res.append(XSTR(VIGRA_SKELETON_FEATURE_EUCLIDEAN_DIAMETER));
+        res.append(XSTR(VIGRA_SKELETON_FEATURE_TOTAL_LENGTH));
+        res.append(XSTR(VIGRA_SKELETON_FEATURE_AVERAGE_LENGTH));
+        res.append(XSTR(VIGRA_SKELETON_FEATURE_BRANCH_COUNT));
+        res.append(XSTR(VIGRA_SKELETON_FEATURE_HOLE_COUNT));
+        res.append(XSTR(VIGRA_SKELETON_VECTOR_FEATURE_CENTER));
+        res.append(XSTR(VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_1));
+        res.append(XSTR(VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_2));
+
+        return res;
+    }
 
     TinyVector<npy_intp, N> permutation = labels.template permuteLikewise<N>();
     ArrayVector<SkeletonFeatures> features;
@@ -189,15 +305,15 @@ pyExtractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
         { \
             array(k) = features[k].ATTRIBUTE; \
         } \
-        res[#NAME] = array; \
+        res[XSTR(NAME)] = array; \
     }
     
-    VIGRA_SKELETON_FEATURE(double, Diameter, diameter)
-    VIGRA_SKELETON_FEATURE(double, EuclideanDiameter, euclidean_diameter)
-    VIGRA_SKELETON_FEATURE(double, TotalLength, total_length)
-    VIGRA_SKELETON_FEATURE(double, AverageLength, average_length)
-    VIGRA_SKELETON_FEATURE(npy_uint32, BranchCount, branch_count)
-    VIGRA_SKELETON_FEATURE(npy_uint32, HoleCount, hole_count)
+    VIGRA_SKELETON_FEATURE(double, VIGRA_SKELETON_FEATURE_DIAMETER, diameter)
+    VIGRA_SKELETON_FEATURE(double, VIGRA_SKELETON_FEATURE_EUCLIDEAN_DIAMETER, euclidean_diameter)
+    VIGRA_SKELETON_FEATURE(double, VIGRA_SKELETON_FEATURE_TOTAL_LENGTH, total_length)
+    VIGRA_SKELETON_FEATURE(double, VIGRA_SKELETON_FEATURE_AVERAGE_LENGTH, average_length)
+    VIGRA_SKELETON_FEATURE(npy_uint32, VIGRA_SKELETON_FEATURE_BRANCH_COUNT, branch_count)
+    VIGRA_SKELETON_FEATURE(npy_uint32,VIGRA_SKELETON_FEATURE_HOLE_COUNT, hole_count)
     
     #undef VIGRA_SKELETON_FEATURE
         
@@ -209,12 +325,12 @@ pyExtractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
             for(int j=0; j<N; ++j) \
                 array(k, permutation[j]) = features[k].ATTRIBUTE[j]; \
         } \
-        res[#NAME] = array; \
+	res[XSTR(NAME)] = array; \
     }
     
-    VIGRA_SKELETON_VECTOR_FEATURE(Center, center)
-    VIGRA_SKELETON_VECTOR_FEATURE(Terminal1, terminal1)
-    VIGRA_SKELETON_VECTOR_FEATURE(Terminal2, terminal2)
+    VIGRA_SKELETON_VECTOR_FEATURE(VIGRA_SKELETON_VECTOR_FEATURE_CENTER, center)
+    VIGRA_SKELETON_VECTOR_FEATURE(VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_1, terminal1)
+    VIGRA_SKELETON_VECTOR_FEATURE(VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_2, terminal2)
     
     #undef VIGRA_SKELETON_VECTOR_FEATURE
 
@@ -241,7 +357,9 @@ void defineSinglebandRegionAccumulators()
     
     def("extractConvexHullFeatures", 
          registerConverters(&extractConvexHullFeatures<2, npy_uint32>),
-          (arg("labels"), arg("ignoreLabel")=python::object()),
+          (arg("labels"),
+	   arg("ignoreLabel")=python::object(),
+           arg("list_features_only")=false),
             "\nExtract convex hull features for each region of a labeled 2D image\n"
             "(with dtype=numpy.uint32) and return a dictionary holding the\n"
             "resulting feature arrays. Argument 'ignoreLabel' can be used to specify\n"
@@ -273,9 +391,10 @@ void defineSinglebandRegionAccumulators()
             "   - 'Polygon':  the convex hull polygon\n\n");
     
     def("extractSkeletonFeatures", 
-         registerConverters(&pyExtractConvexHullFeatures<2, npy_uint32>),
+         registerConverters(&pyExtractSkeletonFeatures<2, npy_uint32>),
          (arg("labels"),
-          arg("pruning_threshold")=0.2),
+          arg("pruning_threshold")=0.2,
+	  arg("list_features_only")=false),
             "\nExtract skeleton features for each region of a labeled 2D image\n"
             "(with dtype=numpy.uint32) and return a dictionary holding the\n"
             "resulting feature arrays. Label 0 is always considered background\n"

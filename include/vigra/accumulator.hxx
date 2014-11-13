@@ -6181,7 +6181,20 @@ class ConvexHull
         bool features_computed_;
         
         Impl()
-        : features_computed_(false)
+	: convex_hull_()
+	, input_center_()
+	, convex_hull_center_()
+	, defect_center_()
+	, convexity_()
+	, rugosity_()
+	, mean_defect_displacement_()
+	, defect_area_mean_()
+	, defect_area_variance_()
+	, defect_area_skewness_()
+	, defect_area_kurtosis_()
+	, convexity_defect_count_()
+        , convexity_defect_area_()
+	, features_computed_(false)
         {}
         
         template <class U, class NEXT>
@@ -6216,47 +6229,49 @@ class ConvexHull
                 convexity_defect_count_ = 
                    labelImageWithBackground(convex_hull_difference, convexity_defects, false, 0);
                 
-                AccumulatorChainArray<CoupledArrays<2, UInt32>,
-                        Select<LabelArg<1>, Count, RegionCenter> > convexity_defects_stats;
-                convexity_defects_stats.ignoreLabel(0);
-                extractFeatures(convexity_defects, convexity_defects_stats);
+                if (convexity_defect_count_ != 0)
+		{
+		  AccumulatorChainArray<CoupledArrays<2, UInt32>,
+					Select<LabelArg<1>, Count, RegionCenter> > convexity_defects_stats;
+		  convexity_defects_stats.ignoreLabel(0);
+		  extractFeatures(convexity_defects, convexity_defects_stats);
                 
-                double total_defect_area = 0.0;
-                mean_defect_displacement_ = 0.0;
-                defect_center_ = point_type();
-                for (int k = 1; k <= convexity_defect_count_; ++k) 
-                {
-                    double area = get<Count>(convexity_defects_stats, k);
-                    point_type center = get<RegionCenter>(convexity_defects_stats, k) + offset;
+		  double total_defect_area = 0.0;
+		  mean_defect_displacement_ = 0.0;
+		  defect_center_ = point_type();
+		  for (int k = 1; k <= convexity_defect_count_; ++k)
+		    {
+		      double area = get<Count>(convexity_defects_stats, k);
+		      point_type center = get<RegionCenter>(convexity_defects_stats, k) + offset;
                     
-                    convexity_defect_area_.push_back(area);
-                    total_defect_area += area;
-                    defect_center_ += area*center;
-                    mean_defect_displacement_ += area*norm(input_center_ - center);
-                }
-                sort(convexity_defect_area_.begin(), convexity_defect_area_.end(), 
-                     std::greater<MultiArrayIndex>());
-                mean_defect_displacement_ /= total_defect_area;
-                defect_center_ /= total_defect_area;
+		      convexity_defect_area_.push_back(area);
+		      total_defect_area += area;
+		      defect_center_ += area*center;
+		      mean_defect_displacement_ += area*norm(input_center_ - center);
+		    }
+		  sort(convexity_defect_area_.begin(), convexity_defect_area_.end(),
+		       std::greater<MultiArrayIndex>());
+		  mean_defect_displacement_ /= total_defect_area;
+		  defect_center_ /= total_defect_area;
                 
-                AccumulatorChain<MultiArrayIndex, 
-                                 Select<Mean, UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis> > defect_area_stats;
-                extractFeatures(convexity_defect_area_.begin(),
-                                convexity_defect_area_.end(), defect_area_stats);
+		  AccumulatorChain<MultiArrayIndex,
+				   Select<Mean, UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis> > defect_area_stats;
+		  extractFeatures(convexity_defect_area_.begin(),
+				  convexity_defect_area_.end(), defect_area_stats);
 
-                defect_area_mean_ = convexity_defect_count_ > 0 
-                                        ? get<Mean>(defect_area_stats)
-                                        : 0.0;
-                defect_area_variance_ = convexity_defect_count_ > 1 
-                                        ? get<UnbiasedVariance>(defect_area_stats)
-                                        : 0.0;
-                defect_area_skewness_ = convexity_defect_count_ > 2 
-                                        ? get<UnbiasedSkewness>(defect_area_stats)
-                                        : 0.0;
-                defect_area_kurtosis_ = convexity_defect_count_ > 3 
-                                        ? get<UnbiasedKurtosis>(defect_area_stats)
-                                        : 0.0;
-                
+		  defect_area_mean_ = convexity_defect_count_ > 0
+		    ? get<Mean>(defect_area_stats)
+		    : 0.0;
+		  defect_area_variance_ = convexity_defect_count_ > 1
+		    ? get<UnbiasedVariance>(defect_area_stats)
+		    : 0.0;
+		  defect_area_skewness_ = convexity_defect_count_ > 2
+		    ? get<UnbiasedSkewness>(defect_area_stats)
+		    : 0.0;
+		  defect_area_kurtosis_ = convexity_defect_count_ > 3
+		    ? get<UnbiasedKurtosis>(defect_area_stats)
+		    : 0.0;
+                }
                 /**********************************************/
                 features_computed_ = true;
             }
