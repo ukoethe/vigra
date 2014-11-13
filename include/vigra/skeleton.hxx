@@ -194,8 +194,9 @@ skeletonThinning(CostMap const & cost, LabelMap & labels,
            labels[p] > 0 &&
            isSimplePoint[neighborhoodConfiguration(g, p, labels)])
         {
+            // add an offset to break ties in a FIFI manner
             pqueue.push(SP(p, cost[p]+offset));
-	    offset += epsilon;
+            offset += epsilon;
         }
     }
 
@@ -220,7 +221,7 @@ skeletonThinning(CostMap const & cost, LabelMap & labels,
                isSimplePoint[neighborhoodConfiguration(g, q, labels)])
             {
                 pqueue.push(SP(q, cost[q]+offset));
-		offset += epsilon;
+                offset += epsilon;
             }
         }
     }
@@ -848,8 +849,8 @@ class SkeletonFeatures
                       class T2, class S2>
             void
             skeletonizeImage(MultiArrayView<2, T1, S1> const & labels,
-                        MultiArrayView<2, T2, S2> dest,
-                        SkeletonOptions const & options = SkeletonOptions());
+                             MultiArrayView<2, T2, S2> dest,
+                             SkeletonOptions const & options = SkeletonOptions());
         }
         \endcode
 
