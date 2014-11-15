@@ -117,7 +117,7 @@ std::string trimString(const std::string &s)
 
 
 // find filenames matching the pattern "<path>/base[0-9]+ext"
-#ifdef _WIN32
+#ifdef _MSC_VER
 void splitPathFromFilename(const std::string &pathAndName,
                            std::string &path, std::string &name)
 {
@@ -203,7 +203,7 @@ VIGRA_EXPORT void findImageSequence(const std::string &name_base,
     numbers.swap(result);
 }
 
-#else // _WIN32
+#else // not _MSC_VER
 
 void splitPathFromFilename(const std::string &pathAndName,
                            std::string &path, std::string &name)
@@ -266,7 +266,7 @@ void findImageSequence(const std::string &name_base,
     numbers.swap(result);
 }
 
-#endif // _WIN32
+#endif // _MSC_VER
 
 // build a string from a sequence.
 #if defined(_MSC_VER) && (_MSC_VER < 1300)

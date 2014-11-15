@@ -36,6 +36,7 @@
 #ifndef VIGRA_MULTI_GRIDGRAPH_HXX
 #define VIGRA_MULTI_GRIDGRAPH_HXX
 
+#include "multi_fwd.hxx"
 #include "multi_iterator.hxx"
 #include "multi_array.hxx"
 #include "graphs.hxx"
@@ -45,7 +46,6 @@ struct NeighborhoodTests;
 
 namespace vigra {
 
-
 template<unsigned int N, class T, class Stride>
 inline
 typename vigra::MultiArrayView<N, T, Stride>::const_reference 
@@ -54,8 +54,6 @@ get(vigra::MultiArrayView<N, T, Stride> const & pmap,
 { 
     return pmap[k]; 
 }
-
-
 
 /** \addtogroup GraphDataStructures Graph Data Structures
         
@@ -259,7 +257,7 @@ computeNeighborOffsets(ArrayVector<Shape> const & neighborOffsets,
 
 } // namespace detail
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly>
 class GridGraphNeighborIterator
 {
 public:
@@ -412,9 +410,6 @@ public:
 };
 
 template<unsigned int N, bool BackEdgesOnly>
-class GridGraphEdgeIterator;
-
-template<unsigned int N, bool BackEdgesOnly=false>
 class GridGraphOutEdgeIterator
 {
   public:
@@ -589,7 +584,7 @@ class GridGraphOutEdgeIterator
     index_type index_;
 };
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly>
 class GridGraphOutArcIterator
 : public GridGraphOutEdgeIterator<N, BackEdgesOnly>
 {
@@ -670,7 +665,7 @@ class GridGraphOutArcIterator
     {}
 };
 
-template<unsigned int N, bool BackEdgesOnly=false>
+template<unsigned int N, bool BackEdgesOnly>
 class GridGraphInArcIterator
 : public GridGraphOutEdgeIterator<N, BackEdgesOnly>
 {
@@ -855,6 +850,12 @@ public:
     {
         return outEdgeIterator_.operator->();
     }
+    
+    MultiArrayIndex neighborIndex() const
+    {
+        return outEdgeIterator_.neighborIndex();
+    }
+
 
     bool operator==(GridGraphEdgeIterator const & other) const
     {
@@ -1231,7 +1232,7 @@ struct GridGraphBase<N, undirected_tag>
 
     Another choice to be made at compile time is whether the graph should be directed 
     or undirected. This is defined via the <tt>DirectedTag</tt> template parameter
-    which can take the values <tt>directed_tag</tt> or <tt>undirected_tag</tt>.
+    which can take the values <tt>directed_tag</tt> or <tt>undirected_tag</tt> (default).
     
     The main difficulty in a grid graph is to skip the missing neighbors
     of the pixels near the grid's border. For example, the upper left pixel in a 
@@ -1419,7 +1420,7 @@ struct GridGraphBase<N, undirected_tag>
     A slightly enhanced version of this code is actually used to implement this
     functionality in VIGRA.
 */
-template<unsigned int N, class DirectedTag>
+template<unsigned int N, class DirectedTag=undirected_tag>
 class GridGraph
 : public detail::GridGraphBase<N, DirectedTag>
 {
@@ -1430,6 +1431,10 @@ public:
     
     typedef detail::GridGraphBase<N, DirectedTag>   base_type;
     typedef GridGraph<N, DirectedTag>               self_type;
+    
+        /** \brief Dimension of the grid.
+        */
+    static const unsigned int dimension = N;
     
         /** \brief Shape type of the graph and a node property map.
         */

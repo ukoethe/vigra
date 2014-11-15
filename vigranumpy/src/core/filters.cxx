@@ -40,6 +40,7 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/nonlineardiffusion.hxx>
 #include <vigra/symmetry.hxx>
+#include <vigra/tv_filter.hxx>
 
 namespace python = boost::python;
 
@@ -47,39 +48,80 @@ namespace vigra
 {
 
 template <class InValue, class OutValue>
-NumpyAnyArray 
-pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<InValue> > image, 
+NumpyAnyArray
+pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<InValue> > image,
                            double edgeThreshold, double scale,
                            NumpyArray<3, Multiband<OutValue> > res=NumpyArray<3, Multiband<float> >())
 {
-    res.reshapeIfEmpty(image.taggedShape(), 
+    res.reshapeIfEmpty(image.taggedShape(),
         "nonlinearDiffusion2D(): Output array has wrong shape.");
-        
+
     {
         PyAllowThreads _pythread;
         for(int k=0; k<image.shape(2); ++k)
         {
             MultiArrayView<2, OutValue, StridedArrayTag> bres = res.bindOuter(k);
-            nonlinearDiffusion(srcImageRange(image.bindOuter(k)), 
-                               destImage(bres), 
+            nonlinearDiffusion(srcImageRange(image.bindOuter(k)),
+                               destImage(bres),
                                DiffusivityFunctor< double >(edgeThreshold), scale);
         }
     }
     return res;
 }
 
+
+template <class InValue, class OutValue>
+NumpyAnyArray
+pythonTotalVariationFilter2D(NumpyArray<2, Singleband<InValue> > image,
+                           double alpha, int steps, double eps = 0,
+                           NumpyArray<2, Singleband<OutValue> > res = python::object())
+{
+    std::string description("totalVariationFilter, alpha, steps, eps=");
+    description += asString(eps);
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "totalVariationFilter(): Output array has wrong shape.");
+
+    {
+        PyAllowThreads _pythread;
+        totalVariationFilter(image, res, alpha, steps, eps);
+    }
+    return res;
+}
+
+template <class InValue, class InValue2, class OutValue>
+NumpyAnyArray
+pythonTotalVariationFilter2D(NumpyArray<2, Singleband<InValue> > image,
+                             NumpyArray<2, Singleband<InValue2> > weight,
+                           double alpha, int steps, double eps = 0,
+                           NumpyArray<2, Singleband<OutValue> > res = python::object())
+{
+    std::string description("totalVariationFilter, weight, alpha, steps, eps=");
+    description += asString(eps);
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "totalVariationFilter(): Output array has wrong shape.");
+
+    {
+        PyAllowThreads _pythread;
+        totalVariationFilter(image, weight, res, alpha, steps, eps);
+    }
+    return res;
+}
+
+
 template < class SrcPixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonRadialSymmetryTransform2D(NumpyArray<2, Singleband<SrcPixelType> > image,
                                 double scale = 1.0,
                                 NumpyArray<2, Singleband<SrcPixelType> > res = python::object())
 {
     std::string description("radial symmetry transform, scale=");
     description += asString(scale);
-    
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
-            "radialSymmetryTransform2D(): Output array has wrong shape.");    
-        
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "radialSymmetryTransform2D(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
         radialSymmetryTransform(srcImageRange(image), destImage(res), scale);
@@ -91,15 +133,29 @@ pythonRadialSymmetryTransform2D(NumpyArray<2, Singleband<SrcPixelType> > image,
 void defineFilters2D()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
-    
-    def("nonlinearDiffusion", 
+
+    def("nonlinearDiffusion",
         registerConverters(&pythonNonlinearDiffusion2D<float, float>),
         (arg("image"), arg("edgeThreshold"), arg("scale"), arg("out")=python::object()),
         "Perform edge-preserving smoothing at the given scale."
         "\n\n"
         "For details see nonlinearDiffusion_ in the vigra C++ documentation.\n");
+
+    def("totalVariationFilter",
+        registerConverters(&pythonTotalVariationFilter2D<double,double>),
+        (arg("image"), arg("alpha"), arg("steps"), arg("eps"), arg("out")=python::object()),
+        "Perform total variation filter on 2D single band images."
+        "\n\n"
+        "For details see totalVariationFilter in the vigra C++ documentation.\n");
+
+    def("totalVariationFilter",
+        registerConverters(&pythonTotalVariationFilter2D<double,double,double>),
+        (arg("image"), arg("weight"), arg("alpha"), arg("steps"), arg("eps"), arg("out")=python::object()),
+        "Perform weighted total variation filter on 2D single band images."
+        "\n\n"
+        "For details see totalVariationFilter in the vigra C++ documentation.\n");
 
     def("radialSymmetryTransform2D",
         registerConverters(&pythonRadialSymmetryTransform2D<float>),

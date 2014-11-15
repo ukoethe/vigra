@@ -38,8 +38,10 @@
 
 #include "fftw3.hxx"
 #include "multi_array.hxx"
+#include "multi_math.hxx"
 #include "navigator.hxx"
 #include "copyimage.hxx"
+#include "threading.hxx"
 
 namespace vigra {
 
@@ -165,6 +167,37 @@ inline void moveDCToHalfspaceUpperLeft(MultiArrayView<N, T, C> a)
 
 namespace detail
 {
+
+#ifndef VIGRA_SINGLE_THREADED
+
+template <int DUMMY=0>
+class FFTWLock
+{
+  public:
+    threading::lock_guard<threading::mutex> guard_;
+    
+    FFTWLock()
+    : guard_(plan_mutex_)
+    {}
+    
+    static threading::mutex plan_mutex_;
+};
+
+template <int DUMMY>
+threading::mutex FFTWLock<DUMMY>::plan_mutex_;
+
+#else // VIGRA_SINGLE_THREADED
+
+template <int DUMMY=0>
+class FFTWLock
+{
+  public:
+    
+    FFTWLock()
+    {}
+};
+
+#endif // not VIGRA_SINGLE_THREADED
 
 inline fftw_plan 
 fftwPlanCreate(unsigned int N, int* shape, 
@@ -925,6 +958,7 @@ class FFTWPlan
         */
     ~FFTWPlan()
     {
+        detail::FFTWLock<> lock;
         detail::fftwPlanDestroy(plan);
     }
 
@@ -1077,12 +1111,16 @@ FFTWPlan<N, Real>::initImpl(MI ins, MO outs, int SIGN, unsigned int planner_flag
         ototal[j] = outs.stride(j-1) / outs.stride(j);
     }
     
-    PlanType newPlan = detail::fftwPlanCreate(N, newShape.begin(), 
-                                  ins.data(), itotal.begin(), ins.stride(N-1),
-                                  outs.data(), ototal.begin(), outs.stride(N-1),
-                                  SIGN, planner_flags);
-    detail::fftwPlanDestroy(plan);
-    plan = newPlan;
+    {
+        detail::FFTWLock<> lock;
+        PlanType newPlan = detail::fftwPlanCreate(N, newShape.begin(), 
+                                      ins.data(), itotal.begin(), ins.stride(N-1),
+                                      outs.data(), ototal.begin(), outs.stride(N-1),
+                                      SIGN, planner_flags);
+        detail::fftwPlanDestroy(plan);
+        plan = newPlan;
+    }
+    
     shape.swap(newShape);
     instrides.swap(newIStrides);
     outstrides.swap(newOStrides);
@@ -1417,7 +1455,10 @@ class FFTWConvolvePlan
     template <class C1, class C2, class C3>
     void execute(MultiArrayView<N, Real, C1> in, 
                  MultiArrayView<N, Real, C2> kernel,
-                 MultiArrayView<N, Real, C3> out);
+                 MultiArrayView<N, Real, C3> out)
+    {
+        executeImpl(in, kernel, out);
+    }
     
         /** \brief Execute a plan to convolve a real array with a complex kernel.
          
@@ -1485,7 +1526,7 @@ class FFTWConvolvePlan
         executeManyImpl(in, kernels, kernelsEnd, outs, UseFourierKernel());
     }
 
-  private:
+  protected:
   
     template <class KernelIterator, class OutIterator>
     Shape checkShapes(Shape in, 
@@ -1501,6 +1542,12 @@ class FFTWConvolvePlan
     Shape checkShapesComplex(Shape in, 
                              KernelIterator kernels, KernelIterator kernelsEnd,
                              OutIterator outs);
+    
+    template <class C1, class C2, class C3>
+    void executeImpl(MultiArrayView<N, Real, C1> in, 
+                     MultiArrayView<N, Real, C2> kernel,
+                     MultiArrayView<N, Real, C3> out,
+                     bool do_correlation=false);
     
     template <class C1, class KernelIterator, class OutIterator>
     void 
@@ -1610,9 +1657,10 @@ FFTWConvolvePlan<N, Real>::initComplex(Shape in, Shape kernel,
 template <unsigned int N, class Real>
 template <class C1, class C2, class C3>
 void 
-FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in, 
-                                    MultiArrayView<N, Real, C2> kernel,
-                                    MultiArrayView<N, Real, C3> out)
+FFTWConvolvePlan<N, Real>::executeImpl(MultiArrayView<N, Real, C1> in, 
+                                       MultiArrayView<N, Real, C2> kernel,
+                                       MultiArrayView<N, Real, C3> out,
+                                       bool do_correlation)
 {
     vigra_precondition(!useFourierKernel,
        "FFTWConvolvePlan::execute(): plan was generated for Fourier kernel, got spatial kernel.");
@@ -1634,8 +1682,16 @@ FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     detail::fftEmbedKernel(kernel, realKernel);
     forward_plan.execute(realKernel, fourierKernel);
     
-    fourierArray *= fourierKernel;
-    
+    if(do_correlation)
+    {
+        using namespace multi_math;
+        fourierArray *= conj(fourierKernel);
+    }
+    else
+    {
+        fourierArray *= fourierKernel;
+    }
+        
     backward_plan.execute(fourierArray, realArray);
     
     out = realArray.subarray(left, right);
@@ -1645,8 +1701,8 @@ template <unsigned int N, class Real>
 template <class C1, class C2, class C3>
 void 
 FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in, 
-                                    MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                                    MultiArrayView<N, Real, C3> out)
+                                   MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                                   MultiArrayView<N, Real, C3> out)
 {
     vigra_precondition(useFourierKernel,
        "FFTWConvolvePlan::execute(): plan was generated for spatial kernel, got Fourier kernel.");
@@ -1927,6 +1983,123 @@ FFTWConvolvePlan<N, Real>::checkShapesComplex(Shape in,
     }
 }
  
+/********************************************************/
+/*                                                      */
+/*                  FFTWCorrelatePlan                   */
+/*                                                      */
+/********************************************************/
+
+/** Like FFTWConvolvePlan, but performs correlation rather than convolution.
+ 
+ See \ref vigra::FFTWConvolvePlan for details.
+ 
+ <b> Usage:</b>
+ 
+ <b>\#include</b> \<vigra/multi_fft.hxx\><br>
+ Namespace: vigra
+ 
+ \code
+ // convolve a real array with a real kernel
+ MultiArray<2, double> src(Shape2(w, h)), dest(Shape2(w, h));
+ 
+ MultiArray<2, double> spatial_kernel(Shape2(9, 9));
+ Gaussian<double> gauss(1.0);
+ 
+ for(int y=0; y<9; ++y)
+ for(int x=0; x<9; ++x)
+ spatial_kernel(x, y) = gauss(x-4.0)*gauss(y-4.0);
+ 
+ // create an optimized plan by measuring the speed of several algorithm variants
+ FFTWCorrelatePlan<2, double> plan(src, spatial_kernel, dest, FFTW_MEASURE);
+ 
+ plan.execute(src, spatial_kernel, dest);
+ \endcode
+ */
+template <unsigned int N, class Real>
+class FFTWCorrelatePlan
+: private FFTWConvolvePlan<N, Real>
+{
+    typedef FFTWConvolvePlan<N, Real> BaseType;
+public:
+    
+    typedef typename MultiArrayShape<N>::type Shape;
+    
+        /** \brief Create an empty plan.
+         
+         The plan can be initialized later by one of the init() functions.
+         */
+    FFTWCorrelatePlan()
+    : BaseType()
+    {}
+    
+        /** \brief Create a plan to correlate a real array with a real kernel.
+         
+         The kernel must be defined in the spatial domain.
+         See \ref correlateFFT() for detailed information on required shapes and internal padding.
+         
+         \arg planner_flags must be a combination of the
+         <a href="http://www.fftw.org/doc/Planner-Flags.html">planner
+         flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+         optimal algorithm settings or read them from pre-loaded
+         <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+         */
+    template <class C1, class C2, class C3>
+    FFTWCorrelatePlan(MultiArrayView<N, Real, C1> in,
+                      MultiArrayView<N, Real, C2> kernel,
+                      MultiArrayView<N, Real, C3> out,
+                      unsigned int planner_flags = FFTW_ESTIMATE)
+    : BaseType(in, kernel, out, planner_flags)
+    {}
+    
+        /** \brief Create a plan from just the shape information.
+         
+         See \ref convolveFFT() for detailed information on required shapes and internal padding.
+         
+         \arg fourierDomainKernel determines if the kernel is defined in the spatial or
+         Fourier domain.
+         \arg planner_flags must be a combination of the
+         <a href="http://www.fftw.org/doc/Planner-Flags.html">planner
+         flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+         optimal algorithm settings or read them from pre-loaded
+         <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+         */
+    template <class C1, class C2, class C3>
+    FFTWCorrelatePlan(Shape inOut, Shape kernel,
+                     bool useFourierKernel = false,
+                     unsigned int planner_flags = FFTW_ESTIMATE)
+    : BaseType(inOut, kernel, false, planner_flags)
+    {}
+    
+        /** \brief Init a plan to convolve a real array with a real kernel.
+         
+         See the constructor with the same signature for details.
+         */
+    template <class C1, class C2, class C3>
+    void init(MultiArrayView<N, Real, C1> in,
+              MultiArrayView<N, Real, C2> kernel,
+              MultiArrayView<N, Real, C3> out,
+              unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        vigra_precondition(in.shape() == out.shape(),
+                           "FFTWCorrelatePlan::init(): input and output must have the same shape.");
+        BaseType::init(in.shape(), kernel.shape(), planner_flags);
+    }
+    
+        /** \brief Execute a plan to correlate a real array with a real kernel.
+         
+         The array shapes must be the same as in the corresponding init function
+         or constructor. However, execute() can be called several times on
+         the same plan, even with different arrays, as long as they have the appropriate
+         shapes.
+         */
+    template <class C1, class C2, class C3>
+    void execute(MultiArrayView<N, Real, C1> in,
+                 MultiArrayView<N, Real, C2> kernel,
+                 MultiArrayView<N, Real, C3> out)
+    {
+        BaseType::executeImpl(in, kernel, out, true);
+    }
+};
 
 /********************************************************/
 /*                                                      */
@@ -2240,6 +2413,65 @@ convolveFFTComplexMany(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     FFTWConvolvePlan<N, Real> plan;
     plan.initMany(in, kernels, kernelsEnd, outs, fourierDomainKernel);
     plan.executeMany(in, kernels, kernelsEnd, outs);
+}
+    
+/********************************************************/
+/*                                                      */
+/*                     correlateFFT                     */
+/*                                                      */
+/********************************************************/
+
+/** \brief Correlate an array with a kernel by means of the Fourier transform.
+ 
+ This function correlates a real-valued input array with a real-valued kernel 
+ such that the result is also real-valued. Thanks to the correlation theorem of 
+ Fourier theory, a correlation in the spatial domain is equivalent to a multiplication 
+ with the complex conjugate in the frequency domain. Thus, for
+ certain kernels (especially large, non-separable ones), it is advantageous to perform the 
+ correlation by first transforming both array and kernel to the frequency domain, multiplying
+ the frequency representations, and transforming the result back into the spatial domain.
+ 
+ The output arrays must have the same shape as the input arrays.
+ 
+ See also \ref convolveFFT() for corresponding functionality.
+ 
+ <b> Declarations:</b>
+ 
+ \code
+ namespace vigra {
+     template <unsigned int N, class Real, class C1, class C2, class C3>
+     void
+     correlateFFT(MultiArrayView<N, Real, C1> in,
+                  MultiArrayView<N, Real, C2> kernel,
+                  MultiArrayView<N, Real, C3> out);
+ }
+ \endcode
+ 
+ <b> Usage:</b>
+ 
+ <b>\#include</b> \<vigra/multi_fft.hxx\><br>
+ Namespace: vigra
+ 
+ \code
+ // correlate real array with a template to find best matches
+ // (implicitly uses padding by at least 4 pixels)
+ MultiArray<2, double> src(Shape2(w, h)), dest(Shape2(w, h));
+ 
+ MultiArray<2, double> template(Shape2(9, 9));
+ template = ...; 
+
+ correlateFFT(src, template, dest);
+ \endcode
+ */
+doxygen_overloaded_function(template <...> void correlateFFT)
+
+template <unsigned int N, class Real, class C1, class C2, class C3>
+void
+correlateFFT(MultiArrayView<N, Real, C1> in,
+            MultiArrayView<N, Real, C2> kernel,
+            MultiArrayView<N, Real, C3> out)
+{
+    FFTWCorrelatePlan<N, Real>(in, kernel, out).execute(in, kernel, out);
 }
 
 //@}

@@ -37,11 +37,6 @@
 #ifndef VIGRA_RANDOM_FOREST_HXX
 #define VIGRA_RANDOM_FOREST_HXX
 
-
- #include <omp.h>
-
-
-
 #include <iostream>
 #include <algorithm>
 #include <map>
@@ -754,9 +749,8 @@ void RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1
     //visitor.visit_at_beginning(*this, preprocessor);
 
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
-    for(int ii = 0; ii < (int)trees_.size(); ++ii)
+    for(int ii = 0; ii < static_cast<int>(trees_.size()); ++ii)
     {
-        std::cout<<" train tree "<<ii<<"\n";
         online_visitor_.tree_id=ii;
         poisson_sampler.sample();
         std::map<int,int> leaf_parents;
@@ -820,7 +814,6 @@ void RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1
                                 poisson_sampler,
                                 stack_entry,
                                 ii);*/
-        std::cout<<" train tree "<<ii<<" done\n";
     }
 
     //visitor.visit_at_end(*this, preprocessor);
@@ -982,7 +975,7 @@ void RandomForest<LabelType, PreprocessorTag>::
 
 
     // Make stl compatible random functor.
-    //RandFunctor_t           randint     ( random);
+    RandFunctor_t           randint     ( random);
 
 
     // Preprocess the data to get something the split functor can work
@@ -1000,29 +993,17 @@ void RandomForest<LabelType, PreprocessorTag>::
     //initialize trees.
     trees_.resize(options_.tree_count_  , DecisionTree_t(ext_param_));
 
-
+    Sampler<Random_t > sampler(preprocessor.strata().begin(),
+                               preprocessor.strata().end(),
+                               detail::make_sampler_opt(options_)
+                                        .sampleSize(ext_param().actual_msample_),
+                               &random);
 
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     
-    omp_lock_t printLock;
-    omp_init_lock(&printLock);
-
-    size_t doneCounter = 0;
-
-    #pragma omp parallel for shared(doneCounter)
-    for(int ii = 0; ii < (int)trees_.size(); ++ii)
+    for(int ii = 0; ii < static_cast<int>(trees_.size()); ++ii)
     {
-        Random_t myRandom(RandomSeed);
-        Sampler<Random_t > sampler(preprocessor.strata().begin(),
-                           preprocessor.strata().end(),
-                           detail::make_sampler_opt(options_)
-                                    .sampleSize(ext_param().actual_msample_),
-                           &myRandom);
-        RandFunctor_t           randint     ( myRandom);
-
-
-
         //initialize First region/node/stack entry
         sampler
             .sample();  
@@ -1041,23 +1022,12 @@ void RandomForest<LabelType, PreprocessorTag>::
                                 stop,
                                 visitor,
                                 randint);
-        omp_set_lock(&printLock);
         visitor
             .visit_after_tree(  *this,
                                 preprocessor,
                                 sampler,
                                 first_stack_entry,
                                 ii);
-
-        //#pragma omp atomic
-        //doneCounter++;
-
-        
-        doneCounter++;
-        std::cout<<"done with tree "<<doneCounter<<" / "<<trees_.size()<<" \n";
-        omp_unset_lock(&printLock);
-
-        
     }
 
     visitor.visit_at_end(*this, preprocessor);
@@ -1128,7 +1098,7 @@ void RandomForest<LabelType,PreprocessorTag>
       "RandomForestn::predictProbabilities():"
         " Too few columns in feature matrix.");
     vigra_precondition( columnCount(prob)
-                        == (MultiArrayIndex)ext_param_.class_count_,
+                        == static_cast<MultiArrayIndex>(ext_param_.class_count_),
       "RandomForestn::predictProbabilities():"
       " Probability matrix must have as many columns as there are classes.");
     prob.init(0.0);
@@ -1167,9 +1137,9 @@ void RandomForest<LabelType,PreprocessorTag>
                     //update votecount.
                     for(int l=0; l<ext_param_.class_count_; ++l)
                     {
-                        prob(predictionSet.indices[set_id][i], l) += (T2)weights[l];
+                        prob(predictionSet.indices[set_id][i], l) += static_cast<T2>(weights[l]);
                         //every weight in totalWeight.
-                        totalWeights[predictionSet.indices[set_id][i]] += (T1)weights[l];
+                        totalWeights[predictionSet.indices[set_id][i]] += static_cast<T1>(weights[l]);
                     }
                 }
             }
@@ -1271,7 +1241,7 @@ void RandomForest<LabelType, PreprocessorTag>
       "RandomForestn::predictProbabilities():"
         " Too few columns in feature matrix.");
     vigra_precondition( columnCount(prob)
-                        == (MultiArrayIndex)ext_param_.class_count_,
+                        == static_cast<MultiArrayIndex>(ext_param_.class_count_),
       "RandomForestn::predictProbabilities():"
       " Probability matrix must have as many columns as there are classes.");
 
@@ -1320,7 +1290,7 @@ void RandomForest<LabelType, PreprocessorTag>
             {
                 double cur_w = weights[l] * (weighted * (*(weights-1))
                                            + (1-weighted));
-                prob(row, l) += (T)cur_w;
+                prob(row, l) += static_cast<T>(cur_w);
                 //every weight in totalWeight.
                 totalWeight += cur_w;
             }
@@ -1361,7 +1331,7 @@ void RandomForest<LabelType, PreprocessorTag>
       "RandomForestn::predictProbabilities():"
         " Too few columns in feature matrix.");
     vigra_precondition( columnCount(prob)
-                        == (MultiArrayIndex)ext_param_.class_count_,
+                        == static_cast<MultiArrayIndex>(ext_param_.class_count_),
       "RandomForestn::predictProbabilities():"
       " Probability matrix must have as many columns as there are classes.");
 
@@ -1395,7 +1365,7 @@ void RandomForest<LabelType, PreprocessorTag>
             {
                 double cur_w = weights[l] * (weighted * (*(weights-1))
                                            + (1-weighted));
-                prob(row, l) += (T)cur_w;
+                prob(row, l) += static_cast<T>(cur_w);
                 //every weight in totalWeight.
                 totalWeight += cur_w;
             }

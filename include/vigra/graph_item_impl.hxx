@@ -551,9 +551,25 @@ namespace vigra{
             index_type id_;
         };
 
-    }
+    } // namespace detail
 } // end namespace vigra
 
+namespace std {
 
+template<class INDEX_TYPE>
+ostream & operator<<(ostream & o, vigra::detail::GenericNode<INDEX_TYPE> const & n)
+{
+    o << "Node(" << n.id() << ")";
+    return o;
+}
+
+template<class INDEX_TYPE>
+ostream & operator<<(ostream & o, vigra::detail::GenericEdge<INDEX_TYPE> const & e)
+{
+    o << "Edge(" << e.id() << ")";
+    return o;
+}
+
+}
 
 #endif // VIGRA_NODE_IMPL_HXX

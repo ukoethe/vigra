@@ -48,6 +48,7 @@
 #include <cmath>
 #include <memory>
 #include <boost/python.hpp>
+#include<vigra/random_forest/rf_earlystopping.hxx>
 
 namespace python = boost::python;
 namespace vigra
@@ -168,7 +169,9 @@ double
 pythonLearnRandomForest(RandomForest<LabelType> & rf, 
                         NumpyArray<2,FeatureType> trainData, 
                         NumpyArray<2,LabelType> trainLabels,
-                        UInt32 randomSeed=0)
+                        UInt32 randomSeed=0,
+                        int maxdepth=-1,
+                        int minsize=0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.learnRF(): training data and labels must not\n"
@@ -177,11 +180,13 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
     using namespace rf;
     visitors::OOB_Error oob_v;
 
+
+    vigra::DepthAndSizeStopping earlystop(maxdepth,minsize);
     {
         PyAllowThreads _pythread;
         RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
         rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v),
-                vigra::rf_default(), vigra::rf_default(),
+                vigra::rf_default(), earlystop,
                 rnd);
     }
     double oob = oob_v.oob_breiman;
@@ -400,7 +405,8 @@ void defineRandomForest()
              "The output is an array containing a probability for every test sample and class.\n")
         .def("learnRF",
              registerConverters(&pythonLearnRandomForest<LabelType,float>),
-             (arg("trainData"), arg("trainLabels"), arg("randomSeed")=0),
+             (arg("trainData"), arg("trainLabels"), arg("randomSeed")=0,
+              arg("maxDepth")=-1, arg("minSize")=0),
              "Trains a random Forest using 'trainData' and 'trainLabels'.\n\n"
              "and returns the OOB. See the vigra documentation for the meaning af the rest of the parameters.\n")
         .def("reLearnTree",

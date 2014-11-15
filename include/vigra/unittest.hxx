@@ -122,6 +122,8 @@
 
 #define shouldMsg VIGRA_ASSERT_MESSAGE
 
+#define shouldMessage VIGRA_ASSERT_MESSAGE
+
 #define shouldEqual(left, right) \
     vigra::detail::equal_impl(left, right, #left " == " #right, __FILE__, __LINE__)
 
@@ -466,6 +468,12 @@ should_impl(bool predicate, const char * message, const char * file, int line)
         buf << message << " (" << file <<":" << line << ")";
         throw unit_test_failed(buf.str()); 
     } 
+}
+
+inline void
+should_impl(bool predicate, std::string const & message, const char * file, int line)
+{
+    should_impl(predicate, message.c_str(), file, line);
 }
 
 template <class Iter1, class Iter2>

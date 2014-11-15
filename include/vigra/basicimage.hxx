@@ -141,7 +141,7 @@ class BasicImageIteratorBase
     typedef IteratorAdaptor<LineBasedColumnIteratorPolicy<IMAGEITERATOR> >
                                  column_iterator;
 
-    typedef int                  MoveX;
+    typedef std::ptrdiff_t       MoveX;
     typedef LINESTARTITERATOR    MoveY;
 
     MoveX x;
@@ -210,12 +210,12 @@ class BasicImageIteratorBase
         return *(*(y + d.y) + x + d.x);
     }
 
-    index_reference operator()(int dx, int dy) const
+    index_reference operator()(std::ptrdiff_t dx, std::ptrdiff_t dy) const
     {
         return *(*(y + dy) + x + dx);
     }
 
-    pointer operator[](int dy) const
+    pointer operator[](std::ptrdiff_t dy) const
     {
         return y[dy] + x;
     }
@@ -235,7 +235,7 @@ class BasicImageIteratorBase
       y(line)
     {}
 
-    BasicImageIteratorBase(int ix, LINESTARTITERATOR const & line)
+    BasicImageIteratorBase(std::ptrdiff_t ix, LINESTARTITERATOR const & line)
     : x(ix),
       y(line)
     {}
@@ -602,7 +602,7 @@ class BasicImage
 
         /** construct image of size width x height, use the specified allocator.
         */
-    BasicImage(int width, int height, Alloc const & alloc = Alloc())
+    BasicImage(std::ptrdiff_t width, std::ptrdiff_t height, Alloc const & alloc = Alloc())
     : data_(0),
       width_(0),
       height_(0),
@@ -637,7 +637,7 @@ class BasicImage
         value_type doesn't have a default constructor).
         Use the specified allocator.
         */
-    BasicImage(int width, int height, value_type const & d, Alloc const & alloc = Alloc())
+    BasicImage(std::ptrdiff_t width, std::ptrdiff_t height, value_type const & d, Alloc const & alloc = Alloc())
     : data_(0),
       width_(0),
       height_(0),
@@ -655,7 +655,7 @@ class BasicImage
             of the memory (see BasicImage::resize for details).
             Use the specified allocator.
         */
-    BasicImage(int width, int height, SkipInitializationTag, Alloc const & alloc = Alloc())
+    BasicImage(std::ptrdiff_t width, std::ptrdiff_t height, SkipInitializationTag, Alloc const & alloc = Alloc())
     : data_(0),
       width_(0),
       height_(0),
@@ -708,7 +708,7 @@ class BasicImage
         /** construct image of size width*height and copy the data from the
             given C-style array \a d. Use the specified allocator.
         */
-    BasicImage(int width, int height, const_pointer d, Alloc const & alloc = Alloc())
+    BasicImage(std::ptrdiff_t width, std::ptrdiff_t height, const_pointer d, Alloc const & alloc = Alloc())
     : data_(0),
       width_(0),
       height_(0),
@@ -773,7 +773,7 @@ class BasicImage
         /** reset image to specified size (dimensions must not be negative)
             (old data are kept if new size matches old size)
         */
-    void resize(int width, int height)
+    void resize(std::ptrdiff_t width, std::ptrdiff_t height)
     {
         if(width != width_ || height != height_)
             resize(width, height, value_type());
@@ -795,7 +795,7 @@ class BasicImage
             constructor, dimensions must not be negative,
             old data are kept if new size matches old size)
         */
-    void resize(int width, int height, value_type const & d)
+    void resize(std::ptrdiff_t width, std::ptrdiff_t height, value_type const & d)
     {
         resizeImpl(width, height, d, false);
     }
@@ -811,7 +811,7 @@ class BasicImage
             image.resize(new_width, new_height, SkipInitialization);
             \endcode
         */
-    void resize(int width, int height, SkipInitializationTag)
+    void resize(std::ptrdiff_t width, std::ptrdiff_t height, SkipInitializationTag)
     {
         resizeImpl(width, height, NumericTraits<value_type>::zero(), 
                    CanSkipInitialization<value_type>::value);
@@ -820,7 +820,7 @@ class BasicImage
         /** resize image to given size and initialize by copying data
             from the C-style array \a data.
         */
-    void resizeCopy(int width, int height, const_pointer data);
+    void resizeCopy(std::ptrdiff_t width, std::ptrdiff_t height, const_pointer data);
 
         /** resize image to size of other image and copy its data
         */
@@ -835,14 +835,14 @@ class BasicImage
 
         /** width of Image
         */
-    int width() const
+    std::ptrdiff_t width() const
     {
         return width_;
     }
 
         /** height of Image
         */
-    int height() const
+    std::ptrdiff_t height() const
     {
         return height_;
     }
@@ -883,7 +883,7 @@ class BasicImage
         /** access pixel at given location. <br>
         usage: <TT> value_type value = image(1,2) </TT>
         */
-    reference operator()(int dx, int dy)
+    reference operator()(std::ptrdiff_t dx, std::ptrdiff_t dy)
     {
         VIGRA_ASSERT_INSIDE(difference_type(dx,dy));
         return lines_[dy][dx];
@@ -892,7 +892,7 @@ class BasicImage
         /** read pixel at given location. <br>
         usage: <TT> value_type value = image(1,2) </TT>
         */
-    const_reference operator()(int dx, int dy) const
+    const_reference operator()(std::ptrdiff_t dx, std::ptrdiff_t dy) const
     {
         VIGRA_ASSERT_INSIDE(difference_type(dx,dy));
         return lines_[dy][dx];
@@ -902,7 +902,7 @@ class BasicImage
             Note that the 'x' index is the trailing index. <br>
         usage: <TT> value_type value = image[2][1] </TT>
         */
-    pointer operator[](int dy)
+    pointer operator[](std::ptrdiff_t dy)
     {
         VIGRA_ASSERT_INSIDE(difference_type(0,dy));
         return lines_[dy];
@@ -912,7 +912,7 @@ class BasicImage
             Note that the 'x' index is the trailing index. <br>
         usage: <TT> value_type value = image[2][1] </TT>
         */
-    const_pointer operator[](int dy) const
+    const_pointer operator[](std::ptrdiff_t dy) const
     {
         VIGRA_ASSERT_INSIDE(difference_type(0,dy));
         return lines_[dy];
@@ -996,35 +996,35 @@ class BasicImage
 
         /** init 1D random access iterator pointing to first pixel of row \a y
         */
-    row_iterator rowBegin(int y)
+    row_iterator rowBegin(std::ptrdiff_t y)
     {
         return lines_[y];
     }
 
         /** init 1D random access iterator pointing past the end of row \a y
         */
-    row_iterator rowEnd(int y)
+    row_iterator rowEnd(std::ptrdiff_t y)
     {
         return rowBegin(y) + width();
     }
 
         /** init 1D random access const iterator pointing to first pixel of row \a y
         */
-    const_row_iterator rowBegin(int y) const
+    const_row_iterator rowBegin(std::ptrdiff_t y) const
     {
         return lines_[y];
     }
 
         /** init 1D random access const iterator pointing past the end of row \a y
         */
-    const_row_iterator rowEnd(int y) const
+    const_row_iterator rowEnd(std::ptrdiff_t y) const
     {
         return rowBegin(y) + width();
     }
 
         /** init 1D random access iterator pointing to first pixel of column \a x
         */
-    column_iterator columnBegin(int x)
+    column_iterator columnBegin(std::ptrdiff_t x)
     {
         typedef typename column_iterator::BaseType Iter;
         return column_iterator(Iter(lines_, x));
@@ -1032,14 +1032,14 @@ class BasicImage
 
         /** init 1D random access iterator pointing past the end of column \a x
         */
-    column_iterator columnEnd(int x)
+    column_iterator columnEnd(std::ptrdiff_t x)
     {
         return columnBegin(x) + height();
     }
 
         /** init 1D random access const iterator pointing to first pixel of column \a x
         */
-    const_column_iterator columnBegin(int x) const
+    const_column_iterator columnBegin(std::ptrdiff_t x) const
     {
         typedef typename const_column_iterator::BaseType Iter;
         return const_column_iterator(Iter(lines_, x));
@@ -1047,7 +1047,7 @@ class BasicImage
 
         /** init 1D random access const iterator pointing past the end of column \a x
         */
-    const_column_iterator columnEnd(int x) const
+    const_column_iterator columnEnd(std::ptrdiff_t x) const
     {
         return columnBegin(x) + height();
     }
@@ -1076,14 +1076,14 @@ class BasicImage
   private:
 
     void deallocate();
-    void resizeImpl(int width, int height, value_type const & d, bool skipInit);
+    void resizeImpl(std::ptrdiff_t width, std::ptrdiff_t height, value_type const & d, bool skipInit);
 
 
-    value_type ** initLineStartArray(value_type * data, int width, int height);
+    value_type ** initLineStartArray(value_type * data, std::ptrdiff_t width, std::ptrdiff_t height);
 
     PIXELTYPE * data_;
     PIXELTYPE ** lines_;
-    int width_, height_;
+    std::ptrdiff_t width_, height_;
     Alloc allocator_;
     LineAllocator pallocator_;
 };
@@ -1137,7 +1137,7 @@ BasicImage<PIXELTYPE, Alloc>::init(value_type const & pixel)
 
 template <class PIXELTYPE, class Alloc>
 void
-BasicImage<PIXELTYPE, Alloc>::resizeImpl(int width, int height, value_type const & d, bool skipInit)
+BasicImage<PIXELTYPE, Alloc>::resizeImpl(std::ptrdiff_t width, std::ptrdiff_t height, value_type const & d, bool skipInit)
 {
     vigra_precondition((width >= 0) && (height >= 0),
          "BasicImage::resize(int width, int height, value_type const &): "
@@ -1188,9 +1188,9 @@ BasicImage<PIXELTYPE, Alloc>::resizeImpl(int width, int height, value_type const
 
 template <class PIXELTYPE, class Alloc>
 void
-BasicImage<PIXELTYPE, Alloc>::resizeCopy(int width, int height, const_pointer data)
+BasicImage<PIXELTYPE, Alloc>::resizeCopy(std::ptrdiff_t width, std::ptrdiff_t height, const_pointer data)
 {
-    int newsize = width*height;
+    std::ptrdiff_t newsize = width*height;
     if (width_ != width || height_ != height)  // change size?
     {
         value_type * newdata = 0;
@@ -1259,10 +1259,10 @@ BasicImage<PIXELTYPE, Alloc>::deallocate()
 
 template <class PIXELTYPE, class Alloc>
 PIXELTYPE **
-BasicImage<PIXELTYPE, Alloc>::initLineStartArray(value_type * data, int width, int height)
+BasicImage<PIXELTYPE, Alloc>::initLineStartArray(value_type * data, std::ptrdiff_t width, std::ptrdiff_t height)
 {
     value_type ** lines = pallocator_.allocate(typename Alloc::size_type(height));
-    for(int y=0; y<height; ++y)
+    for(std::ptrdiff_t y=0; y<height; ++y)
          lines[y] = data + y*width;
     return lines;
 }

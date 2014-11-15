@@ -269,7 +269,7 @@ class Sampler
     {
         // compute how many samples to take from each stratum
         // (may be unequal if sample_size_ is not a multiple of strataCount())
-        int strata_sample_size = (int)std::ceil(double(sample_size_) / strataCount());
+        int strata_sample_size = static_cast<int>(std::ceil(double(sample_size_) / strataCount()));
         int strata_total_count = strata_sample_size * strataCount();
 
         for(StrataIndicesType::iterator i = strata_indices_.begin(); 
@@ -299,8 +299,8 @@ class Sampler
             Random const * rnd = 0)
     : total_count_(totalCount),
       sample_size_(opt.sample_size == 0
-                         ? (int)(std::ceil(total_count_ * opt.sample_proportion))
-                         : opt.sample_size),
+                   ? static_cast<int>((std::ceil(total_count_ * opt.sample_proportion)))
+                   : opt.sample_size),
       current_oob_count_(oobInvalid),
       current_sample_(sample_size_),
       current_oob_sample_(total_count_),
@@ -339,8 +339,8 @@ class Sampler
             Random const * rnd = 0)
     : total_count_(strataEnd - strataBegin),
       sample_size_(opt.sample_size == 0
-                         ? (int)(std::ceil(total_count_ * opt.sample_proportion))
-                         : opt.sample_size),
+                   ? static_cast<int>((std::ceil(total_count_ * opt.sample_proportion)))
+                   : opt.sample_size),
       current_oob_count_(oobInvalid),
       current_sample_(sample_size_),
       current_oob_sample_(total_count_),
@@ -367,7 +367,7 @@ class Sampler
                 strata_indices_[0][i] = i;
         }
             
-        vigra_precondition(sample_size_ >= (int)strata_indices_.size(),
+        vigra_precondition(sample_size_ >= static_cast<int>(strata_indices_.size()),
             "Sampler(): Requested sample count must be at least as large as the number of strata.");
 
         initStrataCount();
@@ -479,7 +479,7 @@ void Sampler<Random>::sample()
         {
             // do sampling with replacement in each strata and copy data.
             int stratum_size = iter->second.size();
-            for(int i = 0; i < (int)strata_sample_size_[iter->first]; ++i, ++j)
+            for(int i = 0; i < static_cast<int>(strata_sample_size_[iter->first]); ++i, ++j)
             {
                 current_sample_[j] = iter->second[random_.uniformInt(stratum_size)];
                 is_used_[current_sample_[j]] = true;
@@ -495,7 +495,7 @@ void Sampler<Random>::sample()
         {
             // do sampling without replacement in each strata and copy data.
             int stratum_size = iter->second.size();
-            for(int i = 0; i < (int)strata_sample_size_[iter->first]; ++i, ++j)
+            for(int i = 0; i < static_cast<int>(strata_sample_size_[iter->first]); ++i, ++j)
             {
                 std::swap(iter->second[i], iter->second[i+ random_.uniformInt(stratum_size - i)]);
                 current_sample_[j] = iter->second[i];

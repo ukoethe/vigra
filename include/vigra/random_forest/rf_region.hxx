@@ -115,7 +115,7 @@ class DT_StackEntry
     {
         int num = 0;
 
-        for(int ii = 0; ii < (int)classCounts().size(); ++ii)
+        for(int ii = 0; ii < static_cast<int>(classCounts().size()); ++ii)
         {
             num += classCounts()[ii] > 0;
         }

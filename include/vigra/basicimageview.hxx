@@ -182,7 +182,7 @@ class BasicImageView
 
         /** construct view of size w x h
         */
-    BasicImageView(const_pointer data, int w, int h, int stride = 0)
+    BasicImageView(const_pointer data, std::ptrdiff_t w, std::ptrdiff_t h, std::ptrdiff_t stride = 0)
     : data_(const_cast<pointer>(data)),
       width_(w),
       height_(h),
@@ -191,7 +191,7 @@ class BasicImageView
 
         /** construct view of size size.x x size.y
         */
-    BasicImageView(const_pointer data, difference_type const & size, int stride = 0)
+    BasicImageView(const_pointer data, difference_type const & size, std::ptrdiff_t stride = 0)
     : data_(const_cast<pointer>(data)),
       width_(size.x),
       height_(size.y),
@@ -209,14 +209,14 @@ class BasicImageView
 
         /** width of Image
         */
-    int width() const
+    std::ptrdiff_t width() const
     {
         return width_;
     }
 
         /** height of Image
         */
-    int height() const
+    std::ptrdiff_t height() const
     {
         return height_;
     }
@@ -224,7 +224,7 @@ class BasicImageView
         /** stride of Image.
             Memory offset between the start of two successive rows.
         */
-    int stride() const
+    std::ptrdiff_t stride() const
     {
         return stride_;
     }
@@ -265,7 +265,7 @@ class BasicImageView
         /** access pixel at given location. <br>
         usage: <TT> value_type value = image(1,2) </TT>
         */
-    reference operator()(int dx, int dy)
+    reference operator()(std::ptrdiff_t dx, std::ptrdiff_t dy)
     {
         VIGRA_ASSERT_INSIDE(difference_type(dx,dy));
         return data_[dy*stride_ + dx];
@@ -274,7 +274,7 @@ class BasicImageView
         /** read pixel at given location. <br>
         usage: <TT> value_type value = image(1,2) </TT>
         */
-    const_reference operator()(int dx, int dy) const
+    const_reference operator()(std::ptrdiff_t dx, std::ptrdiff_t dy) const
     {
         VIGRA_ASSERT_INSIDE(difference_type(dx, dy));
         return data_[dy*stride_ + dx];
@@ -284,7 +284,7 @@ class BasicImageView
             Note that the 'x' index is the trailing index. <br>
         usage: <TT> value_type value = image[2][1] </TT>
         */
-    pointer operator[](int dy)
+    pointer operator[](std::ptrdiff_t dy)
     {
         VIGRA_ASSERT_INSIDE(difference_type(0, dy));
         return data_ + dy*stride_;
@@ -294,7 +294,7 @@ class BasicImageView
             Note that the 'x' index is the trailing index. <br>
         usage: <TT> value_type value = image[2][1] </TT>
         */
-    const_pointer operator[](int dy) const
+    const_pointer operator[](std::ptrdiff_t dy) const
     {
         VIGRA_ASSERT_INSIDE(difference_type(0,dy));
         return data_ + dy*stride_;
@@ -378,35 +378,35 @@ class BasicImageView
 
         /** init 1D random access iterator pointing to first pixel of row \a y
         */
-    row_iterator rowBegin(int y)
+    row_iterator rowBegin(std::ptrdiff_t y)
     {
         return data_ + stride_ * y;
     }
 
         /** init 1D random access iterator pointing past the end of row \a y
         */
-    row_iterator rowEnd(int y)
+    row_iterator rowEnd(std::ptrdiff_t y)
     {
         return rowBegin(y) + width();
     }
 
         /** init 1D random access const iterator pointing to first pixel of row \a y
         */
-    const_row_iterator rowBegin(int y) const
+    const_row_iterator rowBegin(std::ptrdiff_t y) const
     {
         return data_ + stride_ * y;
     }
 
         /** init 1D random access const iterator pointing past the end of row \a y
         */
-    const_row_iterator rowEnd(int y) const
+    const_row_iterator rowEnd(std::ptrdiff_t y) const
     {
         return rowBegin(y) + width();
     }
 
         /** init 1D random access iterator pointing to first pixel of column \a x
         */
-    column_iterator columnBegin(int x)
+    column_iterator columnBegin(std::ptrdiff_t x)
     {
         typedef typename column_iterator::BaseType Iter;
         return column_iterator(Iter(data_ + x, stride_));
@@ -414,14 +414,14 @@ class BasicImageView
 
         /** init 1D random access iterator pointing past the end of column \a x
         */
-    column_iterator columnEnd(int x)
+    column_iterator columnEnd(std::ptrdiff_t x)
     {
         return columnBegin(x) + height();
     }
 
         /** init 1D random access const iterator pointing to first pixel of column \a x
         */
-    const_column_iterator columnBegin(int x) const
+    const_column_iterator columnBegin(std::ptrdiff_t x) const
     {
         typedef typename const_column_iterator::BaseType Iter;
         return const_column_iterator(Iter(data_ + x, stride_));
@@ -429,7 +429,7 @@ class BasicImageView
 
         /** init 1D random access const iterator pointing past the end of column \a x
         */
-    const_column_iterator columnEnd(int x) const
+    const_column_iterator columnEnd(std::ptrdiff_t x) const
     {
         return columnBegin(x) + height();
     }
@@ -458,7 +458,7 @@ class BasicImageView
   private:
 
     pointer data_;
-    int width_, height_, stride_;
+    std::ptrdiff_t width_, height_, stride_;
 };
 
 

@@ -545,10 +545,10 @@ void VolumeImportInfo::importImpl(MultiArrayView <3, T, Stride> &volume) const
         for (unsigned int i = 0; i < numbers_.size(); ++i)
         {
             // build the filename
-            std::string name = baseName_ + numbers_[i] + extension_;
+            std::string filename = baseName_ + numbers_[i] + extension_;
 
             // import the image
-            ImageImportInfo info (name.c_str ());
+            ImageImportInfo info (filename.c_str ());
 
             // generate a basic image view to the current layer
             MultiArrayView <2, T, Stride> view (volume.bindOuter (i));
@@ -866,12 +866,15 @@ exportVolume (MultiArrayView <3, T, Tag> const & volume,
             stream << std::setfill ('0') << std::setw (numlen) << i;
             std::string name_num;
             stream >> name_num;
-            std::string name = std::string(volinfo.getFileNameBase()) + name_num + std::string(volinfo.getFileNameExt());
+            std::string sliceFilename =
+                std::string(volinfo.getFileNameBase()) +
+                name_num +
+                std::string(volinfo.getFileNameExt());
 
             MultiArrayView <2, T, Tag> view (volume.bindOuter (i));
 
             // export the image
-            info.setFileName(name.c_str ());
+            info.setFileName(sliceFilename.c_str ());
             exportImage(srcImageRange(view), info); 
         }
     }

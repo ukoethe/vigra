@@ -626,7 +626,7 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> data,
                             MultiArrayView<2,double,stride4> alpha,MultiArrayView<2,double,stride5> beta,
                             MultiArrayView<2,double,stride6> gamma,
                             MultiArrayView<2,double,stride7> xedges,MultiArrayView<2,double,stride8> yedges,
-		            MultiArrayView<2,double,stride9> out,
+                    MultiArrayView<2,double,stride9> out,
                             int steps){
   
   using namespace multi_math;

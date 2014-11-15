@@ -146,8 +146,8 @@ class StandardAccessor
 
         /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template <class ITERATOR, class DIFFERENCE>
-    VALUETYPE const & operator()(ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class ITERATOR, class OFFSET>
+    VALUETYPE const & operator()(ITERATOR const & i, OFFSET const & diff) const
     {
         return i[diff];
     }
@@ -170,8 +170,8 @@ class StandardAccessor
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V const & value, ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class V, class ITERATOR, class OFFSET>
+    void set(V const & value, ITERATOR const & i, OFFSET const & diff) const
     {
         i[diff]= detail::RequiresExplicitCast<VALUETYPE>::cast(value);
     }
@@ -215,8 +215,8 @@ class StandardValueAccessor
             is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template <class ITERATOR, class DIFFERENCE>
-    VALUETYPE operator()(ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class ITERATOR, class OFFSET>
+    VALUETYPE operator()(ITERATOR const & i, OFFSET const & diff) const
     {
         return detail::RequiresExplicitCast<VALUETYPE>::cast(i[diff]);
     }
@@ -238,8 +238,8 @@ class StandardValueAccessor
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V value, ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class V, class ITERATOR, class OFFSET>
+    void set(V value, ITERATOR const & i, OFFSET const & diff) const
     {
         i[diff]= detail::RequiresExplicitCast<VALUETYPE>::cast(value);
     }
@@ -279,8 +279,8 @@ class StandardConstAccessor
 
         /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template <class ITERATOR, class DIFFERENCE>
-    VALUETYPE const & operator()(ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class ITERATOR, class OFFSET>
+    VALUETYPE const & operator()(ITERATOR const & i, OFFSET const & diff) const
     {
         return i[diff];
     }
@@ -322,8 +322,8 @@ class StandardConstValueAccessor
             is automatically converted to <TT>VALUETYPE</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template <class ITERATOR, class DIFFERENCE>
-    VALUETYPE operator()(ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class ITERATOR, class OFFSET>
+    VALUETYPE operator()(ITERATOR const & i, OFFSET const & diff) const
     {
         return detail::RequiresExplicitCast<VALUETYPE>::cast(i[diff]);
     }
@@ -384,8 +384,8 @@ class VectorComponentAccessor
 
         /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template <class ITERATOR, class DIFFERENCE>
-    value_type const & operator()(ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class ITERATOR, class OFFSET>
+    value_type const & operator()(ITERATOR const & i, OFFSET const & diff) const
     {
         return i[diff][index_];
     }
@@ -405,8 +405,8 @@ class VectorComponentAccessor
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V const & value, ITERATOR const & i, DIFFERENCE const & diff) const 
+    template <class V, class ITERATOR, class OFFSET>
+    void set(V const & value, ITERATOR const & i, OFFSET const & diff) const 
     { 
         i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
     }
@@ -474,8 +474,8 @@ class VectorComponentValueAccessor
             is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template <class ITERATOR, class DIFFERENCE>
-    value_type operator()(ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class ITERATOR, class OFFSET>
+    value_type operator()(ITERATOR const & i, OFFSET const & diff) const
     { 
         return detail::RequiresExplicitCast<value_type>::cast(i[diff][index_]); 
     }
@@ -495,8 +495,8 @@ class VectorComponentValueAccessor
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V value, ITERATOR const & i, DIFFERENCE const & diff) const 
+    template <class V, class ITERATOR, class OFFSET>
+    void set(V value, ITERATOR const & i, OFFSET const & diff) const 
     { 
         i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
     }
@@ -560,8 +560,8 @@ class VectorElementAccessor
     
         /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
-    template <class ITERATOR, class DIFFERENCE>
-    value_type const & operator()(ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class ITERATOR, class OFFSET>
+    value_type const & operator()(ITERATOR const & i, OFFSET const & diff) const
     { 
         return a_.getComponent(i, diff, index_); 
     }
@@ -581,8 +581,8 @@ class VectorElementAccessor
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
         */
-    template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V const & value, ITERATOR const & i, DIFFERENCE const & diff) const 
+    template <class V, class ITERATOR, class OFFSET>
+    void set(V const & value, ITERATOR const & i, OFFSET const & diff) const 
     { 
        a_.setComponent(detail::RequiresExplicitCast<value_type>::cast(value), i, diff, index_); 
     }
@@ -668,8 +668,8 @@ class SequenceAccessor
         /** get begin iterator for sequence at an offset
             of given iterator position
         */
-    template <class ITERATOR, class DIFFERENCE>
-    iterator begin(ITERATOR const & i, DIFFERENCE const & diff)  const
+    template <class ITERATOR, class OFFSET>
+    iterator begin(ITERATOR const & i, OFFSET const & diff)  const
     {
         return i[diff].begin();
     }
@@ -677,8 +677,8 @@ class SequenceAccessor
         /** get end iterator for sequence at a 2D difference vector
             of given iterator position
         */
-    template <class ITERATOR, class DIFFERENCE>
-    iterator end(ITERATOR const & i, DIFFERENCE const & diff)  const
+    template <class ITERATOR, class OFFSET>
+    iterator end(ITERATOR const & i, OFFSET const & diff)  const
     {
         return i[diff].end();
     }
@@ -690,8 +690,8 @@ class SequenceAccessor
 
         /** get size of sequence at 2D difference vector of given iterator position
         */
-    template <class ITERATOR, class DIFFERENCE>
-    unsigned int size(ITERATOR const & i, DIFFERENCE const & diff) const
+    template <class ITERATOR, class OFFSET>
+    unsigned int size(ITERATOR const & i, OFFSET const & diff) const
     { return i[diff].size(); }
 };
 
@@ -804,8 +804,8 @@ class VectorAccessor
         /** Read the component data at given vector index
             at an offset of given iterator position
         */
-    template <class ITERATOR, class DIFFERENCE>
-    component_type const & getComponent(ITERATOR const & i, DIFFERENCE const & diff, int idx) const
+    template <class ITERATOR, class OFFSET>
+    component_type const & getComponent(ITERATOR const & i, OFFSET const & diff, int idx) const
     {
         return i[diff][idx];
     }
@@ -815,9 +815,9 @@ class VectorAccessor
         in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
             In case of a conversion floating point -> integral this includes rounding and clipping.
     */
-    template <class V, class ITERATOR, class DIFFERENCE>
+    template <class V, class ITERATOR, class OFFSET>
     void
-    setComponent(V const & value, ITERATOR const & i, DIFFERENCE const & diff, int idx) const
+    setComponent(V const & value, ITERATOR const & i, OFFSET const & diff, int idx) const
     {
         i[diff][idx] = detail::RequiresExplicitCast<component_type>::cast(value);
     }
@@ -885,16 +885,16 @@ class MultiImageAccessor2
 
         /** read the current data item
         */
-    template <class DIFFERENCE>
-    value_type operator()(DIFFERENCE const & d) const
+    template <class OFFSET>
+    value_type operator()(OFFSET const & d) const
     {
         return std::make_pair(a1_(i1_, d), a2_(i2_, d));
     }
 
         /** read the data item at an offset
         */
-    template <class DIFFERENCE1, class DIFFERENCE2>
-    value_type operator()(DIFFERENCE1 d1, DIFFERENCE2 const & d2) const
+    template <class OFFSET1, class OFFSET2>
+    value_type operator()(OFFSET1 d1, OFFSET2 const & d2) const
     {
         d1 += d2;
         return std::make_pair(a1_(i1_, d1), a2_(i2_, d1));

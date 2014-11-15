@@ -240,7 +240,8 @@ namespace vigra
                     ImageIterator image_iterator, ImageAccessor image_accessor,
                     /* isScalar? */ VigraFalseType)
         {
-            vigra_precondition(import_info.numBands() == image_accessor.size(image_iterator) ||
+            vigra_precondition((static_cast<unsigned int>(import_info.numBands())
+                                == image_accessor.size(image_iterator)) ||
                                import_info.numBands() == 1,
                 "importImage(): Number of channels in input and destination image don't match.");
 

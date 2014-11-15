@@ -54,6 +54,12 @@
 # ifdef DIFFERENCE
 #  undef DIFFERENCE
 # endif
+# ifdef IN
+#  undef IN
+# endif
+# ifdef OUT
+#  undef OUT
+# endif
 #endif
 
 #endif /* VIGRA_WINDOWS_H */

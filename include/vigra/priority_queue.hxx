@@ -427,7 +427,7 @@ public:
     : maxSize_(maxSize),
       currentSize_(0),
       heap_(maxSize_+1),
-      indices_(maxSize_+1),
+      indices_(maxSize_+1, -1),
       priorities_(maxSize_+1)
     {
         for(int i = 0; i <= maxSize_; i++)
@@ -440,10 +440,19 @@ public:
         for(int i = 0; i <= maxSize_; i++)
             indices_[i] = -1;
     }
-
     /// check if the PQ is empty
     bool empty() const {
         return currentSize_ == 0;
+    }
+ 
+    /// check if the PQ is empty
+    void clear() {
+        for(int i = 0; i < currentSize_; i++)
+        {
+            indices_[heap_[i+1]] = -1;
+            heap_[i+1] = -1;
+        }
+        currentSize_ = 0;
     }
  
     /// check if i is an index on the PQ
