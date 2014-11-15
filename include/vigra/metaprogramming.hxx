@@ -400,7 +400,7 @@ struct IsDerivedFrom
     static falseResult * testIsDerivedFrom(...);
     static trueResult * testIsDerivedFrom(BASE const *);
     
-    enum { resultSize = sizeof(*testIsDerivedFrom((DERIVED const *)0)) };
+    enum { resultSize = sizeof(*testIsDerivedFrom(static_cast<DERIVED const *>(0))) };
     
     static const bool value = (resultSize == 2);
     typedef typename 
@@ -473,7 +473,7 @@ struct sfinae_test
     static falseResult * test(...);
     static trueResult * test(USER<sfinae_void>);
     
-    enum { resultSize = sizeof(*test((T*)0)) };
+    enum { resultSize = sizeof(*test(static_cast<T*>(0))) };
     
     static const bool value = (resultSize == 2);
     typedef typename
@@ -547,7 +547,7 @@ struct IsArray
     template <class U, unsigned n>
     static trueResult * test(U (*)[n]);
     
-    enum { resultSize = sizeof(*test((T*)0)) };
+    enum { resultSize = sizeof(*test(static_cast<T*>(0))) };
     
     static const bool value = (resultSize == 2);
     typedef typename
@@ -680,7 +680,7 @@ struct MetaPow<X, 0>
 template<class HEAD, class TAIL=void>
 struct TypeList
 {
-	typedef TypeList<HEAD, TAIL> type;
+    typedef TypeList<HEAD, TAIL> type;
     typedef HEAD Head;
     typedef TAIL Tail;
 };

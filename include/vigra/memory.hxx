@@ -204,7 +204,7 @@ destroy_dealloc_n(T * p, std::size_t n)
 #if !defined(__GNUC__) ||  __GNUC__ >= 3
 
 template <class T>
-inline void destroy(T * p, VigraTrueType /* isPOD */)
+inline void destroy(T * /* p */, VigraTrueType /* isPOD */)
 {
 }
 

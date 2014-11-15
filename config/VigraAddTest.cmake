@@ -19,10 +19,10 @@ MACRO(VIGRA_NATIVE_PATH out in)
         STRING(REGEX REPLACE "\\$\\([^\\)]*\\)" "%CONFIGURATION%" ${out} "${${out}}")
     ENDIF()
     IF(MINGW)
-        STRING(REGEX REPLACE "/" "\\\\" ${out} "${${out}}")
-    ELSE()
-        file(TO_NATIVE_PATH "${${out}}" ${out})
+        # turn "c:/" into "/c/"
+        STRING(REGEX REPLACE "^([a-zA-Z]):" "/\\1" ${out} "${${out}}")
     ENDIF()
+    file(TO_NATIVE_PATH "${${out}}" ${out})
 ENDMACRO(VIGRA_NATIVE_PATH)
 
 FUNCTION(VIGRA_ADD_TEST target)
@@ -80,7 +80,7 @@ FUNCTION(VIGRA_ADD_TEST target)
     ENDFOREACH(lib)
     
     VIGRA_NATIVE_PATH(VIGRA_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
-    IF(MSVC OR MINGW)
+    IF(MSVC)
         SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_${target}.bat")
         SET(VIGRA_TEST_EXECUTABLE "\"${VIGRA_TEST_EXECUTABLE}\"")  # take care of paths with spaces
         CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.bat.in

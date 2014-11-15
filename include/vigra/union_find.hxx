@@ -107,7 +107,7 @@ struct UnionFindAccessorImpl<T, VigraTrueType>
     
     static bool isAnchor(T const & t)
     {
-        return t <= 0;
+        return t < 0;
     }
     
     static bool isValidAnchor(T const & t)
@@ -117,17 +117,17 @@ struct UnionFindAccessorImpl<T, VigraTrueType>
     
     static bool notAnchor(T const & t)
     {
-        return t > 0;
+        return t >= 0;
     }
     
     static T toAnchor(T const & t)
     {
-        return -t;
+        return -t - 1;
     }
     
     static T fromAnchor(T const & t)
     {
-        return -t;
+        return -(t + 1);
     }
 };
 

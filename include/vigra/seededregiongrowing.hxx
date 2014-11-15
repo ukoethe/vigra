@@ -484,7 +484,7 @@ seededRegionGrowing(SrcIterator srcul,
             }
             else
             {
-                vigra_precondition((LabelType)*irx <= stats.maxRegionLabel(),
+                vigra_precondition((LabelType)*irx <= (LabelType)stats.maxRegionLabel(),
                     "seededRegionGrowing(): Largest label exceeds size of RegionStatisticsArray.");
                 if(maxRegionLabel < *irx)
                     maxRegionLabel = *irx;

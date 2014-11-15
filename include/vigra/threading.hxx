@@ -40,6 +40,8 @@
    when the compiler doesn't yet support C++11.
 */
 
+    // ignore all threading if VIGRA_SINGLE_THREADED is defined
+#ifndef VIGRA_SINGLE_THREADED
 
 #ifndef VIGRA_NO_STD_THREADING 
 # if defined(__clang__)
@@ -57,13 +59,15 @@
 # endif
 #endif
 
-#ifdef VIGRA_NO_STD_THREADING
+#ifdef USE_BOOST_THREAD
 #  include <boost/thread.hpp>
 #  if BOOST_VERSION >= 105300
 #    include <boost/atomic.hpp>
 #    define VIGRA_HAS_ATOMIC 1
 #  endif
 #  define VIGRA_THREADING_NAMESPACE boost
+#elif defined(VIGRA_NO_STD_THREADING)
+#  error "Your compiler does not support std::thread. If the boost libraries are available, consider running cmake with -DWITH_BOOST_THREAD=1"
 #else
 #  include <thread>
 #  include <mutex>
@@ -193,7 +197,7 @@ using VIGRA_THREADING_NAMESPACE::atomic_signal_fence;
 // using VIGRA_THREADING_NAMESPACE::atomic_flag_clearatomic_flag_clear_explicit;
 // using VIGRA_THREADING_NAMESPACE::atomic_init;
 // using VIGRA_THREADING_NAMESPACE::kill_dependency;
-	
+    
 #else  // VIGRA_HAS_ATOMIC not defined
 
 enum memory_order {
@@ -371,5 +375,7 @@ struct atomic_long
 }} // namespace vigra::threading
 
 #undef VIGRA_THREADING_NAMESPACE
+
+#endif // not VIGRA_SINGLE_THREADED
 
 #endif // VIGRA_THREADING_HXX

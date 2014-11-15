@@ -235,6 +235,7 @@ initMultiArray(MultiArrayView<N, T, S> s, VALUETYPE const & v)
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
+            // init equal borders on all array sides
         template <unsigned int N, class T, class S, 
                   class VALUETYPE>
         void 
@@ -246,6 +247,15 @@ initMultiArray(MultiArrayView<N, T, S> s, VALUETYPE const & v)
         void 
         initMultiArrayBorder( MultiArrayView<N, T, S> array, 
                               MultiArrayIndex border_width, FUNCTOR const & v);
+        
+            // specify border width individually for all array sides
+        template <unsigned int N, class T, class S, 
+                  class VALUETYPE>
+        void 
+        initMultiArrayBorder( MultiArrayView<N, T, S> array, 
+                              typename MultiArrayShape<N>::type const & lower_border, 
+                              typename MultiArrayShape<N>::type const & upper_border, 
+                              VALUETYPE const & v);
     }
     \endcode
     
@@ -293,26 +303,37 @@ template <class Iterator, class Diff_type, class Accessor,
           class VALUETYPE>
 void
 initMultiArrayBorder(Iterator upperleft, Diff_type shape, Accessor a,
-                     MultiArrayIndex border_width, VALUETYPE const & v)
+                     Diff_type lower_border, Diff_type upper_border, 
+                     VALUETYPE const & v)
 {
-    Diff_type border(shape);
     for(unsigned int dim=0; dim<shape.size(); dim++)
     {
-        border[dim] = (border_width > shape[dim]) ? shape[dim] : border_width;
+        lower_border[dim] = (lower_border[dim] > shape[dim]) ? shape[dim] : lower_border[dim];
+        upper_border[dim] = (upper_border[dim] > shape[dim]) ? shape[dim] : upper_border[dim];
     }
 
     for(unsigned int dim=0; dim<shape.size(); dim++)
     {
-        Diff_type  start(shape),
+        Diff_type  start,
                    offset(shape);
-        start = start-shape;
-        offset[dim]=border[dim];
+        offset[dim] = lower_border[dim];
 
         initMultiArray(upperleft+start, offset, a, v);
  
-        start[dim]=shape[dim]-border[dim];
+        start[dim]  = shape[dim] - upper_border[dim];
+        offset[dim] = upper_border[dim];
         initMultiArray(upperleft+start, offset, a, v);
     }
+}
+    
+template <class Iterator, class Diff_type, class Accessor, 
+          class VALUETYPE>
+inline void
+initMultiArrayBorder(Iterator upperleft, Diff_type shape, Accessor a,
+                     MultiArrayIndex border_width, VALUETYPE const & v)
+{
+    initMultiArrayBorder(upperleft, shape, a,
+                         Diff_type(border_width), Diff_type(border_width), v);
 }
     
 template <class Iterator, class Diff_type, class Accessor, 
@@ -324,6 +345,17 @@ initMultiArrayBorder( triple<Iterator, Diff_type, Accessor> multiArray,
     initMultiArrayBorder(multiArray.first, multiArray.second, multiArray.third, border_width, v);
 }
 
+template <class Iterator, class Diff_type, class Accessor, 
+          class VALUETYPE>
+inline void 
+initMultiArrayBorder( triple<Iterator, Diff_type, Accessor> multiArray, 
+                      Diff_type const & lower_border, Diff_type const & upper_border, 
+                      VALUETYPE const & v)
+{
+    initMultiArrayBorder(multiArray.first, multiArray.second, multiArray.third, 
+                         lower_border, upper_border, v);
+}
+
 template <unsigned int N, class T, class S, 
           class VALUETYPE>
 inline void 
@@ -331,6 +363,17 @@ initMultiArrayBorder( MultiArrayView<N, T, S> array,
                       MultiArrayIndex border_width, VALUETYPE const & v)
 {
     initMultiArrayBorder(destMultiArrayRange(array), border_width, v);
+}
+
+template <unsigned int N, class T, class S, 
+          class VALUETYPE>
+inline void 
+initMultiArrayBorder( MultiArrayView<N, T, S> array, 
+                      typename MultiArrayShape<N>::type const & lower_border, 
+                      typename MultiArrayShape<N>::type const & upper_border, 
+                      VALUETYPE const & v)
+{
+    initMultiArrayBorder(destMultiArrayRange(array), lower_border, upper_border, v);
 }
 
 /********************************************************/

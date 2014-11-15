@@ -139,13 +139,13 @@ class VisitorBase
      * \sa RF_Traits::StackEntry_t
      */
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
-                            Split         & split,
-                            Region        & parent,
-                            Region        & leftChild,
-                            Region        & rightChild,
-                            Feature_t     & features,
-                            Label_t       & labels)
+    void visit_after_split( Tree          & /* tree */, 
+                            Split         & /* split */,
+                            Region        & /* parent */,
+                            Region        & /* leftChild */,
+                            Region        & /* rightChild */,
+                            Feature_t     & /* features */,
+                            Label_t       & /* labels */)
     {}
     
     /** do something after each tree has been learned
@@ -158,7 +158,7 @@ class VisitorBase
      * \param index     index of current tree
      */
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF & /* rf */, PR & /* pr */, SM & /* sm */, ST & /* st */, int /* index */)
     {}
     
     /** do something after all trees have been learned
@@ -168,7 +168,7 @@ class VisitorBase
      * \param pr        reference to the preprocessor that processed the input
      */
     template<class RF, class PR>
-    void visit_at_end(RF const & rf, PR const & pr)
+    void visit_at_end(RF const & /* rf */, PR const & /* pr */)
     {}
     
     /** do something before learning starts 
@@ -178,7 +178,7 @@ class VisitorBase
      * \param pr        reference to the Processor class used.
      */
     template<class RF, class PR>
-    void visit_at_beginning(RF const & rf, PR const & pr)
+    void visit_at_beginning(RF const & /* rf */, PR const & /* pr */)
     {}
     /** do some thing while traversing tree after it has been learned 
      *  (external nodes)
@@ -194,7 +194,7 @@ class VisitorBase
      * use the NodeBase class.
      */
     template<class TR, class IntT, class TopT,class Feat>
-    void visit_external_node(TR & tr, IntT index, TopT node_t,Feat & features)
+    void visit_external_node(TR & /* tr */, IntT /* index */, TopT /* node_t */, Feat & /* features */)
     {}
     
     /** do something when visiting a internal node after it has been learned
@@ -202,7 +202,7 @@ class VisitorBase
      * \sa visit_external_node
      */
     template<class TR, class IntT, class TopT,class Feat>
-    void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
+    void visit_internal_node(TR & /* tr */, IntT /* index */, TopT /* node_t */, Feat & /* features */)
     {}
 
     /** return a double value.  The value of the first 
@@ -614,7 +614,7 @@ public:
     /** Initialize, set the number of trees
      */
     template<class RF,class PR>
-    void visit_at_beginning(RF & rf,const PR & pr)
+    void visit_at_beginning(RF & rf,const PR & /* pr */)
     {
         tree_id=0;
         trees_online_information.resize(rf.options_.tree_count_);
@@ -633,19 +633,19 @@ public:
     /** simply increase the tree count
     */
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF & /* rf */, PR & /* pr */,  SM & /* sm */, ST & /* st */, int /* index */)
     {
         tree_id++;
     }
     
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split( Tree          & tree, 
-                Split         & split,
-                            Region       & parent,
+                            Split         & split,
+                            Region        & parent,
                             Region        & leftChild,
                             Region        & rightChild,
                             Feature_t     & features,
-                            Label_t       & labels)
+                            Label_t       & /* labels */)
     {
         int linear_index;
         int addr=tree.topology_.size();
@@ -793,7 +793,7 @@ public:
 
     /** does the basic calculation per tree*/
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF & rf, PR & pr,  SM & sm, ST & st, int index)
     {
         //do the first time called.
         if(int(oobCount.size()) != rf.ext_param_.row_count_)
@@ -825,7 +825,7 @@ public:
     void visit_at_end(RF & rf, PR & pr)
     {
         // do some normalisation
-        for(int l=0; l < (int)rf.ext_param_.row_count_; ++l)
+        for(int l=0; l < static_cast<int>(rf.ext_param_.row_count_); ++l)
         {
             if(oobCount[l])
             {
@@ -985,7 +985,7 @@ class OOB_Error : public VisitorBase
         // ullis original metric and breiman style stuff
         int totalOobCount =0;
         int breimanstyle = 0;
-        for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+        for(int ll=0; ll < static_cast<int>(rf.ext_param_.row_count_); ++ll)
         {
             if(oobCount[ll])
             {
@@ -1148,7 +1148,7 @@ class CompleteOOBInfo : public VisitorBase
         }
         int breimanstyle = 0;
         int totalOobCount = 0;
-        for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+        for(int ll=0; ll < static_cast<int>(rf.ext_param_.row_count_); ++ll)
         {
             if(oobCount[ll])
             {
@@ -1169,7 +1169,7 @@ class CompleteOOBInfo : public VisitorBase
                     = oobroc_per_tree.bindOuter(index);
             for(int gg = 0; gg < current_roc.shape(2); ++gg)
             {
-                for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+                for(int ll=0; ll < static_cast<int>(rf.ext_param_.row_count_); ++ll)
                 {
                     if(oobCount[ll])
                     {
@@ -1195,7 +1195,7 @@ class CompleteOOBInfo : public VisitorBase
         oob_per_tree2 = 0; 
         int totalOobCount =0;
         int breimanstyle = 0;
-        for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+        for(int ll=0; ll < static_cast<int>(rf.ext_param_.row_count_); ++ll)
         {
             if(oobCount[ll])
             {
@@ -1275,11 +1275,11 @@ class VariableImportanceVisitor : public VisitorBase
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split( Tree          & tree, 
                             Split         & split,
-                            Region        & parent,
-                            Region        & leftChild,
-                            Region        & rightChild,
-                            Feature_t     & features,
-                            Label_t       & labels)
+                            Region        & /* parent */,
+                            Region        & /* leftChild */,
+                            Region        & /* rightChild */,
+                            Feature_t     & /* features */,
+                            Label_t       & /* labels */)
     {
         //resize to right size when called the first time
         
@@ -1308,7 +1308,7 @@ class VariableImportanceVisitor : public VisitorBase
      * \sa FieldProxy
      */
     template<class RF, class PR, class SM, class ST>
-    void after_tree_ip_impl(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void after_tree_ip_impl(RF& rf, PR & pr,  SM & sm, ST & /* st */, int index)
     {
         typedef MultiArrayShape<2>::type Shp_t;
         Int32                   column_count = rf.ext_param_.column_count_;
@@ -1438,7 +1438,7 @@ class VariableImportanceVisitor : public VisitorBase
     /** Normalise variable importance after the number of trees is known.
      */
     template<class RF, class PR>
-    void visit_at_end(RF & rf, PR & pr)
+    void visit_at_end(RF & rf, PR & /* pr */)
     {
         variable_importance_ /= rf.trees_.size();
     }
@@ -1535,8 +1535,9 @@ class CorrelationVisitor : public VisitorBase
 #undef VAR_WRITE
 */
     }
+
     template<class RF, class PR>
-    void visit_at_beginning(RF const & rf, PR  & pr)
+    void visit_at_beginning(RF const & rf, PR & pr)
     {
         typedef MultiArrayShape<2>::type Shp;
         int n = rf.ext_param_.column_count_;

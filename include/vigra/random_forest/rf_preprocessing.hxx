@@ -37,6 +37,7 @@
 #define VIGRA_RF_PREPROCESSING_HXX
 
 #include <limits>
+#include <vigra/mathutil.hxx>
 #include "rf_common.hxx"
 
 namespace vigra
@@ -107,8 +108,8 @@ namespace detail
                 break;
             case RF_PROPORTIONAL:
                 ext_param.actual_msample_ =
-                    (int)std::ceil(  options.training_set_proportion_ *
-                                     ext_param.row_count_);
+                    static_cast<int>(std::ceil(options.training_set_proportion_ *
+                                               ext_param.row_count_));
                     break;
             case RF_FUNCTION:
                 ext_param.actual_msample_ =
@@ -127,7 +128,7 @@ namespace detail
     bool contains_nan(MultiArrayView<N, T, C> const & in)
     {
         for(int ii = 0; ii < in.size(); ++ii)
-            if(in[ii] != in[ii])
+            if(isnan(in[ii]))
                 return true;
         return false; 
     }
@@ -140,7 +141,7 @@ namespace detail
          if(!std::numeric_limits<T>::has_infinity)
              return false;
          for(int ii = 0; ii < in.size(); ++ii)
-            if(in[ii] == std::numeric_limits<T>::infinity())
+            if(abs(in[ii]) == std::numeric_limits<T>::infinity())
                 return true;
          return false;
     }
@@ -213,7 +214,7 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
         if(ext_param.class_weights_.size() == 0)
         {
             ArrayVector<T2> 
-                tmp((std::size_t)ext_param.class_count_, 
+                tmp(static_cast<std::size_t>(ext_param.class_count_),
                     NumericTraits<T2>::one());
             ext_param.class_weights(tmp.begin(), tmp.end());
         }

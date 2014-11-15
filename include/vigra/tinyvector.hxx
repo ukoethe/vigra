@@ -54,6 +54,7 @@ struct Invalid;
 #include "memory.hxx"
 #include "mathutil.hxx"
 #include "diff2d.hxx"
+#include "static_assert.hxx"
 
 #ifdef VIGRA_CHECK_BOUNDS
 #define VIGRA_ASSERT_INSIDE(diff) \
@@ -795,15 +796,16 @@ class TinyVectorBase
         return static_cast<DERIVED &>(*this);
     }
 
-        /** Calculate magnitude.
-        */
+        /** Calculate magnitude (i.e. 2-norm / Euclidean norm / length).
+         * \see squaredMagnitude()
+         */
     NormType magnitude() const
     {
          return sqrt(static_cast<typename
               SquareRootTraits<SquaredNormType>::SquareRootArgument>(squaredMagnitude()));
     }
 
-        /** Calculate squared magnitude.
+        /** Calculate squared magnitude (i.e. sum of squared elements).
         */
     SquaredNormType squaredMagnitude() const
     {
@@ -868,6 +870,14 @@ class TinyVectorBase
         /** Get const random access iterator past-the-end of vector.
         */
     const_iterator end() const { return data_ + SIZE; }
+
+        /** Get const random access iterator to begin of vector.
+        */
+    const_iterator cbegin() const { return data_; }
+
+        /** Get const random access iterator past-the-end of vector.
+        */
+    const_iterator cend() const { return data_ + SIZE; }
     
         /** Get a view to the subarray with length <tt>(TO-FROM)</tt> starting at <tt>FROM</tt>.
             The bounds must fullfill <tt>0 <= FROM < TO <= SIZE</tt>, but this is only
@@ -906,6 +916,26 @@ class TinyVectorBase
 
     const_pointer data() const { return data_; }
     
+    reference front()
+    {
+        return data_[0];
+    }
+    
+    const_reference front() const
+    {
+        return data_[0];
+    }
+    
+    reference back()
+    {
+        return data_[SIZE-1];
+    }
+    
+    const_reference back() const
+    {
+        return data_[SIZE-1];
+    }
+    
         /** \brief Factory function for a unit vector for dimension \a k.
         */
     static TinyVector<VALUETYPE, SIZE> unitVector(int k)
@@ -932,6 +962,15 @@ class TinyVectorBase
   
     DATA data_;
 };
+
+#ifndef DOXYGEN
+
+template <int SIZE, int DESIRED_SIZE>
+struct TinyVector_constructor_has_wrong_number_of_arguments
+: staticAssert::AssertBool<SIZE == DESIRED_SIZE>
+{};
+
+#endif /* DOXYGEN */
 
 /** \brief Class for fixed size vectors.
     \ingroup RangesAndPoints
@@ -1022,6 +1061,7 @@ class TinyVector
     TinyVector(value_type const & i1, value_type const & i2)
     : BaseType()
     {
+        VIGRA_STATIC_ASSERT((TinyVector_constructor_has_wrong_number_of_arguments<SIZE, 2>));
         BaseType::data_[0] = i1;
         BaseType::data_[1] = i2;
     }
@@ -1032,6 +1072,7 @@ class TinyVector
     TinyVector(value_type const & i1, value_type const & i2, value_type const & i3)
     : BaseType()
     {
+        VIGRA_STATIC_ASSERT((TinyVector_constructor_has_wrong_number_of_arguments<SIZE, 3>));
         BaseType::data_[0] = i1;
         BaseType::data_[1] = i2;
         BaseType::data_[2] = i3;
@@ -1044,6 +1085,7 @@ class TinyVector
                value_type const & i3, value_type const & i4)
     : BaseType()
     {
+        VIGRA_STATIC_ASSERT((TinyVector_constructor_has_wrong_number_of_arguments<SIZE, 4>));
         BaseType::data_[0] = i1;
         BaseType::data_[1] = i2;
         BaseType::data_[2] = i3;
@@ -1058,6 +1100,7 @@ class TinyVector
                value_type const & i5)
     : BaseType()
     {
+        VIGRA_STATIC_ASSERT((TinyVector_constructor_has_wrong_number_of_arguments<SIZE, 5>));
         BaseType::data_[0] = i1;
         BaseType::data_[1] = i2;
         BaseType::data_[2] = i3;
@@ -1957,6 +2000,19 @@ round(TinyVectorBase<V, SIZE, D1, D2> const & v)
     return res;
 }
 
+    /** Apply roundi() function to each vector component, i.e. return an integer vector.
+    */
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<std::ptrdiff_t, SIZE>
+roundi(TinyVectorBase<V, SIZE, D1, D2> const & v)
+{
+    TinyVector<V, SIZE> res(detail::dontInit());
+    for(int k=0; k<SIZE; ++k)
+        res[k] = roundi(v[k]);
+    return res;
+}
+
     /** Apply sqrt() function to each vector component.
     */
 template <class V, int SIZE, class D1, class D2>
@@ -2203,23 +2259,19 @@ transpose(TinyVector<V, SIZE> const & t, TinyVector<T, SIZE> const & permutation
     return res;
 }
 
-    /** \brief transposed copy
+    /** \brief Clip negative values.
     
-        All elements smaller 0 are clipped to zero.
+        All elements smaller than 0 are set to zero.
     */
 template<class V,int SIZE>
 inline
 TinyVector<V, SIZE> clipLower(TinyVector<V, SIZE> const & t){
-    TinyVector<V, SIZE> res(SkipInitialization);
-    for(int k=0; k<SIZE; ++k){
-        res[k]=t[k]< static_cast<V>(0) ?  static_cast<V>(0) :  t[k];
-    }
-    return res;
+    return clipLower(t, V(0));
 }
 
-    /** \brief transposed copy
+    /** \brief Clip values below a threshold.
     
-        All elements smaller val are clipped to val.
+        All elements smaller than \a val are set to \a val.
     */
 template<class V,int SIZE>
 inline
@@ -2230,9 +2282,10 @@ TinyVector<V, SIZE> clipLower(TinyVector<V, SIZE> const & t,const V val){
     }
     return res;
 }
-    /** \brief transposed copy
+
+    /** \brief Clip values above a threshold.
     
-        All elements bigger val are clipped to val.
+        All elements bigger than \a val are set to \a val.
     */
 template<class V,int SIZE>
 inline
@@ -2244,14 +2297,43 @@ TinyVector<V, SIZE> clipUpper(TinyVector<V, SIZE> const & t,const V val){
     return res;
 }
 
-
+    /** \brief Clip values to an interval.
+    
+        All elements less than \a valLower are set to \a valLower, all elements
+        bigger than \a valUpper are set to \a valUpper.
+    */
 template<class V,int SIZE>
 inline
-TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,const V valLow,const V valUpper){
+TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,const V valLower, const V valUpper){
     TinyVector<V, SIZE> res(SkipInitialization);
     for(int k=0; k<SIZE; ++k){
-        res[k]=t[k]< valLow   ? valLow :  t[k];
-        res[k]=t[k]> valUpper ? valUpper :  t[k];
+        res[k] =  (t[k] < valLower)
+                       ? valLower 
+                       : (t[k] > valUpper)
+                             ? valUpper
+                             : t[k];
+    }
+    return res;
+}
+
+    /** \brief Clip values to a vector of intervals.
+    
+        All elements less than \a valLower are set to \a valLower, all elements
+        bigger than \a valUpper are set to \a valUpper.
+    */
+template<class V,int SIZE>
+inline
+TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,
+                         TinyVector<V, SIZE> const & valLower, 
+                         TinyVector<V, SIZE> const & valUpper)
+{
+    TinyVector<V, SIZE> res(SkipInitialization);
+    for(int k=0; k<SIZE; ++k){
+        res[k] =  (t[k] < valLower[k])
+                       ? valLower[k] 
+                       : (t[k] > valUpper[k])
+                             ? valUpper[k] 
+                             : t[k];
     }
     return res;
 }

@@ -578,12 +578,47 @@ def _genFeaturConvenienceFunctions():
                 print "Computing features:", f[:2]
                 r = vigra.analysis.extractRegionFeatures(array, labels, features=f[:2])
         '''
-        
         return analysis.extractRegionFeatures(array, labels, None).supportedFeatures()
-    
+
     supportedRegionFeatures.__module__ = 'vigra.analysis'
     analysis.supportedRegionFeatures = supportedRegionFeatures
-    
+
+    def supportedConvexHullFeatures(labels):
+        '''Return a list of Convex Hull feature names that are available for the given 2D label array. 
+           These Convex Hull feature names are the valid inputs to a call of 
+           :func:`extractConvexHullFeatures`. E.g., to compute just the first two features in the 
+           list, use::
+           
+                f = vigra.analysis.supportedConvexHullFeatures(labels)
+                print "Computing Convex Hull features:", f[:2]
+                r = vigra.analysis.extractConvexHullFeatures(labels, features=f[:2])
+        '''
+        try:
+            return analysis.extractConvexHullFeatures(labels, list_features_only=True)
+        except:
+            return []
+
+    supportedConvexHullFeatures.__module__ = 'vigra.analysis'
+    analysis.supportedConvexHullFeatures = supportedConvexHullFeatures
+
+    def supportedSkeletonFeatures(labels):
+        '''Return a list of Skeleton feature names that are available for the given 2D label array. 
+           These Skeleton feature names are the valid inputs to a call of 
+           :func:`extractSkeletonFeatures`. E.g., to compute just the first two features in the 
+           list, use::
+           
+                f = vigra.analysis.supportedSkeletonFeatures(labels)
+                print "Computing Skeleton features:", f[:2]
+                r = vigra.analysis.extractSkeletonFeatures(labels, features=f[:2])
+        '''
+        try:
+            return analysis.extractSkeletonFeatures(labels, list_features_only=True)
+        except:
+            return []
+
+    supportedSkeletonFeatures.__module__ = 'vigra.analysis'
+    analysis.supportedSkeletonFeatures = supportedSkeletonFeatures
+
     # implement the read-only part of the 'dict' API in FeatureAccumulator and RegionFeatureAccumulator
     def __len__(self):
         return len(self.keys())

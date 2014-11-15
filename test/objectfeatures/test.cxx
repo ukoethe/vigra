@@ -244,6 +244,16 @@ struct AccumulatorTest
             // nested Select
         should((IsSameType<Select<Count, Mean, Select<Sum, Minimum>, Variance>::type,
                            Select<Count, Mean, Sum, Minimum, Variance>::type>::value));
+
+            // RegionContour
+        should((IsSameType<StandardizeTag<RegionContour>::type,
+                           RegionContour >::value));
+        should((IsSameType<StandardizeTag<DataFromHandle<RegionContour> >::type,
+                           RegionContour >::value));
+        should((IsSameType<StandardizeTag<Coord<RegionContour> >::type,
+                           RegionContour >::value));
+        should((IsSameType<StandardizeTag<Weighted<Coord<RegionContour> > >::type,
+                           RegionContour >::value));
     }
 
     template <class SOURCE, class REFERENCE>
@@ -734,7 +744,7 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
             typedef Shape3 V;
 
-            typedef AccumulatorChain<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, Coord<StdDev>, Coord<Covariance>,
+            typedef AccumulatorChain<Handle, Select<Coord<Maximum>, Coord<Minimum>, BoundingBox, Coord<Mean>, Coord<StdDev>, Coord<Covariance>,
                                                Coord<Principal<Variance> >, Coord<Principal<CoordinateSystem> >,
                                                Coord<AbsSum>, Coord<MeanAbsoluteDeviation>, Coord<CovarianceEigensystem>
                                           > > A;
@@ -757,6 +767,8 @@ struct AccumulatorTest
             shouldEqual(get<Count>(a), 3.0);
             shouldEqual(get<Coord<Minimum> >(a), V(1));
             shouldEqual(get<Coord<Maximum> >(a), V(3));
+            shouldEqual(get<BoundingBox>(a).first, V(1));
+            shouldEqual(get<BoundingBox>(a).second, V(3));
             shouldEqual(get<Coord<Sum> >(a), W(6.0));
             shouldEqual(get<Coord<AbsSum> >(a), W(6.0));
             shouldEqual(get<Coord<Mean> >(a), W(2.0));
@@ -1118,7 +1130,7 @@ struct AccumulatorTest
         return acc::acc_detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
     }
 
-    void testLabelDispatch()
+    void testRegionAccumulators()
     {
         using namespace vigra::acc;
         {
@@ -1126,13 +1138,13 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
             typedef Shape2 V;
 
-            typedef Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum> >, LabelArg<1>, DataArg<1> > Selected;
+            typedef Select<Count, RegionAnchor, Coord<Sum>, Global<Count>, Global<Coord<Minimum> >, LabelArg<1>, DataArg<1> > Selected;
             typedef AccumulatorChainArray<Handle, Selected> A;
 
             should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::GlobalTags, 
                                TypeList<Count,TypeList<Coord<Minimum>,TypeList<DataArg<1>, TypeList<LabelArg<1>, void> > > > >::value));
             should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::RegionTags, 
-                               TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
+                               TypeList<RegionAnchor,TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, TypeList<LabelArg<1>, void> > > > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
             typedef LookupDependency<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
@@ -1168,9 +1180,18 @@ struct AccumulatorTest
             shouldEqual(2, get<Count>(a, 1));
             shouldEqual(6, get<Global<Count> >(a));
 
+            shouldEqual(Shape2(0,0), get<RegionAnchor>(a, 0));
+            shouldEqual(Shape2(2,0), get<RegionAnchor>(a, 1));
+
             shouldEqual(V(2,2), get<Coord<Sum> >(a, 0));
             shouldEqual(V(4,1), get<Coord<Sum> >(a, 1));
             shouldEqual(V(0,0), get<Global<Coord<Minimum> > >(a));
+
+            a.merge(1, 0);
+
+            shouldEqual(6, get<Count>(a, 1));
+            shouldEqual(Shape2(0,0), get<RegionAnchor>(a, 1));
+            shouldEqual(V(6,3), get<Coord<Sum> >(a, 1));
 
             A aa;
             aa.setMaxRegionLabel(1);
@@ -1186,6 +1207,23 @@ struct AccumulatorTest
             shouldEqual(V(10,-2), get<Coord<Sum> >(aa, 0));
             shouldEqual(V(8,-1), get<Coord<Sum> >(aa, 1));
             shouldEqual(V(2,-1), get<Global<Coord<Minimum> > >(aa));
+
+            A ab;
+            ab.setMaxRegionLabel(1);
+            ab.setCoordinateOffset(V(2, -1));
+            ab.setCoordinateOffset(0, V(-1,1));
+            ab.setCoordinateOffset(1, V(1,-2));
+
+            for(i = start; i < end; ++i)
+                ab(*i);
+            
+            shouldEqual(4, get<Count>(ab, 0));
+            shouldEqual(2, get<Count>(ab, 1));
+            shouldEqual(6, get<Global<Count> >(ab));
+
+            shouldEqual(V(-2,6), get<Coord<Sum> >(ab, 0));
+            shouldEqual(V(6,-3), get<Coord<Sum> >(ab, 1));
+            shouldEqual(V(2,-1), get<Global<Coord<Minimum> > >(ab));
 
             A b;
             b.ignoreLabel(0);
@@ -1208,7 +1246,8 @@ struct AccumulatorTest
             typedef CoupledIteratorType<2, double, int>::type Iterator;
             typedef Iterator::value_type Handle;
 
-            typedef AccumulatorChainArray<Handle, Select<Count, AutoRangeHistogram<3>, GlobalRangeHistogram<3>,
+            typedef AccumulatorChainArray<Handle, Select<Count, RegionPerimeter, RegionCircularity, RegionEccentricity, 
+                                                         AutoRangeHistogram<3>, GlobalRangeHistogram<3>,
                                                          Global<Count>, Global<AutoRangeHistogram<3> >, DataArg<1>, LabelArg<2>
                                           > > A;
 
@@ -1258,6 +1297,24 @@ struct AccumulatorTest
             shouldEqual(V(3,1,0), get<GlobalRangeHistogram<3> >(a, 0));
             shouldEqual(V(0,1,1), get<GlobalRangeHistogram<3> >(a, 1));
             shouldEqual(V(3,2,1), get<Global<AutoRangeHistogram<3> > >(a));
+
+            typedef LookupTag<RegionContour, A>::value_type::value_type Point;
+
+            Point ref0[] = { Point(0, -0.5), Point(-0.5, 0), Point(-0.5, 1), Point(0, 1.5), Point(1, 1.5), 
+                             Point(1.5, 1), Point(1.5, 0), Point(1, -0.5), Point(0.0, -0.5) };
+            shouldEqual(get<RegionContour>(a, 0).size(), 9);
+            shouldEqualSequence(get<RegionContour>(a, 0).cbegin(), get<RegionContour>(a, 0).cend(), ref0);
+            shouldEqualTolerance(get<RegionPerimeter>(a, 0), 4.0 + 2.0*M_SQRT2, 1e-15);
+            shouldEqualTolerance(get<RegionCircularity>(a, 0), 0.9712214720608953, 1e-15);
+            shouldEqualTolerance(get<RegionEccentricity>(a, 0), 0.0, 1e-15);
+ 
+            Point ref1[] = { Point(2, -0.5), Point(1.5, 0), Point(1.5, 1), Point(2, 1.5), 
+                             Point(2.5, 1), Point(2.5, 0), Point(2, -0.5) };
+            shouldEqual(get<RegionContour>(a, 1).size(), 7);
+            shouldEqualSequence(get<RegionContour>(a, 1).cbegin(), get<RegionContour>(a, 1).cend(), ref1);
+            shouldEqualTolerance(get<RegionPerimeter>(a, 1), 2.0 + 2.0*M_SQRT2, 1e-15);
+            shouldEqualTolerance(get<RegionCircularity>(a, 1), 0.8991763601646624, 1e-15);
+            shouldEqualTolerance(get<RegionEccentricity>(a, 1), 1.0, 1e-15);
         }
 
         {
@@ -1433,6 +1490,65 @@ struct AccumulatorTest
             shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,3));
         }
     }
+
+    void testConvexHullFeatures()
+    {
+        using namespace vigra::acc;
+
+        int size = 6;
+        MultiArray<2, int> mask(vigra::Shape2(size, size));
+
+        mask(1, 1) = 1;
+        mask(2, 1) = 1;
+        mask(2, 2) = 1;
+        mask(2, 3) = 1;
+        mask(1, 3) = 1;
+        mask(3, 1) = 1;
+        mask(3, 3) = 1;
+        mask(4, 1) = 1;
+        mask(4, 3) = 1;
+
+        //for(auto i = mask.begin(); i != mask.end(); ++i)
+        //{
+        //    std::cerr << (*i ? "*" : " ");
+        //    if(i.point()[0] == mask.shape(0)-1)
+        //        std::cerr << "\n";
+        //}
+
+        AccumulatorChainArray<CoupledArrays<2, int>, 
+                              Select<LabelArg<1>, ConvexHull> > chf;
+        chf.ignoreLabel(0);
+        extractFeatures(mask, chf);
+
+        shouldEqual(getAccumulator<ConvexHull>(chf, 1).inputArea(), 8.5);
+        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).inputPerimeter(), 8.0 + 6.0*M_SQRT2, 1e-15);
+
+        typedef TinyVector<double, 2> P;
+        P ref[] = { P(1.0, 0.5), P(0.5, 1.0), P(0.5, 3.0), P(1.0, 3.5), P(4.0, 3.5), 
+                    P(4.5, 3.0), P(4.5, 1.0), P(4.0, 0.5),  P(1.0, 0.5) };
+        shouldEqual(get<ConvexHull>(chf, 1).hull().size(), 9);
+        shouldEqualSequence(ref, ref+9, get<ConvexHull>(chf, 1).hull().begin());
+        shouldEqual(get<ConvexHull>(chf, 1).hullArea(), 11.5);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).hullPerimeter(), 10.0 + 2.0*M_SQRT2, 1e-15);
+
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexity(), 8.5 / 11.5, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).rugosity(),  1.2850586602653933, 1e-15);
+
+        shouldEqual(get<ConvexHull>(chf, 1).convexityDefectCount(), 2);
+        shouldEqual(get<ConvexHull>(chf, 1).defectAreaList().size(), 2);
+        shouldEqual(get<ConvexHull>(chf, 1).defectAreaList()[0], 2);
+        shouldEqual(get<ConvexHull>(chf, 1).defectAreaList()[1], 1);
+
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaMean(), 1.5, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaVariance(), 0.5, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaSkewness(), 0.0, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaKurtosis(), 0.0, 1e-15);
+        shouldEqualTolerance(get<ConvexHull>(chf, 1).meanDefectDisplacement(), 1.185185185185185, 1e-15);
+
+        shouldEqualTolerance(P(2.4444444444444444, 2.0), get<ConvexHull>(chf, 1).inputCenter(), P(1e-15));
+        shouldEqualTolerance(P(2.5, 2.0), get<ConvexHull>(chf, 1).hullCenter(), P(1e-15));
+        shouldEqualTolerance(P(2.6666666666666667, 2.0), get<ConvexHull>(chf, 1).convexityDefectCenter(), P(1e-15));
+    }
 };
 
 struct FeaturesTestSuite : public vigra::test_suite
@@ -1447,8 +1563,9 @@ struct FeaturesTestSuite : public vigra::test_suite
         add(testCase(&AccumulatorTest::testMerge));
         add(testCase(&AccumulatorTest::testCoordAccess));
         add(testCase(&AccumulatorTest::testHistogram));
-        add(testCase(&AccumulatorTest::testLabelDispatch));
+        add(testCase(&AccumulatorTest::testRegionAccumulators));
         add(testCase(&AccumulatorTest::testIndexSpecifiers));
+        add(testCase(&AccumulatorTest::testConvexHullFeatures));
     }
 };
 

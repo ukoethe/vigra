@@ -38,13 +38,11 @@
 #define VIGRA_MULTI_ITERATOR_HXX
 
 #include <sys/types.h>
+#include "multi_fwd.hxx"
 #include "iteratortags.hxx"
 #include "multi_iterator_coupled.hxx"
 
 namespace vigra {
-
-template<unsigned int N, class DirectedTag>
-class GridGraph;
 
 /** \addtogroup MultiIteratorGroup
 */
@@ -334,6 +332,16 @@ class StridedScanOrderIterator
     const_reference operator[](MultiArrayIndex i) const
     {
         return *(StridedScanOrderIterator(*this) += i);
+    }
+
+    reference operator[](const shape_type& coordOffset)
+    {
+        return *(StridedScanOrderIterator(*this) += coordOffset);
+    }
+
+    const_reference operator[](const shape_type& coordOffset) const
+    {
+        return *(StridedScanOrderIterator(*this) += coordOffset);
     }
 
     StridedScanOrderIterator & operator++()
@@ -734,12 +742,6 @@ struct MultiIteratorStrideTraits
         return s + d;
     }
 };
-
-template <unsigned int N, class T, class REFERENCE = T &, class POINTER = T *>
-class MultiIterator;
-
-template <unsigned int N, class T, class REFERENCE = T &, class POINTER = T *>
-class StridedMultiIterator;
 
 /********************************************************/
 /*                                                      */

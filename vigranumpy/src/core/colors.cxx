@@ -316,7 +316,9 @@ NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueIm
                        "pythonApplyColortable: shape of res is wrong");
     
     const unsigned int N = colortable.shape(0);
-   
+
+    bool startsWithTransparent = (colortable(0,3) == 0);
+
     for(MultiArrayIndex c=0; c<colortable.shape(1); ++c)
     {
         MultiArrayView<2, UInt8>::iterator channelIter = res.bind<2>(c).begin();
@@ -326,7 +328,24 @@ NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueIm
         
         for(typename InputType::const_iterator v = valueImage.begin(); v != valueImage.end(); ++v, ++channelIter)
         {
-            const_cast<UInt8 &>(*channelIter) = ctable[*v % N];
+            if (*v == 0)
+            {
+                *channelIter = ctable[0];
+            }
+            else if (startsWithTransparent)
+            {
+                // Special behavior: If the colortable has too few values for the image,
+                // we simply repeat the table for the higher indexes (see below).
+                // BUT:
+                // It's common for the colortable to start with a transparent value for "background".
+                // In that case, we only repeat the remaining values in the colortable (don't repeat the transparent color)
+                *channelIter = ctable[((*v-1) % (N-1))+1];
+            }
+            else
+            {
+                // Use % to repeat the colortable if there aren't enough values in the colortable.
+                *channelIter = ctable[*v % N];
+            }
         }
     }
     
@@ -471,8 +490,10 @@ void defineColors()
         arg("colortable"),
         arg("out")=python::object()), 
         "Applies a colortable to the given 2D valueImage.\n\n"
-        "Colortable must have 4 columns, each row represents a color (for example, RGBA).\n"
-        "Values in valueImage are first taken module the length of the colortable.\n\n"
+        "Colortable must have 4 columns, each row represents a color (for example, RGBA). \n"
+        "Values in valueImage are first taken modulo the length of the colortable. \n"
+        "In the special case where the first color in the table is transparent, that value "
+        "is NOT repeated for values outside the colortable length.\n\n"
         "Returns: uint8 image with 4 channels\n");
     
     multidef("gray2qimage_ARGB32Premultiplied", pyGray2QImage_ARGB32Premultiplied<vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
