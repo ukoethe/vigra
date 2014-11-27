@@ -56,10 +56,6 @@
 #include "adjacency_list_graph.hxx"
 #include "graph_maps.hxx"
 #include "timing.hxx"
-#include "thread_pool.hxx"
-
-#include <boost/asio.hpp>
-#include <boost/thread.hpp>
 
 
 
@@ -137,7 +133,6 @@ namespace vigra{
 
             vigra::TinyVector<Int64, 3> shape = bg.shape();
 
-            std::cout<<"project back parallel\n";
 
             if(ignoreLabel==-1){
                 

@@ -9,6 +9,10 @@
 
 namespace python = boost::python;
 
+/*
+ BROKEN! REFACTOR ME
+*/
+
 namespace vigra
 {
 
@@ -33,7 +37,7 @@ namespace vigra
         T maxLabel = *std::max_element(src.begin(), src.end());
         centers.reshapeIfEmpty(Shape2(maxLabel, N),
                                "eccentricityCenters(): Output has wrong dimensions");
-        findEccentricityCenters(src, centers, maxLabel);
+        eccentricityCenters(src, centers);
         return centers;
     }
 

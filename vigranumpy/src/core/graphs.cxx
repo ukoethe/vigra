@@ -57,7 +57,7 @@ namespace vigra{
 	void defineGridGraph2d();
     void defineGridGraph3d();
     void defineGridGraphImplicitEdgeMap();
-    void defineEccentricity();
+    //void defineEccentricity();
 } // namespace vigra
 
 using namespace vigra;
@@ -94,11 +94,5 @@ BOOST_PYTHON_MODULE_INIT(graphs)
     // implicit edge maps
     defineGridGraphImplicitEdgeMap();
 
-    // define new rag functions
-
-    defineNewRag();
-
-    defineNeuroGraph();
-
-    defineEccentricity();
+    //defineEccentricity();
 }
