@@ -57,8 +57,6 @@ namespace vigra{
 	void defineGridGraph2d();
     void defineGridGraph3d();
     void defineGridGraphImplicitEdgeMap();
-    void defineNewRag();
-    void defineNeuroGraph();
     void defineEccentricity();
 } // namespace vigra
 
