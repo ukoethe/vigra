@@ -50,6 +50,7 @@
 #include "vigra/algorithm.hxx"
 #include "vigra/compression.hxx"
 
+#include "vigra/multi_blocking.hxx"
 
 using namespace vigra;
 
@@ -1263,12 +1264,91 @@ struct CompressionTest
     }
 };
 
+
+struct MultiBlockingTest
+{
+    void test2d()
+    {
+        typedef MultiBlocking<2> Mb;
+        typedef typename Mb::Shape Shape;
+        typedef typename Mb::Block Block;
+        typedef typename Mb::Block Block;
+
+        typedef typename Mb::BlockWithBorder BlockWithBorder;
+        {
+            Shape shape(10,11), blockShape(4,5);
+            Mb blocking(shape, blockShape);
+            shouldEqual(blocking.numBlocks(),9);
+
+            // get the first block 
+            const Block b0 = blocking.getBlock(0);
+            shouldEqual(b0.begin()[0], 0);
+            shouldEqual(b0.begin()[1], 0);
+            shouldEqual(b0.end()[0], 4);
+            shouldEqual(b0.end()[1], 5);
+
+            // get the second block
+            const Block b1 = blocking.getBlock(1);
+            shouldEqual(b1.begin()[0], 4);
+            shouldEqual(b1.begin()[1], 0);
+            shouldEqual(b1.end()[0], 8);
+            shouldEqual(b1.end()[1], 5);
+
+            // get the third block
+            const Block b2 = blocking.getBlock(2);
+            shouldEqual(b2.begin()[0], 8);
+            shouldEqual(b2.begin()[1], 0);
+            shouldEqual(b2.end()[0], 10);
+            shouldEqual(b2.end()[1], 5);
+
+            //  first block with border
+            const BlockWithBorder bb0 = blocking.getBlockWithBorder(0, Shape(1));
+            shouldEqual(bb0.core().begin()[0], 0);
+            shouldEqual(bb0.core().begin()[1], 0);
+            shouldEqual(bb0.core().end()[0], 4);
+            shouldEqual(bb0.core().end()[1], 5);
+
+            shouldEqual(bb0.border().begin()[0], 0);
+            shouldEqual(bb0.border().begin()[1], 0);
+            shouldEqual(bb0.border().end()[0], 5);
+            shouldEqual(bb0.border().end()[1], 6);
+
+            //  second block with border
+            const BlockWithBorder bb1 = blocking.getBlockWithBorder(1, Shape(1));
+            shouldEqual(bb1.core().begin()[0], 4);
+            shouldEqual(bb1.core().begin()[1], 0);
+            shouldEqual(bb1.core().end()[0], 8);
+            shouldEqual(bb1.core().end()[1], 5);
+
+            shouldEqual(bb1.border().begin()[0], 3);
+            shouldEqual(bb1.border().begin()[1], 0);
+            shouldEqual(bb1.border().end()[0], 9);
+            shouldEqual(bb1.border().end()[1], 6);
+
+            //  third block with border
+            const BlockWithBorder bb2 = blocking.getBlockWithBorder(2, Shape(1));
+            shouldEqual(bb2.core().begin()[0], 8);
+            shouldEqual(bb2.core().begin()[1], 0);
+            shouldEqual(bb2.core().end()[0], 10);
+            shouldEqual(bb2.core().end()[1], 5);
+
+            shouldEqual(bb2.border().begin()[0], 7);
+            shouldEqual(bb2.border().begin()[1], 0);
+            shouldEqual(bb2.border().end()[0], 10);
+            shouldEqual(bb2.border().end()[1], 6);
+        }
+    }
+};
+
+
+
 struct UtilitiesTestSuite
 : public vigra::test_suite
 {
     UtilitiesTestSuite()
     : vigra::test_suite("UtilitiesTestSuite")
     {
+        add( testCase( &MultiBlockingTest::test2d));
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
         add( testCase( &ArrayVectorTest::testAmbiguousConstructor));

@@ -107,3 +107,8 @@ VIGRA_ADD_NUMPY_MODULE(histogram SOURCES
 VIGRA_ADD_NUMPY_MODULE(utilities SOURCES
     utilities.cxx
   VIGRANUMPY)
+
+
+VIGRA_ADD_NUMPY_MODULE(blockwise SOURCES
+    blockwise.cxx
+  VIGRANUMPY)
