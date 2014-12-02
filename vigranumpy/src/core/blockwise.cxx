@@ -52,12 +52,11 @@ namespace vigra{
     template<unsigned int DIM, class T_IN, class T_OUT>
     NumpyAnyArray pyBlockwiseGaussianSmoothMultiArray(
         const NumpyArray<DIM, T_IN> &  source, 
-        const double sigma,
-        const MultiBlocking<DIM> & blocking,
+        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
         NumpyArray<DIM, T_IN>  dest
     ){
         dest.reshapeIfEmpty(source.taggedShape());
-        blockwise::gaussianSmoothMultiArray(source, dest, sigma, blocking);
+        blockwise::gaussianSmoothMultiArray(source, dest, opt);
         return dest;
     }
 
@@ -65,11 +64,12 @@ namespace vigra{
 
     template<unsigned int DIM, class T_IN, class T_OUT>
     void defineBlockwiseFilters(){
+        //typedef blockwise::BlockwiseConvolutionOptions<DIM> Opt;
+
         python::def("gaussianSmooth",registerConverters(&pyBlockwiseGaussianSmoothMultiArray<DIM, T_IN, T_OUT>),
             (
                 python::arg("source"),
-                python::arg("simga"),
-                python::arg("blocking"),
+                python::arg("options"),
                 python::arg("out") = python::object()
             )
         );
@@ -88,7 +88,14 @@ namespace vigra{
 
 
 
+    template<unsigned int DIM>
+    void defineBlockwiseConvolutionOptions(const std::string & clsName){
 
+        typedef blockwise::BlockwiseConvolutionOptions<DIM> Opt;
+        python::class_<Opt>(clsName.c_str(), python::init<>())
+        .add_property("stdDev", &Opt::getStdDev, &Opt::setStdDev)
+        ;
+    }
 
 
 
@@ -110,6 +117,9 @@ BOOST_PYTHON_MODULE_INIT(blockwise)
 
     defineMultiBlocking<2>("Blocking2D");
     defineMultiBlocking<3>("Blocking3D");
+
+    defineBlockwiseConvolutionOptions<2>("BlockwiseConvolutionOptions2D");
+    defineBlockwiseConvolutionOptions<3>("BlockwiseConvolutionOptions3D");
 
     defineBlockwiseFilters<3, float, float>();
 }

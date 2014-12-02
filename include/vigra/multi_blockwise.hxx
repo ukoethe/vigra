@@ -4,6 +4,11 @@
 #include "vigra/multi_blocking.hxx"
 #include "vigra/multi_convolution.hxx"
 
+
+#ifndef VIGRA_DEFAULT_BLOCK_SHAPE 
+    #define VIGRA_DEFAULT_BLOCK_SHAPE 64
+#endif 
+
 namespace vigra{
 
 /*
@@ -58,7 +63,7 @@ namespace blockwise{
 
         #pragma omp parallel for
         for(size_t i=0 ; i<blocking.numBlocks(); ++i){
-
+            //std::cout<<"in blockwise caller "<<i<<"\n";
             // get the block with border
             const BlockWithBorder bwb = blocking.getBlockWithBorder(i, borderWidth);
 
@@ -127,42 +132,137 @@ namespace blockwise{
 
 
 
-    enum ParallelizationType{
-        DefaultParallelization,
-        OpenMpParallelization,
-        BoostThreadsParallelization,
-        Std11ThreadsParallelization
+    enum ConcurrencyType{
+        DefaultConcurrency,
+        OpenMpConcurrency,
+        BoostThreadsConcurrency,
+        Std11ThreadsConcurrency,
+        NoConcurrency
+
     };
-    
-    template<class N>
-    public: BlockwiseOptions{
+        
+
+    class ParallelOptions{
+    public:
+        ParallelOptions(const size_t numThreds = 0, 
+                        const ConcurrencyType  concurrencyType = DefaultConcurrency)
+        :   numThreads_(numThreds), // zero means AUTO
+            concurrencyType_(concurrencyType){
+        }
+        size_t getNumThreads()const{
+            return numThreads_;
+        }
+        ConcurrencyType getConcurrencyType()const{
+            return concurrencyType_;
+        }
+    private:
+        size_t numThreads_;
+        ConcurrencyType concurrencyType_;
+    };
+
+
+    template<unsigned int N>
+    class BlockwiseOptions
+    : public ParallelOptions
+    {
+    public:
         typedef vigra::TinyVector< vigra::MultiArrayIndex, N> Shape;
 
-        bool runParallel(){
-
+        BlockwiseOptions(const Shape & blockShape = Shape(VIGRA_DEFAULT_BLOCK_SHAPE))
+        :   ParallelOptions(),
+            blockShape_(blockShape){
+        }
+        const Shape & getBlockShape()const{
+            return blockShape_;
         }
     private:
         Shape blockShape_;
-        size_t numThreds_;
-        Parallelization::ParallelizationType parallelizationType_;
+    };
+
+    template<unsigned int N>
+    class BlockwiseConvolutionOptions
+    :   public  BlockwiseOptions<N>, public vigra::ConvolutionOptions<N>{
+    public:
+        BlockwiseConvolutionOptions()
+        :   BlockwiseOptions<N>(),
+            vigra::ConvolutionOptions<N>(){
+        }
+    private:
+
     };
 
 
+
+    template<unsigned int N>
+    vigra::TinyVector< vigra::MultiArrayIndex, N > getBorder(
+        const BlockwiseConvolutionOptions<N> & opt,
+        const size_t order
+    ){
+        vigra::TinyVector< vigra::MultiArrayIndex, N > res(vigra::SkipInitialization);
+        if(opt.getFilterWindowSize()<=0.00001){
+            for(size_t d=0; d<N; ++d){
+                const double stdDev =  opt.getStdDev()[d];
+                res[d] = std::round(3.0 * stdDev  + 0.5*static_cast<double>(order));
+            }
+        }
+        return res;
+    }
 
 
     // include this also in the above macro
     template <unsigned int N, class T1, class S1,
-    class T2, class S2, class C>
+    class T2, class S2>
     void gaussianSmoothMultiArray(
         MultiArrayView<N, T1, S1> const & source,
         MultiArrayView<N, T2, S2> dest,
-        double sigma,
-        const MultiBlocking<N, C> & blocking,
+        const BlockwiseConvolutionOptions<N> & options 
     )
-    {
-        const typename MultiBlocking<N, C>::Shape border(sigma*3.0 + 0.5);
-        GaussianSmoothOld<N> f(sigma);
-        blockwiseCaller(source, dest, f, blocking, border);
+    {   
+        // typdefs
+        typedef  MultiBlocking<N, vigra::MultiArrayIndex> Blocking;
+        typedef typename Blocking::BlockWithBorder BlockWithBorder;
+        typedef typename Blocking::Block Block;
+        typedef typename Blocking::Shape Shape;
+        
+        const Shape border = getBorder(options, 0);
+
+
+        std::pair<Shape, Shape> roi = options.getSubarray();
+        if(roi.first == Shape() && roi.second == Shape()){
+
+            const Blocking blocking(source.shape(), options.getBlockShape());
+            GaussianSmoothFunctor<N> f(options);
+            blockwiseCaller(source, dest, f, blocking, border);
+        }
+        else{
+            // make roi positive
+            for(size_t d=0; d<N; ++d){
+                if(roi.first[d] < 0){roi.first[d] += source.shape(k);}
+                if(roi.second[d] < 0){roi.second[d] += source.shape(k);}
+            }
+            Block coreBlock(roi.first, roi.second);
+            Block borderBlock(coreBlock);
+            borderBlock.addBorder(border);
+            borderBlock &= Block(source.shape();
+
+            BlockWithBorder bwb(coreBlock, borderBlock);
+
+            // extract the relevant part of the input image    
+            MultiArrayView<N, T1, S1> subSource = source.subarray(boarder.begin(), boarder.end());
+            BlockwiseConvolutionOptions<N> newOpt(options); 
+
+            // set the new roi 
+            newOpt.subarray(bwb.localCore().begin(), bwb.localCore.end());
+
+            // extract the relevant part of the input image    
+            MultiArrayView<N, T1, S1> subDest = source.subarray(boarder.begin(), boarder.end());
+            BlockwiseConvolutionOptions<N> newOpt(options); 
+
+        }   
+
+
+
+
     }
 
 } // end namespace blockwise
