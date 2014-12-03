@@ -46,10 +46,9 @@ namespace vigra{
             Block border_;
         };
 
-
+        
         template<unsigned int DIM, class C>
         class MultiBlockWithBorderIter
-        : public MultiCoordinateIterator<DIM>
         {
             public:
                 typedef C  PointValue;
@@ -57,8 +56,13 @@ namespace vigra{
                 typedef Point Shape;
                 typedef Box<PointValue, DIM> Block;
                 typedef MultiCoordinateIterator< DIM> MultiCoordIter;
-                //typedef BlockWithBorder<DIM, PointValue> BlockWithBorder;
+                typedef BlockWithBorder<DIM, PointValue> BlockWithBorderType;
                 typedef vigra::MultiBlocking<DIM, PointValue> MultiBlockingType;
+
+                typedef MultiCoordinateIterator<DIM> BaseIterator;
+                typedef BlockWithBorderType value_type;
+                typedef const value_type & const_reference;
+                typedef const_reference reference;
 
                 MultiBlockWithBorderIter(const MultiBlockingType & multiBlocking, const MultiCoordIter & baseIter)
                 :   MultiCoordIter(baseIter),
@@ -67,10 +71,30 @@ namespace vigra{
 
                 }
 
+                bool operator == (const MultiBlockWithBorderIter & rhs)const{
+                    return baseIterator_ == rhs.baseIterator_;
+                }
+                bool operator != (const MultiBlockWithBorderIter & rhs)const{
+                    return !(*this==rhs);
+                }
+
+
             private:
                 const MultiBlockingType * multiBlocking_;
+                BaseIterator baseIterator_;
         };
+        
     }
+
+    template<unsigned int DIM, class C>
+    vigra::TinyVector<C, DIM> makePositivCoordinate(const vigra::TinyVector<C, DIM> & vec, const vigra::TinyVector<C, DIM> & shape){
+        vigra::TinyVector<C, DIM> res(vigra::SkipInitialization);
+        for(size_t d=0; d<DIM; ++d){
+            res[d] = vec[d] < 0 ? vec[d] + shape[d] : vec[d];
+        }
+        return res;
+    }
+
 
 
     template<unsigned int DIM, class C = MultiArrayIndex>
@@ -85,16 +109,23 @@ namespace vigra{
         typedef detail_multi_blocking::BlockWithBorder<DIM, PointValue> BlockWithBorder;
 
         MultiBlocking(const Shape & shape,
-                      const Shape & blockShape)
+                      const Shape & blockShape,
+                      const Shape & roiBegin = Shape(0),
+                      const Shape & roiEnd = Shape(0)
+        )
         :   shape_(shape),
+            roiBlock_(makePositivCoordinate<DIM, C>(roiBegin, shape),
+                      roiEnd == Shape(0) ? shape : makePositivCoordinate<DIM, C>(roiEnd, shape)),
             blockShape_(blockShape),
-            blocksPerAxis_(shape/blockShape),
+            blocksPerAxis_(vigra::SkipInitialization),
             blockDescIter_(),
             numBlocks_(1)
         {
+            const Shape roiShape = roiBlock_.size();
+            blocksPerAxis_ = roiShape / blockShape_;
 
             for(size_t d=0; d<DIM; ++d){
-                if(blocksPerAxis_[d]*blockShape_[d] < shape_[d] ){
+                if(blocksPerAxis_[d]*blockShape_[d] < roiShape[d] ){
                     ++blocksPerAxis_[d];
                 }
                 numBlocks_ *= blocksPerAxis_[d];
@@ -107,16 +138,14 @@ namespace vigra{
             return numBlocks_;
         }
 
-
-
         /// get a block with border
         BlockWithBorder getBlockWithBorder(const BlockDesc & blockDesc, const Shape & width )const{
-            const Point blockStart(blockDesc * blockShape_);
+            const Point blockStart(blockDesc * blockShape_ + roiBlock_.begin());
             const Point blockEnd(blockStart + blockShape_);
-            const Block core = Block(blockStart, blockEnd) & Block(shape_) ;
+            const Block core = Block(blockStart, blockEnd) & roiBlock_ ;
             Block border = core;
             border.addBorder(width);
-            border &=  Block(shape_);
+            border &= Block(shape_);
             return BlockWithBorder( core, border );
         }
 
@@ -129,9 +158,9 @@ namespace vigra{
 
         /// get a block (without any overlap)
         Block getBlock(const BlockDesc & blockDesc)const{
-            const Point blockStart(blockDesc * blockShape_);
+            const Point blockStart(blockDesc * blockShape_ + roiBlock_.begin());
             const Point blockEnd(blockStart + blockShape_);
-            return Block(blockStart, blockEnd) & Block(shape_);
+            return Block(blockStart, blockEnd) & roiBlock_;
         }
 
         /// get a block (without any overlap)
@@ -139,9 +168,17 @@ namespace vigra{
             return getBlock(blockDescIter_[index]);
         }
 
+        const Shape & roiBegin()const{
+            return roiBlock_.begin();
+        }
+
+        const Shape & roiEnd()const{
+            return roiBlock_.end();
+        }
 
     private:
         Shape shape_;
+        Block roiBlock_;
         Shape blockShape_;
         Shape blocksPerAxis_;
         MultiCoordIter blockDescIter_;

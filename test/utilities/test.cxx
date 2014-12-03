@@ -1338,6 +1338,32 @@ struct MultiBlockingTest
             shouldEqual(bb2.border().end()[1], 6);
         }
     }
+
+
+    void test2dWithRoi()
+    {
+        typedef MultiBlocking<2> Mb;
+        typedef typename Mb::Shape Shape;
+        typedef typename Mb::Block Block;
+        typedef typename Mb::Block Block;
+
+        typedef typename Mb::BlockWithBorder BlockWithBorder;
+        {
+            Shape shape(13,14), blockShape(4,5), roiBegin(1,2), roiEnd(9,11);
+            Mb blocking(shape, blockShape, roiBegin, roiEnd);
+            shouldEqual(blocking.numBlocks(),4);
+
+            const Block blocks[4] = { blocking.getBlock(0), blocking.getBlock(1), blocking.getBlock(2), blocking.getBlock(3)};
+            shouldEqual(blocks[0].begin(), Shape(1,2));
+            shouldEqual(blocks[0].end(),   Shape(5,7));
+            shouldEqual(blocks[1].begin(), Shape(5,2));
+            shouldEqual(blocks[1].end(),   Shape(9,7));
+            shouldEqual(blocks[2].begin(), Shape(1,7));
+            shouldEqual(blocks[2].end(),   Shape(5,11));
+            shouldEqual(blocks[3].begin(), Shape(5,7));
+            shouldEqual(blocks[3].end(),   Shape(9,11));
+        }
+    }
 };
 
 
@@ -1349,6 +1375,7 @@ struct UtilitiesTestSuite
     : vigra::test_suite("UtilitiesTestSuite")
     {
         add( testCase( &MultiBlockingTest::test2d));
+        add( testCase( &MultiBlockingTest::test2dWithRoi));
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
         add( testCase( &ArrayVectorTest::testAmbiguousConstructor));

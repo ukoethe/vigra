@@ -82,7 +82,8 @@ namespace blockwise{
                                                                             bwb.localCore().end());
 
             // write the core global out
-            dest.subarray(bwb.core().begin(), bwb.core().end()) = destSubCore;
+            dest.subarray(bwb.core().begin()-blocking.roiBegin(), 
+                          bwb.core().end()  -blocking.roiEnd()  ) = destSubCore;
 
         }
     }
@@ -220,45 +221,21 @@ namespace blockwise{
     {   
         // typdefs
         typedef  MultiBlocking<N, vigra::MultiArrayIndex> Blocking;
-        typedef typename Blocking::BlockWithBorder BlockWithBorder;
-        typedef typename Blocking::Block Block;
+        //typedef typename Blocking::BlockWithBorder BlockWithBorder;
+        //typedef typename Blocking::Block Block;
         typedef typename Blocking::Shape Shape;
         
         const Shape border = getBorder(options, 0);
 
 
-        std::pair<Shape, Shape> roi = options.getSubarray();
-        if(roi.first == Shape() && roi.second == Shape()){
+        //std::pair<Shape, Shape> roi = options.getSubarray();
+        BlockwiseConvolutionOptions<N> subOptions(options);
+        subOptions.subarray(Shape(0), Shape(0)); 
 
-            const Blocking blocking(source.shape(), options.getBlockShape());
-            GaussianSmoothFunctor<N> f(options);
-            blockwiseCaller(source, dest, f, blocking, border);
-        }
-        else{
-            // make roi positive
-            for(size_t d=0; d<N; ++d){
-                if(roi.first[d] < 0){roi.first[d] += source.shape(k);}
-                if(roi.second[d] < 0){roi.second[d] += source.shape(k);}
-            }
-            Block coreBlock(roi.first, roi.second);
-            Block borderBlock(coreBlock);
-            borderBlock.addBorder(border);
-            borderBlock &= Block(source.shape();
-
-            BlockWithBorder bwb(coreBlock, borderBlock);
-
-            // extract the relevant part of the input image    
-            MultiArrayView<N, T1, S1> subSource = source.subarray(boarder.begin(), boarder.end());
-            BlockwiseConvolutionOptions<N> newOpt(options); 
-
-            // set the new roi 
-            newOpt.subarray(bwb.localCore().begin(), bwb.localCore.end());
-
-            // extract the relevant part of the input image    
-            MultiArrayView<N, T1, S1> subDest = source.subarray(boarder.begin(), boarder.end());
-            BlockwiseConvolutionOptions<N> newOpt(options); 
-
-        }   
+        const Blocking blocking(source.shape(), options.getBlockShape());
+        GaussianSmoothFunctor<N> f(subOptions);
+        blockwiseCaller(source, dest, f, blocking, border);
+  
 
 
 
