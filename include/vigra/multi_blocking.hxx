@@ -1,10 +1,11 @@
-#ifndef VIGRA_MULTI_BLOCKING_HXX
+ #ifndef VIGRA_MULTI_BLOCKING_HXX
 #define VIGRA_MULTI_BLOCKING_HXX
 
 #include "vigra/tinyvector.hxx"
 #include "vigra/box.hxx"
 #include "vigra/multi_iterator.hxx"
 #include "vigra/multi_convolution.hxx"
+#include "vigra/transform_iterator.hxx"
 
 namespace vigra{
 
@@ -47,42 +48,6 @@ namespace vigra{
         };
 
         
-        template<unsigned int DIM, class C>
-        class MultiBlockWithBorderIter
-        {
-            public:
-                typedef C  PointValue;
-                typedef TinyVector<PointValue, DIM> Point;
-                typedef Point Shape;
-                typedef Box<PointValue, DIM> Block;
-                typedef MultiCoordinateIterator< DIM> MultiCoordIter;
-                typedef BlockWithBorder<DIM, PointValue> BlockWithBorderType;
-                typedef vigra::MultiBlocking<DIM, PointValue> MultiBlockingType;
-
-                typedef MultiCoordinateIterator<DIM> BaseIterator;
-                typedef BlockWithBorderType value_type;
-                typedef const value_type & const_reference;
-                typedef const_reference reference;
-
-                MultiBlockWithBorderIter(const MultiBlockingType & multiBlocking, const MultiCoordIter & baseIter)
-                :   MultiCoordIter(baseIter),
-                    multiBlocking_(&multiBlocking_)
-                {
-
-                }
-
-                bool operator == (const MultiBlockWithBorderIter & rhs)const{
-                    return baseIterator_ == rhs.baseIterator_;
-                }
-                bool operator != (const MultiBlockWithBorderIter & rhs)const{
-                    return !(*this==rhs);
-                }
-
-
-            private:
-                const MultiBlockingType * multiBlocking_;
-                BaseIterator baseIterator_;
-        };
         
     }
 
@@ -96,10 +61,30 @@ namespace vigra{
     }
 
 
+    template<class MB>
+    class MultiCoordToBlockWithBoarder{
+    public:
+        typedef typename MB::Shape Shape;
+        typedef typename MB::MultiCoordIter input_iter;
+        typedef typename MB::BlockWithBorder result_type;
+        MultiCoordToBlockWithBoarder(const MB & mb, const Shape & width)
+        :   mb_(&mb),
+            width_(width){
+        }
+
+        result_type operator()(const input_iter & iter)const{
+            return mb_->getBlockWithBorder(*iter, width_);
+        }
+    private:
+        const MB * mb_;
+        Shape width_;
+    };
+
 
     template<unsigned int DIM, class C = MultiArrayIndex>
     class MultiBlocking{
     public:
+        typedef MultiBlocking<DIM, C> SelfType;
         typedef C  PointValue;
         typedef TinyVector<PointValue, DIM> Point;
         typedef Point Shape;
@@ -107,6 +92,13 @@ namespace vigra{
         typedef Box<PointValue, DIM> Block;
         typedef MultiCoordinateIterator< DIM> MultiCoordIter;
         typedef detail_multi_blocking::BlockWithBorder<DIM, PointValue> BlockWithBorder;
+
+
+        // iterators 
+        typedef MultiCoordToBlockWithBoarder<SelfType> CoordToBwb;
+        typedef TransformIterator<CoordToBwb, MultiCoordIter> BlockWithBorderIter;
+
+
 
         MultiBlocking(const Shape & shape,
                       const Shape & blockShape,
@@ -136,6 +128,17 @@ namespace vigra{
         /// total number of blocks
         size_t numBlocks()const{
             return numBlocks_;
+        }
+
+        BlockWithBorderIter BlockWithBorderBegin(const Shape & width)const{
+            return BlockWithBorderIter(MultiCoordIter(blocksPerAxis_),
+                                       CoordToBwb(*this, width));
+        }
+
+
+        BlockWithBorderIter BlockWithBorderEnd(const Shape & width)const{
+            const MultiCoordIter beginIter(blocksPerAxis_);
+            return BlockWithBorderIter(beginIter.getEndIterator(),CoordToBwb(*this, width));
         }
 
         /// get a block with border

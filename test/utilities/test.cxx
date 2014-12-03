@@ -1345,9 +1345,8 @@ struct MultiBlockingTest
         typedef MultiBlocking<2> Mb;
         typedef typename Mb::Shape Shape;
         typedef typename Mb::Block Block;
-        typedef typename Mb::Block Block;
 
-        typedef typename Mb::BlockWithBorder BlockWithBorder;
+        //typedef typename Mb::BlockWithBorder BlockWithBorder;
         {
             Shape shape(13,14), blockShape(4,5), roiBegin(1,2), roiEnd(9,11);
             Mb blocking(shape, blockShape, roiBegin, roiEnd);
@@ -1362,6 +1361,23 @@ struct MultiBlockingTest
             shouldEqual(blocks[2].end(),   Shape(5,11));
             shouldEqual(blocks[3].begin(), Shape(5,7));
             shouldEqual(blocks[3].end(),   Shape(9,11));
+        }
+    }
+
+    void test2dIterator()
+    {
+        typedef MultiBlocking<2> Mb;
+        typedef typename Mb::Shape Shape;
+        //typedef typename Mb::Block Block;
+        typedef typename Mb::BlockWithBorder BlockWithBorder;
+        //typedef typename Mb::BlockWithBorderIter BlockWithBorderIter;
+        {
+            Shape shape(13,14), blockShape(4,5), roiBegin(1,2), roiEnd(9,11), width(2,3);
+            Mb blocking(shape, blockShape, roiBegin, roiEnd);
+            shouldEqual(blocking.numBlocks(),4);
+
+            std::vector<BlockWithBorder> bwbVec(blocking.BlockWithBorderBegin(width), 
+                                                blocking.BlockWithBorderEnd(width));
         }
     }
 };
