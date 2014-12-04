@@ -59,32 +59,43 @@ namespace blockwise{
         const vigra::MultiBlocking<DIM, C> & blocking,
         const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth
     ){
+
+
+
         typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
+        typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
 
-        #pragma omp parallel for
-        for(size_t i=0 ; i<blocking.numBlocks(); ++i){
-            //std::cout<<"in blockwise caller "<<i<<"\n";
-            // get the block with border
-            const BlockWithBorder bwb = blocking.getBlockWithBorder(i, borderWidth);
+        
 
-            // get the input of the block as a view
-            vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin(),
-                                                                         bwb.border().end());
 
-            // get the output as NEW allocated array
-            vigra::MultiArray<DIM, T_OUT> destSub(sourceSub.shape());
+        #pragma omp parallel
+        {
+            BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
+            //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
 
-            // call the functor
-            functor(sourceSub, destSub);
+            #pragma omp for
+            for(size_t i=0 ; i<blocking.numBlocks(); ++i){
 
-             // write the core global out
-            vigra::MultiArrayView<DIM, T_IN, ST_IN> destSubCore = destSub.subarray(bwb.localCore().begin(),
-                                                                            bwb.localCore().end());
+                const BlockWithBorder bwb = iter[i];
 
-            // write the core global out
-            dest.subarray(bwb.core().begin()-blocking.roiBegin(), 
-                          bwb.core().end()  -blocking.roiEnd()  ) = destSubCore;
+                // get the input of the block as a view
+                vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin(),
+                                                                             bwb.border().end());
 
+                // get the output as NEW allocated array
+                vigra::MultiArray<DIM, T_OUT> destSub(sourceSub.shape());
+
+                // call the functor
+                functor(sourceSub, destSub);
+
+                 // write the core global out
+                vigra::MultiArrayView<DIM, T_IN, ST_IN> destSubCore = destSub.subarray(bwb.localCore().begin(),
+                                                                                bwb.localCore().end());
+                // write the core global out
+                dest.subarray(bwb.core().begin()-blocking.roiBegin(), 
+                              bwb.core().end()  -blocking.roiBegin()  ) = destSubCore;
+
+            }
         }
     }
 
@@ -173,8 +184,11 @@ namespace blockwise{
         :   ParallelOptions(),
             blockShape_(blockShape){
         }
-        const Shape & getBlockShape()const{
+        Shape getBlockShape()const{
             return blockShape_;
+        }
+        void setBlockShape(const Shape & blockShape){
+            blockShape_ = blockShape;
         }
     private:
         Shape blockShape_;

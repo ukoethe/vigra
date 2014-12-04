@@ -1275,34 +1275,39 @@ struct MultiBlockingTest
         typedef typename Mb::Block Block;
 
         typedef typename Mb::BlockWithBorder BlockWithBorder;
+        typedef typename Mb::BlockWithBorderIter BlockWithBorderIter;
+        typedef typename Mb::BlockIter BlockIter;
         {
             Shape shape(10,11), blockShape(4,5);
             Mb blocking(shape, blockShape);
             shouldEqual(blocking.numBlocks(),9);
 
+
+            BlockWithBorderIter bwbIter  = blocking.blockWithBorderBegin(Shape(1));
+            BlockIter bIter = blocking.blockBegin();
+
             // get the first block 
-            const Block b0 = blocking.getBlock(0);
-            shouldEqual(b0.begin()[0], 0);
-            shouldEqual(b0.begin()[1], 0);
-            shouldEqual(b0.end()[0], 4);
-            shouldEqual(b0.end()[1], 5);
+            shouldEqual(bIter[0].begin()[0], 0);
+            shouldEqual(bIter[0].begin()[1], 0);
+            shouldEqual(bIter[0].end()[0], 4);
+            shouldEqual(bIter[0].end()[1], 5);
 
             // get the second block
-            const Block b1 = blocking.getBlock(1);
+            const Block b1 = bIter[1];
             shouldEqual(b1.begin()[0], 4);
             shouldEqual(b1.begin()[1], 0);
             shouldEqual(b1.end()[0], 8);
             shouldEqual(b1.end()[1], 5);
 
             // get the third block
-            const Block b2 = blocking.getBlock(2);
+            Block b2 = bIter[2];
             shouldEqual(b2.begin()[0], 8);
             shouldEqual(b2.begin()[1], 0);
             shouldEqual(b2.end()[0], 10);
             shouldEqual(b2.end()[1], 5);
 
             //  first block with border
-            const BlockWithBorder bb0 = blocking.getBlockWithBorder(0, Shape(1));
+            const BlockWithBorder bb0 = bwbIter[0];
             shouldEqual(bb0.core().begin()[0], 0);
             shouldEqual(bb0.core().begin()[1], 0);
             shouldEqual(bb0.core().end()[0], 4);
@@ -1314,7 +1319,7 @@ struct MultiBlockingTest
             shouldEqual(bb0.border().end()[1], 6);
 
             //  second block with border
-            const BlockWithBorder bb1 = blocking.getBlockWithBorder(1, Shape(1));
+            const BlockWithBorder bb1 = bwbIter[1];
             shouldEqual(bb1.core().begin()[0], 4);
             shouldEqual(bb1.core().begin()[1], 0);
             shouldEqual(bb1.core().end()[0], 8);
@@ -1326,7 +1331,7 @@ struct MultiBlockingTest
             shouldEqual(bb1.border().end()[1], 6);
 
             //  third block with border
-            const BlockWithBorder bb2 = blocking.getBlockWithBorder(2, Shape(1));
+            const BlockWithBorder bb2 = bwbIter[2];
             shouldEqual(bb2.core().begin()[0], 8);
             shouldEqual(bb2.core().begin()[1], 0);
             shouldEqual(bb2.core().end()[0], 10);
@@ -1344,23 +1349,26 @@ struct MultiBlockingTest
     {
         typedef MultiBlocking<2> Mb;
         typedef typename Mb::Shape Shape;
-        typedef typename Mb::Block Block;
-
+        //typedef typename Mb::Block Block;
+        typedef Mb::BlockIter BlockIter;
         //typedef typename Mb::BlockWithBorder BlockWithBorder;
         {
+            
+
             Shape shape(13,14), blockShape(4,5), roiBegin(1,2), roiEnd(9,11);
             Mb blocking(shape, blockShape, roiBegin, roiEnd);
             shouldEqual(blocking.numBlocks(),4);
 
-            const Block blocks[4] = { blocking.getBlock(0), blocking.getBlock(1), blocking.getBlock(2), blocking.getBlock(3)};
-            shouldEqual(blocks[0].begin(), Shape(1,2));
-            shouldEqual(blocks[0].end(),   Shape(5,7));
-            shouldEqual(blocks[1].begin(), Shape(5,2));
-            shouldEqual(blocks[1].end(),   Shape(9,7));
-            shouldEqual(blocks[2].begin(), Shape(1,7));
-            shouldEqual(blocks[2].end(),   Shape(5,11));
-            shouldEqual(blocks[3].begin(), Shape(5,7));
-            shouldEqual(blocks[3].end(),   Shape(9,11));
+            BlockIter bIter = blocking.blockBegin();
+
+            shouldEqual(bIter[0].begin(), Shape(1,2));
+            shouldEqual(bIter[0].end(),   Shape(5,7));
+            shouldEqual(bIter[1].begin(), Shape(5,2));
+            shouldEqual(bIter[1].end(),   Shape(9,7));
+            shouldEqual(bIter[2].begin(), Shape(1,7));
+            shouldEqual(bIter[2].end(),   Shape(5,11));
+            shouldEqual(bIter[3].begin(), Shape(5,7));
+            shouldEqual(bIter[3].end(),   Shape(9,11));
         }
     }
 
@@ -1370,15 +1378,22 @@ struct MultiBlockingTest
         typedef typename Mb::Shape Shape;
         //typedef typename Mb::Block Block;
         typedef typename Mb::BlockWithBorder BlockWithBorder;
-        //typedef typename Mb::BlockWithBorderIter BlockWithBorderIter;
+        typedef typename Mb::BlockWithBorderIter BlockWithBorderIter;
         {
             Shape shape(13,14), blockShape(4,5), roiBegin(1,2), roiEnd(9,11), width(2,3);
             Mb blocking(shape, blockShape, roiBegin, roiEnd);
             shouldEqual(blocking.numBlocks(),4);
+            
+            {
+                std::vector<BlockWithBorder> bwbVec(blocking.blockWithBorderBegin(width), 
+                                                    blocking.blockWithBorderEnd(width));
+                shouldEqual(bwbVec.size(),4);
+            }
 
-            std::vector<BlockWithBorder> bwbVec(blocking.BlockWithBorderBegin(width), 
-                                                blocking.BlockWithBorderEnd(width));
-        }
+            BlockWithBorderIter begin  = blocking.blockWithBorderBegin(width);
+            BlockWithBorderIter end    = begin.getEndIterator();
+            shouldEqual(begin+4==end, true);
+        }   
     }
 };
 
@@ -1392,6 +1407,8 @@ struct UtilitiesTestSuite
     {
         add( testCase( &MultiBlockingTest::test2d));
         add( testCase( &MultiBlockingTest::test2dWithRoi));
+        add( testCase( &MultiBlockingTest::test2dIterator));
+
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
         add( testCase( &ArrayVectorTest::testAmbiguousConstructor));

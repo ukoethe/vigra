@@ -94,6 +94,7 @@ namespace vigra{
         typedef blockwise::BlockwiseConvolutionOptions<DIM> Opt;
         python::class_<Opt>(clsName.c_str(), python::init<>())
         .add_property("stdDev", &Opt::getStdDev, &Opt::setStdDev)
+        .add_property("blockShape", &Opt::getBlockShape, &Opt::setBlockShape)
         ;
     }
 

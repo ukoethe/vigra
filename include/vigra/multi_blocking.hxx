@@ -23,7 +23,7 @@ namespace vigra{
             typedef Box<PointValue, DIM> Block;
             typedef MultiCoordinateIterator< DIM> MultiCoordIter;
 
-            BlockWithBorder(const Block & core, const Block & border)
+            BlockWithBorder(const Block & core = Block(), const Block & border = Block())
             :   core_(core),
                 border_(border){
             }
@@ -42,10 +42,24 @@ namespace vigra{
                 return border_;
             }
 
+            bool operator == (const BlockWithBorder & rhs) const{
+                return core_ == rhs.core_ && border_ == rhs.border_;
+            }
+            bool operator != (const BlockWithBorder & rhs) const{
+                return core_ != rhs.core_ || border_ != rhs.border_;
+            }
+
         private:
             Block core_;
             Block border_;
         };
+
+        template<class VALUETYPE, unsigned int DIMENSION>
+        std::ostream& operator<< (std::ostream& stream, const BlockWithBorder<DIMENSION,VALUETYPE> & bwb) {
+            stream<<"["<<bwb.core()<<", "<<bwb.border()<<" ]";
+            return stream;
+        }
+
 
         
         
@@ -65,26 +79,56 @@ namespace vigra{
     class MultiCoordToBlockWithBoarder{
     public:
         typedef typename MB::Shape Shape;
-        typedef typename MB::MultiCoordIter input_iter;
+        typedef typename MB::BlockDesc BlockDesc;
         typedef typename MB::BlockWithBorder result_type;
+        MultiCoordToBlockWithBoarder()
+        :   mb_(NULL),
+            width_(){
+        }
         MultiCoordToBlockWithBoarder(const MB & mb, const Shape & width)
         :   mb_(&mb),
             width_(width){
         }
 
-        result_type operator()(const input_iter & iter)const{
-            return mb_->getBlockWithBorder(*iter, width_);
+        result_type operator()(const BlockDesc & blockDesc)const{
+            return mb_->getBlockWithBorder(blockDesc, width_);
         }
     private:
         const MB * mb_;
         Shape width_;
     };
 
+    template<class MB>
+    class MultiCoordToBlock{
+    public:
+        typedef typename MB::Shape Shape;
+        typedef typename MB::BlockDesc BlockDesc;
+        typedef typename MB::Block result_type;
+        MultiCoordToBlock()
+        :   mb_(NULL){
+        }
+        MultiCoordToBlock(const MB & mb)
+        :   mb_(&mb){
+        }
+
+        result_type operator()(const BlockDesc & blockDesc)const{
+            return mb_->getBlock(blockDesc);
+        }
+    private:
+        const MB * mb_;
+    };
+
+
+
+
+
 
     template<unsigned int DIM, class C = MultiArrayIndex>
     class MultiBlocking{
     public:
         typedef MultiBlocking<DIM, C> SelfType;
+        friend class MultiCoordToBlock<SelfType>;
+        friend class MultiCoordToBlockWithBoarder<SelfType>;
         typedef C  PointValue;
         typedef TinyVector<PointValue, DIM> Point;
         typedef Point Shape;
@@ -96,8 +140,9 @@ namespace vigra{
 
         // iterators 
         typedef MultiCoordToBlockWithBoarder<SelfType> CoordToBwb;
-        typedef TransformIterator<CoordToBwb, MultiCoordIter> BlockWithBorderIter;
-
+        typedef MultiCoordToBlock<SelfType> CoordToB;
+        typedef EndAwareTransformIterator<CoordToBwb, MultiCoordIter> BlockWithBorderIter;
+        typedef EndAwareTransformIterator<CoordToB,   MultiCoordIter> BlockIter;
 
 
         MultiBlocking(const Shape & shape,
@@ -130,16 +175,40 @@ namespace vigra{
             return numBlocks_;
         }
 
-        BlockWithBorderIter BlockWithBorderBegin(const Shape & width)const{
+        BlockWithBorderIter blockWithBorderBegin(const Shape & width)const{
             return BlockWithBorderIter(MultiCoordIter(blocksPerAxis_),
                                        CoordToBwb(*this, width));
         }
 
-
-        BlockWithBorderIter BlockWithBorderEnd(const Shape & width)const{
+        BlockWithBorderIter blockWithBorderEnd(const Shape & width)const{
             const MultiCoordIter beginIter(blocksPerAxis_);
-            return BlockWithBorderIter(beginIter.getEndIterator(),CoordToBwb(*this, width));
+            return BlockWithBorderIter(beginIter.getEndIterator(),
+                                       CoordToBwb(*this, width));
         }
+
+        BlockIter blockBegin()const{
+            return BlockIter(MultiCoordIter(blocksPerAxis_),CoordToB(*this));
+        }
+
+        BlockIter blockEnd()const{
+            const MultiCoordIter beginIter(blocksPerAxis_);
+            return BlockIter(beginIter.getEndIterator(),CoordToB(*this));
+        }
+
+
+
+
+
+        const Shape & roiBegin()const{
+            return roiBlock_.begin();
+        }
+
+        const Shape & roiEnd()const{
+            return roiBlock_.end();
+        }
+
+    private:
+
 
         /// get a block with border
         BlockWithBorder getBlockWithBorder(const BlockDesc & blockDesc, const Shape & width )const{
@@ -152,13 +221,6 @@ namespace vigra{
             return BlockWithBorder( core, border );
         }
 
-
-        /// get a block with border
-        BlockWithBorder getBlockWithBorder(const size_t index, const Shape & width )const{
-            return getBlockWithBorder(blockDescIter_[index], width);
-        }
-
-
         /// get a block (without any overlap)
         Block getBlock(const BlockDesc & blockDesc)const{
             const Point blockStart(blockDesc * blockShape_ + roiBlock_.begin());
@@ -166,20 +228,7 @@ namespace vigra{
             return Block(blockStart, blockEnd) & roiBlock_;
         }
 
-        /// get a block (without any overlap)
-        Block getBlock(const size_t index)const{
-            return getBlock(blockDescIter_[index]);
-        }
 
-        const Shape & roiBegin()const{
-            return roiBlock_.begin();
-        }
-
-        const Shape & roiEnd()const{
-            return roiBlock_.end();
-        }
-
-    private:
         Shape shape_;
         Block roiBlock_;
         Shape blockShape_;

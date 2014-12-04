@@ -551,6 +551,12 @@ class Box
     }
 };
 
+template<class VALUETYPE, unsigned int DIMENSION>
+std::ostream& operator<< (std::ostream& stream, const Box<VALUETYPE, DIMENSION> & box) {
+    stream<<"["<<box.begin()<<", "<<box.end()<<" ]";
+    return stream;
+}
+
 //@}
 
 } // namespace vigra

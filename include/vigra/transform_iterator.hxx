@@ -4,25 +4,63 @@
 namespace vigra{
 
 
-    template <typename T>
-    class proxy_holder {
-        T t;
+
+
+    template<class T>
+    class TransformIterValProxy{
     public:
-        proxy_holder(const T& t) : t(t) {}
-        T* operator ->() const { return &t; }
-    };
+        typedef const T & reference;
+        typedef const T * pointer;
+        typedef T value_type;
 
-
-
-    struct UseDefault{
+        reference getRef(const T & functionReturn){
+            t_ = functionReturn;
+            return t_;
+        }
+        pointer getPr(const T & functionReturn){
+            t_ = functionReturn;
+            return &t_;
+        }
+    private:
+        T t_;
     };
 
 
     template<class T>
-    struct IdentityResultType{
-        typedef T result_type;
+    class TransformIterValProxy<const T &>{
+        typedef const T & reference;
+        typedef const T * pointer;
+        typedef T value_type;
+
+        reference getRef(const T & functionReturn){
+            t_ = functionReturn;
+            return t_;
+        }
+        pointer getPr(const T & functionReturn){
+            t_ = functionReturn;
+            return &t_;
+        }
+    private:
+        T t_;
     };
 
+    template<class T>
+    class TransformIterValProxy<T &>{
+        typedef T & reference;
+        typedef T * pointer;
+        typedef T value_type;
+
+        reference getRef(const T & functionReturn){
+            t_ = functionReturn;
+            return t_;
+        }
+        pointer getPr(const T & functionReturn){
+            t_ = functionReturn;
+            return &t_;
+        }
+    private:
+        T t_;
+    };
 
 
     template <
@@ -34,7 +72,13 @@ namespace vigra{
     public:
         
         typedef typename UnaryFunction::result_type function_result_type;
-        typedef typename UnqualifiedType<function_result_type>::type  value_type;
+        typedef TransformIterValProxy<function_result_type> RetHelper;
+
+        typedef typename RetHelper::value_type  value_type;
+        typedef typename RetHelper::reference   reference;
+        typedef typename RetHelper::pointer     pointer;
+
+        typedef typename std::iterator_traits<Iterator>::difference_type    difference_type;
         typedef typename std::iterator_traits<Iterator>::iterator_category iterator_category;
 
 
@@ -42,19 +86,30 @@ namespace vigra{
 
 
 
-
-
-
-
-
-        TransformIterator(const Iterator & iter, const UnaryFunction & f)
+        TransformIterator(const Iterator & iter = Iterator(), const UnaryFunction & f = UnaryFunction())
         :   iter_(iter),
             f_(f){
         }
 
 
+
+
+
+        reference  operator * () const{
+            return retHelper_.getRef(f_(*iter_)); 
+        } 
+
+        reference  operator[](const difference_type i) const{
+            return retHelper_.getRef(f_(iter_[i])); 
+        }
+
+        pointer  operator -> () const{
+            return retHelper_.getRef(f_(*iter_)); 
+        }
+
+
         #define TRANSFORMITERATOR_CP_OP_GEN(OP)\
-        bool operator OP (const Iterator & rhs)const{\
+        bool operator OP (const TransformIterator & rhs)const{\
             return iter_ OP rhs.iter_;\
         }
 
@@ -85,33 +140,62 @@ namespace vigra{
             --res.iter_;
             return res;
         }
-        TransformIterator & operator+=( const std::ptrdiff_t i ){
+        TransformIterator & operator+=( const difference_type i ){
             iter_ += i;
             return *this;
         } 
-        TransformIterator & operator-=( const std::ptrdiff_t i ){
+        TransformIterator & operator-=( const difference_type i ){
             iter_ -= i;
             return *this;
         }
-        TransformIterator operator+( const std::ptrdiff_t i )const{
+        TransformIterator operator+( const difference_type i )const{
             TransformIterator res(*this);
             res += i;
             return res;
         } 
-        TransformIterator operator-( const std::ptrdiff_t i )const{
+        TransformIterator operator-( const difference_type i )const{
             TransformIterator res(*this);
             res -= i;
             return res;
         } 
 
-        std::ptrdiff_t operator - (const TransformIterator rhs) const{
+        difference_type operator - (const TransformIterator rhs) const{
             return iter_ - rhs.iter_;
         }
 
-
-
+    protected:
+        const Iterator & baseIterator()const{
+            return iter_;
+        }
+        const UnaryFunction & unaryFunction()const{
+            return f_;
+        }
     private:
         Iterator iter_;
         UnaryFunction f_;
+        mutable RetHelper retHelper_;
     };
+
+
+    template <
+        class UnaryFunction, 
+        class Iterator
+    >
+    class EndAwareTransformIterator
+    : public TransformIterator<UnaryFunction, Iterator>
+    {
+    public:
+        EndAwareTransformIterator(const Iterator & iter = Iterator(), const UnaryFunction & f = UnaryFunction())
+        :   TransformIterator<UnaryFunction, Iterator>(iter,f){
+        }
+
+        EndAwareTransformIterator getEndIterator()const{
+            return EndAwareTransformIterator(this->baseIterator().getEndIterator(),
+                                             this->unaryFunction());
+        }
+    private:    
+
+    };
+
+
 }
