@@ -100,6 +100,59 @@ namespace blockwise{
     }
 
 
+    template<
+        unsigned int DIM,
+        class T_IN, class ST_IN,
+        class T_OUT, class ST_OUT,
+        class FILTER_FUCTOR,
+        class C
+    >
+    void blockwiseCallerNew(
+        const vigra::MultiArrayView<DIM, T_IN,  ST_IN > & source,
+        const vigra::MultiArrayView<DIM, T_OUT, ST_OUT> & dest,
+        FILTER_FUCTOR & functor,
+        const vigra::MultiBlocking<DIM, C> & blocking,
+        const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth
+    ){
+
+
+
+        typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
+        typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
+        typedef typename BlockWithBorder::Shape Shape;
+        
+        const Shape & totalRoiBegin = blocking.roiBegin();
+
+        //#pragma omp parallel
+        {
+            BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
+            //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
+
+            #pragma omp for
+            for(size_t i=0 ; i<blocking.numBlocks(); ++i){
+
+                const BlockWithBorder bwb = iter[i];
+
+                // get the input of the block as a view
+                vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin()-totalRoiBegin,
+                                                                                    bwb.border().end()-totalRoiBegin);
+
+
+                    
+                vigra::MultiArrayView<DIM, T_OUT, ST_OUT>  desSubCore = dest.subarray(bwb.core().begin()-totalRoiBegin, 
+                                                                                      bwb.core().end()  -totalRoiBegin);
+
+
+                // call the functor
+                const Shape roiBegin = bwb.localCore().begin();
+                const Shape roiEnd = bwb.localCore().end();
+                functor(sourceSub, desSubCore, roiBegin, roiEnd);
+
+            }
+        }
+    }
+
+
 
     template<unsigned int DIM>
     struct GaussianSmoothOld{
@@ -129,6 +182,11 @@ namespace blockwise{
         void operator()(const S & s, D & d)const{ \
             FUNCTION_NAME(s, d, convOpt_); \
         } \
+        template<class S, class D,class SHAPE> \
+        void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){ \
+            convOpt_.subarray(roiBegin, roiEnd); \
+            FUNCTION_NAME(s, d, convOpt_); \
+        } \
     private: \
         ConvOpt  convOpt_; \
     };
@@ -142,7 +200,7 @@ namespace blockwise{
     CONVOLUTION_FUNCTOR(GaussianGradientMagnitudeFunctor, vigra::gaussianGradientMagnitude);
     CONVOLUTION_FUNCTOR(StructureTensorFunctor,           vigra::structureTensorMultiArray);
 
-
+    #undef CONVOLUTION_FUNCTOR
 
     enum ConcurrencyType{
         DefaultConcurrency,
@@ -211,7 +269,8 @@ namespace blockwise{
     template<unsigned int N>
     vigra::TinyVector< vigra::MultiArrayIndex, N > getBorder(
         const BlockwiseConvolutionOptions<N> & opt,
-        const size_t order
+        const size_t order,
+        const bool usesOuterScale = false
     ){
         vigra::TinyVector< vigra::MultiArrayIndex, N > res(vigra::SkipInitialization);
         if(opt.getFilterWindowSize()<=0.00001){
@@ -224,37 +283,37 @@ namespace blockwise{
     }
 
 
-    // include this also in the above macro
-    template <unsigned int N, class T1, class S1,
-    class T2, class S2>
-    void gaussianSmoothMultiArray(
-        MultiArrayView<N, T1, S1> const & source,
-        MultiArrayView<N, T2, S2> dest,
-        const BlockwiseConvolutionOptions<N> & options 
-    )
-    {   
-        // typdefs
-        typedef  MultiBlocking<N, vigra::MultiArrayIndex> Blocking;
-        //typedef typename Blocking::BlockWithBorder BlockWithBorder;
-        //typedef typename Blocking::Block Block;
-        typedef typename Blocking::Shape Shape;
-        
-        const Shape border = getBorder(options, 0);
 
-
-        //std::pair<Shape, Shape> roi = options.getSubarray();
-        BlockwiseConvolutionOptions<N> subOptions(options);
-        subOptions.subarray(Shape(0), Shape(0)); 
-
-        const Blocking blocking(source.shape(), options.getBlockShape());
-        GaussianSmoothFunctor<N> f(subOptions);
-        blockwiseCaller(source, dest, f, blocking, border);
-  
-
-
-
-
+    #define BLOCKWISE_FUNCTION_GEN(FUNCTOR, FUNCTION, ORDER, USES_OUTER_SCALE) \
+    template <unsigned int N, class T1, class S1, class T2, class S2> \
+    void FUNCTION( \
+        MultiArrayView<N, T1, S1> const & source, \
+        MultiArrayView<N, T2, S2> dest, \
+        const BlockwiseConvolutionOptions<N> & options \
+    ) \
+    {  \
+        typedef  MultiBlocking<N, vigra::MultiArrayIndex> Blocking; \
+        typedef typename Blocking::Shape Shape; \
+        const Shape border = getBorder(options, ORDER, USES_OUTER_SCALE); \
+        BlockwiseConvolutionOptions<N> subOptions(options); \
+        subOptions.subarray(Shape(0), Shape(0));  \
+        const Blocking blocking(source.shape(), options.getBlockShape()); \
+        FUNCTOR f(subOptions); \
+        blockwiseCaller(source, dest, f, blocking, border); \
     }
+
+
+    BLOCKWISE_FUNCTION_GEN(GaussianSmoothFunctor<N> ,           gaussianSmoothMultiArray,       0, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianGradientFunctor<N> ,         gaussianGradientMultiArray,     1, false );
+    BLOCKWISE_FUNCTION_GEN(SymmetricGradientFunctor<N> ,        symmetricGradientMultiArray,    1, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianDivergenceFunctor<N> ,       gaussianDivergenceMultiArray,   2, false );
+    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFunctor<N> ,        hessianOfGaussianMultiArray,    2, false );
+    BLOCKWISE_FUNCTION_GEN(LaplacianOfGaussianFunctor<N> ,      laplacianOfGaussianMultiArray,  2, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianGradientMagnitudeFunctor<N>, gaussianGradientMagnitude,      1, false );
+    BLOCKWISE_FUNCTION_GEN(StructureTensorFunctor<N> ,          structureTensorMultiArray,      1, true  );
+
+
+    #undef  BLOCKWISE_FUNCTION_GEN
 
 } // end namespace blockwise
 } // end namespace vigra

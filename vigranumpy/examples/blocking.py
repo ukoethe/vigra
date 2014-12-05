@@ -10,7 +10,7 @@ from vigra import blockwise as bw
 numpy.random.seed(42)
 
 # input
-shape = (1000, 1000, 1000)
+shape = (500, 500, 500)
 
 data = numpy.random.rand(*shape).astype('float32')
 
