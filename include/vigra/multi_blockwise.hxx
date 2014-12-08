@@ -222,8 +222,14 @@ namespace blockwise{
         size_t getNumThreads()const{
             return numThreads_;
         }
+        void setNumThreads(const size_t numThreads){
+            numThreads_ = numThreads;
+        }
         ConcurrencyType getConcurrencyType()const{
             return concurrencyType_;
+        }
+        void setConcurencyType(const concurrencyType & concurrencyType)const{
+            concurrencyType_ = concurrencyType_;
         }
     private:
         size_t numThreads_;
@@ -275,7 +281,9 @@ namespace blockwise{
         vigra::TinyVector< vigra::MultiArrayIndex, N > res(vigra::SkipInitialization);
         if(opt.getFilterWindowSize()<=0.00001){
             for(size_t d=0; d<N; ++d){
-                const double stdDev =  opt.getStdDev()[d];
+                double stdDev =  opt.getStdDev()[d];
+                if(usesOuterScale)
+                    stdDev += opt.getOuterScake()[d];
                 res[d] = std::round(3.0 * stdDev  + 0.5*static_cast<double>(order));
             }
         }
@@ -306,7 +314,7 @@ namespace blockwise{
     BLOCKWISE_FUNCTION_GEN(GaussianSmoothFunctor<N> ,           gaussianSmoothMultiArray,       0, false );
     BLOCKWISE_FUNCTION_GEN(GaussianGradientFunctor<N> ,         gaussianGradientMultiArray,     1, false );
     BLOCKWISE_FUNCTION_GEN(SymmetricGradientFunctor<N> ,        symmetricGradientMultiArray,    1, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianDivergenceFunctor<N> ,       gaussianDivergenceMultiArray,   2, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianDivergenceFunctor<N> ,       gaussianDivergenceMultiArray,   1, false );
     BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFunctor<N> ,        hessianOfGaussianMultiArray,    2, false );
     BLOCKWISE_FUNCTION_GEN(LaplacianOfGaussianFunctor<N> ,      laplacianOfGaussianMultiArray,  2, false );
     BLOCKWISE_FUNCTION_GEN(GaussianGradientMagnitudeFunctor<N>, gaussianGradientMagnitude,      1, false );
