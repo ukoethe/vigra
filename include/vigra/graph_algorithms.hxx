@@ -877,6 +877,11 @@ namespace vigra{
                                 pq.push(neigbour,edgeWeights[edge]);
                                 inPQ[neigbour]=true;
                             }
+                            else{
+                                const WeightType priority = priorManipFunctor(labelFound,edgeWeights[edge]);
+                                pq.push(neigbour,edgeWeights[edge]);
+                                inPQ[neigbour]=true;
+                            }
                         }
                     }
                 }
