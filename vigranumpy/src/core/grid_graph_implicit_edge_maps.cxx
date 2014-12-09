@@ -124,6 +124,10 @@ namespace vigra{
                 std::string("ImplicitMEanEdgeMap_3d_float_float"),
                 std::string("implicitMeanEdgeMap")
             );
+            defineGridGraphImplicitEdgeMapT<2, NodeValue, EdgeValue,Functor>(
+                std::string("ImplicitMEanEdgeMap_2d_float_float"),
+                std::string("implicitMeanEdgeMap")
+            );
         }
     }
 

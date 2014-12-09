@@ -51,6 +51,9 @@
 #include "tinyvector.hxx"
 #include "algorithm.hxx"
 
+
+#include <iostream>
+
 namespace vigra
 {
 
@@ -590,21 +593,28 @@ internalSeparableConvolveSubarray(
     typedef typename TmpArray::traverser TmpIterator;
     typedef typename AccessorTraits<TmpType>::default_accessor TmpAcessor;
     
-    SrcShape sstart, sstop, axisorder, tmpshape;
+    SrcShape sstart, sstartToSort, sstop, sstopToSort, axisorder, tmpshape;
     TinyVector<double, N> overhead;
     for(int k=0; k<N; ++k)
     {
+        axisorder[k] = k;
         sstart[k] = start[k] - kit[k].right();
-        if(sstart[k] < 0)
+        sstartToSort[k] = sstart[k]; 
+        if(sstart[k] < 0){
             sstart[k] = 0;
+        }
         sstop[k] = stop[k] - kit[k].left();
-        if(sstop[k] > shape[k])
+        sstopToSort[k] = sstop[k];
+        if(sstop[k] > shape[k]){
             sstop[k] = shape[k];
-        overhead[k] = double(sstop[k] - sstart[k]) / (stop[k] - start[k]);
+        }
+        overhead[k] = double(sstopToSort[k] - sstartToSort[k]) / (stop[k] - start[k]);
     }
     
     indexSort(overhead.begin(), overhead.end(), axisorder.begin(), std::greater<double>());
-    
+    std::cout<<"axisorder "<<axisorder<<"\n";
+
+
     SrcShape dstart, dstop(sstop - sstart);
     dstop[axisorder[0]]  = stop[axisorder[0]] - start[axisorder[0]];
     

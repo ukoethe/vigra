@@ -2,19 +2,20 @@ import vigra
 from vigra import numpy
 
 
-produceBug = True
+produceBug = False
 
 # parameter
 filepath = '12003.jpg'  # input image path
 img = vigra.impex.readImage(filepath)
 
 
-roiBegin = (100, 100)
 
 if produceBug:
-    roiEnd  = (img.shape[0] - 3, img.shape[1] - 3)
+	roiBegin = (img.shape[0]-100, img.shape[1]-100)
+	roiEnd  = (img.shape[0] , img.shape[1])
 else:
-    roiEnd = (200, 200)
+	roiBegin = (100, 100)
+	roiEnd = (200, 200)
 
 
 

@@ -228,8 +228,8 @@ namespace blockwise{
         ConcurrencyType getConcurrencyType()const{
             return concurrencyType_;
         }
-        void setConcurencyType(const concurrencyType & concurrencyType)const{
-            concurrencyType_ = concurrencyType_;
+        void setConcurencyType(const ConcurrencyType & concurrencyType){
+            concurrencyType_ = concurrencyType;
         }
     private:
         size_t numThreads_;
@@ -283,7 +283,7 @@ namespace blockwise{
             for(size_t d=0; d<N; ++d){
                 double stdDev =  opt.getStdDev()[d];
                 if(usesOuterScale)
-                    stdDev += opt.getOuterScake()[d];
+                    stdDev += opt.getOuterScale()[d];
                 res[d] = std::round(3.0 * stdDev  + 0.5*static_cast<double>(order));
             }
         }

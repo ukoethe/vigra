@@ -1077,6 +1077,11 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
         def mergeGraph(self):
             return graphs.AdjacencyListGraphMergeGraph(self)
 
+        def accumulateSeeds(self, seeds, out=None):
+            graph = self.baseGraph
+            labels = self.labels
+            return graphs._pyAccNodeSeeds(self, graph, labels, seeds, out)
+
         def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
             """ accumulate edge features from base graphs edges features
 
@@ -1093,7 +1098,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             graph = self.baseGraph
             affiliatedEdges = self.affiliatedEdges
 
-            if isinstance(edgeFeatures, graphs.ImplicitMEanEdgeMap_3d_float_float):
+            if isinstance(edgeFeatures, (graphs.ImplicitMEanEdgeMap_2d_float_float, graphs.ImplicitMEanEdgeMap_3d_float_float)):
 
                 if acc is not "mean":
                     raise RuntimeError("for implicit edge maps only mean is supported")

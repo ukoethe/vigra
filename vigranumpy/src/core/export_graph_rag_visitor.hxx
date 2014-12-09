@@ -237,6 +237,15 @@ public:
             )
         );
 
+        python::def("_pyAccNodeSeeds",registerConverters(&pyAccNodeSeeds),
+            (
+                python::arg("rag"),
+                python::arg("graph"),
+                python::arg("labels"),
+                python::arg("seeds"),
+                python::arg("out")=python::object()
+            )
+        );
 
 
         exportPyRagProjectNodeFeaturesToBaseGraph< Singleband<float > >();
@@ -245,6 +254,37 @@ public:
         exportPyRagProjectNodeFeaturesToBaseGraph< Multiband< UInt32> >();
 
     }
+
+
+    static NumpyAnyArray pyAccNodeSeeds(
+        const RagGraph &           rag,
+        const Graph &              graph,
+        UInt32NodeArray            labelsArray,
+        UInt32NodeArray            seedsArray,
+        typename PyNodeMapTraits<RagGraph, UInt32>::Array  ragSeedsArray=RagUInt32NodeArray()
+    ){
+        ragSeedsArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedNodeMapShape(rag));
+        std::fill(ragSeedsArray.begin(),ragSeedsArray.end(),0);
+
+        UInt32NodeArrayMap labelsArrayMap(graph,labelsArray);
+        UInt32NodeArrayMap seedsArrayMap(graph,seedsArray);
+
+        typename PyNodeMapTraits<RagGraph, UInt32>::Map ragSeedsArrayMap(rag, ragSeedsArray);
+
+
+        for(NodeIt iter(graph); iter!=lemon::INVALID; ++iter){
+            const UInt32 label = labelsArrayMap[*iter];
+            const UInt32 seed  = seedsArrayMap[*iter];
+            if(seed!=0){
+                RagNode node = rag.nodeFromId(label);
+                ragSeedsArrayMap[node] = seed;
+            } 
+        }
+
+        return ragSeedsArray;
+    }
+
+
 
 
     static python::tuple 
@@ -486,6 +526,7 @@ public:
         }
         return edgePoints;
     }
+
 
 
     static NumpyAnyArray  pyRagNodeFeaturesSingleband(
