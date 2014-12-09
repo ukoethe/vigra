@@ -1561,7 +1561,7 @@ def _genGraphSegmentationFunctions():
     graphs.felzenszwalbSegmentation = felzenszwalbSegmentation
 
 
-    def edgeWeightedWatersheds(graph,edgeWeights,seeds,backgoundLabel=None,backgroundBias=None,out=None):
+    def edgeWeightedWatersheds(graph,edgeWeights,seeds,backgroundLabel=None,backgroundBias=None,out=None):
         """ edge weighted seeded watersheds
 
         Keyword Arguments :
@@ -1578,12 +1578,12 @@ def _genGraphSegmentationFunctions():
             - backgroundBias : backgroundBias (default  : None)
 
         """
-        if backgoundLabel is None and backgroundBias is None:
+        if backgroundLabel is None and backgroundBias is None:
             return graphs._edgeWeightedWatershedsSegmentation(graph=graph,edgeWeights=edgeWeights,seeds=seeds,
                                                                 out=out)
         else :
-            if backgoundLabel is None or backgroundBias is None:
-                raise RuntimeError("if backgoundLabel or backgroundBias is not None, the other must also be not None")
+            if backgroundLabel is None or backgroundBias is None:
+                raise RuntimeError("if backgroundLabel or backgroundBias is not None, the other must also be not None")
             return graphs._carvingSegmentation(graph=graph,edgeWeights=edgeWeights,seeds=seeds,
                                                 backgroundLabel=backgroundLabel,backgroundBias=backgroundBias,out=out)
 
