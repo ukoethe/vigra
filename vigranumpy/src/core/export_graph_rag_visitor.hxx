@@ -150,6 +150,7 @@ public:
                     python::arg("graph"),
                     python::arg("affiliatedEdges"),
                     python::arg("edgeFeatures"),
+                    python::arg("accumulator"),
                     python::arg("out")=python::object()
                 )
             );
@@ -442,6 +443,7 @@ public:
         const Graph &              graph,
         const RagAffiliatedEdges & affiliatedEdges,
         const OTF_EDGES & otfEdgeMap,
+        const std::string & accumulator,
         typename PyEdgeMapTraits<RagGraph,T >::Array ragEdgeFeaturesArray
     ){
 
@@ -450,25 +452,47 @@ public:
 
         // resize out
         ragEdgeFeaturesArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedEdgeMapShape(rag));
-        std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
+        
 
 
         // numpy arrays => lemon maps
         typename PyEdgeMapTraits<RagGraph,T >::Map ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
 
 
-
-        for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
-            const RagEdge ragEdge = *iter;
-            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
-            for(size_t i=0;i<affEdges.size();++i){
-                ragEdgeFeaturesArrayMap[ragEdge]+=otfEdgeMap[affEdges[i]];
+        if(accumulator == std::string("mean") || accumulator == std::string("sum") ){
+            std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                for(size_t i=0;i<affEdges.size();++i){
+                    ragEdgeFeaturesArrayMap[ragEdge]+=otfEdgeMap[affEdges[i]];
+                }
+                if(accumulator == std::string("mean")){
+                    ragEdgeFeaturesArrayMap[ragEdge]/=affEdges.size();
+                }
             }
-            ragEdgeFeaturesArrayMap[ragEdge]/=affEdges.size();
+        }
+        if(accumulator == std::string("min") ){
+            std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),std::numeric_limits<float>::infinity());
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                for(size_t i=0;i<affEdges.size();++i){
+                    ragEdgeFeaturesArrayMap[ragEdge] = std::min(otfEdgeMap[affEdges[i]], ragEdgeFeaturesArrayMap[ragEdge]);
+                }
+            }
+        }
+        if(accumulator == std::string("max") ){
+            std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),-1.0f*std::numeric_limits<float>::infinity());
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                for(size_t i=0;i<affEdges.size();++i){
+                    ragEdgeFeaturesArrayMap[ragEdge] = std::max(otfEdgeMap[affEdges[i]], ragEdgeFeaturesArrayMap[ragEdge]);
+                }
+            }
         }
         
-
-
 
         // return 
         return ragEdgeFeaturesArray;

@@ -115,6 +115,7 @@ import optimization
 import histogram
 import graphs
 import utilities
+import blockwise
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 
@@ -1100,13 +1101,11 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
             if isinstance(edgeFeatures, (graphs.ImplicitMEanEdgeMap_2d_float_float, graphs.ImplicitMEanEdgeMap_3d_float_float)):
 
-                if acc is not "mean":
-                    raise RuntimeError("for implicit edge maps only mean is supported")
 
                 if graphs.isGridGraph(graph)==False:
                     raise RuntimeError("implicit edge maps are only implemented for grid graphs")
 
-                return graphs._ragEdgeFeatures(self, graph, affiliatedEdges, edgeFeatures, out)
+                return graphs._ragEdgeFeatures(self, graph, affiliatedEdges, edgeFeatures,acc, out)
             else:
                 if self.edgeNum == 0:
                     raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")

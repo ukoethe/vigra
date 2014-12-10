@@ -832,12 +832,21 @@ namespace vigra{
                     //std::cout<<"n- node "<<g.id(neigbour)<<"\n";
                     if(labels[neigbour]==static_cast<LabelType>(0)){
                         const WeightType priority = priorManipFunctor(labels[node],edgeWeights[edge]);
+
+                        std::cout<<"seed with label : "<<labels[node]<<"\n";
+                        std::cout<<"     raw  weight: "<<edgeWeights[edge]<<"\n";
+                        std::cout<<"     prio weight: "<<priority<<"\n";
+
+
                         pq.push(edge,priority);
                         inPQ[edge]=true;
                     }
                 }
             }
         }
+
+        std::cout<<"absolute top prio "<<pq.topPriority()<<"\n";
+
         while(!pq.empty()){
 
             const Edge edge = pq.top();
@@ -857,8 +866,8 @@ namespace vigra{
             }
             else{
 
-                const Node unlabeledNode = lU!=0 ? v : u;
-                const LabelType label = lU!=0 ? lU : lV;
+                const Node unlabeledNode = lU==0 ? u : v;
+                const LabelType label = lU==0 ? lV : lU;
 
                 // assign label to unlabeled node
                 labels[unlabeledNode] = label;
@@ -869,7 +878,7 @@ namespace vigra{
                     const Node targetNode=g.target(*a);
                     if(inPQ[otherEdge] == false && labels[targetNode] == 0){
                         const WeightType priority = priorManipFunctor(label,edgeWeights[otherEdge]);
-                        pq.push(edge,priority);
+                        pq.push(otherEdge,priority);
                         inPQ[otherEdge]=true;
                     }
                 }

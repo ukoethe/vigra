@@ -53,20 +53,39 @@ namespace vigra{
     NumpyAnyArray pyBlockwiseGaussianSmoothMultiArray(
         const NumpyArray<DIM, T_IN> &  source, 
         const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
-        NumpyArray<DIM, T_IN>  dest
+        NumpyArray<DIM, T_OUT>  dest
     ){
         dest.reshapeIfEmpty(source.taggedShape());
         blockwise::gaussianSmoothMultiArray(source, dest, opt);
         return dest;
     }
 
-
-
     template<unsigned int DIM, class T_IN, class T_OUT>
+    NumpyAnyArray pyBlockwiseHessianOfGaussianEigenvaluesMultiArray(
+        const NumpyArray<DIM, T_IN> &  source, 
+        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        NumpyArray<DIM, T_OUT>  dest
+    ){
+        dest.reshapeIfEmpty(source.taggedShape());
+        blockwise::hessianOfGaussianEigenvaluesMultiArray(source, dest, opt);
+        return dest;
+    }
+
+
+
+    template<unsigned int DIM, class T_IN>
     void defineBlockwiseFilters(){
         //typedef blockwise::BlockwiseConvolutionOptions<DIM> Opt;
 
-        python::def("gaussianSmooth",registerConverters(&pyBlockwiseGaussianSmoothMultiArray<DIM, T_IN, T_OUT>),
+        python::def("gaussianSmooth",registerConverters(&pyBlockwiseGaussianSmoothMultiArray<DIM, T_IN, float>),
+            (
+                python::arg("source"),
+                python::arg("options"),
+                python::arg("out") = python::object()
+            )
+        );
+
+        python::def("hessianOfGaussianEigenvalues",registerConverters(&pyBlockwiseHessianOfGaussianEigenvaluesMultiArray<DIM, T_IN, vigra::TinyVector<float, DIM> >),
             (
                 python::arg("source"),
                 python::arg("options"),
@@ -125,5 +144,6 @@ BOOST_PYTHON_MODULE_INIT(blockwise)
     defineBlockwiseConvolutionOptions<2>("BlockwiseConvolutionOptions2D");
     defineBlockwiseConvolutionOptions<3>("BlockwiseConvolutionOptions3D");
 
-    defineBlockwiseFilters<3, float, float>();
+    defineBlockwiseFilters<2, float>();
+    defineBlockwiseFilters<3, float>();
 }

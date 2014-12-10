@@ -3,7 +3,7 @@
 
 #include "vigra/multi_blocking.hxx"
 #include "vigra/multi_convolution.hxx"
-
+#include "vigra/multi_tensorutilities.hxx"
 
 #ifndef VIGRA_DEFAULT_BLOCK_SHAPE 
     #define VIGRA_DEFAULT_BLOCK_SHAPE 64
@@ -89,7 +89,7 @@ namespace blockwise{
                 functor(sourceSub, destSub);
 
                  // write the core global out
-                vigra::MultiArrayView<DIM, T_IN, ST_IN> destSubCore = destSub.subarray(bwb.localCore().begin(),
+                vigra::MultiArrayView<DIM, T_OUT, ST_OUT> destSubCore = destSub.subarray(bwb.localCore().begin(),
                                                                                 bwb.localCore().end());
                 // write the core global out
                 dest.subarray(bwb.core().begin()-blocking.roiBegin(), 
@@ -191,6 +191,7 @@ namespace blockwise{
         ConvOpt  convOpt_; \
     };
 
+
     CONVOLUTION_FUNCTOR(GaussianSmoothFunctor,            vigra::gaussianSmoothMultiArray);
     CONVOLUTION_FUNCTOR(GaussianGradientFunctor,          vigra::gaussianGradientMultiArray);
     CONVOLUTION_FUNCTOR(SymmetricGradientFunctor,         vigra::symmetricGradientMultiArray);
@@ -199,6 +200,33 @@ namespace blockwise{
     CONVOLUTION_FUNCTOR(LaplacianOfGaussianFunctor,       vigra::laplacianOfGaussianMultiArray);
     CONVOLUTION_FUNCTOR(GaussianGradientMagnitudeFunctor, vigra::gaussianGradientMagnitude);
     CONVOLUTION_FUNCTOR(StructureTensorFunctor,           vigra::structureTensorMultiArray);
+
+
+    template<unsigned int DIM> 
+    class HessianOfGaussianEigenvaluesFunctor{ 
+    public: 
+        typedef ConvolutionOptions<DIM> ConvOpt; 
+        HessianOfGaussianEigenvaluesFunctor(const ConvOpt & convOpt) 
+        : convOpt_(convOpt){} 
+        template<class S, class D> 
+        void operator()(const S & s, D & d)const{ 
+            typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(d.shape()); 
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_); 
+            vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, d);
+        } 
+        template<class S, class D,class SHAPE> 
+        void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){ 
+            typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(roiEnd-roiBegin); 
+            convOpt_.subarray(roiBegin, roiEnd); 
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_); 
+            vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, d);
+        } 
+    private: 
+        ConvOpt  convOpt_; 
+    };
+
 
     #undef CONVOLUTION_FUNCTOR
 
@@ -311,14 +339,15 @@ namespace blockwise{
     }
 
 
-    BLOCKWISE_FUNCTION_GEN(GaussianSmoothFunctor<N> ,           gaussianSmoothMultiArray,       0, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianGradientFunctor<N> ,         gaussianGradientMultiArray,     1, false );
-    BLOCKWISE_FUNCTION_GEN(SymmetricGradientFunctor<N> ,        symmetricGradientMultiArray,    1, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianDivergenceFunctor<N> ,       gaussianDivergenceMultiArray,   1, false );
-    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFunctor<N> ,        hessianOfGaussianMultiArray,    2, false );
-    BLOCKWISE_FUNCTION_GEN(LaplacianOfGaussianFunctor<N> ,      laplacianOfGaussianMultiArray,  2, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianGradientMagnitudeFunctor<N>, gaussianGradientMagnitude,      1, false );
-    BLOCKWISE_FUNCTION_GEN(StructureTensorFunctor<N> ,          structureTensorMultiArray,      1, true  );
+    BLOCKWISE_FUNCTION_GEN(GaussianSmoothFunctor<N> ,               gaussianSmoothMultiArray,               0, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianGradientFunctor<N> ,             gaussianGradientMultiArray,             1, false );
+    BLOCKWISE_FUNCTION_GEN(SymmetricGradientFunctor<N> ,            symmetricGradientMultiArray,            1, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianDivergenceFunctor<N> ,           gaussianDivergenceMultiArray,           1, false );
+    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFunctor<N> ,            hessianOfGaussianMultiArray,            2, false );
+    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianEigenvaluesFunctor<N> , hessianOfGaussianEigenvaluesMultiArray, 2, false );
+    BLOCKWISE_FUNCTION_GEN(LaplacianOfGaussianFunctor<N> ,          laplacianOfGaussianMultiArray,          2, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianGradientMagnitudeFunctor<N>,     gaussianGradientMagnitude,              1, false );
+    BLOCKWISE_FUNCTION_GEN(StructureTensorFunctor<N> ,              structureTensorMultiArray,              1, true  );
 
 
     #undef  BLOCKWISE_FUNCTION_GEN
