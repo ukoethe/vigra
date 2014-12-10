@@ -813,6 +813,78 @@ namespace vigra{
 
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename LABELS::Value  LabelType;
+        typedef typename Graph:: template EdgeMap<bool>    EdgeBoolMap;
+        typedef PriorityQueue<Edge,WeightType,true> PQ;
+
+        PQ pq;
+        EdgeBoolMap inPQ(g);
+        copyNodeMap(g,seeds,labels);
+        fillEdgeMap(g,inPQ,false);
+
+
+        // put edges from nodes with seed on pq
+        for(NodeIt n(g);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            if(labels[node]!=static_cast<LabelType>(0)){
+                for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
+                    const Edge edge(*a);
+                    const Node neigbour=g.target(*a);
+                    //std::cout<<"n- node "<<g.id(neigbour)<<"\n";
+                    if(labels[neigbour]==static_cast<LabelType>(0)){
+                        const WeightType priority = priorManipFunctor(labels[node],edgeWeights[edge]);
+                        pq.push(edge,priority);
+                        inPQ[edge]=true;
+                    }
+                }
+            }
+        }
+        while(!pq.empty()){
+
+            const Edge edge = pq.top();
+            pq.pop();
+
+            const Node u = g.u(edge);
+            const Node v = g.v(edge);
+            const LabelType lU = labels[u];
+            const LabelType lV = labels[v];
+
+
+            if(lU==0 && lV==0){
+                throw std::runtime_error("both have no labels");
+            }
+            else if(lU!=0 && lV!=0){
+                // nothing to do
+            }
+            else{
+
+                const Node unlabeledNode = lU!=0 ? v : u;
+                const LabelType label = lU!=0 ? lU : lV;
+
+                // assign label to unlabeled node
+                labels[unlabeledNode] = label;
+
+                // iterate over the nodes edges
+                for(OutArcIt a(g,unlabeledNode);a!=lemon::INVALID;++a){
+                    const Edge otherEdge(*a);
+                    const Node targetNode=g.target(*a);
+                    if(inPQ[otherEdge] == false && labels[targetNode] == 0){
+                        const WeightType priority = priorManipFunctor(label,edgeWeights[otherEdge]);
+                        pq.push(edge,priority);
+                        inPQ[otherEdge]=true;
+                    }
+                }
+            }
+
+        }
+        /*
+        typedef GRAPH Graph;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::OutArcIt OutArcIt;
+
+        typedef typename EDGE_WEIGHTS::Value WeightType;
+        typedef typename LABELS::Value  LabelType;
         typedef typename Graph:: template NodeMap<bool>    NodeBoolMap;
         typedef PriorityQueue<Node,WeightType,true> PQ;
 
@@ -907,6 +979,7 @@ namespace vigra{
                 }
             }
         }
+        */
     }
 
     } // end namespace detail_watersheds_segmentation
