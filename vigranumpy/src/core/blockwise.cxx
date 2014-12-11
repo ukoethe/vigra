@@ -71,6 +71,28 @@ namespace vigra{
         return dest;
     }
 
+    template<unsigned int DIM, class T_IN, class T_OUT>
+    NumpyAnyArray pyBlockwiseHessianOfGaussianFirstEigenvalueMultiArray(
+        const NumpyArray<DIM, T_IN> &  source, 
+        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        NumpyArray<DIM, T_OUT>  dest
+    ){
+        dest.reshapeIfEmpty(source.taggedShape());
+        blockwise::hessianOfGaussianFirstEigenvalueMultiArray(source, dest, opt);
+        return dest;
+    }
+
+    template<unsigned int DIM, class T_IN, class T_OUT>
+    NumpyAnyArray pyBlockwiseHessianOfGaussianLastEigenvalueMultiArray(
+        const NumpyArray<DIM, T_IN> &  source, 
+        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        NumpyArray<DIM, T_OUT>  dest
+    ){
+        dest.reshapeIfEmpty(source.taggedShape());
+        blockwise::hessianOfGaussianLastEigenvalueMultiArray(source, dest, opt);
+        return dest;
+    }
+
 
 
     template<unsigned int DIM, class T_IN>
@@ -86,6 +108,20 @@ namespace vigra{
         );
 
         python::def("hessianOfGaussianEigenvalues",registerConverters(&pyBlockwiseHessianOfGaussianEigenvaluesMultiArray<DIM, T_IN, vigra::TinyVector<float, DIM> >),
+            (
+                python::arg("source"),
+                python::arg("options"),
+                python::arg("out") = python::object()
+            )
+        );
+        python::def("hessianOfGaussianFirstEigenvalue",registerConverters(&pyBlockwiseHessianOfGaussianFirstEigenvalueMultiArray<DIM, T_IN, float>),
+            (
+                python::arg("source"),
+                python::arg("options"),
+                python::arg("out") = python::object()
+            )
+        );
+        python::def("hessianOfGaussianLastEigenvalue",registerConverters(&pyBlockwiseHessianOfGaussianLastEigenvalueMultiArray<DIM, T_IN, float>),
             (
                 python::arg("source"),
                 python::arg("options"),

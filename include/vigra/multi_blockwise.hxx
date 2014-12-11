@@ -228,6 +228,67 @@ namespace blockwise{
     };
 
 
+
+    template<unsigned int DIM, unsigned int EV> 
+    class HessianOfGaussianSelectedEigenvalueFunctor{ 
+    public: 
+        typedef ConvolutionOptions<DIM> ConvOpt; 
+        HessianOfGaussianSelectedEigenvalueFunctor(const ConvOpt & convOpt) 
+        : convOpt_(convOpt){} 
+        template<class S, class D> 
+        void operator()(const S & s, D & d)const{ 
+            typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
+
+            // compute the hessian of gaussian and extract eigenvalue
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(s.shape()); 
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_); 
+
+            vigra::MultiArray<DIM, TinyVector<RealType, DIM > >  allEigenvalues(s.shape()); 
+            vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, allEigenvalues);
+
+            d = allEigenvalues.bindElementChannel(EV);
+        } 
+        template<class S, class D,class SHAPE> 
+        void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){ 
+
+            typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
+
+            // compute the hessian of gaussian and extract eigenvalue
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(roiEnd-roiBegin); 
+            convOpt_.subarray(roiBegin, roiEnd); 
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_); 
+
+            vigra::MultiArray<DIM, TinyVector<RealType, DIM > >  allEigenvalues(roiEnd-roiBegin); 
+            vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, allEigenvalues);
+
+            d = allEigenvalues.bindElementChannel(EV);
+        } 
+    private: 
+        ConvOpt  convOpt_; 
+    };
+
+
+    template<unsigned int DIM> 
+    class HessianOfGaussianFirstEigenvalueFunctor
+    : public HessianOfGaussianSelectedEigenvalueFunctor<DIM, 0>{ 
+    public: 
+        typedef ConvolutionOptions<DIM> ConvOpt; 
+        HessianOfGaussianFirstEigenvalueFunctor(const ConvOpt & convOpt) 
+        : HessianOfGaussianSelectedEigenvalueFunctor<DIM, 0>(convOpt){} 
+    };
+
+    template<unsigned int DIM> 
+    class HessianOfGaussianLastEigenvalueFunctor
+    : public HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM-1>{ 
+    public: 
+        typedef ConvolutionOptions<DIM> ConvOpt; 
+        HessianOfGaussianLastEigenvalueFunctor(const ConvOpt & convOpt) 
+        : HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM-1>(convOpt){} 
+    };
+
+
+
+
     #undef CONVOLUTION_FUNCTOR
 
     enum ConcurrencyType{
@@ -339,15 +400,17 @@ namespace blockwise{
     }
 
 
-    BLOCKWISE_FUNCTION_GEN(GaussianSmoothFunctor<N> ,               gaussianSmoothMultiArray,               0, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianGradientFunctor<N> ,             gaussianGradientMultiArray,             1, false );
-    BLOCKWISE_FUNCTION_GEN(SymmetricGradientFunctor<N> ,            symmetricGradientMultiArray,            1, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianDivergenceFunctor<N> ,           gaussianDivergenceMultiArray,           1, false );
-    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFunctor<N> ,            hessianOfGaussianMultiArray,            2, false );
-    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianEigenvaluesFunctor<N> , hessianOfGaussianEigenvaluesMultiArray, 2, false );
-    BLOCKWISE_FUNCTION_GEN(LaplacianOfGaussianFunctor<N> ,          laplacianOfGaussianMultiArray,          2, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianGradientMagnitudeFunctor<N>,     gaussianGradientMagnitude,              1, false );
-    BLOCKWISE_FUNCTION_GEN(StructureTensorFunctor<N> ,              structureTensorMultiArray,              1, true  );
+    BLOCKWISE_FUNCTION_GEN(GaussianSmoothFunctor<N> ,                   gaussianSmoothMultiArray,                   0, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianGradientFunctor<N> ,                 gaussianGradientMultiArray,                 1, false );
+    BLOCKWISE_FUNCTION_GEN(SymmetricGradientFunctor<N> ,                symmetricGradientMultiArray,                1, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianDivergenceFunctor<N> ,               gaussianDivergenceMultiArray,               1, false );
+    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFunctor<N> ,                hessianOfGaussianMultiArray,                2, false );
+    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianEigenvaluesFunctor<N> ,     hessianOfGaussianEigenvaluesMultiArray,     2, false );
+    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFirstEigenvalueFunctor<N> , hessianOfGaussianFirstEigenvalueMultiArray, 2, false );
+    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianLastEigenvalueFunctor<N> ,  hessianOfGaussianLastEigenvalueMultiArray,  2, false );
+    BLOCKWISE_FUNCTION_GEN(LaplacianOfGaussianFunctor<N> ,              laplacianOfGaussianMultiArray,              2, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianGradientMagnitudeFunctor<N>,         gaussianGradientMagnitude,                  1, false );
+    BLOCKWISE_FUNCTION_GEN(StructureTensorFunctor<N> ,                  structureTensorMultiArray,                  1, true  );
 
 
     #undef  BLOCKWISE_FUNCTION_GEN
