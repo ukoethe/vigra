@@ -19,10 +19,15 @@ namespace vigra{
         typedef GridGraph<DIM, boost::undirected_tag>  GridGraphType;
         typedef LABELS LabelType;
         typedef TinyVector<MultiArrayIndex, DIM>  Shape;
+        typedef TinyVector<MultiArrayIndex,   1>  Shape1;
         GridRag() : AdjacencyListGraph(){
 
         }
 
+        int findEdgeFromIds(const LabelType lu, const LabelType lv){
+            const Edge e  = this->findEdge(this->nodeFromId(lu), this->nodeFromId(lu));
+            return this->id(e);
+        }
 
         void assignLabels(const MultiArrayView<DIM, LABELS> & labels){
             labelView_ = labels;
@@ -45,82 +50,107 @@ namespace vigra{
 
      
 
-            if(false){
-                GridGraphType gridGraph(labelView_.shape());
-                for(typename  GridGraphType::EdgeIt e(gridGraph); e!=lemon::INVALID; ++e){
-                    const typename GridGraphType::Edge edge(*e);
-                    const LabelType lu = labelView_[gridGraph.u(edge)];
-                    const LabelType lv = labelView_[gridGraph.v(edge)];
-                    if(  lu!=lv   ){
-                        this->addEdge( this->nodeFromId(lu),this->nodeFromId(lv));
-                    }
+
+            
+            std::cout<<"add edges\n";
+            TIC;
+            const Shape shape = labelView_.shape();
+
+            if(DIM == 2){
+                for(size_t y=0; y<shape[1]; ++y)
+                for(size_t x=0; x<shape[0]; ++x){
+                    const LabelType l  = labelView_(x, y);
+                    if(x+1 < shape[0] )
+                        maybeAddEdge(l, labelView_(x+1, y));
+                    if(y+1 < shape[1])
+                        maybeAddEdge(l, labelView_(x, y+1));
+                }
+            }
+            else if(DIM==3){
+                for(size_t z=0; z<shape[2]; ++z)
+                for(size_t y=0; y<shape[1]; ++y)
+                for(size_t x=0; x<shape[0]; ++x){
+                    const LabelType l  = labelView_(x, y, z);
+                    if(x+1 < shape[0] )
+                        maybeAddEdge(l, labelView_(x+1, y, z));
+                    if(y+1 < shape[1])
+                        maybeAddEdge(l, labelView_(x, y+1, z));
+                    if(z+1 < shape[2])
+                        maybeAddEdge(l, labelView_(x, y, z+1));
                 }
             }
             else{
+                throw std::runtime_error("currently only 2D and 3D");
+            }
+            TOC;
+        }
+
+        template<class WEIGHTS_IN, class WEIGHTS_OUT>
+        void accumulateEdgeFeatures(
+            const MultiArrayView<DIM, WEIGHTS_IN> & featuresIn,
+            const MultiArrayView<1, typename vigra::NumericTraits<WEIGHTS_IN>::RealPromote > & featuresOut
+        ){
+            typedef typename vigra::NumericTraits<WEIGHTS_IN>::RealPromote RealType;
+            const Shape shape = labelView_.shape();
+            MultiArray<1, UInt32>   counting(Shape1(this->edgeNum()));
 
 
-                omp_lock_t  nodeLocks;
-                omp_init_lock(&nodeLocks);
-                
 
+            // initiaize output with zeros
+            featuresOut = RealType(0);
 
-                std::cout<<"add edges\n";
-                TIC;
-                const Shape shape = labelView_.shape();
+            //do the accumulation
+            for(size_t z=0; z<shape[2]; ++z)
+            for(size_t y=0; y<shape[1]; ++y)
+            for(size_t x=0; x<shape[0]; ++x){
+                const LabelType lu  = labelView_(x, y, z);
+                if(x+1 < shape[0]){
+                    const LabelType lv = labelView_(x+1, y, z);
+                    if(lu!=lv){
+                        const int eid = findEdgeFromIds(lu, lv);
+                        counting[eid]+=2;
+                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z));
+                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x+1,y,z));
 
-                //#pragma omp parallel for
-                for(size_t z=0; z<shape[2]; ++z){
-                    for(size_t y=0; y<shape[1]; ++y){
-                        for(size_t x=0; x<shape[0]; ++x){
-
-                            const LabelType l  = labelView_(x, y, z);
-                            
-
-                            if(x+1 < shape[0] ){
-                                const LabelType ol  = labelView_(x+1, y, z);
-                                if(l != ol){
-                                    //omp_set_lock(&nodeLocks);
-                                    this->addEdge( this->nodeFromId(l),this->nodeFromId(ol));
-                                    //omp_unset_lock(&nodeLocks);
-                                }
-                            }
-                            if(y+1 < shape[1]){
-                                const LabelType ol  = labelView_(x, y+1, z);
-                                if(l != ol){
-                                    //omp_set_lock(&nodeLocks);
-                                    this->addEdge( this->nodeFromId(l),this->nodeFromId(ol));
-                                    //omp_unset_lock(&nodeLocks);
-                                }
-                            }
-                            if(z+1 < shape[2]){
-                                const LabelType ol  = labelView_(x, y, z+1);
-                                if(l != ol){
-                                    //omp_set_lock(&nodeLocks);
-                                    this->addEdge( this->nodeFromId(l),this->nodeFromId(ol));
-                                    //omp_unset_lock(&nodeLocks);
-                                }
-                            }
-                           
-                        }
                     }
                 }
-                TOC;
 
+                if(y+1 < shape[1]){
+                    const LabelType lv = labelView_(x, y+1, z);
+                    if(lu!=lv){
+                        const int eid = findEdgeFromIds(lu, lv);
+                        counting[eid]+=2;
+                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z));
+                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y+1,z));
 
-
-                //omp_destroy_lock(nodeLocks);
-                //TOC;
-
-
+                    }
+                }
+                    
+                if(z+1 < shape[2]){
+                    const LabelType lv = labelView_(x, y, z+1);
+                    if(lu!=lv){
+                        const int eid = findEdgeFromIds(lu, lv);
+                        counting[eid]+=2;
+                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z));
+                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z+1));
+                    }
+                }
             }
+        }
 
-
+    private:
+        void maybeAddEdge(const LabelType lu, const LabelType lv){
+            if(lu != lv){
+                this->addEdge( this->nodeFromId(lu),this->nodeFromId(lv));
+            }
         }
 
 
-    private:
         vigra::MultiArrayView< DIM, LABELS> labelView_;
 	};
+
+
+
 
 }
 

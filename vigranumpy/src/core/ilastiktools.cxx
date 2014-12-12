@@ -74,6 +74,23 @@ void pyAssignLabels(
 }
 
 
+template<unsigned int DIM, class LABEL_TYPE
+         class FEATURES_IN>
+void pyAccumulateEdgeFeatures(
+    GridRag<DIM, LABEL_TYPE> & graph,
+    const NumpyArray<DIM, FEATURES_IN> & featuresIn,
+    NumpyArray<DIM, typename NumericTraits<FEATURES_IN>::RealPromote > out 
+){
+    typedef TinyVector<1, DIM>  Shape1;
+    Shape1 shape(graph.edgeNum());
+    out.reshapeIfEmpty(shape);
+
+    graph.accumulateEdgeFeatures(featuresIn, out);
+
+    return out;
+}
+
+
 
 
 template<unsigned int DIM, class LABEL_TYPE>
@@ -87,7 +104,14 @@ void defineGridRag(const std::string & clsName){
         .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
         .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
         // my functions
-        .def("assignLabels",vigra::registerConverters(&pyAssignLabels<DIM, LABEL_TYPE>))
+        .def("assignLabels",registerConverters(&pyAssignLabels<DIM, LABEL_TYPE>))
+        .def("accumulateEdgeFeatures", 
+            registerConverters(&pyAccumulateEdgeFeatures<DIM, LABEL_TYPE, float>),
+            (
+                python::arg("features"),
+                python::arg("out") = python::object()
+            )
+        )
     ;
 }
 
