@@ -1,6 +1,8 @@
 #ifndef VIGRA_MULTI_BLOCKWISE_HXX
 #define VIGRA_MULTI_BLOCKWISE_HXX
 
+
+#include <cmath>
 #include "vigra/multi_blocking.hxx"
 #include "vigra/multi_convolution.hxx"
 #include "vigra/multi_tensorutilities.hxx"
@@ -8,6 +10,8 @@
 #ifndef VIGRA_DEFAULT_BLOCK_SHAPE 
     #define VIGRA_DEFAULT_BLOCK_SHAPE 64
 #endif 
+
+
 
 namespace vigra{
 
@@ -373,7 +377,7 @@ namespace blockwise{
                 double stdDev =  opt.getStdDev()[d];
                 if(usesOuterScale)
                     stdDev += opt.getOuterScale()[d];
-                res[d] = std::round(3.0 * stdDev  + 0.5*static_cast<double>(order));
+                res[d] = static_cast<MultiArrayIndex>(3.0 * stdDev  + 0.5*static_cast<double>(order)+0.5);
             }
         }
         return res;

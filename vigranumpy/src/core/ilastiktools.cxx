@@ -74,14 +74,14 @@ void pyAssignLabels(
 }
 
 
-template<unsigned int DIM, class LABEL_TYPE
+template<unsigned int DIM, class LABEL_TYPE,
          class FEATURES_IN>
-void pyAccumulateEdgeFeatures(
+NumpyAnyArray pyAccumulateEdgeFeatures(
     GridRag<DIM, LABEL_TYPE> & graph,
     const NumpyArray<DIM, FEATURES_IN> & featuresIn,
-    NumpyArray<DIM, typename NumericTraits<FEATURES_IN>::RealPromote > out 
+    NumpyArray<1, typename NumericTraits<FEATURES_IN>::RealPromote > out 
 ){
-    typedef TinyVector<1, DIM>  Shape1;
+    typedef TinyVector<MultiArrayIndex, 1>  Shape1;
     Shape1 shape(graph.edgeNum());
     out.reshapeIfEmpty(shape);
 

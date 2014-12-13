@@ -85,10 +85,10 @@ namespace vigra{
             TOC;
         }
 
-        template<class WEIGHTS_IN, class WEIGHTS_OUT>
+        template<class WEIGHTS_IN>
         void accumulateEdgeFeatures(
             const MultiArrayView<DIM, WEIGHTS_IN> & featuresIn,
-            const MultiArrayView<1, typename vigra::NumericTraits<WEIGHTS_IN>::RealPromote > & featuresOut
+            MultiArrayView<1, typename vigra::NumericTraits<WEIGHTS_IN>::RealPromote > & featuresOut
         ){
             typedef typename vigra::NumericTraits<WEIGHTS_IN>::RealPromote RealType;
             const Shape shape = labelView_.shape();
@@ -99,40 +99,67 @@ namespace vigra{
             // initiaize output with zeros
             featuresOut = RealType(0);
 
-            //do the accumulation
-            for(size_t z=0; z<shape[2]; ++z)
-            for(size_t y=0; y<shape[1]; ++y)
-            for(size_t x=0; x<shape[0]; ++x){
-                const LabelType lu  = labelView_(x, y, z);
-                if(x+1 < shape[0]){
-                    const LabelType lv = labelView_(x+1, y, z);
-                    if(lu!=lv){
-                        const int eid = findEdgeFromIds(lu, lv);
-                        counting[eid]+=2;
-                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z));
-                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x+1,y,z));
 
+            if(DIM==2){
+                //do the accumulation
+                for(size_t y=0; y<shape[1]; ++y)
+                for(size_t x=0; x<shape[0]; ++x){
+                    const LabelType lu  = labelView_(x, y);
+                    if(x+1 < shape[0]){
+                        const LabelType lv = labelView_(x+1, y);
+                        if(lu!=lv){
+                            const int eid = findEdgeFromIds(lu, lv);
+                            counting[eid]+=2;
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y));
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x+1,y));
+                        }
+                    }
+
+                    if(y+1 < shape[1]){
+                        const LabelType lv = labelView_(x, y+1);
+                        if(lu!=lv){
+                            const int eid = findEdgeFromIds(lu, lv);
+                            counting[eid]+=2;
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y));
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y+1));
+                        }
                     }
                 }
-
-                if(y+1 < shape[1]){
-                    const LabelType lv = labelView_(x, y+1, z);
-                    if(lu!=lv){
-                        const int eid = findEdgeFromIds(lu, lv);
-                        counting[eid]+=2;
-                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z));
-                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y+1,z));
-
+            }
+            else if(DIM==3){
+                //do the accumulation
+                for(size_t z=0; z<shape[2]; ++z)
+                for(size_t y=0; y<shape[1]; ++y)
+                for(size_t x=0; x<shape[0]; ++x){
+                    const LabelType lu  = labelView_(x, y, z);
+                    if(x+1 < shape[0]){
+                        const LabelType lv = labelView_(x+1, y, z);
+                        if(lu!=lv){
+                            const int eid = findEdgeFromIds(lu, lv);
+                            counting[eid]+=2;
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z));
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x+1,y,z));
+                        }
                     }
-                }
-                    
-                if(z+1 < shape[2]){
-                    const LabelType lv = labelView_(x, y, z+1);
-                    if(lu!=lv){
-                        const int eid = findEdgeFromIds(lu, lv);
-                        counting[eid]+=2;
-                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z));
-                        featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z+1));
+
+                    if(y+1 < shape[1]){
+                        const LabelType lv = labelView_(x, y+1, z);
+                        if(lu!=lv){
+                            const int eid = findEdgeFromIds(lu, lv);
+                            counting[eid]+=2;
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z));
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y+1,z));
+                        }
+                    }
+                        
+                    if(z+1 < shape[2]){
+                        const LabelType lv = labelView_(x, y, z+1);
+                        if(lu!=lv){
+                            const int eid = findEdgeFromIds(lu, lv);
+                            counting[eid]+=2;
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z));
+                            featuresOut[eid]+=static_cast<RealType>(featuresIn(x,y,z+1));
+                        }
                     }
                 }
             }
