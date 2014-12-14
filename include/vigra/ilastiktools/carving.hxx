@@ -197,8 +197,51 @@ namespace vigra{
         vigra::MultiArrayView< DIM, LABELS> labelView_;
     };
 
+    template<class T>
+    struct GridSegmentorEdgeMap{
 
+        typedef T Value;
+        typedef T & Reference;
+        typedef const T & ConstReference;
+        GridSegmentorEdgeMap(MultiArrayView<1, T> & values)
+        : values_(values){
+            
+        }
+        template<class K>
+        Reference operator[](const K key){
+            return values_[key.id()];
+        }
 
+        template<class K>
+        ConstReference operator[](const K key)const{
+            return values_[key.id()];
+        }
+
+        MultiArrayView<1, T> values_;
+    };
+
+    template<class T>
+    struct GridSegmentorNodeMap{
+
+        typedef T Value;
+        typedef T & Reference;
+        typedef const T & ConstReference;
+        GridSegmentorNodeMap(MultiArrayView<1, T> & values)
+        : values_(values){
+
+        }
+        template<class K>
+        Reference operator[](const K key){
+            return values_[key.id()];
+        }
+
+        template<class K>
+        ConstReference operator[](const K key)const{
+            return values_[key.id()];
+        }
+
+        MultiArrayView<1, T> & values_;
+    };
 
     template<  
         unsigned int DIM, 
@@ -252,11 +295,21 @@ namespace vigra{
             TOC;
         }
 
-        void clearCurrentLabeling(){
+        void clearSeeds(){
             #pragma omp parallel for
             for(size_t i=0; i<this->nodeNum();++i){
                 nodeSeeds_[i]=0;
             }
+        }
+
+
+        void run(float bias, float noBiasBelow){
+
+            GridSegmentorNodeMap<UInt8> nodeSeeds(nodeSeeds_);
+            GridSegmentorNodeMap<UInt8> resultSegmentation(resultSegmentation_);
+            GridSegmentorEdgeMap<VALUE_TYPE> edgeWeights(edgeWeights_);
+            
+            carvingSegmentation(graph_, edgeWeights, nodeSeeds, 1, bias, resultSegmentation);
         }
 
         template<class PIXEL_LABELS>
@@ -264,11 +317,9 @@ namespace vigra{
             const MultiArrayView<DIM, PIXEL_LABELS> & brushStroke,
             const TinyVector<MultiArrayIndex, DIM> roiBegin,
             const TinyVector<MultiArrayIndex, DIM> roiEnd,
-            const PIXEL_LABELS clearLabel
+            const PIXEL_LABELS maxValidLabel
         ){
-            std::cout<<"get labels view\n";
             const LabelView & labels = graph_.labels();
-            std::cout<<"get subarray\n";
             const LabelView roiLabels = labels.subarray(roiBegin, roiEnd);
 
             typedef typename MultiArrayView<DIM, PIXEL_LABELS>::const_iterator  BrushIter;
@@ -278,18 +329,15 @@ namespace vigra{
                 std::cout<<"brushStroke shape "<<brushStroke.shape()<<"\n";
                 throw std::runtime_error("wrong shapes");
             }
-            std::cout<<"get iterators\n";
             LabelViewIter labelIter(roiLabels.begin());
             LabelViewIter labelIterEnd(roiLabels.end());
             BrushIter brushIter(brushStroke.begin());
 
-            std::cout<<"do loop\n";
             for(; labelIter<labelIterEnd; ++labelIter,++brushIter){
                 const PIXEL_LABELS brushLabel = *brushIter;
                 const LABELS nodeId = *labelIter;
-                nodeSeeds_[nodeId] = brushLabel == clearLabel ? 0 : brushLabel;
+                nodeSeeds_[nodeId] = brushLabel > maxValidLabel ? 0 : brushLabel;
             }
-            std::cout<<"done\n";
         }
 
 

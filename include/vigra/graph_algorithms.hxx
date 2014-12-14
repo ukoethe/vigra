@@ -828,13 +828,13 @@ namespace vigra{
 
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename LABELS::Value  LabelType;
-        typedef typename Graph:: template EdgeMap<bool>    EdgeBoolMap;
+        //typedef typename Graph:: template EdgeMap<bool>    EdgeBoolMap;
         typedef PriorityQueue<Edge,WeightType,true> PQ;
 
         PQ pq;
-        EdgeBoolMap inPQ(g);
+        //EdgeBoolMap inPQ(g);
         copyNodeMap(g,seeds,labels);
-        fillEdgeMap(g,inPQ,false);
+        //fillEdgeMap(g,inPQ,false);
 
 
         // put edges from nodes with seed on pq
@@ -848,7 +848,7 @@ namespace vigra{
                     if(labels[neigbour]==static_cast<LabelType>(0)){
                         const WeightType priority = priorManipFunctor(labels[node],edgeWeights[edge]);
                         pq.push(edge,priority);
-                        inPQ[edge]=true;
+                        //inPQ[edge]=true;
                     }
                 }
             }
@@ -884,10 +884,11 @@ namespace vigra{
                 for(OutArcIt a(g,unlabeledNode);a!=lemon::INVALID;++a){
                     const Edge otherEdge(*a);
                     const Node targetNode=g.target(*a);
-                    if(inPQ[otherEdge] == false && labels[targetNode] == 0){
+                    if(labels[targetNode] == 0){
+                    //if(inPQ[otherEdge] == false && labels[targetNode] == 0){
                         const WeightType priority = priorManipFunctor(label,edgeWeights[otherEdge]);
                         pq.push(otherEdge,priority);
-                        inPQ[otherEdge]=true;
+                        // inPQ[otherEdge]=true;
                     }
                 }
             }
@@ -1019,14 +1020,7 @@ namespace vigra{
         detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
     }   
     
-    /// \brief edge weighted watersheds Segmentataion
-    /// 
-    /// \param graph: input graph
-    /// \param edgeWeights : edge weights / edge indicator
-    /// \param seeds : seed must be non empty!
-    /// \param backgroundLabel : which label is background
-    /// \param backgroundBias  : bias for background
-    /// \param[labels] labels : resulting  nodeLabeling (not necessarily dense)
+
     template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
     void carvingSegmentation(
         const GRAPH                         & g,
@@ -1041,7 +1035,6 @@ namespace vigra{
         detail_watersheds_segmentation::CarvingFunctor<WeightType,LabelType> f(backgroundLabel,backgroundBias);
         detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
     }
-
 
     /// \brief edge weighted watersheds Segmentataion
     /// 

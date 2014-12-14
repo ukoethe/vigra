@@ -105,9 +105,9 @@ void pyAddLabels(
     const NumpyArray<DIM, UInt8> & brushStroke,
     const TinyVector<MultiArrayIndex, DIM> roiBegin,
     const TinyVector<MultiArrayIndex, DIM> roiEnd,
-    const UInt8 clearLabel
+    const UInt8 maxValidLabel
 ){
-    gridSegmentor.addLabels(brushStroke, roiBegin, roiEnd, clearLabel);;
+    gridSegmentor.addLabels(brushStroke, roiBegin, roiEnd, maxValidLabel);;
 }
 
 template<unsigned int DIM, class LABEL_TYPE>
@@ -178,7 +178,7 @@ void defineGridSegmentor(const std::string & clsName){
                 python::arg("brushStroke"),
                 python::arg("roiBegin"),
                 python::arg("roiEnd"),
-                python::arg("clearLabel")
+                python::arg("maxValidLabel")
             )
         )
         .def("getSegmentation", 
@@ -193,6 +193,8 @@ void defineGridSegmentor(const std::string & clsName){
         .def("edgeNum",&Segmentor::edgeNum)
         .def("maxNodeId",&Segmentor::maxNodeId)
         .def("maxEdgeId",&Segmentor::maxEdgeId)
+        .def("run",&Segmentor::run)
+        .def("clearSeeds",&Segmentor::clearSeeds)
     ;
 }
 
