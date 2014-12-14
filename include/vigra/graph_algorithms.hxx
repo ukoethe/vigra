@@ -176,20 +176,12 @@ namespace vigra{
         typedef typename GraphOut::Edge   EdgeGraphOut; 
 
 
-        USETICTOC;
-
-
-        std::cout<<"add nodes\n";
-        TIC;
         for(NodeItGraphIn iter(graphIn);iter!=lemon::INVALID;++iter){
             const LabelType l=labels[*iter];
             if(ignoreLabel==-1 || static_cast<Int64>(l)!=ignoreLabel)
                 rag.addNode(l);
         }
-        TOC;
-
-        std::cout<<"add edges\n";
-        TIC;       
+    
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
@@ -199,13 +191,8 @@ namespace vigra{
                 rag.addEdge( rag.nodeFromId(lu),rag.nodeFromId(lv));
             }
         }
-        TOC;
-
-
-        std::cout<<"setup hyper edges\n";
-        TIC
+        
         //SET UP HYPEREDGES
-
         affiliatedEdges.assign(rag);
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
@@ -220,7 +207,6 @@ namespace vigra{
                 //std::cout<<"write done\n";
             }
         }
-        TOC;
     }
 
     /// restricted region adjacency graph from a graph and labels w.r.t. that graph

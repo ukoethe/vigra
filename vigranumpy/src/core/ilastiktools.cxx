@@ -84,10 +84,49 @@ NumpyAnyArray pyAccumulateEdgeFeatures(
     typedef TinyVector<MultiArrayIndex, 1>  Shape1;
     Shape1 shape(graph.edgeNum());
     out.reshapeIfEmpty(shape);
-
     graph.accumulateEdgeFeatures(featuresIn, out);
-
     return out;
+}
+
+template<unsigned int DIM, class LABEL_TYPE>
+void pyPreprocessing(
+    GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    const NumpyArray<DIM, LABEL_TYPE> & labels,
+    const NumpyArray<DIM, float> & weightArray      
+){
+    gridSegmentor.preprocessing(labels, weightArray);
+}
+
+
+
+template<unsigned int DIM, class LABEL_TYPE>
+void pyAddLabels(
+    GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    const NumpyArray<DIM, UInt8> & brushStroke,
+    const TinyVector<MultiArrayIndex, DIM> roiBegin,
+    const TinyVector<MultiArrayIndex, DIM> roiEnd,
+    const UInt8 clearLabel
+){
+    gridSegmentor.addLabels(brushStroke, roiBegin, roiEnd, clearLabel);;
+}
+
+template<unsigned int DIM, class LABEL_TYPE>
+NumpyAnyArray pyGetSegmentation(
+    const GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    const TinyVector<MultiArrayIndex, DIM> roiBegin,
+    const TinyVector<MultiArrayIndex, DIM> roiEnd,
+    NumpyArray<DIM, UInt8>  segmentation
+){
+    typedef TinyVector<MultiArrayIndex, DIM>  ShapeN;
+    ShapeN shape(roiEnd-roiBegin);
+    segmentation.reshapeIfEmpty(shape);
+
+    {
+        PyAllowThreads _pythread;
+        gridSegmentor.getSegmentation(roiBegin, roiEnd, segmentation);
+    }
+   
+    return segmentation;
 }
 
 
@@ -112,8 +151,53 @@ void defineGridRag(const std::string & clsName){
                 python::arg("out") = python::object()
             )
         )
+
     ;
 }
+
+
+
+
+template<unsigned int DIM, class LABEL_TYPE>
+void defineGridSegmentor(const std::string & clsName){
+
+
+    typedef GridSegmentor<DIM, LABEL_TYPE, float> Segmentor;
+
+    python::class_<Segmentor>(clsName.c_str(),python::init<  >())
+        .def("preprocessing", 
+            registerConverters( & pyPreprocessing<DIM, LABEL_TYPE>),
+            (
+                python::arg("labels"),
+                python::arg("weightArray")
+            )
+        )
+        .def("addSeeds", 
+            registerConverters( & pyAddLabels<DIM, LABEL_TYPE>),
+            (
+                python::arg("brushStroke"),
+                python::arg("roiBegin"),
+                python::arg("roiEnd"),
+                python::arg("clearLabel")
+            )
+        )
+        .def("getSegmentation", 
+            registerConverters( & pyGetSegmentation<DIM, LABEL_TYPE>),
+            (
+                python::arg("roiBegin"),
+                python::arg("roiEnd"),
+                python::arg("out") = python::object()
+            )
+        )
+        .def("nodeNum",&Segmentor::nodeNum)
+        .def("edgeNum",&Segmentor::edgeNum)
+        .def("maxNodeId",&Segmentor::maxNodeId)
+        .def("maxEdgeId",&Segmentor::maxEdgeId)
+    ;
+}
+
+
+
 
 
 BOOST_PYTHON_MODULE_INIT(ilastiktools)
@@ -124,6 +208,7 @@ BOOST_PYTHON_MODULE_INIT(ilastiktools)
 
 
     defineGridRag<3, vigra::UInt32>("GridRag_3D_UInt32");
+    defineGridSegmentor<3, vigra::UInt32>("GridSegmentor_3D_UInt32");
 
 }
 
