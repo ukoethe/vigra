@@ -75,6 +75,14 @@ namespace vigra{
             }
         }
 
+        void assignLabelsFromSerialization(
+            const MultiArrayView<DIM, LABELS> & labels,
+            const MultiArrayView<1, LABELS> & serialization
+        ){
+            labelView_ = labels;
+            this->deserialize(serialization.begin(), serialization.end());
+        }
+
         template<class WEIGHTS_IN, class WEIGHTS_OUT>
         void accumulateEdgeFeatures(
             const MultiArrayView<DIM, WEIGHTS_IN> & featuresIn,
@@ -295,6 +303,32 @@ namespace vigra{
             TOC;
         }
 
+        void preprocessingFromSerialization(
+            const MultiArrayView< DIM, LABELS> & labels,
+            const MultiArrayView< 1,  LABELS> & serialization,
+            const MultiArrayView< 1,  VALUE_TYPE> & edgeWeights,
+            const MultiArrayView< 1,  UInt8> & nodeSeeds,
+            const MultiArrayView< 1,  UInt8> & resultSegmentation
+        )
+        {
+
+            USETICTOC;
+
+            std::cout<<"get RAG from serialization\n";
+            TIC;
+            // get the RAG
+            graph_.assignLabelsFromSerialization(labels, serialization);
+            TOC;
+
+
+            // assign weights and seeds
+            // and resultSegmentation
+            edgeWeights_ = edgeWeights;
+            nodeSeeds_ = nodeSeeds;
+            resultSegmentation_ = resultSegmentation;
+
+        }
+
         void clearSeeds(){
             #pragma omp parallel for
             for(size_t i=0; i<this->nodeNum();++i){
@@ -367,6 +401,10 @@ namespace vigra{
             return graph_;
         }
 
+        GridRag<DIM, LABELS> & graph(){
+            return graph_;
+        }
+
         size_t nodeNum() const{
             return graph_.nodeNum();
         }
@@ -378,6 +416,16 @@ namespace vigra{
         }
         size_t maxEdgeId()const{
             return graph_.maxEdgeId();
+        }
+
+        const MultiArray<1 , VALUE_TYPE> & edgeWeights()const{
+            return edgeWeights_;
+        }
+        const MultiArray<1 , UInt8>      & nodeSeeds()const{
+            return nodeSeeds_;
+        }
+        const MultiArray<1 , UInt8>      & resultSegmentation()const{
+            return resultSegmentation_;
         }
     private:
         GridRag<DIM, LABELS> graph_;

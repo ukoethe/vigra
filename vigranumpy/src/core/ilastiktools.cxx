@@ -73,6 +73,16 @@ void pyAssignLabels(
     graph.assignLabels(labels);
 }
 
+template<unsigned int DIM, class LABEL_TYPE>
+void pyAssignLabelsFromSerialization(
+    GridRag<DIM, LABEL_TYPE> & graph,
+    const NumpyArray<DIM, LABEL_TYPE> & labels,
+    NumpyArray<1, UInt32> serialization 
+){
+    graph.assignLabelsFromSerialization(labels, serialization);
+}
+
+
 
 template<unsigned int DIM, class LABEL_TYPE,
          class FEATURES_IN>
@@ -96,6 +106,25 @@ void pyPreprocessing(
 ){
     gridSegmentor.preprocessing(labels, weightArray);
 }
+
+
+template<unsigned int DIM, class LABEL_TYPE>
+void pyPreprocessingFromSerialization(
+    GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    const NumpyArray<DIM, LABEL_TYPE> & labels,
+    const NumpyArray<1, LABEL_TYPE> & serialization,
+    const NumpyArray<1, float> & edgeWeights,
+    const NumpyArray<1, UInt8> & nodeSeeds,
+    const NumpyArray<1, UInt8> & resultSegmentation
+){
+    gridSegmentor.preprocessingFromSerialization(labels, serialization,
+                                                 edgeWeights, nodeSeeds,
+                                                 resultSegmentation);
+}
+
+
+
+
 
 
 
@@ -129,8 +158,63 @@ NumpyAnyArray pyGetSegmentation(
     return segmentation;
 }
 
+template<unsigned int DIM, class LABEL_TYPE>
+NumpyAnyArray pySerializeGraph(
+    const GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    NumpyArray<1, UInt32> serialization 
+){
+    serialization.reshapeIfEmpty( NumpyArray<1, UInt32>::difference_type(gridSegmentor.graph().serializationSize()));
+    gridSegmentor.graph().serialize(serialization.begin());
+    return serialization;
+}
+
+template<unsigned int DIM, class LABEL_TYPE>
+void pyDeserializeGraph(
+    GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    const NumpyArray<1, UInt32> & serialization 
+){
+    gridSegmentor.graph().clear();
+    gridSegmentor.graph().deserialize(serialization.begin(),serialization.end());
+}
 
 
+
+
+template<unsigned int DIM, class LABEL_TYPE>
+NumpyAnyArray pyEdgeWeights(
+    const GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    NumpyArray<1, float> out
+){
+    out.reshapeIfEmpty( 
+        NumpyArray<1, UInt32>::difference_type(gridSegmentor.edgeNum())
+    );
+    out = gridSegmentor.edgeWeights();
+    return out;
+}
+
+template<unsigned int DIM, class LABEL_TYPE>
+NumpyAnyArray pyNodeSeeds(
+    const GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    NumpyArray<1, UInt8> out
+){
+    out.reshapeIfEmpty( 
+        NumpyArray<1, UInt32>::difference_type(gridSegmentor.maxNodeId()+1)
+    );
+    out = gridSegmentor.nodeSeeds();
+    return out;
+}
+
+template<unsigned int DIM, class LABEL_TYPE>
+NumpyAnyArray pyGetResultSegmentation(
+    const GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    NumpyArray<1, UInt8> out
+){
+    out.reshapeIfEmpty( 
+        NumpyArray<1, UInt32>::difference_type(gridSegmentor.maxNodeId()+1)
+    );
+    out = gridSegmentor.resultSegmentation();
+    return out;
+}
 
 template<unsigned int DIM, class LABEL_TYPE>
 void defineGridRag(const std::string & clsName){
@@ -172,6 +256,16 @@ void defineGridSegmentor(const std::string & clsName){
                 python::arg("weightArray")
             )
         )
+        .def("preprocessingFromSerialization", 
+            registerConverters( & pyPreprocessingFromSerialization<DIM, LABEL_TYPE>),
+            (
+                python::arg("labels"),
+                python::arg("serialization"),
+                python::arg("edgeWeights"),
+                python::arg("nodeSeeds"),
+                python::arg("resultSegmentation")
+            )
+        )
         .def("addSeeds", 
             registerConverters( & pyAddLabels<DIM, LABEL_TYPE>),
             (
@@ -195,6 +289,31 @@ void defineGridSegmentor(const std::string & clsName){
         .def("maxEdgeId",&Segmentor::maxEdgeId)
         .def("run",&Segmentor::run)
         .def("clearSeeds",&Segmentor::clearSeeds)
+        .def("serializeGraph", registerConverters(&pySerializeGraph<DIM, LABEL_TYPE>),
+            (
+                python::arg("out") = python::object()
+            )
+        )
+        .def("deserializeGraph", registerConverters(&pyDeserializeGraph<DIM, LABEL_TYPE>),
+            (
+                python::arg("serialization")
+            )
+        )
+        .def("getEdgeWeights",registerConverters(pyEdgeWeights<DIM, LABEL_TYPE>),
+            (
+                python::arg("out") = python::object()
+            )
+        )
+        .def("getNodeSeeds",registerConverters(pyNodeSeeds<DIM, LABEL_TYPE>),
+            (
+                python::arg("out") = python::object()
+            )
+        )
+        .def("getResultSegmentation",registerConverters(pyGetResultSegmentation<DIM, LABEL_TYPE>),
+            (
+                python::arg("out") = python::object()
+            )
+        )
     ;
 }
 

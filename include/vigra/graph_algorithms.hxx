@@ -888,7 +888,7 @@ namespace vigra{
                     //if(inPQ[otherEdge] == false && labels[targetNode] == 0){
                         const WeightType priority = priorManipFunctor(label,edgeWeights[otherEdge]);
                         pq.push(otherEdge,priority);
-                        // inPQ[otherEdge]=true;
+                       // inPQ[otherEdge]=true;
                     }
                 }
             }
