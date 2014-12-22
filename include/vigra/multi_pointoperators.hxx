@@ -1026,7 +1026,7 @@ inline void
 transformMultiArray(MultiArrayView<N, T1, S1> const & source,
                     MultiArrayView<N, T2, S2> dest, Functor const & f)
 {
-    for(int k=0; k<N; ++k)
+    for(unsigned int k=0; k<N; ++k)
         vigra_precondition(source.shape(k) == dest.shape(k) || source.shape(k) == 1 || 1 == dest.shape(k),
             "transformMultiArray(): shape mismatch between input and output.");
 
@@ -1525,7 +1525,7 @@ combineTwoMultiArrays(MultiArrayView<N, T11, S11> const & source1,
                       MultiArrayView<N, T2, S2> dest, 
                       Functor const & f)
 {
-    for(int k=0; k<N; ++k)
+    for(unsigned int k=0; k<N; ++k)
         vigra_precondition((source1.shape(k) == source2.shape(k) || source1.shape(k) == 1 || 1 == source2.shape(k)) &&
                            (source1.shape(k) == dest.shape(k) || source1.shape(k) == 1 || 1 == dest.shape(k)),
             "combineTwoMultiArrays(): shape mismatch between inputs and/or output.");
