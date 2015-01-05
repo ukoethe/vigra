@@ -273,7 +273,7 @@ struct MultiDistanceTest
     {
         MultiArray<3, int> data(Shape3(9,10,2));
         data.subarray(Shape3(5,5,1), Shape3(7,7,2)) = 1;
-        MultiArray<3, TinyVector<int, 3>> res(data.shape());
+        MultiArray<3, TinyVector<int, 3> > res(data.shape());
 
         separableVectorDistance(data, res);
 
