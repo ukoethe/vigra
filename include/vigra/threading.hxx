@@ -49,7 +49,7 @@
 #    define VIGRA_NO_STD_THREADING
 #  endif
 # else
-#  if defined(__GNUC__) && (!defined(_GLIBCXX_HAS_GTHREADS) || !defined(_GLIBCXX_USE_C99_STDINT_TR1))
+#  if defined(__GNUC__) && (!defined(_GLIBCXX_HAS_GTHREADS) || !defined(_GLIBCXX_USE_C99_STDINT_TR1) || !defined(_GLIBCXX_USE_SCHED_YIELD))
 #    define VIGRA_NO_STD_THREADING
 #  endif
 # endif
