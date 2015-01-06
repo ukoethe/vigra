@@ -164,6 +164,17 @@ VIGRA_DEFINE_MISSING_ABS(signed long long)
 using std::isinf;
 using std::isnan;
 
+#ifdef _LIBCPP_VERSION
+// On older versions of Mac, the system's libc++ does not provide isnan(double)
+// So we just provide it ourselves.
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, bool>::type
+inline isnan(T x)
+{
+    return (x != x);
+}
+#endif
+
 #else
 
 template <class REAL>
