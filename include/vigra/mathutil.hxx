@@ -739,7 +739,7 @@ void symmetric2x2Eigenvalues(T a00, T a01, T a11, T * r0, T * r1)
         This uses a numerically stable version of the analytical eigenvalue formula according to
         <p>
         David Eberly: <a href="http://www.geometrictools.com/Documentation/EigenSymmetric3x3.pdf">
-        <em>"Eigensystems for 3 � 3 Symmetric Matrices (Revisited)"</em></a>, Geometric Tools Documentation, 2006
+        <em>"Eigensystems for 3 × 3 Symmetric Matrices (Revisited)"</em></a>, Geometric Tools Documentation, 2006
         
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
