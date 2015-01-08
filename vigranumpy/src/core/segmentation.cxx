@@ -1398,7 +1398,7 @@ void defineSegmentation()
         " method:\n"
         "    the algorithm to be used for watershed computation. Possible values:\n\n"
         "      'Turbo':\n"
-        "        (default if input dtype == uint8) use fastSeededRegionGrowing_ or tws() respectively\n"
+        "        (default if input dtype == uint8) use fastSeededRegionGrowing() (in 2D) or tws() (in 3D)\n"
         "      'RegionGrowing':\n"
         "        (default if input dtype != uint8) use seededRegionGrowing_ or seededRegionGrowing3D_ respectively\n"
         "      'UnionFind:\n"

@@ -947,6 +947,8 @@ MergeGraphAdaptor<GRAPH>::maxArcId()const {
 }
 
 
+#ifndef DOXYGEN  // doxygen doesn't understand this
+
 template<class GRAPH>
 inline typename MergeGraphAdaptor<GRAPH>::IdType 
 MergeGraphAdaptor<GRAPH>::id(
@@ -970,7 +972,8 @@ MergeGraphAdaptor<GRAPH>::id(
 )const{
     return arc.id();
 }
- 
+
+#endif //DOXYGEN
 
 
 template<class GRAPH>

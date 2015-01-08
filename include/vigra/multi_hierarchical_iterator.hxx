@@ -58,7 +58,9 @@ template <unsigned int N,
           class HANDLES,
           int DIMENSION = N-1>
 class HierarchicalIterator
+#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
 : public HierarchicalIterator<N, HANDLES, DIMENSION-1>
+#endif
 {
   public:
 

@@ -59,6 +59,10 @@
 
 namespace vigra{
 
+/** \addtogroup GraphDataStructures
+*/
+//@{
+
     namespace detail_graph_algorithms{
         template <class GRAPH_MAP,class COMPERATOR>
         struct GraphItemCompare
@@ -146,7 +150,7 @@ namespace vigra{
     /// \param labels   : labels w.r.t. graphIn
     /// \param[out] rag  : region adjacency graph 
     /// \param[out] affiliatedEdges : a vector of edges of graphIn for each edge in rag
-    /// \param      ingoreLabel : optional label to ignore (default: -1 means no label will be ignored)
+    /// \param      ignoreLabel : optional label to ignore (default: -1 means no label will be ignored)
     ///
     template<
         class GRAPH_IN,
@@ -702,10 +706,10 @@ namespace vigra{
 
     /// \brief edge weighted watersheds Segmentataion
     /// 
-    /// \param graph: input graph
+    /// \param g: input graph
     /// \param edgeWeights : edge weights / edge indicator
     /// \param seeds : seed must be non empty!
-    /// \param[labels] labels : resulting  nodeLabeling (not necessarily dense)
+    /// \param[out] labels : resulting  nodeLabeling (not necessarily dense)
     template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
     void edgeWeightedWatershedsSegmentation(
         const GRAPH & g,
@@ -719,12 +723,12 @@ namespace vigra{
     
     /// \brief edge weighted watersheds Segmentataion
     /// 
-    /// \param graph: input graph
+    /// \param g: input graph
     /// \param edgeWeights : edge weights / edge indicator
     /// \param seeds : seed must be non empty!
     /// \param backgroundLabel : which label is background
     /// \param backgroundBias  : bias for background
-    /// \param[labels] labels : resulting  nodeLabeling (not necessarily dense)
+    /// \param[out] labels : resulting  nodeLabeling (not necessarily dense)
     template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
     void carvingSegmentation(
         const GRAPH                         & g,
@@ -747,8 +751,7 @@ namespace vigra{
     /// \param edgeWeights : edge weights / edge indicator
     /// \param nodeSizes : size of each node
     /// \param k : free parameter of felzenszwalb algorithm
-    /// \param backgroundBias  : bias for background
-    /// \param[labels] nodeLabeling :  nodeLabeling (not necessarily dense)
+    /// \param[out] nodeLabeling :  nodeLabeling (not necessarily dense)
     /// \param nodeNumStopCond      : optional stopping condition
     template< class GRAPH , class EDGE_WEIGHTS, class NODE_SIZE,class NODE_LABEL_MAP>
     void felzenszwalbSegmentation(
@@ -924,7 +927,7 @@ namespace vigra{
     } // namespace detail_graph_smoothing
 
 
-    /// \smooth node features of a graph
+    /// \brief smooth node features of a graph
     ///
     /// \param g               : input graph
     /// \param nodeFeaturesIn  : input node features which should be smoothed       
@@ -947,7 +950,7 @@ namespace vigra{
         detail_graph_smoothing::graphSmoothingImpl(g,nodeFeaturesIn,edgeIndicator,functor,nodeFeaturesOut);
     }
 
-    /// \smooth node features of a graph
+    /// \brief smooth node features of a graph
     ///
     /// \param g               : input graph
     /// \param nodeFeaturesIn  : input node features which should be smoothed       
@@ -955,8 +958,8 @@ namespace vigra{
     /// \param lambda          : scale edge indicator by lambda bevore taking negative exponent
     /// \param edgeThreshold   : edge threshold
     /// \param scale           : how much smoothing should be applied
-    /// \param iteration       : how often should this algorithm be called recursively
-    /// \param[out] nodeFeaturesOut : preallocated(!) buffer to store node features temp.
+    /// \param iterations      : how often should this algorithm be called recursively
+    /// \param[out] nodeFeaturesBuffer : preallocated(!) buffer to store node features temp.
     /// \param[out] nodeFeaturesOut : smoothed node features
     template<class GRAPH, class NODE_FEATURES_IN,class EDGE_INDICATOR,class NODE_FEATURES_OUT>
     void recursiveGraphSmoothing(
@@ -1152,6 +1155,8 @@ namespace vigra{
             }
         }
     }
+
+//@}
 
 } // namespace vigra
 

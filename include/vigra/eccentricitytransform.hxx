@@ -150,8 +150,8 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
         }
         \endcode
         
-        \param src : labeled array
-        \param centers[out] : list of eccentricity centers (required interface: 
+        \param[in] src : labeled array
+        \param[out] centers : list of eccentricity centers (required interface: 
                                <tt>centers[k] = TinyVector<int, N>()</tt> must be supported)    
                                
         <b> Usage:</b>
@@ -210,9 +210,9 @@ eccentricityCenters(const MultiArrayView<N, T, S> & src,
         }
         \endcode
         
-        \param src : labeled array
-        \param dest[out] : eccentricity transform of src
-        \param centers[out] : (optional) list of eccentricity centers (required interface: 
+        \param[in] src : labeled array
+        \param[out] dest : eccentricity transform of src
+        \param[out] centers : (optional) list of eccentricity centers (required interface: 
                                <tt>centers[k] = TinyVector<int, N>()</tt> must be supported)    
                                
         <b> Usage:</b>
