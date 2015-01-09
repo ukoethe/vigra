@@ -164,6 +164,17 @@ VIGRA_DEFINE_MISSING_ABS(signed long long)
 using std::isinf;
 using std::isnan;
 
+#ifdef VIGRA_NO_INT_ISNAN
+// On older versions of Mac, the system's libc++ does not provide isnan() for integer types.
+// So we just provide it ourselves.
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, bool>::type
+inline isnan(T x)
+{
+    return (x != x);
+}
+#endif
+
 #else
 
 template <class REAL>
@@ -728,7 +739,7 @@ void symmetric2x2Eigenvalues(T a00, T a01, T a11, T * r0, T * r1)
         This uses a numerically stable version of the analytical eigenvalue formula according to
         <p>
         David Eberly: <a href="http://www.geometrictools.com/Documentation/EigenSymmetric3x3.pdf">
-        <em>"Eigensystems for 3 × 3 Symmetric Matrices (Revisited)"</em></a>, Geometric Tools Documentation, 2006
+        <em>"Eigensystems for 3 Ã— 3 Symmetric Matrices (Revisited)"</em></a>, Geometric Tools Documentation, 2006
         
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra

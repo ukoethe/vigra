@@ -81,6 +81,8 @@ IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
     ENDIF()
 ENDIF()
 
+include(VigraConfigCmath)
+
 ##################################################
 #
 #     search for dependencies
