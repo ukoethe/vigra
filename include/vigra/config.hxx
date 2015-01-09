@@ -149,7 +149,7 @@
 //                                                       //
 ///////////////////////////////////////////////////////////
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) and !defined(__clang__)
     #if  __GNUC__ < 2 || ((__GNUC__ == 2) && (__GNUC_MINOR__ <= 8))
         #error "Need at least g++ 2.95"
     #endif
@@ -162,18 +162,57 @@
     #pragma GCC diagnostic ignored "-Wshadow"  
     
     #if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
-        #if defined(__APPLE__) && !(defined(__clang_major__) && __clang_major__ > 4)
+        #if defined(__APPLE__)
             #define VIGRA_NO_UNIQUE_PTR
         #endif
     #else
-        #if defined(__APPLE__) && defined(__clang_major__) &&  __clang_major__ <= 4
+        // C++98 mode.  No native unique_ptr support
+        #define VIGRA_NO_UNIQUE_PTR
+        #define VIGRA_SHARED_PTR_IN_TR1
+    #endif
+#endif  // __GNUC__
+
+///////////////////////////////////////////////////////////
+//                                                       //
+//                         clang                         //
+//                                                       //
+///////////////////////////////////////////////////////////
+#if defined(__clang__)
+    // In Apple builds of clang, __clang_major__ and __clang_minor__
+    // have totally different values than in other builds of clang.
+    #if defined(__apple_build_version__)
+        // (For Apple builds of clang, __clang_major__ tracks the XCode version.)
+        // For Apple builds, C++11 only works well with libc++, not stdlibc++
+        #define VIGRA_NO_UNIQUE_PTR
+        #if __cplusplus >= 201103L
+            // Must have at least XCode 4 and use libc++ to use std::shared_ptr, etc.
+            // Otherwise, use tr1.
+            #if !((__clang_major__ >= 4) && defined(_LIBCPP_VERSION))
+                #define VIGRA_SHARED_PTR_IN_TR1
+            #endif
+        #else
+            // C++98 mode.  No native unique_ptr support
+            #define VIGRA_NO_UNIQUE_PTR
+            #if !defined(_LIBCPP_VERSION)
+                #define VIGRA_SHARED_PTR_IN_TR1
+            #endif
+        #endif
+    #else
+        // This is a conservative constraint:
+        // Full C++11 support was achieved in clang-3.3,
+        // but most support was available in 3.1 and 3.2
+        #if __cplusplus >= 201103L
+            #if (__clang_major__ < 3) || ((__clang_major__ == 3) && (__clang_minor__ < 3))
+                #define VIGRA_SHARED_PTR_IN_TR1
+                #define VIGRA_NO_UNIQUE_PTR
+            #endif
+        #else
+            // C++98 mode.  No native shared_ptr/unique_ptr support
+            #define VIGRA_NO_UNIQUE_PTR
             #define VIGRA_SHARED_PTR_IN_TR1
         #endif
-        #define VIGRA_NO_UNIQUE_PTR        
     #endif
-
-
-#endif  // __GNUC__
+#endif // __clang__
 
 ///////////////////////////////////////////////////////////
 //                                                       //
