@@ -155,6 +155,7 @@
 # include <unistd.h>
 # include <sys/stat.h>
 # include <sys/mman.h>
+# include <cstdio>
 #endif
 
 // Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
