@@ -152,6 +152,10 @@ IF(WITH_VALGRIND)
     FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)
 ENDIF()
 
+
+include(VigraDetectCppVersion)
+VIGRA_DETECT_CPP_VERSION()
+
 ##################################################
 #
 #     setup testing environment
