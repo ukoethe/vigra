@@ -21,7 +21,7 @@ endif()
 
 # multiarray/test.cxx uses 'auto' from c++11.
 string(COMPARE LESS ${VIGRA_CPP_VERSION} "201103" NO_CXX11)
-if(NO_CXX11)
+if(NO_CXX11 AND NOT MSVC) # Visual Studio 2010 and 2012 supports enough c++11 features that we can still use it 
     MESSAGE(STATUS "** WARNING: You are compiling in C++98 mode.")
     MESSAGE(STATUS "**          Multiarray tests will be skipped.")
     MESSAGE(STATUS "**          Add -std=c++11 to CMAKE_CXX_FLAGS to enable multiarray tests.")
