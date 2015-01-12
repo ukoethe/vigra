@@ -550,7 +550,7 @@ void VolumeImportInfo::importImpl(MultiArrayView <3, T, Stride> &volume) const
             // import the image
             ImageImportInfo info (filename.c_str ());
 
-            // generate a basic image view to the current layer
+            // generate a 2D image view to the current layer
             MultiArrayView <2, T, Stride> view (volume.bindOuter (i));
             vigra_precondition(view.shape() == info.shape(),
                 "importVolume(): the images have inconsistent sizes.");
