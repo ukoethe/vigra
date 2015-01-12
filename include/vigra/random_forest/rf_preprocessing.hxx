@@ -127,8 +127,10 @@ namespace detail
     template<unsigned int N, class T, class C>
     bool contains_nan(MultiArrayView<N, T, C> const & in)
     {
-        for(int ii = 0; ii < in.size(); ++ii)
-            if(isnan(in[ii]))
+        typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
+        Iter i = in.begin(), end = in.end();
+        for(; i != end; ++i)
+            if(isnan(NumericTraits<T>::toRealPromote(*i)))
                 return true;
         return false; 
     }
@@ -140,8 +142,10 @@ namespace detail
     {
          if(!std::numeric_limits<T>::has_infinity)
              return false;
-         for(int ii = 0; ii < in.size(); ++ii)
-            if(abs(in[ii]) == std::numeric_limits<T>::infinity())
+        typedef typename MultiArrayView<N, T, C>::const_iterator Iter;
+        Iter i = in.begin(), end = in.end();
+        for(; i != end; ++i)
+            if(abs(*i) == std::numeric_limits<T>::infinity())
                 return true;
          return false;
     }
