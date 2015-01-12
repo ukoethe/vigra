@@ -56,6 +56,10 @@
 
 namespace vigra{
 
+/** \addtogroup GraphDataStructures
+*/
+//@{
+
 
     namespace detail_adjacency_list_graph{
 
@@ -1013,7 +1017,9 @@ namespace boost{
         );
     }
 
-}
+//@}
+
+}  // namespace vigra
 
 
 #endif /*VIGRA_ADJACENCY_LIST_GRAPH_HXX*/

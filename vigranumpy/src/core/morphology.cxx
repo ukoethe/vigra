@@ -1039,7 +1039,7 @@ void defineMorphology()
         "between the image and the infinite region) is also used. Otherwise (default), regions\n"
         "touching the array border are treated as if they extended to infinity.\n"
         "\n"
-        "For more details see boundaryDistanceTransform_ in the vigra C++ documentation.\n");
+        "For more details see boundaryMultiDistance_ in the vigra C++ documentation.\n");
 
     def("boundaryDistanceTransform",
        registerConverters(&pythonboundaryDistanceTransform<3, npy_uint32>),
@@ -1116,7 +1116,7 @@ void defineMorphology()
         (arg("image"),
          arg("out")=python::object()),
         "Compute the eccentricity transform of a 2D uint32 label array.\n\n"
-        "For more details see eccentricityTransform_ in the vigra C++ documentation.\n");
+        "For more details see eccentricityTransformOnLabels_ in the vigra C++ documentation.\n");
 
     def("eccentricityTransform",
         registerConverters(&pythonEccentricityTransform<2, UInt8, float>),
@@ -1141,7 +1141,7 @@ void defineMorphology()
         (arg("image")),
          "Compute a list holding the eccentricity center of each region in\n"
          "a 2D uint32 label array.\n\n"
-         "For more details see eccentricityTransform_ in the vigra C++ documentation.\n");
+         "For more details see eccentricityCenters_ in the vigra C++ documentation.\n");
 
     def("eccentricityCenters",
         registerConverters(&pythonEccentricityCenters<2, UInt8>),

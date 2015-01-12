@@ -139,13 +139,13 @@ class VisitorBase
      * \sa RF_Traits::StackEntry_t
      */
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & /* tree */, 
-                            Split         & /* split */,
-                            Region        & /* parent */,
-                            Region        & /* leftChild */,
-                            Region        & /* rightChild */,
-                            Feature_t     & /* features */,
-                            Label_t       & /* labels */)
+    void visit_after_split( Tree          & tree, 
+                            Split         & split,
+                            Region        & parent,
+                            Region        & leftChild,
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {}
     
     /** do something after each tree has been learned
@@ -158,7 +158,7 @@ class VisitorBase
      * \param index     index of current tree
      */
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF & /* rf */, PR & /* pr */, SM & /* sm */, ST & /* st */, int /* index */)
+    void visit_after_tree(RF & rf, PR & pr, SM & sm, ST & st, int index)
     {}
     
     /** do something after all trees have been learned
@@ -168,7 +168,7 @@ class VisitorBase
      * \param pr        reference to the preprocessor that processed the input
      */
     template<class RF, class PR>
-    void visit_at_end(RF const & /* rf */, PR const & /* pr */)
+    void visit_at_end(RF const & rf, PR const & pr)
     {}
     
     /** do something before learning starts 
@@ -178,7 +178,7 @@ class VisitorBase
      * \param pr        reference to the Processor class used.
      */
     template<class RF, class PR>
-    void visit_at_beginning(RF const & /* rf */, PR const & /* pr */)
+    void visit_at_beginning(RF const & rf, PR const & pr)
     {}
     /** do some thing while traversing tree after it has been learned 
      *  (external nodes)
@@ -194,7 +194,7 @@ class VisitorBase
      * use the NodeBase class.
      */
     template<class TR, class IntT, class TopT,class Feat>
-    void visit_external_node(TR & /* tr */, IntT /* index */, TopT /* node_t */, Feat & /* features */)
+    void visit_external_node(TR & tr, IntT index, TopT node_t, Feat & features)
     {}
     
     /** do something when visiting a internal node after it has been learned
