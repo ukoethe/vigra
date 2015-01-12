@@ -48,7 +48,6 @@ std::string trimString(const std::string &s)
 } // namespace detail
 
 
-// find filenames matching the pattern "<path>/base[0-9]+ext"
 #ifdef _MSC_VER
 void splitPathFromFilename(const std::string &pathAndName,
                            std::string &path, std::string &name)
@@ -74,6 +73,7 @@ void splitPathFromFilename(const std::string &pathAndName,
     }
 }
 
+// find filenames matching the pattern "<path>/base[0-9]+ext" (Windows version)
 VIGRA_EXPORT void findImageSequence(const std::string &name_base,
                        const std::string &name_ext,
                        std::vector<std::string> & numbers)
@@ -153,6 +153,7 @@ void splitPathFromFilename(const std::string &pathAndName,
     }
 }
 
+// find filenames matching the pattern "<path>/base[0-9]+ext" (Unix version)
 void findImageSequence(const std::string &name_base,
                        const std::string &name_ext,
                        std::vector<std::string> & numbers)
@@ -863,7 +864,24 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
             return;            
         }
     }
-    
+
+    // for TIFF files, check for single-file, 3D data, tiled TIFFs first:
+    if(codecManager().getFileTypeByMagicString(filename) == "TIFF")
+    {
+        TIFFFile f(filename.c_str(), "r");
+
+        shape_ = f.imageSize3D();
+
+        pixelType_ = f.pixelType();
+        numBands_ = 1; // FIXME
+
+        path_ = filename;
+
+        baseName_ = filename;
+        fileType_ = "TILEDTIFF";
+        return;
+    }
+
     // try multi-page TIFF or image stack
     if(isImage(filename.c_str()))
     {
