@@ -123,6 +123,12 @@ public:
     typedef ShortestPathDijkstra<Graph,float> ShortestPathDijkstraType;
 
 
+    typedef OnTheFlyEdgeMap2<
+        Graph, typename PyNodeMapTraits<Graph,float>::Map,
+        MeanFunctor<float>, float
+    > ImplicitEdgeMap;
+
+
     typedef typename GraphDescriptorToMultiArrayIndex<Graph>::IntrinsicNodeMapShape NodeCoordinate;
     typedef NumpyArray<1,NodeCoordinate>  NodeCoorinateArray;
 
@@ -143,6 +149,20 @@ public:
             )
         )
         .def("run",registerConverters(&runShortestPath),
+            (
+                python::arg("edgeWeights"),
+                python::arg("source"),
+                python::arg("target")
+            )
+        )
+
+        .def("run",registerConverters(&runShortestPathImplicit),
+            (
+                python::arg("edgeWeights"),
+                python::arg("source")
+            )
+        )
+        .def("run",registerConverters(&runShortestPathNoTargetImplicit),
             (
                 python::arg("edgeWeights"),
                 python::arg("source"),
@@ -290,6 +310,32 @@ public:
 
         // run algorithm itself
         sp.run(edgeWeightsArrayMap,source);
+    }
+
+
+        static void runShortestPathImplicit(
+        ShortestPathDijkstraType & sp,
+        const ImplicitEdgeMap & edgeWeights,
+        PyNode source,
+        PyNode target
+    ){
+        // numpy arrays => lemon maps
+        //FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
+
+        // run algorithm itself
+        sp.run(edgeWeights,source,target);
+    }
+
+    static void runShortestPathNoTargetImplicit(
+        ShortestPathDijkstraType & sp,
+        const ImplicitEdgeMap & edgeWeights,
+        PyNode source
+    ){
+        // numpy arrays => lemon maps
+        //FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
+
+        // run algorithm itself
+        sp.run(edgeWeights,source);
     }
 
 };

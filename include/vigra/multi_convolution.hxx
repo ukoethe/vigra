@@ -612,7 +612,7 @@ internalSeparableConvolveSubarray(
     }
     
     indexSort(overhead.begin(), overhead.end(), axisorder.begin(), std::greater<double>());
-    std::cout<<"axisorder "<<axisorder<<"\n";
+    //std::cout<<"axisorder "<<axisorder<<"\n";
 
 
     SrcShape dstart, dstop(sstop - sstart);

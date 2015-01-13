@@ -15,7 +15,7 @@ def makeWeights(gamma):
     print "raw ",raw.min(),raw.max()
     wImg= numpy.exp((gradmag**0.5)*gamma*-1.0)#**0.5
     wImg = numpy.array(wImg).astype(numpy.float32)
-    w=vigra.graphs.edgeFeaturesFromInterpolatedImage(gridGraph,wImg)
+    w=vigra.graphs.implicitMeanEdgeMap(gridGraph,wImg)
     return w
 
 def makeVisuImage(path,img):
@@ -63,15 +63,14 @@ print imgLab.shape
 
 
 print "interpolate image"
-imgLabBig = vigra.resize(imgLab,[imgLab.shape[0]*2-1,imgLab.shape[1]*2-1 ])
-
+imgLabSmall = imgLab
 
 # make a few edge weights
 
-gradmag = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLabBig,sigma))
-hessian = numpy.squeeze(vigra.filters.hessianOfGaussianEigenvalues(imgLabBig[:,:,0],sigma))[:,:,0]
+gradmag = numpy.squeeze(vigra.filters.gaussianGradientMagnitude(imgLabSmall,sigma))
+hessian = numpy.squeeze(vigra.filters.hessianOfGaussianEigenvalues(imgLabSmall[:,:,0],sigma))[:,:,0]
 hessian-=hessian.min()
-raw     = 256-imgLabBig[:,:,0].copy()
+raw     = 256-imgLabSmall[:,:,0].copy()
 gridGraph  = vigraph.gridGraph(imgLab.shape[:2],False)  
 
 
@@ -131,7 +130,7 @@ def unfreeze(event):
 
 def onslide(event):
     global img,gradmag,weights,clickList,sgamma
-    weights[:]  = makeWeights(sgamma.val)
+    weights  = makeWeights(sgamma.val)
     print "onslide",clickList
     if len(clickList)>=2:
         print "we have  path"
