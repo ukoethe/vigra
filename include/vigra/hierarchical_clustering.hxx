@@ -254,8 +254,8 @@ namespace cluster_operators{
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
-            const float sizeU = std::min(nodeSizeMap_[uu] , float(std::pow(50,3)));
-            const float sizeV = std::min(nodeSizeMap_[vv] , float(std::pow(50,3)));
+            const float sizeU = std::min(nodeSizeMap_[uu] , float(std::pow(50.f,3)));
+            const float sizeV = std::min(nodeSizeMap_[vv] , float(std::pow(50.f,3)));
 
             const ValueType wardFacRaw = 1.0 / ( 1.0/std::sqrt(sizeU) + 1.0/std::sqrt(sizeV) );
             const ValueType wardFac = (wardFacRaw*wardness_) + (1.0-wardness_);
