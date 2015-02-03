@@ -365,7 +365,7 @@ namespace vigra {
         if( TIFFGetField( tiff, TIFFTAG_TILEWIDTH, &tileWidth ) &&
             TIFFGetField( tiff, TIFFTAG_TILELENGTH, &tileHeight ) )
             vigra_precondition( (tileWidth == width) && (tileHeight == height),
-                                "TIFFDecoderImpl::init(): "
+                                "TIFFDecoder: "
                                 "Cannot read tiled TIFFs (not implemented)." );
 
         // find out strip heights
@@ -376,7 +376,7 @@ namespace vigra {
         extra_samples_per_pixel = 0;
         if ( !TIFFGetFieldDefaulted( tiff, TIFFTAG_SAMPLESPERPIXEL,
                                      &samples_per_pixel ) )
-            vigra_fail( "TIFFDecoderImpl::init(): Samples per pixel not set."
+            vigra_fail( "TIFFDecoder: Samples per pixel not set."
                         " A suitable default was not found." );
 
         // read extra samples (# of alpha channels)
@@ -391,7 +391,7 @@ namespace vigra {
             for (int i=0; i< extra_samples_per_pixel; i++) {
                 if (extra_sample_types[i] ==  EXTRASAMPLE_ASSOCALPHA)
                 {
-                    std::cerr << "WARNING: TIFFDecoderImpl::init(): associated alpha treated"
+                    std::cerr << "WARNING: TIFFDecoder: associated alpha treated"
                                  " as unassociated alpha!" << std::endl;
                 }
             }
@@ -400,9 +400,28 @@ namespace vigra {
         // get photometric
         if ( !TIFFGetFieldDefaulted( tiff, TIFFTAG_PHOTOMETRIC,
                                      &photometric ) )
-            vigra_fail( "TIFFDecoderImpl::init(): Photometric tag is not set."
-                        " A suitable default was not found." );
-
+        {
+            // No photometric found in the file, try to guess.
+            // FIXME: also look at extra_samples_per_pixel here
+            if(samples_per_pixel == 1)
+            {
+                photometric = PHOTOMETRIC_MINISBLACK;
+                std::cerr << "Warning: TIFFDecoder: TIFFTAG_PHOTOMETRIC is not set, "
+                             "guessing PHOTOMETRIC_MINISBLACK." << std::endl;
+            }
+            else if(samples_per_pixel == 3)
+            {
+                photometric = PHOTOMETRIC_RGB;
+                std::cerr << "Warning: TIFFDecoder: TIFFTAG_PHOTOMETRIC is not set, "
+                             "guessing PHOTOMETRIC_RGB." << std::endl;
+            }
+            else
+            {
+                vigra_fail( "TIFFDecoder: TIFFTAG_PHOTOMETRIC is not set."
+                            " A suitable default was not found." );
+            }
+        }
+        
         // check photometric preconditions
         switch ( photometric )
         {
@@ -411,7 +430,7 @@ namespace vigra {
             case PHOTOMETRIC_PALETTE:
             {
                 if ( samples_per_pixel - extra_samples_per_pixel != 1 )
-                vigra_fail("TIFFDecoderImpl::init():"
+                vigra_fail("TIFFDecoder:"
                                 " Photometric tag does not fit the number of"
                                 " samples per pixel." );
                 break;
@@ -423,7 +442,7 @@ namespace vigra {
                     extra_samples_per_pixel = samples_per_pixel - 3;
                 }
                 if ( samples_per_pixel - extra_samples_per_pixel != 3 )
-                    vigra_fail("TIFFDecoderImpl::init():"
+                    vigra_fail("TIFFDecoder:"
                                     " Photometric tag does not fit the number of"
                                     " samples per pixel." );
                 break;
@@ -434,7 +453,7 @@ namespace vigra {
                 uint16 tiffcomp;
                 TIFFGetFieldDefaulted( tiff, TIFFTAG_COMPRESSION, &tiffcomp );
                 if (tiffcomp != COMPRESSION_SGILOG && tiffcomp != COMPRESSION_SGILOG24)
-                    vigra_fail("TIFFDecoderImpl::init():"
+                    vigra_fail("TIFFDecoder:"
                                     " Only SGILOG compression is supported for"
                                     " LogLuv TIFF."
                     );
@@ -447,14 +466,14 @@ namespace vigra {
         if ( samples_per_pixel > 1 ) {
             if ( !TIFFGetFieldDefaulted( tiff, TIFFTAG_PLANARCONFIG,
                                          &planarconfig ) )
-                vigra_fail( "TIFFDecoderImpl::init(): Planarconfig is not"
+                vigra_fail( "TIFFDecoder: TIFFTAG_PLANARCONFIG is not"
                             " set. A suitable default was not found." );
         }
 
         // get bits per pixel
         if ( !TIFFGetField( tiff, TIFFTAG_BITSPERSAMPLE, &bits_per_sample ) )
         {
-            std::cerr << "Warning: no TIFFTAG_BITSPERSAMPLE, using 8 bits per sample.\n";
+            std::cerr << "Warning: TIFFDecoder: no TIFFTAG_BITSPERSAMPLE, using 8 bits per sample.\n";
             bits_per_sample = 8;
         }
         // get pixeltype
@@ -487,12 +506,12 @@ namespace vigra {
                             pixeltype =  "DOUBLE";
                             break;
                         default:
-                            vigra_fail( "TIFFDecoderImpl::init(): Sampleformat or Datatype tag undefined and guessing sampletype from Bits per Sample failed." );
+                            vigra_fail( "TIFFDecoder: Sampleformat or Datatype tag undefined and guessing sampletype from Bits per Sample failed." );
                             break;
                     }
                     if(bits_per_sample != 8) // issue the warning only for non-trivial cases
-                        std::cerr << "Warning: no TIFFTAG_SAMPLEFORMAT or TIFFTAG_DATATYPE, "
-                                     "guessing pixeltype '" << pixeltype << "'.\n";
+                        std::cerr << "Warning: TIFFDecoder: no TIFFTAG_SAMPLEFORMAT or "
+                                      "TIFFTAG_DATATYPE, guessing pixeltype '" << pixeltype << "'.\n";
                 }
             }
 
