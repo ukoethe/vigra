@@ -62,6 +62,84 @@ struct GraphAlgorithmTest{
 
     }
 
+
+    void testShortestPathGridGraph2()
+    {
+        typedef GridGraph<2, boost::undirected_tag> GridGraph2d;
+        typedef TinyVector< MultiArrayIndex, 2> Shape2;
+        typedef GridGraph2d:: template EdgeMap<float> EdgeMap;
+
+        GridGraph2d gridGraph(Shape2(3,3),DirectNeighborhood);
+
+        EdgeMap edgeMap(gridGraph);
+
+        for(GridGraph2d::EdgeIt ei(gridGraph); ei!=lemon::INVALID; ++ei ){
+            edgeMap[*ei] = 1.0;
+        }
+
+        typedef ShortestPathDijkstra<GridGraph2d,float> Sp;
+        typedef typename Sp::PredecessorsMap PredMap;
+        typedef typename Sp::DistanceMap     DistMap;
+        typedef typename GridGraph2d::Node Node;
+        typedef typename GridGraph2d::Edge Edge;
+
+        Sp pf(gridGraph);
+
+        Shape2 n00(0,0);
+
+        pf.run(edgeMap,n00);
+
+        const DistMap & dmap  = pf.distances();
+        const PredMap & pmap  = pf.predecessors();
+
+        // check the length and the path 
+        shouldEqual( pathLength(Shape2(0,0), Shape2(0,0),pmap) , 1);
+        shouldEqual( pathLength(Shape2(0,0), Shape2(0,1),pmap) , 2);
+        shouldEqual( pathLength(Shape2(0,0), Shape2(0,2),pmap) , 3);
+        shouldEqual( pathLength(Shape2(0,0), Shape2(1,0),pmap) , 2);
+        shouldEqual( pathLength(Shape2(0,0), Shape2(2,0),pmap) , 3);
+
+        shouldEqual( pathLength(Shape2(0,0), Shape2(1,1),pmap) , 3);
+        shouldEqual( pathLength(Shape2(0,0), Shape2(1,2),pmap) , 4);
+        shouldEqual( pathLength(Shape2(0,0), Shape2(2,1),pmap) , 4);
+        shouldEqual( pathLength(Shape2(0,0), Shape2(2,2),pmap) , 5);
+
+
+
+        shouldEqualTolerance(dmap[Shape2(0,0)],0.0f , 0.00001);
+        shouldEqualTolerance(dmap[Shape2(0,1)],1.0f , 0.00001);
+        shouldEqualTolerance(dmap[Shape2(0,2)],2.0f , 0.00001);
+        shouldEqualTolerance(dmap[Shape2(1,0)],1.0f , 0.00001);
+        shouldEqualTolerance(dmap[Shape2(1,1)],2.0f , 0.00001);
+        shouldEqualTolerance(dmap[Shape2(1,2)],3.0f , 0.00001);
+        shouldEqualTolerance(dmap[Shape2(2,0)],2.0f , 0.00001);
+        shouldEqualTolerance(dmap[Shape2(2,1)],3.0f , 0.00001);
+        shouldEqualTolerance(dmap[Shape2(2,2)],4.0f , 0.00001);
+
+
+        should(pmap[Shape2(0,0)] == Shape2(0,0));
+        should(pmap[Shape2(1,0)] == Shape2(0,0));
+        should(pmap[Shape2(2,0)] == Shape2(1,0));
+
+        should(pmap[Shape2(2,1)] == Shape2(2,0) || pmap[Shape2(2,1)] == Shape2(1,1));
+        should(pmap[Shape2(1,2)] == Shape2(0,2) || pmap[Shape2(2,1)] == Shape2(1,1));
+
+        should(pmap[Shape2(0,0)] == Shape2(0,0));
+        should(pmap[Shape2(0,1)] == Shape2(0,0));
+        should(pmap[Shape2(0,2)] == Shape2(0,1));
+
+        should(pmap[Shape2(1,1)] == Shape2(0,1) || pmap[Shape2(1,1)] == Shape2(1,0) );
+        should(pmap[Shape2(2,2)] == Shape2(2,1) || pmap[Shape2(2,2)] == Shape2(1,2) );
+
+        //shouldEqual(pmap[Shape2(1,1)], );
+        //shouldEqual(pmap[Shape2(1,2)], );
+        //shouldEqual(pmap[Shape2(2,0)], );
+        //shouldEqual(pmap[Shape2(2,1)], );
+        //shouldEqual(pmap[Shape2(2,2)], );
+
+
+    }
+
     template <class Graph>
     void testShortestPathImpl(Graph const & g)
     {
@@ -482,6 +560,7 @@ struct GraphAlgorithmTestSuite
         add( testCase( &GraphAlgorithmTest::testRegionAdjacencyGraph));
         add( testCase( &GraphAlgorithmTest::testEdgeSort));
         add( testCase( &GraphAlgorithmTest::testEdgeWeightComputation));
+        add( testCase( &GraphAlgorithmTest::testShortestPathGridGraph2));
     }
 };
 

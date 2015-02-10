@@ -90,7 +90,7 @@ struct vertex_index_t {};
 struct edge_property_tag {};
 
 
-#if 0
+#if 1
 #ifndef BOOST_TUPLE_HPP
 
 // tie() support for std::pair, similar to Boost's one:

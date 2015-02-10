@@ -343,7 +343,7 @@ namespace vigra{
             GridSegmentorNodeMap<UInt8> resultSegmentation(resultSegmentation_);
             GridSegmentorEdgeMap<VALUE_TYPE> edgeWeights(edgeWeights_);
             
-            carvingSegmentation(graph_, edgeWeights, nodeSeeds, 1, bias, resultSegmentation);
+            carvingSegmentation(graph_, edgeWeights, nodeSeeds, 1, bias,noBiasBelow, resultSegmentation);
         }
 
         template<class PIXEL_LABELS>

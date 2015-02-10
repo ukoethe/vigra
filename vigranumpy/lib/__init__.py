@@ -336,9 +336,14 @@ def imshow(image,show=True):
 
 def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False,r=0):
 
+    img = numpy.squeeze(img)
+    if img.ndim ==2:
+        img = numpy.concatenate( [ img[:,:,None]]*3 ,axis=2).astype(numpy.float32)
+        img = taggedView(img, 'xyc')
+
     labels = numpy.squeeze(labels)
     crackedEdges = analysis.regionImageToCrackEdgeImage(labels).squeeze()
-    print "cracked shape",crackedEdges.shape
+    #print "cracked shape",crackedEdges.shape
     whereEdge    =  numpy.where(crackedEdges==0)
     whereNoEdge  =  numpy.where(crackedEdges!=0)
     crackedEdges[whereEdge] = 1
@@ -734,8 +739,16 @@ def _genGridGraphConvenienceFunctions():
     def isGridGraph(obj):
         """ check if obj is gridGraph"""
         return isinstance(obj,(graphs.GridGraphUndirected2d , graphs.GridGraphUndirected3d))
+    def isGridGraph2d(obj):
+        """ check if obj is gridGraph"""
+        return isinstance(obj,graphs.GridGraphUndirected2d)
+
     isGridGraph.__module__ = 'vigra.graphs'
     graphs.isGridGraph = isGridGraph  
+
+    isGridGraph2d.__module__ = 'vigra.graphs'
+    graphs.isGridGraph2d = isGridGraph2d  
+
 
 _genGridGraphConvenienceFunctions()
 del _genGridGraphConvenienceFunctions
@@ -1106,6 +1119,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     raise RuntimeError("implicit edge maps are only implemented for grid graphs")
 
                 return graphs._ragEdgeFeatures(self, graph, affiliatedEdges, edgeFeatures,acc, out)
+
             else:
                 if self.edgeNum == 0:
                     raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")
@@ -1114,7 +1128,10 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 else:
                     weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
                     weights[:] = 1
-                return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
+                if graphs.isGridGraph2d(graph) and edgeFeatures.ndim == 4 :
+                    return graphs._ragEdgeFeaturesMb(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
+                else:
+                    return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
 
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
@@ -1138,7 +1155,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             if acc == 'mean':
               #print "get node size..."
               weights = self.baseGraph.nodeSize()
-              print "weights == ", weights
+              #print "weights == ", weights
             else :
               weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
               weights[:]=1
@@ -1839,6 +1856,33 @@ del _genGraphSegmentationFunctions
 
 
 
+def _genHistogram():
+    def gaussianHistogram(image,minVals,maxVals,bins=30,
+                     sigma=3.0,sigmaBin=2.0,out=None):
+        """ 
+        """
+        spatialDim  = image.ndim - 1
+        out = histogram.gaussianHistogram_(image=image, minVals=minVals, maxVals=maxVals,
+                                           bins=bins, sigma=sigma, sigmaBin=sigmaBin, 
+                                           out=out)
+
+        out = out.reshape(image.shape[0:spatialDim]+(-1,))
+        if spatialDim == 2:
+            out /= numpy.sum(out,axis=spatialDim)[:,:, numpy.newaxis]
+        elif spatialDim == 3:
+            out /= numpy.sum(out,axis=spatialDim)[:,:,:, numpy.newaxis]
+        elif spatialDim == 4:
+            out /= numpy.sum(out,axis=spatialDim)[:,:,:, :,numpy.newaxis]
+        return out
+
+    gaussianHistogram.__module__ = 'vigra.histogram'
+    histogram.gaussianHistogram = gaussianHistogram
+
+
+_genHistogram()
+del _genHistogram
+
+
 def _genGraphSmoothingFunctions():
     def recursiveGraphSmoothing( graph,nodeFeatures,edgeIndicator,gamma,
                                edgeThreshold,scale=1.0,iterations=1,out=None):
@@ -1876,6 +1920,7 @@ def _genGraphSmoothingFunctions():
 
 _genGraphSmoothingFunctions()
 del _genGraphSmoothingFunctions
+
 
 
 

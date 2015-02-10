@@ -89,6 +89,7 @@ public:
     typedef NumpyArray<RagNodeMapDim,   Singleband<UInt32> > RagUInt32NodeArray;
     typedef NumpyArray<RagNodeMapDim,   Singleband<Int32 > > RagInt32NodeArray;
     typedef NumpyArray<RagNodeMapDim +1,Multiband <float > > RagMultiFloatNodeArray;
+    typedef NumpyArray<RagEdgeMapDim +1,Multiband <float > > RagMultiFloatEdgeArray;
 
     typedef NumpyScalarEdgeMap<RagGraph,RagFloatEdgeArray>         RagFloatEdgeArrayMap;
     typedef NumpyScalarNodeMap<RagGraph,RagFloatNodeArray>         RagFloatNodeArrayMap;
@@ -158,7 +159,18 @@ public:
         }
 
         
-
+        // explicit rag features
+        python::def("_ragEdgeFeaturesMb",registerConverters(&pyRagEdgeFeaturesMb<Multiband<float> >),
+            (
+                python::arg("rag"),
+                python::arg("graph"),
+                python::arg("affiliatedEdges"),
+                python::arg("edgeFeatures"),
+                python::arg("edgeSizes"),
+                python::arg("acc"),
+                python::arg("out")=python::object()
+            )
+        );
 
 
         // explicit rag features
@@ -435,6 +447,83 @@ public:
         return ragEdgeFeaturesArray;
     }
 
+
+    template<class T>
+    static NumpyAnyArray  pyRagEdgeFeaturesMb(
+        const RagGraph &           rag,
+        const Graph &              graph,
+        const RagAffiliatedEdges & affiliatedEdges,
+        typename PyEdgeMapTraits<Graph,T >::Array edgeFeaturesArray ,
+        typename PyEdgeMapTraits<Graph,float >::Array edgeSizesArray,
+        const std::string &        accumulator,
+        typename PyEdgeMapTraits<RagGraph,T >::Array ragEdgeFeaturesArray
+    ){
+
+        vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
+
+        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") || 
+                           accumulator==std::string("min")  || accumulator==std::string("max"),
+            "currently the accumulators are limited to mean and sum and min and max"
+        );
+
+
+
+
+        // resize out
+        typename MultiArray<RagEdgeMapDim+1,int>::difference_type outShape;
+        for(size_t d=0;d<RagEdgeMapDim;++d){
+            outShape[d]=IntrinsicGraphShape<RagGraph>::intrinsicEdgeMapShape(rag)[d];
+        }
+        outShape[RagEdgeMapDim]=edgeFeaturesArray.shape(EdgeMapDim);
+
+
+        ragEdgeFeaturesArray.reshapeIfEmpty(   RagMultiFloatEdgeArray::ArrayTraits::taggedShape(outShape,"ec") );
+        std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
+
+
+
+
+
+        // resize out
+        //ragEdgeFeaturesArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedEdgeMapShape(rag));
+        std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
+        // numpy arrays => lemon maps
+        typename PyEdgeMapTraits<Graph   ,T >::Map edgeFeaturesArrayMap(graph,edgeFeaturesArray);
+        typename PyEdgeMapTraits<Graph   ,float >::Map edgeSizesArrayMap(graph,edgeSizesArray);
+        typename PyEdgeMapTraits<RagGraph,T >::Map ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
+
+        //typedef typename PyEdgeMapTraits<Graph,float >::Array::value_type ValType;
+
+        if(accumulator == std::string("mean") ){
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                float weightSum=0.0;
+                for(size_t i=0;i<affEdges.size();++i){
+                    const float weight = edgeSizesArrayMap[affEdges[i]];
+                    vigra::MultiArray<1,float> val = edgeFeaturesArrayMap[affEdges[i]];
+                    val*=weight;
+                    ragEdgeFeaturesArrayMap[ragEdge]+=val;
+                    weightSum+=weight;
+                }
+                ragEdgeFeaturesArrayMap[ragEdge]/=weightSum;
+            }
+        }
+        else if( accumulator == std::string("sum")){
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                for(size_t i=0;i<affEdges.size();++i){
+                    ragEdgeFeaturesArrayMap[ragEdge]+=edgeFeaturesArrayMap[affEdges[i]];
+                }
+            }
+        }
+        else{
+            throw std::runtime_error("not supported accumulator");
+        }
+
+        return ragEdgeFeaturesArray;
+    }
 
 
     template<class T_PIXEL, class T, class OTF_EDGES>

@@ -213,6 +213,13 @@ public:
         return NodeHolder<MergeGraph>(mg,mg.inactiveEdgesNode(edge));
     }
 
+    static EdgeHolder<MergeGraph> pyReprEdgeID(
+        const MergeGraph & mg,
+        const EdgeHolder<MergeGraph> & edge
+    ){
+        return EdgeHolder<MergeGraph>(mg,mg.reprEdge(edge));
+    }
+    
 
     static void pyContractEdgeA(
         MergeGraph & mg,

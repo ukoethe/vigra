@@ -800,15 +800,24 @@ namespace vigra{
 
     template<class PRIORITY_TYPE,class LABEL_TYPE>
     struct CarvingFunctor{
-        CarvingFunctor(const LABEL_TYPE backgroundLabel,const PRIORITY_TYPE & factor)
+        CarvingFunctor(const LABEL_TYPE backgroundLabel,
+                       const PRIORITY_TYPE & factor,
+                       const PRIORITY_TYPE & noPriorBelow
+        )
         :   backgroundLabel_(backgroundLabel),
-            factor_(factor){
+            factor_(factor),
+            noPriorBelow_(noPriorBelow){
         }
         PRIORITY_TYPE operator()(const LABEL_TYPE label,const PRIORITY_TYPE  priority)const{
-            return (label==backgroundLabel_ ? priority*factor_ : priority);
+            if(priority>=noPriorBelow_)
+                return (label==backgroundLabel_ ? priority*factor_ : priority);
+            else{
+                return priority;
+            }
         }
         LABEL_TYPE     backgroundLabel_;
         PRIORITY_TYPE  factor_;
+        PRIORITY_TYPE  noPriorBelow_;
     };
 
 
@@ -894,110 +903,7 @@ namespace vigra{
             }
 
         }
-        /*
-        typedef GRAPH Graph;
-        typedef typename Graph::Edge Edge;
-        typedef typename Graph::Node Node;
-        typedef typename Graph::NodeIt NodeIt;
-        typedef typename Graph::OutArcIt OutArcIt;
 
-        typedef typename EDGE_WEIGHTS::Value WeightType;
-        typedef typename LABELS::Value  LabelType;
-        typedef typename Graph:: template NodeMap<bool>    NodeBoolMap;
-        typedef PriorityQueue<Node,WeightType,true> PQ;
-
-        PQ pq;
-        NodeBoolMap inPQ(g);
-        copyNodeMap(g,seeds,labels);
-        fillNodeMap(g,inPQ,false);
-
-        bool anySeed=false;
-        for(NodeIt n(g);n!=lemon::INVALID;++n){
-            const Node node(*n);
-            if(labels[node]!=static_cast<LabelType>(0)){
-                anySeed=true;
-                for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
-                    const Edge edge(*a);
-                    const Node neigbour=g.target(*a);
-                    //std::cout<<"n- node "<<g.id(neigbour)<<"\n";
-                    if(labels[neigbour]==static_cast<LabelType>(0) && !inPQ[neigbour]){
-                        const WeightType priority = priorManipFunctor(labels[node],edgeWeights[edge]);
-                        pq.push(neigbour,priority);
-                        inPQ[neigbour]=true;
-                    }
-                }
-            }
-        }
-
-
-        if(anySeed){
-
-            while(!pq.empty()){
-                const Node node       = pq.top();
-                const LabelType label = labels[node]; 
-                //std::cout<<"node "<<g.id(node)<<" with label "<<label<<"\n";
-                if(label!=0){
-                    throw std::runtime_error("seems like there are no seeds at all");
-                }
-
-                pq.pop();
-                bool moreThanOneLabel = false;
-                LabelType labelFound  = 0 ;
-                for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
-                    const Edge edge(*a);
-                    const Node neigbour=g.target(*a);
-                    if(labels[neigbour]!=static_cast<LabelType>(0)){
-                        if(labelFound==0){
-                            labelFound=labels[neigbour];
-                        }
-                        else{
-                            moreThanOneLabel=true;
-                            break;
-                        }
-                    }
-                }
-                if(labelFound!=0 && !moreThanOneLabel ){
-                    labels[node]=labelFound;
-                    for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
-                        const Edge edge(*a);
-                        const Node neigbour=g.target(*a);
-                        if(labels[neigbour]==static_cast<LabelType>(0)){
-                            if(!inPQ[neigbour]){
-                                const WeightType priority = priorManipFunctor(labelFound,edgeWeights[edge]);
-                                pq.push(neigbour,edgeWeights[edge]);
-                                inPQ[neigbour]=true;
-                            }
-                            else{
-                                const WeightType priority = priorManipFunctor(labelFound,edgeWeights[edge]);
-                                pq.push(neigbour,edgeWeights[edge]);
-                                inPQ[neigbour]=true;
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            for(NodeIt n(g);n!=lemon::INVALID;++n){
-                const Node node(*n);
-                if(labels[node]==static_cast<LabelType>(0)){
-
-                    WeightType minWeight       = std::numeric_limits<WeightType>::infinity();
-                    LabelType  minWeightLabel  = static_cast<LabelType>(0);
-                    for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
-                        const Edge edge(*a);
-                        const Node neigbour=g.target(*a);
-                        const WeightType priority = priorManipFunctor(labels[neigbour],edgeWeights[edge]);
-                        if(labels[neigbour]!=0 && priority<minWeight){
-                            minWeight=priority;
-                            minWeightLabel=labels[neigbour];
-                        }
-                    }
-                    labels[node]=minWeightLabel;
-                }
-            }
-        }
-        */
     }
 
     } // end namespace detail_watersheds_segmentation
@@ -1028,11 +934,12 @@ namespace vigra{
         const SEEDS                         & seeds,
         const typename LABELS::Value        backgroundLabel,
         const typename EDGE_WEIGHTS::Value  backgroundBias,
+        const typename EDGE_WEIGHTS::Value  noPriorBelow,
         LABELS                      & labels
     ){
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename LABELS::Value       LabelType;
-        detail_watersheds_segmentation::CarvingFunctor<WeightType,LabelType> f(backgroundLabel,backgroundBias);
+        detail_watersheds_segmentation::CarvingFunctor<WeightType,LabelType> f(backgroundLabel,backgroundBias, noPriorBelow);
         detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
     }
 
@@ -1351,12 +1258,12 @@ namespace vigra{
         Overlap overlap(rag);
         
         size_t i=0;
-        std::cout<<"\n"; 
+        //::cout<<"\n"; 
         for(BaseGraphNodeIt baseNodeIter(baseGraph); baseNodeIter!=lemon::INVALID; ++baseNodeIter , ++i ){
 
-            if (i%2000 == 0){
-                std::cout<<"\r"<<std::setw(10)<< float(i)/float(baseGraph.nodeNum())<<std::flush;
-            }
+            //if (i%2000 == 0){
+            //    std::cout<<"\r"<<std::setw(10)<< float(i)/float(baseGraph.nodeNum())<<std::flush;
+            //}
 
             const BaseGraphNode baseNode = *baseNodeIter;
 
@@ -1371,7 +1278,7 @@ namespace vigra{
             // fill overlap 
             overlap[ragNode][gtLabel]+=1;
         }
-        std::cout<<"\n"; 
+        //std::cout<<"\n"; 
         // select label with max overlap
         for(RagNodeIt ragNodeIter(rag); ragNodeIter!=lemon::INVALID; ++ragNodeIter ){
             const RagNode  ragNode = *ragNodeIter;

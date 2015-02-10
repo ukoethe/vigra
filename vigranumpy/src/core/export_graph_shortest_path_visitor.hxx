@@ -262,7 +262,7 @@ public:
         PyNode target,
         NumpyArray<1,Singleband<UInt32> > nodeIdPath = (NumpyArray<1,Singleband<UInt32> >())
     ){
-        typename  ShortestPathDijkstraType::PredecessorsMap predMap = sp.predecessors();
+        const typename  ShortestPathDijkstraType::PredecessorsMap & predMap = sp.predecessors();
         const Node source = sp.source();
         Node currentNode = target; 
         // comput length of the path
@@ -278,7 +278,7 @@ public:
         PyNode target,
         NodeCoorinateArray nodeCoordinates = NodeCoorinateArray()
     ){
-        typename  ShortestPathDijkstraType::PredecessorsMap predMap = sp.predecessors();
+        const typename  ShortestPathDijkstraType::PredecessorsMap & predMap = sp.predecessors();
         const Node source = sp.source();
         // comput length of the path
         const size_t length = pathLength(Node(source),Node(target),predMap);
