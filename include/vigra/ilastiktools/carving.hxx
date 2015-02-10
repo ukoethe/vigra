@@ -342,7 +342,7 @@ namespace vigra{
             GridSegmentorNodeMap<UInt8> nodeSeeds(nodeSeeds_);
             GridSegmentorNodeMap<UInt8> resultSegmentation(resultSegmentation_);
             GridSegmentorEdgeMap<VALUE_TYPE> edgeWeights(edgeWeights_);
-            
+            std::cout<<"run with bias "<<bias<<" no noBiasBelow "<<noBiasBelow<<"\n";
             carvingSegmentation(graph_, edgeWeights, nodeSeeds, 1, bias,noBiasBelow, resultSegmentation);
         }
 
@@ -368,9 +368,19 @@ namespace vigra{
             BrushIter brushIter(brushStroke.begin());
 
             for(; labelIter<labelIterEnd; ++labelIter,++brushIter){
-                const PIXEL_LABELS brushLabel = *brushIter;
+                const int brushLabel = int(*brushIter);
                 const LABELS nodeId = *labelIter;
-                nodeSeeds_[nodeId] = brushLabel > maxValidLabel ? 0 : brushLabel;
+
+                //std::cout<<"brush label "<< int(brushLabel)<<"\n";
+                if(brushLabel == 0 ){
+
+                }
+                else if(brushLabel == 1 || brushLabel == 2 ){
+                    nodeSeeds_[nodeId] = brushLabel;
+                }
+                else{
+                    nodeSeeds_[nodeId] = 0;
+                }
             }
         }
 
@@ -397,6 +407,18 @@ namespace vigra{
 
         }
 
+        void getSuperVoxelSeg(
+            MultiArrayView<1, UInt8> & segmentation
+        )const{
+            std::copy(resultSegmentation_.begin(), resultSegmentation_.end(), segmentation.begin());
+        }
+
+        void getSuperVoxelSeeds(
+            MultiArrayView<1, UInt8> & seeds
+        )const{
+            std::copy(nodeSeeds_.begin(), nodeSeeds_.end(), seeds.begin());
+        }
+
         const GridRag<DIM, LABELS> & graph()const{
             return graph_;
         }
@@ -416,6 +438,19 @@ namespace vigra{
         }
         size_t maxEdgeId()const{
             return graph_.maxEdgeId();
+        }
+
+        void setSeeds(
+            const MultiArray<1 , UInt8> & fgSeeds,
+            const MultiArray<1 , UInt8> & bgSeeds
+        ){
+            nodeSeeds_ = 0;
+            for(size_t i=0; i<fgSeeds.size(); ++i){
+                nodeSeeds_[fgSeeds[i]] = 2;
+            }
+            for(size_t i=0; i<fgSeeds.size(); ++i){
+                nodeSeeds_[bgSeeds[i]] = 1;
+            }
         }
 
         const MultiArray<1 , VALUE_TYPE> & edgeWeights()const{

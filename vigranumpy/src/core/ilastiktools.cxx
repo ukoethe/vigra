@@ -158,6 +158,45 @@ NumpyAnyArray pyGetSegmentation(
     return segmentation;
 }
 
+
+template<unsigned int DIM, class LABEL_TYPE>
+NumpyAnyArray pyGetSuperVoxelSeg(
+    const GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    NumpyArray<1, UInt8>  segmentation
+){
+    typedef TinyVector<MultiArrayIndex, 1>  Shape1;
+    Shape1 shape(gridSegmentor.maxNodeId()+1);
+    segmentation.reshapeIfEmpty(shape);
+
+    {
+        PyAllowThreads _pythread;
+        gridSegmentor.getSuperVoxelSeg(segmentation);
+    }
+   
+    return segmentation;
+}
+
+template<unsigned int DIM, class LABEL_TYPE>
+NumpyAnyArray pyGetSuperVoxelSeeds(
+    const GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    NumpyArray<1, UInt8>  seeds
+){
+    typedef TinyVector<MultiArrayIndex, 1>  Shape1;
+    Shape1 shape(gridSegmentor.maxNodeId()+1);
+    seeds.reshapeIfEmpty(shape);
+
+    {
+        PyAllowThreads _pythread;
+        gridSegmentor.getSuperVoxelSeeds(seeds);
+    }
+   
+    return seeds;
+}
+
+
+
+
+
 template<unsigned int DIM, class LABEL_TYPE>
 NumpyAnyArray pySerializeGraph(
     const GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
@@ -214,6 +253,17 @@ NumpyAnyArray pyGetResultSegmentation(
     );
     out = gridSegmentor.resultSegmentation();
     return out;
+}
+
+
+
+template<unsigned int DIM, class LABEL_TYPE>
+void pySetSeeds(
+    GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    const NumpyArray<1, UInt8> & fgSeeds,
+    const NumpyArray<1, UInt8> & bgSeeds
+){
+    gridSegmentor.setSeeds(fgSeeds, bgSeeds);
 }
 
 template<unsigned int DIM, class LABEL_TYPE>
@@ -275,6 +325,13 @@ void defineGridSegmentor(const std::string & clsName){
                 python::arg("maxValidLabel")
             )
         )
+        .def("setSeeds", 
+            registerConverters( & pySetSeeds<DIM, LABEL_TYPE>),
+            (
+                python::arg("fgSeeds"),
+                python::arg("bgSeeds")
+            )
+        )
         .def("getSegmentation", 
             registerConverters( & pyGetSegmentation<DIM, LABEL_TYPE>),
             (
@@ -310,6 +367,16 @@ void defineGridSegmentor(const std::string & clsName){
             )
         )
         .def("getResultSegmentation",registerConverters(pyGetResultSegmentation<DIM, LABEL_TYPE>),
+            (
+                python::arg("out") = python::object()
+            )
+        )
+        .def("getSuperVoxelSeg",registerConverters(pyGetSuperVoxelSeg<DIM, LABEL_TYPE>),
+            (
+                python::arg("out") = python::object()
+            )
+        )
+        .def("getSuperVoxelSeeds",registerConverters(pyGetSuperVoxelSeeds<DIM, LABEL_TYPE>),
             (
                 python::arg("out") = python::object()
             )
