@@ -6,7 +6,9 @@
 #include "../multi_gridgraph.hxx"
 #include "../timing.hxx"
 
-#include <omp.h>
+#ifdef WITH_OPENMP
+    #include <omp.h>
+#endif
 
 namespace vigra{
 
@@ -98,11 +100,13 @@ namespace vigra{
             // initiaize output with zeros
             featuresOut = WEIGHTS_OUT(0);
             
+            #ifdef WITH_OPENMP
             omp_lock_t * edgeLocks = new omp_lock_t[this->edgeNum()];
             #pragma omp parallel for
             for(size_t i=0; i<this->edgeNum();++i){
                 omp_init_lock(&(edgeLocks[i]));
             }
+            #endif
 
 
             if(DIM==2){
@@ -144,44 +148,57 @@ namespace vigra{
                         const LabelType lv = labelView_(x+1, y, z);
                         if(lu!=lv){
                             const int eid = findEdgeFromIds(lu, lv);
+                            #ifdef WITH_OPENMP
                             omp_set_lock(&(edgeLocks[eid]));
+                            #endif
                             counting[eid]+=2;
                             featuresOut[eid]+=static_cast<WEIGHTS_OUT>(featuresIn(x,y,z));
                             featuresOut[eid]+=static_cast<WEIGHTS_OUT>(featuresIn(x+1,y,z));
+                            #ifdef WITH_OPENMP
                             omp_unset_lock(&(edgeLocks[eid]));
+                            #endif
                         }
                     }
                     if(y+1 < shape[1]){
                         const LabelType lv = labelView_(x, y+1, z);
                         if(lu!=lv){
                             const int eid = findEdgeFromIds(lu, lv);
+                            #ifdef WITH_OPENMP
                             omp_set_lock(&(edgeLocks[eid]));
+                            #endif
                             counting[eid]+=2;
                             featuresOut[eid]+=static_cast<WEIGHTS_OUT>(featuresIn(x,y,z));
                             featuresOut[eid]+=static_cast<WEIGHTS_OUT>(featuresIn(x,y+1,z));
+                            #ifdef WITH_OPENMP
                             omp_unset_lock(&(edgeLocks[eid]));
+                            #endif
                         }
                     }
                     if(z+1 < shape[2]){
                         const LabelType lv = labelView_(x, y, z+1);
                         if(lu!=lv){
                             const int eid = findEdgeFromIds(lu, lv);
+                            #ifdef WITH_OPENMP
                             omp_set_lock(&(edgeLocks[eid]));
+                            #endif
                             counting[eid]+=2;
                             featuresOut[eid]+=static_cast<WEIGHTS_OUT>(featuresIn(x,y,z));
                             featuresOut[eid]+=static_cast<WEIGHTS_OUT>(featuresIn(x,y,z+1));
+                             #ifdef WITH_OPENMP
                             omp_unset_lock(&(edgeLocks[eid]));
+                            #endif
                         }
                     }
                 }
             }
 
+            #ifdef WITH_OPENMP
             #pragma omp parallel for
             for(size_t i=0; i<this->edgeNum();++i){
                 omp_destroy_lock(&(edgeLocks[i]));
             }
             delete[] edgeLocks;
-
+            #endif
 
             // normalize
             #pragma omp parallel for
