@@ -114,10 +114,10 @@ VIGRA_ADD_NUMPY_MODULE(blockwise SOURCES
   VIGRANUMPY)
 
 
-if (OPENMP_FOUND)
-    VIGRA_ADD_NUMPY_MODULE(ilastiktools SOURCES
-        ilastiktools.cxx
-      VIGRANUMPY)
-else()
-    message(WARNING "OPENMP NOT FOUND: Not building ilastiktools")
-endif()
+#if (OPENMP_FOUND)
+#    VIGRA_ADD_NUMPY_MODULE(ilastiktools SOURCES
+#        ilastiktools.cxx
+#      VIGRANUMPY)
+#else()
+#    message(WARNING "OPENMP NOT FOUND: Not building ilastiktools")
+#endif()

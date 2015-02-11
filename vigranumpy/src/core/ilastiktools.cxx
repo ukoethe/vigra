@@ -260,10 +260,18 @@ NumpyAnyArray pyGetResultSegmentation(
 template<unsigned int DIM, class LABEL_TYPE>
 void pySetSeeds(
     GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
-    const NumpyArray<1, UInt8> & fgSeeds,
-    const NumpyArray<1, UInt8> & bgSeeds
+    const NumpyArray<2, Int64> & fgSeeds,
+    const NumpyArray<2, Int64> & bgSeeds
 ){
     gridSegmentor.setSeeds(fgSeeds, bgSeeds);
+}
+
+template<unsigned int DIM, class LABEL_TYPE>
+void pySetResulFgObj(
+    GridSegmentor<DIM , LABEL_TYPE, float> & gridSegmentor,
+    const NumpyArray<1, Int64> & fgNodes
+){
+    gridSegmentor.setResulFgObj(fgNodes);
 }
 
 template<unsigned int DIM, class LABEL_TYPE>
@@ -332,6 +340,13 @@ void defineGridSegmentor(const std::string & clsName){
                 python::arg("bgSeeds")
             )
         )
+        .def("setResulFgObj", 
+            registerConverters( & pySetResulFgObj<DIM, LABEL_TYPE>),
+            (
+                python::arg("fgNodes")
+            )
+        )
+
         .def("getSegmentation", 
             registerConverters( & pyGetSegmentation<DIM, LABEL_TYPE>),
             (

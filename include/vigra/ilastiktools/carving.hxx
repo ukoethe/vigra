@@ -441,15 +441,29 @@ namespace vigra{
         }
 
         void setSeeds(
-            const MultiArray<1 , UInt8> & fgSeeds,
-            const MultiArray<1 , UInt8> & bgSeeds
+            const MultiArray<2 , Int64> & fgSeedsCoord,
+            const MultiArray<2 , Int64> & bgSeedsCoord
         ){
-            nodeSeeds_ = 0;
-            for(size_t i=0; i<fgSeeds.size(); ++i){
-                nodeSeeds_[fgSeeds[i]] = 2;
+            nodeSeeds_ = UInt8(0);
+
+            const LabelView & labels = graph_.labels();
+
+            for(size_t i=0; i<fgSeedsCoord.shape(1); ++i){
+                vigra::TinyVector<MultiArrayIndex, 3> c;
+                c[0] = fgSeedsCoord(0,i);
+                c[1] = fgSeedsCoord(1,i);
+                c[2] = fgSeedsCoord(2,i);
+                const UInt64 node = labels[c];
+                nodeSeeds_[node] = 2;
             }
-            for(size_t i=0; i<fgSeeds.size(); ++i){
-                nodeSeeds_[bgSeeds[i]] = 1;
+
+            for(size_t i=0; i<bgSeedsCoord.shape(1); ++i){
+                vigra::TinyVector<MultiArrayIndex, 3> c;
+                c[0] = bgSeedsCoord(0,i);
+                c[1] = bgSeedsCoord(1,i);
+                c[2] = bgSeedsCoord(2,i);
+                const UInt64 node = labels[c];
+                nodeSeeds_[node] = 2;
             }
         }
 
@@ -461,6 +475,13 @@ namespace vigra{
         }
         const MultiArray<1 , UInt8>      & resultSegmentation()const{
             return resultSegmentation_;
+        }
+
+        void setResulFgObj(MultiArray<1 , Int64>  fgNodes ){
+            resultSegmentation_ = 1;
+            for(size_t i=0; i<fgNodes.shape(0); ++i){
+                resultSegmentation_[fgNodes(i)] = 2;
+            }
         }
     private:
         GridRag<DIM, LABELS> graph_;
