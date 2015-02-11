@@ -70,7 +70,10 @@ void pyAssignLabels(
     GridRag<DIM, LABEL_TYPE> & graph,
     const NumpyArray<DIM, LABEL_TYPE> & labels
 ){
-    graph.assignLabels(labels);
+    {
+        PyAllowThreads _pythread;
+        graph.assignLabels(labels);
+    }
 }
 
 template<unsigned int DIM, class LABEL_TYPE>
@@ -79,7 +82,10 @@ void pyAssignLabelsFromSerialization(
     const NumpyArray<DIM, LABEL_TYPE> & labels,
     NumpyArray<1, UInt32> serialization 
 ){
-    graph.assignLabelsFromSerialization(labels, serialization);
+    {
+        PyAllowThreads _pythread;
+        graph.assignLabelsFromSerialization(labels, serialization);
+    }
 }
 
 
@@ -94,7 +100,10 @@ NumpyAnyArray pyAccumulateEdgeFeatures(
     typedef TinyVector<MultiArrayIndex, 1>  Shape1;
     Shape1 shape(graph.edgeNum());
     out.reshapeIfEmpty(shape);
-    graph.accumulateEdgeFeatures(featuresIn, out);
+    {
+        PyAllowThreads _pythread;
+        graph.accumulateEdgeFeatures(featuresIn, out);
+    }
     return out;
 }
 
@@ -104,7 +113,10 @@ void pyPreprocessing(
     const NumpyArray<DIM, LABEL_TYPE> & labels,
     const NumpyArray<DIM, float> & weightArray      
 ){
-    gridSegmentor.preprocessing(labels, weightArray);
+    {
+        PyAllowThreads _pythread;
+        gridSegmentor.preprocessing(labels, weightArray);
+    }
 }
 
 
@@ -117,9 +129,12 @@ void pyPreprocessingFromSerialization(
     const NumpyArray<1, UInt8> & nodeSeeds,
     const NumpyArray<1, UInt8> & resultSegmentation
 ){
-    gridSegmentor.preprocessingFromSerialization(labels, serialization,
+    {
+        PyAllowThreads _pythread;
+        gridSegmentor.preprocessingFromSerialization(labels, serialization,
                                                  edgeWeights, nodeSeeds,
                                                  resultSegmentation);
+    }
 }
 
 
@@ -136,7 +151,10 @@ void pyAddLabels(
     const TinyVector<MultiArrayIndex, DIM> roiEnd,
     const UInt8 maxValidLabel
 ){
-    gridSegmentor.addLabels(brushStroke, roiBegin, roiEnd, maxValidLabel);;
+    {
+        PyAllowThreads _pythread;
+        gridSegmentor.addLabels(brushStroke, roiBegin, roiEnd, maxValidLabel);
+    }
 }
 
 template<unsigned int DIM, class LABEL_TYPE>

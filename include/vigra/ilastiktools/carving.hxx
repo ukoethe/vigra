@@ -5,7 +5,7 @@
 #include "../timing.hxx"
 #include "../multi_gridgraph.hxx"
 #include "../timing.hxx"
-
+#include "../priority_queue.hxx"
 #ifdef WITH_OPENMP
     #include <omp.h>
 #endif
@@ -363,6 +363,10 @@ namespace vigra{
             carvingSegmentation(graph_, edgeWeights, nodeSeeds, 1, bias,noBiasBelow, resultSegmentation);
         }
 
+        
+
+
+
         template<class PIXEL_LABELS>
         void addLabels(
             const MultiArrayView<DIM, PIXEL_LABELS> & brushStroke,
@@ -480,7 +484,7 @@ namespace vigra{
                 c[1] = bgSeedsCoord(1,i);
                 c[2] = bgSeedsCoord(2,i);
                 const UInt64 node = labels[c];
-                nodeSeeds_[node] = 2;
+                nodeSeeds_[node] = 1;
             }
         }
 
