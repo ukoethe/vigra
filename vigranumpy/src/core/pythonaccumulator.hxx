@@ -290,6 +290,7 @@ struct PythonFeatureAccumulator
     virtual python::object get(std::string const & tag) { throw std::runtime_error("abstract function called."); return python::object(); }
     virtual void merge(PythonFeatureAccumulator const & o) { throw std::runtime_error("abstract function called."); }
     virtual PythonFeatureAccumulator * create() const { throw std::runtime_error("abstract function called."); return 0; }
+    virtual ~PythonFeatureAccumulator() {}
     
     static void definePythonClass()
     {
