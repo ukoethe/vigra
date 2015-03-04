@@ -455,6 +455,11 @@ class AxisTags
         return res;
     }
     
+    bool contains(std::string const & key)
+    {
+        return index(key) < (int)size();
+    }
+    
     AxisInfo & get(int k)
     {
         checkIndex(k);

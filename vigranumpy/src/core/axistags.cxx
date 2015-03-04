@@ -312,6 +312,22 @@ std::string AxisTags_str(AxisTags const & axistags)
     return res;
 }
 
+python::list AxisTags_keys(AxisTags const & axistags)
+{
+    python::list res;
+    for(unsigned int k=0; k<axistags.size(); ++k)
+        res.append(axistags.get(k).key());
+    return res;
+}
+
+python::list AxisTags_values(AxisTags const & axistags)
+{
+    python::list res;
+    for(unsigned int k=0; k<axistags.size(); ++k)
+        res.append(axistags.get(k));
+    return res;
+}
+
 python::object
 AxisTags_permutationToNormalOrder(AxisTags const & axistags)
 {
@@ -673,11 +689,14 @@ void defineAxisTags()
             (void (AxisTags::*)(std::string const &, AxisInfo const &))&AxisTags::set)
         .def("__delitem__", (void (AxisTags::*)(int))&AxisTags::dropAxis)
         .def("__delitem__", (void (AxisTags::*)(std::string const &))&AxisTags::dropAxis)
+        .def("__contains__", &AxisTags::contains)
         .def("insert", &AxisTags::insert)
         .def("append", &AxisTags::push_back)
         .def("dropChannelAxis", &AxisTags::dropChannelAxis)
         .def("insertChannelAxis", &AxisTags_insertChannelAxis)
         .def("swapaxes", &AxisTags::swapaxes)
+        .def("keys", &AxisTags_keys)
+        .def("values", &AxisTags_values)
         
         // NOTE: in contrast to arrays, AxisTags::transpose() works
         //       in-place, i.e. changes 'self'
