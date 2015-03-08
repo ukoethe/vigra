@@ -100,10 +100,9 @@ struct NumpyTypenumConverter
         void* const storage =   
             ((python::converter::rvalue_from_python_storage<NumpyAnyArray>* ) data)->storage.bytes;
 
-        // FIXME: there should be a more elegant way to program this...
-        int typeID = -1;
-        if(obj->ob_type == &PyArrayDescr_Type)
-            typeID = (NPY_TYPES)((PyArray_Descr*)obj)->type_num;
+        int typeID = obj->ob_type == &PyArrayDescr_Type ?
+                                         (NPY_TYPES)((PyArray_Descr*)obj)->type_num :
+					 -1;
         VIGRA_NUMPY_TYPECONVERTER(NPY_BOOL)
         VIGRA_NUMPY_TYPECONVERTER(NPY_INT8)
         VIGRA_NUMPY_TYPECONVERTER(NPY_UINT8)
