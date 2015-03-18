@@ -328,6 +328,11 @@ python::list AxisTags_values(AxisTags const & axistags)
     return res;
 }
 
+bool AxisTags_contains(AxisTags const & axistags, AxisInfo const & axisinfo)
+{
+    return axistags.contains(axisinfo.key());
+}
+
 python::object
 AxisTags_permutationToNormalOrder(AxisTags const & axistags)
 {
@@ -689,7 +694,8 @@ void defineAxisTags()
             (void (AxisTags::*)(std::string const &, AxisInfo const &))&AxisTags::set)
         .def("__delitem__", (void (AxisTags::*)(int))&AxisTags::dropAxis)
         .def("__delitem__", (void (AxisTags::*)(std::string const &))&AxisTags::dropAxis)
-        .def("__contains__", &AxisTags::contains)
+        .def("__contains__", &AxisTags_contains)
+        .def("__contains__", (bool (AxisTags::*)(std::string const &))&AxisTags::contains)
         .def("insert", &AxisTags::insert)
         .def("append", &AxisTags::push_back)
         .def("dropChannelAxis", &AxisTags::dropChannelAxis)

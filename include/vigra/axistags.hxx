@@ -455,7 +455,7 @@ class AxisTags
         return res;
     }
     
-    bool contains(std::string const & key)
+    bool contains(std::string const & key) const
     {
         return index(key) < (int)size();
     }
