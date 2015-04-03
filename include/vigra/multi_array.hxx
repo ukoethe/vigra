@@ -1453,7 +1453,7 @@ public:
     {
         difference_type shape = m_shape;
         for (unsigned int i = 0; i < actual_dimension; ++i)
-            shape [i] /= s [i];
+            shape[i] = (shape[i] + s[i] - 1) / s[i];
         return MultiArrayView <N, T, StridedArrayTag>(shape, m_stride * s, m_ptr);
     }
 

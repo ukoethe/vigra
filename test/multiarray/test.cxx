@@ -1436,9 +1436,9 @@ public:
         
         strided_array_t st = a3.stridearray (shape3_t(3,4,6));
 
-        shouldEqual (st.shape (0), 6);
-        shouldEqual (st.shape (1), 7);
-        shouldEqual (st.shape (2), 8);
+        shouldEqual (st.shape (0), 7);
+        shouldEqual (st.shape (1), 8);
+        shouldEqual (st.shape (2), 9);
         
         // test hierarchical navigation
         typedef strided_array_t::traverser Traverser3;
@@ -1465,9 +1465,9 @@ public:
             ++countz;
         }
 
-        shouldEqual (countx, 336u);
-        shouldEqual (county, 56u);
-        shouldEqual (countz, 8u);
+        shouldEqual (countx, 504u);
+        shouldEqual (county, 72u);
+        shouldEqual (countz, 9u);
   
         // test direct navigation
         strided_array_t::traverser i = st.traverser_begin();        
