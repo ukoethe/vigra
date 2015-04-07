@@ -179,7 +179,7 @@ Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
     The resulting labeling is equivalent to a labeling by \ref watershedsUnionFind, that is,
     the components are the same but may have different ids.
     If \a temporary_storage is provided, this array is used for intermediate result storage.
-    Otherwise, a newly created \ref ChunkedArrayLazy is used.
+    Otherwise, a newly created \ref vigra::ChunkedArrayLazy is used.
 
     Return: the number of labels assigned (=largest label, because labels start at one)
     

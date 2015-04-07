@@ -2,9 +2,8 @@ IF(MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 ENDIF()
 
-if(APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0" AND NOT WITH_BOOST_THREAD)
-    MESSAGE(FATAL_ERROR "cmake must be run with '-DWITH_BOOST_THREAD=1' in this toolset.")
-endif()
+include(VigraConfigureThreading)
+VIGRA_CONFIGURE_THREADING(REQUIRED) # We require a working threading implementation.
 
 if(WITH_BOOST_THREAD)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})

@@ -155,6 +155,7 @@
 # include <unistd.h>
 # include <sys/stat.h>
 # include <sys/mman.h>
+# include <cstdio>
 #endif
 
 // Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
@@ -2168,8 +2169,11 @@ class ChunkedArrayFull
     using Storage::size;
     using Storage::begin;
     using Storage::end;
+    
+#ifndef DOXYGEN  // doxygen doesn't understand this
     using Storage::operator==;
     using Storage::operator!=;
+#endif
     
     explicit ChunkedArrayFull(shape_type const & shape,
                               ChunkedArrayOptions const & options = ChunkedArrayOptions(), 
@@ -2989,9 +2993,11 @@ class ChunkIterator
     {
         return base_type::operator-(other);
     }
-    
+        
+#ifndef DOXYGEN  // doxygen doesn't understand this
     using base_type::operator==;
     using base_type::operator!=;
+#endif
     using base_type::shape;
     
     array_type * array_;

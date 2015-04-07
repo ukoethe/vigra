@@ -47,6 +47,8 @@
 #include <sstream>
 #include <cctype>
 
+/*! \file */ 
+
 namespace vigra {
 
 /** Convert a value to a string. Available for integral and floating point types

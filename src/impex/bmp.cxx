@@ -792,7 +792,7 @@ void BmpDecoderImpl::read_rgb_data ()
 
 void BmpDecoder::init( const std::string & filename )
 {
-    pimpl = new BmpDecoderImpl( filename.c_str() );
+    pimpl = new BmpDecoderImpl( filename );
 }
 
 BmpDecoder::~BmpDecoder()

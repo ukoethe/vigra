@@ -402,7 +402,7 @@ namespace vigra {
 
     void PnmDecoder::init( const std::string & filename )
     {
-        pimpl = new PnmDecoderImpl( filename.c_str() );
+        pimpl = new PnmDecoderImpl( filename );
     }
 
     PnmDecoder::~PnmDecoder()
