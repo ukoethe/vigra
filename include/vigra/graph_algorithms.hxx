@@ -213,39 +213,6 @@ namespace vigra{
         }
     }
 
-    /// restricted region adjacency graph from a graph and labels w.r.t. that graph
-    template< unsigned int DIM,class LABEL_TYPE>
-    void makeRegionAdjacencyGraph(
-        MultiArrayView< DIM, LABEL_TYPE> labels,
-        AdjacencyListGraph & rag         
-    ){
-        typedef LABEL_TYPE LabelType;
-        // ASSERT THAT THE MINIMUM LABEL IS 1
-        LabelType minLabel, maxLabel;
-        labels.minmax(minLabel, maxLabel);
-        if(minLabel!=1){
-            throw std::runtime_error("min label must be 1, this overload of makeRegionAdjacencyGraph is very restricted");
-        }
-
-
-        rag.clear();
-
-        // ADD NODES
-        USETICTOC;
-        std::cout<<"add nodes\n";
-        TIC;
-        rag.assignNodeRange(1, maxLabel+1);
-        TOC;
-
-
-        // ADD EDGES
-
-    }
-
-
-
-
-
     template<unsigned int DIM, class DTAG, class AFF_EDGES>
     size_t affiliatedEdgesSerializationSize(
         const GridGraph<DIM,DTAG> & gridGraph,
