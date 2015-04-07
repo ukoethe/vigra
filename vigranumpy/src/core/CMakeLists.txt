@@ -113,7 +113,3 @@ VIGRA_ADD_NUMPY_MODULE(blockwise SOURCES
     blockwise.cxx
   VIGRANUMPY)
 
-
-VIGRA_ADD_NUMPY_MODULE(ilastiktools SOURCES
-   ilastiktools.cxx
-  VIGRANUMPY)
