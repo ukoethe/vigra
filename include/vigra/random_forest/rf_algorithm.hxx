@@ -34,7 +34,6 @@
 /************************************************************************/
 #ifndef VIGRA_RF_ALGORITHM_HXX
 #define VIGRA_RF_ALGORITHM_HXX
-#include <vigra/random_forest.hxx>
 #include <vector>
 #include "splices.hxx"
 #include <queue>
