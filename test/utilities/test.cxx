@@ -49,7 +49,6 @@
 #include "vigra/priority_queue.hxx"
 #include "vigra/algorithm.hxx"
 #include "vigra/compression.hxx"
-
 #include "vigra/multi_blocking.hxx"
 
 using namespace vigra;
