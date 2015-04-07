@@ -608,8 +608,6 @@ internalSeparableConvolveSubarray(
     }
     
     indexSort(overhead.begin(), overhead.end(), axisorder.begin(), std::greater<double>());
-
-
     SrcShape dstart, dstop(sstop - sstart);
     dstop[axisorder[0]]  = stop[axisorder[0]] - start[axisorder[0]];
     

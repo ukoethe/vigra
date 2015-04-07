@@ -120,8 +120,6 @@ namespace vigra{
             else{
                 throw std::runtime_error("not yet implemented for arbitrary dimension");
             }
-
-            // normalize histogram
         }
 
 
