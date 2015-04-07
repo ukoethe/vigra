@@ -45,7 +45,6 @@ namespace vigra{
         truncatedDistanceTransform
 
     ParabolicFilters: 
-
 */
 namespace blockwise{
 
@@ -64,13 +63,8 @@ namespace blockwise{
         const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth
     ){
 
-
-
         typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
         typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
-
-        
-
 
         #pragma omp parallel
         {
@@ -98,82 +92,9 @@ namespace blockwise{
                 // write the core global out
                 dest.subarray(bwb.core().begin()-blocking.roiBegin(), 
                               bwb.core().end()  -blocking.roiBegin()  ) = destSubCore;
-
             }
         }
     }
-
-
-    template<
-        unsigned int DIM,
-        class T_IN, class ST_IN,
-        class T_OUT, class ST_OUT,
-        class FILTER_FUCTOR,
-        class C
-    >
-    void blockwiseCallerNew(
-        const vigra::MultiArrayView<DIM, T_IN,  ST_IN > & source,
-        const vigra::MultiArrayView<DIM, T_OUT, ST_OUT> & dest,
-        FILTER_FUCTOR & functor,
-        const vigra::MultiBlocking<DIM, C> & blocking,
-        const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth
-    ){
-
-
-
-        typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
-        typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
-        typedef typename BlockWithBorder::Shape Shape;
-        
-        const Shape & totalRoiBegin = blocking.roiBegin();
-
-        //#pragma omp parallel
-        {
-            BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
-            //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
-
-            #pragma omp for
-            for(size_t i=0 ; i<blocking.numBlocks(); ++i){
-
-                const BlockWithBorder bwb = iter[i];
-
-                // get the input of the block as a view
-                vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin()-totalRoiBegin,
-                                                                                    bwb.border().end()-totalRoiBegin);
-
-
-                    
-                vigra::MultiArrayView<DIM, T_OUT, ST_OUT>  desSubCore = dest.subarray(bwb.core().begin()-totalRoiBegin, 
-                                                                                      bwb.core().end()  -totalRoiBegin);
-
-
-                // call the functor
-                const Shape roiBegin = bwb.localCore().begin();
-                const Shape roiEnd = bwb.localCore().end();
-                functor(sourceSub, desSubCore, roiBegin, roiEnd);
-
-            }
-        }
-    }
-
-
-
-    template<unsigned int DIM>
-    struct GaussianSmoothOld{
-    public:
-        typedef ConvolutionOptions<DIM> ConvOpt;
-
-        GaussianSmoothOld(const double sigma)
-        :   sigma_(sigma){
-        }
-        template<class S, class D>
-        void operator()(const S & s, D & d)const{
-            vigra::gaussianSmoothMultiArray(s, d, sigma_);
-        }
-    private:
-        const double sigma_;
-    };
-
 
     #define CONVOLUTION_FUNCTOR(FUCTOR_NAME, FUNCTION_NAME) \
     template<unsigned int DIM> \
@@ -308,9 +229,12 @@ namespace blockwise{
     class ParallelOptions{
     public:
         ParallelOptions(const size_t numThreds = 0, 
-                        const ConcurrencyType  concurrencyType = DefaultConcurrency)
+                        const ConcurrencyType  concurrencyType = OpenMpConcurrency)
         :   numThreads_(numThreds), // zero means AUTO
             concurrencyType_(concurrencyType){
+                if(concurrencyType_!=OpenMpConcurrency){
+                    throw std::runtime_error("currently only OpenMpConcurrency is implemented");
+                }
         }
         size_t getNumThreads()const{
             return numThreads_;
@@ -372,6 +296,7 @@ namespace blockwise{
         const bool usesOuterScale = false
     ){
         vigra::TinyVector< vigra::MultiArrayIndex, N > res(vigra::SkipInitialization);
+        
         if(opt.getFilterWindowSize()<=0.00001){
             for(size_t d=0; d<N; ++d){
                 double stdDev =  opt.getStdDev()[d];
@@ -380,9 +305,11 @@ namespace blockwise{
                 res[d] = static_cast<MultiArrayIndex>(3.0 * stdDev  + 0.5*static_cast<double>(order)+0.5);
             }
         }
+        else{
+            throw std::runtime_error("blockwise filters do not allow a user defined FilterWindowSize");
+        }
         return res;
     }
-
 
 
     #define BLOCKWISE_FUNCTION_GEN(FUNCTOR, FUNCTION, ORDER, USES_OUTER_SCALE) \
