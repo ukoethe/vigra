@@ -81,19 +81,10 @@ namespace vigra{
         typedef typename std::iterator_traits<Iterator>::difference_type    difference_type;
         typedef typename std::iterator_traits<Iterator>::iterator_category iterator_category;
 
-
-        
-
-
-
         TransformIterator(const Iterator & iter = Iterator(), const UnaryFunction & f = UnaryFunction())
         :   iter_(iter),
             f_(f){
         }
-
-
-
-
 
         reference  operator * () const{
             return retHelper_.getRef(f_(*iter_)); 

@@ -1743,7 +1743,7 @@ def _genGraphSegmentationFunctions():
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 
-        print "make mg"
+
         #import sys
         #print "graph refcout", sys.getrefcount(graph)
         mg = graphs.mergeGraph(graph)
@@ -1756,19 +1756,18 @@ def _genGraphSegmentationFunctions():
         #print "graph refcout", sys.getrefcount(graph)
         #sys.exit(0)
 
-        print "make cluster op"
+
 
         clusterOp = graphs.minEdgeWeightNodeDist(mg,edgeWeights=edgeWeights,edgeLengths=edgeLengths,
                                                     nodeFeatures=nodeFeatures,nodeSizes=nodeSizes,
                                                     beta=float(beta),metric=metric,wardness=wardness)
 
         
-        print "make hc  obj" 
+
         hc = graphs.hierarchicalClustering(clusterOp, nodeNumStopCond=nodeNumStop,
                                            buildMergeTreeEncoding=False)
-        print "start"
+
         hc.cluster()
-        print "get result labels"
         labels = hc.resultLabels(out=out)
         #del hc
         #del clusterOp
@@ -1827,58 +1826,40 @@ def _genGraphSegmentationFunctions():
 
         assert edgeWeights is not None or nodeFeatures is not None
 
-        print "prepare "
+
 
         if nodeNumStop is None:
             nodeNumStop = max(graph.nodeNum/2,min(graph.nodeNum,2))
 
         
         if edgeLengths is None :
-            print "get edge length"
             edgeLengths = graphs.getEdgeLengths(graph)
 
         
         if nodeSizes is None:
-            print "get node size"
             nodeSizes = graphs.getNodeSizes(graph)
 
         
         if edgeWeights is None :
-            print "get wegihts length"
             edgeWeights = graphs.graphMap(graph,'edge')
             edgeWeights[:]=0
 
         if nodeFeatures is None :
-            print "get node feat"
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 
-        print "make mg"
-        #import sys
-        #print "graph refcout", sys.getrefcount(graph)
+
         mg = graphs.mergeGraph(graph)
-        #print "graph refcout", sys.getrefcount(graph)
-        #mg = []
-        #del mg
-        #import gc
-        #gc.collect()
 
-        #print "graph refcout", sys.getrefcount(graph)
-        #sys.exit(0)
-
-        print "make cluster op"
 
         clusterOp = graphs.neuroOperator(mg,edgeWeights=edgeWeights,edgeLengths=edgeLengths,
                                                 nodeFeatures=nodeFeatures,nodeSizes=nodeSizes,
                                                 beta=float(beta),metric=metric,wardness=wardness)
 
-        
-        print "make hc  obj" 
+    
         hc = graphs.hierarchicalClustering(clusterOp, nodeNumStopCond=nodeNumStop,
                                            buildMergeTreeEncoding=False)
-        print "start"
         hc.cluster()
-        print "get result labels"
         labels = hc.resultLabels(out=out)
         #del hc
         #del clusterOp
@@ -2161,7 +2142,6 @@ def loadBSDGt(filename):
     import scipy.io as sio
     matContents = sio.loadmat(filename)
     ngt = len(matContents['groundTruth'][0])
-    print "ngts",ngt
     gts = []
     for gti in range(ngt):
         gt =  matContents['groundTruth'][0][gti][0]['Segmentation'][0]
