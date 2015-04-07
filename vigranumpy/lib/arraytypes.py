@@ -1825,7 +1825,8 @@ class ImagePyramid(list):
         if lowestLevel > copyImageToLevel or highestLevel < copyImageToLevel:
             raise ValueError('ImagePyramid(): copyImageToLevel must be between lowestLevel and highestLevel (inclusive)')
         
-        list.__init__(self, [image.__class__(image, dtype=image.dtype)])
+        import copy
+        list.__init__(self, [copy.deepcopy(image)])
         self._lowestLevel = copyImageToLevel
         self._highestLevel = copyImageToLevel
         self.createLevel(lowestLevel)
@@ -1842,6 +1843,32 @@ class ImagePyramid(list):
         '''The pyramids highest level (inclusive).
         '''
         return self._highestLevel
+    
+    @property
+    def ndim(self):
+        '''The dimension of the images in this pyramid.
+        '''
+        return self[self._highestLevel].ndim
+    
+    @property
+    def dtype(self):
+        '''The pixel type of the images in this pyramid.
+        '''
+        return self[self._highestLevel].dtype
+        
+    @property
+    def channelIndex(self):
+        '''The channel dimension of the images in this pyramid.
+           If the images have no axistags, or no channel axis is 
+           specified, this defaults to 'ndim'.
+        '''
+        return getattr(self[self._highestLevel], 'channelIndex', self.ndim)
+        
+    @property
+    def axistags(self):
+        '''The axistags of the images in this pyramid.
+        '''
+        return getattr(self[self._highestLevel], 'axistags', None)
     
     def __getitem__(self, level):
         '''Get the image at 'level'.
@@ -1961,22 +1988,33 @@ class ImagePyramid(list):
         ''' Make sure that 'level' exists. If 'level' is outside the current range of levels,
             empty images of the appropriate shape are inserted into the pyramid.
         '''
+        channelIndex = self.channelIndex
+        hasChannels = channelIndex < self.ndim
+        axistags = self.axistags
         if level > self.highestLevel:
+            image = list.__getitem__(self, -1)
             for i in range(self.highestLevel, level):
-                image = list.__getitem__(self, -1)
                 newShape = [int((k + 1) / 2) for k in image.shape]
-                channelIndex = getattr(image, 'channelIndex', image.ndim)
-                if channelIndex < image.ndim:
+                if hasChannels:
                     newShape[channelIndex] = image.shape[channelIndex]
-                self.append(image.__class__(newShape, dtype=image.dtype))
+                if axistags:
+                    image = image.__class__(newShape, dtype=image.dtype, axistags=axistags)
+                else:
+                    image = image.__class__(newShape, dtype=image.dtype)
+                    image[...] = 0
+                self.append(image)
             self._highestLevel = level
         elif level < self.lowestLevel:
             image = list.__getitem__(self, 0)
             for i in range(self.lowestLevel, level, -1):
                 newShape = [2*k-1 for k in image.shape]
-                channelIndex = getattr(image, 'channelIndex', image.ndim)
-                if channelIndex < image.ndim:
+                if hasChannels:
                     newShape[channelIndex] = image.shape[channelIndex]
-                self.insert(0, image.__class__(newShape, dtype=image.dtype))
+                if axistags:
+                    image = image.__class__(newShape, dtype=image.dtype, axistags=axistags)
+                else:
+                    image = image.__class__(newShape, dtype=image.dtype)
+                    image[...] = 0
+                self.insert(0, image)
             self._lowestLevel = level
              

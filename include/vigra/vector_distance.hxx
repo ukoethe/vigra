@@ -380,7 +380,7 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
     vigra_precondition(pixelPitch.size() == N, 
         "separableVectorDistance(): pixelPitch has wrong length.");
         
-    T2 maxDist(2*source.shape()*pixelPitch), rzero;
+    T2 maxDist(2*sum(source.shape()*pixelPitch)), rzero;
     if(background == true)
         transformMultiArray( source, dest,
                                 ifThenElse( Arg1() == Param(0), Param(maxDist), Param(rzero) ));
@@ -403,7 +403,7 @@ template <unsigned int N, class T1, class S1,
 inline void 
 separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
                         MultiArrayView<N, T2, S2> dest, 
-                        bool background=false)
+                        bool background=true)
 {
     TinyVector<double, N> pixelPitch(1.0);
     separableVectorDistance(source, dest, background, pixelPitch);
@@ -495,7 +495,7 @@ boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
         typedef MultiArrayNavigator<LabelIterator, N> LabelNavigator;
         typedef MultiArrayNavigator<DestIterator, N> DNavigator;
         
-        T2 maxDist(2*labels.shape()*pixelPitch);
+        T2 maxDist(2*sum(labels.shape()*pixelPitch));
         dest = maxDist;
         for( int d = 0; d < N; ++d )
         {

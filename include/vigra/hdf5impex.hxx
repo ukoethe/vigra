@@ -618,6 +618,8 @@ public:
     }
 };
 
+//@}
+
 } // namespace vigra
 
 namespace std {
@@ -635,6 +637,11 @@ inline void swap(vigra::HDF5HandleShared & l, vigra::HDF5HandleShared & r)
 } // namespace std
 
 namespace vigra {
+
+/** \addtogroup VigraHDF5Impex
+*/
+//@{
+
 
 /********************************************************/
 /*                                                      */

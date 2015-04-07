@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>vigra</id>
+        <version>1.10.0</version>
+        <title>vigra</title>
+        <authors>Ullrich Koethe</authors>
+        <licenseUrl>http://ukoethe.github.io/vigra/LICENSE.txt</licenseUrl>
+        <projectUrl>http://hci.iwr.uni-heidelberg.de/vigra/</projectUrl>
+        <iconUrl>http://ukoethe.github.io/vigra/vigra_logo.gif</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A generic C++ library for image analysis.</description>
+        <releaseNotes>first nuget version</releaseNotes>
+        <copyright>Copyright 2014</copyright>
+        <tags>VIGRA, image analysis, image processing, native</tags>
+        <dependencies>
+          <dependency id="libpng" version="1.5.10" />
+          <dependency id="libtiff" version="4.0.1" />
+          <dependency id="libjpeg" version="9.0.1" />
+          <dependency id="vigra.redist" version="1.10.0" />
+        </dependencies>
+    </metadata>
+    
+    <files>
+        <file src="include\**\*.*" target="build\native\include" />
+        <file src="lib\*.lib" target="build\native\lib\x64\v110" />
+        <file src="vigra.targets" target="build\native\vigra.targets" />
+    </files>
+</package>

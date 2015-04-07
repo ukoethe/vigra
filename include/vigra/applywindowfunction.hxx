@@ -150,7 +150,6 @@ namespace vigra {
     // apply the filter function to the input image
     applyWindowFunction(src, dest, func);
     \endcode
-    \deprecatedEnd
 
     <b> Preconditions:</b>
 

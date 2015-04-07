@@ -25,7 +25,6 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
 include(VigraSetDefaults)
 include(VigraCMakeUtils)
-include(VigraConfigureThreading)
 
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
@@ -161,6 +160,13 @@ ENDIF()
 IF(WITH_VALGRIND)
     FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)
 ENDIF()
+
+# Must be included AFTER boost is found.
+include(VigraDetectThreading)
+include(VigraConfigureThreading)
+
+include(VigraDetectCppVersion)
+VIGRA_DETECT_CPP_VERSION()
 
 ##################################################
 #

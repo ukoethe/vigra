@@ -161,12 +161,6 @@ struct property_traits
     typedef typename PropMap::category    category;
 };
 
-namespace {
-
-vertex_index_t vertex_index;
-
-} // anonymous namespace
-
 } // namespace boost
 
 #endif // WITH_BOOST_GRAPH

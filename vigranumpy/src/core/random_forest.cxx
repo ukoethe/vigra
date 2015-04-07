@@ -343,7 +343,7 @@ void defineRandomForest()
                                                  boost::python::default_call_policies(),
                                                  ( arg("file_id"),
                                                    arg("pathInFile")="")),
-             "Load from an open HDF5 file id (note that the keyword 'file_id' must\n"
+             "\nLoad from an open HDF5 file id (note that the keyword 'file_id' must\n"
              "be specified explicitly, otherwise the argument will be interpreted as\n"
              "the number of trees to be used)::\n\n"
              "  RandomForest(file_id=id, pathInFile='/path/to/dataset')\n\n")
@@ -351,7 +351,7 @@ void defineRandomForest()
                                                  boost::python::default_call_policies(),
                                                  ( arg("filename"),
                                                    arg("pathInFile")="")),
-             "Load from HDF5 file::\n\n"
+             "\nLoad from HDF5 file::\n\n"
              "  RandomForest(filename, pathInFile)\n\n")
 #endif // HasHDF5
        .def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<LabelType,float>),
@@ -365,16 +365,18 @@ void defineRandomForest()
                                                    arg("sample_classes_individually")=false,
                                                    arg("prepare_online_learning")=false,
                                                    arg("labels")=python::list())),
-             "Constructor::\n\n"
+             "\nConstruct a new random forest::\n\n"
              "  RandomForest(treeCount = 255, mtry=RF_SQRT, min_split_node_size=1,\n"
              "               training_set_size=0, training_set_proportions=1.0,\n"
              "               sample_with_replacement=True, sample_classes_individually=False,\n"
              "               prepare_online_learning=False)\n\n"
-             "'treeCount' controls the number of trees that are created.\n"
-             "'labels' is a list specifying the permitted labels.\n"
-             "         If empty (default), the labels are automatically determined\n"
-             "         from the training data. A non-empty list is useful when some\n"
-             "         labels lack training examples.\n\n"
+             "treeCount:\n"
+             "     controls the number of trees that are created.\n"
+             "labels:\n"
+             "     is a list specifying the permitted labels.\n"
+             "     If empty (default), the labels are automatically determined\n"
+             "     from the training data. A non-empty list is useful when some\n"
+             "     labels lack training examples.\n\n"
              "See RandomForest_ and RandomForestOptions_ in the C++ documentation "
              "for the meaning of the other parameters.\n")
         .def("featureCount",

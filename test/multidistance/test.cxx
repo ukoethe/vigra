@@ -267,7 +267,25 @@ struct MultiDistanceTest
         separableVectorDistance(vol.transpose(), vecVolume, false);
         transformMultiArray(vecVolume, res2.transpose(), squaredNorm(Arg1()));
         shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
-     }
+    }
+
+    void testVectorDistanceBug()
+    {
+        MultiArray<3, int> data(Shape3(9,10,2));
+        data.subarray(Shape3(5,5,1), Shape3(7,7,2)) = 1;
+        MultiArray<3, TinyVector<int, 3> > res(data.shape());
+
+        separableVectorDistance(data, res);
+
+        int ref[] = { 5, 4, 3, 2, 1, 0, 0, -1, -2, -3 };
+
+        for(MultiCoordinateIterator<3> it(data.shape()); it.isValid(); ++it)
+        {
+            shouldEqual(res[*it][0], ref[(*it)[0]]);
+            shouldEqual(res[*it][1], ref[(*it)[1]]);
+            shouldEqual(res[*it][2], 1-(*it)[2]);
+        }
+    }
 
     void testDistanceVolumesAnisotropic()
     {    
@@ -840,6 +858,7 @@ struct DistanceTransformTestSuite
     : vigra::test_suite("DistanceTransformTestSuite")
     {
         add( testCase( &MultiDistanceTest::testDistanceVolumes));
+        add( testCase( &MultiDistanceTest::testVectorDistanceBug));
         add( testCase( &MultiDistanceTest::testDistanceAxesPermutation));
         add( testCase( &MultiDistanceTest::testDistanceVolumesAnisotropic));
         add( testCase( &MultiDistanceTest::distanceTransform2DCompare));

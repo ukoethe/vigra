@@ -144,6 +144,7 @@ generateFunctionIndex(functionList)
 # Note that '::' are not allowed in reStructuedText link names, 
 # so we have to use '.' instead.
 replaces=open("../vigranumpy/docsrc/c_api_replaces.txt","w")
+lowercase_names = set()
 for i in range(len(functionList)):
     functionName = functionList[i][1]
     overloadDisambiguation = functionList[i][2]
@@ -154,6 +155,7 @@ for i in range(len(functionList)):
         functionName = overloadDisambiguation +'.' + functionName
     link = functionList[i][0]
     replaces.write(functionName+":"+link+"\n")
+    lowercase_names.add(functionName.lower())
 for i in range(len(classList)):
     className = classList[i][1]
     namespace = classList[i][2]
@@ -161,6 +163,8 @@ for i in range(len(classList)):
        (i < len(classList)-1 and className == classList[i+1][1]):
         namespace = namespace.replace('::', '.')
         className = namespace +'.' + className
+    if className.lower() in lowercase_names:
+        className = className + 'Class'
     link = classList[i][0]
     replaces.write(className+":"+link+"\n")
 replaces.close()

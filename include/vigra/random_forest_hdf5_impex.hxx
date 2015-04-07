@@ -235,7 +235,7 @@ void rf_export_HDF5(const RandomForest<T, Tag> & rf,
     method will lead to crashes.
 
     \param rf       Random forest object to be exported
-    \param file_id  HDF5 file id
+    \param outf_id  HDF5 file id
     \param pathname If empty or not supplied, save the random forest to the
                     root group of the HDF5 file. Otherwise, save to a
                     new-created group specified by the path name (relative

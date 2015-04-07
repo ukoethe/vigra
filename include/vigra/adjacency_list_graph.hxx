@@ -56,6 +56,9 @@
 
 namespace vigra{
 
+/** \addtogroup GraphDataStructures
+*/
+//@{
 
     namespace detail_adjacency_list_graph{
 
@@ -215,7 +218,7 @@ namespace vigra{
             mutable Arc arc_;
         };
 
-    }
+    } // namespace detail_adjacency_list_graph
 
 
     /** \brief undirected adjacency list graph in the LEMON API 
@@ -329,9 +332,11 @@ namespace vigra{
 
     // public member functions
     public:
-        /// construct 
-        /// @param nodes : reserve space for n nodes
-        /// @param edges : reserve space for n edges
+        /** \brief Constructor.
+         
+            @param nodes : reserve space for so many nodes
+            @param edges : reserve space for so many edges
+        */
         AdjacencyListGraph(const size_t nodes=0,const size_t edges=0);
 
         /** \brief Get the number of edges in this graph (API: LEMON).
@@ -657,7 +662,7 @@ namespace vigra{
 
 
 
-
+#ifndef DOXYGEN  // doxygen doesn't like out-of-line definitions
 
     inline AdjacencyListGraph::AdjacencyListGraph(
         const size_t reserveNodes,
@@ -854,7 +859,6 @@ namespace vigra{
         }
     }
 
-    
     inline AdjacencyListGraph::Node
     AdjacencyListGraph::oppositeNode(
         const AdjacencyListGraph::Node &n,
@@ -1072,7 +1076,11 @@ namespace vigra{
         return EdgeIt(edgeNum(),edgeNum());
     }
 
-} // end namespace vigra
+#endif //DOXYGEN
+
+//@}
+
+} // namespace vigra
 
 
 // boost free functions specialized for adjacency list graph
@@ -1152,7 +1160,6 @@ namespace boost{
         );
     }
 
-}
-
+}  // namespace boost
 
 #endif /*VIGRA_ADJACENCY_LIST_GRAPH_HXX*/

@@ -55,11 +55,14 @@ get(vigra::MultiArrayView<N, T, Stride> const & pmap,
     return pmap[k]; 
 }
 
-/** \addtogroup GraphDataStructures Graph Data Structures
+/** \addtogroup GraphDataStructures Graph Data Structures and Algorithms
         
-        A GridGraph class implementing the APIs of the <a href="http://www.boost.org/doc/libs/release/libs/graph/">boost::graph</a> and
-        <a href="http://lemon.cs.elte.hu/">LEMON</a> libraries. See also
-        the \ref BoostGraphExtensions.
+        Graph algorithms and the underlying graph data structures (e.g. GridGraph and AdjacencyListGraph)
+        implementing the APIs of the 
+        <a href="http://www.boost.org/doc/libs/release/libs/graph/">boost::graph</a> and
+        <a href="http://lemon.cs.elte.hu/">LEMON</a> libraries. 
+        
+        See also the \ref BoostGraphExtensions.
 */
 //@{
 
