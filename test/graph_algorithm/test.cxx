@@ -67,7 +67,7 @@ struct GraphAlgorithmTest{
     {
         typedef GridGraph<2, boost::undirected_tag> GridGraph2d;
         typedef TinyVector< MultiArrayIndex, 2> Shape2;
-        typedef GridGraph2d:: template EdgeMap<float> EdgeMap;
+        typedef GridGraph2d::EdgeMap<float> EdgeMap;
 
         GridGraph2d gridGraph(Shape2(3,3),DirectNeighborhood);
 
