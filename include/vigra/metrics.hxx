@@ -44,9 +44,6 @@ namespace vigra{
 namespace metrics{
 
 
-
-
-
     template<class T>
     class ChiSquared{
     public:
@@ -77,7 +74,6 @@ namespace metrics{
             return res*T(0.5);
         }
     };
-
 
     template<class T>
     class HellingerDistance{

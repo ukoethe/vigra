@@ -83,14 +83,14 @@ public:
     > DefaultClusterOperator;
 
 
-    typedef cluster_operators::EdgeWeightNodeFeatures2<
-        MergeGraph,
-        FloatEdgeArrayMap,
-        FloatEdgeArrayMap,
-        MultiFloatNodeArrayMap,
-        FloatNodeArrayMap,
-        FloatEdgeArrayMap
-    > NeuroClusterOperator;
+    //typedef cluster_operators::EdgeWeightNodeFeatures2<
+    //    MergeGraph,
+    //    FloatEdgeArrayMap,
+    //    FloatEdgeArrayMap,
+    //    MultiFloatNodeArrayMap,
+    //    FloatNodeArrayMap,
+    //    FloatEdgeArrayMap
+    //> NeuroClusterOperator;
 
     typedef cluster_operators::PythonOperator<MergeGraph> PythonClusterOperator;
 
@@ -142,23 +142,22 @@ public:
             );
 
         }
-        {   
-            const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("NeuroOperator");
-            python::class_<NeuroClusterOperator  >(operatorName.c_str(),python::no_init)
-            .def("__init__", python::make_constructor(&pyNeuroConstructor))
-            ;
-            python::def("__neuroOperator",registerConverters(&pyNeuroConstructor),
-                python::with_custodian_and_ward_postcall< 0,1 ,
-                    python::with_custodian_and_ward_postcall< 0 ,2,
-                        python::with_custodian_and_ward_postcall< 0 ,3,
-                            python::with_custodian_and_ward_postcall< 0 ,4,
-                                python::with_custodian_and_ward_postcall< 0 ,5,
-                                    python::with_custodian_and_ward_postcall< 0 ,6,
-                                        python::return_value_policy<   python::manage_new_object      
-
-                >  >    >   >   >   >   >()  
-            );
-        }
+        //{   
+        //    const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("NeuroOperator");
+        //    python::class_<NeuroClusterOperator  >(operatorName.c_str(),python::no_init)
+        //    .def("__init__", python::make_constructor(&pyNeuroConstructor))
+        //    ;
+        //    python::def("__neuroOperator",registerConverters(&pyNeuroConstructor),
+        //        python::with_custodian_and_ward_postcall< 0,1 ,
+        //            python::with_custodian_and_ward_postcall< 0 ,2,
+        //                python::with_custodian_and_ward_postcall< 0 ,3,
+        //                    python::with_custodian_and_ward_postcall< 0 ,4,
+        //                        python::with_custodian_and_ward_postcall< 0 ,5,
+        //                            python::with_custodian_and_ward_postcall< 0 ,6,
+        //                                python::return_value_policy<   python::manage_new_object      
+        //        >  >    >   >   >   >   >()  
+        //    );
+        //}
         {
 
             const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("PythonOperator");
@@ -220,10 +219,10 @@ public:
         exportHierarchicalClusteringOperators();
 
         // export Hierarchical Clustering (for all  cluster operators)
-        {
-            const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("NeuroOperator");
-            exportHierarchicalClustering<NeuroClusterOperator>(operatorName);
-        }
+        //{
+        //    const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("NeuroOperator");
+        //    exportHierarchicalClustering<NeuroClusterOperator>(operatorName);
+        //}
         {
             const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("MinEdgeWeightNodeDistOperator");
             exportHierarchicalClustering<DefaultClusterOperator>(operatorName);
@@ -314,34 +313,30 @@ public:
         );
     }
 
-    static NeuroClusterOperator * 
-    pyNeuroConstructor(
-        MergeGraph &                mergeGraph,
-        FloatEdgeArray              edgeIndicatorMapArray,
-        FloatEdgeArray              edgeSizeMapArray,
-        MultiFloatNodeArray         nodeFeatureMapArray,
-        FloatNodeArray              nodeSizeMapArray,
-        FloatEdgeArray              edgeMinWeightMapArray,
-        const float                 beta,
-        const metrics::MetricType   nodeDistType,
-        const float                 wardness 
-    ){
-
-        FloatEdgeArrayMap       edgeIndicatorMap(mergeGraph.graph(),edgeIndicatorMapArray);
-        FloatEdgeArrayMap       edgeSizeMap(mergeGraph.graph(),edgeSizeMapArray);   
-        MultiFloatNodeArrayMap  nodeFeatureMap(mergeGraph.graph(),nodeFeatureMapArray);
-        FloatNodeArrayMap       nodeSizeMap(mergeGraph.graph(),nodeSizeMapArray);
-        FloatEdgeArrayMap       edgeMinWeightMap(mergeGraph.graph(),edgeMinWeightMapArray);
-
-
-
-        return new NeuroClusterOperator(mergeGraph,
-            edgeIndicatorMap,edgeSizeMap,
-            nodeFeatureMap, nodeSizeMap,
-            edgeMinWeightMap,
-            beta,nodeDistType,wardness
-        );
-    }
+    //static NeuroClusterOperator * 
+    //pyNeuroConstructor(
+    //    MergeGraph &                mergeGraph,
+    //    FloatEdgeArray              edgeIndicatorMapArray,
+    //    FloatEdgeArray              edgeSizeMapArray,
+    //    MultiFloatNodeArray         nodeFeatureMapArray,
+    //    FloatNodeArray              nodeSizeMapArray,
+    //    FloatEdgeArray              edgeMinWeightMapArray,
+    //    const float                 beta,
+    //    const metrics::MetricType   nodeDistType,
+    //    const float                 wardness 
+    //){
+    //    FloatEdgeArrayMap       edgeIndicatorMap(mergeGraph.graph(),edgeIndicatorMapArray);
+    //    FloatEdgeArrayMap       edgeSizeMap(mergeGraph.graph(),edgeSizeMapArray);   
+    //    MultiFloatNodeArrayMap  nodeFeatureMap(mergeGraph.graph(),nodeFeatureMapArray);
+    //    FloatNodeArrayMap       nodeSizeMap(mergeGraph.graph(),nodeSizeMapArray);
+    //    FloatEdgeArrayMap       edgeMinWeightMap(mergeGraph.graph(),edgeMinWeightMapArray);
+    //    return new NeuroClusterOperator(mergeGraph,
+    //        edgeIndicatorMap,edgeSizeMap,
+    //        nodeFeatureMap, nodeSizeMap,
+    //        edgeMinWeightMap,
+    //        beta,nodeDistType,wardness
+    //    );
+    //}
 
 
 
