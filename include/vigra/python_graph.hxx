@@ -744,28 +744,63 @@ public:
 
     }
     bool done(){
-        return boost::python::extract<bool>(object_.attr("done")());
+        bool retVal;
+        try{
+            retVal =  boost::python::extract<bool>(object_.attr("done")());
+        }
+        catch(...){
+            throw std::runtime_error("error while calling cluster_operators PythonOperator::done");
+        }
+        return retVal;
     }
     void mergeEdges(const Edge & a,const Edge & b){
-        const EdgeHolderType aa(mergeGraph_,a);
-        const EdgeHolderType bb(mergeGraph_,b);
-        object_.attr("mergeEdges")(aa,bb);
+        try{
+            const EdgeHolderType aa(mergeGraph_,a);
+            const EdgeHolderType bb(mergeGraph_,b);
+            object_.attr("mergeEdges")(aa,bb);
+        }
+        catch(...){
+            throw std::runtime_error("error while calling cluster_operators PythonOperator::mergeEdges");
+        }
     }
-    void mergeNodes(const Node & a,const Node & b){
-        const NodeHolderType aa(mergeGraph_,a);
-        const NodeHolderType bb(mergeGraph_,b);
-        object_.attr("mergeNodes")(aa,bb);
+    void mergeNodes(const Node & a,const Node & b){\
+        try{
+            const NodeHolderType aa(mergeGraph_,a);
+            const NodeHolderType bb(mergeGraph_,b);
+            object_.attr("mergeNodes")(aa,bb);
+        }
+        catch(...){
+            throw std::runtime_error("error while calling cluster_operators PythonOperator::mergeNodes");
+        }
     }
     void eraseEdge(const Edge & e){
-        const EdgeHolderType ee(mergeGraph_,e);
-        object_.attr("eraseEdge")(ee);
+        try{
+            const EdgeHolderType ee(mergeGraph_,e);
+            object_.attr("eraseEdge")(ee);
+        }
+        catch(...){
+            throw std::runtime_error("error while calling cluster_operators PythonOperator::eraseEdge");
+        }
     }
     Edge contractionEdge(){
-        EdgeHolderType eh = boost::python::extract<EdgeHolderType>(object_.attr("contractionEdge")());
+        EdgeHolderType eh;
+        try{
+            eh = boost::python::extract<EdgeHolderType>(object_.attr("contractionEdge")());
+        }
+        catch(...){
+            throw std::runtime_error("error while calling cluster_operators PythonOperator::contractionEdge");
+        }
         return eh;
     }
     WeightType contractionWeight()const{
-        return boost::python::extract<WeightType>(object_.attr("contractionWeight")());
+        WeightType w;
+        try{
+            w = boost::python::extract<WeightType>(object_.attr("contractionWeight")());
+        }
+        catch(...){
+            throw std::runtime_error("error while calling cluster_operators PythonOperator::contractionWeight");
+        }
+        return w;
     }
 
     MergeGraph & mergeGraph(){

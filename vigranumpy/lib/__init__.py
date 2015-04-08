@@ -1834,9 +1834,9 @@ def _genGraphSegmentationFunctions():
 
 
 
-    def pythonClusterOperator(mergeGraph,opertator,useMergeNodeCallback=True,useMergeEdgesCallback=True,useEraseEdgeCallback=True):
+    def pythonClusterOperator(mergeGraph,operator,useMergeNodeCallback=True,useMergeEdgesCallback=True,useEraseEdgeCallback=True):
       #call unsave function and make it save
-      op = graphs.__pythonClusterOperator(mergeGraph,opertator,useMergeNodeCallback,useMergeEdgesCallback,useEraseEdgeCallback)
+      op = graphs.__pythonClusterOperator(mergeGraph,operator,useMergeNodeCallback,useMergeEdgesCallback,useEraseEdgeCallback)
       #op.__dict__['__base_object__']=mergeGraph
       #op.__base_object__=mergeGraph
       return op
