@@ -40,7 +40,7 @@ edgeWeights = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
 nodeFeatures = rag.accumulateNodeFeatures(imgLab)
 
 # do agglomerativeClustering
-labels = graphs.neuroClustering(graph=rag, edgeWeights=edgeWeights,
+labels = graphs.agglomerativeClustering(graph=rag, edgeWeights=edgeWeights,
                                         beta=beta, nodeFeatures=nodeFeatures,
                                         nodeNumStop=nodeNumStop)
 
