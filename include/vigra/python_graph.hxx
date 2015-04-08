@@ -744,7 +744,7 @@ public:
 
     }
     bool done(){
-        return false;
+        return boost::python::extract<bool>(object_.attr("done")());
     }
     void mergeEdges(const Edge & a,const Edge & b){
         const EdgeHolderType aa(mergeGraph_,a);
