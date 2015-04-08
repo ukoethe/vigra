@@ -1269,13 +1269,13 @@ struct MultiBlockingTest
     void test2d()
     {
         typedef MultiBlocking<2> Mb;
-        typedef typename Mb::Shape Shape;
-        typedef typename Mb::Block Block;
-        typedef typename Mb::Block Block;
+        typedef Mb::Shape Shape;
+        typedef Mb::Block Block;
+        typedef Mb::Block Block;
 
-        typedef typename Mb::BlockWithBorder BlockWithBorder;
-        typedef typename Mb::BlockWithBorderIter BlockWithBorderIter;
-        typedef typename Mb::BlockIter BlockIter;
+        typedef Mb::BlockWithBorder BlockWithBorder;
+        typedef Mb::BlockWithBorderIter BlockWithBorderIter;
+        typedef Mb::BlockIter BlockIter;
         {
             Shape shape(10,11), blockShape(4,5);
             Mb blocking(shape, blockShape);
@@ -1347,10 +1347,10 @@ struct MultiBlockingTest
     void test2dWithRoi()
     {
         typedef MultiBlocking<2> Mb;
-        typedef typename Mb::Shape Shape;
-        //typedef typename Mb::Block Block;
+        typedef Mb::Shape Shape;
+        //typedef Mb::Block Block;
         typedef Mb::BlockIter BlockIter;
-        //typedef typename Mb::BlockWithBorder BlockWithBorder;
+        //typedef Mb::BlockWithBorder BlockWithBorder;
         {
             
 
@@ -1374,10 +1374,10 @@ struct MultiBlockingTest
     void test2dIterator()
     {
         typedef MultiBlocking<2> Mb;
-        typedef typename Mb::Shape Shape;
-        //typedef typename Mb::Block Block;
-        typedef typename Mb::BlockWithBorder BlockWithBorder;
-        typedef typename Mb::BlockWithBorderIter BlockWithBorderIter;
+        typedef Mb::Shape Shape;
+        //typedef  Mb::Block Block;
+        typedef Mb::BlockWithBorder BlockWithBorder;
+        typedef  Mb::BlockWithBorderIter BlockWithBorderIter;
         {
             Shape shape(13,14), blockShape(4,5), roiBegin(1,2), roiEnd(9,11), width(2,3);
             Mb blocking(shape, blockShape, roiBegin, roiEnd);
