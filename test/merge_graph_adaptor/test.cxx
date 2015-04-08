@@ -665,9 +665,9 @@ struct AdjacencyListGraph2MergeGraphTest{
         const Node n4=g.nodeFromId(4);
 
         const Edge e12 = g.findEdge(n1,n2);
-        const Edge e13 = g.findEdge(n1,n3);
-        const Edge e24 = g.findEdge(n2,n4);
-        const Edge e34 = g.findEdge(n3,n4);
+        //const Edge e13 = g.findEdge(n1,n3);
+        //const Edge e24 = g.findEdge(n2,n4);
+        //const Edge e34 = g.findEdge(n3,n4);
 
 
         // for Graph id(u(edge)) < id(v(edge));
@@ -948,7 +948,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         const Node n9 = g.nodeFromId(9);
 
         // "|" edges
-        const Edge e12 = g.findEdge(n1,n2);
+        //const Edge e12 = g.findEdge(n1,n2);
         const Edge e23 = g.findEdge(n2,n3);
         const Edge e45 = g.findEdge(n4,n5);
         const Edge e56 = g.findEdge(n5,n6);
@@ -958,10 +958,10 @@ struct AdjacencyListGraph2MergeGraphTest{
         // "--" edges
         const Edge e14 = g.findEdge(n1,n4);
         const Edge e25 = g.findEdge(n2,n5);
-        const Edge e36 = g.findEdge(n3,n6);
-        const Edge e47 = g.findEdge(n4,n7);
+        //const Edge e36 = g.findEdge(n3,n6);
+        //const Edge e47 = g.findEdge(n4,n7);
         const Edge e58 = g.findEdge(n5,n8);
-        const Edge e69 = g.findEdge(n6,n9);
+        //  const Edge e69 = g.findEdge(n6,n9);
 
 
         // CURRENT GRAPH:
@@ -1303,20 +1303,20 @@ struct AdjacencyListGraph2MergeGraphTest{
         const Node n9 = g.nodeFromId(9);
 
         // "|" edges
-        const Edge e12 = g.findEdge(n1,n2);
+        //const Edge e12 = g.findEdge(n1,n2);
         const Edge e23 = g.findEdge(n2,n3);
-        const Edge e45 = g.findEdge(n4,n5);
+        //const Edge e45 = g.findEdge(n4,n5);
         const Edge e56 = g.findEdge(n5,n6);
-        const Edge e78 = g.findEdge(n7,n8);
+        //const Edge e78 = g.findEdge(n7,n8);
         const Edge e89 = g.findEdge(n8,n9);
 
         // "--" edges
-        const Edge e14 = g.findEdge(n1,n4);
+        //const Edge e14 = g.findEdge(n1,n4);
         const Edge e25 = g.findEdge(n2,n5);
-        const Edge e36 = g.findEdge(n3,n6);
+        //const Edge e36 = g.findEdge(n3,n6);
         const Edge e47 = g.findEdge(n4,n7);
-        const Edge e58 = g.findEdge(n5,n8);
-        const Edge e69 = g.findEdge(n6,n9);
+        //const Edge e58 = g.findEdge(n5,n8);
+        //const Edge e69 = g.findEdge(n6,n9);
 
 
         // CURRENT GRAPH:
