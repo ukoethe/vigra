@@ -42,15 +42,10 @@ ragEdgeIndicator = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
 
 affEdges = rag.affiliatedEdges
 
-aVec = affEdges.getEdgeVec(gridGraph, 0)
-print aVec
+coordsList = []
 
-
-for ei in aVec:
-    e = gridGraph.edgeFromId(ei)
-    na = gridGraph.u(e)
-    nb = gridGraph.v(e)
-
-    print na,nb
-
-    print numpy.array(na.coord())+numpy.array(nb.coord())/2.0
+for e in rag.edgeIter():
+    eid = rag.id(e)
+    coords = affEdges.getUVCoordinates(gridGraph, eid)
+    coordsList.append(coords)
+#print coordsList

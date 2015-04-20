@@ -115,8 +115,8 @@ public:
 
         const std::string hyperEdgeMapNamClsName = clsName_ + std::string("RagAffiliatedEdges");
         python::class_<RagAffiliatedEdges>(hyperEdgeMapNamClsName.c_str(),python::init<const RagGraph &>())
-                .def("getEdgeVec",
-                    &getEdgeVec)
+                .def("getEdgeIdVector",&getEdgeIdVector)
+                .def("getUVCoordinates",registerConverters(&getUVCoordinatesArray))
         ;
 
     }
@@ -282,18 +282,47 @@ public:
     }
 
 
-    static std::vector<index_type>  getEdgeVec(
-        const RagAffiliatedEdges & vevVec, 
+    static std::vector<index_type>  getEdgeIdVector(
+        const RagAffiliatedEdges & vecVec, 
         const Graph & graph,
         const size_t i 
     ){
-        std::vector<index_type>  tmp(vevVec[i].size());
-        for(size_t j=0; j<vevVec[i].size(); ++j){
-            tmp[j] = graph.id(vevVec[i][j]);
+        std::vector<index_type>  tmp(vecVec[i].size());
+        for(size_t j=0; j<vecVec[i].size(); ++j){
+            tmp[j] = graph.id(vecVec[i][j]);
         }
         return tmp;
     }
 
+
+    static NumpyAnyArray getUVCoordinatesArray(
+        const RagAffiliatedEdges & vecVec, 
+        const Graph & graph,
+        const size_t ragEdgeIndex 
+    ){
+        const size_t pseudoDim = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension;
+        typedef typename GraphDescriptorToMultiArrayIndex<Graph>::IntrinsicNodeMapShape Shape;
+
+        const size_t nEdges = vecVec[ragEdgeIndex].size();
+        vigra::TinyVector<MultiArrayIndex, 2> shape(nEdges,pseudoDim*2);
+        NumpyArray<2, UInt32> coords(shape);
+
+
+
+        for(size_t e=0; e<nEdges; ++e){
+            const Edge edge = vecVec[ragEdgeIndex][e];
+            const Node u = graph.u(edge);
+            const Node v = graph.v(edge);
+            const Shape uCoord = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, u);
+            const Shape vCoord = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, v);
+
+            for(size_t i=0; i<pseudoDim; ++i)
+                coords(e, i) = uCoord[i];
+            for(size_t i=pseudoDim; i<2*pseudoDim; ++i)
+                coords(e, i) = vCoord[i-pseudoDim];
+        }
+        return coords;
+    }
 
 
 
