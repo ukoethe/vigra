@@ -111,28 +111,84 @@ def newaxis(axisinfo=AxisInfo()):
         >>> t.axistags  # with channel axis 
         x y c
     '''
-    return axisinfo
+    if isinstance(axisinfo, str):
+        return eval('AxisInfo.'+axisinfo)
+    else:
+        return axisinfo
 
-def taggedView(array, axistags):
+def makeAxistags(spec, order=None, noChannels=None):
     '''
-    Create a view to the given array with type :class:`~vigra.VigraArray` and the 
-    given axistags. This is essentially a shorthand for::
+    Create a new :class:`~vigra.AxisTags` object from the specification ``spec``. 
+    ``spec`` can be one of the following:
+    
+    * an instance of the ``AxisTags`` class. In this case, the function creates 
+      a copy of ``spec``. If ``order`` is given, the resulting axistags are 
+      transposed to the desired order ('C', 'F', or 'V'). If ``noChannels=True``,
+      the channel axis (if any) is dropped from the specification.      
+      
+    * a string or tuple of axis keys (e.g. ``'xyc'`` or ``('x', 'y', 'c')`` respectively) 
+      or a tuple of :class:`~vigra.AxisInfo` objects (e.g. 
+      ``(AxisInfo.x, AxisInfo.y, AxisInfo.c)``). The function then constructs a 
+      new ``AxisTags`` object from this specification. If ``order`` is given, 
+      the resulting axistags are transposed to the desired order ('C', 'F', or 'V'). 
+      If ``noChannels=True``, the channel axis (if any) is dropped from the specification. 
+      
+    * an integer signifying the desired number of axes. In this case, the call (including
+      optional arguments ``order`` and ``noChannels``) is forwarded to the function 
+      :meth:`~vigra.VigraArray.defaultAxistags`, whose output is returned.
+    '''
+    if isinstance(spec, int):
+        return VigraArray.defaultAxistags(spec, order=order, noChannels=noChannels)
+
+    if isinstance(spec, AxisTags):
+        res = copy.copy(spec)
+    else:
+        tags = [k if isinstance(k, AxisInfo) else eval('AxisInfo.'+k) for k in spec]
+        res = AxisTags(*tuple(tags))
+    if order:
+        res.transpose(res.permutationToOrder(order))
+    if noChannels:
+        res.dropChannelAxis()
+    return res
+    
+def taggedView(array, axistags='', force=False, order=None, noChannels=False):
+    '''
+    Create a view to the given array with type :class:`~vigra.VigraArray` and 
+    given axistags. 
+    
+    The ``axistags`` can be specified as an instance of class :class:`~vigra.AxisTags`, 
+    as a string or tuple of axis keys (``'xyc'`` and ``('x', 'y', 'c')`` respectively)
+    or as a tuple of :class:`~vigra.AxisInfo` objects ``(AxisInfo.x, AxisInfo.y, AxisInfo.c)``. 
+    When empty, a default as indicated below is used.
+    
+    taggedView() supports two essential modes of operation:
+    
+    1. If ``array`` already has axistags, and ``force=False``, the function calls
+       :meth:`vigra.ArrayType.withAxes`, i.e. it executes::
+    
+        >>> view = array.withAxes(axistags if axistags else array.axistags, 
+                                  order=order, noChannels=noChannels)
+        
+    2. If ``array`` has no axistags, or ``force=True`` (i.e. existing axistags 
+       shall be ignored), the function is a shorthand for::
     
         >>> view = array.view(vigra.VigraArray)
-        >>> view.axistags = copy.copy(axistags)
-        
-    if axistags is an instance of AxisTags. Otherwise, the function first attempts
-    to convert the input to that type by calling VigraArray.defaultAxistags()
+        >>> view.axistags = vigra.makeAxistags(axistags if axistags else array.ndim)
+        >>> view = view.withAxes(order=order, noChannels=noChannels)
+    
+    The function raises a RuntimeError when the axistag specification is incompatible
+    with the array.
     '''
-    if not isinstance(axistags, AxisTags):
-        axistags = VigraArray.defaultAxistags(axistags)
-    else:
-        axistags = copy.copy(axistags)
-    if array.ndim != len(axistags):
-        raise RuntimeError('vigra.taggedView(): array.ndim must match len(axistags).')
-    res = array.view(VigraArray)
-    res.axistags = axistags
-    return res
+    if not hasattr(array, 'axistags') or force:
+        if not axistags:
+            axistags = makeAxistags(array.ndim, order=order, noChannels=noChannels)
+        else:
+            axistags = makeAxistags(axistags)
+        if array.ndim != len(axistags):
+            raise RuntimeError('vigra.taggedView(): array.ndim must match len(axistags).')
+        array = array.view(VigraArray)
+        array.axistags = axistags
+    return array.withAxes(axistags, order=order, noChannels=noChannels)
 
 def dropChannelAxis(array):
     '''
@@ -951,17 +1007,33 @@ class VigraArray(numpy.ndarray):
             res.axistags[-1] = AxisInfo.c
         return res
     
-    def withAxes(self, *axiskeys):
+    def noTags(self):
+        '''
+        Drop the axistags. This is a shorthand for ``array.view(numpy.ndarray)``.
+        '''
+        return self.view(numpy.ndarray)
+    
+    def withAxes(self, *axiskeys, **kw):
         '''
         Create a view containing the desired axis keys in the given  
         order. When the array contains an axis not listed, the axis
-        will be dropped if it is a singfleton (otherwise, an exception
+        will be dropped if it is a singleton (otherwise, an exception
         is raised). If a requested key is not present in this array,
         a singleton axis will be inserted at that position, if the 
         missing key is among the known standard keys (otherwise, an 
         exception is raised). The function fails if this array contains
-        axes of unknown type (key '?'). If 'self' is already suitable, 
-        it is simply retured without generating a new view.
+        axes of unknown type (key '?').
+        
+        The ``axiskeys`` specification can be passed in any format that is
+        understood by :func:`vigra.makeAxistags`. If ``axiskeys`` is empty, 
+        ``self.axistags`` is used.
+        
+        The function supports optional keyword arguments ``order`` and 
+        ``noChannels``. If the former is specified, the resulting view
+        is transposed into that order ('C', 'F', or 'V') irrespective of 
+        the original order in ``axiskeys``. If ``noChannels=True``, the 
+        channel axis (if there is one and it is a singleton) is dropped 
+        from the resulting view.
         
         Usage::
         
@@ -970,32 +1042,46 @@ class VigraArray(numpy.ndarray):
             x y
             >>> a.shape
             (200, 100)
-            >>> b = a.withAxes('y', 'x', 'c')
+            
+            >>> b = a.withAxes('yxc')
             >>> b.axistags
             y x c
             >>> b.shape
             (100, 200, 1)
-        
+            
+            >>> c = b.withAxes(order='F')
+            >>> c.axistags
+            c x y
+            >>> c.shape
+            (1, 200, 100)
         '''
-        if repr(self.axistags) == ' '.join(axiskeys):
-            return self
-        axisinfo = []
-        slicing = [0]*self.ndim
-        for key in axiskeys:
-            index = self.axistags.index(key)
-            if index < self.ndim:
-                axisinfo.append(self.axistags[index])
-                slicing[index] = slice(None)
-            else:
-                axisinfo.append(eval('AxisInfo.%s' % key))
-                slicing.append(axisinfo[-1])
-        for k in xrange(self.ndim):
-            if self.axistags[k].isType(AxisType.UnknownAxisType):
-                raise RuntimeError("VigraArray.ensureAxes(): array must not contain axes of unknown type (key '?').")
-            if slicing[k] == 0 and self.shape[k] != 1:
-                raise RuntimeError("VigraArray.ensureAxes(): cannot drop non-singleton axis '%s'." % self.axistags[k].key)
-        permutation = AxisTags(axisinfo).permutationFromNumpyOrder()
-        return self[slicing].transposeToNumpyOrder().transpose(permutation)
+        res = self
+        if len(axiskeys) == 1:
+            axiskeys = axiskeys[0]
+        if axiskeys:
+            axistags = makeAxistags(axiskeys)
+            if not self.axistags.compatible(axistags):
+                axisinfo = []
+                slicing = [0]*self.ndim
+                for key in axistags.keys():
+                    index = self.axistags.index(key)
+                    if index < self.ndim:
+                        axisinfo.append(self.axistags[index])
+                        slicing[index] = slice(None)
+                    else:
+                        axisinfo.append(eval('AxisInfo.%s' % key))
+                        slicing.append(axisinfo[-1])
+                for k in xrange(self.ndim):
+                    if self.axistags[k].isType(AxisType.UnknownAxisType):
+                        raise RuntimeError("VigraArray.withAxes(): array must not contain axes of unknown type (key '?').")
+                    if slicing[k] == 0 and self.shape[k] != 1:
+                        raise RuntimeError("VigraArray.withAxes(): cannot drop non-singleton axis '%s'." % self.axistags[k].key)
+                permutation = AxisTags(axisinfo).permutationFromNumpyOrder()
+                res = self[slicing].transposeToNumpyOrder().transpose(permutation)
+        res = res.transposeToOrder(kw.get('order'))
+        if kw.get('noChannels'):
+            res = res.dropChannelAxis()
+        return res
     
     def view5D(self, order='C'):
         '''
@@ -1073,7 +1159,7 @@ class VigraArray(numpy.ndarray):
         Get a transposed view onto this array according to the given 'order'.
         Possible orders are:
         
-        'A':
+        'A' or '' or None:
             return the array unchanged
         'C':
             transpose to descending axis order (e.g. 'z y x c')
@@ -1083,7 +1169,7 @@ class VigraArray(numpy.ndarray):
             transpose to VIGRA order, i.e. ascending spatial axes, but
             the channel axis is last (e.g. 'x y z c')
         '''
-        if order == 'A':
+        if not order or order == 'A':
             return self
         permutation = self.permutationToOrder(order)
         return self.transpose(permutation)

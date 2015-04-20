@@ -156,6 +156,14 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert_equal(img.axistags, vaxistags)
         assert_equal(img.view5D('F').axistags, axistags5)
         assert_equal(img.withAxes('y', 'z', 'x', 'c').axistags, axistags4)
+        assert_equal(img.withAxes('yzxc').axistags, axistags4)
+        assert_equal(img.withAxes(axistags4).axistags, axistags4)
+        assert_true(img.withAxes(img.axistags) is img)
+        array = img.noTags()
+        assert_equal(type(array), numpy.ndarray)
+        assert_equal(arraytypes.taggedView(array, vaxistags).axistags, vaxistags)
+        assert_equal(arraytypes.taggedView(array, vaxistags.keys()).axistags, vaxistags)
+        assert_equal(arraytypes.taggedView(array, ''.join(vaxistags.keys())).axistags, vaxistags)
         if img.channels == 1:
             assert_equal(img.withAxes('y', 'z', 'x').axistags, axistags3)
         else:
@@ -969,6 +977,53 @@ def testVector4Volume():
     checkArray(arraytypes.Vector4Volume, 4, 3)
 
 def testTaggedShape():
+    a = arraytypes.makeAxistags(4)
+    assert_equal(repr(a), 'x y z c')
+    a = arraytypes.makeAxistags(4, order='C')
+    assert_equal(repr(a), 'z y x c')
+    a = arraytypes.makeAxistags(4, order='F')
+    assert_equal(repr(a), 'c x y z')
+    a = arraytypes.makeAxistags(4, order='C', noChannels=True)
+    assert_equal(repr(a), 't z y x')
+    a = arraytypes.makeAxistags(4, noChannels=True)
+    assert_equal(repr(a), 'x y z t')
+    
+    aa = arraytypes.makeAxistags('xyc')
+    a = arraytypes.makeAxistags(aa)
+    assert_equal(repr(a), 'x y c')
+    assert(a is not aa)
+    a = arraytypes.makeAxistags(aa, order='C')
+    assert_equal(repr(a), 'y x c')
+    assert(a is not aa)
+    a = arraytypes.makeAxistags(aa, order='F')
+    assert_equal(repr(a), 'c x y')
+    assert(a is not aa)
+    
+    a = arraytypes.makeAxistags(aa, noChannels=True)
+    assert_equal(repr(a), 'x y')
+    assert(a is not aa)
+    a = arraytypes.makeAxistags(aa, order='V', noChannels=True)
+    assert_equal(repr(a), 'x y')
+    assert(a is not aa)
+    a = arraytypes.makeAxistags(aa, order='C', noChannels=True)
+    assert_equal(repr(a), 'y x')
+    assert(a is not aa)
+    a = arraytypes.makeAxistags(aa, order='F', noChannels=True)
+    assert_equal(repr(a), 'x y')
+    assert(a is not aa)
+
+    a = arraytypes.makeAxistags('xyc', order='V')
+    assert_equal(repr(a), 'x y c')
+    a = arraytypes.makeAxistags('xyc', order='C')
+    assert_equal(repr(a), 'y x c')
+    a = arraytypes.makeAxistags('xyc', order='F')
+    assert_equal(repr(a), 'c x y')
+    a = arraytypes.makeAxistags('xyc', order='F', noChannels=True)
+    assert_equal(repr(a), 'x y')
+    a = arraytypes.makeAxistags('xyc', order='V', noChannels=True)
+    assert_equal(repr(a), 'x y')
+    a = arraytypes.makeAxistags('xyc', order='C', noChannels=True)
+    assert_equal(repr(a), 'y x')
 
     a = arraytypes.Image((20,10))
     a.axistags.setChannelDescription("in")
@@ -1111,14 +1166,78 @@ def testTaggedShape():
     
     a = numpy.zeros((3,4,5))
     at = AxisTags(AxisInfo.x, AxisInfo.y, AxisInfo.z)
+    
     r = arraytypes.taggedView(a, at)
     assert_equal(r.shape, (3,4,5))
     assert_equal(r.axistags, at)
     assert(r.axistags is not at)
+    
     r = arraytypes.taggedView(a, 'xyz')
     assert_equal(r.shape, (3,4,5))
     assert_equal(r.axistags, at)
+    
+    r = arraytypes.taggedView(a, 'cyx')
+    assert_equal(r.shape, (3,4,5))
+    assert_equal(repr(r.axistags), 'c y x')
+    
+    r = arraytypes.taggedView(a, 'cxy', order='C')
+    assert_equal(r.shape, (5,4,3))
+    assert_equal(repr(r.axistags), 'y x c')
+    
+    r = arraytypes.taggedView(a, 'cxy', order='V')
+    assert_equal(r.shape, (4,5,3))
+    assert_equal(repr(r.axistags), 'x y c')
  
+    a = arraytypes.taggedView(a, 'zyx')
+    r = arraytypes.taggedView(a, '', order='C')
+    assert_equal(r.shape, (3,4,5))
+    assert_equal(repr(r.axistags), 'z y x')    
+    r = arraytypes.taggedView(a, '', order='V')
+    assert_equal(r.shape, (5,4,3))
+    assert_equal(repr(r.axistags), 'x y z')    
+    r = arraytypes.taggedView(a, '', order='F')
+    assert_equal(r.shape, (5,4,3))
+    assert_equal(repr(r.axistags), 'x y z')    
+    
+    a = a[0,...]
+    r = arraytypes.taggedView(a, 'xcy')
+    assert_equal(r.shape, (5,1,4))
+    assert_equal(repr(r.axistags), 'x c y')    
+    r = arraytypes.taggedView(a, 'xcy', order='')
+    assert_equal(r.shape, (5,1,4))
+    assert_equal(repr(r.axistags), 'x c y')    
+    r = arraytypes.taggedView(a, 'xcy', order='A')
+    assert_equal(r.shape, (5,1,4))
+    assert_equal(repr(r.axistags), 'x c y')    
+    r = arraytypes.taggedView(a, 'yxc', order='A')
+    assert_equal(r.shape, (4,5,1))
+    assert_equal(repr(r.axistags), 'y x c')    
+
+    r = arraytypes.taggedView(a, 'xyc', order='F')
+    assert_equal(r.shape, (1,5,4))
+    assert_equal(repr(r.axistags), 'c x y')    
+    r = arraytypes.taggedView(a, 'xyc', order='C')
+    assert_equal(r.shape, (4,5,1))
+    assert_equal(repr(r.axistags), 'y x c')    
+    r = arraytypes.taggedView(a, 'xyc', order='V')
+    assert_equal(r.shape, (5,4,1))
+    assert_equal(repr(r.axistags), 'x y c')    
+    try:
+        r = arraytypes.taggedView(a, 'xcz')
+        raise AssertionError, "arraytypes.taggedView() failed to throw."
+    except RuntimeError:
+        pass
+        
+    try:
+        r = arraytypes.taggedView(a, 'xcz', force=True)
+        raise AssertionError, "arraytypes.taggedView() failed to throw."
+    except RuntimeError:
+        pass
+    
+    r = arraytypes.taggedView(a, 'xz', force=True)
+    assert_equal(r.shape, (4,5))
+    assert_equal(repr(r.axistags), 'x z')    
+
 def testDeepcopy():
     a = arraytypes.RGBImage(numpy.random.random((10, 4, 3)), order='C')
     b = copy.deepcopy(a)
