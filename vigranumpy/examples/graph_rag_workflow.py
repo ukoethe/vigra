@@ -40,18 +40,10 @@ rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 ragEdgeIndicator = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
 
 
-affEdges = rag.affiliatedEdges
 
-coordsList = []
 
 for e in rag.edgeIter():
     eid = rag.id(e)
-    uc,vc = rag.edgeUVCoordinates(e)
     uc,vc = rag.edgeUVCoordinates(eid)
     et = rag.edgeTopologicalCoordinates(e)
-    et = rag.edgeTopologicalCoordinates(eid)
-    ec = rag.edgeCoordinates(e)
     ec = rag.edgeCoordinates(eid)
-    print et
-    print ec
-    break
