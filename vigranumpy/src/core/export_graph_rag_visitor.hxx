@@ -4,6 +4,7 @@
 
 /*boost python before anything else*/
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 /*std*/
 #include <sstream>
@@ -100,7 +101,7 @@ public:
 
 
     typedef typename RagGraph:: template EdgeMap< std::vector<Edge> > RagAffiliatedEdges;
-
+    typedef std::vector<Edge> EdgeVec;
 
     typedef typename GraphDescriptorToMultiArrayIndex<Graph>::IntrinsicNodeMapShape NodeCoordinate;
     typedef NumpyArray<1,NodeCoordinate>  NodeCoorinateArray;
@@ -114,6 +115,17 @@ public:
 
         const std::string hyperEdgeMapNamClsName = clsName_ + std::string("RagAffiliatedEdges");
         python::class_<RagAffiliatedEdges>(hyperEdgeMapNamClsName.c_str(),python::init<const RagGraph &>())
+                .def("getEdgeVec",
+                    &getEdgeVec)
+        ;
+
+    }
+
+     void exportEdgeVec()const{
+
+        const std::string hyperEdgeMapNamClsName = clsName_ + std::string("EdgeIdVec");
+        python::class_<std::vector<index_type> >(hyperEdgeMapNamClsName.c_str(),python::init<>())
+            .def(boost::python::vector_indexing_suite< std::vector<index_type> , true >());
         ;
 
     }
@@ -123,6 +135,7 @@ public:
     {   
 
         // something like RagEdgeMap< std::vector< Edge > >
+        exportEdgeVec();
         exportRagAffiliatedEdges();
 
         // make the region adjacency graph
@@ -267,6 +280,21 @@ public:
         exportPyRagProjectNodeFeaturesToBaseGraph< Multiband< UInt32> >();
 
     }
+
+
+    static std::vector<index_type>  getEdgeVec(
+        const RagAffiliatedEdges & vevVec, 
+        const Graph & graph,
+        const size_t i 
+    ){
+        std::vector<index_type>  tmp(vevVec[i].size());
+        for(size_t j=0; j<vevVec[i].size(); ++j){
+            tmp[j] = graph.id(vevVec[i][j]);
+        }
+        return tmp;
+    }
+
+
 
 
     static NumpyAnyArray pyAccNodeSeeds(

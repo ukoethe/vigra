@@ -1,5 +1,6 @@
 import vigra
 from vigra import graphs
+from vigra import numpy
 
 # parameter:
 filepath = '100075.jpg'   # input image path
@@ -39,31 +40,17 @@ rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 ragEdgeIndicator = rag.accumulateEdgeFeatures(gridGraphEdgeIndicator)
 
 
-pathFinder = graphs.ShortestPathPathDijkstra(rag)
-pathFinder.run(ragEdgeIndicator,)
+affEdges = rag.affiliatedEdges
+
+aVec = affEdges.getEdgeVec(gridGraph, 0)
+print aVec
 
 
+for ei in aVec:
+    e = gridGraph.edgeFromId(ei)
+    na = gridGraph.u(e)
+    nb = gridGraph.v(e)
 
-# get labels/segmentation for rag
-ragLabels = graphs.felzenszwalbSegmentation(rag, ragEdgeIndicator,
-                                            k=10, nodeNumStop=1000)
+    print na,nb
 
-# get more corsair graph from labeled rag
-rag2 = graphs.regionAdjacencyGraph(graph=rag, labels=ragLabels)
-
-# accumulate new edge weights
-rag2EdgeIndicator = rag2.accumulateEdgeFeatures(ragEdgeIndicator,
-                                                acc='mean')
-
-# get labels/segmentation for rag2
-rag2Labels = graphs.felzenszwalbSegmentation(rag2, ragEdgeIndicator,
-                                             k=20, nodeNumStop=100)
-
-# get more corsair graph from labeled rag2
-rag3 = graphs.regionAdjacencyGraph(graph=rag2, labels=rag2Labels)
-
-# visualize results
-for g in [rag, rag2, rag3]:
-    print g.nodeNum
-    g.show(img=img)
-    vigra.show()
+    print numpy.array(na.coord())+numpy.array(nb.coord())/2.0

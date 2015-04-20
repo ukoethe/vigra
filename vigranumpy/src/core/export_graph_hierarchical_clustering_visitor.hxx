@@ -114,6 +114,7 @@ public:
         .def("graph",&pyMergeGraphsGraph, python::return_internal_reference<>())
         .def("contractEdge",&pyContractEdgeA)
         .def("contractEdge",&pyContractEdgeB)
+        .def("hasEdgeId",&pyHasEdgeId)
         ;
 
         python::def("__mergeGraph",&pyMergeGraphConstructor ,  
@@ -264,6 +265,14 @@ public:
     ){
         mg.contractEdge(mg.reprEdge(graphEdge));
     }
+
+    static bool pyHasEdgeId(
+        MergeGraph & mg,
+        typename MergeGraph::index_type id
+    ){
+        return mg.hasEdgeId(id);
+    }
+
 
 
     template<class CLUSTER_OP>

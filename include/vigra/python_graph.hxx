@@ -748,7 +748,8 @@ public:
         try{
             retVal =  boost::python::extract<bool>(object_.attr("done")());
         }
-        catch(...){
+        catch(std::exception & e){
+            std::cout<<"reason: "<<e.what()<<"\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::done");
         }
         return retVal;
@@ -759,7 +760,8 @@ public:
             const EdgeHolderType bb(mergeGraph_,b);
             object_.attr("mergeEdges")(aa,bb);
         }
-        catch(...){
+        catch(std::exception & e){
+            std::cout<<"reason: "<<e.what()<<"\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::mergeEdges");
         }
     }
@@ -769,7 +771,8 @@ public:
             const NodeHolderType bb(mergeGraph_,b);
             object_.attr("mergeNodes")(aa,bb);
         }
-        catch(...){
+        catch(std::exception & e){
+            std::cout<<"reason: "<<e.what()<<"\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::mergeNodes");
         }
     }
@@ -778,7 +781,8 @@ public:
             const EdgeHolderType ee(mergeGraph_,e);
             object_.attr("eraseEdge")(ee);
         }
-        catch(...){
+        catch(std::exception & e){
+            std::cout<<"reason: "<<e.what()<<"\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::eraseEdge");
         }
     }
@@ -787,7 +791,8 @@ public:
         try{
             eh = boost::python::extract<EdgeHolderType>(object_.attr("contractionEdge")());
         }
-        catch(...){
+        catch(std::exception & e){
+            std::cout<<"reason: "<<e.what()<<"\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::contractionEdge");
         }
         return eh;
@@ -797,7 +802,8 @@ public:
         try{
             w = boost::python::extract<WeightType>(object_.attr("contractionWeight")());
         }
-        catch(...){
+        catch(std::exception & e){
+            std::cout<<"reason: "<<e.what()<<"\n";
             throw std::runtime_error("error while calling cluster_operators PythonOperator::contractionWeight");
         }
         return w;
