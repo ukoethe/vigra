@@ -1228,6 +1228,28 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             return gt, gtQuality
 
 
+        def edgeUVCoordinates(self, edgeId):
+
+            try :
+                ei = int(edgeId)
+            except:
+                ei = edgeId.id
+
+            affEdges = self.affiliatedEdges
+            uvCoords = affEdges.getUVCoordinates(self.baseGraph, ei)
+            dim = uvCoords.shape[1]/2
+            uCoords = uvCoords[:,0:dim]
+            vCoords = uvCoords[:,dim:2*dim]
+            return (uCoords,vCoords)
+
+        def edgeTopologicalCoordinates(self, edgeId):
+            uc,vc = self.edgeUVCoordinates(edgeId)
+            return uc+vc
+
+        def edgeCoordinates(self, edgeId):
+            uc,vc = self.edgeUVCoordinates(edgeId)
+            return (uc+vc)/2.0
+
     RegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.RegionAdjacencyGraph = RegionAdjacencyGraph
 

@@ -46,6 +46,12 @@ coordsList = []
 
 for e in rag.edgeIter():
     eid = rag.id(e)
-    coords = affEdges.getUVCoordinates(gridGraph, eid)
-    coordsList.append(coords)
-#print coordsList
+    uc,vc = rag.edgeUVCoordinates(e)
+    uc,vc = rag.edgeUVCoordinates(eid)
+    et = rag.edgeTopologicalCoordinates(e)
+    et = rag.edgeTopologicalCoordinates(eid)
+    ec = rag.edgeCoordinates(e)
+    ec = rag.edgeCoordinates(eid)
+    print et
+    print ec
+    break
