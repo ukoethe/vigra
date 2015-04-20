@@ -78,8 +78,8 @@ struct GraphAlgorithmTest{
         }
 
         typedef ShortestPathDijkstra<GridGraph2d,float> Sp;
-        typedef typename Sp::PredecessorsMap PredMap;
-        typedef typename Sp::DistanceMap     DistMap;
+        typedef Sp::PredecessorsMap PredMap;
+        typedef Sp::DistanceMap     DistMap;
 
         Sp pf(gridGraph);
 
