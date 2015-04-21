@@ -1180,22 +1180,20 @@ def testTaggedShape():
     assert_equal(r.shape, (3,4,5))
     assert_equal(repr(r.axistags), 'c y x')
     
-    r = arraytypes.taggedView(a, 'cxy', order='C')
-    assert_equal(r.shape, (5,4,3))
-    assert_equal(repr(r.axistags), 'y x c')
-    
-    r = arraytypes.taggedView(a, 'cxy', order='V')
-    assert_equal(r.shape, (4,5,3))
-    assert_equal(repr(r.axistags), 'x y c')
- 
+    try:
+        r = arraytypes.taggedView(a, 'cxy', order='C')
+        raise AssertionError, "arraytypes.taggedView() failed to throw."
+    except RuntimeError:
+        pass
+     
     a = arraytypes.taggedView(a, 'zyx')
-    r = arraytypes.taggedView(a, '', order='C')
+    r = arraytypes.taggedView(a, order='C')
     assert_equal(r.shape, (3,4,5))
     assert_equal(repr(r.axistags), 'z y x')    
-    r = arraytypes.taggedView(a, '', order='V')
+    r = arraytypes.taggedView(a, order='V')
     assert_equal(r.shape, (5,4,3))
     assert_equal(repr(r.axistags), 'x y z')    
-    r = arraytypes.taggedView(a, '', order='F')
+    r = arraytypes.taggedView(a, order='F')
     assert_equal(r.shape, (5,4,3))
     assert_equal(repr(r.axistags), 'x y z')    
     
@@ -1203,25 +1201,10 @@ def testTaggedShape():
     r = arraytypes.taggedView(a, 'xcy')
     assert_equal(r.shape, (5,1,4))
     assert_equal(repr(r.axistags), 'x c y')    
-    r = arraytypes.taggedView(a, 'xcy', order='')
-    assert_equal(r.shape, (5,1,4))
-    assert_equal(repr(r.axistags), 'x c y')    
-    r = arraytypes.taggedView(a, 'xcy', order='A')
-    assert_equal(r.shape, (5,1,4))
-    assert_equal(repr(r.axistags), 'x c y')    
-    r = arraytypes.taggedView(a, 'yxc', order='A')
+    r = arraytypes.taggedView(a, 'yxc')
     assert_equal(r.shape, (4,5,1))
     assert_equal(repr(r.axistags), 'y x c')    
 
-    r = arraytypes.taggedView(a, 'xyc', order='F')
-    assert_equal(r.shape, (1,5,4))
-    assert_equal(repr(r.axistags), 'c x y')    
-    r = arraytypes.taggedView(a, 'xyc', order='C')
-    assert_equal(r.shape, (4,5,1))
-    assert_equal(repr(r.axistags), 'y x c')    
-    r = arraytypes.taggedView(a, 'xyc', order='V')
-    assert_equal(r.shape, (5,4,1))
-    assert_equal(repr(r.axistags), 'x y c')    
     try:
         r = arraytypes.taggedView(a, 'xcz')
         raise AssertionError, "arraytypes.taggedView() failed to throw."
@@ -1236,7 +1219,17 @@ def testTaggedShape():
     
     r = arraytypes.taggedView(a, 'xz', force=True)
     assert_equal(r.shape, (4,5))
-    assert_equal(repr(r.axistags), 'x z')    
+    assert_equal(repr(r.axistags), 'x z')
+    
+    a = a[..., arraytypes.newaxis('c')]
+    r = arraytypes.taggedView(a, order='V')
+    assert_equal(r.shape, (5, 4, 1))
+    assert_equal(repr(r.axistags), 'x y c')
+    
+    r = arraytypes.taggedView(a, order='V', noChannels=True)
+    assert_equal(r.shape, (5, 4))
+    assert_equal(repr(r.axistags), 'x y')
+    
 
 def testDeepcopy():
     a = arraytypes.RGBImage(numpy.random.random((10, 4, 3)), order='C')
