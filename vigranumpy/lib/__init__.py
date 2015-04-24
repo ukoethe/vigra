@@ -1694,7 +1694,7 @@ def _genGraphSegmentationFunctions():
     graphs.nodeWeightedWatersheds = nodeWeightedWatersheds
 
     def agglomerativeClustering(graph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,
-            nodeNumStop=None,beta=0.5,metric='l1',wardness=1.0,out=None):
+            nodeLabels=None,nodeNumStop=None,beta=0.5,metric='l1',wardness=1.0,out=None):
         """ agglomerative hierarchicalClustering
         Keyword Arguments :
 
@@ -1765,6 +1765,10 @@ def _genGraphSegmentationFunctions():
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 
+        if nodeLabels is None:
+            nodeLabels = graphs.graphMap(graph,'node',dtype='uint32')
+
+
 
         #import sys
         #print "graph refcout", sys.getrefcount(graph)
@@ -1782,6 +1786,7 @@ def _genGraphSegmentationFunctions():
 
         clusterOp = graphs.minEdgeWeightNodeDist(mg,edgeWeights=edgeWeights,edgeLengths=edgeLengths,
                                                     nodeFeatures=nodeFeatures,nodeSizes=nodeSizes,
+                                                    nodeLabels=nodeLabels,
                                                     beta=float(beta),metric=metric,wardness=wardness)
 
         
@@ -1802,8 +1807,9 @@ def _genGraphSegmentationFunctions():
 
 
 
-    def minEdgeWeightNodeDist(mergeGraph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,outWeight=None,
-        beta=0.5,metric='squaredNorm',wardness=1.0):
+    def minEdgeWeightNodeDist(mergeGraph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,
+        nodeLabels=None,outWeight=None,
+        beta=0.5,metric='squaredNorm',wardness=1.0, gamma=10000000.0):
             graph=mergeGraph.graph()
             assert edgeWeights is not None or nodeFeatures is not None
 
@@ -1823,6 +1829,10 @@ def _genGraphSegmentationFunctions():
             if outWeight is None:
                 outWeight=graphs.graphMap(graph,item='edge',dtype=numpy.float32)
 
+            if nodeLabels is None :
+                nodeLabels = graphs.graphMap(graph,'node',dtype='uint32')
+                nodeLabels[:]=0
+
 
             if  metric=='squaredNorm':
                 nd=graphs.MetricType.squaredNorm
@@ -1838,8 +1848,9 @@ def _genGraphSegmentationFunctions():
                 raise RuntimeError("'%s' is not a supported distance type"%str(metric))
 
             # call unsave c++ function and make it sav
-            op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,
-                float(beta),nd,float(wardness))
+            print "nodeLabels ",nodeLabels.shape, nodeLabels.dtype
+            op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,nodeLabels,
+                float(beta),nd,float(wardness),float(gamma))
 
 
             op.__base_object__=mergeGraph

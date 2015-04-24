@@ -60,7 +60,8 @@ namespace cluster_operators{
         class EDGE_SIZE_MAP,
         class NODE_FEATURE_MAP,
         class NODE_SIZE_MAP,
-        class MIN_WEIGHT_MAP
+        class MIN_WEIGHT_MAP,
+        class NODE_LABEL_MAP
     >
     class EdgeWeightNodeFeatures{
         
@@ -70,7 +71,8 @@ namespace cluster_operators{
             EDGE_SIZE_MAP,
             NODE_FEATURE_MAP,
             NODE_SIZE_MAP,
-            MIN_WEIGHT_MAP
+            MIN_WEIGHT_MAP,
+            NODE_LABEL_MAP
         > SelfType;
     public:
 
@@ -101,9 +103,11 @@ namespace cluster_operators{
             NODE_FEATURE_MAP nodeFeatureMap,
             NODE_SIZE_MAP nodeSizeMap,
             MIN_WEIGHT_MAP minWeightEdgeMap,
+            NODE_LABEL_MAP nodeLabelMap,
             const ValueType beta,
             const metrics::MetricType metricType,
-            const ValueType wardness=1.0
+            const ValueType wardness=1.0,
+            const ValueType gamma = 10000000.0
         )
         :   mergeGraph_(mergeGraph),
             edgeIndicatorMap_(edgeIndicatorMap),
@@ -111,9 +115,11 @@ namespace cluster_operators{
             nodeFeatureMap_(nodeFeatureMap),
             nodeSizeMap_(nodeSizeMap),
             minWeightEdgeMap_(minWeightEdgeMap),
+            nodeLabelMap_(nodeLabelMap),
             pq_(mergeGraph.maxEdgeId()+1),
             beta_(beta),
             wardness_(wardness),
+            gamma_(gamma),
             metric_(metricType)
         {
             typedef typename MergeGraph::MergeNodeCallBackType MergeNodeCallBackType;
@@ -151,6 +157,8 @@ namespace cluster_operators{
             EdgeIndicatorReference vb=edgeIndicatorMap_[bb];
             va*=edgeSizeMap_[aa];
             vb*=edgeSizeMap_[bb];
+
+
             va+=vb;
             edgeSizeMap_[aa]+=edgeSizeMap_[bb];
             va/=(edgeSizeMap_[aa]);
@@ -171,6 +179,19 @@ namespace cluster_operators{
             nodeSizeMap_[aa]+=nodeSizeMap_[bb];
             va/=(nodeSizeMap_[aa]);
             vb/=nodeSizeMap_[bb];
+
+
+            // update labels
+            const UInt32 labelA = nodeLabelMap_[aa];
+            const UInt32 labelB = nodeLabelMap_[bb];
+
+            if(labelA!=0 && labelB!=0){
+                throw std::runtime_error("both nodes have labels");
+            }
+            else{
+                const UInt32 newLabel  = std::max(labelA, labelB);
+                nodeLabelMap_[aa] = newLabel;
+            }
         }
 
         /// \brief will be called via callbacks from mergegraph
@@ -239,7 +260,15 @@ namespace cluster_operators{
         }
 
         bool done(){
-            return false;
+
+            index_type minLabel = pq_.top();
+            while(mergeGraph_.hasEdgeId(minLabel)==false){
+                pq_.deleteItem(minLabel);
+                minLabel = pq_.top();
+            }
+            const ValueType p =  pq_.topPriority();
+
+            return p>= gamma_;
         }
 
     private:
@@ -262,7 +291,15 @@ namespace cluster_operators{
 
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist = metric_(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
-            const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
+            ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
+
+
+            const UInt32 labelA = nodeLabelMap_[uu];
+            const UInt32 labelB = nodeLabelMap_[vv];
+
+            if(labelA!=0 && labelB!=0){
+                totalWeight += gamma_;
+            }
             return totalWeight;
         }
 
@@ -273,9 +310,11 @@ namespace cluster_operators{
         NODE_FEATURE_MAP nodeFeatureMap_;
         NODE_SIZE_MAP nodeSizeMap_;
         MIN_WEIGHT_MAP minWeightEdgeMap_;
+        NODE_LABEL_MAP nodeLabelMap_;
         vigra::ChangeablePriorityQueue< ValueType > pq_;
         ValueType beta_;
         ValueType wardness_;
+        ValueType gamma_;
 
         metrics::Metric<float> metric_;
     };
