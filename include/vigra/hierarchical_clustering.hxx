@@ -53,7 +53,35 @@ namespace vigra{
 namespace cluster_operators{
 
 
-    /// \brief  get minimum edge weight from an edge indicator and difference of node features
+    /// \brief  This Cluster Operator is a MONSTER.
+    /// It can to really a lot.
+    ///
+    /// Each edge has a single scalar weight w_e.
+    /// Each node has a feature vector f_n.
+    /// (all f_n's have the same length).
+    /// Edges and nodes have a length / size
+    /// 
+    /// The total edge weight is computed via a complicated formula
+    /// 
+    /// The main idea is the following.
+    /// Use a  mixture between the edge weights w_e,
+    /// and node based edge weights which are computed
+    /// via a metric which measures the 'difference' between
+    /// the u/v feature vectors f_n.
+    ///
+    /// Furthermore a 'Ward'-like regularization can be applied.
+    /// This is useful if one  have clusters with sizes
+    /// in the same magnitude (or 'similar' sizes).
+    /// The amount of 'ward'-regularization is controlled
+    /// with the 'wardness' parameter.
+    ///
+    /// Also labels (in the sense of seeds) can be attached to get a 'watershed-ish'
+    /// behavior (nodes with different labels will never be merged)
+    /// The '0'-Label is used to indicate that there is no label at all.
+    /// If certain connected regions share the same seed/label
+    /// it is not guaranteed that they will merge. But a certain prior / multiplier
+    /// must be specified. The total weight of an edge where the u/v node have
+    /// the same label is multiplied with this very multiplier.
     template<
         class MERGE_GRAPH,
         class EDGE_INDICATOR_MAP,
@@ -107,7 +135,8 @@ namespace cluster_operators{
             const ValueType beta,
             const metrics::MetricType metricType,
             const ValueType wardness=1.0,
-            const ValueType gamma = 10000000.0
+            const ValueType gamma = 10000000.0,
+            const ValueType sameLabelMultiplier = 0.8
         )
         :   mergeGraph_(mergeGraph),
             edgeIndicatorMap_(edgeIndicatorMap),
@@ -120,6 +149,7 @@ namespace cluster_operators{
             beta_(beta),
             wardness_(wardness),
             gamma_(gamma),
+            sameLabelMultiplier_(sameLabelMultiplier),
             metric_(metricType)
         {
             typedef typename MergeGraph::MergeNodeCallBackType MergeNodeCallBackType;
@@ -297,8 +327,13 @@ namespace cluster_operators{
             const UInt32 labelA = nodeLabelMap_[uu];
             const UInt32 labelB = nodeLabelMap_[vv];
 
-            if(labelA!=0 && labelB!=0 && labelA!=labelB){
-                totalWeight += gamma_;
+            if(labelA!=0 && labelB!=0){
+                if(labelA == labelB){
+                    totalWeight*=sameLabelMultiplier_;
+                }
+                else{
+                    totalWeight += gamma_;
+                }
             }
             return totalWeight;
         }
@@ -315,7 +350,7 @@ namespace cluster_operators{
         ValueType beta_;
         ValueType wardness_;
         ValueType gamma_;
-
+        ValueType sameLabelMultiplier_;
         metrics::Metric<float> metric_;
     };
 
