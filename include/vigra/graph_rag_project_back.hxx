@@ -165,6 +165,13 @@ namespace vigra{
 
 
     }
+
+
+    /// project node features of a region adjacency
+    /// graph back to the base graph.
+    ///
+    /// This function can be used to show a segmentation
+    /// or node features of RAG on pixel / voxel level
     template< class BASE_GRAPH,
                 class BASE_GRAPH_LABELS,
                 class RAG_FEATURES,

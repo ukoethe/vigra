@@ -115,27 +115,17 @@ public:
 
         const std::string hyperEdgeMapNamClsName = clsName_ + std::string("RagAffiliatedEdges");
         python::class_<RagAffiliatedEdges>(hyperEdgeMapNamClsName.c_str(),python::init<const RagGraph &>())
-                .def("getEdgeIdVector",&getEdgeIdVector)
                 .def("getUVCoordinates",registerConverters(&getUVCoordinatesArray))
         ;
 
     }
 
-     void exportEdgeVec()const{
-
-        const std::string hyperEdgeMapNamClsName = clsName_ + std::string("EdgeIdVec");
-        python::class_<std::vector<index_type> >(hyperEdgeMapNamClsName.c_str(),python::init<>())
-            .def(boost::python::vector_indexing_suite< std::vector<index_type> , true >());
-        ;
-
-    }
 
     template <class classT>
     void visit(classT& c) const
     {   
 
         // something like RagEdgeMap< std::vector< Edge > >
-        exportEdgeVec();
         exportRagAffiliatedEdges();
 
         // make the region adjacency graph
@@ -281,18 +271,6 @@ public:
 
     }
 
-
-    static std::vector<index_type>  getEdgeIdVector(
-        const RagAffiliatedEdges & vecVec, 
-        const Graph & graph,
-        const size_t i 
-    ){
-        std::vector<index_type>  tmp(vecVec[i].size());
-        for(size_t j=0; j<vecVec[i].size(); ++j){
-            tmp[j] = graph.id(vecVec[i][j]);
-        }
-        return tmp;
-    }
 
 
     static NumpyAnyArray getUVCoordinatesArray(

@@ -51,8 +51,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -82,8 +82,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -111,8 +111,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -167,8 +167,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -197,8 +197,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -238,8 +238,8 @@ namespace metrics{
 
         }
 
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             switch(static_cast<unsigned int>(metricType_)){
                 case 0:
                     return chiSquared_(a,b);
