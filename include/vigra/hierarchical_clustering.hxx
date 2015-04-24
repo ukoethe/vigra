@@ -185,7 +185,7 @@ namespace cluster_operators{
             const UInt32 labelA = nodeLabelMap_[aa];
             const UInt32 labelB = nodeLabelMap_[bb];
 
-            if(labelA!=0 && labelB!=0){
+            if(labelA!=0 && labelB!=0 && labelA!=labelB){
                 throw std::runtime_error("both nodes have labels");
             }
             else{
@@ -297,7 +297,7 @@ namespace cluster_operators{
             const UInt32 labelA = nodeLabelMap_[uu];
             const UInt32 labelB = nodeLabelMap_[vv];
 
-            if(labelA!=0 && labelB!=0){
+            if(labelA!=0 && labelB!=0 && labelA!=labelB){
                 totalWeight += gamma_;
             }
             return totalWeight;
