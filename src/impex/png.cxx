@@ -587,7 +587,7 @@ namespace vigra {
         }
 
         // set offset
-        if (position.x > 0 && position.y > 0) {
+        if (position.x != 0 || position.y != 0) {
             if (setjmp(png_jmpbuf(png)))
                 vigra_postcondition( false, png_error_message.insert(0, "error in png_set_oFFs(): ").c_str() );
             png_set_oFFs(png, info, position.x, position.y, PNG_OFFSET_PIXEL);
