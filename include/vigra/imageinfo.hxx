@@ -322,10 +322,11 @@ class ImageExportInfo
 
             Currently only supported by TIFF, PNG and OpenEXR files.
 
-            The offset is encoded in the XPosition and YPosition TIFF tags.
+            The offset is encoded in the XPosition and YPosition TIFF tags. TIFF
+            requires that the resolution must also be set.
 
             @param pos     position of the upper left corner in pixels
-                           (must be >= 0)
+                           (must be >= 0 for TIFF)
          **/
     VIGRA_EXPORT ImageExportInfo & setPosition(const Diff2D & pos);
 
