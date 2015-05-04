@@ -49,6 +49,7 @@
 #include "multi_pointoperators.hxx"
 #include "metaprogramming.hxx"
 #include "mathutil.hxx"
+#include "algorithm.hxx"
 
 // Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
 #ifdef VIGRA_CHECK_BOUNDS
@@ -1452,7 +1453,7 @@ public:
     {
         difference_type shape = m_shape;
         for (unsigned int i = 0; i < actual_dimension; ++i)
-            shape [i] /= s [i];
+            shape[i] = (shape[i] + s[i] - 1) / s[i];
         return MultiArrayView <N, T, StridedArrayTag>(shape, m_stride * s, m_ptr);
     }
 
@@ -1895,11 +1896,22 @@ public:
         return ret;
     }
 
-    view_type view ()
+    view_type view () const
     {
         return *this;
     }
 };
+
+template <unsigned int N, class T, class StrideTag>
+class MultiArrayView<N, Multiband<T>, StrideTag>
+: public MultiArrayView<N, T, StrideTag>
+{
+  public:
+    MultiArrayView(MultiArrayView<N, T, StrideTag> const & v)
+    : MultiArrayView<N, T, StrideTag>(v)
+    {}
+};
+
 
 template <unsigned int N, class T, class Stride1>
 template <class Stride2>
@@ -2520,6 +2532,12 @@ public:
     MultiArray (const difference_type &shape, const_reference init,
                 allocator_type const & alloc = allocator_type());
 
+        /** construct from shape and initialize with a linear sequence in scan order 
+            (i.e. first pixel gets value 0, second on gets value 1 and so on).
+         */
+    MultiArray (const difference_type &shape, MultiArrayInitializationTag init,
+                allocator_type const & alloc = allocator_type());
+
         /** construct from shape and copy values from the given array
          */
     MultiArray (const difference_type &shape, const_pointer init,
@@ -2861,6 +2879,31 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_reference 
         this->m_stride [0] = 1;
     }
     allocate (this->m_ptr, this->elementCount (), init);
+}
+
+template <unsigned int N, class T, class A>
+MultiArray <N, T, A>::MultiArray (const difference_type &shape, MultiArrayInitializationTag init,
+                                  allocator_type const & alloc)
+: view_type(shape,
+            defaultStride(shape),
+            0),
+  m_alloc(alloc)
+{
+    if (N == 0)
+    {
+        this->m_shape [0] = 1;
+        this->m_stride [0] = 1;
+    }
+    allocate (this->m_ptr, this->elementCount (), value_type());
+    switch(init)
+    {
+      case LinearSequence:
+        linearSequence(this->begin(), this->end());
+        break;
+      default:
+        vigra_precondition(false,
+            "MultiArray(): invalid MultiArrayInitializationTag.");
+    }
 }
 
 template <unsigned int N, class T, class A>

@@ -1099,6 +1099,8 @@ class ThresholdSplit: public SplitBase<Tag>
         }
         //std::cerr << current_min_gini << "curr " << region_gini_ << std::endl;
         // did not find any suitable split
+        // FIXME: this is wrong: sometimes we must execute bad splits to make progress,
+        //        especially near the root.
         if(closeAtTolerance(current_min_gini, region_gini_))
             return  this->makeTerminalNode(features, labels, region, randint);
         

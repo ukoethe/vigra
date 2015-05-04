@@ -106,6 +106,48 @@ inline bool isHDF5(char const * filename)
 #endif
 }
 
+    /** \brief Temporarily disable HDF5's native error output.
+    
+        This should be used when you want to call an HDF5 function
+        that is known to fail (e.g. during testing), or when you want
+        to use an alternative error reporting mechanism (e.g. exceptions).
+        
+        <b>Usage:</b>
+        
+        <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
+        Namespace: vigra
+        \code
+        {
+            HDF5DisableErrorOutput hdf5DisableErrorOutput;
+        
+            ... // call some HDF5 function
+            
+        } // restore the original error reporting in the destructor of HDF5DisableErrorOutput
+        \endcode
+    */
+class HDF5DisableErrorOutput
+{
+    H5E_auto2_t old_func_;
+    void *old_client_data_;
+    
+    HDF5DisableErrorOutput(HDF5DisableErrorOutput const &);
+    HDF5DisableErrorOutput & operator=(HDF5DisableErrorOutput const &);
+
+  public:    
+    HDF5DisableErrorOutput()
+    : old_func_(0)
+    , old_client_data_(0)
+    {
+        H5Eget_auto2(H5E_DEFAULT, &old_func_, &old_client_data_);
+        H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
+    }
+
+    ~HDF5DisableErrorOutput()
+    {
+        H5Eset_auto2(H5E_DEFAULT, old_func_, old_client_data_);
+    }
+};
+
     /** \brief Wrapper for unique hid_t objects.
 
     This class offers the functionality of <tt>std::unique_ptr</tt> for HDF5 handles 
@@ -576,6 +618,8 @@ public:
     }
 };
 
+//@}
+
 } // namespace vigra
 
 namespace std {
@@ -593,6 +637,11 @@ inline void swap(vigra::HDF5HandleShared & l, vigra::HDF5HandleShared & r)
 } // namespace std
 
 namespace vigra {
+
+/** \addtogroup VigraHDF5Impex
+*/
+//@{
+
 
 /********************************************************/
 /*                                                      */

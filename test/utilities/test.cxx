@@ -1132,12 +1132,56 @@ struct MetaprogrammingTest
         should(typeid(UnqualifiedType<int*&>::type) == typeid(int));
         should(typeid(UnqualifiedType<const int*&>::type) == typeid(int));
     }
+
+#if 0
+    struct FinallyTester
+    {
+        mutable int & v_;
+
+        FinallyTester(int & v)
+            : v_(v)
+        {}
+        
+        void sq() const
+        {
+            v_ = v_*v_;
+        }
+    };
+#endif
+
+    void testFinally()
+    {
+        std::cout << "testFinally() is disabled because many compilers do not yet support it." << std::endl;
+#if 0
+        int v = 0;
+        {
+            FinallyTester finally_tester(v);
+            VIGRA_FINALLY(finally_tester.sq());
+
+            VIGRA_FINALLY({ 
+                v = 3;
+            });
+            shouldEqual(v, 0);
+        }
+        shouldEqual(v, 9);
+
+        try {
+            VIGRA_FINALLY(v = 2);
+
+            throw std::runtime_error("");
+
+            VIGRA_FINALLY(v = 3);
+        }
+        catch(std::runtime_error &) {}
+        shouldEqual(v, 2);
+#endif
+    }
 };
 
 void stringTest()
 {
     std::string s;
-    s << "Hallo " << 1 << " " << 2.0 << " " << false;
+    s = s << "Hallo " << 1 << " " << 2.0 << " " << false;
     shouldEqual(s, std::string("Hallo 1 2 0"));
 
     shouldEqual(asString(1), "1");
@@ -1238,6 +1282,7 @@ struct UtilitiesTestSuite
         add( testCase( &MetaprogrammingTest::testInt));
         add( testCase( &MetaprogrammingTest::testLogic));
         add( testCase( &MetaprogrammingTest::testTypeTools));
+        add( testCase( &MetaprogrammingTest::testFinally));
         add( testCase( &stringTest));
         add( testCase( &CompressionTest::testZLIB));
         add( testCase( &CompressionTest::testLZ4));

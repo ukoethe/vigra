@@ -10,10 +10,26 @@ IF(TIFF_FOUND)
   ADD_DEFINITIONS(-DHasTIFF)
 ENDIF(TIFF_FOUND)
 
-VIGRA_ADD_TEST(test_multiarray test.cxx LIBRARIES vigraimpex)
-
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/impex)
 
+# Check cpp version
+if(NOT ${VIGRA_CPP_VERSION})
+    message(FATAL_ERROR 
+            "cmake error: VIGRA_CPP_VERSION not defined yet. "
+            "Call VIGRA_DETECT_CPP_VERSION() from the main CMakeLists file." )
+endif()
+
+# multiarray/test.cxx uses 'auto' from c++11.
+string(COMPARE LESS ${VIGRA_CPP_VERSION} "201103" NO_CXX11)
+if(NO_CXX11 AND NOT MSVC) # Visual Studio 2010 and 2012 supports enough c++11 features that we can still use it 
+    MESSAGE(STATUS "** WARNING: You are compiling in C++98 mode.")
+    MESSAGE(STATUS "**          Multiarray tests will be skipped.")
+    MESSAGE(STATUS "**          Add -std=c++11 to CMAKE_CXX_FLAGS to enable multiarray tests.")
+else()
+    VIGRA_ADD_TEST(test_multiarray test.cxx LIBRARIES vigraimpex)
+endif()    
+
+# Even with C++11, a working threading implementation is needed for running multiarray_chunked tests.
 VIGRA_CONFIGURE_THREADING()
 
 if(NOT THREADING_FOUND)
@@ -22,9 +38,7 @@ if(NOT THREADING_FOUND)
     if(NOT WITH_BOOST_THREAD)
         MESSAGE(STATUS "**          Try to run cmake with '-DWITH_BOOST_THREAD=1' to use boost threading.")
     endif()
-    
 else()
-
   SET(MULTIARRAY_CHUNKED_LIBRARIES ${THREADING_LIBRARIES})
 
   IF(HDF5_FOUND)
@@ -37,6 +51,5 @@ else()
 
   VIGRA_ADD_TEST(test_multiarray_chunked test_chunked.cxx 
                  LIBRARIES ${MULTIARRAY_CHUNKED_LIBRARIES})
-
 endif()
 

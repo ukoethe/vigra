@@ -4,4 +4,4 @@
 #       configure_file(${CMAKE_CURRENT_SOURCE_DIR}/oldClassifier.log 
 #                      ${CMAKE_CURRENT_BINARY_DIR}/oldClassifier.log
 #                      COPYONLY)
-VIGRA_COPY_TEST_DATA(oldClassifier.log oldsetTest.log)
+VIGRA_COPY_TEST_DATA(oldClassifier.log oldsetTest.log empty.hdf5 bare.hdf5)

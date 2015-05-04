@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>vigra.redist</id>
+        <version>1.10.0</version>
+        <title>vigra Redist</title>
+        <authors>Ullrich Koethe</authors>
+        <licenseUrl>http://ukoethe.github.io/vigra/LICENSE.txt</licenseUrl>
+        <projectUrl>http://hci.iwr.uni-heidelberg.de/vigra/</projectUrl>
+        <iconUrl>http://ukoethe.github.io/vigra/vigra_logo.gif</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Redistributable components for package 'vigra'.</description>
+        <releaseNotes>first nuget version</releaseNotes>
+        <copyright>Copyright 2014</copyright>
+        <tags>VIGRA, image analysis, image processing, native</tags>
+    </metadata>
+    
+    <files>
+        <file src="bin\*.dll" target="build\native\bin\x64\v110" />
+        <file src="vigra.redist.targets" target="build\native\vigra.redist.targets" />
+    </files>
+</package>

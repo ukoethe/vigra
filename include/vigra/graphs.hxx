@@ -45,6 +45,12 @@
 #include "metaprogramming.hxx"
 #include "tinyvector.hxx"
 
+#ifdef USE_BOOST_THREAD
+// If boost is available, go ahead and include its tuple implementation
+// to avoid naming conflicts with our own definition of tie(), below.
+#include <boost/tuple/tuple.hpp>
+#endif
+
 #ifdef WITH_BOOST_GRAPH
 
 #  include <boost/tuple/tuple.hpp>
@@ -157,12 +163,6 @@ struct property_traits
     typedef typename PropMap::reference   reference;
     typedef typename PropMap::category    category;
 };
-
-namespace {
-
-vertex_index_t vertex_index;
-
-} // anonymous namespace
 
 } // namespace boost
 

@@ -42,6 +42,63 @@
 
 namespace vigra{
 
+namespace labeling_equality{
+
+struct Yes
+{
+    char d[100];
+};
+struct No
+{
+    char d[1];
+};
+
+template <size_t>
+struct SizeToType;
+template <>
+struct SizeToType<sizeof(Yes)>
+{
+    typedef VigraTrueType type;
+};
+template <>
+struct SizeToType<sizeof(No)>
+{
+    typedef VigraFalseType type;
+};
+
+template <class Equal>
+class TakesThreeArguments
+{
+public:
+    template <class T>
+    static Yes check(typename T::WithDiffTag*);
+    template <class T>
+    static No check(...);
+
+    typedef typename SizeToType<sizeof(check<Equal>(0))>::type type;
+    static const unsigned int value = type::asBool;
+};
+
+template <class Equal, class Data, class Shape>
+bool callEqualImpl(Equal& equal, const Data& u_data, const Data& v_data, const Shape& diff, VigraTrueType)
+{
+    return equal(u_data, v_data, diff);
+}
+template <class Equal, class Data, class Shape>
+bool callEqualImpl(Equal& equal, const Data& u_data, const Data& v_data, const Shape& diff, VigraFalseType)
+{
+    return equal(u_data, v_data);
+}
+
+template< class Equal, class Data, class Shape>
+bool callEqual(Equal& equal, const Data& u_data, const Data& v_data, const Shape& diff)
+{
+    return callEqualImpl(equal, u_data, v_data, diff, typename TakesThreeArguments<Equal>::type());
+}
+
+}
+
+
 /** \addtogroup Labeling
 */
 //@{
@@ -90,6 +147,53 @@ labelGraph(Graph const & g,
     }
     return count;
 }
+
+template <unsigned int N, class DirectedTag, class T1Map, class T2Map, class Equal>
+typename T2Map::value_type
+labelGraph(GridGraph<N, DirectedTag> const & g, 
+           T1Map const & data,
+           T2Map & labels,
+           Equal const & equal)
+{
+    typedef GridGraph<N, DirectedTag>     Graph;
+    typedef typename Graph::NodeIt        graph_scanner;
+    typedef typename Graph::OutBackArcIt  neighbor_iterator;
+    typedef typename T2Map::value_type    LabelType;
+    typedef typename Graph::shape_type    Shape;
+
+    vigra::UnionFindArray<LabelType>  regions;
+
+    // pass 1: find connected components
+    for (graph_scanner node(g); node != INVALID; ++node) 
+    {
+        typename T1Map::value_type center = data[*node];
+        
+        // define tentative label for current node
+        LabelType currentIndex = regions.nextFreeIndex();
+        
+        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+        {
+            Shape diff = g.neighborOffset(arc.neighborIndex());
+            // merge regions if colors are equal
+            if(labeling_equality::callEqual(equal, center, data[g.target(*arc)], diff))
+            {
+                currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
+            }
+        }
+        // set label of current node
+        labels[*node] = regions.finalizeIndex(currentIndex);
+    }
+    
+    LabelType count = regions.makeContiguous();
+
+    // pass 2: make component labels contiguous
+    for (graph_scanner node(g); node != INVALID; ++node) 
+    {
+        labels[*node] = regions.findLabel(labels[*node]);
+    }
+    return count;
+}
+
 
 template <class Graph, class T1Map, class T2Map, class Equal>
 typename T2Map::value_type
@@ -141,6 +245,61 @@ labelGraphWithBackground(Graph const & g,
     }
     return count;
 }
+
+template <unsigned int N, class DirectedTag, class T1Map, class T2Map, class Equal>
+typename T2Map::value_type
+labelGraphWithBackground(GridGraph<N, DirectedTag> const & g, 
+                         T1Map const & data,
+                         T2Map & labels,
+                         typename T1Map::value_type backgroundValue,
+                         Equal const & equal)
+{
+    typedef GridGraph<N, DirectedTag>     Graph;
+    typedef typename Graph::NodeIt        graph_scanner;
+    typedef typename Graph::OutBackArcIt  neighbor_iterator;
+    typedef typename T2Map::value_type    LabelType;
+    typedef typename Graph::shape_type    Shape;
+
+    vigra::UnionFindArray<LabelType>  regions;
+
+    // pass 1: find connected components
+    for (graph_scanner node(g); node != INVALID; ++node) 
+    {
+        typename T1Map::value_type center = data[*node];
+        
+        // background always gets label zero
+        if(labeling_equality::callEqual(equal, center, backgroundValue, Shape()))
+        {
+            labels[*node] = 0;
+            continue;
+        }
+        
+        // define tentative label for current node
+        LabelType currentIndex = regions.nextFreeIndex();
+        
+        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+        {
+            // merge regions if colors are equal
+            Shape diff = g.neighborOffset(arc.neighborIndex());
+            if(labeling_equality::callEqual(equal, center, data[g.target(*arc)], diff))
+            {
+                currentIndex = regions.makeUnion(labels[g.target(*arc)], currentIndex);
+            }
+        }
+        // set label of current node
+        labels[*node] = regions.finalizeIndex(currentIndex);
+    }
+    
+    LabelType count = regions.makeContiguous();
+
+    // pass 2: make component labels contiguous
+    for (graph_scanner node(g); node != INVALID; ++node) 
+    {
+        labels[*node] = regions.findLabel(labels[*node]);
+    }
+    return count;
+}
+
 
 } // namespace lemon_graph
 

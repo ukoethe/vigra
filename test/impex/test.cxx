@@ -676,6 +676,58 @@ class CanvasSizeTest
     }
 };
 
+class PositionTest
+{
+  public:
+    void testFile(const char* filename)
+    {
+        ImageExportInfo exportinfo(filename);
+        FRGBImage img(1, 1);
+        img(0, 0) = 1;
+
+        const Diff2D position(0, 100);
+        exportinfo.setPosition(position);
+        exportinfo.setXResolution(1.0);
+        exportinfo.setYResolution(1.0);
+
+        exportImage(srcImageRange(img), exportinfo);
+
+        ImageImportInfo info(filename);
+
+        should (info.getPosition() == position);
+    }
+
+    void testEXRPosition()
+    {
+#if !defined(HasEXR)
+        FRGBImage img(1, 1);
+        failCodec(img, vigra::ImageExportInfo("res.exr"));
+#else
+        testFile("res.exr");
+#endif
+    }
+
+    void testTIFFPosition()
+    {
+#if !defined(HasTIFF)
+        FRGBImage img(1, 1);
+        failCodec(img, vigra::ImageExportInfo("res.tif"));
+#else
+        testFile("res.tif");
+#endif
+    }
+
+    void testPNGPosition()
+    {
+#if !defined(HasPNG)
+        FRGBImage img(1, 1);
+        failCodec(img, vigra::ImageExportInfo("res.png"));
+#else
+        testFile("res.png");
+#endif
+    }
+};
+
 class PNGInt16Test
 {
   public:
@@ -1802,6 +1854,10 @@ struct ImageImportExportTestSuite : public vigra::test_suite
 #endif
 
         add(testCase(&CanvasSizeTest::testTIFFCanvasSize));
+
+        add(testCase(&PositionTest::testEXRPosition));
+        add(testCase(&PositionTest::testTIFFPosition));
+        add(testCase(&PositionTest::testPNGPosition));
 
         // grayscale float images
         add(testCase(&FloatImageExportImportTest::testGIF));

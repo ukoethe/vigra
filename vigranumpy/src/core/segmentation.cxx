@@ -217,6 +217,81 @@ pythonLabelVolumeWithBackground(NumpyArray<3, Singleband<VoxelType> > volume,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLabelVolumeWithBackground, pythonLabelVolumeWithBackground)
 
+template < class VoxelType, unsigned int ndim >
+NumpyAnyArray
+pythonLabelMultiArray(NumpyArray<ndim, Singleband<VoxelType> > volume,
+                      std::string neighborhood="",
+                      NumpyArray<ndim, Singleband<npy_uint32> > res = NumpyArray<ndim, Singleband<npy_uint32> >())
+{
+    neighborhood = tolower(neighborhood);
+    if (neighborhood == "")
+    {
+        neighborhood = "direct";
+    }
+
+    vigra_precondition(neighborhood == "direct" || neighborhood == "indirect",
+        "labelMultiArray(): neighborhood must be 'direct' or 'indirect'.");
+
+    std::string description("connected components with background, neighborhood=" + neighborhood);
+
+    res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description),
+        "labelMultiArray(): Output array has wrong shape.");
+
+    {
+        PyAllowThreads _pythread;
+        if (neighborhood == "direct")
+        {
+            labelMultiArray(volume, res, DirectNeighborhood);
+        }
+        else
+        {
+            labelMultiArray(volume, res, IndirectNeighborhood);
+        }
+    }
+    return res;
+}
+
+
+template < class VoxelType, unsigned int ndim >
+NumpyAnyArray
+pythonLabelMultiArrayWithBackground(NumpyArray<ndim, Singleband<VoxelType> > volume,
+                                std::string neighborhood="",
+                                VoxelType background_value = 0,
+                                NumpyArray<ndim, Singleband<npy_uint32> > res = NumpyArray<ndim, Singleband<npy_uint32> >())
+{
+    neighborhood = tolower(neighborhood);
+    if (neighborhood == "")
+    {
+        neighborhood = "direct";
+    }
+    vigra_precondition(neighborhood == "direct" || neighborhood == "indirect",
+        "labelMultiArrayWithBackground(): neighborhood must be 'direct' or 'indirect'.");
+
+    std::string description("connected components with background, neighborhood=");
+    description += neighborhood + ", bglabel=" + asString(background_value);
+
+    res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description),
+        "labelMultiArrayWithBackground(): Output array has wrong shape.");
+
+    {
+        PyAllowThreads _pythread;
+        if (neighborhood == "direct")
+        {
+            labelMultiArrayWithBackground(volume,
+                res, DirectNeighborhood,
+                background_value);
+        }
+        else
+        {
+            labelMultiArrayWithBackground(volume,
+                res, IndirectNeighborhood,
+                background_value);
+        }
+    }
+    return res;
+}
+
+
 /*********************************************************************************/
 
 // FIXME: support output of label images from localMinim/Maxima functions
@@ -1081,7 +1156,118 @@ void defineSegmentation()
         "the pixel neighborhood to be used and can be 6 (default) or 26.\n"
         "\n"
         "For details see labelVolumeWithBackground_ in the vigra C++ documentation.\n");
-    
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<npy_uint8, 2>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()),
+        "Find the connected components of a segmented ND array."
+        "Parameter 'neighborhood' specifies the pixel neighborhood "
+        "to be used and can be 'direct' (default) or 'indirect'.\n"
+        "\n"
+        "For details see labelMultiArray_ in the vigra C++ documentation.\n");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<npy_uint8, 2>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<npy_uint8, 3>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<npy_uint8, 4>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<npy_uint8, 5>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<npy_uint32, 2>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<npy_uint32, 3>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<npy_uint32, 4>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<npy_uint32, 5>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<float, 2>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<float, 3>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<float, 4>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArray",
+        registerConverters(&pythonLabelMultiArray<float, 5>),
+        (arg("volume"), arg("neighborhood")="", arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<npy_uint8, 2>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()),
+        "Find the connected components of a segmented ND array, excluding the "
+        "background from labeling, where the background is the set of all pixels with "
+        "the given 'background_value'. Parameter 'neighborhood' specifies "
+        "the pixel neighborhood to be used and can be 'direct' (default) or 'indirect'.\n"
+        "\n"
+        "For details see labelMultiArrayWithBackground_ in the vigra C++ documentation.\n");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<npy_uint8, 3>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<npy_uint8, 4>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<npy_uint8, 5>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<npy_uint32, 2>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<npy_uint32, 3>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<npy_uint32, 4>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<npy_uint32, 5>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<float, 2>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<float, 3>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<float, 4>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
+    def("labelMultiArrayWithBackground",
+        registerConverters(&pythonLabelMultiArrayWithBackground<float, 5>),
+        (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
+
     /******************************************************************************/
     
     def("localMinima",
@@ -1212,7 +1398,7 @@ void defineSegmentation()
         " method:\n"
         "    the algorithm to be used for watershed computation. Possible values:\n\n"
         "      'Turbo':\n"
-        "        (default if input dtype == uint8) use fastSeededRegionGrowing_ or tws() respectively\n"
+        "        (default if input dtype == uint8) use fastSeededRegionGrowing() (in 2D) or tws() (in 3D)\n"
         "      'RegionGrowing':\n"
         "        (default if input dtype != uint8) use seededRegionGrowing_ or seededRegionGrowing3D_ respectively\n"
         "      'UnionFind:\n"

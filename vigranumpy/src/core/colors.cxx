@@ -275,6 +275,17 @@ pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType> > image,
     return res;
 }
 
+template < class SrcPixelType>
+inline NumpyAnyArray
+pythonLinearRangeMapping2D(NumpyArray<3, Multiband<SrcPixelType> > image,
+                           python::object oldRange,
+                           python::object newRange,
+                           NumpyArray<3, Multiband<UInt8> > res)
+{
+    return pythonLinearRangeMapping(image, oldRange, newRange, res);
+}
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLinearRangeMapping2D, pythonLinearRangeMapping2D)
 
 template < class PixelType, unsigned int N, class Functor >
 NumpyAnyArray
@@ -578,8 +589,7 @@ void defineColors()
          (arg("volume"), arg("gamma"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
          "Likewise for a 3D scalar or multiband volume.\n");
 
-    def("linearRangeMapping",
-         registerConverters(&pythonLinearRangeMapping<float, UInt8, 3>),
+    multidef("linearRangeMapping", pyLinearRangeMapping2D<vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
          (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
         "Convert the intensity range of a 2D scalar or multiband image. The function applies a linear transformation "
         "to the intensities such that the value oldRange[0] is mapped onto newRange[0], "
@@ -595,22 +605,22 @@ void defineColors()
         "\n"
         "   range = image.min(), image.max()\n\n"
         "If 'newRange' is None or \"\" or \"auto\", it is set to (0, 255.0). "
-        "If 'out' is explicitly passed, it must be a uin8 image.\n");
+        "If 'out' is explicitly passed, it must be a uint8 image.\n");
 
     def("linearRangeMapping",
          registerConverters(&pythonLinearRangeMapping<float, float, 3>),
          (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
-         "Likewise, but 'out' is a float32 image.\n");
+         "Likewise, but #in' and 'out' are float32 images.\n");
 
     def("linearRangeMapping",
          registerConverters(&pythonLinearRangeMapping<float, UInt8, 4>),
          (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
-         "Likewise for a 3D scalar or multiband volume, when 'out' is a unit8 volume.\n");
+         "Likewise for a 3D scalar or multiband volume, when 'in' is a float32 and 'out' a unit8 volume.\n");
 
     def("linearRangeMapping",
          registerConverters(&pythonLinearRangeMapping<float, float, 4>),
          (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
-         "Likewise, but 'out' is a float32 volume.\n");
+         "Likewise, but 'in' and 'out' are float32 volumes.\n");
 
 
     exportColorTransform(RGB2sRGB);

@@ -286,6 +286,17 @@ struct TinyVectorTest
         ivi3 = -round(fvm3);
         should(equalIter(ivi3.begin(), ivi3.end(), ri));
 
+        shouldEqual(clipLower(iv3), iv3);
+        shouldEqual(clipLower(iv3, 11), IV(11));
+        shouldEqual(clipUpper(iv3, 0), IV(0));
+        shouldEqual(clipUpper(iv3, 11), iv3);
+        shouldEqual(clip(iv3, 0, 11), iv3);
+        shouldEqual(clip(iv3, 11, 12), IV(11));
+        shouldEqual(clip(iv3, -1, 0), IV(0));
+        shouldEqual(clip(iv3, IV(0), IV(11)), iv3);
+        shouldEqual(clip(iv3, IV(11), IV(12)), IV(11));
+        shouldEqual(clip(iv3, IV(-1), IV(0)), IV(0));
+
         should(bv1.squaredMagnitude() == SIZE);
         should(iv1.squaredMagnitude() == SIZE);
         should(fv1.squaredMagnitude() == (float)SIZE);

@@ -574,54 +574,66 @@ class TaggedShape
     template <class U, int N>
     TaggedShape & transposeShape(TinyVector<U, N> const & p)
     {
-        int ntags = axistags.size();
-        ArrayVector<npy_intp> permute = axistags.permutationToNormalOrder();
-        
-        int tstart = (axistags.channelIndex(ntags) < ntags)
-                        ? 1
-                        : 0;
-        int sstart = (channelAxis == first)
-                        ? 1
-                        : 0;
-        int ndim = ntags - tstart;
-
-        vigra_precondition(N == ndim,
-             "TaggedShape.transposeShape(): size mismatch.");
-             
-        PyAxisTags newAxistags(axistags.axistags); // force copy
-        for(int k=0; k<ndim; ++k)
+        if(axistags)
         {
-            original_shape[k+sstart] = shape[p[k]+sstart];
-            newAxistags.setResolution(permute[k+tstart], axistags.resolution(permute[p[k]+tstart]));
+            int ntags = axistags.size();
+            ArrayVector<npy_intp> permute = axistags.permutationToNormalOrder();
+            
+            int tstart = (axistags.channelIndex(ntags) < ntags)
+                            ? 1
+                            : 0;
+            int sstart = (channelAxis == first)
+                            ? 1
+                            : 0;
+            int ndim = ntags - tstart;
+
+            vigra_precondition(N == ndim,
+                 "TaggedShape.transposeShape(): size mismatch.");
+                 
+            PyAxisTags newAxistags(axistags.axistags); // force copy
+            for(int k=0; k<ndim; ++k)
+            {
+                original_shape[k+sstart] = shape[p[k]+sstart];
+                newAxistags.setResolution(permute[k+tstart], axistags.resolution(permute[p[k]+tstart]));
+            }
+            axistags = newAxistags;
+        }
+        else
+        {
+            for(int k=0; k<N; ++k)
+            {
+                original_shape[k] = shape[p[k]];
+            }
         }
         shape = original_shape;
-        axistags = newAxistags;
         
         return *this;
     }
 
     TaggedShape & toFrequencyDomain(int sign = 1)
     {
-        int ntags = axistags.size();
-        
-        ArrayVector<npy_intp> permute = axistags.permutationToNormalOrder();
-        
-        int tstart = (axistags.channelIndex(ntags) < ntags)
-                        ? 1
-                        : 0;
-        int sstart = (channelAxis == first)
-                        ? 1
-                        : 0;
-        int send  = (channelAxis == last)
-                        ? (int)size()-1
-                        : (int)size();
-        int size = send - sstart;
-        
-        for(int k=0; k<size; ++k)
+        if(axistags)
         {
-            axistags.toFrequencyDomain(permute[k+tstart], shape[k+sstart], sign);
+            int ntags = axistags.size();
+            
+            ArrayVector<npy_intp> permute = axistags.permutationToNormalOrder();
+            
+            int tstart = (axistags.channelIndex(ntags) < ntags)
+                            ? 1
+                            : 0;
+            int sstart = (channelAxis == first)
+                            ? 1
+                            : 0;
+            int send  = (channelAxis == last)
+                            ? (int)size()-1
+                            : (int)size();
+            int size = send - sstart;
+            
+            for(int k=0; k<size; ++k)
+            {
+                axistags.toFrequencyDomain(permute[k+tstart], shape[k+sstart], sign);
+            }
         }
-        
         return *this;
     }
 

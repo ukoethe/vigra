@@ -42,6 +42,9 @@
 #include <vigra/multi_morphology.hxx>
 #include <vigra/distancetransform.hxx>
 #include <vigra/multi_distance.hxx>
+#include <vigra/eccentricitytransform.hxx>
+#include <vigra/skeleton.hxx>
+#include <vigra/vector_distance.hxx>
 
 namespace python = boost::python;
 
@@ -420,19 +423,19 @@ pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
     return res;
 }
 
-template < class VoxelType >
+template < unsigned int N, class VoxelType >
 NumpyAnyArray 
-pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume, 
+pythonDistanceTransformND(NumpyArray<N, Singleband<VoxelType> > volume, 
                           bool background, 
                           ArrayVector<double> pixelPitch = ArrayVector<double>(),
-                          NumpyArray<3, Singleband<VoxelType> > res=python::object())
+                          NumpyArray<N, Singleband<VoxelType> > res=python::object())
 {
     res.reshapeIfEmpty(volume.taggedShape(), 
             "distanceTransform3D(): Output array has wrong shape.");
     
     if (pixelPitch.size() == 0)
     {
-        pixelPitch = ArrayVector<double>(3, 1.0);
+        pixelPitch = ArrayVector<double>(N, 1.0);
     }
     else
     {
@@ -444,6 +447,212 @@ pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume,
         separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background, pixelPitch);
     }
     return res;
+}
+
+template < unsigned int N, class VoxelType >
+NumpyAnyArray 
+pythonVectorDistanceTransformND(NumpyArray<N, Singleband<VoxelType> > volume, 
+                                bool background, 
+                                ArrayVector<double> pyPixelPitch = ArrayVector<double>(),
+                                NumpyArray<N, TinyVector<float, N> > res=python::object())
+{
+    vigra_precondition(pyPixelPitch.size() == 0 || pyPixelPitch.size() == N,
+        "vectorDistanceTransform(): pixel_pitch has wrong shape.");
+    
+    res.reshapeIfEmpty(volume.taggedShape(), 
+            "vectorDistanceTransform(): Output array has wrong shape.");
+            
+    TinyVector<double, N> pixelPitch(1.0);
+    if (pyPixelPitch.size() > 0)
+    {
+        pixelPitch.init(pyPixelPitch.begin(), pyPixelPitch.end());
+        pixelPitch = volume.permuteLikewise(pixelPitch);
+    }
+    
+    {
+        PyAllowThreads _pythread;
+        separableVectorDistance(volume, res, background, pixelPitch);
+    }
+    return res;
+}
+
+template < unsigned int N, class VoxelType >
+NumpyAnyArray
+pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
+                                bool array_border_is_active,
+                                std::string boundary,
+                                NumpyArray<N, Singleband<float> > res)
+{
+    res.reshapeIfEmpty(volume.taggedShape(),
+            "boundaryDistanceTransform(): Output array has wrong shape.");
+            
+    boundary = tolower(boundary);
+    BoundaryDistanceTag boundary_tag = InterpixelBoundary;
+    if(boundary == "outerboundary")
+        boundary_tag = OuterBoundary;
+    else if(boundary == "interpixelboundary" || boundary == "")
+        boundary_tag = InterpixelBoundary;
+    else if(boundary == "innerboundary")
+        boundary_tag = InnerBoundary;
+    else
+        vigra_precondition(false, 
+                           "boundaryDistanceTransform(): invalid 'boundary' specification.");
+    {
+        PyAllowThreads _pythread;
+        boundaryMultiDistance(volume, res, array_border_is_active, boundary_tag);
+    }
+    return res;
+}
+
+template < unsigned int N, class VoxelType >
+NumpyAnyArray
+pythonboundaryVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
+                                bool array_border_is_active,
+                                std::string boundary,
+                                NumpyArray<N, TinyVector<float, N> > res)
+{
+    res.reshapeIfEmpty(volume.taggedShape(),
+            "boundaryVectorDistanceTransform(): Output array has wrong shape.");
+            
+    boundary = tolower(boundary);
+    BoundaryDistanceTag boundary_tag = InterpixelBoundary;
+    if(boundary == "outerboundary")
+        boundary_tag = OuterBoundary;
+    else if(boundary == "interpixelboundary" || boundary == "")
+        boundary_tag = InterpixelBoundary;
+    else if(boundary == "innerboundary")
+        boundary_tag = InnerBoundary;
+    else
+        vigra_precondition(false, 
+                           "boundaryVectorDistanceTransform(): invalid 'boundary' specification.");
+    {
+        PyAllowThreads _pythread;
+        boundaryVectorDistance(volume, res, array_border_is_active, boundary_tag);
+    }
+    return res;
+}
+
+template < unsigned int N, class T, class S >
+NumpyAnyArray
+pythonEccentricityTransform(const NumpyArray<N, T> & image,
+                            NumpyArray<N, S> res)
+{
+    res.reshapeIfEmpty(image.taggedShape(),
+                       "eccentricityTransform(): Output array has wrong shape.");
+    eccentricityTransformOnLabels(image, res);
+    return res;
+}
+
+template < unsigned int N, class T >
+python::list
+pythonEccentricityCenters(const NumpyArray<N, T> & image)
+{
+    typedef typename MultiArrayShape<N>::type Point;
+    ArrayVector<Point> centers;
+    eccentricityCenters(image, centers);
+
+    python::list centerlist = python::list();
+    for (int i=0; i<centers.size(); ++i) {
+        centerlist.append(centers[i]);
+    }
+    return centerlist;
+}
+
+template < unsigned int N, class T, class S >
+python::tuple
+pythonEccentricityTransformWithCenters(const NumpyArray<N, T> & image,
+                                       NumpyArray<N, S> res)
+{
+    typedef typename MultiArrayShape<N>::type Point;
+    res.reshapeIfEmpty(image.taggedShape(),
+                       "eccentricityTransformWithCenters(): Output array has wrong shape.");
+    ArrayVector<Point> centers;
+    eccentricityTransformOnLabels(image, res, centers);
+
+    python::list centerlist = python::list();
+    for (int i=0; i<centers.size(); ++i) {
+        centerlist.append(centers[i]);
+    }
+    return python::make_tuple(res, centerlist);
+}
+
+template <unsigned int N, class T>
+NumpyAnyArray
+pySkeletonizeImage(NumpyArray<N, Singleband<T> > const & labels,
+              std::string mode,
+              double pruning_threshold)
+{
+    mode = tolower(mode);
+    SkeletonOptions options;
+    bool returnFloat = false;
+    
+    if(mode == "dontprune")
+    {
+        options.dontPrune();
+    }
+    else if(mode == "returnlength")
+    {
+        options.returnLength();
+        returnFloat = true;
+    }
+    else if(mode == "prunelength")
+    {
+        options.pruneLength(pruning_threshold);
+    }
+    else if(mode == "prunelengthrelative")
+    {
+        options.pruneLengthRelative(pruning_threshold);
+    }
+    else if(mode == "returnsalience")
+    {
+        options.returnSalience();
+        returnFloat = true;
+    }
+    else if(mode == "pruneasalience")
+    {
+        options.pruneSalience(pruning_threshold);
+    }
+    else if(mode == "prunesaliencerelative" || mode == "")
+    {
+        options.pruneSalienceRelative(pruning_threshold);
+    }
+    else if(mode == "prunetopology")
+    {
+        options.pruneTopology();
+    }
+    else if(mode == "pruneaggressive")
+    {
+        options.pruneTopology(false);
+    }
+    else
+    {
+        vigra_precondition(false, "skeletonizeImage(): invalid mode.");
+    }
+    
+    if(returnFloat)
+    {
+        NumpyArray<N, Singleband<float> > res(labels.taggedShape());
+        
+        {
+            PyAllowThreads _pythread;
+            
+            skeletonizeImage(labels, res, options);
+        }
+        
+        return res;
+    }
+    else
+    {
+        NumpyArray<N, Singleband<T> > res(labels.taggedShape());
+        
+        {
+            PyAllowThreads _pythread;
+            
+            skeletonizeImage(labels, res, options);
+        }
+        
+        return res;
+    }
 }
 
 void defineMorphology()
@@ -744,7 +953,7 @@ void defineMorphology()
         "\n"
         "For details see distanceTransform_ in the vigra C++ documentation.\n");
 
-        def("distanceTransform2D",
+    def("distanceTransform2D",
         registerConverters(&pythonDistanceTransform2D<UInt8,float>),
         (arg("image"), 
          arg("background")=true, 
@@ -754,7 +963,7 @@ void defineMorphology()
         "Likewise for a 2D uint8 input array.\n");
 
     def("distanceTransform3D",
-        registerConverters(&pythonDistanceTransform3D<float>),
+        registerConverters(&pythonDistanceTransformND<3, float>),
         (arg("array"), 
          arg("background") = true, 
          arg("pixel_pitch") = ArrayVector<double>(), 
@@ -773,6 +982,235 @@ void defineMorphology()
         "given, the data is treated isotropically with unit distance between pixels.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
+        
+    def("vectorDistanceTransform",
+        registerConverters(&pythonVectorDistanceTransformND<2, float>),
+        (arg("array"), 
+         arg("background") = true, 
+         arg("pixel_pitch") = ArrayVector<double>(), 
+         arg("out")=python::object()),
+        "Perform a Euclidean distance transform and return, for each background pixel, the\n"
+        "difference vector to the nearest foreground pixel (when 'background=True', the\n"
+        "default), or the other way around (when 'background=False').\n"
+        "Otherwise, this function behaves like :func:`distanceTransform2D` (which just\n"
+        "returns the magnitude of the difference vectors).\n"
+        "\n"
+        "For more detailed documentation, see :func:`distanceTransform2D` and\n" "separableVectorDistance_ in the vigra C++ documentation.\n");
+        
+    def("vectorDistanceTransform",
+        registerConverters(&pythonVectorDistanceTransformND<2, npy_uint32>),
+        (arg("array"), 
+         arg("background") = true, 
+         arg("pixel_pitch") = ArrayVector<double>(), 
+         arg("out")=python::object()),
+        "Likewise for uint32 images.\n");
+        
+    def("vectorDistanceTransform",
+        registerConverters(&pythonVectorDistanceTransformND<3, float>),
+        (arg("array"), 
+         arg("background") = true, 
+         arg("pixel_pitch") = ArrayVector<double>(), 
+         arg("out")=python::object()),
+        "Likewise for 3D arrays.\n");
+        
+    def("vectorDistanceTransform",
+        registerConverters(&pythonVectorDistanceTransformND<3, npy_uint32>),
+        (arg("array"), 
+         arg("background") = true, 
+         arg("pixel_pitch") = ArrayVector<double>(), 
+         arg("out")=python::object()),
+        "Likewise for 3D uint32 arrays.\n");
+        
+    def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<2, npy_uint32>),
+       (arg("image"),
+        arg("array_border_is_active") = false,
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+        "Compute the Euclidean distance transform of all regions in a 2D or 3D label\n"
+        "array with respect to the region boundaries. The 'boundary' parameter must be\n"
+        "one of the following strings:\n\n"
+        "   - 'OuterBoundary':  compute distance relative to outer regin boundaries\n\n"
+        "   - 'InterpixelBoundary':  compute distance relative to interpixel boundaries (default)\n\n"
+        "   - 'InnerBoundary':  compute distance relative to inner region boundaries\n\n"
+        "where the outer boundary consists of the pixels touching a given region from the\n"
+        "outside and the inner boundary are the pixels adjacent to the region's complement.\n"
+        "If 'array_border_is_active=True', the external border of the array (i.e. the border\n"
+        "between the image and the infinite region) is also used. Otherwise (default), regions\n"
+        "touching the array border are treated as if they extended to infinity.\n"
+        "\n"
+        "For more details see boundaryMultiDistance_ in the vigra C++ documentation.\n");
+
+    def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<3, npy_uint32>),
+       (arg("volume"),
+        arg("array_border_is_active") = false,
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+         "Likewise for a 3D uint32 input array.\n");
+
+    def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<2, float>),
+       (arg("image"),
+        arg("array_border_is_active") = false,
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+         "Likewise for a 2D float32 input array.\n");
+
+    def("boundaryDistanceTransform",
+       registerConverters(&pythonboundaryDistanceTransform<3, float>),
+       (arg("volume"),
+        arg("array_border_is_active") = false,
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+         "Likewise for a 3D float32 input array.\n");
+
+    def("boundaryVectorDistanceTransform",
+       registerConverters(&pythonboundaryVectorDistanceTransform<2, npy_uint32>),
+       (arg("image"),
+        arg("array_border_is_active") = false,
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+        "Compute the Euclidean distance transform of all regions in a 2D or 3D label\n"
+        "array with respect to the region boundaries and return, in each pixel,\n"
+        "the difference vector to the nearest boundary point.\n"
+        "The 'boundary' parameter must be one of the following strings:\n\n"
+        "   - 'OuterBoundary':  compute distance relative to outer regin boundaries\n\n"
+        "   - 'InterpixelBoundary':  compute distance relative to interpixel boundaries (default)\n\n"
+        "   - 'InnerBoundary':  compute distance relative to inner region boundaries\n\n"
+        "where the outer boundary consists of the pixels touching a given region from the\n"
+        "outside and the inner boundary are the pixels adjacent to the region's complement.\n"
+        "If 'array_border_is_active=True', the external border of the array (i.e. the border\n"
+        "between the image and the infinite region) is also used. Otherwise (default), regions\n"
+        "touching the array border are treated as if they extended to infinity.\n"
+        "\n"
+        "For more details see :func:`boundaryDistanceTransform` and boundaryVectorDistance_ in\n"
+        "the vigra C++ documentation.\n");
+
+    def("boundaryVectorDistanceTransform",
+       registerConverters(&pythonboundaryVectorDistanceTransform<3, npy_uint32>),
+       (arg("volume"),
+        arg("array_border_is_active") = false,
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+         "Likewise for a 3D uint32 input array.\n");
+
+    def("boundaryVectorDistanceTransform",
+       registerConverters(&pythonboundaryVectorDistanceTransform<2, float>),
+       (arg("image"),
+        arg("array_border_is_active") = false,
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+         "Likewise for a 2D float32 input array.\n");
+
+    def("boundaryVectorDistanceTransform",
+       registerConverters(&pythonboundaryVectorDistanceTransform<3, float>),
+       (arg("volume"),
+        arg("array_border_is_active") = false,
+        arg("boundary") = "InterpixelBoundary",
+        arg("out")=python::object()),
+         "Likewise for a 3D float32 input array.\n");
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<2, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+        "Compute the eccentricity transform of a 2D uint32 label array.\n\n"
+        "For more details see eccentricityTransformOnLabels_ in the vigra C++ documentation.\n");
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<2, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 2D uint8 input array.\n");
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<3, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 3D uint32 label array.\n");
+
+    def("eccentricityTransform",
+        registerConverters(&pythonEccentricityTransform<3, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 3D uint8 input array.\n");
+
+    def("eccentricityCenters",
+        registerConverters(&pythonEccentricityCenters<2, UInt32>),
+        (arg("image")),
+         "Compute a list holding the eccentricity center of each region in\n"
+         "a 2D uint32 label array.\n\n"
+         "For more details see eccentricityCenters_ in the vigra C++ documentation.\n");
+
+    def("eccentricityCenters",
+        registerConverters(&pythonEccentricityCenters<2, UInt8>),
+        (arg("image")),
+         "Likewise for a 2D uint8 input array.\n");
+
+    def("eccentricityCenters",
+        registerConverters(&pythonEccentricityCenters<3, UInt32>),
+        (arg("image")),
+         "Likewise for a 3D uint32 label array.\n");
+
+    def("eccentricityCenters",
+        registerConverters(&pythonEccentricityCenters<3, UInt8>),
+        (arg("image")),
+         "Likewise for a 3D uint8 array.\n");
+
+    def("eccentricityTransformWithCenters",
+        registerConverters(&pythonEccentricityTransformWithCenters<2, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Compute the eccentricity transform and eccentricity centers of a 2D uint32 label array.\n"
+         "\n"
+         "Returns the tuple (ecc_image, centers).\n");
+
+    def("eccentricityTransformWithCenters",
+        registerConverters(&pythonEccentricityTransformWithCenters<2, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 2D uint8 input array.\n");
+
+    def("eccentricityTransformWithCenters",
+        registerConverters(&pythonEccentricityTransformWithCenters<3, UInt32, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 3D uint32 label array.\n");
+
+    def("eccentricityTransformWithCenters",
+        registerConverters(&pythonEccentricityTransformWithCenters<3, UInt8, float>),
+        (arg("image"),
+         arg("out")=python::object()),
+         "Likewise for a 2D uint8 input array.\n");
+
+    def("skeletonizeImage",
+        registerConverters(&pySkeletonizeImage<2, UInt32>),
+        (arg("labels"),
+         arg("mode")="PruneSalienceRelative",
+         arg("pruning_threshold")=0.2),
+         "Skeletonize all regions in the given label image. Each skeleton receives\n"
+         "the label of the corresponding region, unless 'length' or 'salience' are\n"
+         "requested, in which case the skeleton points hold real numbers. Non-skeleton\n"
+         "points always have the value zero. When the input image contains label zero,\n"
+         "it is always considered background and therefore ignored.\n"
+         "The 'mode' must be one of the following strings:\n\n"
+            "   - 'DontPrune':  don't remove any branches\n\n"
+            "   - 'ReturnLength':  mark each pixel with the length of the longest branch\n"
+            "                      it belongs to\n\n"
+            "   - 'PruneLength':  remove all branches that are shorter than the given\n" "                     'pruning_threshold'\n\n"
+            "   - 'PruneLengthRelative':  remove all branches that are shorter than the\n" "                             fraction specified in 'pruning_threshold' of the\n"
+            "                             longest branch in the present region\n\n"
+            "   - 'ReturnSalience':  mark each pixel with the salience of the longest branch\n"
+            "                        it belongs to\n\n"
+            "   - 'PruneSalience':  remove all branches whose salience is less than the given\n" "                       'pruning_threshold'\n\n"
+            "   - 'PruneSalienceRelative':  remove all branches whose salience is less than the\n" "                               fraction specified in 'pruning_threshold' of the\n"
+            "                               most salient branch in the present region\n"
+            "                               (default with pruning_threshold=0.2)\n\n"
+            "   - 'PruneTopology':  prune all branches that are not essential for the topology,\n"
+            "                       but keep the skeleton center\n\n"
+            "   - 'PruneAggressive':  like 'PruneTopology', but don't necessarily preserve the center\n\n"
+            "For details see skeletonizeImage_ in the vigra C++ documentation.\n");
 }
 
 } // namespace vigra

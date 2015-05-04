@@ -527,7 +527,7 @@ method proposed by Foerstner.
 
 
 Histogram and Channel Representation
-----------------------------------
+------------------------------------
 
 The module vigra.histogram provides histograms and channel representation
 
@@ -537,7 +537,7 @@ The module vigra.histogram provides histograms and channel representation
 
 
 Graphs and Algorithms on Graphs
-----------------------------------
+-------------------------------
 
 The module vigra.graphs provides graphs and graph algorithms
 
