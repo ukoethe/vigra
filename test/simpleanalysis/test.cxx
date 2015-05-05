@@ -647,6 +647,42 @@ struct EdgeDetectionTest
         }
     }
 
+    void cannyNegativeThresholdTest()
+    {
+        double scale = 1.0;
+        double threshold = -1.0;
+        
+        try
+        {
+            std::vector<vigra::Edgel> edgels;
+            cannyEdgelListThreshold(View(imgCanny), edgels, scale, threshold);
+            failTest("No exception thrown in cannyEdgelListThreshold with negative gradient thresholds.");
+        }
+        catch(PreconditionViolation &)
+        {}
+
+        try
+        {
+            vigra::BImage result(40, 40);
+            result = 0;
+            cannyEdgeImageWithThinning(View(imgCanny), MultiArrayView<2, unsigned char>(result), scale, threshold, 1, false);
+            failTest("No exception thrown in cannyEdgeImageWithThinning with negative gradient thresholds.");
+        }
+        catch(PreconditionViolation &)
+        {}
+
+        try
+        {
+            std::vector<vigra::Edgel> edgels;
+            cannyEdgelList3x3Threshold(View(imgCanny),
+                                       edgels, scale, threshold);
+            failTest("No exception thrown in cannyEdgelList3x3Threshold with negative gradient thresholds.");
+        }
+        catch(PreconditionViolation &)
+        {}
+
+    }
+
     void cannyEdgelList3x3Test()
     {
         std::vector<vigra::Edgel> edgels;
@@ -2423,6 +2459,7 @@ struct SimpleAnalysisTestSuite
         add( testCase( &EdgeDetectionTest::beautifyCrackEdgeTest));
         add( testCase( &EdgeDetectionTest::closeGapsInCrackEdgeTest));
         add( testCase( &EdgeDetectionTest::cannyEdgelListTest));
+        add( testCase( &EdgeDetectionTest::cannyNegativeThresholdTest));
         add( testCase( &EdgeDetectionTest::cannyEdgelList3x3Test));
         add( testCase( &EdgeDetectionTest::cannyEdgeImageTest));
         add( testCase( &EdgeDetectionTest::cannyEdgeImageWithThinningTest));
