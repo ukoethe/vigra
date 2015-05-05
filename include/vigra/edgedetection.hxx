@@ -2238,6 +2238,9 @@ void cannyEdgeImageFromGradWithThinning(
            GradValue gradient_threshold,
            DestValue edge_marker, bool addBorder = true)
 {
+    vigra_precondition(gradient_threshold >= NumericTraits<GradValue>::zero(),
+         "cannyEdgeImageFromGradWithThinning(): gradient threshold must not be negative.");
+    
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
