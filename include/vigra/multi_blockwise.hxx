@@ -406,7 +406,7 @@ namespace blockwise{
     BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFirstEigenvalueFunctor<N> , hessianOfGaussianFirstEigenvalueMultiArray, 2, false );
     BLOCKWISE_FUNCTION_GEN(HessianOfGaussianLastEigenvalueFunctor<N> ,  hessianOfGaussianLastEigenvalueMultiArray,  2, false );
     BLOCKWISE_FUNCTION_GEN(LaplacianOfGaussianFunctor<N> ,              laplacianOfGaussianMultiArray,              2, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianGradientMagnitudeFunctor<N>,         gaussianGradientMagnitude,                  1, false );
+    BLOCKWISE_FUNCTION_GEN(GaussianGradientMagnitudeFunctor<N>,         gaussianGradientMagnitudeMultiArray,        1, false );
     BLOCKWISE_FUNCTION_GEN(StructureTensorFunctor<N> ,                  structureTensorMultiArray,                  1, true  );
 
 

@@ -61,6 +61,28 @@ namespace vigra{
     }
 
     template<unsigned int DIM, class T_IN, class T_OUT>
+    NumpyAnyArray pyBlockwiseGaussianGradientMagnitudeMultiArray(
+        const NumpyArray<DIM, T_IN> &  source, 
+        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        NumpyArray<DIM, T_OUT>  dest
+    ){
+        dest.reshapeIfEmpty(source.taggedShape());
+        blockwise::gaussianGradientMagnitudeMultiArray(source, dest, opt);
+        return dest;
+    }
+
+    template<unsigned int DIM, class T_IN, class T_OUT>
+    NumpyAnyArray pyBlockwiseGaussianGradientMultiArray(
+        const NumpyArray<DIM, T_IN> &  source, 
+        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        NumpyArray<DIM, T_OUT>  dest
+    ){
+        dest.reshapeIfEmpty(source.taggedShape());
+        blockwise::gaussianGradientMultiArray(source, dest, opt);
+        return dest;
+    }
+
+    template<unsigned int DIM, class T_IN, class T_OUT>
     NumpyAnyArray pyBlockwiseHessianOfGaussianEigenvaluesMultiArray(
         const NumpyArray<DIM, T_IN> &  source, 
         const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
@@ -95,11 +117,28 @@ namespace vigra{
 
 
 
+
     template<unsigned int DIM, class T_IN>
     void defineBlockwiseFilters(){
         //typedef blockwise::BlockwiseConvolutionOptions<DIM> Opt;
 
         python::def("gaussianSmooth",registerConverters(&pyBlockwiseGaussianSmoothMultiArray<DIM, T_IN, float>),
+            (
+                python::arg("source"),
+                python::arg("options"),
+                python::arg("out") = python::object()
+            )
+        );
+
+        python::def("gaussianGradientMagnitude",registerConverters(&pyBlockwiseGaussianGradientMagnitudeMultiArray<DIM, T_IN, float>),
+            (
+                python::arg("source"),
+                python::arg("options"),
+                python::arg("out") = python::object()
+            )
+        );
+
+        python::def("gaussianGradient",registerConverters(&pyBlockwiseGaussianGradientMultiArray<DIM, T_IN, TinyVector<float, DIM> >),
             (
                 python::arg("source"),
                 python::arg("options"),
