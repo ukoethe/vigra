@@ -55,17 +55,12 @@
 #include "union_find.hxx"
 #include "adjacency_list_graph.hxx"
 #include "graph_maps.hxx"
-#include "timing.hxx"
-
-
-
-
-#include "timing.hxx"
 
 
 
 namespace vigra{
 
+    /// \cond
     namespace detail_rag_project_back{
 
     template<
@@ -165,7 +160,7 @@ namespace vigra{
 
 
     }
-
+    /// \endcond
 
     /// project node features of a region adjacency
     /// graph back to the base graph.
