@@ -277,7 +277,9 @@ namespace blockwise{
         : HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM-1>(convOpt){} 
     };
 
-
+    /// concurrency type to use within parallel algorithms
+    /// 
+    /// So far, only OpenMpConcurrency is implemented
     enum ConcurrencyType{
         DefaultConcurrency,
         OpenMpConcurrency,
@@ -287,7 +289,7 @@ namespace blockwise{
 
     };
         
-
+    /// base option class for parallel algorithms
     class ParallelOptions{
     public:
         ParallelOptions(const size_t numThreds = 0, 
@@ -315,7 +317,8 @@ namespace blockwise{
         ConcurrencyType concurrencyType_;
     };
 
-
+    /// base option class for blockwise algorithms
+    /// attaches blockshape to ParallelOptions
     template<unsigned int N>
     class BlockwiseOptions
     : public ParallelOptions
