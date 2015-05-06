@@ -1,3 +1,39 @@
+/************************************************************************/
+/*                                                                      */
+/*               Copyright 2015 by Thorsten Beier                       */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
+
+
 #ifndef VIGRA_MULTI_BLOCKWISE_HXX
 #define VIGRA_MULTI_BLOCKWISE_HXX
 
@@ -12,42 +48,16 @@
 #endif 
 
 
-
 namespace vigra{
 
-/*
-    Blockwise needs to implement:
-    
-    Simple Element Wise (with reduction):
-        min
-        max
-        minmax
-
-    Simple Convolution:
-        gaussianSmoothMultiArray
-        gaussianGradientMultiArray
-        symmetricGradientMultiArray
-        gaussianDivergenceMultiArray
-        hessianOfGaussianMultiArray
-        laplacianOfGaussianMultiArray
-        gaussianGradientMagnitude
-        structureTensorMultiArray
-
-    Tensor Related
-        hessianOfGaussianEigenvalues
-        hessianOfGaussianTrace
-        structureTensorEigenvalues
-        structureTensoTrace
-        tensorEigenvalue
-        tensorTrace
-
-    Distance Transform:
-        truncatedDistanceTransform
-
-    ParabolicFilters: 
-*/
 namespace blockwise{
 
+
+    /**
+        helper function to create blockwise parallel filters.
+        This implementation should be used if the filter functor
+        does not support the ROI/sub array options.
+    */
     template<
         unsigned int DIM,
         class T_IN, class ST_IN,
@@ -55,7 +65,7 @@ namespace blockwise{
         class FILTER_FUCTOR,
         class C
     >
-    void blockwiseCaller(
+    void blockwiseCallerNoRoiApi(
         const vigra::MultiArrayView<DIM, T_IN,  ST_IN > & source,
         const vigra::MultiArrayView<DIM, T_OUT, ST_OUT> & dest,
         FILTER_FUCTOR & functor,
@@ -96,6 +106,63 @@ namespace blockwise{
         }
     }
 
+    /**
+        helper function to create blockwise parallel filters.
+        This implementation should be used if the filter functor
+        does support the ROI/sub array options.
+    */
+    template<
+        unsigned int DIM,
+        class T_IN, class ST_IN,
+        class T_OUT, class ST_OUT,
+        class FILTER_FUCTOR,
+        class C
+    >
+    void blockwiseCaller(
+        const vigra::MultiArrayView<DIM, T_IN,  ST_IN > & source,
+        const vigra::MultiArrayView<DIM, T_OUT, ST_OUT> & dest,
+        FILTER_FUCTOR & functor,
+        const vigra::MultiBlocking<DIM, C> & blocking,
+        const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth
+    ){
+
+        typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
+        typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
+        typedef typename MultiBlocking<DIM, C>::Block Block;
+        #pragma omp parallel
+        {
+            BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
+            //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
+
+            #pragma omp for
+            for(int i=0 ; i<blocking.numBlocks(); ++i){
+
+                const BlockWithBorder bwb = iter[i];
+
+                // get the input of the block as a view
+                vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin(),
+                                                                            bwb.border().end());
+
+                // get the output of the blocks core as a view
+                vigra::MultiArrayView<DIM, T_OUT, ST_OUT> destCore = dest.subarray(bwb.core().begin(),
+                                                                            bwb.core().end());
+
+
+                const Block localCore =  bwb.localCore();
+
+
+                // call the functor
+                functor(sourceSub, destCore, localCore.begin(), localCore.end());
+
+                // write the core global out
+                //vigra::MultiArrayView<DIM, T_OUT, ST_OUT> destSubCore = destSub.subarray(bwb.localCore().begin(),
+                //                                                                bwb.localCore().end());
+                //dest.subarray(bwb.core().begin()-blocking.roiBegin(), 
+                //              bwb.core().end()  -blocking.roiBegin()  ) = destSubCore;
+            }
+        }
+    }
+
     #define CONVOLUTION_FUNCTOR(FUCTOR_NAME, FUNCTION_NAME) \
     template<unsigned int DIM> \
     class FUCTOR_NAME{ \
@@ -126,6 +193,7 @@ namespace blockwise{
     CONVOLUTION_FUNCTOR(GaussianGradientMagnitudeFunctor, vigra::gaussianGradientMagnitude);
     CONVOLUTION_FUNCTOR(StructureTensorFunctor,           vigra::structureTensorMultiArray);
 
+    #undef CONVOLUTION_FUNCTOR
 
     template<unsigned int DIM> 
     class HessianOfGaussianEigenvaluesFunctor{ 
@@ -151,8 +219,6 @@ namespace blockwise{
     private: 
         ConvOpt  convOpt_; 
     };
-
-
 
     template<unsigned int DIM, unsigned int EV> 
     class HessianOfGaussianSelectedEigenvalueFunctor{ 
@@ -211,10 +277,6 @@ namespace blockwise{
         : HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM-1>(convOpt){} 
     };
 
-
-
-
-    #undef CONVOLUTION_FUNCTOR
 
     enum ConcurrencyType{
         DefaultConcurrency,
@@ -329,7 +391,6 @@ namespace blockwise{
         FUNCTOR f(subOptions); \
         blockwiseCaller(source, dest, f, blocking, border); \
     }
-
 
     BLOCKWISE_FUNCTION_GEN(GaussianSmoothFunctor<N> ,                   gaussianSmoothMultiArray,                   0, false );
     BLOCKWISE_FUNCTION_GEN(GaussianGradientFunctor<N> ,                 gaussianGradientMultiArray,                 1, false );

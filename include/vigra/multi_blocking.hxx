@@ -1,4 +1,39 @@
- #ifndef VIGRA_MULTI_BLOCKING_HXX
+/************************************************************************/
+/*                                                                      */
+/*               Copyright 2015 by Thorsten Beier                       */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
+
+#ifndef VIGRA_MULTI_BLOCKING_HXX
 #define VIGRA_MULTI_BLOCKING_HXX
 
 #include "vigra/tinyvector.hxx"
@@ -13,7 +48,9 @@ namespace vigra{
     template<unsigned int DIM, class C>
     class MultiBlocking;
 
+    /// \cond
     namespace detail_multi_blocking{
+
         template<unsigned int DIM, class C>
         class BlockWithBorder{
         public:
@@ -61,74 +98,69 @@ namespace vigra{
         }
 
 
-        
-        
+        template<class MB>
+        class MultiCoordToBlockWithBoarder{
+        public:
+            typedef typename MB::Shape Shape;
+            typedef typename MB::BlockDesc BlockDesc;
+            typedef typename MB::BlockWithBorder result_type;
+            MultiCoordToBlockWithBoarder()
+            :   mb_(NULL),
+                width_(){
+            }
+            MultiCoordToBlockWithBoarder(const MB & mb, const Shape & width)
+            :   mb_(&mb),
+                width_(width){
+            }
+
+            result_type operator()(const BlockDesc & blockDesc)const{
+                return mb_->getBlockWithBorder(blockDesc, width_);
+            }
+        private:
+            const MB * mb_;
+            Shape width_;
+        };
+
+        template<class MB>
+        class MultiCoordToBlock{
+        public:
+            typedef typename MB::Shape Shape;
+            typedef typename MB::BlockDesc BlockDesc;
+            typedef typename MB::Block result_type;
+            MultiCoordToBlock()
+            :   mb_(NULL){
+            }
+            MultiCoordToBlock(const MB & mb)
+            :   mb_(&mb){
+            }
+
+            result_type operator()(const BlockDesc & blockDesc)const{
+                return mb_->getBlock(blockDesc);
+            }
+        private:
+            const MB * mb_;
+        };
     }
-
-    template<unsigned int DIM, class C>
-    vigra::TinyVector<C, DIM> makePositivCoordinate(const vigra::TinyVector<C, DIM> & vec, const vigra::TinyVector<C, DIM> & shape){
-        vigra::TinyVector<C, DIM> res(vigra::SkipInitialization);
-        for(size_t d=0; d<DIM; ++d){
-            res[d] = vec[d] < 0 ? vec[d] + shape[d] : vec[d];
-        }
-        return res;
-    }
-
-
-    template<class MB>
-    class MultiCoordToBlockWithBoarder{
-    public:
-        typedef typename MB::Shape Shape;
-        typedef typename MB::BlockDesc BlockDesc;
-        typedef typename MB::BlockWithBorder result_type;
-        MultiCoordToBlockWithBoarder()
-        :   mb_(NULL),
-            width_(){
-        }
-        MultiCoordToBlockWithBoarder(const MB & mb, const Shape & width)
-        :   mb_(&mb),
-            width_(width){
-        }
-
-        result_type operator()(const BlockDesc & blockDesc)const{
-            return mb_->getBlockWithBorder(blockDesc, width_);
-        }
-    private:
-        const MB * mb_;
-        Shape width_;
-    };
-
-    template<class MB>
-    class MultiCoordToBlock{
-    public:
-        typedef typename MB::Shape Shape;
-        typedef typename MB::BlockDesc BlockDesc;
-        typedef typename MB::Block result_type;
-        MultiCoordToBlock()
-        :   mb_(NULL){
-        }
-        MultiCoordToBlock(const MB & mb)
-        :   mb_(&mb){
-        }
-
-        result_type operator()(const BlockDesc & blockDesc)const{
-            return mb_->getBlock(blockDesc);
-        }
-    private:
-        const MB * mb_;
-    };
+    /// \endcond
+    
 
 
 
-
-
-
+    /**
+        MultiBlocking is used to split a image / volume / multiarray
+        into non-overlapping blocks.
+        These non overlapping blocks are called cores.
+        A border can be added to the core boxes.
+        These 'core+border' blocks are just called border.
+        The core block within the coordinate system 
+        of the border block is called local core.
+    */
     template<unsigned int DIM, class C = MultiArrayIndex>
     class MultiBlocking{
     public:
         typedef MultiBlocking<DIM, C> SelfType;
-        friend class MultiCoordToBlock<SelfType>;
-        friend class MultiCoordToBlockWithBoarder<SelfType>;
+        friend class detail_multi_blocking::MultiCoordToBlock<SelfType>;
+        friend class detail_multi_blocking::MultiCoordToBlockWithBoarder<SelfType>;
         typedef C  PointValue;
         typedef TinyVector<PointValue, DIM> Point;
         typedef Point Shape;
@@ -139,8 +171,8 @@ namespace vigra{
 
 
         // iterators 
-        typedef MultiCoordToBlockWithBoarder<SelfType> CoordToBwb;
-        typedef MultiCoordToBlock<SelfType> CoordToB;
+        typedef detail_multi_blocking::MultiCoordToBlockWithBoarder<SelfType> CoordToBwb;
+        typedef detail_multi_blocking::MultiCoordToBlock<SelfType> CoordToB;
         typedef EndAwareTransformIterator<CoordToBwb, MultiCoordIter> BlockWithBorderIter;
         typedef EndAwareTransformIterator<CoordToB,   MultiCoordIter> BlockIter;
 
@@ -151,8 +183,7 @@ namespace vigra{
                       const Shape & roiEnd = Shape(0)
         )
         :   shape_(shape),
-            roiBlock_(makePositivCoordinate<DIM, C>(roiBegin, shape),
-                      roiEnd == Shape(0) ? shape : makePositivCoordinate<DIM, C>(roiEnd, shape)),
+            roiBlock_(roiBegin,roiEnd == Shape(0) ? shape : roiEnd),
             blockShape_(blockShape),
             blocksPerAxis_(vigra::SkipInitialization),
             blockDescIter_(),
@@ -195,10 +226,6 @@ namespace vigra{
             return BlockIter(beginIter.getEndIterator(),CoordToB(*this));
         }
 
-
-
-
-
         const Shape & roiBegin()const{
             return roiBlock_.begin();
         }
@@ -239,7 +266,6 @@ namespace vigra{
             const Point blockEnd(blockStart + blockShape_);
             return Block(blockStart, blockEnd) & roiBlock_;
         }
-
 
         Shape shape_;
         Block roiBlock_;
