@@ -192,6 +192,20 @@ struct ArcToEdgeHolder{
 };
 
 template<class GRAPH>
+struct ArcToArcHolder{
+    typedef typename GRAPH::Edge Edge;
+    typedef typename GRAPH::Arc Arc;
+    ArcToArcHolder(const GRAPH & graph)
+    : graph_(&graph){
+    }
+    ArcHolder<GRAPH> operator()(const Arc & arc)const{
+        return ArcHolder<GRAPH>(*graph_,arc);
+    }
+    const GRAPH * graph_;
+};
+
+
+template<class GRAPH>
 struct NodeToNodeHolder{
     typedef typename GRAPH::Node Node;
     NodeToNodeHolder(const GRAPH & graph)
@@ -294,8 +308,8 @@ struct IncEdgeIteratorHolder{
     typedef typename GRAPH::Node Node;
     typedef typename GRAPH::Edge Edge;
     typedef typename GRAPH::OutArcIt Iter;
-    typedef detail_python_graph::ArcToEdgeHolder<GRAPH> Transform;
-    typedef boost::transform_iterator<Transform ,Iter ,EdgeHolder<GRAPH>, EdgeHolder<GRAPH> > const_iterator;
+    typedef detail_python_graph::ArcToArcHolder<GRAPH> Transform;
+    typedef boost::transform_iterator<Transform ,Iter ,ArcHolder<GRAPH>, ArcHolder<GRAPH> > const_iterator;
     IncEdgeIteratorHolder(const GRAPH & graph,const Node & node)
     : graph_(&graph),
       node_(node){

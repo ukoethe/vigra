@@ -207,6 +207,18 @@ namespace vigra{
             return roiBlock_.end();
         }
 
+        const Shape & shape()const{
+            return shape_;
+        }
+
+        const Shape & blockShape()const{
+            return blockShape_;
+        }
+
+        const Shape & blocksPerAxis()const{
+            return blocksPerAxis_;
+        }
+
     private:
 
 
