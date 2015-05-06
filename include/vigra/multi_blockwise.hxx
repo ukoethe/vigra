@@ -354,6 +354,8 @@ namespace blockwise{
 
 
 
+    /// \warning this functions is deprecated 
+    /// and should not be used from end users
     template<unsigned int N>
     vigra::TinyVector< vigra::MultiArrayIndex, N > getBorder(
         const BlockwiseConvolutionOptions<N> & opt,

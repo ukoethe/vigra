@@ -144,8 +144,6 @@ namespace vigra{
     /// \endcond
     
 
-
-
     /**
         MultiBlocking is used to split a image / volume / multiarray
         into non-overlapping blocks.
@@ -247,7 +245,6 @@ namespace vigra{
         }
 
     private:
-
 
         /// get a block with border
         BlockWithBorder getBlockWithBorder(const BlockDesc & blockDesc, const Shape & width )const{
