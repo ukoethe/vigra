@@ -122,7 +122,7 @@ namespace vigra{
     void defineBlockwiseFilters(){
         //typedef blockwise::BlockwiseConvolutionOptions<DIM> Opt;
 
-        python::def("gaussianSmooth",registerConverters(&pyBlockwiseGaussianSmoothMultiArray<DIM, T_IN, float>),
+        python::def("_gaussianSmooth",registerConverters(&pyBlockwiseGaussianSmoothMultiArray<DIM, T_IN, float>),
             (
                 python::arg("source"),
                 python::arg("options"),
@@ -130,7 +130,7 @@ namespace vigra{
             )
         );
 
-        python::def("gaussianGradientMagnitude",registerConverters(&pyBlockwiseGaussianGradientMagnitudeMultiArray<DIM, T_IN, float>),
+        python::def("_gaussianGradientMagnitude",registerConverters(&pyBlockwiseGaussianGradientMagnitudeMultiArray<DIM, T_IN, float>),
             (
                 python::arg("source"),
                 python::arg("options"),
@@ -138,7 +138,7 @@ namespace vigra{
             )
         );
 
-        python::def("gaussianGradient",registerConverters(&pyBlockwiseGaussianGradientMultiArray<DIM, T_IN, TinyVector<float, DIM> >),
+        python::def("_gaussianGradient",registerConverters(&pyBlockwiseGaussianGradientMultiArray<DIM, T_IN, TinyVector<float, DIM> >),
             (
                 python::arg("source"),
                 python::arg("options"),
@@ -146,21 +146,21 @@ namespace vigra{
             )
         );
 
-        python::def("hessianOfGaussianEigenvalues",registerConverters(&pyBlockwiseHessianOfGaussianEigenvaluesMultiArray<DIM, T_IN, vigra::TinyVector<float, DIM> >),
+        python::def("_hessianOfGaussianEigenvalues",registerConverters(&pyBlockwiseHessianOfGaussianEigenvaluesMultiArray<DIM, T_IN, vigra::TinyVector<float, DIM> >),
             (
                 python::arg("source"),
                 python::arg("options"),
                 python::arg("out") = python::object()
             )
         );
-        python::def("hessianOfGaussianFirstEigenvalue",registerConverters(&pyBlockwiseHessianOfGaussianFirstEigenvalueMultiArray<DIM, T_IN, float>),
+        python::def("_hessianOfGaussianFirstEigenvalue",registerConverters(&pyBlockwiseHessianOfGaussianFirstEigenvalueMultiArray<DIM, T_IN, float>),
             (
                 python::arg("source"),
                 python::arg("options"),
                 python::arg("out") = python::object()
             )
         );
-        python::def("hessianOfGaussianLastEigenvalue",registerConverters(&pyBlockwiseHessianOfGaussianLastEigenvalueMultiArray<DIM, T_IN, float>),
+        python::def("_hessianOfGaussianLastEigenvalue",registerConverters(&pyBlockwiseHessianOfGaussianLastEigenvalueMultiArray<DIM, T_IN, float>),
             (
                 python::arg("source"),
                 python::arg("options"),
@@ -191,7 +191,7 @@ namespace vigra{
         .add_property("innerScale", &Opt::getInnerScale, &Opt::setInnerScale)
         .add_property("outerScale", &Opt::getOuterScale, &Opt::setOuterScale)
         .add_property("blockShape", &Opt::getBlockShape, &Opt::setBlockShape)
-        .add_property("numThreads", &Opt::getNumThreads, &Opt::getNumThreads)
+        .add_property("numThreads", &Opt::getNumThreads, &Opt::setNumThreads)
         ;
     }
 
@@ -218,6 +218,8 @@ BOOST_PYTHON_MODULE_INIT(blockwise)
 
     defineBlockwiseConvolutionOptions<2>("BlockwiseConvolutionOptions2D");
     defineBlockwiseConvolutionOptions<3>("BlockwiseConvolutionOptions3D");
+    defineBlockwiseConvolutionOptions<4>("BlockwiseConvolutionOptions4D");
+    defineBlockwiseConvolutionOptions<5>("BlockwiseConvolutionOptions4D");
 
     defineBlockwiseFilters<2, float>();
     defineBlockwiseFilters<3, float>();

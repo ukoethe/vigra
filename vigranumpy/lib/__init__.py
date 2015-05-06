@@ -34,6 +34,8 @@
 #######################################################################
 
 import sys, os, time
+from numbers import Number
+from multiprocessing import cpu_count
 
 _vigra_path = os.path.abspath(os.path.dirname(__file__))
 _vigra_doc_path = _vigra_path + '/doc/vigranumpy/index.html'
@@ -2029,6 +2031,94 @@ _genGraphMiscFunctions()
 del _genGraphMiscFunctions
 
 
+
+
+
+
+def _genBlockwiseFunctions():
+        
+    def makeTuple(val, ndim):
+        tvals = None
+        if isinstance(val, Number):
+            tvals = (float(val),)*ndim
+        else :
+            tvals = tuple(val)
+            if len(tvals) != ndim:
+                raise RuntimeError("sigma/innerScale/outerScale must be as long as ndim, or must be a scalar")
+        return tvals
+
+    def getConvolutionOptionsClass(ndim):
+        assert ndim >=2 and ndim <= 5
+        if ndim == 2 :
+            return blockwise.BlockwiseConvolutionOptions2D
+        elif ndim == 3 :
+            return blockwise.BlockwiseConvolutionOptions3D
+        elif ndim == 4 :
+            return blockwise.BlockwiseConvolutionOptions4D
+        elif ndim == 5 :
+            return blockwise.BlockwiseConvolutionOptions5D
+
+    def convolutionOptions(blockShape, sigma=None, innerScale=None, outerScale=None, numThreads = cpu_count()):
+        ndim = len(blockShape)
+        options = getConvolutionOptionsClass(ndim)()
+        options.blockShape = blockShape
+        options.numThreads = numThreads
+
+        if sigma is not None:
+            sigma = makeTuple(sigma,ndim)
+            options.stdDev = sigma
+
+        if innerScale is not None:
+            options.innerScale = makeTuple(innerScale,ndim)
+
+        if outerScale is not None:
+            options.outerScale = makeTuple(outerScale,ndim)
+        return options
+
+    convolutionOptions.__module__ = 'vigra.blockwise'
+    blockwise.convolutionOptions = convolutionOptions
+    blockwise.convOpts = convolutionOptions
+
+    def gaussianSmooth(image,options,out=None):
+        out = blockwise._gaussianSmooth(image,options,out)
+        return out
+    gaussianSmooth.__module__ = 'vigra.blockwise'
+    blockwise.gaussianSmooth = gaussianSmooth
+
+    def gaussianGradient(image,options,out=None):
+        out = blockwise._gaussianGradient(image,options,out)
+        return out
+    gaussianGradient.__module__ = 'vigra.blockwise'
+    blockwise.gaussianGradient = gaussianGradient
+
+    def gaussianGradientMagnitude(image,options,out=None):
+        out = blockwise._gaussianGradientMagnitude(image,options,out)
+        return out
+    gaussianGradientMagnitude.__module__ = 'vigra.blockwise'
+    blockwise.gaussianGradientMagnitude = gaussianGradientMagnitude
+
+
+    def hessianOfGaussianEigenvalues(image,options,out=None):
+        out = blockwise._hessianOfGaussianEigenvalues(image,options,out)
+        return out
+    hessianOfGaussianEigenvalues.__module__ = 'vigra.blockwise'
+    blockwise.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
+
+    def hessianOfGaussianFirstEigenvalue(image,options,out=None):
+        out = blockwise._hessianOfGaussianFirstEigenvalue(image,options,out)
+        return out
+    hessianOfGaussianFirstEigenvalue.__module__ = 'vigra.blockwise'
+    blockwise.hessianOfGaussianFirstEigenvalue = hessianOfGaussianFirstEigenvalue
+
+    def hessianOfGaussianLastEigenvalue(image,options,out=None):
+        out = blockwise._hessianOfGaussianLastEigenvalue(image,options,out)
+        return out
+    hessianOfGaussianLastEigenvalue.__module__ = 'vigra.blockwise'
+    blockwise.hessianOfGaussianLastEigenvalue = hessianOfGaussianLastEigenvalue
+
+
+_genBlockwiseFunctions()
+del _genBlockwiseFunctions
 
 
 def loadBSDGt(filename):
