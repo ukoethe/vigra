@@ -61,6 +61,12 @@ ADD_LIBRARY(vigraimpex ${LIBTYPE}
     viff.cxx
     void_vector.cxx)
 
+SET(VIGRA_IMPEX_EXTRA_C_FLAGS "" CACHE STRING 
+"Extra flags specifically for *.c files in vigra/impex. Useful for supporting old compilers and/or glibc versions.")
+IF(VIGRA_IMPEX_EXTRA_C_FLAGS)
+    SET_SOURCE_FILES_PROPERTIES(lz4.c iccjpeg.c rgbe.c PROPERTIES COMPILE_FLAGS "${VIGRA_IMPEX_EXTRA_C_FLAGS}")
+ENDIF()
+
 set(SOVERSION 6)  # increment this after changing the vigraimpex library
 IF(MACOSX)
     SET_TARGET_PROPERTIES(vigraimpex PROPERTIES VERSION ${SOVERSION}.${vigra_version} 
