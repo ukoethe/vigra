@@ -266,6 +266,19 @@ class Box
         }
     }
 
+        /** Adds a border of the given width around the box. That
+         * means, begin()'s components are moved by -borderWidth
+         * and end()'s by borderWidth. (If borderWidth is
+         * negative, the box will get smaller accordingly.)
+         */
+    void addBorder(const Vector & borderWidth)
+    {
+        begin_ -= borderWidth;
+        end_   += borderWidth;
+    }
+
+
+
         /// equality check
     bool operator==(Box const &r) const
     {
@@ -461,7 +474,7 @@ class Box
          * Return box scaled by given factor.  The same scalar
          * multiplication will be performed on both begin() and end().
          */
-    Box operator*(double scale)
+    Box operator*(double scale)const
     {
         Box result(*this);
         result *= scale;
@@ -484,7 +497,7 @@ class Box
          * Return box scaled by inverse of given factor.  The same scalar
          * division will be performed on both begin() and end().
          */
-    Box operator/(double scale)
+    Box operator/(double scale)const
     {
         Box result(*this);
         result /= scale;
@@ -507,7 +520,7 @@ class Box
          * Translate box by vector addition.  The same vector addition
          * operation will be performed on both begin() and end().
          */
-    Box operator+(const Vector &offset)
+    Box operator+(const Vector &offset)const
     {
         Box result(*this);
         result += offset;
@@ -530,13 +543,19 @@ class Box
          * Translate box by vector subtract.  The same vector subtract
          * operation will be performed on both begin() and end().
          */
-    Box operator-(const Vector &offset)
+    Box operator-(const Vector &offset)const
     {
         Box result(*this);
         result -= offset;
         return result;
     }
 };
+
+template<class VALUETYPE, unsigned int DIMENSION>
+std::ostream& operator<< (std::ostream& stream, const Box<VALUETYPE, DIMENSION> & box) {
+    stream<<"["<<box.begin()<<", "<<box.end()<<" ]";
+    return stream;
+}
 
 //@}
 

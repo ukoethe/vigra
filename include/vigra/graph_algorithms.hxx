@@ -44,7 +44,8 @@
 #include <algorithm>
 #include <vector>
 #include <functional>
-
+#include <set>
+#include <iomanip>
 
 /*vigra*/
 #include "graphs.hxx"
@@ -54,6 +55,11 @@
 #include "union_find.hxx"
 #include "adjacency_list_graph.hxx"
 #include "graph_maps.hxx"
+
+#include "timing.hxx"
+//#include "openmp_helper.hxx"
+
+
 #include "functorexpression.hxx"
 #include "array_vector.hxx"
 
@@ -171,15 +177,15 @@ namespace vigra{
         typedef typename GraphIn::Edge   EdgeGraphIn;
         typedef typename GraphIn::NodeIt NodeItGraphIn;
         typedef typename GraphIn::EdgeIt EdgeItGraphIn;
-
         typedef typename GraphOut::Edge   EdgeGraphOut; 
+
+
         for(NodeItGraphIn iter(graphIn);iter!=lemon::INVALID;++iter){
             const LabelType l=labels[*iter];
             if(ignoreLabel==-1 || static_cast<Int64>(l)!=ignoreLabel)
                 rag.addNode(l);
         }
-
-        // add al edges
+    
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
@@ -189,9 +195,9 @@ namespace vigra{
                 rag.addEdge( rag.nodeFromId(lu),rag.nodeFromId(lv));
             }
         }
-        // SET UP HYPEREDGES
+        
+        //SET UP HYPEREDGES
         affiliatedEdges.assign(rag);
-        // add edges
         for(EdgeItGraphIn e(graphIn);e!=lemon::INVALID;++e){
             const EdgeGraphIn edge(*e);
             const LabelType lu = labels[graphIn.u(edge)];
@@ -206,6 +212,85 @@ namespace vigra{
             }
         }
     }
+
+    template<unsigned int DIM, class DTAG, class AFF_EDGES>
+    size_t affiliatedEdgesSerializationSize(
+        const GridGraph<DIM,DTAG> & gridGraph,
+        const AdjacencyListGraph & rag,
+        const AFF_EDGES & affEdges
+    ){
+        size_t size = 0;
+
+        typedef typename  AdjacencyListGraph::EdgeIt EdgeIt;
+        typedef typename  AdjacencyListGraph::Edge Edge;
+
+        for(EdgeIt iter(rag); iter!=lemon::INVALID; ++iter){
+            const Edge e(*iter);
+            size+=1;
+            size+=affEdges[e].size()*(DIM+1);
+        }
+        return size;
+    }
+
+    template<class OUT_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
+    void serializeAffiliatedEdges(
+        const GridGraph<DIM,DTAG> & gridGraph,
+        const AdjacencyListGraph & rag,
+        const AFF_EDGES & affEdges,
+        OUT_ITER outIter
+    ){
+      
+        typedef typename  AdjacencyListGraph::EdgeIt EdgeIt;
+        typedef typename  AdjacencyListGraph::Edge Edge;
+        typedef typename  GridGraph<DIM,DTAG>::Edge GEdge;
+
+        for(EdgeIt iter(rag); iter!=lemon::INVALID; ++iter){
+
+            const Edge edge = *iter;
+            const size_t numAffEdge = affEdges[edge].size();
+            *outIter = numAffEdge; ++outIter;
+
+            for(size_t i=0; i<numAffEdge; ++i){
+                const GEdge gEdge = affEdges[edge][i];
+                for(size_t d=0; d<DIM+1; ++d){
+                    *outIter = gEdge[d]; ++outIter;
+                }
+            }
+        }
+    }
+
+    template<class IN_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
+    void deserializeAffiliatedEdges(
+        const GridGraph<DIM,DTAG> & gridGraph,
+        const AdjacencyListGraph & rag,
+        AFF_EDGES & affEdges,
+        IN_ITER begin,
+        IN_ITER end
+    ){
+      
+        typedef typename  AdjacencyListGraph::EdgeIt EdgeIt;
+        typedef typename  AdjacencyListGraph::Edge Edge;
+        typedef typename  GridGraph<DIM,DTAG>::Edge GEdge;
+
+        affEdges.assign(rag);
+
+        for(EdgeIt iter(rag); iter!=lemon::INVALID; ++iter){
+
+            const Edge edge = *iter;
+            const size_t numAffEdge = *begin; ++begin;
+
+            for(size_t i=0; i<numAffEdge; ++i){
+                GEdge gEdge;
+                for(size_t d=0; d<DIM+1; ++d){
+                    gEdge[d]=*begin; ++begin;
+                }
+                affEdges[edge].push_back(gEdge);
+            }
+        }
+    }
+
+
+
 
     /// \brief shortest path computer
     template<class GRAPH,class WEIGHT_TYPE>
@@ -490,8 +575,6 @@ namespace vigra{
         }
     }
 
-
-
     /// \brief Astar Shortest path search
     template<class GRAPH,class WEIGHTS,class PREDECESSORS,class DISTANCE,class HEURSTIC>
     void shortestPathAStar(
@@ -570,6 +653,112 @@ namespace vigra{
         }
     }
     
+    template<
+    class GRAPH, 
+    class EDGE_WEIGHTS, 
+    class NODE_WEIGHTS,
+    class SEED_NODE_MAP,
+    class WEIGHT_TYPE
+    >
+    void shortestPathSegmentation(
+        const GRAPH & graph,
+        const EDGE_WEIGHTS & edgeWeights,
+        const NODE_WEIGHTS & nodeWeights,
+        SEED_NODE_MAP & seeds
+    ){
+
+        typedef GRAPH Graph;
+
+        typedef typename Graph::Node Node;
+        typedef typename Graph::NodeIt NodeIt;
+        typedef typename Graph::Edge Edge;
+        typedef typename Graph::OutArcIt OutArcIt;
+
+        typedef WEIGHT_TYPE WeightType;
+        typedef ChangeablePriorityQueue<WeightType>           PqType;
+        typedef typename Graph:: template NodeMap<Node>       PredecessorsMap;
+        typedef typename Graph:: template NodeMap<WeightType> DistanceMap;
+
+
+
+        // allocate maps
+        DistanceMap distMap(graph);
+        PredecessorsMap predMap(graph);
+        PqType pq(graph.maxNodeId()+1);
+
+
+        for(NodeIt n(graph);n!=lemon::INVALID;++n){
+            const Node node(*n);
+            // not a seed
+            if(seeds[node]==0){
+                pq.push(graph.id(node),std::numeric_limits<WeightType>::infinity() );
+                distMap[node]=std::numeric_limits<WeightType>::infinity();
+                predMap[node]=lemon::INVALID;
+            }
+            // a seed
+            else{
+
+                // seeds are not added to pq
+                // but direct neighbors of seed which are not seeds
+                // will be added to the queue with their distance
+                for(OutArcIt oa(graph,node); oa!=lemon::INVALID; ++oa){
+                    Edge e(*oa);
+                    const Node nNode=graph.target(*oa);
+
+                    // check that other node is NOT a seed
+                    if(seeds[nNode]==0){
+                        
+                        // set starting distance
+                        const WeightType startDist = edgeWeights[e]+nodeWeights[nNode];
+                        pq.push(graph.id(node),startDist );
+                        distMap[nNode]=startDist;
+
+                        // make seed node the predecessors
+                        // of non seed direct neighbor
+                        predMap[nNode]=node;
+                    }
+                }
+            }
+        }
+
+
+        while(!pq.empty() ){ //&& !finished){
+            const Node topNode(graph.nodeFromId(pq.top()));
+            pq.pop();
+            // loop over all neigbours
+            for(OutArcIt outArcIt(graph,topNode);outArcIt!=lemon::INVALID;++outArcIt){
+                const Node otherNode = graph.target(*outArcIt);
+                const size_t otherNodeId = graph.id(otherNode);
+
+                if(pq.contains(otherNodeId)){
+                    const Edge edge(*outArcIt);
+                    const WeightType currentDist     = distMap[otherNode];
+                    const WeightType alternativeDist = distMap[topNode]+edgeWeights[edge]+nodeWeights[otherNode];
+                    if(alternativeDist<currentDist){
+                        pq.push(otherNodeId,alternativeDist);
+                        distMap[otherNode]=alternativeDist;
+                        predMap[otherNode]=topNode;
+                    }
+                }
+
+            }
+        }
+
+        // do the labeling
+        for(NodeIt n(graph);n!=lemon::INVALID;++n){
+            Node node(*n);
+            if(seeds[node]==0){
+                int label = 0 ;
+                Node pred=predMap[node];
+                while(seeds[pred]==0){
+                    pred=predMap[pred];
+                }
+                seeds[node]=seeds[pred];
+            }
+        }
+    }
+
+
 
     namespace detail_watersheds_segmentation{
 
@@ -580,26 +769,52 @@ namespace vigra{
         }
     };
 
+    struct NoEarlyStop{
+        Int64 onQueue2_;
+        Int64 onQueue1_;
+    };
+
+    struct CarvingEarlyStop{
+        
+    };
+
     template<class PRIORITY_TYPE,class LABEL_TYPE>
     struct CarvingFunctor{
-        CarvingFunctor(const LABEL_TYPE backgroundLabel,const PRIORITY_TYPE & factor)
+        CarvingFunctor(const LABEL_TYPE backgroundLabel,
+                       const PRIORITY_TYPE & factor,
+                       const PRIORITY_TYPE & noPriorBelow
+        )
         :   backgroundLabel_(backgroundLabel),
-            factor_(factor){
+            factor_(factor),
+            noPriorBelow_(noPriorBelow){
         }
         PRIORITY_TYPE operator()(const LABEL_TYPE label,const PRIORITY_TYPE  priority)const{
-            return (label==backgroundLabel_ ? priority*factor_ : priority);
+            if(priority>=noPriorBelow_)
+                return (label==backgroundLabel_ ? priority*factor_ : priority);
+            else{
+                return priority;
+            }
         }
         LABEL_TYPE     backgroundLabel_;
         PRIORITY_TYPE  factor_;
+        PRIORITY_TYPE  noPriorBelow_;
     };
 
 
-    template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class PRIORITY_MANIP_FUNCTOR,class LABELS>
+    template<
+        class GRAPH,
+        class EDGE_WEIGHTS,
+        class SEEDS,
+        class PRIORITY_MANIP_FUNCTOR,
+        class EARLY_STOP_FUNCTOR,
+        class LABELS
+    >
     void edgeWeightedWatershedsSegmentationImpl(
         const GRAPH & g,
         const EDGE_WEIGHTS      & edgeWeights,
         const SEEDS             & seeds,
         PRIORITY_MANIP_FUNCTOR  & priorManipFunctor,
+        EARLY_STOP_FUNCTOR      & earlyStop,
         LABELS                  & labels
     ){  
         typedef GRAPH Graph;
@@ -610,95 +825,73 @@ namespace vigra{
 
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename LABELS::Value  LabelType;
-        typedef typename Graph:: template NodeMap<bool>    NodeBoolMap;
-        typedef PriorityQueue<Node,WeightType,true> PQ;
+        //typedef typename Graph:: template EdgeMap<bool>    EdgeBoolMap;
+        typedef PriorityQueue<Edge,WeightType,true> PQ;
 
         PQ pq;
-        NodeBoolMap inPQ(g);
+        //EdgeBoolMap inPQ(g);
         copyNodeMap(g,seeds,labels);
-        fillNodeMap(g,inPQ,false);
+        //fillEdgeMap(g,inPQ,false);
 
-        bool anySeed=false;
+
+        // put edges from nodes with seed on pq
         for(NodeIt n(g);n!=lemon::INVALID;++n){
             const Node node(*n);
             if(labels[node]!=static_cast<LabelType>(0)){
-                anySeed=true;
                 for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
                     const Edge edge(*a);
                     const Node neigbour=g.target(*a);
                     //std::cout<<"n- node "<<g.id(neigbour)<<"\n";
-                    if(labels[neigbour]==static_cast<LabelType>(0) && !inPQ[neigbour]){
+                    if(labels[neigbour]==static_cast<LabelType>(0)){
                         const WeightType priority = priorManipFunctor(labels[node],edgeWeights[edge]);
-                        pq.push(neigbour,priority);
-                        inPQ[neigbour]=true;
+                        pq.push(edge,priority);
+                        //inPQ[edge]=true;
                     }
                 }
             }
         }
 
 
-        if(anySeed){
+        while(!pq.empty()){
 
-            while(!pq.empty()){
-                const Node node       = pq.top();
-                const LabelType label = labels[node]; 
-                //std::cout<<"node "<<g.id(node)<<" with label "<<label<<"\n";
-                if(label!=0){
-                    throw std::runtime_error("seems like there are no seeds at all");
-                }
+            const Edge edge = pq.top();
+            pq.pop();
 
-                pq.pop();
-                bool moreThanOneLabel = false;
-                LabelType labelFound  = 0 ;
-                for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
-                    const Edge edge(*a);
-                    const Node neigbour=g.target(*a);
-                    if(labels[neigbour]!=static_cast<LabelType>(0)){
-                        if(labelFound==0){
-                            labelFound=labels[neigbour];
-                        }
-                        else{
-                            moreThanOneLabel=true;
-                            break;
-                        }
-                    }
-                }
-                if(labelFound!=0 && !moreThanOneLabel ){
-                    labels[node]=labelFound;
-                    for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
-                        const Edge edge(*a);
-                        const Node neigbour=g.target(*a);
-                        if(labels[neigbour]==static_cast<LabelType>(0)){
-                            if(!inPQ[neigbour]){
-                                const WeightType priority = priorManipFunctor(labelFound,edgeWeights[edge]);
-                                pq.push(neigbour,edgeWeights[edge]);
-                                inPQ[neigbour]=true;
-                            }
-                        }
+            const Node u = g.u(edge);
+            const Node v = g.v(edge);
+            const LabelType lU = labels[u];
+            const LabelType lV = labels[v];
+
+
+            if(lU==0 && lV==0){
+                throw std::runtime_error("both have no labels");
+            }
+            else if(lU!=0 && lV!=0){
+                // nothing to do
+            }
+            else{
+
+                const Node unlabeledNode = lU==0 ? u : v;
+                const LabelType label = lU==0 ? lV : lU;
+
+                // assign label to unlabeled node
+                labels[unlabeledNode] = label;
+
+                // iterate over the nodes edges
+                for(OutArcIt a(g,unlabeledNode);a!=lemon::INVALID;++a){
+                    const Edge otherEdge(*a);
+                    const Node targetNode=g.target(*a);
+                    if(labels[targetNode] == 0){
+                    //if(inPQ[otherEdge] == false && labels[targetNode] == 0){
+                        const WeightType priority = priorManipFunctor(label,edgeWeights[otherEdge]);
+                        pq.push(otherEdge,priority);
+                       // inPQ[otherEdge]=true;
                     }
                 }
             }
 
-
-            for(NodeIt n(g);n!=lemon::INVALID;++n){
-                const Node node(*n);
-                if(labels[node]==static_cast<LabelType>(0)){
-
-                    WeightType minWeight       = std::numeric_limits<WeightType>::infinity();
-                    LabelType  minWeightLabel  = static_cast<LabelType>(0);
-                    for(OutArcIt a(g,node);a!=lemon::INVALID;++a){
-                        const Edge edge(*a);
-                        const Node neigbour=g.target(*a);
-                        const WeightType priority = priorManipFunctor(labels[neigbour],edgeWeights[edge]);
-                        if(labels[neigbour]!=0 && priority<minWeight){
-                            minWeight=priority;
-                            minWeightLabel=labels[neigbour];
-                        }
-                    }
-                    labels[node]=minWeightLabel;
-                }
-            }
         }
+
     }
 
     } // end namespace detail_watersheds_segmentation
@@ -717,10 +910,12 @@ namespace vigra{
         const SEEDS        & seeds,
         LABELS             & labels
     ){  
-        detail_watersheds_segmentation::RawPriorityFunctor f;
-        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
+        detail_watersheds_segmentation::RawPriorityFunctor fPriority;
+        detail_watersheds_segmentation::NoEarlyStop fStop;
+        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,fPriority,fStop,labels);
     }   
     
+
     /// \brief edge weighted watersheds Segmentataion
     /// 
     /// \param g: input graph
@@ -736,14 +931,15 @@ namespace vigra{
         const SEEDS                         & seeds,
         const typename LABELS::Value        backgroundLabel,
         const typename EDGE_WEIGHTS::Value  backgroundBias,
+        const typename EDGE_WEIGHTS::Value  noPriorBelow,
         LABELS                      & labels
     ){
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename LABELS::Value       LabelType;
-        detail_watersheds_segmentation::CarvingFunctor<WeightType,LabelType> f(backgroundLabel,backgroundBias);
-        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,f,labels);
+        detail_watersheds_segmentation::CarvingFunctor<WeightType,LabelType> fPriority(backgroundLabel,backgroundBias, noPriorBelow);
+        detail_watersheds_segmentation::CarvingEarlyStop fStop;
+        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,fPriority,fStop,labels);
     }
-
 
     /// \brief edge weighted watersheds Segmentataion
     /// 
@@ -995,6 +1191,40 @@ namespace vigra{
         }
     }
 
+
+    template<class GRAPH, class NODE_MAP, class EDGE_MAP>
+    void nodeGtToEdgeGt(
+        const GRAPH & g,
+        const NODE_MAP & nodeGt,
+        const Int64 ignoreLabel,
+        EDGE_MAP & edgeGt
+    ){
+        typedef typename  GRAPH::Node Node;
+        typedef typename  GRAPH::EdgeIt EdgeIt;
+        typedef typename  GRAPH::Edge Edge;
+
+        for(EdgeIt edgeIt(g); edgeIt!=lemon::INVALID; ++edgeIt){
+            const Edge edge(*edgeIt);
+            const Node u = g.u(edge);
+            const Node v = g.v(edge);
+
+            const Int64 lU = static_cast<Int64>(nodeGt[u]);
+            const Int64 lV = static_cast<Int64>(nodeGt[v]);
+
+            if(ignoreLabel==-1 || (lU!=ignoreLabel || lV!=ignoreLabel)){
+                edgeGt[edge] = lU == lV ? 0 : 1;
+            }
+            else{
+                edgeGt[edge] = 2;
+            }
+        }
+    }
+
+
+
+
+
+
     /// project ground truth from a base graph, to a region adjacency graph.
     ///     
     ///
@@ -1023,8 +1253,14 @@ namespace vigra{
         typedef typename MapType::const_iterator MapIter;
         typedef typename  RAG:: template NodeMap<MapType> Overlap;
         Overlap overlap(rag);
+        
+        size_t i=0;
+        //::cout<<"\n"; 
+        for(BaseGraphNodeIt baseNodeIter(baseGraph); baseNodeIter!=lemon::INVALID; ++baseNodeIter , ++i ){
 
-        for(BaseGraphNodeIt baseNodeIter(baseGraph); baseNodeIter!=lemon::INVALID; ++baseNodeIter ){
+            //if (i%2000 == 0){
+            //    std::cout<<"\r"<<std::setw(10)<< float(i)/float(baseGraph.nodeNum())<<std::flush;
+            //}
 
             const BaseGraphNode baseNode = *baseNodeIter;
 
@@ -1039,7 +1275,7 @@ namespace vigra{
             // fill overlap 
             overlap[ragNode][gtLabel]+=1;
         }
-
+        //std::cout<<"\n"; 
         // select label with max overlap
         for(RagNodeIt ragNodeIter(rag); ragNodeIter!=lemon::INVALID; ++ragNodeIter ){
             const RagNode  ragNode = *ragNodeIter;
@@ -1056,6 +1292,77 @@ namespace vigra{
         }
     }
 
+
+
+    /// \brief Find indices of points on the edges
+    ///
+    /// \param rag : Region adjacency graph of the labels array
+    /// \param g : Graph of labels array
+    /// \param affiliatedEdges : The affiliated edges of the region adjacency graph
+    /// \param labelsArray : The label image
+    /// \param node : The node (of the region adjacency graph), whose edges shall be found
+    template<class RAGGRAPH, class GRAPH, class RAGEDGES, unsigned int N, class T>
+    MultiArray<2, MultiArrayIndex> ragFindEdges(
+            const RAGGRAPH & rag,
+            const GRAPH & graph,
+            const RAGEDGES & affiliatedEdges,
+            MultiArrayView<N, T> labelsArray,
+            const typename RAGGRAPH::Node & node
+    ){
+        typedef typename GRAPH::Node Node;
+        typedef typename GRAPH::Edge Edge;
+        typedef typename RAGGRAPH::OutArcIt RagOutArcIt;
+        typedef typename RAGGRAPH::Edge RagEdge;
+        typedef typename GraphDescriptorToMultiArrayIndex<GRAPH>::IntrinsicNodeMapShape NodeCoordinate;
+
+        T nodeLabel = rag.id(node);
+
+        // Find edges and write them into a set.
+        std::set< NodeCoordinate > edgeCoordinates;
+        for (RagOutArcIt iter(rag, node); iter != lemon::INVALID; ++iter)
+        {
+            const RagEdge ragEdge(*iter);
+            const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+            for (int i=0; i<affEdges.size(); ++i)
+            {
+                Node u = graph.u(affEdges[i]);
+                Node v = graph.v(affEdges[i]);
+                T uLabel = labelsArray[u];
+                T vLabel = labelsArray[v];
+
+                NodeCoordinate coords;
+                if (uLabel == nodeLabel)
+                {
+                    coords = GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(graph, u);
+                }
+                else if (vLabel == nodeLabel)
+                {
+                    coords = GraphDescriptorToMultiArrayIndex<GRAPH>::intrinsicNodeCoordinate(graph, v);
+                }
+                else
+                {
+                    vigra_precondition(false, "You should not come to this part of the code.");
+                }
+                edgeCoordinates.insert(coords);
+            }
+        }
+
+        // Fill the return array.
+        MultiArray<2, MultiArrayIndex> edgePoints(Shape2(edgeCoordinates.size(), N));
+        edgePoints.init(0);
+        int next = 0;
+        typedef typename std::set< NodeCoordinate >::iterator setIter;
+        for (setIter iter = edgeCoordinates.begin(); iter!=edgeCoordinates.end(); ++iter)
+        {
+            NodeCoordinate coords = *iter;
+            for (int k=0; k<coords.size(); ++k)
+            {
+                edgePoints(next, k) = coords[k];
+            }
+            next++;
+        }
+        return edgePoints;
+    }
     /// \brief create edge weights from node weights
     ///
     /// \param g : input graph

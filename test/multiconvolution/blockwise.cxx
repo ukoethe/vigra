@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2011 by Ullrich Koethe                     */
+/*                 Copyright 2004 by Ullrich Koethe                     */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -29,70 +29,94 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
+#include <iostream>
+#include "vigra/unittest.hxx"
+#include "vigra/stdimage.hxx"
+#include "vigra/multi_array.hxx"
+#include "vigra/multi_resize.hxx"
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/metrics.hxx>
-
-namespace python = boost::python;
-
-namespace vigra{
-
-
-
-
-
-	void defineInvalid(){
-        python::class_<lemon::Invalid>("Invalid",python::init<>());
-    }
-
-	void defineAdjacencyListGraph();
-	void defineGridGraph2d();
-    void defineGridGraph3d();
-    void defineGridGraphImplicitEdgeMap();
-    //void defineEccentricity();
-} // namespace vigra
+#include "vigra/multi_blocking.hxx"
+#include "vigra/multi_blockwise.hxx"
 
 using namespace vigra;
-using namespace boost::python;
 
 
-
-BOOST_PYTHON_MODULE_INIT(graphs)
+template <class Iterator>
+void myFillRandom(Iterator begin, Iterator end, int maximum)
 {
-    import_vigranumpy();
+    using namespace std;
 
-    python::docstring_options doc_options(true, true, false);
-
-    // all exporters needed for graph exporters (like lemon::INVALID)
-    defineInvalid();
-
-    enum_<metrics::MetricType>("MetricType")
-        .value("chiSquared", metrics::ChiSquaredMetric)
-        .value("hellinger", metrics::HellingerMetric)
-        .value("squaredNorm", metrics::SquaredNormMetric)
-        .value("norm", metrics::NormMetric)
-        .value("manhattan", metrics::ManhattanMetric)
-        .value("symetricKl", metrics::SymetricKlMetric)
-        .value("bhattacharya", metrics::BhattacharyaMetric)
-        ;
-    
-
-
-    // all graph classes itself (GridGraph , AdjacencyListGraph)
-    defineAdjacencyListGraph();
-    defineGridGraph2d();
-    defineGridGraph3d();
-
-    // implicit edge maps
-    defineGridGraphImplicitEdgeMap();
-
-    //defineEccentricity();
+    for( ; begin != end; ++begin)
+        *begin = rand() % maximum;
 }
+
+struct BlockwiseConvolutionTest{
+
+
+
+
+    BlockwiseConvolutionTest(){       
+
+    }
+
+
+    void test1()
+    {
+        double sigma = 1.0;
+        blockwise::BlockwiseConvolutionOptions<2>   opt;
+        TinyVector<double, 2> sigmaV(sigma, sigma);
+
+        opt.setStdDev(sigmaV);
+        opt.setBlockShape(TinyVector<int, 2>(5,7));
+
+
+        typedef MultiArray<2, double> Array;
+        typedef Array::difference_type Shape;
+        
+        // random array
+        Shape shape(200,200);
+        Array data(shape);
+        myFillRandom(data.begin(), data.end(), 2000);
+
+        // blockwise
+        Array resB(shape);
+        blockwise::gaussianSmoothMultiArray(data, resB, opt);
+
+        Array res(shape);
+        gaussianSmoothMultiArray(data, res, sigma);
+
+        shouldEqualSequenceTolerance(
+            res.begin(), 
+            res.end(), 
+            resB.begin(), 
+            1e-14
+        );
+
+    }
+};
+ 
+struct BlockwiseConvolutionTestSuite
+: public vigra::test_suite
+{
+    BlockwiseConvolutionTestSuite()
+    : vigra::test_suite("BlockwiseConvolutionTestSuite")
+    {   
+        add( testCase( &BlockwiseConvolutionTest::test1));
+    }
+};
+
+int main(int argc, char ** argv)
+{
+    BlockwiseConvolutionTestSuite test;
+
+    int failed = test.run(vigra::testsToBeExecuted(argc, argv));
+
+    std::cout << test.report() << std::endl;
+
+    return (failed != 0);
+}
+

@@ -36,8 +36,9 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
 #define NO_IMPORT_ARRAY
 
+#define WITH_BOOST_GRAPH
 
-
+/*vigra*/
 #include "export_graph_visitor.hxx"
 #include "export_graph_rag_visitor.hxx"
 #include "export_graph_algorithm_visitor.hxx"
@@ -46,58 +47,90 @@
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
+#include <vigra/multi_gridgraph.hxx>
 #include <vigra/adjacency_list_graph.hxx>
+#include <vigra/graph_algorithms.hxx>
+#include <vigra/graph_maps.hxx>
 #include <vigra/python_graph.hxx>
+
+
 namespace python = boost::python;
 
 namespace vigra{
 
 
 
-    NumpyAnyArray pySerializeAdjacencyListGraph(
-        const AdjacencyListGraph & graph,
-        NumpyArray<1, UInt32> serialization 
+
+    template<class GRAPH, class T_NODE,class FUNCTOR , class OTF_EDGE_MAP>
+    OTF_EDGE_MAP * makeImplicitEdgeMap(
+        const GRAPH & graph,
+        const typename PyNodeMapTraits<GRAPH, T_NODE>::Array & nodeArray
     ){
-        serialization.reshapeIfEmpty( NumpyArray<1, UInt32>::difference_type(graph.serializationSize()));
-        graph.serialize(serialization.begin());
-        return serialization;
+        // generate lemon compatible map to node array (cheap view)
+        typename PyNodeMapTraits<GRAPH,   T_NODE>::Map nodeArrayMap(graph, nodeArray);
+        FUNCTOR f;
+        OTF_EDGE_MAP * res = new OTF_EDGE_MAP(graph, nodeArrayMap, f);
+        return res;
+
     }
 
 
-    void pyDeserializeAdjacencyListGraph(
-        AdjacencyListGraph & graph,
-        const NumpyArray<1, UInt32> & serialization 
-    ){
-        graph.clear();
-        graph.deserialize(serialization.begin(),serialization.end());
-    }
 
+    template<class GRAPH, class T_NODE,class NODE_MAP, class FUNCTOR, class RESULT>
+    void defineImplicitEdgeMapT(const std::string & clsName, const std::string & factoryName){
 
-    void defineAdjacencyListGraph(){
         
-        typedef AdjacencyListGraph  Graph;
-        // define graph itself
-        const std::string clsName = "AdjacencyListGraph";
-        python::class_<Graph>(clsName.c_str(),"undirected adjacency list graph",
-            python::init< const size_t,const size_t >( )
-        )
-        .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
-        .def(LemonUndirectedGraphAddItemsVisitor<Graph>(clsName))
-        .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
-        .def(LemonGraphShortestPathVisitor<Graph>(clsName))
-        .def(LemonGraphRagVisitor<Graph>(clsName))
-        .def(LemonGraphHierachicalClusteringVisitor<Graph>(clsName))
+        typedef OnTheFlyEdgeMap2<GRAPH, NODE_MAP, FUNCTOR, RESULT> EdgeMap;
 
-        // serialization helper
-        .def("serializationSize",&Graph::serializationSize, "number of integers needed to serialize graph")
-        .def("serialize",registerConverters(&pySerializeAdjacencyListGraph),
-            (
-                python::arg("serialization")=python::object()
-            )
-        )
-        .def("deserialize",registerConverters(&pyDeserializeAdjacencyListGraph) )
+        python::class_<EdgeMap>(clsName.c_str(),python::no_init)
         ;
+
+
+
+        python::def(factoryName.c_str(),registerConverters(&makeImplicitEdgeMap<GRAPH, T_NODE,FUNCTOR, EdgeMap>),
+            python::with_custodian_and_ward_postcall< 0,1 ,
+                python::with_custodian_and_ward_postcall< 0 ,2,
+                    python::return_value_policy<   python::manage_new_object      
+                >   >   >()  
+        );
+       
     }
+
+    template<int DIM, class T_NODE, class T_RES, class FUNCTOR>
+    void defineGridGraphImplicitEdgeMapT(const std::string & clsName, const std::string & factoryName){
+            
+
+
+        typedef GridGraph<DIM, boost::undirected_tag> Graph;
+        typedef typename PyNodeMapTraits<Graph, T_NODE>::Map NodeMap;
+       
+        //typedef OnTheFlyEdgeMap2<Graph, NodeMap, FUNCTOR, T_RES> EdgeMap;
+        defineImplicitEdgeMapT<Graph,T_NODE, NodeMap, FUNCTOR,  T_RES>(clsName,factoryName);
+
+
+
+
+
+    }
+
+
+    void defineGridGraphImplicitEdgeMap(){
+
+        {
+            typedef float NodeValue;
+            typedef float EdgeValue;
+            typedef MeanFunctor<EdgeValue> Functor;
+            defineGridGraphImplicitEdgeMapT<3, NodeValue, EdgeValue,Functor>(
+                std::string("ImplicitMEanEdgeMap_3d_float_float"),
+                std::string("implicitMeanEdgeMap")
+            );
+            defineGridGraphImplicitEdgeMapT<2, NodeValue, EdgeValue,Functor>(
+                std::string("ImplicitMEanEdgeMap_2d_float_float"),
+                std::string("implicitMeanEdgeMap")
+            );
+        }
+    }
+
 } 
 
 

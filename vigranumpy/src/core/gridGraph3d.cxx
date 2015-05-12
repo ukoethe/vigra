@@ -59,9 +59,6 @@ namespace vigra{
 
 
 
-
-
-
     template<unsigned int DIM,class DTAG>
     NodeHolder< GridGraph<DIM,boost::undirected_tag> > pyCoordinateToNode3d(
         const GridGraph<DIM,boost::undirected_tag> & g,
@@ -78,6 +75,14 @@ namespace vigra{
     ){
         return new GridGraph<DIM,DTAG>(shape,directNeighborhood?DirectNeighborhood:IndirectNeighborhood);
     }
+
+
+
+    
+    template<unsigned int DIM>
+    void defineGridGraphRagSerialization();
+
+
 
     template<unsigned int DIM>
     void defineGridGraphT3d(const std::string & clsName){
@@ -103,6 +108,9 @@ namespace vigra{
     void defineGridGraph3d(){
         //defineGridGraphT<2>("GridGraphUndirected2d");
         defineGridGraphT3d<3>("GridGraphUndirected3d");
+
+        defineGridGraphRagSerialization<3>();
+
     }
 
 

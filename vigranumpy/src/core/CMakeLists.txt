@@ -90,8 +90,13 @@ VIGRA_ADD_NUMPY_MODULE(optimization SOURCES
 VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     graphs.cxx
     adjacencyListGraph.cxx
+    gridGraphNd.cxx
     gridGraph2d.cxx
     gridGraph3d.cxx
+    grid_graph_implicit_edge_maps.cxx
+    #eccentricity.cxx
+  LIBRARIES
+    ${VIGRANUMPY_IMPEX_LIBRARIES}  ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(histogram SOURCES
@@ -101,3 +106,9 @@ VIGRA_ADD_NUMPY_MODULE(histogram SOURCES
 VIGRA_ADD_NUMPY_MODULE(utilities SOURCES
     utilities.cxx
   VIGRANUMPY)
+
+
+VIGRA_ADD_NUMPY_MODULE(blockwise SOURCES
+    blockwise.cxx
+  VIGRANUMPY)
+

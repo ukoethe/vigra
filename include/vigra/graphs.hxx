@@ -95,6 +95,8 @@ struct vertex_index_t {};
 
 struct edge_property_tag {};
 
+
+#if 1
 #ifndef BOOST_TUPLE_HPP
 
 // tie() support for std::pair, similar to Boost's one:
@@ -127,6 +129,7 @@ tie(T1& t1, T2& t2)
 {
     return tie_adapter<T1, T2>(t1, t2);
 }
+#endif
 #endif
 
 // graph_traits class template

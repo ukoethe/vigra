@@ -23,6 +23,9 @@ imgLabBig = vigra.resize(imgLab, [imgLab.shape[0]*2-1, imgLab.shape[1]*2-1])
 gradMag    = vigra.filters.gaussianGradientMagnitude(imgLab, sigmaGradMag)
 gradMagBig = vigra.filters.gaussianGradientMagnitude(imgLabBig, sigmaGradMag*2.0)
 
+vigra.imshow(gradMagBig)
+vigra.show()
+
 # get 2D grid graph and  edgeMap for grid graph
 # from gradMag of interpolated image
 gridGraph = graphs.gridGraph(img.shape[0:2])

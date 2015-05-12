@@ -452,6 +452,15 @@ namespace vigra{
             new node will be added.
         */
         Node addNode(const index_type id);
+
+
+        /*  \brief this will remove any nodes if there are existing nodes (and edges)
+            and will add nodes in the range of ids , endId is not included!
+        */
+        void assignNodeRange(const index_type beginId, const index_type endId);
+
+
+
         /* \brief add an edge to the graph.
             If there is an other edge between u and v no new edge will be added.
         */
@@ -486,6 +495,122 @@ namespace vigra{
         }
 
         static const bool is_directed = false;
+
+    public:
+
+        void reserveMaxNodeId(const index_type mxid ){
+            if(nodeNum()==0 ||  mxid>maxNodeId())
+                nodes_.reserve(mxid+1);
+        }
+
+        void reserveEdges(const size_t size ){
+            if(size>edgeNum())
+                edges_.reserve(size);
+        }
+
+
+        void clear(){
+            nodeNum_=0;
+            edgeNum_=0;
+            edges_.clear();
+            nodes_.clear();
+        }
+        size_t serializationSize()const{
+
+            // num edges + num nodes 
+            // max edge id  + max node id
+            size_t size=4;
+
+            // edge ids
+            size+= 2*edgeNum();
+
+
+            for(NodeIt iter(*this); iter!= lemon::INVALID ; ++iter){
+                size+= 2+this->degree(*iter)*2;    
+            }
+
+            return size;
+        }
+
+        template<class ITER>
+        void serialize(ITER outIter) const {
+
+            // sizes of graph
+            *outIter = nodeNum(); ++outIter;
+            *outIter = edgeNum(); ++outIter;
+            *outIter = maxNodeId(); ++outIter;
+            *outIter = maxEdgeId(); ++outIter;
+
+            // edges
+            for(EdgeIt iter(*this); iter!=lemon::INVALID; ++iter){
+                const Edge e(*iter);
+                const size_t ui = this->id(this->u(e));
+                const size_t vi = this->id(this->v(e));
+                *outIter = ui; ++outIter;
+                *outIter = vi; ++outIter;
+            }
+
+
+
+            // node neighbors
+            for(NodeIt iter(*this); iter!= lemon::INVALID ; ++iter){
+                const Node n(*iter);
+
+                *outIter = this->id(*iter); ++outIter;
+                *outIter = this->degree(*iter); ++outIter;
+
+                for(OutArcIt eIter(*this,n); eIter!=lemon::INVALID; ++eIter){
+                    const Edge e(*eIter);
+                    const Node oNode(this->target(*eIter));
+
+                    const size_t ei = this->id(e);
+                    const size_t oni = this->id(oNode);
+
+                    *outIter = ei; ++outIter;
+                    *outIter = oni; ++outIter;
+                }
+            }
+
+        }
+
+        template<class ITER>
+        void deserialize(ITER begin, ITER end){
+
+
+            nodeNum_ = *begin; ++begin;
+            edgeNum_ = *begin; ++begin;
+            const size_t maxNid = *begin; ++begin;
+            const size_t maxEid = *begin; ++begin;
+
+            nodes_.clear();
+            edges_.clear();
+            nodes_.resize(maxNid+1, NodeStorage());
+            edges_.resize(maxEid+1, EdgeStorage());
+
+            // set up edges
+            for(size_t eid=0; eid<edgeNum_; ++eid){
+                const size_t u = *begin; ++begin;
+                const size_t v = *begin; ++begin;
+                nodes_[u].setId(u);
+                nodes_[v].setId(v);
+                edges_[eid]=EdgeStorage(u,v,eid);
+            }
+
+            // set up nodes
+            for(size_t i=0; i<nodeNum_; ++i){
+
+                const size_t id = *begin; ++begin;
+                const size_t nodeDegree=*begin; ++begin;
+
+                NodeStorage & nodeImpl = nodes_[id];
+                nodeImpl.setId(id);
+                for(size_t d=0; d<nodeDegree; ++d){
+                    const size_t ei  = *begin; ++begin;
+                    const size_t oni =  *begin; ++begin;
+                    nodeImpl.insert(oni, ei);
+                }
+            }
+        }
 
     private:
         // private typedefs
@@ -589,6 +714,20 @@ namespace vigra{
             return Node(id);
         }
     }
+
+
+    inline void 
+    AdjacencyListGraph::assignNodeRange(const AdjacencyListGraph::index_type beginId, const AdjacencyListGraph::index_type endId){
+        nodes_.clear();
+        edges_.clear();
+        edgeNum_=0;
+        nodeNum_ = endId - beginId;
+        nodes_.resize(endId);
+        for(index_type i=beginId; i<endId; ++i)
+            nodes_[i]=NodeStorage(i);
+    }
+
+
 
     inline AdjacencyListGraph::Edge 
     AdjacencyListGraph::addEdge(

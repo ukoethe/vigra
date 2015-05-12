@@ -4,6 +4,7 @@
 
 /*boost python before anything else*/
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 /*std*/
 #include <sstream>
@@ -19,6 +20,7 @@
 #include <vigra/metrics.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/error.hxx>
+#include <vigra/graph_rag_project_back.hxx>
 namespace python = boost::python;
 
 namespace vigra{
@@ -88,6 +90,7 @@ public:
     typedef NumpyArray<RagNodeMapDim,   Singleband<UInt32> > RagUInt32NodeArray;
     typedef NumpyArray<RagNodeMapDim,   Singleband<Int32 > > RagInt32NodeArray;
     typedef NumpyArray<RagNodeMapDim +1,Multiband <float > > RagMultiFloatNodeArray;
+    typedef NumpyArray<RagEdgeMapDim +1,Multiband <float > > RagMultiFloatEdgeArray;
 
     typedef NumpyScalarEdgeMap<RagGraph,RagFloatEdgeArray>         RagFloatEdgeArrayMap;
     typedef NumpyScalarNodeMap<RagGraph,RagFloatNodeArray>         RagFloatNodeArrayMap;
@@ -98,7 +101,7 @@ public:
 
 
     typedef typename RagGraph:: template EdgeMap< std::vector<Edge> > RagAffiliatedEdges;
-
+    typedef std::vector<Edge> EdgeVec;
 
     typedef typename GraphDescriptorToMultiArrayIndex<Graph>::IntrinsicNodeMapShape NodeCoordinate;
     typedef NumpyArray<1,NodeCoordinate>  NodeCoorinateArray;
@@ -112,9 +115,11 @@ public:
 
         const std::string hyperEdgeMapNamClsName = clsName_ + std::string("RagAffiliatedEdges");
         python::class_<RagAffiliatedEdges>(hyperEdgeMapNamClsName.c_str(),python::init<const RagGraph &>())
+                .def("getUVCoordinates",registerConverters(&getUVCoordinatesArray))
         ;
 
     }
+
 
     template <class classT>
     void visit(classT& c) const
@@ -128,6 +133,50 @@ public:
             python::return_value_policy<  python::manage_new_object >()
         );
 
+
+
+        // on the fly rag edge mean 
+        {
+
+
+            typedef OnTheFlyEdgeMap2<
+                Graph, typename PyNodeMapTraits<Graph,float>::Map,
+                MeanFunctor<float>, float
+            > ImplicitEdgeMap;
+
+            
+            python::def("_ragEdgeFeatures",
+                registerConverters(
+                    &pyRagEdgeMeanFromImplicit< float, float, ImplicitEdgeMap >
+                ),
+                (
+                    python::arg("rag"),
+                    python::arg("graph"),
+                    python::arg("affiliatedEdges"),
+                    python::arg("edgeFeatures"),
+                    python::arg("accumulator"),
+                    python::arg("out")=python::object()
+                )
+            );
+
+        }
+
+        
+        // explicit rag features
+        python::def("_ragEdgeFeaturesMb",registerConverters(&pyRagEdgeFeaturesMb<Multiband<float> >),
+            (
+                python::arg("rag"),
+                python::arg("graph"),
+                python::arg("affiliatedEdges"),
+                python::arg("edgeFeatures"),
+                python::arg("edgeSizes"),
+                python::arg("acc"),
+                python::arg("out")=python::object()
+            )
+        );
+
+
+        // explicit rag features
         python::def("_ragEdgeFeatures",registerConverters(&pyRagEdgeFeatures<Singleband<float> >),
             (
                 python::arg("rag"),
@@ -204,6 +253,15 @@ public:
             )
         );
 
+        python::def("_pyAccNodeSeeds",registerConverters(&pyAccNodeSeeds),
+            (
+                python::arg("rag"),
+                python::arg("graph"),
+                python::arg("labels"),
+                python::arg("seeds"),
+                python::arg("out")=python::object()
+            )
+        );
 
 
         exportPyRagProjectNodeFeaturesToBaseGraph< Singleband<float > >();
@@ -212,6 +270,69 @@ public:
         exportPyRagProjectNodeFeaturesToBaseGraph< Multiband< UInt32> >();
 
     }
+
+
+
+    static NumpyAnyArray getUVCoordinatesArray(
+        const RagAffiliatedEdges & vecVec, 
+        const Graph & graph,
+        const size_t ragEdgeIndex 
+    ){
+        const size_t pseudoDim = IntrinsicGraphShape<Graph>::IntrinsicNodeMapDimension;
+        typedef typename GraphDescriptorToMultiArrayIndex<Graph>::IntrinsicNodeMapShape Shape;
+
+        const size_t nEdges = vecVec[ragEdgeIndex].size();
+        vigra::TinyVector<MultiArrayIndex, 2> shape(nEdges,pseudoDim*2);
+        NumpyArray<2, UInt32> coords(shape);
+
+
+
+        for(size_t e=0; e<nEdges; ++e){
+            const Edge edge = vecVec[ragEdgeIndex][e];
+            const Node u = graph.u(edge);
+            const Node v = graph.v(edge);
+            const Shape uCoord = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, u);
+            const Shape vCoord = GraphDescriptorToMultiArrayIndex<Graph>::intrinsicNodeCoordinate(graph, v);
+
+            for(size_t i=0; i<pseudoDim; ++i)
+                coords(e, i) = uCoord[i];
+            for(size_t i=pseudoDim; i<2*pseudoDim; ++i)
+                coords(e, i) = vCoord[i-pseudoDim];
+        }
+        return coords;
+    }
+
+
+
+    static NumpyAnyArray pyAccNodeSeeds(
+        const RagGraph &           rag,
+        const Graph &              graph,
+        UInt32NodeArray            labelsArray,
+        UInt32NodeArray            seedsArray,
+        typename PyNodeMapTraits<RagGraph, UInt32>::Array  ragSeedsArray=RagUInt32NodeArray()
+    ){
+        ragSeedsArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedNodeMapShape(rag));
+        std::fill(ragSeedsArray.begin(),ragSeedsArray.end(),0);
+
+        UInt32NodeArrayMap labelsArrayMap(graph,labelsArray);
+        UInt32NodeArrayMap seedsArrayMap(graph,seedsArray);
+
+        typename PyNodeMapTraits<RagGraph, UInt32>::Map ragSeedsArrayMap(rag, ragSeedsArray);
+
+
+        for(NodeIt iter(graph); iter!=lemon::INVALID; ++iter){
+            const UInt32 label = labelsArrayMap[*iter];
+            const UInt32 seed  = seedsArrayMap[*iter];
+            if(seed!=0){
+                RagNode node = rag.nodeFromId(label);
+                ragSeedsArrayMap[node] = seed;
+            } 
+        }
+
+        return ragSeedsArray;
+    }
+
+
 
 
     static python::tuple 
@@ -257,6 +378,26 @@ public:
 
         // call algorithm itself
         makeRegionAdjacencyGraph(graph,labelsArrayMap,rag,*affiliatedEdges,ignoreLabel);
+
+        return affiliatedEdges;
+    }
+
+
+    static RagAffiliatedEdges * pyMakeRegionAdjacencyGraphFast(
+        const Graph &   graph,
+        UInt32NodeArray labelsArray,
+        RagGraph &      rag,
+        const UInt32 maxLabel,
+        const UInt32 reserveEdges
+    ){
+        // numpy arrays => lemon maps
+        UInt32NodeArrayMap labelsArrayMap(graph,labelsArray);
+
+        // allocate a new RagAffiliatedEdges
+        RagAffiliatedEdges * affiliatedEdges = new RagAffiliatedEdges(rag);
+
+        // call algorithm itself
+        makeRegionAdjacencyGraphFast(graph,labelsArrayMap,rag,*affiliatedEdges,maxLabel,reserveEdges);
 
         return affiliatedEdges;
     }
@@ -343,6 +484,149 @@ public:
 
 
     template<class T>
+    static NumpyAnyArray  pyRagEdgeFeaturesMb(
+        const RagGraph &           rag,
+        const Graph &              graph,
+        const RagAffiliatedEdges & affiliatedEdges,
+        typename PyEdgeMapTraits<Graph,T >::Array edgeFeaturesArray ,
+        typename PyEdgeMapTraits<Graph,float >::Array edgeSizesArray,
+        const std::string &        accumulator,
+        typename PyEdgeMapTraits<RagGraph,T >::Array ragEdgeFeaturesArray
+    ){
+
+        vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
+
+        vigra_precondition(accumulator==std::string("mean") || accumulator==std::string("sum") || 
+                           accumulator==std::string("min")  || accumulator==std::string("max"),
+            "currently the accumulators are limited to mean and sum and min and max"
+        );
+
+
+
+
+        // resize out
+        typename MultiArray<RagEdgeMapDim+1,int>::difference_type outShape;
+        for(size_t d=0;d<RagEdgeMapDim;++d){
+            outShape[d]=IntrinsicGraphShape<RagGraph>::intrinsicEdgeMapShape(rag)[d];
+        }
+        outShape[RagEdgeMapDim]=edgeFeaturesArray.shape(EdgeMapDim);
+
+
+        ragEdgeFeaturesArray.reshapeIfEmpty(   RagMultiFloatEdgeArray::ArrayTraits::taggedShape(outShape,"ec") );
+        std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
+
+
+
+
+
+        // resize out
+        //ragEdgeFeaturesArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedEdgeMapShape(rag));
+        std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
+        // numpy arrays => lemon maps
+        typename PyEdgeMapTraits<Graph   ,T >::Map edgeFeaturesArrayMap(graph,edgeFeaturesArray);
+        typename PyEdgeMapTraits<Graph   ,float >::Map edgeSizesArrayMap(graph,edgeSizesArray);
+        typename PyEdgeMapTraits<RagGraph,T >::Map ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
+
+        //typedef typename PyEdgeMapTraits<Graph,float >::Array::value_type ValType;
+
+        if(accumulator == std::string("mean") ){
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                float weightSum=0.0;
+                for(size_t i=0;i<affEdges.size();++i){
+                    const float weight = edgeSizesArrayMap[affEdges[i]];
+                    vigra::MultiArray<1,float> val = edgeFeaturesArrayMap[affEdges[i]];
+                    val*=weight;
+                    ragEdgeFeaturesArrayMap[ragEdge]+=val;
+                    weightSum+=weight;
+                }
+                ragEdgeFeaturesArrayMap[ragEdge]/=weightSum;
+            }
+        }
+        else if( accumulator == std::string("sum")){
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                for(size_t i=0;i<affEdges.size();++i){
+                    ragEdgeFeaturesArrayMap[ragEdge]+=edgeFeaturesArrayMap[affEdges[i]];
+                }
+            }
+        }
+        else{
+            throw std::runtime_error("not supported accumulator");
+        }
+
+        return ragEdgeFeaturesArray;
+    }
+
+
+    template<class T_PIXEL, class T, class OTF_EDGES>
+    static NumpyAnyArray pyRagEdgeMeanFromImplicit(
+        const RagGraph &           rag,
+        const Graph &              graph,
+        const RagAffiliatedEdges & affiliatedEdges,
+        const OTF_EDGES & otfEdgeMap,
+        const std::string & accumulator,
+        typename PyEdgeMapTraits<RagGraph,T >::Array ragEdgeFeaturesArray
+    ){
+
+        // preconditions
+        vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
+
+        // resize out
+        ragEdgeFeaturesArray.reshapeIfEmpty(TaggedGraphShape<RagGraph>::taggedEdgeMapShape(rag));
+        
+
+
+        // numpy arrays => lemon maps
+        typename PyEdgeMapTraits<RagGraph,T >::Map ragEdgeFeaturesArrayMap(rag,ragEdgeFeaturesArray);
+
+
+        if(accumulator == std::string("mean") || accumulator == std::string("sum") ){
+            std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),0.0f);
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                for(size_t i=0;i<affEdges.size();++i){
+                    ragEdgeFeaturesArrayMap[ragEdge]+=otfEdgeMap[affEdges[i]];
+                }
+                if(accumulator == std::string("mean")){
+                    ragEdgeFeaturesArrayMap[ragEdge]/=affEdges.size();
+                }
+            }
+        }
+        if(accumulator == std::string("min") ){
+            std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),std::numeric_limits<float>::infinity());
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                for(size_t i=0;i<affEdges.size();++i){
+                    ragEdgeFeaturesArrayMap[ragEdge] = std::min(otfEdgeMap[affEdges[i]], ragEdgeFeaturesArrayMap[ragEdge]);
+                }
+            }
+        }
+        if(accumulator == std::string("max") ){
+            std::fill(ragEdgeFeaturesArray.begin(),ragEdgeFeaturesArray.end(),-1.0f*std::numeric_limits<float>::infinity());
+            for(RagEdgeIt iter(rag);iter!=lemon::INVALID;++iter){
+                const RagEdge ragEdge = *iter;
+                const std::vector<Edge> & affEdges = affiliatedEdges[ragEdge];
+                for(size_t i=0;i<affEdges.size();++i){
+                    ragEdgeFeaturesArrayMap[ragEdge] = std::max(otfEdgeMap[affEdges[i]], ragEdgeFeaturesArrayMap[ragEdge]);
+                }
+            }
+        }
+        
+
+        // return 
+        return ragEdgeFeaturesArray;
+
+    }
+
+
+
+
+    template<class T>
     static NumpyAnyArray  pyRagFindEdges(
         const RagGraph &           rag,
         const Graph &              graph,
@@ -390,6 +674,7 @@ public:
         }
         return edgePoints;
     }
+
 
 
     static NumpyAnyArray  pyRagNodeFeaturesSingleband(
@@ -531,7 +816,7 @@ public:
                 ragNodeFeaturesArrayMap[ragNode]/=counting[ragNode];
             }
         }
-        else{
+        else if(accumulator == std::string("sum")){
             for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
                 UInt32 l = labelsArrayMap[*iter];
                 if(ignoreLabel==-1 || static_cast<Int32>(l)!=ignoreLabel){
@@ -539,6 +824,9 @@ public:
                     ragNodeFeaturesArrayMap[ragNode]+=nodeFeaturesArrayMap[*iter];
                 }
             }
+        }
+        else{
+            throw std::runtime_error("for multiband only mean and sum is implemented");
         }
         return ragNodeFeaturesArray;
     }
@@ -627,6 +915,14 @@ public:
         typename PyNodeMapTraits<Graph,   UInt32>::Map labelsWhichGeneratedRagArrayMap(graph, labelsWhichGeneratedRagArray);
         typename PyNodeMapTraits<RagGraph,T     >::Map ragNodeFeaturesArrayMap(rag,ragNodeFeaturesArray);
         typename PyNodeMapTraits<Graph,   T     >::Map graphNodeFeaturesArrayMap(graph,graphNodeFeaturesArray);
+        
+
+        projectBack(rag, graph, ignoreLabel, labelsWhichGeneratedRagArrayMap, 
+                    ragNodeFeaturesArrayMap, graphNodeFeaturesArrayMap);
+
+
+        /*
+
         // run algorithm
         for(typename Graph::NodeIt iter(graph);iter!=lemon::INVALID;++iter){
             if(ignoreLabel==-1 || static_cast<Int32>(labelsWhichGeneratedRagArrayMap[*iter])!=ignoreLabel)
@@ -635,12 +931,16 @@ public:
                 // do nothing
             }
         }
+        */
         return graphNodeFeaturesArray; // out
+        
     }
 
 private:
     std::string clsName_;
 };
+
+
 
 
 

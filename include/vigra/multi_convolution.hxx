@@ -51,6 +51,9 @@
 #include "tinyvector.hxx"
 #include "algorithm.hxx"
 
+
+#include <iostream>
+
 namespace vigra
 {
 
@@ -198,7 +201,7 @@ struct multiArrayScaleParam
 
 } // namespace detail
 
-#define VIGRA_CONVOLUTION_OPTIONS(function_name, default_value, member_name) \
+#define VIGRA_CONVOLUTION_OPTIONS(function_name, default_value, member_name, getter_setter_name) \
     template <class Param> \
     ConvolutionOptions & function_name(const Param & val) \
     { \
@@ -229,8 +232,13 @@ struct multiArrayScaleParam
     { \
         member_name = ParamVec(v0, v1, v2, v3, v4, "ConvolutionOptions::" #function_name); \
         return *this; \
+    } \
+    typename  ParamVec::p_vector  get##getter_setter_name()const{ \
+      return member_name.vec; \
+    } \
+    void set##getter_setter_name(typename ParamVec::p_vector vec){ \
+      member_name.vec = vec; \
     }
-
 
 /** \brief  Options class template for convolutions.
  
@@ -366,7 +374,7 @@ class ConvolutionOptions
 
     // Step size per axis.
     // Default: dim values of 1.0
-    VIGRA_CONVOLUTION_OPTIONS(stepSize, 1.0, step_size)
+    VIGRA_CONVOLUTION_OPTIONS(stepSize, 1.0, step_size, StepSize)
 #ifdef DOXYGEN
         /** Step size(s) per axis, i.e., the distance between two
             adjacent pixels. Required for <tt>MultiArray</tt>
@@ -385,7 +393,7 @@ class ConvolutionOptions
 
     // Resolution standard deviation per axis.
     // Default: dim values of 0.0
-    VIGRA_CONVOLUTION_OPTIONS(resolutionStdDev, 0.0, sigma_d)
+    VIGRA_CONVOLUTION_OPTIONS(resolutionStdDev, 0.0, sigma_d, ResolutionStdDev)
 #ifdef DOXYGEN
         /** Resolution standard deviation(s) per axis, i.e., a supposed
             pre-existing gaussian filtering by this value.
@@ -401,8 +409,8 @@ class ConvolutionOptions
 
     // Standard deviation of scale space operators.
     // Default: dim values of 0.0
-    VIGRA_CONVOLUTION_OPTIONS(stdDev, 0.0, sigma_eff)
-    VIGRA_CONVOLUTION_OPTIONS(innerScale, 0.0, sigma_eff)
+    VIGRA_CONVOLUTION_OPTIONS(stdDev, 0.0, sigma_eff, StdDev)
+    VIGRA_CONVOLUTION_OPTIONS(innerScale, 0.0, sigma_eff, InnerScale)
 
 #ifdef DOXYGEN
         /** Standard deviation(s) of scale space operators, or inner scale(s) for \ref structureTensorMultiArray().
@@ -432,7 +440,7 @@ class ConvolutionOptions
 
     // Outer scale, for structure tensor.
     // Default: dim values of 0.0
-    VIGRA_CONVOLUTION_OPTIONS(outerScale, 0.0, outer_scale)
+    VIGRA_CONVOLUTION_OPTIONS(outerScale, 0.0, outer_scale, OuterScale)
 #ifdef DOXYGEN
         /** Standard deviation(s) of the second convolution of the
             structure tensor. 
@@ -470,6 +478,10 @@ class ConvolutionOptions
         return *this;
     }
 
+    double getFilterWindowSize() const {
+      return window_ratio;
+    }
+
         /** Restrict the filter to a subregion of the input array. 
 
             This is useful for speeding up computations by ignoring irrelevant 
@@ -485,6 +497,13 @@ class ConvolutionOptions
         from_point = from;
         to_point = to;
         return *this;
+    }
+
+    std::pair<Shape, Shape> getSubarray()const{
+      std::pair<Shape, Shape> res;
+      res.first  = from_point;
+      res.second = to_point;
+      return res;
     }
 };
 
@@ -578,6 +597,7 @@ internalSeparableConvolveSubarray(
     TinyVector<double, N> overhead;
     for(int k=0; k<N; ++k)
     {
+        axisorder[k] = k;
         sstart[k] = start[k] - kit[k].right();
         if(sstart[k] < 0)
             sstart[k] = 0;
@@ -588,7 +608,6 @@ internalSeparableConvolveSubarray(
     }
     
     indexSort(overhead.begin(), overhead.end(), axisorder.begin(), std::greater<double>());
-    
     SrcShape dstart, dstop(sstop - sstart);
     dstop[axisorder[0]]  = stop[axisorder[0]] - start[axisorder[0]];
     

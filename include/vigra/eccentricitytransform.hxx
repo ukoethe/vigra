@@ -52,6 +52,7 @@
 namespace vigra
 {
 
+
 template <class Graph, class WeightType, 
           class EdgeMap, class Shape>
 TinyVector<MultiArrayIndex, Shape::static_size> 

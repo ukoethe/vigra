@@ -33,7 +33,9 @@
 #
 #######################################################################
 
-import sys, os
+import sys, os, time
+from numbers import Number
+from multiprocessing import cpu_count
 
 _vigra_path = os.path.abspath(os.path.dirname(__file__))
 _vigra_doc_path = _vigra_path + '/doc/vigranumpy/index.html'
@@ -115,8 +117,34 @@ import optimization
 import histogram
 import graphs
 import utilities
+import blockwise
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
+
+
+
+class Timer:    
+    def __init__(self, name, verbose=True):
+        self.name = name 
+        self.verbose = verbose
+
+    def __enter__(self):
+        if self.verbose:
+            print self.name, "..."
+        self.start = time.time()
+        return self
+
+    def __exit__(self, *args):
+        self.end = time.time()
+        self.interval = self.end - self.start
+        if self.verbose  :
+            print "... took ", self.interval, "sec"
+
+
+
+
+
+
 
 try:
     import fourier
@@ -308,12 +336,25 @@ def imshow(image,show=True):
         raise RuntimeError("vigra.imshow(): Image must have 1 or 3 channels.")
 
 
-def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False):
+def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False,r=0):
+
+    img = numpy.squeeze(img)
+    if img.ndim ==2:
+        img = numpy.concatenate( [ img[:,:,None]]*3 ,axis=2).astype(numpy.float32)
+        img = taggedView(img, 'xyc')
 
     labels = numpy.squeeze(labels)
     crackedEdges = analysis.regionImageToCrackEdgeImage(labels).squeeze()
-    print "cracked shape",crackedEdges.shape
+    #print "cracked shape",crackedEdges.shape
     whereEdge    =  numpy.where(crackedEdges==0)
+    whereNoEdge  =  numpy.where(crackedEdges!=0)
+    crackedEdges[whereEdge] = 1
+    crackedEdges[whereNoEdge] = 0
+
+    if r>0 :
+        res = filters.discDilation(crackedEdges.astype(numpy.uint8),int(r) )
+        whereEdge  =  numpy.where(res==1)
+
     imgToDisplay = resize(img,numpy.squeeze(crackedEdges).shape)
     imgToDisplay-=imgToDisplay.min()
     imgToDisplay/=imgToDisplay.max()
@@ -700,8 +741,16 @@ def _genGridGraphConvenienceFunctions():
     def isGridGraph(obj):
         """ check if obj is gridGraph"""
         return isinstance(obj,(graphs.GridGraphUndirected2d , graphs.GridGraphUndirected3d))
+    def isGridGraph2d(obj):
+        """ check if obj is gridGraph"""
+        return isinstance(obj,graphs.GridGraphUndirected2d)
+
     isGridGraph.__module__ = 'vigra.graphs'
     graphs.isGridGraph = isGridGraph  
+
+    isGridGraph2d.__module__ = 'vigra.graphs'
+    graphs.isGridGraph2d = isGridGraph2d  
+
 
 _genGridGraphConvenienceFunctions()
 del _genGridGraphConvenienceFunctions
@@ -983,7 +1032,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
     class RegionAdjacencyGraph(graphs.AdjacencyListGraph):
-        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
+        def __init__(self,graph=None ,labels=None ,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
             """ Region adjacency graph
 
                 Keyword Arguments :
@@ -1011,20 +1060,43 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
             """
-            super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
+            if(graph is not None and labels is not None):
+                super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
 
-            if ignoreLabel is None:
-                ignoreLabel=-1
+                if ignoreLabel is None and isDense is not None and isDense == True:
+                    if ignoreLabel is None:
+                        ignoreLabel=-1
 
-            self.labels          = labels
-            self.ignoreLabel     = ignoreLabel
-            self.baseGraphLabels = labels
-            self.baseGraph       = graph
-            # set up rag
-            self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
+                    self.labels          = labels
+                    self.ignoreLabel     = ignoreLabel
+                    self.baseGraphLabels = labels
+                    self.baseGraph       = graph
+                    if maxLabel is None:
+                        maxLabel = int(numpy.max(labels))
+                    # set up rag
+                    self.affiliatedEdges = graphs._regionAdjacencyGraphFast(graph,labels,self,maxLabel,int(reserveEdges))
+
+                else:
+
+                    if ignoreLabel is None:
+                        ignoreLabel=-1
+
+                    self.labels          = labels
+                    self.ignoreLabel     = ignoreLabel
+                    self.baseGraphLabels = labels
+                    self.baseGraph       = graph
+                    # set up rag
+                    self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
+            else :
+                super(RegionAdjacencyGraph,self).__init__(0,0)
 
         def mergeGraph(self):
             return graphs.AdjacencyListGraphMergeGraph(self)
+
+        def accumulateSeeds(self, seeds, out=None):
+            graph = self.baseGraph
+            labels = self.labels
+            return graphs._pyAccNodeSeeds(self, graph, labels, seeds, out)
 
         def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
             """ accumulate edge features from base graphs edges features
@@ -1034,21 +1106,34 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     - edgeFeatures : edge features of baseGraph
                     - acc : used accumulator (default: 'mean')
                         Currently only 'mean' and 'sum' are implemented
-                    - out :  preallocated edge map 
+                    - out :  preallocated edge map
 
-                Returns : 
+                Returns :
                     accumulated edge features
             """
-            if self.edgeNum == 0 :
-              raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")
             graph = self.baseGraph
             affiliatedEdges = self.affiliatedEdges
-            if acc == 'mean':
-              weights = self.baseGraph.edgeLengths()
-            else :
-              weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
-              weights[:]=1
-            return  graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
+
+            if isinstance(edgeFeatures, (graphs.ImplicitMEanEdgeMap_2d_float_float, graphs.ImplicitMEanEdgeMap_3d_float_float)):
+
+
+                if graphs.isGridGraph(graph)==False:
+                    raise RuntimeError("implicit edge maps are only implemented for grid graphs")
+
+                return graphs._ragEdgeFeatures(self, graph, affiliatedEdges, edgeFeatures,acc, out)
+
+            else:
+                if self.edgeNum == 0:
+                    raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")
+                if acc == 'mean':
+                    weights = self.baseGraph.edgeLengths()
+                else:
+                    weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
+                    weights[:] = 1
+                if graphs.isGridGraph2d(graph) and edgeFeatures.ndim == 4 :
+                    return graphs._ragEdgeFeaturesMb(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
+                else:
+                    return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
 
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
@@ -1070,10 +1155,13 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             labels = self.baseGraphLabels
             ignoreLabel = self.ignoreLabel
             if acc == 'mean':
+              #print "get node size..."
               weights = self.baseGraph.nodeSize()
+              #print "weights == ", weights
             else :
               weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
               weights[:]=1
+
             return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,weights,acc,ignoreLabel,out)
 
         def projectNodeFeatureToBaseGraph(self,features,out=None):
@@ -1135,17 +1223,40 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             return self.projectNodeFeatureToBaseGraph(features=labels)
 
         def projectBaseGraphGt(self, baseGraphGt, gt=None, gtQuality=None):
+            bggt = numpy.require(baseGraphGt,dtype=numpy.uint32)
             gt, gtQuality = graphs._ragProjectGroundTruth(rag=self, graph=self.baseGraph,
-                                                          labels=self.baseGraphLabels, gt=baseGraphGt,
+                                                          labels=self.baseGraphLabels, gt=bggt,
                                                           ragGt=gt, ragGtQuality=gtQuality)
             return gt, gtQuality
 
+
+        def edgeUVCoordinates(self, edgeId):
+
+            try :
+                ei = int(edgeId)
+            except:
+                ei = edgeId.id
+
+            affEdges = self.affiliatedEdges
+            uvCoords = affEdges.getUVCoordinates(self.baseGraph, ei)
+            dim = uvCoords.shape[1]/2
+            uCoords = uvCoords[:,0:dim]
+            vCoords = uvCoords[:,dim:2*dim]
+            return (uCoords,vCoords)
+
+        def edgeTopologicalCoordinates(self, edgeId):
+            uc,vc = self.edgeUVCoordinates(edgeId)
+            return uc+vc
+
+        def edgeCoordinates(self, edgeId):
+            uc,vc = self.edgeUVCoordinates(edgeId)
+            return (uc+vc)/2.0
 
     RegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.RegionAdjacencyGraph = RegionAdjacencyGraph
 
     class GridRegionAdjacencyGraph(graphs.RegionAdjacencyGraph):
-        def __init__(self,graph,labels,ignoreLabel=None,reserveEdges=0):
+        def __init__(self,graph=None,labels=None,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
             """ Grid Region adjacency graph
 
                 A region adjaceny graph,where the base graph should be
@@ -1180,9 +1291,12 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
             """
-            if not (graphs.isGridGraph(graph) or  isinstance(graph,GridRegionAdjacencyGraph)):
-                raise RuntimeError("graph must be a GridGraph or a GridRegionAdjacencyGraph")
-            super(GridRegionAdjacencyGraph,self).__init__(graph,labels,ignoreLabel,reserveEdges)
+            if graph is not None and labels is not None:
+                if not (graphs.isGridGraph(graph) or  isinstance(graph,GridRegionAdjacencyGraph)):
+                    raise RuntimeError("graph must be a GridGraph or a GridRegionAdjacencyGraph")
+                super(GridRegionAdjacencyGraph, self).__init__(graph, labels, ignoreLabel, reserveEdges, maxLabel, isDense)
+            else:
+                super(GridRegionAdjacencyGraph, self).__init__()
 
         @property
         def shape(self):
@@ -1284,12 +1398,79 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             baseNodeSizes = self.baseGraph.edgeLengths()
             return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
 
+
+        def writeHDF5(self, filename, dset):
+            if(graphs.isGridGraph(self.baseGraph)):
+
+                sGraph    = self.serialize()
+                sAffEdges = graphs._serialzieGridGraphAffiliatedEdges(self.baseGraph, self, self.affiliatedEdges )
+                sLabels   = self.labels
+
+
+                writeHDF5(numpy.array([self.ignoreLabel]), filename, dset+'/ignore_label')
+                writeHDF5(sLabels, filename, dset+'/labels')
+                writeHDF5(sGraph, filename, dset+'/graph')
+                writeHDF5(sAffEdges, filename, dset+'/affiliated_edges')
+                
+
+            else:
+                raise RuntimeError("only RAGs of Grid graph can be serialized")
+
+
+        #def readHdf5(self, filename, dset):
+        #    labels = readHdf5(filename,  dset+'/labels')
+        #    shape = labels.shape
+        #    self.baseGraph  = graphs.gridGraph(shape)
+
+
+
     GridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
 
 
 
-    def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0):
+    def loadGridRagHDF5(filename , dset):
+
+        #print "load labels and make grid graph"
+        labels = readHDF5(filename,  dset+'/labels')
+        shape = labels.shape
+        gridGraph = graphs.gridGraph(shape)
+        #print gridGraph
+
+
+        #print "load graph serialization"
+        graphSerialization = readHDF5(filename, dset+'/graph')
+
+        #print "make empty grid rag"
+        gridRag = GridRegionAdjacencyGraph()
+
+        #print "deserialize"
+        gridRag.deserialize(graphSerialization)
+
+
+        #print "load affiliatedEdges"
+        affEdgeSerialization = readHDF5(filename, dset+'/affiliated_edges')
+        #print "deserialize"
+        affiliatedEdges = graphs._deserialzieGridGraphAffiliatedEdges(gridGraph, gridRag, affEdgeSerialization)
+
+
+        ignoreLabel =  readHDF5(filename, dset+'/ignore_label')
+
+        gridRag.affiliatedEdges = affiliatedEdges
+        gridRag.labels          = taggedView(labels,"xyz")
+        gridRag.ignoreLabel     = int(ignoreLabel[0])
+        gridRag.baseGraphLabels = taggedView(labels,"xyz")
+        gridRag.baseGraph       = gridGraph
+
+        return gridRag
+
+
+
+
+    loadGridRagHDF5.__module__ = 'vigra.graphs'
+    graphs.loadGridRagHDF5 = loadGridRagHDF5
+
+    def regionAdjacencyGraph(graph,labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
         """ Return a region adjacency graph for a labeld graph.
 
             Parameters:
@@ -1306,15 +1487,22 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     Otherwise a RegionAdjacencyGraph will be returned
         """
         if isinstance(graph , graphs.GridRegionAdjacencyGraph) or graphs.isGridGraph(graph):
-            return GridRegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges)
+            return GridRegionAdjacencyGraph(graph=graph, labels=labels, ignoreLabel=ignoreLabel,
+                                            reserveEdges=reserveEdges, maxLabel=maxLabel, isDense=isDense)
         else:
-            return RegionAdjacencyGraph(graph=graph,labels=labels,ignoreLabel=ignoreLabel,reserveEdges=reserveEdges) 
+            return RegionAdjacencyGraph(graph=graph, labels=labels, ignoreLabel=ignoreLabel,
+                                        reserveEdges=reserveEdges, maxLabel=maxLabel, isDense=isDense)
 
 
     regionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.regionAdjacencyGraph = regionAdjacencyGraph
 
-    def gridRegionAdjacencyGraph(labels,ignoreLabel=None,reserveEdges=0):
+
+   
+
+
+
+    def gridRegionAdjacencyGraph(labels,ignoreLabel=None,reserveEdges=0, maxLabel=None, isDense=None):
         """ get a region adjacency graph and a grid graph from a labeling.
 
             This function will call 'graphs.gridGraph' and 'graphs.regionAdjacencyGraph'
@@ -1325,8 +1513,9 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 - reserveEdges : reserve a number of edges (default: 0)
         """
         _gridGraph=graphs.gridGraph(numpy.squeeze(labels).shape)
-        rag=graphs.regionAdjacencyGraph(_gridGraph,labels,ignoreLabel,reserveEdges)
-        return _gridGraph,rag
+        rag=graphs.regionAdjacencyGraph(graph=_gridGraph, labels=labels, ignoreLabel=ignoreLabel,
+                                        reserveEdges=reserveEdges, maxLabel=maxLabel, isDense=isDense)
+        return _gridGraph, rag
 
     gridRegionAdjacencyGraph.__module__ = 'vigra.graphs'
     graphs.gridRegionAdjacencyGraph = gridRegionAdjacencyGraph
@@ -1412,7 +1601,7 @@ def _genGraphSegmentationFunctions():
     graphs.felzenszwalbSegmentation = felzenszwalbSegmentation
 
 
-    def edgeWeightedWatersheds(graph,edgeWeights,seeds,backgoundLabel=None,backgroundBias=None,out=None):
+    def edgeWeightedWatersheds(graph,edgeWeights,seeds,backgroundLabel=None,backgroundBias=None,out=None):
         """ edge weighted seeded watersheds
 
         Keyword Arguments :
@@ -1429,12 +1618,12 @@ def _genGraphSegmentationFunctions():
             - backgroundBias : backgroundBias (default  : None)
 
         """
-        if backgoundLabel is None and backgroundBias is None:
+        if backgroundLabel is None and backgroundBias is None:
             return graphs._edgeWeightedWatershedsSegmentation(graph=graph,edgeWeights=edgeWeights,seeds=seeds,
                                                                 out=out)
         else :
-            if backgoundLabel is None or backgroundBias is None:
-                raise RuntimeError("if backgoundLabel or backgroundBias is not None, the other must also be not None")
+            if backgroundLabel is None or backgroundBias is None:
+                raise RuntimeError("if backgroundLabel or backgroundBias is not None, the other must also be not None")
             return graphs._carvingSegmentation(graph=graph,edgeWeights=edgeWeights,seeds=seeds,
                                                 backgroundLabel=backgroundLabel,backgroundBias=backgroundBias,out=out)
 
@@ -1457,6 +1646,31 @@ def _genGraphSegmentationFunctions():
 
     nodeWeightedWatershedsSeeds.__module__ = 'vigra.graphs'
     graphs.nodeWeightedWatershedsSeeds = nodeWeightedWatershedsSeeds
+
+
+    def shortestPathSegmentation(graph, edgeWeights, nodeWeights, seeds=None, out=None):
+        """ node weighted seeded watersheds
+
+        Keyword Arguments :
+
+            - graph : input graph
+
+            - edgeWeights : edge weight map 
+
+            - nodeWeights : node weight map
+
+            - seeds : node map with seeds (default: None)
+                If seeds are None, 'nodeWeightedWatershedsSeeds' will be called
+
+        """
+
+        if seeds  is None:
+            seeds = graphs.nodeWeightedWatershedsSeeds(graph=graph,nodeWeights=nodeWeights)
+        return graphs._shortestPathSegmentation(graph=graph, edgeWeights=edgeWeights, nodeWeights=nodeWeights,
+                                                seeds=seeds, out=out)
+
+    shortestPathSegmentation.__module__ = 'vigra.graphs'
+    graphs.shortestPathSegmentation = shortestPathSegmentation
 
     def nodeWeightedWatersheds(graph,nodeWeights,seeds=None,method='regionGrowing',out=None):
         """ node weighted seeded watersheds
@@ -1482,7 +1696,7 @@ def _genGraphSegmentationFunctions():
     graphs.nodeWeightedWatersheds = nodeWeightedWatersheds
 
     def agglomerativeClustering(graph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,
-            nodeNumStop=None,beta=0.5,metric='l1',wardness=1.0,out=None):
+            nodeLabels=None,nodeNumStop=None,beta=0.5,metric='l1',wardness=1.0,out=None):
         """ agglomerative hierarchicalClustering
         Keyword Arguments :
 
@@ -1524,23 +1738,38 @@ def _genGraphSegmentationFunctions():
             A node labele map encoding the segmentation
 
         """
+
         assert edgeWeights is not None or nodeFeatures is not None
+
+        print "prepare "
 
         if nodeNumStop is None:
             nodeNumStop = max(graph.nodeNum/2,min(graph.nodeNum,2))
 
+        
         if edgeLengths is None :
+            print "get edge length"
             edgeLengths = graphs.getEdgeLengths(graph)
+
+        
         if nodeSizes is None:
+            print "get node size"
             nodeSizes = graphs.getNodeSizes(graph)
 
+        
         if edgeWeights is None :
+            print "get wegihts length"
             edgeWeights = graphs.graphMap(graph,'edge')
             edgeWeights[:]=0
 
         if nodeFeatures is None :
+            print "get node feat"
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
+
+        if nodeLabels is None:
+            nodeLabels = graphs.graphMap(graph,'node',dtype='uint32')
+
 
 
         #import sys
@@ -1556,22 +1785,22 @@ def _genGraphSegmentationFunctions():
         #sys.exit(0)
 
 
+
         clusterOp = graphs.minEdgeWeightNodeDist(mg,edgeWeights=edgeWeights,edgeLengths=edgeLengths,
                                                     nodeFeatures=nodeFeatures,nodeSizes=nodeSizes,
+                                                    nodeLabels=nodeLabels,
                                                     beta=float(beta),metric=metric,wardness=wardness)
 
         
-        #clusterOp.mg=mg
-        #clusterOp.nodeSizes    = nodeSizes
-        #clusterOp.edgeLengths  = edgeLengths
-        #clusterOp.nodeFeatures = nodeFeatures
-        #clusterOp.edgeWeights  = edgeWeights        
-        hc = graphs.hierarchicalClustering(clusterOp,nodeNumStopCond=nodeNumStop)
+
+        hc = graphs.hierarchicalClustering(clusterOp, nodeNumStopCond=nodeNumStop,
+                                           buildMergeTreeEncoding=False)
+
         hc.cluster()
         labels = hc.resultLabels(out=out)
-        del hc
-        del clusterOp
-        del mg
+        #del hc
+        #del clusterOp
+        #del mg
         return labels
 
 
@@ -1579,8 +1808,10 @@ def _genGraphSegmentationFunctions():
     graphs.agglomerativeClustering = agglomerativeClustering
 
 
-    def minEdgeWeightNodeDist(mergeGraph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,outWeight=None,
-        beta=0.5,metric='squaredNorm',wardness=1.0):
+
+    def minEdgeWeightNodeDist(mergeGraph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,
+        nodeLabels=None,outWeight=None,
+        beta=0.5,metric='squaredNorm',wardness=1.0, gamma=10000000.0):
             graph=mergeGraph.graph()
             assert edgeWeights is not None or nodeFeatures is not None
 
@@ -1600,6 +1831,10 @@ def _genGraphSegmentationFunctions():
             if outWeight is None:
                 outWeight=graphs.graphMap(graph,item='edge',dtype=numpy.float32)
 
+            if nodeLabels is None :
+                nodeLabels = graphs.graphMap(graph,'node',dtype='uint32')
+                nodeLabels[:]=0
+
 
             if  metric=='squaredNorm':
                 nd=graphs.MetricType.squaredNorm
@@ -1615,8 +1850,9 @@ def _genGraphSegmentationFunctions():
                 raise RuntimeError("'%s' is not a supported distance type"%str(metric))
 
             # call unsave c++ function and make it sav
-            op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,
-                float(beta),nd,float(wardness))
+            print "nodeLabels ",nodeLabels.shape, nodeLabels.dtype
+            op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,nodeLabels,
+                float(beta),nd,float(wardness),float(gamma))
 
 
             op.__base_object__=mergeGraph
@@ -1627,12 +1863,15 @@ def _genGraphSegmentationFunctions():
             op.nodeFeatures=nodeFeatures
             return op
 
+
     minEdgeWeightNodeDist.__module__ = 'vigra.graphs'
     graphs.minEdgeWeightNodeDist = minEdgeWeightNodeDist    
 
-    def pythonClusterOperator(mergeGraph,opertator,useMergeNodeCallback=True,useMergeEdgesCallback=True,useEraseEdgeCallback=True):
+
+
+    def pythonClusterOperator(mergeGraph,operator,useMergeNodeCallback=True,useMergeEdgesCallback=True,useEraseEdgeCallback=True):
       #call unsave function and make it save
-      op = graphs.__pythonClusterOperator(mergeGraph,opertator,useMergeNodeCallback,useMergeEdgesCallback,useEraseEdgeCallback)
+      op = graphs.__pythonClusterOperator(mergeGraph,operator,useMergeNodeCallback,useMergeEdgesCallback,useEraseEdgeCallback)
       #op.__dict__['__base_object__']=mergeGraph
       #op.__base_object__=mergeGraph
       return op
@@ -1640,9 +1879,9 @@ def _genGraphSegmentationFunctions():
     pythonClusterOperator.__module__ = 'vigra.graphs'
     graphs.pythonClusterOperator = pythonClusterOperator    
 
-    def hierarchicalClustering(clusterOperator,nodeNumStopCond):
+    def hierarchicalClustering(clusterOperator,nodeNumStopCond,buildMergeTreeEncoding=True):
         # call unsave c++ function and make it save
-        hc = graphs.__hierarchicalClustering(clusterOperator,long(nodeNumStopCond))
+        hc = graphs.__hierarchicalClustering(clusterOperator,long(nodeNumStopCond),bool(buildMergeTreeEncoding))
         #hc.__dict__['__base_object__']=clusterOperator
         hc.__base_object__ = clusterOperator
         return hc
@@ -1653,6 +1892,33 @@ def _genGraphSegmentationFunctions():
 _genGraphSegmentationFunctions()
 del _genGraphSegmentationFunctions
 
+
+
+def _genHistogram():
+    def gaussianHistogram(image,minVals,maxVals,bins=30,
+                     sigma=3.0,sigmaBin=2.0,out=None):
+        """ 
+        """
+        spatialDim  = image.ndim - 1
+        out = histogram.gaussianHistogram_(image=image, minVals=minVals, maxVals=maxVals,
+                                           bins=bins, sigma=sigma, sigmaBin=sigmaBin, 
+                                           out=out)
+
+        out = out.reshape(image.shape[0:spatialDim]+(-1,))
+        if spatialDim == 2:
+            out /= numpy.sum(out,axis=spatialDim)[:,:, numpy.newaxis]
+        elif spatialDim == 3:
+            out /= numpy.sum(out,axis=spatialDim)[:,:,:, numpy.newaxis]
+        elif spatialDim == 4:
+            out /= numpy.sum(out,axis=spatialDim)[:,:,:, :,numpy.newaxis]
+        return out
+
+    gaussianHistogram.__module__ = 'vigra.histogram'
+    histogram.gaussianHistogram = gaussianHistogram
+
+
+_genHistogram()
+del _genHistogram
 
 
 def _genGraphSmoothingFunctions():
@@ -1695,6 +1961,7 @@ del _genGraphSmoothingFunctions
 
 
 
+
 def _genGraphMiscFunctions():
     
     def nodeFeaturesToEdgeWeights(graph,nodeFeatures,metric='l1',out=None):
@@ -1714,17 +1981,150 @@ def _genGraphMiscFunctions():
     nodeFeaturesToEdgeWeights.__module__ = 'vigra.graphs'
     graphs.nodeFeaturesToEdgeWeights = nodeFeaturesToEdgeWeights
 
+    def eccentricityTransform(labels, out=None):
+        """ Compute eccentricity transform on labeled image.
+
+            Keyword Arguments :
+                - labels : input image (labeled)
+
+            Returns :
+                eccentricity transform
+        """
+        return graphs._eccentricityTransform(labels=labels, out=out)
+
+    eccentricityTransform.__module__ = 'vigra.graphs'
+    graphs.eccentricityTransform = eccentricityTransform
+
+    def eccentricityCenters(labels, out=None):
+        """ Compute eccentricity centers on labeled image.
+            Output is of shape (m, N), where m is the largest label in labels and N is the dimension.
+            Since labels start with 1, column i of the output contains the center of the region with label i+1.
+
+            Keyword Arguments :
+                - labels : input image (labeled)
+
+            Returns :
+                centers of the labeled regions
+        """
+        return graphs._eccentricityCenters(labels=labels, out=out)
+
+    eccentricityCenters.__module__ = 'vigra.graphs'
+    graphs.eccentricityCenters = eccentricityCenters
+
+    def eccentricityTransformWithCenters(labels, ecc=None, centers=None):
+        """ Compute eccentricity transform and centers on labeled image.
+            Shape of centers is (m, N), where m is the largest label in labels and N is the dimension.
+            Since labels start with 1, column i of the centers contains the center of the region with label i+1.
+
+            Keyword Arguments :
+                - labels : input image (labeled)
+
+            Returns :
+                2-tuple with eccentricity transform and centers
+        """
+        return graphs._eccentricityTransformWithCenters(labels=labels, ecc=ecc, centers=centers)
+
+    eccentricityTransformWithCenters.__module__ = 'vigra.graphs'
+    graphs.eccentricityTransformWithCenters = eccentricityTransformWithCenters
+
 _genGraphMiscFunctions()
 del _genGraphMiscFunctions
 
 
 
 
+
+
+def _genBlockwiseFunctions():
+        
+    def makeTuple(val, ndim):
+        tvals = None
+        if isinstance(val, Number):
+            tvals = (float(val),)*ndim
+        else :
+            tvals = tuple(val)
+            if len(tvals) != ndim:
+                raise RuntimeError("sigma/innerScale/outerScale must be as long as ndim, or must be a scalar")
+        return tvals
+
+    def getConvolutionOptionsClass(ndim):
+        assert ndim >=2 and ndim <= 5
+        if ndim == 2 :
+            return blockwise.BlockwiseConvolutionOptions2D
+        elif ndim == 3 :
+            return blockwise.BlockwiseConvolutionOptions3D
+        elif ndim == 4 :
+            return blockwise.BlockwiseConvolutionOptions4D
+        elif ndim == 5 :
+            return blockwise.BlockwiseConvolutionOptions5D
+
+    def convolutionOptions(blockShape, sigma=None, innerScale=None, outerScale=None, numThreads = cpu_count()):
+        ndim = len(blockShape)
+        options = getConvolutionOptionsClass(ndim)()
+        options.blockShape = blockShape
+        options.numThreads = numThreads
+
+        if sigma is not None:
+            sigma = makeTuple(sigma,ndim)
+            options.stdDev = sigma
+
+        if innerScale is not None:
+            options.innerScale = makeTuple(innerScale,ndim)
+
+        if outerScale is not None:
+            options.outerScale = makeTuple(outerScale,ndim)
+        return options
+
+    convolutionOptions.__module__ = 'vigra.blockwise'
+    blockwise.convolutionOptions = convolutionOptions
+    blockwise.convOpts = convolutionOptions
+
+    def gaussianSmooth(image,options,out=None):
+        out = blockwise._gaussianSmooth(image,options,out)
+        return out
+    gaussianSmooth.__module__ = 'vigra.blockwise'
+    blockwise.gaussianSmooth = gaussianSmooth
+
+    def gaussianGradient(image,options,out=None):
+        out = blockwise._gaussianGradient(image,options,out)
+        return out
+    gaussianGradient.__module__ = 'vigra.blockwise'
+    blockwise.gaussianGradient = gaussianGradient
+
+    def gaussianGradientMagnitude(image,options,out=None):
+        out = blockwise._gaussianGradientMagnitude(image,options,out)
+        return out
+    gaussianGradientMagnitude.__module__ = 'vigra.blockwise'
+    blockwise.gaussianGradientMagnitude = gaussianGradientMagnitude
+
+
+    def hessianOfGaussianEigenvalues(image,options,out=None):
+        out = blockwise._hessianOfGaussianEigenvalues(image,options,out)
+        return out
+    hessianOfGaussianEigenvalues.__module__ = 'vigra.blockwise'
+    blockwise.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
+
+    def hessianOfGaussianFirstEigenvalue(image,options,out=None):
+        out = blockwise._hessianOfGaussianFirstEigenvalue(image,options,out)
+        return out
+    hessianOfGaussianFirstEigenvalue.__module__ = 'vigra.blockwise'
+    blockwise.hessianOfGaussianFirstEigenvalue = hessianOfGaussianFirstEigenvalue
+
+    def hessianOfGaussianLastEigenvalue(image,options,out=None):
+        out = blockwise._hessianOfGaussianLastEigenvalue(image,options,out)
+        return out
+    hessianOfGaussianLastEigenvalue.__module__ = 'vigra.blockwise'
+    blockwise.hessianOfGaussianLastEigenvalue = hessianOfGaussianLastEigenvalue
+
+
+_genBlockwiseFunctions()
+del _genBlockwiseFunctions
+
+
 def loadBSDGt(filename):
     import scipy.io as sio
     matContents = sio.loadmat(filename)
     ngt = len(matContents['groundTruth'][0])
-    print "ngts",ngt
     gts = []
     for gti in range(ngt):
         gt =  matContents['groundTruth'][0][gti][0]['Segmentation'][0]

@@ -1117,6 +1117,15 @@ void defineSegmentation()
         "shrink / ungrow a labeling / segmentation"
     );
 
+    python::def("segToSeeds", registerConverters(pythonShrinkLabels<3>),
+        (
+            python::arg("image"),
+            python::arg("shrinkN"),
+            python::arg("out")=python::object()
+        ),
+        "shrink / ungrow a labeling / segmentation"
+    );
+
     multidef("labelImage", pyLabelImage<npy_uint8, npy_uint32, float>(),
         (arg("image"), 
         arg("neighborhood") = 4,

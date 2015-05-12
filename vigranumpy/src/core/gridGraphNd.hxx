@@ -34,12 +34,24 @@
 /************************************************************************/
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
+#define NO_IMPORT_ARRAY
+
+#define WITH_BOOST_GRAPH
+
+/*vigra*/
+#include "export_graph_visitor.hxx"
+#include "export_graph_rag_visitor.hxx"
+#include "export_graph_algorithm_visitor.hxx"
+#include "export_graph_shortest_path_visitor.hxx"
+#include "export_graph_hierarchical_clustering_visitor.hxx"
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/metrics.hxx>
+#include <vigra/multi_gridgraph.hxx>
+#include <vigra/adjacency_list_graph.hxx>
+#include <vigra/graph_algorithms.hxx>
+#include <vigra/python_graph.hxx>
+
 
 namespace python = boost::python;
 
@@ -49,50 +61,56 @@ namespace vigra{
 
 
 
-	void defineInvalid(){
-        python::class_<lemon::Invalid>("Invalid",python::init<>());
+
+    template<unsigned int DIM,class DTAG>
+    NodeHolder< GridGraph<DIM,boost::undirected_tag> > pyCoordinateToNode3d(
+        const GridGraph<DIM,boost::undirected_tag> & g,
+        const typename MultiArray<DIM,int>::difference_type & coordinate
+    ){
+        typename GridGraph<DIM,boost::undirected_tag>::Node node(coordinate);
+        return NodeHolder<  GridGraph<DIM,boost::undirected_tag> >(g,node);
     }
 
-	void defineAdjacencyListGraph();
-	void defineGridGraph2d();
-    void defineGridGraph3d();
-    void defineGridGraphImplicitEdgeMap();
-    //void defineEccentricity();
-} // namespace vigra
-
-using namespace vigra;
-using namespace boost::python;
+    template<unsigned int DIM,class DTAG>
+    GridGraph<DIM,DTAG>  * pyGridGraphFactory3d(
+        typename MultiArray<DIM,int>::difference_type shape,
+        const bool directNeighborhood
+    ){
+        return new GridGraph<DIM,DTAG>(shape,directNeighborhood?DirectNeighborhood:IndirectNeighborhood);
+    }
 
 
 
-BOOST_PYTHON_MODULE_INIT(graphs)
-{
-    import_vigranumpy();
 
-    python::docstring_options doc_options(true, true, false);
 
-    // all exporters needed for graph exporters (like lemon::INVALID)
-    defineInvalid();
+    template<unsigned int DIM>
+    void defineGridGraphT3d(const std::string & clsName){
 
-    enum_<metrics::MetricType>("MetricType")
-        .value("chiSquared", metrics::ChiSquaredMetric)
-        .value("hellinger", metrics::HellingerMetric)
-        .value("squaredNorm", metrics::SquaredNormMetric)
-        .value("norm", metrics::NormMetric)
-        .value("manhattan", metrics::ManhattanMetric)
-        .value("symetricKl", metrics::SymetricKlMetric)
-        .value("bhattacharya", metrics::BhattacharyaMetric)
+        typedef GridGraph<DIM,boost::undirected_tag> Graph;
+        typedef typename MultiArray<DIM,int>::difference_type ShapeType;
+
+        
+        python::class_<Graph>(clsName.c_str(),python::init< ShapeType >())
+        .def("__init__",python::make_constructor(&pyGridGraphFactory3d<DIM,boost::undirected_tag>))
+        .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
+        .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
+        .def(LemonGridGraphAlgorithmAddonVisitor<Graph>(clsName))
+        .def(LemonGraphShortestPathVisitor<Graph>(clsName))
+        .def(LemonGraphRagVisitor<Graph>(clsName))
+        .def(LemonGraphHierachicalClusteringVisitor<Graph>(clsName))
+        .def("coordinateToNode",pyCoordinateToNode3d<DIM,boost::undirected_tag>)
         ;
-    
+
+       
+    }
+
+    void defineGridGraph3d(){
+        //defineGridGraphT<2>("GridGraphUndirected2d");
+        defineGridGraphT3d<3>("GridGraphUndirected3d");
+    }
 
 
-    // all graph classes itself (GridGraph , AdjacencyListGraph)
-    defineAdjacencyListGraph();
-    defineGridGraph2d();
-    defineGridGraph3d();
 
-    // implicit edge maps
-    defineGridGraphImplicitEdgeMap();
+} 
 
-    //defineEccentricity();
-}
+

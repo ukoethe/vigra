@@ -429,8 +429,17 @@ public:
       heap_(maxSize_+1),
       indices_(maxSize_+1, -1),
       priorities_(maxSize_+1)
-    {}
- 
+    {
+        for(int i = 0; i <= maxSize_; i++)
+            indices_[i] = -1;
+    }
+    
+
+    void reset(){
+        currentSize_ = 0 ;
+        for(int i = 0; i <= maxSize_; i++)
+            indices_[i] = -1;
+    }
     /// check if the PQ is empty
     bool empty() const {
         return currentSize_ == 0;

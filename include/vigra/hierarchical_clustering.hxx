@@ -52,14 +52,44 @@ namespace vigra{
 
 namespace cluster_operators{
 
-    /// \brief  get minimum edge weight from an edge indicator and difference of node features
+
+    /// \brief  This Cluster Operator is a MONSTER.
+    /// It can to really a lot.
+    ///
+    /// Each edge has a single scalar weight w_e.
+    /// Each node has a feature vector f_n.
+    /// (all f_n's have the same length).
+    /// Edges and nodes have a length / size
+    /// 
+    /// The total edge weight is computed via a complicated formula
+    /// 
+    /// The main idea is the following.
+    /// Use a  mixture between the edge weights w_e,
+    /// and node based edge weights which are computed
+    /// via a metric which measures the 'difference' between
+    /// the u/v feature vectors f_n.
+    ///
+    /// Furthermore a 'Ward'-like regularization can be applied.
+    /// This is useful if one  have clusters with sizes
+    /// in the same magnitude (or 'similar' sizes).
+    /// The amount of 'ward'-regularization is controlled
+    /// with the 'wardness' parameter.
+    ///
+    /// Also labels (in the sense of seeds) can be attached to get a 'watershed-ish'
+    /// behavior (nodes with different labels will never be merged)
+    /// The '0'-Label is used to indicate that there is no label at all.
+    /// If certain connected regions share the same seed/label
+    /// it is not guaranteed that they will merge. But a certain prior / multiplier
+    /// must be specified. The total weight of an edge where the u/v node have
+    /// the same label is multiplied with this very multiplier.
     template<
         class MERGE_GRAPH,
         class EDGE_INDICATOR_MAP,
         class EDGE_SIZE_MAP,
         class NODE_FEATURE_MAP,
         class NODE_SIZE_MAP,
-        class MIN_WEIGHT_MAP
+        class MIN_WEIGHT_MAP,
+        class NODE_LABEL_MAP
     >
     class EdgeWeightNodeFeatures{
         
@@ -69,7 +99,8 @@ namespace cluster_operators{
             EDGE_SIZE_MAP,
             NODE_FEATURE_MAP,
             NODE_SIZE_MAP,
-            MIN_WEIGHT_MAP
+            MIN_WEIGHT_MAP,
+            NODE_LABEL_MAP
         > SelfType;
     public:
 
@@ -100,9 +131,12 @@ namespace cluster_operators{
             NODE_FEATURE_MAP nodeFeatureMap,
             NODE_SIZE_MAP nodeSizeMap,
             MIN_WEIGHT_MAP minWeightEdgeMap,
+            NODE_LABEL_MAP nodeLabelMap,
             const ValueType beta,
             const metrics::MetricType metricType,
-            const ValueType wardness=1.0
+            const ValueType wardness=1.0,
+            const ValueType gamma = 10000000.0,
+            const ValueType sameLabelMultiplier = 0.8
         )
         :   mergeGraph_(mergeGraph),
             edgeIndicatorMap_(edgeIndicatorMap),
@@ -110,9 +144,12 @@ namespace cluster_operators{
             nodeFeatureMap_(nodeFeatureMap),
             nodeSizeMap_(nodeSizeMap),
             minWeightEdgeMap_(minWeightEdgeMap),
+            nodeLabelMap_(nodeLabelMap),
             pq_(mergeGraph.maxEdgeId()+1),
             beta_(beta),
             wardness_(wardness),
+            gamma_(gamma),
+            sameLabelMultiplier_(sameLabelMultiplier),
             metric_(metricType)
         {
             typedef typename MergeGraph::MergeNodeCallBackType MergeNodeCallBackType;
@@ -128,6 +165,7 @@ namespace cluster_operators{
             mergeGraph_.registerMergeEdgeCallBack(cbMe);
             mergeGraph_.registerEraseEdgeCallBack(cbEe);
 
+          
 
             for(EdgeIt e(mergeGraph);e!=lemon::INVALID;++e){
                 const Edge edge = *e;
@@ -137,6 +175,7 @@ namespace cluster_operators{
                 pq_.push(edgeId,currentWeight);
                 minWeightEdgeMap_[graphEdge]=currentWeight;
             }
+
         }
 
         /// \brief will be called via callbacks from mergegraph
@@ -148,6 +187,8 @@ namespace cluster_operators{
             EdgeIndicatorReference vb=edgeIndicatorMap_[bb];
             va*=edgeSizeMap_[aa];
             vb*=edgeSizeMap_[bb];
+
+
             va+=vb;
             edgeSizeMap_[aa]+=edgeSizeMap_[bb];
             va/=(edgeSizeMap_[aa]);
@@ -168,6 +209,19 @@ namespace cluster_operators{
             nodeSizeMap_[aa]+=nodeSizeMap_[bb];
             va/=(nodeSizeMap_[aa]);
             vb/=nodeSizeMap_[bb];
+
+
+            // update labels
+            const UInt32 labelA = nodeLabelMap_[aa];
+            const UInt32 labelB = nodeLabelMap_[bb];
+
+            if(labelA!=0 && labelB!=0 && labelA!=labelB){
+                throw std::runtime_error("both nodes have labels");
+            }
+            else{
+                const UInt32 newLabel  = std::max(labelA, labelB);
+                nodeLabelMap_[aa] = newLabel;
+            }
         }
 
         /// \brief will be called via callbacks from mergegraph
@@ -182,7 +236,7 @@ namespace cluster_operators{
             const Node newNode = mergeGraph_.inactiveEdgesNode(edge);
             //std::cout<<"new node "<<mergeGraph_.id(newNode)<<"\n";
 
-            size_t counter=0;
+
             // iterate over all edges of this node
             for (IncEdgeIt e(mergeGraph_,newNode);e!=lemon::INVALID;++e){
 
@@ -195,16 +249,15 @@ namespace cluster_operators{
                 //std::cout<<"get inc edge weight"<<counter<<"\n";
                 // compute the new weight for this edge
                 // (this should involve region differences)
-                const ValueType newWeight = getEdgeWeight(incEdge);
+                const ValueType newWeight =    getEdgeWeight(incEdge);
+
+
                 // change the weight in pq by repushing
 
                 //std::cout<<"push\n";
                 pq_.push(incEdge.id(),newWeight);
-                // remember edge weight
-
-                //std::cout<<"set new\n";
                 minWeightEdgeMap_[incGraphEdge]=newWeight;
-                ++counter;
+
             }
             //std::cout<<"done\n";
         }
@@ -235,22 +288,53 @@ namespace cluster_operators{
         MergeGraph & mergeGraph(){
             return mergeGraph_;
         }
+
+        bool done(){
+
+            index_type minLabel = pq_.top();
+            while(mergeGraph_.hasEdgeId(minLabel)==false){
+                pq_.deleteItem(minLabel);
+                minLabel = pq_.top();
+            }
+            const ValueType p =  pq_.topPriority();
+
+            return p>= gamma_;
+        }
+
     private:
         ValueType getEdgeWeight(const Edge & e){
             
             const Node u = mergeGraph_.u(e);
             const Node v = mergeGraph_.v(e);
 
+            const size_t dU = mergeGraph_.degree(u);
+            const size_t dV = mergeGraph_.degree(u);
             const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
-            const ValueType wardFacRaw = 1.0 / ( 1.0/std::log(nodeSizeMap_[uu]) + 1.0/std::log(nodeSizeMap_[vv]) );
+            const float sizeU = std::min(nodeSizeMap_[uu] , float(std::pow(50.f,3)));
+            const float sizeV = std::min(nodeSizeMap_[vv] , float(std::pow(50.f,3)));
+
+            const ValueType wardFacRaw = 1.0 / ( 1.0/std::sqrt(sizeU) + 1.0/std::sqrt(sizeV) );
             const ValueType wardFac = (wardFacRaw*wardness_) + (1.0-wardness_);
 
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist = metric_(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
-            const ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
+            ValueType totalWeight = ((1.0-beta_)*fromEdgeIndicator + beta_*fromNodeDist)*wardFac;
+
+
+            const UInt32 labelA = nodeLabelMap_[uu];
+            const UInt32 labelB = nodeLabelMap_[vv];
+
+            if(labelA!=0 && labelB!=0){
+                if(labelA == labelB){
+                    totalWeight*=sameLabelMultiplier_;
+                }
+                else{
+                    totalWeight += gamma_;
+                }
+            }
             return totalWeight;
         }
 
@@ -261,12 +345,17 @@ namespace cluster_operators{
         NODE_FEATURE_MAP nodeFeatureMap_;
         NODE_SIZE_MAP nodeSizeMap_;
         MIN_WEIGHT_MAP minWeightEdgeMap_;
+        NODE_LABEL_MAP nodeLabelMap_;
         vigra::ChangeablePriorityQueue< ValueType > pq_;
         ValueType beta_;
         ValueType wardness_;
-
+        ValueType gamma_;
+        ValueType sameLabelMultiplier_;
         metrics::Metric<float> metric_;
     };
+
+
+
 } // end namespace cluster_operators
 
 
@@ -329,24 +418,30 @@ namespace cluster_operators{
             mergeGraph_(clusterOperator_.mergeGraph()),
             graph_(mergeGraph_.graph()),
             timestamp_(graph_.maxNodeId()+1),
-            toTimeStamp_(graph_.maxNodeId()+1),
-            timeStampIndexToMergeIndex_(graph_.maxNodeId()+1),
+            toTimeStamp_(),
+            timeStampIndexToMergeIndex_(),
             mergeTreeEndcoding_()
         {
-            // this can be be made smater since user can pass
-            // stoping condition based on nodeNum
-            mergeTreeEndcoding_.reserve(graph_.nodeNum()*2);
-
-            for(MergeGraphIndexType nodeId=0;nodeId<=mergeGraph_.maxNodeId();++nodeId){
-                toTimeStamp_[nodeId]=nodeId;
+            if(param_.buildMergeTreeEncoding_){
+                // this can be be made smater since user can pass
+                // stoping condition based on nodeNum
+                mergeTreeEndcoding_.reserve(graph_.nodeNum()*2);
+                toTimeStamp_.resize(graph_.maxNodeId()+1);
+                timeStampIndexToMergeIndex_.resize(graph_.maxNodeId()+1);
+                for(MergeGraphIndexType nodeId=0;nodeId<=mergeGraph_.maxNodeId();++nodeId){
+                    toTimeStamp_[nodeId]=nodeId;
+                }
             }
+
+
+
         }
 
         /// \brief start the clustering
         void cluster(){
             if(param_.verbose_)
                 std::cout<<"\n"; 
-            while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0){
+            while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0 && !clusterOperator_.done()){
                 
 
                 const Edge edgeToRemove = clusterOperator_.contractionEdge();
@@ -364,11 +459,13 @@ namespace cluster_operators{
                     timestamp_+=1;
                 }
                 else{
+                    //std::cout<<"constract\n";
                     // do the merge 
                     mergeGraph_.contractEdge( edgeToRemove );
                 }
-                if(param_.verbose_ && mergeGraph_.nodeNum()%10==0)
+                if(param_.verbose_ && mergeGraph_.nodeNum()%1==0){
                     std::cout<<"\rNodes: "<<std::setw(10)<<mergeGraph_.nodeNum()<<std::flush;
+                }
                 
             }
             if(param_.verbose_)

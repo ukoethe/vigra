@@ -233,6 +233,66 @@ private:
     FUNCTOR & f_;
 };
 
+
+
+template<class T_OUT>
+struct MeanFunctor{
+    template<class T>
+    T_OUT operator()(const T & a, const T & b)const{
+        return static_cast<T_OUT>(a+b)/static_cast<T_OUT>(2.0);
+    }
+
+};
+
+
+// implicit edge map:
+// the values of a node map are converted
+// to an edge map.
+// FUNCTOR is used to convert the two
+// node map values corresponding to an edge to
+// an edge map value
+template<class G,class NODE_MAP,class FUNCTOR,class RESULT>
+class OnTheFlyEdgeMap2{
+
+public:
+    typedef G  Graph;
+    typedef typename Graph::Node Node;
+    typedef NODE_MAP  NodeMap;
+    typedef typename  Graph::Edge      Key;
+    typedef RESULT   Value;
+    typedef RESULT   ConstReference;
+
+    typedef Key             key_type;
+    typedef Value           value_type;
+    typedef ConstReference  const_reference;
+
+    typedef boost::readable_property_map_tag category;
+
+    OnTheFlyEdgeMap2(const Graph & graph,const NodeMap & nodeMap,FUNCTOR  f)
+    :   graph_(graph),
+        nodeMap_(nodeMap),
+        f_(f){
+    }
+
+    ConstReference operator[](const Key & key){
+        const Node u(graph_.u(key));
+        const Node v(graph_.v(key));
+        return f_(nodeMap_[u],nodeMap_[v]);
+    }
+
+    ConstReference operator[](const Key & key)const{
+        const Node u(graph_.u(key));
+        const Node v(graph_.v(key));
+        return f_(nodeMap_[u],nodeMap_[v]);
+    }
+private:
+
+    const Graph & graph_;
+    const NodeMap nodeMap_;
+    FUNCTOR  f_;
+};
+
+
 // convert 2 edge maps with a functor into a single edge map
 template<class G,class EDGE_MAP_A,class EDGE_MAP_B,class FUNCTOR,class RESULT>
 class BinaryOpEdgeMap{

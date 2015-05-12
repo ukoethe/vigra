@@ -92,7 +92,7 @@ namespace vigra{
     template<unsigned int DIM,unsigned int CHANNELS>
     void defineMultiGaussianHistogram(){
 
-        python::def("gaussianHistogram",registerConverters(&pyMultiGaussianHistogram<DIM,CHANNELS>),
+        python::def("gaussianHistogram_",registerConverters(&pyMultiGaussianHistogram<DIM,CHANNELS>),
             (
                 python::arg("image"),
                 python::arg("minVals"),

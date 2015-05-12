@@ -512,6 +512,11 @@ class MergeGraphCallbacks{
             for(size_t i=0;i<eraseEdgeCallbacks_.size();++i)
                 eraseEdgeCallbacks_[i](a);
         }
+        void clearCallbacks(){
+            mergeNodeCallbacks_.clear();
+            mergeEdgeCallbacks_.clear();
+            eraseEdgeCallbacks_.clear();
+        }
     private:
         std::vector<MergeNodeCallBackType> mergeNodeCallbacks_;
         std::vector<MergeEdgeCallBackType> mergeEdgeCallbacks_;
@@ -774,6 +779,8 @@ class MergeGraphAdaptor
             return md;
         }
 
+        void reset();
+
     private:
         // needs acces to const nodeImpl
         template<class G,class NIMPL,class FILT>
@@ -810,9 +817,6 @@ class MergeGraphAdaptor
 
 
         const GRAPH & graph_;
-        size_t nInitNodes_;
-        size_t nInitEdges_;
-
         UfdType nodeUfd_;
         UfdType edgeUfd_;
 
@@ -827,8 +831,6 @@ template<class GRAPH>
 MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
 :   MergeGraphCallbacks<Node,Edge >(),
     graph_(graph),
-    nInitNodes_(0),
-    nInitEdges_(0),
     nodeUfd_(graph.maxNodeId()+1),
     edgeUfd_(graph.maxEdgeId()+1),
     nodeVector_(graph.maxNodeId()+1),
@@ -840,7 +842,7 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
             nodeUfd_.eraseElement(possibleNodeId);
         }
         else{
-            nodeVector_[possibleNodeId].id_ = -1;
+            nodeVector_[possibleNodeId].id_ = possibleNodeId;
         }
     }
     for(index_type possibleEdgeId = 0 ; possibleEdgeId <= graph_.maxEdgeId(); ++possibleEdgeId){
@@ -858,6 +860,40 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
     
 }
 
+
+template<class GRAPH>
+void MergeGraphAdaptor<GRAPH>::reset  (){
+
+    nodeUfd_.reset(graph_.maxNodeId()+1),
+    edgeUfd_.reset(graph_.maxEdgeId()+1),
+
+    this->clearCallbacks();
+
+    // clean nodes_
+    for(index_type possibleNodeId = 0 ; possibleNodeId <= graph_.maxNodeId(); ++possibleNodeId){
+
+        nodeVector_[possibleNodeId].clear();
+        if(graph_.nodeFromId(possibleNodeId)==lemon::INVALID){
+            nodeUfd_.eraseElement(possibleNodeId);
+        }
+        else{
+            nodeVector_[possibleNodeId].id_ = possibleNodeId;
+        }
+    }
+
+    for(index_type possibleEdgeId = 0 ; possibleEdgeId <= graph_.maxEdgeId(); ++possibleEdgeId){
+        const GraphEdge possibleEdge(graph_.edgeFromId(possibleEdgeId));
+        if(possibleEdge==lemon::INVALID){
+            edgeUfd_.eraseElement(possibleEdgeId);
+        }
+        else{
+            const index_type guid = graphUId(possibleEdgeId);
+            const index_type gvid = graphVId(possibleEdgeId);
+            nodeVector_[ guid ].insert(gvid,possibleEdgeId);
+            nodeVector_[ gvid ].insert(guid,possibleEdgeId);   
+        }
+    }
+}
 
 
 template<class GRAPH>

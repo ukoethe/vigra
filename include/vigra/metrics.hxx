@@ -44,9 +44,6 @@ namespace vigra{
 namespace metrics{
 
 
-
-
-
     template<class T>
     class ChiSquared{
     public:
@@ -54,8 +51,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -78,7 +75,6 @@ namespace metrics{
         }
     };
 
-
     template<class T>
     class HellingerDistance{
     public:
@@ -86,8 +82,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -115,8 +111,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -171,8 +167,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -184,11 +180,9 @@ namespace metrics{
             while(iterA!=endA){
                 const T aa=static_cast<T>(*iterA);
                 const T bb=static_cast<T>(*iterB);
-                if(aa>static_cast<T>(0.0000001) && bb>static_cast<T>(0.0000001) ){
-                    const T val = std::log(aa/bb)*aa + std::log(bb/aa)*bb;
-                    if(!isinf(val) && !isnan(val))
-                        res+=std::log(aa/bb)*aa + std::log(bb/aa)*bb;
-                }
+                const T val = std::log(aa/bb)*(aa - bb);
+                if(!isinf(val) && !isnan(val))
+                    res+=val;
                 ++iterA;
                 ++iterB;
             }
@@ -203,8 +197,8 @@ namespace metrics{
         T operator()(const T & a,const T & b)const{
             return opImpl(&a,&a+1,&b);
         }
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
         } 
     private:
@@ -244,8 +238,8 @@ namespace metrics{
 
         }
 
-        template<class A>
-        T operator()(const A & a,const A & b)const{
+        template<class A, class B>
+        T operator()(const A & a,const B & b)const{
             switch(static_cast<unsigned int>(metricType_)){
                 case 0:
                     return chiSquared_(a,b);

@@ -21,7 +21,7 @@
 #include <vigra/error.hxx>
 #include <vigra/merge_graph_adaptor.hxx>
 #include <vigra/hierarchical_clustering.hxx>
-
+#include <vigra/timing.hxx>
 namespace python = boost::python;
 
 namespace vigra{
@@ -79,8 +79,19 @@ public:
         FloatEdgeArrayMap,
         MultiFloatNodeArrayMap,
         FloatNodeArrayMap,
-        FloatEdgeArrayMap
+        FloatEdgeArrayMap,
+        UInt32NodeArrayMap
     > DefaultClusterOperator;
+
+
+    //typedef cluster_operators::EdgeWeightNodeFeatures2<
+    //    MergeGraph,
+    //    FloatEdgeArrayMap,
+    //    FloatEdgeArrayMap,
+    //    MultiFloatNodeArrayMap,
+    //    FloatNodeArrayMap,
+    //    FloatEdgeArrayMap
+    //> NeuroClusterOperator;
 
     typedef cluster_operators::PythonOperator<MergeGraph> PythonClusterOperator;
 
@@ -102,12 +113,16 @@ public:
         .def(LemonUndirectedGraphCoreVisitor<MergeGraph>(mgAdaptorClsName))
         .def("inactiveEdgesNode",&pyInactiveEdgesNode)
         .def("graph",&pyMergeGraphsGraph, python::return_internal_reference<>())
+        .def("contractEdge",&pyContractEdgeA)
+        .def("contractEdge",&pyContractEdgeB)
+        .def("hasEdgeId",&pyHasEdgeId)
         ;
 
         python::def("__mergeGraph",&pyMergeGraphConstructor ,  
             python::with_custodian_and_ward_postcall< 0,1 ,
                     python::return_value_policy<   python::manage_new_object      >  >()  
-        );
+        )
+        ;
     }
 
     void exportHierarchicalClusteringOperators()const{
@@ -123,12 +138,28 @@ public:
                             python::with_custodian_and_ward_postcall< 0 ,4,
                                 python::with_custodian_and_ward_postcall< 0 ,5,
                                     python::with_custodian_and_ward_postcall< 0 ,6,
-                                        python::return_value_policy<   python::manage_new_object      
-
-                >  >    >   >   >   >   >()  
+                                        python::with_custodian_and_ward_postcall< 0 ,7,
+                                            python::return_value_policy<   python::manage_new_object      
+                >  >    >   >   >   >   >   >()  
             );
 
         }
+        //{   
+        //    const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("NeuroOperator");
+        //    python::class_<NeuroClusterOperator  >(operatorName.c_str(),python::no_init)
+        //    .def("__init__", python::make_constructor(&pyNeuroConstructor))
+        //    ;
+        //    python::def("__neuroOperator",registerConverters(&pyNeuroConstructor),
+        //        python::with_custodian_and_ward_postcall< 0,1 ,
+        //            python::with_custodian_and_ward_postcall< 0 ,2,
+        //                python::with_custodian_and_ward_postcall< 0 ,3,
+        //                    python::with_custodian_and_ward_postcall< 0 ,4,
+        //                        python::with_custodian_and_ward_postcall< 0 ,5,
+        //                            python::with_custodian_and_ward_postcall< 0 ,6,
+        //                                python::return_value_policy<   python::manage_new_object      
+        //        >  >    >   >   >   >   >()  
+        //    );
+        //}
         {
 
             const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("PythonOperator");
@@ -190,6 +221,10 @@ public:
         exportHierarchicalClusteringOperators();
 
         // export Hierarchical Clustering (for all  cluster operators)
+        //{
+        //    const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("NeuroOperator");
+        //    exportHierarchicalClustering<NeuroClusterOperator>(operatorName);
+        //}
         {
             const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("MinEdgeWeightNodeDistOperator");
             exportHierarchicalClustering<DefaultClusterOperator>(operatorName);
@@ -210,11 +245,49 @@ public:
         return NodeHolder<MergeGraph>(mg,mg.inactiveEdgesNode(edge));
     }
 
+    static EdgeHolder<MergeGraph> pyReprEdgeID(
+        const MergeGraph & mg,
+        const EdgeHolder<MergeGraph> & edge
+    ){
+        return EdgeHolder<MergeGraph>(mg,mg.reprEdge(edge));
+    }
+    
+
+    static void pyContractEdgeA(
+        MergeGraph & mg,
+        const EdgeHolder<MergeGraph> & edge
+    ){
+        mg.contractEdge(edge);
+    }
+
+    static void pyContractEdgeB(
+        MergeGraph & mg,
+        const EdgeHolder<Graph> & graphEdge
+    ){
+        mg.contractEdge(mg.reprEdge(graphEdge));
+    }
+
+    static bool pyHasEdgeId(
+        MergeGraph & mg,
+        typename MergeGraph::index_type id
+    ){
+        return mg.hasEdgeId(id);
+    }
+
+
 
     template<class CLUSTER_OP>
-    static HierarchicalClustering<CLUSTER_OP> * pyHierarchicalClusteringConstructor(CLUSTER_OP & clusterOp,const size_t nodeNumStopCond){
+    static HierarchicalClustering<CLUSTER_OP> * pyHierarchicalClusteringConstructor(
+        CLUSTER_OP & clusterOp,
+        const size_t nodeNumStopCond,
+        const bool buildMergeTreeEncoding
+
+
+    ){
         typename HierarchicalClustering<CLUSTER_OP>::Parameter param;
         param.nodeNumStopCond_=nodeNumStopCond;
+        param.buildMergeTreeEncoding_=buildMergeTreeEncoding;
+        param.verbose_=true;
         return new  HierarchicalClustering<CLUSTER_OP>(clusterOp,param);
     }
 
@@ -229,9 +302,11 @@ public:
         MultiFloatNodeArray         nodeFeatureMapArray,
         FloatNodeArray              nodeSizeMapArray,
         FloatEdgeArray              edgeMinWeightMapArray,
+        UInt32NodeArray             nodeLabelArray,
         const float                 beta,
         const metrics::MetricType   nodeDistType,
-        const float                 wardness 
+        const float                 wardness,
+        const float                 gamma
     ){
 
         FloatEdgeArrayMap       edgeIndicatorMap(mergeGraph.graph(),edgeIndicatorMapArray);
@@ -239,16 +314,17 @@ public:
         MultiFloatNodeArrayMap  nodeFeatureMap(mergeGraph.graph(),nodeFeatureMapArray);
         FloatNodeArrayMap       nodeSizeMap(mergeGraph.graph(),nodeSizeMapArray);
         FloatEdgeArrayMap       edgeMinWeightMap(mergeGraph.graph(),edgeMinWeightMapArray);
-
+        UInt32NodeArrayMap      nodeLabelMap(mergeGraph.graph(),nodeLabelArray);
 
 
         return new DefaultClusterOperator(mergeGraph,
             edgeIndicatorMap,edgeSizeMap,
             nodeFeatureMap, nodeSizeMap,
-            edgeMinWeightMap,
-            beta,nodeDistType,wardness
+            edgeMinWeightMap,nodeLabelMap,
+            beta,nodeDistType,wardness, gamma
         );
     }
+
 
 
 
@@ -285,10 +361,15 @@ public:
         resultArray.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(hcluster.graph()));
 
         UInt32NodeArrayMap resultArrayMap(hcluster.graph(),resultArray);
+        std::cout<<"find result labels\n";
 
+        USETICTOC;
+
+        TIC;
         for(NodeIt iter(hcluster.graph());iter!=lemon::INVALID;++iter ){
             resultArrayMap[*iter]=hcluster.mergeGraph().reprNodeId(hcluster.graph().id(*iter));
         }
+        TOC;
         return resultArray;
     }
 

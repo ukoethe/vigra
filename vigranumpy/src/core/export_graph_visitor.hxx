@@ -188,6 +188,8 @@ public:
             .def("target",&target)
 
 
+            .def("edgeFromArc",&edgeFromArc)
+
             // iterators
             //.def("edgeIter",&edgeHolder,python::with_custodian_and_ward_postcall<0,1>() )  // graph may not be deleted bevore holder is deleted
             //.def("nodeIter",&nodeHolder,python::with_custodian_and_ward_postcall<0,1>() )  // graph may not be deleted bevore holder is deleted
@@ -242,10 +244,16 @@ public:
 
 
 
-
             //.def("dtypetest",registerConverters(&dtypetest<Edge,EdgeIt>),( python::arg("out")=python::object() ) )
             
         ;
+    }
+
+
+    static PyEdge edgeFromArc(const Graph & self, const PyArc & arcH){
+        const Arc arc(arcH);
+        const Edge edge(arc);
+        return PyEdge(self, edge);
     }
 
     static PyEdgeIteratorHolder getEdgeIteratorHolder(const Graph & self){

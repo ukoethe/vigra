@@ -36,8 +36,9 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
 #define NO_IMPORT_ARRAY
 
+#define WITH_BOOST_GRAPH
 
-
+/*vigra*/
 #include "export_graph_visitor.hxx"
 #include "export_graph_rag_visitor.hxx"
 #include "export_graph_algorithm_visitor.hxx"
@@ -46,58 +47,85 @@
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
+#include <vigra/multi_gridgraph.hxx>
 #include <vigra/adjacency_list_graph.hxx>
+#include <vigra/graph_algorithms.hxx>
 #include <vigra/python_graph.hxx>
+
+
 namespace python = boost::python;
 
 namespace vigra{
 
 
 
-    NumpyAnyArray pySerializeAdjacencyListGraph(
-        const AdjacencyListGraph & graph,
-        NumpyArray<1, UInt32> serialization 
+
+
+    template<unsigned int DIM>
+    NumpyAnyArray pySerializeAffiliatedEdges(
+        const GridGraph<DIM, boost::undirected_tag> & gridGraph,
+        const AdjacencyListGraph & rag,
+        const typename AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > & affiliatedEdges,
+        NumpyArray<1,UInt32> out
     ){
-        serialization.reshapeIfEmpty( NumpyArray<1, UInt32>::difference_type(graph.serializationSize()));
-        graph.serialize(serialization.begin());
-        return serialization;
+        // reshape
+        const size_t sSize = affiliatedEdgesSerializationSize(gridGraph, rag, affiliatedEdges);
+        out.reshapeIfEmpty( typename NumpyArray<1,UInt32>::difference_type(sSize) );
+
+        // do serialization
+        serializeAffiliatedEdges(gridGraph, rag, affiliatedEdges, out.begin());
+
+        // return 
+        return out;
+
     }
 
 
-    void pyDeserializeAdjacencyListGraph(
-        AdjacencyListGraph & graph,
-        const NumpyArray<1, UInt32> & serialization 
+    template<unsigned int DIM>
+    AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > * 
+    pyDeserializeAffiliatedEdges(
+        const GridGraph<DIM, boost::undirected_tag> & gridGraph,
+        const AdjacencyListGraph & rag,
+        NumpyArray<1,UInt32> serialization
     ){
-        graph.clear();
-        graph.deserialize(serialization.begin(),serialization.end());
+
+        AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > * affEdges_
+        = new AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > () ; 
+
+        // do serialization
+        deserializeAffiliatedEdges(gridGraph, rag, *affEdges_, serialization.begin(), serialization.end());
+
+        // return 
+        return affEdges_;
     }
 
 
-    void defineAdjacencyListGraph(){
-        
-        typedef AdjacencyListGraph  Graph;
-        // define graph itself
-        const std::string clsName = "AdjacencyListGraph";
-        python::class_<Graph>(clsName.c_str(),"undirected adjacency list graph",
-            python::init< const size_t,const size_t >( )
-        )
-        .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
-        .def(LemonUndirectedGraphAddItemsVisitor<Graph>(clsName))
-        .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
-        .def(LemonGraphShortestPathVisitor<Graph>(clsName))
-        .def(LemonGraphRagVisitor<Graph>(clsName))
-        .def(LemonGraphHierachicalClusteringVisitor<Graph>(clsName))
 
-        // serialization helper
-        .def("serializationSize",&Graph::serializationSize, "number of integers needed to serialize graph")
-        .def("serialize",registerConverters(&pySerializeAdjacencyListGraph),
+
+    template<unsigned int DIM>
+    void defineGridGraphRagSerialization(){
+        python::def("_serialzieGridGraphAffiliatedEdges",registerConverters(&pySerializeAffiliatedEdges<DIM>),
             (
-                python::arg("serialization")=python::object()
+                python::arg("gridGraph"),
+                python::arg("rag"),
+                python::arg("affiliatedEdges"),
+                python::arg("out") = python::object()
             )
-        )
-        .def("deserialize",registerConverters(&pyDeserializeAdjacencyListGraph) )
-        ;
-    }
+        );
+
+        python::def("_deserialzieGridGraphAffiliatedEdges",registerConverters(&pyDeserializeAffiliatedEdges<DIM>),
+            (
+                python::arg("gridGraph"),
+                python::arg("rag"),
+                python::arg("serialization")
+            ),
+            python::return_value_policy<python::manage_new_object>()
+        );
+    };
+
+
+    template void defineGridGraphRagSerialization< 3 >();
+
 } 
 
 
