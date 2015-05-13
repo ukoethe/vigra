@@ -1391,12 +1391,18 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
         def nodeSize(self):
             """ get the geometric size of the nodes """
-            baseNodeSizes = self.baseGraph.nodeSize()
-            return self.accumulateNodeFeatures(baseNodeSizes,acc='sum')
+            if graphs.isGridGraph(self.baseGraph):
+                return graphs._ragNodeSize(self, self.baseGraph, self.labels, self.ignoreLabel)
+            else:
+                baseNodeSizes = self.baseGraph.nodeSize()
+                return self.accumulateNodeFeatures(baseNodeSizes,acc='sum')
         def edgeLengths(self):
             """ get the geometric length of the edges"""
-            baseNodeSizes = self.baseGraph.edgeLengths()
-            return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
+            if graphs.isGridGraph(self.baseGraph):
+                return graphs._ragEdgeSize(self,affiliatedEdges)
+            else:
+                baseNodeSizes = self.baseGraph.edgeLengths()
+                return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
 
 
         def writeHDF5(self, filename, dset):

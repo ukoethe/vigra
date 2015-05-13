@@ -122,7 +122,6 @@ namespace vigra{
             }
         }
 
-
     }
 
     template< unsigned int DIM , class T_DATA, class T_HIST >
@@ -205,9 +204,96 @@ namespace vigra{
             throw std::runtime_error("not yet implemented for arbitrary dimension");
         }
 
-
-
     }
+
+
+
+
+    template< unsigned int DIM , class T, class U>
+    void multi_gaussian_rank(
+        const MultiArrayView<DIM, T > & image,
+        const T minVal,
+        const T maxVal,
+        const size_t bins,
+        const TinyVector<double, 3> sigmaSpatial,
+        std::vector<float> ranks,
+        const MultiArrayView<DIM+1, U> & out
+    ){
+        typedef MultiArray<DIM, T> ImgType;
+        typedef typename ImgType::difference_type ImgCoord;
+
+        typedef MultiArray<DIM+1, U> HistType;
+        typedef typename HistType::difference_type HistCoord;
+        HistType histogramA, histogramB;
+
+        // collect values
+        HistCoord histCoord;
+        MultiCoordinateIterator<DIM> iter(image.shape());
+        for(size_t i=0 ;i<image.size(); ++i, ++iter){
+            const ImgCoord imgCoord(*iter);
+            std::copy(imgCoord.begin(),imgCoord.end(),histCoord );
+
+            const T value = image[imgCoord];
+            const T fbinIndex = ((value-minVal)/maxVal)*nBins;
+            const T fFloorBin = std::floor(fbinIndex);
+            const int floorBin = static_cast<int>(fFloorBin);
+            const int ceilBin = static_cast<int>(std::ceil(fbinIndex));
+
+            if(floorBin==ceilBin){
+               histCoord[DIM] = floorBin;
+               histogramA[histCoord] += 1.0; 
+            }
+            else{
+                const T floorBin = std::floor(fbinIndex);
+                const T ceilBin = std::ceil(fbinIndex);
+                const double ceilW = (fbinIndex - fFloorBin);
+                const double floorW = 1.0 - ceilW;
+                histCoord[DIM] = floorBin;
+                histogramA[histCoord] += floorW; 
+                histCoord[DIM] = ceilBin;
+                histogramA[histCoord] += floorW; 
+            }
+
+        }
+
+        // convolve spatial dimensions
+        HistType * input  = &histogramA;
+        HistType * smoothedHist = &histogramB;
+        for(size_t d=0; d<DIM; ++d){
+
+            Kernel1D<float> gaussSpatial;
+            gaussSpatial.initGaussian(sigmaSpatial[d]);
+            convolveMultiArrayOneDimension(srcMultiArrayRange(*input),
+                                           destMultiArrayRange(*smoothedHist),
+                                           d, gaussSpatial);
+            std::swap(input, smoothedHist);
+        }
+
+        // convolve bins
+        Kernel1D<float> gaussBin;
+        gaussBin.initGaussian(sigmaBin);
+        convolveMultiArrayOneDimension(srcMultiArrayRange(*input),
+                                           destMultiArrayRange(*smoothedHist),
+                                           DIM, gaussBin);
+        // normalize sum to one
+        for(size_t i=0 ;i<image.size(); ++i, ++iter){
+            const ImgCoord imgCoord(*iter);
+            std::copy(imgCoord.begin(),imgCoord.end(),histCoord );
+            double sum = 0;
+            for(size_t bi=0; bi<nBins; ++bi){
+                histCoord[DIM] = bi;
+                sum += (*smoothedHist)[histCoord];
+            }
+            for(size_t bi=0; bi<nBins; ++bi){
+                histCoord[DIM] = bi;
+                (*smoothedHist)[histCoord] /= sum;
+            }
+        }
+        // compute the ranks
+        
+    }
+
+
 
 }
 //end namespace vigra
