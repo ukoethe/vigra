@@ -209,87 +209,138 @@ namespace vigra{
 
 
 
-    template< unsigned int DIM , class T, class U>
-    void multi_gaussian_rank(
+    template< unsigned int DIM , class T, class U, class V>
+    void multi_gaussian_rank_order(
         const MultiArrayView<DIM, T > & image,
         const T minVal,
         const T maxVal,
         const size_t bins,
-        const TinyVector<double, 3> sigmaSpatial,
-        std::vector<float> ranks,
-        const MultiArrayView<DIM+1, U> & out
+        const TinyVector<double, DIM+1> sigmas,
+        const MultiArrayView<1, V> & ranks,
+        MultiArrayView<DIM+1, U> & out
     ){
         typedef MultiArray<DIM, T> ImgType;
         typedef typename ImgType::difference_type ImgCoord;
 
-        typedef MultiArray<DIM+1, U> HistType;
+        typedef MultiArray<DIM+1, float> HistType;
         typedef typename HistType::difference_type HistCoord;
-        HistType histogramA, histogramB;
+
+        typedef MultiArray<DIM+1, U> OutType;
+        typedef typename OutType::difference_type OutCoord;
+
+
+        HistCoord histShape;
+        std::copy(image.shape().begin(), image.shape().end(), histShape.begin());
+        histShape[DIM] = bins;
+        HistType histA(histShape);
+
+        histA = 0.0;
 
         // collect values
-        HistCoord histCoord;
-        MultiCoordinateIterator<DIM> iter(image.shape());
-        for(size_t i=0 ;i<image.size(); ++i, ++iter){
-            const ImgCoord imgCoord(*iter);
-            std::copy(imgCoord.begin(),imgCoord.end(),histCoord );
+        HistCoord histCoord,nextHistCoord;
+        {
+            MultiCoordinateIterator<DIM> iter(image.shape());
+            for(size_t i=0 ;i<image.size(); ++i, ++iter){
+                const ImgCoord imgCoord(*iter);
+                std::copy(imgCoord.begin(),imgCoord.end(),histCoord.begin() );
 
-            const T value = image[imgCoord];
-            const T fbinIndex = ((value-minVal)/maxVal)*nBins;
-            const T fFloorBin = std::floor(fbinIndex);
-            const int floorBin = static_cast<int>(fFloorBin);
-            const int ceilBin = static_cast<int>(std::ceil(fbinIndex));
+                const T value = image[imgCoord];
+                const T fbinIndex = ((value-minVal)/(maxVal-minVal))*bins;
+                const T fFloorBin = std::floor(fbinIndex);
+                const int floorBin = static_cast<int>(fFloorBin);
+                const int ceilBin = static_cast<int>(std::ceil(fbinIndex));
 
-            if(floorBin==ceilBin){
-               histCoord[DIM] = floorBin;
-               histogramA[histCoord] += 1.0; 
+                if(floorBin==ceilBin){
+                   histCoord[DIM] = floorBin;
+                   histA[histCoord] += 1.0; 
+                }
+                else{
+                    const T floorBin = std::floor(fbinIndex);
+                    const T ceilBin = std::ceil(fbinIndex);
+                    const double ceilW = (fbinIndex - fFloorBin);
+                    const double floorW = 1.0 - ceilW;
+                    histCoord[DIM] = floorBin;
+                    histA[histCoord] += floorW; 
+                    histCoord[DIM] = ceilBin;
+                    histA[histCoord] += ceilW; 
+                }
+
             }
-            else{
-                const T floorBin = std::floor(fbinIndex);
-                const T ceilBin = std::ceil(fbinIndex);
-                const double ceilW = (fbinIndex - fFloorBin);
-                const double floorW = 1.0 - ceilW;
-                histCoord[DIM] = floorBin;
-                histogramA[histCoord] += floorW; 
-                histCoord[DIM] = ceilBin;
-                histogramA[histCoord] += floorW; 
-            }
-
         }
+        //
+        ConvolutionOptions<DIM+1> opts;
+        opts.stdDev(sigmas);
 
         // convolve spatial dimensions
-        HistType * input  = &histogramA;
-        HistType * smoothedHist = &histogramB;
-        for(size_t d=0; d<DIM; ++d){
+        gaussianSmoothMultiArray(histA, histA, opts);
 
-            Kernel1D<float> gaussSpatial;
-            gaussSpatial.initGaussian(sigmaSpatial[d]);
-            convolveMultiArrayOneDimension(srcMultiArrayRange(*input),
-                                           destMultiArrayRange(*smoothedHist),
-                                           d, gaussSpatial);
-            std::swap(input, smoothedHist);
-        }
+        OutCoord outCoord;
 
-        // convolve bins
-        Kernel1D<float> gaussBin;
-        gaussBin.initGaussian(sigmaBin);
-        convolveMultiArrayOneDimension(srcMultiArrayRange(*input),
-                                           destMultiArrayRange(*smoothedHist),
-                                           DIM, gaussBin);
-        // normalize sum to one
-        for(size_t i=0 ;i<image.size(); ++i, ++iter){
-            const ImgCoord imgCoord(*iter);
-            std::copy(imgCoord.begin(),imgCoord.end(),histCoord );
-            double sum = 0;
-            for(size_t bi=0; bi<nBins; ++bi){
-                histCoord[DIM] = bi;
-                sum += (*smoothedHist)[histCoord];
-            }
-            for(size_t bi=0; bi<nBins; ++bi){
-                histCoord[DIM] = bi;
-                (*smoothedHist)[histCoord] /= sum;
+        //std::cout<<"normalize and compute ranks\n";
+        {
+            MultiCoordinateIterator<DIM> iter(image.shape());
+            for(size_t i=0 ;i<image.size(); ++i, ++iter){
+
+                // normalize
+                const ImgCoord imgCoord(*iter);
+                //std::cout<<"at pixel "<<imgCoord<<"\n";
+
+                std::copy(imgCoord.begin(),imgCoord.end(),histCoord.begin() );
+                nextHistCoord = histCoord;
+                std::copy(imgCoord.begin(),imgCoord.end(),outCoord.begin() );
+                double sum = 0;
+                for(size_t bi=0; bi<bins; ++bi){
+                    histCoord[DIM] = bi;
+                    sum += histA[histCoord];
+                }
+                for(size_t bi=0; bi<bins; ++bi){
+                    histCoord[DIM] = bi;
+                    histA[histCoord] /= sum;
+                }
+                histCoord[DIM] = 0;
+                for(size_t bi=1; bi<bins; ++bi){
+                    
+                    double prevVal =  histA[histCoord];
+                    histCoord[DIM] = bi;
+                    histA[histCoord] +=prevVal;
+                }
+
+
+
+                // compute rank (consider binary search)
+                size_t bi=0;
+                for(size_t r=0; r<ranks.size(); ++r){
+                    outCoord[DIM] = r;
+                    const V rank = ranks[r];
+
+                    //std::cout<<"  compute rank "<<rank<<"\n";
+                    while(true){
+                        histCoord[DIM] = bi;
+                        nextHistCoord[DIM] = bi +1;
+                        //std::cout<<"    bi "<<bi<<" rank "<<rank<<" "<<histA[histCoord]<<"\n";
+                        // corner cases
+                        if(rank < histA[histCoord] || 
+                           std::abs(rank-histA[histCoord])< 0.0000001 || 
+                           bi==bins-1
+                        ){
+                            out[outCoord] = static_cast<U>((maxVal-minVal)*bi*bins + minVal);
+                            break;
+                        }
+                        else if(rank > histA[histCoord] && rank < histA[nextHistCoord]){
+                            const double rankVal0 = static_cast<U>((maxVal-minVal)*bi*bins + minVal);
+                            const double rankVal1 = static_cast<U>((maxVal-minVal)*(bi+1)*bins + minVal);
+                            const double dd = histA[nextHistCoord] - histA[histCoord];
+                            const double relD0 = (rank - histA[histCoord])/dd;
+                            out[outCoord] = rankVal1 * relD0  + (1.0 - relD0)*rankVal0;
+                            break;
+                        }
+                        else if(rank >= histA[nextHistCoord]){
+                            ++bi;
+                        }
+                    }
+                }
             }
         }
-        // compute the ranks
         
     }
 

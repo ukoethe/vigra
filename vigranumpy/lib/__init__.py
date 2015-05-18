@@ -1923,6 +1923,40 @@ def _genHistogram():
     histogram.gaussianHistogram = gaussianHistogram
 
 
+    def gaussianRankOrder(image, minVal=None, maxVal=None, 
+                     bins=20, sigmas=None, ranks=[0.1,0.25,0.5,0.75,0.9],
+                     out=None):
+        image = numpy.require(image.squeeze(),dtype='float32')
+        nDim = image.ndim
+        if sigmas is None:
+            sigmas =  (2.0,)*nDim + (float(bins)/10.0,)
+
+        ranks = numpy.require(ranks,dtype='float32')
+        sigmas = numpy.require(sigmas,dtype='float32')
+        assert len(sigmas) == image.ndim + 1 
+        
+
+            
+
+        if minVal is None :
+            minVal = image.min()
+        if maxVal is None :
+            maxVal = image.max()
+
+        print "image",image.shape,image.dtype
+        print "ranks",ranks.shape,ranks.dtype
+        print "sigmas",sigmas
+        return histogram._gaussianRankOrder(image=image,
+                                            minVal=float(minVal),
+                                            maxVal=float(maxVal), 
+                                            bins=int(bins),
+                                            sigmas=sigmas,ranks=ranks,
+                                            out=out)
+
+    gaussianRankOrder.__module__ = 'vigra.histogram'
+    histogram.gaussianRankOrder = gaussianRankOrder
+
+
 _genHistogram()
 del _genHistogram
 
