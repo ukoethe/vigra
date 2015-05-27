@@ -95,17 +95,6 @@ VIGRA_FIND_PACKAGE(FFTW3 NAMES libfftw3-3 libfftw-3.3)
 VIGRA_FIND_PACKAGE(FFTW3F NAMES libfftw3f-3 libfftwf-3.3)
 
 
-#FIND_PACKAGE( OpenMP REQUIRED)
-FIND_PACKAGE( OpenMP )
-if(OPENMP_FOUND)
-message("OPENMP FOUND")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-endif()
-
-
-
 IF(WITH_OPENEXR)
     VIGRA_FIND_PACKAGE(OpenEXR)
 ENDIF()
@@ -165,8 +154,19 @@ ENDIF()
 include(VigraDetectThreading)
 include(VigraConfigureThreading)
 
+# Should come after VigraDetectThreading, since that updates the -std flag.
 include(VigraDetectCppVersion)
 VIGRA_DETECT_CPP_VERSION()
+
+# Put this last, because it can interfere with VigraDetectCppVersion, above.
+FIND_PACKAGE( OpenMP )
+if(OPENMP_FOUND)
+message("OPENMP FOUND")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
+
 
 ##################################################
 #
