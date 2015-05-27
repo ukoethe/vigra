@@ -61,8 +61,11 @@ namespace vigra{
         outShape[DIM]=bins;
         outShape[DIM+1]=CHANNELS;
         histogram.reshapeIfEmpty(outShape);
-        multi_gaussian_histogram<DIM,float,CHANNELS,float>(image,minVals,maxVals,bins,
-            sigma,sigmaBin,histogram);
+        {
+             PyAllowThreads _pythread;
+            multi_gaussian_histogram<DIM,float,CHANNELS,float>(image,minVals,maxVals,bins,
+                sigma,sigmaBin,histogram);
+        }
         return histogram;
     }
 
@@ -84,10 +87,47 @@ namespace vigra{
         outShape[DIM]=bins[0];
         outShape[DIM+1]=bins[1];
         histogram.reshapeIfEmpty(outShape);
-        multi_gaussian_co_histogram<DIM,float,float>(imageA,imageB,minVals,maxVals,bins,
-           sigma,histogram);
+        {
+            PyAllowThreads _pythread;
+            multi_gaussian_co_histogram<DIM,float,float>(imageA,imageB,minVals,maxVals,bins,
+            sigma,histogram);
+        }
         return histogram;
     }
+
+
+
+
+    template<unsigned int DIM>
+    NumpyAnyArray pyMultiGaussianRankOrder(
+        const NumpyArray<DIM, float>      & image,
+        const float                         minVal,
+        const float                         maxVal,
+        const size_t                        bins,
+        const NumpyArray<1, float>        & sigmas,  
+        const NumpyArray<1, float>        & ranks,
+        NumpyArray<DIM+1, float>            out
+    ){
+        // reshape 
+        typename NumpyArray<DIM+1,float>::difference_type  outShape;
+        for(size_t d=0;d<DIM;++d){
+           outShape[d]=image.shape(d);
+        }
+        outShape[DIM]=ranks.size();
+        out.reshapeIfEmpty(outShape);
+
+        {
+             PyAllowThreads _pythread;
+            TinyVector<double, DIM+1> sigmaVec;
+            std::copy(sigmas.begin(),sigmas.end(),sigmaVec.begin());
+
+            multi_gaussian_rank_order(image, minVal, maxVal,
+                                bins, sigmaVec, ranks, out);
+        }
+        return out;
+    }
+
+
 
     template<unsigned int DIM,unsigned int CHANNELS>
     void defineMultiGaussianHistogram(){
@@ -121,6 +161,23 @@ namespace vigra{
             )
         );
     }
+
+
+    template<unsigned int DIM>
+    void defineMultiGaussianRank(){
+
+        python::def("_gaussianRankOrder",registerConverters(&pyMultiGaussianRankOrder<DIM>),
+            (
+                python::arg("image"),
+                python::arg("minVal"),
+                python::arg("maxVal"),
+                python::arg("bins"),
+                python::arg("sigmas"),
+                python::arg("ranks"),
+                python::arg("out")=python::object()
+            )
+        );
+    }
     
 
 
@@ -144,4 +201,7 @@ BOOST_PYTHON_MODULE_INIT(histogram)
 
     defineMultiGaussianCoHistogram<2>();
     defineMultiGaussianCoHistogram<3>();
+
+    defineMultiGaussianRank<2>();
+    defineMultiGaussianRank<3>();
 }

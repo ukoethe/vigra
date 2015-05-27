@@ -1391,12 +1391,18 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
         def nodeSize(self):
             """ get the geometric size of the nodes """
-            baseNodeSizes = self.baseGraph.nodeSize()
-            return self.accumulateNodeFeatures(baseNodeSizes,acc='sum')
+            if graphs.isGridGraph(self.baseGraph):
+                return graphs._ragNodeSize(self, self.baseGraph, self.labels, self.ignoreLabel)
+            else:
+                baseNodeSizes = self.baseGraph.nodeSize()
+                return self.accumulateNodeFeatures(baseNodeSizes,acc='sum')
         def edgeLengths(self):
             """ get the geometric length of the edges"""
-            baseNodeSizes = self.baseGraph.edgeLengths()
-            return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
+            if graphs.isGridGraph(self.baseGraph):
+                return graphs._ragEdgeSize(self,self.affiliatedEdges)
+            else:
+                baseNodeSizes = self.baseGraph.edgeLengths()
+                return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
 
 
         def writeHDF5(self, filename, dset):
@@ -1917,6 +1923,40 @@ def _genHistogram():
     histogram.gaussianHistogram = gaussianHistogram
 
 
+    def gaussianRankOrder(image, minVal=None, maxVal=None, 
+                     bins=20, sigmas=None, ranks=[0.1,0.25,0.5,0.75,0.9],
+                     out=None):
+        image = numpy.require(image.squeeze(),dtype='float32')
+        nDim = image.ndim
+        if sigmas is None:
+            sigmas =  (2.0,)*nDim + (float(bins)/10.0,)
+
+        ranks = numpy.require(ranks,dtype='float32')
+        sigmas = numpy.require(sigmas,dtype='float32')
+        assert len(sigmas) == image.ndim + 1 
+        
+
+            
+
+        if minVal is None :
+            minVal = image.min()
+        if maxVal is None :
+            maxVal = image.max()
+
+        #print "image",image.shape,image.dtype
+        #print "ranks",ranks.shape,ranks.dtype
+        #print "sigmas",sigmas
+        return histogram._gaussianRankOrder(image=image,
+                                            minVal=float(minVal),
+                                            maxVal=float(maxVal), 
+                                            bins=int(bins),
+                                            sigmas=sigmas,ranks=ranks,
+                                            out=out)
+
+    gaussianRankOrder.__module__ = 'vigra.histogram'
+    histogram.gaussianRankOrder = gaussianRankOrder
+
+
 _genHistogram()
 del _genHistogram
 
@@ -2058,7 +2098,7 @@ def _genBlockwiseFunctions():
         elif ndim == 5 :
             return blockwise.BlockwiseConvolutionOptions5D
 
-    def convolutionOptions(blockShape, sigma=None, innerScale=None, outerScale=None, numThreads = cpu_count()):
+    def convolutionOptions(blockShape, sigma=None,innerScale=None, outerScale=None, numThreads = cpu_count()):
         ndim = len(blockShape)
         options = getConvolutionOptionsClass(ndim)()
         options.blockShape = blockShape
@@ -2073,6 +2113,7 @@ def _genBlockwiseFunctions():
 
         if outerScale is not None:
             options.outerScale = makeTuple(outerScale,ndim)
+
         return options
 
     convolutionOptions.__module__ = 'vigra.blockwise'
