@@ -1399,7 +1399,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
         def edgeLengths(self):
             """ get the geometric length of the edges"""
             if graphs.isGridGraph(self.baseGraph):
-                return graphs._ragEdgeSize(self,affiliatedEdges)
+                return graphs._ragEdgeSize(self,self.affiliatedEdges)
             else:
                 baseNodeSizes = self.baseGraph.edgeLengths()
                 return self.accumulateEdgeFeatures(baseNodeSizes,acc='sum')
@@ -1943,9 +1943,9 @@ def _genHistogram():
         if maxVal is None :
             maxVal = image.max()
 
-        print "image",image.shape,image.dtype
-        print "ranks",ranks.shape,ranks.dtype
-        print "sigmas",sigmas
+        #print "image",image.shape,image.dtype
+        #print "ranks",ranks.shape,ranks.dtype
+        #print "sigmas",sigmas
         return histogram._gaussianRankOrder(image=image,
                                             minVal=float(minVal),
                                             maxVal=float(maxVal), 
@@ -2098,7 +2098,7 @@ def _genBlockwiseFunctions():
         elif ndim == 5 :
             return blockwise.BlockwiseConvolutionOptions5D
 
-    def convolutionOptions(blockShape, sigma=None, innerScale=None, outerScale=None, numThreads = cpu_count()):
+    def convolutionOptions(blockShape, sigma=None,innerScale=None, outerScale=None, numThreads = cpu_count()):
         ndim = len(blockShape)
         options = getConvolutionOptionsClass(ndim)()
         options.blockShape = blockShape
@@ -2113,6 +2113,7 @@ def _genBlockwiseFunctions():
 
         if outerScale is not None:
             options.outerScale = makeTuple(outerScale,ndim)
+
         return options
 
     convolutionOptions.__module__ = 'vigra.blockwise'
