@@ -13,6 +13,10 @@
 # The function VIGRA_COPY_TEST_DATA copies the given files from the current source directory
 # to the corresponding binary directory.
 #
+if (NOT (CMAKE_VERSION VERSION_LESS 3.0))
+   cmake_policy(SET CMP0026 OLD)
+endif()
+
 MACRO(VIGRA_NATIVE_PATH out in)
     file(TO_CMAKE_PATH "${in}" ${out})
     IF(NOT CMAKE_CFG_INTDIR STREQUAL ".")
@@ -60,6 +64,7 @@ FUNCTION(VIGRA_ADD_TEST target)
     endif()
     
     # find the test executable
+    # Requires cmake 2.8 semantics.  See CMP0026 setting above.
     GET_TARGET_PROPERTY(${target}_executable ${target} LOCATION)
     VIGRA_NATIVE_PATH(VIGRA_TEST_EXECUTABLE ${${target}_executable})
     
@@ -71,6 +76,7 @@ FUNCTION(VIGRA_ADD_TEST target)
         SET(PATHSEP ":")
     ENDIF()
     FOREACH(lib ${LIBRARIES})
+        # Requires cmake 2.8 semantics.  See CMP0026 setting above.
         GET_TARGET_PROPERTY(p ${lib} LOCATION)
         if(p)
             GET_FILENAME_COMPONENT(p ${p} PATH)
