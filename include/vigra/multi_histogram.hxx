@@ -276,6 +276,8 @@ namespace vigra{
 
         OutCoord outCoord;
 
+
+        std::vector<float> histBuffer(bins);
         //std::cout<<"normalize and compute ranks\n";
         {
             MultiCoordinateIterator<DIM> iter(image.shape());
@@ -298,54 +300,50 @@ namespace vigra{
                     histA[histCoord] /= sum;
                 }
                 histCoord[DIM] = 0;
+                histBuffer[0] = histA[histCoord];
                 for(size_t bi=1; bi<bins; ++bi){
                     
                     double prevVal =  histA[histCoord];
                     histCoord[DIM] = bi;
                     histA[histCoord] +=prevVal;
+                    histBuffer[bi] = histA[histCoord];
                 }
 
 
 
-                // compute rank (consider binary search)
                 size_t bi=0;
                 for(size_t r=0; r<ranks.size(); ++r){
                     outCoord[DIM] = r;
                     const V rank = ranks[r];
-
-                    //std::cout<<"  compute rank "<<rank<<"\n";
-                    while(true){
+                    histCoord[DIM] = bi;
+                    nextHistCoord[DIM] = bi +1;
+                    //std::cout<<"    bi "<<bi<<" rank "<<rank<<" "<<histA[histCoord]<<"\n";
+                    // corner cases
+                    if(rank < histA[histCoord] || 
+                       std::abs(rank-histA[histCoord])< 0.0000001 || 
+                       bi==bins-1
+                    ){
+                        out[outCoord] = static_cast<U>((maxVal-minVal)*bi*bins + minVal);
+                        break;
+                    }
+                    else{
+                        // with binary search
+                        const size_t upperBinIndex = 
+                            std::distance(histBuffer.begin(),std::lower_bound(histBuffer.begin()+bi, histBuffer.end(),float(rank)));
+                        bi = upperBinIndex - 1;
                         histCoord[DIM] = bi;
-                        nextHistCoord[DIM] = bi +1;
-                        //std::cout<<"    bi "<<bi<<" rank "<<rank<<" "<<histA[histCoord]<<"\n";
-                        // corner cases
-                        if(rank < histA[histCoord] || 
-                           std::abs(rank-histA[histCoord])< 0.0000001 || 
-                           bi==bins-1
-                        ){
-                            out[outCoord] = static_cast<U>((maxVal-minVal)*bi*bins + minVal);
-                            break;
-                        }
-                        else if(rank > histA[histCoord] && rank < histA[nextHistCoord]){
-                            const double rankVal0 = static_cast<U>((maxVal-minVal)*bi*bins + minVal);
-                            const double rankVal1 = static_cast<U>((maxVal-minVal)*(bi+1)*bins + minVal);
-                            const double dd = histA[nextHistCoord] - histA[histCoord];
-                            const double relD0 = (rank - histA[histCoord])/dd;
-                            out[outCoord] = rankVal1 * relD0  + (1.0 - relD0)*rankVal0;
-                            break;
-                        }
-                        else if(rank >= histA[nextHistCoord]){
-                            ++bi;
-                        }
+                        nextHistCoord[DIM] = upperBinIndex;
+                        const double rankVal0 = static_cast<U>((maxVal-minVal)*bi*bins + minVal);
+                        const double rankVal1 = static_cast<U>((maxVal-minVal)*(bi+1)*bins + minVal);
+                        const double dd = histA[nextHistCoord] - histA[histCoord];
+                        const double relD0 = (rank - histA[histCoord])/dd;
+                        out[outCoord] = rankVal1 * relD0  + (1.0 - relD0)*rankVal0;
+                        break;
                     }
                 }
             }
         }
-        
     }
-
-
-
 }
 //end namespace vigra
 
