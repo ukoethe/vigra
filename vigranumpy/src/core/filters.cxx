@@ -47,6 +47,38 @@ namespace python = boost::python;
 namespace vigra
 {
 
+
+
+/**
+python::tuple
+pythonGetAnisotropy2D(
+    const NumpyArray<2, double> & image,
+    const double alpha_par,
+    const double beta_par,
+    const double sigma_par,
+    const double rho_par,
+    const double K_par,
+    NumpyArray<2, double> phi,
+    NumpyArray<2, double> alpha,
+    NumpyArray<2, double> beta
+)
+{
+    res.reshapeIfEmpty(image.taggedShape(),
+        "getAnisotropy2D(): Output array has wrong shape.");
+
+    {
+        PyAllowThreads _pythread;
+        
+    }
+
+    return ;
+}
+**/
+
+
+
+
+
 template <class InValue, class OutValue>
 NumpyAnyArray
 pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<InValue> > image,

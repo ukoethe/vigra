@@ -36,6 +36,11 @@
 import sys, os, time
 from numbers import Number
 from multiprocessing import cpu_count
+try:
+    import pylab
+except Exception, e:
+    pass
+
 
 _vigra_path = os.path.abspath(os.path.dirname(__file__))
 _vigra_doc_path = _vigra_path + '/doc/vigranumpy/index.html'
@@ -336,6 +341,22 @@ def imshow(image,show=True):
         raise RuntimeError("vigra.imshow(): Image must have 1 or 3 channels.")
 
 
+def multiImshow(images,shape, show=True):
+    nImg = len(images)
+    f = pylab.figure()
+
+    s = tuple(shape)
+    for c,iname in enumerate(images.keys()):
+        data,itype = images[iname]
+        if itype == 'img':
+
+            ax1 = f.add_subplot(s[0],s[1],c+1)
+            imshow(data,show=False)
+            ax1.set_title(iname)
+            pylab.axis('off')
+    if show :
+        pylab.show()
+
 def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False,r=0):
 
     img = numpy.squeeze(img)
@@ -558,6 +579,32 @@ def _genTensorConvenienceFunctions():
 
 _genTensorConvenienceFunctions()
 del _genTensorConvenienceFunctions
+
+
+
+
+
+# define tensor convenience functions
+def _genDistanceTransformFunctions():
+
+    def distanceTransform(array,background=True,norm=2,pixel_pitch=None, out=None):
+        if array.squeeze().ndim == 2:
+            return filters.distanceTransform2D(array,background=background,norm=norm,
+                                               pixel_pitch=pixel_pitch, out=out)
+        elif array.squeeze().ndim == 3:
+            return filters.distanceTransform3D(array,background=background,norm=norm,
+                                               pixel_pitch=pixel_pitch, out=out)
+        else:
+            raise RuntimeError("distanceTransform is only implemented for 2D and 3D arrays")
+        
+    distanceTransform.__module__ = 'vigra.filters'
+    filters.distanceTransform = distanceTransform
+
+_genDistanceTransformFunctions()
+del _genDistanceTransformFunctions
+
+
+
 
 # define feature convenience functions
 def _genFeaturConvenienceFunctions():
@@ -1701,6 +1748,70 @@ def _genGraphSegmentationFunctions():
     nodeWeightedWatersheds.__module__ = 'vigra.graphs'
     graphs.nodeWeightedWatersheds = nodeWeightedWatersheds
 
+
+
+
+
+
+
+
+    def seededSegmentation(graph, nodeMap=None, edgeMap=None, seeds=None, alg='ws',out=None,**kwargs):
+        """
+            alg:
+                - 'ws' watershed
+                - 'sp' shortest path
+                - 'crf' crf/mrf method
+                - 'hc' hierarchical-clustering method
+        """
+
+        if alg == 'ws':
+            # "default" node weighted watershed
+            if nodeMap is not None and edgeMap is None:
+                seg = graphs.nodeWeightedWatersheds(graph=graph,
+                                                         nodeWeights=nodeMap, 
+                                                         seeds=seeds,out=out)
+            # edge weighted watershed
+            elif nodeMap is None and edgeMap is not None:
+                seg = graphs.edgeWeightedWatersheds(graph=graph,
+                                                         edgeWeights=edgeMap, 
+                                                         seeds=seeds,out=out)
+            # hybrid (not yet implemented)
+            elif nodeMap is not None and edgeMap is not None:
+                raise RuntimeError("Not Yet Implemented")
+            else :
+                # error
+                raise RuntimeError("error")
+
+        elif alg == 'sp':
+            # "default" shortest path
+            if nodeMap is None and edgeMap is  None:
+                raise RuntimeError("Not Yet Implemented")
+            elif nodeMap is not None or edgeMap is not None:
+                if nodeMap is None:
+                    nodeMap = graphs.graphMap(graph,'node',dtype='float32')
+                    nodeMap[:] = 0
+                if edgeMap is None:
+                    edgeMap = graphs.graphMap(graph,'edge',dtype='float32')
+                    edgeMap[:] = 0
+                seg = graphs.shortestPathSegmentation(graph=graph,
+                                                           edgeWeights=edgeMap,
+                                                           nodeWeights=nodeMap, 
+                                                           seeds=seeds,out=out)
+
+            else :
+                # error
+                raise RuntimeError("error")
+
+        elif alg == 'crf':
+            raise RuntimeError("Not Yet Implemented")
+        
+
+        return seg
+        
+    seededSegmentation.__module__ = 'vigra.graphs'
+    graphs.seededSegmentation = seededSegmentation
+
+
     def agglomerativeClustering(graph,edgeWeights=None,edgeLengths=None,nodeFeatures=None,nodeSizes=None,
             nodeLabels=None,nodeNumStop=None,beta=0.5,metric='l1',wardness=1.0,out=None):
         """ agglomerative hierarchicalClustering
@@ -2176,3 +2287,10 @@ def loadBSDGt(filename):
     gtArray = numpy.concatenate(gts,axis=2)
     print gtArray.shape
     return gtArray
+
+
+
+
+
+def pmapSeeds(pmap):
+    pass

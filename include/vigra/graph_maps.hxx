@@ -235,6 +235,33 @@ private:
 
 
 
+template<class G,class RESULT>
+class ZeroNodeMap{
+
+public:
+    typedef G  Graph;
+    typedef typename Graph::Node Key;
+    typedef RESULT   Value;
+    typedef RESULT   ConstReference;
+
+    typedef Key             key_type;
+    typedef Value           value_type;
+    typedef ConstReference  const_reference;
+    typedef boost::readable_property_map_tag category;
+    ZeroNodeMap(){
+    }
+    ConstReference operator[](const Key & key){
+        return static_cast<RESULT>(0);
+    }
+
+    ConstReference operator[](const Key & key)const{
+        return static_cast<RESULT>(0);
+    }
+private:
+};
+
+
+
 template<class T_OUT>
 struct MeanFunctor{
     template<class T>
