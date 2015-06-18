@@ -84,7 +84,7 @@ namespace vigra{
             }
         }
 
-        MultiArray<DIM+2 , T_HIST>    histogramBuffer(histogram);
+        //MultiArray<DIM+2 , T_HIST>    histogramBuffer(histogram);
         Kernel1D<float> gauss,gaussBin;
         gauss.initGaussian(sigma);
         gaussBin.initGaussian(sigmaBin);
@@ -92,34 +92,16 @@ namespace vigra{
 
             // histogram for one channel
             MultiArrayView<DIM+1,T_HIST> histc       = histogram.bindOuter(c);
-            MultiArrayView<DIM+1,T_HIST> histcBuffer = histogram.bindOuter(c);
+            //MultiArrayView<DIM+1,T_HIST> histcBuffer = histogram.bindOuter(c);
 
-            // convolve along all spatial axis and bin axis
-            // - refactor me
-            if(DIM==2){
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 0, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 1, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 2, gaussBin);
-                histc=histcBuffer;
-            }
-            else if(DIM==3){
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 0, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 1, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 2, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 3, gaussBin);
-                histc=histcBuffer;
-            }
-            else if(DIM==4){
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 0, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 1, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 2, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 3, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 4, gaussBin);
-                histc=histcBuffer;
-            }
-            else{
-                throw std::runtime_error("not yet implemented for arbitrary dimension");
-            }
+            ConvolutionOptions<DIM+1> opts;
+            TinyVector<double, DIM+1> sigmaVec(sigma);
+            sigmaVec[DIM] = sigmaBin;
+            opts.stdDev(sigmaVec);
+
+            // convolve spatial dimensions
+            gaussianSmoothMultiArray(histc, histc, opts);
+
         }
 
     }
