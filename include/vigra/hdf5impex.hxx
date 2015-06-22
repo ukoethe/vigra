@@ -45,6 +45,9 @@
 #define H5Dopen_vers 2
 #define H5Dcreate_vers 2
 #define H5Acreate_vers 2
+#define H5Eset_auto_vers 2
+#define H5Eget_auto_vers 2
+
 
 #include <hdf5.h>
 
