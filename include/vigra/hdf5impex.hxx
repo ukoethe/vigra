@@ -2393,6 +2393,15 @@ class HDF5File
          */
     hid_t openCreateGroup_(std::string groupName, bool create = true)
     {
+        
+        //save current error handling
+        H5E_auto2_t  oldfunc;
+        void *old_client_data;
+
+        H5Eget_auto(H5E_DEFAULT, &oldfunc, &old_client_data);
+        // Turn off error handling 
+        H5Eset_auto(H5E_DEFAULT, NULL, NULL);
+        
         // make groupName clean
         groupName = get_absolute_path(groupName);
 
@@ -2419,26 +2428,28 @@ class HDF5File
             std::string group(groupName.begin()+begin, groupName.begin()+end);
             hid_t prevParent = parent;
 
-            if(H5LTfind_dataset(parent, group.c_str()) == 0)
+            parent = H5Gopen(prevParent, group.c_str(), H5P_DEFAULT);
+            if(parent < 0)// if group doesn't exisist error code is returned. error output is suppressed
             {
                 if(create)
                     parent = H5Gcreate(prevParent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
                 else
-                    parent = -1;
+                {
+                    H5Gclose(prevParent);
+                    // Restore previous error handler before exiting
+                    H5Eset_auto(H5E_DEFAULT, oldfunc, old_client_data);
+                    return -1;
+                }
+                    //parent = -1;
             } 
-            else 
-            {
-                parent = H5Gopen(prevParent, group.c_str(), H5P_DEFAULT);
-            }
+
             H5Gclose(prevParent);
 
-            if(parent < 0)
-            {
-                return parent;
-            }
             begin = end + 1;
             end = groupName.find('/', begin);
         }
+        // Restore previous error handler 
+        H5Eset_auto(H5E_DEFAULT, oldfunc, old_client_data);
 
         return parent;
     }
