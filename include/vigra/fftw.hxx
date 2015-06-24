@@ -604,6 +604,27 @@ class FFTWMagnitudeAccessor
 
 /* documentation: see fftw3.hxx
 */
+class FFTWLogMagnitudeAccessor
+{
+  public:
+        /// The accessor's value type.
+    typedef fftw_real value_type;
+
+        /// Read natural log of magnitude at iterator position.
+    template <class ITERATOR>
+    value_type operator()(ITERATOR const & i) const {
+        return std::log((*i).magnitude() + 1);
+    }
+
+        /// Read natural log of magnitude at offset from iterator position.
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const {
+        return std::log((i[d]).magnitude() + 1);
+    }
+};
+
+/* documentation: see fftw3.hxx
+*/
 class FFTWPhaseAccessor
 {
   public:

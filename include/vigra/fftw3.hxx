@@ -1393,6 +1393,32 @@ class FFTWMagnitudeAccessor
     }
 };
 
+    /** Calculate natural logarithm of magnitude of complex number on the fly.
+
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
+    Namespace: vigra
+    */
+template <class Real = double>
+class FFTWLogMagnitudeAccessor
+{
+  public:
+        /// The accessor's value type.
+    typedef Real value_type;
+
+        /// Read natural log of magnitude at iterator position.
+    template <class ITERATOR>
+    value_type operator()(ITERATOR const & i) const {
+        return std::log((*i).magnitude() + 1);
+    }
+
+        /// Read natural log of magnitude at offset from iterator position.
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const {
+        return std::log((i[d]).magnitude() + 1);
+    }
+};
+
     /** Calculate phase of complex number on the fly.
 
     <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
