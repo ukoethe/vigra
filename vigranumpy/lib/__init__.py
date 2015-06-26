@@ -592,13 +592,14 @@ def _genDistanceTransformFunctions():
             return filters.distanceTransform2D(array,background=background,norm=norm,
                                                pixel_pitch=pixel_pitch, out=out)
         elif array.squeeze().ndim == 3:
-            return filters.distanceTransform3D(array,background=background,norm=norm,
-                                               pixel_pitch=pixel_pitch, out=out)
+            return filters.distanceTransform3D(array.astype('float32'),background=background,norm=2)
         else:
             raise RuntimeError("distanceTransform is only implemented for 2D and 3D arrays")
         
     distanceTransform.__module__ = 'vigra.filters'
     filters.distanceTransform = distanceTransform
+
+
 
 _genDistanceTransformFunctions()
 del _genDistanceTransformFunctions

@@ -1210,7 +1210,7 @@ namespace vigra{
     /// \param g               : input graph
     /// \param nodeFeaturesIn  : input node features which should be smoothed       
     /// \param edgeIndicator   : edge indicator to indicate over which edges one should smooth        
-    /// \param lambda          : scale edge indicator by lambda bevore taking negative exponent
+    /// \param lambda          : scale edge indicator by lambda before taking negative exponent
     /// \param edgeThreshold   : edge threshold
     /// \param scale           : how much smoothing should be applied
     /// \param[out] nodeFeaturesOut : smoothed node features
@@ -1233,7 +1233,7 @@ namespace vigra{
     /// \param g               : input graph
     /// \param nodeFeaturesIn  : input node features which should be smoothed       
     /// \param edgeIndicator   : edge indicator to indicate over which edges one should smooth        
-    /// \param lambda          : scale edge indicator by lambda bevore taking negative exponent
+    /// \param lambda          : scale edge indicator by lambda before taking negative exponent
     /// \param edgeThreshold   : edge threshold
     /// \param scale           : how much smoothing should be applied
     /// \param iterations      : how often should this algorithm be called recursively
