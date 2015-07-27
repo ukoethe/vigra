@@ -382,7 +382,7 @@ void pythonGray2QImage_ARGB32Premultiplied(
     TmpType pixelF;
     
     TmpType normalizeLow, normalizeHigh; 
-    if(normalize != boost::python::object())
+    if(normalize.pyObject() != Py_None)
     {
         vigra_precondition(normalize.shape(0) == 2,
             "gray2qimage_ARGB32Premultiplied(): normalize.shape[0] == 2 required.");
