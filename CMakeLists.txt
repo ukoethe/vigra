@@ -123,13 +123,16 @@ ENDIF()
 
 IF(WITH_BOOST)
     VIGRA_FIND_PACKAGE( Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
-    
-    if(Boost_FOUND AND WITH_BOOST_COMPONENTS)
-        # configure boost's autolink magic to use the right library name
-        # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
-        if(("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib") OR
-           ("${Boost_SYSTEM_LIBRARY}" MATCHES "boost_system\\.lib"))
-            ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
+
+    if(Boost_FOUND)
+        INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+        if(WITH_BOOST_COMPONENTS)
+            # configure boost's autolink magic to use the right library name
+            # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
+            if(("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib") OR
+               ("${Boost_SYSTEM_LIBRARY}" MATCHES "boost_system\\.lib"))
+                ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
+            endif()
         endif()
     endif()
 ENDIF()
