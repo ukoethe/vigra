@@ -609,7 +609,7 @@ public:
 
     ~ArrayVector()
     {
-        deallocate(this->data_, this->size_);
+        deallocate(this->data_, this->size_, this->capacity_);
     }
 
     void pop_back();
@@ -659,7 +659,7 @@ public:
 
   private:
 
-    void deallocate(pointer data, size_type size);
+    void deallocate(pointer data, size_type size, size_type capacity);
 
     pointer reserve_raw(size_type capacity);
 
@@ -706,7 +706,7 @@ inline void ArrayVector<T, Alloc>::push_back( value_type const & t )
     alloc_.construct(this->data_ + this->size_, t);
     // deallocate old data _after_ construction of new element, so that
     // 't' can refer to the old data as in 'push_back(front())'
-    deallocate(old_data, this->size_);
+    deallocate(old_data, this->size_, this->capacity_);
     ++this->size_;
 }
 
@@ -759,7 +759,7 @@ ArrayVector<T, Alloc>::insert(iterator p, size_type n, value_type const & v)
             alloc_.deallocate(new_data, new_capacity);
             throw;
         }
-        deallocate(this->data_, this->size_);
+        deallocate(this->data_, this->size_, this->capacity_);
         capacity_ = new_capacity;
         this->data_ = new_data;
     }
@@ -804,7 +804,7 @@ ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
             alloc_.deallocate(new_data, new_capacity);
             throw;
         }
-        deallocate(this->data_, this->size_);
+        deallocate(this->data_, this->size_, this->capacity_);
         capacity_ = new_capacity;
         this->data_ = new_data;
     }
@@ -859,10 +859,13 @@ ArrayVector<T, Alloc>::reserveImpl( bool dealloc, size_type new_capacity)
     if(this->size_ > 0)
         std::uninitialized_copy(old_data, old_data+this->size_, new_data);
     this->data_ = new_data;
-    capacity_ = new_capacity;
     if(!dealloc)
+    {
+        this->capacity_ = new_capacity;
         return old_data;
-    deallocate(old_data, this->size_);
+    }
+    deallocate(old_data, this->size_, this->capacity_);
+    this->capacity_ = new_capacity;
     return 0;
 }
 
@@ -924,12 +927,12 @@ ArrayVector<T, Alloc>::swap(this_type & rhs)
 
 template <class T, class Alloc>
 inline void
-ArrayVector<T, Alloc>::deallocate(pointer data, size_type size)
+ArrayVector<T, Alloc>::deallocate(pointer data, size_type size, size_type capacity)
 {
     if(data)
     {
         detail::destroy_n(data, size);
-        alloc_.deallocate(data, size);
+        alloc_.deallocate(data, capacity);
     }
 }
 
