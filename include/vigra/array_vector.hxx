@@ -468,7 +468,7 @@ ArrayVectorView <T>::swapDataImpl(const ArrayVectorView <U>& rhs)
     {
         ArrayVector<T> t(*this);
         copyImpl(rhs);
-        rhs.copyImpl(*this);
+        rhs.copyImpl(t);
     }
 }
 
