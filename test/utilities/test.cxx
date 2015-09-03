@@ -225,6 +225,27 @@ struct ArrayVectorTest
         shouldEqualSequence(vector_.begin(), vector_.end(), data);
     }
 
+    void testBackInsertion_failedOnVC14()
+    {
+        // regression test for bug appearing with VC14,
+        // see https://github.com/ukoethe/vigra/issues/256
+      
+        shouldEqual(vector_.size(), 0u);
+
+        // the bug is triggered when reserve()ing a capacity of 1024,
+        // which results in a memory block of 4096 bytes and thus
+        // reaches a "big allocation" threshold in VC14's
+        // std::allocator
+        const unsigned int N = 1030u;
+        const value_type value = 42;
+
+        std::fill_n(std::back_inserter(vector_), N, value);
+        
+        shouldEqual(vector_.size(), N);
+        shouldEqual(vector_[0], value);
+        shouldEqual(vector_[N-1], value);
+    }
+
     void testAmbiguousConstructor()
     {
         ArrayVector<std::ptrdiff_t> a(2, std::ptrdiff_t(1));
