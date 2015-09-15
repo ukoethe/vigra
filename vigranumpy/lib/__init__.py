@@ -33,7 +33,7 @@
 #
 #######################################################################
 
-import sys, os, time
+import sys, os, time, math
 from numbers import Number
 from multiprocessing import cpu_count
 try:
@@ -365,7 +365,7 @@ def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False,r=
         img = taggedView(img, 'xyc')
 
     labels = numpy.squeeze(labels)
-    crackedEdges = analysis.regionImageToCrackEdgeImage(labels).squeeze()
+    crackedEdges = analysis.regionImageToCrackEdgeImage(labels+1).squeeze()
     #print "cracked shape",crackedEdges.shape
     whereEdge    =  numpy.where(crackedEdges==0)
     whereNoEdge  =  numpy.where(crackedEdges!=0)
@@ -1175,6 +1175,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")
                 if acc == 'mean':
                     weights = self.baseGraph.edgeLengths()
+                    #print "Weights",weights
                 else:
                     weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
                     weights[:] = 1
@@ -1437,6 +1438,55 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             pLabels = self.projectLabelsToGridGraph(labels)
             return segShow(img,numpy.squeeze(pLabels),edgeColor=edgeColor,alpha=alpha,returnImg=returnImg)
 
+
+        def showEdgeFeature(self, img, edgeFeature, cmap='jet', returnImg=False, labelMode=False):
+            import matplotlib
+            assert graphs.isGridGraph(self.baseGraph)
+            imgOut = img.copy().squeeze()
+            if imgOut.ndim == 2:
+                imgOut = numpy.concatenate([imgOut[:,:,None]]*3,axis=2)
+            imgOut = taggedView(imgOut,'xyc')
+            imgOut-=imgOut.min()
+            imgOut/=imgOut.max()
+
+            if not labelMode:
+                edgeFeatureShow = edgeFeature.copy()
+                mi = edgeFeatureShow.min()
+                ma = edgeFeatureShow.max()
+                cm = matplotlib.cm.ScalarMappable(cmap=cmap)
+                rgb = cm.to_rgba(edgeFeatureShow)[:,0:3]
+                print rgb.shape
+
+                if(ma > mi):    
+                    edgeFeatureShow -=mi
+                    edgeFeatureShow /= edgeFeatureShow.max()
+                else:
+                    edgeFeatureShow[:] = 1
+
+            for e in self.edgeIter():
+                
+                u,v = self.edgeUVCoordinates(e.id)
+
+                if not labelMode:
+                    showVal = rgb[e.id,:]
+                else:
+                    if edgeFeature[e.id] == 0:
+                        showVal=[0,0,1]
+                    elif edgeFeature[e.id] == 1:
+                        showVal=[0,1,0]
+                    elif edgeFeature[e.id] == -1:
+                        showVal=[1,0,0]
+
+                imgOut[u[:,0],u[:,1],:] = showVal
+                imgOut[v[:,0],v[:,1],:] = showVal
+                #print u.shape
+            if returnImg:
+                return imgOut
+            imshow(imgOut)
+
+
+
+
         def nodeSize(self):
             """ get the geometric size of the nodes """
             if graphs.isGridGraph(self.baseGraph):
@@ -1482,6 +1532,98 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     graphs.GridRegionAdjacencyGraph = GridRegionAdjacencyGraph
 
 
+    class TinyEdgeLabelGui(object):
+        def __init__(self, rag, img, edgeLabels = None):
+
+
+            self.rag = rag 
+            self.img = img
+            self.edgeLabels = edgeLabels
+
+            self.visuImg = img.copy()
+            self.visuImg -= self.visuImg.min()
+            self.visuImg /= self.visuImg.max()
+
+            if self.edgeLabels is None :
+                self.edgeLabels = numpy.zeros(rag.edgeNum, dtype='int32')
+
+            self.implot  = None
+            self.currentLabel  = 1
+
+        def startGui(self):
+            from functools import partial
+            import pylab as plt
+            ax = plt.gca()
+            fig = plt.gcf()
+
+            imgWithEdges =self.rag.showEdgeFeature(self.visuImg, self.edgeLabels,returnImg=True, labelMode=True)
+            self.implot = ax.imshow(numpy.swapaxes(imgWithEdges,0,1))
+
+            ff = partial(self.onclick, self)
+
+            cid = fig.canvas.mpl_connect('button_press_event', self.onclick)
+
+            fig.canvas.mpl_connect('key_press_event', self.press)
+
+            plt.show()
+
+        def press(self, event):
+            sys.stdout.flush()
+            if event.key=='0' or event.key=='3':
+                self.currentLabel = 0
+            if event.key=='1':
+                self.currentLabel = 1
+            if event.key=='2':
+                self.currentLabel = -1
+
+        def onclick(self, event):
+            import pylab as plt
+            img = self.img
+            rag  = self.rag
+            labels = rag.baseGraphLabels
+            shape = img.shape
+            if event.xdata != None and event.ydata != None:
+                xRaw,yRaw = event.xdata,event.ydata
+                if xRaw >=0.0 and yRaw>=0.0 and xRaw<img.shape[0] and yRaw<img.shape[1]:
+                    x,y = long(math.floor(event.xdata)),long(math.floor(event.ydata))
+                      
+                    #print "X,Y",x,y
+                    l = labels[x,y]
+                    other  = None
+                    for xo in [-2,-1,0,1,2]:
+                        for yo in [-2,-1,0,1,2]:
+                            xx = x+xo
+                            yy = y+yo
+                            if xo is not 0 or yo is not 0:
+                                if  xx >=0 and xx<shape[0] and \
+                                    yy >=0 and yy<shape[0]:
+                                    otherLabel = labels[xx, yy]
+                                    if l != otherLabel:
+                                        edge = rag.findEdge(long(l), long(otherLabel))
+                                        #print edge
+                                        other = (xx,yy,edge)
+                                        #break
+                        if other is not None:
+                            pass
+                    
+                    if other is not None:
+                        eid = other[2].id
+                        oldLabel  = self.edgeLabels[eid]
+
+                        newLabel = self.currentLabel 
+        
+                        #print "old label",oldLabel
+                        #print "new label",newLabel
+
+                        self.edgeLabels[eid] = newLabel
+                        imgWithEdges = rag.showEdgeFeature(img, self.edgeLabels,returnImg=True, labelMode=True)
+                        self.implot.set_data(numpy.swapaxes(imgWithEdges,0,1))
+                        plt.draw()
+
+
+    TinyEdgeLabelGui.__module__ = 'vigra.graphs'
+    graphs.TinyEdgeLabelGui = TinyEdgeLabelGui
+
 
     def loadGridRagHDF5(filename , dset):
 
@@ -1504,6 +1646,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
         #print "load affiliatedEdges"
         affEdgeSerialization = readHDF5(filename, dset+'/affiliated_edges')
+
         #print "deserialize"
         affiliatedEdges = graphs._deserialzieGridGraphAffiliatedEdges(gridGraph, gridRag, affEdgeSerialization)
 

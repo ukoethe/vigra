@@ -41,6 +41,7 @@
 #include <vigra/nonlineardiffusion.hxx>
 #include <vigra/symmetry.hxx>
 #include <vigra/tv_filter.hxx>
+#include <vigra/shockfilter.hxx>
 
 namespace python = boost::python;
 
@@ -75,6 +76,33 @@ pythonGetAnisotropy2D(
 }
 **/
 
+
+template <class InValue, class OutValue>
+NumpyAnyArray
+pythonShockFilter(NumpyArray<3, Multiband<InValue> > image,
+                  float sigma, 
+                  float rho,
+                  float upwind_factor_h,
+                  unsigned int iterations,
+                  NumpyArray<3, Multiband<OutValue> > res=NumpyArray<3, Multiband<float> >())
+{
+    res.reshapeIfEmpty(image.taggedShape(),
+        "nonlinearDiffusion2D(): Output array has wrong shape.");
+
+    {
+        PyAllowThreads _pythread;
+        for(int k=0; k<image.shape(2); ++k)
+        {
+            MultiArrayView<2, OutValue, StridedArrayTag> bres   = res.bindOuter(k);
+            MultiArrayView<2, InValue,  StridedArrayTag> bimage = image.bindOuter(k);
+
+
+            shockFilter(bimage,bres, sigma, 
+                rho, upwind_factor_h, iterations);
+        }
+    }
+    return res;
+}
 
 
 
@@ -174,6 +202,25 @@ void defineFilters2D()
         "Perform edge-preserving smoothing at the given scale."
         "\n\n"
         "For details see nonlinearDiffusion_ in the vigra C++ documentation.\n");
+
+    def("shockFilter",
+        registerConverters(&pythonShockFilter<float, float>),
+        (
+            arg("image"), 
+            arg("sigma"), 
+            arg("rho"),
+            arg("updwindFactorH") ,
+            arg("iterations"),
+            arg("out")=python::object()
+        ),
+        "Perform edge-preserving smoothing at the given scale."
+        "\n\n"
+        "For details see shockFilter_ in the vigra C++ documentation.\n");
+
+
+    
+    
+
 
     def("totalVariationFilter",
         registerConverters(&pythonTotalVariationFilter2D<double,double>),
