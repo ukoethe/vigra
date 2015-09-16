@@ -1,3 +1,4 @@
+from IPython import embed; embed
 import vigra
 import vigra.graphs as vigraph
 import vigra.graphs as graphs
@@ -30,5 +31,9 @@ rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 # view3d(grayData=((volume, 'vol'),), segData=((labels, 'lab'),))
 # from IPython import embed; embed()
 
-gui = vigra.graphs.TinyEdgeLabelGui(rag=rag, img=volume)
+embed()
+
+rand = np.random.rand(rag.edgeNum)*2-1
+
+gui = vigra.graphs.TinyEdgeLabelGui(rag=rag, img=volume, edgeLabels=rand, labelMode=False)
 gui.startGui()

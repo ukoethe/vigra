@@ -1537,8 +1537,10 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
     class TinyEdgeLabelGui(object):
-        def __init__(self, rag, img, edgeLabels = None):
+        def __init__(self, rag, img, edgeLabels = None, labelMode=True):
 
+            if labelMode and isinstance(edgeLabels, numpy.ndarray):
+                assert set(numpy.unique(edgeLabels)).issubset({-1, 0, 1}), 'if labelMode is true only label values of [-1, 0, 1] are permitted'
 
             self.rag = rag
             self.img = img
@@ -1557,10 +1559,12 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             self.rag2d = None
             self.visuImg2d = None
 
+            self.labelMode = labelMode
+
 
             if self.edgeLabels is None :
-                self.edgeLabels = numpy.zeros(self.rag.edgeNum, dtype='int32')
-                self.edgeLabels2d = None
+                self.edgeLabels = numpy.zeros(self.rag.edgeNum, dtype=numpy.float32)
+            self.edgeLabels2d = None
 
             self.slice2d()
 
@@ -1577,7 +1581,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             fig = plt.gcf()
 
 
-            imgWithEdges =self.rag2d.showEdgeFeature(self.visuImg2d, self.edgeLabels,returnImg=True, labelMode=True)
+            imgWithEdges =self.rag2d.showEdgeFeature(self.visuImg2d, self.edgeLabels2d,returnImg=True, labelMode=self.labelMode)
             self.implot = ax.imshow(numpy.swapaxes(imgWithEdges,0,1))
 
             ff = partial(self.onclick, self)
@@ -1587,7 +1591,6 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             fig.canvas.mpl_connect('key_press_event', self.press)
 
             fig.canvas.mpl_connect('scroll_event', self.scroll)
-
 
 
             plt.show()
@@ -1608,7 +1611,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 gg = vigra.graphs.gridGraph(labels.shape)
                 self.rag2d = vigra.graphs.regionAdjacencyGraph(gg, labels)
                 # update edges 2d:
-                self.edgeLabels2d = numpy.zeros(self.rag2d.edgeNum, dtype='int32')
+                self.edgeLabels2d = numpy.zeros(self.rag2d.edgeNum, dtype=numpy.float32)
 
                 # update edge correlation
                 self.edgeIdRag2dToRag = dict()
@@ -1626,6 +1629,12 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             elif self.dim==2:
                 self.rag2d = self.rag
                 self.visuImg2d = self.visuImg
+                self.edgeIdRag2dToRag = dict()
+                for edge in self.rag.edgeIter():
+                    self.edgeIdRag2dToRag[edge.id] = edge.id
+
+                self.edgeIdRagToRag2d = self.edgeIdRag2dToRag
+                self.edgeLabels2d = self.edgeLabels
 
             else:
                 print 'warning: bad dimension!'
@@ -1640,7 +1649,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
                 self.zOffset = self.zOffset % self.visuImg.shape[2]
                 self.slice2d()
-                imgWithEdges = self.rag2d.showEdgeFeature(self.visuImg2d, self.edgeLabels2d,returnImg=True, labelMode=True)
+                imgWithEdges = self.rag2d.showEdgeFeature(self.visuImg2d, self.edgeLabels2d,returnImg=True, labelMode=self.labelMode)
                 self.implot.set_data(numpy.swapaxes(imgWithEdges,0,1))
                 plt.draw()
 
@@ -1679,7 +1688,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                         if other is not None:
                             pass
 
-                    if other is not None:
+                    if other is not None and self.labelMode:
                         eid = other[2].id
                         oldLabel  = self.edgeLabels[self.edgeIdRag2dToRag[eid]]
 
@@ -1694,7 +1703,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
                         self.edgeLabels[self.edgeIdRag2dToRag[eid]] = newLabel
                         self.edgeLabels2d[eid] = newLabel
-                        imgWithEdges = rag.showEdgeFeature(self.visuImg2d, self.edgeLabels2d,returnImg=True, labelMode=True)
+                        imgWithEdges = rag.showEdgeFeature(self.visuImg2d, self.edgeLabels2d,returnImg=True, labelMode=self.labelMode)
                         self.implot.set_data(numpy.swapaxes(imgWithEdges,0,1))
                         plt.draw()
 
