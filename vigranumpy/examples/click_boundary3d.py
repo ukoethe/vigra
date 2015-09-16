@@ -1,4 +1,3 @@
-from IPython import embed; embed
 import vigra
 import vigra.graphs as vigraph
 import vigra.graphs as graphs
@@ -27,11 +26,6 @@ volume = vigra.impex.readHDF5(*imPath)
 
 gridGraph = graphs.gridGraph(labels.shape)
 rag = graphs.regionAdjacencyGraph(gridGraph, labels)
-
-# view3d(grayData=((volume, 'vol'),), segData=((labels, 'lab'),))
-# from IPython import embed; embed()
-
-embed()
 
 rand = np.random.rand(rag.edgeNum)*2-1
 

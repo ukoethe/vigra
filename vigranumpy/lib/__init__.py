@@ -33,7 +33,6 @@
 #
 #######################################################################
 
-from IPython import embed
 import pylab as plt
 
 import sys, os, time, math
@@ -1581,7 +1580,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             fig = plt.gcf()
 
 
-            imgWithEdges =self.rag2d.showEdgeFeature(self.visuImg2d, self.edgeLabels2d,returnImg=True, labelMode=self.labelMode)
+            imgWithEdges =self.rag2d.showEdgeFeature(self.visuImg2d, self.edgeLabels2d, returnImg=True, labelMode=self.labelMode)
             self.implot = ax.imshow(numpy.swapaxes(imgWithEdges,0,1))
 
             ff = partial(self.onclick, self)
