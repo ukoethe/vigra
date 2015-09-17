@@ -832,6 +832,16 @@ public:
         return MultiArrayView<N, T, StridedArrayTag>(m_shape, m_stride, m_ptr);
     }
 
+	/** Reset this <tt>MultiArrayView</tt> to an invalid state (as after default construction).
+		Can e.g. be used prior to assignment to make a view object point to new data.
+         */
+    void reset() {
+	m_shape = diff_zero_t(0);
+	m_stride = diff_zero_t(0);
+	m_ptr = 0;
+    }
+
+
         /** Assignment. There are 3 cases:
 
             <ul>
