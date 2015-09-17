@@ -1545,6 +1545,93 @@ namespace vigra{
         }
     }
 
+    template<class GRAPH>
+    struct ThreeCycle{
+
+        typedef typename GRAPH::Node Node;
+
+        ThreeCycle(const Node & a, const Node & b, const Node c){
+            nodes_[0] = a;
+            nodes_[1] = b;
+            nodes_[2] = c;
+            std::sort(nodes_, nodes_+3);
+        }
+        bool operator < (const ThreeCycle & other)const{
+            if(nodes_[0] < other.nodes_[0]){
+                return true;
+            }
+            else if(nodes_[0] == other.nodes_[0]){
+                if(nodes_[1] < other.nodes_[1]){
+                    return true;
+                }
+                else if(nodes_[1] == other.nodes_[1]){
+                    if(nodes_[2] < other.nodes_[2]){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+                else{
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+        }
+
+        Node nodes_[3];
+
+
+    };
+
+
+    template<class GRAPH>
+    void find3Cycles(
+        const GRAPH & g, 
+        MultiArray<1, TinyVector<Int32, 3> > & cyclesArray 
+    ){
+        typedef typename GRAPH::Node Node;
+        typedef typename GRAPH::Edge Edge;
+        typedef typename GRAPH::EdgeIt EdgeIt;
+        typedef typename GRAPH::OutArcIt OutArcIt;
+
+        typedef ThreeCycle<GRAPH> Cycle;
+
+        std::set< Cycle > cycles;
+        typedef typename std::set<Cycle>::const_iterator SetIter;
+        for (EdgeIt iter(g); iter!=lemon::INVALID; ++iter){
+            const Edge edge(*iter);
+            const Node u = g.u(edge);
+            const Node v = g.v(edge);
+
+            // find a node n which is connected to u and v
+            for(OutArcIt outArcIt(g,u); outArcIt!=lemon::INVALID;++outArcIt){
+                const Node w = g.target(*outArcIt);
+                if(w != v){
+                    const Edge e = g.findEdge(w,v);
+                    if(e != lemon::INVALID){
+                        // found cycle
+                        cycles.insert(Cycle(u, v, w));
+                    }
+                }
+            }
+        }
+        cyclesArray.reshape(TinyVector<UInt32,1>(cycles.size()));
+        UInt32 i=0;
+        for(SetIter iter=cycles.begin(); iter!=cycles.end(); ++iter){
+
+            const Cycle & c = *iter;
+            for(size_t j=0;j<3; ++j){
+                cyclesArray(i)[j] = g.id(c.nodes_[j]);
+            }
+            ++i;
+        }
+    }
+
+
+
 //@}
 
 } // namespace vigra
