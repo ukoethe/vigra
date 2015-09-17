@@ -227,7 +227,16 @@ public:
             shouldEqual(array3[k], k+100);
         for(int k=100; k<200; ++k)
             shouldEqual(array3[k], k-100);
-
+            
+        MultiArrayView <3, scalar_type> varray1 = array;
+        MultiArrayView <3, scalar_type> varray2 = array3.subarray (Shape(0,1,0), Shape(3,4,5));
+        shouldEqual (varray1.shape(), Shape(4,4,4));
+        shouldEqual (varray2.shape(), Shape(3,3,5));
+        varray2.swap(varray1);
+        shouldEqual (varray2.shape(), Shape(4,4,4));
+        shouldEqual (varray1.shape(), Shape(3,3,5));
+        shouldEqual (varray2.data(), array.data());
+        shouldEqual (varray1.data(), &array3(0,1,0));
     }
         
     // stridearray tests
