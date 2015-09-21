@@ -1543,7 +1543,6 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
     class TinyEdgeLabelGui(object):
         def __init__(self, rag, img, edgeLabels = None, labelMode=True):
-            import pylab as plt
 
             if labelMode and isinstance(edgeLabels, numpy.ndarray):
                 assert set(numpy.unique(edgeLabels)).issubset({-1, 0, 1}), 'if labelMode is true only label values of [-1, 0, 1] are permitted'
@@ -1658,6 +1657,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
         def onclick(self, event):
+            import pylab as plt
             if event.button==1:
                 self.currentLabel = 1
             if event.button==3:
