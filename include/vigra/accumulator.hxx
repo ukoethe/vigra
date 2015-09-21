@@ -2232,6 +2232,53 @@ class DynamicAccumulatorChain<CoupledArrays<N, T1, T2, T3, T4, T5>, Selected>
 
 
 
+
+template<unsigned int N, class T, class SELECT>
+class StandAloneAccumulatorChain{
+public:
+    typedef typename CoupledHandleType<N, T>::type HandleType;
+    typedef typename HandleType::base_type CoordHandle;
+    typedef typename MultiArrayShape<N>::type CoordType;
+
+    typedef SELECT SelectType;
+    typedef AccumulatorChain<HandleType, SelectType>  AcculmatorChainType;
+
+
+    StandAloneAccumulatorChain()
+    :   val_(),
+        coordHandlePtr_(NULL),
+        handle_(&val_, CoordType(), CoordHandle(CoordType())),
+        accChain_(){
+        coordHandlePtr_ = static_cast<HandleType *>(&handle_);
+    }
+
+    const AcculmatorChainType accumulatorChain() const{
+        return accChain_;
+    }
+    AcculmatorChainType accumulatorChain(){
+        return accChain_;
+    }
+
+    void updatePassN(const T & val, const CoordType & coord, unsigned int p){
+        val_ = val;
+        const CoordType & constP = coordHandlePtr_->point();
+        CoordType & nonConstP = *const_cast<CoordType*>(&constP);
+        nonConstP = coord;
+
+        accChain_.updatePassN(handle_, p);
+    }
+private:
+    T val_;
+    CoordHandle * coordHandlePtr_;
+    HandleType handle_;
+    AcculmatorChainType accChain_;
+
+};
+
+
+
+
+
 /** \brief Create an array of accumulator chains containing the selected per-region and global statistics and their dependencies.
 
     AccumulatorChainArray is used to compute per-region statistics (as well as global statistics). The statistics are selected at compile-time. An array of accumulator chains (one per region) for region statistics is created and one accumulator chain for global statistics. The region labels always start at 0. Use the Global modifier to compute global statistics (by default per-region statistics are computed). 

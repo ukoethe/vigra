@@ -975,7 +975,7 @@ void RandomForest<LabelType, PreprocessorTag>::
 
 
     // Make stl compatible random functor.
-    
+    RandFunctor_t           randint     ( random);
 
 
     // Preprocess the data to get something the split functor can work
@@ -993,25 +993,17 @@ void RandomForest<LabelType, PreprocessorTag>::
     //initialize trees.
     trees_.resize(options_.tree_count_  , DecisionTree_t(ext_param_));
 
-    
-
-    visitor.visit_at_beginning(*this, preprocessor);
-    // THE MAIN EFFING RF LOOP - YEAY DUDE!
-    
-    #pragma omp parallel for
-    for(int ii = 0; ii < static_cast<int>(trees_.size()); ++ii)
-    {   
-
-
-        //
-        RandFunctor_t           randint     (random);
-
-        Sampler<Random_t > sampler(preprocessor.strata().begin(),
+    Sampler<Random_t > sampler(preprocessor.strata().begin(),
                                preprocessor.strata().end(),
                                detail::make_sampler_opt(options_)
                                         .sampleSize(ext_param().actual_msample_),
                                &random);
 
+    visitor.visit_at_beginning(*this, preprocessor);
+    // THE MAIN EFFING RF LOOP - YEAY DUDE!
+    
+    for(int ii = 0; ii < static_cast<int>(trees_.size()); ++ii)
+    {
         //initialize First region/node/stack entry
         sampler
             .sample();  
