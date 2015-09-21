@@ -29,5 +29,5 @@ rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 
 rand = np.random.rand(rag.edgeNum)*2-1
 
-gui = vigra.graphs.TinyEdgeLabelGui(rag=rag, img=volume, edgeLabels=rand, labelMode=False)
+gui = vigra.graphs.TinyEdgeLabelGui(rag=rag, img=volume, edgeLabels=None, labelMode=True)
 gui.startGui()
