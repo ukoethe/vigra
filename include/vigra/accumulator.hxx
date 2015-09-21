@@ -2267,6 +2267,14 @@ public:
 
         accChain_.updatePassN(handle_, p);
     }
+    void updatePassN(const T & val, const CoordType & coord, unsigned int p){
+        val_ = val;
+        const CoordType & constP = coordHandlePtr_->point();
+        CoordType & nonConstP = *const_cast<CoordType*>(&constP);
+        nonConstP = coord;
+
+        accChain_.updatePassN(handle_, p);
+    }
 private:
     T val_;
     CoordHandle * coordHandlePtr_;
