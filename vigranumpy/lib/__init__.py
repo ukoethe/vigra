@@ -1643,6 +1643,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
         def scroll(self, event):
+            import pylab as plt
             if self.dim==3:
                 if event.button == 'up':
                     self.zOffset += 1
