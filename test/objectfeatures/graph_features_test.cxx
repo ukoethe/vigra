@@ -95,9 +95,9 @@ struct GraphFeatureTest
         a.updatePassN(2.0, Point(0,3,0), 2);
         a.updatePassN(3.0, Point(0,0,3), 2);
 
-        shouldEqualTolerance( get<Mean>(a.accumulatorChain()), 2.0, 0.000001);
+        shouldEqualTolerance( get<Mean>(a), 2.0, 0.000001);
 
-        CoordType rCenter = get<RegionCenter>(a.accumulatorChain());
+        CoordType rCenter = get<RegionCenter>(a);
         CoordType trueCenter(1,1,1);
         shouldEqualSequence(rCenter.begin(),rCenter.end(), trueCenter.begin());
 

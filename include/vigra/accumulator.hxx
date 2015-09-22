@@ -2234,30 +2234,30 @@ class DynamicAccumulatorChain<CoupledArrays<N, T1, T2, T3, T4, T5>, Selected>
 
 
 template<unsigned int N, class T, class SELECT>
-class StandAloneAccumulatorChain{
+class StandAloneAccumulatorChain : public
+AccumulatorChain<
+    typename CoupledHandleType<N, T>::type,
+    SELECT
+>
+{
 public:
     typedef typename CoupledHandleType<N, T>::type HandleType;
     typedef typename HandleType::base_type CoordHandle;
     typedef typename MultiArrayShape<N>::type CoordType;
 
     typedef SELECT SelectType;
-    typedef AccumulatorChain<HandleType, SelectType>  AcculmatorChainType;
+    typedef AccumulatorChain<HandleType, SelectType>  BaseType;
 
 
     StandAloneAccumulatorChain()
-    :   val_(),
+    :   BaseType(),
+        val_(),
         coordHandlePtr_(NULL),
-        handle_(&val_, CoordType(), CoordHandle(CoordType())),
-        accChain_(){
+        handle_(&val_, CoordType(), CoordHandle(CoordType()))
+    {
         coordHandlePtr_ = static_cast<HandleType *>(&handle_);
     }
 
-    const AcculmatorChainType accumulatorChain() const{
-        return accChain_;
-    }
-    AcculmatorChainType accumulatorChain(){
-        return accChain_;
-    }
 
     void updatePassN(const T & val, const CoordType & coord, unsigned int p){
         val_ = val;
@@ -2265,21 +2265,13 @@ public:
         CoordType & nonConstP = *const_cast<CoordType*>(&constP);
         nonConstP = coord;
 
-        accChain_.updatePassN(handle_, p);
-    }
-    void updatePassN(const T & val, const CoordType & coord, unsigned int p){
-        val_ = val;
-        const CoordType & constP = coordHandlePtr_->point();
-        CoordType & nonConstP = *const_cast<CoordType*>(&constP);
-        nonConstP = coord;
-
-        accChain_.updatePassN(handle_, p);
+        BaseType::updatePassN(handle_, p);
     }
 private:
     T val_;
     CoordHandle * coordHandlePtr_;
     HandleType handle_;
-    AcculmatorChainType accChain_;
+    //AcculmatorChainType accChain_;
 
 };
 

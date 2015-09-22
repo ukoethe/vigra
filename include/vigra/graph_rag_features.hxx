@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2011 by Ullrich Koethe                     */
+/*     Copyright 2014 by Thorsten Beier and Ullrich Koethe              */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -33,72 +33,39 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
+/**
+ * This header provides definitions of graph-related algorithms
+ */
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/metrics.hxx>
+#ifndef VIGRA_GRAPH_FEATURES
+#define VIGRA_GRAPH_FEATURES
 
-namespace python = boost::python;
+/*std*/
+#include <algorithm>
+#include <vector>
+#include <functional>
+#include <set>
+
+
+/*vigra*/
+#include "graphs.hxx"
+#include "graph_generalization.hxx"
+#include "multi_gridgraph.hxx"
+#include "priority_queue.hxx"
+#include "union_find.hxx"
+#include "adjacency_list_graph.hxx"
+#include "graph_maps.hxx"
+
+
 
 namespace vigra{
 
 
 
-
-
-	void defineInvalid(){
-        python::class_<lemon::Invalid>("Invalid",python::init<>());
-    }
-
-	void defineAdjacencyListGraph();
-	void defineGridGraph2d();
-    void defineGridGraph3d();
-    void defineGridGraphImplicitEdgeMap();
-    template<unsigned int DIM>
-    void defineGridRag(const std::string &);
-
-    //void defineEccentricity();
-} // namespace vigra
-
-using namespace vigra;
-using namespace boost::python;
-
-
-
-BOOST_PYTHON_MODULE_INIT(graphs)
-{
-    import_vigranumpy();
-
-    python::docstring_options doc_options(true, true, false);
-
-    // all exporters needed for graph exporters (like lemon::INVALID)
-    defineInvalid();
-
-    enum_<metrics::MetricType>("MetricType")
-        .value("chiSquared", metrics::ChiSquaredMetric)
-        .value("hellinger", metrics::HellingerMetric)
-        .value("squaredNorm", metrics::SquaredNormMetric)
-        .value("norm", metrics::NormMetric)
-        .value("manhattan", metrics::ManhattanMetric)
-        .value("symetricKl", metrics::SymetricKlMetric)
-        .value("bhattacharya", metrics::BhattacharyaMetric)
-        ;
     
 
 
-    // all graph classes itself (GridGraph , AdjacencyListGraph)
-    defineAdjacencyListGraph();
-    defineGridGraph2d();
-    defineGridGraph3d();
-
-    // implicit edge maps
-    defineGridGraphImplicitEdgeMap();
-
-    defineGridRag<2>("GridRagEdgeImageFeatureExtractor2D");
-    defineGridRag<3>("GridRagEdgeImageFeatureExtractor3D");
-
-    //defineEccentricity();
 }
+
+#endif /* VIGRA_GRAPH_FEATURES */
+

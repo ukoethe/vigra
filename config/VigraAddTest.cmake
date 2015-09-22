@@ -14,6 +14,9 @@
 # to the corresponding binary directory.
 #
 MACRO(VIGRA_NATIVE_PATH out in)
+    if(CMAKE_MAJOR_VERSION STREQUAL "3")
+        cmake_policy(SET CMP0026 OLD)
+    endif()
     file(TO_CMAKE_PATH "${in}" ${out})
     IF(NOT CMAKE_CFG_INTDIR STREQUAL ".")
         STRING(REGEX REPLACE "\\$\\([^\\)]*\\)" "%CONFIGURATION%" ${out} "${${out}}")

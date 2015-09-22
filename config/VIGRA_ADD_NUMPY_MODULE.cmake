@@ -20,8 +20,14 @@
 #        no installation target will be defined). The cmake target name becomes 
 #        'vigranumpy_modulename' in order to get useful alphabetic sorting of 
 #        targets in project files.
+
+
+
+
 FUNCTION(VIGRA_ADD_NUMPY_MODULE target)
-    
+    if(CMAKE_MAJOR_VERSION STREQUAL "3")
+        cmake_policy(SET CMP0026 OLD)
+    endif()
     # parse the args
     set(v SOURCES)
     set(PART_OF_VIGRANUMPY 0)

@@ -8,6 +8,13 @@ cmake_minimum_required(VERSION 2.6)
 
 PROJECT(vigra)
 
+
+
+if(CMAKE_MAJOR_VERSION STREQUAL "3")
+    cmake_policy(SET CMP0026 OLD)
+endif()
+
+
 # read the current version from config_version.hxx
 file(READ ${vigra_SOURCE_DIR}/include/vigra/config_version.hxx VIGRA_VERSION_FILE)
 string(REGEX MATCH "VIGRA_VERSION_MAJOR[ \t\n]+[^ \t\n]+" VIGRA_VERSION_MAJOR ${VIGRA_VERSION_FILE})
