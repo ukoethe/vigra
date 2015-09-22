@@ -223,6 +223,11 @@ public:
         return vigra::get<TARGET_INDEX>(*this);
     }
 
+
+    void updatePtrAdresse(T & val){
+        pointer_ = & val;
+    }
+
     pointer pointer_;
     shape_type strides_;
 };

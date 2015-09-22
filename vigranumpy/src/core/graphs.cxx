@@ -58,7 +58,7 @@ namespace vigra{
     void defineGridGraph3d();
     void defineGridGraphImplicitEdgeMap();
     template<unsigned int DIM>
-    void defineGridRag(const std::string &);
+    void defineGridRag();
 
     //void defineEccentricity();
 } // namespace vigra
@@ -97,8 +97,8 @@ BOOST_PYTHON_MODULE_INIT(graphs)
     // implicit edge maps
     defineGridGraphImplicitEdgeMap();
 
-    defineGridRag<2>("GridRagEdgeImageFeatureExtractor2D");
-    defineGridRag<3>("GridRagEdgeImageFeatureExtractor3D");
+    vigra::defineGridRag<2>();
+    vigra::defineGridRag<3>();
 
     //defineEccentricity();
 }

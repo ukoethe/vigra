@@ -2251,25 +2251,63 @@ public:
 
     StandAloneAccumulatorChain()
     :   BaseType(),
-        val_(),
-        coordHandlePtr_(NULL),
+        val_(0.0),
         handle_(&val_, CoordType(), CoordHandle(CoordType()))
     {
-        coordHandlePtr_ = static_cast<HandleType *>(&handle_);
     }
 
+    
+    
 
     void updatePassN(const T & val, const CoordType & coord, unsigned int p){
-        val_ = val;
-        const CoordType & constP = coordHandlePtr_->point();
-        CoordType & nonConstP = *const_cast<CoordType*>(&constP);
-        nonConstP = coord;
-
+        //val_ = val;
+        handle_.updatePtrAdresse(val_);
+        handle_. template get<1>() = val;
+        const CoordType & constP = handle_. template get<0>();
+        CoordType & nonConstP = * const_cast<CoordType*>(&constP);
+        
+        std::copy(coord.begin(), coord.end(), nonConstP.begin());
         BaseType::updatePassN(handle_, p);
     }
 private:
     T val_;
-    CoordHandle * coordHandlePtr_;
+    HandleType handle_;
+    //AcculmatorChainType accChain_;
+
+};
+
+template<unsigned int N, class SELECT>
+class StandAloneDataFreeAccumulatorChain : public
+AccumulatorChain<
+    typename CoupledHandleType<N>::type,
+    SELECT
+>
+{
+public:
+    typedef typename CoupledHandleType<N>::type HandleType;
+    typedef typename MultiArrayShape<N>::type CoordType;
+
+    typedef SELECT SelectType;
+    typedef AccumulatorChain<HandleType, SelectType>  BaseType;
+
+
+    StandAloneDataFreeAccumulatorChain()
+    :   BaseType(),
+        handle_(CoordType())
+    {
+        
+    }
+
+    
+    
+
+    void updatePassN(const CoordType & coord, unsigned int p){
+        const CoordType & constP = handle_. template get<0>();
+        CoordType & nonConstP = * const_cast<CoordType*>(&constP);
+        std::copy(coord.begin(), coord.end(), nonConstP.begin());
+        BaseType::updatePassN(handle_, p);
+    }
+private:
     HandleType handle_;
     //AcculmatorChainType accChain_;
 

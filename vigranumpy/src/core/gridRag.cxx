@@ -57,27 +57,105 @@ namespace vigra{
 
 
 
-   
+
+
     template<unsigned int DIM>
-    void defineGridRag(
-        const std::string & clsName
-    ){
-        
-       
+    struct ExportFeatureExtractor{
 
 
-        typedef GridRagFeatureExtractor<
-            DIM, 
-            UInt32
-        > GridRagFeatureExtractorType;
+        typedef GridRagFeatureExtractor<DIM, UInt32> GridRagFeatureExtractorType;
 
-        python::class_<GridRagFeatureExtractorType>(
-            clsName.c_str(),
-            python::no_init
-        )
-        ;
-        
+        static void exportFeatureExtractor(
+            const std::string & clsName
+        ){
+
+            python::class_<GridRagFeatureExtractorType>(
+                clsName.c_str(),
+                python::no_init
+            )
+            .def("accumulatedFeatures", registerConverters(&accumulatedFeatures<float>),
+                (
+                    python::arg("data"),
+                    python::arg("minVal"),
+                    python::arg("maxVal"),
+                    python::arg("out") = python::object()
+                )
+            )
+            .def("geometricFeatures", registerConverters(&geometricFeatures),
+                (
+                    python::arg("out") = python::object()
+                )
+            )
+
+            ;
+
+            python::def("gridRagFeatureExtractor", registerConverters(&factory),
+                python::return_value_policy<python::manage_new_object>()
+            );
+        }
+
+        // the factory
+        static GridRagFeatureExtractorType * factory(
+            const AdjacencyListGraph & graph,
+            NumpyArray<DIM, UInt32> labels
+        ){
+            if(graph.edgeNum() != graph.maxEdgeId() + 1){
+                throw std::runtime_error("graph.edgeNum() == graph.maxEdgeId() +1 is violated");
+            }
+            return new GridRagFeatureExtractorType(graph, labels);
+        }
+
+
+        template<class DATA_TYPE>
+        static NumpyAnyArray accumulatedFeatures(
+            const GridRagFeatureExtractorType & extractor,
+            const NumpyArray<DIM, DATA_TYPE>  & data,
+            const DATA_TYPE minVal,
+            const DATA_TYPE maxVal,
+            NumpyArray<2, float> out
+        ){
+
+
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(),100);
+            out.reshape(outShape);
+            extractor.accumulatedFeatures(data, minVal, maxVal, out);
+            return out;
+        }
+
+        static NumpyAnyArray geometricFeatures(
+            const GridRagFeatureExtractorType & extractor,
+            NumpyArray<2, float> out
+        ){
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(),100);
+            out.reshape(outShape);
+            extractor.geometricFeatures(out);
+            return out;
+        }
+
+    };
+
+
+
+
+    template<unsigned int DIM>
+    void defineGridRag(){
+
+        std::string clsName;
+        if (DIM == 2)
+            clsName = "GridRagFeatureExtractor2D";
+        if (DIM == 3)
+            clsName = "GridRagFeatureExtractor3D";
+        if (DIM == 4)
+            clsName = "GridRagFeatureExtractor4D";
+
+        ExportFeatureExtractor<DIM>::exportFeatureExtractor(clsName) ;
     }
+
+
+    template void defineGridRag<2>();
+    template void defineGridRag<3>();
+
+
 } 
 
 
