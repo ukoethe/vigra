@@ -285,6 +285,36 @@ writeHDF5.__module__ = 'vigra.impex'
 from filters import convolve, gaussianSmoothing
 from sampling import resize
 
+def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
+'''
+    Convolve 'array' with a Gaussian derivate kernel of the given 'orders'. 
+    'orders' must contain a list of integers >= 0 for each non-channel axis.
+    Each channel of the array is treated independently. If 'sigma' is a single 
+    value, the kernel size is equal in each dimension. If 'sigma' is a tuple 
+    or list of values of appropriate length, a different size is used for each axis.
+
+    'window_size' specifies the ratio between the filter scale and the size of 
+    the filter window. Use values around 2.0 to speed-up the computation for the 
+    price of increased cut-off error, and values >= 4.0 for vary accurate results.
+    The window size is automatically determined for the default value 0.0.
+'''
+    if hasattr(array, 'dropChannelAxis'):
+        if array.dropChannelAxis().ndim != len(orders):
+            raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
+    else:
+        if array.ndim == len(orders):
+            raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
+    try:
+        len(sigma)
+    except:
+        sigma = [sigma]*len(orders)
+    kernels = tuple([filters.gaussianDerivativeKernel(s, o, window_size=window_size) \
+                     for s, o in zip(sigma, orders)])
+    return filters.convolve(array, kernels, out)
+
+filters.gaussianDerivative = gaussianDerivative
+gaussianDerivative.__module__ = 'vigra.filters'
+
 # import enums
 CLOCKWISE = sampling.RotationDirection.CLOCKWISE
 COUNTER_CLOCKWISE = sampling.RotationDirection.COUNTER_CLOCKWISE
@@ -436,9 +466,9 @@ def _genKernelFactories(name):
         newName = newPrefix + 'Kernel'
         if name == 'Kernel2D':
             newName += '2D'
-        code = '''def %(newName)s(*args):
+        code = '''def %(newName)s(*args, **kw):
         k = filters.%(name)s()
-        k.%(oldName)s(*args)
+        k.%(oldName)s(*args, **kw)
         return k
 %(newName)s.__doc__ = filters.%(name)s.%(oldName)s.__doc__
 filters.%(newName)s=%(newName)s
