@@ -286,18 +286,18 @@ from filters import convolve, gaussianSmoothing
 from sampling import resize
 
 def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
-'''
-    Convolve 'array' with a Gaussian derivate kernel of the given 'orders'. 
-    'orders' must contain a list of integers >= 0 for each non-channel axis.
-    Each channel of the array is treated independently. If 'sigma' is a single 
-    value, the kernel size is equal in each dimension. If 'sigma' is a tuple 
-    or list of values of appropriate length, a different size is used for each axis.
+    '''
+        Convolve 'array' with a Gaussian derivate kernel of the given 'orders'. 
+        'orders' must contain a list of integers >= 0 for each non-channel axis.
+        Each channel of the array is treated independently. If 'sigma' is a single 
+        value, the kernel size is equal in each dimension. If 'sigma' is a tuple 
+        or list of values of appropriate length, a different size is used for each axis.
 
-    'window_size' specifies the ratio between the filter scale and the size of 
-    the filter window. Use values around 2.0 to speed-up the computation for the 
-    price of increased cut-off error, and values >= 4.0 for vary accurate results.
-    The window size is automatically determined for the default value 0.0.
-'''
+        'window_size' specifies the ratio between the filter scale and the size of 
+        the filter window. Use values around 2.0 to speed-up the computation for the 
+        price of increased cut-off error, and values >= 4.0 for vary accurate results.
+        The window size is automatically determined for the default value 0.0.
+    '''
     if hasattr(array, 'dropChannelAxis'):
         if array.dropChannelAxis().ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
