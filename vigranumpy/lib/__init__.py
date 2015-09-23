@@ -1673,8 +1673,11 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
         def onclick(self, event):
             self.press = event.xdata, event.ydata
-            self.handle_click(event)
-
+            print event.xdata, event.ydata
+            try:
+                self.handle_click(event)
+            except:
+                pass
         def handle_click(self, event):
             
             import pylab as plt
@@ -1719,12 +1722,12 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                         oldLabel  = self.edgeLabels[self.edgeIdRag2dToRag[eid]]
 
                         if self.currentLabel == oldLabel:
-                            pass #newLabel = 0
+                            newLabel = oldLabel
                         else:
                             newLabel = self.currentLabel
 
-                        #print "old label",oldLabel
-                        #print "new label",newLabel
+                        print "old label",oldLabel
+                        print "new label",newLabel
 
                         self.edgeLabels[self.edgeIdRag2dToRag[eid]] = newLabel
                         self.edgeLabels2d[eid] = newLabel
