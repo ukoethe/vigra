@@ -73,6 +73,7 @@ namespace vigra{
                 clsName.c_str(),
                 python::no_init
             )
+            .def("nAccumulatedFeatures",registerConverters(&nAccumulatedFeatures<float>))
             .def("accumulatedFeatures", registerConverters(&accumulatedFeatures<float>),
                 (
                     python::arg("data"),
@@ -81,7 +82,14 @@ namespace vigra{
                     python::arg("out") = python::object()
                 )
             )
+            .def("nGeometricFeatures", &GridRagFeatureExtractorType::nGeometricFeatures)
             .def("geometricFeatures", registerConverters(&geometricFeatures),
+                (
+                    python::arg("out") = python::object()
+                )
+            )
+            .def("nTopologicalFeatures", &GridRagFeatureExtractorType::nTopologicalFeatures)
+            .def("topologicalFeatures", registerConverters(&topologicalFeatures),
                 (
                     python::arg("out") = python::object()
                 )
@@ -107,6 +115,14 @@ namespace vigra{
 
 
         template<class DATA_TYPE>
+        static UInt64 nAccumulatedFeatures(
+            const GridRagFeatureExtractorType & extractor,
+            const NumpyArray<DIM, DATA_TYPE>  & data
+        ){
+            return extractor.nAccumulatedFeatures<DATA_TYPE>();
+        }
+
+        template<class DATA_TYPE>
         static NumpyAnyArray accumulatedFeatures(
             const GridRagFeatureExtractorType & extractor,
             const NumpyArray<DIM, DATA_TYPE>  & data,
@@ -116,7 +132,7 @@ namespace vigra{
         ){
 
 
-            TinyVector<UInt32,2> outShape(extractor.edgeNum(),100);
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nAccumulatedFeatures<DATA_TYPE>());
             out.reshape(outShape);
             extractor.accumulatedFeatures(data, minVal, maxVal, out);
             return out;
@@ -126,12 +142,22 @@ namespace vigra{
             const GridRagFeatureExtractorType & extractor,
             NumpyArray<2, float> out
         ){
-            TinyVector<UInt32,2> outShape(extractor.edgeNum(),100);
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(), extractor.nGeometricFeatures());
             out.reshape(outShape);
             extractor.geometricFeatures(out);
             return out;
         }
 
+
+        static NumpyAnyArray topologicalFeatures(
+            const GridRagFeatureExtractorType & extractor,
+            NumpyArray<2, float> out
+        ){
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(), extractor.nTopologicalFeatures());
+            out.reshape(outShape);
+            extractor.topologicalFeatures(out);
+            return out;
+        }
     };
 
 

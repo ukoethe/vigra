@@ -1547,6 +1547,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             if labelMode and isinstance(edgeLabels, numpy.ndarray):
                 assert set(numpy.unique(edgeLabels)).issubset({-1, 0, 1}), 'if labelMode is true only label values of [-1, 0, 1] are permitted'
 
+            self.press = None
             self.rag = rag
             self.img = img
             self.edgeLabels = edgeLabels
@@ -1591,13 +1592,16 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
             cid = fig.canvas.mpl_connect('button_press_event', self.onclick)
 
-            fig.canvas.mpl_connect('key_press_event', self.press)
+            fig.canvas.mpl_connect('key_press_event', self.press_event)
 
             fig.canvas.mpl_connect('scroll_event', self.scroll)
 
+            fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
+            fig.canvas.mpl_connect('button_release_event', self.on_release)
+
             plt.show()
 
-        def press(self, event):
+        def press_event(self, event):
             sys.stdout.flush()
             if event.key=='0' or event.key=='3':
                 self.currentLabel = 0
@@ -1605,7 +1609,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 self.currentLabel = 1
             if event.key=='2':
                 self.currentLabel = -1
-
+            
 
         def slice2d(self):
             if self.dim==3:
@@ -1655,14 +1659,32 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 imgWithEdges = self.rag2d.showEdgeFeature(self.visuImg2d, self.edgeLabels2d,returnImg=True, labelMode=self.labelMode)
                 self.implot.set_data(numpy.swapaxes(imgWithEdges,0,1))
                 plt.draw()
+        def on_motion(self, event):
+            
+            if self.press is None: 
+                return
 
+            print event.xdata, event.ydata
+            self.handle_click(event)
+
+        def on_release(self, event):
+            print 'on release we reset the press data'
+            self.press = None
 
         def onclick(self, event):
+            self.press = event.xdata, event.ydata
+            self.handle_click(event)
+
+        def handle_click(self, event):
+            
             import pylab as plt
             if event.button==1:
                 self.currentLabel = 1
+            if event.button==2:
+                self.currentLabel = 0
             if event.button==3:
                 self.currentLabel = -1
+            print "press",event.button 
 
             img = self.img
             rag  = self.rag2d
@@ -1697,7 +1719,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                         oldLabel  = self.edgeLabels[self.edgeIdRag2dToRag[eid]]
 
                         if self.currentLabel == oldLabel:
-                            newLabel = 0
+                            pass #newLabel = 0
                         else:
                             newLabel = self.currentLabel
 

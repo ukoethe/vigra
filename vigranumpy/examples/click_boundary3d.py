@@ -20,11 +20,8 @@ imPath = ('holyRegion.h5', 'im')   # input image path
 labPath = ('segMaskOnly.h5', 'data')   # labeled image path
 
 # load volume
-#labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
-#volume = vigra.impex.readHDF5(*imPath)
-
-volume = np.random.rand(4,5,5)
-labels = np.random.rand(4,5,5).astype('uint32')
+labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)[:,:,0:20]
+volume = vigra.impex.readHDF5(*imPath)[:,:,0:20]
 
 
 gridGraph = graphs.gridGraph(labels.shape)
@@ -34,3 +31,5 @@ rand = np.random.rand(rag.edgeNum)*2-1
 
 gui = vigra.graphs.TinyEdgeLabelGui(rag=rag, img=volume, edgeLabels=None, labelMode=True)
 gui.startGui()
+
+print gui.edgeLabels

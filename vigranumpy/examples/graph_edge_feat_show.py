@@ -4,8 +4,9 @@ import pylab
 import numpy
 import matplotlib
 
+import sklearn.decomposition
 # parameter:
-filepath = '/media/tbeier/data/datasets/hhess/2x2x2nm_normalized/2x2x2nm.0005.tif.png'   # input image path
+filepath = '100075.jpg'   # input image path
 sigmaGradMag = 3.0       # sigma Gaussian gradient
 superpixelDiameter = 20  # super-pixel size
 slicWeight = 100.0        # SLIC color - spatial weight
@@ -14,8 +15,8 @@ slicWeight = 100.0        # SLIC color - spatial weight
 img = vigra.impex.readImage(filepath)[0:800,0:800].squeeze()
 
 
-
-labels, nseg = vigra.analysis.watershedsNew(vigra.filters.gaussianSmoothing(-1.0*img,2.0))
+gradMag = vigra.filters.gaussianGradientMagnitude(img,7.0).squeeze()
+labels, nseg = vigra.analysis.watershedsNew(gradMag)
 
 
 labels = vigra.analysis.labelImage(labels)
@@ -24,6 +25,7 @@ labels = labels.squeeze()
 
 
 
+print vigra.__file__
 
 # get 2D grid graph and  edgeMap for grid graph
 # from gradMag of interpolated image
@@ -40,12 +42,29 @@ featureExtractor.graph  = rag
 
 
 
-accFeat = featureExtractor.accumulatedFeatures(img,float(img.min()),float(img.max()))
+gradMag = vigra.filters.gaussianGradientMagnitude(img,3.0).squeeze()
+miMa = float(gradMag.min()),float(gradMag.max()) 
+accFeat = featureExtractor.accumulatedFeatures(gradMag,miMa[0],miMa[1])
 geoFeat = featureExtractor.geometricFeatures()
+topoFeat = featureExtractor.topologicalFeatures()
 
-a = numpy.ones_like(img)
-a[0,0] = 0
-for i in range(5):
+
+#for i in range(accFeat.shape[1]):
+#    print i
+#    rag.showEdgeFeature(img, accFeat[:,i])
+#    vigra.show()
+#
+#sys.exit(0)
+
+feat = numpy.concatenate([accFeat],axis=1)
+
+print "FET MIN MAX",feat.min(),feat.max()
+
+dimRed = sklearn.decomposition.PCA(n_components=3)
+
+dimRedFeat = dimRed.fit_transform(feat)
+
+for i in range(dimRedFeat.shape[1]):
     print i
-    rag.showEdgeFeature(a, geoFeat[:,i])
+    rag.showEdgeFeature(img, dimRedFeat[:,i])
     vigra.show()
