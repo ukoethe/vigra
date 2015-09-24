@@ -58,7 +58,7 @@ topoFeat = featureExtractor.topologicalFeatures()
 
 feat = numpy.concatenate([accFeat],axis=1)
 
-print "FET MIN MAX",feat.min(),feat.max()
+
 
 dimRed = sklearn.decomposition.PCA(n_components=3)
 

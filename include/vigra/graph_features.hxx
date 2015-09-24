@@ -11,6 +11,69 @@
 
 namespace vigra{
 
+template<class T, class KEY>
+struct ArrayMap{
+
+    typedef MultiArrayView<1, T>  View;
+    typedef KEY    Key;
+    typedef typename View::value_type  Value;
+    typedef typename View::const_reference  ConstReference;
+    typedef typename View::reference  Reference;
+
+    ArrayMap(const AdjacencyListGraph & graph)
+    :   graph_(graph),
+        view_(){
+    }
+
+    ArrayMap(const AdjacencyListGraph & graph, const View & view)
+    :   graph_(graph),
+        view_(view){
+    }
+
+    void setArray(const MultiArrayView<1, T> & view){
+        view_ = view;
+    }
+
+    Reference operator[](const Key & key){
+       return view_(graph_.id(key));
+    }
+
+    ConstReference operator[](const Key & key)const{
+        return view_(graph_.id(key));
+    }
+    MultiArrayView<1, T> view_;
+    AdjacencyListGraph & graph_;
+};
+
+
+double squaredHellinger(
+    const double mA, const double mB,
+    const double sA, const double sB
+){
+    const double ssA = sA*sA;
+    const double ssB = sB*sB;
+
+    const double eArg = -0.25*std::pow(mA-mB,2)/(ssA+ssB);
+    const double sArg = (2*sA*sB)/(ssA+ssB);
+    return 1.0 - std::sqrt(sArg)*std::exp(eArg);
+}
+
+
+
+// TinyVector<double, 5> 
+// fHellinger(
+    // const double mE, const double mU, const double mV,
+    // const double sE, const double sU, const double sV
+// ){
+// 
+    // const double hUV = squaredHellinger(mU, mV, sU, sV);
+    // const double hUE = squaredHellinger(mU, mE, sU, sE);
+    // const double hVE = squaredHellinger(mV, mE, sV, sE);
+// 
+// }
+
+
+
 
 
 
@@ -535,6 +598,72 @@ public:
             features(eid, 4) = intersectionSize;
         }
     }
+
+    /**
+     * @brief      do ucm tranformation of an edge indicator
+     *
+     * @param      edgeIndicator  0 mean no edge, high value mean 'more edge'
+     * @param      features       out
+     */
+    void ucmTransform(
+        vigra::MultiArrayView<2, float> & edgeIndicators,
+        vigra::MultiArrayView<1, float> & edgeSizes,   
+        vigra::MultiArrayView<1, float> & nodeSizes,                     
+        vigra::MultiArrayView<2, float> & features             
+    )const{
+
+        typedef MergeGraphAdaptor<AdjacencyListGraph> Mg;
+
+        typedef ArrayMap<float, Edge> EdgeMapView;
+        typedef ArrayMap<float, Node> NodeMapView;
+
+
+        typedef cluster_operators::EdgeWeightedUcm<
+            Mg,EdgeMapView,EdgeMapView,NodeMapView,EdgeMapView
+        > ClusterOperator;
+
+
+        typedef HierarchicalClustering<ClusterOperator> Hc;
+        typedef typename Hc::Parameter HcParam;
+
+        // buffers
+        vigra::MultiArray<1, float > edgeIndicatorBuffer(edgeSizes.shape());
+        vigra::MultiArray<1, float > ucmBuffer(edgeSizes.shape());
+        vigra::MultiArray<1, float > edgeSizeBuffer(edgeSizes.shape());
+        vigra::MultiArray<1, float > nodeSizeBuffer(nodeSizes.shape());
+
+        EdgeMapView edgeIndicatorMap(graph_, edgeIndicatorBuffer);
+        EdgeMapView edgeSizeMap(graph_, edgeSizeBuffer);
+        NodeMapView nodeSizeMap(graph_, nodeSizeBuffer);
+        EdgeMapView ucmMap(graph_, ucmBuffer);
+
+
+
+        Mg mg(graph_);
+        ClusterOperator cOp(mg, edgeIndicatorMap, edgeSizeMap,
+                        nodeSizeMap, ucmMap, 1.0);
+
+        HcParam hcParam(1,false,true);
+
+        for(size_t i=0; i<edgeIndicators.shape(1); ++i){
+            
+            if(i>0)
+                cOp.resetMgAndPq();
+            // fill buffers with data
+            edgeIndicatorBuffer = edgeIndicators.bindInner(i);
+            ucmBuffer =  0.0f;
+            edgeSizeBuffer = edgeSizes;
+            nodeSizeBuffer = nodeSizes;
+
+            Hc hc(cOp, hcParam);
+            hc.cluster();
+
+
+        }
+
+    }
+
+
 
 
     // template<class OUT_TYPE>
