@@ -1684,7 +1684,6 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             self.handle_click(event)
 
         def on_release(self, event):
-            print 'on release we reset the press data'
             self.press = None
 
         def onclick(self, event):
@@ -1703,7 +1702,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 self.currentLabel = 0
             if event.button==3:
                 self.currentLabel = -1
-            print "press",event.button 
+
 
             img = self.img
             rag  = self.rag2d
@@ -1745,8 +1744,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                             else:
                                 newLabel = self.currentLabel
 
-                            print "old label",oldLabel
-                            print "new label",newLabel
+ 
 
                             self.edgeLabels[self.edgeIdRag2dToRag[eid]] = newLabel
                             self.edgeLabels2d[eid] = newLabel

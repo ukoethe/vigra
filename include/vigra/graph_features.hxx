@@ -312,8 +312,10 @@ template<
 >
 class GridRagFeatureExtractor{
 
-        typedef acc::UserRangeHistogram<40> Hist;
-        typedef acc::StandardQuantiles<Hist> Quants;
+        typedef acc::AutoRangeHistogram<40> AHist;
+        typedef acc::UserRangeHistogram<40> UHist;
+        typedef acc::StandardQuantiles<UHist> Quants;
+        typedef acc::StandardQuantiles<AHist> AQuants;
         typedef typename AdjacencyListGraph::Edge Edge;
         typedef typename AdjacencyListGraph::Node Node;
         typedef typename AdjacencyListGraph::EdgeIt EdgeIt;
@@ -337,6 +339,81 @@ public:
     UInt64 edgeNum()const{
         return graph_.edgeNum();
     }
+
+
+
+
+
+
+
+    template<class DATA_TYPE>
+    UInt64 nAccumulatedFeaturesSimple()const{
+        return 2*11;
+    }
+
+    template<
+        class DATA_TYPE,
+        class OUT_TYPE
+    >
+    void accumulatedFeaturesSimple(
+        const vigra::MultiArrayView<DIM, DATA_TYPE> & data,
+        vigra::MultiArrayView<2, OUT_TYPE> & features 
+    )const{ 
+
+
+        typedef acc::Select< 
+            acc::DataArg<1>,
+            acc::Mean, acc::StdDev
+        >  SelectType;    
+
+        typedef acc::StandAloneAccumulatorChain<DIM, DATA_TYPE, SelectType> FreeChain;
+        typedef typename AdjacencyListGraph:: template EdgeMap<FreeChain> EdgeChainMap;
+        typedef typename AdjacencyListGraph:: template NodeMap<FreeChain> NodeChainMap;
+
+
+        NodeChainMap nodeAccChainMap(graph_);
+        EdgeChainMap edgeAccChainMap(graph_);
+
+
+
+    
+        nodeAndEdgeAccumlation<DIM>(graph_, labels_, data, nodeAccChainMap, edgeAccChainMap);
+        for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
+
+
+
+
+            const Edge edge = *eIt;
+            const UInt32 eid = graph_.id(edge);
+            vigra::MultiArrayView<1, OUT_TYPE> edgeFeat = features.bindInner(eid);
+            const Node u = graph_.u(edge);
+            const Node v = graph_.v(edge);
+
+            const FreeChain & eChain = edgeAccChainMap[edge];
+            const FreeChain & uChain = nodeAccChainMap[u];
+            const FreeChain & vChain = nodeAccChainMap[v];
+            const float mean = acc::get<acc::Mean>(eChain);
+
+            const float eM = acc::get<acc::Mean>(eChain);
+            const float uM = acc::get<acc::Mean>(uChain);
+            const float vM = acc::get<acc::Mean>(vChain);
+            const float eS = acc::get<acc::StdDev>(eChain);
+            const float uS = acc::get<acc::StdDev>(uChain);
+            const float vS = acc::get<acc::StdDev>(vChain);
+       
+
+
+            UInt64 fIndex = 0;
+
+            defaultFeat(fIndex,edgeFeat, eM,uM,vM);
+            defaultFeat(fIndex,edgeFeat, eS,uS,vS);
+            //for(size_t qi=0; qi<7;++qi)
+            //    defaultFeat(fIndex,edgeFeat, eQnt[qi],uQnt[qi],vQnt[qi]);
+        }
+    }
+
+
+
 
 
 
@@ -664,6 +741,101 @@ public:
     }
 
 
+    UInt64 nCyclePropergationFeatures(
+
+    )const{
+        return 8;
+    }
+
+    void cyclePropergationFeatures(
+        const vigra::MultiArrayView<1, float> & edgeFeatureIn,                    
+        vigra::MultiArrayView<2, float> & features             
+    )const{
+
+
+        typedef acc::Select< 
+            acc::DataArg<1>,
+            acc::Mean, 
+            AQuants
+        >  SelectType;    
+
+        typedef acc::StandAloneAccumulatorChain<DIM, float, SelectType> FreeChain;
+        typedef typename AdjacencyListGraph:: template EdgeMap<FreeChain> EdgeChainMap;
+        //typedef typename AdjacencyListGraph:: template NodeMap<FreeChain> NodeChainMap;
+
+
+        EdgeChainMap edgeAccChain(graph_);
+        const size_t nPasses = edgeAccChain[*EdgeIt(graph_)].passesRequired();
+
+
+        MultiArray<1, TinyVector<Int32, 3> >  cyclesArray;
+        find3CyclesEdges(graph_, cyclesArray);
+
+
+        TinyVector<Int32, DIM> fakeCoord;
+
+        for(size_t p=0; p<nPasses; ++p){
+            for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
+                const Edge edge = *eIt;
+                const UInt32 eid = graph_.id(edge);
+                edgeAccChain[eid].updatePassN(edgeFeatureIn[eid], fakeCoord, p+1); 
+            }
+            for(size_t ci=0; ci<cyclesArray.shape(0); ++ci){
+                const TinyVector<Int32, 3> & ce = cyclesArray[ci];
+
+
+                uint  indices[3]={0,1,2};
+                float vals[3] ={
+                    edgeFeatureIn[ce[0]],
+                    edgeFeatureIn[ce[1]],
+                    edgeFeatureIn[ce[2]]
+                };
+
+                indexSort(vals,vals+3, indices);
+
+                for(size_t i=0; i<3; ++i){
+                    const UInt64 ei = ce[i];
+                    FreeChain & eChain = edgeAccChain[ei];
+
+
+                    //for(size_t j=0; j<3; ++j){
+                    //    if(i!=j){
+                    //        eChain.updatePassN(edgeFeatureIn[ce[j]], fakeCoord, p+1);
+                    //    }
+                    //}
+                    // smallest value
+                    if(i==indices[0]){
+                       // do nothing
+                    }
+                    else{
+                       if(i==indices[1]){
+                           UInt64 oe = ce[indices[2]];
+                           eChain.updatePassN(edgeFeatureIn[oe], fakeCoord, p+1);
+                       }
+                       if(i==indices[2]){
+                           UInt64 oe = ce[indices[1]];
+                           eChain.updatePassN(edgeFeatureIn[oe], fakeCoord, p+1);
+                       }
+                    }
+                }
+            }
+        }
+
+        for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
+            const Edge edge = *eIt;
+            const UInt32 eid = graph_.id(edge);
+
+            FreeChain & eChain = edgeAccChain[eid];
+            const TinyVector<float, 7> eQnt = acc::get<AQuants>(eChain);
+            features(eid,0) = acc::get<acc::Mean>(eChain);
+            for(size_t i=0; i<7; ++i){
+                features(eid,i+1) = eQnt[i];
+            }
+        }
+
+
+
+    }
 
 
     // template<class OUT_TYPE>

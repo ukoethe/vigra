@@ -6,7 +6,7 @@ import matplotlib
 
 import sklearn.decomposition
 # parameter:
-filepath = '100075.jpg'   # input image path
+filepath = '12003.jpg'   # input image path
 sigmaGradMag = 3.0       # sigma Gaussian gradient
 superpixelDiameter = 20  # super-pixel size
 slicWeight = 100.0        # SLIC color - spatial weight
@@ -47,14 +47,22 @@ miMa = float(gradMag.min()),float(gradMag.max())
 accFeat = featureExtractor.accumulatedFeatures(gradMag,miMa[0],miMa[1])
 geoFeat = featureExtractor.geometricFeatures()
 topoFeat = featureExtractor.topologicalFeatures()
+meanGrad = accFeat[:,0]
+
+cycleFeats = None
+for x in range(1000):
+    if cycleFeats is None:
+        cycleFeats = featureExtractor.cyclePropergationFeatures(meanGrad)[:,0]
+    else:
+        cycleFeats = featureExtractor.cyclePropergationFeatures(cycleFeats)[:,0]
+
+    if x%100 ==0 or x==0:
+        rag.showEdgeFeature(img, cycleFeats)
+        vigra.show()
 
 
-#for i in range(accFeat.shape[1]):
-#    print i
-#    rag.showEdgeFeature(img, accFeat[:,i])
-#    vigra.show()
-#
-#sys.exit(0)
+
+sys.exit(0)
 
 feat = numpy.concatenate([accFeat],axis=1)
 

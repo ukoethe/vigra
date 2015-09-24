@@ -24,20 +24,41 @@ labPath = ('segMaskOnly.h5', 'data')   # labeled image path
 labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)#[:,:,0:20]
 volume = vigra.impex.readHDF5(*imPath)#[:,:,0:20]
 
+volume = volume.astype('float32')
 
 gridGraph = graphs.gridGraph(labels.shape)
 rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 
 featureExtractor = graphs.gridRagFeatureExtractor(rag, labels)
-featureExtractor.labels = labels
-featureExtractor.graph  = rag
 
-miMa = float(volume.min()),float(volume.max()) 
-accFeat = featureExtractor.accumulatedFeatures(volume.astype('float32'),miMa[0],miMa[1])
-geoFeat = featureExtractor.geometricFeatures()
-topoFeat = featureExtractor.topologicalFeatures()
 
-feat = numpy.concatenate([accFeat, geoFeat, topoFeat],axis=1).astype('float32')
+accSimpel =  featureExtractor.accumulatedFeaturesSimple
+
+
+
+with vigra.Timer("acc raw"):
+    miMa = float(volume.min()),float(volume.max()) 
+    accFeatRaw = featureExtractor.accumulatedFeatures(volume,miMa[0],miMa[1])
+
+with vigra.Timer("acc grad"): 
+    grad = vigra.filters.gaussianGradientMagnitude(volume,1.0)
+    accFeatGrad = accSimpel(grad)
+
+
+
+with vigra.Timer("acc hessian"): 
+    grad = vigra.filters.hessianOfGaussianEigenvalues(volume,1.0)[:,:,0]
+    accFeatHess = accSimpel(grad)
+    gui = vigra.graphs.TinyEdgeLabelGui(rag=rag, img=volume, edgeLabels=accFeatHess[:,0], labelMode=False)
+    gui.startGui()
+
+with vigra.Timer("geo feat"):
+    geoFeat = featureExtractor.geometricFeatures()
+with vigra.Timer("topo feat"):
+    topoFeat = featureExtractor.topologicalFeatures()
+
+feat = [geoFeat, topoFeat]
+feat = numpy.concatenate(feat,axis=1).astype('float32')
 
 
 

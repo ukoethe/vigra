@@ -1630,7 +1630,52 @@ namespace vigra{
         }
     }
 
+    template<class GRAPH>
+    void find3CyclesEdges(
+        const GRAPH & g, 
+        MultiArray<1, TinyVector<Int32, 3> > & cyclesArray 
+    ){
+        typedef typename GRAPH::Node Node;
+        typedef typename GRAPH::Edge Edge;
+        typedef typename GRAPH::EdgeIt EdgeIt;
+        typedef typename GRAPH::OutArcIt OutArcIt;
 
+        typedef ThreeCycle<GRAPH> Cycle;
+
+        std::set< Cycle > cycles;
+        typedef typename std::set<Cycle>::const_iterator SetIter;
+        for (EdgeIt iter(g); iter!=lemon::INVALID; ++iter){
+            const Edge edge(*iter);
+            const Node u = g.u(edge);
+            const Node v = g.v(edge);
+
+            // find a node n which is connected to u and v
+            for(OutArcIt outArcIt(g,u); outArcIt!=lemon::INVALID;++outArcIt){
+                const Node w = g.target(*outArcIt);
+                if(w != v){
+                    const Edge e = g.findEdge(w,v);
+                    if(e != lemon::INVALID){
+                        // found cycle
+                        cycles.insert(Cycle(u, v, w));
+                    }
+                }
+            }
+        }
+        cyclesArray.reshape(TinyVector<UInt32,1>(cycles.size()));
+        UInt32 i=0;
+        for(SetIter iter=cycles.begin(); iter!=cycles.end(); ++iter){
+
+            const Cycle & c = *iter;
+            const Node u = c.nodes_[0];
+            const Node v = c.nodes_[1];
+            const Node w = c.nodes_[2];
+
+            cyclesArray(i)[0] = g.id(g.findEdge(u, v));
+            cyclesArray(i)[1] = g.id(g.findEdge(u, w));
+            cyclesArray(i)[2] = g.id(g.findEdge(v, w));
+            ++i;
+        }
+    }
 
 //@}
 
