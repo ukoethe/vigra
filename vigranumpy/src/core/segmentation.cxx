@@ -301,6 +301,8 @@ NumpyAnyArray
 pythonLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
                     PixelType marker = NumericTraits<PixelType>::one(),
                     int neighborhood = 8,
+                    bool allowAtBorder = false,
+                    bool allowPlateaus = false,
                     NumpyArray<2, Singleband<PixelType> > res = NumpyArray<2, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
@@ -313,22 +315,13 @@ pythonLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
             "localMinima(): Output array has wrong shape.");
 
     {
-            PyAllowThreads _pythread;
-        switch (neighborhood)
-        {
-            case 4:
-            {
-                localMinima(srcImageRange(image), destImage(res), marker,
-                    FourNeighborCode());
-                break;
-            }
-            case 8:
-            {
-                localMinima(srcImageRange(image), destImage(res), marker,
-                    EightNeighborCode());
-                break;
-            }
-        }
+        PyAllowThreads _pythread;
+        localMinima(image, res,
+            LocalMinmaxOptions()
+                .neighborhood(neighborhood)
+                .allowAtBorder(allowAtBorder)
+                .markWith(marker)
+                .allowPlateaus(allowPlateaus));
     }
     
     return res;
@@ -339,6 +332,8 @@ NumpyAnyArray
 pythonLocalMinima3D(NumpyArray<3, Singleband<PixelType> > volume,
                     PixelType marker = NumericTraits<PixelType>::one(), 
                     int neighborhood = 6, 
+                    bool allowAtBorder = false,
+                    bool allowPlateaus = false,
                     NumpyArray<3, Singleband<PixelType> > res = NumpyArray<3, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
@@ -350,20 +345,14 @@ pythonLocalMinima3D(NumpyArray<3, Singleband<PixelType> > volume,
     res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description), 
             "localMinima(): Output array has wrong shape.");
             
-    switch (neighborhood)
     {
-        case 6:
-        {
-            localMinima3D(srcMultiArrayRange(volume), destMultiArray(res), marker,
-                    NeighborCode3DSix());
-            break;
-        }
-        case 26:
-        {
-            localMinima3D(srcMultiArrayRange(volume), destMultiArray(res), marker,
-                    NeighborCode3DTwentySix());
-            break;
-        }
+        PyAllowThreads _pythread;
+        localMinima(volume, res,
+            LocalMinmaxOptions()
+                .neighborhood(neighborhood)
+                .allowAtBorder(allowAtBorder)
+                .markWith(marker)
+                .allowPlateaus(allowPlateaus));
     }
 
     return res;
@@ -449,6 +438,8 @@ NumpyAnyArray
 pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
                     PixelType marker = NumericTraits<PixelType>::one(),
                     int neighborhood = 8,
+                    bool allowAtBorder = false,
+                    bool allowPlateaus = false,
                     NumpyArray<2, Singleband<PixelType> > res = NumpyArray<2, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
@@ -462,21 +453,12 @@ pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
 
     {
         PyAllowThreads _pythread;
-        switch (neighborhood)
-        {
-            case 4:
-            {
-                localMaxima(srcImageRange(image), destImage(res), marker,
-                    FourNeighborCode());
-                break;
-            }
-            case 8:
-            {
-                localMaxima(srcImageRange(image), destImage(res), marker,
-                    EightNeighborCode());
-                break;
-            }
-        }
+        localMaxima(image, res,
+            LocalMinmaxOptions()
+                .neighborhood(neighborhood)
+                .allowAtBorder(allowAtBorder)
+                .markWith(marker)
+                .allowPlateaus(allowPlateaus));
     }
     
     return res;
@@ -487,6 +469,8 @@ NumpyAnyArray
 pythonLocalMaxima3D(NumpyArray<3, Singleband<PixelType> > volume,
                     PixelType marker = NumericTraits<PixelType>::one(), 
                     int neighborhood = 6, 
+                    bool allowAtBorder = false,
+                    bool allowPlateaus = false,
                     NumpyArray<3, Singleband<PixelType> > res = NumpyArray<3, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
@@ -497,20 +481,15 @@ pythonLocalMaxima3D(NumpyArray<3, Singleband<PixelType> > volume,
     
     res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description), 
             "localMaxima(): Output array has wrong shape.");
-    switch (neighborhood)
+
     {
-        case 6:
-        {
-            localMaxima3D(srcMultiArrayRange(volume), destMultiArray(res), marker,
-                NeighborCode3DSix());
-            break;
-        }
-        case 26:
-        {
-            localMaxima3D(srcMultiArrayRange(volume), destMultiArray(res), marker,
-                NeighborCode3DTwentySix());
-            break;
-        }
+        PyAllowThreads _pythread;
+        localMaxima(volume, res,
+            LocalMinmaxOptions()
+                .neighborhood(neighborhood)
+                .allowAtBorder(allowAtBorder)
+                .markWith(marker)
+                .allowPlateaus(allowPlateaus));
     }
 
     return res;
@@ -1099,6 +1078,52 @@ NumpyAnyArray  pythonShrinkLabels(
 }
 
 
+template<class T>
+vigra::NumpyAnyArray pySizeFilterSegInplace(vigra::NumpyArray<3, T>  seg, const vigra::UInt32 maxLabel, const vigra::UInt32 sizeLimit, bool checkAtBorder=false){
+    
+
+    std::vector<bool > atBorder(maxLabel+1, false);
+
+    if (not checkAtBorder){
+        for(size_t z=0;z<seg.shape(2); ++z)
+        for(size_t y=0;y<seg.shape(1); ++y){
+            atBorder[seg(0,y,z)] = true;
+            atBorder[seg(seg.shape(0)-1,y,z)] = true;
+        }
+
+        for(size_t z=0;z<seg.shape(2); ++z)
+        for(size_t x=0;x<seg.shape(0); ++x){
+            atBorder[seg(x,0,z)] = true;
+            atBorder[seg(x,seg.shape(1)-1,z)] = true;
+        }
+
+        for(size_t y=0;y<seg.shape(1); ++y)
+        for(size_t x=0;x<seg.shape(0); ++x){
+            atBorder[seg(x,y,0)] = true;
+            atBorder[seg(x,y,seg.shape(2)-1)] = true;
+        }
+    }
+
+
+
+    std::vector<size_t > counts(maxLabel+1,0);
+
+    for(auto iter = seg.begin(); iter!=seg.end(); ++iter){
+        counts[*iter] += 1;
+    }
+
+
+
+    for(auto iter = seg.begin(); iter!=seg.end(); ++iter){
+        const auto l = *iter;
+        const auto c = counts[l];
+        if(c<sizeLimit && atBorder[l] == false){
+            *iter = 0;
+        }
+    }
+
+    return seg;
+}
 
 
 void defineSegmentation()
@@ -1277,6 +1302,19 @@ void defineSegmentation()
         registerConverters(&pythonLabelMultiArrayWithBackground<float, 5>),
         (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
 
+    def("sizeFilterSegInplace",registerConverters(&pySizeFilterSegInplace<UInt32>),
+        (
+            arg("seg"),
+            arg("maxLabel"),
+            arg("sizeLimit"),
+            arg("checkAtBorder") = false
+        ),
+        "replace every occurance of each number in the array 'seg' with zeros if this number"
+        " occures less than 'sizeLimit' times in the array. If 'checkAtBorder' is false (default) "
+        "segments that touch the border of the array will not be changed.\n"
+        "'maxLabel' is the maximum label in seg\n"
+    );
+
     /******************************************************************************/
     
     def("localMinima",
@@ -1284,20 +1322,32 @@ void defineSegmentation()
         (arg("image"), 
          arg("marker")=1.0, 
          arg("neighborhood") = 8,
+         arg("allowAtBorder") = false,
+         arg("allowPlateaus") = false,
          arg("out")=python::object()),
         "Find local minima in an image and mark them with the given 'marker'. Parameter "
         "'neighborhood' specifies the pixel neighborhood to be used and can be "
-        "4 or 8 (default).\n\n"
+        "4 or 8 (default). \n"
+        "If 'allowAtBorder' is true local minima at the image border will be detected.\n"
+        "If 'allowPlateaus' is true regions of constant gray value whose neighbors are all higher than the value of the region will be detected."
+        "\n\n"
         "For details see localMinima_ in the vigra C++ documentation.\n");
 
     def("localMinima3D",
-            registerConverters(&pythonLocalMinima3D<float> ),
-            (arg("volume"), arg("marker") = 1.0, arg("neighborhood") = 6, arg(
-                    "out") = python::object()),
-            "Find local minima in a volume and mark them with the given 'marker'. Parameter "
-                "'neighborhood' specifies the pixel neighborhood to be used and can be "
-                "6 or 26 (default).\n\n"
-                "For details see localMinima3D_ in the vigra C++ documentation.\n");
+        registerConverters(&pythonLocalMinima3D<float> ),
+        (arg("volume"),
+         arg("marker") = 1.0,
+         arg("neighborhood") = 6,
+         arg("allowAtBorder") = false,
+         arg("allowPlateaus") = false,
+         arg("out") = python::object()),
+        "Find local minima in a volume and mark them with the given 'marker'. Parameter "
+            "'neighborhood' specifies the pixel neighborhood to be used and can be "
+            "6 (default) or 26.\n"
+        "If 'allowAtBorder' is set to 'True' local minima at the volume border will be detected.\n"
+        "If 'allowPlateaus' is set to 'True' regions of constant gray value whose neighbors are all higher than the value of the region will be detected."
+        "\n\n"
+        "For details see localMinima_ in the vigra C++ documentation.\n");
 
     // def("extendedLocalMinima",
         // registerConverters(&pythonExtendedLocalMinima2D<float>),
@@ -1336,18 +1386,31 @@ void defineSegmentation()
         (arg("image"), 
          arg("marker")=1.0, 
          arg("neighborhood") = 8,
+         arg("allowAtBorder") = false,
+         arg("allowPlateaus") = false,
          arg("out")=python::object()),
         "Find local maxima in an image and mark them with the given 'marker'. Parameter "
         "'neighborhood' specifies the pixel neighborhood to be used and can be "
-        "4 or 8 (default).\n\n"
+        "4 or 8 (default).\n"
+        "If 'allowAtBorder' is set to 'True' local maxima at image border will be detected.\n"
+        "If 'allowPlateaus' is set to 'True' regions of constant gray value whose neighbors are all lower than the value of the region will be detected."
+        "\n\n"
         "For details see localMaxima_ in the vigra C++ documentation.\n");
 
     def("localMaxima3D", registerConverters(&pythonLocalMaxima3D<float> ), 
-         (arg("volume"), arg("marker") = 1.0, arg("neighborhood") = 6, arg("out") = python::object()),
+         (arg("volume"),
+          arg("marker") = 1.0,
+          arg("neighborhood") = 6,
+          arg("allowAtBorder") = false,
+          arg("allowPlateaus") = false,
+          arg("out") = python::object()),
             "Find local maxima and maximal plateaus in a volume and mark them with "
             "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
-            "neighborhood to be used and can be 6(default) or 26 .\n\n"
-            "For details see localMaxima3D_ in the vigra C++ documentation.\n");
+            "neighborhood to be used and can be 6(default) or 26.\n"
+        "If 'allowAtBorder' is set to 'True' local maxima at the volume border will be detected.\n"
+        "If 'allowPlateaus' is set to 'True' regions of constant gray value whose neighbors are all lower than the value of the region will be detected."
+        "\n\n"
+        "For details see localMaxima_ in the vigra C++ documentation.\n");
 
     def("extendedLocalMaxima",
         registerConverters(&pythonExtendedLocalMaxima2D<float>),
@@ -1498,6 +1561,7 @@ void defineSegmentation()
        arg("iterations")=10,
        arg("out")=python::object()),
        "Likewise compute Slic superpixels for a 3D volume, either single- or threeband.\n");
+
 }
 
 void defineEdgedetection();
