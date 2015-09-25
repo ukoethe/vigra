@@ -73,6 +73,13 @@ namespace vigra{
                 clsName.c_str(),
                 python::no_init
             )
+            .def("nAccumulatedFeaturesSimple",registerConverters(&nAccumulatedFeaturesSimple<float>))
+            .def("accumulatedFeaturesSimple", registerConverters(&accumulatedFeaturesSimple<float>),
+                (
+                    python::arg("data"),
+                    python::arg("out") = python::object()
+                )
+            )
             .def("nAccumulatedFeatures",registerConverters(&nAccumulatedFeatures<float>))
             .def("accumulatedFeatures", registerConverters(&accumulatedFeatures<float>),
                 (
@@ -94,13 +101,54 @@ namespace vigra{
                     python::arg("out") = python::object()
                 )
             )
-
+            .def("nCyclePropergationFeatures", &GridRagFeatureExtractorType::nCyclePropergationFeatures)
+            .def("cyclePropergationFeatures", registerConverters(&cyclePropergationFeatures),
+                (
+                    python::arg("edgeIndicators"),
+                    python::arg("out") = python::object()
+                )
+            )
+            .def("nUcmTransformFeatures", &GridRagFeatureExtractorType::nUcmTransformFeatures)
+            .def("ucmTransformFeatures", registerConverters(&ucmTransformFeatures),
+                (
+                    python::arg("edgeIndicators"),
+                    python::arg("out") = python::object()
+                )
+            )
             ;
+
+
 
             python::def("gridRagFeatureExtractor", registerConverters(&factory),
                 python::return_value_policy<python::manage_new_object>()
             );
         }
+
+
+        static NumpyAnyArray ucmTransformFeatures(
+            const GridRagFeatureExtractorType & extractor,
+            const NumpyArray<2, float>  & edgeIndicators,
+            NumpyArray<2, float> out
+        ){
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nUcmTransformFeatures());
+            out.reshape(outShape);
+            extractor.ucmTransformFeatures(edgeIndicators, out);
+            return out;
+        }
+
+
+
+        static NumpyAnyArray cyclePropergationFeatures(
+            const GridRagFeatureExtractorType & extractor,
+            const NumpyArray<1, float>  & edgeIndicators,
+            NumpyArray<2, float> out
+        ){
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nCyclePropergationFeatures());
+            out.reshape(outShape);
+            extractor.cyclePropergationFeatures(edgeIndicators, out);
+            return out;
+        }
+
 
         // the factory
         static GridRagFeatureExtractorType * factory(
@@ -113,6 +161,28 @@ namespace vigra{
             return new GridRagFeatureExtractorType(graph, labels);
         }
 
+
+        template<class DATA_TYPE>
+        static UInt64 nAccumulatedFeaturesSimple(
+            const GridRagFeatureExtractorType & extractor,
+            const NumpyArray<DIM, DATA_TYPE>  & data
+        ){
+            return extractor.nAccumulatedFeatures<DATA_TYPE>();
+        }
+
+        template<class DATA_TYPE>
+        static NumpyAnyArray accumulatedFeaturesSimple(
+            const GridRagFeatureExtractorType & extractor,
+            const NumpyArray<DIM, DATA_TYPE>  & data,
+            NumpyArray<2, float> out
+        ){
+
+
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nAccumulatedFeaturesSimple<DATA_TYPE>());
+            out.reshape(outShape);
+            extractor.accumulatedFeaturesSimple(data, out);
+            return out;
+        }
 
         template<class DATA_TYPE>
         static UInt64 nAccumulatedFeatures(

@@ -47,18 +47,40 @@ miMa = float(gradMag.min()),float(gradMag.max())
 accFeat = featureExtractor.accumulatedFeatures(gradMag,miMa[0],miMa[1])
 geoFeat = featureExtractor.geometricFeatures()
 topoFeat = featureExtractor.topologicalFeatures()
+meanGrad = accFeat[:,0]
 
 
-#for i in range(accFeat.shape[1]):
-#    print i
-#    rag.showEdgeFeature(img, accFeat[:,i])
-#    vigra.show()
-#
-#sys.exit(0)
+ucm = featureExtractor.ucmTransformFeatures(meanGrad[:,None])[:,0]
+
+rag.showEdgeFeature(img, meanGrad)
+vigra.show()
+
+
+rag.showEdgeFeature(img, ucm)
+vigra.show()
+
+
+sys.exit(0)
+
+
+cycleFeats = None
+for x in range(1000):
+    if cycleFeats is None:
+        cycleFeats = featureExtractor.cyclePropergationFeatures(meanGrad)[:,0]
+    else:
+        cycleFeats = featureExtractor.cyclePropergationFeatures(cycleFeats)[:,0]
+
+    if x%100 ==0 or x==0:
+        rag.showEdgeFeature(img, cycleFeats)
+        vigra.show()
+
+
+
+sys.exit(0)
 
 feat = numpy.concatenate([accFeat],axis=1)
 
-print "FET MIN MAX",feat.min(),feat.max()
+
 
 dimRed = sklearn.decomposition.PCA(n_components=3)
 

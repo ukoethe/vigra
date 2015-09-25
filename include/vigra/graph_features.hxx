@@ -11,6 +11,70 @@
 
 namespace vigra{
 
+template<class T, class KEY>
+struct ArrayMap{
+
+    typedef MultiArrayView<1, T>  View;
+    typedef KEY    Key;
+    typedef typename View::value_type  Value;
+    typedef typename View::const_reference  ConstReference;
+    typedef typename View::reference  Reference;
+
+    ArrayMap(const AdjacencyListGraph & graph)
+    :   graph_(graph),
+        view_(){
+    }
+
+    ArrayMap(const AdjacencyListGraph & graph, const View & view)
+    :   graph_(graph),
+        view_(view){
+    }
+
+    void setArray(const MultiArrayView<1, T> & view){
+        view_ = view;
+    }
+
+    Reference operator[](const Key & key){
+       return view_(graph_.id(key));
+    }
+
+    ConstReference operator[](const Key & key)const{
+        return view_(graph_.id(key));
+    }
+    const AdjacencyListGraph & graph_;
+    MultiArrayView<1, T> view_;
+   
+};
+
+
+double squaredHellinger(
+    const double mA, const double mB,
+    const double sA, const double sB
+){
+    const double ssA = sA*sA;
+    const double ssB = sB*sB;
+
+    const double eArg = -0.25*std::pow(mA-mB,2)/(ssA+ssB);
+    const double sArg = (2*sA*sB)/(ssA+ssB);
+    return 1.0 - std::sqrt(sArg)*std::exp(eArg);
+}
+
+
+
+// TinyVector<double, 5> 
+// fHellinger(
+    // const double mE, const double mU, const double mV,
+    // const double sE, const double sU, const double sV
+// ){
+// 
+    // const double hUV = squaredHellinger(mU, mV, sU, sV);
+    // const double hUE = squaredHellinger(mU, mE, sU, sE);
+    // const double hVE = squaredHellinger(mV, mE, sV, sE);
+// 
+// }
+
+
+
 
 
 
@@ -249,8 +313,10 @@ template<
 >
 class GridRagFeatureExtractor{
 
-        typedef acc::UserRangeHistogram<40> Hist;
-        typedef acc::StandardQuantiles<Hist> Quants;
+        typedef acc::AutoRangeHistogram<40> AHist;
+        typedef acc::UserRangeHistogram<40> UHist;
+        typedef acc::StandardQuantiles<UHist> Quants;
+        typedef acc::StandardQuantiles<AHist> AQuants;
         typedef typename AdjacencyListGraph::Edge Edge;
         typedef typename AdjacencyListGraph::Node Node;
         typedef typename AdjacencyListGraph::EdgeIt EdgeIt;
@@ -274,6 +340,81 @@ public:
     UInt64 edgeNum()const{
         return graph_.edgeNum();
     }
+
+
+
+
+
+
+
+    template<class DATA_TYPE>
+    UInt64 nAccumulatedFeaturesSimple()const{
+        return 2*11;
+    }
+
+    template<
+        class DATA_TYPE,
+        class OUT_TYPE
+    >
+    void accumulatedFeaturesSimple(
+        const vigra::MultiArrayView<DIM, DATA_TYPE> & data,
+        vigra::MultiArrayView<2, OUT_TYPE> & features 
+    )const{ 
+
+
+        typedef acc::Select< 
+            acc::DataArg<1>,
+            acc::Mean, acc::StdDev
+        >  SelectType;    
+
+        typedef acc::StandAloneAccumulatorChain<DIM, DATA_TYPE, SelectType> FreeChain;
+        typedef typename AdjacencyListGraph:: template EdgeMap<FreeChain> EdgeChainMap;
+        typedef typename AdjacencyListGraph:: template NodeMap<FreeChain> NodeChainMap;
+
+
+        NodeChainMap nodeAccChainMap(graph_);
+        EdgeChainMap edgeAccChainMap(graph_);
+
+
+
+    
+        nodeAndEdgeAccumlation<DIM>(graph_, labels_, data, nodeAccChainMap, edgeAccChainMap);
+        for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
+
+
+
+
+            const Edge edge = *eIt;
+            const UInt32 eid = graph_.id(edge);
+            vigra::MultiArrayView<1, OUT_TYPE> edgeFeat = features.bindInner(eid);
+            const Node u = graph_.u(edge);
+            const Node v = graph_.v(edge);
+
+            const FreeChain & eChain = edgeAccChainMap[edge];
+            const FreeChain & uChain = nodeAccChainMap[u];
+            const FreeChain & vChain = nodeAccChainMap[v];
+            const float mean = acc::get<acc::Mean>(eChain);
+
+            const float eM = acc::get<acc::Mean>(eChain);
+            const float uM = acc::get<acc::Mean>(uChain);
+            const float vM = acc::get<acc::Mean>(vChain);
+            const float eS = acc::get<acc::StdDev>(eChain);
+            const float uS = acc::get<acc::StdDev>(uChain);
+            const float vS = acc::get<acc::StdDev>(vChain);
+       
+
+
+            UInt64 fIndex = 0;
+
+            defaultFeat(fIndex,edgeFeat, eM,uM,vM);
+            defaultFeat(fIndex,edgeFeat, eS,uS,vS);
+            //for(size_t qi=0; qi<7;++qi)
+            //    defaultFeat(fIndex,edgeFeat, eQnt[qi],uQnt[qi],vQnt[qi]);
+        }
+    }
+
+
+
 
 
 
@@ -534,6 +675,224 @@ public:
 
             features(eid, 4) = intersectionSize;
         }
+    }
+
+     
+    UInt64 nUcmTransformFeatures()const{
+        return 1;
+    }
+
+    void ucmTransformFeatures22(
+        vigra::MultiArrayView<1, float> & edgeIndicators,                  
+        vigra::MultiArrayView<2, float> & features             
+    )const{
+    }
+    void ucmTransformFeatures(
+        const vigra::MultiArrayView<2, float> & edgeIndicators,                  
+        vigra::MultiArrayView<2, float> & features             
+    )const{
+
+        typedef acc::Select< 
+            acc::Count
+        >  SelectType;    
+
+        typedef acc::StandAloneDataFreeAccumulatorChain<DIM, SelectType> FreeChain;
+        typedef typename AdjacencyListGraph:: template EdgeMap<FreeChain> EdgeChainMap;
+        typedef typename AdjacencyListGraph:: template NodeMap<FreeChain> NodeChainMap;
+
+
+
+
+    
+
+
+
+        typedef MergeGraphAdaptor<AdjacencyListGraph> Mg;
+        typedef ArrayMap<float, Edge> EdgeMapView;
+        typedef ArrayMap<float, Node> NodeMapView;
+
+
+        typedef cluster_operators::EdgeWeightedUcm<
+            Mg,EdgeMapView,EdgeMapView,NodeMapView,EdgeMapView
+        > ClusterOperator;
+
+
+        typedef HierarchicalClustering<ClusterOperator> Hc;
+        typedef typename Hc::Parameter HcParam;
+
+
+        NodeChainMap nodeAccChainMap(graph_);
+        EdgeChainMap edgeAccChainMap(graph_);
+        UInt64 fi = 0;
+        nodeAndEdgeAccumlation<DIM>(graph_, labels_, nodeAccChainMap, edgeAccChainMap);
+
+
+
+
+        vigra::MultiArray<1, float > edgeSizes(vigra::MultiArray<1, float >::difference_type(graph_.edgeNum()));
+        vigra::MultiArray<1, float > nodeSizes(vigra::MultiArray<1, float >::difference_type(graph_.edgeNum()));
+
+        
+        for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
+            const Edge edge  = *eIt;
+            const FreeChain & eChain = edgeAccChainMap[edge];
+            const UInt32 eid = graph_.id(edge);
+            edgeSizes[eid] = acc::get<acc::Count>(eChain);
+        }
+        for(NodeIt nIt(graph_); nIt != lemon::INVALID; ++nIt){
+            const Node node  = *nIt;
+            const FreeChain & nChain = nodeAccChainMap[node];
+            const UInt32 nid = graph_.id(node);
+            nodeSizes[nid] = acc::get<acc::Count>(nChain);
+        }
+
+
+
+        // buffers
+        vigra::MultiArray<1, float > edgeIndicatorBuffer(edgeSizes.shape());
+        vigra::MultiArray<1, float > ucmBuffer(edgeSizes.shape());
+        vigra::MultiArray<1, float > edgeSizeBuffer(edgeSizes.shape());
+        vigra::MultiArray<1, float > nodeSizeBuffer(nodeSizes.shape());
+
+
+        EdgeMapView edgeIndicatorMap(graph_, edgeIndicatorBuffer);
+        EdgeMapView edgeSizeMap(graph_, edgeSizeBuffer);
+        NodeMapView nodeSizeMap(graph_, nodeSizeBuffer);
+        EdgeMapView ucmMap(graph_, ucmBuffer);
+
+
+        edgeIndicatorBuffer = edgeIndicators.bindOuter(0);
+        edgeSizeBuffer = edgeSizes;
+        nodeSizeBuffer = nodeSizes;
+
+        Mg mg(graph_);
+        ClusterOperator cOp(mg, edgeIndicatorMap, edgeSizeMap,
+                        nodeSizeMap, ucmMap, 2.0);
+
+        HcParam hcParam(1,false,true);
+
+        std::cout<<"mg node num "<<mg.nodeNum()<<"\n";
+        std::cout<<"mg edge num "<<mg.edgeNum()<<"\n";
+
+        for(size_t i=0; i<edgeIndicators.shape(1); ++i){
+            std::cout<<" f iter "<<i<<"\n";
+
+            edgeIndicatorBuffer = edgeIndicators.bindOuter(i);
+            ucmBuffer =  0.0f;
+            edgeSizeBuffer = edgeSizes;
+            nodeSizeBuffer = nodeSizes;
+
+
+            if(i>0)
+                cOp.resetMgAndPq();
+            // fill buffers with data
+            
+            Hc hc(cOp, hcParam);
+            std::cout<<"do cluter\n";
+            hc.cluster();
+            std::cout<<"do cluter end\n";
+            hc.ucmTransform(ucmMap);
+            features.bindOuter(i) = ucmBuffer;
+
+        }
+
+    }
+
+
+    UInt64 nCyclePropergationFeatures(
+
+    )const{
+        return 8;
+    }
+
+    void cyclePropergationFeatures(
+        const vigra::MultiArrayView<1, float> & edgeFeatureIn,                    
+        vigra::MultiArrayView<2, float> & features             
+    )const{
+
+
+        typedef acc::Select< 
+            acc::DataArg<1>,
+            acc::Mean, 
+            AQuants
+        >  SelectType;    
+
+        typedef acc::StandAloneAccumulatorChain<DIM, float, SelectType> FreeChain;
+        typedef typename AdjacencyListGraph:: template EdgeMap<FreeChain> EdgeChainMap;
+        //typedef typename AdjacencyListGraph:: template NodeMap<FreeChain> NodeChainMap;
+
+
+        EdgeChainMap edgeAccChain(graph_);
+        const size_t nPasses = edgeAccChain[*EdgeIt(graph_)].passesRequired();
+
+
+        MultiArray<1, TinyVector<Int32, 3> >  cyclesArray;
+        find3CyclesEdges(graph_, cyclesArray);
+
+
+        TinyVector<Int32, DIM> fakeCoord;
+
+        for(size_t p=0; p<nPasses; ++p){
+            for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
+                const Edge edge = *eIt;
+                const UInt32 eid = graph_.id(edge);
+                edgeAccChain[eid].updatePassN(edgeFeatureIn[eid], fakeCoord, p+1); 
+            }
+            for(size_t ci=0; ci<cyclesArray.shape(0); ++ci){
+                const TinyVector<Int32, 3> & ce = cyclesArray[ci];
+
+
+                uint  indices[3]={0,1,2};
+                float vals[3] ={
+                    edgeFeatureIn[ce[0]],
+                    edgeFeatureIn[ce[1]],
+                    edgeFeatureIn[ce[2]]
+                };
+
+                indexSort(vals,vals+3, indices);
+
+                for(size_t i=0; i<3; ++i){
+                    const UInt64 ei = ce[i];
+                    FreeChain & eChain = edgeAccChain[ei];
+
+
+                    //for(size_t j=0; j<3; ++j){
+                    //    if(i!=j){
+                    //        eChain.updatePassN(edgeFeatureIn[ce[j]], fakeCoord, p+1);
+                    //    }
+                    //}
+                    // smallest value
+                    if(i==indices[0]){
+                       // do nothing
+                    }
+                    else{
+                       if(i==indices[1]){
+                           UInt64 oe = ce[indices[2]];
+                           eChain.updatePassN(edgeFeatureIn[oe], fakeCoord, p+1);
+                       }
+                       if(i==indices[2]){
+                           UInt64 oe = ce[indices[1]];
+                           eChain.updatePassN(edgeFeatureIn[oe], fakeCoord, p+1);
+                       }
+                    }
+                }
+            }
+        }
+
+        for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
+            const Edge edge = *eIt;
+            const UInt32 eid = graph_.id(edge);
+
+            FreeChain & eChain = edgeAccChain[eid];
+            const TinyVector<float, 7> eQnt = acc::get<AQuants>(eChain);
+            features(eid,0) = acc::get<acc::Mean>(eChain);
+            for(size_t i=0; i<7; ++i){
+                features(eid,i+1) = eQnt[i];
+            }
+        }
+
+
+
     }
 
 

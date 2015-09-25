@@ -1576,12 +1576,15 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             self.implot = None
             self.currentLabel  = 1
 
-
+            self.brushSize = 1
 
 
         def startGui(self):
             from functools import partial
             import pylab as plt
+            from matplotlib.widgets import Slider, Button, RadioButtons
+
+
             ax = plt.gca()
             fig = plt.gcf()
 
@@ -1599,7 +1602,20 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
             fig.canvas.mpl_connect('button_release_event', self.on_release)
 
+            if self.labelMode:
+                axcolor = 'lightgoldenrodyellow'
+                axamp  = plt.axes([0.25, 0.15, 0.65, 0.03], axisbg=axcolor)
+                self.slideBrush = Slider(axamp, 'brush-size', 1, 20.0, valinit=2)
+
+                self.slideBrush.on_changed(self.updateBrushSize)
+
             plt.show()
+
+
+        def updateBrushSize(self, val):
+            self.brushSize = int(val+0.5)
+        
+
 
         def press_event(self, event):
             sys.stdout.flush()
@@ -1668,7 +1684,6 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             self.handle_click(event)
 
         def on_release(self, event):
-            print 'on release we reset the press data'
             self.press = None
 
         def onclick(self, event):
@@ -1687,7 +1702,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 self.currentLabel = 0
             if event.button==3:
                 self.currentLabel = -1
-            print "press",event.button 
+
 
             img = self.img
             rag  = self.rag2d
@@ -1700,9 +1715,11 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
                     #print "X,Y",x,y
                     l = labels[x,y]
-                    other  = None
-                    for xo in [-2,-1,0,1,2]:
-                        for yo in [-2,-1,0,1,2]:
+                    others  = []
+
+                    bs = self.brushSize
+                    for xo in range(-1*bs, bs+1):
+                        for yo in range(-1*bs, bs+1):
                             xx = x+xo
                             yy = y+yo
                             if xo is not 0 or yo is not 0:
@@ -1711,26 +1728,26 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                                     otherLabel = labels[xx, yy]
                                     if l != otherLabel:
                                         edge = rag.findEdge(long(l), long(otherLabel))
-                                        #print edge
-                                        other = (xx,yy,edge)
+                                    #print edge
+                                        others.append((xx,yy,edge))
                                         #break
-                        if other is not None:
-                            pass
+                        #if other is not None:
+                        #    pass
 
-                    if other is not None and self.labelMode:
-                        eid = other[2].id
-                        oldLabel  = self.edgeLabels[self.edgeIdRag2dToRag[eid]]
+                    if self.labelMode:
+                        for other in others:
+                            eid = other[2].id
+                            oldLabel  = self.edgeLabels[self.edgeIdRag2dToRag[eid]]
 
-                        if self.currentLabel == oldLabel:
-                            newLabel = oldLabel
-                        else:
-                            newLabel = self.currentLabel
+                            if self.currentLabel == oldLabel:
+                                newLabel = oldLabel
+                            else:
+                                newLabel = self.currentLabel
 
-                        print "old label",oldLabel
-                        print "new label",newLabel
+ 
 
-                        self.edgeLabels[self.edgeIdRag2dToRag[eid]] = newLabel
-                        self.edgeLabels2d[eid] = newLabel
+                            self.edgeLabels[self.edgeIdRag2dToRag[eid]] = newLabel
+                            self.edgeLabels2d[eid] = newLabel
                         imgWithEdges = rag.showEdgeFeature(self.visuImg2d, self.edgeLabels2d,returnImg=True, labelMode=self.labelMode)
                         self.implot.set_data(numpy.swapaxes(imgWithEdges,0,1))
                         plt.draw()
