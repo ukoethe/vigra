@@ -1728,7 +1728,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                                     otherLabel = labels[xx, yy]
                                     if l != otherLabel:
                                         edge = rag.findEdge(long(l), long(otherLabel))
-                                        #print edge
+                                    #print edge
                                         others.append((xx,yy,edge))
                                         #break
                         #if other is not None:

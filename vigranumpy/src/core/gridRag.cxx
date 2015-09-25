@@ -101,12 +101,17 @@ namespace vigra{
                     python::arg("out") = python::object()
                 )
             )
-
-
             .def("nCyclePropergationFeatures", &GridRagFeatureExtractorType::nCyclePropergationFeatures)
             .def("cyclePropergationFeatures", registerConverters(&cyclePropergationFeatures),
                 (
-                    python::arg("edgeFeatureIn"),
+                    python::arg("edgeIndicators"),
+                    python::arg("out") = python::object()
+                )
+            )
+            .def("nUcmTransformFeatures", &GridRagFeatureExtractorType::nUcmTransformFeatures)
+            .def("ucmTransformFeatures", registerConverters(&ucmTransformFeatures),
+                (
+                    python::arg("edgeIndicators"),
                     python::arg("out") = python::object()
                 )
             )
@@ -119,14 +124,28 @@ namespace vigra{
             );
         }
 
+
+        static NumpyAnyArray ucmTransformFeatures(
+            const GridRagFeatureExtractorType & extractor,
+            const NumpyArray<2, float>  & edgeIndicators,
+            NumpyArray<2, float> out
+        ){
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nUcmTransformFeatures());
+            out.reshape(outShape);
+            extractor.ucmTransformFeatures(edgeIndicators, out);
+            return out;
+        }
+
+
+
         static NumpyAnyArray cyclePropergationFeatures(
             const GridRagFeatureExtractorType & extractor,
-            const NumpyArray<1, float>  & feataureIn,
+            const NumpyArray<1, float>  & edgeIndicators,
             NumpyArray<2, float> out
         ){
             TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nCyclePropergationFeatures());
             out.reshape(outShape);
-            extractor.cyclePropergationFeatures(feataureIn, out);
+            extractor.cyclePropergationFeatures(edgeIndicators, out);
             return out;
         }
 

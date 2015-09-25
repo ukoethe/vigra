@@ -126,7 +126,7 @@ template<
 
           
 
-            for(EdgeIt e(mergeGraph);e!=lemon::INVALID;++e){
+            for(EdgeIt e(mergeGraph_);e!=lemon::INVALID;++e){
                 const Edge edge = *e;
                 const BaseGraphEdge graphEdge=EdgeHelper::itemToGraphItem(mergeGraph_,edge);
                 const index_type edgeId = mergeGraph_.id(edge);
@@ -139,7 +139,7 @@ template<
 
         void resetMgAndPq(){
             mergeGraph_.reset();
-            for(EdgeIt e(mergeGraph);e!=lemon::INVALID;++e){
+            for(EdgeIt e(mergeGraph_);e!=lemon::INVALID;++e){
                 const Edge edge = *e;
                 const BaseGraphEdge graphEdge=EdgeHelper::itemToGraphItem(mergeGraph_,edge);
                 const index_type edgeId = mergeGraph_.id(edge);
@@ -217,7 +217,7 @@ template<
         Edge contractionEdge(){
             index_type minLabel = pq_.top();
             while(mergeGraph_.hasEdgeId(minLabel)==false){
-                pq_.deleteItem(minLabel);
+                eraseEdge(Edge(minLabel));
                 minLabel = pq_.top();
             }
             return Edge(minLabel);
@@ -227,7 +227,7 @@ template<
         WeightType contractionWeight(){
             index_type minLabel = pq_.top();
             while(mergeGraph_.hasEdgeId(minLabel)==false){
-                pq_.deleteItem(minLabel);
+                eraseEdge(Edge(minLabel));
                 minLabel = pq_.top();
             }
             return pq_.topPriority();
@@ -244,12 +244,10 @@ template<
 
             index_type minLabel = pq_.top();
             while(mergeGraph_.hasEdgeId(minLabel)==false){
-                pq_.deleteItem(minLabel);
+                eraseEdge(Edge(minLabel));
                 minLabel = pq_.top();
             }
-            const ValueType p =  pq_.topPriority();
-
-            return mergeGraph_.edgeNum();
+            return mergeGraph_.edgeNum()==0 || mergeGraph_.nodeNum()==1;
         }
 
     private:
@@ -264,11 +262,11 @@ template<
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
-            const float sizeU = std::min(nodeSizeMap_[uu] , float(std::pow(50.f,3)));
-            const float sizeV = std::min(nodeSizeMap_[vv] , float(std::pow(50.f,3)));
+            const float sizeU = nodeSizeMap_[uu] ;
+            const float sizeV = nodeSizeMap_[vv] ;
 
-            const ValueType wardFacRaw = 1.0 / ( 1.0/std::sqrt(sizeU) + 1.0/std::sqrt(sizeV) );
-            const ValueType wardFac = (wardFacRaw*wardness_) + (1.0-wardness_);
+            const ValueType wardFac = 2.0 / ( 1.0/std::pow(sizeU,wardness_) + 1/std::pow(sizeV,wardness_) );
+            //const ValueType wardFac = (wardFacRaw*wardness_) + (1.0-wardness_);
 
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             const ValueType totalWeight = fromEdgeIndicator*wardFac;
@@ -695,7 +693,7 @@ template<
                 std::cout<<"\n"; 
             while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0 && !clusterOperator_.done()){
                 
-
+                std::cout<<"...\n";
                 const Edge edgeToRemove = clusterOperator_.contractionEdge();
                 if(param_.buildMergeTreeEncoding_){
                     const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove)); 
@@ -727,6 +725,16 @@ template<
         /// \brief get the encoding of the merge tree
         const MergeTreeEncoding & mergeTreeEndcoding()const{
             return mergeTreeEndcoding_;
+        }
+
+        template<class EDGE_MAP>
+        void ucmTransform(EDGE_MAP & edgeMap)const{
+            typedef typename Graph::EdgeIt  BaseGraphEdgeIt;
+
+            for(BaseGraphEdgeIt iter(graph()); iter!=lemon::INVALID; ++iter ){
+                const BaseGraphEdge edge=*iter;
+                edgeMap[edge] = edgeMap[mergeGraph().reprGraphEdge(edge)];
+            }
         }
 
         /// \brief get the node id's which are the leafes of a treeNodeId
