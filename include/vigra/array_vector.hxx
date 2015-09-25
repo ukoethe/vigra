@@ -427,7 +427,7 @@ ArrayVectorView <T>::copyImpl(const ArrayVectorView & rhs)
 {
     vigra_precondition (size() == rhs.size(),
         "ArrayVectorView::copy(): shape mismatch.");
-    if(size() == 0)  // needed because MSVC debug assertions in std::copy() may fire  
+    if(size() == 0)  // needed because MSVC debug assertions in std::copy() may fire
         return;      // "invalid address: data_ == NULL" even when nothing is to be copied
     // use copy() or copy_backward() according to possible overlap of this and rhs
     if(data_ <= rhs.data())
@@ -703,10 +703,11 @@ template <class T, class Alloc>
 inline void ArrayVector<T, Alloc>::push_back( value_type const & t )
 {
     pointer old_data = reserveImpl(false);
+    size_type old_capacity = this->capacity_;
     alloc_.construct(this->data_ + this->size_, t);
     // deallocate old data _after_ construction of new element, so that
     // 't' can refer to the old data as in 'push_back(front())'
-    deallocate(old_data, this->size_, this->capacity_);
+    deallocate(old_data, this->size_, old_capacity);
     ++this->size_;
 }
 
