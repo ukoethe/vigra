@@ -100,10 +100,11 @@ namespace vigra{
                     python::arg("out") = python::object()
                 )
             )
-            .def("nUcmTransformFeatures", &GridRagFeatureExtractorType::nUcmTransformFeatures)
+            //.def("nUcmTransformFeatures", &GridRagFeatureExtractorType::nUcmTransformFeatures)
             .def("ucmTransformFeatures", registerConverters(&ucmTransformFeatures),
                 (
                     python::arg("edgeIndicators"),
+                    python::arg("wardness"),
                     python::arg("out") = python::object()
                 )
             )
@@ -120,11 +121,12 @@ namespace vigra{
         static NumpyAnyArray ucmTransformFeatures(
             const GridRagFeatureExtractorType & extractor,
             const NumpyArray<2, float>  & edgeIndicators,
+            const NumpyArray<1, float>  & wardness,
             NumpyArray<2, float> out
         ){
-            TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nUcmTransformFeatures());
+            TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nUcmTransformFeatures(edgeIndicators,wardness));
             out.reshape(outShape);
-            extractor.ucmTransformFeatures(edgeIndicators, out);
+            extractor.ucmTransformFeatures(edgeIndicators,wardness, out);
             return out;
         }
 

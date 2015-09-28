@@ -92,6 +92,9 @@ template<
         typedef MergeGraphItemHelper<MergeGraph,Edge> EdgeHelper;
         typedef MergeGraphItemHelper<MergeGraph,Node> NodeHelper;
 
+        typedef typename MergeGraph::MergeNodeCallBackType MergeNodeCallBackType;
+        typedef typename MergeGraph::MergeEdgeCallBackType MergeEdgeCallBackType;
+        typedef typename MergeGraph::EraseEdgeCallBackType EraseEdgeCallBackType;
 
         typedef typename EDGE_INDICATOR_MAP::Reference EdgeIndicatorReference;
         /// \brief construct cluster operator
@@ -111,9 +114,7 @@ template<
             pq_(mergeGraph.maxEdgeId()+1),
             wardness_(wardness)
         {
-            typedef typename MergeGraph::MergeNodeCallBackType MergeNodeCallBackType;
-            typedef typename MergeGraph::MergeEdgeCallBackType MergeEdgeCallBackType;
-            typedef typename MergeGraph::EraseEdgeCallBackType EraseEdgeCallBackType;
+
 
 
             MergeNodeCallBackType cbMn(MergeNodeCallBackType:: template from_method<SelfType,&SelfType::mergeNodes>(this));
@@ -137,8 +138,23 @@ template<
 
         }
 
+        void setWardness(const float w){
+            wardness_ = w;
+        }
         void resetMgAndPq(){
             mergeGraph_.reset();
+
+
+            MergeNodeCallBackType cbMn(MergeNodeCallBackType:: template from_method<SelfType,&SelfType::mergeNodes>(this));
+            MergeEdgeCallBackType cbMe(MergeEdgeCallBackType:: template from_method<SelfType,&SelfType::mergeEdges>(this));
+            EraseEdgeCallBackType cbEe(EraseEdgeCallBackType:: template from_method<SelfType,&SelfType::eraseEdge>(this));
+
+            mergeGraph_.registerMergeNodeCallBack(cbMn);
+            mergeGraph_.registerMergeEdgeCallBack(cbMe);
+            mergeGraph_.registerEraseEdgeCallBack(cbEe);
+
+
+            pq_.reset();
             for(EdgeIt e(mergeGraph_);e!=lemon::INVALID;++e){
                 const Edge edge = *e;
                 const BaseGraphEdge graphEdge=EdgeHelper::itemToGraphItem(mergeGraph_,edge);
@@ -693,7 +709,6 @@ template<
                 std::cout<<"\n"; 
             while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0 && !clusterOperator_.done()){
                 
-                std::cout<<"...\n";
                 const Edge edgeToRemove = clusterOperator_.contractionEdge();
                 if(param_.buildMergeTreeEncoding_){
                     const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove)); 

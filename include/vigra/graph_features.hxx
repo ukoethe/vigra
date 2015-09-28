@@ -376,17 +376,16 @@ public:
     }
 
      
-    UInt64 nUcmTransformFeatures()const{
-        return 1;
+    UInt64 nUcmTransformFeatures(
+        const vigra::MultiArrayView<2, float> & edgeIndicators,
+        const vigra::MultiArrayView<1, float> & wardness
+    )const{
+        return edgeIndicators.shape(1)*2*wardness.shape(0);
     }
 
-    void ucmTransformFeatures22(
-        vigra::MultiArrayView<1, float> & edgeIndicators,                  
-        vigra::MultiArrayView<2, float> & features             
-    )const{
-    }
     void ucmTransformFeatures(
-        const vigra::MultiArrayView<2, float> & edgeIndicators,                  
+        const vigra::MultiArrayView<2, float> & edgeIndicators,   
+        const vigra::MultiArrayView<1, float> & wardness,                 
         vigra::MultiArrayView<2, float> & features             
     )const{
 
@@ -421,7 +420,7 @@ public:
 
         NodeChainMap nodeAccChainMap(graph_);
         EdgeChainMap edgeAccChainMap(graph_);
-        UInt64 fi = 0;
+
         nodeAndEdgeAccumlation<DIM>(graph_, labels_, ZeroVal(), nodeAccChainMap, edgeAccChainMap);
 
 
@@ -465,35 +464,43 @@ public:
 
         Mg mg(graph_);
         ClusterOperator cOp(mg, edgeIndicatorMap, edgeSizeMap,
-                        nodeSizeMap, ucmMap, 2.0);
+                        nodeSizeMap, ucmMap, 0.0);
 
-        HcParam hcParam(1,false,true);
+        HcParam hcParam(1,false,false);
 
         std::cout<<"mg node num "<<mg.nodeNum()<<"\n";
         std::cout<<"mg edge num "<<mg.edgeNum()<<"\n";
 
-        for(size_t i=0; i<edgeIndicators.shape(1); ++i){
-            std::cout<<" f iter "<<i<<"\n";
 
-            edgeIndicatorBuffer = edgeIndicators.bindOuter(i);
-            ucmBuffer =  0.0f;
-            edgeSizeBuffer = edgeSizes;
-            nodeSizeBuffer = nodeSizes;
+        size_t fi=0;
+
+        for(auto w : wardness){
+            for(size_t i=0; i<edgeIndicators.shape(1); ++i){
+
+                edgeIndicatorBuffer = edgeIndicators.bindOuter(i);
+                ucmBuffer =  0.0f;
+                edgeSizeBuffer = edgeSizes;
+                nodeSizeBuffer = nodeSizes;
 
 
-            if(i>0)
+    
+                cOp.setWardness(w);
                 cOp.resetMgAndPq();
-            // fill buffers with data
-            
-            Hc hc(cOp, hcParam);
-            std::cout<<"do cluter\n";
-            hc.cluster();
-            std::cout<<"do cluter end\n";
-            hc.ucmTransform(ucmMap);
-            features.bindOuter(i) = ucmBuffer;
+                
+                // fill buffers with data
+                
+                Hc hc(cOp, hcParam);
+                hc.cluster();
 
+
+                // ucm map itself
+                hc.ucmTransform(ucmMap);
+                features.bindOuter(fi++) = ucmBuffer;
+                //  edge indicator
+                hc.ucmTransform(edgeIndicatorMap);
+                features.bindOuter(fi++) = edgeIndicatorBuffer;
+            }
         }
-
     }
 
 
