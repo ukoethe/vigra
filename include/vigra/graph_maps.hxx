@@ -358,6 +358,44 @@ private:
 
 
 
+template<class T,class GRAPH, class KEY>
+struct ArrayMap{
+
+    typedef MultiArrayView<1, T>  View;
+    typedef KEY    Key;
+    typedef typename View::value_type  Value;
+    typedef typename View::const_reference  ConstReference;
+    typedef typename View::reference  Reference;
+
+    ArrayMap(const GRAPH & graph)
+    :   graph_(graph),
+        view_(){
+    }
+
+    ArrayMap(const GRAPH & graph, const View & view)
+    :   graph_(graph),
+        view_(view){
+    }
+
+    void setArray(const MultiArrayView<1, T> & view){
+        view_ = view;
+    }
+
+    Reference operator[](const Key & key){
+       return view_(graph_.id(key));
+    }
+
+    ConstReference operator[](const Key & key)const{
+        return view_(graph_.id(key));
+    }
+    const GRAPH & graph_;
+    MultiArrayView<1, T> view_;
+   
+};
+
+
+
+
 } // end namespace vigra
 
 #endif // VIGRA_GRAPH_MAPS

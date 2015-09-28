@@ -11,79 +11,23 @@
 
 namespace vigra{
 
-template<class T, class KEY>
-struct ArrayMap{
 
-    typedef MultiArrayView<1, T>  View;
-    typedef KEY    Key;
-    typedef typename View::value_type  Value;
-    typedef typename View::const_reference  ConstReference;
-    typedef typename View::reference  Reference;
-
-    ArrayMap(const AdjacencyListGraph & graph)
-    :   graph_(graph),
-        view_(){
+template<unsigned int DIM>
+struct ForEachCoord{
+    typedef TinyVector<MultiArrayIndex, DIM> Coord;
+    template<class F>
+    static void forEachCoord(const Coord & shape, F &&f){
+        MultiCoordinateIterator<DIM> i(shape), end = i.getEndIterator();
+        for(; i != end; ++i){
+            f(*i);
+        }
     }
-
-    ArrayMap(const AdjacencyListGraph & graph, const View & view)
-    :   graph_(graph),
-        view_(view){
-    }
-
-    void setArray(const MultiArrayView<1, T> & view){
-        view_ = view;
-    }
-
-    Reference operator[](const Key & key){
-       return view_(graph_.id(key));
-    }
-
-    ConstReference operator[](const Key & key)const{
-        return view_(graph_.id(key));
-    }
-    const AdjacencyListGraph & graph_;
-    MultiArrayView<1, T> view_;
-   
 };
 
 
-double squaredHellinger(
-    const double mA, const double mB,
-    const double sA, const double sB
-){
-    const double ssA = sA*sA;
-    const double ssB = sB*sB;
-
-    const double eArg = -0.25*std::pow(mA-mB,2)/(ssA+ssB);
-    const double sArg = (2*sA*sB)/(ssA+ssB);
-    return 1.0 - std::sqrt(sArg)*std::exp(eArg);
-}
-
-
-
-// TinyVector<double, 5> 
-// fHellinger(
-    // const double mE, const double mU, const double mV,
-    // const double sE, const double sU, const double sV
-// ){
-// 
-    // const double hUV = squaredHellinger(mU, mV, sU, sV);
-    // const double hUE = squaredHellinger(mU, mE, sU, sE);
-    // const double hVE = squaredHellinger(mV, mE, sV, sE);
-// 
-// }
-
-
-
-
-
-
-template<
-    unsigned int DIM,
-    class LABELS_ARRAY,
-    class DATA_ARRAY,
-    class NODE_ACC_CHAIN,
-    class EDGE_ACC_CHAIN
+template< 
+    unsigned int DIM,class LABELS_ARRAY,
+    class DATA_ARRAY,class NODE_ACC_CHAIN,class EDGE_ACC_CHAIN
 >
 void nodeAndEdgeAccumlation(
     const AdjacencyListGraph &  graph,
@@ -92,81 +36,16 @@ void nodeAndEdgeAccumlation(
     NODE_ACC_CHAIN &            nodeAccChain, 
     EDGE_ACC_CHAIN &            edgeAccChain
 ){
-    typedef typename AdjacencyListGraph::Edge Edge;
-    typedef typename AdjacencyListGraph::Node Node;
     typedef typename AdjacencyListGraph::EdgeIt EdgeIt;
     typedef typename AdjacencyListGraph::NodeIt NodeIt;
     typedef typename MultiArrayShape<DIM>::type Coord;
-    typedef typename DATA_ARRAY::value_type DataType;
-    typedef typename LABELS_ARRAY::value_type LabelType;
-
-    
-
-
     const size_t nPassesNodeAcc = nodeAccChain[*NodeIt(graph)].passesRequired();
     const size_t nPassesEdgeAcc = edgeAccChain[*EdgeIt(graph)].passesRequired();
-
-
-    const size_t nPasses = std::max(nPassesNodeAcc, nPassesEdgeAcc);
-
-
-
-    Coord shape(labelsArray.shape());
-    Coord coord(0);
-
-    if(DIM == 2){
-
-        for(size_t p=0; p<nPasses; ++p)
-        for(coord[1]=0; coord[1]<shape[1]; ++coord[1])
-        for(coord[0]=0; coord[0]<shape[0]; ++coord[0]){
-
-            
-            const LabelType uLabel = labelsArray[coord];
-            const Node uNode = graph.nodeFromId(uLabel);
-            const DataType uVal = dataArray[coord];
-
-            if(p<nPassesNodeAcc){
-                nodeAccChain[uNode].updatePassN(uVal, coord, p+1);
-            }
-
-           
-            if(p<nPassesEdgeAcc){
-
-
-                for(size_t d=0; d<DIM; ++d){
-                    Coord otherCoord = coord;
-                    otherCoord[d] += 1;
-
-
-                    if(otherCoord[d] < shape[d]){
-                        const LabelType vLabel = labelsArray[otherCoord];
-                        
-                        if(uLabel != vLabel){
-                            const Node vNode = graph.nodeFromId(vLabel);
-                            const DataType  vVal  = dataArray[otherCoord];
-                            const Edge e  = graph.findEdge(uNode, vNode);
-
-    
-                            edgeAccChain[e].updatePassN(uVal, coord, p+1); 
-                            edgeAccChain[e].updatePassN(vVal, otherCoord, p+1); 
-
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if(DIM == 3){
-        for(size_t p=0; p<nPasses; ++p)
-        for(coord[2]=0; coord[2]<shape[2]; ++coord[2])
-        for(coord[1]=0; coord[1]<shape[1]; ++coord[1])
-        for(coord[0]=0; coord[0]<shape[0]; ++coord[0]){
-
-            
-            const LabelType uLabel = labelsArray[coord];
-            const Node uNode = graph.nodeFromId(uLabel);
-            const DataType uVal = dataArray[coord];
-
+    for(size_t p=0; p<std::max(nPassesNodeAcc, nPassesEdgeAcc); ++p){
+        ForEachCoord<DIM>::forEachCoord(labelsArray.shape(), [&](const Coord & coord){
+            const auto uLabel = labelsArray[coord];
+            const auto uNode = graph.nodeFromId(labelsArray[coord]);
+            const auto uVal = dataArray[coord];
             if(p<nPassesNodeAcc){
                 nodeAccChain[uNode].updatePassN(uVal, coord, p+1);
             }
@@ -174,128 +53,18 @@ void nodeAndEdgeAccumlation(
                 for(size_t d=0; d<DIM; ++d){
                     Coord otherCoord = coord;
                     otherCoord[d] += 1;
-                    if(otherCoord[d] < shape[d]){
-                        const LabelType vLabel = labelsArray[otherCoord];
-                        if(uLabel != vLabel){
-
-                            const Node vNode = graph.nodeFromId(vLabel);
-                            const DataType  vVal  = dataArray[otherCoord];
-                            const Edge e  = graph.findEdge(uNode, vNode);
+                    if(otherCoord[d] < labelsArray.shape(d)){
+                        const auto vNode = graph.nodeFromId(labelsArray[otherCoord]);
+                        if(uNode != vNode){
+                            const auto vVal = dataArray[otherCoord];
+                            const auto e = graph.findEdge(uNode, vNode);
                             edgeAccChain[e].updatePassN(uVal, coord, p+1); 
                             edgeAccChain[e].updatePassN(vVal, otherCoord, p+1); 
-
                         }
                     }
                 }
             }
-        }
-    }
-}
-
-
-template<
-    unsigned int DIM,
-    class LABELS_ARRAY,
-    class NODE_ACC_CHAIN,
-    class EDGE_ACC_CHAIN
->
-void nodeAndEdgeAccumlation(
-    const AdjacencyListGraph &  graph,
-    const LABELS_ARRAY &        labelsArray,
-    NODE_ACC_CHAIN &            nodeAccChain, 
-    EDGE_ACC_CHAIN &            edgeAccChain
-){
-    typedef typename AdjacencyListGraph::Edge Edge;
-    typedef typename AdjacencyListGraph::Node Node;
-    typedef typename AdjacencyListGraph::EdgeIt EdgeIt;
-    typedef typename AdjacencyListGraph::NodeIt NodeIt;
-    typedef typename MultiArrayShape<DIM>::type Coord;
-    typedef typename LABELS_ARRAY::value_type LabelType;
-
-    
-
-
-    const size_t nPassesNodeAcc = nodeAccChain[*NodeIt(graph)].passesRequired();
-    const size_t nPassesEdgeAcc = edgeAccChain[*EdgeIt(graph)].passesRequired();
-
-
-    const size_t nPasses = std::max(nPassesNodeAcc, nPassesEdgeAcc);
-
-
-
-    Coord shape(labelsArray.shape());
-    Coord coord(0);
-
-    if(DIM == 2){
-
-        for(size_t p=0; p<nPasses; ++p)
-        for(coord[1]=0; coord[1]<shape[1]; ++coord[1])
-        for(coord[0]=0; coord[0]<shape[0]; ++coord[0]){
-
-            
-            const LabelType uLabel = labelsArray[coord];
-            const Node uNode = graph.nodeFromId(uLabel);
-
-
-            if(p<nPassesNodeAcc){
-                nodeAccChain[uNode].updatePassN(coord, p+1);
-            }
-
-           
-            if(p<nPassesEdgeAcc){
-
-
-                for(size_t d=0; d<DIM; ++d){
-                    Coord otherCoord = coord;
-                    otherCoord[d] += 1;
-
-
-                    if(otherCoord[d] < shape[d]){
-                        const LabelType vLabel = labelsArray[otherCoord];
-                        
-                        if(uLabel != vLabel){
-                            const Node vNode = graph.nodeFromId(vLabel);
-                            const Edge e  = graph.findEdge(uNode, vNode);
-                            edgeAccChain[e].updatePassN(coord, p+1); 
-                            edgeAccChain[e].updatePassN(otherCoord, p+1); 
-
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if(DIM == 3){
-        for(size_t p=0; p<nPasses; ++p)
-        for(coord[2]=0; coord[2]<shape[2]; ++coord[2])
-        for(coord[1]=0; coord[1]<shape[1]; ++coord[1])
-        for(coord[0]=0; coord[0]<shape[0]; ++coord[0]){
-
-            
-            const LabelType uLabel = labelsArray[coord];
-            const Node uNode = graph.nodeFromId(uLabel);
-
-
-            if(p<nPassesNodeAcc){
-                nodeAccChain[uNode].updatePassN( coord, p+1);
-            }
-            if(p<nPassesEdgeAcc){
-                for(size_t d=0; d<DIM; ++d){
-                    Coord otherCoord = coord;
-                    otherCoord[d] += 1;
-                    if(otherCoord[d] < shape[d]){
-                        const LabelType vLabel = labelsArray[otherCoord];
-                        if(uLabel != vLabel){
-                            const Node vNode = graph.nodeFromId(vLabel);
-                            const Edge e  = graph.findEdge(uNode, vNode);
-                            edgeAccChain[e].updatePassN(coord, p+1); 
-                            edgeAccChain[e].updatePassN(otherCoord, p+1); 
-
-                        }
-                    }
-                }
-            }
-        }
+        });
     }
 }
 
@@ -307,23 +76,35 @@ void nodeAndEdgeAccumlation(
 
 
 
-template<
-    unsigned int DIM, 
-    class LABEL_TYPE
->
+
+
+
+
+
+
+
+
+template<unsigned int DIM, class LABEL_TYPE>
 class GridRagFeatureExtractor{
 
-        typedef acc::AutoRangeHistogram<40> AHist;
-        typedef acc::UserRangeHistogram<40> UHist;
-        typedef acc::StandardQuantiles<UHist> Quants;
-        typedef acc::StandardQuantiles<AHist> AQuants;
-        typedef typename AdjacencyListGraph::Edge Edge;
-        typedef typename AdjacencyListGraph::Node Node;
-        typedef typename AdjacencyListGraph::EdgeIt EdgeIt;
-        typedef typename AdjacencyListGraph::NodeIt NodeIt;
-        typedef typename AdjacencyListGraph::OutArcIt OutArcIt;
-        typedef std::set<Node> NodeSet;
-        typedef typename NodeSet::const_iterator NodeSetIter;
+    typedef acc::AutoRangeHistogram<40> AHist;
+    typedef acc::StandardQuantiles<AHist> Quants;
+    typedef typename AdjacencyListGraph::Edge Edge;
+    typedef typename AdjacencyListGraph::Node Node;
+    typedef typename AdjacencyListGraph::EdgeIt EdgeIt;
+    typedef typename AdjacencyListGraph::NodeIt NodeIt;
+    typedef typename AdjacencyListGraph::OutArcIt OutArcIt;
+    typedef std::set<Node> NodeSet;
+    typedef typename NodeSet::const_iterator NodeSetIter;
+
+
+    struct ZeroVal{
+        template<class T>
+        int operator[](const T &)const{
+            return int();
+        }
+    };
+
 public:
 
 
@@ -347,75 +128,6 @@ public:
 
 
 
-    template<class DATA_TYPE>
-    UInt64 nAccumulatedFeaturesSimple()const{
-        return 2*11;
-    }
-
-    template<
-        class DATA_TYPE,
-        class OUT_TYPE
-    >
-    void accumulatedFeaturesSimple(
-        const vigra::MultiArrayView<DIM, DATA_TYPE> & data,
-        vigra::MultiArrayView<2, OUT_TYPE> & features 
-    )const{ 
-
-
-        typedef acc::Select< 
-            acc::DataArg<1>,
-            acc::Mean, acc::StdDev
-        >  SelectType;    
-
-        typedef acc::StandAloneAccumulatorChain<DIM, DATA_TYPE, SelectType> FreeChain;
-        typedef typename AdjacencyListGraph:: template EdgeMap<FreeChain> EdgeChainMap;
-        typedef typename AdjacencyListGraph:: template NodeMap<FreeChain> NodeChainMap;
-
-
-        NodeChainMap nodeAccChainMap(graph_);
-        EdgeChainMap edgeAccChainMap(graph_);
-
-
-
-    
-        nodeAndEdgeAccumlation<DIM>(graph_, labels_, data, nodeAccChainMap, edgeAccChainMap);
-        for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
-
-
-
-
-            const Edge edge = *eIt;
-            const UInt32 eid = graph_.id(edge);
-            vigra::MultiArrayView<1, OUT_TYPE> edgeFeat = features.bindInner(eid);
-            const Node u = graph_.u(edge);
-            const Node v = graph_.v(edge);
-
-            const FreeChain & eChain = edgeAccChainMap[edge];
-            const FreeChain & uChain = nodeAccChainMap[u];
-            const FreeChain & vChain = nodeAccChainMap[v];
-            const float mean = acc::get<acc::Mean>(eChain);
-
-            const float eM = acc::get<acc::Mean>(eChain);
-            const float uM = acc::get<acc::Mean>(uChain);
-            const float vM = acc::get<acc::Mean>(vChain);
-            const float eS = acc::get<acc::StdDev>(eChain);
-            const float uS = acc::get<acc::StdDev>(uChain);
-            const float vS = acc::get<acc::StdDev>(vChain);
-       
-
-
-            UInt64 fIndex = 0;
-
-            defaultFeat(fIndex,edgeFeat, eM,uM,vM);
-            defaultFeat(fIndex,edgeFeat, eS,uS,vS);
-            //for(size_t qi=0; qi<7;++qi)
-            //    defaultFeat(fIndex,edgeFeat, eQnt[qi],uQnt[qi],vQnt[qi]);
-        }
-    }
-
-
-
-
 
 
     template<class DATA_TYPE>
@@ -429,8 +141,6 @@ public:
     >
     void accumulatedFeatures(
         const vigra::MultiArrayView<DIM, DATA_TYPE> & data,
-        const DATA_TYPE minVal,
-        const DATA_TYPE maxVal,
         vigra::MultiArrayView<2, OUT_TYPE> & features 
     )const{ 
 
@@ -448,18 +158,6 @@ public:
         NodeChainMap nodeAccChainMap(graph_);
         EdgeChainMap edgeAccChainMap(graph_);
 
-
-
-        vigra::HistogramOptions histogram_opt;
-        //histogram_opt = histogram_opt.setBinCount(50);
-        histogram_opt = histogram_opt.setMinMax(minVal, maxVal); 
-
-        for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
-            edgeAccChainMap[*eIt].setHistogramOptions(histogram_opt); 
-        }
-        for(NodeIt nIt(graph_); nIt != lemon::INVALID; ++nIt){
-            nodeAccChainMap[*nIt].setHistogramOptions(histogram_opt); 
-        }
 
         nodeAndEdgeAccumlation<DIM>(graph_, labels_, data, nodeAccChainMap, edgeAccChainMap);
         for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
@@ -557,7 +255,7 @@ public:
 
 
         UInt64 fi = 0;
-        nodeAndEdgeAccumlation<DIM>(graph_, labels_, nodeAccChainMap, edgeAccChainMap);
+        nodeAndEdgeAccumlation<DIM>(graph_, labels_, ZeroVal(),nodeAccChainMap, edgeAccChainMap);
         for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
 
             const Edge edge = *eIt;
@@ -708,8 +406,8 @@ public:
 
 
         typedef MergeGraphAdaptor<AdjacencyListGraph> Mg;
-        typedef ArrayMap<float, Edge> EdgeMapView;
-        typedef ArrayMap<float, Node> NodeMapView;
+        typedef ArrayMap<float,AdjacencyListGraph, Edge> EdgeMapView;
+        typedef ArrayMap<float,AdjacencyListGraph, Node> NodeMapView;
 
 
         typedef cluster_operators::EdgeWeightedUcm<
@@ -724,7 +422,7 @@ public:
         NodeChainMap nodeAccChainMap(graph_);
         EdgeChainMap edgeAccChainMap(graph_);
         UInt64 fi = 0;
-        nodeAndEdgeAccumlation<DIM>(graph_, labels_, nodeAccChainMap, edgeAccChainMap);
+        nodeAndEdgeAccumlation<DIM>(graph_, labels_, ZeroVal(), nodeAccChainMap, edgeAccChainMap);
 
 
 
@@ -814,7 +512,7 @@ public:
         typedef acc::Select< 
             acc::DataArg<1>,
             acc::Mean, 
-            AQuants
+            Quants
         >  SelectType;    
 
         typedef acc::StandAloneAccumulatorChain<DIM, float, SelectType> FreeChain;
@@ -884,7 +582,7 @@ public:
             const UInt32 eid = graph_.id(edge);
 
             FreeChain & eChain = edgeAccChain[eid];
-            const TinyVector<float, 7> eQnt = acc::get<AQuants>(eChain);
+            const TinyVector<float, 7> eQnt = acc::get<Quants>(eChain);
             features(eid,0) = acc::get<acc::Mean>(eChain);
             for(size_t i=0; i<7; ++i){
                 features(eid,i+1) = eQnt[i];

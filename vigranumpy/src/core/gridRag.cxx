@@ -73,19 +73,11 @@ namespace vigra{
                 clsName.c_str(),
                 python::no_init
             )
-            .def("nAccumulatedFeaturesSimple",registerConverters(&nAccumulatedFeaturesSimple<float>))
-            .def("accumulatedFeaturesSimple", registerConverters(&accumulatedFeaturesSimple<float>),
-                (
-                    python::arg("data"),
-                    python::arg("out") = python::object()
-                )
-            )
+
             .def("nAccumulatedFeatures",registerConverters(&nAccumulatedFeatures<float>))
             .def("accumulatedFeatures", registerConverters(&accumulatedFeatures<float>),
                 (
                     python::arg("data"),
-                    python::arg("minVal"),
-                    python::arg("maxVal"),
                     python::arg("out") = python::object()
                 )
             )
@@ -163,28 +155,6 @@ namespace vigra{
 
 
         template<class DATA_TYPE>
-        static UInt64 nAccumulatedFeaturesSimple(
-            const GridRagFeatureExtractorType & extractor,
-            const NumpyArray<DIM, DATA_TYPE>  & data
-        ){
-            return extractor.nAccumulatedFeatures<DATA_TYPE>();
-        }
-
-        template<class DATA_TYPE>
-        static NumpyAnyArray accumulatedFeaturesSimple(
-            const GridRagFeatureExtractorType & extractor,
-            const NumpyArray<DIM, DATA_TYPE>  & data,
-            NumpyArray<2, float> out
-        ){
-
-
-            TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nAccumulatedFeaturesSimple<DATA_TYPE>());
-            out.reshape(outShape);
-            extractor.accumulatedFeaturesSimple(data, out);
-            return out;
-        }
-
-        template<class DATA_TYPE>
         static UInt64 nAccumulatedFeatures(
             const GridRagFeatureExtractorType & extractor,
             const NumpyArray<DIM, DATA_TYPE>  & data
@@ -196,15 +166,13 @@ namespace vigra{
         static NumpyAnyArray accumulatedFeatures(
             const GridRagFeatureExtractorType & extractor,
             const NumpyArray<DIM, DATA_TYPE>  & data,
-            const DATA_TYPE minVal,
-            const DATA_TYPE maxVal,
             NumpyArray<2, float> out
         ){
 
 
             TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nAccumulatedFeatures<DATA_TYPE>());
             out.reshape(outShape);
-            extractor.accumulatedFeatures(data, minVal, maxVal, out);
+            extractor.accumulatedFeatures(data, out);
             return out;
         }
 

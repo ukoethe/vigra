@@ -2298,7 +2298,12 @@ public:
         
     }
 
-    
+    template<class IGNORED_DATA>
+    void updatePassN(
+        const IGNORED_DATA & ignoreData,
+        const CoordType & coord, unsigned int p){
+        this->updatePassN(coord,p);
+    }
     
 
     void updatePassN(const CoordType & coord, unsigned int p){
