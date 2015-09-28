@@ -60,6 +60,8 @@ namespace vigra{
     template<unsigned int DIM>
     void defineGridRag();
 
+    void defineVisualization();
+
     //void defineEccentricity();
 } // namespace vigra
 
@@ -99,6 +101,6 @@ BOOST_PYTHON_MODULE_INIT(graphs)
 
     vigra::defineGridRag<2>();
     vigra::defineGridRag<3>();
-
+    vigra::defineVisualization();
     //defineEccentricity();
 }

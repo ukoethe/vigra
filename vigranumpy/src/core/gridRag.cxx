@@ -48,6 +48,7 @@
 #include "vigra/numpy_array_converters.hxx"
 #include "vigra/adjacency_list_graph.hxx"
 #include "vigra/graph_features.hxx"
+#include "vigra/grid_rag_visualization.hxx"
 
 
 
@@ -221,7 +222,81 @@ namespace vigra{
     template void defineGridRag<2>();
     template void defineGridRag<3>();
 
+    void pyFindSliceEdges(
+        SliceEdges & sliceEdges,
+        const NumpyArray<2, UInt32> labels
+    ){
+        sliceEdges.findSlicesEdges(labels);
+
+    }
+
+    NumpyAnyArray pyVisibleEdges(
+        SliceEdges & sliceEdges,
+        NumpyArray<1, Int32> out
+    ){
+        out.reshapeIfEmpty(TinyVector<MultiArrayIndex,1>(sliceEdges.nVisibleEdges()));
+        sliceEdges.visibleEdges(out);
+        return out;
+    }
+
+    UInt64 pyNLinesTotal(const SliceEdges & sliceEdges){
+        return sliceEdges.nLines();
+    }
+    UInt64 pyNLines(const SliceEdges & sliceEdges, const UInt64 edgeId){
+        return sliceEdges.nLines(edgeId);
+    }
+
+    NumpyAnyArray pyLineIds(
+        const SliceEdges & sliceEdges, 
+        const UInt64 edgeId,
+        NumpyArray<1, UInt64> out
+    ){
+        out.reshapeIfEmpty(TinyVector<MultiArrayIndex,1>(sliceEdges.nLines(edgeId)));
+        sliceEdges.lineIds(edgeId, out);
+        return out;
+    }
+
+    NumpyAnyArray pyLine(
+        const SliceEdges & sliceEdges, 
+        const UInt64 lineId,
+        NumpyArray<1, typename SliceEdges::Coord > out
+    ){
+        out.reshapeIfEmpty(TinyVector<MultiArrayIndex,1>(sliceEdges.lineSize(lineId)));
+        sliceEdges.line(lineId, out);
+        return out;
+    }
+
+    void defineVisualization(){
+
+        python::class_<SliceEdges>("SliceEdges",python::init<const AdjacencyListGraph  &>())
+            .def("findSlicesEdges", registerConverters(&pyFindSliceEdges))
+            .def("nVisibleEdges",&SliceEdges::nVisibleEdges)
+            .def("visibleEdges",registerConverters(&pyVisibleEdges),
+                (
+                    python::arg("out") = python::object()
+                )
+            )
+            .def("nLines",&pyNLinesTotal)
+            .def("nLines",&pyNLines)
+            .def("lineIds",registerConverters(&pyLineIds),
+                (
+                    python::arg("edgeId"),
+                    python::arg("out") = python::object()
+                )
+            )
+            .def("lineSize",&SliceEdges::lineSize)
+            .def("line",registerConverters(&pyLine),
+                (
+                    python::arg("lineId"), 
+                    python::arg("out") = python::object()
+                )
+            )
+            ;
+
+        ;
+    }
 
 } 
+
 
 
