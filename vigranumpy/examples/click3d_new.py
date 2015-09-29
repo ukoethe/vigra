@@ -82,6 +82,15 @@ class DownCtrl(QtGui.QWidget):
         self.layout.addWidget(self.loadLabelsButton)
 
 
+class AllCurves(pg.GraphItem):
+    def __init__(self):
+        pg.GraphItem.__init__(self)
+        self.curves = []
+
+    def setCurves(self, curves):
+        self.curves = curves
+        for c in self.curves:
+            c.setParentItem(self)
 
 
 class EdgeGui(object):
@@ -141,7 +150,7 @@ class EdgeGui(object):
         self.dataDict = dict()
 
         self.curves = []
-
+        self.allCurves = AllCurves()
         self.cz = 0
 
     def setData(self, data, key):
@@ -178,8 +187,8 @@ class EdgeGui(object):
         #self.viewBox.update()
 
 
-        for curve in self.curves:
-            self.viewBox.removeItem(curve)
+        #for curve in self.curves:
+        #    self.viewBox.removeItem(curve)
         self.curves = []
 
         slicesEdges = vigra.graphs.SliceEdges(self.rag)
@@ -211,8 +220,10 @@ class EdgeGui(object):
                     
                 self.curves.append(curve)
                 #with vigra.Timer("add curve"):
-                vbAdd(curve)
+                #vbAdd(curve)
                 #self.viewBox.update()
+        self.allCurves.setCurves(self.curves)
+        self.viewBox.addItem(self.allCurves)
         with vigra.Timer("update auto range"):
             vb.updateAutoRange()
 
