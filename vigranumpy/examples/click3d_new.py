@@ -44,8 +44,6 @@ rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 app = QtGui.QApplication([])
 
 
-## lock the aspect ratio so pixels are always square
-#view.setRange(QtCore.QRectF(0, 0, 600, 600))
 
 
 
@@ -114,7 +112,7 @@ class EdgeGui(object):
         self.cw.setLayout(self.layout)
         self.gv = pg.GraphicsLayoutWidget()
         self.layout.addWidget(self.gv)
-
+        self.viewBox
         self.viewBox = self.gv.addViewBox()
         self.viewBox.setAspectLocked(True)
 
