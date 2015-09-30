@@ -11,9 +11,10 @@ class BvViewBox(pg.ViewBox):
         super(BvViewBox,self).__init__()
         self.setAspectLocked(True)
 
-    #def mouseClickEvent(self, ev):
-    #    print "vb click"
-
+    def mouseClickEvent(self, ev):
+        print "vb click"
+    def mouseClickEvent(self, ev):
+        print "vb release"
     def wheelEvent(self, ev, axis=None):
         kmods = ev.modifiers()
         if kmods & pg.QtCore.Qt.ControlModifier:
@@ -21,7 +22,6 @@ class BvViewBox(pg.ViewBox):
         else:
             d = (ev.delta() * self.state['wheelScaleFactor'])
             self.sigScrolled.emit(d)
-
     def mouseDragEvent(self, ev, axis=None):
         kmods = ev.modifiers()
         if kmods & pg.QtCore.Qt.ShiftModifier:
@@ -29,12 +29,11 @@ class BvViewBox(pg.ViewBox):
         if kmods & pg.QtCore.Qt.ControlModifier:
             super(BvViewBox,self).mouseDragEvent(ev, axis)
 
+    
 class BvImageItem(pg.ImageItem):
     def __init__(self,**kwargs):
         super(BvImageItem,self).__init__(**kwargs)
 
-    def mouseClickEvent(self, ev):
-        print "image click"
 
 
 
@@ -42,52 +41,68 @@ class BvPlotCurveItem(pg.PlotCurveItem):
     def __init__(self,**kwargs):
         super(BvPlotCurveItem,self).__init__(**kwargs)
 
-        self.setAcceptHoverEvents(True)
-        self.setAcceptDrops(True)
-        self.setHandlesChildEvents(True)
-        #self.acceptDrags(True)
- 
+        #self.setAcceptHoverEvents(True)
+        #self.setAcceptDrops(True)
+        #self.setHandlesChildEvents(True)
+        #self.setAcceptTouchEvents(True)
+
+
+    def dragEnterEvent(self, ev):
+        print "dragEnterEvent"
+    def dragLeaveEvent(self, ev):
+        print "dragLeaveEvent"
+    def dragEnterEvent(self, ev):
+        print "dragEnterEvent"
+    def dragMoveEvent(self, ev):
+        print "dragMoveEvent"
+    def dropEvent(self, ev):
+        print "dropEvent"
+
+
+
+
+
     def mouseOverEvent(self, ev):
         print "mouse over"
 
     def mouseDragEvent(self, ev):
         print "drag click"
 
-    def mouseMoveEvent(self, ev):
-        print "move"
+    def mouseDragMoveEvent(self, ev):
+        print "drag move"
 
     def mouseHoverEvent(self, ev):
         print "mouse move"
 
     def mouseClickEvent(self, ev):
-        print "clicked"
-        self.setPen(pg.mkPen({'color': (150,150,50), 'width': 6}))
-
+        self.viewer.edgeClicked(self, ev)
+        #self.setPen(pg.mkPen({'color': (150,150,50), 'width': 6}))
+        #ev.accept()
     def mouseReleaseEvent(self, ev):
         print "released"
+    
 
+
+    #def event(self, ev):
+    #    print ev
+    #    return False
     #def hoverMoveEvent(self, ev):
     #    print "fooo"
 
+    def mouseMoveEvent(self, mouseEvent):
+        print "YAY"
+
+
+
     def hoverEnterEvent(self, ev):
-        #if ev.button() == QtCore.Qt.RightButton:
-        #print "enter",ev
-        if self.isUnderMouse():
-            if self.contains(ev.pos()):
-                self.setPen(pg.mkPen({'color': (255,0,1), 'width': 6}))
-            else:
-                self.setPen(pg.mkPen({'color': (0,0,255), 'width': 6}))
-        else:
-            self.setPen(pg.mkPen({'color': (0,255,0), 'width': 6}))
-    #def hoverLeaveEvent(self, ev):
-    #    self.setPen(pg.mkPen({'color': (0,0,1), 'width': 3}))
+        if self.mouseShape().contains(ev.pos()):
+            print "hover enter event"
+            self.viewer.edgeClicked(self, ev)
 
-    #def shape(self):
-    #    print "shape"
-    #    return self.path
-
-    #def boundingRect(self):
-    #    print "JOO"
+    #def hoverMoveEvent(self, ev):
+    #    if self.mouseShape().contains(ev.pos()):
+    #        print "hover move event"
+  
 
 if __name__ == '__main__':
 
