@@ -75,7 +75,8 @@ class BvPlotCurveItem(pg.PlotCurveItem):
         print "mouse move"
 
     def mouseClickEvent(self, ev):
-        self.viewer.edgeClicked(self, ev)
+        if self.mouseShape().contains(ev.pos()):
+            self.viewer.edgeClicked(self, ev)
         #self.setPen(pg.mkPen({'color': (150,150,50), 'width': 6}))
         #ev.accept()
     def mouseReleaseEvent(self, ev):
