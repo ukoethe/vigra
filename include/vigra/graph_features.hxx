@@ -416,7 +416,7 @@ public:
 
 
         vigra::MultiArray<1, float > edgeSizes(vigra::MultiArray<1, float >::difference_type(graph_.edgeNum()));
-        vigra::MultiArray<1, float > nodeSizes(vigra::MultiArray<1, float >::difference_type(graph_.edgeNum()));
+        vigra::MultiArray<1, float > nodeSizes(vigra::MultiArray<1, float >::difference_type(graph_.nodeNum()+1));
 
         
         for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){

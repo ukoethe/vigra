@@ -11,7 +11,7 @@ import pylab as plt
 import math
 import h5py
 from matplotlib.widgets import Slider, Button, RadioButtons
-
+from vigra import blockwise as bw
 from functools import partial
 import matplotlib.lines as lines
 from pyqtgraph.Qt import QtCore, QtGui
@@ -21,8 +21,19 @@ import pyqtgraph.ptime as ptime
 
 from bv_view_box import *
 
+
+def hessianEv2(img, sigma, sigmaOuter=None):
+    if sigmaOuter is None:
+        sigmaOuter = sigma * 2.0
+    res = vigra.filters.hessianOfGaussian(img, sigma)
+    res = vigra.filters.gaussianSmoothing(res, sigmaOuter)
+    res = vigra.filters.tensorEigenvalues(res)[:,:,0]
+    return res
+    
+
+
 # parameter:
-if True:
+if False:
     imPath = ('../holyRegion.h5', 'im')   # input image path
     labPath = ('../segMaskOnly.h5', 'data')   # labeled image path
     labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
@@ -35,8 +46,8 @@ else:
     # load volume
     labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
     volume = vigra.impex.readHDF5(*imPath).astype('float32').T
-    labels = labels[0:500,0:500,0:20]
-    volume = volume[0:500,0:500,0:20]
+    labels = labels[0:400,0:400,0:30]
+    volume = volume[0:400,0:400,0:30]
 
 print labels.shape, volume.shape
 
@@ -325,11 +336,27 @@ class EdgeGui(object):
         topoFeat = extractor.topologicalFeatures()
         features = [geoFeat, topoFeat]
 
-        for s in [2.0, 3.0, 4.0]:
-            res = vigra.gaussianSmoothing(rawData, s)
-            accFeat = extractor.accumulatedFeatures(res)
-            features.append(accFeat)
+
+        options = bw.BlockwiseConvolutionOptions3D()
+        options.blockShape = (128, )*3
+        #for s in [2.0, 3.0, 4.0]:
+        #    options.stdDev = (s, )*3
+        #    res = bw.gaussianSmooth(rawData, options)
+        #    accFeat = extractor.accumulatedFeatures(res)
+        #    features.append(accFeat)
         
+        wardness = numpy.array([0.0, 0.1, 0.15, 0.25, 0.5, 1.0], dtype='float32')
+
+        for s in [1.0,  3.0,  4.0]:
+            img = hessianEv2(rawData, s, 2.0)
+            #vigra.imshow(img)
+            #vigra.show()
+            accFeat = extractor.accumulatedFeatures(img)
+            features.append(accFeat)
+            mean = accFeat[:,0]
+            ucm = extractor.ucmTransformFeatures(mean[:,None],wardness)
+            features.extend([accFeat,ucm])
+
 
         features = numpy.concatenate(features,axis=1)
         self.currentFeatures = features
