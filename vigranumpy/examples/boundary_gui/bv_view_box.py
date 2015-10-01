@@ -46,41 +46,39 @@ class BvPlotCurveItem(pg.PlotCurveItem):
         #self.setHandlesChildEvents(True)
         #self.setAcceptTouchEvents(True)
 
+        self.bRect = QtCore.QRectF()
 
-    def dragEnterEvent(self, ev):
-        print "dragEnterEvent"
-    def dragLeaveEvent(self, ev):
-        print "dragLeaveEvent"
-    def dragEnterEvent(self, ev):
-        print "dragEnterEvent"
-    def dragMoveEvent(self, ev):
-        print "dragMoveEvent"
-    def dropEvent(self, ev):
-        print "dropEvent"
-
-
-
+    #def dragEnterEvent(self, ev):
+    #    print "dragEnterEvent"
+    #def dragLeaveEvent(self, ev):
+    #    print "dragLeaveEvent"
+    #def dragEnterEvent(self, ev):
+    #    print "dragEnterEvent"
+    #def dragMoveEvent(self, ev):
+    #    print "dragMoveEvent"
+    #def dropEvent(self, ev):
+    #    print "dropEvent"
 
 
-    def mouseOverEvent(self, ev):
-        print "mouse over"
 
-    def mouseDragEvent(self, ev):
-        print "drag click"
 
-    def mouseDragMoveEvent(self, ev):
-        print "drag move"
 
-    def mouseHoverEvent(self, ev):
-        print "mouse move"
-
+    #def mouseOverEvent(self, ev):
+    #    print "mouse over"
+    #def mouseDragEvent(self, ev):
+    #    print "drag click"
+    #def mouseDragMoveEvent(self, ev):
+    #    print "drag move"
+    #def mouseHoverEvent(self, ev):
+    #    print "mouse move"
     def mouseClickEvent(self, ev):
+        print "click event"
         if self.mouseShape().contains(ev.pos()):
             self.viewer.edgeClicked(self, ev)
         #self.setPen(pg.mkPen({'color': (150,150,50), 'width': 6}))
         #ev.accept()
-    def mouseReleaseEvent(self, ev):
-        print "released"
+    #def mouseReleaseEvent(self, ev):
+    #    print "released"
     
 
 
@@ -90,15 +88,16 @@ class BvPlotCurveItem(pg.PlotCurveItem):
     #def hoverMoveEvent(self, ev):
     #    print "fooo"
 
-    def mouseMoveEvent(self, mouseEvent):
-        print "YAY"
+    #def mouseMoveEvent(self, mouseEvent):
+    #    print "YAY"
 
+    def boundingRect(self):
+        return self.bRect
 
-
-    def hoverEnterEvent(self, ev):
-        if self.mouseShape().contains(ev.pos()):
-            print "hover enter event"
-            self.viewer.edgeClicked(self, ev)
+    #def hoverEnterEvent(self, ev):
+    #    if self.mouseShape().contains(ev.pos()):
+    #        print "hover enter event"
+    #        self.viewer.edgeClicked(self, ev)
 
     #def hoverMoveEvent(self, ev):
     #    if self.mouseShape().contains(ev.pos()):
