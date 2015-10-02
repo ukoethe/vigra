@@ -19,7 +19,7 @@ import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.ptime as ptime
 import threading
-
+import opengm
 from bv_view_box import *
 from bv_layer    import *
 
@@ -44,7 +44,7 @@ if True:
     labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
     volume = vigra.impex.readHDF5(*imPath).astype('float32')
 
-    if False:
+    if True:
         gridGraph = graphs.gridGraph(labels.shape)
         rag = graphs.regionAdjacencyGraph(gridGraph, labels)
         rag.writeHDF5("rag.h5",'data')
@@ -63,7 +63,7 @@ elif False:
 
     labels, nseg = vigra.analysis.watershedsNew(volume)
 
-    if True:
+    if False:
         gridGraph = graphs.gridGraph(labels.shape)
         rag = graphs.regionAdjacencyGraph(gridGraph, labels)
         rag.writeHDF5("rag.h5",'data')
@@ -72,12 +72,14 @@ elif False:
         labels=rag.labels
 
 else :
+
     imPath = ("/media/tbeier/data/datasets/hhess/data_sub.h5",'data')
     volume = vigra.impex.readHDF5(*imPath).astype('float32')
-    volume = volume[0:600,0:600,0:40]
+    volume = volume[0:1000,0:1000,0:40]
     volume = vigra.taggedView(volume,'xyz')
 
     if False:
+        print "hessianEv2"
         ev = hessianEv2(volume, 2.5)
         print ev.shape, ev.dtype
         ev = vigra.filters.gaussianSmoothing(ev, 2.5)
@@ -85,16 +87,17 @@ else :
         vigra.imshow(ev[:,:,0])
         vigra.show()
 
-
+        print "watershedsNew"
         labels, nseg = vigra.analysis.watershedsNew(ev)
         vigra.segShow(volume[:,:,0], labels[:,:,0])
         vigra.show()
 
+        print "gridGraph"
         gridGraph = graphs.gridGraph(labels.shape)
         rag = graphs.regionAdjacencyGraph(gridGraph, labels)
-        rag.writeHDF5("rag.h5",'data')
+        rag.writeHDF5("ragb.h5",'data')
     else:
-        rag = vigra.graphs.loadGridRagHDF5("rag.h5",'data')
+        rag = vigra.graphs.loadGridRagHDF5("ragb.h5",'data')
         labels=rag.labels
 print labels.shape, volume.shape
 
@@ -130,6 +133,7 @@ class DownCtrl(QtGui.QWidget):
         self.modeSelectorComboBox.addItem('Black')
         self.modeSelectorComboBox.addItem('Probabilities')
         self.modeSelectorComboBox.addItem('LabelProbabilities')
+        self.modeSelectorComboBox.addItem('McRes')
         self.sharedCtrlLayout.addWidget(self.modeSelectorComboBox)
         
       
@@ -163,12 +167,10 @@ class DownCtrl(QtGui.QWidget):
         # show the features
         self.featureShowLayout = QtGui.QVBoxLayout()
         self.mainLayout.addLayout(self.featureShowLayout)
-        self.featureSpinBox = QtGui.QSpinBox()
-        self.featureSpinBox.setEnabled(False)
+
 
         self.featureGradientWidget = pg.GradientWidget(orientation='top')
         self.featureGradientWidget.setEnabled(False)
-        self.featureShowLayout.addWidget(self.featureSpinBox)
         self.featureShowLayout.addWidget(self.featureGradientWidget)
 
 
@@ -182,12 +184,15 @@ class DownCtrl(QtGui.QWidget):
 
         self.trainRfButton = QtGui.QPushButton('TrainRf')
         self.predictProbsButton = QtGui.QPushButton('Predict Probs')
+        self.predictMcButton = QtGui.QPushButton('MC')
+
 
         self.saveRfButton = QtGui.QPushButton('Save Rf')
         self.loadRfButton = QtGui.QPushButton('Load Rf')
         
         self.rfLayout1.addWidget(self.trainRfButton)
         self.rfLayout1.addWidget(self.predictProbsButton)
+        self.rfLayout1.addWidget(self.predictMcButton)
 
         self.rfLayout2.addWidget(self.saveRfButton)
         self.rfLayout2.addWidget(self.loadRfButton)
@@ -198,9 +203,6 @@ class DownCtrl(QtGui.QWidget):
         return self.featureGradientWidget.item.getColor(x, toQColor)
 
     def setFeatures(self, nFeatures):
-        self.featureSpinBox.setMinimum(0)
-        self.featureSpinBox.setMaximum(nFeatures-1)
-        self.featureSpinBox.setEnabled(True)
         self.featureGradientWidget.setEnabled(True)
 
     def mode(self):
@@ -330,12 +332,13 @@ class EdgeGui(object):
 
 
 
-        self.ctrlWidget.featureSpinBox.valueChanged.connect(self.onFeatureToShowChanged)
+
         self.ctrlWidget.featureGradientWidget.sigGradientChanged.connect(self.onGradientChanged)
         
 
         self.ctrlWidget.trainRfButton.clicked.connect(self.onClickedTrainRf)
         self.ctrlWidget.predictProbsButton.clicked.connect(self.onClickedPredictProbs)
+        self.ctrlWidget.predictMcButton.clicked.connect(self.onClickedMulticut)
         self.ctrlWidget.saveRfButton.clicked.connect(self.onClickedSaveRf)
         self.ctrlWidget.loadRfButton.clicked.connect(self.onClickedLoadRf)
 
@@ -355,7 +358,7 @@ class EdgeGui(object):
 
         self.currentFeatures = None
         self.featureMinMax = None
-        self.currentFi = self.ctrlWidget.featureSpinBox.value()
+        self.currentFi = 0
 
         self.rf = None
         self.probs = None
@@ -391,26 +394,43 @@ class EdgeGui(object):
         self.probs = self.rf.predictProbabilities(self.currentFeatures)[:,1]
 
 
-        extractor =  self.featureExtractor
-        wardness = numpy.array([0.0, 0.1, 0.15, 0.25, 0.5, 1.0], dtype='float32')
-        ucmProbs = extractor.ucmTransformFeatures(self.probs[:,None],wardness)
-        newFeat = numpy.concatenate([self.currentFeatures, ucmProbs ],axis=1)
-
-
-
-
-        trainingInstances = numpy.array(self.edgeClickLabels.keys(),dtype='uint64')
-        labels = numpy.array([self.edgeClickLabels[k] for k in trainingInstances],dtype='uint32')[:,None]
-        features = newFeat[trainingInstances,:]
-
-        rf2 = vigra.learning.RandomForest(treeCount=255)
-        oob = rf2.learnRF(features, labels)
-
-        self.probs = rf2.predictProbabilities(newFeat)[:,1]
-
-
-        print "predict probs done"
+        #extractor =  self.featureExtractor
+        #wardness = numpy.array([0.0, 0.1, 0.15, 0.25, 0.5, 1.0], dtype='float32')
+        #ucmProbs = extractor.ucmTransformFeatures(self.probs[:,None],wardness)
+        #newFeat = numpy.concatenate([self.currentFeatures, ucmProbs ],axis=1)
+        #trainingInstances = numpy.array(self.edgeClickLabels.keys(),dtype='uint64')
+        #labels = numpy.array([self.edgeClickLabels[k] for k in trainingInstances],dtype='uint32')[:,None]
+        #features = newFeat[trainingInstances,:]
+        #rf2 = vigra.learning.RandomForest(treeCount=255)
+        #oob = rf2.learnRF(features, labels)
+        #self.probs = rf2.predictProbabilities(newFeat)[:,1]
+        #print "predict probs done"
         self.ctrlWidget.modeSelectorComboBox.setCurrentIndex(4)
+
+    def onClickedMulticut(self):
+
+        p1 = self.probs.copy()
+        p1 = numpy.clip(p1, 0.005, 1-0.005)
+        p0 = 1.0 - self.probs
+
+        weights = numpy.log(p0/p1)
+        nVar = self.rag.maxNodeId + 1
+        nos = numpy.ones(nVar)*nVar
+        gm = opengm.gm(nos)
+
+        uv = self.rag.uvIds()
+        uv = numpy.sort(uv,axis=1)
+        pf = opengm.pottsFunctions([nVar,nVar], numpy.array([0]),weights)
+        fid = gm.addFunctions(pf)
+        gm.addFactors(fid,uv)
+
+        inf = opengm.inference.Multicut(gm)
+        inf.infer(inf.verboseVisitor())
+        arg = inf.arg()
+
+        self.eArg = arg[uv[:,0]]!=arg[uv[:,1]]
+
+        self.ctrlWidget.modeSelectorComboBox.setCurrentIndex(6)
 
     def onClickedSaveRf(self):
         print "save rf"
@@ -468,16 +488,26 @@ class EdgeGui(object):
             lCtrl.addFeature("RawGaussianSmooth",fRange(accFeat),subNames=accFeatNames)
             features.append(accFeat)
         
-        
+        # 6
+        wardness = numpy.array([0.0, 0.1, 0.15, 0.25, 0.5, 1.0], dtype='float32')
+        wnames =[]
+        for w in wardness :
+            wnames.append(" w"+str(w))
+            wnames.append(" r"+str(w))
         for s in [2.0]:
             options.stdDev = (s, )*3
             res = bw.hessianOfGaussianFirstEigenvalue(rawData, options)
             accFeat, accFeatNames = extractor.accumulatedFeatures(res)
             lCtrl.addFeature("hessianOfGaussianFirstEigenvalue",fRange(accFeat),subNames=accFeatNames)
             features.append(accFeat)
-    
-        #wardness = numpy.array([0.0, 0.1, 0.15, 0.25, 0.5, 1.0], dtype='float32')
-
+        
+            print "ucm"
+            mean = accFeat[:,0]
+            ucm = extractor.ucmTransformFeatures(mean[:,None], wardness)
+            print  "ucm done"
+            lCtrl.addFeature("hessianMeanUcm",fRange(ucm),subNames=wnames)
+            features.append(ucm)
+        
         #for s in [1.0,  3.0,  4.0]:
         #    img = hessianEv2(rawData, s, 2.0)
         #    #vigra.imshow(img)
@@ -502,14 +532,14 @@ class EdgeGui(object):
     def onClickedSaveFeatures(self):
         if self.currentFeatures is None:
             raise RuntimeError("Has no features to save")
-        path = str(pg.QtGui.QFileDialog.getSaveFileName(caption='Save file',directory='/home'))
+        path = str(pg.QtGui.QFileDialog.getSaveFileName(caption='Save file',directory='/home/tbeier'))
         f = h5py.File(path,'w')
         f['features'] = self.currentFeatures
         f.close()
         
     def onClickedLoadFeatures(self):
         print "load features"
-        path = str(pg.QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='/home'))
+        path = str(pg.QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='/home/tbeier'))
         f = h5py.File(path,'r')
         self.currentFeatures = f['features'][:]
         fMin = numpy.min(self.currentFeatures, axis=0)
@@ -530,16 +560,16 @@ class EdgeGui(object):
         else:
             vals = [self.edgeClickLabels[k] for k in keys]        
             keys = numpy.array(keys,dtype='int64')
-            vals = numpy.array(keys,dtype='int64')
+            vals = numpy.array(vals,dtype='int64')
 
-            path = str(pg.QtGui.QFileDialog.getSaveFileName(caption='Save file',directory='/home'))
+            path = str(pg.QtGui.QFileDialog.getSaveFileName(caption='Save file',directory='/home/tbeier'))
             f = h5py.File(path,'w')
             f['edgeIds'] = keys
             f['labels'] = vals
             f.close()
         
     def onClickedLoadLabels(self):
-        path = str(pg.QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='/home'))
+        path = str(pg.QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='/home/tbeier'))
         f = h5py.File(path,'r')
         keys = f['edgeIds'][:]
         vals = f['labels'][:]
@@ -607,6 +637,12 @@ class EdgeGui(object):
                 #assert self.probs is not None
                 color = self.ctrlWidget.getColor(self.probs[edge])
                 return pg.mkPen({'color': color, 'width':w})
+        elif m == "McRes":
+            state = self.eArg[edge]
+            if(state == 0):
+                return pg.mkPen({'color': (255,0,0,50), 'width':w})
+            else:
+                return pg.mkPen({'color': (0,255,0), 'width':w})
 
     def edgeWidth(self):
         return self.ctrlWidget.edgeSize()
@@ -691,6 +727,7 @@ class EdgeGui(object):
 
             leftTop = numpy.nanmin(lx),numpy.nanmin(ly)
             rightBottom =  numpy.nanmax(lx),numpy.nanmax(ly)
+            curve.setToolTip("id%d"%edge)
             curve.bRect.setCoords(leftTop[0],leftTop[1],rightBottom[0],rightBottom[1])
             curve.edge = edge
             curve.setPen(self.getPen(edge))

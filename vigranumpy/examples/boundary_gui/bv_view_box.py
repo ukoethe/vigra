@@ -20,12 +20,21 @@ class BvGridViewBox(pg.ViewBox):
 
 
 
+
     def __init__(self, blocking2d):
+
+
         super(BvGridViewBox,self).__init__()
         self.setAspectLocked(True)
+        self.setMenuEnabled(False)
         self.blocking2d = blocking2d
         self.blockVisibility = numpy.zeros(len(self.blocking2d),dtype='bool')
         self.visibleBlocks = None
+        self.setAcceptHoverEvents(True)
+
+
+
+        #proxy = pg.SignalProxy(self.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
 
         self.sigXRangeChanged.connect(self.rangeChanged)
         self.sigYRangeChanged.connect(self.rangeChanged)
@@ -76,12 +85,9 @@ class BvImageItem(pg.ImageItem):
 class BvPlotCurveItem(pg.PlotCurveItem):
     def __init__(self,**kwargs):
         super(BvPlotCurveItem,self).__init__(**kwargs)
-
-
-
         self.bRect = QtCore.QRectF()
 
-
+        self.setClickable(None, 8)
 
     def mouseClickEvent(self, ev):
         print "click event"

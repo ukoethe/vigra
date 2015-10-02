@@ -7,6 +7,7 @@
 #include <vigra/multi_array.hxx>
 #include <vigra/impex.hxx>
 #include <vigra/accumulator.hxx>
+#include <vigra/multi_blocking.hxx>
 #include <vigra/for_each_coord.hxx>
 
 namespace vigra{
@@ -209,6 +210,76 @@ private:
 };
 
 
+
+
+class EdgeTileManager2D{
+
+public:
+
+    typedef MultiBlocking<2> Blocking;
+    typedef typename Blocking::Point Point;
+    typedef typename Blocking::Block Block;
+    typedef Point Shape;
+
+
+    EdgeTileManager2D(
+        const AdjacencyListGraph & graph,   
+        const Shape & shape, 
+        const Shape & blockShape
+    )
+    :   graph_(graph),
+        blocking_(shape, blockShape),
+        viewRect_(Point(0),Point(0)),
+        isVisible_(blocking_.numBlocks(), false),
+        visibleBlocks_(),
+        appearedBlocks_(),
+        disappearedBlocks_()
+    {
+        const auto nb = blocking_.numBlocks();
+        visibleBlocks_.reserve(nb);
+        appearedBlocks_.reserve(nb);
+        disappearedBlocks_.reserve(nb);
+    }
+
+
+    void setViewRect(const Point & begin, const Point & end){
+
+        viewRect_ = Block(begin, end);
+        visibleBlocks_.resize(0);
+        appearedBlocks_.resize(0);
+        disappearedBlocks_.resize(0);
+
+        auto  c=0;
+        for(auto iter=blocking_.blockBegin(); iter!=blocking_.blockEnd(); ++iter){
+            if(viewRect_.intersects(*(iter))){
+                visibleBlocks_.push_back(c);
+                if(isVisible_[c] == false){
+                    appearedBlocks_.push_back(c);
+                }
+                isVisible_[c] = true;
+            }
+            else{
+                if(isVisible_[c] == true){
+                    disappearedBlocks_.push_back(c);
+                }
+                isVisible_[c] = false;
+            }
+        }
+    }
+
+    
+private:
+
+    const AdjacencyListGraph & graph_;
+    Blocking blocking_;
+    Block viewRect_;
+
+    std::vector<bool>   isVisible_;
+    std::vector<UInt32> visibleBlocks_;
+    std::vector<UInt32> appearedBlocks_;
+    std::vector<UInt32> disappearedBlocks_;
+
+};
 
 
 

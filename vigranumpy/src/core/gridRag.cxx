@@ -266,8 +266,41 @@ namespace vigra{
         return out;
     }
 
+
+
+
+    struct ExportEdgeTileManager2D{
+
+
+        typedef typename EdgeTileManager2D::Blocking Blocking;
+        typedef typename EdgeTileManager2D::Point Point;
+        typedef typename EdgeTileManager2D::Shape Shape;
+
+
+        static void exportEdgeTileManager(
+
+        ){
+
+            python::class_<EdgeTileManager2D>(
+                "EdgeTileManager2D",
+                python::init<
+                    const AdjacencyListGraph &,
+                    const Shape &, 
+                    const Shape & 
+                >()
+            )
+            .def("setViewRect", &EdgeTileManager2D::setViewRect)
+            ;
+        }
+
+
+    };
+
+
+
     void defineVisualization(){
 
+        ExportEdgeTileManager2D::exportEdgeTileManager();
 
 
 

@@ -468,11 +468,12 @@ public:
         nodeAndEdgeAccumlation<DIM>(graph_, labels_, ZeroVal(), nodeAccChainMap, edgeAccChainMap);
 
 
-
+        //std::cout<<"a\n";
 
         vigra::MultiArray<1, float > edgeSizes(vigra::MultiArray<1, float >::difference_type(graph_.edgeNum()));
-        vigra::MultiArray<1, float > nodeSizes(vigra::MultiArray<1, float >::difference_type(graph_.nodeNum()+1));
+        vigra::MultiArray<1, float > nodeSizes(vigra::MultiArray<1, float >::difference_type(graph_.maxNodeId()+1));
 
+        //std::cout<<"b\n";
         
         for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
             const Edge edge  = *eIt;
@@ -480,6 +481,9 @@ public:
             const UInt32 eid = graph_.id(edge);
             edgeSizes[eid] = acc::get<acc::Count>(eChain);
         }
+
+        //std::cout<<"c\n";
+
         for(NodeIt nIt(graph_); nIt != lemon::INVALID; ++nIt){
             const Node node  = *nIt;
             const FreeChain & nChain = nodeAccChainMap[node];
@@ -487,7 +491,7 @@ public:
             nodeSizes[nid] = acc::get<acc::Count>(nChain);
         }
 
-
+        //std::cout<<"d\n";
 
         // buffers
         vigra::MultiArray<1, float > edgeIndicatorBuffer(edgeSizes.shape());
@@ -495,6 +499,7 @@ public:
         vigra::MultiArray<1, float > edgeSizeBuffer(edgeSizes.shape());
         vigra::MultiArray<1, float > nodeSizeBuffer(nodeSizes.shape());
 
+        //std::cout<<"e\n";
 
         EdgeMapView edgeIndicatorMap(graph_, edgeIndicatorBuffer);
         EdgeMapView edgeSizeMap(graph_, edgeSizeBuffer);
@@ -502,9 +507,14 @@ public:
         EdgeMapView ucmMap(graph_, ucmBuffer);
 
 
+        //std::cout<<"f\n";
+
         edgeIndicatorBuffer = edgeIndicators.bindOuter(0);
         edgeSizeBuffer = edgeSizes;
         nodeSizeBuffer = nodeSizes;
+
+
+        //std::cout<<"g\n";
 
         Mg mg(graph_);
         ClusterOperator cOp(mg, edgeIndicatorMap, edgeSizeMap,
@@ -512,8 +522,8 @@ public:
 
         HcParam hcParam(1,false,false);
 
-        std::cout<<"mg node num "<<mg.nodeNum()<<"\n";
-        std::cout<<"mg edge num "<<mg.edgeNum()<<"\n";
+        //std::cout<<"mg node num "<<mg.nodeNum()<<"\n";
+        //std::cout<<"mg edge num "<<mg.edgeNum()<<"\n";
 
 
         size_t fi=0;
