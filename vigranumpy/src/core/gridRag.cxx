@@ -35,7 +35,7 @@
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
 #define NO_IMPORT_ARRAY
-
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 
 #include "export_graph_visitor.hxx"
@@ -166,7 +166,7 @@ namespace vigra{
         }
 
         template<class DATA_TYPE>
-        static NumpyAnyArray accumulatedFeatures(
+        static python::tuple accumulatedFeatures(
             const GridRagFeatureExtractorType & extractor,
             const NumpyArray<DIM, DATA_TYPE>  & data,
             NumpyArray<2, float> out
@@ -175,29 +175,29 @@ namespace vigra{
 
             TinyVector<UInt32,2> outShape(extractor.edgeNum(),extractor.nAccumulatedFeatures<DATA_TYPE>());
             out.reshape(outShape);
-            extractor.accumulatedFeatures(data, out);
-            return out;
+            auto fnames = extractor.accumulatedFeatures(data, out);
+            return python::make_tuple(out, fnames);
         }
 
-        static NumpyAnyArray geometricFeatures(
+        static python::tuple geometricFeatures(
             const GridRagFeatureExtractorType & extractor,
             NumpyArray<2, float> out
         ){
             TinyVector<UInt32,2> outShape(extractor.edgeNum(), extractor.nGeometricFeatures());
             out.reshape(outShape);
-            extractor.geometricFeatures(out);
-            return out;
+            std::vector<std::string> fnames = extractor.geometricFeatures(out);
+            return python::make_tuple(out, fnames);
         }
 
 
-        static NumpyAnyArray topologicalFeatures(
+        static python::tuple topologicalFeatures(
             const GridRagFeatureExtractorType & extractor,
             NumpyArray<2, float> out
         ){
             TinyVector<UInt32,2> outShape(extractor.edgeNum(), extractor.nTopologicalFeatures());
             out.reshape(outShape);
-            extractor.topologicalFeatures(out);
-            return out;
+            auto fnames = extractor.topologicalFeatures(out);
+            return python::make_tuple(out, fnames);
         }
     };
 
@@ -267,6 +267,13 @@ namespace vigra{
     }
 
     void defineVisualization(){
+
+
+
+
+        python::class_< std::vector < std::string > >("StringVector")
+        .def(python::vector_indexing_suite<std::vector< std::string > >());
+
 
         python::class_<SliceEdges>("SliceEdges",python::init<const AdjacencyListGraph  &>())
             .def("findSlicesEdges", registerConverters(&pyFindSliceEdges))

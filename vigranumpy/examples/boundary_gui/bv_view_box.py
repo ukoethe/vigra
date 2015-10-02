@@ -1,24 +1,60 @@
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
-import numpy as np
+import numpy#
 
-class BvViewBox(pg.ViewBox):
+
+
+
+
+
+
+
+class BvGridViewBox(pg.ViewBox):
 
     sigScrolled = QtCore.Signal(object)
 
+    #                                   
 
-    def __init__(self):
-        super(BvViewBox,self).__init__()
+    sigBlocksAppeared = QtCore.Signal(object)
+    sigBlocksDisappeared = QtCore.Signal(object)
+
+
+
+    def __init__(self, blocking2d):
+        super(BvGridViewBox,self).__init__()
         self.setAspectLocked(True)
+        self.blocking2d = blocking2d
+        self.blockVisibility = numpy.zeros(len(self.blocking2d),dtype='bool')
+        self.visibleBlocks = None
 
-    def mouseClickEvent(self, ev):
-        print "vb click"
-    def mouseClickEvent(self, ev):
-        print "vb release"
+        self.sigXRangeChanged.connect(self.rangeChanged)
+        self.sigYRangeChanged.connect(self.rangeChanged)
+
+
+    def rangeChanged(self):
+        #print '\n\n\n\n'
+        rect =  self.viewRect()
+
+        self.visibleBlocks =  self.blocking2d.iBlocks(rect)
+
+        tmp = self.blockVisibility.copy()
+        #print self.blockVisibility
+        self.blockVisibility[:] = 0
+        self.blockVisibility[self.visibleBlocks] = 1
+
+        changingBlocks = numpy.where(tmp!=self.blockVisibility)[0]
+
+        if(len(changingBlocks)>0):
+            newState = self.blockVisibility[changingBlocks]
+            self.sigBlocksAppeared.emit( changingBlocks[numpy.where(newState==1)] )
+            self.sigBlocksDisappeared.emit( changingBlocks[numpy.where(newState==0)] )
+
+
+        #print self.blockVisibility
     def wheelEvent(self, ev, axis=None):
         kmods = ev.modifiers()
         if kmods & pg.QtCore.Qt.ControlModifier:
-            super(BvViewBox,self).wheelEvent(ev, axis)
+            super(BvGridViewBox,self).wheelEvent(ev, axis)
         else:
             d = (ev.delta() * self.state['wheelScaleFactor'])
             self.sigScrolled.emit(d)
@@ -27,7 +63,7 @@ class BvViewBox(pg.ViewBox):
         if kmods & pg.QtCore.Qt.ShiftModifier:
             print "shift"
         if kmods & pg.QtCore.Qt.ControlModifier:
-            super(BvViewBox,self).mouseDragEvent(ev, axis)
+            super(BvGridViewBox,self).mouseDragEvent(ev, axis)
 
     
 class BvImageItem(pg.ImageItem):
@@ -41,68 +77,22 @@ class BvPlotCurveItem(pg.PlotCurveItem):
     def __init__(self,**kwargs):
         super(BvPlotCurveItem,self).__init__(**kwargs)
 
-        #self.setAcceptHoverEvents(True)
-        #self.setAcceptDrops(True)
-        #self.setHandlesChildEvents(True)
-        #self.setAcceptTouchEvents(True)
+
 
         self.bRect = QtCore.QRectF()
 
-    #def dragEnterEvent(self, ev):
-    #    print "dragEnterEvent"
-    #def dragLeaveEvent(self, ev):
-    #    print "dragLeaveEvent"
-    #def dragEnterEvent(self, ev):
-    #    print "dragEnterEvent"
-    #def dragMoveEvent(self, ev):
-    #    print "dragMoveEvent"
-    #def dropEvent(self, ev):
-    #    print "dropEvent"
 
 
-
-
-
-    #def mouseOverEvent(self, ev):
-    #    print "mouse over"
-    #def mouseDragEvent(self, ev):
-    #    print "drag click"
-    #def mouseDragMoveEvent(self, ev):
-    #    print "drag move"
-    #def mouseHoverEvent(self, ev):
-    #    print "mouse move"
     def mouseClickEvent(self, ev):
         print "click event"
         if self.mouseShape().contains(ev.pos()):
             self.viewer.edgeClicked(self, ev)
-        #self.setPen(pg.mkPen({'color': (150,150,50), 'width': 6}))
-        #ev.accept()
-    #def mouseReleaseEvent(self, ev):
-    #    print "released"
-    
-
-
-    #def event(self, ev):
-    #    print ev
-    #    return False
-    #def hoverMoveEvent(self, ev):
-    #    print "fooo"
-
-    #def mouseMoveEvent(self, mouseEvent):
-    #    print "YAY"
-
+  
     def boundingRect(self):
         return self.bRect
 
-    #def hoverEnterEvent(self, ev):
-    #    if self.mouseShape().contains(ev.pos()):
-    #        print "hover enter event"
-    #        self.viewer.edgeClicked(self, ev)
 
-    #def hoverMoveEvent(self, ev):
-    #    if self.mouseShape().contains(ev.pos()):
-    #        print "hover move event"
-  
+
 
 if __name__ == '__main__':
 
@@ -130,7 +120,7 @@ if __name__ == '__main__':
 
 
     # parameter:
-    imPath = ('../holyRegion.h5', 'im')   # input image path
+    imPath = ('../holyRegion.h5', 'im')  #ut image path
     labPath = ('../segMaskOnly.h5', 'data')   # labeled image path
 
 

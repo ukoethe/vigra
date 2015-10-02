@@ -277,6 +277,23 @@ namespace vigra{
             return volumeBorderBlocks_;
         }
 
+
+        std::vector<UInt32> intersectingBlocks(
+            const Shape roiBegin,
+            const Shape roiEnd
+        )const{
+            size_t i=0;
+            std::vector<UInt32> iBlocks;
+            const Block testBlock(roiBegin, roiEnd);
+            for(BlockIter iter=blockBegin(); iter!=blockEnd(); ++iter){
+                if(testBlock.intersects(*iter)){
+                    iBlocks.push_back(i);
+                }
+                ++i;
+            }
+            return std::move(iBlocks);
+        }
+
     private:
 
         /// get a block with border

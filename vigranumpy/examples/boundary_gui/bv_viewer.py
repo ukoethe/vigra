@@ -18,9 +18,10 @@ from pyqtgraph.Qt import QtCore, QtGui
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.ptime as ptime
+import threading
 
 from bv_view_box import *
-
+from bv_layer    import *
 
 def hessianEv2(img, sigma, sigmaOuter=None):
     if sigmaOuter is None:
@@ -37,15 +38,19 @@ def hessianEv2(img, sigma, sigmaOuter=None):
 
 
 # parameter:
-if False:
+if True:
     imPath = ('../holyRegion.h5', 'im')   # input image path
     labPath = ('../segMaskOnly.h5', 'data')   # labeled image path
     labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
     volume = vigra.impex.readHDF5(*imPath).astype('float32')
 
-    gridGraph = graphs.gridGraph(labels.shape)
-    rag = graphs.regionAdjacencyGraph(gridGraph, labels)
-
+    if False:
+        gridGraph = graphs.gridGraph(labels.shape)
+        rag = graphs.regionAdjacencyGraph(gridGraph, labels)
+        rag.writeHDF5("rag.h5",'data')
+    else:
+        rag = vigra.graphs.loadGridRagHDF5("rag.h5",'data')
+        labels=rag.labels
 elif False:
     labPath=  ("/media/tbeier/data/datasets/hhess/init_underseg.h5",'data')
     imPath = ("/media/tbeier/data/datasets/hhess/data_sub.h5",'data')
@@ -58,8 +63,13 @@ elif False:
 
     labels, nseg = vigra.analysis.watershedsNew(volume)
 
-    gridGraph = graphs.gridGraph(labels.shape)
-    rag = graphs.regionAdjacencyGraph(gridGraph, labels)
+    if True:
+        gridGraph = graphs.gridGraph(labels.shape)
+        rag = graphs.regionAdjacencyGraph(gridGraph, labels)
+        rag.writeHDF5("rag.h5",'data')
+    else:
+        rag = vigra.graphs.loadGridRagHDF5("rag.h5",'data')
+        labels=rag.labels
 
 else :
     imPath = ("/media/tbeier/data/datasets/hhess/data_sub.h5",'data')
@@ -210,6 +220,22 @@ class AllCurves(pg.GraphItem):
     #    #    c.setParentItem(self)
 
 
+
+
+class Blocking2d(object):
+    def __init__(self, shape, blockShape):
+        self.blocking = vigra.blockwise.Blocking2D(shape, blockShape)
+
+    def iBlocks(self, rect):
+        tl = rect.topLeft()
+        br = rect.bottomRight()
+
+        begin = (  int(tl.x()-0.5), int(tl.y()-0.5))
+        end = (  int(br.x()+0.5), int(br.y()+0.5))
+        return self.blocking.intersectingBlocks(begin,end)
+
+    def __len__(self):
+        return len(self.blocking)
 class EdgeGui(object):
     def __init__(self, rag, ndim=3, axis=2):
         self.rag = rag
@@ -219,7 +245,10 @@ class EdgeGui(object):
         self.featureExtractor.labels = self.labels
         self.featureExtractor.graph  = self.rag
 
+
+
         self.shape = self.labels.shape
+        self.blocking2d = Blocking2d(self.shape[0:2], (40,40))
         self.ndim = ndim
         self.axis = axis
         assert len(self.shape) == ndim
@@ -240,14 +269,20 @@ class EdgeGui(object):
         self.cw = QtGui.QWidget()
         self.cw.setMouseTracking(True)
         self.win.setCentralWidget(self.cw)
-        self.layout = QtGui.QVBoxLayout()
+        self.layout = QtGui.QHBoxLayout()
+        self.layout2 = QtGui.QVBoxLayout()
         self.cw.setLayout(self.layout)
         self.gv = pg.GraphicsLayoutWidget()
         self.gv.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
         self.gv.setMouseTracking(True)
         
-        self.layout.addWidget(self.gv,3)
-        self.viewBox = BvViewBox()
+        self.layerCtrl = BvLayerCtrl()
+        self.layout.addLayout(self.layout2)
+        self.layout.addWidget(self.layerCtrl)
+
+
+        self.layout2.addWidget(self.gv,3)
+        self.viewBox = BvGridViewBox(blocking2d=self.blocking2d)
         #self.viewBox.setMouseTracking(True)
         self.gv.addItem(self.viewBox)
         self.viewBox.setAspectLocked(True)
@@ -276,8 +311,8 @@ class EdgeGui(object):
         self.ctrlWidget = DownCtrl()
         self.ctrlWidget.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum)
 
-        self.layout.insertStretch(1,0)
-        self.layout.addWidget(self.ctrlWidget)
+        self.layout2.insertStretch(1,0)
+        self.layout2.addWidget(self.ctrlWidget)
 
 
 
@@ -305,6 +340,8 @@ class EdgeGui(object):
         self.ctrlWidget.loadRfButton.clicked.connect(self.onClickedLoadRf)
 
 
+        self.layerCtrl.sigFeatureSelected.connect(self.onFeatureSelected)
+
         self.imgItem = pg.ImageItem(border='w')
         self.viewBox.addItem(self.imgItem)
         self.dataDict = dict()
@@ -323,6 +360,16 @@ class EdgeGui(object):
         self.rf = None
         self.probs = None
         self.nCurves = 0
+
+
+        self.ScrollLock = threading.Lock()
+        self.scrollingIsLocked = False
+
+
+    def onFeatureSelected(self, fIndex):
+        self.currentFi = fIndex
+        self.updatePens()
+
     def onClickedTrainRf(self):
         assert self.currentFeatures is not None
         trainingInstances = numpy.array(self.edgeClickLabels.keys(),dtype='uint64')
@@ -385,35 +432,61 @@ class EdgeGui(object):
         if(self.mode()=='Features'):
             self.updatePens()
 
+
+
     def onClickedComputeFeatures(self):
+
+
+        lCtrl = self.layerCtrl
+
         extractor =  self.featureExtractor
         rawData = self.dataDict['raw']
 
         print "compute features"
-        geoFeat = extractor.geometricFeatures()
-        topoFeat = extractor.topologicalFeatures()
+
+        fSize = [0] 
+        def fRange(feat):
+            old = long(fSize[0])
+            fSize[0] += feat.shape[1]
+            return (old, fSize[0])
+
+        geoFeat,geoFeatNames = extractor.geometricFeatures()
+        lCtrl.addFeature("GeometricFeature",fRange(geoFeat),subNames=geoFeatNames)
+
+        topoFeat, topoFeatNames = extractor.topologicalFeatures()
+        lCtrl.addFeature("TopologicalFeatures",fRange(topoFeat),subNames=topoFeatNames)
+
         features = [geoFeat, topoFeat]
 
 
         options = bw.BlockwiseConvolutionOptions3D()
         options.blockShape = (128, )*3
-        #for s in [2.0, 3.0, 4.0]:
-        #    options.stdDev = (s, )*3
-        #    res = bw.gaussianSmooth(rawData, options)
-        #    accFeat = extractor.accumulatedFeatures(res)
-        #    features.append(accFeat)
-        
-        wardness = numpy.array([0.0, 0.1, 0.15, 0.25, 0.5, 1.0], dtype='float32')
-
-        for s in [1.0,  3.0,  4.0]:
-            img = hessianEv2(rawData, s, 2.0)
-            #vigra.imshow(img)
-            #vigra.show()
-            accFeat = extractor.accumulatedFeatures(img)
+        for s in [2.0]:
+            options.stdDev = (s, )*3
+            res = bw.gaussianSmooth(rawData, options)
+            accFeat, accFeatNames = extractor.accumulatedFeatures(res)
+            lCtrl.addFeature("RawGaussianSmooth",fRange(accFeat),subNames=accFeatNames)
             features.append(accFeat)
-            mean = accFeat[:,0]
-            ucm = extractor.ucmTransformFeatures(mean[:,None],wardness)
-            features.extend([accFeat,ucm])
+        
+        
+        for s in [2.0]:
+            options.stdDev = (s, )*3
+            res = bw.hessianOfGaussianFirstEigenvalue(rawData, options)
+            accFeat, accFeatNames = extractor.accumulatedFeatures(res)
+            lCtrl.addFeature("hessianOfGaussianFirstEigenvalue",fRange(accFeat),subNames=accFeatNames)
+            features.append(accFeat)
+    
+        #wardness = numpy.array([0.0, 0.1, 0.15, 0.25, 0.5, 1.0], dtype='float32')
+
+        #for s in [1.0,  3.0,  4.0]:
+        #    img = hessianEv2(rawData, s, 2.0)
+        #    #vigra.imshow(img)
+        #    #vigra.show()
+        #    accFeat = extractor.accumulatedFeatures(img)
+        #    features.append(accFeat)
+        #    mean = accFeat[:,0]
+        #    ucm = extractor.ucmTransformFeatures(mean[:,None],wardness)
+        #    features.extend([accFeat,ucm])
 
 
         features = numpy.concatenate(features,axis=1)
@@ -554,75 +627,6 @@ class EdgeGui(object):
 
         ev.accept()
 
-    def setZ2(self, z):
-
-        print "\n\n"
-            
-
-        vb = self.viewBox
-
-      
-
-        dataSlice = self.dataDict['raw'][:,:,z]
-        labelSlice = self.labels[:,:,z]  
-
-        self.imgItem.setImage(dataSlice)
-        self.imgItem.update()
-        #self.viewBox.update()
-
-
-        #for curve in self.curves:
-        #    self.viewBox.removeItem(curve)
-        self.curves = []
-
-        slicesEdges = vigra.graphs.SliceEdges(self.rag)
-
-
-        with vigra.Timer("find slices"):
-            slicesEdges.findSlicesEdges(labelSlice)
-
-
-
-        with vigra.Timer("remove old"):
-            if self.allCurves is not None:
-                self.viewBox.removeItem(self.allCurves)
-                self.allCurves = None
-            self.allCurves = AllCurves()
-
-
-
-        with vigra.Timer("add"):
-            self.viewBox.addItem(self.allCurves)
-
-        with vigra.Timer("build curves"):
-            visibleEdges = slicesEdges.visibleEdges()
-            for edge in visibleEdges:
-
-                edge = long(edge)
-                lineIds = slicesEdges.lineIds(edge)
-                totalLine = []
-                for lid in lineIds:
-                    line = slicesEdges.line(long(lid)).astype('float32')/2.0
-                    totalLine.append(line)
-                    totalLine.append([[float('nan'),float('nan')]])
-                totalLine = numpy.concatenate(totalLine,axis=0)
-                lx = totalLine[:,0]
-                ly = totalLine[:,1]
-
-                leftTop = lx.min(),ly.min()
-                rightBottom = lx.max(),ly.max()
-
-
-                #with vigra.Timer("get curve"):
-                curve = BvPlotCurveItem(clickable=True,parent=self.allCurves)#vb.childGroup)
-                lastCurve = curve
-                curve.edge = edge
-                curve.viewer = self
-                curve.setPen(self.getPen(edge))
-                curve.setData(lx,ly, connect="finite")
-                curve.sigClicked.connect(self.edgeClicked)
-                curve.setVisible(True)
-                self.curves.append(curve)
 
 
 
@@ -631,20 +635,15 @@ class EdgeGui(object):
     def setZ(self, z):
 
 
+
+
         vb = self.viewBox
-
-      
-
         dataSlice = self.dataDict['raw'][:,:,z]
         labelSlice = self.labels[:,:,z]  
 
         self.imgItem.setImage(dataSlice)
         self.imgItem.update()
-        #self.viewBox.update()
 
-
-        #for curve in self.curves:
-        #    self.viewBox.removeItem(curve)
         
         
         slicesEdges = vigra.graphs.SliceEdges(self.rag)
@@ -702,8 +701,6 @@ class EdgeGui(object):
         print self.nCurves
         for cii in range(ci, len(self.curves)):
             self.curves[cii].setVisible(False)
-
-
 
 
 

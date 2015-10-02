@@ -128,7 +128,7 @@ public:
         class DATA_TYPE,
         class OUT_TYPE
     >
-    void accumulatedFeatures(
+    std::vector<std::string> accumulatedFeatures(
         const vigra::MultiArrayView<DIM, DATA_TYPE> & data,
         vigra::MultiArrayView<2, OUT_TYPE> & features 
     )const{ 
@@ -147,6 +147,22 @@ public:
         NodeChainMap nodeAccChainMap(graph_);
         EdgeChainMap edgeAccChainMap(graph_);
 
+
+        std::vector<std::string> fnames;
+        std::vector<std::string> baseNames = {
+            "mean","StdDev","Minimum", "Q0.10", "Q0.25","Q0.50", "Q0.75", "Q0.9","Maximum"
+        };
+        std::vector<std::string> defNames = {
+            "E","UVSum","absDiffUV","minUV","maxUV","meanUV",
+            "absEminUVDiff","absEmaxUVDiff","absEmeanUVDiff",
+            "min(eUE,eVE) - dUV","max(eUE,eVE) - dUV"
+        };
+
+        for(const auto & bn : baseNames){
+            for(const auto & dn: defNames){
+                fnames.push_back(bn +std::string("_")+ dn);
+            }
+        }
 
         nodeAndEdgeAccumlation<DIM>(graph_, labels_, data, nodeAccChainMap, edgeAccChainMap);
         for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
@@ -183,6 +199,7 @@ public:
             for(size_t qi=0; qi<7;++qi)
                 defaultFeat(fIndex,edgeFeat, eQnt[qi],uQnt[qi],vQnt[qi]);
         }
+        return fnames;
     }
 
 
@@ -222,7 +239,8 @@ public:
     }
 
     template<class OUT_TYPE>
-    void geometricFeatures(
+    std::vector<std::string> 
+    geometricFeatures(
         vigra::MultiArrayView<2, OUT_TYPE> & features 
     )const{ 
 
@@ -242,6 +260,32 @@ public:
         EdgeChainMap edgeAccChainMap(graph_);
 
 
+
+        std::vector<std::string> fnames{
+            "eCount",
+            "minUVCount",
+            "maxUVCount",
+            "sumUVCount",
+            "minUVCount/maxUvCount",
+            "absUVCountDiff",
+            "eNCount/minNUVCount",
+            "eNCount/maxNUVCount",
+            "eNCount/NUVCount",
+
+            "dUV",
+            "mindEUdEV",
+            "maxdEUdEV",
+            "sumdEUdEV",
+            "mindEUdEV/maxdEUdEV",
+            "absdEUdEVDiff",
+
+            "uvNCount/dEV",
+            "min(uRat, vRat)",
+            "max(uRat, vRat)",
+            "uRat + vRat",
+            "abs(uRat - vRat)+0.5",
+            "max(uRat, vRat) / std::min(uRat, vRat)"
+        };
 
         UInt64 fi = 0;
         nodeAndEdgeAccumlation<DIM>(graph_, labels_, ZeroVal(),nodeAccChainMap, edgeAccChainMap);
@@ -302,14 +346,15 @@ public:
 
 
             // count and center of mass based
-            features(eid,15) = std::log(uvRat);
-            features(eid,16) = std::log(std::min(uRat, vRat));
-            features(eid,17) = std::log(std::max(uRat, vRat));
-            features(eid,18) = std::log(uRat + vRat);
-            features(eid,19) = std::log(std::abs(uRat - vRat)+0.5);
-            features(eid,20) = std::log(std::max(uRat, vRat) / std::min(uRat, vRat));
+            features(eid,15) =uvRat;
+            features(eid,16) =std::min(uRat, vRat);
+            features(eid,17) =std::max(uRat, vRat);
+            features(eid,18) =uRat + vRat;
+            features(eid,19) =std::abs(uRat - vRat)+0.5;
+            features(eid,20) =std::max(uRat, vRat) / std::min(uRat, vRat);
             
         }
+        return fnames;
     }
 
 
@@ -318,8 +363,17 @@ public:
     }
 
     template<class OUT_TYPE>
-    void topologicalFeatures(vigra::MultiArrayView<2, OUT_TYPE> & features )const{
+    std::vector<std::string> 
+    topologicalFeatures(vigra::MultiArrayView<2, OUT_TYPE> & features )const{
 
+
+        std::vector<std::string> fnames{
+            "minUVDegree",
+            "maxUVDegree",
+            "sumUVDegree",
+            "absUVDegreeDiff",
+            "uvNhIntersectionSize"
+        };
         UInt64 fi = 0;
         for(EdgeIt eIt(graph_); eIt != lemon::INVALID; ++eIt){
 
@@ -337,7 +391,7 @@ public:
                uSet.insert(graph_.target(*outArcIt));
 
             for(OutArcIt outArcIt(graph_,v); outArcIt!=lemon::INVALID;++outArcIt)
-               vSet.insert(graph_.target(*outArcIt));
+           vSet.insert(graph_.target(*outArcIt));
 
             UInt64 intersectionSize = 0;
             for(NodeSetIter siter=uSet.begin(); siter!=uSet.end(); ++siter){
@@ -352,7 +406,7 @@ public:
             features(eid, 0) = std::min(uDeg, vDeg);
             features(eid, 1) = std::max(uDeg, vDeg);
             features(eid, 2) = uDeg + vDeg;
-            features(eid, 3) = std::abs(uDeg - vDeg)*std::abs(uDeg - vDeg);
+            features(eid, 3) = std::abs(uDeg - vDeg);
 
 
             // cycle based
@@ -362,6 +416,7 @@ public:
 
             features(eid, 4) = intersectionSize;
         }
+        return fnames;
     }
 
      
