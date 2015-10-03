@@ -20,8 +20,10 @@ import pyqtgraph as pg
 import pyqtgraph.ptime as ptime
 import threading
 import opengm
+
 from bv_view_box import *
 from bv_layer    import *
+from bv_feature_selection import *
 
 def hessianEv2(img, sigma, sigmaOuter=None):
     if sigmaOuter is None:
@@ -44,7 +46,7 @@ if True:
     labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
     volume = vigra.impex.readHDF5(*imPath).astype('float32')
 
-    if True:
+    if False:
         gridGraph = graphs.gridGraph(labels.shape)
         rag = graphs.regionAdjacencyGraph(gridGraph, labels)
         rag.writeHDF5("rag.h5",'data')
@@ -170,6 +172,11 @@ class DownCtrl(QtGui.QWidget):
 
 
         self.featureGradientWidget = pg.GradientWidget(orientation='top')
+    
+        d = {'ticks': [(0.0, (165, 0, 60, 255)), (1.0, (0, 170, 60, 255))], 'mode': 'rgb'}
+
+        self.featureGradientWidget.restoreState(d)
+
         self.featureGradientWidget.setEnabled(False)
         self.featureShowLayout.addWidget(self.featureGradientWidget)
 
@@ -275,6 +282,10 @@ class EdgeGui(object):
         self.layout2 = QtGui.QVBoxLayout()
         self.cw.setLayout(self.layout)
         self.gv = pg.GraphicsLayoutWidget()
+
+
+        self.gv.scene()
+    
         self.gv.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
         self.gv.setMouseTracking(True)
         
@@ -457,6 +468,17 @@ class EdgeGui(object):
     def onClickedComputeFeatures(self):
 
 
+
+
+        d = FeatureSelectionDialog(viewer=self,parent=self.ctrlWidget)
+        d.show()
+
+    def onClickedComputeFeaturesImpl(self):
+
+
+
+
+
         lCtrl = self.layerCtrl
 
         extractor =  self.featureExtractor
@@ -603,7 +625,7 @@ class EdgeGui(object):
             if edge in self.edgeClickLabels:
                 label = self.edgeClickLabels[edge]
                 if label == 0 :
-                    return pg.mkPen({'color': (255,0,0,50), 'width':w})
+                    return pg.mkPen({'color': (255,0,0,255), 'width':w})
                 else:
                     return pg.mkPen({'color': (0,255,0), 'width':w})
             else:
@@ -630,7 +652,7 @@ class EdgeGui(object):
             if edge in self.edgeClickLabels:
                 label = self.edgeClickLabels[edge]
                 if label == 0 :
-                    return pg.mkPen({'color': (255,0,0,50), 'width':w})
+                    return pg.mkPen({'color': (255,0,0,255), 'width':w})
                 else:
                     return pg.mkPen({'color': (0,255,0), 'width':w})
             else:
@@ -640,7 +662,7 @@ class EdgeGui(object):
         elif m == "McRes":
             state = self.eArg[edge]
             if(state == 0):
-                return pg.mkPen({'color': (255,0,0,50), 'width':w})
+                return pg.mkPen({'color': (255,0,0,255), 'width':w})
             else:
                 return pg.mkPen({'color': (0,255,0), 'width':w})
 
@@ -719,10 +741,10 @@ class EdgeGui(object):
             try:
                 curve = self.curves[ci]
             except:
-                curve = BvPlotCurveItem(clickable=False, parent=self.imgItem)
+                curve = BvPlotCurveItem(clickable=False,parent=self.imgItem)
                 self.curves.append(curve)
                 curve.viewer = self
-                
+                #self.viewBox.addItem(curve,ignoreBounds=True)
             ci += 1
 
             leftTop = numpy.nanmin(lx),numpy.nanmin(ly)

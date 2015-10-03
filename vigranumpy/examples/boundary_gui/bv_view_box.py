@@ -40,6 +40,8 @@ class BvGridViewBox(pg.ViewBox):
         self.sigYRangeChanged.connect(self.rangeChanged)
 
 
+
+
     def rangeChanged(self):
         #print '\n\n\n\n'
         rect =  self.viewRect()
@@ -67,14 +69,40 @@ class BvGridViewBox(pg.ViewBox):
         else:
             d = (ev.delta() * self.state['wheelScaleFactor'])
             self.sigScrolled.emit(d)
+
+
     def mouseDragEvent(self, ev, axis=None):
+
         kmods = ev.modifiers()
-        if kmods & pg.QtCore.Qt.ShiftModifier:
-            print "shift"
         if kmods & pg.QtCore.Qt.ControlModifier:
             super(BvGridViewBox,self).mouseDragEvent(ev, axis)
+        else:
+            ev.accept()
+            #print self.mapSceneToView(ev.pos())
 
-    
+            view = self.scene().views()[0]
+            tr = view.viewportTransform()
+            point = ev.scenePos()
+            items = self.scene().items(point, QtCore.Qt.IntersectsItemShape, QtCore.Qt.DescendingOrder, tr)
+            
+
+            for item in items:
+                #print item
+                if isinstance(item, BvPlotCurveItem):
+                    if(item.mouseShape().contains(item.mapFromScene(point))):
+                        item.viewer.edgeClicked(item, ev)
+                        #item.mouseClickEvent(ev)
+
+
+
+
+
+
+
+
+
+
+            #ev.accept()
 class BvImageItem(pg.ImageItem):
     def __init__(self,**kwargs):
         super(BvImageItem,self).__init__(**kwargs)
@@ -93,10 +121,11 @@ class BvPlotCurveItem(pg.PlotCurveItem):
         print "click event"
         if self.mouseShape().contains(ev.pos()):
             self.viewer.edgeClicked(self, ev)
+        else:
+            print "outside"
   
     def boundingRect(self):
         return self.bRect
-
 
 
 

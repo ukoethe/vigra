@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include <functional>
 
 #include <vigra/multi_array.hxx>
 #include <vigra/impex.hxx>
@@ -212,14 +213,26 @@ private:
 
 
 
+struct SortedLine{
+};
+
 class EdgeTileManager2D{
 
 public:
 
+    typedef typename AdjacencyListGraph::Edge Edge;
     typedef MultiBlocking<2> Blocking;
     typedef typename Blocking::Point Point;
     typedef typename Blocking::Block Block;
     typedef Point Shape;
+
+    typedef MultiArray<2, UInt32>     LabelSliceArray;
+    typedef MultiArrayView<2, UInt32> LabelSliceView;
+
+    typedef std::set<UInt32> BlockIndexSet;
+
+    typedef std::function< void (const Point &, const Point &, LabelSliceView & ) > GetLabelsSliceCallback;
+
 
 
     EdgeTileManager2D(
@@ -233,7 +246,8 @@ public:
         isVisible_(blocking_.numBlocks(), false),
         visibleBlocks_(),
         appearedBlocks_(),
-        disappearedBlocks_()
+        disappearedBlocks_(),
+        getLabelSliceCallback_()
     {
         const auto nb = blocking_.numBlocks();
         visibleBlocks_.reserve(nb);
@@ -255,20 +269,40 @@ public:
                 visibleBlocks_.push_back(c);
                 if(isVisible_[c] == false){
                     appearedBlocks_.push_back(c);
+                    blockAppeared(c);
                 }
                 isVisible_[c] = true;
             }
             else{
                 if(isVisible_[c] == true){
                     disappearedBlocks_.push_back(c);
+                    blockDisappeared(c);
                 }
                 isVisible_[c] = false;
             }
         }
     }
 
-    
+    /**
+     * @brief this will notify that the viewer was scrolled.
+     *  As a result, all edges for visible blocks will 
+     *  be recomputed
+     */
+    void scrolled(){
+        // todo
+    }
+
+
 private:
+
+    void blockAppeared(const UInt32 bi){
+
+    }
+
+    void blockDisappeared(const UInt32 bi){
+
+    }
+
 
     const AdjacencyListGraph & graph_;
     Blocking blocking_;
@@ -278,7 +312,17 @@ private:
     std::vector<UInt32> visibleBlocks_;
     std::vector<UInt32> appearedBlocks_;
     std::vector<UInt32> disappearedBlocks_;
+    GetLabelsSliceCallback getLabelSliceCallback_;
 
+
+    // which edges can i find in a certain block
+    std::vector<  std::vector<Edge>  >   blockToEdges_;
+
+    // for each edge in each block there is a line
+    std::vector<  std::vector<SortedLine>  >  blocksLines_;
+
+    // in which blocks can i find a certain edge
+    std::map< Edge, BlockIndexSet  > edgeToBlocks_;
 };
 
 
