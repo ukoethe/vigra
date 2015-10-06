@@ -297,9 +297,9 @@ class EdgeGui(object):
 
         def scrolled(d):
             if d>0: 
-                d=1
+                d=5
             else :
-                d=-1
+                d=-5
             if self.ndim == 3:
                 newSlice = min(self.nSlices-1, self.currentSlice - d)
                 newSlice = max(0, newSlice)
@@ -414,7 +414,7 @@ class EdgeGui(object):
 
         p1 = self.probs.copy()
         p1 = numpy.clip(p1, 0.05, 1-0.05)
-        p0 = 1.0 - self.probs
+        p0 = 1.0 - p1
 
         weights = numpy.log(p0/p1)
         nVar = self.rag.maxNodeId + 1
@@ -742,7 +742,7 @@ class EdgeGui(object):
         elif m == "McRes":
             state = self.eArg[edge]
             if(state == 0):
-                return pg.mkPen({'color': (255,0,0,255), 'width':w})
+                return pg.mkPen({'color': (255,0,0,50), 'width':w})
             else:
                 return pg.mkPen({'color': (0,255,0), 'width':w})
 
