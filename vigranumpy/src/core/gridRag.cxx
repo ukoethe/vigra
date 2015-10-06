@@ -50,6 +50,7 @@
 #include "vigra/graph_features.hxx"
 #include "vigra/grid_rag_visualization.hxx"
 #include "vigra/pwatershed.hxx"
+#include "vigra/downsample_labels.hxx"
 
 
 namespace python = boost::python;
@@ -311,6 +312,18 @@ namespace vigra{
     }
 
 
+
+    NumpyAnyArray pyDownsampleLabels(
+        const NumpyArray<3, UInt8>  labels,
+        const UInt8 maxLabel,
+        NumpyArray<3, UInt8> out
+    ){
+        //out.reshapeIfEmpty(evalMap.shape());
+        downsampleLabels(labels,maxLabel, out);
+        return out;
+    }
+    
+
     void defineVisualization(){
 
         ExportEdgeTileManager2D::exportEdgeTileManager();
@@ -326,6 +339,7 @@ namespace vigra{
             )
         );
 
+        python::def("downsampleLabels", registerConverters(&pyDownsampleLabels));
 
 
         python::class_< std::vector < std::string > >("StringVector")

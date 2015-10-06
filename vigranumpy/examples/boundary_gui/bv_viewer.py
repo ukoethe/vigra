@@ -413,7 +413,7 @@ class EdgeGui(object):
     def onClickedMulticut(self):
 
         p1 = self.probs.copy()
-        p1 = numpy.clip(p1, 0.05, 1-0.05)
+        p1 = numpy.clip(p1, 0.005, 1.0-0.005)
         p0 = 1.0 - p1
 
         weights = numpy.log(p0/p1)
