@@ -49,7 +49,7 @@
 #include "vigra/adjacency_list_graph.hxx"
 #include "vigra/graph_features.hxx"
 #include "vigra/grid_rag_visualization.hxx"
-
+#include "vigra/pwatershed.hxx"
 
 
 namespace python = boost::python;
@@ -298,9 +298,33 @@ namespace vigra{
 
 
 
+
+    NumpyAnyArray pwatershed(
+        const NumpyArray<3, float>  evalMap,
+        const Int64 w,
+        const Int64 m,
+        NumpyArray<3, UInt32> out
+    ){
+        out.reshapeIfEmpty(evalMap.shape());
+        parallelWatershed3D(evalMap,w,m, out);
+        return out;
+    }
+
+
     void defineVisualization(){
 
         ExportEdgeTileManager2D::exportEdgeTileManager();
+
+
+        python::def("pwatershed", 
+            registerConverters(&pwatershed),
+            (
+                python::arg("evalMap"),
+                python::arg("w"),
+                python::arg("m"),
+                python::arg("out") = python::object()
+            )
+        );
 
 
 

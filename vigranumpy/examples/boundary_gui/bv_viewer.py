@@ -40,7 +40,7 @@ def hessianEv2(img, sigma, sigmaOuter=None):
 
 
 # parameter:
-if True:
+if False:
     imPath = ('../holyRegion.h5', 'im')   # input image path
     labPath = ('../segMaskOnly.h5', 'data')   # labeled image path
     labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
@@ -53,25 +53,17 @@ if True:
     else:
         rag = vigra.graphs.loadGridRagHDF5("rag.h5",'data')
         labels=rag.labels
-elif False:
-    labPath=  ("/media/tbeier/data/datasets/hhess/init_underseg.h5",'data')
-    imPath = ("/media/tbeier/data/datasets/hhess/data_sub.h5",'data')
+elif True:
+    volume = vigra.impex.readHDF5("/home/tbeier/Desktop/hhes/pmap_pipe/data_sub.h5","data").astype('float32').T#[0:300,0:300,0:300]
+
 
 
     # load volume
     #labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
-    volume = vigra.impex.readHDF5(*imPath).astype('float32')#.T
-    volume = volume[0:1000,0:1000,0:20]
 
-    labels, nseg = vigra.analysis.watershedsNew(volume)
 
-    if False:
-        gridGraph = graphs.gridGraph(labels.shape)
-        rag = graphs.regionAdjacencyGraph(gridGraph, labels)
-        rag.writeHDF5("rag.h5",'data')
-    else:
-        rag = vigra.graphs.loadGridRagHDF5("rag.h5",'data')
-        labels=rag.labels
+    rag = vigra.graphs.loadGridRagHDF5("/home/tbeier/Desktop/hhes/pmap_pipe/regrown_rag.h5",'data')
+    labels=rag.labels
 
 else :
 
@@ -421,7 +413,7 @@ class EdgeGui(object):
     def onClickedMulticut(self):
 
         p1 = self.probs.copy()
-        p1 = numpy.clip(p1, 0.005, 1-0.005)
+        p1 = numpy.clip(p1, 0.05, 1-0.05)
         p0 = 1.0 - self.probs
 
         weights = numpy.log(p0/p1)
@@ -473,7 +465,7 @@ class EdgeGui(object):
         d = FeatureSelectionDialog(viewer=self,parent=self.ctrlWidget)
         d.show()
 
-    def onClickedComputeFeaturesImpl(self):
+    def onClickedComputeFeaturesImpl(self, param):
 
 
 
@@ -486,11 +478,19 @@ class EdgeGui(object):
 
         print "compute features"
 
+        print param
+
+
+        options = bw.BlockwiseConvolutionOptions3D()
+        options.blockShape = (128, )*3
+
+
         fSize = [0] 
         def fRange(feat):
             old = long(fSize[0])
             fSize[0] += feat.shape[1]
             return (old, fSize[0])
+
 
         geoFeat,geoFeatNames = extractor.geometricFeatures()
         lCtrl.addFeature("GeometricFeature",fRange(geoFeat),subNames=geoFeatNames)
@@ -501,35 +501,115 @@ class EdgeGui(object):
         features = [geoFeat, topoFeat]
 
 
-        options = bw.BlockwiseConvolutionOptions3D()
-        options.blockShape = (128, )*3
-        for s in [2.0]:
-            options.stdDev = (s, )*3
-            res = bw.gaussianSmooth(rawData, options)
-            accFeat, accFeatNames = extractor.accumulatedFeatures(res)
-            lCtrl.addFeature("RawGaussianSmooth",fRange(accFeat),subNames=accFeatNames)
-            features.append(accFeat)
-        
-        # 6
-        wardness = numpy.array([0.0, 0.1, 0.15, 0.25, 0.5, 1.0], dtype='float32')
-        wnames =[]
-        for w in wardness :
-            wnames.append(" w"+str(w))
-            wnames.append(" r"+str(w))
-        for s in [2.0]:
-            options.stdDev = (s, )*3
-            res = bw.hessianOfGaussianFirstEigenvalue(rawData, options)
-            accFeat, accFeatNames = extractor.accumulatedFeatures(res)
-            lCtrl.addFeature("hessianOfGaussianFirstEigenvalue",fRange(accFeat),subNames=accFeatNames)
-            features.append(accFeat)
-        
-            print "ucm"
-            mean = accFeat[:,0]
-            ucm = extractor.ucmTransformFeatures(mean[:,None], wardness)
-            print  "ucm done"
-            lCtrl.addFeature("hessianMeanUcm",fRange(ucm),subNames=wnames)
-            features.append(ucm)
-        
+
+        for order in range(3):
+            orderName = '%d-Order Filter'%order
+            doFilter = param[('RawData',orderName,'computeFilter')]
+            if(doFilter):
+                sigmas = param[('RawData',orderName,'sigma')]
+                sigmas = list(eval(sigmas))
+
+                doUcm = param[('RawData',orderName,'UCM','ucmFilters')]
+                ucmMeanSign = float(param[('RawData',orderName,'UCM','meanSign')])
+                print "ucmMeanSign",ucmMeanSign
+                print "doUcm",doUcm
+                wardness = param[('RawData',orderName,'UCM','wardness')]
+                wardness = list(eval(wardness))
+                wardness = numpy.array(wardness, dtype='float32')
+                wnames =[]
+                for w in wardness :
+                    wnames.append(" w"+str(w))
+                    wnames.append(" r"+str(w))
+
+                print "sigma",sigmas, "w",wardness
+
+
+                for sigma in sigmas:
+                    print sigma
+                    orderSigmaName = orderName + str(sigma)
+                    options.stdDev = (float(sigma), )*3
+                    if order == 0:
+                        if sigma < 0.01:
+                            res = rawData
+                        else:
+                            res = bw.gaussianSmooth(rawData, options)
+                            accFeat, accFeatNames = extractor.accumulatedFeatures(res)
+                            lCtrl.addFeature(orderSigmaName,fRange(accFeat),subNames=accFeatNames)
+                            features.append(accFeat)
+
+                            if doUcm :
+                                mean = accFeat[:,0]
+                                mean *= ucmMeanSign
+                                ucmName = orderSigmaName+"MeanUcm"
+                                ucm = extractor.ucmTransformFeatures(mean[:,None], wardness) 
+                                lCtrl.addFeature(ucmName,fRange(ucm),subNames=wnames)
+                                features.append(ucm)
+
+                    if order == 1 :
+                        if sigma < 0.5:
+                            continue
+                        else:
+                            res = bw.gaussianGradientMagnitude(rawData, options)
+                            accFeat, accFeatNames = extractor.accumulatedFeatures(res)
+                            lCtrl.addFeature(orderSigmaName,fRange(accFeat),subNames=accFeatNames)
+                            features.append(accFeat)
+
+                            if doUcm :
+                                mean = accFeat[:,0]
+                                print "ucmMeanSign",ucmMeanSign
+                                mean *= ucmMeanSign
+                                ucmName = orderSigmaName+"MeanUcm"
+                                ucm = extractor.ucmTransformFeatures(mean[:,None], wardness) 
+                                lCtrl.addFeature(ucmName,fRange(ucm),subNames=wnames)
+                                features.append(ucm)
+
+                    if order == 2 :
+                        if sigma < 0.5:
+                            continue
+                        else:
+                            res = bw.hessianOfGaussianFirstEigenvalue(rawData, options)
+                            accFeat, accFeatNames = extractor.accumulatedFeatures(res)
+                            lCtrl.addFeature(orderSigmaName,fRange(accFeat),subNames=accFeatNames)
+                            features.append(accFeat)
+
+                            if doUcm :
+                                mean = accFeat[:,0]
+                                mean *= ucmMeanSign
+                                ucmName = orderSigmaName+"MeanUcm"
+                                ucm = extractor.ucmTransformFeatures(mean[:,None], wardness) 
+                                lCtrl.addFeature(ucmName,fRange(ucm),subNames=wnames)
+                                features.append(ucm)
+
+
+
+        if False:
+            for s in [2.0]:
+                options.stdDev = (s, )*3
+                res = bw.gaussianSmooth(rawData, options)
+                accFeat, accFeatNames = extractor.accumulatedFeatures(res)
+                lCtrl.addFeature("RawGaussianSmooth",fRange(accFeat),subNames=accFeatNames)
+                features.append(accFeat)
+            
+            # 6
+            wardness = numpy.array([0.0, 0.1, 0.15, 0.25, 0.5, 1.0], dtype='float32')
+            wnames =[]
+            for w in wardness :
+                wnames.append(" w"+str(w))
+                wnames.append(" r"+str(w))
+            for s in [2.0]:
+                options.stdDev = (s, )*3
+                res = bw.hessianOfGaussianFirstEigenvalue(rawData, options)
+                accFeat, accFeatNames = extractor.accumulatedFeatures(res)
+                lCtrl.addFeature("hessianOfGaussianFirstEigenvalue",fRange(accFeat),subNames=accFeatNames)
+                features.append(accFeat)
+            
+                print "ucm"
+                mean = accFeat[:,0]
+                ucm = extractor.ucmTransformFeatures(mean[:,None], wardness)
+                print  "ucm done"
+                lCtrl.addFeature("hessianMeanUcm",fRange(ucm),subNames=wnames)
+                features.append(ucm)
+            
         #for s in [1.0,  3.0,  4.0]:
         #    img = hessianEv2(rawData, s, 2.0)
         #    #vigra.imshow(img)
