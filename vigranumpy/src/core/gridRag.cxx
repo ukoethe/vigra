@@ -316,10 +316,11 @@ namespace vigra{
     NumpyAnyArray pyDownsampleLabels(
         const NumpyArray<3, UInt8>  labels,
         const UInt8 maxLabel,
+        const float threshold,
         NumpyArray<3, UInt8> out
     ){
         //out.reshapeIfEmpty(evalMap.shape());
-        downsampleLabels(labels,maxLabel, out);
+        downsampleLabels(labels,maxLabel,threshold, out);
         return out;
     }
     
