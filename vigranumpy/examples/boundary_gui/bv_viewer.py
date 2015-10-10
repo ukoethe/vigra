@@ -40,7 +40,7 @@ def hessianEv2(img, sigma, sigmaOuter=None):
 
 
 # parameter:
-if False:
+if True:
     imPath = ('../holyRegion.h5', 'im')   # input image path
     labPath = ('../segMaskOnly.h5', 'data')   # labeled image path
     labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
@@ -53,7 +53,7 @@ if False:
     else:
         rag = vigra.graphs.loadGridRagHDF5("rag.h5",'data')
         labels=rag.labels
-elif True:
+elif False:
     volume = vigra.impex.readHDF5("/home/tbeier/Desktop/hhes/pmap_pipe/data_sub.h5","data").astype('float32').T#[0:300,0:300,0:300]
 
 

@@ -87,6 +87,8 @@ VIGRA_ADD_NUMPY_MODULE(optimization SOURCES
   VIGRANUMPY)
 
 
+find_package(Boost COMPONENTS system filesystem REQUIRED)
+
 VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     graphs.cxx
     adjacencyListGraph.cxx
@@ -98,6 +100,8 @@ VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     #eccentricity.cxx
   LIBRARIES
     ${VIGRANUMPY_IMPEX_LIBRARIES}  ${VIGRANUMPY_THREAD_LIBRARIES}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(histogram SOURCES

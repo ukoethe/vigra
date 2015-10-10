@@ -51,6 +51,15 @@
 #include "vigra/grid_rag_visualization.hxx"
 #include "vigra/pwatershed.hxx"
 #include "vigra/downsample_labels.hxx"
+#include <stdio.h>
+
+#include <fstream>      // std::ifstream, std::ofstream
+      
+//#include <experimental/filesystem>
+//namespace fs = std::experimental::filesystem;
+#include "boost/filesystem/operations.hpp"
+#include "boost/filesystem/path.hpp"  
+
 
 
 namespace python = boost::python;
@@ -325,6 +334,84 @@ namespace vigra{
     }
     
 
+    void pySaveLabels(
+        const MultiArrayView<3, UInt32> & labels,
+        const std::string & baseName
+    ){
+        typedef TinyVector<Int64, 3> Coord;
+        Coord blockShape(128);
+
+        MultiBlocking<3> blocking(labels.shape(), blockShape);
+
+
+
+
+
+        for(auto iter = blocking.blockBegin(); 
+            iter !=blocking.blockEnd(); ++iter){
+            const auto block = *iter;
+            Coord begin = block.begin();
+            Coord end = block.end();
+            Coord c(0);
+            Coord cc(0);
+
+            char buffer [50];
+            {
+                
+                int n=sprintf (buffer, "x%1$d/y%2$d/z%3$d/",
+                    int(begin[0]/128),
+                    int(begin[1]/128),
+                    int(begin[2]/128)
+                );
+                std::string dirnanme (buffer, buffer+n);
+                boost::filesystem::create_directories(baseName+dirnanme);
+            }
+            int n=sprintf (buffer, "x%1$d/y%2$d/z%3$d/%4$s_x%1$d_y%2$d_z%3$d.raw",
+                int(begin[0]/128),
+                int(begin[1]/128),
+                int(begin[2]/128),"aName"
+            );
+            std::string fname (buffer, buffer+n);
+
+
+
+
+            //fs::create_directories(baseName+fname);
+            std::cout<<"FRESH "<<baseName+fname<<"\n";
+
+            std::ofstream outfile(baseName+fname,std::ofstream::binary);
+            
+
+            UInt64 i=0;
+            std::vector<UInt64> vals;
+
+            for(c[2]=0; c[2]<128; ++c[2])
+            for(c[1]=0; c[1]<128; ++c[1])
+            for(c[0]=0; c[0]<128; ++c[0]){
+
+                cc = begin + c;
+                UInt64 val;
+                if(cc[0] < end[0] && cc[1] < end[1] &&cc[2] < end[2]){
+                    val = UInt64(labels[cc]);
+                }
+                else{
+                    val = UInt64(0);
+                }
+                outfile.write(reinterpret_cast<const char *>(&val), sizeof(val));
+                //outfile<<val;
+                ++i;
+            }
+            std::cout<<"i "<<i<<" .."<<128*128*128<<"\n";
+            outfile.flush();
+            outfile.close();
+        }
+    }
+
+
+
+
+
+
     void defineVisualization(){
 
         ExportEdgeTileManager2D::exportEdgeTileManager();
@@ -337,6 +424,14 @@ namespace vigra{
                 python::arg("w"),
                 python::arg("m"),
                 python::arg("out") = python::object()
+            )
+        );
+
+        python::def("saveLabels", 
+            registerConverters(&pySaveLabels),
+            (
+                python::arg("labels"),
+                python::arg("basePath")
             )
         );
 
@@ -374,6 +469,13 @@ namespace vigra{
 
         ;
     }
+
+
+
+    //void defineLargeScaleFeatures(){
+    //    python::class_<LargeScaleEdgeFeatures>("LargeScaleEdgeFeatures")
+    //    ;
+    //}
 
 } 
 
