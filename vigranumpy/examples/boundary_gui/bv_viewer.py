@@ -1,23 +1,15 @@
 import vigra
-import vigra.graphs as vigraph
 import vigra.graphs as graphs
-import pylab
-import numpy as np
+import vigra.blockwise as bw
 import numpy
 import sys
 import math
-import matplotlib
-import pylab as plt
 import math
 import h5py
-from matplotlib.widgets import Slider, Button, RadioButtons
 from vigra import blockwise as bw
 from functools import partial
-import matplotlib.lines as lines
 from pyqtgraph.Qt import QtCore, QtGui
-import numpy as np
 import pyqtgraph as pg
-import pyqtgraph.ptime as ptime
 import threading
 import opengm
 
@@ -25,75 +17,43 @@ from bv_view_box import *
 from bv_layer    import *
 from bv_feature_selection import *
 
-def hessianEv2(img, sigma, sigmaOuter=None):
-    if sigmaOuter is None:
-        sigmaOuter = sigma * 2.0
-    res = vigra.filters.hessianOfGaussian(img, sigma)
-    res = vigra.filters.gaussianSmoothing(res, sigmaOuter)
-    if res.ndim == 4:
-        res = vigra.filters.tensorEigenvalues(res)[:,:,:,0]
-    else :
-        res = vigra.filters.tensorEigenvalues(res)[:,:,0] 
-    return res
 
 
 
 
-# parameter:
-if True:
-    imPath = ('../holyRegion.h5', 'im')   # input image path
-    labPath = ('../segMaskOnly.h5', 'data')   # labeled image path
-    labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
-    volume = vigra.impex.readHDF5(*imPath).astype('float32')
 
-    if False:
-        gridGraph = graphs.gridGraph(labels.shape)
-        rag = graphs.regionAdjacencyGraph(gridGraph, labels)
-        rag.writeHDF5("rag.h5",'data')
-    else:
-        rag = vigra.graphs.loadGridRagHDF5("rag.h5",'data')
-        labels=rag.labels
-elif False:
-    volume = vigra.impex.readHDF5("/home/tbeier/Desktop/hhes/pmap_pipe/data_sub.h5","data").astype('float32').T#[0:300,0:300,0:300]
+imPath = ("/media/tbeier/data/datasets/hhess/data_sub.h5",'data')
+volume = vigra.impex.readHDF5(*imPath).astype('float32')
+volume = volume[0:1000,0:1000,0:40]
+volume = vigra.taggedView(volume,'xyz')
 
+if False:
 
+    options = bw.BlockwiseConvolutionOptions3D()
+    sigma = 3.5
+    options.stdDev = (sigma, )*3
+    options.blockShape = (64, )*3
 
-    # load volume
-    #labels = vigra.impex.readHDF5(*labPath).astype(np.uint32)
+    print "hessianEv"
+    ev = bw.hessianOfGaussianFirstEigenvalue(volume, options)
+    print ev.shape, ev.dtype
+
+    print "smooth"
+    ev = bw.gaussianSmooth(ev, options)
 
 
-    rag = vigra.graphs.loadGridRagHDF5("/home/tbeier/Desktop/hhes/pmap_pipe/regrown_rag.h5",'data')
+    print "watershedsNew"
+    labels, nseg = vigra.analysis.watershedsNew(ev)
+   
+
+    print "gridGraph"
+    gridGraph = graphs.gridGraph(labels.shape)
+    rag = graphs.regionAdjacencyGraph(gridGraph, labels)
+    rag.writeHDF5("rag.h5",'data')
+else:
+    rag = vigra.graphs.loadGridRagHDF5("rag.h5",'data')
     labels=rag.labels
 
-else :
-
-    imPath = ("/media/tbeier/data/datasets/hhess/data_sub.h5",'data')
-    volume = vigra.impex.readHDF5(*imPath).astype('float32')
-    volume = volume[0:1000,0:1000,0:40]
-    volume = vigra.taggedView(volume,'xyz')
-
-    if False:
-        print "hessianEv2"
-        ev = hessianEv2(volume, 2.5)
-        print ev.shape, ev.dtype
-        ev = vigra.filters.gaussianSmoothing(ev, 2.5)
-
-        vigra.imshow(ev[:,:,0])
-        vigra.show()
-
-        print "watershedsNew"
-        labels, nseg = vigra.analysis.watershedsNew(ev)
-        vigra.segShow(volume[:,:,0], labels[:,:,0])
-        vigra.show()
-
-        print "gridGraph"
-        gridGraph = graphs.gridGraph(labels.shape)
-        rag = graphs.regionAdjacencyGraph(gridGraph, labels)
-        rag.writeHDF5("ragb.h5",'data')
-    else:
-        rag = vigra.graphs.loadGridRagHDF5("ragb.h5",'data')
-        labels=rag.labels
-print labels.shape, volume.shape
 
 
 
@@ -427,7 +387,9 @@ class EdgeGui(object):
         fid = gm.addFunctions(pf)
         gm.addFactors(fid,uv)
 
-        inf = opengm.inference.Multicut(gm)
+        pparam = opengm.InfParam(seedFraction=0.02)
+        parameter = opengm.InfParam(generator='randomizedWatershed',proposalParam=pparam,numStopIt=20,numIt=3000)
+        inf = opengm.inference.IntersectionBased(gm, parameter=parameter)
         inf.infer(inf.verboseVisitor())
         arg = inf.arg()
 

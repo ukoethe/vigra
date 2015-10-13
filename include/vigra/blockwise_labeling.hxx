@@ -108,6 +108,7 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         LabelBlocksIterator label_blocks_it = label_blocks_begin;
         typename MultiArray<Dimensions, Label>::iterator offsets_it = label_offsets.begin();
         Label current_offset = 0;
+        // a la OPENMP_PRAGMA FOR
         for( ; data_blocks_it != data_blocks_end; ++data_blocks_it, ++label_blocks_it, ++offsets_it)
         {
             vigra_assert(label_blocks_it != label_blocks_end && offsets_it != label_offsets.end(), "");

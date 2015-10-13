@@ -67,6 +67,8 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
     
     MultiCoordinateIterator<N> it(shape);
     MultiCoordinateIterator<N> end = it.getEndIterator();
+
+    // trivial prarallel. )(halo 1)
     for( ; it != end; ++it)
     {
         DirectionsBlock directions_block = directions_blocks_begin[*it];
