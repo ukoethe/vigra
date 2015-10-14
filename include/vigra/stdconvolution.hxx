@@ -1002,9 +1002,7 @@ public:
         }
     }
 
-        /** \brief Init as a 2D box filter with given radius.
-
-            The function returns a reference to the kernel.
+        /** Init as a 2D box filter with given radius.
          */
     void initAveraging(int radius)
     {
@@ -1013,9 +1011,7 @@ public:
         return initSeparable(avg, avg);
     }
 
-        /** \brief Init as a 2D Gaussian function with given standard deviation and norm.
-
-            The function returns a reference to the kernel.
+        /** Init as a 2D Gaussian function with given standard deviation and norm.
          */
     void initGaussian(double std_dev, value_type norm)
     {
@@ -1024,9 +1020,7 @@ public:
         return initSeparable(gauss, gauss);
     }
 
-        /** \brief Init as a 2D Gaussian function with given standard deviation and unit norm.
-
-            The function returns a reference to the kernel.
+        /** Init as a 2D Gaussian function with given standard deviation and unit norm.
          */
     void initGaussian(double std_dev)
     {

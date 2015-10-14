@@ -475,7 +475,7 @@ ArrayVectorView <T>::swapDataImpl(const ArrayVectorView <U>& rhs)
 
 /** Replacement for <tt>std::vector</tt>.
 
-    This template implements the same functionality as <tt>a href="http://www.sgi.com/tech/stl/Vector.html">std::vector</a></tt> (see there for detailed documentation).
+    This template implements the same functionality as <tt><a href="http://www.sgi.com/tech/stl/Vector.html">std::vector</a></tt> (see there for detailed documentation).
     However, it gives two useful guarantees, that <tt>std::vector</tt> fails
     to provide:
 

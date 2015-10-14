@@ -200,7 +200,7 @@ namespace vigra {
 
     All \ref BorderTreatmentMode "border treatment modes" are supported.
 
-    The unput pixel type <tt>T1</tt> must be a \ref LinearSpace "linear space" over 
+    The input pixel type <tt>T1</tt> must be a \ref LinearSpace "linear space" over 
     the kernel's value_type <tt>T</tt>, i.e. addition of source values, multiplication with kernel values,
     and NumericTraits must be defined. The kernel's value_type must be an \ref AlgebraicField "algebraic field",
     i.e. the arithmetic operations (+, -, *, /) and NumericTraits must be defined. Typically, you will use 
