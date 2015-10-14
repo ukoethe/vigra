@@ -1004,7 +1004,7 @@ inline typename FFTWComplex<R>::NormType abs(const FFTWComplex<R> &a)
     return a.magnitude();
 }
 
-    /// pahse
+    /// phase
 template <class R>
 inline R arg(const FFTWComplex<R> &a)
 {
