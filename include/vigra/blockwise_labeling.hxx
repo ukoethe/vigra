@@ -36,6 +36,10 @@
 #ifndef VIGRA_BLOCKWISE_LABELING_HXX
 #define VIGRA_BLOCKWISE_LABELING_HXX
 
+
+#include <omp.h>
+
+
 #include "multi_gridgraph.hxx"
 #include "multi_labeling.hxx"
 #include "union_find.hxx"
@@ -109,21 +113,48 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         typename MultiArray<Dimensions, Label>::iterator offsets_it = label_offsets.begin();
         Label current_offset = 0;
         // a la OPENMP_PRAGMA FOR
-        for( ; data_blocks_it != data_blocks_end; ++data_blocks_it, ++label_blocks_it, ++offsets_it)
-        {
-            vigra_assert(label_blocks_it != label_blocks_end && offsets_it != label_offsets.end(), "");
-            *offsets_it = current_offset;
-            if(background_value)
-            {
-                current_offset += 1 + labelMultiArrayWithBackground(*data_blocks_it, *label_blocks_it,
+        
+        auto d = std::distance(data_blocks_begin, data_blocks_end);
+
+
+        std::vector<UInt32> nSeg(d);
+        #pragma omp parallel for
+        for(int i=0; i<d; ++i){
+            int resVal;
+            if(background_value){
+                resVal = 1 + labelMultiArrayWithBackground(data_blocks_it[i], label_blocks_it[i],
                                                                     neighborhood, *background_value, equal);
             }
-            else
-            {
-                current_offset += labelMultiArray(*data_blocks_it, *label_blocks_it,
+            else{
+                resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
                                                   neighborhood, equal);
+            
             }
+            nSeg[i] = resVal;
         }
+        for(int i=0; i<d;++i){
+            offsets_it[i] = current_offset;
+            current_offset+=nSeg[i];
+        }
+
+
+
+        
+        //for( ; data_blocks_it != data_blocks_end; ++data_blocks_it, ++label_blocks_it, ++offsets_it)
+        //{
+        //    vigra_assert(label_blocks_it != label_blocks_end && offsets_it != label_offsets.end(), "");
+        //    * = current_offset;
+        //    if(background_value)
+        //    {
+        //        current_offset += 1 + labelMultiArrayWithBackground(*data_blocks_it, *label_blocks_it,
+        //                                                            neighborhood, *background_value, equal);
+        //    }
+        //    else
+        //    {
+        //        current_offset += labelMultiArray(*data_blocks_it, *label_blocks_it,
+        //                                          neighborhood, equal);
+        //    }
+        //}
         unmerged_label_number = current_offset;
         if(!background_value)
             ++unmerged_label_number;

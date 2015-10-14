@@ -320,10 +320,16 @@ public:
 
 
 
-            const float uRat = uNCount/dEU;
-            const float vRat = vNCount/dEV;
-            const float uvRat = uvNCount/dEV;
+            const float uRat = uNCount/(dEU+1.0);
+            const float vRat = vNCount/(dEV+1.0);
+            const float uvRat = uvNCount/(dUV+1.0);
             
+/*            std::cout<<"dEU"<<dEU<<"\n";
+            std::cout<<"dEV"<<dEV<<"\n";
+            std::cout<<"dUV"<<dUV<<"\n";
+            std::cout<<"uNCount"<<uNCount<<"\n";
+            std::cout<<"vNCount"<<vNCount<<"\n";
+            std::cout<<"eNCount"<<eNCount<<"\n";*/
             
             // count based 
             features(eid, 0) = eCount;                            

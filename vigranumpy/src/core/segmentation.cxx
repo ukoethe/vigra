@@ -41,6 +41,7 @@
 #include <vigra/localminmax.hxx>
 #include <vigra/labelimage.hxx>
 #include <vigra/watersheds.hxx>
+#include <vigra/blockwise_watersheds.hxx>
 #include <vigra/seededregiongrowing.hxx>
 #include <vigra/labelvolume.hxx>
 #include <vigra/watersheds3d.hxx>
@@ -1126,12 +1127,32 @@ vigra::NumpyAnyArray pySizeFilterSegInplace(vigra::NumpyArray<3, T>  seg, const 
 }
 
 
+template<unsigned int DIM>
+python::tuple  pyUnionFindWatershedsBlockwise(
+    NumpyArray<DIM,float> data,
+    TinyVector<Int64, DIM> blockShape,
+    NumpyArray<DIM, UInt32 > out
+){
+    out.reshapeIfEmpty(data.shape());
+    UInt64 nSeg =  unionFindWatershedsBlockwise(data, out,DirectNeighborhood, blockShape);
+    return python::make_tuple(out, nSeg);
+}
+
 void defineSegmentation()
 {
     using namespace python;
     
     docstring_options doc_options(true, true, false);
 
+
+    python::def("unionFindWatershed3D",
+        registerConverters(&pyUnionFindWatershedsBlockwise<3>),
+        (
+            python::arg("image"),
+            python::arg("blockShape"),
+            python::arg("out") = python::object()
+        )
+    );
 
     python::def("segToSeeds", registerConverters(pythonShrinkLabels<2>),
         (

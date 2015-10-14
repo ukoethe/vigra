@@ -21,29 +21,35 @@ from bv_feature_selection import *
 
 
 
-
 imPath = ("/media/tbeier/data/datasets/hhess/data_sub.h5",'data')
+imPath = ("/home/tbeier/Desktop/hhes/pmap_pipe/data_sub.h5",'data')
 volume = vigra.impex.readHDF5(*imPath).astype('float32')
-volume = volume[0:1000,0:1000,0:40]
+volume = volume[:,:,0:600]
 volume = vigra.taggedView(volume,'xyz')
 
-if False:
+if True:
 
-    options = bw.BlockwiseConvolutionOptions3D()
-    sigma = 3.5
-    options.stdDev = (sigma, )*3
-    options.blockShape = (64, )*3
+    if False:
+        options = bw.BlockwiseConvolutionOptions3D()
+        sigma = 2.7
+        options.stdDev = (sigma, )*3
+        options.blockShape = (64, )*3
 
-    print "hessianEv"
-    ev = bw.hessianOfGaussianFirstEigenvalue(volume, options)
-    print ev.shape, ev.dtype
+        print "hessianEv"
+        ev = bw.hessianOfGaussianFirstEigenvalue(volume, options)
+        print ev.shape, ev.dtype
 
-    print "smooth"
-    ev = bw.gaussianSmooth(ev, options)
+        options.stdDev = (4.5, )*3
+        print "smooth"
+        ev = bw.gaussianSmooth(ev, options)
 
+        vigra.impex.writeHDF5(ev,"growmap.h5",'data')
+    
+    else:
+        ev = vigra.impex.readHDF5("growmap.h5",'data')
 
-    print "watershedsNew"
-    labels, nseg = vigra.analysis.watershedsNew(ev)
+    with vigra.Timer("watershedsNew"):
+        labels, nseg = vigra.analysis.unionFindWatershed3D(ev,(100,100,100))
    
 
     print "gridGraph"
@@ -728,8 +734,7 @@ class EdgeGui(object):
         ev.accept()
 
 
-
-
+   
 
 
     def setZ(self, z):
@@ -749,8 +754,8 @@ class EdgeGui(object):
         slicesEdges = vigra.graphs.SliceEdges(self.rag)
 
 
-        #with vigra.Timer("find slices"):
-        slicesEdges.findSlicesEdges(labelSlice)
+        with vigra.Timer("find slices"):
+            slicesEdges.findSlicesEdges(labelSlice)
 
 
 

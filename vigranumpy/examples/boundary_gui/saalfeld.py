@@ -83,16 +83,26 @@ else:
         labels=rag.labels[0:500,0:500,0:500]
         extractor = graphs.gridRagFeatureExtractor(rag, labels)
         
-        if False:
+        if True:
             geoFeat, geoFeatNames = extractor.geometricFeatures()
             topoFeat, topoFeatNames = extractor.topologicalFeatures()
             accFeat, accFeatNames = extractor.accumulatedFeatures(raw)
 
             features = [geoFeat, topoFeat, accFeat]
+            names = graphs.StringVector()
+            names.extend(geoFeatNames)
+            names.extend(topoFeatNames)
+            names.extend(accFeatNames)
+    
             features = numpy.concatenate(features,axis=1)
             vigra.impex.writeHDF5(features, "features2.h5", "data")
-        else:
-            features = vigra.impex.readHDF5("features2.h5", "data")
+            #else:
+            #features = vigra.impex.readHDF5("features2.h5", "data")
+            print  features
+            for fi in range(features.shape[1]):
+                feat = features[:,fi]
+                print  "mima",names[fi],feat.min(), feat.max(), feat
+
             features = numpy.nan_to_num(features)
 
 

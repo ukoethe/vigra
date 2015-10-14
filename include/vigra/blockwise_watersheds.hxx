@@ -65,11 +65,13 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
     Shape shape = overlaps.shape();
     vigra_assert(shape == directions_blocks_begin.shape(), "");
     
-    MultiCoordinateIterator<N> it(shape);
-    MultiCoordinateIterator<N> end = it.getEndIterator();
+    MultiCoordinateIterator<N> it3(shape);
+    MultiCoordinateIterator<N> end = it3.getEndIterator();
 
     // trivial prarallel. )(halo 1)
-    for( ; it != end; ++it)
+    
+    #pragma omp parallel for
+    for(MultiCoordinateIterator<N> it=it3; it < end; ++it)
     {
         DirectionsBlock directions_block = directions_blocks_begin[*it];
         OverlappingBlock<DataArray> data_block = overlaps[*it];
