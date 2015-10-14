@@ -1559,11 +1559,14 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
         "hessianMatrixOfGaussian(): shape mismatch between input and output.");
         
     MultiArrayView<3, T2> expanded(dest.expandElements(0));
+    MultiArrayView<2, T2> dxx(expanded.template bind<0>(0));
+    MultiArrayView<2, T2> dxy(expanded.template bind<0>(1));
+    MultiArrayView<2, T2> dyy(expanded.template bind<0>(2));
     
     hessianMatrixOfGaussian(srcImageRange(src),
-                            destImage(expanded.bind<0>(0)),
-                            destImage(expanded.bind<0>(1)),
-                            destImage(expanded.bind<0>(2)),
+                            destImage(dxx),
+                            destImage(dxy),
+                            destImage(dyy),
                             scale);
 }
 
