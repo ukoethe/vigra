@@ -101,7 +101,7 @@ The following sub-modules group related functionality:
 * graphs     (grid graphs / graphs / graph algorithms)
 * utilities  (priority queues)
 ''' % _vigra_doc_path
- 
+
 from __version__ import version
 import vigranumpycore
 import arraytypes
@@ -123,9 +123,9 @@ sampling.ImagePyramid = arraytypes.ImagePyramid
 
 
 
-class Timer:    
+class Timer:
     def __init__(self, name, verbose=True):
-        self.name = name 
+        self.name = name
         self.verbose = verbose
 
     def __enter__(self):
@@ -149,17 +149,17 @@ class Timer:
 try:
     import fourier
 except Exception, e:
-    _fallbackModule('vigra.fourier', 
+    _fallbackModule('vigra.fourier',
     '''
     %s
-    
+
     Make sure that the fftw3 libraries are found during compilation and import.
     They may be downloaded at http://www.fftw.org/.''' % str(e))
     import fourier
 
 # import most frequently used functions
 from arraytypes import *
-standardArrayType = arraytypes.VigraArray 
+standardArrayType = arraytypes.VigraArray
 defaultAxistags = arraytypes.VigraArray.defaultAxistags
 
 from vigranumpycore import ChunkedArrayFull, ChunkedArrayLazy, ChunkedArrayCompressed, ChunkedArrayTmpFile, Compression
@@ -167,26 +167,26 @@ try:
     from vigranumpycore import ChunkedArrayHDF5, HDF5Mode
 except:
     pass
-    
+
 
 from impex import readImage, readVolume
 
 def readHDF5(filenameOrGroup, pathInFile, order=None):
     '''Read an array from an HDF5 file.
-    
+
        'filenameOrGroup' can contain a filename or a group object
-       referring to an already open HDF5 file. 'pathInFile' is the name 
-       of the dataset to be read, including intermediate groups. If the 
-       first argument is a group object, the path is relative to this 
+       referring to an already open HDF5 file. 'pathInFile' is the name
+       of the dataset to be read, including intermediate groups. If the
+       first argument is a group object, the path is relative to this
        group, otherwise it is relative to the file's root group.
-       
+
        If the dataset has an attribute 'axistags', the returned array
-       will have type :class:`~vigra.VigraArray` and will be transposed 
+       will have type :class:`~vigra.VigraArray` and will be transposed
        into the given 'order' ('vigra.VigraArray.defaultOrder'
-       will be used if no order is given).  Otherwise, the returned 
-       array is a plain 'numpy.ndarray'. In this case, order='F' will 
+       will be used if no order is given).  Otherwise, the returned
+       array is a plain 'numpy.ndarray'. In this case, order='F' will
        return the array transposed into Fortran order.
-       
+
        Requirements: the 'h5py' module must be installed.
     '''
     import h5py
@@ -217,8 +217,8 @@ def readHDF5(filenameOrGroup, pathInFile, order=None):
         if file is not None:
             file.close()
     return data
-        
-def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
+
+def writeHDF5(data, filenameOrGroup, pathInFile, compression=None, chunks=None):
     '''Write an array to an HDF5 file.
 
        'filenameOrGroup' can contain a filename or a group object
@@ -236,7 +236,7 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
        gzip (standard compression),
        szip (available if HDF5 is compiled with szip. Faster compression, limited types),
        lzf (very fast compression, all types).
-       The 'lzf' compression filter is many times faster than 'gzip' 
+       The 'lzf' compression filter is many times faster than 'gzip'
        at the cost of a lower compresion ratio.
 
        Requirements: the 'h5py' module must be installed.
@@ -270,13 +270,13 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
             data = data.transposeToNumpyOrder()
         except:
             pass
-        dataset = group.create_dataset(levels[-1], data=data, compression=compression)
+        dataset = group.create_dataset(levels[-1], data=data, compression=compression, chunks=chunks)
         if hasattr(data, 'axistags'):
             dataset.attrs['axistags'] = data.axistags.toJSON()
     finally:
         if file is not None:
             file.close()
-        
+
 impex.readHDF5 = readHDF5
 readHDF5.__module__ = 'vigra.impex'
 impex.writeHDF5 = writeHDF5
@@ -287,14 +287,14 @@ from sampling import resize
 
 def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
     '''
-        Convolve 'array' with a Gaussian derivate kernel of the given 'orders'. 
+        Convolve 'array' with a Gaussian derivate kernel of the given 'orders'.
         'orders' must contain a list of integers >= 0 for each non-channel axis.
-        Each channel of the array is treated independently. If 'sigma' is a single 
-        value, the kernel size is equal in each dimension. If 'sigma' is a tuple 
+        Each channel of the array is treated independently. If 'sigma' is a single
+        value, the kernel size is equal in each dimension. If 'sigma' is a tuple
         or list of values of appropriate length, a different size is used for each axis.
 
-        'window_size' specifies the ratio between the filter scale and the size of 
-        the filter window. Use values around 2.0 to speed-up the computation for the 
+        'window_size' specifies the ratio between the filter scale and the size of
+        the filter window. Use values around 2.0 to speed-up the computation for the
         price of increased cut-off error, and values >= 4.0 for vary accurate results.
         The window size is automatically determined for the default value 0.0.
     '''
@@ -322,7 +322,7 @@ UPSIDE_DOWN = sampling.RotationDirection.UPSIDE_DOWN
 CompleteGrow = analysis.SRGType.CompleteGrow
 KeepContours = analysis.SRGType.KeepContours
 StopAtThreshold = analysis.SRGType.StopAtThreshold
- 
+
 _selfdict = globals()
 def searchfor(searchstring):
    '''Scan all vigra modules to find classes and functions containing
@@ -338,14 +338,14 @@ def searchfor(searchstring):
 def imshow(image,show=True):
     '''Display a scalar or RGB image by means of matplotlib.
        If the image does not have one or three channels, an exception is raised.
-       The image will be automatically scaled to the range 0...255 when its dtype 
+       The image will be automatically scaled to the range 0...255 when its dtype
        is not already 'uint8'.
     '''
     import matplotlib.pylab
-    
+
     if not hasattr(image, 'axistags'):
         return matplotlib.pyplot.imshow(image)
-    
+
     image = image.transposeToNumpyOrder()
     if image.channels == 1:
         image = image.dropChannelAxis().view(numpy.ndarray)
@@ -401,7 +401,7 @@ def nestedSegShow(img,labels,edgeColors=None,scale=1,show=False,returnImg=False)
     shape=(labels.shape[0]*scale,labels.shape[1]*scale)
     if scale!=1:
         img=vigra.resize(img,shape)
-    
+
 
 
 
@@ -435,7 +435,7 @@ def nestedSegShow(img,labels,edgeColors=None,scale=1,show=False,returnImg=False)
         crackedEdges = analysis.regionImageToCrackEdgeImage(l)
         whereEdge    = numpy.where(crackedEdges==0)
 
-   
+
         if len(edgeColors[si])<4:
             alpha = 0.0
         else:
@@ -453,7 +453,7 @@ def show():
     import matplotlib.pylab
     matplotlib.pylab.show()
 
-        
+
 # auto-generate code for additional Kernel generators:
 def _genKernelFactories(name):
     for oldName in dir(eval('filters.'+name)):
@@ -485,15 +485,15 @@ def _genWatershedsUnionFind():
         '''Compute watersheds of an image using the union find algorithm.
            If 'neighborhood' is 'None', it defaults to 8-neighborhood for 2D inputs
            and 6-neighborhood for 3D inputs.
-           
+
            Calls :func:`watersheds` with parameters::\n\n
                 watersheds(image, neighborhood=neighborhood, method='UnionFind', out=out)
         '''
         if neighborhood is None:
             neighborhood = 8 if image.spatialDimensions == 2 else 6
-                
+
         return analysis.watersheds(image, neighborhood=neighborhood, method='UnionFind', out=out)
-    
+
     watershedsUnionFind.__module__ = 'vigra.analysis'
     analysis.watershedsUnionFind = watershedsUnionFind
 
@@ -544,7 +544,7 @@ def _genWatershedsReoptimization():
           pylab.show()
 
         return analysis.watersheds(edgeIndicator,seeds=seeds,out=out)
-        
+
     watershedsReoptimization.__module__ = 'vigra.analysis'
     analysis.watershedsReoptimization = watershedsReoptimization
 
@@ -554,35 +554,35 @@ del _genWatershedsReoptimization
 
 # define tensor convenience functions
 def _genTensorConvenienceFunctions():
-    def hessianOfGaussianEigenvalues(image, scale, out=None, 
+    def hessianOfGaussianEigenvalues(image, scale, out=None,
                                      sigma_d=0.0, step_size=1.0, window_size=0.0, roi=None):
         '''Compute the eigenvalues of the Hessian of Gaussian at the given scale
            for a scalar image or volume.
-           
+
            Calls :func:`hessianOfGaussian` and :func:`tensorEigenvalues`.
         '''
-        
-        hessian = filters.hessianOfGaussian(image, scale, 
-                                            sigma_d=sigma_d, step_size=step_size, 
+
+        hessian = filters.hessianOfGaussian(image, scale,
+                                            sigma_d=sigma_d, step_size=step_size,
                                             window_size=window_size, roi=roi)
         return filters.tensorEigenvalues(hessian, out=out)
-    
+
     hessianOfGaussianEigenvalues.__module__ = 'vigra.filters'
     filters.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
 
-    def structureTensorEigenvalues(image, innerScale, outerScale, out=None, 
+    def structureTensorEigenvalues(image, innerScale, outerScale, out=None,
                                    sigma_d=0.0, step_size=1.0, window_size=0.0, roi=None):
         '''Compute the eigenvalues of the structure tensor at the given scales
            for a scalar or multi-channel image or volume.
-           
+
            Calls :func:`structureTensor` and :func:`tensorEigenvalues`.
         '''
 
-        st = filters.structureTensor(image, innerScale, outerScale, 
-                                     sigma_d=sigma_d, step_size=step_size, 
+        st = filters.structureTensor(image, innerScale, outerScale,
+                                     sigma_d=sigma_d, step_size=step_size,
                                      window_size=window_size, roi=roi)
         return filters.tensorEigenvalues(st, out=out)
-    
+
     structureTensorEigenvalues.__module__ = 'vigra.filters'
     filters.structureTensorEigenvalues = structureTensorEigenvalues
 
@@ -593,25 +593,25 @@ del _genTensorConvenienceFunctions
 def _genFeaturConvenienceFunctions():
     def supportedFeatures(array):
         '''Return a list of feature names that are available for the given array. These feature
-           names are the valid inputs to a call of :func:`extractFeatures`. E.g., to compute 
+           names are the valid inputs to a call of :func:`extractFeatures`. E.g., to compute
            just the first two features in the list, use::
-           
+
                 f = vigra.analysis.supportedFeatures(array)
                 print "Computing features:", f[:2]
                 r = vigra.analysis.extractFeatures(array, features=f[:2])
         '''
-        
+
         return analysis.extractFeatures(array, None).supportedFeatures()
 
     supportedFeatures.__module__ = 'vigra.analysis'
     analysis.supportedFeatures = supportedFeatures
 
     def supportedRegionFeatures(array, labels):
-        '''Return a list of feature names that are available for the given array and label array. 
-           These feature names are the valid inputs to a call of 
-           :func:`extractRegionFeatures`. E.g., to compute just the first two features in the 
+        '''Return a list of feature names that are available for the given array and label array.
+           These feature names are the valid inputs to a call of
+           :func:`extractRegionFeatures`. E.g., to compute just the first two features in the
            list, use::
-           
+
                 f = vigra.analysis.supportedRegionFeatures(array, labels)
                 print "Computing features:", f[:2]
                 r = vigra.analysis.extractRegionFeatures(array, labels, features=f[:2])
@@ -622,11 +622,11 @@ def _genFeaturConvenienceFunctions():
     analysis.supportedRegionFeatures = supportedRegionFeatures
 
     def supportedConvexHullFeatures(labels):
-        '''Return a list of Convex Hull feature names that are available for the given 2D label array. 
-           These Convex Hull feature names are the valid inputs to a call of 
-           :func:`extractConvexHullFeatures`. E.g., to compute just the first two features in the 
+        '''Return a list of Convex Hull feature names that are available for the given 2D label array.
+           These Convex Hull feature names are the valid inputs to a call of
+           :func:`extractConvexHullFeatures`. E.g., to compute just the first two features in the
            list, use::
-           
+
                 f = vigra.analysis.supportedConvexHullFeatures(labels)
                 print "Computing Convex Hull features:", f[:2]
                 r = vigra.analysis.extractConvexHullFeatures(labels, features=f[:2])
@@ -640,11 +640,11 @@ def _genFeaturConvenienceFunctions():
     analysis.supportedConvexHullFeatures = supportedConvexHullFeatures
 
     def supportedSkeletonFeatures(labels):
-        '''Return a list of Skeleton feature names that are available for the given 2D label array. 
-           These Skeleton feature names are the valid inputs to a call of 
-           :func:`extractSkeletonFeatures`. E.g., to compute just the first two features in the 
+        '''Return a list of Skeleton feature names that are available for the given 2D label array.
+           These Skeleton feature names are the valid inputs to a call of
+           :func:`extractSkeletonFeatures`. E.g., to compute just the first two features in the
            list, use::
-           
+
                 f = vigra.analysis.supportedSkeletonFeatures(labels)
                 print "Computing Skeleton features:", f[:2]
                 r = vigra.analysis.extractSkeletonFeatures(labels, features=f[:2])
@@ -679,7 +679,7 @@ def _genFeaturConvenienceFunctions():
     def iteritems(self):
         for k in self.keys():
             yield (k, self[k])
-    
+
     for k in ['__len__', '__iter__', 'has_key', 'values', 'items', 'iterkeys', 'itervalues', 'iteritems']:
         setattr(analysis.FeatureAccumulator, k, eval(k))
         setattr(analysis.RegionFeatureAccumulator, k, eval(k))
@@ -694,7 +694,7 @@ MetricType = graphs.MetricType
 def _genGridGraphConvenienceFunctions():
 
     def gridGraph(shape,directNeighborhood=True):
-        '''Return a grid graph with certain shape. 
+        '''Return a grid graph with certain shape.
 
             Parameters:
 
@@ -741,13 +741,13 @@ def _genGridGraphConvenienceFunctions():
 
         ##inject some methods in the point foo
         class moreGridGraph(gridGraphInjector, cls):
-            
+
             @property
             def shape(self):
                 """ shape of grid graph"""
                 return self.intrinsicNodeMapShape()
 
-            
+
             def nodeSize(self):
                 """ node map filled with 1.0"""
                 size = graphs.graphMap(self,item='node',dtype=numpy.float32)
@@ -776,10 +776,10 @@ def _genGridGraphConvenienceFunctions():
         return isinstance(obj,graphs.GridGraphUndirected2d)
 
     isGridGraph.__module__ = 'vigra.graphs'
-    graphs.isGridGraph = isGridGraph  
+    graphs.isGridGraph = isGridGraph
 
     isGridGraph2d.__module__ = 'vigra.graphs'
-    graphs.isGridGraph2d = isGridGraph2d  
+    graphs.isGridGraph2d = isGridGraph2d
 
 
 _genGridGraphConvenienceFunctions()
@@ -802,7 +802,7 @@ def _genGraphConvenienceFunctions():
                 - graph
         '''
         return graphs.AdjacencyListGraph(nodes,edges)
-        
+
     listGraph.__module__ = 'vigra.graphs'
     graphs.listGraph = listGraph
 
@@ -829,7 +829,7 @@ def _genGraphConvenienceFunctions():
             return graph.intrinsicEdgeMapShape()
         elif item=='node':
             return graph.intrinsicNodeMapShape()
-        elif item=='arc': 
+        elif item=='arc':
             return graph.intrinsicArcMapShape()
         else :
             raise RuntimeError("%s is not valid,must be 'edge','node' or 'arc' "%item)
@@ -845,10 +845,10 @@ def _genGraphConvenienceFunctions():
 
                 - graph    : graph to get a graph map for
                 - item     : ``'node'`` , ``'edge'`` or ``'arc'``
-                - dtype    : desired dtype 
+                - dtype    : desired dtype
                 - channels : number of channels (default: 1)
                 - addChannelDim -- add an explicit channelDim :(default: False)
-                    only useful if channels == 1 
+                    only useful if channels == 1
 
             Returns:
 
@@ -891,10 +891,10 @@ def _genGraphConvenienceFunctions():
 
                 - graph    : graph to get a graph map for
                 - item     : ``'node'`` , ``'edge'`` or ``'arc'``
-                - dtype    : desired dtype 
+                - dtype    : desired dtype
                 - channels : number of channels (default: 1)
                 - addChannelDim -- add an explicit channelDim :(default: False)
-                    only useful if channels == 1 
+                    only useful if channels == 1
 
             Returns:
 
@@ -971,7 +971,7 @@ def _genGraphConvenienceFunctions():
 
                    - weights : edge weights encoding distance from two adjacent nodes
 
-                   - source : source node 
+                   - source : source node
 
                    - target : target node (default: None)
                         If target node is None, the shortest path
@@ -994,7 +994,7 @@ def _genGraphConvenienceFunctions():
                    - weights : edge weights encoding distance from two adjacent nodes
 
                    - source : source node
-                   
+
                    - val : upper bound
 
             """
@@ -1010,7 +1010,7 @@ def _genGraphConvenienceFunctions():
 
                     - weights : edge weights encoding distance from two adjacent nodes
 
-                    - source : source node 
+                    - source : source node
 
                     - target : target node (default: None)
                         If target node is None, the target specified
@@ -1080,7 +1080,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
                     - ignoreLabel  : ignoreLabel passed in constructor
 
-                    - baseGraphLabels : labels passed in constructor 
+                    - baseGraphLabels : labels passed in constructor
                         (fixme,dublicated attribute (see labels) )
 
                     - baseGraph : baseGraph is the graph passed in constructor
@@ -1116,7 +1116,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     self.baseGraphLabels = labels
                     self.baseGraph       = graph
                     # set up rag
-                    self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)   
+                    self.affiliatedEdges = graphs._regionAdjacencyGraph(graph,labels,self,self.ignoreLabel)
             else :
                 super(RegionAdjacencyGraph,self).__init__(0,0)
 
@@ -1176,7 +1176,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                         Currently only 'mean' and 'sum' are implemented
                     - out :  preallocated node map (default: None)
 
-                Returns : 
+                Returns :
                     accumulated node features
             """
             if self.edgeNum == 0 :
@@ -1308,7 +1308,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
                     - ignoreLabel  : ignoreLabel passed in constructor
 
-                    - baseGraphLabels : labels passed in constructor 
+                    - baseGraphLabels : labels passed in constructor
                         (fixme,dublicated attribute (see labels) )
 
                     - baseGraph : baseGraph is the graph passed in constructor
@@ -1377,7 +1377,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             """ show the complet graph chain  / hierarchy given an RGB image
 
                 Keyword Arguments:
-                    - img : RGB image 
+                    - img : RGB image
 
                     - labels : node labeling of this graph (default: None)
                         If labels is None, each node gets its own label
@@ -1405,7 +1405,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             """ show the graph given an RGB image
 
                 Keyword Arguments:
-                    - img : RGB image 
+                    - img : RGB image
 
                     - labels : node labeling of this graph (default: None)
                         If labels is None, each node gets its own label
@@ -1441,7 +1441,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 writeHDF5(sLabels, filename, dset+'/labels')
                 writeHDF5(sGraph, filename, dset+'/graph')
                 writeHDF5(sAffEdges, filename, dset+'/affiliated_edges')
-                
+
 
             else:
                 raise RuntimeError("only RAGs of Grid graph can be serialized")
@@ -1512,7 +1512,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
             Returns:
                 - rag -- instance of RegionAdjacencyGraph or GridRegionAdjacencyGraph
-                    If graph is a GridGraph or a GridRegionAdjacencyGraph, a GridRegionAdjacencyGraph 
+                    If graph is a GridGraph or a GridRegionAdjacencyGraph, a GridRegionAdjacencyGraph
                     will be returned.
                     Otherwise a RegionAdjacencyGraph will be returned
         """
@@ -1528,7 +1528,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     graphs.regionAdjacencyGraph = regionAdjacencyGraph
 
 
-   
+
 
 
 
@@ -1560,7 +1560,7 @@ def _genGraphSegmentationFunctions():
         """ get size of nodes:
 
             This functions will try to call 'graph.nodeSize()' .
-            If this fails, a node map filled with 1.0 will be 
+            If this fails, a node map filled with 1.0 will be
             returned
 
             Keyword Arguments:
@@ -1580,7 +1580,7 @@ def _genGraphSegmentationFunctions():
         """ get lengths/sizes of edges:
 
             This functions will try to call 'graph.edgeLength()' .
-            If this fails, an edge map filled with 1.0 will be 
+            If this fails, an edge map filled with 1.0 will be
             returned
 
             Keyword Arguments:
@@ -1606,7 +1606,7 @@ def _genGraphSegmentationFunctions():
 
             - edgeWeights : edge weights / indicators
 
-            - nodeSizes : size of each node (default: None) 
+            - nodeSizes : size of each node (default: None)
                 If nodeSizes is None, 'getNodeSizes' will be called
 
             - k : free parameter in felzenszwalbs algorithms (default : 1.0)
@@ -1685,7 +1685,7 @@ def _genGraphSegmentationFunctions():
 
             - graph : input graph
 
-            - edgeWeights : edge weight map 
+            - edgeWeights : edge weight map
 
             - nodeWeights : node weight map
 
@@ -1754,7 +1754,7 @@ def _genGraphSegmentationFunctions():
             - nodeNumStop : stop the agglomeration at a given nodeNum (default : graph.nodeNum/2)
 
             - beta : weight between edgeWeights and nodeFeatures based edgeWeights (default:0.5) :
-                    0.0 means only edgeWeights (from keyword edge weights) and 1.0 means only edgeWeights 
+                    0.0 means only edgeWeights (from keyword edge weights) and 1.0 means only edgeWeights
                     from nodeFeatures differences
 
             - metric : metric used to compute node feature difference (default : 'l1')
@@ -1776,17 +1776,17 @@ def _genGraphSegmentationFunctions():
         if nodeNumStop is None:
             nodeNumStop = max(graph.nodeNum/2,min(graph.nodeNum,2))
 
-        
+
         if edgeLengths is None :
             print "get edge length"
             edgeLengths = graphs.getEdgeLengths(graph)
 
-        
+
         if nodeSizes is None:
             print "get node size"
             nodeSizes = graphs.getNodeSizes(graph)
 
-        
+
         if edgeWeights is None :
             print "get wegihts length"
             edgeWeights = graphs.graphMap(graph,'edge')
@@ -1821,7 +1821,7 @@ def _genGraphSegmentationFunctions():
                                                     nodeLabels=nodeLabels,
                                                     beta=float(beta),metric=metric,wardness=wardness)
 
-        
+
 
         hc = graphs.hierarchicalClustering(clusterOp, nodeNumStopCond=nodeNumStop,
                                            buildMergeTreeEncoding=False)
@@ -1895,7 +1895,7 @@ def _genGraphSegmentationFunctions():
 
 
     minEdgeWeightNodeDist.__module__ = 'vigra.graphs'
-    graphs.minEdgeWeightNodeDist = minEdgeWeightNodeDist    
+    graphs.minEdgeWeightNodeDist = minEdgeWeightNodeDist
 
 
 
@@ -1907,7 +1907,7 @@ def _genGraphSegmentationFunctions():
       return op
 
     pythonClusterOperator.__module__ = 'vigra.graphs'
-    graphs.pythonClusterOperator = pythonClusterOperator    
+    graphs.pythonClusterOperator = pythonClusterOperator
 
     def hierarchicalClustering(clusterOperator,nodeNumStopCond,buildMergeTreeEncoding=True):
         # call unsave c++ function and make it save
@@ -1927,11 +1927,11 @@ del _genGraphSegmentationFunctions
 def _genHistogram():
     def gaussianHistogram(image,minVals,maxVals,bins=30,
                      sigma=3.0,sigmaBin=2.0,out=None):
-        """ 
+        """
         """
         spatialDim  = image.ndim - 1
         out = histogram.gaussianHistogram_(image=image, minVals=minVals, maxVals=maxVals,
-                                           bins=bins, sigma=sigma, sigmaBin=sigmaBin, 
+                                           bins=bins, sigma=sigma, sigmaBin=sigmaBin,
                                            out=out)
 
         out = out.reshape(image.shape[0:spatialDim]+(-1,))
@@ -1968,15 +1968,15 @@ def _genGraphSmoothingFunctions():
 
                 - nodeFeatures : node features which should be smoothed
 
-                - edgeIndicator  : edge indicator 
+                - edgeIndicator  : edge indicator
 
                 - gamma  : scale edgeIndicator by gamma bevore taking the negative exponent
 
-                - scale  : how much should a node be mixed with its neighbours per iteration 
+                - scale  : how much should a node be mixed with its neighbours per iteration
 
                 - iteration : how often should recursiveGraphSmoothing be called recursively
 
-            Returns : 
+            Returns :
                 smoothed nodeFeatures
 
         """
@@ -1993,7 +1993,7 @@ del _genGraphSmoothingFunctions
 
 
 def _genGraphMiscFunctions():
-    
+
     def nodeFeaturesToEdgeWeights(graph,nodeFeatures,metric='l1',out=None):
         """ compute an edge indicator from node features .
 
@@ -2066,7 +2066,7 @@ del _genGraphMiscFunctions
 
 
 def _genBlockwiseFunctions():
-        
+
     def makeTuple(val, ndim):
         tvals = None
         if isinstance(val, Number):
