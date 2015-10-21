@@ -239,6 +239,11 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None, chunks=None):
        The 'lzf' compression filter is many times faster than 'gzip'
        at the cost of a lower compresion ratio.
 
+       Chunking is disabled by default. When 'chunks' is set to True
+       chunking is enabled and a chunk shape is determined automatically.
+       Alternatively a chunk shape can be specified explicitly by passing
+       a tuple of the desired shape.
+
        Requirements: the 'h5py' module must be installed.
     '''
     import h5py
