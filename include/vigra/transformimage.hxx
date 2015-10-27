@@ -95,7 +95,7 @@ transformLineIf(SrcIterator s,
 
 /** \brief Apply unary point transformation to each pixel.
 
-    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array expressions",
     this function is rarely needed. Moreover, \ref transformMultiArray() provides the 
     same functionality for arbitrary dimensional arrays.
 
@@ -242,7 +242,7 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
 /** \brief Apply unary point transformation to each pixel within the ROI
     (i.e., where the mask is non-zero).
 
-    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array expressions",
     this function is rarely needed. Moreover, \ref combineTwoMultiArrays() provides the 
     same functionality for arbitrary dimensional arrays.
 

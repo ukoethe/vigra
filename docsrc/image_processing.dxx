@@ -41,7 +41,7 @@
     float det = linalg::determinant(matrix);
     \endcode
     
-    For historical reasons, VIGRA also supports two alternative APIs in terms of iterators. These APIs used to considerably faster, but meanwhile compilers and processors have improved to the point where the much simpler MultiArrayView API no longer imposes a significant abstraction penalty. While there are no plans to remove support for the old APIs, they should not be used in new code.
+    For historical reasons, VIGRA also supports two alternative APIs in terms of iterators. These APIs used to be considerably faster, but meanwhile compilers and processors have improved to the point where the much simpler MultiArrayView API no longer imposes a significant abstraction penalty. While there are no plans to remove support for the old APIs, they should not be used in new code.
     
     <ul>
     <li> Functions on 2-dimensional images may support an \ref ImageIterators API. These iterators are best passed to the functions via the convenience functions <tt>srcImageRange(array)</tt>, <tt>srcImage(array)</tt>, and <tt>destImage(array)</tt>. A detailed description of the convenience functions can be found in section \ref ArgumentObjectFactories. Example:

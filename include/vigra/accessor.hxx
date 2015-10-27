@@ -51,7 +51,7 @@ an iterator points to. When we access the data directly, we
 are bound to what <TT>operator*()</TT> returns, if this method exists at
 all. Encapsulating access in an accessor enables a better
 decoupling of data structures and algorithms.
-<a href="http://hci.iwr.uni-heidelberg.de/vigra/documents/DataAccessors.ps">This paper</a> contains
+<a href="http://ukoethe.github.io/vigra/doc/vigra/documents/DataAccessors.ps">This paper</a> contains
 a detailed description of the concept. Here is a brief list of the basic
 accessor requirements:
 
