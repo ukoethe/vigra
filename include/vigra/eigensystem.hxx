@@ -994,7 +994,7 @@ bool hessenbergQrDecomposition(MultiArrayView<2, T, C1> & H, MultiArrayView<2, T
         \a a is a real symmetric matrix, \a ew is a single-column matrix
         holding the eigenvalues, and \a ev is a matrix of the same size as
         \a a whose columns are the corresponding eigenvectors. Eigenvalues
-        will be sorted from largest to smallest magnitude.
+        will be sorted from largest to smallest.
         The algorithm returns <tt>false</tt> when it doesn't
         converge. It can be applied in-place, i.e. <tt>&a == &ev</tt> is allowed.
         The code of this function was adapted from JAMA.
@@ -1026,66 +1026,153 @@ symmetricEigensystem(MultiArrayView<2, T, C1> const & a,
 }
 
 namespace detail{
-template <class T, class C1, class C2, class C3>
+
+template <class T, class C2, class C3>
 bool
-symmetricEigensystem2x2(MultiArrayView<2, T, C1> const & a,
+symmetricEigensystem2x2(T a00, T a01, T a11,
             MultiArrayView<2, T, C2> & ew, MultiArrayView<2, T, C3> & ev)
 {
-    vigra_precondition(isSymmetric(a),
-        "symmetricEigensystem(): symmetric input matrix required.");
- 
     double evec[2]={0,0};
-      
-      /* Eigenvectors*/ 
-      if (a(0,1)==0){
-        if (fabs(a(1,1))>fabs(a(0,0))){
-          evec[0]=0.;
-          evec[1]=1.;
-          ew(0,0)=a(1,1);
-          ew(1,0)=a(0,0);
-         }
-        else if(fabs(a(0,0))>fabs(a(1,1))) {
-          evec[0]=1.;
-          evec[1]=0.;
-          ew(0,0)=a(0,0);
-          ew(1,0)=a(1,1);
+
+    /* Eigenvectors*/
+    if (a01==0){
+        if (fabs(a11)>fabs(a00)){
+            evec[0]=0.;
+            evec[1]=1.;
+            ew(0,0)=a11;
+            ew(1,0)=a00;
+        }
+        else if(fabs(a00)>fabs(a11)) {
+            evec[0]=1.;
+            evec[1]=0.;
+            ew(0,0)=a00;
+            ew(1,0)=a11;
         }
         else {
-          evec[0]=.5* M_SQRT2;
-          evec[1]=.5* M_SQRT2;
-          ew(0,0)=a(0,0);
-          ew(1,0)=a(1,1);
+            evec[0]=.5* M_SQRT2;
+            evec[1]=.5* M_SQRT2;
+            ew(0,0)=a00;
+            ew(1,0)=a11;
         }
-      }
-      else{ 
-        double temp=a(1,1)-a(0,0);
-        
-        double coherence=sqrt(temp*temp+4*a(0,1)*a(0,1));
-        evec[0]=2*a(0,1);
+    }
+    else{
+        double temp=a11-a00;
+
+        double coherence=sqrt(temp*temp+4*a01*a01);
+        evec[0]=2*a01;
         evec[1]=temp+coherence;
         temp=std::sqrt(evec[0]*evec[0]+evec[1]*evec[1]);
         if (temp==0){
-          evec[0]=.5* M_SQRT2;
-          evec[1]=.5* M_SQRT2;
-          ew(0,0)=1.;
-          ew(1,0)=1.;
+            evec[0]=.5* M_SQRT2;
+            evec[1]=.5* M_SQRT2;
+            ew(0,0)=1.;
+            ew(1,0)=1.;
         }
         else{
-          evec[0]/=temp;
-          evec[1]/=temp;
-          
-          /* Eigenvalues */
-          ew(0,0)=.5*(a(0,0)+a(1,1)+coherence);
-          ew(1,0)=.5*(a(0,0)+a(1,1)-coherence);
+            evec[0]/=temp;
+            evec[1]/=temp;
+
+            /* Eigenvalues */
+            ew(0,0)=.5*(a00+a11+coherence);
+            ew(1,0)=.5*(a00+a11-coherence);
         }
-      }
-      ev(0,0)= evec[0];
-      ev(1,0)= evec[1];
-      ev(0,1)=-evec[1];
-      ev(1,1)= evec[0];
-      return true;
+    }
+    ev(0,0)= evec[0];
+    ev(1,0)= evec[1];
+    ev(0,1)=-evec[1];
+    ev(1,1)= evec[0];
+    return true;
 }
-} // closing namespace detail 
+
+template <class T, class C2, class C3>
+bool
+symmetricEigensystem3x3(T a00, T a01, T a02, T a11, T a12, T a22,
+            MultiArrayView<2, T, C2> & ew, MultiArrayView<2, T, C3> & ev)
+{
+    symmetric3x3Eigenvalues(a00, a01, a02, a11, a12, a22,
+                            &ew(0,0), &ew(1,0), &ew(2,0));
+
+    /* Calculate eigen vectors */
+    double a1=a01*a12,
+           a2=a01*a02,
+           a3=sq(a01);
+
+    double b1=a00-ew(0,0),
+           b2=a11-ew(0,0);
+    ev(0,0)=a1-a02*b2;
+    ev(1,0)=a2-a12*b1;
+    ev(2,0)=b1*b2-a3;
+
+    b1=a00-ew(1,0);
+    b2=a11-ew(1,0);
+    ev(0,1)=a1-a02*b2;
+    ev(1,1)=a2-a12*b1;
+    ev(2,1)=b1*b2-a3;
+
+    b1=a00-ew(2,0);
+    b2=a11-ew(2,0);
+    ev(0,2)=a1-a02*b2;
+    ev(1,2)=a2-a12*b1;
+    ev(2,2)=b1*b2-a3;
+
+    /* Eigen vector normalization */
+    double l0=norm(columnVector(ev, 0));
+    double l1=norm(columnVector(ev, 1));
+    double l2=norm(columnVector(ev, 2));
+
+    /* Detect fail : eigenvectors with only zeros */
+    double M = std::max(std::max(abs(ew(0,0)), abs(ew(1,0))), abs(ew(2,0)));
+    double epsilon = 1e-12*M;
+    if(l0<epsilon) { return false; }
+    if(l1<epsilon) { return false; }
+    if(l2<epsilon) { return false; }
+
+    columnVector(ev, 0) /= l0;
+    columnVector(ev, 1) /= l1;
+    columnVector(ev, 2) /= l2;
+
+    /* Succes    */
+    return true;
+}
+
+} // closing namespace detail
+
+
+    /** Fast computation of the eigensystem of a 2x2 or 3x3 symmetric matrix.
+
+        The function works like \ref symmetricEigensystem(), but uses fast analytic
+        formula to avoid iterative computations.
+
+        <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, class C1, class C2, class C3>
+bool
+symmetricEigensystemNoniterative(MultiArrayView<2, T, C1> const & a,
+                                 MultiArrayView<2, T, C2> & ew, MultiArrayView<2, T, C3> & ev)
+{
+    vigra_precondition(isSymmetric(a),
+        "symmetricEigensystemNoniterative(): symmetric input matrix required.");
+    const MultiArrayIndex acols = columnCount(a);
+    if(acols == 2)
+    {
+        detail::symmetricEigensystem2x2(a(0,0), a(0,1), a(1,1), ew, ev);
+        return true;
+    }
+    if(acols == 3)
+    {
+        // try the fast algorithm
+        if(detail::symmetricEigensystem3x3(a(0,0), a(0,1), a(0,2), a(1,1), a(1,2), a(2,2),
+                                           ew, ev))
+            return true;
+        // fast algorithm failed => fall-back to iterative algorithm
+        return symmetricEigensystem(a, ew, ev);
+    }
+    vigra_precondition(false,
+        "symmetricEigensystemNoniterative(): can only handle 2x2 and 3x3 matrices.");
+    return false;
+}
 
     /** Compute the eigensystem of a square, but
         not necessarily symmetric matrix.
@@ -1187,9 +1274,9 @@ bool polynomialRootsEigenvalueMethod(POLYNOMIAL const & poly, VECTOR & roots)
         with a <tt>value_type</tt> compatible to the type <tt>POLYNOMIAL::Real</tt>) to which
         the roots are appended. The function calls \ref polynomialRootsEigenvalueMethod() and
         throws away all complex roots. It returns <tt>false</tt> if it fails to converge.
-        The parameter <tt>polishRoots</tt> is ignored (it is only here for syntax compatibility 
+        The parameter <tt>polishRoots</tt> is ignored (it is only here for syntax compatibility
         with polynomialRealRoots()).
-        
+
 
         <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
         <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
@@ -1222,6 +1309,7 @@ bool polynomialRealRootsEigenvalueMethod(POLYNOMIAL const & p, VECTOR & roots)
 } // namespace linalg
 
 using linalg::symmetricEigensystem;
+using linalg::symmetricEigensystemNoniterative;
 using linalg::nonsymmetricEigensystem;
 using linalg::polynomialRootsEigenvalueMethod;
 using linalg::polynomialRealRootsEigenvalueMethod;
