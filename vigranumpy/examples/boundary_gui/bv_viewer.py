@@ -22,12 +22,12 @@ from bv_feature_selection import *
 
 
 imPath = ("/media/tbeier/data/datasets/hhess/data_sub.h5",'data')
-imPath = ("/home/tbeier/Desktop/hhes/pmap_pipe/data_sub.h5",'data')
+#imPath = ("/home/tbeier/Desktop/hhes/pmap_pipe/data_sub.h5",'data')
 volume = vigra.impex.readHDF5(*imPath).astype('float32')
-volume = volume[:,:,0:600]
+volume = volume[0:500,0:500,0:100]
 volume = vigra.taggedView(volume,'xyz')
 
-if True:
+if False:
 
     if False:
         options = bw.BlockwiseConvolutionOptions3D()
@@ -383,9 +383,11 @@ class EdgeGui(object):
         p0 = 1.0 - p1
 
         weights = numpy.log(p0/p1)
+
         nVar = self.rag.maxNodeId + 1
         nos = numpy.ones(nVar)*nVar
         gm = opengm.gm(nos)
+
 
         uv = self.rag.uvIds()
         uv = numpy.sort(uv,axis=1)
@@ -393,9 +395,14 @@ class EdgeGui(object):
         fid = gm.addFunctions(pf)
         gm.addFactors(fid,uv)
 
-        pparam = opengm.InfParam(seedFraction=0.02)
-        parameter = opengm.InfParam(generator='randomizedWatershed',proposalParam=pparam,numStopIt=20,numIt=3000)
+        pparam = opengm.InfParam(seedFraction=0.05)
+        parameter = opengm.InfParam(generator='randomizedWatershed',proposalParam=pparam,numStopIt=10,numIt=3000)
         inf = opengm.inference.IntersectionBased(gm, parameter=parameter)
+
+
+
+
+        inf = opengm.inference.Multicut(gm)
         inf.infer(inf.verboseVisitor())
         arg = inf.arg()
 

@@ -241,9 +241,17 @@ namespace vigra{
             return BlockIter(MultiCoordIter(blocksPerAxis_),CoordToB(*this));
         }
 
+
         BlockIter blockEnd()const{
             const MultiCoordIter beginIter(blocksPerAxis_);
             return BlockIter(beginIter.getEndIterator(),CoordToB(*this));
+        }
+
+
+        Block blockDescToBlock(const BlockDesc & blockDesc)const{
+            MultiCoordIter iter(blocksPerAxis_);
+            iter+=blockDesc;
+            return *BlockIter(iter,CoordToB(*this));
         }
 
 
@@ -293,6 +301,8 @@ namespace vigra{
             }
             return std::move(iBlocks);
         }
+
+
 
     private:
 

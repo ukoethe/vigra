@@ -57,8 +57,8 @@
       
 //#include <experimental/filesystem>
 //namespace fs = std::experimental::filesystem;
-#include "boost/filesystem/operations.hpp"
-#include "boost/filesystem/path.hpp"  
+//#include "boost/filesystem/operations.hpp"
+//#include "boost/filesystem/path.hpp"  
 
 
 
@@ -333,7 +333,7 @@ namespace vigra{
         return out;
     }
     
-
+    /*
     void pySaveLabels(
         const MultiArrayView<3, UInt32> & labels,
         const std::string & baseName
@@ -407,8 +407,7 @@ namespace vigra{
         }
     }
 
-
-
+    */
 
 
 
@@ -427,13 +426,13 @@ namespace vigra{
             )
         );
 
-        python::def("saveLabels", 
-            registerConverters(&pySaveLabels),
-            (
-                python::arg("labels"),
-                python::arg("basePath")
-            )
-        );
+        //python::def("saveLabels", 
+        //    registerConverters(&pySaveLabels),
+        //    (
+        //        python::arg("labels"),
+        //        python::arg("basePath")
+        //    )
+        //);
 
         python::def("downsampleLabels", registerConverters(&pyDownsampleLabels));
 

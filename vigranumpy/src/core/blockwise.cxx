@@ -195,11 +195,41 @@ namespace vigra{
     }
 
 
+    template<class  MB>
+    python::tuple getBlock2(
+        const MB & mb,
+        const typename  MB::BlockDesc desc
+    ){
+        const auto block = mb.blockDescToBlock(desc);
+        auto tl = block.begin();
+        auto br = block.end();
+        return python::make_tuple(tl,br);
+    }
+
+    template<class BLOCK>
+    typename BLOCK::Vector
+    blockBegin(const BLOCK & b){
+        return b.begin();
+    }
+    template<class BLOCK>
+    typename BLOCK::Vector
+    blockEnd(const BLOCK & b){
+        return b.end();
+    }
+
+    template<class BLOCK>
+    typename BLOCK::Vector
+    blockShape(const BLOCK & b){
+        return b.size();
+    }
+
+
     template<unsigned int DIM>
     void defineMultiBlocking(const std::string & clsName){
 
         typedef MultiBlocking<DIM> Blocking;
         typedef typename Blocking::Shape Shape;
+        typedef typename Blocking::Block Block;
 
         python::class_<Blocking>(clsName.c_str(), python::init<const Shape &, const Shape &>())
             .def("intersectingBlocks",registerConverters(&intersectingBlocks<Blocking>),
@@ -211,6 +241,15 @@ namespace vigra{
             )
             .def("__len__", &Blocking::numBlocks)
             .def("__getitem__", &getBlock<Blocking>)
+            .def("__getitem__", &getBlock2<Blocking>)
+        ;
+
+        const std::string blockName = clsName + std::string("Block");
+
+        python::class_<Block>(blockName.c_str())
+            .add_property("begin",&blockBegin<Block>)
+            .add_property("end",  &blockEnd<Block>)
+            .add_property("shape",&blockShape<Block>)
         ;
     }
 

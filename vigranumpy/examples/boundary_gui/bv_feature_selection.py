@@ -129,4 +129,4 @@ class FeatureSelectionDialog(QtGui.QDialog):
             self.hide()
             event.accept()
         else:
-            super(Dialog, self).keyPressEvent(event)
+            super(QtGui.QDialog, self).keyPressEvent(event)

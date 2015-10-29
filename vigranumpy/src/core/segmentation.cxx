@@ -63,6 +63,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
+
 template < class PixelType >
 NumpyAnyArray 
 pythonLabelImage(NumpyArray<2, Singleband<PixelType> > image,
