@@ -42,6 +42,10 @@
 #ifndef VIGRA_GRAPH_HXX
 #define VIGRA_GRAPH_HXX
 
+#include <stdexcept>
+#include <vector>
+#include <map>
+
 #include "metaprogramming.hxx"
 #include "tinyvector.hxx"
 
@@ -350,5 +354,286 @@ namespace lemon_graph {
 using namespace lemon;
 
 }} // namespace vigra::lemon_graph
+
+
+
+namespace vigra {
+namespace detail {
+
+template <typename INDEXTYPE>
+class NodeDescriptor
+{
+public:
+    typedef INDEXTYPE index_type;
+    NodeDescriptor(lemon::Invalid = lemon::INVALID)
+        : id_(-1)
+    {}
+    explicit NodeDescriptor(index_type const & id)
+        : id_(id)
+    {}
+    bool operator!=(NodeDescriptor const & other) const
+    {
+        return id_ != other.id_;
+    }
+    bool operator==(NodeDescriptor const & other) const
+    {
+        return id_ == other.id_;
+    }
+    bool operator<(NodeDescriptor const & other) const
+    {
+        return id_ < other.id_;
+    }
+    index_type id() const
+    {
+        return id_;
+    }
+protected:
+    index_type id_;
+};
+
+template <typename INDEXTYPE>
+std::ostream & operator << (std::ostream & os, NodeDescriptor<INDEXTYPE> const & item)
+{
+    return os << item.id();
+}
+
+template <typename INDEXTYPE>
+class ArcDescriptor
+{
+public:
+    typedef INDEXTYPE index_type;
+    ArcDescriptor(lemon::Invalid = lemon::INVALID)
+        : id_(-1)
+    {}
+    explicit ArcDescriptor(index_type const & id)
+        : id_(id)
+    {}
+    bool operator!=(ArcDescriptor const & other) const
+    {
+        return id_ != other.id_;
+    }
+    bool operator==(ArcDescriptor const & other) const
+    {
+        return id_ == other.id_;
+    }
+    bool operator<(ArcDescriptor const & other) const
+    {
+        return id_ < other.id_;
+    }
+    index_type id() const
+    {
+        return id_;
+    }
+protected:
+    index_type id_;
+};
+
+template <typename INDEXTYPE>
+std::ostream & operator << (std::ostream & os, ArcDescriptor<INDEXTYPE> const & item)
+{
+    return os << item.id();
+}
+
+} // namespace detail
+
+
+
+enum ContainerTag
+{
+    MapTag,
+    VectorTag
+};
+
+/**
+ * @brief The PropertyMap is used to store Node or Arc information of graphs.
+ * 
+ * @tparam <KEYTYPE> the key type
+ * @tparam <MAPPEDTYPE> the mapped type
+ * @tparam <ContainerTag = MapTag> whether to use a map or a vector as underlying storage
+ * 
+ * @note operator[] is not supported, since it is easily misused if a vector is used as underlying storage.
+ */
+template <typename KEYTYPE, typename MAPPEDTYPE, ContainerTag = MapTag >
+class PropertyMap
+{
+public:
+    typedef KEYTYPE key_type;
+    typedef MAPPEDTYPE mapped_type;
+    typedef std::pair<key_type const, mapped_type> value_type;
+    typedef value_type & reference;
+    typedef value_type const & const_reference;
+    typedef std::map<key_type, mapped_type> Map;
+    typedef typename Map::iterator iterator;
+    typedef typename Map::const_iterator const_iterator;
+
+    mapped_type & at(key_type const & k)
+    {
+        return map_.at(k);
+    }
+    mapped_type const & at(key_type const & k) const
+    {
+        return map_.at(k);
+    }
+    void insert(key_type const & k, mapped_type const & v)
+    {
+        map_[k] = v;
+    }
+    iterator begin()
+    {
+        return map_.begin();
+    }
+    const_iterator begin() const
+    {
+        return map_.begin();
+    }
+    iterator end()
+    {
+        return map_.end();
+    }
+    const_iterator end() const
+    {
+        return map_.end();
+    }
+    void clear()
+    {
+        map_.clear();
+    }
+    iterator find(key_type const & k)
+    {
+        return map_.find(k);
+    }
+    const_iterator find(key_type const & k) const
+    {
+        return map_.find(k);
+    }
+    size_t size() const
+    {
+        return map_.size();
+    }
+    size_t erase(key_type const & k)
+    {
+        return map_.erase(k);
+    }
+
+protected:
+    Map map_;
+};
+
+
+
+/**
+ * @brief Specialization of PropertyMap that uses a vector as underlying storage instead of a map.
+ */
+template <typename KEYTYPE, typename MAPPEDTYPE>
+class PropertyMap<KEYTYPE, MAPPEDTYPE, VectorTag>
+{
+public:
+    typedef KEYTYPE key_type;
+    typedef MAPPEDTYPE mapped_type;
+    typedef std::pair<key_type, mapped_type> value_type;
+    typedef value_type & reference;
+    typedef value_type const & const_reference;
+    typedef std::vector<value_type> Map;
+    typedef typename Map::iterator iterator;
+    typedef typename Map::const_iterator const_iterator;
+
+    mapped_type & at(key_type const & k)
+    {
+        if (indices_.at(k.id()) == -1)
+            throw std::out_of_range("PropertyMap::at(): Key not found.");
+
+        return map_[indices_[k.id()]].second;
+    }
+    mapped_type const & at(key_type const & k) const
+    {
+        if (indices_.at(k.id()) == -1)
+            throw std::out_of_range("PropertyMap::at(): Key not found.");
+
+        return map_[indices_[k.id()]].second;
+    }
+    void insert(key_type const & k, mapped_type const & v)
+    {
+        if (k.id() < 0)
+            throw std::out_of_range("PropertyMap::insert(): Key must not be negative.");
+        
+        if (k.id() >= indices_.size())
+            indices_.resize(k.id()+1, -1);
+        
+        if (indices_[k.id()] == -1)
+        {
+            indices_[k.id()] = map_.size();
+            map_.push_back({k, v});
+        }
+    }
+    iterator begin()
+    {
+        return map_.begin();
+    }
+    const_iterator begin() const
+    {
+        return map_.begin();
+    }
+    iterator end()
+    {
+        return map_.end();
+    }
+    const_iterator end() const
+    {
+        return map_.end();
+    }
+    void clear()
+    {
+        map_.clear();
+        indices_.clear();
+    }
+    iterator find(key_type const & k)
+    {
+        if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
+            return map_.end();
+        else
+            return std::next(map_.begin(), indices_[k.id()]);
+    }
+    const_iterator find(key_type const & k) const
+    {
+        if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
+            return map_.end();
+        else
+            return std::next(map_.begin(), indices_[k.id()]);
+    }
+    size_t size() const
+    {
+        return map_.size();
+    }
+    size_t erase(key_type const & k)
+    {
+        if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
+        {
+            return 0;
+        }
+        else
+        {
+            // Erase the element from the index vector and the map.
+            size_t ind = indices_[k.id()];
+            indices_[k.id()] = -1;
+            map_.erase(std::next(map_.begin(), ind));
+
+            // Adjust the indices.
+            for (size_t i = 0; i < indices_.size(); ++i)
+                if (indices_[i] > ind)
+                    --indices_[i];
+            return 1;
+        }
+    }
+
+protected:
+    Map map_;
+    std::vector<int> indices_;
+};
+
+
+
+} // namespace vigra
+
+
 
 #endif // VIGRA_GRAPH_HXX
