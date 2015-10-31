@@ -22,14 +22,15 @@ t0 =time()
 #    cimg/=cimg.max()
 
 
-iters = 10
+iters = 0
 
-#policy = vigra.filters.RatioPolicy(sigma=10.0, meanRatio=0.95, varRatio=0.5)
-policy = vigra.filters.NormPolicy(sigma=50.0, meanDist=50, varRatio=0.5)
+policy = vigra.filters.RatioPolicy(sigma=20.0, meanRatio=0.7, varRatio=0.5)
+#policy = vigra.filters.NormPolicy(sigma=4.0, meanDist=10, varRatio=0.5)
 #data-=100.0
-res = vigra.filters.nonLocalMean2d(data,policy=policy,searchRadius=5,patchRadius=1,nThreads=cpus+1,stepSize=2,verbose=True,sigmaMean=10.0)
+data = res
+res = vigra.filters.nonLocalMean2d(data,policy=policy,searchRadius=25,patchRadius=2,nThreads=cpus+1,stepSize=2,verbose=True,sigmaMean=1.0)
 for i in range(iters-1):
-    res = vigra.filters.nonLocalMean2d(res,policy=policy,searchRadius=5,patchRadius=2,nThreads=cpus+1,stepSize=2,verbose=True,sigmaMean=10.0)
+    res = vigra.filters.nonLocalMean2d(res,policy=policy,searchRadius=5,patchRadius=2,nThreads=cpus+1,stepSize=2,verbose=True,sigmaMean=20.0)
 t1 = time()
 
 res = vigra.taggedView(res,'xyc')
