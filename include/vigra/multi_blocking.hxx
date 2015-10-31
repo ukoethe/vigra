@@ -237,6 +237,11 @@ namespace vigra{
                                        CoordToBwb(*this, width));
         }
 
+        Block blockDescToBlock(const BlockDesc & desc){
+            MultiCoordIter beginIter(blocksPerAxis_);
+            beginIter+=desc;
+            return *BlockIter(beginIter,CoordToB(*this));
+        }
         BlockIter blockBegin()const{
             return BlockIter(MultiCoordIter(blocksPerAxis_),CoordToB(*this));
         }
