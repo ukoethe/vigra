@@ -53,7 +53,7 @@ private:
     std::condition_variable conditionF;
 
     bool stop;
-    std::atomic_uint busy, processed;
+    std::atomic<unsigned int> busy, processed;
 };
  
 // the constructor just launches some amount of workers
