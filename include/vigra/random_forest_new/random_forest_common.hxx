@@ -165,399 +165,162 @@ public:
 
 
 
-// namespace detail
-// {
-//     class GiniTracker
-//     {
-//     public:
-//         GiniTracker(std::vector<size_t> const & counts)
-//             :
-//             counts_(counts),
-//             n_(std::accumulate(counts.begin(), counts.end(), 0))
-//         {
-//             score_ = 1.0;
-//             if (n_ != 0)
-//             {
-//                 for (auto c : counts)
-//                 {
-//                     double const p = c / static_cast<double>(n_);
-//                     score_ -= p*p;
-//                 }
-//             }
-//         }
-//         double score() const
-//         {
-//             return n_ * score_;
-//         }
-//         double increment(size_t i)
-//         {
-//             score_ *= n_*n_;
-//             score_ += 2 * (n_-counts_[i]);
-//             score_ /= static_cast<double>((n_+1)*(n_+1));
-//             ++counts_[i];
-//             ++n_;
-//             return n_ * score_;
-//         }
-//         double decrement(size_t i)
-//         {
-//             if (n_ == 1)
-//             {
-//                 score_ = 1.0;
-//             }
-//             else
-//             {
-//                 score_ *= n_*n_;
-//                 score_ -= 2 * (n_-counts_[i]);
-//                 score_ /= static_cast<double>((n_-1)*(n_-1));
-//             }
-//             --counts_[i];
-//             --n_;
-//             return n_ * score_;
-//         }
-//     private:
-//         std::vector<size_t> counts_;
-//         size_t n_;
-//         double score_;
-//     };
-// }
-
-
-
-// class MultiClassGiniScorer
-// {
-// public:
-
-//     MultiClassGiniScorer(std::vector<size_t> const & priors)
-//         :
-//         split_found_(false),
-//         best_split_(0),
-//         best_dim_(0),
-//         best_score_(std::numeric_limits<double>::max()),
-//         priors_(priors)
-//     {}
-
-//     template <typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
-//     void operator()(
-//         FEATURES const & features,
-//         LABELS const & labels,
-//         WEIGHTS const & weights,
-//         ITER begin,
-//         ITER end,
-//         size_t dim
-//     ){
-//         if (begin == end)
-//             return;
-
-//         detail::GiniTracker left_(std::vector<size_t>(priors_.size(), 0));
-//         detail::GiniTracker right_(priors_);
-
-//         ITER next = begin;
-//         ++next;
-//         for (; next != end; ++begin, ++next)
-//         {
-//             size_t const label = static_cast<size_t>(labels(*begin));
-
-//             double l = left_.increment(label);
-//             double r = right_.decrement(label);
-//             for (size_t i = 1; i < weights[*begin]; ++i)
-//             {
-//                 l = left_.increment(label);
-//                 r = right_.decrement(label);
-//             }
-
-//             // Skip if there is no new split.
-//             auto const left = features(*begin, dim);
-//             auto const right = features(*next, dim);
-//             if (left == right)
-//                 continue;
-
-//             // Update the score.
-//             split_found_ = true;
-//             double const s = l+r;
-//             if (s < best_score_)
-//             {
-//                 best_score_ = s;
-//                 best_split_ = 0.5*(left+right);
-//                 best_dim_ = dim;
-//             }
-//         }
-//     }
-
-//     bool split_found_;
-//     double best_split_;
-//     size_t best_dim_;
-//     double best_score_;
-
-// private:
-
-//     std::vector<size_t> priors_;
-// };
-
-
-class GiniScorer
+namespace detail
 {
-public:
 
-    GiniScorer(std::vector<size_t> const & priors)
-        :
-        split_found_(false),
-        best_split_(0),
-        best_dim_(0),
-        best_score_(std::numeric_limits<double>::max()),
-        priors_(priors),
-        n_total_(std::accumulate(priors.begin(), priors.end(), 0))
-    {}
-
-    template <typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
-    void operator()(
-        FEATURES const & features,
-        LABELS const & labels,
-        WEIGHTS const & weights,
-        ITER begin,
-        ITER end,
-        size_t dim
-    ){
-        if (begin == end)
-            return;
-
-        std::vector<size_t> counts(priors_.size(), 0);
-        size_t n_left = 0;
-        ITER next = begin;
-        ++next;
-        for (; next != end; ++begin, ++next)
-        {
-            size_t const left_index = *begin;
-            size_t const right_index = *next;
-            size_t const label = static_cast<size_t>(labels(left_index));
-            counts[label] += weights[left_index];
-            n_left += weights[left_index];
-
-            // Skip if there is no new split.
-            auto const left = features(left_index, dim);
-            auto const right = features(right_index, dim);
-            if (left == right)
-                continue;
-
-            // Update the score.
-            split_found_ = true;
-            double const s = score(counts, n_left);
-            if (s < best_score_)
-            {
-                best_score_ = s;
-                best_split_ = 0.5*(left+right);
-                best_dim_ = dim;
-            }
-        }
-    }
-
-    bool split_found_;
-    double best_split_;
-    size_t best_dim_;
-    double best_score_;
-
-private:
-
-    double score(std::vector<size_t> const & counts, double n_left) const
+    template <bool MINIMIZE, typename FUNCTOR>
+    class GeneralScorer
     {
-        double const n_right = static_cast<double>(n_total_) - n_left;
-        double gini_left = 1;
-        double gini_right = 1;
-        for (size_t i = 0; i < counts.size(); ++i)
-        {
-            double const p_left = counts[i] / n_left;
-            double const p_right = (priors_[i] - counts[i]) / n_right;
-            gini_left -= (p_left*p_left);
-            gini_right -= (p_right*p_right);
-        }
-        return n_left*gini_left + n_right*gini_right;
-    }
+    public:
 
-    std::vector<size_t> const priors_;
-    size_t n_total_;
-};
+        GeneralScorer(std::vector<size_t> const & priors)
+            :
+            split_found_(false),
+            best_split_(0),
+            best_dim_(0),
+            best_score_(MINIMIZE ? std::numeric_limits<double>::max() : std::numeric_limits<double>::lowest()),
+            priors_(priors),
+            n_total_(std::accumulate(priors.begin(), priors.end(), 0))
+        {}
 
+        template <typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
+        void operator()(
+            FEATURES const & features,
+            LABELS const & labels,
+            WEIGHTS const & weights,
+            ITER begin,
+            ITER end,
+            size_t dim
+        ){
+            if (begin == end)
+                return;
 
+            FUNCTOR score;
 
-class EntropyScorer
-{
-public:
-
-    EntropyScorer(std::vector<size_t> const & priors)
-        :
-        split_found_(false),
-        best_split_(0),
-        best_dim_(0),
-        best_score_(std::numeric_limits<double>::max()),
-        priors_(priors),
-        n_total_(std::accumulate(priors.begin(), priors.end(), 0))
-    {}
-
-    template <typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
-    void operator()(
-        FEATURES const & features,
-        LABELS const & labels,
-        WEIGHTS const & weights,
-        ITER begin,
-        ITER end,
-        size_t dim
-    ){
-        if (begin == end)
-            return;
-
-        std::vector<size_t> counts(priors_.size(), 0);
-        size_t n_left = 0;
-        ITER next = begin;
-        ++next;
-        for (; next != end; ++begin, ++next)
-        {
-            size_t const left_index = *begin;
-            size_t const right_index = *next;
-            size_t const label = static_cast<size_t>(labels(left_index));
-            counts[label] += weights[left_index];
-            n_left += weights[left_index];
-
-            // Skip if there is no new split.
-            auto const left = features(left_index, dim);
-            auto const right = features(right_index, dim);
-            if (left == right)
-                continue;
-
-            // Update the score.
-            split_found_ = true;
-            double const s = score(counts, n_left);
-            if (s < best_score_)
+            std::vector<size_t> counts(priors_.size(), 0);
+            size_t n_left = 0;
+            ITER next = begin;
+            ++next;
+            for (; next != end; ++begin, ++next)
             {
-                best_score_ = s;
-                best_split_ = 0.5*(left+right);
-                best_dim_ = dim;
+                // Move the label from the right side to the left side.
+                size_t const left_index = *begin;
+                size_t const right_index = *next;
+                size_t const label = static_cast<size_t>(labels(left_index));
+                counts[label] += weights[left_index];
+                n_left += weights[left_index];
+
+                // Skip if there is no new split.
+                auto const left = features(left_index, dim);
+                auto const right = features(right_index, dim);
+                if (left == right)
+                    continue;
+
+                // Update the score.
+                split_found_ = true;
+                double const s = score(priors_, counts, n_total_, n_left);
+                bool const better_score = MINIMIZE ? s < best_score_ : s > best_score_;
+                if (better_score)
+                {
+                    best_score_ = s;
+                    best_split_ = 0.5*(left+right);
+                    best_dim_ = dim;
+                }
             }
         }
-    }
 
-    bool split_found_;
-    double best_split_;
-    size_t best_dim_;
-    double best_score_;
+        bool split_found_;
+        double best_split_;
+        size_t best_dim_;
+        double best_score_;
 
-private:
+    private:
 
-    double score(std::vector<size_t> const & counts, double n_left) const
+        std::vector<size_t> const priors_;
+        size_t n_total_;
+    };
+
+    class GiniScoreFunctor
     {
-        double const n_right = static_cast<double>(n_total_) - n_left;
-
-        double ig = 0;
-        for (size_t i = 0; i < counts.size(); ++i)
+    public:
+        double operator()(std::vector<size_t> const & priors, std::vector<size_t> const & counts, double n_total, double n_left) const
         {
-            auto c = counts[i];
-            if (c != 0)
-                ig -= c * std::log(c / n_left);
-
-            c = priors_[i] - c;
-            if (c != 0)
-                ig -= c * std::log(c / n_right);
-        }
-        return ig;
-    }
-
-    std::vector<size_t> const priors_;
-    size_t n_total_;
-};
-
-
-
-class KSDScorer
-{
-public:
-
-    KSDScorer(std::vector<size_t> const & priors)
-        :
-        split_found_(false),
-        best_split_(0),
-        best_dim_(0),
-        best_score_(std::numeric_limits<double>::lowest()),
-        priors_(priors),
-        nnz_(priors.size() - std::count(priors.begin(), priors.end(), 0))
-    {}
-
-    template <typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
-    void operator()(
-        FEATURES const & features,
-        LABELS const & labels,
-        WEIGHTS const & weights,
-        ITER begin,
-        ITER end,
-        size_t dim
-    ){
-        if (begin == end)
-            return;
-
-        std::vector<size_t> counts(priors_.size(), 0);
-        size_t n_left = 0;
-        ITER next = begin;
-        ++next;
-        for (; next != end; ++begin, ++next)
-        {
-            size_t const left_index = *begin;
-            size_t const right_index = *next;
-            size_t const label = static_cast<size_t>(labels(left_index));
-            counts[label] += weights[left_index];
-            n_left += weights[left_index];
-
-            // Skip if there is no new split.
-            auto const left = features(left_index, dim);
-            auto const right = features(right_index, dim);
-            if (left == right)
-                continue;
-
-            // Update the score.
-            split_found_ = true;
-            double const s = score(counts, n_left);
-            if (s > best_score_)
+            double const n_right = n_total - n_left;
+            double gini_left = 1;
+            double gini_right = 1;
+            for (size_t i = 0; i < counts.size(); ++i)
             {
-                best_score_ = s;
-                best_split_ = 0.5*(left+right);
-                best_dim_ = dim;
+                double const p_left = counts[i] / n_left;
+                double const p_right = (priors[i] - counts[i]) / n_right;
+                gini_left -= (p_left*p_left);
+                gini_right -= (p_right*p_right);
             }
+            return n_left*gini_left + n_right*gini_right;
         }
-    }
+    };
 
-    bool split_found_;
-    double best_split_;
-    size_t best_dim_;
-    double best_score_;
-
-private:
-
-    double score(std::vector<size_t> const & counts, double n_left) const
+    class EntropyScoreFunctor
     {
-        if (nnz_ == 0)
-            return 0.0;
-
-        std::vector<double> norm_counts(counts.size(), 0);
-        for (size_t i = 0; i < counts.size(); ++i)
-            if (priors_[i] != 0)
-                norm_counts[i] = counts[i] / static_cast<double>(priors_[i]);
-
-        // NOTE to future self:
-        // In std::accumulate, it makes a huge difference whether you use 0 or 0.0 as init. Think about that before making changes.
-        double const mean = std::accumulate(norm_counts.begin(), norm_counts.end(), 0.0) / static_cast<double>(nnz_);
-
-        // Compute the sum of the squared distances.
-        double ksd = 0.0;
-        for (size_t i = 0; i < norm_counts.size(); ++i)
+    public:
+        double operator()(std::vector<size_t> const & priors, std::vector<size_t> const & counts, double n_total, double n_left) const
         {
-            if (priors_[i] != 0)
+            double const n_right = n_total - n_left;
+            double ig = 0;
+            for (size_t i = 0; i < counts.size(); ++i)
             {
-                double const v = (mean-norm_counts[i]);
-                ksd += v*v;
-            }
-        }
-        return ksd;
-    }
+                auto c = counts[i];
+                if (c != 0)
+                    ig -= c * std::log(c / n_left);
 
-    std::vector<size_t> const priors_;
-    size_t const nnz_;
-};
+                c = priors[i] - c;
+                if (c != 0)
+                    ig -= c * std::log(c / n_right);
+            }
+            return ig;
+        }
+    };
+
+    class KSDScoreFunctor
+    {
+    public:
+        double operator()(std::vector<size_t> const & priors, std::vector<size_t> const & counts, double n_total, double n_left) const
+        {
+            size_t nnz = 0;
+            std::vector<double> norm_counts(counts.size(), 0);
+            for (size_t i = 0; i < counts.size(); ++i)
+            {
+                if (priors[i] != 0)
+                {
+                    norm_counts[i] = counts[i] / static_cast<double>(priors[i]);
+                    ++nnz;
+                }
+            }
+            if (nnz == 0)
+                return 0.0;
+
+            // NOTE to future self:
+            // In std::accumulate, it makes a huge difference whether you use 0 or 0.0 as init. Think about that before making changes.
+            double const mean = std::accumulate(norm_counts.begin(), norm_counts.end(), 0.0) / static_cast<double>(nnz);
+
+            // Compute the sum of the squared distances.
+            double ksd = 0.0;
+            for (size_t i = 0; i < norm_counts.size(); ++i)
+            {
+                if (priors[i] != 0)
+                {
+                    double const v = (mean-norm_counts[i]);
+                    ksd += v*v;
+                }
+            }
+            return ksd;
+        }
+    };
+
+} // namespace detail
+
+typedef detail::GeneralScorer<true, detail::GiniScoreFunctor> GiniScorer;
+typedef detail::GeneralScorer<true, detail::EntropyScoreFunctor> EntropyScorer;
+typedef detail::GeneralScorer<false, detail::KSDScoreFunctor> KSDScorer;
 
 
 
