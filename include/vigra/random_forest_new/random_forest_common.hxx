@@ -84,7 +84,7 @@ public:
             {
                 buffer_.resize(vec.size(), 0);
             }
-            value_type const n = std::accumulate(vec.begin(), vec.end(), 0);
+            value_type const n = std::accumulate(vec.begin(), vec.end(), static_cast<value_type>(0));
             for (size_t i = 0; i < vec.size(); ++i)
             {
                 buffer_[i] += vec[i] / static_cast<double>(n);
@@ -450,14 +450,11 @@ private:
         {
             auto c = counts[i];
             if (c != 0)
-            {
                 ig -= c * std::log(c / n_left);
-            }
+
             c = priors_[i] - c;
             if (c != 0)
-            {
                 ig -= c * std::log(c / n_right);
-            }
         }
         return ig;
     }
@@ -468,98 +465,99 @@ private:
 
 
 
-// class KSDScorer
-// {
-// public:
+class KSDScorer
+{
+public:
 
-//     KSDScorer(std::vector<size_t> const & priors)
-//         :
-//         split_found_(false),
-//         best_split_(0),
-//         best_dim_(0),
-//         best_score_(std::numeric_limits<double>::lowest()),
-//         priors_(priors),
-//         nnz_(priors.size() - std::count(priors.begin(), priors.end(), 0))
-//     {}
+    KSDScorer(std::vector<size_t> const & priors)
+        :
+        split_found_(false),
+        best_split_(0),
+        best_dim_(0),
+        best_score_(std::numeric_limits<double>::lowest()),
+        priors_(priors),
+        nnz_(priors.size() - std::count(priors.begin(), priors.end(), 0))
+    {}
 
-//     template <typename FEATURES, typename LABELS, typename ITER>
-//     void operator()(
-//         FEATURES const & features,
-//         LABELS const & labels,
-//         ITER begin,
-//         ITER end,
-//         size_t dim
-//     ){
-//         if (begin == end)
-//             return;
+    template <typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
+    void operator()(
+        FEATURES const & features,
+        LABELS const & labels,
+        WEIGHTS const & weights,
+        ITER begin,
+        ITER end,
+        size_t dim
+    ){
+        if (begin == end)
+            return;
 
-//         std::vector<double> increment(priors_.size(), 0);
-//         for (size_t i = 0; i < priors_.size(); ++i)
-//         {
-//             if (priors_[i] != 0)
-//             {
-//                 increment[i] = 1.0 / priors_[i];
-//             }
-//         }
+        std::vector<size_t> counts(priors_.size(), 0);
+        size_t n_left = 0;
+        ITER next = begin;
+        ++next;
+        for (; next != end; ++begin, ++next)
+        {
+            size_t const left_index = *begin;
+            size_t const right_index = *next;
+            size_t const label = static_cast<size_t>(labels(left_index));
+            counts[label] += weights[left_index];
+            n_left += weights[left_index];
 
-//         std::vector<double> counts(priors_.size(), 0);
-//         ITER next = begin;
-//         ++next;
-//         for (; next != end; ++begin, ++next)
-//         {
-//             size_t const left_index = *begin;
-//             size_t const right_index = *next;
-//             size_t const label = static_cast<size_t>(labels(left_index));
-//             counts[label] += increment[label];
+            // Skip if there is no new split.
+            auto const left = features(left_index, dim);
+            auto const right = features(right_index, dim);
+            if (left == right)
+                continue;
 
-//             // Skip if there is no new split.
-//             auto const left = features(left_index, dim);
-//             auto const right = features(right_index, dim);
-//             if (left == right)
-//                 continue;
+            // Update the score.
+            split_found_ = true;
+            double const s = score(counts, n_left);
+            if (s > best_score_)
+            {
+                best_score_ = s;
+                best_split_ = 0.5*(left+right);
+                best_dim_ = dim;
+            }
+        }
+    }
 
-//             // Update the score.
-//             split_found_ = true;
-//             double const s = score(counts);
-//             if (s > best_score_)
-//             {
-//                 best_score_ = s;
-//                 best_split_ = 0.5*(left+right);
-//                 best_dim_ = dim;
-//             }
-//         }
-//     }
+    bool split_found_;
+    double best_split_;
+    size_t best_dim_;
+    double best_score_;
 
-//     bool split_found_;
-//     double best_split_;
-//     size_t best_dim_;
-//     double best_score_;
+private:
 
-// private:
+    double score(std::vector<size_t> const & counts, double n_left) const
+    {
+        if (nnz_ == 0)
+            return 0.0;
 
-//     double score(std::vector<double> const & counts) const
-//     {
-//         if (nnz_ == 0)
-//             return 0.0;
+        std::vector<double> norm_counts(counts.size(), 0);
+        for (size_t i = 0; i < counts.size(); ++i)
+            if (priors_[i] != 0)
+                norm_counts[i] = counts[i] / static_cast<double>(priors_[i]);
 
-//         // Compute the means.
-//         double const mean = std::accumulate(counts.begin(), counts.end(), 0.0) / nnz_;
+        // NOTE to future self:
+        // In std::accumulate, it makes a huge difference whether you use 0 or 0.0 as init. Think about that before making changes.
+        double const mean = std::accumulate(norm_counts.begin(), norm_counts.end(), 0.0) / static_cast<double>(nnz_);
 
-//         // Compute the sum of the squared distances.
-//         double ksd = 0.0;
-//         for (size_t i = 0; i < counts.size(); ++i)
-//         {
-//             if (priors_[i] != 0)
-//             {
-//                 ksd += (mean-counts[i])*(mean-counts[i]);
-//             }
-//         }
-//         return ksd;
-//     }
+        // Compute the sum of the squared distances.
+        double ksd = 0.0;
+        for (size_t i = 0; i < norm_counts.size(); ++i)
+        {
+            if (priors_[i] != 0)
+            {
+                double const v = (mean-norm_counts[i]);
+                ksd += v*v;
+            }
+        }
+        return ksd;
+    }
 
-//     std::vector<size_t> const priors_;
-//     size_t const nnz_;
-// };
+    std::vector<size_t> const priors_;
+    size_t const nnz_;
+};
 
 
 
@@ -636,10 +634,11 @@ public:
         :
         min_n_(min_n)
     {}
-    template <typename LABELS, typename ITER>
-    bool operator()(LABELS const & labels, RFNodeDescription<ITER> const & desc) const
+    template <typename LABELS, typename ARR>
+    bool operator()(LABELS const & labels, RFNodeDescription<ARR> const & desc) const
     {
-        if (std::accumulate(desc.priors_.begin(), desc.priors_.end(), 0) <= min_n_)
+        typedef typename ARR::value_type value_type;
+        if (std::accumulate(desc.priors_.begin(), desc.priors_.end(), static_cast<value_type>(0)) <= min_n_)
             return true;
         else
             return is_pure(labels, desc);
@@ -659,11 +658,13 @@ public:
         vigra_precondition(tau > 0 && tau < 1, "NodeComplexityStop(): Tau must be in the open interval (0, 1).");
     }
 
-    template <typename LABELS, typename ITER>
-    bool operator()(LABELS const & labels, RFNodeDescription<ITER> const & desc)
+    template <typename LABELS, typename ARR>
+    bool operator()(LABELS const & labels, RFNodeDescription<ARR> const & desc)
     {
+        typedef typename ARR::value_type value_type;
+
         // Count the labels.
-        size_t const total = std::accumulate(desc.priors_.begin(), desc.priors_.end(), 0);
+        size_t const total = std::accumulate(desc.priors_.begin(), desc.priors_.end(), static_cast<value_type>(0));
 
         // Compute log(prod_k(n_k!)).
         size_t nnz = 0;
@@ -696,7 +697,8 @@ enum RandomForestOptionTags
     RF_CONST,
     RF_ALL,
     RF_GINI,
-    RF_ENTROPY
+    RF_ENTROPY,
+    RF_KSD
 };
 
 
@@ -757,8 +759,9 @@ public:
     RandomForestNewOptions & split(RandomForestOptionTags p_split)
     {
         vigra_precondition(p_split == RF_GINI ||
-                           p_split == RF_ENTROPY,
-                           "RandomForestNewOptions::split(): Input must be RF_GINI or RF_ENTROPY.");
+                           p_split == RF_ENTROPY ||
+                           p_split == RF_KSD,
+                           "RandomForestNewOptions::split(): Input must be RF_GINI, RF_ENTROPY or RF_KSD.");
         split_ = p_split;
         return *this;
     }

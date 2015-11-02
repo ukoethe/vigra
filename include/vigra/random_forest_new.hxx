@@ -396,6 +396,8 @@ DefaultRFType<FEATURES, LABELS> random_forest(
         return random_forest_impl0<FEATURES, LABELS, GiniScorer>(features, labels, options, n_threads);
     else if (options.split_ == RF_ENTROPY)
         return random_forest_impl0<FEATURES, LABELS, EntropyScorer>(features, labels, options, n_threads);
+    else if (options.split_ == RF_KSD)
+        return random_forest_impl0<FEATURES, LABELS, KSDScorer>(features, labels, options, n_threads);
     else
         throw std::runtime_error("random_forest(): Unknown split.");
 }
