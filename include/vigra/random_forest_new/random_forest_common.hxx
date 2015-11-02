@@ -4,6 +4,7 @@
 #include <iterator>
 #include <type_traits>
 #include <cmath>
+#include <algorithm>
 
 #include "../multi_array.hxx"
 #include "../mathutil.hxx"
@@ -578,3 +579,4 @@ public:
 } // namespace vigra
 
 #endif
+
