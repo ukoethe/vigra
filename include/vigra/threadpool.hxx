@@ -173,7 +173,7 @@ void parallel_foreach_impl(
     // typedef typename std::iterator_traits<ITER>::reference ReferenceType;
     uint64_t workload = std::distance(iter, end);
     const float workPerThread = float(workload)/pool.nThreads();
-    const uint64_t chunkedWorkPerThread = std::max(uint64_t(std::round(workPerThread/3.0f)),1ul);
+    const uint64_t chunkedWorkPerThread = std::max(uint64_t(std::round(workPerThread/3.0f)), uint64_t(1));
 
     for( ;iter<end; iter+=chunkedWorkPerThread){
 

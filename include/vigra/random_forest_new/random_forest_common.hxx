@@ -4,7 +4,7 @@
 #include <iterator>
 #include <type_traits>
 #include <cmath>
-#include <algorithm>
+#include <numeric>
 
 #include "../multi_array.hxx"
 #include "../mathutil.hxx"
