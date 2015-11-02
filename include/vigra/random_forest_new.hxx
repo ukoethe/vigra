@@ -80,13 +80,15 @@ namespace detail
 
 
 
-// The default random forest type.
 template <typename FEATURES, typename LABELS>
-using DefaultRFType = RandomForest<FEATURES,
-                                   LABELS,
-                                   LessEqualSplitTest<typename FEATURES::value_type>,
-                                   ArgMaxVectorAcc<size_t>,
-                                   VectorTag>;
+struct DefaultRF
+{
+    typedef RandomForest<FEATURES,
+                         LABELS,
+                         LessEqualSplitTest<typename FEATURES::value_type>,
+                         ArgMaxVectorAcc<size_t>,
+                         VectorTag> type;
+};
 
 
 
@@ -279,7 +281,7 @@ template <typename FEATURES,
           typename LABELS,
           typename SCORER,
           typename STOP>
-DefaultRFType<FEATURES, LABELS>
+typename DefaultRF<FEATURES, LABELS>::type
 random_forest_impl(
         FEATURES const & features,
         LABELS const & labels,
@@ -291,7 +293,7 @@ random_forest_impl(
     typedef LABELS Labels;
     // typedef typename Features::value_type FeatureType;
     typedef typename Labels::value_type LabelType;
-    typedef DefaultRFType<FEATURES, LABELS> RF;
+    typedef typename DefaultRF<FEATURES, LABELS>::type RF;
 
     // Check the number of trees.
     size_t const tree_count = options.tree_count_;
@@ -366,7 +368,7 @@ random_forest_impl(
 
 /// \brief Get the stop criterion from the option object and pass it as template argument.
 template <typename FEATURES, typename LABELS, typename SCORER>
-DefaultRFType<FEATURES, LABELS> random_forest_impl0(
+typename DefaultRF<FEATURES, LABELS>::type random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
@@ -386,7 +388,7 @@ DefaultRFType<FEATURES, LABELS> random_forest_impl0(
 
 /// \brief Get the scorer from the option object and pass it as template argument.
 template <typename FEATURES, typename LABELS>
-DefaultRFType<FEATURES, LABELS> random_forest(
+typename DefaultRF<FEATURES, LABELS>::type random_forest(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options = RandomForestNewOptions(),
