@@ -109,6 +109,7 @@ void random_forest_single_tree(
     typedef LessEqualSplitTest<FeatureType> SplitTests;
     typedef typename RF::Node Node;
     typedef typename RF::ACC ACC;
+    typedef typename ACC::input_type ACCInputType;
 
     static_assert(std::is_same<SplitTests, typename RF::SplitTests>::value,
                   "random_forest_single_tree(): Wrong Random Forest class.");
@@ -145,13 +146,14 @@ void random_forest_single_tree(
 
     // Create the node stack and place the root node inside.
     std::stack<Node> node_stack;
-    PropertyMap<Node, std::pair<InstanceIter, InstanceIter> > instance_range;
+    typedef std::pair<InstanceIter, InstanceIter> IterPair;
+    PropertyMap<Node, IterPair> instance_range;
     PropertyMap<Node, std::vector<size_t> > node_distributions;
     PropertyMap<Node, size_t> node_depths;
     {
         auto const rootnode = tree.graph_.addNode();
         node_stack.push(rootnode);
-        instance_range.insert(rootnode, {instance_indices.begin(), instance_indices.end()});
+        instance_range.insert(rootnode, IterPair(instance_indices.begin(), instance_indices.end()));
 
         auto priors = std::vector<size_t>(tree.distinct_labels_.size(), 0);
         for (auto i : instance_indices)
@@ -214,7 +216,7 @@ void random_forest_single_tree(
         // If no split was found, the node is terminal.
         if (!score.split_found_)
         {
-            tree.node_responses_.insert(node, {});
+            tree.node_responses_.insert(node, ACCInputType());
             node_map_updater(tree.node_responses_.at(node), node_distributions.at(node));
             continue;
         }
@@ -232,8 +234,8 @@ void random_forest_single_tree(
                 return features(i, best_dim) <= best_split;
             }
         );
-        instance_range.insert(n_left, {begin, split_iter});
-        instance_range.insert(n_right, {split_iter, end});
+        instance_range.insert(n_left, IterPair(begin, split_iter));
+        instance_range.insert(n_right, IterPair(split_iter, end));
         tree.split_tests_.insert(node, SplitTests(best_dim, best_split));
         node_depths.insert(n_left, depth+1);
         node_depths.insert(n_right, depth+1);
@@ -247,7 +249,7 @@ void random_forest_single_tree(
         // Check if the left child is terminal.
         if (stop(labels, RFNodeDescription<decltype(priors_left)>(depth+1, priors_left)))
         {
-            tree.node_responses_.insert(n_left, {});
+            tree.node_responses_.insert(n_left, ACCInputType());
             node_map_updater(tree.node_responses_.at(n_left), node_distributions.at(n_left));
         }
         else
@@ -264,7 +266,7 @@ void random_forest_single_tree(
         // Check if the right child is terminal.
         if (stop(labels, RFNodeDescription<decltype(priors_right)>(depth+1, priors_right)))
         {
-            tree.node_responses_.insert(n_right, {});
+            tree.node_responses_.insert(n_right, ACCInputType());
             node_map_updater(tree.node_responses_.at(n_right), node_distributions.at(n_right));
         }
         else

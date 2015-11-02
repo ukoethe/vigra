@@ -11,6 +11,7 @@
 #include <queue>
 #include <condition_variable>
 #include <stdexcept>
+#include <cmath>
 
 
 namespace vigra
@@ -59,8 +60,8 @@ private:
 // the constructor just launches some amount of workers
 inline ThreadPool::ThreadPool(size_t threads)
     :   stop(false),
-        busy(ATOMIC_VAR_INIT(0U)),
-        processed(ATOMIC_VAR_INIT(0U))
+        busy(0),
+        processed(0)
 {
     for(size_t ti = 0; ti<threads; ++ti)
     {
@@ -173,7 +174,7 @@ void parallel_foreach_impl(
     // typedef typename std::iterator_traits<ITER>::reference ReferenceType;
     uint64_t workload = std::distance(iter, end);
     const float workPerThread = float(workload)/pool.nThreads();
-    const uint64_t chunkedWorkPerThread = std::max(uint64_t(std::round(workPerThread/3.0f)), uint64_t(1));
+    const uint64_t chunkedWorkPerThread = std::max(uint64_t(std::floor(workPerThread/3.0f+0.5f)), uint64_t(1));
 
     for( ;iter<end; iter+=chunkedWorkPerThread){
 

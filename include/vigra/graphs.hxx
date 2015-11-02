@@ -562,7 +562,7 @@ public:
         if (indices_[k.id()] == -1)
         {
             indices_[k.id()] = map_.size();
-            map_.push_back({k, v});
+            map_.push_back(value_type(k, v));
         }
     }
     iterator begin()

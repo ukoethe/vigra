@@ -41,7 +41,12 @@ struct RandomForestTests
             leaf_responses.insert(n5, 2);
             leaf_responses.insert(n6, 3);
         }
-        RF rf = RF(gr, split_tests, leaf_responses, {0, 1, -7, 3}, 2);
+        std::vector<int> distinct_labels; //{0, 1, -7, 3};
+        distinct_labels.push_back(0);
+        distinct_labels.push_back(1);
+        distinct_labels.push_back(-7);
+        distinct_labels.push_back(3);
+        RF rf = RF(gr, split_tests, leaf_responses, distinct_labels, 2);
 
         // Check if the given points are predicted correctly.
         double test_x_values[] = {
@@ -75,7 +80,10 @@ struct RandomForestTests
         Features test_x(train_x);
         Labels test_y(train_y);
 
-        std::vector<RandomForestOptionTags> splits = {RF_GINI, RF_ENTROPY, RF_KSD};
+        std::vector<RandomForestOptionTags> splits;// = {RF_GINI, RF_ENTROPY, RF_KSD};
+        splits.push_back(RF_GINI);
+        splits.push_back(RF_ENTROPY);
+        splits.push_back(RF_KSD);
         for (auto split : splits)
         {
             RandomForestNewOptions options = RandomForestNewOptions().tree_count(1).bootstrap_sampling(false).split(split);
