@@ -194,8 +194,14 @@ struct BinaryForestTests
         }
 
         {
-            std::vector<Node> keys, keys_expected = {n0, n1, n2};
-            std::vector<int> values, values_expected = {27, 12, 73};
+            std::vector<Node> keys, keys_expected;// = {n0, n1, n2};
+            keys_expected.push_back(n0);
+            keys_expected.push_back(n1);
+            keys_expected.push_back(n2);
+            std::vector<int> values, values_expected;// = {27, 12, 73};
+            values_expected.push_back(27);
+            values_expected.push_back(12);
+            values_expected.push_back(73);
             for (auto const & p : m)
             {
                 keys.push_back(p.first);
@@ -211,8 +217,12 @@ struct BinaryForestTests
         should(m.at(n2) == 73);
 
         {
-            std::vector<Node> keys, keys_expected = {n0, n2};
-            std::vector<int> values, values_expected = {27, 73};
+            std::vector<Node> keys, keys_expected;// = {n0, n2};
+            keys_expected.push_back(n0);
+            keys_expected.push_back(n2);
+            std::vector<int> values, values_expected;// = {27, 73};
+            values_expected.push_back(27);
+            values_expected.push_back(73);
             for (auto const & p : m)
             {
                 keys.push_back(p.first);
