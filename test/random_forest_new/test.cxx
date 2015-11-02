@@ -75,10 +75,10 @@ struct RandomForestTests
         Features test_x(train_x);
         Labels test_y(train_y);
 
-        std::vector<RandomForestOptionTags> splits = {RF_GINI, RF_ENTROPY};
+        std::vector<RandomForestOptionTags> splits = {RF_GINI, RF_ENTROPY, RF_KSD};
         for (auto split : splits)
         {
-            RandomForestNewOptions options = RandomForestNewOptions().tree_count(1).bootstrap_sampling(false).split(RF_ENTROPY);
+            RandomForestNewOptions options = RandomForestNewOptions().tree_count(1).bootstrap_sampling(false).split(split);
             auto rf = random_forest(train_x, train_y, options, 1);
             Labels pred_y(test_y.shape());
             rf.predict(test_x, pred_y, 1);
