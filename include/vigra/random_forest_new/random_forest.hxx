@@ -245,7 +245,7 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids(
         indices.begin(),
         indices.end(),
         [this, &features, &ids, &split_comparisons](size_t thread_id, size_t i) {
-            split_comparisons[thread_id] += leaf_ids_impl(features, ids, i, i+1);
+            split_comparisons[thread_id] += this->leaf_ids_impl(features, ids, i, i+1);
         }
     );
 
