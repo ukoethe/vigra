@@ -42,7 +42,7 @@ nodeFeatures = rag.accumulateNodeFeatures(imgLab)
 # do agglomerativeClustering
 labels = graphs.agglomerativeClustering(graph=rag, edgeWeights=edgeWeights,
                                         beta=beta, nodeFeatures=nodeFeatures,
-                                        nodeNumStop=nodeNumStop)
+                                        nodeNumStop=nodeNumStop,wardness=0.0)
 
 # show result
 f = pylab.figure()

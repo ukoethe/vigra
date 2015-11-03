@@ -579,8 +579,8 @@ template<
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
-            //const float sizeU = std::min(nodeSizeMap_[uu] , float(std::pow(50.f,3)));
-            //const float sizeV = std::min(nodeSizeMap_[vv] , float(std::pow(50.f,3)));
+            const float sizeU = nodeSizeMap_[uu];
+            const float sizeV = nodeSizeMap_[vv];
 
 
             const ValueType wardFac = 2.0 / ( 1.0/std::pow(sizeU,wardness_) + 1/std::pow(sizeV,wardness_) );
