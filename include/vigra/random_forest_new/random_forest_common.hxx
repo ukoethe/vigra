@@ -481,7 +481,8 @@ public:
         split_(RF_GINI),
         max_depth_(0),
         node_complexity_tau_(-1),
-        min_num_instances_(1)
+        min_num_instances_(1),
+        use_stratification_(false)
     {}
 
     RandomForestNewOptions & tree_count(int p_tree_count)
@@ -548,6 +549,12 @@ public:
         return *this;
     }
 
+    RandomForestNewOptions & use_stratification(bool b)
+    {
+        use_stratification_ = b;
+        return *this;
+    }
+
     size_t get_features_per_node(size_t total) const
     {
         if (features_per_node_switch_ == RF_SQRT)
@@ -571,6 +578,87 @@ public:
     size_t max_depth_;
     double node_complexity_tau_;
     size_t min_num_instances_;
+    bool use_stratification_;
+
+};
+
+
+
+template <typename LabelType>
+class ProblemSpecNew
+{
+public:
+
+    ProblemSpecNew()
+        :
+        num_features_(0),
+        num_instances_(0),
+        num_classes_(0),
+        distinct_classes_(),
+        actual_mtry_(0),
+        is_weighted_(false),
+        class_weights_()
+    {}
+
+    ProblemSpecNew & num_features(size_t n)
+    {
+        num_features_ = n;
+        return *this;
+    }
+
+    ProblemSpecNew & num_instances(size_t n)
+    {
+        num_instances_ = n;
+        return *this;
+    }
+
+    ProblemSpecNew & distinct_classes(std::vector<LabelType> v)
+    {
+        distinct_classes_ = v;
+        num_classes_ = v.size();
+        return *this;
+    }
+
+    ProblemSpecNew & actual_mtry(size_t m)
+    {
+        actual_mtry_ = m;
+        return *this;
+    }
+
+    ProblemSpecNew & is_weighted(bool b)
+    {
+        is_weighted_ = b;
+        return *this;
+    }
+
+    ProblemSpecNew & class_weights(std::vector<double> v)
+    {
+        class_weights_ = v;
+        is_weighted_ = true;
+        return *this;
+    }
+
+    bool operator==(ProblemSpecNew const & other) const
+    {
+        #define COMPARE(field) if (field != other.field) return false;
+        COMPARE(num_features_);
+        COMPARE(num_instances_);
+        COMPARE(num_classes_);
+        COMPARE(distinct_classes_);
+        COMPARE(actual_mtry_);
+        COMPARE(is_weighted_);
+        COMPARE(class_weights_);
+        #undef COMPARE
+        return true;
+    }
+
+    size_t num_features_;
+    size_t num_instances_;
+    size_t num_classes_;
+    std::vector<LabelType> distinct_classes_;
+    size_t actual_mtry_;
+    bool is_weighted_;
+    std::vector<double> class_weights_;
 
 };
 

@@ -7,6 +7,7 @@
 #include "../multi_shape.hxx"
 #include "../binary_forest.hxx"
 #include "../threadpool.hxx"
+#include "random_forest_common.hxx"
 
 
 
@@ -31,7 +32,7 @@ public:
     typedef BinaryForest Graph;
     typedef Graph::Node Node;
     typedef std::vector<size_t> DistributionType;
-    
+
     static ContainerTag const container_tag = CTag;
 
     // Default (empty) constructor.
@@ -42,8 +43,7 @@ public:
         Graph const & graph,
         PropertyMap<Node, SplitTests, CTag> const & split_tests,
         PropertyMap<Node, AccInputType, CTag> const & node_responses,
-        std::vector<LabelType> const & distinct_labels,
-        size_t num_features
+        ProblemSpecNew<LabelType> const & problem_spec
     );
 
     /// \brief Grow this forest by incorporating the other.
@@ -98,11 +98,8 @@ public:
     /// \brief Contains the responses of each node (for example the most frequent label).
     PropertyMap<Node, AccInputType, CTag> node_responses_;
 
-    /// \brief The distinct labels that were found in training.
-    std::vector<LabelType> distinct_labels_;
-
-    /// \brief The number of features.
-    size_t num_features_;
+    /// \brief The specifications.
+    ProblemSpecNew<LabelType> problem_spec_;
 
 private:
 
@@ -123,8 +120,7 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::RandomForest()
     graph_(),
     split_tests_(),
     node_responses_(),
-    distinct_labels_(),
-    num_features_(0)
+    problem_spec_()
 {}
 
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
@@ -132,24 +128,20 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::RandomForest(
     Graph const & graph,
     PropertyMap<Node, SplitTests, CTag> const & split_tests,
     PropertyMap<Node, AccInputType, CTag> const & node_responses,
-    std::vector<LabelType> const & distinct_labels,
-    size_t num_features
+    ProblemSpecNew<LabelType> const & problem_spec
 )   :
     graph_(graph),
     split_tests_(split_tests),
     node_responses_(node_responses),
-    distinct_labels_(distinct_labels),
-    num_features_(num_features)
+    problem_spec_(problem_spec)
 {}
 
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
 void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::merge(
     RandomForest const & other
 ){
-    vigra_precondition(num_features_ == other.num_features_,
-                       "RandomForest::merge(): Number of features must not be different.");
-    vigra_precondition(distinct_labels_ == other.distinct_labels_,
-                       "RandomForest::merge(): The distinct labels must not be different.");
+    vigra_precondition(problem_spec_ == other.problem_spec_,
+                       "RandomForest::merge(): You cannot merge with different problem specs.");
 
     size_t const offset = num_nodes();
     graph_.merge(other.graph_);
@@ -171,17 +163,17 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict(
 ) const {
     vigra_precondition(features.shape()[0] == labels.shape()[0],
                        "RandomForest::predict(): Shape mismatch between features and labels.");
-    vigra_precondition(features.shape()[1] == num_features_,
+    vigra_precondition(features.shape()[1] == problem_spec_.num_features_,
                        "RandomForest::predict(): Number of features in prediction differs from training.");
 
-    MultiArray<2, double> probs(Shape2(features.shape()[0], distinct_labels_.size()));
+    MultiArray<2, double> probs(Shape2(features.shape()[0], problem_spec_.num_classes_));
     double const average_split_counts = predict_proba(features, probs, n_threads);
     for (size_t i = 0; i < features.shape()[0]; ++i)
     {
         auto const sub_probs = probs.template bind<0>(i);
         auto it = std::max_element(sub_probs.begin(), sub_probs.end());
         size_t const label = std::distance(sub_probs.begin(), it);
-        labels(i) = distinct_labels_[label];
+        labels(i) = problem_spec_.distinct_classes_[label];
     }
     return average_split_counts;
 }
@@ -195,9 +187,9 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict_proba(
 ) const {
     vigra_precondition(features.shape()[0] == probs.shape()[0],
                        "RandomForest::predict_proba(): Shape mismatch between features and probabilities.");
-    vigra_precondition(features.shape()[1] == num_features_,
+    vigra_precondition(features.shape()[1] == problem_spec_.num_features_,
                        "RandomForest::predict_proba(): Number of features in prediction differs from training.");
-    vigra_precondition(probs.shape()[1] == distinct_labels_.size(),
+    vigra_precondition(probs.shape()[1] == problem_spec_.num_classes_,
                        "RandomForest::predict_proba(): Number of labels in probabilities differs from training.");
 
     size_t const num_roots = graph_.numRoots();
@@ -226,7 +218,7 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids(
 ) const {
     vigra_precondition(features.shape()[0] == ids.shape()[0],
                        "RandomForest::leaf_ids(): Shape mismatch between features and probabilities.");
-    vigra_precondition(features.shape()[1] == num_features_,
+    vigra_precondition(features.shape()[1] == problem_spec_.num_features_,
                        "RandomForest::leaf_ids(): Number of features in prediction differs from training.");
     vigra_precondition(ids.shape()[1] == graph_.numRoots(),
                        "RandomForest::leaf_ids(): Leaf array has wrong shape.");
@@ -263,7 +255,7 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids_impl(
 ) const {
     vigra_precondition(features.shape()[0] == ids.shape()[0],
                        "RandomForest::leaf_ids_impl(): Shape mismatch between features and labels.");
-    vigra_precondition(features.shape()[1] == num_features_,
+    vigra_precondition(features.shape()[1] == problem_spec_.num_features_,
                        "RandomForest::leaf_ids_impl(): Number of Features in prediction differs from training.");
     vigra_precondition(from >= 0 && from <= to && to <= features.shape()[0],
                        "RandomForest::leaf_ids_impl(): Indices out of range.");

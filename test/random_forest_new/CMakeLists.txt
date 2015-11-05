@@ -1,1 +1,1 @@
-VIGRA_ADD_TEST(test_random_forest_new test.cxx) 
+VIGRA_ADD_TEST(test_random_forest_new test.cxx LIBRARIES vigraimpex)

@@ -1,5 +1,6 @@
 #include <vigra/unittest.hxx>
 #include <vigra/random_forest_new.hxx>
+#include <vigra/hdf5impex.hxx>
 
 using namespace vigra;
 
@@ -46,7 +47,8 @@ struct RandomForestTests
         distinct_labels.push_back(1);
         distinct_labels.push_back(-7);
         distinct_labels.push_back(3);
-        RF rf = RF(gr, split_tests, leaf_responses, distinct_labels, 2);
+        auto const pspec = ProblemSpecNew<int>().num_features(2).distinct_classes(distinct_labels);
+        RF rf = RF(gr, split_tests, leaf_responses, pspec);
 
         // Check if the given points are predicted correctly.
         double test_x_values[] = {
@@ -86,7 +88,7 @@ struct RandomForestTests
         splits.push_back(RF_KSD);
         for (auto split : splits)
         {
-            RandomForestNewOptions options = RandomForestNewOptions().tree_count(1).bootstrap_sampling(false).split(split);
+            RandomForestNewOptions const options = RandomForestNewOptions().tree_count(1).bootstrap_sampling(false).split(split);
             auto rf = random_forest(train_x, train_y, options, 1);
             Labels pred_y(test_y.shape());
             rf.predict(test_x, pred_y, 1);

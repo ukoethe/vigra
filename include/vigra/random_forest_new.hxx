@@ -118,7 +118,7 @@ void random_forest_single_tree(
     auto const num_features = features.shape()[1];
     vigra_precondition(num_instances == labels.size(),
                        "random_forest_single_tree(): Shape mismatch between features and labels.");
-    vigra_precondition(num_features == tree.num_features_,
+    vigra_precondition(num_features == tree.problem_spec_.num_features_,
                        "random_forest_single_tree(): Wrong number of features.");
 
     // Create the index vector for bookkeeping.
@@ -131,7 +131,9 @@ void random_forest_single_tree(
     if (options.bootstrap_sampling_)
     {
         std::fill(instance_weights.begin(), instance_weights.end(), 0);
-        Sampler<MersenneTwister> sampler(num_instances, SamplerOptions().withReplacement(), &randengine);
+        Sampler<MersenneTwister> sampler(num_instances,
+                                         SamplerOptions().withReplacement().stratified(options.use_stratification_),
+                                         &randengine);
         sampler.sample();
         for (size_t i = 0; i < sampler.sampleSize(); ++i)
         {
@@ -141,7 +143,7 @@ void random_forest_single_tree(
     }
 
     // Create the sampler for the split dimensions.
-    auto const mtry = options.get_features_per_node(num_features);
+    auto const mtry = tree.problem_spec_.actual_mtry_;
     Sampler<MersenneTwister> dim_sampler(num_features, SamplerOptions().withoutReplacement().sampleSize(mtry), &randengine);
 
     // Create the node stack and place the root node inside.
@@ -155,7 +157,7 @@ void random_forest_single_tree(
         node_stack.push(rootnode);
         instance_range.insert(rootnode, IterPair(instance_indices.begin(), instance_indices.end()));
 
-        auto priors = std::vector<size_t>(tree.distinct_labels_.size(), 0);
+        auto priors = std::vector<size_t>(tree.problem_spec_.num_classes_, 0);
         for (auto i : instance_indices)
             priors[labels(i)] += instance_weights[i];
 
@@ -241,7 +243,7 @@ void random_forest_single_tree(
         node_depths.insert(n_right, depth+1);
 
         // Update the prior list for the left child and check if the node is terminal.
-        auto priors_left = std::vector<size_t>(tree.distinct_labels_.size(), 0);
+        auto priors_left = std::vector<size_t>(tree.problem_spec_.num_classes_, 0);
         for (auto it = begin; it != split_iter; ++it)
             priors_left[labels(*it)] += instance_weights[*it];
         node_distributions.insert(n_left, priors_left);
@@ -258,7 +260,7 @@ void random_forest_single_tree(
         }
 
         // Update the prior list for the right child.
-        auto priors_right = std::vector<size_t>(tree.distinct_labels_.size(), 0);
+        auto priors_right = std::vector<size_t>(tree.problem_spec_.num_classes_, 0);
         for (auto it = split_iter; it != end; ++it)
             priors_right[labels(*it)] += instance_weights[*it];
         node_distributions.insert(n_right, priors_right);
@@ -316,12 +318,14 @@ random_forest_impl(
         transformed_labels(i) = label_map[labels(i)];
     }
 
-    // Update the tree information.
+    // Write the problem specification into the trees.
+    auto const pspec = ProblemSpecNew<LabelType>()
+                           .num_features(features.shape()[1])
+                           .num_instances(features.shape()[0])
+                           .distinct_classes(distinct_labels)
+                           .actual_mtry(options.get_features_per_node(features.shape()[1]));
     for (auto & t : trees)
-    {
-        t.distinct_labels_ = distinct_labels;
-        t.num_features_ = features.shape()[1];
-    }
+        t.problem_spec_ = pspec;
 
     // Find the correct number of threads.
     if (n_threads == -1)
