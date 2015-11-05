@@ -634,7 +634,8 @@ public:
     ProblemSpecNew & class_weights(std::vector<double> v)
     {
         class_weights_ = v;
-        is_weighted_ = true;
+        if (v.size() > 0)
+            is_weighted_ = true;
         return *this;
     }
 

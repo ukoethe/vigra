@@ -110,15 +110,17 @@ void random_forest_single_tree(
     typedef typename RF::Node Node;
     typedef typename RF::ACC ACC;
     typedef typename ACC::input_type ACCInputType;
-
+    
     static_assert(std::is_same<SplitTests, typename RF::SplitTests>::value,
                   "random_forest_single_tree(): Wrong Random Forest class.");
 
     auto const num_instances = features.shape()[0];
     auto const num_features = features.shape()[1];
+    auto const & spec = tree.problem_spec_;
+
     vigra_precondition(num_instances == labels.size(),
                        "random_forest_single_tree(): Shape mismatch between features and labels.");
-    vigra_precondition(num_features == tree.problem_spec_.num_features_,
+    vigra_precondition(num_features == spec.num_features_,
                        "random_forest_single_tree(): Wrong number of features.");
 
     // Create the index vector for bookkeeping.
@@ -142,8 +144,17 @@ void random_forest_single_tree(
         }
     }
 
+    // Adjust the instance weights according to the class weights.
+    if (spec.is_weighted_)
+    {
+        vigra_precondition(spec.class_weights_.size() == spec.distinct_classes_.size(),
+                           "random_forest_single_tree(): Number of class weights must be equal to number of classes.");
+        for (size_t i = 0; i < instance_weights.size(); ++i)
+            instance_weights[i] *= spec.class_weights_[labels(i)];
+    }
+
     // Create the sampler for the split dimensions.
-    auto const mtry = tree.problem_spec_.actual_mtry_;
+    auto const mtry = spec.actual_mtry_;
     Sampler<MersenneTwister> dim_sampler(num_features, SamplerOptions().withoutReplacement().sampleSize(mtry), &randengine);
 
     // Create the node stack and place the root node inside.
@@ -157,7 +168,7 @@ void random_forest_single_tree(
         node_stack.push(rootnode);
         instance_range.insert(rootnode, IterPair(instance_indices.begin(), instance_indices.end()));
 
-        auto priors = std::vector<size_t>(tree.problem_spec_.num_classes_, 0);
+        auto priors = std::vector<size_t>(spec.num_classes_, 0);
         for (auto i : instance_indices)
             priors[labels(i)] += instance_weights[i];
 
@@ -243,7 +254,7 @@ void random_forest_single_tree(
         node_depths.insert(n_right, depth+1);
 
         // Update the prior list for the left child and check if the node is terminal.
-        auto priors_left = std::vector<size_t>(tree.problem_spec_.num_classes_, 0);
+        auto priors_left = std::vector<size_t>(spec.num_classes_, 0);
         for (auto it = begin; it != split_iter; ++it)
             priors_left[labels(*it)] += instance_weights[*it];
         node_distributions.insert(n_left, priors_left);
@@ -260,7 +271,7 @@ void random_forest_single_tree(
         }
 
         // Update the prior list for the right child.
-        auto priors_right = std::vector<size_t>(tree.problem_spec_.num_classes_, 0);
+        auto priors_right = std::vector<size_t>(spec.num_classes_, 0);
         for (auto it = split_iter; it != end; ++it)
             priors_right[labels(*it)] += instance_weights[*it];
         node_distributions.insert(n_right, priors_right);
@@ -291,7 +302,8 @@ random_forest_impl(
         LABELS const & labels,
         RandomForestNewOptions const & options,
         int n_threads,
-        STOP const & stop
+        STOP const & stop,
+        std::map<typename LABELS::value_type, double> class_weights
 ){
     // typedef FEATURES Features;
     typedef LABELS Labels;
@@ -299,14 +311,20 @@ random_forest_impl(
     typedef typename Labels::value_type LabelType;
     typedef typename DefaultRF<FEATURES, LABELS>::type RF;
 
+    ProblemSpecNew<LabelType> pspec;
+    pspec.num_instances(features.shape()[0])
+         .num_features(features.shape()[1])
+         .actual_mtry(options.get_features_per_node(features.shape()[1]));
+
     // Check the number of trees.
     size_t const tree_count = options.tree_count_;
-    vigra_precondition(tree_count > 0, "random_forest(): tree_count must not be zero.");
+    vigra_precondition(tree_count > 0, "random_forest_impl(): tree_count must not be zero.");
     std::vector<RF> trees(tree_count);
 
     // Transform the labels to 0, 1, 2, ...
     std::set<LabelType> const dlabels(labels.begin(), labels.end());
     std::vector<LabelType> const distinct_labels(dlabels.begin(), dlabels.end());
+    pspec.distinct_classes(distinct_labels);
     std::map<LabelType, size_t> label_map;
     for (size_t i = 0; i < distinct_labels.size(); ++i)
     {
@@ -318,12 +336,24 @@ random_forest_impl(
         transformed_labels(i) = label_map[labels(i)];
     }
 
+    // Create the vector with the class weights.
+    if (class_weights.size() > 0)
+    {
+        std::vector<double> cl_weights;
+        for (auto c : distinct_labels)
+        {
+            vigra_precondition(class_weights.count(c) > 0, "random_forest_impl(): There are class weights, but not for all classes.");
+            cl_weights.push_back(class_weights[c]);
+        }
+        pspec.class_weights(cl_weights);
+        std::cout << "Note: Using class weights!" << std::endl;
+    }
+
+    std::vector<double> cl_weights;
+    for (auto c : distinct_labels)
+        cl_weights.push_back(class_weights[c]);
+
     // Write the problem specification into the trees.
-    auto const pspec = ProblemSpecNew<LabelType>()
-                           .num_features(features.shape()[1])
-                           .num_instances(features.shape()[0])
-                           .distinct_classes(distinct_labels)
-                           .actual_mtry(options.get_features_per_node(features.shape()[1]));
     for (auto & t : trees)
         t.problem_spec_ = pspec;
 
@@ -340,7 +370,7 @@ random_forest_impl(
     {
         seeds.insert(rand_functor());
     }
-    vigra_assert(seeds.size() == n_threads, "random_forest(): Could not create random seeds.");
+    vigra_assert(seeds.size() == n_threads, "random_forest_impl(): Could not create random seeds.");
 
     // Create the random engines that run in the threads.
     std::vector<MersenneTwister> rand_engines;
@@ -378,16 +408,17 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
-        int n_threads
+        int n_threads,
+        std::map<typename LABELS::value_type, double> class_weights
 ){
     if (options.max_depth_ > 0)
-        return random_forest_impl<FEATURES, LABELS, SCORER, DepthStop>(features, labels, options, n_threads, DepthStop(options.max_depth_));
+        return random_forest_impl<FEATURES, LABELS, SCORER, DepthStop>(features, labels, options, n_threads, DepthStop(options.max_depth_), class_weights);
     else if (options.min_num_instances_ > 1)
-        return random_forest_impl<FEATURES, LABELS, SCORER, NumInstancesStop>(features, labels, options, n_threads, NumInstancesStop(options.min_num_instances_));
+        return random_forest_impl<FEATURES, LABELS, SCORER, NumInstancesStop>(features, labels, options, n_threads, NumInstancesStop(options.min_num_instances_), class_weights);
     else if (options.node_complexity_tau_ > 0)
-        return random_forest_impl<FEATURES, LABELS, SCORER, NodeComplexityStop>(features, labels, options, n_threads, NodeComplexityStop(options.node_complexity_tau_));
+        return random_forest_impl<FEATURES, LABELS, SCORER, NodeComplexityStop>(features, labels, options, n_threads, NodeComplexityStop(options.node_complexity_tau_), class_weights);
     else
-        return random_forest_impl<FEATURES, LABELS, SCORER, PurityStop>(features, labels, options, n_threads, PurityStop());
+        return random_forest_impl<FEATURES, LABELS, SCORER, PurityStop>(features, labels, options, n_threads, PurityStop(), class_weights);
 }
 
 
@@ -398,14 +429,15 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options = RandomForestNewOptions(),
-        int n_threads = -1
+        int n_threads = -1,
+        std::map<typename LABELS::value_type, double> class_weights = std::map<typename LABELS::value_type, double>()
 ){
     if (options.split_ == RF_GINI)
-        return random_forest_impl0<FEATURES, LABELS, GiniScorer>(features, labels, options, n_threads);
+        return random_forest_impl0<FEATURES, LABELS, GiniScorer>(features, labels, options, n_threads, class_weights);
     else if (options.split_ == RF_ENTROPY)
-        return random_forest_impl0<FEATURES, LABELS, EntropyScorer>(features, labels, options, n_threads);
+        return random_forest_impl0<FEATURES, LABELS, EntropyScorer>(features, labels, options, n_threads, class_weights);
     else if (options.split_ == RF_KSD)
-        return random_forest_impl0<FEATURES, LABELS, KSDScorer>(features, labels, options, n_threads);
+        return random_forest_impl0<FEATURES, LABELS, KSDScorer>(features, labels, options, n_threads, class_weights);
     else
         throw std::runtime_error("random_forest(): Unknown split.");
 }
