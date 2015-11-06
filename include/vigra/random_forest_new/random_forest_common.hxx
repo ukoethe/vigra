@@ -483,7 +483,8 @@ public:
         node_complexity_tau_(-1),
         min_num_instances_(1),
         use_stratification_(false),
-        n_threads_(-1)
+        n_threads_(-1),
+        class_weights_()
     {}
 
     /**
@@ -602,6 +603,21 @@ public:
     }
 
     /**
+     * @brief Each datapoint is weighted by its class weight. By default, each class has weight 1.
+     * @details
+     * The classes in the random forest training have to follow a strict ordering. The weights must be given in that order.
+     * Example:
+     * You have the classes 3, 8 and 5 and use the vector {0.2, 0.3, 0.4} for the class weights.
+     * The ordering of the classes is 3, 5, 8, so class 3 will get weight 0.2, class 5 will get weight 0.3
+     * and class 8 will get weight 0.4.
+     */
+    RandomForestNewOptions & class_weights(std::vector<double> v)
+    {
+        class_weights_ = v;
+        return *this;
+    }
+
+    /**
      * @brief Get the actual number of features per node.
      * 
      * @param total the total number of features
@@ -631,6 +647,7 @@ public:
     size_t min_num_instances_;
     bool use_stratification_;
     int n_threads_;
+    std::vector<double> class_weights_;
 
 };
 
@@ -647,9 +664,7 @@ public:
         num_instances_(0),
         num_classes_(0),
         distinct_classes_(),
-        actual_mtry_(0),
-        is_weighted_(false),
-        class_weights_()
+        actual_mtry_(0)
     {}
 
     ProblemSpecNew & num_features(size_t n)
@@ -677,20 +692,6 @@ public:
         return *this;
     }
 
-    ProblemSpecNew & is_weighted(bool b)
-    {
-        is_weighted_ = b;
-        return *this;
-    }
-
-    ProblemSpecNew & class_weights(std::vector<double> v)
-    {
-        class_weights_ = v;
-        if (v.size() > 0)
-            is_weighted_ = true;
-        return *this;
-    }
-
     bool operator==(ProblemSpecNew const & other) const
     {
         #define COMPARE(field) if (field != other.field) return false;
@@ -699,8 +700,6 @@ public:
         COMPARE(num_classes_);
         COMPARE(distinct_classes_);
         COMPARE(actual_mtry_);
-        COMPARE(is_weighted_);
-        COMPARE(class_weights_);
         #undef COMPARE
         return true;
     }
@@ -710,8 +709,6 @@ public:
     size_t num_classes_;
     std::vector<LabelType> distinct_classes_;
     size_t actual_mtry_;
-    bool is_weighted_;
-    std::vector<double> class_weights_;
 
 };
 

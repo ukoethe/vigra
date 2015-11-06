@@ -145,12 +145,10 @@ void random_forest_single_tree(
     }
 
     // Adjust the instance weights according to the class weights.
-    if (spec.is_weighted_)
+    if (options.class_weights_.size() > 0)
     {
-        vigra_precondition(spec.class_weights_.size() == spec.distinct_classes_.size(),
-                           "random_forest_single_tree(): Number of class weights must be equal to number of classes.");
         for (size_t i = 0; i < instance_weights.size(); ++i)
-            instance_weights[i] *= spec.class_weights_[labels(i)];
+            instance_weights[i] *= options.class_weights_[labels(i)];
     }
 
     // Create the sampler for the split dimensions.
@@ -301,8 +299,7 @@ random_forest_impl(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
-        STOP const & stop,
-        std::map<typename LABELS::value_type, double> class_weights
+        STOP const & stop
 ){
     // typedef FEATURES Features;
     typedef LABELS Labels;
@@ -335,22 +332,9 @@ random_forest_impl(
         transformed_labels(i) = label_map[labels(i)];
     }
 
-    // Create the vector with the class weights.
-    if (class_weights.size() > 0)
-    {
-        std::vector<double> cl_weights;
-        for (auto c : distinct_labels)
-        {
-            vigra_precondition(class_weights.count(c) > 0, "random_forest_impl(): There are class weights, but not for all classes.");
-            cl_weights.push_back(class_weights[c]);
-        }
-        pspec.class_weights(cl_weights);
-        std::cout << "Note: Using class weights!" << std::endl;
-    }
-
-    std::vector<double> cl_weights;
-    for (auto c : distinct_labels)
-        cl_weights.push_back(class_weights[c]);
+    // Check the vector with the class weights.
+    vigra_precondition(options.class_weights_.size() == 0 || options.class_weights_.size() == distinct_labels.size(),
+                       "random_forest_impl(): The number of class weights must be 0 or equal to the number of classes.");
 
     // Write the problem specification into the trees.
     for (auto & t : trees)
@@ -407,17 +391,16 @@ template <typename FEATURES, typename LABELS, typename SCORER>
 typename DefaultRF<FEATURES, LABELS>::type random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
-        RandomForestNewOptions const & options,
-        std::map<typename LABELS::value_type, double> class_weights
+        RandomForestNewOptions const & options
 ){
     if (options.max_depth_ > 0)
-        return random_forest_impl<FEATURES, LABELS, SCORER, DepthStop>(features, labels, options, DepthStop(options.max_depth_), class_weights);
+        return random_forest_impl<FEATURES, LABELS, SCORER, DepthStop>(features, labels, options, DepthStop(options.max_depth_));
     else if (options.min_num_instances_ > 1)
-        return random_forest_impl<FEATURES, LABELS, SCORER, NumInstancesStop>(features, labels, options, NumInstancesStop(options.min_num_instances_), class_weights);
+        return random_forest_impl<FEATURES, LABELS, SCORER, NumInstancesStop>(features, labels, options, NumInstancesStop(options.min_num_instances_));
     else if (options.node_complexity_tau_ > 0)
-        return random_forest_impl<FEATURES, LABELS, SCORER, NodeComplexityStop>(features, labels, options, NodeComplexityStop(options.node_complexity_tau_), class_weights);
+        return random_forest_impl<FEATURES, LABELS, SCORER, NodeComplexityStop>(features, labels, options, NodeComplexityStop(options.node_complexity_tau_));
     else
-        return random_forest_impl<FEATURES, LABELS, SCORER, PurityStop>(features, labels, options, PurityStop(), class_weights);
+        return random_forest_impl<FEATURES, LABELS, SCORER, PurityStop>(features, labels, options, PurityStop());
 }
 
 
@@ -427,15 +410,14 @@ template <typename FEATURES, typename LABELS>
 typename DefaultRF<FEATURES, LABELS>::type random_forest(
         FEATURES const & features,
         LABELS const & labels,
-        RandomForestNewOptions const & options = RandomForestNewOptions(),
-        std::map<typename LABELS::value_type, double> class_weights = std::map<typename LABELS::value_type, double>()
+        RandomForestNewOptions const & options = RandomForestNewOptions()
 ){
     if (options.split_ == RF_GINI)
-        return random_forest_impl0<FEATURES, LABELS, GiniScorer>(features, labels, options, class_weights);
+        return random_forest_impl0<FEATURES, LABELS, GiniScorer>(features, labels, options);
     else if (options.split_ == RF_ENTROPY)
-        return random_forest_impl0<FEATURES, LABELS, EntropyScorer>(features, labels, options, class_weights);
+        return random_forest_impl0<FEATURES, LABELS, EntropyScorer>(features, labels, options);
     else if (options.split_ == RF_KSD)
-        return random_forest_impl0<FEATURES, LABELS, KSDScorer>(features, labels, options, class_weights);
+        return random_forest_impl0<FEATURES, LABELS, KSDScorer>(features, labels, options);
     else
         throw std::runtime_error("random_forest(): Unknown split.");
 }

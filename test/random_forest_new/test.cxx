@@ -42,7 +42,7 @@ struct RandomForestTests
             leaf_responses.insert(n5, 2);
             leaf_responses.insert(n6, 3);
         }
-        std::vector<int> distinct_labels; //{0, 1, -7, 3};
+        std::vector<int> distinct_labels;
         distinct_labels.push_back(0);
         distinct_labels.push_back(1);
         distinct_labels.push_back(-7);
@@ -82,7 +82,7 @@ struct RandomForestTests
         Features test_x(train_x);
         Labels test_y(train_y);
 
-        std::vector<RandomForestOptionTags> splits;// = {RF_GINI, RF_ENTROPY, RF_KSD};
+        std::vector<RandomForestOptionTags> splits;
         splits.push_back(RF_GINI);
         splits.push_back(RF_ENTROPY);
         splits.push_back(RF_KSD);
