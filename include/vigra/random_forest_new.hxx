@@ -144,7 +144,7 @@ void random_forest_single_tree(
         }
     }
 
-    // Adjust the instance weights according to the class weights.
+    // Multiply the instance weights by the class weights.
     if (options.class_weights_.size() > 0)
     {
         for (size_t i = 0; i < instance_weights.size(); ++i)
@@ -158,19 +158,20 @@ void random_forest_single_tree(
     // Create the node stack and place the root node inside.
     std::stack<Node> node_stack;
     typedef std::pair<InstanceIter, InstanceIter> IterPair;
-    PropertyMap<Node, IterPair> instance_range;
-    PropertyMap<Node, std::vector<size_t> > node_distributions;
-    PropertyMap<Node, size_t> node_depths;
+    PropertyMap<Node, IterPair> instance_range;  // begin and end of the instances of a node in the bookkeeping vector
+    PropertyMap<Node, std::vector<size_t> > node_distributions;  // the class distributions in the nodes
+    PropertyMap<Node, size_t> node_depths;  // the depth of each node
     {
         auto const rootnode = tree.graph_.addNode();
         node_stack.push(rootnode);
+
         instance_range.insert(rootnode, IterPair(instance_indices.begin(), instance_indices.end()));
 
         auto priors = std::vector<size_t>(spec.num_classes_, 0);
         for (auto i : instance_indices)
             priors[labels(i)] += instance_weights[i];
-
         node_distributions.insert(rootnode, priors);
+
         node_depths.insert(rootnode, 0);
     }
 
@@ -178,6 +179,7 @@ void random_forest_single_tree(
     detail::RFMapUpdater<ACC> node_map_updater;
     while (!node_stack.empty())
     {
+        // Get the data of the current node.
         auto const node = node_stack.top();
         node_stack.pop();
         auto const begin = instance_range.at(node).first;
@@ -196,6 +198,7 @@ void random_forest_single_tree(
         SCORER score(priors);
         if (options.resample_count_ == 0 || used_instances.size() <= options.resample_count_)
         {
+            // Find the split using all instances.
             detail::split_score(
                 features,
                 labels,
@@ -207,13 +210,14 @@ void random_forest_single_tree(
         }
         else
         {
-            // Generate a random subset of the node instances.
+            // Generate a random subset of the instances.
             Sampler<MersenneTwister> resampler(used_instances.begin(), used_instances.end(), SamplerOptions().withoutReplacement().sampleSize(options.resample_count_), &randengine);
             resampler.sample();
             auto indices = std::vector<size_t>(options.resample_count_);
             for (size_t i = 0; i < options.resample_count_; ++i)
                 indices[i] = used_instances[resampler[i]];
 
+            // Find the split using the subset.
             detail::split_score(
                 features,
                 labels,
@@ -232,7 +236,7 @@ void random_forest_single_tree(
             continue;
         }
 
-        // Do the split.
+        // Create the child nodes and split the instances accordingly.
         auto const n_left = tree.graph_.addNode();
         auto const n_right = tree.graph_.addNode();
         tree.graph_.addArc(node, n_left);
@@ -251,7 +255,7 @@ void random_forest_single_tree(
         node_depths.insert(n_left, depth+1);
         node_depths.insert(n_right, depth+1);
 
-        // Update the prior list for the left child and check if the node is terminal.
+        // Compute the class distribution for the left child.
         auto priors_left = std::vector<size_t>(spec.num_classes_, 0);
         for (auto it = begin; it != split_iter; ++it)
             priors_left[labels(*it)] += instance_weights[*it];
@@ -268,7 +272,7 @@ void random_forest_single_tree(
             node_stack.push(n_left);
         }
 
-        // Update the prior list for the right child.
+        // Compute the class distribution for the right child.
         auto priors_right = std::vector<size_t>(spec.num_classes_, 0);
         for (auto it = split_iter; it != end; ++it)
             priors_right[labels(*it)] += instance_weights[*it];
