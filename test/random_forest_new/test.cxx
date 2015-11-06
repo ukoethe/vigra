@@ -88,8 +88,12 @@ struct RandomForestTests
         splits.push_back(RF_KSD);
         for (auto split : splits)
         {
-            RandomForestNewOptions const options = RandomForestNewOptions().tree_count(1).bootstrap_sampling(false).split(split);
-            auto rf = random_forest(train_x, train_y, options, 1);
+            RandomForestNewOptions const options = RandomForestNewOptions()
+                                                       .tree_count(1)
+                                                       .bootstrap_sampling(false)
+                                                       .split(split)
+                                                       .n_threads(1);
+            auto rf = random_forest(train_x, train_y, options);
             Labels pred_y(test_y.shape());
             rf.predict(test_x, pred_y, 1);
             shouldEqualSequence(pred_y.begin(), pred_y.end(), test_y.begin());

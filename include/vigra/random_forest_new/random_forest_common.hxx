@@ -482,15 +482,24 @@ public:
         max_depth_(0),
         node_complexity_tau_(-1),
         min_num_instances_(1),
-        use_stratification_(false)
+        use_stratification_(false),
+        n_threads_(-1)
     {}
 
+    /**
+     * @brief The number of trees.
+     */
     RandomForestNewOptions & tree_count(int p_tree_count)
     {
         tree_count_ = p_tree_count;
         return *this;
     }
 
+    /**
+     * @brief The number of features that are considered when computing the split.
+     * 
+     * @param p_features_per_node the number of features
+     */
     RandomForestNewOptions & features_per_node(int p_features_per_node)
     {
         features_per_node_switch_ = RF_CONST;
@@ -498,6 +507,11 @@ public:
         return *this;
     }
 
+    /**
+     * @brief The number of features that are considered when computing the split.
+     * 
+     * @param p_features_per_node_switch possible values: RF_SQRT, RF_LOG, RF_ALL
+     */
     RandomForestNewOptions & features_per_node(RandomForestOptionTags p_features_per_node_switch)
     {
         vigra_precondition(p_features_per_node_switch == RF_SQRT ||
@@ -508,12 +522,18 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Use bootstrap sampling.
+     */
     RandomForestNewOptions & bootstrap_sampling(bool b)
     {
         bootstrap_sampling_ = b;
         return *this;
     }
 
+    /**
+     * @brief If resample_count is greater than zero, the split in each node is computed using only resample_count data points.
+     */
     RandomForestNewOptions & resample_count(int n)
     {
         resample_count_ = n;
@@ -521,6 +541,11 @@ public:
         return *this;
     }
 
+    /**
+     * @brief The split criterion.
+     * 
+     * @param p_split possible values: RF_GINI, RF_ENTROPY, RF_KSD
+     */
     RandomForestNewOptions & split(RandomForestOptionTags p_split)
     {
         vigra_precondition(p_split == RF_GINI ||
@@ -531,30 +556,56 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Do not split a node if its depth is greater or equal to max_depth.
+     */
     RandomForestNewOptions & max_depth(size_t d)
     {
         max_depth_ = d;
         return *this;
     }
 
+    /**
+     * @brief Value of the node complexity termination criterion.
+     */
     RandomForestNewOptions & node_complexity_tau(double tau)
     {
         node_complexity_tau_ = tau;
         return *this;
     }
 
+    /**
+     * @brief Do not split a node if it contains less than min_num_instances data points.
+     */
     RandomForestNewOptions & min_num_instances(size_t n)
     {
         min_num_instances_ = n;
         return *this;
     }
 
+    /**
+     * @brief Use stratification when creating the bootstrap samples.
+     */
     RandomForestNewOptions & use_stratification(bool b)
     {
         use_stratification_ = b;
         return *this;
     }
 
+    /**
+     * @brief The number of threads that are used in training. -1 means use number of cores.
+     */
+    RandomForestNewOptions & n_threads(int n)
+    {
+        n_threads_ = n;
+        return *this;
+    }
+
+    /**
+     * @brief Get the actual number of features per node.
+     * 
+     * @param total the total number of features
+     */
     size_t get_features_per_node(size_t total) const
     {
         if (features_per_node_switch_ == RF_SQRT)
@@ -579,6 +630,7 @@ public:
     double node_complexity_tau_;
     size_t min_num_instances_;
     bool use_stratification_;
+    int n_threads_;
 
 };
 

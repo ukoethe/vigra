@@ -301,7 +301,6 @@ random_forest_impl(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
-        int n_threads,
         STOP const & stop,
         std::map<typename LABELS::value_type, double> class_weights
 ){
@@ -358,6 +357,7 @@ random_forest_impl(
         t.problem_spec_ = pspec;
 
     // Find the correct number of threads.
+    size_t n_threads = options.n_threads_;
     if (n_threads == -1)
         n_threads = std::thread::hardware_concurrency();
     if (n_threads < 1)
@@ -408,17 +408,16 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
-        int n_threads,
         std::map<typename LABELS::value_type, double> class_weights
 ){
     if (options.max_depth_ > 0)
-        return random_forest_impl<FEATURES, LABELS, SCORER, DepthStop>(features, labels, options, n_threads, DepthStop(options.max_depth_), class_weights);
+        return random_forest_impl<FEATURES, LABELS, SCORER, DepthStop>(features, labels, options, DepthStop(options.max_depth_), class_weights);
     else if (options.min_num_instances_ > 1)
-        return random_forest_impl<FEATURES, LABELS, SCORER, NumInstancesStop>(features, labels, options, n_threads, NumInstancesStop(options.min_num_instances_), class_weights);
+        return random_forest_impl<FEATURES, LABELS, SCORER, NumInstancesStop>(features, labels, options, NumInstancesStop(options.min_num_instances_), class_weights);
     else if (options.node_complexity_tau_ > 0)
-        return random_forest_impl<FEATURES, LABELS, SCORER, NodeComplexityStop>(features, labels, options, n_threads, NodeComplexityStop(options.node_complexity_tau_), class_weights);
+        return random_forest_impl<FEATURES, LABELS, SCORER, NodeComplexityStop>(features, labels, options, NodeComplexityStop(options.node_complexity_tau_), class_weights);
     else
-        return random_forest_impl<FEATURES, LABELS, SCORER, PurityStop>(features, labels, options, n_threads, PurityStop(), class_weights);
+        return random_forest_impl<FEATURES, LABELS, SCORER, PurityStop>(features, labels, options, PurityStop(), class_weights);
 }
 
 
@@ -429,15 +428,14 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options = RandomForestNewOptions(),
-        int n_threads = -1,
         std::map<typename LABELS::value_type, double> class_weights = std::map<typename LABELS::value_type, double>()
 ){
     if (options.split_ == RF_GINI)
-        return random_forest_impl0<FEATURES, LABELS, GiniScorer>(features, labels, options, n_threads, class_weights);
+        return random_forest_impl0<FEATURES, LABELS, GiniScorer>(features, labels, options, class_weights);
     else if (options.split_ == RF_ENTROPY)
-        return random_forest_impl0<FEATURES, LABELS, EntropyScorer>(features, labels, options, n_threads, class_weights);
+        return random_forest_impl0<FEATURES, LABELS, EntropyScorer>(features, labels, options, class_weights);
     else if (options.split_ == RF_KSD)
-        return random_forest_impl0<FEATURES, LABELS, KSDScorer>(features, labels, options, n_threads, class_weights);
+        return random_forest_impl0<FEATURES, LABELS, KSDScorer>(features, labels, options, class_weights);
     else
         throw std::runtime_error("random_forest(): Unknown split.");
 }
