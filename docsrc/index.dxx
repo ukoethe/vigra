@@ -20,6 +20,8 @@
     <LI> \ref MultiDimensionalArrays
         <BR>&nbsp;&nbsp;&nbsp;<em>Arrays, iterators, and supporting types and functions
              for arbitrary dimensions</em>
+    <LI> \ref ChunkedArrayClasses
+        <BR>&nbsp;&nbsp;&nbsp;<em>Store big data (potentially larger than RAM) as a collection of rectangular blocks</em>
     <LI> \ref GraphDataStructures
         <BR>&nbsp;&nbsp;&nbsp;<em>Graph-based algorithms (e.g. segmentation) and underlying graph classes (e.g. grid graphs for arbitrary dimensions)</em>
     <LI> \ref ImportExport
@@ -249,9 +251,9 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>Fast Fourier transform for arrays of arbitrary dimension</em>
     <LI> \ref resizeMultiArraySplineInterpolation()
          <BR>&nbsp;&nbsp;&nbsp;<em>Interpolation of arrays in arbitrary dimensions</em>
-    <LI> \ref MultiArrayDistanceTransform 
+    <LI> \ref MultiArrayDistanceTransform
          <BR>&nbsp;&nbsp;&nbsp;<em>Separable distance transform for arrays of arbitrary dimension</em>
-    <LI> \ref MultiArrayMorphology 
+    <LI> \ref MultiArrayMorphology
          <BR>&nbsp;&nbsp;&nbsp;<em>Separable morphology with parabola structuring function for arrays of arbitrary dimension</em>
     <LI> \ref labelVolume(), \ref seededRegionGrowing3D(), \ref watersheds3D(), \ref localMinima3D(), \ref localMaxima3D(),
          <BR>&nbsp;&nbsp;&nbsp;<em>3-dimensional image (i.e. volume) analysis</em>
@@ -271,8 +273,8 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA's highlevel image import/export interface</em>
     <LI> \ref VolumeImpex
          <BR>&nbsp;&nbsp;&nbsp;<em>Import/export interface for volume data</em>
-    <LI> \ref VigraHDF5Impex 
-         <BR>&nbsp;&nbsp;&nbsp;<em>Import/export of images and arrays in 
+    <LI> \ref VigraHDF5Impex
+         <BR>&nbsp;&nbsp;&nbsp;<em>Import/export of images and arrays in
          <a href="http://www.hdfgroup.org/HDF5/">HDF5</a> format</em>
     <LI> \ref TIFFImpex
          <BR>&nbsp;&nbsp;&nbsp;<em>image import/export interface if you want to call libtiff functions directly</em>
@@ -283,8 +285,8 @@
     <b>If you already have an image data type in your system:</b>
 
     Then I recommend using VIGRA's algorithms directly on top of your data type.
-    To do this, you simply wrap your data in an \ref vigra::ImageIterator and/or 
-    \ref vigra::MultiArrayView (depending on the functions you want to call). If 
+    To do this, you simply wrap your data in an \ref vigra::ImageIterator and/or
+    \ref vigra::MultiArrayView (depending on the functions you want to call). If
     your data have some exotic properties, that prevent this solution from working,
     you can still implement your own versions or subclasses of the interface classe,
     which isn't very difficult.
@@ -547,39 +549,39 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 
 /** \page VigraMatlab Vigra Matlab
 
-    Matlab bindings (mex-files) for the most important VIGRA functions are located 
-    <tt>[vigra_src_dir]/src/matlab</tt>. To compile and install them, start Matlab, 
+    Matlab bindings (mex-files) for the most important VIGRA functions are located
+    <tt>[vigra_src_dir]/src/matlab</tt>. To compile and install them, start Matlab,
     go into that directory and call the function buildVigraExtensions:
-    
+
     \code
     buildVigraExtensions('install_path')
     \endcode
-    
-    If the compilation fails because includes or libraries are not found, you can 
+
+    If the compilation fails because includes or libraries are not found, you can
     provide additional search directories like this:
-    
+
     \code
     buildVigraExtensions('install_path', 'all', struct('flags', '-I/path/to/includes -L/path/to/libs'))
     \endcode
-    
+
     Additional compiler flags are specified in the same way. Suggestions about typical settings on Linux and
     Windows can be found in the individual .cpp files. For example, on Windows we usually need
-    
+
     \code
     buildVigraExtensions('install_path', 'all', ...
      struct('flags', '-I[HDF5PATH]/include -L[HDF5PATH]/lib -lhdf5dll -lhdf5_hldll -D_HDF5USEDLL_ -DHDF5CPP_USEDLL'))
     \endcode
-   
+
     After successful compilation, you can obtain a list of the available VIGRA functions by calling
 
     \code
     help vigraIndex
     \endcode
-    
-    In the same way, you get documentation for the individual functions. More 
-    information about the glue code behind the bindings is available in 
+
+    In the same way, you get documentation for the individual functions. More
+    information about the glue code behind the bindings is available in
     <a href="http://hci.iwr.uni-heidelberg.de/vigra/documents/tutorial_reference.pdf">this report</a>.
-    
+
 */
 
 /** \namespace vigra
