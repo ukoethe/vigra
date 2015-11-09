@@ -166,12 +166,6 @@
 #define VIGRA_ASSERT_INSIDE(diff)
 #endif
 
- /** \addtogroup ChunkedArrayClasses Chunked arrays.
-
-    Store big data (potentially larger than RAM) as a collection of rectangular blocks.
-*/
-//@{
-
 namespace vigra {
 
 #ifdef __APPLE__
@@ -1269,6 +1263,12 @@ createCoupledIterator(MultiArrayView<N, T, ChunkedArrayTag> const & m)
                         P0(m.shape())));
 }
 
+/** \addtogroup ChunkedArrayClasses Chunked arrays
+
+    Store big data (potentially larger than RAM) as a collection of rectangular blocks.
+*/
+//@{
+
 /** \brief Option object for \ref ChunkedArray construction.
 */
 class ChunkedArrayOptions
@@ -1344,26 +1344,26 @@ provides various APIs to easily access the data.
 <b>\#include</b> \<vigra/multi_array_chunked.hxx\> <br/>
 Namespace: vigra
 
-The template parameters @tparam N and @tparam T of the base class
-determine the array dimension and type of array elements (as in
-\ref MultiArrayView). The actual way of chunk storage is
-determined by the derived class the program uses:
+@tparam N the array dimension
+@tparam T the type of the array elements
+
+(these are the same as in \ref MultiArrayView). The actual way of chunk storage is determined by the derived class the program uses:
 
 <ul>
-    <li>\ref ChunkedArrayFull: Provides the chunked array API for a standard
+    <li>ChunkedArrayFull: Provides the chunked array API for a standard
     \ref MultiArray (i.e. there is only one chunk for the entire array).
 
-    <li>\ref ChunkedArrayLazy: All chunks reside in memory, but are only
+    <li>ChunkedArrayLazy: All chunks reside in memory, but are only
     allocated upon first access.
 
-    <li>\ref ChunkedArrayCompressed: Like ChunkedArrayLazy, but temporarily
+    <li>ChunkedArrayCompressed: Like ChunkedArrayLazy, but temporarily
     unused chunks are compressed in memory to save space.
 
-    <li>\ref ChunkedArrayTmpFile: Chunks are stored in a memory-mapped file.
+    <li>ChunkedArrayTmpFile: Chunks are stored in a memory-mapped file.
     Temporarily unused chunks are written to the hard-drive and deleted from
     memory.
 
-    <li>\ref ChunkedArrayHDF5: Chunks are stored in a HDF5 dataset by means of
+    <li>ChunkedArrayHDF5: Chunks are stored in a HDF5 dataset by means of
     HDF5's native chunked storage capabilities. Temporarily unused chunks are
     written to the hard-drive in compressed form and deleted from memory.
 </ul>
@@ -3468,9 +3468,9 @@ class ChunkIterator
     shape_type start_, stop_, chunk_shape_, array_point_;
 };
 
-} // namespace vigra
-
 //@}
+
+} // namespace vigra
 
 #undef VIGRA_ASSERT_INSIDE
 

@@ -49,11 +49,11 @@
 #define VIGRA_ASSERT_INSIDE(diff)
 #endif
 
- /** \addtogroup ChunkedArrayClasses
+namespace vigra {
+
+/** \addtogroup ChunkedArrayClasses
 */
 //@{
-
-namespace vigra {
 
 /** Implement ChunkedArray as a chunked dataset in an HDF5 file.
 
@@ -454,9 +454,9 @@ class ChunkedArrayHDF5
     Alloc alloc_;
 };
 
-} // namespace vigra
-
 //@}
+
+} // namespace vigra
 
 #undef VIGRA_ASSERT_INSIDE
 
