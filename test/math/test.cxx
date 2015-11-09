@@ -2600,15 +2600,21 @@ struct LinalgTest
         int size = 2;
         for(unsigned int i = 0; i < iterations; ++i)
         {
+            using namespace vigra::linalg;
             Matrix a = random_symmetric_matrix (size);
             Matrix ew(size, 1), ewref(size, 1);
-            Matrix ev(size, size);
-            symmetricEigensystem(a, ewref, ev);
+            Matrix ev(size, size), evref(size, size);
+            symmetricEigensystem(a, ewref, evref);
             vigra::symmetric2x2Eigenvalues(
                 a(0,0), a(0,1),
                 a(1,1),
                 &ew(0,0), &ew(1,0));
             shouldEqualSequenceTolerance(ew.data(), ew.data()+size, ewref.data(), epsilon);
+            ew = 0.0;
+            symmetricEigensystemNoniterative(a, ew, ev);
+            shouldEqualSequenceTolerance(ew.data(), ew.data()+size, ewref.data(), epsilon);
+            shouldEqualTolerance(std::fabs(dot(columnVector(ev, 0), columnVector(evref, 0))), 1.0, epsilon);
+            shouldEqualTolerance(std::fabs(dot(columnVector(ev, 1), columnVector(evref, 1))), 1.0, epsilon);
         }
 
         size = 3;
@@ -2616,14 +2622,20 @@ struct LinalgTest
         {
             Matrix a = random_symmetric_matrix (size);
             Matrix ew(size, 1), ewref(size, 1);
-            Matrix ev(size, size);
-            symmetricEigensystem(a, ewref, ev);
+            Matrix ev(size, size), evref(size, size);
+            symmetricEigensystem(a, ewref, evref);
             vigra::symmetric3x3Eigenvalues<double>(
                 a(0,0), a(0,1), a(0,2),
                 a(1,1), a(1,2),
                 a(2,2),
                 &ew(0,0), &ew(1,0), &ew(2,0));
             shouldEqualSequenceTolerance(ew.data(), ew.data()+size, ewref.data(), epsilon);
+            ew = 0.0;
+            symmetricEigensystemNoniterative(a, ew, ev);
+            shouldEqualSequenceTolerance(ew.data(), ew.data()+size, ewref.data(), epsilon);
+            shouldEqualTolerance(std::fabs(dot(columnVector(ev, 0), columnVector(evref, 0))), 1.0, epsilon);
+            shouldEqualTolerance(std::fabs(dot(columnVector(ev, 1), columnVector(evref, 1))), 1.0, epsilon);
+            shouldEqualTolerance(std::fabs(dot(columnVector(ev, 2), columnVector(evref, 2))), 1.0, epsilon);
         }
     }
 
