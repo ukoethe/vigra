@@ -56,62 +56,6 @@ namespace vigra
 
 
 
-/**
- * @brief Base class from which all random forest visitors derive.
- * 
- * @details
- * Due to the parallel training, we cannot simply use a single visitor for all trees.
- * Instead, each tree gets a copy of the original visitor. The total procedure looks as follows:
- * - Call visit_at_beginning on the original visitor.
- * - Give a copy of the visitor to each tree.
- * - In each tree, call visit_before_tree (visit_after_tree) on the copy before (after) the tree was trained.
- * - Call visit_at_end (which gets a vector with the visitor copies) on the original visitor.
- */
-class RFVisitorBase
-{
-public:
-
-    RFVisitorBase()
-    {}
-
-    /**
-     * @brief Do something before a tree has been learned.
-     */
-    void visit_before_tree()
-    {}
-
-    /**
-     * @brief Do something after a tree has been learned.
-     */
-    void visit_after_tree()
-    {}
-
-    /**
-     * @brief Do something before learning starts.
-     */
-    void visit_at_beginning()
-    {}
-
-    /**
-     * @brief Do something after all trees have been learned.
-     * 
-     * @param v vector of size number_of_trees with the visitor copies
-     */
-    template <typename VISITORS>
-    void visit_at_end(VISITORS & v)
-    {}
-
-};
-
-
-
-class RFStopVisitor : public RFVisitorBase
-{
-
-};
-
-
-
 namespace detail
 {
     template <typename ACC>
