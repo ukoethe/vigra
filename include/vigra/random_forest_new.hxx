@@ -48,69 +48,12 @@
 #include "threadpool.hxx"
 #include "random_forest_new/random_forest.hxx"
 #include "random_forest_new/random_forest_common.hxx"
+#include "random_forest_new/random_forest_visitors.hxx"
 
 
 
 namespace vigra
 {
-
-
-
-namespace detail
-{
-    template <typename ACC>
-    struct RFMapUpdater
-    {
-        template <typename A, typename B>
-        void operator()(A & a, B const & b) const
-        {
-            a = b;
-        }
-    };
-
-    template <>
-    struct RFMapUpdater<ArgMaxAcc>
-    {
-        template <typename A, typename B>
-        void operator()(A & a, B const & b) const
-        {
-            auto it = std::max_element(b.begin(), b.end());
-            a = std::distance(b.begin(), it);
-        }
-    };
-
-    template <typename FEATURES, typename LABELS, typename SAMPLER, typename SCORER>
-    void split_score(
-            FEATURES const & features,
-            LABELS const & labels,
-            std::vector<size_t> const & instance_weights,
-            std::vector<size_t> const & instances,
-            SAMPLER const & dim_sampler,
-            SCORER & score
-    ){
-        typedef typename FEATURES::value_type FeatureType;
-
-        auto feats = std::vector<FeatureType>(instances.size());
-        auto sorted_indices = std::vector<size_t>(feats.size());
-
-        for (size_t i = 0; i < dim_sampler.sampleSize(); ++i)
-        {
-            size_t const d = dim_sampler[i];
-
-            // Copy the features to a vector with the correct size (so the sort is faster because of data locality).
-            for (size_t kk = 0; kk < instances.size(); ++kk)
-                feats[kk] = features(instances[kk], d);
-
-            // Sort the features.
-            indexSort(feats.begin(), feats.end(), sorted_indices.begin());
-            auto tosort_instances = std::vector<size_t>(instances);
-            applyPermutation(sorted_indices.begin(), sorted_indices.end(), instances.begin(), tosort_instances.begin());
-
-            // Get the score of the splits.
-            score(features, labels, instance_weights, tosort_instances.begin(), tosort_instances.end(), d);
-        }
-    }
-}
 
 
 
@@ -126,14 +69,75 @@ struct DefaultRF
 
 
 
+namespace detail
+{
+
+
+
+template <typename ACC>
+struct RFMapUpdater
+{
+    template <typename A, typename B>
+    void operator()(A & a, B const & b) const
+    {
+        a = b;
+    }
+};
+
+template <>
+struct RFMapUpdater<ArgMaxAcc>
+{
+    template <typename A, typename B>
+    void operator()(A & a, B const & b) const
+    {
+        auto it = std::max_element(b.begin(), b.end());
+        a = std::distance(b.begin(), it);
+    }
+};
+
+template <typename FEATURES, typename LABELS, typename SAMPLER, typename SCORER>
+void split_score(
+        FEATURES const & features,
+        LABELS const & labels,
+        std::vector<size_t> const & instance_weights,
+        std::vector<size_t> const & instances,
+        SAMPLER const & dim_sampler,
+        SCORER & score
+){
+    typedef typename FEATURES::value_type FeatureType;
+
+    auto feats = std::vector<FeatureType>(instances.size());
+    auto sorted_indices = std::vector<size_t>(feats.size());
+
+    for (size_t i = 0; i < dim_sampler.sampleSize(); ++i)
+    {
+        size_t const d = dim_sampler[i];
+
+        // Copy the features to a vector with the correct size (so the sort is faster because of data locality).
+        for (size_t kk = 0; kk < instances.size(); ++kk)
+            feats[kk] = features(instances[kk], d);
+
+        // Sort the features.
+        indexSort(feats.begin(), feats.end(), sorted_indices.begin());
+        auto tosort_instances = std::vector<size_t>(instances);
+        applyPermutation(sorted_indices.begin(), sorted_indices.end(), instances.begin(), tosort_instances.begin());
+
+        // Get the score of the splits.
+        score(features, labels, instance_weights, tosort_instances.begin(), tosort_instances.end(), d);
+    }
+}
+
+
+
 /**
  * @brief Train a single randomized decision tree.
  */
-template <typename RF, typename SCORER, typename STOP, typename RANDENGINE>
+template <typename RF, typename SCORER, typename VISITOR, typename STOP, typename RANDENGINE>
 void random_forest_single_tree(
         typename RF::Features const & features,
         typename RF::Labels const & labels,
         RandomForestNewOptions const & options,
+        VISITOR & visitor,
         STOP stop,
         RF & tree,
         RANDENGINE const & randengine
@@ -208,6 +212,9 @@ void random_forest_single_tree(
 
         node_depths.insert(rootnode, 0);
     }
+
+    // Call the visitor.
+    visitor.visit_before_tree();
 
     // Split the nodes.
     detail::RFMapUpdater<ACC> node_map_updater;
@@ -323,6 +330,9 @@ void random_forest_single_tree(
             node_stack.push(n_right);
         }
     }
+
+    // Call the visitor.
+    visitor.visit_after_tree();
 }
 
 
@@ -330,6 +340,7 @@ void random_forest_single_tree(
 /// \brief Preprocess the labels and call the train functions on the single trees.
 template <typename FEATURES,
           typename LABELS,
+          typename VISITOR,
           typename SCORER,
           typename STOP>
 typename DefaultRF<FEATURES, LABELS>::type
@@ -337,6 +348,7 @@ random_forest_impl(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
+        VISITOR & visitor,
         STOP const & stop
 ){
     // typedef FEATURES Features;
@@ -401,64 +413,97 @@ random_forest_impl(
         rand_engines.push_back(MersenneTwister(seed));
     }
 
+    // Copy the visitor for each single tree.
+    visitor.visit_before_training();
+    std::vector<VISITOR> tree_visitors(tree_count, visitor);
+
     // Train the trees.
     ThreadPool pool((size_t)n_threads);
     for (size_t i = 0; i < tree_count; ++i)
     {
-        pool.enqueue([&features, &transformed_labels, &options, &stop, &trees, i, &rand_engines](size_t thread_id)
+        pool.enqueue([&features, &transformed_labels, &options, &tree_visitors, &stop, &trees, i, &rand_engines](size_t thread_id)
             {
-                random_forest_single_tree<RF, SCORER, STOP>(features, transformed_labels, options, stop, trees[i], rand_engines[thread_id]);
+                random_forest_single_tree<RF, SCORER, VISITOR, STOP>(features, transformed_labels, options, tree_visitors[i], stop, trees[i], rand_engines[thread_id]);
             }
         );
     }
     pool.waitFinished();
 
-    // Merge the trees together and return the result.
-    RF rf = trees[0];
+    // Merge the trees together.
+    RF rf(trees[0]);
     for (size_t i = 1; i < trees.size(); ++i)
     {
         rf.merge(trees[i]);
     }
+
+    // Call the visitor.
+    visitor.visit_after_training(tree_visitors, rf);
+
     return rf;
 }
 
 
 
 /// \brief Get the stop criterion from the option object and pass it as template argument.
-template <typename FEATURES, typename LABELS, typename SCORER>
+template <typename FEATURES, typename LABELS, typename VISITOR, typename SCORER>
 typename DefaultRF<FEATURES, LABELS>::type random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
-        RandomForestNewOptions const & options
+        RandomForestNewOptions const & options,
+        VISITOR & visitor
 ){
     if (options.max_depth_ > 0)
-        return random_forest_impl<FEATURES, LABELS, SCORER, DepthStop>(features, labels, options, DepthStop(options.max_depth_));
+        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, DepthStop>(features, labels, options, visitor, DepthStop(options.max_depth_));
     else if (options.min_num_instances_ > 1)
-        return random_forest_impl<FEATURES, LABELS, SCORER, NumInstancesStop>(features, labels, options, NumInstancesStop(options.min_num_instances_));
+        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, NumInstancesStop>(features, labels, options, visitor, NumInstancesStop(options.min_num_instances_));
     else if (options.node_complexity_tau_ > 0)
-        return random_forest_impl<FEATURES, LABELS, SCORER, NodeComplexityStop>(features, labels, options, NodeComplexityStop(options.node_complexity_tau_));
+        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, NodeComplexityStop>(features, labels, options, visitor, NodeComplexityStop(options.node_complexity_tau_));
     else
-        return random_forest_impl<FEATURES, LABELS, SCORER, PurityStop>(features, labels, options, PurityStop());
+        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, PurityStop>(features, labels, options, visitor, PurityStop());
 }
+
+
+
+} // namespace detail
 
 
 
 /// \brief Get the scorer from the option object and pass it as template argument.
+template <typename FEATURES, typename LABELS, typename VISITOR>
+typename DefaultRF<FEATURES, LABELS>::type random_forest(
+        FEATURES const & features,
+        LABELS const & labels,
+        RandomForestNewOptions const & options,
+        VISITOR & visitor
+){
+    if (options.split_ == RF_GINI)
+        return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, GiniScorer>(features, labels, options, visitor);
+    else if (options.split_ == RF_ENTROPY)
+        return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, EntropyScorer>(features, labels, options, visitor);
+    else if (options.split_ == RF_KSD)
+        return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, KSDScorer>(features, labels, options, visitor);
+    else
+        throw std::runtime_error("random_forest(): Unknown split.");
+}
+
 template <typename FEATURES, typename LABELS>
 typename DefaultRF<FEATURES, LABELS>::type random_forest(
         FEATURES const & features,
         LABELS const & labels,
-        RandomForestNewOptions const & options = RandomForestNewOptions()
+        RandomForestNewOptions const & options
 ){
-    if (options.split_ == RF_GINI)
-        return random_forest_impl0<FEATURES, LABELS, GiniScorer>(features, labels, options);
-    else if (options.split_ == RF_ENTROPY)
-        return random_forest_impl0<FEATURES, LABELS, EntropyScorer>(features, labels, options);
-    else if (options.split_ == RF_KSD)
-        return random_forest_impl0<FEATURES, LABELS, KSDScorer>(features, labels, options);
-    else
-        throw std::runtime_error("random_forest(): Unknown split.");
+    RFStopVisiting stop;
+    return random_forest(features, labels, options, stop);
 }
+
+template <typename FEATURES, typename LABELS>
+typename DefaultRF<FEATURES, LABELS>::type random_forest(
+        FEATURES const & features,
+        LABELS const & labels
+){
+    return random_forest(features, labels, RandomForestNewOptions());
+}
+
 
 
 

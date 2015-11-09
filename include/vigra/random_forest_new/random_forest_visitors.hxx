@@ -47,10 +47,17 @@ namespace vigra
  * 
  * @details
  * Due to the parallel training, we cannot simply use a single visitor for all trees.
- * Instead, each tree gets a copy of the original visitor. The total procedure looks as follows:
- * - Call visit_at_beginning on the original visitor.
- * - Give a copy of the visitor to each tree.
- * - In each tree, call visit_before_tree (visit_after_tree) on the copy before (after) the tree was trained.
+ * Instead, each tree gets a copy of the original visitor.
+ * 
+ * The random forest training with visitors looks as follows:
+ * - Do the random forest preprocessing (translate labels to 0, 1, 2, ...).
+ * - Call visit_at_beginning() on the original visitor.
+ * - For each tree:
+ * - - Copy the original visitor and give the copy to the tree.
+ * - - Do the preprocessing (create the bootstrap sample, assign weights to the data points, ...).
+ * - - Call visit_before_tree() on the visitor copy.
+ * - - Do the node splitting until the tree is fully trained.
+ * - - Call visit_after_tree() on the visitor copy.
  * - Call visit_at_end (which gets a vector with the visitor copies) on the original visitor.
  */
 class RFVisitorBase
@@ -58,6 +65,24 @@ class RFVisitorBase
 public:
 
     RFVisitorBase()
+        :
+        active_(true)
+    {}
+
+    /**
+     * @brief Do something before training starts.
+     */
+    void visit_before_training()
+    {}
+
+    /**
+     * @brief Do something after all trees have been learned.
+     * 
+     * @param v vector with the visitor copies
+     * @param rf the trained random forest
+     */
+    template <typename VISITORS, typename RF>
+    void visit_after_training(VISITORS & v, RF & rf)
     {}
 
     /**
@@ -73,28 +98,315 @@ public:
     {}
 
     /**
-     * @brief Do something before learning starts.
+     * @brief Do something after the split was made.
      */
-    void visit_at_beginning()
+    void visit_after_split()
     {}
 
     /**
-     * @brief Do something after all trees have been learned.
-     * 
-     * @param v vector of size number_of_trees with the visitor copies
+     * @brief Return whether the visitor is active or not.
      */
-    template <typename VISITORS>
-    void visit_at_end(VISITORS & v)
-    {}
+    bool is_active() const
+    {
+        return active_;
+    }
+
+    /**
+     * @brief Activate the visitor.
+     */
+    void activate()
+    {
+        active_ = true;
+    }
+
+    /**
+     * @brief Deactivate the visitor.
+     */
+    void deactivate()
+    {
+        active_ = false;
+    }
+
+private:
+
+    bool active_;
 
 };
 
 
 
-class RFStopVisitor : public RFVisitorBase
+class RFStopVisiting : public RFVisitorBase
 {
 
 };
+
+
+
+namespace detail
+{
+
+/**
+ * @brief Container elements of the statically linked visitor list. Use the create_visitor() functions to create visitors up to size 10.
+ */
+template <typename Visitor, typename Next = RFStopVisiting>
+class RFVisitorNode
+{
+public:
+
+    Visitor & visitor_;
+    Next next_; // This is no reference, because Next is either RFStopVisiting or RFVisitorNode.
+    
+    RFVisitorNode(Visitor & visitor, Next next)
+        :
+        visitor_(visitor),
+        next_(next)
+    {}
+
+    RFVisitorNode(Visitor & visitor)
+        :
+        visitor_(visitor),
+        next_(RFStopVisiting())
+    {}
+
+    void visit_before_training()
+    {
+        if (visitor_.is_active())
+            visitor_.visit_before_training();
+        next_.visit_before_training();
+    }
+
+    template <typename VISITORS, typename RF>
+    void visit_after_training(VISITORS & v, RF & rf)
+    {
+        if (visitor_.is_active())
+            visitor_.visit_after_training(v, rf);
+        next_.visit_after_training(v, rf);
+    }
+
+    void visit_before_tree()
+    {
+        if (visitor_.is_active())
+            visitor_.visit_before_tree();
+        next_.visit_before_tree();
+    }
+
+    void visit_after_tree()
+    {
+        if (visitor_.is_active())
+            visitor_.visit_after_tree();
+        next_.visit_after_tree();
+    }
+
+};
+
+} // namespace detail
+
+
+
+// Visitor factory functions for up to 10 visitors.
+// FIXME: This should be a variadic template.
+
+template<typename A>
+detail::RFVisitorNode<A>
+create_visitor(A & a)
+{
+    typedef detail::RFVisitorNode<A> _0_t;
+    _0_t _0(a);
+    return _0;
+}
+
+template<typename A, typename B>
+detail::RFVisitorNode<A, detail::RFVisitorNode<B> >
+create_visitor(A & a, B & b)
+{
+    typedef detail::RFVisitorNode<B> _1_t;
+    _1_t _1(b);
+    typedef detail::RFVisitorNode<A, _1_t> _0_t;
+    _0_t _0(a, _1);
+    return _0;
+}
+
+template<typename A, typename B, typename C>
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C> > >
+create_visitor(A & a, B & b, C & c)
+{
+    typedef detail::RFVisitorNode<C> _2_t;
+    _2_t _2(c);
+    typedef detail::RFVisitorNode<B, _2_t> _1_t;
+    _1_t _1(b, _2);
+    typedef detail::RFVisitorNode<A, _1_t> _0_t;
+    _0_t _0(a, _1);
+    return _0;
+}
+
+template<typename A, typename B, typename C, typename D>
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+    detail::RFVisitorNode<D> > > >
+create_visitor(A & a, B & b, C & c, D & d)
+{
+    typedef detail::RFVisitorNode<D> _3_t;
+    _3_t _3(d);
+    typedef detail::RFVisitorNode<C, _3_t> _2_t;
+    _2_t _2(c, _3);
+    typedef detail::RFVisitorNode<B, _2_t> _1_t;
+    _1_t _1(b, _2);
+    typedef detail::RFVisitorNode<A, _1_t> _0_t;
+    _0_t _0(a, _1);
+    return _0;
+}
+
+template<typename A, typename B, typename C, typename D, typename E>
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+    detail::RFVisitorNode<D, detail::RFVisitorNode<E> > > > >
+create_visitor(A & a, B & b, C & c, D & d, E & e)
+{
+    typedef detail::RFVisitorNode<E> _4_t;
+    _4_t _4(e);
+    typedef detail::RFVisitorNode<D, _4_t> _3_t;
+    _3_t _3(d, _4);
+    typedef detail::RFVisitorNode<C, _3_t> _2_t;
+    _2_t _2(c, _3);
+    typedef detail::RFVisitorNode<B, _2_t> _1_t;
+    _1_t _1(b, _2);
+    typedef detail::RFVisitorNode<A, _1_t> _0_t;
+    _0_t _0(a, _1);
+    return _0;
+}
+
+template<typename A, typename B, typename C, typename D, typename E,
+         typename F>
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F> > > > > >
+create_visitor(A & a, B & b, C & c, D & d, E & e, F & f)
+{
+    typedef detail::RFVisitorNode<F> _5_t;
+    _5_t _5(f);
+    typedef detail::RFVisitorNode<E, _5_t> _4_t;
+    _4_t _4(e, _5);
+    typedef detail::RFVisitorNode<D, _4_t> _3_t;
+    _3_t _3(d, _4);
+    typedef detail::RFVisitorNode<C, _3_t> _2_t;
+    _2_t _2(c, _3);
+    typedef detail::RFVisitorNode<B, _2_t> _1_t;
+    _1_t _1(b, _2);
+    typedef detail::RFVisitorNode<A, _1_t> _0_t;
+    _0_t _0(a, _1);
+    return _0;
+}
+
+template<typename A, typename B, typename C, typename D, typename E,
+         typename F, typename G>
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
+    detail::RFVisitorNode<G> > > > > > >
+create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g)
+{
+    typedef detail::RFVisitorNode<G> _6_t;
+    _6_t _6(g);
+    typedef detail::RFVisitorNode<F, _6_t> _5_t;
+    _5_t _5(f, _6);
+    typedef detail::RFVisitorNode<E, _5_t> _4_t;
+    _4_t _4(e, _5);
+    typedef detail::RFVisitorNode<D, _4_t> _3_t;
+    _3_t _3(d, _4);
+    typedef detail::RFVisitorNode<C, _3_t> _2_t;
+    _2_t _2(c, _3);
+    typedef detail::RFVisitorNode<B, _2_t> _1_t;
+    _1_t _1(b, _2);
+    typedef detail::RFVisitorNode<A, _1_t> _0_t;
+    _0_t _0(a, _1);
+    return _0;
+}
+
+template<typename A, typename B, typename C, typename D, typename E,
+         typename F, typename G, typename H>
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
+    detail::RFVisitorNode<G, detail::RFVisitorNode<H> > > > > > > >
+create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h)
+{
+    typedef detail::RFVisitorNode<H> _7_t;
+    _7_t _7(h);
+    typedef detail::RFVisitorNode<G, _7_t> _6_t;
+    _6_t _6(g, _7);
+    typedef detail::RFVisitorNode<F, _6_t> _5_t;
+    _5_t _5(f, _6);
+    typedef detail::RFVisitorNode<E, _5_t> _4_t;
+    _4_t _4(e, _5);
+    typedef detail::RFVisitorNode<D, _4_t> _3_t;
+    _3_t _3(d, _4);
+    typedef detail::RFVisitorNode<C, _3_t> _2_t;
+    _2_t _2(c, _3);
+    typedef detail::RFVisitorNode<B, _2_t> _1_t;
+    _1_t _1(b, _2);
+    typedef detail::RFVisitorNode<A, _1_t> _0_t;
+    _0_t _0(a, _1);
+    return _0;
+}
+
+template<typename A, typename B, typename C, typename D, typename E,
+         typename F, typename G, typename H, typename I>
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
+    detail::RFVisitorNode<G, detail::RFVisitorNode<H, detail::RFVisitorNode<I> > > > > > > > >
+create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h, I & i)
+{
+    typedef detail::RFVisitorNode<I> _8_t;
+    _8_t _8(i);
+    typedef detail::RFVisitorNode<H, _8_t> _7_t;
+    _7_t _7(h, _8);
+    typedef detail::RFVisitorNode<G, _7_t> _6_t;
+    _6_t _6(g, _7);
+    typedef detail::RFVisitorNode<F, _6_t> _5_t;
+    _5_t _5(f, _6);
+    typedef detail::RFVisitorNode<E, _5_t> _4_t;
+    _4_t _4(e, _5);
+    typedef detail::RFVisitorNode<D, _4_t> _3_t;
+    _3_t _3(d, _4);
+    typedef detail::RFVisitorNode<C, _3_t> _2_t;
+    _2_t _2(c, _3);
+    typedef detail::RFVisitorNode<B, _2_t> _1_t;
+    _1_t _1(b, _2);
+    typedef detail::RFVisitorNode<A, _1_t> _0_t;
+    _0_t _0(a, _1);
+    return _0;
+}
+
+template<typename A, typename B, typename C, typename D, typename E,
+         typename F, typename G, typename H, typename I, typename J>
+detail::RFVisitorNode<A, detail::RFVisitorNode<B, detail::RFVisitorNode<C, 
+    detail::RFVisitorNode<D, detail::RFVisitorNode<E, detail::RFVisitorNode<F,
+    detail::RFVisitorNode<G, detail::RFVisitorNode<H, detail::RFVisitorNode<I,
+    detail::RFVisitorNode<J> > > > > > > > > >
+create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h, I & i,
+               J & j)
+{
+    typedef detail::RFVisitorNode<J> _9_t;
+    _9_t _9(j);
+    typedef detail::RFVisitorNode<I, _9_t> _8_t;
+    _8_t _8(i, _9);
+    typedef detail::RFVisitorNode<H, _8_t> _7_t;
+    _7_t _7(h, _8);
+    typedef detail::RFVisitorNode<G, _7_t> _6_t;
+    _6_t _6(g, _7);
+    typedef detail::RFVisitorNode<F, _6_t> _5_t;
+    _5_t _5(f, _6);
+    typedef detail::RFVisitorNode<E, _5_t> _4_t;
+    _4_t _4(e, _5);
+    typedef detail::RFVisitorNode<D, _4_t> _3_t;
+    _3_t _3(d, _4);
+    typedef detail::RFVisitorNode<C, _3_t> _2_t;
+    _2_t _2(c, _3);
+    typedef detail::RFVisitorNode<B, _2_t> _1_t;
+    _1_t _1(b, _2);
+    typedef detail::RFVisitorNode<A, _1_t> _0_t;
+    _0_t _0(a, _1);
+    return _0;
+}
+
+
+
+
 
 
 
