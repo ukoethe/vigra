@@ -1,6 +1,7 @@
 /************************************************************************/
 /*                                                                      */
-/*     Copyright 2011-2012 Stefan Schmidt and Ullrich Koethe            */
+/*     Copyright 2011-2015 by Stefan Schmidt, Philip Schill and         */
+/*                            Ullrich Koethe                            */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
