@@ -37,7 +37,7 @@ import sys
 import copy
 import numpy
 import ufunc
-import collections 
+import collections
 import vigranumpycore
 
 from vigranumpycore import AxisType, AxisInfo, AxisTags
@@ -48,7 +48,7 @@ def _preserve_doc(f):
                  ("" if f.__doc__ is None else "\n" + f.__doc__)
     return f
 
-# a decorator to finalize the return value of a 
+# a decorator to finalize the return value of a
 # dimension-reducing function (e.g. array.max())
 def _finalize_reduce_result(f):
     def new_f(self, axis=None, out=None):
@@ -60,12 +60,12 @@ def _finalize_reduce_result(f):
                 res.axistags = self._copy_axistags()
                 del res.axistags[axis]
             else:
-                # this 'else' is necessary because numpy 1.6.0 gives 
+                # this 'else' is necessary because numpy 1.6.0 gives
                 #     type(res) == type(self)
                 # instead of the desired
                 #     type(res) == self.dtype
-                # when res is scalar and self is a subclass of ndarray 
-                # (this is probably a bug in numpy, since it works correctly 
+                # when res is scalar and self is a subclass of ndarray
+                # (this is probably a bug in numpy, since it works correctly
                 #  when self is a plain ndarray)
                 res = res.dtype.type(res)
         return res
@@ -97,10 +97,10 @@ class classproperty(object):
 
 def newaxis(axisinfo=AxisInfo()):
     '''
-    Create a new singleton axis via the indexing operator. This works similar to 
-    `numpy.newaxis`, but allows to provide an AxisInfo object for the new axis. 
+    Create a new singleton axis via the indexing operator. This works similar to
+    `numpy.newaxis`, but allows to provide an AxisInfo object for the new axis.
     For example::
-    
+
         >>> s = vigra.ScalarImage((width, height))
         >>> s.axistags  # no channel axis
         x y
@@ -108,7 +108,7 @@ def newaxis(axisinfo=AxisInfo()):
         >>> t.axistags  # with unknown axis type
         x y ?
         >>> t = s[..., vigra.newaxis(vigra.AxisInfo.c)]
-        >>> t.axistags  # with channel axis 
+        >>> t.axistags  # with channel axis
         x y c
     '''
     if isinstance(axisinfo, str):
@@ -118,23 +118,23 @@ def newaxis(axisinfo=AxisInfo()):
 
 def makeAxistags(spec, order=None, noChannels=None):
     '''
-    Create a new :class:`~vigra.AxisTags` object from the specification ``spec``. 
+    Create a new :class:`~vigra.AxisTags` object from the specification ``spec``.
     ``spec`` can be one of the following:
-    
-    * an instance of the ``AxisTags`` class. In this case, the function creates 
-      a copy of ``spec``. If ``order`` is given, the resulting axistags are 
+
+    * an instance of the ``AxisTags`` class. In this case, the function creates
+      a copy of ``spec``. If ``order`` is given, the resulting axistags are
       transposed to the desired order ('C', 'F', or 'V'). If ``noChannels=True``,
-      the channel axis (if any) is dropped from the specification.      
-      
-    * a string or tuple of axis keys (e.g. ``'xyc'`` or ``('x', 'y', 'c')`` respectively) 
-      or a tuple of :class:`~vigra.AxisInfo` objects (e.g. 
-      ``(AxisInfo.x, AxisInfo.y, AxisInfo.c)``). The function then constructs a 
-      new ``AxisTags`` object from this specification. If ``order`` is given, 
-      the resulting axistags are transposed to the desired order ('C', 'F', or 'V'). 
-      If ``noChannels=True``, the channel axis (if any) is dropped from the specification. 
-      
+      the channel axis (if any) is dropped from the specification.
+
+    * a string or tuple of axis keys (e.g. ``'xyc'`` or ``('x', 'y', 'c')`` respectively)
+      or a tuple of :class:`~vigra.AxisInfo` objects (e.g.
+      ``(AxisInfo.x, AxisInfo.y, AxisInfo.c)``). The function then constructs a
+      new ``AxisTags`` object from this specification. If ``order`` is given,
+      the resulting axistags are transposed to the desired order ('C', 'F', or 'V').
+      If ``noChannels=True``, the channel axis (if any) is dropped from the specification.
+
     * an integer signifying the desired number of axes. In this case, the call (including
-      optional arguments ``order`` and ``noChannels``) is forwarded to the function 
+      optional arguments ``order`` and ``noChannels``) is forwarded to the function
       :meth:`~vigra.VigraArray.defaultAxistags`, whose output is returned.
     '''
     if isinstance(spec, int):
@@ -150,45 +150,45 @@ def makeAxistags(spec, order=None, noChannels=None):
     if noChannels:
         res.dropChannelAxis()
     return res
-    
+
 def taggedView(array, axistags='', force=False, order=None, noChannels=False):
     '''
-    Create a view to the given array with type :class:`~vigra.VigraArray` and 
+    Create a view to the given array with type :class:`~vigra.VigraArray` and
     desired axistags.
 
-    You can either explicitly provide axistags to be imposed on the array 
-    (parameter ``axistags``), or a general description for the desired axis 
-    ordering (parameters ``order`` and ``noChannels``). It is an error to 
+    You can either explicitly provide axistags to be imposed on the array
+    (parameter ``axistags``), or a general description for the desired axis
+    ordering (parameters ``order`` and ``noChannels``). It is an error to
     specify axistags and order simultaneously. In addition, the effect of
     ``taggedView()`` depends on whether ``array`` already has axistags or not.
-    
-    1. If ``array`` has no axistags or ``force=True`` (i.e. existing axistags 
+
+    1. If ``array`` has no axistags or ``force=True`` (i.e. existing axistags
        shall be ignored) and the ``order`` parameter is given, the function
        constructs appropriate axistags via :meth:`~vigra.VigraArray.defaultAxistags`::
-       
+
        >>> view = array.view(VigraArray)
        >>> view.axistags = VigraArray.defaultAxistags(view.ndim, order, noChannels)
-       
-    2. If ``array`` has no axistags (or ``force=True``) and the ``axistags`` parameter 
+
+    2. If ``array`` has no axistags (or ``force=True``) and the ``axistags`` parameter
        is given, the function transforms this specification into an object of type
        :class:`~vigra.AxisTags` and attaches the result to the view::
-    
+
        >>> view = array.view(VigraArray)
        >>> view.axistags = makeAxistags(axistags)
-    
-    3. If ``array`` has axistags (and ``force=False``) and the ``order`` parameter is 
+
+    3. If ``array`` has axistags (and ``force=False``) and the ``order`` parameter is
        given, the function transposes the array into the desired order::
-       
+
        >>> view = array.transposeToOrder(order)
        >>> if noChannels:
        ...     view = view.dropChannelAxis()
-       
-    4. If ``array`` has axistags (and ``force=False``) and the ``axistags`` parameter 
-       is given, the function calls :meth:`~vigra.VigraArray.withAxes` to transforms 
+
+    4. If ``array`` has axistags (and ``force=False``) and the ``axistags`` parameter
+       is given, the function calls :meth:`~vigra.VigraArray.withAxes` to transforms
        the present axistags into the desired ones::
-    
+
        >>> view = array.withAxes(axistags)
-     
+
     The function raises a RuntimeError when the axistag specification is incompatible
     with the array.
     '''
@@ -214,7 +214,7 @@ def taggedView(array, axistags='', force=False, order=None, noChannels=False):
 
 def dropChannelAxis(array):
     '''
-    Return the view created by ``array.``:meth:`~vigra.VigraArray.dropChannelAxis` if 
+    Return the view created by ``array.``:meth:`~vigra.VigraArray.dropChannelAxis` if
     the given array supports that function, or return ``array`` unchanged otherwise.
     '''
     try:
@@ -246,7 +246,7 @@ def _AxisTags__reduce__(self):
 AxisTags.__reduce__ = _AxisTags__reduce__
 AxisTags.fromJSON = staticmethod(_AxisTags_fromJSON)
 AxisTags.fromJSON.__doc__ = _AxisTags_fromJSON.__doc__
-    
+
 # How to construct a VigraArray
 #
 # case 1: from shape and order or axistags
@@ -268,19 +268,19 @@ AxisTags.fromJSON.__doc__ = _AxisTags_fromJSON.__doc__
 # * permute the array by the inverse normalization
 # * copy original data and axistags
 
-_constructArrayFromAxistags = vigranumpycore.constructArrayFromAxistags 
-    
+_constructArrayFromAxistags = vigranumpycore.constructArrayFromAxistags
+
 def _constructArrayFromOrder(cls, shape, dtype, order, init):
     axistags = VigraArray.defaultAxistags(len(shape), order)
     return _constructArrayFromAxistags(cls, shape, dtype, axistags, init)
-    
+
 def _constructArrayFromArray(cls, obj, dtype, order, init, axistags):
     if order is None:
         order = 'A'
     if order == 'A':
         # we cannot use ndarray.copy('A') here, because this only preserves 'C' and 'F'
         # order, whereas any other order is silently transformed into 'C'
-        
+
         # we must also make sure that a singleton channel index has the smallest stride
         # (otherwise, strides in the copy may not exactly match those in obj)
         strides = list(obj.strides)
@@ -297,7 +297,7 @@ def _constructArrayFromArray(cls, obj, dtype, order, init, axistags):
         array = array.transpose(inverse_permutation)
     else:
         array = _constructArrayFromOrder(cls, obj.shape, dtype, order, False)
-        
+
     if init:
         array[...] = obj
     if cls is not numpy.ndarray:
@@ -315,7 +315,7 @@ def _constructArrayFromPickle(_arraypickle, _permutation, _axistags):
     array = array.transpose(_permutation)
     array.axistags = AxisTags.fromJSON(_axistags)
     return array
-    
+
 def _constructArrayFromZMQSocket(socket, flags=0, copy=True, track=False):
     metadata = socket.recv_json(flags=flags)
     axistags = AxisTags.fromJSON(socket.recv(flags=flags))
@@ -323,61 +323,61 @@ def _constructArrayFromZMQSocket(socket, flags=0, copy=True, track=False):
     array = numpy.frombuffer(data, dtype=metadata['dtype']).reshape(metadata['shape'])
     array = taggedView(array.transpose(metadata['permutation']), axistags)
     return array
-    
+
 ##################################################################
 
 class VigraArray(numpy.ndarray):
     '''
-    This class extends numpy.ndarray with the concept of **axistags** 
+    This class extends numpy.ndarray with the concept of **axistags**
     which encode the semantics of the array's axes. VigraArray overrides all
     numpy.ndarray methods in order to handle axistags in a sensible way.
     In particular, operations acting on two arrays simultaneously (e.g.
-    addition) will first transpose the arguments such that their axis 
+    addition) will first transpose the arguments such that their axis
     ordering matches.
 
     Constructor:
-    
+
     .. method:: VigraArray(obj, dtype=numpy.float32, order=None, init=True, value=None, axistags=None)
 
         :param obj: an array or shape object (see below)
         :param dtype: desired element type
         :param order: desired memory layout (see below)
-        :param init: True: initialize the image with zeros; False: do not 
+        :param init: True: initialize the image with zeros; False: do not
                      initialize the image
         :type init: boolean
         :param value: initialize the image with this value (overrides init)
         :type value: convertible to dtype
-        :param axistags: the AxisTags object of the new array. The length of 
-                         axistags must match the array's shape. It axistags=None, 
-                         obj.axistags is used if it exists. Otherwise, a new 
-                         axistags object is created by a call to 
+        :param axistags: the AxisTags object of the new array. The length of
+                         axistags must match the array's shape. It axistags=None,
+                         obj.axistags is used if it exists. Otherwise, a new
+                         axistags object is created by a call to
                          :meth:`~vigra.VigraArray.defaultAxistags`.
- 
+
         **obj** may be one of the following
 
-        * If obj is a numpy.ndarray or a subtype, a copy of obj with the given 
+        * If obj is a numpy.ndarray or a subtype, a copy of obj with the given
           dtype, order and resulting class VigraArray is created. If obj.axistags
           exists, the new array will have these axistags as well, unless new
           axistags are explicitly passed to the constructor.
-        * If obj is a sequence, it is interpreted as a shape. 
+        * If obj is a sequence, it is interpreted as a shape.
         * Otherwise, or if shape and axistags are incompatible, an exception
           is raised.
-          
+
         **order** can be 'C' (C order), 'F' (Fortran order), 'V' (VIGRA
-        order), 'A' (any), or None. This parameter controls the order of strides 
-        and axistags (unless axistags are explicit passed into the constructor). 
-        See the :ref:`order definitions <array-order-parameter>` for details. If 
+        order), 'A' (any), or None. This parameter controls the order of strides
+        and axistags (unless axistags are explicit passed into the constructor).
+        See the :ref:`order definitions <array-order-parameter>` for details. If
         'order=None', the order is determined by :attr:`VigraArray.defaultOrder`.
     '''
-    
+
     ###############################################################
     #                                                             #
     #       a number of helper functions related to axistags      #
     #                                                             #
-    ###############################################################    
-    
+    ###############################################################
+
     # a number of helper functions related to axistags
-    
+
     # IMPORTANT: do not remove or rename this function, it is called from C++
     @classproperty
     def defaultOrder(cls):
@@ -390,13 +390,13 @@ class VigraArray(numpy.ndarray):
     @staticmethod
     def defaultAxistags(tagSpec, order=None, noChannels=False):
         '''
-        Get default axistags for the given specification 'tagSpec'. TagSpec can be the 
-        number of dimensions of the array (``array.ndim``, must be <= 5) or a string 
-        containing a sequence of axis keys (only the default keys 'x', 'y', 'z', 't', 
-        and 'c' are currently supported). The 'order' parameter determines the axis 
+        Get default axistags for the given specification 'tagSpec'. TagSpec can be the
+        number of dimensions of the array (``array.ndim``, must be <= 5) or a string
+        containing a sequence of axis keys (only the default keys 'x', 'y', 'z', 't',
+        and 'c' are currently supported). The 'order' parameter determines the axis
         ordering, see the :ref:`order definitions <array-order-parameter>` for details.
         If 'noChannels' is True, there will be no channel axis. Examples::
-        
+
             >>> vigra.VigraArray.defaultAxistags(3)
             x y c
             >>> vigra.VigraArray.defaultAxistags(4)
@@ -443,7 +443,7 @@ class VigraArray(numpy.ndarray):
             source = source.transposeToNumpyOrder()
         except:
             pass
-        
+
         try:
             compatible = source.axistags.compatible(target.axistags)
         except:
@@ -453,21 +453,21 @@ class VigraArray(numpy.ndarray):
             raise RuntimeError("VigraArray._copyValuesImpl(): incompatible axistags")
 
         target[...] = source
-    
+
     # IMPORTANT: do not remove or rename this function, it is called from C++
     @staticmethod
     def _empty_axistags(ndim):
-        '''Create an axistags object with non-informative entries. 
+        '''Create an axistags object with non-informative entries.
            That is, all axisinfo objects are '?'.
         '''
         return AxisTags(ndim)
-    
+
     def _copy_axistags(self):
-        '''Create a copy of 'self.axistags'. If the array doesn't have axistags, _empty_axistags() 
+        '''Create a copy of 'self.axistags'. If the array doesn't have axistags, _empty_axistags()
            will be returned.
         '''
         return copy.copy(getattr(self, 'axistags', self._empty_axistags(self.ndim)))
-        
+
     def _transform_axistags(self, index):
         if hasattr(self, 'axistags'):
             return self.axistags.transform(index, self.ndim)
@@ -492,8 +492,8 @@ class VigraArray(numpy.ndarray):
     #                                                             #
     #                   standard array functions                  #
     #                                                             #
-    ###############################################################    
-    
+    ###############################################################
+
     def __new__(cls, obj, dtype=numpy.float32, order=None, init=True, value=None, axistags=None):
         if value is not None:
             init = False
@@ -537,7 +537,7 @@ class VigraArray(numpy.ndarray):
         result = numpy.ndarray.__copy__(self, order)
         result.axistags = result._copy_axistags()
         return result
-        
+
     @_preserve_doc
     def __deepcopy__(self, memo):
         # numpy.ndarray.__deepcopy__ always creates C-order arrays =>
@@ -547,18 +547,18 @@ class VigraArray(numpy.ndarray):
         memo[id(self)] = result
         result.__dict__ = copy.deepcopy(self.__dict__, memo)
         return result
-    
+
     def __repr__(self):
         return "%s(shape=%s, axistags=%s, dtype=%s, data=\n%s)" % \
           (self.__class__.__name__, str(self.shape), repr(self.axistags), str(self.dtype), str(self))
-          
+
     def __str__(self):
         try:
             self = self.transposeToVigraOrder().transpose()
         except:
             pass
         return str(self.view(numpy.ndarray))
-          
+
     def __reduce__(self):
         '''
             Enable pickling of a VigraArray, including axistags. The stride ordering
@@ -566,29 +566,29 @@ class VigraArray(numpy.ndarray):
             will not be saved and restored.
         '''
         # since the stride ordering is not necessarily preserved by ndarray's pickling
-        # functions, we need to normalize stride ordering, and permute to the original 
+        # functions, we need to normalize stride ordering, and permute to the original
         # ordering upon reconstruction
         pickled = numpy.ndarray.__reduce__(self.transposeToNumpyOrder())
         return _constructArrayFromPickle, (pickled, self.permutationFromNumpyOrder(), self.axistags.toJSON())
-        
+
     @staticmethod
     def receiveSocket(socket, flags=0, copy=True, track=False):
         '''
-        Reconstruct an array that has been transferred via a ZMQ socket by a call to 
+        Reconstruct an array that has been transferred via a ZMQ socket by a call to
         VigraArray.sendSocket(). This only works when the 'zmq' module is available.
         The meaning of the arguments is described in zmq.Socket.recv().
         '''
         return _constructArrayFromZMQSocket(socket, flags, copy, track)
 
-            
+
     ###############################################################
     #                                                             #
     #                     array I/O and display                   #
     #                                                             #
-    ###############################################################    
-    
+    ###############################################################
+
     def writeImage(self, filename, dtype = '', compression = '', mode='w'):
-        '''Write an image to a file. 
+        '''Write an image to a file.
         Consult :func:`vigra.impex.writeImage` for detailed documentation'''
         import vigra.impex
 
@@ -599,9 +599,9 @@ class VigraArray(numpy.ndarray):
             raise RuntimeError("VigraArray.writeImage(): array must have 2 non-channel axes.")
 
         vigra.impex.writeImage(self, filename, dtype, compression, mode)
-            
+
     def writeSlices(self, filename_base, filename_ext, dtype = '', compression = ''):
-        '''Write a volume to a sequence of files.         
+        '''Write a volume to a sequence of files.
         Consult :func:`vigra.impex.writeVolume` for detailed documentation.
         '''
         import vigra.impex
@@ -613,9 +613,9 @@ class VigraArray(numpy.ndarray):
             raise RuntimeError("VigraArray.writeSlices(): array must have 3 non-channel axes.")
 
         vigra.impex.writeVolume(self, filename_base, filename_ext, dtype, compression)
-            
+
     def writeHDF5(self, filenameOurGroup, pathInFile):
-        '''Write the array to a HDF5 file. 
+        '''Write the array to a HDF5 file.
            This is just a shortcut for :func:`vigra.impex.writeHDF5`
         '''
         import vigra.impex
@@ -628,7 +628,7 @@ class VigraArray(numpy.ndarray):
         The meaning of the arguments is described in zmq.Socket.send().
         '''
         import zmq
-        
+
         transposed = self.transposeToNumpyOrder().view(numpy.ndarray)
         metadata = dict(
             dtype = str(transposed.dtype),
@@ -649,10 +649,10 @@ class VigraArray(numpy.ndarray):
     def show(self, normalize=True):
         '''
         Display this image in a vigra.pyqt.ImageWindow.
-        
-        The channels are intepreted as follows: 1 channel = gray image, 
+
+        The channels are intepreted as follows: 1 channel = gray image,
         2 channels = gray + alpha, 3 channels = RGB, 4 channels = RGB + alpha.
-        
+
         The parameter `normalize` can be used to normalize an image's
         value range to 0..255:
 
@@ -668,7 +668,7 @@ class VigraArray(numpy.ndarray):
 
         `normalize` = False:
           don't scale the image's values
-           
+
         '''
         from pyqt.imagewindow import showImage
 
@@ -690,7 +690,7 @@ class VigraArray(numpy.ndarray):
         QImage will have QImage.Format_Indexed8 iff there was only one
         channel and QImage.Format_[A]RGB32 otherwise (with the last of
         2/4 channels being used as alpha channel).
-        
+
         The parameter `normalize` can be used to normalize an image's
         value range to 0..255:
 
@@ -706,7 +706,7 @@ class VigraArray(numpy.ndarray):
 
         `normalize` = False:
           don't scale the image's values
-           
+
         '''
         try:
             import qimage2ndarray
@@ -715,11 +715,11 @@ class VigraArray(numpy.ndarray):
             _fallbackModule('qimage2ndarray',
             '''
             %s
-            
+
             If qimage2ndarray is missing on your system, download it from
             http://pypi.python.org/pypi/qimage2ndarray/.''' % str(e))
             import qimage2ndarray
-        
+
         ndim = self.ndim
         if self.channelIndex < ndim:
             ndim -= 1
@@ -734,13 +734,13 @@ class VigraArray(numpy.ndarray):
             q = qimage2ndarray.array2qimage(yxImage, normalize)
 
         return q
-        
+
     def asRGB(self, normalize=True):
         '''
         Expand a scalar array (i.e. an array with a single channel) into an RGB array with
         three identical color channels. This is useful when you want to paste color
         annotations (e.g. user labels) into the array.
-        
+
         The parameter `normalize` can be used to normalize the array's
         value range to 0..255:
 
@@ -752,7 +752,7 @@ class VigraArray(numpy.ndarray):
 
         `normalize` = False:
           don't scale the array's values
-           
+
         '''
         if self.channels != 1:
             raise RuntimeError("VigraArray.asRGB(): array must have a single channel.")
@@ -783,40 +783,40 @@ class VigraArray(numpy.ndarray):
     #                                                             #
     #           new functionality enabled by axistags             #
     #                                                             #
-    ###############################################################    
-    
+    ###############################################################
+
     def copyValues(self, other):
         '''
         Copy the values of an array to another one. This is similar to::
-        
+
             self[...] = other
-            
+
         but will first transpose both arrays so that axistags are aligned. If
         there is no valid alignment, RuntimeError will be raised.
         '''
         self._copyValuesImpl(self, other)
-    
+
     # IMPORTANT: do not remove or rename this property, it is called from C++
     @property
     def channelIndex(self):
         '''
-        The index of the channel axis according to the axistags.        
-        For example, when axistags are 'x y c', the channel index is 2. 
+        The index of the channel axis according to the axistags.
+        For example, when axistags are 'x y c', the channel index is 2.
         If the axistags contain no channel axis, self.ndim is returned.
         '''
         return self.axistags.channelIndex
-    
+
     # IMPORTANT: do not remove or rename this property, it is called from C++
     @property
     def innerNonchannelIndex(self):
         '''
         The index of the innermost non-channel axis according to the axistags.
-        The innermost axis is determined by the AxisInfo sorting rules (see 
+        The innermost axis is determined by the AxisInfo sorting rules (see
         the :ref:`order definitions <array-order-parameter>` for details).
         For example, when axistags are 'x y c', the innerNonchannelIndex is 0.
         '''
         return self.axistags.innerNonchannelIndex
-    
+
     @property
     def channels(self):
         '''
@@ -828,7 +828,7 @@ class VigraArray(numpy.ndarray):
             return self.shape[i]
         else:
             return 1
-            
+
     @property
     def width(self):
         '''
@@ -840,7 +840,7 @@ class VigraArray(numpy.ndarray):
             return self.shape[i]
         else:
             raise RuntimeError("VigraArray.width(): axistag 'x' does not exist.")
-    
+
     @property
     def height(self):
         '''
@@ -852,7 +852,7 @@ class VigraArray(numpy.ndarray):
             return self.shape[i]
         else:
             raise RuntimeError("VigraArray.height(): axistag 'y' does not exist.")
-    
+
     @property
     def depth(self):
         '''
@@ -864,7 +864,7 @@ class VigraArray(numpy.ndarray):
             return self.shape[i]
         else:
             raise RuntimeError("VigraArray.depth(): axistag 'z' does not exist.")
-    
+
     @property
     def duration(self):
         '''
@@ -876,7 +876,7 @@ class VigraArray(numpy.ndarray):
             return self.shape[i]
         else:
             raise RuntimeError("VigraArray.duration(): axistag 't' does not exist.")
-            
+
     @property
     def spatialDimensions(self):
         '''
@@ -885,7 +885,7 @@ class VigraArray(numpy.ndarray):
         is set.
         '''
         return self.axistags.axisTypeCount(AxisType.Space)
-            
+
     def iterImpl(self, type):
         axes = [k for k in xrange(self.ndim) if self.axistags[k].isType(type)]
         if axes:
@@ -897,14 +897,14 @@ class VigraArray(numpy.ndarray):
                 yield self[tuple(slices)]
         else:
             yield self
-            
+
     def channelIter(self):
         '''
         Create an iterator over the channels of the array.
         In each iteration, you get the array corresponding to a single channel.
         If the axistags contain no channel axis, there is only one iteration
         which yields the entire array. Example::
-        
+
             >>> rgb = vigra.RGBImage((200, 100))
             >>> rgb.axistags
             x y c
@@ -915,14 +915,14 @@ class VigraArray(numpy.ndarray):
             (200, 100)
         '''
         return self.iterImpl(AxisType.Channels)
-            
+
     def spaceIter(self):
         '''
         Create an iterator over all the spatial coordinates in the array.
-        In each iteration, you get the value corresponding to a single 
-        coordinate location. If the axistags contain no spatial axes, 
+        In each iteration, you get the value corresponding to a single
+        coordinate location. If the axistags contain no spatial axes,
         there is only one iteration which yields the entire array. Example::
-        
+
             >>> s = vigra.ScalarImage((2,2))
             >>> s.ravel()[...] = range(4)
             >>> for p in s.spaceIter():
@@ -933,14 +933,14 @@ class VigraArray(numpy.ndarray):
             3.0
         '''
         return self.iterImpl(AxisType.Space)
-        
+
     def timeIter(self):
         '''
         Create an iterator over the time points of the array.
         In each iteration, you get the array corresponding to a single time point.
         If the axistags contain no time axis, there is only one iteration
         which yields the entire array. Example::
-        
+
             >>> from vigra import *
             >>> axistags = AxisTags(AxisInfo.t, AxisInfo.x, AxisInfo.y)
             >>> timesteps, width, height = 2, 200, 100
@@ -948,14 +948,14 @@ class VigraArray(numpy.ndarray):
             >>> step1, step2 = image_sequence.timeIter()
         '''
         return self.iterImpl(AxisType.Time)
-        
+
     def sliceIter(self, key='z'):
         '''
         Create an iterator over a single spatial axis of the array.
         In each iteration, you get the array corresponding to one coordinate
         along the axis given by 'key'. For example, to iterate along the z-axis
         to get all x-y-slices in turn, you write::
-        
+
             >>> volume = vigra.Volume((width, height, depth))
             >>> for slice in volume.sliceIter('z'):
             ...     processSlice(slice)
@@ -968,31 +968,31 @@ class VigraArray(numpy.ndarray):
                 yield self.bindAxis(i, k)
         else:
             yield self
-    
+
     def bindAxis(self, which, index=0):
         '''
         Bind the axis identified by 'which' to the given 'index'.
         This is similar to::
-        
+
             array[:, index, ...]
-            
-        but you do not need to know the position of the axis when you use the 
+
+        but you do not need to know the position of the axis when you use the
         axis key (according to axistags). For example, to get the green channel
         of an RGBImage, you write::
-        
+
             >>> rgb = vigra.RGBImage((200, 100))
             >>> green = rgb.bindAxis('c', 1)
-            
+
         This gives the correct result irrespective of the axis ordering.
         '''
         if type(which) == str:
             which = self.axistags.index(which)
         return self[(slice(None),)*which + (index,) + (slice(None),)*(self.ndim-which-1)]
-    
+
     def dropChannelAxis(self, ignoreMultiChannel=False):
         '''
         Drop the channel axis when it is a singleton.
-        This function is for easy transformation of an array shaped 
+        This function is for easy transformation of an array shaped
         (width, height, 1) into (width, height). A RuntimeError
         is raised when there is more than one channel, unless ignoreMultiChannel=True,
         in which case 'self' is returned.
@@ -1000,17 +1000,17 @@ class VigraArray(numpy.ndarray):
         ci = self.channelIndex
         if ci == self.ndim:
             return self
-        
+
         if self.shape[ci] != 1:
             if ignoreMultiChannel:
                 return self
             raise RuntimeError("dropChannelAxis(): only allowed when there is a single channel.")
         return self.bindAxis(ci, 0)
-    
+
     def insertChannelAxis(self, order=None):
         '''
         Insert a singleton channel axis.
-        This function is for easy transformation of an array shaped 
+        This function is for easy transformation of an array shaped
         (width, height) into (width, height, 1). The 'order' parameter
         determines the position of the new axis: when order is 'F', it
         will become the first axis, otherwise it will become the last
@@ -1020,7 +1020,7 @@ class VigraArray(numpy.ndarray):
         ci = self.channelIndex
         if ci != self.ndim:
             return self
-        
+
         if order == 'F':
             res = self[numpy.newaxis,...]
             res.axistags[0] = AxisInfo.c
@@ -1028,29 +1028,29 @@ class VigraArray(numpy.ndarray):
             res = self[..., numpy.newaxis]
             res.axistags[-1] = AxisInfo.c
         return res
-    
+
     def noTags(self):
         '''
         Drop the axistags. This is a shorthand for ``array.view(numpy.ndarray)``.
         '''
         return self.view(numpy.ndarray)
-    
+
     def withAxes(self, *axistags, **kw):
         '''
-        This function creates a view whose axistags are standardized in a 
+        This function creates a view whose axistags are standardized in a
         desired way. The standardization can be specified in two forms:
-        
-        1. Provide ``axistags`` explicitly in any format understood by  
-           :func:`vigra.makeAxistags`. The original axistags are then 
-           transposed into the given order. When the original array contains 
+
+        1. Provide ``axistags`` explicitly in any format understood by
+           :func:`vigra.makeAxistags`. The original axistags are then
+           transposed into the given order. When the original array contains
            axes not listed in the new specification, these axes are dropped
-           if they are singletons (otherwise, an exception is raised). 
+           if they are singletons (otherwise, an exception is raised).
            If requested axes is not present in the original array,
            singleton axes are inserted at the appropriate positions, provided
-           the axis keys are among the predefined standard keys ('x', 'y', 'z', 
-           't', 'c', 'n', 'e', 'fx', 'fy', 'fz', 'ft'). The function fails if 
+           the axis keys are among the predefined standard keys ('x', 'y', 'z',
+           't', 'c', 'n', 'e', 'fx', 'fy', 'fz', 'ft'). The function fails if
            the original array contains axes of unknown type (key '?')::
-        
+
                 >>> array.axistags
                 x y c
                 >>> array.shape
@@ -1060,12 +1060,12 @@ class VigraArray(numpy.ndarray):
                 t z y x
                 >>> view.shape
                 (1, 1, 50, 100)
-        
+
         2. Provide keyword arguments ``order`` and (optionally) ``noChannels``.
            The array is then transposed into the desired order ('C', 'F', or 'V').
            If ``noChannels=True``, the channel axis is dropped if it is a
            singleton, otherwise an exception is raised::
-        
+
                 >>> array.axistags
                 x y c
                 >>> array.shape
@@ -1080,7 +1080,7 @@ class VigraArray(numpy.ndarray):
                 y x
                 >>> view.shape
                 (50, 100)
-                
+
         The parameters ``axistags`` and ``order`` cannot be specified simultaneously.
         '''
         if len(axistags) == 1:
@@ -1113,15 +1113,15 @@ class VigraArray(numpy.ndarray):
             if kw.get('noChannels'):
                 res = res.dropChannelAxis()
         return res
-    
+
     def view5D(self, order='C'):
         '''
-            Create a 5-dimensional view containing the standard tags 
-            'x', 'y', 'z', 't', 'c' in the desired 'order' (which can be 
-            'C', 'F', and 'V' with the usual meaning). If 'self' has an 
-            axis key that is not among the five admissible keys, an 
-            exception is raised. Axes missing in 'self' are added as 
-            singleton axes with the appropriate tags. 
+            Create a 5-dimensional view containing the standard tags
+            'x', 'y', 'z', 't', 'c' in the desired 'order' (which can be
+            'C', 'F', and 'V' with the usual meaning). If 'self' has an
+            axis key that is not among the five admissible keys, an
+            exception is raised. Axes missing in 'self' are added as
+            singleton axes with the appropriate tags.
         '''
         stdTags = ['x', 'y', 'z', 't', 'c']
         for tag in self.axistags:
@@ -1131,65 +1131,65 @@ class VigraArray(numpy.ndarray):
                 raise RuntimeError("VigraArray.view5D(): array contains unsuitable axis key '%s'." % tag.key)
         index = [Ellipsis] + [newaxis(eval('AxisInfo.' + k)) for k in stdTags]
         return self[index].transposeToOrder(order)
-    
+
     def permutationToOrder(self, order):
         '''Create the permutation that would transpose this array into
            an array view with the given order (where order can be 'A',
-           'C', 'F', 'V' with the usual meaning). 
+           'C', 'F', 'V' with the usual meaning).
         '''
         return list(self.axistags.permutationToOrder(order))
-    
+
     def permutationToNormalOrder(self, types=AxisType.AllAxes):
-        '''Create the permutation that would transpose this array to 
-           normal order (that is, from the current axis order into 
-           ascending order, e.g. 'x y c' into 'c x y'). 
+        '''Create the permutation that would transpose this array to
+           normal order (that is, from the current axis order into
+           ascending order, e.g. 'x y c' into 'c x y').
            If 'types' is not 'AxisType.AllAxes', only the axes with the
            desired types are considered.
         '''
         return list(self.axistags.permutationToNormalOrder(types))
-    
+
     def permutationFromNormalOrder(self):
-        '''Create the permutation that would transpose an array that is 
+        '''Create the permutation that would transpose an array that is
            in normal (ascending) order into the axis order of this array.
-           (e.g. 'c x y' into 'x y c'). 
+           (e.g. 'c x y' into 'x y c').
         '''
         return list(self.axistags.permutationFromNormalOrder())
-    
+
     def permutationToNumpyOrder(self):
-        '''Create the permutation that would transpose this array to 
-           numpy order (that is, from the current axis order into 
-           descending order, e.g. 'x y c' into 'y x c'). 
+        '''Create the permutation that would transpose this array to
+           numpy order (that is, from the current axis order into
+           descending order, e.g. 'x y c' into 'y x c').
         '''
         return list(self.axistags.permutationToNumpyOrder())
-    
+
     def permutationFromNumpyOrder(self):
-        '''Create the permutation that would transpose an array that is 
+        '''Create the permutation that would transpose an array that is
            in numpy (descending) order into the axis order of this array.
-           (e.g.  'y x c' into 'x y c'). 
+           (e.g.  'y x c' into 'x y c').
         '''
         return list(self.axistags.permutationFromNumpyOrder())
-    
+
     def permutationToVigraOrder(self):
-        '''Create the permutation that would transpose this array to 
-           VIGRA order (that is, from the current axis order into 
-           ascending spatial order, but with the channel axis at the 
-           last position, e.g. 'c x y' into 'x y c'). 
+        '''Create the permutation that would transpose this array to
+           VIGRA order (that is, from the current axis order into
+           ascending spatial order, but with the channel axis at the
+           last position, e.g. 'c x y' into 'x y c').
         '''
         return list(self.axistags.permutationToVigraOrder())
-    
+
     def permutationFromVigraOrder(self):
-        '''Create the permutation that would transpose an array that is 
-           in VIGRA order (ascending spatial order, but with the channel 
+        '''Create the permutation that would transpose an array that is
+           in VIGRA order (ascending spatial order, but with the channel
            axis at the last position) into the axis order of this array.
-           (e.g.  'x y c' into 'c x y'). 
+           (e.g.  'x y c' into 'c x y').
         '''
         return list(self.axistags.permutationFromVigraOrder())
-    
+
     def transposeToOrder(self, order):
         '''
         Get a transposed view onto this array according to the given 'order'.
         Possible orders are:
-        
+
         'A' or '' or None:
             return the array unchanged
         'C':
@@ -1204,7 +1204,7 @@ class VigraArray(numpy.ndarray):
             return self
         permutation = self.permutationToOrder(order)
         return self.transpose(permutation)
-    
+
     def transposeToDefaultOrder(self):
         '''Equivalent to self.transposeToOrder(VigraArray.defaultOrder).
         '''
@@ -1242,8 +1242,8 @@ class VigraArray(numpy.ndarray):
             * getitem creates an array view => axistags are transferred from the
               corresponding axes of the base array
             * getitem creates a copy of an array (fancy indexing) => all axistags are '?'
-         
-        If the index contains 'numpy.newaxis', a new singleton axis is inserted at the 
+
+        If the index contains 'numpy.newaxis', a new singleton axis is inserted at the
         appropriate position, whose axisinfo is set to '?' (unknown). If the index contains
         'vigra.newaxis(axisinfo)', the singleton axis will get the given axisinfo.
         '''
@@ -1252,7 +1252,7 @@ class VigraArray(numpy.ndarray):
         except:
             if not isinstance(index, collections.Iterable):
                 raise
-            res = numpy.ndarray.__getitem__(self, 
+            res = numpy.ndarray.__getitem__(self,
                      map(lambda x: None if isinstance(x, AxisInfo) else x, index))
         if res is not self and hasattr(res, 'axistags'):
             if res.base is self or res.base is self.base:
@@ -1260,23 +1260,23 @@ class VigraArray(numpy.ndarray):
             else:
                 res.axistags = res._empty_axistags(res.ndim)
         return res
-        
+
     def subarray(self, p1, p2=None):
         '''
         Construct a subarray view from a pair of points. The first point denotes the start
         of the subarray (inclusive), the second its end (exclusive). For example,
-        
+
             a.subarray((1,2,3), (4,5,6))  # equivalent to a[1:4, 2:5, 3:6]
-        
-        The given points must have the same dimension, otherwise an IndexError is raised. 
-        If only one point is given, it refers to the subarray's end, and the start is set 
+
+        The given points must have the same dimension, otherwise an IndexError is raised.
+        If only one point is given, it refers to the subarray's end, and the start is set
         to the point (0, 0, ...) with appropriate dimension, for example
-        
+
             a.subarray((4,5,6))           # equivalent to a[:4, :5, :6]
-        
-        The function transforms the given point pair into a tuple of slices and calls 
-        self.__getitem__() in it. If the points have lower dimension than the array, an 
-        Ellipsis ('...') is implicitly appended to the slicing, so that missing axes 
+
+        The function transforms the given point pair into a tuple of slices and calls
+        self.__getitem__() in it. If the points have lower dimension than the array, an
+        Ellipsis ('...') is implicitly appended to the slicing, so that missing axes
         are left unaltered.
         '''
         if p2 is not None:
@@ -1285,13 +1285,13 @@ class VigraArray(numpy.ndarray):
             return self.__getitem__(tuple(map(lambda x,y: slice(x.__int__(), y.__int__()), p1, p2)))
         else:
             return self.__getitem__(tuple(map(lambda x: slice(x.__int__()), p1)))
-    
+
     ###############################################################
     #                                                             #
     #      re-implement ndarray methods to handle axistags        #
     #                                                             #
-    ###############################################################    
-    
+    ###############################################################
+
     @_finalize_reduce_result
     @_preserve_doc
     def all(self, axis=None, out=None):
@@ -1321,7 +1321,7 @@ class VigraArray(numpy.ndarray):
         if type(axis) == str:
             axis = self.axistags.index(axis)
         return numpy.ndarray.argmax(self, axis, out)
-        
+
     @_finalize_reduce_result
     @_preserve_doc
     def argmin(self, axis=None, out=None):
@@ -1331,11 +1331,11 @@ class VigraArray(numpy.ndarray):
         if type(axis) == str:
             axis = self.axistags.index(axis)
         return numpy.ndarray.argmin(self, axis, out)
-    
+
     @_preserve_doc
     def copy(self, order='A'):
         return self.__class__(self, dtype=self.dtype, order=order)
-    
+
     @_preserve_doc
     def cumprod(self, axis=None, dtype=None, out=None):
         '''
@@ -1366,7 +1366,7 @@ class VigraArray(numpy.ndarray):
         The array is always transposed to 'C' order before flattening.
         '''
         return self.transposeToNumpyOrder().view(numpy.ndarray).flat
-    
+
     @_preserve_doc
     def flatten(self, order='C'):
         '''
@@ -1389,7 +1389,7 @@ class VigraArray(numpy.ndarray):
         The 'axis' parameter can be an int (axis position) or string (axis key).
         '''
         return _numpyarray_overloaded_function(numpy.ndarray.mean, self, axis, dtype, out)
-    
+
     @_finalize_reduce_result
     @_preserve_doc
     def min(self, axis=None, out=None):
@@ -1397,10 +1397,10 @@ class VigraArray(numpy.ndarray):
         The 'axis' parameter can be an int (axis position) or string (axis key).
         '''
         return numpy.ndarray.min(self, axis, out)
-    
+
     @_preserve_doc
     def nonzero(self):
-        res = numpy.ndarray.nonzero(self)
+        res = tuple(k.view(type(self)) for k in numpy.ndarray.nonzero(self))
         for k in xrange(len(res)):
             res[k].axistags = AxisTags(AxisInfo(self.axistags[k]))
         return res
@@ -1415,7 +1415,7 @@ class VigraArray(numpy.ndarray):
              reduce(lambda x, y: y if y >= x and x >= 0 else -1, self.strides[:-1], 0) >= 0:
             return 'V'
         return 'A'
-    
+
     @_preserve_doc
     def prod(self, axis=None, dtype=None, out=None):
         '''
@@ -1464,7 +1464,7 @@ class VigraArray(numpy.ndarray):
     def reshape(self, shape, order='C', axistags=None):
         '''
         An additional keyword argument 'axistags' can be used to determine
-        the result's axistags. If not given, all axes of the result will 
+        the result's axistags. If not given, all axes of the result will
         have type 'unknown'.
         '''
         if axistags is not None and len(shape) != len(axistags):
@@ -1474,13 +1474,13 @@ class VigraArray(numpy.ndarray):
             res.axistags = copy.copy(axistags)
         else:
             res.axistags = res._empty_axistags(res.ndim)
-        return res        
+        return res
 
     @_preserve_doc
     def resize(self, new_shape, refcheck=True, order=False, axistags=None):
         '''
         An additional keyword argument 'axistags' can be used to determine
-        the self's axistags after the resize. If not given, all axes will have 
+        the self's axistags after the resize. If not given, all axes will have
         type 'unknown'.
         '''
         # ndarray.resize() internally checks for refcount <= 2
@@ -1495,7 +1495,7 @@ class VigraArray(numpy.ndarray):
             self.axistags = copy.copy(axistags)
         else:
             self.axistags = self._empty_axistags(self.ndim)
-            
+
     @_preserve_doc
     def squeeze(self):
         res = numpy.ndarray.squeeze(self)
@@ -1504,7 +1504,7 @@ class VigraArray(numpy.ndarray):
             for k in xrange(self.ndim-1, -1, -1):
                 if self.shape[k] == 1:
                     del res.axistags[k]
-        return res        
+        return res
 
     @_preserve_doc
     def std(self, axis=None, dtype=None, out=None, ddof=0):
@@ -1519,14 +1519,14 @@ class VigraArray(numpy.ndarray):
         The 'axis' parameter can be an int (axis position) or string (axis key).
         '''
         return _numpyarray_overloaded_function(numpy.ndarray.sum, self, axis, dtype, out)
-            
+
     @_preserve_doc
     def swapaxes(self, i, j, keepTags=False):
         '''
         Parameters 'i' and 'j' can also be ints (axis positions) or strings (axis keys).
-        
+
         If 'keepsTags' is False, axistags are swapped like the axes, otherwise they remain
-        unchanged such that the swapped axes aquire a new meaning. 
+        unchanged such that the swapped axes aquire a new meaning.
         '''
         if type(i) == str:
             i = self.axistags.index(i)
@@ -1539,8 +1539,8 @@ class VigraArray(numpy.ndarray):
                 res.axistags.swapaxes(i, j)
             except:
                 res.axistags[i], res.axistags[j] = res.axistags[j], res.axistags[i]
-        return res        
- 
+        return res
+
     @_preserve_doc
     def take(self, indices, axis=None, out=None, mode='raise'):
         '''
@@ -1553,13 +1553,13 @@ class VigraArray(numpy.ndarray):
             return numpy.ndarray.take(self.ravel(), indices, axis, out, mode)
         else:
             return numpy.ndarray.take(self, indices, axis, out, mode)
-           
+
     @_preserve_doc
     def transpose(self, *axes, **keepTags):
         '''
         An additional keyword parameter 'keepTags' can be provided (it has to be passed as an explicit
-        keyword parameter). If it is True, the axistags will remain unchanged such that the transposed 
-        axes aquire a new meaning. 
+        keyword parameter). If it is True, the axistags will remain unchanged such that the transposed
+        axes aquire a new meaning.
         '''
         keepTags = keepTags.get('keepTags', False)
         res = numpy.ndarray.transpose(self, *axes)
@@ -1579,122 +1579,122 @@ class VigraArray(numpy.ndarray):
     #        reimplement the numerical operators to make          #
     #             sure that array order is preserved              #
     #                                                             #
-    ###############################################################    
-    
+    ###############################################################
+
     def __abs__(self):
         return ufunc.absolute(self)
-    
+
     def __add__(self, other):
         return ufunc.add(self, other)
-        
+
     def __and__(self, other):
         return ufunc.bitwise_and(self, other)
-        
+
     def __div__(self, other):
         return ufunc.divide(self, other)
-    
+
     def __divmod__(self, other):
         return ufunc.floor_divide(self, other), ufunc.remainder(self, other)
-    
+
     def __eq__(self, other):
         return ufunc.equal(self, other)
-    
+
     def __floordiv__(self, other):
         return ufunc.floor_divide(self, other)
-    
+
     def __ge__(self, other):
         return ufunc.greater_equal(self, other)
-    
+
     def __gt__(self, other):
         return ufunc.greater(self, other)
-        
+
     def __invert__(self):
         return ufunc.invert(self)
-    
+
     def __le__(self, other):
         return ufunc.less_equal(self, other)
-    
+
     def __lshift__(self, other):
         return ufunc.left_shift(self, other)
-    
+
     def __lt__(self, other):
         return ufunc.less(self, other)
-    
+
     def __mod__(self, other):
         return ufunc.remainder(self, other)
-    
+
     def __mul__(self, other):
         return ufunc.multiply(self, other)
-    
+
     def __ne__(self, other):
         return ufunc.not_equal(self, other)
-    
+
     def __neg__(self):
         return ufunc.negative(self)
-    
+
     def __or__(self, other):
         return ufunc.bitwise_or(self, other)
-    
+
     def __pos__(self):
         return self
-    
+
     def __pow__(self, other):
         return ufunc.power(self, other)
-    
+
     def __radd__(self, other):
         return ufunc.add(other, self)
-    
+
     def __radd__(self, other):
         return ufunc.add(other, self)
-    
+
     def __rand__(self, other):
         return ufunc.bitwise_and(other, self)
-    
+
     def __rdiv__(self, other):
         return ufunc.divide(other, self)
-    
+
     def __rdivmod__(self, other):
         return ufunc.floor_divide(other, self), ufunc.remainder(other, self)
-    
+
     def __rfloordiv__(self, other):
         return ufunc.floor_divide(other, self)
-    
+
     def __rlshift__(self, other):
         return ufunc.left_shoft(other, self)
-    
+
     def __rmod__(self, other):
         return ufunc.remainder(other, self)
-    
+
     def __rmul__(self, other):
         return ufunc.multiply(other, self)
-    
+
     def __ror__(self, other):
         return ufunc.bitwise_or(other, self)
-    
+
     def __rpow__(self, other):
         return ufunc.power(other, self)
-    
+
     def __rrshift__(self, other):
         return ufunc.right_shift(other, self)
-    
+
     def __rshift__(self, other):
         return ufunc.right_shift(self, other)
 
     def __rsub__(self, other):
         return ufunc.subtract(other, self)
-    
+
     def __rtruediv__(self, other):
         return ufunc.true_divide(other, self)
-    
+
     def __rxor__(self, other):
         return ufunc.bitwise_xor(other, self)
-    
+
     def __sub__(self, other):
         return ufunc.subtract(self, other)
-    
+
     def __truediv__(self, other):
         return ufunc.true_divide(self, other)
-    
+
     def __xor__(self, other):
         return ufunc.bitwise_xor(self, other)
 
@@ -1714,7 +1714,7 @@ def _adjustShape(shape, order, spatialDimensions, channelCount, axistags, name):
                 shape = (channelCount,) + shape
             else:
                 shape = shape + (channelCount,)
-    else:        
+    else:
         if channelCount is None or len(shape) != spatialDimensions + 1:
             raise RuntimeError("%s: input shape has wrong length." % name)
         if channelCount > 0:
@@ -1776,66 +1776,66 @@ def _adjustInput(obj, order, spatialDimensions, channelCount, axistags, name):
 
 #################################################################
 
-def Image(obj, dtype=numpy.float32, order=None, 
+def Image(obj, dtype=numpy.float32, order=None,
           init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing an image (i.e. an array with 
-    two spatial axes 'x' and 'y' and optionally a channel axis 'c'). 
+    Factory function for a :class:`~vigra.VigraArray` representing an image (i.e. an array with
+    two spatial axes 'x' and 'y' and optionally a channel axis 'c').
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are not image-like.
     '''
     obj, axistags = _adjustInput(obj, order, 2, 0, axistags, "vigra.Image()")
     return VigraArray(obj, dtype, None, init, value, axistags)
-        
-def ScalarImage(obj, dtype=numpy.float32, order=None, 
+
+def ScalarImage(obj, dtype=numpy.float32, order=None,
                 init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a single-band image (i.e. an 
-    array with two spatial axes 'x' and 'y' and no channel axis). 
+    Factory function for a :class:`~vigra.VigraArray` representing a single-band image (i.e. an
+    array with two spatial axes 'x' and 'y' and no channel axis).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for a single-band image.
     '''
     obj, axistags = _adjustInput(obj, order, 2, None, axistags, "vigra.ScalarImage()")
     return VigraArray(obj, dtype, None, init, value, axistags)
-        
-def Vector2Image(obj, dtype=numpy.float32, order=None, 
+
+def Vector2Image(obj, dtype=numpy.float32, order=None,
                  init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a 2-band image (i.e. an 
-    array with two spatial axes 'x' and 'y' and channel axis 'c' with 2 channels). 
+    Factory function for a :class:`~vigra.VigraArray` representing a 2-band image (i.e. an
+    array with two spatial axes 'x' and 'y' and channel axis 'c' with 2 channels).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for a 2-band image.
     '''
     obj, axistags = _adjustInput(obj, order, 2, 2, axistags, "vigra.Vector2Image()")
     return VigraArray(obj, dtype, None, init, value, axistags)
 
-def Vector3Image(obj, dtype=numpy.float32, order=None, 
+def Vector3Image(obj, dtype=numpy.float32, order=None,
                  init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a 3-band image (i.e. an 
-    array with two spatial axes 'x' and 'y' and channel axis 'c' with 3 channels). 
+    Factory function for a :class:`~vigra.VigraArray` representing a 3-band image (i.e. an
+    array with two spatial axes 'x' and 'y' and channel axis 'c' with 3 channels).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for a 3-band image.
     '''
     obj, axistags = _adjustInput(obj, order, 2, 3, axistags, "vigra.Vector3Image()")
     return VigraArray(obj, dtype, None, init, value, axistags)
 
-def Vector4Image(obj, dtype=numpy.float32, order=None, 
+def Vector4Image(obj, dtype=numpy.float32, order=None,
                  init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a 4-band image (i.e. an 
-    array with two spatial axes 'x' and 'y' and channel axis 'c' with 4 channels). 
+    Factory function for a :class:`~vigra.VigraArray` representing a 4-band image (i.e. an
+    array with two spatial axes 'x' and 'y' and channel axis 'c' with 4 channels).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for a 4-band image.
     '''
     obj, axistags = _adjustInput(obj, order, 2, 4, axistags, "vigra.Vector4Image()")
     return VigraArray(obj, dtype, None, init, value, axistags)
 
-def RGBImage(obj, dtype=numpy.float32, order=None, 
+def RGBImage(obj, dtype=numpy.float32, order=None,
              init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a RGB image (i.e. an 
-    array with two spatial axes 'x' and 'y' and channel axis 'c' with 3 channels). 
+    Factory function for a :class:`~vigra.VigraArray` representing a RGB image (i.e. an
+    array with two spatial axes 'x' and 'y' and channel axis 'c' with 3 channels).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for an RGB image.
     '''
@@ -1846,77 +1846,77 @@ def RGBImage(obj, dtype=numpy.float32, order=None,
 
 #################################################################
 
-def Volume(obj, dtype=numpy.float32, order=None, 
+def Volume(obj, dtype=numpy.float32, order=None,
            init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a volume (i.e. an array with 
-    three spatial axes 'x', 'y' and 'z' and optionally a channel axis 'c'). 
+    Factory function for a :class:`~vigra.VigraArray` representing a volume (i.e. an array with
+    three spatial axes 'x', 'y' and 'z' and optionally a channel axis 'c').
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are not volume-like.
     '''
     obj, axistags = _adjustInput(obj, order, 3, 0, axistags, "vigra.Volume()")
     return VigraArray(obj, dtype, None, init, value, axistags)
 
-def ScalarVolume(obj, dtype=numpy.float32, order=None, 
+def ScalarVolume(obj, dtype=numpy.float32, order=None,
                  init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a single-band volume (i.e. an 
-    array with three spatial axes 'x', 'y' and 'z' and no channel axis). 
+    Factory function for a :class:`~vigra.VigraArray` representing a single-band volume (i.e. an
+    array with three spatial axes 'x', 'y' and 'z' and no channel axis).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for a single-band volume.
     '''
     obj, axistags = _adjustInput(obj, order, 3, None, axistags, "vigra.ScalarVolume()")
     return VigraArray(obj, dtype, None, init, value, axistags)
 
-def Vector2Volume(obj, dtype=numpy.float32, order=None, 
+def Vector2Volume(obj, dtype=numpy.float32, order=None,
                   init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a 2-band volume (i.e. an 
-    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 2 channels). 
+    Factory function for a :class:`~vigra.VigraArray` representing a 2-band volume (i.e. an
+    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 2 channels).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for a 2-band volume.
     '''
     obj, axistags = _adjustInput(obj, order, 3, 2, axistags, "vigra.Vector2Volume()")
     return VigraArray(obj, dtype, None, init, value, axistags)
 
-def Vector3Volume(obj, dtype=numpy.float32, order=None, 
+def Vector3Volume(obj, dtype=numpy.float32, order=None,
                   init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a 3-band volume (i.e. an 
-    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 3 channels). 
+    Factory function for a :class:`~vigra.VigraArray` representing a 3-band volume (i.e. an
+    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 3 channels).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for a 3-band volume.
     '''
     obj, axistags = _adjustInput(obj, order, 3, 3, axistags, "vigra.Vector3Volume()")
     return VigraArray(obj, dtype, None, init, value, axistags)
 
-def Vector4Volume(obj, dtype=numpy.float32, order=None, 
+def Vector4Volume(obj, dtype=numpy.float32, order=None,
                   init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a 4-band volume (i.e. an 
-    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 4 channels). 
+    Factory function for a :class:`~vigra.VigraArray` representing a 4-band volume (i.e. an
+    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 4 channels).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for a 4-band volume.
     '''
     obj, axistags = _adjustInput(obj, order, 3, 4, axistags, "vigra.Vector4Volume()")
     return VigraArray(obj, dtype, None, init, value, axistags)
 
-def Vector6Volume(obj, dtype=numpy.float32, order=None, 
+def Vector6Volume(obj, dtype=numpy.float32, order=None,
                   init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing a 6-band volume (i.e. an 
-    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 6 channels). 
+    Factory function for a :class:`~vigra.VigraArray` representing a 6-band volume (i.e. an
+    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 6 channels).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for a 6-band volume.
     '''
     obj, axistags = _adjustInput(obj, order, 3, 6, axistags, "vigra.Vector6Volume()")
     return VigraArray(obj, dtype, None, init, value, axistags)
 
-def RGBVolume(obj, dtype=numpy.float32, order=None, 
+def RGBVolume(obj, dtype=numpy.float32, order=None,
               init=True, value=None, axistags=None):
     '''
-    Factory function for a :class:`~vigra.VigraArray` representing an RGB volume (i.e. an 
-    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 3 channels). 
+    Factory function for a :class:`~vigra.VigraArray` representing an RGB volume (i.e. an
+    array with three spatial axes 'x', 'y' and 'z' and channel axis 'c' with 3 channels).
     Paramters are interpreted as in the VigraArray constructor, but an exception
     will be raised if the shape or axistags are unsuitable for an RGB volume.
     '''
@@ -1934,14 +1934,14 @@ class ImagePyramid(list):
             and the given 'image' is copied to 'copyImageToLevel'. The images at other
             levels are filled with zeros and sized so that the shape is reduced by half
             when going up (to higher levels), and doubled when going down.
-            
+
             This class can handle multi-channel images, but only when image.channelIndex
-            exists and returns image.ndim-1 (i.e. the image must have axistags, and the 
+            exists and returns image.ndim-1 (i.e. the image must have axistags, and the
             channel axis must correspond to the last index, as in C- or V-order).
         '''
         if lowestLevel > copyImageToLevel or highestLevel < copyImageToLevel:
             raise ValueError('ImagePyramid(): copyImageToLevel must be between lowestLevel and highestLevel (inclusive)')
-        
+
         import copy
         list.__init__(self, [copy.deepcopy(image)])
         self._lowestLevel = copyImageToLevel
@@ -1954,39 +1954,39 @@ class ImagePyramid(list):
         '''The pyramids lowest level.
         '''
         return self._lowestLevel
-    
+
     @property
     def highestLevel(self):
         '''The pyramids highest level (inclusive).
         '''
         return self._highestLevel
-    
+
     @property
     def ndim(self):
         '''The dimension of the images in this pyramid.
         '''
         return self[self._highestLevel].ndim
-    
+
     @property
     def dtype(self):
         '''The pixel type of the images in this pyramid.
         '''
         return self[self._highestLevel].dtype
-        
+
     @property
     def channelIndex(self):
         '''The channel dimension of the images in this pyramid.
-           If the images have no axistags, or no channel axis is 
+           If the images have no axistags, or no channel axis is
            specified, this defaults to 'ndim'.
         '''
         return getattr(self[self._highestLevel], 'channelIndex', self.ndim)
-        
+
     @property
     def axistags(self):
         '''The axistags of the images in this pyramid.
         '''
         return getattr(self[self._highestLevel], 'axistags', None)
-    
+
     def __getitem__(self, level):
         '''Get the image at 'level'.
            Raises IndexError when the level does not exist.
@@ -1994,19 +1994,19 @@ class ImagePyramid(list):
         if level < self.lowestLevel or level > self.highestLevel:
             raise IndexError("ImagePyramid[level]: level out of range.")
         return list.__getitem__(self, level - self.lowestLevel)
-    
+
     def __setitem__(self, level, image):
         '''Copy the data of the given 'image' to the image at 'level'.
            Raises IndexError when the level does not exist.
         '''
         self[level][...] = image[...]
-        
+
     def expandImpl(self, src, dest, centerValue):
         import filters
-        
+
         ss, ds = src.shape, dest.shape
         s = [ss[k] if 2*ss[k] == ds[k] else -1 for k in range(len(ss))]
-    
+
         smooth1 = filters.explictKernel(-1, 1, numpy.array([0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue]))
         smooth2 = filters.explictKernel(-1, 0, numpy.array([0.5, 0.5]));
 
@@ -2014,23 +2014,23 @@ class ImagePyramid(list):
         filters.convolve(src[:,:s[1]], (smooth1, smooth2), out=dest[::2,1::2])
         filters.convolve(src[:s[0],:], (smooth2, smooth1), out=dest[1::2,::2])
         filters.convolve(src[:s[0],:s[1]], (smooth2, smooth2), out=dest[1::2,1::2])
-    
+
     def reduce(self, srcLevel, destLevel, centerValue = 0.42):
         '''Reduce the image at 'srcLevel' to 'destLevel', using the Burt smoothing filter
            with the given 'centerValue'. srcLevel must be smaller than destLevel.
-           
+
            For more details, see pyramidReduceBurtFilter_ in the C++ documentation.
         '''
         # FIXME: This should be implemented in C++
         # FIXME: This should be implemented for arbitrary dimensions
         import filters
-        
+
         if srcLevel > destLevel:
             raise RuntimeError("ImagePyramid::reduce(): srcLevel <= destLevel required.")
         if srcLevel < self.lowestLevel or srcLevel > self.highestLevel:
             raise RuntimeError("ImagePyramid::reduce(): srcLevel does not exist.")
         self.createLevel(destLevel)
-        
+
         smooth = filters.burtFilterKernel(0.25 - 0.5*centerValue)
         for k in range(srcLevel, destLevel):
             i = filters.convolve(self[k], smooth)
@@ -2039,7 +2039,7 @@ class ImagePyramid(list):
     def expand(self, srcLevel, destLevel, centerValue = 0.42):
         '''Expand the image at 'srcLevel' to 'destLevel', using the Burt smoothing filter
            with the given 'centerValue'. srcLevel must be larger than destLevel.
-           
+
            For more details, see pyramidExpandBurtFilter_ in the C++ documentation.
         '''
         # FIXME: This should be implemented in C++
@@ -2057,13 +2057,13 @@ class ImagePyramid(list):
         '''Reduce the image at 'srcLevel' to 'destLevel', using the Burt smoothing filter
            with the given 'centerValue', and compute Laplacian images for the levels
            srcLevel ... destLevel-1. srcLevel must be smaller than destLevel.
-           
+
            For more details, see pyramidReduceBurtLaplacian_ in the C++ documentation.
         '''
         # FIXME: This should be implemented in C++
         # FIXME: This should be implemented for arbitrary dimensions
         import filters
-        
+
         if srcLevel > destLevel:
             raise RuntimeError("ImagePyramid::reduceLaplacian(): srcLevel <= destLevel required.")
         if srcLevel < self.lowestLevel or srcLevel > self.highestLevel:
@@ -2081,13 +2081,13 @@ class ImagePyramid(list):
         '''Expand the image at 'srcLevel' to 'destLevel', using the Burt smoothing filter
            with the given 'centerValue', and reconstruct the images for the levels
            srcLevel-1 ... destLevel from their Laplacian images. srcLevel must be larger than destLevel.
-           
+
            For more details, see pyramidExpandBurtLaplacian_ in the C++ documentation.
         '''
         # FIXME: This should be implemented in C++
         # FIXME: This should be implemented for arbitrary dimensions
         import filters
-        
+
         if srcLevel < destLevel:
             raise RuntimeError("ImagePyramid::expandLaplacian(): srcLevel >= destLevel required.")
         if srcLevel < self.lowestLevel or srcLevel > self.highestLevel:
@@ -2134,4 +2134,4 @@ class ImagePyramid(list):
                     image[...] = 0
                 self.insert(0, image)
             self._lowestLevel = level
-             
+

@@ -1364,8 +1364,7 @@ void defineSegmentation()
          arg("allowPlateaus") = false,
          arg("out") = python::object()),
         "Find local minima in a volume and mark them with the given 'marker'. Parameter "
-            "'neighborhood' specifies the pixel neighborhood to be used and can be "
-            "6 (default) or 26.\n"
+        "6 (default) or 26.\n"
         "If 'allowAtBorder' is set to 'True' local minima at the volume border will be detected.\n"
         "If 'allowPlateaus' is set to 'True' regions of constant gray value whose neighbors are all higher than the value of the region will be detected."
         "\n\n"
@@ -1420,15 +1419,15 @@ void defineSegmentation()
         "For details see localMaxima_ in the vigra C++ documentation.\n");
 
     def("localMaxima3D", registerConverters(&pythonLocalMaxima3D<float> ), 
-         (arg("volume"),
-          arg("marker") = 1.0,
-          arg("neighborhood") = 6,
-          arg("allowAtBorder") = false,
-          arg("allowPlateaus") = false,
-          arg("out") = python::object()),
-            "Find local maxima and maximal plateaus in a volume and mark them with "
-            "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
-            "neighborhood to be used and can be 6(default) or 26.\n"
+        (arg("volume"),
+         arg("marker") = 1.0,
+         arg("neighborhood") = 6,
+         arg("allowAtBorder") = false,
+         arg("allowPlateaus") = false,
+         arg("out") = python::object()),
+        "Find local maxima and maximal plateaus in a volume and mark them with "
+        "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
+        "neighborhood to be used and can be 6(default) or 26.\n"
         "If 'allowAtBorder' is set to 'True' local maxima at the volume border will be detected.\n"
         "If 'allowPlateaus' is set to 'True' regions of constant gray value whose neighbors are all lower than the value of the region will be detected."
         "\n\n"

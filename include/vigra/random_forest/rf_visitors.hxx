@@ -1388,7 +1388,7 @@ class VariableImportanceVisitor : public VisitorBase
             {               
                 //permute dimension. 
                 int n = oob_indices.size();
-                for(int jj = 1; jj < n; ++jj)
+                for(int jj = n-1; jj >= 1; --jj)
                     std::swap(features(oob_indices[jj], ii), 
                               features(oob_indices[randint(jj+1)], ii));
 

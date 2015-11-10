@@ -698,7 +698,7 @@ python_ptr constructNumpyArrayFromData(
 /** Provide the MultiArrayView interface for a Python array.
 
     This class inherits from both \ref vigra::MultiArrayView and \ref vigra::NumpyAnyArray
-    in order to support easy and save application of VIGRA functions to Python arrays.
+    in order to support easy and safe application of VIGRA functions to Python arrays.
 
     <b>\#include</b> \<vigra/numpy_array.hxx\><br>
     Namespace: vigra
