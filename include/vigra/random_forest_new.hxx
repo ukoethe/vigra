@@ -95,6 +95,8 @@ struct RFMapUpdater<ArgMaxAcc>
     }
 };
 
+
+
 template <typename FEATURES, typename LABELS, typename SAMPLER, typename SCORER>
 void split_score(
         FEATURES const & features,
@@ -106,8 +108,9 @@ void split_score(
 ){
     typedef typename FEATURES::value_type FeatureType;
 
-    auto feats = std::vector<FeatureType>(instances.size());
-    auto sorted_indices = std::vector<size_t>(feats.size());
+    auto feats = std::vector<FeatureType>(instances.size()); // storage for the features
+    auto sorted_indices = std::vector<size_t>(feats.size()); // storage for the index sort result
+    auto tosort_instances = std::vector<size_t>(feats.size()); // storage for the sorted instances
 
     for (size_t i = 0; i < dim_sampler.sampleSize(); ++i)
     {
@@ -119,7 +122,7 @@ void split_score(
 
         // Sort the features.
         indexSort(feats.begin(), feats.end(), sorted_indices.begin());
-        auto tosort_instances = std::vector<size_t>(instances);
+        std::copy(instances.begin(), instances.end(), tosort_instances.begin());
         applyPermutation(sorted_indices.begin(), sorted_indices.end(), instances.begin(), tosort_instances.begin());
 
         // Get the score of the splits.

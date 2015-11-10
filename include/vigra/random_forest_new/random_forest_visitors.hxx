@@ -100,7 +100,18 @@ public:
     /**
      * @brief Do something after the split was made.
      */
-    void visit_after_split()
+    template <typename FEATURES,
+              typename LABELS,
+              typename WEIGHTS,
+              typename SPLIT,
+              typename RANGE>
+    void visit_after_split(FEATURES & features,
+                           LABELS & labels,
+                           WEIGHTS & weights,
+                           SPLIT & split,
+                           RANGE & parent,
+                           RANGE & left_child,
+                           RANGE & right_child)
     {}
 
     /**
@@ -135,12 +146,36 @@ private:
 
 
 
+/////////////////////////////////////////////
+//          The concrete visitors          //
+/////////////////////////////////////////////
+
+/**
+ * @brief The default visitor (= "do nothing").
+ */
 class RFStopVisiting : public RFVisitorBase
 {
 
 };
 
 
+
+/**
+ * @brief Compute the out of bag error.
+ */
+class OOBError : public RFVisitorBase
+{
+public:
+
+
+
+};
+
+
+
+/////////////////////////////////////////////
+//            The visitor chain            //
+/////////////////////////////////////////////
 
 namespace detail
 {
@@ -203,8 +238,10 @@ public:
 
 
 
-// Visitor factory functions for up to 10 visitors.
-// FIXME: This should be a variadic template.
+//////////////////////////////////////////////////////////
+//   Visitor factory functions for up to 10 visitors.   //
+//      FIXME: This should be a variadic template.      //
+//////////////////////////////////////////////////////////
 
 template<typename A>
 detail::RFVisitorNode<A>

@@ -80,6 +80,7 @@ public:
     size_t numParents(Node const & node) const;
     size_t numChildren(Node const & node) const;
     size_t numRoots() const;
+    Node getNode(size_t i) const;
     Node getParent(Node const & node, size_t i = 0) const;
     Node getChild(Node const & node, size_t i = 0) const;
     Node getRoot(size_t i = 0) const;
@@ -282,6 +283,15 @@ inline size_t BinaryForest::numChildren(
 inline size_t BinaryForest::numRoots() const
 {
     return root_nodes_.size();
+}
+
+inline BinaryForest::Node BinaryForest::getNode(
+    size_t i
+) const {
+    if (i >= numNodes())
+        return Node(lemon::INVALID);
+    else
+        return Node(i);
 }
 
 inline BinaryForest::Node BinaryForest::getParent(
