@@ -728,12 +728,12 @@ struct ClassifierTest
 
     void RFvariableImportanceTest()
     {
-        double pina_var_imp[] = 
+        double pina_var_imp[] =
         {
-            0.017263, 0.040776, 0.003548, 0.003463, 0.005085, 0.015100, 0.005815, 0.019693, 
-            0.000555, 0.034199, 0.000093, 0.001263, 0.000669, 0.014896, 0.002777, 0.007323, 
-            0.017818, 0.074975, 0.003641, 0.004726, 0.005754, 0.029996, 0.008591, 0.027016, 
-            13.743281, 48.682308, 15.098506, 10.868249, 11.145719, 29.414823, 22.270783, 23.060834 
+            0.0177306,   0.0403224,  0.00387167, 0.0034106,  0.00471615,  0.0153205, 0.00530416, 0.019674,
+            0.000552956, 0.0335148, -8.2882e-05, 0.00100585, 0.000792797, 0.0143894, 0.00297142, 0.00743654,
+            0.0182836,   0.0738372, 0.00378879,  0.00441645, 0.00550894,  0.02971, 	 0.00827557, 0.0271106,
+            13.7433,     48.6823,   15.0985,     10.8682,    11.1457,     29.4148,   22.2708,    23.0608
         };
 
         vigra::MultiArrayView<2, double> p_imp(MultiArrayShape<2>::type(8, 4), pina_var_imp);
@@ -756,12 +756,10 @@ struct ClassifierTest
                             rf_default(),
                             vigra::RandomMT19937(1));
                 
-                var_imp.variable_importance_ -= p_imp;
                 for(int jj = 0; jj < p_imp.shape(0);  ++jj)
                     for(int gg = 0; gg < p_imp.shape(1); ++gg)
-                        shouldEqualTolerance(var_imp
-                                               .variable_importance_(jj, gg)
-                                             , 0.0,0.0001);
+                        shouldEqualTolerance(var_imp.variable_importance_(jj, gg)
+                                             , p_imp(jj,gg),0.01);
                 std::cerr << std::endl;
                 std::cerr << "[";
                 for(int ss = 0; ss < ii+1; ++ss)

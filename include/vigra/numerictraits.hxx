@@ -152,14 +152,12 @@
     <tr><td>
     <b> <TT>typedef ... Type;</TT></b>
     </td><td>
-    
             the type itself 
         
     </td></tr>
     <tr><td>
     <b> <TT>typedef ... Promote;</TT></b>
     </td><td>
-    
             promote type for addition and subtraction 
         
     </td></tr>
@@ -174,14 +172,12 @@
     <tr><td>
     <b> <TT>typedef ... ComplexPromote;</TT></b>
     </td><td>
-    
             promote type for complex arithmetic 
         
     </td></tr>
     <tr><td>
     <b> <TT>typedef ... ValueType;</TT></b>
     </td><td>
-    
             for scalar types: the type itself<br>
             otherwise: typename Type::value_type (if defined)
         

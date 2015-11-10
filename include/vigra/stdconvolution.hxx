@@ -139,7 +139,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
             // init the sum
             SumType sum = NumericTraits<SumType>::zero();
             KernelIterator ykernel  = ki + klr;
-            
+
             if(x >= klr.x && y >= klr.y && x < w + kul.x && y < h + kul.y)
             {
                 // kernel is entirely inside the image
@@ -227,7 +227,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                         sum += ak(xkernel) * src_acc(src_ul, diff);
                     }
                 }
-                
+
                 sum *= norm / ksum;
             }
             else if(border == BORDER_TREATMENT_ZEROPAD)
@@ -445,7 +445,7 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     <b> Preconditions:</b>
 
     <ul>
-    <li> The image must be longer than the kernel radius: <tt>w > std::max(kernel.lowerRight().x, -kernel.upperLeft().x)</tt> and 
+    <li> The image must be longer than the kernel radius: <tt>w > std::max(kernel.lowerRight().x, -kernel.upperLeft().x)</tt> and
          <tt>h > std::max(kernel.lowerRight().y, -kernel.upperLeft().y)</tt>.
     <li> The sum of kernel elements must be != 0.
     <li> <tt>border == BORDER_TREATMENT_CLIP || border == BORDER_TREATMENT_AVOID</tt>
@@ -792,6 +792,11 @@ public:
         {}
 
         ~InitProxy()
+#ifndef _MSC_VER
+            throw(PreconditionViolation)
+#elif _MSC_VER >= 1900
+            noexcept(false)
+#endif
         {
             vigra_precondition(count_ == 1 || count_ == sum_,
                                "Kernel2D::initExplicitly(): "
@@ -997,21 +1002,17 @@ public:
         }
     }
 
-        /** \brief Init as a 2D box filter with given radius.
-        
-            The function returns a reference to the kernel.
-         */    
+        /** Init as a 2D box filter with given radius.
+         */
     void initAveraging(int radius)
     {
         Kernel1D<value_type> avg;
         avg.initAveraging(radius);
         return initSeparable(avg, avg);
     }
-    
-        /** \brief Init as a 2D Gaussian function with given standard deviation and norm.
-        
-            The function returns a reference to the kernel.
-         */    
+
+        /** Init as a 2D Gaussian function with given standard deviation and norm.
+         */
     void initGaussian(double std_dev, value_type norm)
     {
         Kernel1D<value_type> gauss;
@@ -1019,9 +1020,7 @@ public:
         return initSeparable(gauss, gauss);
     }
 
-        /** \brief Init as a 2D Gaussian function with given standard deviation and unit norm.
-        
-            The function returns a reference to the kernel.
+        /** Init as a 2D Gaussian function with given standard deviation and unit norm.
          */
     void initGaussian(double std_dev)
     {
@@ -1032,7 +1031,7 @@ public:
             calculated as
             <TT>NumericTraits<value_type>::one() / (number of non-zero kernel values)</TT>.
             The kernel's value_type must be a linear space.
-        
+
             <b> Required Interface:</b>
 
             \code
@@ -1092,7 +1091,7 @@ public:
 
         /** Init the kernel by an explicit initializer list.
             The upper left and lower right corners (inclusive) of the kernel must be passed
-            either as <tt>Shape2</tt> or <tt>Diff2D</tt> objects. A comma-separated initializer 
+            either as <tt>Shape2</tt> or <tt>Diff2D</tt> objects. A comma-separated initializer
             list for the kernel's weights is given after the assignment operator like this:
 
             \code

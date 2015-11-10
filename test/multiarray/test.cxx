@@ -227,7 +227,16 @@ public:
             shouldEqual(array3[k], k+100);
         for(int k=100; k<200; ++k)
             shouldEqual(array3[k], k-100);
-
+            
+        MultiArrayView <3, scalar_type> varray1 = array;
+        MultiArrayView <3, scalar_type> varray2 = array3.subarray (Shape(0,1,0), Shape(3,4,5));
+        shouldEqual (varray1.shape(), Shape(4,4,4));
+        shouldEqual (varray2.shape(), Shape(3,3,5));
+        varray2.swap(varray1);
+        shouldEqual (varray2.shape(), Shape(4,4,4));
+        shouldEqual (varray1.shape(), Shape(3,3,5));
+        shouldEqual (varray2.data(), array.data());
+        shouldEqual (varray1.data(), &array3(0,1,0));
     }
         
     // stridearray tests
@@ -449,7 +458,10 @@ public:
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
+	array.reset();
+	array = array3.subarray(Shape(0,0,0), Shape(10,1,1)); // possible after reset.
         MultiArrayView <3, scalar_type, array3_stride> subarray = array3.subarray(Shape(0,0,0), Shape(10,1,1));
+	should(subarray == array);
         subarray = array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
         for(unsigned int k=0; k<10; ++k)
             shouldEqual(array3(k,0,0), array3(k,1,0));

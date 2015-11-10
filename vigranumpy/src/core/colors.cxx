@@ -382,7 +382,7 @@ void pythonGray2QImage_ARGB32Premultiplied(
     TmpType pixelF;
     
     TmpType normalizeLow, normalizeHigh; 
-    if(normalize != boost::python::object())
+    if(normalize.pyObject() != Py_None)
     {
         vigra_precondition(normalize.shape(0) == 2,
             "gray2qimage_ARGB32Premultiplied(): normalize.shape[0] == 2 required.");
@@ -496,7 +496,7 @@ void defineColors()
 
     docstring_options doc_options(true, true, false);
 
-    multidef("applyColortable", pyApplyColortable<vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32>(),
+    multidef("applyColortable", pyApplyColortable<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32>(),
         (arg("valueImage"), 
         arg("colortable"),
         arg("out")=python::object()), 
@@ -507,7 +507,7 @@ void defineColors()
         "is NOT repeated for values outside the colortable length.\n\n"
         "Returns: uint8 image with 4 channels\n");
     
-    multidef("gray2qimage_ARGB32Premultiplied", pyGray2QImage_ARGB32Premultiplied<vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
+    multidef("gray2qimage_ARGB32Premultiplied", pyGray2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
         (arg("image"), 
         arg("qimage"),
         arg("normalize")=python::object()), 
@@ -518,7 +518,7 @@ void defineColors()
         "normalize = numpy.asarray([10, 217], dtype=image.dtype)\n"
         "vigra.colors.gray2qimage_ARGB32Premultiplied(a, qimage2ndarray.byte_view(qimg), normalize)\n");
     
-    multidef("alphamodulated2qimage_ARGB32Premultiplied", pyAlphaModulated2QImage_ARGB32Premultiplied<vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
+    multidef("alphamodulated2qimage_ARGB32Premultiplied", pyAlphaModulated2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
         (arg("image"), 
         arg("qimage"),
         arg("tintColor"),
@@ -589,7 +589,7 @@ void defineColors()
          (arg("volume"), arg("gamma"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
          "Likewise for a 3D scalar or multiband volume.\n");
 
-    multidef("linearRangeMapping", pyLinearRangeMapping2D<vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
+    multidef("linearRangeMapping", pyLinearRangeMapping2D<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
          (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
         "Convert the intensity range of a 2D scalar or multiband image. The function applies a linear transformation "
         "to the intensities such that the value oldRange[0] is mapped onto newRange[0], "

@@ -10,6 +10,6 @@ before_script:
    
 script:
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DVIGRANUMPY_LIBRARIES="/usr/lib/libpython2.7.so;/usr/lib/libboost_python.so" ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DVIGRANUMPY_LIBRARIES="/opt/python/${TRAVIS_PYTHON_VERSION}*/lib/libpython${TRAVIS_PYTHON_VERSION}.so;/usr/lib/libboost_python.so" ..
   - make
   - make test

@@ -33,33 +33,39 @@ if(HDF5_INCLUDE_DIR)
     else()
         MESSAGE( STATUS "HDF5: need at least version ${HDF5_VERSION_MAJOR}.${HDF5_VERSION_MINOR}" )
     endif()
+    
+    if(HDF5_SUFFICIENT_VERSION)
+        # Only test for HDF5 features if a suitable version of the library was 
+        # found previously.
 
-    set(HDF5_USES_ZLIB FALSE)
-    TRY_COMPILE(HDF5_USES_ZLIB
-               ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/config/checkHDF5usesCompression.c
-               COMPILE_DEFINITIONS "-DH5_SOMETHING=H5_HAVE_FILTER_DEFLATE"
-               CMAKE_FLAGS "${HDF5_TRY_COMPILE_INCLUDE_DIR}") 
+        set(HDF5_USES_ZLIB FALSE)
+        TRY_COMPILE(HDF5_USES_ZLIB
+                   ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/config/checkHDF5usesCompression.c
+                   COMPILE_DEFINITIONS "-DH5_SOMETHING=H5_HAVE_FILTER_DEFLATE"
+                   CMAKE_FLAGS "${HDF5_TRY_COMPILE_INCLUDE_DIR}") 
 
-    if(HDF5_USES_ZLIB)
-        FIND_LIBRARY(HDF5_Z_LIBRARY NAMES zlib1 zlib z )
-        set(HDF5_ZLIB_OK ${HDF5_Z_LIBRARY})
-    else()
-        set(HDF5_ZLIB_OK TRUE)
-        set(HDF5_Z_LIBRARY "")
-    endif()
+        if(HDF5_USES_ZLIB)
+            FIND_LIBRARY(HDF5_Z_LIBRARY NAMES zlib1 zlib z )
+            set(HDF5_ZLIB_OK ${HDF5_Z_LIBRARY})
+        else()
+            set(HDF5_ZLIB_OK TRUE)
+            set(HDF5_Z_LIBRARY "")
+        endif()
 
-    set(HDF5_USES_SZLIB FALSE)
-    TRY_COMPILE(HDF5_USES_SZLIB 
-                ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/config/checkHDF5usesCompression.c
-                COMPILE_DEFINITIONS "-DH5_SOMETHING=H5_HAVE_FILTER_SZIP"
-                CMAKE_FLAGS "${HDF5_TRY_COMPILE_INCLUDE_DIR}") 
-            
-    if(HDF5_USES_SZLIB)
-        FIND_LIBRARY(HDF5_SZ_LIBRARY NAMES szlibdll sz szip)
-        set(HDF5_SZLIB_OK ${HDF5_SZ_LIBRARY})
-    else()
-        set(HDF5_SZLIB_OK TRUE)
-        set(HDF5_SZ_LIBRARY "")
+        set(HDF5_USES_SZLIB FALSE)
+        TRY_COMPILE(HDF5_USES_SZLIB 
+                    ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/config/checkHDF5usesCompression.c
+                    COMPILE_DEFINITIONS "-DH5_SOMETHING=H5_HAVE_FILTER_SZIP"
+                    CMAKE_FLAGS "${HDF5_TRY_COMPILE_INCLUDE_DIR}") 
+                
+        if(HDF5_USES_SZLIB)
+            FIND_LIBRARY(HDF5_SZ_LIBRARY NAMES szlibdll sz szip)
+            set(HDF5_SZLIB_OK ${HDF5_SZ_LIBRARY})
+        else()
+            set(HDF5_SZLIB_OK TRUE)
+            set(HDF5_SZ_LIBRARY "")
+        endif()
+    
     endif()
 endif()
 
