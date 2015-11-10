@@ -208,14 +208,14 @@ namespace detail
     {
     public:
 
-        GeneralScorer(std::vector<size_t> const & priors)
+        GeneralScorer(std::vector<double> const & priors)
             :
             split_found_(false),
             best_split_(0),
             best_dim_(0),
             best_score_(MINIMIZE ? std::numeric_limits<double>::max() : std::numeric_limits<double>::lowest()),
             priors_(priors),
-            n_total_(std::accumulate(priors.begin(), priors.end(), 0))
+            n_total_(std::accumulate(priors.begin(), priors.end(), 0.0))
         {}
 
         template <typename FEATURES, typename LABELS, typename WEIGHTS, typename ITER>
@@ -232,8 +232,8 @@ namespace detail
 
             FUNCTOR score;
 
-            std::vector<size_t> counts(priors_.size(), 0);
-            size_t n_left = 0;
+            std::vector<double> counts(priors_.size(), 0.0);
+            double n_left = 0;
             ITER next = begin;
             ++next;
             for (; next != end; ++begin, ++next)
@@ -271,14 +271,14 @@ namespace detail
 
     private:
 
-        std::vector<size_t> const priors_;
-        size_t n_total_;
+        std::vector<double> const priors_;
+        double const n_total_;
     };
 
     class GiniScoreFunctor
     {
     public:
-        double operator()(std::vector<size_t> const & priors, std::vector<size_t> const & counts, double n_total, double n_left) const
+        double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
         {
             double const n_right = n_total - n_left;
             double gini_left = 1;
@@ -297,13 +297,13 @@ namespace detail
     class EntropyScoreFunctor
     {
     public:
-        double operator()(std::vector<size_t> const & priors, std::vector<size_t> const & counts, double n_total, double n_left) const
+        double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
         {
             double const n_right = n_total - n_left;
             double ig = 0;
             for (size_t i = 0; i < counts.size(); ++i)
             {
-                auto c = counts[i];
+                double c = counts[i];
                 if (c != 0)
                     ig -= c * std::log(c / n_left);
 
@@ -318,24 +318,25 @@ namespace detail
     class KSDScoreFunctor
     {
     public:
-        double operator()(std::vector<size_t> const & priors, std::vector<size_t> const & counts, double n_total, double n_left) const
+        double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
         {
-            size_t nnz = 0;
-            std::vector<double> norm_counts(counts.size(), 0);
+            double const eps = 1e-10;
+            double nnz = 0;
+            std::vector<double> norm_counts(counts.size(), 0.0);
             for (size_t i = 0; i < counts.size(); ++i)
             {
-                if (priors[i] != 0)
+                if (priors[i] > eps)
                 {
-                    norm_counts[i] = counts[i] / static_cast<double>(priors[i]);
+                    norm_counts[i] = counts[i] / priors[i];
                     ++nnz;
                 }
             }
-            if (nnz == 0)
+            if (nnz < eps)
                 return 0.0;
 
             // NOTE to future self:
             // In std::accumulate, it makes a huge difference whether you use 0 or 0.0 as init. Think about that before making changes.
-            double const mean = std::accumulate(norm_counts.begin(), norm_counts.end(), 0.0) / static_cast<double>(nnz);
+            double const mean = std::accumulate(norm_counts.begin(), norm_counts.end(), 0.0) / nnz;
 
             // Compute the sum of the squared distances.
             double ksd = 0.0;

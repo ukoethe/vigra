@@ -63,7 +63,7 @@ struct DefaultRF
     typedef RandomForest<FEATURES,
                          LABELS,
                          LessEqualSplitTest<typename FEATURES::value_type>,
-                         ArgMaxVectorAcc<size_t>,
+                         ArgMaxVectorAcc<double>,
                          VectorTag> type;
 };
 
@@ -73,6 +73,10 @@ namespace detail
 {
 
 
+// In random forest training, you can store different items in the leaves,
+// depending on the accumulator. Typically, you want to store the class
+// distributions, but the ArgMaxAcc does not need this. The RFMapUpdater is
+// used to store only the necessary information.
 
 template <typename ACC>
 struct RFMapUpdater
@@ -101,7 +105,7 @@ template <typename FEATURES, typename LABELS, typename SAMPLER, typename SCORER>
 void split_score(
         FEATURES const & features,
         LABELS const & labels,
-        std::vector<size_t> const & instance_weights,
+        std::vector<double> const & instance_weights,
         std::vector<size_t> const & instances,
         SAMPLER const & dim_sampler,
         SCORER & score
@@ -170,10 +174,10 @@ void random_forest_single_tree(
     typedef std::vector<size_t>::iterator InstanceIter;
 
     // Create the weights for the bootstrap sample.
-    auto instance_weights = std::vector<size_t>(num_instances, 1);
+    auto instance_weights = std::vector<double>(num_instances, 1.0);
     if (options.bootstrap_sampling_)
     {
-        std::fill(instance_weights.begin(), instance_weights.end(), 0);
+        std::fill(instance_weights.begin(), instance_weights.end(), 0.0);
         Sampler<MersenneTwister> sampler(num_instances,
                                          SamplerOptions().withReplacement().stratified(options.use_stratification_),
                                          &randengine);
@@ -189,7 +193,7 @@ void random_forest_single_tree(
     if (options.class_weights_.size() > 0)
     {
         for (size_t i = 0; i < instance_weights.size(); ++i)
-            instance_weights[i] *= options.class_weights_[labels(i)];
+            instance_weights[i] *= options.class_weights_.at(labels(i));
     }
 
     // Create the sampler for the split dimensions.
@@ -200,7 +204,7 @@ void random_forest_single_tree(
     std::stack<Node> node_stack;
     typedef std::pair<InstanceIter, InstanceIter> IterPair;
     PropertyMap<Node, IterPair> instance_range;  // begin and end of the instances of a node in the bookkeeping vector
-    PropertyMap<Node, std::vector<size_t> > node_distributions;  // the class distributions in the nodes
+    PropertyMap<Node, std::vector<double> > node_distributions;  // the class distributions in the nodes
     PropertyMap<Node, size_t> node_depths;  // the depth of each node
     {
         auto const rootnode = tree.graph_.addNode();
@@ -208,7 +212,7 @@ void random_forest_single_tree(
 
         instance_range.insert(rootnode, IterPair(instance_indices.begin(), instance_indices.end()));
 
-        auto priors = std::vector<size_t>(spec.num_classes_, 0);
+        auto priors = std::vector<double>(spec.num_classes_, 0.0);
         for (auto i : instance_indices)
             priors[labels(i)] += instance_weights[i];
         node_distributions.insert(rootnode, priors);
@@ -234,7 +238,7 @@ void random_forest_single_tree(
         // Get the instances with weight > 0.
         std::vector<size_t> used_instances;
         for (auto it = begin; it != end; ++it)
-            if (instance_weights[*it] > 0)
+            if (instance_weights[*it] > 1e-10)
                 used_instances.push_back(*it);
  
         // Find the best split.
@@ -300,7 +304,7 @@ void random_forest_single_tree(
         node_depths.insert(n_right, depth+1);
 
         // Compute the class distribution for the left child.
-        auto priors_left = std::vector<size_t>(spec.num_classes_, 0);
+        auto priors_left = std::vector<double>(spec.num_classes_, 0.0);
         for (auto it = begin; it != split_iter; ++it)
             priors_left[labels(*it)] += instance_weights[*it];
         node_distributions.insert(n_left, priors_left);
@@ -317,7 +321,7 @@ void random_forest_single_tree(
         }
 
         // Compute the class distribution for the right child.
-        auto priors_right = std::vector<size_t>(spec.num_classes_, 0);
+        auto priors_right = std::vector<double>(spec.num_classes_, 0.0);
         for (auto it = split_iter; it != end; ++it)
             priors_right[labels(*it)] += instance_weights[*it];
         node_distributions.insert(n_right, priors_right);
@@ -345,14 +349,16 @@ template <typename FEATURES,
           typename LABELS,
           typename VISITOR,
           typename SCORER,
-          typename STOP>
+          typename STOP,
+          typename RANDENGINE>
 typename DefaultRF<FEATURES, LABELS>::type
 random_forest_impl(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
         VISITOR & visitor,
-        STOP const & stop
+        STOP const & stop,
+        RANDENGINE & randengine
 ){
     // typedef FEATURES Features;
     typedef LABELS Labels;
@@ -401,7 +407,7 @@ random_forest_impl(
         n_threads = 1;
 
     // Use the global random engine to create seeds for the random engines that run in the threads.
-    UniformIntRandomFunctor<MersenneTwister> rand_functor;
+    UniformIntRandomFunctor<RANDENGINE> rand_functor(randengine);
     std::set<UInt32> seeds;
     while (seeds.size() < n_threads)
     {
@@ -410,10 +416,10 @@ random_forest_impl(
     vigra_assert(seeds.size() == n_threads, "random_forest_impl(): Could not create random seeds.");
 
     // Create the random engines that run in the threads.
-    std::vector<MersenneTwister> rand_engines;
+    std::vector<RANDENGINE> rand_engines;
     for (auto seed : seeds)
     {
-        rand_engines.push_back(MersenneTwister(seed));
+        rand_engines.push_back(RANDENGINE(seed));
     }
 
     // Copy the visitor for each single tree.
@@ -448,21 +454,22 @@ random_forest_impl(
 
 
 /// \brief Get the stop criterion from the option object and pass it as template argument.
-template <typename FEATURES, typename LABELS, typename VISITOR, typename SCORER>
+template <typename FEATURES, typename LABELS, typename VISITOR, typename SCORER, typename RANDENGINE>
 typename DefaultRF<FEATURES, LABELS>::type random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
-        VISITOR & visitor
+        VISITOR & visitor,
+        RANDENGINE & randengine
 ){
     if (options.max_depth_ > 0)
-        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, DepthStop>(features, labels, options, visitor, DepthStop(options.max_depth_));
+        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, DepthStop, RANDENGINE>(features, labels, options, visitor, DepthStop(options.max_depth_), randengine);
     else if (options.min_num_instances_ > 1)
-        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, NumInstancesStop>(features, labels, options, visitor, NumInstancesStop(options.min_num_instances_));
+        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, NumInstancesStop, RANDENGINE>(features, labels, options, visitor, NumInstancesStop(options.min_num_instances_), randengine);
     else if (options.node_complexity_tau_ > 0)
-        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, NodeComplexityStop>(features, labels, options, visitor, NodeComplexityStop(options.node_complexity_tau_));
+        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, NodeComplexityStop, RANDENGINE>(features, labels, options, visitor, NodeComplexityStop(options.node_complexity_tau_), randengine);
     else
-        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, PurityStop>(features, labels, options, visitor, PurityStop());
+        return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, PurityStop, RANDENGINE>(features, labels, options, visitor, PurityStop(), randengine);
 }
 
 
@@ -472,6 +479,24 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest_impl0(
 
 
 /// \brief Get the scorer from the option object and pass it as template argument.
+template <typename FEATURES, typename LABELS, typename VISITOR, typename RANDENGINE>
+typename DefaultRF<FEATURES, LABELS>::type random_forest(
+        FEATURES const & features,
+        LABELS const & labels,
+        RandomForestNewOptions const & options,
+        VISITOR & visitor,
+        RANDENGINE & randengine
+){
+    if (options.split_ == RF_GINI)
+        return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, GiniScorer, RANDENGINE>(features, labels, options, visitor, randengine);
+    else if (options.split_ == RF_ENTROPY)
+        return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, EntropyScorer, RANDENGINE>(features, labels, options, visitor, randengine);
+    else if (options.split_ == RF_KSD)
+        return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, KSDScorer, RANDENGINE>(features, labels, options, visitor, randengine);
+    else
+        throw std::runtime_error("random_forest(): Unknown split.");
+}
+
 template <typename FEATURES, typename LABELS, typename VISITOR>
 typename DefaultRF<FEATURES, LABELS>::type random_forest(
         FEATURES const & features,
@@ -479,14 +504,8 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest(
         RandomForestNewOptions const & options,
         VISITOR & visitor
 ){
-    if (options.split_ == RF_GINI)
-        return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, GiniScorer>(features, labels, options, visitor);
-    else if (options.split_ == RF_ENTROPY)
-        return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, EntropyScorer>(features, labels, options, visitor);
-    else if (options.split_ == RF_KSD)
-        return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, KSDScorer>(features, labels, options, visitor);
-    else
-        throw std::runtime_error("random_forest(): Unknown split.");
+    auto randengine = MersenneTwister::global();
+    return random_forest(features, labels, options, visitor, randengine);
 }
 
 template <typename FEATURES, typename LABELS>

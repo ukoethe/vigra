@@ -487,6 +487,10 @@ public:
     {
         return map_.begin();
     }
+    const_iterator cbegin() const
+    {
+        return map_.cbegin();
+    }
     iterator end()
     {
         return map_.end();
@@ -494,6 +498,10 @@ public:
     const_iterator end() const
     {
         return map_.end();
+    }
+    const_iterator cend() const
+    {
+        return map_.cend();
     }
     void clear()
     {
@@ -574,6 +582,10 @@ public:
     {
         return map_.begin();
     }
+    const_iterator cbegin() const
+    {
+        return map_.cend();
+    }
     iterator end()
     {
         return map_.end();
@@ -581,6 +593,10 @@ public:
     const_iterator end() const
     {
         return map_.end();
+    }
+    const_iterator cend() const
+    {
+        return map_.cend();
     }
     void clear()
     {
