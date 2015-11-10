@@ -743,14 +743,7 @@ namespace vigra{
         }
     };
 
-    struct NoEarlyStop{
-        Int64 onQueue2_;
-        Int64 onQueue1_;
-    };
 
-    struct CarvingEarlyStop{
-        
-    };
 
     template<class PRIORITY_TYPE,class LABEL_TYPE>
     struct CarvingFunctor{
@@ -780,7 +773,6 @@ namespace vigra{
         class EDGE_WEIGHTS,
         class SEEDS,
         class PRIORITY_MANIP_FUNCTOR,
-        class EARLY_STOP_FUNCTOR,
         class LABELS
     >
     void edgeWeightedWatershedsSegmentationImpl(
@@ -788,7 +780,6 @@ namespace vigra{
         const EDGE_WEIGHTS      & edgeWeights,
         const SEEDS             & seeds,
         PRIORITY_MANIP_FUNCTOR  & priorManipFunctor,
-        EARLY_STOP_FUNCTOR      & earlyStop,
         LABELS                  & labels
     ){  
         typedef GRAPH Graph;
@@ -885,8 +876,7 @@ namespace vigra{
         LABELS             & labels
     ){  
         detail_watersheds_segmentation::RawPriorityFunctor fPriority;
-        detail_watersheds_segmentation::NoEarlyStop fStop;
-        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,fPriority,fStop,labels);
+        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,fPriority,labels);
     }   
     
 
@@ -911,8 +901,7 @@ namespace vigra{
         typedef typename EDGE_WEIGHTS::Value WeightType;
         typedef typename LABELS::Value       LabelType;
         detail_watersheds_segmentation::CarvingFunctor<WeightType,LabelType> fPriority(backgroundLabel,backgroundBias, noPriorBelow);
-        detail_watersheds_segmentation::CarvingEarlyStop fStop;
-        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,fPriority,fStop,labels);
+        detail_watersheds_segmentation::edgeWeightedWatershedsSegmentationImpl(g,edgeWeights,seeds,fPriority,labels);
     }
 
     /// \brief edge weighted watersheds Segmentataion
