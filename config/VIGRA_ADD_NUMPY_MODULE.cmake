@@ -20,12 +20,8 @@
 #        no installation target will be defined). The cmake target name becomes 
 #        'vigranumpy_modulename' in order to get useful alphabetic sorting of 
 #        targets in project files.
-
-
-
-
 FUNCTION(VIGRA_ADD_NUMPY_MODULE target)
-    
+
     # parse the args
     set(v SOURCES)
     set(PART_OF_VIGRANUMPY 0)
