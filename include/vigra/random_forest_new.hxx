@@ -455,7 +455,8 @@ random_forest_impl(
 
 /// \brief Get the stop criterion from the option object and pass it as template argument.
 template <typename FEATURES, typename LABELS, typename VISITOR, typename SCORER, typename RANDENGINE>
-typename DefaultRF<FEATURES, LABELS>::type random_forest_impl0(
+typename DefaultRF<FEATURES, LABELS>::type
+random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
@@ -480,7 +481,8 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest_impl0(
 
 /// \brief Get the scorer from the option object and pass it as template argument.
 template <typename FEATURES, typename LABELS, typename VISITOR, typename RANDENGINE>
-typename DefaultRF<FEATURES, LABELS>::type random_forest(
+typename DefaultRF<FEATURES, LABELS>::type
+random_forest(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
@@ -498,7 +500,8 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest(
 }
 
 template <typename FEATURES, typename LABELS, typename VISITOR>
-typename DefaultRF<FEATURES, LABELS>::type random_forest(
+typename DefaultRF<FEATURES, LABELS>::type
+random_forest(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
@@ -509,7 +512,8 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest(
 }
 
 template <typename FEATURES, typename LABELS>
-typename DefaultRF<FEATURES, LABELS>::type random_forest(
+typename DefaultRF<FEATURES, LABELS>::type
+random_forest(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options
@@ -519,7 +523,8 @@ typename DefaultRF<FEATURES, LABELS>::type random_forest(
 }
 
 template <typename FEATURES, typename LABELS>
-typename DefaultRF<FEATURES, LABELS>::type random_forest(
+typename DefaultRF<FEATURES, LABELS>::type
+random_forest(
         FEATURES const & features,
         LABELS const & labels
 ){
