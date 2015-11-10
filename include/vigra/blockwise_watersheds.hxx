@@ -68,8 +68,6 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
     MultiCoordinateIterator<N> it3(shape);
     MultiCoordinateIterator<N> end = it3.getEndIterator();
 
-    // trivial prarallel. )(halo 1)
-    
     #pragma omp parallel for
     for(MultiCoordinateIterator<N> it=it3; it < end; ++it)
     {
