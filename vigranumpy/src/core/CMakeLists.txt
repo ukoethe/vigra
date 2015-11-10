@@ -53,10 +53,6 @@ VIGRA_ADD_NUMPY_MODULE(filters SOURCES
     ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
   
-
-find_package(Boost COMPONENTS system filesystem REQUIRED)
-
-
 VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     segmentation.cxx
     edgedetection.cxx
@@ -64,9 +60,6 @@ VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     accumulator.cxx
     accumulator-region-singleband.cxx
     accumulator-region-multiband.cxx
-  LIBRARIES
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
   VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES
