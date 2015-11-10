@@ -34,7 +34,6 @@
 /************************************************************************/
 #include <vigra/unittest.hxx>
 #include <vigra/random_forest_new.hxx>
-#include <vigra/hdf5impex.hxx>
 
 using namespace vigra;
 
