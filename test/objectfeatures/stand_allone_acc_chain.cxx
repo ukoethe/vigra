@@ -63,8 +63,8 @@ struct StandAloneAccChain
         using namespace vigra::acc;
 
         typedef double DataType;
-        typedef typename MultiArrayShape<3>::type CoordType;
-        typedef typename MultiArrayShape<3>::type   Point;
+        typedef MultiArrayShape<3>::type CoordType;
+        typedef MultiArrayShape<3>::type   Point;
 
 
         typedef Select< 
