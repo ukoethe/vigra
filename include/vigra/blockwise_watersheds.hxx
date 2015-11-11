@@ -66,7 +66,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
     vigra_assert(shape == directions_blocks_begin.shape(), "");
     
     MultiCoordinateIterator<N> itBegin(shape);
-    MultiCoordinateIterator<N> end = it3.getEndIterator();
+    MultiCoordinateIterator<N> end = itBegin.getEndIterator();
 
 
     const auto d = std::distance(itBegin, end);
