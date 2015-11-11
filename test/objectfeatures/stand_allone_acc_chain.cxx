@@ -106,6 +106,7 @@ struct StandAloneAccChain
 };
 
 
+
 struct StandAlloneAccChain : public vigra::test_suite
 {
     StandAlloneAccChain()
