@@ -661,8 +661,8 @@ struct AdjacencyListGraph2MergeGraphTest{
         MergeGraphType g(graph2x2_);
         const Node n1=g.nodeFromId(1);
         const Node n2=g.nodeFromId(2);
-        const Node n3=g.nodeFromId(3);
-        const Node n4=g.nodeFromId(4);
+        //const Node n3=g.nodeFromId(3);
+        //const Node n4=g.nodeFromId(4);
 
         const Edge e12 = g.findEdge(n1,n2);
         //const Edge e13 = g.findEdge(n1,n3);

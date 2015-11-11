@@ -65,14 +65,18 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
     Shape shape = overlaps.shape();
     vigra_assert(shape == directions_blocks_begin.shape(), "");
     
-    MultiCoordinateIterator<N> it3(shape);
+    MultiCoordinateIterator<N> itBegin(shape);
     MultiCoordinateIterator<N> end = it3.getEndIterator();
 
+
+    const auto d = std::distance(itBegin, end);
     #pragma omp parallel for
-    for(MultiCoordinateIterator<N> it=it3; it < end; ++it)
+    for(int i=0; i<d; ++i)
     {
-        DirectionsBlock directions_block = directions_blocks_begin[*it];
-        OverlappingBlock<DataArray> data_block = overlaps[*it];
+        const auto  iterVal = itBegin[i];
+
+        DirectionsBlock directions_block = directions_blocks_begin[iterVal];
+        OverlappingBlock<DataArray> data_block = overlaps[iterVal];
         
         typedef GridGraph<N, undirected_tag> Graph;
         typedef typename Graph::NodeIt GraphScanner;
