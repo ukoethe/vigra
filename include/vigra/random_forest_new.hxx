@@ -64,7 +64,7 @@ struct DefaultRF
                          LABELS,
                          LessEqualSplitTest<typename FEATURES::value_type>,
                          ArgMaxVectorAcc<double>,
-                         VectorTag> type;
+                         IndexVectorTag> type;
 };
 
 

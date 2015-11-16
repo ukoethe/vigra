@@ -218,6 +218,9 @@ struct BinaryForestTests
         should(m.at(n0) == 27);
         should(m.at(n1) == 12);
         should(m.at(n2) == 73);
+        should(m[n0] == 27);
+        should(m[n1] == 12);
+        should(m[n2] == 73);
         
         {
             auto it = m.find(n0);
@@ -249,6 +252,8 @@ struct BinaryForestTests
         should(m.size() == 2);
         should(m.at(n0) == 27);
         should(m.at(n2) == 73);
+        should(m[n0] == 27);
+        should(m[n2] == 73);
 
         {
             std::vector<Node> keys, keys_expected;// = {n0, n2};
@@ -280,7 +285,7 @@ struct BinaryForestTestSuite : public test_suite
         add(testCase(&BinaryForestTests::test_basic_attributes));
         add(testCase(&BinaryForestTests::test_merge));
         add(testCase(&BinaryForestTests::test_property_map<MapTag>));
-        add(testCase(&BinaryForestTests::test_property_map<VectorTag>));
+        add(testCase(&BinaryForestTests::test_property_map<IndexVectorTag>));
     }
 };
 

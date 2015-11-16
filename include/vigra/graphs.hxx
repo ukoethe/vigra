@@ -442,7 +442,7 @@ std::ostream & operator << (std::ostream & os, ArcDescriptor<INDEXTYPE> const & 
 enum ContainerTag
 {
     MapTag,
-    VectorTag
+    IndexVectorTag
 };
 
 /**
@@ -452,7 +452,10 @@ enum ContainerTag
  * @tparam <MAPPEDTYPE> the mapped type
  * @tparam <ContainerTag = MapTag> whether to use a map or a vector as underlying storage
  * 
- * @note operator[] is not supported, since it is easily misused if a vector is used as underlying storage.
+ * @note
+ * In contrast to std::map, operator[] does not insert elements. Use insert() instead.
+ * If ContainerTag == MapTag: at() and operator[] behave like std::map::at().
+ * If ContainerTag == IndexVectorTag: at() behaves like std::map::at(). operator[] does not check if the key exists.
  */
 template <typename KEYTYPE, typename MAPPEDTYPE, ContainerTag = MapTag >
 class PropertyMap
@@ -472,6 +475,14 @@ public:
         return map_.at(k);
     }
     mapped_type const & at(key_type const & k) const
+    {
+        return map_.at(k);
+    }
+    mapped_type & operator[](key_type const & k)
+    {
+        return map_.at(k);
+    }
+    mapped_type const & operator[](key_type const & k) const
     {
         return map_.at(k);
     }
@@ -534,7 +545,7 @@ protected:
  * @brief Specialization of PropertyMap that uses a vector as underlying storage instead of a map.
  */
 template <typename KEYTYPE, typename MAPPEDTYPE>
-class PropertyMap<KEYTYPE, MAPPEDTYPE, VectorTag>
+class PropertyMap<KEYTYPE, MAPPEDTYPE, IndexVectorTag>
 {
 public:
     typedef KEYTYPE key_type;
@@ -548,16 +559,28 @@ public:
 
     mapped_type & at(key_type const & k)
     {
+#ifdef VIGRA_CHECK_BOUNDS
         if (indices_.at(k.id()) == -1)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
+#endif
 
         return map_[indices_[k.id()]].second;
     }
     mapped_type const & at(key_type const & k) const
     {
+#ifdef VIGRA_CHECK_BOUNDS
         if (indices_.at(k.id()) == -1)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
+#endif
 
+        return map_[indices_[k.id()]].second;
+    }
+    mapped_type & operator[](key_type const & k)
+    {
+        return map_[indices_[k.id()]].second;
+    }
+    mapped_type const & operator[](key_type const & k) const
+    {
         return map_[indices_[k.id()]].second;
     }
     void insert(key_type const & k, mapped_type const & v)
