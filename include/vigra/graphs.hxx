@@ -49,6 +49,7 @@
 
 #include "metaprogramming.hxx"
 #include "tinyvector.hxx"
+#include "filter_iterator.hxx"
 
 #ifdef USE_BOOST_THREAD
 // If boost is available, go ahead and include its tuple implementation
@@ -442,6 +443,7 @@ std::ostream & operator << (std::ostream & os, ArcDescriptor<INDEXTYPE> const & 
 enum ContainerTag
 {
     MapTag,
+    VectorTag,
     IndexVectorTag
 };
 
@@ -541,8 +543,175 @@ protected:
 
 
 
+#define DEFAULT_PMAP_KEY lemon::INVALID
+
+namespace detail
+{
+    template <typename VALUE_TYPE>
+    struct PMapValueSkipper
+    {
+        typedef VALUE_TYPE value_type;
+        bool operator()(value_type const & v)
+        {
+            return v.first != DEFAULT_PMAP_KEY;
+        }
+    };
+}
+
 /**
- * @brief Specialization of PropertyMap that uses a vector as underlying storage instead of a map.
+ * @brief Specialization of PropertyMap that stores the elements in a vector (size = max node id of stored elements).
+ */
+template <typename KEYTYPE, typename MAPPEDTYPE>
+class PropertyMap<KEYTYPE, MAPPEDTYPE, VectorTag>
+{
+public:
+    typedef KEYTYPE key_type;
+    typedef MAPPEDTYPE mapped_type;
+    typedef std::pair<key_type, mapped_type> value_type;
+    typedef value_type & reference;
+    typedef value_type const & const_reference;
+    typedef std::vector<value_type> Map;
+    typedef detail::PMapValueSkipper<value_type> ValueSkipper;
+    typedef FilterIterator<ValueSkipper, typename Map::iterator> iterator;
+    typedef FilterIterator<ValueSkipper, typename Map::const_iterator> const_iterator;
+
+    PropertyMap()
+        :
+        num_elements_(0)
+    {}
+
+    mapped_type & at(key_type const & k)
+    {
+#ifdef VIGRA_CHECK_BOUNDS
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+            throw std::out_of_range("PropertyMap::at(): Key not found.");
+#endif
+        return map_[k.id()].second;
+    }
+
+    mapped_type const & at(key_type const & k) const
+    {
+#ifdef VIGRA_CHECK_BOUNDS
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+            throw std::out_of_range("PropertyMap::at(): Key not found.");
+#endif
+        return map_[k.id()].second;
+    }
+
+    mapped_type & operator[](key_type const & k)
+    {
+        return map_[k.id()].second;
+    }
+
+    mapped_type const & operator[](key_type const & k) const
+    {
+        return map_[k.id()].second;
+    }
+
+    void insert(key_type const & k, mapped_type const & v)
+    {
+        if (k.id() < 0)
+            throw std::out_of_range("PropertyMap::insert(): Key must not be negative.");
+
+        if (k.id() >= map_.size())
+            map_.resize(k.id()+1, value_type(DEFAULT_PMAP_KEY, mapped_type()));
+
+        auto & elt = map_[k.id()];
+        if (elt.first == DEFAULT_PMAP_KEY)
+            ++num_elements_;
+
+        elt.first = k;
+        elt.second = v;
+    }
+
+#define MAKE_ITER(it) make_filter_iterator(ValueSkipper(), it, map_.end())
+#define MAKE_CITER(it) make_filter_iterator(ValueSkipper(), it, map_.cend())
+
+    iterator begin()
+    {
+        return MAKE_ITER(map_.begin());
+    }
+
+    const_iterator begin() const
+    {
+        return MAKE_ITER(map_.begin());
+    }
+
+    const_iterator cbegin() const
+    {
+        return MAKE_CITER(map_.cbegin());
+    }
+
+    iterator end()
+    {
+        return MAKE_ITER(map_.end());
+    }
+
+    const_iterator end() const
+    {
+        return MAKE_ITER(map_.end());
+    }
+
+    const_iterator cend() const
+    {
+        return MAKE_CITER(map_.cend());
+    }
+
+    iterator find(key_type const & k)
+    {
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+            return end();
+        else
+            return MAKE_ITER(std::next(map_.begin(), k.id()));
+    }
+
+    const_iterator find(key_type const & k) const
+    {
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+            return end();
+        else
+            return MAKE_ITER(std::next(map_.begin(), k.id()));
+    }
+
+#undef MAKE_ITER
+#undef MAKE_CITER
+
+    void clear()
+    {
+        map_.clear();
+        num_elements_ = 0;
+    }
+
+    size_t size() const
+    {
+        return num_elements_;
+    }
+
+    size_t erase(key_type const & k)
+    {
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+        {
+            return 0;
+        }
+        else
+        {
+            map_[k.id()].first = DEFAULT_PMAP_KEY;
+            --num_elements_;
+            return 1;
+        }
+    }
+
+protected:
+    Map map_;
+    size_t num_elements_;
+};
+
+
+
+/**
+ * @brief
+ * Specialization of PropertyMap that stores the elements in a vector (size = number of stored elements).
+ * An additional index vector is needed for bookkeeping (size = max node id of stored elements).
  */
 template <typename KEYTYPE, typename MAPPEDTYPE>
 class PropertyMap<KEYTYPE, MAPPEDTYPE, IndexVectorTag>
@@ -563,26 +732,28 @@ public:
         if (indices_.at(k.id()) == -1)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
 #endif
-
         return map_[indices_[k.id()]].second;
     }
+
     mapped_type const & at(key_type const & k) const
     {
 #ifdef VIGRA_CHECK_BOUNDS
         if (indices_.at(k.id()) == -1)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
 #endif
-
         return map_[indices_[k.id()]].second;
     }
+
     mapped_type & operator[](key_type const & k)
     {
         return map_[indices_[k.id()]].second;
     }
+
     mapped_type const & operator[](key_type const & k) const
     {
         return map_[indices_[k.id()]].second;
     }
+
     void insert(key_type const & k, mapped_type const & v)
     {
         if (k.id() < 0)
@@ -597,35 +768,43 @@ public:
             map_.push_back(value_type(k, v));
         }
     }
+
     iterator begin()
     {
         return map_.begin();
     }
+
     const_iterator begin() const
     {
         return map_.begin();
     }
+
     const_iterator cbegin() const
     {
         return map_.cend();
     }
+
     iterator end()
     {
         return map_.end();
     }
+
     const_iterator end() const
     {
         return map_.end();
     }
+
     const_iterator cend() const
     {
         return map_.cend();
     }
+
     void clear()
     {
         map_.clear();
         indices_.clear();
     }
+
     iterator find(key_type const & k)
     {
         if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
@@ -633,6 +812,7 @@ public:
         else
             return std::next(map_.begin(), indices_[k.id()]);
     }
+
     const_iterator find(key_type const & k) const
     {
         if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)
@@ -640,10 +820,12 @@ public:
         else
             return std::next(map_.begin(), indices_[k.id()]);
     }
+
     size_t size() const
     {
         return map_.size();
     }
+    
     size_t erase(key_type const & k)
     {
         if (k.id() < 0 || k.id() >= indices_.size() || indices_[k.id()] == -1)

@@ -286,6 +286,7 @@ struct BinaryForestTestSuite : public test_suite
         add(testCase(&BinaryForestTests::test_merge));
         add(testCase(&BinaryForestTests::test_property_map<MapTag>));
         add(testCase(&BinaryForestTests::test_property_map<IndexVectorTag>));
+        add(testCase(&BinaryForestTests::test_property_map<VectorTag>));
     }
 };
 
