@@ -231,6 +231,15 @@ struct BinaryForestTests
         }
 
         {
+            PropertyMap<Node, int, CTag> m2;
+            m2 = m;
+            should(m2.size() == 3);
+            should(m[n0] == 27);
+            should(m[n1] == 12);
+            should(m[n2] == 73);
+        }
+
+        {
             std::vector<Node> keys, keys_expected;// = {n0, n1, n2};
             keys_expected.push_back(n0);
             keys_expected.push_back(n1);

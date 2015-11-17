@@ -711,7 +711,7 @@ public:
 protected:
     Map map_;
     size_t num_elements_;
-    key_type const default_key_;
+    key_type default_key_;
 };
 
 
