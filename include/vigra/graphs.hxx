@@ -543,18 +543,24 @@ protected:
 
 
 
-#define DEFAULT_PMAP_KEY lemon::INVALID
-
 namespace detail
 {
     template <typename VALUE_TYPE>
     struct PMapValueSkipper
     {
+    public:
         typedef VALUE_TYPE value_type;
+        typedef typename value_type::first_type key_type;
+        PMapValueSkipper(key_type default_key)
+            :
+            default_key_(default_key)
+        {}
         bool operator()(value_type const & v)
         {
-            return v.first != DEFAULT_PMAP_KEY;
+            return v.first != default_key_;
         }
+    private:
+        key_type const default_key_;
     };
 }
 
@@ -575,15 +581,16 @@ public:
     typedef FilterIterator<ValueSkipper, typename Map::iterator> iterator;
     typedef FilterIterator<ValueSkipper, typename Map::const_iterator> const_iterator;
 
-    PropertyMap()
+    PropertyMap(key_type default_key = lemon::INVALID)
         :
-        num_elements_(0)
+        num_elements_(0),
+        default_key_(default_key)
     {}
 
     mapped_type & at(key_type const & k)
     {
 #ifdef VIGRA_CHECK_BOUNDS
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
 #endif
         return map_[k.id()].second;
@@ -592,7 +599,7 @@ public:
     mapped_type const & at(key_type const & k) const
     {
 #ifdef VIGRA_CHECK_BOUNDS
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
             throw std::out_of_range("PropertyMap::at(): Key not found.");
 #endif
         return map_[k.id()].second;
@@ -614,18 +621,18 @@ public:
             throw std::out_of_range("PropertyMap::insert(): Key must not be negative.");
 
         if (k.id() >= map_.size())
-            map_.resize(k.id()+1, value_type(DEFAULT_PMAP_KEY, mapped_type()));
+            map_.resize(k.id()+1, value_type(default_key_, mapped_type()));
 
         auto & elt = map_[k.id()];
-        if (elt.first == DEFAULT_PMAP_KEY)
+        if (elt.first == default_key_)
             ++num_elements_;
 
         elt.first = k;
         elt.second = v;
     }
 
-#define MAKE_ITER(it) make_filter_iterator(ValueSkipper(), it, map_.end())
-#define MAKE_CITER(it) make_filter_iterator(ValueSkipper(), it, map_.cend())
+#define MAKE_ITER(it) make_filter_iterator(ValueSkipper(default_key_), it, map_.end())
+#define MAKE_CITER(it) make_filter_iterator(ValueSkipper(default_key_), it, map_.cend())
 
     iterator begin()
     {
@@ -659,7 +666,7 @@ public:
 
     iterator find(key_type const & k)
     {
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
             return end();
         else
             return MAKE_ITER(std::next(map_.begin(), k.id()));
@@ -667,7 +674,7 @@ public:
 
     const_iterator find(key_type const & k) const
     {
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
             return end();
         else
             return MAKE_ITER(std::next(map_.begin(), k.id()));
@@ -689,13 +696,13 @@ public:
 
     size_t erase(key_type const & k)
     {
-        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == DEFAULT_PMAP_KEY)
+        if (k.id() < 0 || k.id() >= map_.size() || map_[k.id()].first == default_key_)
         {
             return 0;
         }
         else
         {
-            map_[k.id()].first = DEFAULT_PMAP_KEY;
+            map_[k.id()].first = default_key_;
             --num_elements_;
             return 1;
         }
@@ -704,6 +711,7 @@ public:
 protected:
     Map map_;
     size_t num_elements_;
+    key_type const default_key_;
 };
 
 
