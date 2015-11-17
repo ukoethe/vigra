@@ -1,1 +1,5 @@
-VIGRA_ADD_TEST(test_threadpool test.cxx LIBRARIES pthread)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    VIGRA_ADD_TEST(test_threadpool test.cxx LIBRARIES pthread)
+else()
+    VIGRA_ADD_TEST(test_threadpool test.cxx LIBRARIES)
+endif()
