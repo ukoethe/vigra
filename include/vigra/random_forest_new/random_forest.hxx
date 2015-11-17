@@ -80,6 +80,11 @@ public:
         ProblemSpecNew<LabelType> const & problem_spec
     );
 
+    // Default stuff, otherweise VS2012 does not find operator=.
+    RandomForest(RandomForest const &) = default;
+    ~RandomForest() = default;
+    RandomForest & operator=(RandomForest const &) = default;
+
     /// \brief Grow this forest by incorporating the other.
     void merge(
         RandomForest const & other
