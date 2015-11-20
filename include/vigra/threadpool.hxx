@@ -68,7 +68,7 @@ public:
     void waitFinished()
     {
         std::unique_lock<std::mutex> lock(queue_mutex);
-        conditionF.wait(lock, [this](){ return tasks.empty() && (busy == 0); });
+        finish_condition.wait(lock, [this](){ return tasks.empty() && (busy == 0); });
     }
 
     size_t nThreads()const{
@@ -83,8 +83,8 @@ private:
     
     // synchronization
     std::mutex queue_mutex;
-    std::condition_variable condition;
-    std::condition_variable conditionF;
+    std::condition_variable worker_condition;
+    std::condition_variable finish_condition;
 
     bool stop;
     std::atomic<unsigned int> busy, processed;
@@ -113,7 +113,7 @@ inline ThreadPool::ThreadPool(size_t threads)
                         //
                         // so the idea of this wait, is : If where are not in the destructor
                         // (which sets stop to true, we wait here for new jobs)
-                        this->condition.wait(lock,[this]{ return this->stop || !this->tasks.empty(); });
+                        this->worker_condition.wait(lock,[this]{ return this->stop || !this->tasks.empty(); });
                         if(!this->tasks.empty()){
                             ++busy;
                             task = std::move(this->tasks.front());
@@ -122,7 +122,7 @@ inline ThreadPool::ThreadPool(size_t threads)
                             task(ti);
                             ++processed;
                             --busy;
-                            conditionF.notify_one();
+                            finish_condition.notify_one();
                         }
                         else if(stop){
                             return;
@@ -158,7 +158,7 @@ ThreadPool::enqueueReturning(F&& f)
 
         tasks.emplace([task](int tid){ (*task)(tid); });
     }
-    condition.notify_one();
+    worker_condition.notify_one();
     return res;
 }
 
@@ -178,7 +178,7 @@ void ThreadPool::enqueue(F&& f)
 
         tasks.emplace(f);
     }
-    condition.notify_one();
+    worker_condition.notify_one();
     //return res;
 }
 
@@ -189,7 +189,7 @@ inline ThreadPool::~ThreadPool()
         std::unique_lock<std::mutex> lock(queue_mutex);
         stop = true;
     }
-    condition.notify_all();
+    worker_condition.notify_all();
     for(std::thread &worker: workers)
         worker.join();
 }
@@ -197,7 +197,7 @@ inline ThreadPool::~ThreadPool()
 
 
 template<class ITER, class F>
-void parallel_foreach_impl(
+inline void parallel_foreach_impl(
     ThreadPool & pool,
     const uint64_t nItems,                   
     ITER iter, 
@@ -206,7 +206,8 @@ void parallel_foreach_impl(
     std::random_access_iterator_tag
 ){
     // typedef typename std::iterator_traits<ITER>::reference ReferenceType;
-    uint64_t workload = nItems;
+    uint64_t workload = std::distance(iter, end);
+    vigra_precondition(workload == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
     const float workPerThread = float(workload)/pool.nThreads();
     const uint64_t chunkedWorkPerThread = std::max(uint64_t(std::floor(workPerThread/3.0f+0.5f)), uint64_t(1));
 
@@ -230,7 +231,7 @@ void parallel_foreach_impl(
 
 
 template<class ITER, class F>
-void parallel_foreach_impl(
+inline void parallel_foreach_impl(
     ThreadPool & pool,
     const uint64_t nItems,                   
     ITER iter, 
@@ -238,6 +239,8 @@ void parallel_foreach_impl(
     F && f,
     std::forward_iterator_tag
 ){
+    if (nItems == 0)
+        nItems = std::distance(iter, end);
 
     // typedef typename std::iterator_traits<ITER>::reference ReferenceType;
     uint64_t workload = nItems;
@@ -259,9 +262,17 @@ void parallel_foreach_impl(
                 }
             }
         );
+        for (size_t i = 0; i < lc; ++i)
+        {
+            ++iter;
+            if (iter == end)
+            {
+                vigra_postcondition(workload == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
+                break;
+            }
+        }
         if(workload==0)
             break;
-        std::advance(iter, lc);
     }
     pool.waitFinished();
 }
@@ -269,7 +280,33 @@ void parallel_foreach_impl(
 
 
 template<class ITER, class F>
-void parallel_foreach_single_thread(
+inline void parallel_foreach_impl(
+    ThreadPool & pool,
+    const uint64_t nItems,
+    ITER iter, 
+    ITER end, 
+    F && f,
+    std::input_iterator_tag
+){
+    size_t num_items = 0;
+    for (; iter != end; ++iter)
+    {
+        auto item = *iter;
+        pool.enqueue(
+            [&f, &item](int id){
+                f(id, item);
+            }
+        );
+        ++num_items;
+    }
+    vigra_postcondition(num_items == nItems, "parallel_foreach(): Mismatch between num items and begin/end.");
+    pool.waitFinished();
+}
+
+
+
+template<class ITER, class F>
+inline void parallel_foreach_single_thread(
     const uint64_t nItems,
     ITER begin, 
     ITER end, 
@@ -284,7 +321,7 @@ void parallel_foreach_single_thread(
 
 
 template<class ITER, class F>
-void parallel_foreach(
+inline void parallel_foreach(
     ThreadPool & pool,
     const uint64_t nItems,
     ITER begin, 
@@ -303,7 +340,7 @@ void parallel_foreach(
 
 
 template<class ITER, class F>
-void parallel_foreach(
+inline void parallel_foreach(
     int64_t nThreads,                  
     const uint64_t nItems,
     ITER begin, 
