@@ -96,6 +96,7 @@ inline ThreadPool::ThreadPool(size_t threads)
         busy(0),
         processed(0)
 {
+    vigra_precondition(threads > 0, "ThreadPool::ThreadPool(): n_threads must not be zero.");
     for(size_t ti = 0; ti<threads; ++ti)
     {
         workers.emplace_back(
@@ -205,7 +206,7 @@ void parallel_foreach_impl(
     std::random_access_iterator_tag
 ){
     // typedef typename std::iterator_traits<ITER>::reference ReferenceType;
-    uint64_t workload = std::distance(iter, end);
+    uint64_t workload = nItems;
     const float workPerThread = float(workload)/pool.nThreads();
     const uint64_t chunkedWorkPerThread = std::max(uint64_t(std::floor(workPerThread/3.0f+0.5f)), uint64_t(1));
 
@@ -290,8 +291,7 @@ void parallel_foreach(
     ITER end, 
     F && f
 ){
-
-    if(pool.nThreads()!=1){
+    if(pool.nThreads()>1){
         parallel_foreach_impl(pool,nItems, begin, end, f,
             typename std::iterator_traits<ITER>::iterator_category());
     }
@@ -304,21 +304,17 @@ void parallel_foreach(
 
 template<class ITER, class F>
 void parallel_foreach(
-    const int64_t nThreads,                  
+    int64_t nThreads,                  
     const uint64_t nItems,
     ITER begin, 
     ITER end, 
     F && f
 ){
-    ThreadPool pool(nThreads==-1 ?  std::thread::hardware_concurrency() : nThreads);
+    nThreads = nThreads==-1 ?  std::thread::hardware_concurrency() : nThreads;
+    vigra_precondition(nThreads > 0, "parallel_foreach(): nThreads must be > 0 or -1.");
 
-    if(pool.nThreads()!=1){
-        parallel_foreach_impl(pool, nItems, begin, end, f,
-            typename std::iterator_traits<ITER>::iterator_category());
-    }
-    else{
-        parallel_foreach_single_thread(nItems, begin, end, f);
-    }
+    ThreadPool pool(nThreads);
+    parallel_foreach(pool, nItems, begin, end, f);
 }
 
 
