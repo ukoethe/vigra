@@ -35,6 +35,8 @@
 #ifndef VIGRA_RANDOM_FOREST_VISITORS_HXX
 #define VIGRA_RANDOM_FOREST_VISITORS_HXX
 
+#include <vector>
+#include <memory>
 
 
 namespace vigra
@@ -58,7 +60,7 @@ namespace vigra
  * - - Call visit_before_tree() on the visitor copy.
  * - - Do the node splitting until the tree is fully trained.
  * - - Call visit_after_tree() on the visitor copy.
- * - Call visit_at_end (which gets a vector with the visitor copies) on the original visitor.
+ * - Call visit_at_end (which gets a vector with pointers to the visitor copies) on the original visitor.
  */
 class RFVisitorBase
 {
@@ -78,23 +80,30 @@ public:
     /**
      * @brief Do something after all trees have been learned.
      * 
-     * @param v vector with the visitor copies
+     * @param v vector with pointers to the visitor copies
      * @param rf the trained random forest
      */
-    template <typename VISITORS, typename RF>
-    void visit_after_training(VISITORS & v, RF & rf)
+    template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
+    void visit_after_training(VISITORS & v, RF & rf, FEATURES & features, LABELS & labels)
     {}
 
     /**
      * @brief Do something before a tree has been learned.
+     * 
+     * @param weights the actual instance weights (after bootstrap sampling and class weights)
      */
-    void visit_before_tree()
+    template <typename WEIGHTS>
+    void visit_before_tree(WEIGHTS & weights)
     {}
 
     /**
      * @brief Do something after a tree has been learned.
      */
-    void visit_after_tree()
+    template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_after_tree(RF & rf,
+                          FEATURES & features,
+                          LABELS & labels,
+                          WEIGHTS & weights)
     {}
 
     /**
@@ -155,20 +164,63 @@ private:
  */
 class RFStopVisiting : public RFVisitorBase
 {
+public:
+    typedef int Visitor;
+    typedef int Next;
+    Visitor* visitor_;
+    Next next_;
 
+    RFStopVisiting copy() const
+    {
+        return RFStopVisiting();
+    }
+
+    void del()
+    {}
 };
 
 
 
 /**
  * @brief Compute the out of bag error.
+ * 
+ * Here, each data point is put down those trees for which it is OOB.
+ * Using bootstrap sampling, each sample is OOB for approximately 37%.
+ * The error rate obtained as such therefore corresponds to a crossvalidation
+ * error obtained using an ensemble containing of 37% of the trees.
  */
 class OOBError : public RFVisitorBase
 {
 public:
 
+    template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_after_tree(RF & rf,
+                          FEATURES & features,
+                          LABELS & labels,
+                          WEIGHTS & weights)
+    {
+        in_bag_count_.resize(weights.size(), 0);
+        for (size_t i = 0; i < weights.size(); ++i)
+        {
+            if (weights[i] > 0)
+            {
+                in_bag_count_[i] = 1;
+            }
+        }
+    }
+
+    template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
+    void visit_after_training(VISITORS & v, RF & rf, FEATURES & features, LABELS & labels)
+    {
+        // TODO: Put each data point in the trees where it is out of bag and compute the error.
 
 
+
+    }
+
+    double oob_err_;
+    MultiArray<2, double> probs_;
+    std::vector<size_t> in_bag_count_;
 };
 
 
@@ -183,53 +235,98 @@ namespace detail
 /**
  * @brief Container elements of the statically linked visitor list. Use the create_visitor() functions to create visitors up to size 10.
  */
-template <typename Visitor, typename Next = RFStopVisiting>
+template <typename VISITOR, typename NEXT = RFStopVisiting>
 class RFVisitorNode
 {
 public:
 
-    Visitor & visitor_;
-    Next next_; // This is no reference, because Next is either RFStopVisiting or RFVisitorNode.
+    typedef VISITOR Visitor;
+    typedef NEXT Next;
+
+    Visitor* visitor_;
+    Next next_;
     
     RFVisitorNode(Visitor & visitor, Next next)
         :
-        visitor_(visitor),
+        visitor_(&visitor),
         next_(next)
     {}
 
     RFVisitorNode(Visitor & visitor)
         :
-        visitor_(visitor),
+        visitor_(&visitor),
         next_(RFStopVisiting())
     {}
 
+    /**
+     * @brief Copy the visitor chain. For each call to copy() there must be a corresponding call to del(), since the copies are allocated on the heap.
+     */
+    RFVisitorNode copy() const
+    {
+        Visitor* v_cpy = new Visitor(*visitor_);
+        RFVisitorNode n(*v_cpy, next_.copy());
+        return n;
+    }
+
+    /**
+     * @brief Delete the visitors. You must call del() if and only if the visitor chain was created by a call to copy().
+     */
+    void del()
+    {
+        delete visitor_;
+        next_.del();
+    }
+
     void visit_before_training()
     {
-        if (visitor_.is_active())
-            visitor_.visit_before_training();
+        if (visitor_->is_active())
+            visitor_->visit_before_training();
         next_.visit_before_training();
     }
 
-    template <typename VISITORS, typename RF>
-    void visit_after_training(VISITORS & v, RF & rf)
+    template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
+    void visit_after_training(VISITORS & v, RF & rf, FEATURES & features, LABELS & labels)
     {
-        if (visitor_.is_active())
-            visitor_.visit_after_training(v, rf);
-        next_.visit_after_training(v, rf);
+        typedef typename VISITORS::value_type VisitorNodeType;
+        typedef typename VisitorNodeType::Visitor VisitorType;
+        typedef typename VisitorNodeType::Next NextType;
+        
+        // We want to call the visit_after_training function of the concrete visitor (e. g. OOBError).
+        // Since v is a vector of visitor nodes (and not a vector of concrete visitors), we have to
+        // extract the concrete visitors.
+        if (visitor_->is_active())
+        {
+            std::vector<VisitorType*> visitors;
+            for (auto x : v)
+                visitors.push_back(x.visitor_);
+            visitor_->visit_after_training(visitors, rf, features, labels);
+        }
+
+        // Now we call the visit_after_training on the next visitor node in the chain.
+        // Therefore we have to remove the current concrete visitor.
+        std::vector<NextType> nexts;
+        for (auto x : v)
+            nexts.push_back(x.next_);
+        next_.visit_after_training(nexts, rf, features, labels);
     }
 
-    void visit_before_tree()
+    template <typename WEIGHTS>
+    void visit_before_tree(WEIGHTS & weights)
     {
-        if (visitor_.is_active())
-            visitor_.visit_before_tree();
-        next_.visit_before_tree();
+        if (visitor_->is_active())
+            visitor_->visit_before_tree(weights);
+        next_.visit_before_tree(weights);
     }
 
-    void visit_after_tree()
+    template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_after_tree(RF & rf,
+                          FEATURES & features,
+                          LABELS & labels,
+                          WEIGHTS & weights)
     {
-        if (visitor_.is_active())
-            visitor_.visit_after_tree();
-        next_.visit_after_tree();
+        if (visitor_->is_active())
+            visitor_->visit_after_tree(rf, features, labels, weights);
+        next_.visit_after_tree(rf, features, labels, weights);
     }
 
 };

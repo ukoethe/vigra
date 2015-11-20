@@ -169,12 +169,12 @@ void random_forest_single_tree(
                        "random_forest_single_tree(): Wrong number of features.");
 
     // Create the index vector for bookkeeping.
-    auto instance_indices = std::vector<size_t>(num_instances);
+    std::vector<size_t> instance_indices(num_instances);
     std::iota(instance_indices.begin(), instance_indices.end(), 0);
     typedef std::vector<size_t>::iterator InstanceIter;
 
     // Create the weights for the bootstrap sample.
-    auto instance_weights = std::vector<double>(num_instances, 1.0);
+    std::vector<double> instance_weights(num_instances, 1.0);
     if (options.bootstrap_sampling_)
     {
         std::fill(instance_weights.begin(), instance_weights.end(), 0.0);
@@ -212,7 +212,7 @@ void random_forest_single_tree(
 
         instance_range.insert(rootnode, IterPair(instance_indices.begin(), instance_indices.end()));
 
-        auto priors = std::vector<double>(spec.num_classes_, 0.0);
+        std::vector<double> priors(spec.num_classes_, 0.0);
         for (auto i : instance_indices)
             priors[labels(i)] += instance_weights[i];
         node_distributions.insert(rootnode, priors);
@@ -221,7 +221,7 @@ void random_forest_single_tree(
     }
 
     // Call the visitor.
-    visitor.visit_before_tree();
+    visitor.visit_before_tree(instance_weights);
 
     // Split the nodes.
     detail::RFMapUpdater<ACC> node_map_updater;
@@ -339,7 +339,7 @@ void random_forest_single_tree(
     }
 
     // Call the visitor.
-    visitor.visit_after_tree();
+    visitor.visit_after_tree(tree, features, labels, instance_weights);
 }
 
 
@@ -356,7 +356,7 @@ random_forest_impl(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
-        VISITOR & visitor,
+        VISITOR visitor,
         STOP const & stop,
         RANDENGINE & randengine
 ){
@@ -424,7 +424,11 @@ random_forest_impl(
 
     // Copy the visitor for each single tree.
     visitor.visit_before_training();
-    std::vector<VISITOR> tree_visitors(tree_count, visitor);
+    std::vector<VISITOR> tree_visitors;
+    for (size_t i = 0; i < tree_count; ++i)
+    {
+        tree_visitors.push_back(visitor.copy());
+    }
 
     // Train the trees.
     ThreadPool pool((size_t)n_threads);
@@ -446,7 +450,11 @@ random_forest_impl(
     }
 
     // Call the visitor.
-    visitor.visit_after_training(tree_visitors, rf);
+    visitor.visit_after_training(tree_visitors, rf, features, labels);
+    for (auto & v : tree_visitors)
+    {
+        v.del();
+    }
 
     return rf;
 }
@@ -460,7 +468,7 @@ random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
-        VISITOR & visitor,
+        VISITOR visitor,
         RANDENGINE & randengine
 ){
     if (options.max_depth_ > 0)
@@ -486,7 +494,7 @@ random_forest(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
-        VISITOR & visitor,
+        VISITOR visitor,
         RANDENGINE & randengine
 ){
     if (options.split_ == RF_GINI)
@@ -505,7 +513,7 @@ random_forest(
         FEATURES const & features,
         LABELS const & labels,
         RandomForestNewOptions const & options,
-        VISITOR & visitor
+        VISITOR visitor
 ){
     auto randengine = MersenneTwister::global();
     return random_forest(features, labels, options, visitor, randengine);
@@ -530,7 +538,6 @@ random_forest(
 ){
     return random_forest(features, labels, RandomForestNewOptions());
 }
-
 
 
 
