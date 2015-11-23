@@ -69,6 +69,14 @@ public:
     {
         std::unique_lock<std::mutex> lock(queue_mutex);
         finish_condition.wait(lock, [this](){ return tasks.empty() && (busy == 0); });
+        {
+            std::lock_guard<std::mutex> lock(exception_mutex);
+            for (size_t i = 0; i < exceptions.size(); ++i)
+            {
+                std::rethrow_exception(exceptions[i]);
+            }
+            exceptions.clear();
+        }
     }
 
     size_t nThreads()const{
@@ -88,6 +96,10 @@ private:
 
     bool stop;
     std::atomic<unsigned int> busy, processed;
+
+    // exception handling
+    std::mutex exception_mutex;
+    std::vector<std::exception_ptr> exceptions;
 };
  
 // the constructor just launches some amount of workers
@@ -119,7 +131,15 @@ inline ThreadPool::ThreadPool(size_t threads)
                             task = std::move(this->tasks.front());
                             this->tasks.pop();
                             lock.unlock();
-                            task(ti);
+                            try
+                            {
+                                task(ti);
+                            }
+                            catch(...)
+                            {
+                                std::lock_guard<std::mutex> lock(this->exception_mutex);
+                                exceptions.push_back(std::current_exception());
+                            }
                             ++processed;
                             --busy;
                             finish_condition.notify_one();
@@ -347,9 +367,9 @@ inline void parallel_foreach(
     ITER end, 
     F && f
 ){
-    nThreads = nThreads==-1 ?  std::thread::hardware_concurrency() : nThreads;
+    nThreads = nThreads==-1 ? std::thread::hardware_concurrency() : nThreads;
     vigra_precondition(nThreads > 0, "parallel_foreach(): nThreads must be > 0 or -1.");
-
+    
     ThreadPool pool(nThreads);
     parallel_foreach(pool, nItems, begin, end, f);
 }

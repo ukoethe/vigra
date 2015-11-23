@@ -88,6 +88,33 @@ struct ThreadPoolTests
         }
         shouldEqualSequence(v_out.begin(), v_out.end(), v_expected.begin());
     }
+
+    void test_exception()
+    {
+        size_t const n = 10000;
+        std::vector<int> v_in(n);
+        std::iota(v_in.begin(), v_in.end(), 0);
+        std::vector<int> v_out(n);
+        bool caught = false;
+        std::string exception_string = "the test exception";
+        try
+        {
+            parallel_foreach(4, n, v_in.begin(), v_in.end(),
+                [&v_out, &exception_string](size_t thread_id, int x)
+                {
+                    if (x == 5000)
+                        throw std::runtime_error(exception_string);
+                    v_out[x] = x;
+                }
+            );
+        }
+        catch (std::runtime_error & ex)
+        {
+            if (ex.what() == exception_string)
+                caught = true;
+        }
+        should(caught);
+    }
 };
 
 struct ThreadPoolTestSuite : public test_suite
@@ -98,6 +125,7 @@ struct ThreadPoolTestSuite : public test_suite
     {
         add(testCase(&ThreadPoolTests::test_threadpool));
         add(testCase(&ThreadPoolTests::test_parallel_foreach));
+        add(testCase(&ThreadPoolTests::test_exception));
     }
 };
 
