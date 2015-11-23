@@ -34,10 +34,6 @@
 /************************************************************************/
 #include <vigra/unittest.hxx>
 #include <vigra/random_forest_new.hxx>
-#ifdef HasHDF5
-  #include <vigra/hdf5impex.hxx>
-#endif
-//#include <vigra/algorithm.hxx>
 #include <vigra/random.hxx>
 
 using namespace vigra;
@@ -170,53 +166,6 @@ struct RandomForestTests
 
 
     }
-
-#ifdef HasHDF5
-    void test_rf_mnist()
-    {
-        typedef MultiArray<2, UInt8> Features;
-        typedef MultiArray<1, UInt8> Labels;
-
-        std::string train_filename = "/home/philip/data/mnist/mnist_train_reshaped.h5";
-        std::string test_filename = "/home/philip/data/mnist/mnist_test_reshaped.h5";
-
-        Features train_x, test_x;
-        Labels train_y, test_y;
-        HDF5File train_file(train_filename.c_str(), HDF5File::ReadOnly);
-        train_file.readAndResize("images", train_x);
-        train_file.readAndResize("labels", train_y);
-        train_file.close();
-        HDF5File test_file(test_filename.c_str(), HDF5File::ReadOnly);
-        test_file.readAndResize("images", test_x);
-        test_file.readAndResize("labels", test_y);
-        test_file.close();
-        train_x = train_x.transpose();
-        test_x = test_x.transpose();
-        should(train_x.shape()[0] == train_y.size());
-        should(test_x.shape()[0] == test_y.size());
-        should(train_x.shape()[1] == test_x.shape()[1]);
-
-        std::vector<RandomForestOptionTags> splits = {RF_GINI};//, RF_ENTROPY, RF_KSD};
-        for (auto split : splits)
-        {
-            RandomForestNewOptions const options = RandomForestNewOptions()
-                                                       .tree_count(10)
-                                                       .split(split)
-                                                       .n_threads(1);
-            auto rf = random_forest(train_x, train_y, options);
-
-            // Predict using all trees.
-            Labels pred_y(test_y.shape());
-            rf.predict(test_x, pred_y, 1);
-            size_t count = 0;
-            for (size_t i = 0; i < test_y.size(); ++i)
-                if (pred_y(i) == test_y(i))
-                    ++count;
-            double performance = count / static_cast<double>(test_y.size());
-            std::cout << "performance: " << performance << std::endl;
-        }
-    }
-#endif
 };
 
 struct RandomForestTestSuite : public test_suite
@@ -228,9 +177,6 @@ struct RandomForestTestSuite : public test_suite
         add(testCase(&RandomForestTests::test_base_class));
         add(testCase(&RandomForestTests::test_default_rf));
         add(testCase(&RandomForestTests::test_oob_visitor));
-#ifdef HasHDF5
-        add(testCase(&RandomForestTests::test_rf_mnist));
-#endif
     }
 };
 

@@ -196,8 +196,6 @@ public:
             auto const & v = *vptr;
             std::cout << "visit_after_training: " << v.oob_err_ << ", address: " << &v.oob_err_ << std::endl;
         }
-
-
     }
 
     double oob_err_;
