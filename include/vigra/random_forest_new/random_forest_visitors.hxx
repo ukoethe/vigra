@@ -42,8 +42,6 @@
 namespace vigra
 {
 
-
-
 /**
  * @brief Base class from which all random forest visitors derive.
  * 
@@ -153,33 +151,9 @@ private:
 
 };
 
-
-
 /////////////////////////////////////////////
 //          The concrete visitors          //
 /////////////////////////////////////////////
-
-/**
- * @brief The default visitor (= "do nothing").
- */
-class RFStopVisiting : public RFVisitorBase
-{
-public:
-    // typedef int Visitor;
-    // typedef int Next;
-    // Visitor* visitor_;
-    // Next next_;
-
-    // RFStopVisiting copy() const
-    // {
-    //     return RFStopVisiting();
-    // }
-
-    // void del()
-    // {}
-};
-
-
 
 /**
  * @brief Compute the out of bag error.
@@ -237,6 +211,12 @@ public:
 //            The visitor chain            //
 /////////////////////////////////////////////
 
+/**
+ * @brief The default visitor node (= "do nothing").
+ */
+class RFStopVisiting : public RFVisitorBase
+{};
+
 namespace detail
 {
 
@@ -266,23 +246,17 @@ public:
         next_(RFStopVisiting())
     {}
 
-    // RFVisitorNode(RFVisitorNode const & other)
-    //     :
-    //     visitor_(other.visitor_),
-    //     next_(other.next_)
-    // {}
+    explicit RFVisitorNode(RFVisitorNode<Visitor, Next, !CPY> & other)
+        :
+        visitor_(other.visitor_),
+        next_(other.next_)
+    {}
 
-    // explicit RFVisitorNode(RFVisitorNode<Visitor, Next, !CPY> & other)
-    //     :
-    //     visitor_(other.visitor_),
-    //     next_(other.next_)
-    // {}
-
-    // explicit RFVisitorNode(RFVisitorNode<Visitor, Next, !CPY> const & other)
-    //     :
-    //     visitor_(other.visitor_),
-    //     next_(other.next_)
-    // {}
+    explicit RFVisitorNode(RFVisitorNode<Visitor, Next, !CPY> const & other)
+        :
+        visitor_(other.visitor_),
+        next_(other.next_)
+    {}
 
     void visit_before_training()
     {
@@ -301,19 +275,21 @@ public:
         // We want to call the visit_after_training function of the concrete visitor (e. g. OOBError).
         // Since v is a vector of visitor nodes (and not a vector of concrete visitors), we have to
         // extract the concrete visitors.
+        // A vector cannot hold references, so we use pointers instead.
         if (visitor_.is_active())
         {
             std::vector<VisitorType*> visitors;
-            for (auto x : v)
+            for (auto & x : v)
                 visitors.push_back(&x.visitor_);
             visitor_.visit_after_training(visitors, rf, features, labels);
         }
 
-        // Now we call the visit_after_training on the next visitor node in the chain.
-        // Therefore we have to remove the current concrete visitor.
+        // Remove the concrete visitors that we just visited.
         std::vector<NextType> nexts;
-        for (auto x : v)
+        for (auto & x : v)
             nexts.push_back(x.next_);
+
+        // Call the next visitor node in the chain.
         next_.visit_after_training(nexts, rf, features, labels);
     }
 
@@ -341,13 +317,13 @@ public:
 } // namespace detail
 
 template <typename VISITOR>
-struct CopyVisitor
+struct VisitorCopy
 {
-    typedef detail::RFVisitorNode<typename VISITOR::Visitor, typename CopyVisitor<typename VISITOR::Next>::type, true> type;
+    typedef detail::RFVisitorNode<typename VISITOR::Visitor, typename VisitorCopy<typename VISITOR::Next>::type, true> type;
 };
 
 template <>
-struct CopyVisitor<RFStopVisiting>
+struct VisitorCopy<RFStopVisiting>
 {
     typedef RFStopVisiting type;
 };

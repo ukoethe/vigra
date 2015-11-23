@@ -425,20 +425,14 @@ random_forest_impl(
     // Call the visitor.
     visitor.visit_before_training();
 
-    // Copy the visitor for each single tree.
-    // We must change the type, since the original visitor chain holds references, so a copy would be useless.
-    typedef typename CopyVisitor<VISITOR>::type CopyVisitorType;
-
-    // static_assert(std::is_same<VISITOR, RFVisitorNode<OOBError, RFStopVisiting, false> >::value, "Wrong VISITOR");
-    // std::vector<CopyVisitorType> tree_visitors_cpy;
-    std::vector<VISITOR> tree_visitors;
-    // for (size_t i = 0; i < tree_count; ++i)
-    // {
-    //     tree_visitors_cpy.emplace_back(visitor);
-    //     tree_visitors.emplace_back(tree_visitors_cpy.back());
-    // }
-
-    std::exit(0);
+    // Copy the visitor for each tree.
+    // We must change the type, since the original visitor chain holds references and therefore a default copy would be useless.
+    typedef typename VisitorCopy<VISITOR>::type VisitorCopyType;
+    std::vector<VisitorCopyType> tree_visitors;
+    for (size_t i = 0; i < tree_count; ++i)
+    {
+        tree_visitors.emplace_back(visitor);
+    }
 
     // Train the trees.
     ThreadPool pool((size_t)n_threads);
@@ -446,7 +440,7 @@ random_forest_impl(
     {
         pool.enqueue([&features, &transformed_labels, &options, &tree_visitors, &stop, &trees, i, &rand_engines](size_t thread_id)
             {
-                random_forest_single_tree<RF, SCORER, VISITOR, STOP>(features, transformed_labels, options, tree_visitors[i], stop, trees[i], rand_engines[thread_id]);
+                random_forest_single_tree<RF, SCORER, VisitorCopyType, STOP>(features, transformed_labels, options, tree_visitors[i], stop, trees[i], rand_engines[thread_id]);
             }
         );
     }
