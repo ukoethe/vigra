@@ -422,13 +422,23 @@ random_forest_impl(
         rand_engines.push_back(RANDENGINE(seed));
     }
 
-    // Copy the visitor for each single tree.
+    // Call the visitor.
     visitor.visit_before_training();
+
+    // Copy the visitor for each single tree.
+    // We must change the type, since the original visitor chain holds references, so a copy would be useless.
+    typedef typename CopyVisitor<VISITOR>::type CopyVisitorType;
+
+    // static_assert(std::is_same<VISITOR, RFVisitorNode<OOBError, RFStopVisiting, false> >::value, "Wrong VISITOR");
+    // std::vector<CopyVisitorType> tree_visitors_cpy;
     std::vector<VISITOR> tree_visitors;
-    for (size_t i = 0; i < tree_count; ++i)
-    {
-        tree_visitors.push_back(visitor.copy());
-    }
+    // for (size_t i = 0; i < tree_count; ++i)
+    // {
+    //     tree_visitors_cpy.emplace_back(visitor);
+    //     tree_visitors.emplace_back(tree_visitors_cpy.back());
+    // }
+
+    std::exit(0);
 
     // Train the trees.
     ThreadPool pool((size_t)n_threads);
@@ -451,10 +461,6 @@ random_forest_impl(
 
     // Call the visitor.
     visitor.visit_after_training(tree_visitors, rf, features, labels);
-    for (auto & v : tree_visitors)
-    {
-        v.del();
-    }
 
     return rf;
 }
