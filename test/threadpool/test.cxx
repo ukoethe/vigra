@@ -62,9 +62,8 @@ struct ThreadPoolTests
 
         std::vector<int> v_expected(n);
         for (size_t i = 0; i < v_expected.size(); ++i)
-        {
             v_expected[i] = i*(i+1)/2;
-        }
+
         shouldEqualSequence(v.begin(), v.end(), v_expected.begin());
     }
 
@@ -72,24 +71,26 @@ struct ThreadPoolTests
     {
         bool caught = false;
         std::string exception_string = "the test exception";
-        size_t const n = 10000;
-        std::vector<int> v(n);
+        std::vector<int> v(10000);
         ThreadPool pool(4);
+        std::vector<std::future<void> > futures;
         for (size_t i = 0; i < v.size(); ++i)
         {
-            pool.enqueue(
-                [&v, &exception_string, i](size_t thread_id)
-                {
-                    v[i] = thread_id;
-                    if (i == 5000)
-                        throw std::runtime_error(exception_string);
-                }
+            futures.emplace_back(
+                pool.enqueue(
+                    [&v, &exception_string, i](size_t thread_id)
+                    {
+                        v[i] = thread_id;
+                        if (i == 5000)
+                            throw std::runtime_error(exception_string);
+                    }
+                )
             );
         }
-
         try
         {
-            pool.waitFinished();
+            for (auto & fut : futures)
+                fut.get();
         }
         catch (std::runtime_error & ex)
         {
@@ -114,9 +115,8 @@ struct ThreadPoolTests
 
         std::vector<int> v_expected(n);
         for (size_t i = 0; i < v_expected.size(); ++i)
-        {
             v_expected[i] = i*(i+1)/2;
-        }
+
         shouldEqualSequence(v_out.begin(), v_out.end(), v_expected.begin());
     }
 

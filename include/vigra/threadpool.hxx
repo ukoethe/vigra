@@ -1,6 +1,7 @@
 /************************************************************************/
 /*                                                                      */
-/*        Copyright 2014-2015 by Ullrich Koethe and Thorsten Beier      */
+/*        Copyright 2014-2015 by Thorsten Beier, Philip Schill          */
+/*                               and Ullrich Koethe                     */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -47,6 +48,7 @@
 #include <cmath>
 
 
+
 namespace vigra
 {
 
@@ -55,54 +57,67 @@ namespace vigra
 class ThreadPool {
 public:
 
-    ThreadPool(size_t);
+    /**
+     * Create a thread pool with n threads. The constructor just launches some workers.
+     */
+    ThreadPool(size_t n);
 
+    /**
+     * The destructor joins all threads.
+     */
+    ~ThreadPool();
+
+    /**
+     * Enqueue a task that will be executed by the thread pool.
+     * The task result can be obtained using the get() function of the returned future.
+     * If the task throws an exception, it will be raised on the call to get().
+     */
     template<class F>
     std::future<typename std::result_of<F(int)>::type>  enqueueReturning(F&& f) ;
 
+    /**
+     * Enqueue function for tasks without return value.
+     * This is a special case of the enqueueReturning template function, but
+     * some compilers fail on std::result_of<F(int)>::type for void(int)functions.
+     */
     template<class F>
-    void enqueue(F&& f) ;
+    std::future<void> enqueue(F&& f) ;
 
-    ~ThreadPool();
-
+    /**
+     * Block until all tasks are finished.
+     */
     void waitFinished()
     {
         std::unique_lock<std::mutex> lock(queue_mutex);
         finish_condition.wait(lock, [this](){ return tasks.empty() && (busy == 0); });
-        {
-            std::lock_guard<std::mutex> lock(exception_mutex);
-            for (size_t i = 0; i < exceptions.size(); ++i)
-            {
-                std::rethrow_exception(exceptions[i]);
-            }
-            exceptions.clear();
-        }
     }
 
-    size_t nThreads()const{
+    /**
+     * Return the number of worker threads.
+     */
+    size_t nThreads() const
+    {
         return workers.size();
     }
+
 private:
+
+    typedef std::packaged_task<void(int)> QueuePackage;
+
     // need to keep track of threads so we can join them
     std::vector< std::thread > workers;
 
     // the task queue
-    std::queue< std::function<void(int)> > tasks;
+    std::queue<std::unique_ptr<QueuePackage> > tasks;
     
     // synchronization
     std::mutex queue_mutex;
     std::condition_variable worker_condition;
     std::condition_variable finish_condition;
-
     bool stop;
     std::atomic<unsigned int> busy, processed;
-
-    // exception handling
-    std::mutex exception_mutex;
-    std::vector<std::exception_ptr> exceptions;
 };
  
-// the constructor just launches some amount of workers
 inline ThreadPool::ThreadPool(size_t threads)
     :   stop(false),
         busy(0),
@@ -116,7 +131,7 @@ inline ThreadPool::ThreadPool(size_t threads)
             {
                 for(;;)
                 {
-                    std::function<void(int)> task;
+                    std::unique_ptr<std::packaged_task<void(int)> > task;
                     {
                         std::unique_lock<std::mutex> lock(this->queue_mutex);
 
@@ -125,26 +140,20 @@ inline ThreadPool::ThreadPool(size_t threads)
                         //
                         // so the idea of this wait, is : If where are not in the destructor
                         // (which sets stop to true, we wait here for new jobs)
-                        this->worker_condition.wait(lock,[this]{ return this->stop || !this->tasks.empty(); });
-                        if(!this->tasks.empty()){
+                        this->worker_condition.wait(lock, [this]{ return this->stop || !this->tasks.empty(); });
+                        if(!this->tasks.empty())
+                        {
                             ++busy;
                             task = std::move(this->tasks.front());
                             this->tasks.pop();
                             lock.unlock();
-                            try
-                            {
-                                task(ti);
-                            }
-                            catch(...)
-                            {
-                                std::lock_guard<std::mutex> lock(this->exception_mutex);
-                                exceptions.push_back(std::current_exception());
-                            }
+                            (*task)(ti);
                             ++processed;
                             --busy;
                             finish_condition.notify_one();
                         }
-                        else if(stop){
+                        else if(stop)
+                        {
                             return;
                         }
                     }
@@ -155,54 +164,6 @@ inline ThreadPool::ThreadPool(size_t threads)
     }
 }
 
-// add new work item to the pool
-template<class F>
-std::future<typename std::result_of<F(int)>::type> 
-ThreadPool::enqueueReturning(F&& f)
-{
-    typedef typename std::result_of<F(int)>::type result_type;
-    typedef std::future<result_type>  FutureResType;
-
-    auto task = std::make_shared< std::packaged_task<result_type(int)> >(
-        f                                                           
-    );
-
-    FutureResType res = task->get_future();
-    //std::future<return_type> res = task->get_future();
-    {
-        std::unique_lock<std::mutex> lock(queue_mutex);
-
-        // don't allow enqueueing after stopping the pool
-        if(stop)
-            throw std::runtime_error("enqueue on stopped ThreadPool");
-
-        tasks.emplace([task](int tid){ (*task)(tid); });
-    }
-    worker_condition.notify_one();
-    return res;
-}
-
-// add new work item to the pool
-template<class F>
-void ThreadPool::enqueue(F&& f)
-{
-    //using return_type = typename std::result_of<F()>::type;
-    
-    //std::future<return_type> res = task->get_future();
-    {
-        std::unique_lock<std::mutex> lock(queue_mutex);
-
-        // don't allow enqueueing after stopping the pool
-        if(stop)
-            throw std::runtime_error("enqueue on stopped ThreadPool");
-
-        tasks.emplace(f);
-    }
-    worker_condition.notify_one();
-    //return res;
-}
-
-// the destructor joins all threads
 inline ThreadPool::~ThreadPool()
 {
     {
@@ -212,6 +173,59 @@ inline ThreadPool::~ThreadPool()
     worker_condition.notify_all();
     for(std::thread &worker: workers)
         worker.join();
+}
+
+template<class F>
+std::future<typename std::result_of<F(int)>::type> 
+ThreadPool::enqueueReturning(F&& f)
+{
+    typedef typename std::result_of<F(int)>::type result_type;
+    typedef std::packaged_task<result_type(int)> PackageType;
+
+    auto task = std::make_shared<PackageType>(f);
+    auto res = task->get_future();
+    {
+        std::unique_lock<std::mutex> lock(queue_mutex);
+
+        // don't allow enqueueing after stopping the pool
+        if(stop)
+            throw std::runtime_error("enqueue on stopped ThreadPool");
+
+        tasks.emplace(new QueuePackage(
+            [task](int tid)
+            {
+                (*task)(tid);
+            }
+        ));
+    }
+    worker_condition.notify_one();
+    return res;
+}
+
+template<class F>
+std::future<void>
+ThreadPool::enqueue(F&& f)
+{
+    typedef std::packaged_task<void(int)> PackageType;
+
+    auto task = std::make_shared<PackageType>(f);
+    auto res = task->get_future();
+    {
+        std::unique_lock<std::mutex> lock(queue_mutex);
+
+        // don't allow enqueueing after stopping the pool
+        if(stop)
+            throw std::runtime_error("enqueue on stopped ThreadPool");
+
+        tasks.emplace(new QueuePackage(
+            [task](int tid)
+            {
+                (*task)(tid);
+            }
+        ));
+    }
+    worker_condition.notify_one();
+    return res;
 }
 
 
@@ -225,27 +239,29 @@ inline void parallel_foreach_impl(
     F && f,
     std::random_access_iterator_tag
 ){
-    // typedef typename std::iterator_traits<ITER>::reference ReferenceType;
     uint64_t workload = std::distance(iter, end);
     vigra_precondition(workload == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
     const float workPerThread = float(workload)/pool.nThreads();
     const uint64_t chunkedWorkPerThread = std::max(uint64_t(std::floor(workPerThread/3.0f+0.5f)), uint64_t(1));
 
-    for( ;iter<end; iter+=chunkedWorkPerThread){
-
-        // ITER localEnd = iter+chunkedWorkPerThread < end ? iter + chunkedWorkPerThread : end;
+    std::vector<std::future<void> > futures;
+    for( ;iter<end; iter+=chunkedWorkPerThread)
+    {
         const size_t lc = std::min(workload, chunkedWorkPerThread);
         workload-=lc;
-        pool.enqueue(
-            [&f, iter, lc]
-            (int id)
-            {
-                for(size_t i=0; i<lc; ++i)
-                    f(id, iter[i]);
-            }
+        futures.emplace_back(
+            pool.enqueue(
+                [&f, iter, lc]
+                (int id)
+                {
+                    for(size_t i=0; i<lc; ++i)
+                        f(id, iter[i]);
+                }
+            )
         );
     }
-    pool.waitFinished();
+    for (auto & fut : futures)
+        fut.get();
 }
 
 
@@ -262,25 +278,27 @@ inline void parallel_foreach_impl(
     if (nItems == 0)
         nItems = std::distance(iter, end);
 
-    // typedef typename std::iterator_traits<ITER>::reference ReferenceType;
     uint64_t workload = nItems;
     const float workPerThread = float(workload)/pool.nThreads();
     const uint64_t chunkedWorkPerThread = std::max(uint64_t(std::round(workPerThread/3.0f)),1ul);
 
-    for(;;){
-
+    std::vector<std::future<void> > futures;
+    for(;;)
+    {
         const size_t lc = std::min(chunkedWorkPerThread, workload);
         workload -= lc;
-        pool.enqueue(
-            [&f, iter, lc]
-            (int id)
-            {
-                auto iterCopy = iter;
-                for(size_t i=0; i<lc; ++i){
-                    f(id, *iterCopy);
-                    ++iterCopy;
+        futures.emplace_back(
+            pool.enqueue(
+                [&f, iter, lc]
+                (int id)
+                {
+                    auto iterCopy = iter;
+                    for(size_t i=0; i<lc; ++i){
+                        f(id, *iterCopy);
+                        ++iterCopy;
+                    }
                 }
-            }
+            )
         );
         for (size_t i = 0; i < lc; ++i)
         {
@@ -294,7 +312,8 @@ inline void parallel_foreach_impl(
         if(workload==0)
             break;
     }
-    pool.waitFinished();
+    for (auto & fut : futures)
+        fut.get();
 }
 
 
@@ -309,18 +328,22 @@ inline void parallel_foreach_impl(
     std::input_iterator_tag
 ){
     size_t num_items = 0;
+    std::vector<std::future<void> > futures;
     for (; iter != end; ++iter)
     {
         auto item = *iter;
-        pool.enqueue(
-            [&f, &item](int id){
-                f(id, item);
-            }
+        futures.emplace_back(
+            pool.enqueue(
+                [&f, &item](int id){
+                    f(id, item);
+                }
+            )
         );
         ++num_items;
     }
     vigra_postcondition(num_items == nItems, "parallel_foreach(): Mismatch between num items and begin/end.");
-    pool.waitFinished();
+    for (auto & fut : futures)
+        fut.get();
 }
 
 
@@ -332,7 +355,8 @@ inline void parallel_foreach_single_thread(
     ITER end, 
     F && f
 ){
-    for(size_t i=0; i<nItems; ++i){
+    for(size_t i=0; i<nItems; ++i)
+    {
         f(0, *begin);
         ++begin;
     }
@@ -348,11 +372,13 @@ inline void parallel_foreach(
     ITER end, 
     F && f
 ){
-    if(pool.nThreads()>1){
+    if(pool.nThreads()>1)
+    {
         parallel_foreach_impl(pool,nItems, begin, end, f,
             typename std::iterator_traits<ITER>::iterator_category());
     }
-    else{
+    else
+    {
         parallel_foreach_single_thread(nItems, begin, end, f);
     }
 }
