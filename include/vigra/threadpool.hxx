@@ -102,13 +102,11 @@ public:
 
 private:
 
-    typedef std::packaged_task<void(int)> QueuePackage;
-
     // need to keep track of threads so we can join them
-    std::vector< std::thread > workers;
+    std::vector<std::thread> workers;
 
     // the task queue
-    std::queue<std::unique_ptr<QueuePackage> > tasks;
+    std::queue<std::function<void(int)> > tasks;
     
     // synchronization
     std::mutex queue_mutex;
@@ -131,7 +129,7 @@ inline ThreadPool::ThreadPool(size_t threads)
             {
                 for(;;)
                 {
-                    std::unique_ptr<std::packaged_task<void(int)> > task;
+                    std::function<void(int)> task;
                     {
                         std::unique_lock<std::mutex> lock(this->queue_mutex);
 
@@ -147,7 +145,7 @@ inline ThreadPool::ThreadPool(size_t threads)
                             task = std::move(this->tasks.front());
                             this->tasks.pop();
                             lock.unlock();
-                            (*task)(ti);
+                            task(ti);
                             ++processed;
                             --busy;
                             finish_condition.notify_one();
@@ -191,12 +189,12 @@ ThreadPool::enqueueReturning(F&& f)
         if(stop)
             throw std::runtime_error("enqueue on stopped ThreadPool");
 
-        tasks.emplace(new QueuePackage(
+        tasks.emplace(
             [task](int tid)
             {
                 (*task)(tid);
             }
-        ));
+        );
     }
     worker_condition.notify_one();
     return res;
@@ -217,12 +215,12 @@ ThreadPool::enqueue(F&& f)
         if(stop)
             throw std::runtime_error("enqueue on stopped ThreadPool");
 
-        tasks.emplace(new QueuePackage(
+        tasks.emplace(
             [task](int tid)
             {
                 (*task)(tid);
             }
-        ));
+        );
     }
     worker_condition.notify_one();
     return res;
