@@ -68,6 +68,37 @@ struct ThreadPoolTests
         shouldEqualSequence(v.begin(), v.end(), v_expected.begin());
     }
 
+    void test_threadpool_exception()
+    {
+        bool caught = false;
+        std::string exception_string = "the test exception";
+        size_t const n = 10000;
+        std::vector<int> v(n);
+        ThreadPool pool(4);
+        for (size_t i = 0; i < v.size(); ++i)
+        {
+            pool.enqueue(
+                [&v, &exception_string, i](size_t thread_id)
+                {
+                    v[i] = thread_id;
+                    if (i == 5000)
+                        throw std::runtime_error(exception_string);
+                }
+            );
+        }
+
+        try
+        {
+            pool.waitFinished();
+        }
+        catch (std::runtime_error & ex)
+        {
+            if (ex.what() == exception_string)
+                caught = true;
+        }
+        should(caught);
+    }
+
     void test_parallel_foreach()
     {
         size_t const n = 10000;
@@ -89,7 +120,7 @@ struct ThreadPoolTests
         shouldEqualSequence(v_out.begin(), v_out.end(), v_expected.begin());
     }
 
-    void test_exception()
+    void test_parallel_foreach_exception()
     {
         size_t const n = 10000;
         std::vector<int> v_in(n);
@@ -124,8 +155,9 @@ struct ThreadPoolTestSuite : public test_suite
         test_suite("ThreadPool test")
     {
         add(testCase(&ThreadPoolTests::test_threadpool));
+        add(testCase(&ThreadPoolTests::test_threadpool_exception));
         add(testCase(&ThreadPoolTests::test_parallel_foreach));
-        add(testCase(&ThreadPoolTests::test_exception));
+        add(testCase(&ThreadPoolTests::test_parallel_foreach_exception));
     }
 };
 
