@@ -162,9 +162,7 @@ struct RandomForestTests
                                                    .n_threads(1);
         OOBError oob;
         auto rf = random_forest(train_x, train_y, options, create_visitor(oob));
-
-
-
+        should(oob.oob_err_ > 0.02 && oob.oob_err_ < 0.04); // FIXME: Use a statistical approach here.
     }
 };
 

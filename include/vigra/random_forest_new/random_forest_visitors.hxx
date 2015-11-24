@@ -168,39 +168,68 @@ class OOBError : public RFVisitorBase
 public:
 
     template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_after_tree(RF & rf,
-                          FEATURES & features,
-                          LABELS & labels,
-                          WEIGHTS & weights)
-    {
-        in_bag_count_.resize(weights.size(), 0);
+    void visit_after_tree(
+            RF & rf,
+            FEATURES & features,
+            LABELS & labels,
+            WEIGHTS & weights
+    ){
+        double const EPS = 1e-20;
+        bool found = false;
+
+        // Save the in-bags.
+        is_in_bag_.resize(weights.size(), true);
         for (size_t i = 0; i < weights.size(); ++i)
         {
-            if (weights[i] > 0)
+            if (std::abs(weights[i]) < EPS)
             {
-                in_bag_count_[i] = 1;
+                is_in_bag_[i] = false;
+                found = true;
             }
         }
 
-        oob_err_ = rf.num_nodes();
-        std::cout << "visit_after_tree: " << oob_err_ << ", address: " << &oob_err_ << std::endl;
+        if (!found)
+            throw std::runtime_error("OOBError::visit_after_tree(): The tree has no out-of-bags.");
     }
 
     template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
-    void visit_after_training(VISITORS & visitors, RF & rf, FEATURES & features, LABELS & labels)
-    {
-        // TODO: Put each data point in the trees where it is out of bag and compute the error.
-
+    void visit_after_training(
+            VISITORS & visitors,
+            RF & rf,
+            FEATURES & features,
+            LABELS & labels
+    ){
+        // Check the input sizes.
+        vigra_precondition(rf.num_trees() > 0, "OOBError::visit_after_training(): Number of trees must be greater than zero after training.");
+        vigra_precondition(visitors.size() == rf.num_trees(), "OOBError::visit_after_training(): Number of visitors must be equal to number of trees.");
+        size_t const num_instances = features.shape()[0];//visitors[0]->is_in_bag_.size();
+        size_t const num_features = features.shape()[1];
         for (auto vptr : visitors)
+            vigra_precondition(vptr->is_in_bag_.size() == num_instances, "OOBError::visit_after_training(): Some visitors have the wrong number of data points.");
+
+        // Get a prediction for each data point using only the trees where it is out of bag.
+        typedef typename std::remove_const<LABELS>::type Labels;
+        Labels pred(Shape1(1));
+        oob_err_ = 0.0;
+        for (size_t i = 0; i < num_instances; ++i)
         {
-            auto const & v = *vptr;
-            std::cout << "visit_after_training: " << v.oob_err_ << ", address: " << &v.oob_err_ << std::endl;
+            // Get the indices of the trees where the data points is out of bag.
+            std::vector<size_t> tree_indices;
+            for (size_t k = 0; k < visitors.size(); ++k)
+                if (!visitors[k]->is_in_bag_[i])
+                    tree_indices.push_back(k);
+
+            // Get the prediction using the above trees.
+            auto const sub_features = features.subarray(Shape2(i, 0), Shape2(i+1, num_features));
+            rf.predict(sub_features, pred, 1, tree_indices);
+            if (pred(0) != labels(i))
+                oob_err_ += 1.0;
         }
+        oob_err_ /= num_instances;
     }
 
     double oob_err_;
-    MultiArray<2, double> probs_;
-    std::vector<size_t> in_bag_count_;
+    std::vector<bool> is_in_bag_;
 };
 
 
