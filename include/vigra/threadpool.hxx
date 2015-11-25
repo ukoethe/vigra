@@ -280,7 +280,7 @@ inline void parallel_foreach_impl(
 
     uint64_t workload = nItems;
     const float workPerThread = float(workload)/pool.nThreads();
-    const uint64_t chunkedWorkPerThread = std::max(uint64_t(std::floor(workPerThread/3.0f+0.5f)), 1ul);
+    const uint64_t chunkedWorkPerThread = std::max<uint64_t>(roundi(workPerThread/3.0), 1);
 
     std::vector<std::future<void> > futures;
     for(;;)
