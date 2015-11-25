@@ -174,7 +174,7 @@ inline ThreadPool::~ThreadPool()
 }
 
 template<class F>
-std::future<typename std::result_of<F(int)>::type> 
+inline std::future<typename std::result_of<F(int)>::type> 
 ThreadPool::enqueueReturning(F&& f)
 {
     typedef typename std::result_of<F(int)>::type result_type;
@@ -201,7 +201,7 @@ ThreadPool::enqueueReturning(F&& f)
 }
 
 template<class F>
-std::future<void>
+inline std::future<void>
 ThreadPool::enqueue(F&& f)
 {
     typedef std::packaged_task<void(int)> PackageType;
@@ -228,6 +228,9 @@ ThreadPool::enqueue(F&& f)
 
 
 
+/**
+ * nItems must be either zero or std::distance(iter, end).
+ */
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
@@ -264,6 +267,9 @@ inline void parallel_foreach_impl(
 
 
 
+/**
+ * nItems must be either zero or std::distance(iter, end).
+ */
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
@@ -316,6 +322,9 @@ inline void parallel_foreach_impl(
 
 
 
+/**
+ * nItems must be either zero or std::distance(iter, end).
+ */
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
@@ -339,36 +348,45 @@ inline void parallel_foreach_impl(
         );
         ++num_items;
     }
-    vigra_postcondition(num_items == nItems, "parallel_foreach(): Mismatch between num items and begin/end.");
+    vigra_postcondition(num_items == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
     for (auto & fut : futures)
         fut.get();
 }
 
 
 
+/**
+ * Runs the parallel foreach on a single thread.
+ */
 template<class ITER, class F>
 inline void parallel_foreach_single_thread(
-    const uint64_t nItems,
     ITER begin, 
     ITER end, 
-    F && f
+    F && f,
+    const uint64_t nItems = 0
 ){
-    for(size_t i=0; i<nItems; ++i)
+    size_t n = 0;
+    for (; begin != end; ++begin)
     {
         f(0, *begin);
-        ++begin;
+        ++n;
     }
+    vigra_postcondition(n == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
 }
 
 
 
+/**
+ * Just like the other parallel_foreach overload, but use the given threadpool
+ * instead of creating a new one.
+ */
 template<class ITER, class F>
 inline void parallel_foreach(
     ThreadPool & pool,
-    const uint64_t nItems,
     ITER begin, 
     ITER end, 
-    F && f
+    F && f,
+    const uint64_t nItems = 0
 ){
     if(pool.nThreads()>1)
     {
@@ -377,25 +395,65 @@ inline void parallel_foreach(
     }
     else
     {
-        parallel_foreach_single_thread(nItems, begin, end, f);
+        parallel_foreach_single_thread(begin, end, f, nItems);
     }
 }
 
 
 
+/**
+ * Create a threadpool to apply the functor F to all items in [begin, end) in
+ * parallel. F must be callable with two arguments of type size_t and T, where
+ * the first argument is the thread index (starting by 0) and T is the value
+ * type of the iterators.
+ * 
+ * If ITER is a forward iterator (std::forward_iterator_tag) and the optional
+ * argument nItems is not set, nItems is computed with std::distance(begin, end).
+ * 
+ * Example:
+ * \code
+ * #include <iostream>
+ * #include <algorithm>
+ * #include <vector>
+ * #include <vigra/threadpool.hxx>
+ * 
+ * using namespace std;
+ * using namespace vigra;
+ * 
+ * int main()
+ * {
+ *     size_t const n_threads = 4;
+ *     size_t const n = 2000;
+ *     vector<size_t> input(n);
+ *     iota(input.begin(), input.end(), 0);
+ *     
+ *     // Compute the sum of the elements in the input vector.
+ *     vector<size_t> results(n_threads, 0);
+ *     parallel_foreach(n_threads, input.begin(), input.end(),
+ *         [&results](size_t thread_id, size_t x)
+ *         {
+ *             results[thread_id] += x;
+ *         }
+ *     );
+ *     size_t const sum = accumulate(results.begin(), results.end(), 0);
+ *     
+ *     cout << "The sum " << sum << " should be equal to " << (n*(n-1))/2 << endl;
+ * }
+ * \endcode
+ */
 template<class ITER, class F>
 inline void parallel_foreach(
-    int64_t nThreads,                  
-    const uint64_t nItems,
+    int64_t nThreads,
     ITER begin, 
     ITER end, 
-    F && f
+    F && f,                  
+    const uint64_t nItems = 0
 ){
     nThreads = nThreads==-1 ? std::thread::hardware_concurrency() : nThreads;
     vigra_precondition(nThreads > 0, "parallel_foreach(): nThreads must be > 0 or -1.");
     
     ThreadPool pool(nThreads);
-    parallel_foreach(pool, nItems, begin, end, f);
+    parallel_foreach(pool, begin, end, f, nItems);
 }
 
 

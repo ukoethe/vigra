@@ -106,7 +106,7 @@ struct ThreadPoolTests
         std::vector<int> v_in(n);
         std::iota(v_in.begin(), v_in.end(), 0);
         std::vector<int> v_out(n);
-        parallel_foreach(4, n, v_in.begin(), v_in.end(),
+        parallel_foreach(4, v_in.begin(), v_in.end(),
             [&v_out](size_t thread_id, int x)
             {
                 v_out[x] = x*(x+1)/2;
@@ -130,7 +130,7 @@ struct ThreadPoolTests
         std::string exception_string = "the test exception";
         try
         {
-            parallel_foreach(4, n, v_in.begin(), v_in.end(),
+            parallel_foreach(4, v_in.begin(), v_in.end(),
                 [&v_out, &exception_string](size_t thread_id, int x)
                 {
                     if (x == 5000)
@@ -146,6 +146,25 @@ struct ThreadPoolTests
         }
         should(caught);
     }
+
+    void test_parallel_foreach_sum()
+    {
+        size_t const n_threads = 4;
+        size_t const n = 2000;
+        std::vector<size_t> input(n);
+        std::iota(input.begin(), input.end(), 0);
+        std::vector<size_t> results(n_threads, 0);
+
+        parallel_foreach(n_threads, input.begin(), input.end(),
+            [&results](size_t thread_id, size_t x)
+            {
+                results[thread_id] += x;
+            }
+        );
+
+        size_t const sum = std::accumulate(results.begin(), results.end(), 0);
+        should(sum == (n*(n-1))/2);
+    }
 };
 
 struct ThreadPoolTestSuite : public test_suite
@@ -158,6 +177,7 @@ struct ThreadPoolTestSuite : public test_suite
         add(testCase(&ThreadPoolTests::test_threadpool_exception));
         add(testCase(&ThreadPoolTests::test_parallel_foreach));
         add(testCase(&ThreadPoolTests::test_parallel_foreach_exception));
+        add(testCase(&ThreadPoolTests::test_parallel_foreach_sum));
     }
 };
 
