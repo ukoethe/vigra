@@ -129,8 +129,11 @@ random_forest_import_HDF5(HDF5File &h5ctx, const std::string &pathname = "")
 		h5ctx.readAndResize("parameters", parameters);
 		h5ctx.cd_up();
 
+		vigra_precondition(topology[0] == num_features, "random_forest_import_HDF5(): number of features mismatch.");
+		vigra_precondition(topology[1] == num_classes, "random_forest_import_HDF5(): number of classes mismatch.");
+
 		Node n = gr.addNode();
-		unsigned int index = 2; // first two entries in topology are n_features and n_classes
+		unsigned int index = 2;
 
 		typedef std::pair<unsigned int, Node> QueuePair;
 		std::queue<QueuePair> q;
@@ -141,7 +144,6 @@ random_forest_import_HDF5(HDF5File &h5ctx, const std::string &pathname = "")
 
 			index = el.first;
 			Node parent = el.second;
-
 
 			if (topology[index] & rf_LeafNodeTag) {
 				unsigned int probs_start = topology[index+1] + 1;
