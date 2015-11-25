@@ -43,8 +43,8 @@ IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
     set(SUFFICIENT_TEMPLATE_DEPTH FALSE)
     TRY_COMPILE(SUFFICIENT_TEMPLATE_DEPTH
                 ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/config/checkTemplateDepth.cxx
-                COMPILE_DEFINITIONS "-DDEPTH=900") 
-            
+                COMPILE_DEFINITIONS "-DDEPTH=900")
+
     IF(SUFFICIENT_TEMPLATE_DEPTH)
         MESSAGE(STATUS "Checking template recursion depth: ok")
     ELSE()
@@ -65,16 +65,16 @@ IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
                 SET(WITH_VIGRANUMPY 0)
             elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.5.0")
                 # gcc 4.4.x syntax is -ftemplate-depth-900 (not =900)
-                SET(CMAKE_CXX_FLAGS "-ftemplate-depth-900 ${CMAKE_CXX_FLAGS}" CACHE STRING  "Flags used by the compiler during all build types" FORCE)        
+                SET(CMAKE_CXX_FLAGS "-ftemplate-depth-900 ${CMAKE_CXX_FLAGS}")
                 MESSAGE(STATUS "Checking template recursion depth: using -ftemplate-depth-900")
             else()
                 # new syntax is =900, not -900
-                SET(CMAKE_CXX_FLAGS "-ftemplate-depth=900 ${CMAKE_CXX_FLAGS}" CACHE STRING  "Flags used by the compiler during all build types" FORCE)        
+                SET(CMAKE_CXX_FLAGS "-ftemplate-depth=900 ${CMAKE_CXX_FLAGS}")
                 MESSAGE(STATUS "Checking template recursion depth: using -ftemplate-depth=900")
             endif()
         else()
             # clang uses newer gcc syntax
-            SET(CMAKE_CXX_FLAGS "-ftemplate-depth=900 ${CMAKE_CXX_FLAGS}" CACHE STRING  "Flags used by the compiler during all build types" FORCE)        
+            SET(CMAKE_CXX_FLAGS "-ftemplate-depth=900 ${CMAKE_CXX_FLAGS}")
             MESSAGE(STATUS "Checking template recursion depth: using -ftemplate-depth=900")
         endif()
     ENDIF()
@@ -161,15 +161,12 @@ include(VigraConfigureThreading)
 include(VigraDetectCppVersion)
 VIGRA_DETECT_CPP_VERSION()
 
-# Put this last, because it can interfere with VigraDetectCppVersion, above.
-FIND_PACKAGE( OpenMP )
-if(OPENMP_FOUND)
-message("OPENMP FOUND")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-endif()
-
+########################################
+#  finalize compiler flags
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}"
+    CACHE STRING  "Flags used by the C compiler during all build types" FORCE)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}"
+    CACHE STRING  "Flags used by the C++ compiler during all build types" FORCE)
 
 ##################################################
 #
@@ -205,16 +202,16 @@ ENABLE_TESTING()
 ADD_CUSTOM_TARGET(doc)
 
 # Automatically push the latest documentation to github's gh-pages.
-# This only works when ${DOCDIR} refers to a VIGRA repository that is 
-# checked out in branch 'gh-pages', and the present repository is 
+# This only works when ${DOCDIR} refers to a VIGRA repository that is
+# checked out in branch 'gh-pages', and the present repository is
 # in branch 'master' (these conditions are checked in the script).
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-    configure_file(${PROJECT_SOURCE_DIR}/config/update-gh-pages.sh.in 
+    configure_file(${PROJECT_SOURCE_DIR}/config/update-gh-pages.sh.in
                    ${PROJECT_BINARY_DIR}/update-gh-pages.sh @ONLY)
     EXECUTE_PROCESS(COMMAND chmod u+x ${PROJECT_BINARY_DIR}/update-gh-pages.sh OUTPUT_QUIET ERROR_QUIET)
-       
-    ADD_CUSTOM_TARGET(gh-pages 
+
+    ADD_CUSTOM_TARGET(gh-pages
           ${PROJECT_BINARY_DIR}/update-gh-pages.sh
           DEPENDS doc
           WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -272,7 +269,7 @@ INCLUDE(CPackConfig)
 #
 ##################################################
 
-find_program(GIT_EXECUTABLE 
+find_program(GIT_EXECUTABLE
               NAMES git git.exe git.cmd
               HINTS $ENV{ProgramFiles}/Git/bin
               DOC "git command line client")
@@ -284,7 +281,7 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/package-src.cmake.in
 add_custom_target(PACKAGE_SRC_TAR
                    COMMAND ${CMAKE_COMMAND} -P package-src.cmake
                    WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-                   COMMENT "Creating ${PROJECT_BINARY_DIR}/vigra-${vigra_version}-src.tar.gz")        
+                   COMMENT "Creating ${PROJECT_BINARY_DIR}/vigra-${vigra_version}-src.tar.gz")
 
 ADD_DEPENDENCIES(PACKAGE_SRC_TAR check)
 ADD_DEPENDENCIES(PACKAGE_SRC_TAR doc_cpp)

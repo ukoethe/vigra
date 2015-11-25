@@ -76,12 +76,12 @@ namespace blockwise{
         typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
         typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
 
-        #pragma omp parallel
+// FIXME: replace with threadpool        #pragma omp parallel
         {
             BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
             //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
 
-            #pragma omp for
+// FIXME: replace with threadpool            #pragma omp for
             for(int i=0 ; i<blocking.numBlocks(); ++i){
 
                 const BlockWithBorder bwb = iter[i];
@@ -129,12 +129,12 @@ namespace blockwise{
         typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
         typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
         typedef typename MultiBlocking<DIM, C>::Block Block;
-        #pragma omp parallel
+// FIXME: replace with threadpool        #pragma omp parallel
         {
             BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
             //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
 
-            #pragma omp for
+// FIXME: replace with threadpool            #pragma omp for
             for(int i=0 ; i<blocking.numBlocks(); ++i){
 
                 const BlockWithBorder bwb = iter[i];

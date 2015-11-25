@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -56,8 +56,8 @@
 
     <b>\#include</b> \<vigra/mathutil.hxx\>
 
-    Since mathematical constants such as <TT>M_PI</TT> and <TT>M_SQRT2</TT> 
-    are not officially standardized, we provide definitions here for those 
+    Since mathematical constants such as <TT>M_PI</TT> and <TT>M_SQRT2</TT>
+    are not officially standardized, we provide definitions here for those
     compilers that don't support them.
 
     \code
@@ -123,15 +123,15 @@ namespace vigra {
 //@{
 // import functions into namespace vigra which VIGRA is going to overload
 
-using VIGRA_CSTD::pow;  
-using VIGRA_CSTD::floor;  
-using VIGRA_CSTD::ceil;  
-using VIGRA_CSTD::exp;  
+using VIGRA_CSTD::pow;
+using VIGRA_CSTD::floor;
+using VIGRA_CSTD::ceil;
+using VIGRA_CSTD::exp;
 
 // import abs(float), abs(double), abs(long double) from <cmath>
 //        abs(int), abs(long), abs(long long) from <cstdlib>
 //        abs(std::complex<T>) from <complex>
-using std::abs;  
+using std::abs;
 
 // define the missing variants of abs() to avoid 'ambiguous overload'
 // errors in template functions
@@ -218,7 +218,7 @@ inline long double pow(long double v, double e)
 
     /** \brief The rounding function.
 
-        Defined for all floating point types. Rounds towards the nearest integer 
+        Defined for all floating point types. Rounds towards the nearest integer
         such that <tt>abs(round(t)) == round(abs(t))</tt> for all <tt>t</tt>.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
@@ -252,17 +252,17 @@ inline long double round(long double t)
 
     /** \brief Round and cast to integer.
 
-        Rounds to the nearest integer like round(), but casts the result to 
-        <tt>int</tt> (this will be faster and is usually needed anyway).
+        Rounds to the nearest integer like round(), but casts the result to
+        <tt>long long</tt> (this will be faster and is usually needed anyway).
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-inline int roundi(double t)
+inline long long roundi(double t)
 {
      return t >= 0.0
-                ? int(t + 0.5)
-                : int(t - 0.5);
+                ? (long long)(t + 0.5)
+                : (long long)(t - 0.5);
 }
 
     /** \brief Round up to the nearest power of 2.
@@ -275,10 +275,10 @@ inline int roundi(double t)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-inline UInt32 ceilPower2(UInt32 x) 
+inline UInt32 ceilPower2(UInt32 x)
 {
     if(x == 0) return 0;
-    
+
     x = x - 1;
     x = x | (x >> 1);
     x = x | (x >> 2);
@@ -286,8 +286,8 @@ inline UInt32 ceilPower2(UInt32 x)
     x = x | (x >> 8);
     x = x | (x >>16);
     return x + 1;
-} 
-    
+}
+
     /** \brief Round down to the nearest power of 2.
 
         Efficient algorithm for finding the largest power of 2 which is not greater than \a x
@@ -297,8 +297,8 @@ inline UInt32 ceilPower2(UInt32 x)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-inline UInt32 floorPower2(UInt32 x) 
-{ 
+inline UInt32 floorPower2(UInt32 x)
+{
     x = x | (x >> 1);
     x = x | (x >> 2);
     x = x | (x >> 4);
@@ -317,10 +317,10 @@ struct IntLog2
 
 template <class T>
 Int32 IntLog2<T>::table[64] = {
-         -1,  0,  -1,  15,  -1,  1,  28,  -1,  16,  -1,  -1,  -1,  2,  21,  
-         29,  -1,  -1,  -1,  19,  17,  10,  -1,  12,  -1,  -1,  3,  -1,  6,  
-         -1,  22,  30,  -1,  14,  -1,  27,  -1,  -1,  -1,  20,  -1,  18,  9,  
-         11,  -1,  5,  -1,  -1,  13,  26,  -1,  -1,  8,  -1,  4,  -1,  25,  
+         -1,  0,  -1,  15,  -1,  1,  28,  -1,  16,  -1,  -1,  -1,  2,  21,
+         29,  -1,  -1,  -1,  19,  17,  10,  -1,  12,  -1,  -1,  3,  -1,  6,
+         -1,  22,  30,  -1,  14,  -1,  27,  -1,  -1,  -1,  20,  -1,  18,  9,
+         11,  -1,  5,  -1,  -1,  13,  26,  -1,  -1,  8,  -1,  4,  -1,  25,
          -1,  7,  24,  -1,  23,  -1,  31,  -1};
 
 } // namespace detail
@@ -329,11 +329,11 @@ Int32 IntLog2<T>::table[64] = {
 
         Returns the position of the left-most 1-bit in the given number \a x, or
         -1 if \a x == 0. That is,
-        
+
         \code
         assert(k >= 0 && k < 32 && log2i(1 << k) == k);
         \endcode
-        
+
         The function uses Robert Harley's algorithm to determine the number of leading zeros
         in \a x (algorithm nlz10() at http://www.hackersdelight.org/). But note that the functions
         \ref floorPower2() or \ref ceilPower2() are more efficient and should be preferred when possible.
@@ -341,15 +341,15 @@ Int32 IntLog2<T>::table[64] = {
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-inline Int32 log2i(UInt32 x) 
-{ 
+inline Int32 log2i(UInt32 x)
+{
     // Propagate leftmost 1-bit to the right.
     x = x | (x >> 1);
     x = x | (x >> 2);
     x = x | (x >> 4);
     x = x | (x >> 8);
     x = x | (x >>16);
-    x = x*0x06EB14F9; // Multiplier is 7*255**3. 
+    x = x*0x06EB14F9; // Multiplier is 7*255**3.
     return detail::IntLog2<Int32>::table[x >> 26];
 }
 
@@ -361,7 +361,7 @@ inline Int32 log2i(UInt32 x)
         Namespace: vigra
     */
 template <class T>
-inline 
+inline
 typename NumericTraits<T>::Promote sq(T t)
 {
     return t*t;
@@ -446,7 +446,7 @@ UInt32 IntSquareRoot<T>::sqq_table[] = {
 };
 
 template <class T>
-UInt32 IntSquareRoot<T>::exec(UInt32 x) 
+UInt32 IntSquareRoot<T>::exec(UInt32 x)
 {
     UInt32 xn;
     if (x >= 0x10000)
@@ -512,7 +512,7 @@ UInt32 IntSquareRoot<T>::exec(UInt32 x)
 using VIGRA_CSTD::sqrt;
 
     /** \brief Signed integer square root.
-    
+
         Useful for fast fixed-point computations.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
@@ -546,15 +546,15 @@ inline UInt32 sqrti(UInt32 v)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-inline double hypot(double a, double b) 
-{ 
+inline double hypot(double a, double b)
+{
     double absa = VIGRA_CSTD::fabs(a), absb = VIGRA_CSTD::fabs(b);
-    if (absa > absb) 
-        return absa * VIGRA_CSTD::sqrt(1.0 + sq(absb/absa)); 
-    else 
+    if (absa > absb)
+        return absa * VIGRA_CSTD::sqrt(1.0 + sq(absb/absa));
+    else
         return absb == 0.0
                    ? 0.0
-                   : absb * VIGRA_CSTD::sqrt(1.0 + sq(absa/absb)); 
+                   : absb * VIGRA_CSTD::sqrt(1.0 + sq(absa/absb));
 }
 
 #else
@@ -571,8 +571,8 @@ using ::hypot;
         Namespace: vigra
     */
 template <class T>
-inline T sign(T t) 
-{ 
+inline T sign(T t)
+{
     return t > NumericTraits<T>::zero()
                ? NumericTraits<T>::one()
                : t < NumericTraits<T>::zero()
@@ -588,8 +588,8 @@ inline T sign(T t)
         Namespace: vigra
     */
 template <class T>
-inline int signi(T t) 
-{ 
+inline int signi(T t)
+{
     return t > NumericTraits<T>::zero()
                ? 1
                : t < NumericTraits<T>::zero()
@@ -605,8 +605,8 @@ inline int signi(T t)
         Namespace: vigra
     */
 template <class T1, class T2>
-inline T1 sign(T1 t1, T2 t2) 
-{ 
+inline T1 sign(T1 t1, T2 t2)
+{
     return t2 >= NumericTraits<T2>::zero()
                ? abs(t1)
                : -abs(t1);
@@ -696,7 +696,7 @@ NormTraits<T>::SquaredNormType squaredNorm(T const & t);
         Namespace: vigra
     */
 template <class T>
-inline typename NormTraits<T>::NormType 
+inline typename NormTraits<T>::NormType
 norm(T const & t)
 {
     typedef typename NormTraits<T>::SquaredNormType SNT;
@@ -704,12 +704,12 @@ norm(T const & t)
 }
 
     /** \brief Compute the eigenvalues of a 2x2 real symmetric matrix.
-      
-        This uses the analytical eigenvalue formula 
+
+        This uses the analytical eigenvalue formula
         \f[
            \lambda_{1,2} = \frac{1}{2}\left(a_{00} + a_{11} \pm \sqrt{(a_{00} - a_{11})^2 + 4 a_{01}^2}\right)
         \f]
-      
+
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
@@ -724,12 +724,12 @@ void symmetric2x2Eigenvalues(T a00, T a01, T a11, T * r0, T * r1)
 }
 
     /** \brief Compute the eigenvalues of a 3x3 real symmetric matrix.
-        
+
         This uses a numerically stable version of the analytical eigenvalue formula according to
         <p>
         David Eberly: <a href="http://www.geometrictools.com/Documentation/EigenSymmetric3x3.pdf">
         <em>"Eigensystems for 3 × 3 Symmetric Matrices (Revisited)"</em></a>, Geometric Tools Documentation, 2006
-        
+
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
@@ -738,17 +738,17 @@ void symmetric3x3Eigenvalues(T a00, T a01, T a02, T a11, T a12, T a22,
                              T * r0, T * r1, T * r2)
 {
     double inv3 = 1.0 / 3.0, root3 = std::sqrt(3.0);
-    
+
     double c0 = a00*a11*a22 + 2.0*a01*a02*a12 - a00*a12*a12 - a11*a02*a02 - a22*a01*a01;
     double c1 = a00*a11 - a01*a01 + a00*a22 - a02*a02 + a11*a22 - a12*a12;
     double c2 = a00 + a11 + a22;
     double c2Div3 = c2*inv3;
     double aDiv3 = (c1 - c2*c2Div3)*inv3;
-    if (aDiv3 > 0.0) 
+    if (aDiv3 > 0.0)
         aDiv3 = 0.0;
     double mbDiv2 = 0.5*(c0 + c2Div3*(2.0*c2Div3*c2Div3 - c1));
     double q = mbDiv2*mbDiv2 + aDiv3*aDiv3*aDiv3;
-    if (q > 0.0) 
+    if (q > 0.0)
         q = 0.0;
     double magnitude = std::sqrt(-aDiv3);
     double angle = std::atan2(std::sqrt(-q),mbDiv2)*inv3;
@@ -820,14 +820,14 @@ T ellipticRF(T x, T y, T z)
 } // namespace detail
 
     /** \brief The incomplete elliptic integral of the first kind.
-    
+
         This function computes
 
         \f[
              \mbox{F}(x, k) = \int_0^x \frac{1}{\sqrt{1 - k^2 \sin(t)^2}} dt
         \f]
-  
-        according to the algorithm given in Press et al. "Numerical Recipes". 
+
+        according to the algorithm given in Press et al. "Numerical Recipes".
 
         Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
         functions must be k^2 rather than k. Check the documentation when results disagree!
@@ -843,19 +843,19 @@ inline double ellipticIntegralF(double x, double k)
 }
 
     /** \brief The incomplete elliptic integral of the second kind.
-      
+
         This function computes
-      
+
         \f[
             \mbox{E}(x, k) = \int_0^x \sqrt{1 - k^2 \sin(t)^2} dt
         \f]
-      
+
         according to the algorithm given in Press et al. "Numerical Recipes". The
         complete elliptic integral of the second kind is simply <tt>ellipticIntegralE(M_PI/2, k)</TT>.
-      
+
         Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
         functions must be k^2 rather than k. Check the documentation when results disagree!
-      
+
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
@@ -885,18 +885,18 @@ double erfImpl(T x)
         return ans - 1.0;
 }
 
-} // namespace detail 
+} // namespace detail
 
     /** \brief The error function.
 
         If <tt>erf()</tt> is not provided in the C standard math library (as it should according to the
-        new C99 standard ?), VIGRA implements <tt>erf()</tt> as an approximation of the error 
+        new C99 standard ?), VIGRA implements <tt>erf()</tt> as an approximation of the error
         function
-        
+
         \f[
             \mbox{erf}(x) = \int_0^x e^{-t^2} dt
         \f]
-        
+
         according to the formula given in Press et al. "Numerical Recipes".
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
@@ -971,7 +971,7 @@ std::pair<double, double> noncentralChi2CDF(unsigned int degreesOfFreedom, T non
         dans = VIGRA_CSTD::exp(lans);
         pans = 1.0 - dans;
     }
-    
+
     // Evaluate first term
     if(degreesOfFreedom == 0)
     {
@@ -1013,9 +1013,9 @@ std::pair<double, double> noncentralChi2CDF(unsigned int degreesOfFreedom, T non
 
 } // namespace detail
 
-    /** \brief Chi square distribution. 
+    /** \brief Chi square distribution.
 
-        Computes the density of a chi square distribution with \a degreesOfFreedom 
+        Computes the density of a chi square distribution with \a degreesOfFreedom
         and tolerance \a accuracy at the given argument \a arg
         by calling <tt>noncentralChi2(degreesOfFreedom, 0.0, arg, accuracy)</tt>.
 
@@ -1027,9 +1027,9 @@ inline double chi2(unsigned int degreesOfFreedom, double arg, double accuracy = 
     return detail::noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy).first;
 }
 
-    /** \brief Cumulative chi square distribution. 
+    /** \brief Cumulative chi square distribution.
 
-        Computes the cumulative density of a chi square distribution with \a degreesOfFreedom 
+        Computes the cumulative density of a chi square distribution with \a degreesOfFreedom
         and tolerance \a accuracy at the given argument \a arg, i.e. the probability that
         a random number drawn from the distribution is below \a arg
         by calling <tt>noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy)</tt>.
@@ -1042,50 +1042,50 @@ inline double chi2CDF(unsigned int degreesOfFreedom, double arg, double accuracy
     return detail::noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy).second;
 }
 
-    /** \brief Non-central chi square distribution. 
+    /** \brief Non-central chi square distribution.
 
-        Computes the density of a non-central chi square distribution with \a degreesOfFreedom, 
-        noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument 
-        \a arg. It uses Algorithm AS 231 from Appl. Statist. (1987) Vol.36, No.3 (code ported from 
+        Computes the density of a non-central chi square distribution with \a degreesOfFreedom,
+        noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument
+        \a arg. It uses Algorithm AS 231 from Appl. Statist. (1987) Vol.36, No.3 (code ported from
         http://lib.stat.cmu.edu/apstat/231). The algorithm has linear complexity in the number of
         degrees of freedom.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-inline double noncentralChi2(unsigned int degreesOfFreedom, 
+inline double noncentralChi2(unsigned int degreesOfFreedom,
               double noncentrality, double arg, double accuracy = 1e-7)
 {
     return detail::noncentralChi2CDF(degreesOfFreedom, noncentrality, arg, accuracy).first;
 }
 
-    /** \brief Cumulative non-central chi square distribution. 
+    /** \brief Cumulative non-central chi square distribution.
 
-        Computes the cumulative density of a chi square distribution with \a degreesOfFreedom, 
-        noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument 
+        Computes the cumulative density of a chi square distribution with \a degreesOfFreedom,
+        noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument
         \a arg, i.e. the probability that a random number drawn from the distribution is below \a arg
-        It uses Algorithm AS 231 from Appl. Statist. (1987) Vol.36, No.3 (code ported from 
+        It uses Algorithm AS 231 from Appl. Statist. (1987) Vol.36, No.3 (code ported from
         http://lib.stat.cmu.edu/apstat/231). The algorithm has linear complexity in the number of
         degrees of freedom (see noncentralChi2CDFApprox() for a constant-time algorithm).
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
-inline double noncentralChi2CDF(unsigned int degreesOfFreedom, 
+inline double noncentralChi2CDF(unsigned int degreesOfFreedom,
               double noncentrality, double arg, double accuracy = 1e-7)
 {
     return detail::noncentralChi2CDF(degreesOfFreedom, noncentrality, arg, accuracy).second;
 }
 
-    /** \brief Cumulative non-central chi square distribution (approximate). 
+    /** \brief Cumulative non-central chi square distribution (approximate).
 
-        Computes approximate values of the cumulative density of a chi square distribution with \a degreesOfFreedom, 
-        and noncentrality parameter \a noncentrality at the given argument 
+        Computes approximate values of the cumulative density of a chi square distribution with \a degreesOfFreedom,
+        and noncentrality parameter \a noncentrality at the given argument
         \a arg, i.e. the probability that a random number drawn from the distribution is below \a arg
-        It uses the approximate transform into a normal distribution due to Wilson and Hilferty 
-        (see Abramovitz, Stegun: "Handbook of Mathematical Functions", formula 26.3.32). 
+        It uses the approximate transform into a normal distribution due to Wilson and Hilferty
+        (see Abramovitz, Stegun: "Handbook of Mathematical Functions", formula 26.3.32).
         The algorithm's running time is independent of the inputs, i.e. is should be used
-        when noncentralChi2CDF() is too slow, and approximate values are sufficient. The accuracy is only 
+        when noncentralChi2CDF() is too slow, and approximate values are sufficient. The accuracy is only
         about 0.1 for few degrees of freedom, but reaches about 0.001 above dof = 5.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
@@ -1111,11 +1111,11 @@ T facLM(T l, T m)
 
 } // namespace detail
 
-    /** \brief Associated Legendre polynomial. 
+    /** \brief Associated Legendre polynomial.
 
-        Computes the value of the associated Legendre polynomial of order <tt>l, m</tt> 
-        for argument <tt>x</tt>. <tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, 
-        otherwise an exception is thrown. The standard Legendre polynomials are the 
+        Computes the value of the associated Legendre polynomial of order <tt>l, m</tt>
+        for argument <tt>x</tt>. <tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>,
+        otherwise an exception is thrown. The standard Legendre polynomials are the
         special case <tt>m == 0</tt>.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
@@ -1144,11 +1144,11 @@ REAL legendre(unsigned int l, int m, REAL x)
             f += 2.0;
         }
     }
-    if((int)l == m) 
+    if((int)l == m)
         return result;
 
     REAL result_1 = x * (2.0 * m + 1.0) * result;
-    if((int)l == m+1) 
+    if((int)l == m+1)
         return result_1;
     REAL other = 0.0;
     for(unsigned int i = m+2; i <= l; ++i)
@@ -1160,7 +1160,7 @@ REAL legendre(unsigned int l, int m, REAL x)
     return other;
 }
 
-    /** \brief \brief Legendre polynomial. 
+    /** \brief \brief Legendre polynomial.
 
         Computes the value of the Legendre polynomial of order <tt>l</tt> for argument <tt>x</tt>.
         <tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, otherwise an exception is thrown.
@@ -1174,7 +1174,7 @@ REAL legendre(unsigned int l, REAL x)
     return legendre(l, 0, x);
 }
 
-    /** \brief sin(pi*x). 
+    /** \brief sin(pi*x).
 
         Essentially calls <tt>std::sin(M_PI*x)</tt> but uses a more accurate implementation
         to make sure that <tt>sin_pi(1.0) == 0.0</tt> (which does not hold for
@@ -1208,12 +1208,12 @@ REAL sin_pi(REAL x)
         rem = NumericTraits<REAL>::one();
     else
         rem = std::sin(M_PI * rem);
-    return invert 
-              ? -rem 
+    return invert
+              ? -rem
               : rem;
 }
 
-    /** \brief cos(pi*x). 
+    /** \brief cos(pi*x).
 
         Essentially calls <tt>std::cos(M_PI*x)</tt> but uses a more accurate implementation
         to make sure that <tt>cos_pi(1.0) == -1.0</tt> and <tt>cos_pi(0.5) == 0.0</tt>.
@@ -1234,7 +1234,7 @@ struct GammaImpl
 {
     static REAL gamma(REAL x);
     static REAL loggamma(REAL x);
-    
+
     static double g[];
     static double a[];
     static double t[];
@@ -1287,7 +1287,7 @@ double GammaImpl<REAL>::a[] = {
     2.20862790713908385557e-04,
     1.08011567247583939954e-04,
     2.52144565451257326939e-05,
-    4.48640949618915160150e-05 
+    4.48640949618915160150e-05
 };
 
 template <class REAL>
@@ -1371,12 +1371,12 @@ REAL GammaImpl<REAL>::gamma(REAL x)
     vigra_precondition(x <= 171.0,
         "gamma(): argument cannot exceed 171.0.");
 
-    if (x == ix) 
+    if (x == ix)
     {
-        if (ix > 0) 
+        if (ix > 0)
         {
             ga = 1.0;               // use factorial
-            for (i=2; i<ix; ++i) 
+            for (i=2; i<ix; ++i)
             {
                ga *= i;
             }
@@ -1387,14 +1387,14 @@ REAL GammaImpl<REAL>::gamma(REAL x)
                  "gamma(): gamma function is undefined for 0 and negative integers.");
         }
      }
-     else 
+     else
      {
-        if (abs(x) > 1.0) 
+        if (abs(x) > 1.0)
         {
             z = abs(x);
             m = (int)z;
             r = 1.0;
-            for (k=1; k<=m; ++k) 
+            for (k=1; k<=m; ++k)
             {
                 r *= (z-k);
             }
@@ -1405,15 +1405,15 @@ REAL GammaImpl<REAL>::gamma(REAL x)
             z = x;
         }
         gr = g[24];
-        for (k=23; k>=0; --k) 
+        for (k=23; k>=0; --k)
         {
             gr = gr*z+g[k];
         }
         ga = 1.0/(gr*z);
-        if (abs(x) > 1.0) 
+        if (abs(x) > 1.0)
         {
             ga *= r;
-            if (x < 0.0) 
+            if (x < 0.0)
             {
                 ga = -M_PI/(x*ga*sin_pi(x));
             }
@@ -1424,13 +1424,13 @@ REAL GammaImpl<REAL>::gamma(REAL x)
 
 /*
  * the following code is derived from lgamma_r() by Sun
- * 
+ *
  * ====================================================
  * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  *
@@ -1440,12 +1440,12 @@ REAL GammaImpl<REAL>::loggamma(REAL x)
 {
     vigra_precondition(x > 0.0,
         "loggamma(): argument must be positive.");
-    
+
     vigra_precondition(x <= 1.0e307,
         "loggamma(): argument must not exceed 1e307.");
 
     double res;
-    
+
     if (x < 4.2351647362715017e-22)
     {
         res = -std::log(x);
@@ -1549,7 +1549,7 @@ REAL GammaImpl<REAL>::loggamma(REAL x)
     {
         res =  x*(std::log(x) - 1.0);
     }
-    
+
     return res;
 }
 
@@ -1560,7 +1560,7 @@ REAL GammaImpl<REAL>::loggamma(REAL x)
 
         This function implements the algorithm from<br>
         Zhang and Jin: "Computation of Special Functions", John Wiley and Sons, 1996.
-        
+
         The argument must be <= 171.0 and cannot be zero or a negative integer. An
         exception is thrown when these conditions are violated.
 
@@ -1577,7 +1577,7 @@ inline double gamma(double x)
         This function is based on a free implementation by Sun Microsystems, Inc., see
         <a href="http://www.sourceware.org/cgi-bin/cvsweb.cgi/~checkout~/src/newlib/libm/mathfp/er_lgamma.c?rev=1.6&content-type=text/plain&cvsroot=src">sourceware.org</a> archive. It can be removed once all compilers support the new C99
         math functions.
-        
+
         The argument must be positive and < 1e30. An exception is thrown when these conditions are violated.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
@@ -1597,15 +1597,15 @@ inline
 FPT safeFloatDivision( FPT f1, FPT f2 )
 {
     return  f2 < NumericTraits<FPT>::one() && f1 > f2 * NumericTraits<FPT>::max()
-                ? NumericTraits<FPT>::max() 
-                : (f2 > NumericTraits<FPT>::one() && f1 < f2 * NumericTraits<FPT>::smallestPositive()) || 
+                ? NumericTraits<FPT>::max()
+                : (f2 > NumericTraits<FPT>::one() && f1 < f2 * NumericTraits<FPT>::smallestPositive()) ||
                    f1 == NumericTraits<FPT>::zero()
-                     ? NumericTraits<FPT>::zero() 
+                     ? NumericTraits<FPT>::zero()
                      : f1/f2;
 }
 
 } // namespace detail
-    
+
     /** \brief Tolerance based floating-point equality.
 
         Check whether two floating point numbers are equal within the given tolerance.
@@ -1617,7 +1617,7 @@ FPT safeFloatDivision( FPT f1, FPT f2 )
         Namespace: vigra
     */
 template <class T1, class T2>
-bool 
+bool
 closeAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
 {
     typedef typename PromoteTraits<T1, T2>::Promote T;
@@ -1638,7 +1638,7 @@ inline bool closeAtTolerance(T1 l, T2 r)
     typedef typename PromoteTraits<T1, T2>::Promote T;
     return closeAtTolerance(l, r, T(2.0) * NumericTraits<T>::epsilon());
 }
-    
+
     /** \brief Tolerance based floating-point less-or-equal.
 
         Check whether two floating point numbers are less or equal within the given tolerance.
@@ -1651,7 +1651,7 @@ inline bool closeAtTolerance(T1 l, T2 r)
         Namespace: vigra
     */
 template <class T1, class T2>
-inline bool 
+inline bool
 lessEqualAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
 {
     return l < r || closeAtTolerance(l, r, epsilon);
@@ -1663,7 +1663,7 @@ inline bool lessEqualAtTolerance(T1 l, T2 r)
     typedef typename PromoteTraits<T1, T2>::Promote T;
     return lessEqualAtTolerance(l, r, T(2.0) * NumericTraits<T>::epsilon());
 }
-    
+
     /** \brief Tolerance based floating-point greater-or-equal.
 
         Check whether two floating point numbers are greater or equal within the given tolerance.
@@ -1676,7 +1676,7 @@ inline bool lessEqualAtTolerance(T1 l, T2 r)
         Namespace: vigra
     */
 template <class T1, class T2>
-inline bool 
+inline bool
 greaterEqualAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
 {
     return r < l || closeAtTolerance(l, r, epsilon);
@@ -1723,7 +1723,7 @@ inline bool greaterEqualAtTolerance(T1 l, T2 r)
     } \
     inline NumericTraits<TYPE>::RealPromote sizeDividedNorm(const TYPE t){ \
         return  norm(t); \
-    } 
+    }
 
 
 VIGRA_MATH_FUNC_HELPER(unsigned char)
