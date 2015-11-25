@@ -261,8 +261,8 @@ inline long double round(long double t)
 inline long long roundi(double t)
 {
      return t >= 0.0
-                ? long long(t + 0.5)
-                : long long(t - 0.5);
+                ? (long long)(t + 0.5)
+                : (long long)(t - 0.5);
 }
 
     /** \brief Round up to the nearest power of 2.
