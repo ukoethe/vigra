@@ -110,15 +110,15 @@ public:
     template <typename FEATURES,
               typename LABELS,
               typename WEIGHTS,
-              typename SPLIT,
-              typename RANGE>
+              typename SCORER,
+              typename ITER>
     void visit_after_split(FEATURES & features,
                            LABELS & labels,
                            WEIGHTS & weights,
-                           SPLIT & split,
-                           RANGE & parent,
-                           RANGE & left_child,
-                           RANGE & right_child)
+                           SCORER & scorer,
+                           ITER begin,
+                           ITER split,
+                           ITER end)
     {}
 
     /**
@@ -158,15 +158,17 @@ private:
 /**
  * @brief Compute the out of bag error.
  * 
- * Here, each data point is put down those trees for which it is OOB.
- * Using bootstrap sampling, each sample is OOB for approximately 37%.
- * The error rate obtained as such therefore corresponds to a crossvalidation
- * error obtained using an ensemble containing of 37% of the trees.
+ * After training, each data point is put down those trees for which it is OOB.
+ * Using bootstrap sampling, each data point is OOB for approximately 37% of
+ * the trees.
  */
 class OOBError : public RFVisitorBase
 {
 public:
 
+    /**
+     * Save whether a data point is in-bag (weight > 0) or out-of-bag (weight == 0).
+     */
     template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
     void visit_after_tree(
             RF & rf,
@@ -192,6 +194,9 @@ public:
             throw std::runtime_error("OOBError::visit_after_tree(): The tree has no out-of-bags.");
     }
 
+    /**
+     * Compute the out-of-bag error.
+     */
     template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
     void visit_after_training(
             VISITORS & visitors,
@@ -228,8 +233,52 @@ public:
         oob_err_ /= num_instances;
     }
 
+    /**
+     * the out-of-bag error
+     */
     double oob_err_;
-    std::vector<bool> is_in_bag_;
+
+private:
+    std::vector<bool> is_in_bag_; // whether a data point is in-bag or out-of-bag
+};
+
+
+
+/**
+ * @brief Compute the variable importance.
+ */
+class VariableImportance : public RFVisitorBase
+{
+public:
+
+    template <typename FEATURES,
+              typename LABELS,
+              typename WEIGHTS,
+              typename SCORER,
+              typename ITER>
+    void visit_after_split(FEATURES & features,
+                           LABELS & labels,
+                           WEIGHTS & weights,
+                           SCORER & scorer,
+                           ITER begin,
+                           ITER split,
+                           ITER end)
+    {
+
+
+
+    }
+
+    /**
+     * the variable importance
+     */
+    MultiArray<2, double> variable_importance_;
+
+    /**
+     * how often the permutation takes place
+     */
+    int repetition_count_;
+
 };
 
 
@@ -339,10 +388,31 @@ public:
         next_.visit_after_tree(rf, features, labels, weights);
     }
 
+    template <typename FEATURES,
+              typename LABELS,
+              typename WEIGHTS,
+              typename SCORER,
+              typename ITER>
+    void visit_after_split(FEATURES & features,
+                           LABELS & labels,
+                           WEIGHTS & weights,
+                           SCORER & scorer,
+                           ITER begin,
+                           ITER split,
+                           ITER end)
+    {
+        if (visitor_.is_active())
+            visitor_.visit_after_split(features, labels, weights, scorer, begin, split, end);
+        next_.visit_after_split(features, labels, weights, scorer, begin, split, end);
+    }
+
 };
 
 } // namespace detail
 
+/**
+ * The VisitorCopy can be used to set the copy argument of the given visitor chain to true.
+ */
 template <typename VISITOR>
 struct VisitorCopy
 {

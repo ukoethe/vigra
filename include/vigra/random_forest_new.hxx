@@ -297,6 +297,10 @@ void random_forest_single_tree(
                 return features(i, best_dim) <= best_split;
             }
         );
+
+        // Call the visitor.
+        visitor.visit_after_split(features, labels, instance_weights, score, begin, split_iter, end);
+
         instance_range.insert(n_left, IterPair(begin, split_iter));
         instance_range.insert(n_right, IterPair(split_iter, end));
         tree.split_tests_.insert(node, SplitTests(best_dim, best_split));
