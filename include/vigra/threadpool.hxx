@@ -115,7 +115,7 @@ private:
     bool stop;
     std::atomic<unsigned int> busy, processed;
 };
- 
+
 inline ThreadPool::ThreadPool(size_t threads)
     :   stop(false),
         busy(0),
@@ -155,7 +155,6 @@ inline ThreadPool::ThreadPool(size_t threads)
                             return;
                         }
                     }
-                    
                 }
             }
         );
@@ -228,9 +227,7 @@ ThreadPool::enqueue(F&& f)
 
 
 
-/**
- * nItems must be either zero or std::distance(iter, end).
- */
+// nItems must be either zero or std::distance(iter, end).
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
@@ -267,9 +264,7 @@ inline void parallel_foreach_impl(
 
 
 
-/**
- * nItems must be either zero or std::distance(iter, end).
- */
+// nItems must be either zero or std::distance(iter, end).
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
@@ -322,9 +317,7 @@ inline void parallel_foreach_impl(
 
 
 
-/**
- * nItems must be either zero or std::distance(iter, end).
- */
+// nItems must be either zero or std::distance(iter, end).
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
