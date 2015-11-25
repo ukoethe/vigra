@@ -35,7 +35,7 @@
 #include <vigra/unittest.hxx>
 #include <vigra/threadpool.hxx>
 #include <numeric>
-#include <chrono>
+// #include <chrono>
 
 using namespace vigra;
 
@@ -167,29 +167,29 @@ struct ThreadPoolTests
         should(sum == (n*(n-1))/2);
     }
 
-    void test_parallel_foreach_timing()
-    {
-        size_t const n_threads = 4;
-        size_t const n = 300000000;
-        std::vector<size_t> input(n);
-        std::iota(input.begin(), input.end(), 0);
+    // void test_parallel_foreach_timing()
+    // {
+    //     size_t const n_threads = 4;
+    //     size_t const n = 300000000;
+    //     std::vector<size_t> input(n);
+    //     std::iota(input.begin(), input.end(), 0);
 
-        std::vector<size_t> results(n_threads, 0);
-        auto starttime = std::chrono::steady_clock::now();
-        parallel_foreach(n_threads, input.begin(), input.end(),
-            [&results](size_t thread_id, size_t x)
-            {
-                results[thread_id] += 1;
-            }
-        );
-        auto endtime = std::chrono::steady_clock::now();
+    //     std::vector<size_t> results(n_threads, 0);
+    //     auto starttime = std::chrono::steady_clock::now();
+    //     parallel_foreach(n_threads, input.begin(), input.end(),
+    //         [&results](size_t thread_id, size_t x)
+    //         {
+    //             results[thread_id] += 1;
+    //         }
+    //     );
+    //     auto endtime = std::chrono::steady_clock::now();
 
-        size_t const sum = std::accumulate(results.begin(), results.end(), 0);
+    //     size_t const sum = std::accumulate(results.begin(), results.end(), 0);
 
-        auto sec = std::chrono::duration<double>(endtime-starttime).count();
-        std::cout << "took " << sec << " seconds" << std::endl;
-        should(sum == n);
-    }
+    //     auto sec = std::chrono::duration<double>(endtime-starttime).count();
+    //     std::cout << "took " << sec << " seconds" << std::endl;
+    //     should(sum == n);
+    // }
 };
 
 struct ThreadPoolTestSuite : public test_suite
