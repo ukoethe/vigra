@@ -66,9 +66,9 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
     Shape shape = overlaps.shape();
     vigra_assert(shape == directions_blocks_begin.shape(), "");
     
-    MultiCoordinateIterator<N> itBegin(shape);
-    MultiCoordinateIterator<N> end = itBegin.getEndIterator();
-    typedef typename MultiCoordinateIterator<N>::value_type Coordinate;
+    MultiCoordinateIterator<DataArray::actual_dimension> itBegin(shape);
+    MultiCoordinateIterator<DataArray::actual_dimension> end = itBegin.getEndIterator();
+    typedef typename MultiCoordinateIterator<DataArray::actual_dimension>::value_type Coordinate;
 
     parallel_foreach(-1,
         itBegin,end, 
