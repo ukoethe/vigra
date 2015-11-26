@@ -176,6 +176,10 @@ random_forest_import_HDF5(HDF5File &h5ctx, const std::string &pathname = "")
 	}
 
 
+	if (cwd.size()) {
+		h5ctx.cd(cwd);
+	}
+
 	RF rf = RF(gr, split_tests, leaf_responses, pspec);
 	return rf;
 }
