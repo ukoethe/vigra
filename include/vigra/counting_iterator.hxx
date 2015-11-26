@@ -53,32 +53,35 @@ namespace vigra{
         const CountingIterator& operator=(const CountingIterator& other) {count_ = other.count_; return other;}
 
         CountingIterator& operator++()    {count_++; return *this;} // prefix++
-        CountingIterator  operator++(int) {CountingIterator tmp(*this); ++(*this); return tmp;} // postfix++
+        CountingIterator  operator++(int)const{CountingIterator tmp(*this); ++(*this); return tmp;} // postfix++
         CountingIterator& operator--()    {count_--; return *this;} // prefix--
-        CountingIterator  operator--(int) {CountingIterator tmp(*this); --(*this); return tmp;} // postfix--
+        CountingIterator  operator--(int)const{CountingIterator tmp(*this); --(*this); return tmp;} // postfix--
 
         void     operator+=(const std::size_t& n)  {count_ += n;}
         void     operator+=(const CountingIterator& other) {count_ += other.count_;}
-        CountingIterator operator+ (const std::size_t& n)  {CountingIterator tmp(*this); tmp += n; return tmp;}
+        CountingIterator operator+ (const std::size_t& n) const{CountingIterator tmp(*this); tmp += n; return tmp;}
         CountingIterator operator+ (const CountingIterator& other) {CountingIterator tmp(*this); tmp += other; return tmp;}
 
         void        operator-=(const std::size_t& n)  {count_ -= n;}
         void        operator-=(const CountingIterator& other) {count_ -= other.count_;}
-        CountingIterator    operator- (const std::size_t& n)  {CountingIterator tmp(*this); tmp -= n; return tmp;}
+        CountingIterator    operator- (const std::size_t& n) const{CountingIterator tmp(*this); tmp -= n; return tmp;}
         std::size_t operator- (const CountingIterator& other) {return count_ - other.count_;}
 
-        bool operator< (const CountingIterator& other) {return (count_-other.count_)< 0;}
-        bool operator<=(const CountingIterator& other) {return (count_-other.count_)<=0;}
-        bool operator> (const CountingIterator& other) {return (count_-other.count_)> 0;}
-        bool operator>=(const CountingIterator& other) {return (count_-other.count_)>=0;}
-        bool operator==(const CountingIterator& other) {return  count_ == other.count_; }
-        bool operator!=(const CountingIterator& other) {return  count_ != other.count_; }
+        bool operator< (const CountingIterator& other)const{return (count_-other.count_)< 0;}
+        bool operator<=(const CountingIterator& other)const{return (count_-other.count_)<=0;}
+        bool operator> (const CountingIterator& other)const{return (count_-other.count_)> 0;}
+        bool operator>=(const CountingIterator& other)const{return (count_-other.count_)>=0;}
+        bool operator==(const CountingIterator& other)const{return  count_ == other.count_; }
+        bool operator!=(const CountingIterator& other)const{return  count_ != other.count_; }
 
         T_INTEGER   operator[](const int& n) const {
             return count_ + n;
         }
         T_INTEGER   operator[](const int& n) {
             return count_ + n;
+        }
+        T_INTEGER   operator*()const{
+            return  count_;
         }
         T_INTEGER   operator*() {
             return  count_;
