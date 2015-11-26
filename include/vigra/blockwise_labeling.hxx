@@ -39,6 +39,7 @@
 #include <algorithm>
 
 #include "threadpool.hxx"
+#include "counting_iterator.hxx"
 #include "multi_gridgraph.hxx"
 #include "multi_labeling.hxx"
 #include "union_find.hxx"
@@ -117,10 +118,13 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
 
 
         std::vector<UInt32> nSeg(d);
-        std::vector<int> ids(d);
-        std::iota(ids.begin(), ids.end(), 0 );
+        //std::vector<int> ids(d);
+        //std::iota(ids.begin(), ids.end(), 0 );
 
-        parallel_foreach(-1, ids.begin(), ids.end(), 
+        auto iterBegin = CountingIterator<int>(0);
+        auto iterEnd   = CountingIterator<int>(d);
+
+        parallel_foreach(-1,iterBegin, iterEnd, 
             [&](const int threadId, const int i){
                 int resVal;
                 if(background_value){

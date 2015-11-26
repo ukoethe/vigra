@@ -365,11 +365,12 @@ def imshow(image,show=True, **kwargs):
     if image.channels == 1:
         image = image.dropChannelAxis().view(numpy.ndarray)
         if 'cmap' in kwargs.keys():
-            cmap = kwargs['cmap']
-        elif 'norm' in kwargs.keys():
-            norm = kwargs['norm']
+            cmap = kwargs.pop('cmap')
         else:
             cmap = matplotlib.cm.gray
+        if 'norm' in kwargs.keys():
+            norm = kwargs.pop('norm')
+        else:
             norm = matplotlib.cm.colors.Normalize()
         plot = matplotlib.pyplot.imshow(image, cmap=cmap, norm=norm, **kwargs)
         if show:
@@ -1294,7 +1295,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 # identity segmentation on this level
                 labels = self.nodeIdMap()
 
-            if steps == current :
+            if steps == _current :
                 return labels
             else :
                 labels = self.projectLabelsToBaseGraph(labels)
@@ -2288,29 +2289,29 @@ def _genGraphSegmentationFunctions():
 
         assert edgeWeights is not None or nodeFeatures is not None
 
-        print "prepare "
+        #print "prepare "
 
         if nodeNumStop is None:
             nodeNumStop = max(graph.nodeNum/2,min(graph.nodeNum,2))
 
 
         if edgeLengths is None :
-            print "get edge length"
+            #print "get edge length"
             edgeLengths = graphs.getEdgeLengths(graph)
 
 
         if nodeSizes is None:
-            print "get node size"
+            #print "get node size"
             nodeSizes = graphs.getNodeSizes(graph)
 
 
         if edgeWeights is None :
-            print "get wegihts length"
+            #print "get wegihts length"
             edgeWeights = graphs.graphMap(graph,'edge')
             edgeWeights[:]=0
 
         if nodeFeatures is None :
-            print "get node feat"
+            #print "get node feat"
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 

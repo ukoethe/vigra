@@ -194,6 +194,7 @@ BOOST_PYTHON_MODULE_INIT(histogram)
     import_vigranumpy();
 
     // all exporters needed for graph exporters (like lemon::INVALID)
+    defineMultiGaussianHistogram<2,1>();
     defineMultiGaussianHistogram<2,3>();
     defineMultiGaussianHistogram<3,1>();
     defineMultiGaussianHistogram<3,3>();
