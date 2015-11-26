@@ -42,6 +42,7 @@
 #include "vigra/multi_blocking.hxx"
 #include "vigra/multi_convolution.hxx"
 #include "vigra/multi_tensorutilities.hxx"
+#include "vigra/threadpool.hxx"
 
 #ifndef VIGRA_DEFAULT_BLOCK_SHAPE
     #define VIGRA_DEFAULT_BLOCK_SHAPE 64
@@ -52,6 +53,57 @@ namespace vigra{
 
 namespace blockwise{
 
+
+    /// base option class for parallel algorithms
+    class ParallelOptions{
+    public:
+        ParallelOptions(const int numThreads = -1)
+        :   numThreads_(numThreads){
+        }
+        int getNumThreads()const{
+            return numThreads_;
+        }
+        void setNumThreads(const int numThreads){
+            numThreads_ = numThreads;
+        }
+    private:
+        int numThreads_;
+    };
+
+    /// base option class for blockwise algorithms
+    /// attaches blockshape to ParallelOptions
+    template<unsigned int N>
+    class BlockwiseOptions
+    : public ParallelOptions
+    {
+    public:
+        typedef vigra::TinyVector< vigra::MultiArrayIndex, N> Shape;
+
+        BlockwiseOptions(const Shape & blockShape = Shape(VIGRA_DEFAULT_BLOCK_SHAPE))
+        :   ParallelOptions(),
+            blockShape_(blockShape){
+        }
+        Shape getBlockShape()const{
+            return blockShape_;
+        }
+        void setBlockShape(const Shape & blockShape){
+            blockShape_ = blockShape;
+        }
+    private:
+        Shape blockShape_;
+    };
+
+    template<unsigned int N>
+    class BlockwiseConvolutionOptions
+    :   public  BlockwiseOptions<N>, public vigra::ConvolutionOptions<N>{
+    public:
+        BlockwiseConvolutionOptions()
+        :   BlockwiseOptions<N>(),
+            vigra::ConvolutionOptions<N>(){
+        }
+    private:
+
+    };
 
     /**
         helper function to create blockwise parallel filters.
@@ -70,40 +122,36 @@ namespace blockwise{
         const vigra::MultiArrayView<DIM, T_OUT, ST_OUT> & dest,
         FILTER_FUNCTOR & functor,
         const vigra::MultiBlocking<DIM, C> & blocking,
-        const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth
+        const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth,
+        const BlockwiseConvolutionOptions<DIM>  & options
     ){
 
         typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
-        typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
 
-// FIXME: replace with threadpool        #pragma omp parallel
-        {
-            BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
-            //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
+        auto beginIter  =  blocking.blockWithBorderBegin(borderWidth);
+        auto endIter   =  blocking.blockWithBorderEnd(borderWidth);
 
-// FIXME: replace with threadpool            #pragma omp for
-            for(int i=0 ; i<blocking.numBlocks(); ++i){
-
-                const BlockWithBorder bwb = iter[i];
-
+        parallel_foreach(options.getNumThreads(), 
+            beginIter, endIter,
+            [&](const int threadId, const BlockWithBorder bwb)
+            {
                 // get the input of the block as a view
                 vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin(),
                                                                              bwb.border().end());
-
                 // get the output as NEW allocated array
                 vigra::MultiArray<DIM, T_OUT> destSub(sourceSub.shape());
-
                 // call the functor
                 functor(sourceSub, destSub);
-
                  // write the core global out
                 vigra::MultiArrayView<DIM, T_OUT, ST_OUT> destSubCore = destSub.subarray(bwb.localCore().begin(),
                                                                                 bwb.localCore().end());
                 // write the core global out
                 dest.subarray(bwb.core().begin()-blocking.roiBegin(),
                               bwb.core().end()  -blocking.roiBegin()  ) = destSubCore;
-            }
-        }
+            },
+            blocking.numBlocks()
+        );
+
     }
 
     /**
@@ -123,44 +171,36 @@ namespace blockwise{
         const vigra::MultiArrayView<DIM, T_OUT, ST_OUT> & dest,
         FILTER_FUNCTOR & functor,
         const vigra::MultiBlocking<DIM, C> & blocking,
-        const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth
+        const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth,
+        const BlockwiseConvolutionOptions<DIM>  & options
     ){
 
         typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
-        typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
+        //typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
         typedef typename MultiBlocking<DIM, C>::Block Block;
-// FIXME: replace with threadpool        #pragma omp parallel
-        {
-            BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
-            //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
 
-// FIXME: replace with threadpool            #pragma omp for
-            for(int i=0 ; i<blocking.numBlocks(); ++i){
+        
+        auto beginIter  =  blocking.blockWithBorderBegin(borderWidth);
+        auto endIter   =  blocking.blockWithBorderEnd(borderWidth);
 
-                const BlockWithBorder bwb = iter[i];
-
+        parallel_foreach(options.getNumThreads(), 
+            beginIter, endIter,
+            [&](const int threadId, const BlockWithBorder bwb)
+            {
                 // get the input of the block as a view
                 vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin(),
                                                                             bwb.border().end());
-
                 // get the output of the blocks core as a view
                 vigra::MultiArrayView<DIM, T_OUT, ST_OUT> destCore = dest.subarray(bwb.core().begin(),
                                                                             bwb.core().end());
-
-
                 const Block localCore =  bwb.localCore();
-
-
                 // call the functor
                 functor(sourceSub, destCore, localCore.begin(), localCore.end());
+            },
+            blocking.numBlocks()
+        );
 
-                // write the core global out
-                //vigra::MultiArrayView<DIM, T_OUT, ST_OUT> destSubCore = destSub.subarray(bwb.localCore().begin(),
-                //                                                                bwb.localCore().end());
-                //dest.subarray(bwb.core().begin()-blocking.roiBegin(),
-                //              bwb.core().end()  -blocking.roiBegin()  ) = destSubCore;
-            }
-        }
+        
     }
 
     #define CONVOLUTION_FUNCTOR(FUNCTOR_NAME, FUNCTION_NAME) \
@@ -278,80 +318,8 @@ namespace blockwise{
         : HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM-1>(convOpt){}
     };
 
-    /// concurrency type to use within parallel algorithms
-    ///
-    /// So far, only OpenMpConcurrency is implemented
-    enum ConcurrencyType{
-        DefaultConcurrency,
-        OpenMpConcurrency,
-        BoostThreadsConcurrency,
-        Std11ThreadsConcurrency,
-        NoConcurrency
 
-    };
 
-    /// base option class for parallel algorithms
-    class ParallelOptions{
-    public:
-        ParallelOptions(const size_t numThreds = 0,
-                        const ConcurrencyType  concurrencyType = OpenMpConcurrency)
-        :   numThreads_(numThreds), // zero means AUTO
-            concurrencyType_(concurrencyType){
-                if(concurrencyType_!=OpenMpConcurrency){
-                    throw std::runtime_error("currently only OpenMpConcurrency is implemented");
-                }
-        }
-        size_t getNumThreads()const{
-            return numThreads_;
-        }
-        void setNumThreads(const size_t numThreads){
-            numThreads_ = numThreads;
-        }
-        ConcurrencyType getConcurrencyType()const{
-            return concurrencyType_;
-        }
-        void setConcurencyType(const ConcurrencyType & concurrencyType){
-            concurrencyType_ = concurrencyType;
-        }
-    private:
-        size_t numThreads_;
-        ConcurrencyType concurrencyType_;
-    };
-
-    /// base option class for blockwise algorithms
-    /// attaches blockshape to ParallelOptions
-    template<unsigned int N>
-    class BlockwiseOptions
-    : public ParallelOptions
-    {
-    public:
-        typedef vigra::TinyVector< vigra::MultiArrayIndex, N> Shape;
-
-        BlockwiseOptions(const Shape & blockShape = Shape(VIGRA_DEFAULT_BLOCK_SHAPE))
-        :   ParallelOptions(),
-            blockShape_(blockShape){
-        }
-        Shape getBlockShape()const{
-            return blockShape_;
-        }
-        void setBlockShape(const Shape & blockShape){
-            blockShape_ = blockShape;
-        }
-    private:
-        Shape blockShape_;
-    };
-
-    template<unsigned int N>
-    class BlockwiseConvolutionOptions
-    :   public  BlockwiseOptions<N>, public vigra::ConvolutionOptions<N>{
-    public:
-        BlockwiseConvolutionOptions()
-        :   BlockwiseOptions<N>(),
-            vigra::ConvolutionOptions<N>(){
-        }
-    private:
-
-    };
 
 
 
@@ -395,7 +363,7 @@ namespace blockwise{
         subOptions.subarray(Shape(0), Shape(0));  \
         const Blocking blocking(source.shape(), options.getBlockShape()); \
         FUNCTOR f(subOptions); \
-        blockwiseCaller(source, dest, f, blocking, border); \
+        blockwiseCaller(source, dest, f, blocking, border, options); \
     }
 
     BLOCKWISE_FUNCTION_GEN(GaussianSmoothFunctor<N> ,                   gaussianSmoothMultiArray,                   0, false );

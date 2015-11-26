@@ -37,8 +37,7 @@
 #define VIGRA_BLOCKWISE_LABELING_HXX
 
 
-#include <omp.h>
-
+#include "vigra/threadpool.hxx"
 
 #include "multi_gridgraph.hxx"
 #include "multi_labeling.hxx"
@@ -118,6 +117,27 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
 
 
         std::vector<UInt32> nSeg(d);
+        std::vector<int> ids(d);
+        std::iota(ids.begin(), ids.end(), 0 );
+
+        parallel_foreach(-1, ids.begin(), ids.end(), 
+            [&](const int threadId, const int i){
+                int resVal;
+                if(background_value){
+                    resVal = 1 + labelMultiArrayWithBackground(data_blocks_it[i], label_blocks_it[i],
+                                                                        neighborhood, *background_value, equal);
+                }
+                else{
+                    resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
+                                                      neighborhood, equal);
+                }
+                nSeg[i] = resVal;
+            },
+            d
+        );
+
+
+        /*
         #pragma omp parallel for
         for(int i=0; i<d; ++i){
             int resVal;
@@ -128,33 +148,16 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
             else{
                 resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
                                                   neighborhood, equal);
-            
             }
             nSeg[i] = resVal;
         }
+        */
         for(int i=0; i<d;++i){
             offsets_it[i] = current_offset;
             current_offset+=nSeg[i];
         }
 
 
-
-        
-        //for( ; data_blocks_it != data_blocks_end; ++data_blocks_it, ++label_blocks_it, ++offsets_it)
-        //{
-        //    vigra_assert(label_blocks_it != label_blocks_end && offsets_it != label_offsets.end(), "");
-        //    * = current_offset;
-        //    if(background_value)
-        //    {
-        //        current_offset += 1 + labelMultiArrayWithBackground(*data_blocks_it, *label_blocks_it,
-        //                                                            neighborhood, *background_value, equal);
-        //    }
-        //    else
-        //    {
-        //        current_offset += labelMultiArray(*data_blocks_it, *label_blocks_it,
-        //                                          neighborhood, equal);
-        //    }
-        //}
         unmerged_label_number = current_offset;
         if(!background_value)
             ++unmerged_label_number;

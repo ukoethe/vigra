@@ -67,8 +67,47 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
     
     MultiCoordinateIterator<N> itBegin(shape);
     MultiCoordinateIterator<N> end = itBegin.getEndIterator();
+    typedef typename MultiCoordinateIterator<N>::value_type Coordinate;
 
+    parallel_foreach(-1,
+        itBegin,end, 
+        [&](const int threadId, const Coordinate  iterVal){
 
+            DirectionsBlock directions_block = directions_blocks_begin[iterVal];
+            OverlappingBlock<DataArray> data_block = overlaps[iterVal];
+            
+            typedef GridGraph<N, undirected_tag> Graph;
+            typedef typename Graph::NodeIt GraphScanner;
+            typedef typename Graph::OutArcIt NeighborIterator;
+            
+            Graph graph(data_block.block.shape(), neighborhood);
+            for(GraphScanner node(graph); node != lemon::INVALID; ++node)
+            {
+                if(within(*node, data_block.inner_bounds))
+                {
+                    typedef typename DataArray::value_type Data;
+                    Data lowest_neighbor = data_block.block[*node];
+                    
+                    typedef typename DirectionsBlock::value_type Direction;
+                    Direction lowest_neighbor_direction = std::numeric_limits<unsigned short>::max();
+                    
+                    for(NeighborIterator arc(graph, *node); arc != lemon::INVALID; ++arc)
+                    {
+                        Shape neighbor_coordinates = graph.target(*arc);
+                        Data neighbor_data = data_block.block[neighbor_coordinates];
+                        if(neighbor_data < lowest_neighbor)
+                        {
+                            lowest_neighbor = neighbor_data;
+                            lowest_neighbor_direction = arc.neighborIndex();
+                        }
+                    }
+                    directions_block[*node - data_block.inner_bounds.first] = lowest_neighbor_direction;
+                }
+            }
+        }
+    );
+
+    /*
     const auto d = std::distance(itBegin, end);
     #pragma omp parallel for
     for(int i=0; i<d; ++i)
@@ -107,6 +146,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
             }
         }
     }
+    */
 }
 
 template <unsigned int N>
