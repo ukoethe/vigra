@@ -444,7 +444,7 @@ inline void parallel_foreach(
     const uint64_t nItems = 0
 ){
     const auto hc = std::thread::hardware_concurrency();
-    if(hc<=0)
+    if(hc<=0 && nThreads == -1)
         nThreads = 1;
     else
         nThreads = (nThreads==-1 ? hc : nThreads);
