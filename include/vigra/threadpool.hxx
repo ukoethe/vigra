@@ -443,9 +443,12 @@ inline void parallel_foreach(
     F && f,                  
     const uint64_t nItems = 0
 ){
-    nThreads = nThreads==-1 ? std::thread::hardware_concurrency() : nThreads;
+    const auto hc = std::thread::hardware_concurrency();
+    if(hc<=0)
+        nThreads = 1;
+    else
+        nThreads = (nThreads==-1 ? hc : nThreads);
     vigra_precondition(nThreads > 0, "parallel_foreach(): nThreads must be > 0 or -1.");
-    
     ThreadPool pool(nThreads);
     parallel_foreach(pool, begin, end, f, nItems);
 }
