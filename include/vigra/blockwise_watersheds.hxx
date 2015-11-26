@@ -77,7 +77,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
             DirectionsBlock directions_block = directions_blocks_begin[iterVal];
             OverlappingBlock<DataArray> data_block = overlaps[iterVal];
             
-            typedef GridGraph<N, undirected_tag> Graph;
+            typedef GridGraph<DataArray::actual_dimension, undirected_tag> Graph;
             typedef typename Graph::NodeIt GraphScanner;
             typedef typename Graph::OutArcIt NeighborIterator;
             
