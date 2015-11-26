@@ -60,9 +60,23 @@ static const double      rf_hdf5_version       =  0.1;
 
 
 // keep in sync with include/vigra/random_forest/rf_nodeproxy.hxx
-static const unsigned int rf_LeafNodeTag    = 0x40000000;
-static const unsigned int rf_ThresholdNode  = 0;
+enum NodeTags
+{
+	rf_UnFilledNode        = 42,
+	rf_AllColumns          = 0x00000000,
+	rf_ToBePrunedTag       = 0x80000000,
+	rf_LeafNodeTag         = 0x40000000,
 
+	rf_i_ThresholdNode     = 0,
+	rf_i_HyperplaneNode    = 1,
+	rf_i_HypersphereNode   = 2,
+	rf_e_ConstProbNode     = 0 | rf_LeafNodeTag,
+	rf_e_LogRegProbNode    = 1 | rf_LeafNodeTag
+};
+
+static const unsigned int rf_tag_mask = 0xf0000000;
+static const unsigned int rf_type_mask = 0x00000003;
+static const unsigned int rf_zero_mask = 0xffffffff & ~rf_tag_mask & ~rf_type_mask;
 
 
 template <typename FEATURES, typename LABELS>
@@ -145,8 +159,12 @@ random_forest_import_HDF5(HDF5File &h5ctx, const std::string &pathname = "")
 			index = el.first;
 			Node parent = el.second;
 
+			vigra_precondition((topology[index] & rf_zero_mask) == 0, "random_forest_import_HDF5(): unexpected node type: type & zero_mask > 0");
+
 			if (topology[index] & rf_LeafNodeTag) {
 				unsigned int probs_start = topology[index+1] + 1;
+
+				vigra_precondition((topology[index] & rf_tag_mask) == rf_LeafNodeTag, "random_forest_import_HDF5(): unexpected node type: additional tags in leaf node");
 
 				std::vector<AccValueType> node_response;
 
@@ -157,7 +175,7 @@ random_forest_import_HDF5(HDF5File &h5ctx, const std::string &pathname = "")
 				leaf_responses.insert(parent, node_response);
 
 			} else {
-				vigra_precondition(topology[index] == rf_ThresholdNode, "random_forest_import_HDF5(): unexpected node type.");
+				vigra_precondition(topology[index] == rf_i_ThresholdNode, "random_forest_import_HDF5(): unexpected node type.");
 
 				Node left = gr.addNode();
 				Node right = gr.addNode();
