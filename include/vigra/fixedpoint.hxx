@@ -1216,7 +1216,7 @@ public:
             to the target type's <tt>OverflowHandling</tt>.
         */
     explicit FixedPoint16(double rhs)
-    : value(detail::FP16OverflowHandling<OverflowHandling>::exec(roundi(rhs * ONE)))
+    : value(detail::FP16OverflowHandling<OverflowHandling>::exec((Int32)roundi(rhs * ONE)))
     {
         VIGRA_STATIC_ASSERT((FixedPoint_error__Right_shift_operator_has_unsupported_semantics<((-1 >> 8) == -1)>));
     }

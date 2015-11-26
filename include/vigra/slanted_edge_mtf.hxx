@@ -58,8 +58,8 @@ namespace vigra {
 /** \addtogroup SlantedEdgeMTF Camera MTF Estimation
     Determine the magnitude transfer function (MTF) of a camera using the slanted edge method.
 */
-//@{ 
-                                    
+//@{
+
 /********************************************************/
 /*                                                      */
 /*                  SlantedEdgeMTFOptions               */
@@ -70,22 +70,22 @@ namespace vigra {
 
     <tt>SlantedEdgeMTFOptions</tt>  is an argument objects that holds various optional
     parameters used by the \ref slantedEdgeMTF() functions. If a parameter is not explicitly
-    set, a suitable default will be used. Changing the defaults is only necessary if you can't 
+    set, a suitable default will be used. Changing the defaults is only necessary if you can't
     obtain good input data, but absolutely need an MTF estimate.
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
-    
+
     \code
     MultiArray<2, float> src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
-    
+
     ...
     slantedEdgeMTF(src, mtf,
                    SlantedEdgeMTFOptions().mtfSmoothingScale(1.0));
-    
+
     // print the frequency / attenuation pairs found
     for(int k=0; k<result.size(); ++k)
         std::cout << "frequency: " << mtf[k][0] << ", estimated attenuation: " << mtf[k][1] << std::endl;
@@ -105,7 +105,7 @@ class SlantedEdgeMTFOptions
     {}
 
         /** Minimum number of pixels the edge must cross.
-        
+
             The longer the edge the more accurate the resulting MTF estimate. If you don't have good
             data, but absolutely have to compute an MTF, you may force a lower value here.<br>
             Default: 20
@@ -117,8 +117,8 @@ class SlantedEdgeMTFOptions
     }
 
         /** Desired number of pixels perpendicular to the edge.
-        
-            The larger the regions to either side of the edge, 
+
+            The larger the regions to either side of the edge,
             the more accurate the resulting MTF estimate. If you don't have good
             data, but absolutely have to compute an MTF, you may force a lower value here.<br>
             Default: 10
@@ -130,8 +130,8 @@ class SlantedEdgeMTFOptions
     }
 
         /** Minimum acceptable number of pixels perpendicular to the edge.
-        
-            The larger the regions to either side of the edge, 
+
+            The larger the regions to either side of the edge,
             the more accurate the resulting MTF estimate. If you don't have good
             data, but absolutely have to compute an MTF, you may force a lower value here.<br>
             Default: 5
@@ -143,7 +143,7 @@ class SlantedEdgeMTFOptions
     }
 
         /** Amount of smoothing of the computed MTF.
-        
+
             If the data is noisy, so will be the MTF. Thus, some smoothing is useful.<br>
             Default: 2.0
         */
@@ -175,12 +175,12 @@ struct SortEdgelsByStrength
        of the image, and white is on the left.
     */
 template <class SrcIterator, class SrcAccessor, class DestImage>
-unsigned int
+ptrdiff_t
 prepareSlantedEdgeInput(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestImage & res,
                         SlantedEdgeMTFOptions const & options)
 {
-    unsigned int w = slr.x - sul.x;
-    unsigned int h = slr.y - sul.y;
+    ptrdiff_t w = slr.x - sul.x;
+    ptrdiff_t h = slr.y - sul.y;
 
     // find rough estimate of the edge
     ArrayVector<Edgel> edgels;
@@ -188,9 +188,9 @@ prepareSlantedEdgeInput(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestI
     std::sort(edgels.begin(), edgels.end(), SortEdgelsByStrength());
 
     double x = 0.0, y = 0.0, x2 = 0.0, y2 = 0.0, xy = 0.0;
-    unsigned int c = std::min(w, h);
+    ptrdiff_t c = std::min(w, h);
 
-    for(unsigned int k = 0; k < c; ++k)
+    for(ptrdiff_t k = 0; k < c; ++k)
     {
         x += edgels[k].x;
         y += edgels[k].y;
@@ -228,26 +228,26 @@ prepareSlantedEdgeInput(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestI
           "slantedEdgeMTF(): Input edge is not slanted");
 
     // trim image so that the edge only intersects the top and bottom border
-    unsigned int minimumNumberOfLines = options.minimum_number_of_lines, //20,
+    ptrdiff_t minimumNumberOfLines = options.minimum_number_of_lines, //20,
                  edgeWidth = options.desired_edge_width, // 10
                  minimumEdgeWidth = options.minimum_edge_width; // 5
 
-    int y0 = 0, y1 = h;
+    ptrdiff_t y0 = 0, y1 = h;
     for(; edgeWidth >= minimumEdgeWidth; --edgeWidth)
     {
-        y0 = int(VIGRA_CSTD::floor((edgeWidth - xc) / slope + yc + 0.5));
-        y1 = int(VIGRA_CSTD::floor((w - edgeWidth - 1 - xc) / slope + yc + 0.5));
+        y0 = ptrdiff_t(VIGRA_CSTD::floor((edgeWidth - xc) / slope + yc + 0.5));
+        y1 = ptrdiff_t(VIGRA_CSTD::floor((w - edgeWidth - 1 - xc) / slope + yc + 0.5));
         if(slope < 0.0)
             std::swap(y0, y1);
-        if(y1 - y0 >= (int)minimumNumberOfLines)
+        if(y1 - y0 >= (ptrdiff_t)minimumNumberOfLines)
             break;
     }
 
     vigra_precondition(edgeWidth >= minimumEdgeWidth,
         "slantedEdgeMTF(): Input edge is too slanted or image is too small");
 
-    y0 = std::max(y0, 0);
-    y1 = std::min(y1+1, (int)h);
+    y0 = std::max(y0, ptrdiff_t(0));
+    y1 = std::min(y1+1, h);
 
     res.resize(w, y1-y0);
 
@@ -265,7 +265,7 @@ prepareSlantedEdgeInput(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestI
 }
 
 template <class Image>
-void slantedEdgeShadingCorrection(Image & i, unsigned int edgeWidth)
+void slantedEdgeShadingCorrection(Image & i, ptrdiff_t edgeWidth)
 {
     using namespace functor;
 
@@ -274,13 +274,13 @@ void slantedEdgeShadingCorrection(Image & i, unsigned int edgeWidth)
 
     transformImage(srcImageRange(i), destImage(i), log(Arg1() + Param(1.0)));
 
-    unsigned int w = i.width(),
-                 h = i.height();
+    ptrdiff_t w = i.width(),
+              h = i.height();
 
     Matrix<double> m(3,3), r(3, 1), l(3, 1);
-    for(unsigned int y = 0; y < h; ++y)
+    for(ptrdiff_t y = 0; y < h; ++y)
     {
-        for(unsigned int x = 0; x < edgeWidth; ++x)
+        for(ptrdiff_t x = 0; x < edgeWidth; ++x)
         {
             l(0,0) = x;
             l(1,0) = y;
@@ -296,9 +296,9 @@ void slantedEdgeShadingCorrection(Image & i, unsigned int edgeWidth)
            c = l(2,0);
 
     // subtract the plane and go back to the non-logarithmic representation
-    for(unsigned int y = 0; y < h; ++y)
+    for(ptrdiff_t y = 0; y < h; ++y)
     {
-        for(unsigned int x = 0; x < w; ++x)
+        for(ptrdiff_t x = 0; x < w; ++x)
         {
             i(x, y) = VIGRA_CSTD::exp(i(x,y) - a*x - b*y - c);
         }
@@ -309,8 +309,8 @@ template <class Image, class BackInsertable>
 void slantedEdgeSubpixelShift(Image const & img, BackInsertable & centers, double & angle,
                               SlantedEdgeMTFOptions const & options)
 {
-    unsigned int w = img.width();
-    unsigned int h = img.height();
+    ptrdiff_t w = img.width();
+    ptrdiff_t h = img.height();
 
     Image grad(w, h);
     Kernel1D<double> kgrad;
@@ -318,28 +318,28 @@ void slantedEdgeSubpixelShift(Image const & img, BackInsertable & centers, doubl
 
     separableConvolveX(srcImageRange(img), destImage(grad), kernel1d(kgrad));
 
-    int desiredEdgeWidth = (int)options.desired_edge_width;
+    ptrdiff_t desiredEdgeWidth = (ptrdiff_t)options.desired_edge_width;
     double sy = 0.0, sx = 0.0, syy = 0.0, sxy = 0.0;
-    for(unsigned int y = 0; y < h; ++y)
+    for(ptrdiff_t y = 0; y < h; ++y)
     {
         double a = 0.0,
                b = 0.0;
-        for(unsigned int x = 0; x < w; ++x)
+        for(ptrdiff_t x = 0; x < w; ++x)
         {
             a += x*grad(x,y);
             b += grad(x,y);
         }
-        int c = int(a / b);
+        ptrdiff_t c = ptrdiff_t(a / b);
         // c is biased because the numbers of black and white pixels differ
         // repeat the analysis with a symmetric window around the edge
         a = 0.0;
         b = 0.0;
-        int ew = desiredEdgeWidth;
+        ptrdiff_t ew = desiredEdgeWidth;
         if(c-desiredEdgeWidth < 0)
             ew = c;
-        if(c + ew + 1 >= (int)w)
+        if(c + ew + 1 >= w)
             ew = w - c - 1;
-        for(int x = c-ew; x < c+ew+1; ++x)
+        for(ptrdiff_t x = c-ew; x < c+ew+1; ++x)
         {
             a += x*grad(x,y);
             b += grad(x,y);
@@ -356,7 +356,7 @@ void slantedEdgeSubpixelShift(Image const & img, BackInsertable & centers, doubl
 
     // compute the regularized subpixel values of the edge location
     angle = VIGRA_CSTD::atan(a);
-    for(unsigned int y = 0; y < h; ++y)
+    for(ptrdiff_t y = 0; y < h; ++y)
     {
         centers.push_back(a * y + b);
     }
@@ -366,18 +366,19 @@ template <class Image, class Vector>
 void slantedEdgeCreateOversampledLine(Image const & img, Vector const & centers,
                                       Image & result)
 {
-    unsigned int w = img.width();
-    unsigned int h = img.height();
-    unsigned int w2 = std::min(std::min(int(centers[0]), int(centers[h-1])),
-                               std::min(int(w - centers[0]) - 1, int(w - centers[h-1]) - 1));
-    unsigned int ww = 8*w2;
+    ptrdiff_t w = img.width();
+    ptrdiff_t h = img.height();
+    ptrdiff_t w2 = std::min(std::min(ptrdiff_t(centers[0]), ptrdiff_t(centers[h-1])),
+                            std::min(ptrdiff_t(w - centers[0]) - 1,
+                                     ptrdiff_t(w - centers[h-1]) - 1));
+    ptrdiff_t ww = 8*w2;
 
     Image r(ww, 1), s(ww, 1);
-    for(unsigned int y = 0; y < h; ++y)
+    for(ptrdiff_t y = 0; y < h; ++y)
     {
-        int x0 = int(centers[y]) - w2;
-        int x1 = int((VIGRA_CSTD::ceil(centers[y]) - centers[y])*4);
-        for(; x1 < (int)ww; x1 += 4)
+        ptrdiff_t x0 = ptrdiff_t(centers[y]) - w2;
+        ptrdiff_t x1 = ptrdiff_t((VIGRA_CSTD::ceil(centers[y]) - centers[y])*4);
+        for(; x1 < ww; x1 += 4)
         {
             r(x1, 0) += img(x0, y);
             ++s(x1, 0);
@@ -385,7 +386,7 @@ void slantedEdgeCreateOversampledLine(Image const & img, Vector const & centers,
         }
     }
 
-    for(unsigned int x = 0; x < ww; ++x)
+    for(ptrdiff_t x = 0; x < ww; ++x)
     {
         vigra_precondition(s(x,0) > 0.0,
            "slantedEdgeMTF(): Input edge is not slanted enough");
@@ -393,7 +394,7 @@ void slantedEdgeCreateOversampledLine(Image const & img, Vector const & centers,
     }
 
     result.resize(ww-1, 1);
-    for(unsigned int x = 0; x < ww-1; ++x)
+    for(ptrdiff_t x = 0; x < ww-1; ++x)
     {
         result(x,0) = r(x+1,0) - r(x,0);
     }
@@ -403,11 +404,11 @@ template <class Image, class BackInsertable>
 void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
                         SlantedEdgeMTFOptions const & options)
 {
-    unsigned int w = i.width();
-    unsigned int h = i.height();
+    ptrdiff_t w = i.width();
+    ptrdiff_t h = i.height();
 
     double slantCorrection = VIGRA_CSTD::cos(angle);
-    int desiredEdgeWidth = 4*options.desired_edge_width;
+    ptrdiff_t desiredEdgeWidth = 4*options.desired_edge_width;
 
     Image magnitude;
 
@@ -417,9 +418,9 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
         fourierTransform(srcImageRange(i), destImage(otf));
 
         magnitude.resize(w, h);
-        for(unsigned int y = 0; y < h; ++y)
+        for(ptrdiff_t y = 0; y < h; ++y)
         {
-            for(unsigned int x = 0; x < w; ++x)
+            for(ptrdiff_t x = 0; x < w; ++x)
             {
                 magnitude(x, y) = norm(otf(x, y));
             }
@@ -444,9 +445,9 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
 
         // subtract the noise power spectrum from the total power spectrum
         magnitude.resize(w, h);
-        for(unsigned int y = 0; y < h; ++y)
+        for(ptrdiff_t y = 0; y < h; ++y)
         {
-            for(unsigned int x = 0; x < w; ++x)
+            for(ptrdiff_t x = 0; x < w; ++x)
             {
                 magnitude(x, y) = VIGRA_CSTD::sqrt(std::max(0.0, squaredNorm(otf(x, y))-squaredNorm(fnoise(x, y))));
             }
@@ -458,10 +459,10 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     Image smooth(w,h);
     separableConvolveX(srcImageRange(magnitude), destImage(smooth), kernel1d(gauss));
 
-    unsigned int ww = w/4;
+    ptrdiff_t ww = w/4;
     double maxVal = smooth(0,0),
            minVal = maxVal;
-    for(unsigned int k = 1; k < ww; ++k)
+    for(ptrdiff_t k = 1; k < ww; ++k)
     {
         if(smooth(k,0) >= 0.0 && smooth(k,0) < minVal)
             minVal = smooth(k,0);
@@ -470,7 +471,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
 
     typedef typename BackInsertable::value_type Result;
     mtf.push_back(Result(0.0, 1.0));
-    for(unsigned int k = 1; k < ww; ++k)
+    for(ptrdiff_t k = 1; k < ww; ++k)
     {
         double n = (smooth(k,0) - minVal)/norm*sq(M_PI*k/w/VIGRA_CSTD::sin(M_PI*k/w));
         double xx = 4.0*k/w/slantCorrection;
@@ -485,8 +486,8 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
 /** \addtogroup SlantedEdgeMTF Camera MTF Estimation
     Determine the magnitude transfer function (MTF) of a camera using the slanted edge method.
 */
-//@{ 
-                                    
+//@{
+
 /********************************************************/
 /*                                                      */
 /*                     slantedEdgeMTF                   */
@@ -495,48 +496,48 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
 
 /** \brief Determine the magnitude transfer function of the camera.
 
-    This operator estimates the magnitude transfer function (MTF) of a camera by means of the 
+    This operator estimates the magnitude transfer function (MTF) of a camera by means of the
     slanted edge method described in:
-    
+
     ISO Standard No. 12233: <i>"Photography - Electronic still picture cameras - Resolution measurements"</i>, 2000
-    
-    The input must be an image that contains a single step edge with bright pixels on one side and dark pixels on 
+
+    The input must be an image that contains a single step edge with bright pixels on one side and dark pixels on
     the other. However, the intensity values must be neither saturated nor zero. The algorithms computes the MTF
-    from the Fourier transform of the edge's derivative. Thus, if the actual MTF is anisotropic, the estimated 
-    MTF does actually only apply in the direction perpendicular to the edge - several edges at different 
+    from the Fourier transform of the edge's derivative. Thus, if the actual MTF is anisotropic, the estimated
+    MTF does actually only apply in the direction perpendicular to the edge - several edges at different
     orientations are required to estimate an anisotropic MTF.
-    
+
     The algorithm returns a sequence of frequency / attenuation pairs. The frequency axis is normalized so that the
     Nyquist frequency of the original image is 0.5. Since the edge's derivative is computed with subpixel accuracy,
-    the attenuation can usually be computed for frequencies significantly above the Nyquist frequency as well. The 
+    the attenuation can usually be computed for frequencies significantly above the Nyquist frequency as well. The
     MTF estimate ends at either the first zero crossing of the MTF or at frequency 1, whichever comes earlier.
-    
+
     The present implementation improves the original slanted edge algorithm according to ISO 12233 in a number of
     ways:
-    
+
     <ul>
     <li> The edge is not required to run nearly vertically or horizontally (i.e. with a slant of approximately 5 degrees).
-         The algorithm will automatically compute the edge's actual angle and adjust estimates accordingly. 
-         However, it is still necessary for the edge to be somewhat slanted, because subpixel-accurate estimation 
-         of the derivative is impossible otherwise (i.e. the edge position perpendicular to the edge direction must 
-         differ by at least 1 pixel between the two ends of the edge). 
-         
-    <li> Our implementation uses a more accurate subpixel derivative algorithm. In addition, we first perform a shading 
+         The algorithm will automatically compute the edge's actual angle and adjust estimates accordingly.
+         However, it is still necessary for the edge to be somewhat slanted, because subpixel-accurate estimation
+         of the derivative is impossible otherwise (i.e. the edge position perpendicular to the edge direction must
+         differ by at least 1 pixel between the two ends of the edge).
+
+    <li> Our implementation uses a more accurate subpixel derivative algorithm. In addition, we first perform a shading
          correction in order to reduce possible derivative bias due to nonuniform illumination.
 
     <li> If the input image is large enough (i.e. there are at least 20 pixels on either side of the edge over
          the edge's entire length), our algorithm attempts to subtract the estimated noise power spectrum
          from the estimated MTF.
     </ul>
-    
+
     The source value type <TT>T1</TT> must be a scalar type which is convertible to <tt>double</tt>.
     The result is written into the \a result sequence, which must be back-insertable (supports <tt>push_back()</tt>)
-    and whose <tt>value_type</tt> must be constructible 
-    from two <tt>double</tt> values. Algorithm options can be set via the \a options object 
+    and whose <tt>value_type</tt> must be constructible
+    from two <tt>double</tt> values. Algorithm options can be set via the \a options object
     (see \ref vigra::NoiseNormalizationOptions for details).
-    
+
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
@@ -546,7 +547,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
                        SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
     }
     \endcode
-    
+
     \deprecatedAPI{slantedEdgeMTF}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
@@ -567,20 +568,20 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     }
     \endcode
     \deprecatedEnd
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
 
     \code
     MultiArray<2, float> src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
-    
+
     ...
     // keep all options at their default values
     slantedEdgeMTF(src, mtf);
-    
+
     // print the frequency / attenuation pairs found
     for(int k=0; k<result.size(); ++k)
         std::cout << "frequency: " << mtf[k][0] << ", estimated attenuation: " << mtf[k][1] << std::endl;
@@ -590,10 +591,10 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     \code
     vigra::BImage src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
-    
+
     ...
     vigra::slantedEdgeMTF(srcImageRange(src), mtf);
-    
+
     // print the frequency / attenuation pairs found
     for(int k=0; k<result.size(); ++k)
         std::cout << "frequency: " << mtf[k][0] << ", estimated attenuation: " << mtf[k][1] << std::endl;
@@ -602,15 +603,15 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     \code
     SrcIterator upperleft, lowerright;
     SrcAccessor src;
-    
+
     typedef SrcAccessor::value_type SrcType;
     typedef NumericTraits<SrcType>::isScalar isScalar;
     assert(isScalar::asBool == true);
-    
+
     double value = src(uperleft);
-    
+
     BackInsertable result;
-    typedef BackInsertable::value_type ResultType;    
+    typedef BackInsertable::value_type ResultType;
     double intensity, variance;
     result.push_back(ResultType(intensity, variance));
     \endcode
@@ -624,7 +625,7 @@ slantedEdgeMTF(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable
                SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions())
 {
     DImage preparedInput;
-    unsigned int edgeWidth = detail::prepareSlantedEdgeInput(sul, slr, src, preparedInput, options);
+    ptrdiff_t edgeWidth = detail::prepareSlantedEdgeInput(sul, slr, src, preparedInput, options);
     detail::slantedEdgeShadingCorrection(preparedInput, edgeWidth);
 
     ArrayVector<double> centers;
@@ -662,43 +663,43 @@ slantedEdgeMTF(MultiArrayView<2, T1, S1> const & src, BackInsertable & mtf,
 /** \brief Fit a Gaussian function to a given MTF.
 
     This function expects a sequence of frequency / attenuation pairs as produced by \ref slantedEdgeMTF()
-    and finds the best fitting Gaussian point spread function (Gaussian functions are good approximations 
+    and finds the best fitting Gaussian point spread function (Gaussian functions are good approximations
     of the PSF of many real cameras). It returns the standard deviation (scale) of this function. The algorithm
     computes the standard deviation by means of a linear least square on the logarithm of the MTF, i.e.
-    an algebraic fit rather than a Euclidean fit - thus, the resulting Gaussian may not be the one that 
+    an algebraic fit rather than a Euclidean fit - thus, the resulting Gaussian may not be the one that
     intuitively fits the data optimally.
-    
+
     <b> Declaration:</b>
-    
+
     \code
     namespace vigra {
         template <class Vector>
         double mtfFitGaussian(Vector const & mtf);
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
-    
+
     \code
     MultiArray<2, float> src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
-    
+
     ...
     slantedEdgeMTF(src, mtf);
     double scale = vigra::mtfFitGaussian(mtf)
-    
+
     std::cout << "The camera PSF is approximately a Gaussian at scale " << scale << std::endl;
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     Vector mtf;
     int numberOfMeasurements = mtf.size()
-    
+
     double frequency = mtf[0][0];
     double attenuation = mtf[0][1];
     \endcode
@@ -707,14 +708,14 @@ template <class Vector>
 double mtfFitGaussian(Vector const & mtf)
 {
     double minVal = mtf[0][1];
-    for(unsigned int k = 1; k < mtf.size(); ++k)
+    for(ptrdiff_t k = 1; k < (ptrdiff_t)mtf.size(); ++k)
     {
         if(mtf[k][1] < minVal)
             minVal = mtf[k][1];
     }
     double x2 = 0.0,
            xy = 0.0;
-    for(unsigned int k = 1; k < mtf.size(); ++k)
+    for(ptrdiff_t k = 1; k < (ptrdiff_t)mtf.size(); ++k)
     {
         if(mtf[k][1] <= 0.0)
             break;

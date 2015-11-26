@@ -131,7 +131,7 @@ namespace vigra{
 
             if(ignoreLabel==-1){
                 
-                #pragma omp parallel for
+// FIXME: replace with threadpool                #pragma omp parallel for
                 for(Int64 z=0; z<shape[2]; ++z){    
                     BgNode node;
                     node[2]=z;
@@ -143,7 +143,7 @@ namespace vigra{
 
             }
             else{
-                #pragma omp parallel for
+// FIXME: replace with threadpool                #pragma omp parallel for
                 for(Int64 z=0; z<shape[2]; ++z){    
                     BgNode node;
                     node[2]=z;
