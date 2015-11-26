@@ -126,7 +126,7 @@ namespace blockwise{
         const BlockwiseConvolutionOptions<DIM>  & options
     ){
 
-        typedef typename MultiBlocking<DIM, zzzzzzzzz>::BlockWithBorder BlockWithBorder;
+        typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
 
         auto beginIter  =  blocking.blockWithBorderBegin(borderWidth);
         auto endIter   =  blocking.blockWithBorderEnd(borderWidth);
