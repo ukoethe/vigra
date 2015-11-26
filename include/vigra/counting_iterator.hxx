@@ -44,7 +44,7 @@ namespace vigra{
 
     template<class T_INTEGER>
     class CountingIterator: 
-    public std::iterator<std::random_access_iterator_tag,T_INTEGER, ptrdiff_t, T_INTEGER *, T_INTEGER>
+    public std::iterator<std::random_access_iterator_tag,T_INTEGER, std::ptrdiff_t, T_INTEGER *, T_INTEGER>
     {
     public:
         CountingIterator(): count_(0) {}
