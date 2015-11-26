@@ -61,7 +61,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                                 NeighborhoodType neighborhood)
 {
     static const unsigned int N = DataArray::actual_dimension;
-    typedef typename MultiArrayShape<N>::type Shape;
+    typedef typename MultiArrayShape<DataArray::actual_dimension>::type Shape;
     typedef typename DirectionsBlocksIterator::value_type DirectionsBlock;
     Shape shape = overlaps.shape();
     vigra_assert(shape == directions_blocks_begin.shape(), "");
