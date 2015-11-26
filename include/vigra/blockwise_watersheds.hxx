@@ -36,6 +36,7 @@
 #ifndef VIGRA_BLOCKWISE_WATERSHEDS_HXX
 #define VIGRA_BLOCKWISE_WATERSHEDS_HXX
 
+#include "threadpool.hxx"
 #include "multi_array.hxx"
 #include "multi_gridgraph.hxx"
 #include "blockify.hxx"

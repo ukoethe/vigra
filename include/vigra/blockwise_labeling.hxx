@@ -36,9 +36,9 @@
 #ifndef VIGRA_BLOCKWISE_LABELING_HXX
 #define VIGRA_BLOCKWISE_LABELING_HXX
 
+#include <algorithm>
 
-#include "vigra/threadpool.hxx"
-
+#include "threadpool.hxx"
 #include "multi_gridgraph.hxx"
 #include "multi_labeling.hxx"
 #include "union_find.hxx"
