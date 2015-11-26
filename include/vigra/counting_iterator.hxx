@@ -67,12 +67,14 @@ namespace vigra{
         CountingIterator    operator- (const std::size_t& n) const{CountingIterator tmp(*this); tmp -= n; return tmp;}
         std::size_t operator- (const CountingIterator& other) {return count_ - other.count_;}
 
-        bool operator< (const CountingIterator& other)const{return (count_-other.count_)< 0;}
-        bool operator<=(const CountingIterator& other)const{return (count_-other.count_)<=0;}
-        bool operator> (const CountingIterator& other)const{return (count_-other.count_)> 0;}
-        bool operator>=(const CountingIterator& other)const{return (count_-other.count_)>=0;}
-        bool operator==(const CountingIterator& other)const{return  count_ == other.count_; }
-        bool operator!=(const CountingIterator& other)const{return  count_ != other.count_; }
+
+        bool operator< (const CountingIterator& other)const{return count_ <  other.count_;}
+        bool operator<=(const CountingIterator& other)const{return count_ <= other.count_;}
+        bool operator> (const CountingIterator& other)const{return count_ >  other.count_;}
+        bool operator>=(const CountingIterator& other)const{return count_ >= other.count_;}
+        bool operator==(const CountingIterator& other)const{return count_ == other.count_;}
+        bool operator!=(const CountingIterator& other)const{return count_ != other.count_;}
+
 
         T_INTEGER   operator[](const int& n) const {
             return count_ + n;
