@@ -2016,52 +2016,6 @@ def _genGraphMiscFunctions():
     nodeFeaturesToEdgeWeights.__module__ = 'vigra.graphs'
     graphs.nodeFeaturesToEdgeWeights = nodeFeaturesToEdgeWeights
 
-    def eccentricityTransform(labels, out=None):
-        """ Compute eccentricity transform on labeled image.
-
-            Keyword Arguments :
-                - labels : input image (labeled)
-
-            Returns :
-                eccentricity transform
-        """
-        return graphs._eccentricityTransform(labels=labels, out=out)
-
-    eccentricityTransform.__module__ = 'vigra.graphs'
-    graphs.eccentricityTransform = eccentricityTransform
-
-    def eccentricityCenters(labels, out=None):
-        """ Compute eccentricity centers on labeled image.
-            Output is of shape (m, N), where m is the largest label in labels and N is the dimension.
-            Since labels start with 1, column i of the output contains the center of the region with label i+1.
-
-            Keyword Arguments :
-                - labels : input image (labeled)
-
-            Returns :
-                centers of the labeled regions
-        """
-        return graphs._eccentricityCenters(labels=labels, out=out)
-
-    eccentricityCenters.__module__ = 'vigra.graphs'
-    graphs.eccentricityCenters = eccentricityCenters
-
-    def eccentricityTransformWithCenters(labels, ecc=None, centers=None):
-        """ Compute eccentricity transform and centers on labeled image.
-            Shape of centers is (m, N), where m is the largest label in labels and N is the dimension.
-            Since labels start with 1, column i of the centers contains the center of the region with label i+1.
-
-            Keyword Arguments :
-                - labels : input image (labeled)
-
-            Returns :
-                2-tuple with eccentricity transform and centers
-        """
-        return graphs._eccentricityTransformWithCenters(labels=labels, ecc=ecc, centers=centers)
-
-    eccentricityTransformWithCenters.__module__ = 'vigra.graphs'
-    graphs.eccentricityTransformWithCenters = eccentricityTransformWithCenters
-
 _genGraphMiscFunctions()
 del _genGraphMiscFunctions
 
