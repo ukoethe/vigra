@@ -43,9 +43,9 @@
 #include "vigra/multi_convolution.hxx"
 #include "vigra/multi_tensorutilities.hxx"
 
-#ifndef VIGRA_DEFAULT_BLOCK_SHAPE 
+#ifndef VIGRA_DEFAULT_BLOCK_SHAPE
     #define VIGRA_DEFAULT_BLOCK_SHAPE 64
-#endif 
+#endif
 
 
 namespace vigra{
@@ -62,13 +62,13 @@ namespace blockwise{
         unsigned int DIM,
         class T_IN, class ST_IN,
         class T_OUT, class ST_OUT,
-        class FILTER_FUCTOR,
+        class FILTER_FUNCTOR,
         class C
     >
     void blockwiseCallerNoRoiApi(
         const vigra::MultiArrayView<DIM, T_IN,  ST_IN > & source,
         const vigra::MultiArrayView<DIM, T_OUT, ST_OUT> & dest,
-        FILTER_FUCTOR & functor,
+        FILTER_FUNCTOR & functor,
         const vigra::MultiBlocking<DIM, C> & blocking,
         const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth
     ){
@@ -76,12 +76,12 @@ namespace blockwise{
         typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
         typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
 
-        #pragma omp parallel
+// FIXME: replace with threadpool        #pragma omp parallel
         {
             BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
             //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
 
-            #pragma omp for
+// FIXME: replace with threadpool            #pragma omp for
             for(int i=0 ; i<blocking.numBlocks(); ++i){
 
                 const BlockWithBorder bwb = iter[i];
@@ -100,7 +100,7 @@ namespace blockwise{
                 vigra::MultiArrayView<DIM, T_OUT, ST_OUT> destSubCore = destSub.subarray(bwb.localCore().begin(),
                                                                                 bwb.localCore().end());
                 // write the core global out
-                dest.subarray(bwb.core().begin()-blocking.roiBegin(), 
+                dest.subarray(bwb.core().begin()-blocking.roiBegin(),
                               bwb.core().end()  -blocking.roiBegin()  ) = destSubCore;
             }
         }
@@ -115,13 +115,13 @@ namespace blockwise{
         unsigned int DIM,
         class T_IN, class ST_IN,
         class T_OUT, class ST_OUT,
-        class FILTER_FUCTOR,
+        class FILTER_FUNCTOR,
         class C
     >
     void blockwiseCaller(
         const vigra::MultiArrayView<DIM, T_IN,  ST_IN > & source,
         const vigra::MultiArrayView<DIM, T_OUT, ST_OUT> & dest,
-        FILTER_FUCTOR & functor,
+        FILTER_FUNCTOR & functor,
         const vigra::MultiBlocking<DIM, C> & blocking,
         const typename vigra::MultiBlocking<DIM, C>::Shape & borderWidth
     ){
@@ -129,12 +129,12 @@ namespace blockwise{
         typedef typename MultiBlocking<DIM, C>::BlockWithBorder BlockWithBorder;
         typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
         typedef typename MultiBlocking<DIM, C>::Block Block;
-        #pragma omp parallel
+// FIXME: replace with threadpool        #pragma omp parallel
         {
             BlockWithBorderIter iter  =  blocking.blockWithBorderBegin(borderWidth);
             //std::cout<<"blockshape "<<(*iter).core().size()<<"\n";
 
-            #pragma omp for
+// FIXME: replace with threadpool            #pragma omp for
             for(int i=0 ; i<blocking.numBlocks(); ++i){
 
                 const BlockWithBorder bwb = iter[i];
@@ -157,18 +157,18 @@ namespace blockwise{
                 // write the core global out
                 //vigra::MultiArrayView<DIM, T_OUT, ST_OUT> destSubCore = destSub.subarray(bwb.localCore().begin(),
                 //                                                                bwb.localCore().end());
-                //dest.subarray(bwb.core().begin()-blocking.roiBegin(), 
+                //dest.subarray(bwb.core().begin()-blocking.roiBegin(),
                 //              bwb.core().end()  -blocking.roiBegin()  ) = destSubCore;
             }
         }
     }
 
-    #define CONVOLUTION_FUNCTOR(FUCTOR_NAME, FUNCTION_NAME) \
+    #define CONVOLUTION_FUNCTOR(FUNCTOR_NAME, FUNCTION_NAME) \
     template<unsigned int DIM> \
-    class FUCTOR_NAME{ \
+    class FUNCTOR_NAME{ \
     public: \
         typedef ConvolutionOptions<DIM> ConvOpt; \
-        FUCTOR_NAME(const ConvOpt & convOpt) \
+        FUNCTOR_NAME(const ConvOpt & convOpt) \
         : convOpt_(convOpt){} \
         template<class S, class D> \
         void operator()(const S & s, D & d)const{ \
@@ -176,8 +176,9 @@ namespace blockwise{
         } \
         template<class S, class D,class SHAPE> \
         void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){ \
-            convOpt_.subarray(roiBegin, roiEnd); \
-            FUNCTION_NAME(s, d, convOpt_); \
+            ConvOpt convOpt(convOpt_); \
+            convOpt.subarray(roiBegin, roiEnd); \
+            FUNCTION_NAME(s, d, convOpt); \
         } \
     private: \
         ConvOpt  convOpt_; \
@@ -195,90 +196,90 @@ namespace blockwise{
 
     #undef CONVOLUTION_FUNCTOR
 
-    template<unsigned int DIM> 
-    class HessianOfGaussianEigenvaluesFunctor{ 
-    public: 
-        typedef ConvolutionOptions<DIM> ConvOpt; 
-        HessianOfGaussianEigenvaluesFunctor(const ConvOpt & convOpt) 
-        : convOpt_(convOpt){} 
-        template<class S, class D> 
-        void operator()(const S & s, D & d)const{ 
+    template<unsigned int DIM>
+    class HessianOfGaussianEigenvaluesFunctor{
+    public:
+        typedef ConvolutionOptions<DIM> ConvOpt;
+        HessianOfGaussianEigenvaluesFunctor(const ConvOpt & convOpt)
+        : convOpt_(convOpt){}
+        template<class S, class D>
+        void operator()(const S & s, D & d)const{
             typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
-            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(d.shape()); 
-            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_); 
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(d.shape());
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_);
             vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, d);
-        } 
-        template<class S, class D,class SHAPE> 
-        void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){ 
+        }
+        template<class S, class D,class SHAPE>
+        void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){
             typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
-            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(roiEnd-roiBegin); 
-            convOpt_.subarray(roiBegin, roiEnd); 
-            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_); 
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(roiEnd-roiBegin);
+            convOpt_.subarray(roiBegin, roiEnd);
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_);
             vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, d);
-        } 
-    private: 
-        ConvOpt  convOpt_; 
+        }
+    private:
+        ConvOpt  convOpt_;
     };
 
-    template<unsigned int DIM, unsigned int EV> 
-    class HessianOfGaussianSelectedEigenvalueFunctor{ 
-    public: 
-        typedef ConvolutionOptions<DIM> ConvOpt; 
-        HessianOfGaussianSelectedEigenvalueFunctor(const ConvOpt & convOpt) 
-        : convOpt_(convOpt){} 
-        template<class S, class D> 
-        void operator()(const S & s, D & d)const{ 
+    template<unsigned int DIM, unsigned int EV>
+    class HessianOfGaussianSelectedEigenvalueFunctor{
+    public:
+        typedef ConvolutionOptions<DIM> ConvOpt;
+        HessianOfGaussianSelectedEigenvalueFunctor(const ConvOpt & convOpt)
+        : convOpt_(convOpt){}
+        template<class S, class D>
+        void operator()(const S & s, D & d)const{
             typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
 
             // compute the hessian of gaussian and extract eigenvalue
-            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(s.shape()); 
-            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_); 
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(s.shape());
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_);
 
-            vigra::MultiArray<DIM, TinyVector<RealType, DIM > >  allEigenvalues(s.shape()); 
+            vigra::MultiArray<DIM, TinyVector<RealType, DIM > >  allEigenvalues(s.shape());
             vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, allEigenvalues);
 
             d = allEigenvalues.bindElementChannel(EV);
-        } 
-        template<class S, class D,class SHAPE> 
-        void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){ 
+        }
+        template<class S, class D,class SHAPE>
+        void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){
 
             typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
 
             // compute the hessian of gaussian and extract eigenvalue
-            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(roiEnd-roiBegin); 
-            convOpt_.subarray(roiBegin, roiEnd); 
-            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_); 
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(roiEnd-roiBegin);
+            convOpt_.subarray(roiBegin, roiEnd);
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_);
 
-            vigra::MultiArray<DIM, TinyVector<RealType, DIM > >  allEigenvalues(roiEnd-roiBegin); 
+            vigra::MultiArray<DIM, TinyVector<RealType, DIM > >  allEigenvalues(roiEnd-roiBegin);
             vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, allEigenvalues);
 
             d = allEigenvalues.bindElementChannel(EV);
-        } 
-    private: 
-        ConvOpt  convOpt_; 
+        }
+    private:
+        ConvOpt  convOpt_;
     };
 
 
-    template<unsigned int DIM> 
+    template<unsigned int DIM>
     class HessianOfGaussianFirstEigenvalueFunctor
-    : public HessianOfGaussianSelectedEigenvalueFunctor<DIM, 0>{ 
-    public: 
-        typedef ConvolutionOptions<DIM> ConvOpt; 
-        HessianOfGaussianFirstEigenvalueFunctor(const ConvOpt & convOpt) 
-        : HessianOfGaussianSelectedEigenvalueFunctor<DIM, 0>(convOpt){} 
+    : public HessianOfGaussianSelectedEigenvalueFunctor<DIM, 0>{
+    public:
+        typedef ConvolutionOptions<DIM> ConvOpt;
+        HessianOfGaussianFirstEigenvalueFunctor(const ConvOpt & convOpt)
+        : HessianOfGaussianSelectedEigenvalueFunctor<DIM, 0>(convOpt){}
     };
 
-    template<unsigned int DIM> 
+    template<unsigned int DIM>
     class HessianOfGaussianLastEigenvalueFunctor
-    : public HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM-1>{ 
-    public: 
-        typedef ConvolutionOptions<DIM> ConvOpt; 
-        HessianOfGaussianLastEigenvalueFunctor(const ConvOpt & convOpt) 
-        : HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM-1>(convOpt){} 
+    : public HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM-1>{
+    public:
+        typedef ConvolutionOptions<DIM> ConvOpt;
+        HessianOfGaussianLastEigenvalueFunctor(const ConvOpt & convOpt)
+        : HessianOfGaussianSelectedEigenvalueFunctor<DIM, DIM-1>(convOpt){}
     };
 
     /// concurrency type to use within parallel algorithms
-    /// 
+    ///
     /// So far, only OpenMpConcurrency is implemented
     enum ConcurrencyType{
         DefaultConcurrency,
@@ -288,11 +289,11 @@ namespace blockwise{
         NoConcurrency
 
     };
-        
+
     /// base option class for parallel algorithms
     class ParallelOptions{
     public:
-        ParallelOptions(const size_t numThreds = 0, 
+        ParallelOptions(const size_t numThreds = 0,
                         const ConcurrencyType  concurrencyType = OpenMpConcurrency)
         :   numThreads_(numThreds), // zero means AUTO
             concurrencyType_(concurrencyType){
@@ -354,7 +355,7 @@ namespace blockwise{
 
 
 
-    /// \warning this functions is deprecated 
+    /// \warning this functions is deprecated
     /// and should not be used from end users
     template<unsigned int N>
     vigra::TinyVector< vigra::MultiArrayIndex, N > getBorder(
@@ -363,7 +364,7 @@ namespace blockwise{
         const bool usesOuterScale = false
     ){
         vigra::TinyVector< vigra::MultiArrayIndex, N > res(vigra::SkipInitialization);
-        
+
         if(opt.getFilterWindowSize()<=0.00001){
             for(size_t d=0; d<N; ++d){
                 double stdDev =  opt.getStdDev()[d];
