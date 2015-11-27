@@ -87,32 +87,31 @@ public:
 
     /// \brief Predict the given data and return the average number of split comparisons.
     /// \note labels should have the shape (features.shape()[0],).
-    template <typename INDICES = std::vector<size_t> >
     double predict(
         FEATURES const & features,
         LABELS & labels,
         int n_threads = -1,
-        INDICES const & tree_indices = std::vector<size_t>()
+        std::vector<size_t> const & tree_indices = std::vector<size_t>()
     ) const;
 
     /// \brief Predict the probabilities of the given data and return the average number of split comparisons.
     /// \note probs should have the shape (features.shape()[0], num_trees).
-    template <typename PROBS, typename INDICES = std::vector<size_t> >
+    template <typename PROBS>
     double predict_proba(
         FEATURES const & features,
         PROBS & probs,
         int n_threads = -1,
-        INDICES const & tree_indices = std::vector<size_t>()
+        std::vector<size_t> tree_indices = std::vector<size_t>()
     ) const;
 
     /// \brief For each data point in features, compute the corresponding leaf ids and return the average number of split comparisons.
     /// \note ids should have the shape (features.shape()[0], num_trees).
-    template <typename IDS, typename INDICES = std::vector<size_t> >
+    template <typename IDS>
     double leaf_ids(
         FEATURES const & features,
         IDS & ids,
         int n_threads = -1,
-        INDICES const & tree_indices = std::vector<size_t>()
+        std::vector<size_t> tree_indices = std::vector<size_t>()
     ) const;
 
     /// \brief Return the number of nodes.
@@ -201,12 +200,11 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::merge(
 }
 
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
-template <typename INDICES>
 double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict(
     FEATURES const & features,
     LABELS & labels,
     int n_threads,
-    INDICES const & tree_indices
+    std::vector<size_t> const & tree_indices
 ) const {
     vigra_precondition(features.shape()[0] == labels.shape()[0],
                        "RandomForest::predict(): Shape mismatch between features and labels.");
@@ -226,12 +224,12 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict(
 }
 
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
-template <typename PROBS, typename INDICES>
+template <typename PROBS>
 double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict_proba(
     FEATURES const & features,
     PROBS & probs,
     int n_threads,
-    INDICES const & tree_indices
+    std::vector<size_t> tree_indices
 ) const {
     vigra_precondition(features.shape()[0] == probs.shape()[0],
                        "RandomForest::predict_proba(): Shape mismatch between features and probabilities.");
@@ -241,26 +239,29 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict_proba(
                        "RandomForest::predict_proba(): Number of labels in probabilities differs from training.");
 
     // Check the tree indices.
-    std::set<size_t> actual_tree_indices(tree_indices.begin(), tree_indices.end());
-    for (auto i : actual_tree_indices)
+    std::sort(tree_indices.begin(), tree_indices.end());
+    tree_indices.erase(std::unique(tree_indices.begin(), tree_indices.end()), tree_indices.end());
+    for (auto i : tree_indices)
         vigra_precondition(i < graph_.numRoots(), "RandomForest::predict_proba(): Tree index out of range.");
 
     // By default, actual_tree_indices is empty. In that case we want to use all trees.
-    if (actual_tree_indices.size() == 0)
-        for (size_t i = 0; i < graph_.numRoots(); ++i)
-            actual_tree_indices.insert(i);
+    if (tree_indices.size() == 0)
+    {
+        tree_indices.resize(graph_.numRoots());
+        std::iota(tree_indices.begin(), tree_indices.end(), 0);
+    }
 
     // Get the leaf ids.
     size_t const num_roots = graph_.numRoots();
     MultiArray<2, size_t> ids(Shape2(features.shape()[0], num_roots));
-    double const average_split_counts = leaf_ids(features, ids, n_threads, actual_tree_indices);
+    double const average_split_counts = leaf_ids(features, ids, n_threads, tree_indices);
 
     // Compute the probabilities.
     ACC acc;
     for (size_t i = 0; i < features.shape()[0]; ++i)
     {
         std::vector<AccInputType> tree_results;
-        for (auto k : actual_tree_indices)
+        for (auto k : tree_indices)
         {
             tree_results.push_back(node_responses_.at(Node(ids(i, k))));
         }
@@ -271,12 +272,12 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict_proba(
 }
 
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
-template <typename IDS, typename INDICES>
+template <typename IDS>
 double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids(
     FEATURES const & features,
     IDS & ids,
     int n_threads,
-    INDICES const & tree_indices
+    std::vector<size_t> tree_indices
 ) const {
     vigra_precondition(features.shape()[0] == ids.shape()[0],
                        "RandomForest::leaf_ids(): Shape mismatch between features and probabilities.");
@@ -286,14 +287,17 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids(
                        "RandomForest::leaf_ids(): Leaf array has wrong shape.");
 
     // Check the tree indices.
-    std::set<size_t> actual_tree_indices(tree_indices.begin(), tree_indices.end());
-    for (auto i : actual_tree_indices)
+    std::sort(tree_indices.begin(), tree_indices.end());
+    tree_indices.erase(std::unique(tree_indices.begin(), tree_indices.end()), tree_indices.end());
+    for (auto i : tree_indices)
         vigra_precondition(i < graph_.numRoots(), "RandomForest::leaf_ids(): Tree index out of range.");
 
     // By default, actual_tree_indices is empty. In that case we want to use all trees.
-    if (actual_tree_indices.size() == 0)
-        for (size_t i = 0; i < graph_.numRoots(); ++i)
-            actual_tree_indices.insert(i);
+    if (tree_indices.size() == 0)
+    {
+        tree_indices.resize(graph_.numRoots());
+        std::iota(tree_indices.begin(), tree_indices.end(), 0);
+    }
 
     size_t const num_instances = features.shape()[0];
     if (n_threads == -1)
@@ -308,8 +312,8 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids(
         n_threads,
         indices.begin(),
         indices.end(),
-        [this, &features, &ids, &split_comparisons, &actual_tree_indices](size_t thread_id, size_t i) {
-            split_comparisons[thread_id] += this->leaf_ids_impl(features, ids, i, i+1, actual_tree_indices);
+        [this, &features, &ids, &split_comparisons, &tree_indices](size_t thread_id, size_t i) {
+            split_comparisons[thread_id] += this->leaf_ids_impl(features, ids, i, i+1, tree_indices);
         }
     );
 
