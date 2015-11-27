@@ -306,7 +306,6 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids(
     std::fill(ids.begin(), ids.end(), -1);
     parallel_foreach(
         n_threads,
-        num_instances,
         indices.begin(),
         indices.end(),
         [this, &features, &ids, &split_comparisons, &actual_tree_indices](size_t thread_id, size_t i) {
