@@ -43,9 +43,9 @@ for a in sys.argv:
     if a.startswith(match):
         outdir = '/' + a[len(match):]
 
-vigraimpex_path = re.sub('/Release$', outdir, r'$<TARGET_FILE_DIR:vigraimpex>')
+vigraimpex_path=r'@VIGRAIMPEX_PATH@%s' % outdir
 print "vigraimpex path:", vigraimpex_path
-os.environ['PATH'] = os.pathsep.join([vigraimpex_path.replace('/', os.sep), os.environ['PATH']])
+os.environ['PATH'] = os.pathsep.join([vigraimpex_path, os.environ['PATH']])
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
