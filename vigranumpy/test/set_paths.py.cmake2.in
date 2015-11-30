@@ -33,16 +33,13 @@
 #
 #######################################################################
 
-import sys, os, re
+import sys, os
 
 if len(sys.argv) == 3:
-    outdir = '/' + sys.argv[-1]
+    outdir = os.sep + sys.argv[-1]
 else:
     outdir = ''
 
-vigraimpex_dir = re.sub('/Release$', outdir, r'$<TARGET_FILE_DIR:vigraimpex>')
-vigranumpytest_dir = re.sub('/Release$', outdir, r'$<TARGET_FILE_DIR:vigranumpytest>')
-
-os.environ['PATH'] = os.pathsep.join([vigraimpex_dir.replace('/', os.sep), os.environ['PATH']])
+os.environ['PATH'] = os.pathsep.join([r'@VIGRAIMPEX_PATH@%s' % outdir, os.environ['PATH']])
 sys.path.insert(0, r'@VIGRANUMPY_TMP_PATH@')
-sys.path.insert(0, vigranumpytest_dir.replace('/', os.sep))
+sys.path.insert(0, r'@VIGRANUMPYTEST_PATH@%s' % outdir)
