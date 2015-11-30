@@ -183,7 +183,7 @@ random_forest_import_HDF5(HDF5File &h5ctx, const std::string &pathname = "")
 				gr.addArc(parent, left);
 				gr.addArc(parent, right);
 
-				split_tests.insert(parent, SplitTest(topology[index+4], parameters[topology[index+1]]));
+				split_tests.insert(parent, SplitTest(topology[index+4], parameters[topology[index+1]+1]));
 
 				q.push(std::make_pair(topology[index+2], left));
 				q.push(std::make_pair(topology[index+3], right));
