@@ -58,7 +58,8 @@ namespace blockwise_watersheds_detail
 template <class DataArray, class DirectionsBlocksIterator>
 void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                                 DirectionsBlocksIterator directions_blocks_begin,
-                                NeighborhoodType neighborhood)
+                                NeighborhoodType neighborhood,
+                                const int nThreads = ParallelOptions::Auto)
 {
     static const unsigned int N = DataArray::actual_dimension;
     typedef typename MultiArrayShape<DataArray::actual_dimension>::type Shape;
@@ -70,7 +71,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
     MultiCoordinateIterator<DataArray::actual_dimension> end = itBegin.getEndIterator();
     typedef typename MultiCoordinateIterator<DataArray::actual_dimension>::value_type Coordinate;
 
-    parallel_foreach(-1,
+    parallel_foreach(nThreads,
         itBegin,end, 
         [&](const int threadId, const Coordinate  iterVal){
 
@@ -177,8 +178,8 @@ template <unsigned int N, class Data, class S1,
 Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
                                    MultiArrayView<N, Label, S2> labels,
                                    NeighborhoodType neighborhood = DirectNeighborhood,
-                                   const typename MultiArrayView<N, Data, S1>::difference_type& block_shape = 
-                                           typename MultiArrayView<N, Data, S1>::difference_type(128))
+                                   const typename MultiArrayView<N, Data, S1>::difference_type& block_shape = typename MultiArrayView<N, Data, S1>::difference_type(128),
+                                   const int nThreads = ParallelOptions::Auto)
 {
     using namespace blockwise_watersheds_detail;
 
@@ -191,7 +192,7 @@ Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
     MultiArray<N, MultiArrayView<N, unsigned short> > directions_blocks = blockify(directions, block_shape);
 
     Overlaps<MultiArrayView<N, Data, S1> > overlaps(data, block_shape, Shape(1), Shape(1));
-    prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), neighborhood);
+    prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), neighborhood, nThreads);
     GridGraph<N, undirected_tag> graph(data.shape(), neighborhood);
     UnionFindWatershedsEquality<N> equal = {&graph};
     return labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood).blockShape(block_shape), equal);

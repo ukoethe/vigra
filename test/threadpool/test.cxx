@@ -167,6 +167,44 @@ struct ThreadPoolTests
         should(sum == (n*(n-1))/2);
     }
 
+    void test_parallel_foreach_sum_serial()
+    {
+        //size_t const n_threads = 4;
+        size_t const n = 2000;
+        std::vector<size_t> input(n);
+        std::iota(input.begin(), input.end(), 0);
+        std::vector<size_t> results(1, 0);
+
+        parallel_foreach(ParallelOptions::NoThreads, input.begin(), input.end(),
+            [&results](size_t thread_id, size_t x)
+            {
+                results[thread_id] += x;
+            }
+        );
+
+        size_t const sum = std::accumulate(results.begin(), results.end(), 0);
+        should(sum == (n*(n-1))/2);
+    }
+
+    void test_parallel_foreach_sum_auto()
+    {
+        size_t const n_threads = ParallelOptions::numThreads(ParallelOptions::Auto);
+        size_t const n = 2000;
+        std::vector<size_t> input(n);
+        std::iota(input.begin(), input.end(), 0);
+        std::vector<size_t> results(n_threads, 0);
+
+        parallel_foreach(n_threads, input.begin(), input.end(),
+            [&results](size_t thread_id, size_t x)
+            {
+                results[thread_id] += x;
+            }
+        );
+
+        size_t const sum = std::accumulate(results.begin(), results.end(), 0);
+        should(sum == (n*(n-1))/2);
+    }
+
     void test_parallel_foreach_timing()
     {
         size_t const n_threads = 4;
@@ -202,6 +240,8 @@ struct ThreadPoolTestSuite : public test_suite
         add(testCase(&ThreadPoolTests::test_parallel_foreach));
         add(testCase(&ThreadPoolTests::test_parallel_foreach_exception));
         add(testCase(&ThreadPoolTests::test_parallel_foreach_sum));
+        add(testCase(&ThreadPoolTests::test_parallel_foreach_sum_serial));
+        add(testCase(&ThreadPoolTests::test_parallel_foreach_sum_auto));
         add(testCase(&ThreadPoolTests::test_parallel_foreach_timing));
     }
 };

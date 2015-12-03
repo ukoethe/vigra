@@ -47,11 +47,49 @@
 #include <stdexcept>
 #include <cmath>
 #include "mathutil.hxx"
-
+#include "counting_iterator.hxx"
 
 
 namespace vigra
 {
+
+
+/// base option class for parallel algorithms
+class ParallelOptions{
+public:
+    enum {
+        Auto       = -1,
+        NoThreads  = 0
+    };
+
+    ParallelOptions(const int numThreads = -1)
+    :   numThreads_(ParallelOptions::numThreads(numThreads)){
+    }
+    int getNumThreads()const{
+        return numThreads_;
+    }
+    void setNumThreads(const int n){
+        numThreads_ = ParallelOptions::numThreads(n);
+    }
+    static size_t numThreads(const int userNThreads){
+
+        vigra_precondition(userNThreads >= -1, "parallel_foreach(): nThreads must be > 0 or -1.");
+        size_t actualNThreads = userNThreads;
+        if(actualNThreads == -1){
+            actualNThreads = std::thread::hardware_concurrency();
+            if(actualNThreads == 0){
+                actualNThreads  = 1;
+            }
+        }
+        #ifdef VIGRA_NO_PARALLELISM
+            actualNThreads = 1;
+        #endif
+        return actualNThreads;
+    }
+private:
+    int numThreads_;
+};
+
 
 
 
@@ -59,9 +97,18 @@ class ThreadPool {
 public:
 
     /**
+     * Create a thread pool from ParallelOptions
+     */
+    ThreadPool(const ParallelOptions & options)
+    : ThreadPool(options.getNumThreads()){
+    }
+
+
+
+    /**
      * Create a thread pool with n threads. The constructor just launches some workers.
      */
-    ThreadPool(size_t n);
+    ThreadPool(const int n);
 
     /**
      * The destructor joins all threads.
@@ -117,13 +164,14 @@ private:
     std::atomic<unsigned int> busy, processed;
 };
 
-inline ThreadPool::ThreadPool(size_t threads)
+inline ThreadPool::ThreadPool(const int threads)
     :   stop(false),
         busy(0),
         processed(0)
 {
-    vigra_precondition(threads > 0, "ThreadPool::ThreadPool(): n_threads must not be zero.");
-    for(size_t ti = 0; ti<threads; ++ti)
+    const size_t actualNThreads = ParallelOptions::numThreads(threads);
+    //vigra_precondition(threads > 0, "ThreadPool::ThreadPool(): n_threads must not be zero.");
+    for(size_t ti = 0; ti<actualNThreads; ++ti)
     {
         workers.emplace_back(
             [ti,this]
@@ -182,21 +230,28 @@ ThreadPool::enqueueReturning(F&& f)
 
     auto task = std::make_shared<PackageType>(f);
     auto res = task->get_future();
-    {
-        std::unique_lock<std::mutex> lock(queue_mutex);
 
-        // don't allow enqueueing after stopping the pool
-        if(stop)
-            throw std::runtime_error("enqueue on stopped ThreadPool");
+    if(workers.size()>0){
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
 
-        tasks.emplace(
-            [task](int tid)
-            {
-                (*task)(tid);
-            }
-        );
+            // don't allow enqueueing after stopping the pool
+            if(stop)
+                throw std::runtime_error("enqueue on stopped ThreadPool");
+
+            tasks.emplace(
+                [task](int tid)
+                {
+                    (*task)(tid);
+                }
+            );
+        }
+        worker_condition.notify_one();
     }
-    worker_condition.notify_one();
+    else{
+        (*task)(0);
+    }
+    
     return res;
 }
 
@@ -208,21 +263,26 @@ ThreadPool::enqueue(F&& f)
 
     auto task = std::make_shared<PackageType>(f);
     auto res = task->get_future();
-    {
-        std::unique_lock<std::mutex> lock(queue_mutex);
+    if(workers.size()>0){
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
 
-        // don't allow enqueueing after stopping the pool
-        if(stop)
-            throw std::runtime_error("enqueue on stopped ThreadPool");
+            // don't allow enqueueing after stopping the pool
+            if(stop)
+                throw std::runtime_error("enqueue on stopped ThreadPool");
 
-        tasks.emplace(
-            [task](int tid)
-            {
-                (*task)(tid);
-            }
-        );
+            tasks.emplace(
+                [task](int tid)
+                {
+                    (*task)(tid);
+                }
+            );
+        }
+        worker_condition.notify_one();
     }
-    worker_condition.notify_one();
+    else{
+        (*task)(0);
+    }
     return res;
 }
 
@@ -443,17 +503,36 @@ inline void parallel_foreach(
     F && f,                  
     const uint64_t nItems = 0
 ){
-    const auto hc = std::thread::hardware_concurrency();
-    if(hc<=0 && nThreads == -1)
-        nThreads = 1;
-    else
-        nThreads = (nThreads==-1 ? hc : nThreads);
-    vigra_precondition(nThreads > 0, "parallel_foreach(): nThreads must be > 0 or -1.");
-    ThreadPool pool(nThreads);
+    
+    ThreadPool pool(ParallelOptions::numThreads(nThreads));
     parallel_foreach(pool, begin, end, f, nItems);
 }
 
 
+template<class F>
+inline void parallel_foreach(
+    int64_t nThreads,
+    uint64_t nItems,
+    F && f
+){
+    CountingIterator<uint64_t> beginIter(0);
+    CountingIterator<uint64_t> endIter(nItems);
+    // call impl;
+    parallel_foreach(nThreads, beginIter, endIter,f, nItems);
+}
+
+
+template<class F>
+inline void parallel_foreach(
+    ThreadPool & threadpool,
+    uint64_t nItems,
+    F && f
+){
+    CountingIterator<uint64_t> beginIter(0);
+    CountingIterator<uint64_t> endIter(nItems);
+    // call impl;
+    parallel_foreach(threadpool, beginIter, endIter, f, nItems);
+}
 
 } // namespace vigra
 

@@ -92,7 +92,8 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
                   LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
                   NeighborhoodType neighborhood, Equal equal,
                   const Value* background_value,
-                  Mapping& mapping)
+                  Mapping& mapping,
+                  const int nThreads = ParallelOptions::Auto)
 {
     typedef typename LabelBlocksIterator::value_type::value_type Label;
     typedef typename DataBlocksIterator::shape_type Shape;
@@ -121,11 +122,8 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         //std::vector<int> ids(d);
         //std::iota(ids.begin(), ids.end(), 0 );
 
-        auto iterBegin = CountingIterator<int>(0);
-        auto iterEnd   = CountingIterator<int>(d);
-
-        parallel_foreach(-1,iterBegin, iterEnd, 
-            [&](const int threadId, const int i){
+        parallel_foreach(nThreads,d,
+            [&](const int threadId, const uint64_t i){
                 int resVal;
                 if(background_value){
                     resVal = 1 + labelMultiArrayWithBackground(data_blocks_it[i], label_blocks_it[i],
@@ -136,8 +134,7 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
                                                       neighborhood, equal);
                 }
                 nSeg[i] = resVal;
-            },
-            d
+            }
         );
 
 

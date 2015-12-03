@@ -54,27 +54,13 @@ namespace vigra{
 namespace blockwise{
 
 
-    /// base option class for parallel algorithms
-    class ParallelOptions{
-    public:
-        ParallelOptions(const int numThreads = -1)
-        :   numThreads_(numThreads){
-        }
-        int getNumThreads()const{
-            return numThreads_;
-        }
-        void setNumThreads(const int numThreads){
-            numThreads_ = numThreads;
-        }
-    private:
-        int numThreads_;
-    };
+
 
     /// base option class for blockwise algorithms
     /// attaches blockshape to ParallelOptions
     template<unsigned int N>
     class BlockwiseOptions
-    : public ParallelOptions
+    : public ParallelOptions    
     {
     public:
         typedef vigra::TinyVector< vigra::MultiArrayIndex, N> Shape;
