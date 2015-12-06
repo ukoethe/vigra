@@ -2232,6 +2232,96 @@ class DynamicAccumulatorChain<CoupledArrays<N, T1, T2, T3, T4, T5>, Selected>
 
 
 
+
+template<unsigned int N, class T, class SELECT>
+class StandAloneAccumulatorChain : public
+AccumulatorChain<
+    typename CoupledHandleType<N, T>::type,
+    SELECT
+>
+{
+public:
+    typedef typename CoupledHandleType<N, T>::type HandleType;
+    typedef typename HandleType::base_type CoordHandle;
+    typedef typename MultiArrayShape<N>::type CoordType;
+
+    typedef SELECT SelectType;
+    typedef AccumulatorChain<HandleType, SelectType>  BaseType;
+
+
+    StandAloneAccumulatorChain()
+    :   BaseType(),
+        val_(0.0),
+        handle_(&val_, CoordType(), CoordHandle(CoordType()))
+    {
+    }
+
+    
+    
+
+    void updatePassN(const T & val, const CoordType & coord, unsigned int p){
+        //val_ = val;
+        handle_.updatePtrAdresse(val_);
+        handle_. template get<1>() = val;
+        const CoordType & constP = handle_. template get<0>();
+        CoordType & nonConstP = * const_cast<CoordType*>(&constP);
+        
+        std::copy(coord.begin(), coord.end(), nonConstP.begin());
+        BaseType::updatePassN(handle_, p);
+    }
+private:
+    T val_;
+    HandleType handle_;
+    //AcculmatorChainType accChain_;
+
+};
+
+template<unsigned int N, class SELECT>
+class StandAloneDataFreeAccumulatorChain : public
+AccumulatorChain<
+    typename CoupledHandleType<N>::type,
+    SELECT
+>
+{
+public:
+    typedef typename CoupledHandleType<N>::type HandleType;
+    typedef typename MultiArrayShape<N>::type CoordType;
+
+    typedef SELECT SelectType;
+    typedef AccumulatorChain<HandleType, SelectType>  BaseType;
+
+
+    StandAloneDataFreeAccumulatorChain()
+    :   BaseType(),
+        handle_(CoordType())
+    {
+        
+    }
+
+    template<class IGNORED_DATA>
+    void updatePassN(
+        const IGNORED_DATA & ignoreData,
+        const CoordType & coord, unsigned int p){
+        this->updatePassN(coord,p);
+    }
+    
+
+    void updatePassN(const CoordType & coord, unsigned int p){
+        const CoordType & constP = handle_. template get<0>();
+        CoordType & nonConstP = * const_cast<CoordType*>(&constP);
+        std::copy(coord.begin(), coord.end(), nonConstP.begin());
+        BaseType::updatePassN(handle_, p);
+    }
+private:
+    HandleType handle_;
+    //AcculmatorChainType accChain_;
+
+};
+
+
+
+
+
 /** \brief Create an array of accumulator chains containing the selected per-region and global statistics and their dependencies.
 
     AccumulatorChainArray is used to compute per-region statistics (as well as global statistics). The statistics are selected at compile-time. An array of accumulator chains (one per region) for region statistics is created and one accumulator chain for global statistics. The region labels always start at 0. Use the Global modifier to compute global statistics (by default per-region statistics are computed). 

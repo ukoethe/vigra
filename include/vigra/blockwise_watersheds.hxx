@@ -36,6 +36,7 @@
 #ifndef VIGRA_BLOCKWISE_WATERSHEDS_HXX
 #define VIGRA_BLOCKWISE_WATERSHEDS_HXX
 
+#include "threadpool.hxx"
 #include "multi_array.hxx"
 #include "multi_gridgraph.hxx"
 #include "blockify.hxx"
@@ -57,20 +58,66 @@ namespace blockwise_watersheds_detail
 template <class DataArray, class DirectionsBlocksIterator>
 void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                                 DirectionsBlocksIterator directions_blocks_begin,
-                                NeighborhoodType neighborhood)
+                                NeighborhoodType neighborhood,
+                                const int nThreads = ParallelOptions::Auto)
 {
     static const unsigned int N = DataArray::actual_dimension;
-    typedef typename MultiArrayShape<N>::type Shape;
+    typedef typename MultiArrayShape<DataArray::actual_dimension>::type Shape;
     typedef typename DirectionsBlocksIterator::value_type DirectionsBlock;
     Shape shape = overlaps.shape();
     vigra_assert(shape == directions_blocks_begin.shape(), "");
     
-    MultiCoordinateIterator<N> it(shape);
-    MultiCoordinateIterator<N> end = it.getEndIterator();
-    for( ; it != end; ++it)
+    MultiCoordinateIterator<DataArray::actual_dimension> itBegin(shape);
+    MultiCoordinateIterator<DataArray::actual_dimension> end = itBegin.getEndIterator();
+    typedef typename MultiCoordinateIterator<DataArray::actual_dimension>::value_type Coordinate;
+
+    parallel_foreach(nThreads,
+        itBegin,end, 
+        [&](const int threadId, const Coordinate  iterVal){
+
+            DirectionsBlock directions_block = directions_blocks_begin[iterVal];
+            OverlappingBlock<DataArray> data_block = overlaps[iterVal];
+            
+            typedef GridGraph<DataArray::actual_dimension, undirected_tag> Graph;
+            typedef typename Graph::NodeIt GraphScanner;
+            typedef typename Graph::OutArcIt NeighborIterator;
+            
+            Graph graph(data_block.block.shape(), neighborhood);
+            for(GraphScanner node(graph); node != lemon::INVALID; ++node)
+            {
+                if(within(*node, data_block.inner_bounds))
+                {
+                    typedef typename DataArray::value_type Data;
+                    Data lowest_neighbor = data_block.block[*node];
+                    
+                    typedef typename DirectionsBlock::value_type Direction;
+                    Direction lowest_neighbor_direction = std::numeric_limits<unsigned short>::max();
+                    
+                    for(NeighborIterator arc(graph, *node); arc != lemon::INVALID; ++arc)
+                    {
+                        Shape neighbor_coordinates = graph.target(*arc);
+                        Data neighbor_data = data_block.block[neighbor_coordinates];
+                        if(neighbor_data < lowest_neighbor)
+                        {
+                            lowest_neighbor = neighbor_data;
+                            lowest_neighbor_direction = arc.neighborIndex();
+                        }
+                    }
+                    directions_block[*node - data_block.inner_bounds.first] = lowest_neighbor_direction;
+                }
+            }
+        }
+    );
+
+    /*
+    const auto d = std::distance(itBegin, end);
+    #pragma omp parallel for
+    for(int i=0; i<d; ++i)
     {
-        DirectionsBlock directions_block = directions_blocks_begin[*it];
-        OverlappingBlock<DataArray> data_block = overlaps[*it];
+        const auto  iterVal = itBegin[i];
+
+        DirectionsBlock directions_block = directions_blocks_begin[iterVal];
+        OverlappingBlock<DataArray> data_block = overlaps[iterVal];
         
         typedef GridGraph<N, undirected_tag> Graph;
         typedef typename Graph::NodeIt GraphScanner;
@@ -101,6 +148,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
             }
         }
     }
+    */
 }
 
 template <unsigned int N>
@@ -130,8 +178,8 @@ template <unsigned int N, class Data, class S1,
 Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
                                    MultiArrayView<N, Label, S2> labels,
                                    NeighborhoodType neighborhood = DirectNeighborhood,
-                                   const typename MultiArrayView<N, Data, S1>::difference_type& block_shape = 
-                                           typename MultiArrayView<N, Data, S1>::difference_type(128))
+                                   const typename MultiArrayView<N, Data, S1>::difference_type& block_shape = typename MultiArrayView<N, Data, S1>::difference_type(128),
+                                   const int nThreads = ParallelOptions::Auto)
 {
     using namespace blockwise_watersheds_detail;
 
@@ -144,7 +192,7 @@ Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
     MultiArray<N, MultiArrayView<N, unsigned short> > directions_blocks = blockify(directions, block_shape);
 
     Overlaps<MultiArrayView<N, Data, S1> > overlaps(data, block_shape, Shape(1), Shape(1));
-    prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), neighborhood);
+    prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), neighborhood, nThreads);
     GridGraph<N, undirected_tag> graph(data.shape(), neighborhood);
     UnionFindWatershedsEquality<N> equal = {&graph};
     return labelMultiArrayBlockwise(directions, labels, LabelOptions().neighborhood(neighborhood).blockShape(block_shape), equal);

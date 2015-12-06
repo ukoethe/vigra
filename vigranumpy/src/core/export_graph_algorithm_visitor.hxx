@@ -211,6 +211,16 @@ public:
             ),
             "apply wards method to an edgeIndicator"
         );
+
+        python::def("find3Cycles", registerConverters(&pyFind3Cycles));
+        python::def("find3CyclesEdges", registerConverters(&pyFind3CyclesEdges));
+        python::def("cyclesEdges", registerConverters(&pyCyclesEdges),
+            (
+                python::arg("graph"),
+                python::arg("graph"),
+                python::arg("out") = python::object()
+            )
+        );
     }
 
     void exportSmoothingAlgorithms()const{
@@ -251,6 +261,74 @@ public:
     }
 
 
+    static NumpyAnyArray pyFind3Cycles(
+        const GRAPH & graph
+    ){
+        NumpyArray<1, vigra::TinyVector<Int32, 3> > cycles;
+
+        MultiArray<1, vigra::TinyVector<Int32, 3> > cyclesArray;
+        find3Cycles(graph, cyclesArray);
+        cycles.reshapeIfEmpty(cyclesArray.shape());
+        cycles = cyclesArray;
+        return cycles;
+    }
+
+
+    static NumpyAnyArray pyFind3CyclesEdges(
+        const GRAPH & graph
+    ){
+        NumpyArray<1, vigra::TinyVector<Int32, 3> > cyclesEdges;
+
+        MultiArray<1, vigra::TinyVector<Int32, 3> > cyclesNodes;
+
+        find3Cycles(graph, cyclesNodes);
+        cyclesEdges.reshapeIfEmpty(cyclesNodes.shape());
+        
+        Node nodes[3];
+        Edge edges[3];
+
+        for(size_t i=0; i<cyclesNodes.size(); ++i){
+            for(size_t j=0; j<3; ++j){
+                nodes[j] = graph.nodeFromId(cyclesNodes(i)[j]);
+            }
+            edges[0] = graph.findEdge(nodes[0],nodes[1]);
+            edges[1] = graph.findEdge(nodes[0],nodes[2]);
+            edges[2] = graph.findEdge(nodes[1],nodes[2]);
+            for(size_t j=0; j<3; ++j){
+                cyclesEdges(i)[j] = graph.id(edges[j]);
+            }
+        }
+
+        return cyclesEdges;
+    }
+
+    static NumpyAnyArray pyCyclesEdges(
+        const GRAPH & graph,
+        NumpyArray<1, vigra::TinyVector<Int32, 3> > cycles,
+        NumpyArray<1, vigra::TinyVector<Int32, 3> > edgesOut       
+    ){
+
+        Node nodes[3];
+        Edge edges[3];
+        Int32 ids[3];
+
+        edgesOut.reshapeIfEmpty(cycles.shape());
+        for(size_t i=0; i<cycles.size(); ++i){
+            for(size_t j=0; j<3; ++j){
+                nodes[j] = graph.nodeFromId(cycles(i)[j]);
+            }
+            edges[0] = graph.findEdge(nodes[0],nodes[1]);
+            edges[1] = graph.findEdge(nodes[0],nodes[2]);
+            edges[2] = graph.findEdge(nodes[1],nodes[2]);
+            for(size_t j=0; j<3; ++j){
+                edgesOut(i)[j] = graph.id(edges[j]);
+            }
+        }   
+        return edgesOut;
+    }
+
+    
+
     static NumpyAnyArray pyWardCorrection(
         const Graph &           g,
         const FloatEdgeArray    edgeWeightsArray,
@@ -276,6 +354,8 @@ public:
         return outArray;
 
     }
+
+
 
 
     static python::tuple pyMulticutDataStructure(
@@ -769,8 +849,12 @@ public:
         //'    "convert an image with with shape = graph.shape *2 -1 to an edge weight array"
         //'    ""
         //');
+
+
     }
 
+
+    
 
 
     static size_t pyAffiliatedEdgesSerializationSize(

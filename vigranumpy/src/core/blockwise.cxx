@@ -169,14 +169,87 @@ namespace vigra{
         );
     }
 
+    template<class  MB>
+    NumpyAnyArray intersectingBlocks(
+        const MB & mb,
+        const typename MB::Shape begin,
+        const typename MB::Shape end,
+        NumpyArray<1, UInt32> out
+    ){
+        std::vector<UInt32> outVec = mb.intersectingBlocks(begin,end);
+        out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(outVec.size()));
+        std::copy(outVec.begin(),outVec.end(), out.begin());
+        return out;
+    }
+
+    template<class  MB>
+    python::tuple getBlock(
+        const MB & mb,
+        const UInt32 blockIndex
+    ){
+        const auto iter = mb.blockBegin();
+        const auto & block = iter[blockIndex];
+        auto tl = block.begin();
+        auto br = block.end();
+        return python::make_tuple(tl,br);
+    }
+
+
+    template<class  MB>
+    python::tuple getBlock2(
+        const MB & mb,
+        const typename  MB::BlockDesc desc
+    ){
+        const auto block = mb.blockDescToBlock(desc);
+        auto tl = block.begin();
+        auto br = block.end();
+        return python::make_tuple(tl,br);
+    }
+
+    template<class BLOCK>
+    typename BLOCK::Vector
+    blockBegin(const BLOCK & b){
+        return b.begin();
+    }
+    template<class BLOCK>
+    typename BLOCK::Vector
+    blockEnd(const BLOCK & b){
+        return b.end();
+    }
+
+    template<class BLOCK>
+    typename BLOCK::Vector
+    blockShape(const BLOCK & b){
+        return b.size();
+    }
+
 
     template<unsigned int DIM>
     void defineMultiBlocking(const std::string & clsName){
 
         typedef MultiBlocking<DIM> Blocking;
         typedef typename Blocking::Shape Shape;
+        typedef typename Blocking::Block Block;
 
         python::class_<Blocking>(clsName.c_str(), python::init<const Shape &, const Shape &>())
+            .def("intersectingBlocks",registerConverters(&intersectingBlocks<Blocking>),
+                (
+                    python::arg("begin"),
+                    python::arg("end"),
+                    python::arg("out") = python::object()
+                )
+            )
+            .def("__len__", &Blocking::numBlocks)
+            .def("__getitem__", &getBlock<Blocking>)
+            .def("__getitem__", &getBlock2<Blocking>)
+        ;
+
+        const std::string blockName = clsName + std::string("Block");
+
+        python::class_<Block>(blockName.c_str())
+            .add_property("begin",&blockBegin<Block>)
+            .add_property("end",  &blockEnd<Block>)
+            .add_property("shape",&blockShape<Block>)
         ;
     }
 
@@ -188,6 +261,7 @@ namespace vigra{
         typedef blockwise::BlockwiseConvolutionOptions<DIM> Opt;
         python::class_<Opt>(clsName.c_str(), python::init<>())
         .add_property("stdDev", &Opt::getStdDev, &Opt::setStdDev)
+        //.add_property("scale", &Opt::getScale, &Opt::setScale)
         .add_property("innerScale", &Opt::getInnerScale, &Opt::setInnerScale)
         .add_property("outerScale", &Opt::getOuterScale, &Opt::setOuterScale)
         .add_property("blockShape", &Opt::getBlockShape, &Opt::setBlockShape)

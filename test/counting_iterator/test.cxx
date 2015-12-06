@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2011 by Ullrich Koethe                     */
+/*                 Copyright 2004 by Ullrich Koethe                     */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -29,73 +29,71 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
-
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/metrics.hxx>
-
-namespace python = boost::python;
-
-namespace vigra{
-
-
-
-
-
-	void defineInvalid(){
-        python::class_<lemon::Invalid>("Invalid",python::init<>());
-    }
-
-	void defineAdjacencyListGraph();
-	void defineGridGraph2d();
-    void defineGridGraph3d();
-    void defineGridGraphImplicitEdgeMap();
-    template<unsigned int DIM>
-    void defineGridRag();
-
-
-    //void defineEccentricity();
-} // namespace vigra
+#include <iostream>
+#include "vigra/unittest.hxx"
+#include "vigra/counting_iterator.hxx"
 
 using namespace vigra;
-using namespace boost::python;
 
 
 
-BOOST_PYTHON_MODULE_INIT(graphs)
+
+
+struct CountingIteratorTest{   
+
+
+    void test1(){
+        
+        auto iterBegin = vigra::CountingIterator<int>(0);
+        auto iterEnd   = vigra::CountingIterator<int>(10);
+        shouldEqual( std::distance(iterBegin,iterEnd), 10);
+        shouldEqual( *iterEnd, 10);
+        for(int i=0; i<10; ++i){
+            shouldEqual( iterBegin[i], i);
+        }
+        for(int i=0; i<10; ++i){
+
+            shouldEqual( std::distance(iterBegin,iterEnd), 10-i);
+            should(iterBegin!=iterEnd);
+            shouldEqual( *iterBegin, i);
+            ++iterBegin;
+        }
+        should(iterBegin==iterEnd);
+        --iterEnd;
+        shouldEqual( *iterEnd, 9);
+        --iterEnd;
+        shouldEqual( *iterEnd, 8);
+
+    }
+
+};
+
+
+
+
+ 
+struct CountingIteratorTestSuite
+: public vigra::test_suite
 {
-    import_vigranumpy();
+    CountingIteratorTestSuite()
+    : vigra::test_suite("CountingIteratorTestSuite")
+    {   
+        add( testCase( &CountingIteratorTest::test1));
+    }
+};
 
-    python::docstring_options doc_options(true, true, false);
+int main(int argc, char ** argv)
+{
+    CountingIteratorTestSuite test;
 
-    // all exporters needed for graph exporters (like lemon::INVALID)
-    defineInvalid();
+    int failed = test.run(vigra::testsToBeExecuted(argc, argv));
 
-    enum_<metrics::MetricType>("MetricType")
-        .value("chiSquared", metrics::ChiSquaredMetric)
-        .value("hellinger", metrics::HellingerMetric)
-        .value("squaredNorm", metrics::SquaredNormMetric)
-        .value("norm", metrics::NormMetric)
-        .value("manhattan", metrics::ManhattanMetric)
-        .value("symetricKl", metrics::SymetricKlMetric)
-        .value("bhattacharya", metrics::BhattacharyaMetric)
-        ;
-    
+    std::cout << test.report() << std::endl;
 
-
-    // all graph classes itself (GridGraph , AdjacencyListGraph)
-    defineAdjacencyListGraph();
-    defineGridGraph2d();
-    defineGridGraph3d();
-
-    // implicit edge maps
-    defineGridGraphImplicitEdgeMap();
-
+    return (failed != 0);
 }
+

@@ -36,6 +36,10 @@
 #ifndef VIGRA_BLOCKWISE_LABELING_HXX
 #define VIGRA_BLOCKWISE_LABELING_HXX
 
+#include <algorithm>
+
+#include "threadpool.hxx"
+#include "counting_iterator.hxx"
 #include "multi_gridgraph.hxx"
 #include "multi_labeling.hxx"
 #include "union_find.hxx"
@@ -88,7 +92,8 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
                   LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
                   NeighborhoodType neighborhood, Equal equal,
                   const Value* background_value,
-                  Mapping& mapping)
+                  Mapping& mapping,
+                  const int nThreads = ParallelOptions::Auto)
 {
     typedef typename LabelBlocksIterator::value_type::value_type Label;
     typedef typename DataBlocksIterator::shape_type Shape;
@@ -108,21 +113,52 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         LabelBlocksIterator label_blocks_it = label_blocks_begin;
         typename MultiArray<Dimensions, Label>::iterator offsets_it = label_offsets.begin();
         Label current_offset = 0;
-        for( ; data_blocks_it != data_blocks_end; ++data_blocks_it, ++label_blocks_it, ++offsets_it)
-        {
-            vigra_assert(label_blocks_it != label_blocks_end && offsets_it != label_offsets.end(), "");
-            *offsets_it = current_offset;
-            if(background_value)
-            {
-                current_offset += 1 + labelMultiArrayWithBackground(*data_blocks_it, *label_blocks_it,
+        // a la OPENMP_PRAGMA FOR
+        
+        auto d = std::distance(data_blocks_begin, data_blocks_end);
+
+
+        std::vector<UInt32> nSeg(d);
+        //std::vector<int> ids(d);
+        //std::iota(ids.begin(), ids.end(), 0 );
+
+        parallel_foreach(nThreads,d,
+            [&](const int threadId, const uint64_t i){
+                int resVal;
+                if(background_value){
+                    resVal = 1 + labelMultiArrayWithBackground(data_blocks_it[i], label_blocks_it[i],
+                                                                        neighborhood, *background_value, equal);
+                }
+                else{
+                    resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
+                                                      neighborhood, equal);
+                }
+                nSeg[i] = resVal;
+            }
+        );
+
+
+        /*
+        #pragma omp parallel for
+        for(int i=0; i<d; ++i){
+            int resVal;
+            if(background_value){
+                resVal = 1 + labelMultiArrayWithBackground(data_blocks_it[i], label_blocks_it[i],
                                                                     neighborhood, *background_value, equal);
             }
-            else
-            {
-                current_offset += labelMultiArray(*data_blocks_it, *label_blocks_it,
+            else{
+                resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
                                                   neighborhood, equal);
             }
+            nSeg[i] = resVal;
         }
+        */
+        for(int i=0; i<d;++i){
+            offsets_it[i] = current_offset;
+            current_offset+=nSeg[i];
+        }
+
+
         unmerged_label_number = current_offset;
         if(!background_value)
             ++unmerged_label_number;

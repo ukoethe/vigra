@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2011 by Ullrich Koethe                     */
+/*             Copyright 2011-2012 by Ullrich Koethe                    */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -33,69 +33,94 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpygraphs_PyArray_API
-//#define NO_IMPORT_ARRAY
+#include <iostream>
+#include <sstream>
+#include <map>
+#include <set>
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/numpy_array_converters.hxx>
-#include <vigra/graphs.hxx>
-#include <vigra/metrics.hxx>
+#include <vigra/unittest.hxx>
+#include <vigra/multi_array.hxx>
+#include <vigra/accumulator.hxx>
 
-namespace python = boost::python;
-
-namespace vigra{
-
-
-
-
-
-	void defineInvalid(){
-        python::class_<lemon::Invalid>("Invalid",python::init<>());
-    }
-
-	void defineAdjacencyListGraph();
-	void defineGridGraph2d();
-    void defineGridGraph3d();
-    void defineGridGraphImplicitEdgeMap();
-    template<unsigned int DIM>
-    void defineGridRag();
-
-
-    //void defineEccentricity();
-} // namespace vigra
 
 using namespace vigra;
-using namespace boost::python;
+
+// mask cl.exe shortcomings
+#if defined(_MSC_VER)
+#pragma warning( disable : 4503 )
+#endif
 
 
 
-BOOST_PYTHON_MODULE_INIT(graphs)
+
+struct StandAloneAccChain
 {
-    import_vigranumpy();
-
-    python::docstring_options doc_options(true, true, false);
-
-    // all exporters needed for graph exporters (like lemon::INVALID)
-    defineInvalid();
-
-    enum_<metrics::MetricType>("MetricType")
-        .value("chiSquared", metrics::ChiSquaredMetric)
-        .value("hellinger", metrics::HellingerMetric)
-        .value("squaredNorm", metrics::SquaredNormMetric)
-        .value("norm", metrics::NormMetric)
-        .value("manhattan", metrics::ManhattanMetric)
-        .value("symetricKl", metrics::SymetricKlMetric)
-        .value("bhattacharya", metrics::BhattacharyaMetric)
-        ;
+    StandAloneAccChain()
+    {}
     
+    void testStandardizeTag()
+    {
+        using namespace vigra::acc;
+
+        typedef double DataType;
+        typedef MultiArrayShape<3>::type CoordType;
+        typedef MultiArrayShape<3>::type   Point;
 
 
-    // all graph classes itself (GridGraph , AdjacencyListGraph)
-    defineAdjacencyListGraph();
-    defineGridGraph2d();
-    defineGridGraph3d();
+        typedef Select< 
+            DataArg<1>,
+            Variance, 
+            Mean, 
+            StdDev, 
+            Minimum, 
+            Maximum, 
+            RootMeanSquares, 
+            Skewness,
+            Covariance,
+            RegionCenter
+        >  SelectType;
 
-    // implicit edge maps
-    defineGridGraphImplicitEdgeMap();
 
+
+        typedef StandAloneAccumulatorChain<3, DataType, SelectType> FreeChain;
+        FreeChain a;
+
+        a.updatePassN(1.0, Point(3,0,0), 1);
+        a.updatePassN(2.0, Point(0,3,0), 1);
+        a.updatePassN(3.0, Point(0,0,3), 1);
+        
+
+
+        a.updatePassN(1.0, Point(3,0,0), 2);
+        a.updatePassN(2.0, Point(0,3,0), 2);
+        a.updatePassN(3.0, Point(0,0,3), 2);
+
+        shouldEqualTolerance( get<Mean>(a), 2.0, 0.000001);
+
+        CoordType rCenter = get<RegionCenter>(a);
+        CoordType trueCenter(1,1,1);
+        shouldEqualSequence(rCenter.begin(),rCenter.end(), trueCenter.begin());
+
+    }
+
+};
+
+
+
+struct StandAlloneAccChain : public vigra::test_suite
+{
+    StandAlloneAccChain()
+        : vigra::test_suite("StandAlloneAccChain")
+    {
+        add(testCase(&StandAloneAccChain::testStandardizeTag));
+    }
+};
+
+int main(int argc, char** argv)
+{
+    StandAlloneAccChain test;
+    const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test.report() << std::endl;
+
+    return failed != 0;
 }
