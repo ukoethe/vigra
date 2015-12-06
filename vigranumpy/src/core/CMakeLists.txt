@@ -52,7 +52,7 @@ VIGRA_ADD_NUMPY_MODULE(filters SOURCES
   LIBRARIES 
     ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
-   
+  
 VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     segmentation.cxx
     edgedetection.cxx
@@ -85,6 +85,7 @@ VIGRA_ADD_NUMPY_MODULE(geometry SOURCES
 VIGRA_ADD_NUMPY_MODULE(optimization SOURCES
     optimization.cxx
   VIGRANUMPY)
+
 
 
 VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
