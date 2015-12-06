@@ -191,8 +191,6 @@ inline ThreadPool::~ThreadPool()
         worker.join();
 }
 
-
-
 inline void ThreadPool::initialize(const int threads){
     const size_t actualNThreads = ParallelOptions::numThreads(threads);
     //vigra_precondition(threads > 0, "ThreadPool::ThreadPool(): n_threads must not be zero.");
