@@ -100,15 +100,20 @@ public:
      * Create a thread pool from ParallelOptions
      */
     ThreadPool(const ParallelOptions & options)
-    : ThreadPool(options.getNumThreads()){
+    :   stop(false),
+        busy(0),
+        processed(0){
+        this->initialize(options.getNumThreads());
     }
-
-
 
     /**
      * Create a thread pool with n threads. The constructor just launches some workers.
      */
     ThreadPool(const int n);
+
+
+
+
 
     /**
      * The destructor joins all threads.
@@ -150,6 +155,9 @@ public:
 
 private:
 
+    void initialize(const int n);
+
+
     // need to keep track of threads so we can join them
     std::vector<std::thread> workers;
 
@@ -169,6 +177,22 @@ inline ThreadPool::ThreadPool(const int threads)
         busy(0),
         processed(0)
 {
+    this->initialize(threads);
+}
+
+inline ThreadPool::~ThreadPool()
+{
+    {
+        std::unique_lock<std::mutex> lock(queue_mutex);
+        stop = true;
+    }
+    worker_condition.notify_all();
+    for(std::thread &worker: workers)
+        worker.join();
+}
+
+
+inline void ThreadPool::initialize(const int threads){
     const size_t actualNThreads = ParallelOptions::numThreads(threads);
     //vigra_precondition(threads > 0, "ThreadPool::ThreadPool(): n_threads must not be zero.");
     for(size_t ti = 0; ti<actualNThreads; ++ti)
@@ -208,17 +232,6 @@ inline ThreadPool::ThreadPool(const int threads)
             }
         );
     }
-}
-
-inline ThreadPool::~ThreadPool()
-{
-    {
-        std::unique_lock<std::mutex> lock(queue_mutex);
-        stop = true;
-    }
-    worker_condition.notify_all();
-    for(std::thread &worker: workers)
-        worker.join();
 }
 
 template<class F>
