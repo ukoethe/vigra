@@ -50,12 +50,9 @@ using namespace vigra;
 #pragma warning( disable : 4503 )
 #endif
 
-
-
-
-struct StandAloneAccChain
+struct StandAloneAccChainTest
 {
-    StandAloneAccChain()
+    StandAloneAccChainTest()
     {}
     
     void testStandardizeTag()
@@ -65,7 +62,6 @@ struct StandAloneAccChain
         typedef double DataType;
         typedef MultiArrayShape<3>::type CoordType;
         typedef MultiArrayShape<3>::type   Point;
-
 
         typedef Select< 
             DataArg<1>,
@@ -79,8 +75,6 @@ struct StandAloneAccChain
             Covariance,
             RegionCenter
         >  SelectType;
-
-
 
         typedef StandAloneAccumulatorChain<3, DataType, SelectType> FreeChain;
         FreeChain a;
@@ -100,25 +94,23 @@ struct StandAloneAccChain
         CoordType rCenter = get<RegionCenter>(a);
         CoordType trueCenter(1,1,1);
         shouldEqualSequence(rCenter.begin(),rCenter.end(), trueCenter.begin());
-
     }
-
 };
 
 
 
-struct StandAlloneAccChain : public vigra::test_suite
+struct StandAloneAccChainTestSuite : public vigra::test_suite
 {
-    StandAlloneAccChain()
-        : vigra::test_suite("StandAlloneAccChain")
+    StandAloneAccChainTestSuite()
+        : vigra::test_suite("StandAloneAccChainTestSuite")
     {
-        add(testCase(&StandAloneAccChain::testStandardizeTag));
+        add(testCase(&StandAloneAccChainTest::testStandardizeTag));
     }
 };
 
 int main(int argc, char** argv)
 {
-    StandAlloneAccChain test;
+    StandAloneAccChainTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 

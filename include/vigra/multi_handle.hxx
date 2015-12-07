@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -69,7 +69,7 @@ class CoupledHandle
 public:
     typedef NEXT                            base_type;
     typedef CoupledHandle<T, NEXT>          self_type;
-    
+
     static const int index =                NEXT::index + 1;    // index of this member of the chain
     static const unsigned int dimensions =  NEXT::dimensions;
 
@@ -82,80 +82,80 @@ public:
 
     CoupledHandle()
     : base_type(),
-      pointer_(), 
+      pointer_(),
       strides_()
     {}
 
     template <class NEXT1>
     CoupledHandle(CoupledHandle<T, NEXT1> const & h, NEXT const & next)
     : base_type(next),
-      pointer_(h.pointer_), 
+      pointer_(h.pointer_),
       strides_(h.strides_)
     {}
 
     CoupledHandle(const_pointer p, shape_type const & strides, NEXT const & next)
     : base_type(next),
-      pointer_(const_cast<pointer>(p)), 
+      pointer_(const_cast<pointer>(p)),
       strides_(strides)
     {}
 
     template <class Stride>
     CoupledHandle(MultiArrayView<dimensions, T, Stride> const & v, NEXT const & next)
     : base_type(next),
-      pointer_(const_cast<pointer>(v.data())), 
+      pointer_(const_cast<pointer>(v.data())),
       strides_(v.stride())
     {
         vigra_precondition(v.shape() == this->shape(), "createCoupledIterator(): shape mismatch.");
     }
 
-    inline void incDim(int dim) 
+    inline void incDim(int dim)
     {
         pointer_ += strides_[dim];
         base_type::incDim(dim);
     }
 
-    inline void decDim(int dim) 
+    inline void decDim(int dim)
     {
         pointer_ -= strides_[dim];
         base_type::decDim(dim);
     }
 
-    inline void addDim(int dim, MultiArrayIndex d) 
+    inline void addDim(int dim, MultiArrayIndex d)
     {
         pointer_ += d*strides_[dim];
         base_type::addDim(dim, d);
     }
 
-    inline void add(shape_type const & d) 
+    inline void add(shape_type const & d)
     {
         pointer_ += dot(d, strides_);
         base_type::add(d);
     }
-    
+
     template<int DIMENSION>
-    inline void increment() 
+    inline void increment()
     {
         pointer_ += strides_[DIMENSION];
         base_type::template increment<DIMENSION>();
     }
-    
+
     template<int DIMENSION>
-    inline void decrement() 
+    inline void decrement()
     {
         pointer_ -= strides_[DIMENSION];
         base_type::template decrement<DIMENSION>();
     }
-    
+
     // TODO: test if making the above a default case of the this hurts performance
     template<int DIMENSION>
-    inline void increment(MultiArrayIndex offset) 
+    inline void increment(MultiArrayIndex offset)
     {
         pointer_ += offset*strides_[DIMENSION];
         base_type::template increment<DIMENSION>(offset);
     }
-    
+
     template<int DIMENSION>
-    inline void decrement(MultiArrayIndex offset) 
+    inline void decrement(MultiArrayIndex offset)
     {
         pointer_ -= offset*strides_[DIMENSION];
         base_type::template decrement<DIMENSION>(offset);
@@ -202,20 +202,20 @@ public:
     {
         return strides_;
     }
-    
+
     MultiArrayView<dimensions, T>
     arrayView() const
     {
         return MultiArrayView<dimensions, T>(this->shape(), strides(), ptr() - dot(this->point(), strides()));
     }
-    
+
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, CoupledHandle, index>::reference
     get()
     {
         return vigra::get<TARGET_INDEX>(*this);
     }
-    
+
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, CoupledHandle, index>::const_reference
     get() const
@@ -223,9 +223,10 @@ public:
         return vigra::get<TARGET_INDEX>(*this);
     }
 
-
-    void updatePtrAdresse(T & val){
-        pointer_ = & val;
+    // NOTE: dangerous function - only use it when you know what you are doing
+    void internal_reset(const_pointer p)
+    {
+        pointer_ = const_cast<pointer>(p);
     }
 
     pointer pointer_;
@@ -267,47 +268,47 @@ public:
       scanOrderIndex_()
     {}
 
-    inline void incDim(int dim) 
+    inline void incDim(int dim)
     {
         ++point_[dim];
     }
 
-    inline void decDim(int dim) 
+    inline void decDim(int dim)
     {
         --point_[dim];
     }
 
-    inline void addDim(int dim, MultiArrayIndex d) 
+    inline void addDim(int dim, MultiArrayIndex d)
     {
         point_[dim] += d;
     }
 
-    inline void add(shape_type const & d) 
+    inline void add(shape_type const & d)
     {
         point_ += d;
     }
-    
+
     template<int DIMENSION>
-    inline void increment() 
+    inline void increment()
     {
         ++point_[DIMENSION];
     }
-    
+
     template<int DIMENSION>
-    inline void decrement() 
+    inline void decrement()
     {
         --point_[DIMENSION];
     }
-    
+
     // TODO: test if making the above a default case of the this hurts performance
     template<int DIMENSION>
-    inline void increment(MultiArrayIndex offset) 
+    inline void increment(MultiArrayIndex offset)
     {
         point_[DIMENSION] += offset;
     }
-    
+
     template<int DIMENSION>
-    inline void decrement(MultiArrayIndex offset) 
+    inline void decrement(MultiArrayIndex offset)
     {
         point_[DIMENSION] -= offset;
     }
@@ -319,22 +320,22 @@ public:
         scanOrderIndex_ = 0;
     }
 
-    inline void incrementIndex() 
+    inline void incrementIndex()
     {
         ++scanOrderIndex_;
     }
-    
-    inline void decrementIndex() 
+
+    inline void decrementIndex()
     {
         --scanOrderIndex_;
     }
-    
-    inline void incrementIndex(MultiArrayIndex offset) 
+
+    inline void incrementIndex(MultiArrayIndex offset)
     {
         scanOrderIndex_ += offset;
     }
-    
-    inline void decrementIndex(MultiArrayIndex offset) 
+
+    inline void decrementIndex(MultiArrayIndex offset)
     {
         scanOrderIndex_ -= offset;
     }
@@ -344,13 +345,13 @@ public:
     {
         return scanOrderIndex_;
     }
-    
+
     // access
     const_reference point() const
     {
         return point_;
     }
-    
+
     // access
     const_reference shape() const
     {
@@ -376,19 +377,25 @@ public:
     {
         return detail::BorderTypeImpl<N>::exec(point_, shape_);
     }
-    
+
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, CoupledHandle, index>::reference
     get()
     {
         return vigra::get<TARGET_INDEX>(*this);
     }
-    
+
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, CoupledHandle, index>::const_reference
     get() const
     {
         return vigra::get<TARGET_INDEX>(*this);
+    }
+
+    // NOTE: dangerous function - only use it when you know what you are doing
+    void internal_reset(value_type const & point)
+    {
+        point_ = point;
     }
 
     value_type point_, shape_;
@@ -403,7 +410,7 @@ class CoupledHandle<Multiband<T>, NEXT>
 public:
     typedef NEXT                                  base_type;
     typedef CoupledHandle<Multiband<T>, NEXT>     self_type;
-    
+
     static const unsigned int index =             NEXT::index + 1;    // index of this member of the chain
     static const unsigned int dimensions =        NEXT::dimensions;
 
@@ -416,80 +423,80 @@ public:
 
     CoupledHandle()
     : base_type(),
-      view_(), 
+      view_(),
       strides_()
     {}
-    
+
     template <class NEXT1>
     CoupledHandle(CoupledHandle<Multiband<T>, NEXT1> const & h, NEXT const & next)
     : base_type(next),
-      view_(h.view_), 
+      view_(h.view_),
       strides_(h.strides_)
     {}
 
     CoupledHandle(const_reference p, shape_type const & strides, NEXT const & next)
     : base_type(next),
-      view_(p), 
+      view_(p),
       strides_(strides)
     {}
 
     template <class Stride>
     CoupledHandle(MultiArrayView<dimensions+1, Multiband<T>, Stride> const & v, NEXT const & next)
     : base_type(next),
-      view_(v.bindInner(shape_type())), 
+      view_(v.bindInner(shape_type())),
       strides_(v.bindOuter(0).stride())
     {
         vigra_precondition(v.bindOuter(0).shape() == this->shape(), "createCoupledIterator(): shape mismatch.");
     }
 
-    inline void incDim(int dim) 
+    inline void incDim(int dim)
     {
         view_.unsafePtr() += strides_[dim];
         base_type::incDim(dim);
     }
 
-    inline void decDim(int dim) 
+    inline void decDim(int dim)
     {
         view_.unsafePtr() -= strides_[dim];
         base_type::decDim(dim);
     }
 
-    inline void addDim(int dim, MultiArrayIndex d) 
+    inline void addDim(int dim, MultiArrayIndex d)
     {
         view_.unsafePtr() += d*strides_[dim];
         base_type::addDim(dim, d);
     }
 
-    inline void add(shape_type const & d) 
+    inline void add(shape_type const & d)
     {
         view_.unsafePtr() += dot(d, strides_);
         base_type::add(d);
     }
-    
+
     template<int DIMENSION>
-    inline void increment() 
+    inline void increment()
     {
         view_.unsafePtr() += strides_[DIMENSION];
         base_type::template increment<DIMENSION>();
     }
-    
+
     template<int DIMENSION>
-    inline void decrement() 
+    inline void decrement()
     {
         view_.unsafePtr() -= strides_[DIMENSION];
         base_type::template decrement<DIMENSION>();
     }
-    
+
     // TODO: test if making the above a default case of the this hurts performance
     template<int DIMENSION>
-    inline void increment(MultiArrayIndex offset) 
+    inline void increment(MultiArrayIndex offset)
     {
         view_.unsafePtr() += offset*strides_[DIMENSION];
         base_type::template increment<DIMENSION>(offset);
     }
-    
+
     template<int DIMENSION>
-    inline void decrement(MultiArrayIndex offset) 
+    inline void decrement(MultiArrayIndex offset)
     {
         view_.unsafePtr() -= offset*strides_[DIMENSION];
         base_type::template decrement<DIMENSION>(offset);
@@ -536,7 +543,7 @@ public:
     {
         return strides_;
     }
-    
+
     MultiArrayView<dimensions+1, Multiband<T> >
     arrayView() const
     {
@@ -548,19 +555,25 @@ public:
         vstride[dimensions] = view_.stride(0);
         return View(vshape, vstride, view_.data() - dot(this->point(), strides())).multiband();
     }
-    
+
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, CoupledHandle, index>::reference
     get()
     {
         return vigra::get<TARGET_INDEX>(*this);
     }
-    
+
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, CoupledHandle, index>::const_reference
     get() const
     {
         return vigra::get<TARGET_INDEX>(*this);
+    }
+
+    template <class U>
+    void internal_reset(U const & p)
+    {
+        vigra_fail("CoupledHandle<Multiband<T>>::internal_reset(): not implemented.");
     }
 
     value_type view_;
@@ -574,40 +587,40 @@ class IteratorChunkHandle
   public:
     typedef ChunkedArray<N, T>             array_type;
     typedef typename MultiArrayShape<N>::type  shape_type;
-    
+
     IteratorChunkHandle()
     : offset_(),
       chunk_(0)
     {}
-    
+
     IteratorChunkHandle(shape_type const & offset)
     : offset_(offset),
       chunk_(0)
     {}
-    
+
     IteratorChunkHandle(IteratorChunkHandle const & other)
     : offset_(other.offset_),
       chunk_(0)
     {}
-    
+
     IteratorChunkHandle & operator=(IteratorChunkHandle const & other)
     {
         offset_ = other.offset_;
         chunk_ = 0;
         return *this;
     }
-    
+
     shape_type offset_;
     SharedChunkHandle<N, T> * chunk_;
 };
 
     /*  CoupledHandle for CunkedArray
-    
-        The handle must store a pointer to a chunk because the chunk knows 
+
+        The handle must store a pointer to a chunk because the chunk knows
         about memory menagement, and to an array view because it knows about
         subarrays and slices.
-        
-        Perhaps we can reduce this to a single pointer or otherwise reduce 
+
+        Perhaps we can reduce this to a single pointer or otherwise reduce
         the handle memory to make it faster?
     */
 template <class U, class NEXT>
@@ -620,7 +633,7 @@ public:
     typedef NEXT                                  base_type;
     typedef IteratorChunkHandle<NEXT::dimensions, T>    base_type2;
     typedef CoupledHandle<ChunkedMemory<U>, NEXT> self_type;
-    
+
     static const unsigned int index =             NEXT::index + 1;    // index of this member of the chain
     static const unsigned int dimensions =        NEXT::dimensions;
 
@@ -634,11 +647,11 @@ public:
     typedef U &                                   reference;
     typedef value_type const &                    const_reference;
     typedef typename base_type::shape_type        shape_type;
-    
+
     CoupledHandle()
     : base_type(),
       base_type2(),
-      pointer_(), 
+      pointer_(),
       strides_(),
       upper_bound_(),
       array_()
@@ -659,7 +672,7 @@ public:
     CoupledHandle(array_type const & array, NEXT const & next)
     : base_type(next),
       base_type2(),
-      pointer_(), 
+      pointer_(),
       array_(const_cast<array_type*>(&array))
     {
         if(array_)
@@ -696,11 +709,11 @@ public:
         }
         return *this;
     }
-    
+
     using base_type::point;
     using base_type::shape;
 
-    inline void incDim(int dim) 
+    inline void incDim(int dim)
     {
         base_type::incDim(dim);
         pointer_ += strides_[dim];
@@ -711,7 +724,7 @@ public:
         }
     }
 
-    inline void decDim(int dim) 
+    inline void decDim(int dim)
     {
         base_type::decDim(dim);
         pointer_ -= strides_[dim];
@@ -722,21 +735,21 @@ public:
         }
     }
 
-    inline void addDim(int dim, MultiArrayIndex d) 
+    inline void addDim(int dim, MultiArrayIndex d)
     {
         base_type::addDim(dim, d);
         if(point()[dim] < shape()[dim] && point()[dim] >= 0)
             pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
     }
 
-    inline void add(shape_type const & d) 
+    inline void add(shape_type const & d)
     {
         base_type::add(d);
         pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
     }
-    
+
     template<int DIMENSION>
-    inline void increment() 
+    inline void increment()
     {
         // incDim(DIMENSION);
         base_type::template increment<DIMENSION>();
@@ -745,15 +758,15 @@ public:
         {
             if(point()[DIMENSION] > shape()[DIMENSION])
                 // this invariant check prevents the compiler from optimizing stupidly
-                // (it makes a difference of a factor of 2!)                
+                // (it makes a difference of a factor of 2!)
                 vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
-            else 
+            else
                 pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
         }
     }
-    
+
     template<int DIMENSION>
-    inline void decrement() 
+    inline void decrement()
     {
         // decDim(DIMENSION);
         base_type::template decrement<DIMENSION>();
@@ -762,21 +775,21 @@ public:
         {
             if(point()[DIMENSION] < -1)
                 // this invariant check prevents the compiler from optimizing stupidly
-                // (it makes a difference of a factor of 2!)                
+                // (it makes a difference of a factor of 2!)
                 vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
             else
                 pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
         }
     }
-    
+
     template<int DIMENSION>
-    inline void increment(MultiArrayIndex d) 
+    inline void increment(MultiArrayIndex d)
     {
         addDim(DIMENSION, d);
     }
-    
+
     template<int DIMENSION>
-    inline void decrement(MultiArrayIndex d) 
+    inline void decrement(MultiArrayIndex d)
     {
         addDim(DIMENSION, -d);
     }
@@ -818,7 +831,7 @@ public:
     {
         return pointer_;
     }
-    
+
     array_type const &
     arrayView() const
     {
@@ -831,12 +844,18 @@ public:
     {
         return vigra::get<TARGET_INDEX>(*this);
     }
-    
+
     template <unsigned int TARGET_INDEX>
     typename CoupledHandleCast<TARGET_INDEX, CoupledHandle, index>::const_reference
     get() const
     {
         return vigra::get<TARGET_INDEX>(*this);
+    }
+
+    template <class U>
+    void internal_reset(U const & p)
+    {
+        vigra_fail("CoupledHandle<ChunkedMemory<T>>::internal_reset(): not implemented.");
     }
 
     pointer pointer_;
@@ -920,7 +939,7 @@ get(Handle const & handle)
     return *cast<TARGET_INDEX>(handle);
 }
 
-    // meta-programming helper classes to infer the type of 
+    // meta-programming helper classes to infer the type of
     // a CoupledHandle for a set of arrays
 template <unsigned int N, class List>
 struct ComposeCoupledHandle;
@@ -931,15 +950,15 @@ struct ComposeCoupledHandle<N, TypeList<T, TAIL> >
     typedef typename ComposeCoupledHandle<N, TAIL>::type  BaseType;
     typedef typename MultiArrayShape<N>::type             shape_type;
     typedef CoupledHandle<T, BaseType>                    type;
-    
+
     template <class S>
-    type exec(MultiArrayView<N, T, S> const & m, 
+    type exec(MultiArrayView<N, T, S> const & m,
               shape_type const & start, shape_type const & end,
               BaseType const & base)
     {
         return type(m.subarray(start, end).data(), m.stride(), base);
     }
-    
+
     template <class S>
     type exec(MultiArrayView<N, T, S> const & m, BaseType const & base)
     {
@@ -952,12 +971,12 @@ struct ComposeCoupledHandle<N, void>
 {
     typedef typename MultiArrayShape<N>::type  shape_type;
     typedef CoupledHandle<shape_type, void>    type;
-    
+
     type exec(shape_type const & shape)
     {
         return type(shape);
     }
-    
+
     type exec(shape_type const & start, shape_type const & end)
     {
         return type(end-start);
@@ -990,7 +1009,7 @@ struct ZipCoupledHandles<A, CoupledHandle<Head, Tail> >
 {
     typedef typename ZipCoupledHandles<A, Tail>::type Next;
     typedef CoupledHandle<Head, Next> type;
-    
+
     static type construct(A const & a, CoupledHandle<Head, Tail> const & h)
     {
         return type(h, ZipCoupledHandles<A, Tail>::construct(a, (Tail const &)h));
@@ -1001,18 +1020,18 @@ template <class A, class Shape>
 struct ZipCoupledHandles<A, CoupledHandle<Shape, void> >
 {
     typedef A type;
-    
+
     static type construct(A const & a, CoupledHandle<Shape, void> const &)
     {
         return a;
     }
 };
 
-    // allow an iterator that uses CoupledHandle to specialize its 
+    // allow an iterator that uses CoupledHandle to specialize its
     // dereferencing functions, such that
-    //    '*iter' returns a referenc to the current point if 
+    //    '*iter' returns a referenc to the current point if
     //            the handle is just a coordinate handle
-    //    '*iter' returns a reference to the current data element 
+    //    '*iter' returns a reference to the current data element
     //            if the handle referes to just one array
     //    '*iter' returns a reference to the handle itself if it refers to
     //            several arrays simultaneously (i.e. is actualy a coupled handle)
@@ -1024,12 +1043,12 @@ struct CoupledHandleTraits
     typedef Handle const & const_reference;
     typedef Handle * pointer;
     typedef Handle const * const_pointer;
-    
+
     static reference dereference(Handle & h)
     {
         return h;
     }
-    
+
     static const_reference dereference(Handle const & h)
     {
         return h;
@@ -1044,12 +1063,12 @@ struct CoupledHandleTraits<Handle, 0>
     typedef typename Handle::const_reference const_reference;
     typedef typename Handle::pointer pointer;
     typedef typename Handle::const_pointer const_pointer;
-    
+
     static reference dereference(Handle & h)
     {
         return *h;
     }
-    
+
     static const_reference dereference(Handle const & h)
     {
         return *h;
@@ -1064,12 +1083,12 @@ struct CoupledHandleTraits<Handle, 1>
     typedef typename Handle::const_reference const_reference;
     typedef typename Handle::pointer pointer;
     typedef typename Handle::const_pointer const_pointer;
-    
+
     static reference dereference(Handle & h)
     {
         return *h;
     }
-    
+
     static const_reference dereference(Handle const & h)
     {
         return *h;
