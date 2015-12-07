@@ -188,7 +188,7 @@ struct ThreadPoolTests
 
     void test_parallel_foreach_sum_auto()
     {
-        size_t const n_threads = ParallelOptions::numThreads(ParallelOptions::Auto);
+        size_t const n_threads = ParallelOptions::actualNumThreads(ParallelOptions::Auto);
         size_t const n = 2000;
         std::vector<size_t> input(n);
         std::iota(input.begin(), input.end(), 0);
