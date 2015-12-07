@@ -90,7 +90,7 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                     LabelOptions options;
                     options.neighborhood(neighborhood);
                     options.blockShape(shape);
-                    
+
                     int correct_label_number;
                     int tested_label_number;
                     if(with_background)
@@ -285,9 +285,9 @@ struct BlockwiseLabelingTestSuite
     BlockwiseLabelingTestSuite()
       : test_suite("blockwise labeling test")
     {
-        add(testCase(&BlockwiseLabelingTest::fiveDimensionalRandomTest));
-        add(testCase(&BlockwiseLabelingTest::twoDimensionalRandomTest));
         add(testCase(&BlockwiseLabelingTest::oneDimensionalRandomTest));
+        add(testCase(&BlockwiseLabelingTest::twoDimensionalRandomTest));
+        add(testCase(&BlockwiseLabelingTest::fiveDimensionalRandomTest));
         add(testCase(&BlockwiseLabelingTest::debugTest));
         add(testCase(&BlockwiseLabelingTest::chunkedArrayTest));
     }
