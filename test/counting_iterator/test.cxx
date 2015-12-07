@@ -34,47 +34,155 @@
 /************************************************************************/
 
 #include <iostream>
+#include <numeric>
 #include "vigra/unittest.hxx"
 #include "vigra/counting_iterator.hxx"
 
 using namespace vigra;
 
+struct CountingIteratorTest
+{
+    void testCountingIterator()
+    {
+        {
+            auto iter1 = range(0,7,3);
+            auto iter2 = range(0,8,3);
+            auto iter3 = range(0,9,3);
+            auto iterEnd   = iter1.end();
+            shouldEqual( *iterEnd, 9);
+            should( iterEnd == iter2.end());
+            should( iterEnd == iter3.end());
+            shouldEqual( std::distance(iter1,iterEnd), 3);
+            shouldEqual( std::distance(iter2,iterEnd), 3);
+            shouldEqual( std::distance(iter3,iterEnd), 3);
 
+            for(int i=0; i<3; ++i){
+                shouldEqual( iter1[i], 3*i);
+                shouldEqual( iter2[i], 3*i);
+                shouldEqual( iter3[i], 3*i);
+                shouldEqual( iterEnd[-i], 9-3*i);
+            }
 
+            for(int i=0; i<3; ++i){
 
+                shouldEqual( std::distance(iter1,iterEnd), 3-i);
+                shouldEqual( std::distance(iter2,iterEnd), 3-i);
+                shouldEqual( std::distance(iter3,iterEnd), 3-i);
 
-struct CountingIteratorTest{   
+                should(iter1!=iterEnd);
+                should(iter2!=iterEnd);
+                should(iter3!=iterEnd);
 
+                shouldEqual( *iter1, 3*i);
+                shouldEqual( *iter2, 3*i);
+                shouldEqual( *iter3, 3*i);
 
-    void test1(){
-        
-        auto iterBegin = vigra::CountingIterator<int>(0);
-        auto iterEnd   = vigra::CountingIterator<int>(10);
-        shouldEqual( std::distance(iterBegin,iterEnd), 10);
-        shouldEqual( *iterEnd, 10);
-        for(int i=0; i<10; ++i){
-            shouldEqual( iterBegin[i], i);
+                ++iter1;
+                iter2++;
+                iter3+=1;
+            }
+
+            should(iter1.empty());
+            should(iter1==iterEnd);
+            should(iter2.empty());
+            should(iter2==iterEnd);
+            should(iter3.empty());
+            should(iter3==iterEnd);
+            --iter1;
+            shouldEqual( *iter1, 6);
+            iter1--;
+            shouldEqual( *iter1, 3);
+            iter1-=1;
+            shouldEqual( *iter1, 0);
         }
-        for(int i=0; i<10; ++i){
 
-            shouldEqual( std::distance(iterBegin,iterEnd), 10-i);
-            should(iterBegin!=iterEnd);
-            shouldEqual( *iterBegin, i);
-            ++iterBegin;
+        {
+            auto iter1 = range(10, 1, -2);
+            auto iter2 = range(10, 0, -2);
+            auto iterEnd   = iter1.end();
+            shouldEqual( *iterEnd, 0);
+            should( iterEnd == iter2.end());
+            shouldEqual( std::distance(iter1,iterEnd), 5);
+            shouldEqual( std::distance(iter2,iterEnd), 5);
+
+            for(int i=0; i<5; ++i){
+                shouldEqual( iter1[i], 10-2*i);
+                shouldEqual( iter2[i], 10-2*i);
+                shouldEqual( iterEnd[-i], 2*i);
+            }
+
+            for(int i=0; i<5; ++i){
+
+                shouldEqual( std::distance(iter1,iterEnd), 5-i);
+                shouldEqual( std::distance(iter2,iterEnd), 5-i);
+
+                should(iter1!=iterEnd);
+                should(iter2!=iterEnd);
+
+                shouldEqual( *iter1, 10-2*i);
+                shouldEqual( *iter2, 10-2*i);
+
+                ++iter1;
+                iter2++;
+            }
+
+            should(iter1.empty());
+            should(iter1==iterEnd);
+            should(iter2.empty());
+            should(iter2==iterEnd);
+            --iter1;
+            shouldEqual( *iter1, 2);
+            iter1--;
+            shouldEqual( *iter1, 4);
         }
-        should(iterBegin==iterEnd);
-        --iterEnd;
-        shouldEqual( *iterEnd, 9);
-        --iterEnd;
-        shouldEqual( *iterEnd, 8);
 
+        int count = 0;
+        for(auto i: range(0, 19, 2))
+        {
+            shouldEqual( i, count);
+            count += 2;
+        }
+        shouldEqual(20, count);
+        for(auto i: range(20, 0, -2))
+        {
+            shouldEqual( i, count);
+            count -= 2;
+        }
+        shouldEqual(0, count);
+
+        {
+            auto iter = range(5),
+                 end  = iter.end();
+            shouldEqual(std::accumulate(iter, end, 0), 10);
+        }
+
+        {
+            double c = 1.0;
+            for(auto i: range(1.0, 2.5, 0.5))
+            {
+                shouldEqual(i, c);
+                c += 0.5;
+            }
+            c = 1.0;
+            auto iter = range(1.0, 1.6, 0.1),
+                 end  = iter.end();
+            for(; iter <= end; ++iter)
+            {
+                shouldEqual(*iter, c);
+                c += 0.1;
+            }
+            c = 1.6;
+            iter = range(1.6, 1.0, -0.1);
+            end  = iter.end();
+            for(; iter <= end; ++iter)
+            {
+                shouldEqual(*iter, c);
+                c -= 0.1;
+            }
+        }
     }
 
 };
-
-
-
-
  
 struct CountingIteratorTestSuite
 : public vigra::test_suite
@@ -82,7 +190,7 @@ struct CountingIteratorTestSuite
     CountingIteratorTestSuite()
     : vigra::test_suite("CountingIteratorTestSuite")
     {   
-        add( testCase( &CountingIteratorTest::test1));
+        add( testCase( &CountingIteratorTest::testCountingIterator));
     }
 };
 
