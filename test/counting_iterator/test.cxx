@@ -63,15 +63,49 @@ struct CountingIteratorTest
                 shouldEqual( iterEnd[-i], 9-3*i);
             }
 
-            for(int i=0; i<3; ++i){
+            for(int i=0; i<6; ++i){
 
                 shouldEqual( std::distance(iter1,iterEnd), 3-i);
                 shouldEqual( std::distance(iter2,iterEnd), 3-i);
                 shouldEqual( std::distance(iter3,iterEnd), 3-i);
 
-                should(iter1!=iterEnd);
-                should(iter2!=iterEnd);
-                should(iter3!=iterEnd);
+                should(iter1 == iter2);
+                should(iter1 == iter3);
+                shouldNot(iter1 != iter2);
+                shouldNot(iter1 != iter3);
+
+                if(i != 3)
+                {
+                    should(iter1 != iterEnd);
+                    shouldNot(iter1 == iterEnd);
+                }
+                else
+                {
+                    shouldNot(iter1 != iterEnd);
+                    should(iter1 == iterEnd);
+                }
+                if(i < 3)
+                {
+                    should(iter1 < iterEnd);
+                    shouldNot(iter1 >= iterEnd);
+                    shouldNot(iter1.empty());
+                }
+                else
+                {
+                    shouldNot(iter1 < iterEnd);
+                    should(iter1 >= iterEnd);
+                    should(iter1.empty());
+                }
+                if(i < 4)
+                {
+                    should(iter1 <= iterEnd);
+                    shouldNot(iter1 > iterEnd);
+                }
+                else
+                {
+                    shouldNot(iter1 <= iterEnd);
+                    should(iter1 > iterEnd);
+                }
 
                 shouldEqual( *iter1, 3*i);
                 shouldEqual( *iter2, 3*i);
@@ -82,12 +116,7 @@ struct CountingIteratorTest
                 iter3+=1;
             }
 
-            should(iter1.empty());
-            should(iter1==iterEnd);
-            should(iter2.empty());
-            should(iter2==iterEnd);
-            should(iter3.empty());
-            should(iter3==iterEnd);
+            iter1 = iterEnd;
             --iter1;
             shouldEqual( *iter1, 6);
             iter1--;
@@ -158,19 +187,64 @@ struct CountingIteratorTest
 
         {
             double c = 1.0;
-            for(auto i: range(1.0, 2.5, 0.5))
+            for(auto i: range(1.0, 1.6, 0.1)) // 1.6 is excluded
             {
-                shouldEqual(i, c);
-                c += 0.5;
-            }
-            c = 1.0;
-            auto iter = range(1.0, 1.6, 0.1),
-                 end  = iter.end();
-            for(; iter <= end; ++iter)
-            {
-                shouldEqual(*iter, c);
+                shouldEqualTolerance(c, i, 1e-15);
                 c += 0.1;
             }
+            shouldEqualTolerance(c, 1.6, 1e-15);
+
+            c = 1.0;
+            for(auto i: range(1.0, 1.61, 0.1)) // 1.6 is included
+            {
+                shouldEqualTolerance(c, i, 1e-15);
+                c += 0.1;
+            }
+            shouldEqualTolerance(c, 1.7, 1e-15);
+
+            auto iter = range(1.0, 1.6, 0.1),
+                 end  = iter.end();
+            shouldEqual(end-iter, 6);
+            c = 1.0;
+            for(int i=0; i < 9; ++i, ++iter)
+            {
+                if(i != 6)
+                {
+                    should(iter != end);
+                    shouldNot(iter == end);
+                }
+                else
+                {
+                    should(iter == end);
+                    shouldNot(iter != end);
+                }
+                if(i < 6)
+                {
+                    should(iter < end);
+                    shouldNot(iter >= end);
+                    shouldNot(iter.empty());
+                }
+                else
+                {
+                    shouldNot(iter < end);
+                    should(iter >= end);
+                    should(iter.empty());
+                }
+                if(i < 7)
+                {
+                    should(iter <= end);
+                    shouldNot(iter > end);
+                }
+                else
+                {
+                    shouldNot(iter <= end);
+                    should(iter > end);
+                }
+                shouldEqualTolerance(*iter, c, 1e-15);
+                c += 0.1;
+            }
+            shouldEqualTolerance(c, 1.9, 1e-15);
+
             c = 1.6;
             iter = range(1.6, 1.0, -0.1);
             end  = iter.end();
@@ -179,9 +253,9 @@ struct CountingIteratorTest
                 shouldEqual(*iter, c);
                 c -= 0.1;
             }
+            shouldEqualTolerance(c, 0.9, 1e-15);
         }
     }
-
 };
  
 struct CountingIteratorTestSuite
