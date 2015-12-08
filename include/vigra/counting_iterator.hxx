@@ -46,6 +46,10 @@
 
 namespace vigra {
 
+/** \addtogroup MathFunctions
+*/
+//@{
+
     /** \brief Iterator that counts upwards or downwards with a given step size.
 
         This iterator replicates the functionality of Python's
@@ -390,6 +394,8 @@ range(T end)
 {
     return CountingIterator<T>(0, end, 1);
 }
+
+//@}
 
 } // namespace vigra
 
