@@ -70,7 +70,8 @@ public:
         */
     enum {
         Auto       = -1, ///< Determine number of threads automatically (from <tt>std::thread::hardware_concurrency()</tt>)
-        NoThreads  = 0   ///< Switch off multi-threading (i.e. execute tasks serially)
+        Nice       = -2, ///< Use half as many threads as <tt>Auto</tt> would.
+        NoThreads  =  0  ///< Switch off multi-threading (i.e. execute tasks sequentially)
     };
 
     ParallelOptions()
@@ -82,12 +83,14 @@ public:
         return numThreads_;
     }
 
-        /** \brief Set the number of threads
+        /** \brief Set the number of threads or one of the constants <tt>Auto</tt>,
+                   <tt>Nice</tt> and <tt>NoThreads</tt>.
 
-            Default: <tt>ParallelOptions::Auto</tt> (use system default)<br/>
+            Default: <tt>ParallelOptions::Auto</tt> (use system default)
+
             This setting is ignored if the preprocessor flag <tt>VIGRA_NO_PARALLELISM</tt>
             is defined. Then, the number of threads is set to 0 and all tasks are
-            executed synchronously (useful for debugging).
+            executed sequentially (useful for debugging).
         */
     ParallelOptions & numThreads(const int n)
     {
@@ -103,7 +106,9 @@ public:
         #else
             return userNThreads >= 0
                        ? userNThreads
-                       : std::thread::hardware_concurrency();
+                       : userNThreads == Nice
+                               ? std::thread::hardware_concurrency() / 2
+                               : std::thread::hardware_concurrency();
         #endif
     }
 
@@ -142,6 +147,7 @@ class ThreadPool
     /** Create a thread pool with n threads. The constructor just launches
         the desired number of workers. If \arg n is <tt>ParallelOptions::Auto</tt>,
         the number of threads is determined by <tt>std::thread::hardware_concurrency()</tt>.
+        <tt>ParallelOptions::Nice</tt> will create half as many threads.
         If <tt>n = 0</tt>, no workers are started, and all tasks will be executed
         synchronously in the present thread. If the preprocessor flag
         <tt>VIGRA_NO_PARALLELISM</tt> is defined, the number of threads is always set
