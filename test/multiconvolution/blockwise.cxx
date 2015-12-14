@@ -71,7 +71,7 @@ struct BlockwiseConvolutionTest{
         TinyVector<double, 2> sigmaV(sigma, sigma);
 
         opt.setStdDev(sigmaV);
-        opt.setBlockShape(TinyVector<int, 2>(5,7));
+        opt.blockShape(TinyVector<int, 2>(5,7));
 
 
         typedef MultiArray<2, double> Array;

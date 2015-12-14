@@ -37,8 +37,8 @@
 #ifndef VIGRA_MULTI_BLOCKWISE_HXX
 #define VIGRA_MULTI_BLOCKWISE_HXX
 
-
 #include <cmath>
+#include <vector>
 #include "vigra/multi_blocking.hxx"
 #include "vigra/multi_convolution.hxx"
 #include "vigra/multi_tensorutilities.hxx"
@@ -53,38 +53,100 @@ namespace vigra{
 
 namespace blockwise{
 
-
-
-
     /// base option class for blockwise algorithms
     /// attaches blockshape to ParallelOptions
-    template<unsigned int N>
     class BlockwiseOptions
-    : public ParallelOptions    
+    : public ParallelOptions
     {
     public:
-        typedef vigra::TinyVector< vigra::MultiArrayIndex, N> Shape;
+        typedef std::vector<MultiArrayIndex> Shape;
 
-        BlockwiseOptions(const Shape & blockShape = Shape(VIGRA_DEFAULT_BLOCK_SHAPE))
-        :   ParallelOptions(),
-            blockShape_(blockShape){
-        }
-        Shape getBlockShape()const{
+        BlockwiseOptions()
+        :   ParallelOptions()
+        ,   blockShape_()
+        {}
+
+            /** Retrieve block shape as a std::vector.
+
+                If the returned vector is empty, a default block shape should be used.
+                If the returned vector has length 1, square blocks of size
+                <tt>getBlockShape()[0]</tt> should be used.
+            */
+        Shape const & getBlockShape() const
+        {
             return blockShape_;
         }
-        void setBlockShape(const Shape & blockShape){
-            blockShape_ = blockShape;
+
+            /** Retrieve block shape as a fixed-size vector.
+
+                Default shape specifications are appropriately expanded.
+                An exception is raised if the stored shape's length is
+                incompatible with dimension <tt>N</tt>.
+            */
+        template <int N>
+        TinyVector<MultiArrayIndex, N> getBlockShapeN() const
+        {
+            if(blockShape_.size() > 1)
+            {
+                vigra_precondition(blockShape_.size() == (size_t)N,
+                    "BlockwiseOptions::getBlockShapeN(): dimension mismatch between N and stored block shape.");
+                return TinyVector<MultiArrayIndex, N>(blockShape_.data());
+            }
+            else if(blockShape_.size() == 1)
+            {
+                return TinyVector<MultiArrayIndex, N>(blockShape_[0]);
+            }
+            else
+            {
+                // FIXME: replace VIGRA_DEFAULT_BLOCK_SHAPE with existing chunk shape metafunctions
+                return TinyVector<MultiArrayIndex, N>(VIGRA_DEFAULT_BLOCK_SHAPE);
+            }
         }
+
+            /** Specify block shape as a std::vector of appropriate length.
+                If <tt>blockShape.size() == 0</tt>, the default shape is used.
+                If <tt>blockShape.size() == 1</tt>, square blocks of size
+                <tt>blockShape[0]</tt> are used.
+
+                Default: Use square blocks with side length <tt>VIGRA_DEFAULT_BLOCK_SHAPE</tt>.
+            */
+        BlockwiseOptions & blockShape(const Shape & blockShape){
+            blockShape_ = blockShape;
+            return *this;
+        }
+
+            /** Specify block shape by a fixed-size shape object.
+            */
+        template <class T, int N>
+        BlockwiseOptions & blockShape(const TinyVector<T, N> & blockShape){
+            Shape(blockShape.begin(), blockShape.end()).swap(blockShape_);
+            return *this;
+        }
+
+            /** Specify square block shape by its side length.
+            */
+        BlockwiseOptions & blockShape(MultiArrayIndex blockShape){
+            Shape(1, blockShape).swap(blockShape_);
+            return *this;
+        }
+
+        BlockwiseOptions & numThreads(const int n)
+        {
+            ParallelOptions::numThreads(n);
+            return *this;
+        }
+
     private:
         Shape blockShape_;
     };
 
     template<unsigned int N>
     class BlockwiseConvolutionOptions
-    :   public  BlockwiseOptions<N>, public vigra::ConvolutionOptions<N>{
+    :   public  BlockwiseOptions
+    ,   public vigra::ConvolutionOptions<N>{
     public:
         BlockwiseConvolutionOptions()
-        :   BlockwiseOptions<N>(),
+        :   BlockwiseOptions(),
             vigra::ConvolutionOptions<N>(){
         }
     private:
@@ -117,7 +179,7 @@ namespace blockwise{
         auto beginIter  =  blocking.blockWithBorderBegin(borderWidth);
         auto endIter   =  blocking.blockWithBorderEnd(borderWidth);
 
-        parallel_foreach(options.getNumThreads(), 
+        parallel_foreach(options.getNumThreads(),
             beginIter, endIter,
             [&](const int threadId, const BlockWithBorder bwb)
             {
@@ -165,11 +227,11 @@ namespace blockwise{
         //typedef typename MultiBlocking<DIM, C>::BlockWithBorderIter BlockWithBorderIter;
         typedef typename MultiBlocking<DIM, C>::Block Block;
 
-        
+
         auto beginIter  =  blocking.blockWithBorderBegin(borderWidth);
         auto endIter   =  blocking.blockWithBorderEnd(borderWidth);
 
-        parallel_foreach(options.getNumThreads(), 
+        parallel_foreach(options.getNumThreads(),
             beginIter, endIter,
             [&](const int threadId, const BlockWithBorder bwb)
             {
@@ -186,7 +248,7 @@ namespace blockwise{
             blocking.numBlocks()
         );
 
-        
+
     }
 
     #define CONVOLUTION_FUNCTOR(FUNCTOR_NAME, FUNCTION_NAME) \
@@ -347,7 +409,7 @@ namespace blockwise{
         const Shape border = getBorder(options, ORDER, USES_OUTER_SCALE); \
         BlockwiseConvolutionOptions<N> subOptions(options); \
         subOptions.subarray(Shape(0), Shape(0));  \
-        const Blocking blocking(source.shape(), options.getBlockShape()); \
+        const Blocking blocking(source.shape(), options.template getBlockShapeN<N>()); \
         FUNCTOR f(subOptions); \
         blockwiseCaller(source, dest, f, blocking, border, options); \
     }
