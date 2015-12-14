@@ -2,25 +2,25 @@
 #
 MESSAGE(STATUS "Checking VIGRANUMPY_DEPENDENCIES")
 
-FIND_PACKAGE(PythonInterp 3)
+FIND_PACKAGE(PythonInterp 2)
 
 IF(PYTHONINTERP_FOUND)
-    # check that Python version 3.x is used
+    # check that Python version 2.x is used
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                          "import sys; print(sys.version[0])"
                           OUTPUT_VARIABLE PYTHON_MAJOR_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
-    IF(${PYTHON_MAJOR_VERSION} EQUAL 3)
-        SET(PYTHONINTERP_V3_FOUND 1)
+    IF(${PYTHON_MAJOR_VERSION} EQUAL 2)
+        SET(PYTHONINTERP_V2_FOUND 1)
     ELSE()
-        MESSAGE(STATUS "vigranumpy currently requires Python 3.x.")
-        MESSAGE(STATUS "Make sure that Python 3 is in your PATH or use 'cmake_gui' to set the PYTHON_EXECUTABLE variable manually.")
-        SET(PYTHONINTERP_V3_FOUND 0)
+        MESSAGE(STATUS "vigranumpy currently requires Python 2.x.")
+        MESSAGE(STATUS "Make sure that Python 2 is in your PATH or use 'cmake_gui' to set the PYTHON_EXECUTABLE variable manually.")
+        SET(PYTHONINTERP_V2_FOUND 0)
     ENDIF()
 ELSE()
-    SET(PYTHONINTERP_V3_FOUND 0)
+    SET(PYTHONINTERP_V2_FOUND 0)
 ENDIF()
 
-IF(PYTHONINTERP_V3_FOUND)
+IF(PYTHONINTERP_V2_FOUND)
 
 #    this command cannot be used because its results are often inconsistent
 #    with the Python interpreter found previously (e.g. libraries or includes
@@ -29,7 +29,7 @@ IF(PYTHONINTERP_V3_FOUND)
 
     # find Python library
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                     "import sys; print(sys.exec_prefix)"
+                     "import sys; print sys.exec_prefix"
                       OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     IF(APPLE AND ${PYTHON_PREFIX} MATCHES ".*framework.*")
@@ -38,7 +38,7 @@ IF(PYTHONINTERP_V3_FOUND)
             FORCE)
     ELSE()
         execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                         "import sys; skip = 2 if sys.platform.startswith('win') else 1; print('python' + sys.version[0:3:skip])"
+                         "import sys; skip = 2 if sys.platform.startswith('win') else 1; print 'python' + sys.version[0:3:skip]"
                           OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
         FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} HINTS "${PYTHON_PREFIX}" 
                      PATH_SUFFIXES lib lib64 libs DOC "Python libraries")
@@ -46,7 +46,7 @@ IF(PYTHONINTERP_V3_FOUND)
 
     # find Python includes
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                    "from distutils.sysconfig import *; print(get_python_inc())"
+                    "from distutils.sysconfig import *; print get_python_inc()"
                     OUTPUT_VARIABLE PYTHON_INCLUDE OUTPUT_STRIP_TRAILING_WHITESPACE)
     SET(PYTHON_INCLUDE_PATH ${PYTHON_INCLUDE}
         CACHE PATH "Path to Python include files"
@@ -70,7 +70,7 @@ IF(PYTHONINTERP_V3_FOUND)
     ######################################################################
     IF(NOT DEFINED VIGRANUMPY_INSTALL_DIR OR VIGRANUMPY_INSTALL_DIR MATCHES "^$")
         execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                         "from distutils.sysconfig import *; print(get_python_lib(1))"
+                         "from distutils.sysconfig import *; print get_python_lib(1)"
                           OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
         FILE(TO_CMAKE_PATH ${PYTHON_SITE_PACKAGES} VIGRANUMPY_INSTALL_DIR)
     ENDIF()
@@ -143,7 +143,7 @@ IF(PYTHONINTERP_V3_FOUND)
     #
     ######################################################################
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                     "import sys; p = sys.platform; print('windows') if p.startswith('win') else p"	
+                     "import sys; p = sys.platform; print 'windows' if p.startswith('win') else p"
                       OUTPUT_VARIABLE PYTHON_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     ######################################################################
@@ -153,7 +153,7 @@ IF(PYTHONINTERP_V3_FOUND)
     ######################################################################
     INCLUDE(FindPackageHandleStandardArgs)
     FIND_PACKAGE_HANDLE_STANDARD_ARGS(VIGRANUMPY_DEPENDENCIES DEFAULT_MSG
-                         PYTHONINTERP_V3_FOUND PYTHONLIBS_FOUND
+                         PYTHONINTERP_V2_FOUND PYTHONLIBS_FOUND
                          Boost_PYTHON_FOUND PYTHON_NUMPY_INCLUDE_DIR VIGRANUMPY_INSTALL_DIR)
 
     IF(NOT VIGRANUMPY_INCLUDE_DIRS OR VIGRANUMPY_INCLUDE_DIRS MATCHES "-NOTFOUND")
