@@ -72,10 +72,16 @@ python_ptr defaultAxistags(int ndim, std::string order = "")
     if(order == "")
         order = defaultOrder();
     python_ptr arraytype = getArrayTypeObject();
-    python_ptr func(PyString_FromString("defaultAxistags"), python_ptr::keep_count);
-    python_ptr d(PyInt_FromLong(ndim), python_ptr::keep_count);
-    python_ptr o(PyString_FromString(order.c_str()), python_ptr::keep_count);
-    python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), o.get(), NULL),
+#if PY_MAJOR_VERSION < 3
+	python_ptr func(PyString_FromString("defaultAxistags"), python_ptr::keep_count);
+	python_ptr d(PyInt_FromLong(ndim), python_ptr::keep_count);
+	python_ptr o(PyString_FromString(order.c_str()), python_ptr::keep_count);
+#else
+	python_ptr func(PyBytes_FromString("defaultAxistags"), python_ptr::keep_count);
+	python_ptr d(PyLong_FromLong(ndim), python_ptr::keep_count);
+	python_ptr o(PyBytes_FromString(order.c_str()), python_ptr::keep_count);
+#endif
+	python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), o.get(), NULL),
                         python_ptr::keep_count);
     if(axistags)
         return axistags;
@@ -87,9 +93,14 @@ inline
 python_ptr emptyAxistags(int ndim)
 {
     python_ptr arraytype = getArrayTypeObject();
-    python_ptr func(PyString_FromString("_empty_axistags"), python_ptr::keep_count);
-    python_ptr d(PyInt_FromLong(ndim), python_ptr::keep_count);
-    python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), NULL),
+#if PY_MAJOR_VERSION < 3
+	python_ptr func(PyString_FromString("_empty_axistags"), python_ptr::keep_count);
+	python_ptr d(PyInt_FromLong(ndim), python_ptr::keep_count);
+#else
+	python_ptr func(PyBytes_FromString("_empty_axistags"), python_ptr::keep_count);
+	python_ptr d(PyLong_FromLong(ndim), python_ptr::keep_count);
+#endif
+	python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), NULL),
                         python_ptr::keep_count);
     if(axistags)
         return axistags;
@@ -103,9 +114,14 @@ getAxisPermutationImpl(ArrayVector<npy_intp> & permute,
                        python_ptr object, const char * name, 
                        AxisInfo::AxisType type, bool ignoreErrors)
 {
-    python_ptr func(PyString_FromString(name), python_ptr::keep_count);
-    python_ptr t(PyInt_FromLong((long)type), python_ptr::keep_count);
-    python_ptr permutation(PyObject_CallMethodObjArgs(object, func.get(), t.get(), NULL), 
+#if PY_MAJOR_VERSION < 3
+	python_ptr func(PyString_FromString(name), python_ptr::keep_count);
+	python_ptr t(PyInt_FromLong((long)type), python_ptr::keep_count);
+#else
+	python_ptr func(PyBytes_FromString(name), python_ptr::keep_count);
+	python_ptr t(PyLong_FromLong((long)type), python_ptr::keep_count);
+#endif
+	python_ptr permutation(PyObject_CallMethodObjArgs(object, func.get(), t.get(), NULL), 
                            python_ptr::keep_count);
     if(!permutation && ignoreErrors)
     {
@@ -127,16 +143,24 @@ getAxisPermutationImpl(ArrayVector<npy_intp> & permute,
     for(int k=0; k<(int)res.size(); ++k)
     {
         python_ptr i(PySequence_GetItem(permutation, k), python_ptr::keep_count);
-        if(!PyInt_Check(i))
-        {
+#if PY_MAJOR_VERSION < 3
+		if(!PyInt_Check(i))
+#else
+		if (!PyLong_Check(i))
+#endif
+		{
             if(ignoreErrors)
                 return;
             std::string message = std::string(name) + "() did not return a sequence of int.";
             PyErr_SetString(PyExc_ValueError, message.c_str());
             pythonToCppException(false);
         }
-        res[k] = PyInt_AsLong(i);
-    }
+#if PY_MAJOR_VERSION < 3
+		res[k] = PyInt_AsLong(i);
+#else
+		res[k] = PyLong_AsLong(i);
+#endif
+	}
     res.swap(permute);
 }
 
@@ -186,8 +210,12 @@ class PyAxisTags
         
         if(createCopy)
         {
-            python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
-            axistags = python_ptr(PyObject_CallMethodObjArgs(tags, func.get(), NULL), 
+#if PY_MAJOR_VERSION < 3
+			python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
+#else
+			python_ptr func(PyBytes_FromString("__copy__"), python_ptr::keep_count);
+#endif
+			axistags = python_ptr(PyObject_CallMethodObjArgs(tags, func.get(), NULL), 
                                   python_ptr::keep_count);
         }
         else
@@ -202,8 +230,12 @@ class PyAxisTags
             return;
         if(createCopy)
         {
-            python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
-            axistags = python_ptr(PyObject_CallMethodObjArgs(other.axistags, func.get(), NULL), 
+#if PY_MAJOR_VERSION < 3
+			python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
+#else
+			python_ptr func(PyBytes_FromString("__copy__"), python_ptr::keep_count);
+#endif
+			axistags = python_ptr(PyObject_CallMethodObjArgs(other.axistags, func.get(), NULL),
                                   python_ptr::keep_count);
         }
         else
@@ -256,9 +288,14 @@ class PyAxisTags
     {
         if(!axistags)
             return;
-        python_ptr d(PyString_FromString(description.c_str()), python_ptr::keep_count);
-        python_ptr func(PyString_FromString("setChannelDescription"), python_ptr::keep_count);
-        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), d.get(), NULL), 
+#if PY_MAJOR_VERSION < 3
+		python_ptr d(PyString_FromString(description.c_str()), python_ptr::keep_count);
+		python_ptr func(PyString_FromString("setChannelDescription"), python_ptr::keep_count);
+#else
+		python_ptr d(PyBytes_FromString(description.c_str()), python_ptr::keep_count);
+		python_ptr func(PyBytes_FromString("setChannelDescription"), python_ptr::keep_count);
+#endif
+		python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), d.get(), NULL), 
                        python_ptr::keep_count);
         pythonToCppException(res);
     }
@@ -267,9 +304,14 @@ class PyAxisTags
     {
         if(!axistags)
             return 0.0;
-        python_ptr func(PyString_FromString("resolution"), python_ptr::keep_count);
-        python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
-        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), NULL), 
+#if PY_MAJOR_VERSION < 3
+		python_ptr func(PyString_FromString("resolution"), python_ptr::keep_count);
+		python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
+#else
+		python_ptr func(PyBytes_FromString("resolution"), python_ptr::keep_count);
+		python_ptr i(PyLong_FromLong(index), python_ptr::keep_count);
+#endif
+		python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), NULL), 
                        python_ptr::keep_count);
         pythonToCppException(res);
         if(!PyFloat_Check(res))
@@ -284,9 +326,14 @@ class PyAxisTags
     {
         if(!axistags)
             return;
-        python_ptr func(PyString_FromString("setResolution"), python_ptr::keep_count);
-        python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
-        python_ptr r(PyFloat_FromDouble(resolution), python_ptr::keep_count);
+#if PY_MAJOR_VERSION < 3
+		python_ptr func(PyString_FromString("setResolution"), python_ptr::keep_count);
+		python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
+#else
+		python_ptr func(PyBytes_FromString("setResolution"), python_ptr::keep_count);
+		python_ptr i(PyLong_FromLong(index), python_ptr::keep_count);
+#endif
+		python_ptr r(PyFloat_FromDouble(resolution), python_ptr::keep_count);
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), r.get(), NULL), 
                        python_ptr::keep_count);
         pythonToCppException(res);
@@ -296,9 +343,14 @@ class PyAxisTags
     {
         if(!axistags)
             return;
-        python_ptr func(PyString_FromString("scaleResolution"), python_ptr::keep_count);
-        python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
-        python_ptr f(PyFloat_FromDouble(factor), python_ptr::keep_count);
+#if PY_MAJOR_VERSION < 3
+		python_ptr func(PyString_FromString("scaleResolution"), python_ptr::keep_count);
+		python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
+#else
+		python_ptr func(PyBytes_FromString("scaleResolution"), python_ptr::keep_count);
+		python_ptr i(PyLong_FromLong(index), python_ptr::keep_count);
+#endif
+		python_ptr f(PyFloat_FromDouble(factor), python_ptr::keep_count);
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), f.get(), NULL), 
                        python_ptr::keep_count);
         pythonToCppException(res);
@@ -309,12 +361,22 @@ class PyAxisTags
         if(!axistags)
             return;
         python_ptr func(sign == 1
-                           ? PyString_FromString("toFrequencyDomain")
-                           : PyString_FromString("fromFrequencyDomain"), 
-                        python_ptr::keep_count);
+#if PY_MAJOR_VERSION < 3
+							? PyString_FromString("toFrequencyDomain")
+							: PyString_FromString("fromFrequencyDomain"), 
+#else
+							? PyBytes_FromString("toFrequencyDomain")
+							: PyBytes_FromString("fromFrequencyDomain"),
+#endif
+			python_ptr::keep_count);
+#if PY_MAJOR_VERSION < 3
         python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
         python_ptr s(PyInt_FromLong(size), python_ptr::keep_count);
-        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), s.get(), NULL), 
+#else
+		python_ptr i(PyLong_FromLong(index), python_ptr::keep_count);
+		python_ptr s(PyLong_FromLong(size), python_ptr::keep_count);
+#endif
+		python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), s.get(), NULL), 
                        python_ptr::keep_count);
         pythonToCppException(res);
     }
@@ -363,10 +425,14 @@ class PyAxisTags
     {
         if(!axistags)
             return;
+#if PY_MAJOR_VERSION < 3
         python_ptr func(PyString_FromString("dropChannelAxis"), 
-                               python_ptr::keep_count);
+#else
+		python_ptr func(PyBytes_FromString("dropChannelAxis"),
+#endif		
+						python_ptr::keep_count);
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
-                       python_ptr::keep_count);
+					   python_ptr::keep_count);
         pythonToCppException(res);
     }
     
@@ -374,8 +440,12 @@ class PyAxisTags
     {
         if(!axistags)
             return;
+#if PY_MAJOR_VERSION < 3
         python_ptr func(PyString_FromString("insertChannelAxis"), 
-                               python_ptr::keep_count);
+#else
+		python_ptr func(PyBytes_FromString("insertChannelAxis"),
+#endif
+						python_ptr::keep_count);
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
                        python_ptr::keep_count);
         pythonToCppException(res);

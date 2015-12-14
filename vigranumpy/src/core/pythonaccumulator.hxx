@@ -527,8 +527,12 @@ bool pythonActivateTags(Accu & a, python::object tags)
     if(tags == python::object() || python::len(tags) == 0)
         return false;
 
+#if PY_MAJOR_VERSION < 3
     if(PyString_Check(tags.ptr()))
-    {
+#else
+	if (PyBytes_Check(tags.ptr()))
+#endif	
+		{
         std::string tag = python::extract<std::string>(tags)();
         if(normalizeString(tag) == "all")
             a.activateAll();
@@ -550,9 +554,12 @@ void pythonHistogramOptions(Accu & a, python::object minmax, int binCount)
 {
     HistogramOptions options;
     options.setBinCount(binCount);
-    
+#if PY_MAJOR_VERSION < 3
     if(PyString_Check(minmax.ptr()))
-    {
+#else
+	if (PyBytes_Check(minmax.ptr()))
+#endif
+	{
         std::string spec = normalizeString(python::extract<std::string>(minmax)());
         if(spec == "globalminmax")
             options.globalAutoInit();

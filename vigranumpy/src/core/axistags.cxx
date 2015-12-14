@@ -198,8 +198,12 @@ AxisTags_create(python::object i1, python::object i2,
     {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(tags()));
     }
+#if PY_MAJOR_VERSION < 3
     else if(PyString_Check(i1.ptr()))
-    {
+#else
+	else if (PyBytes_Check(i1.ptr()))
+#endif
+	{
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(python::extract<std::string>(i1)()));
     }
     else if(PySequence_Check(i1.ptr()))
@@ -216,8 +220,12 @@ AxisTags_create(python::object i1, python::object i2,
             res->push_back(info());
         }
     }
+#if PY_MAJOR_VERSION < 3
     else if(PyInt_Check(i1.ptr()))
-    {
+#else
+	else if (PyLong_Check(i1.ptr()))
+#endif
+	{
         int size = python::extract<int>(i1)();
         for(int k=0; k<size; ++k)
             res->push_back(AxisInfo());
@@ -438,8 +446,12 @@ AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
     while(knew < lnew)
     {
         python::object item = index[kindex];
+#if PY_MAJOR_VERSION < 3
         if(PyInt_Check(item.ptr()))
-        {
+#else
+		if(PyLong_Check(item.ptr()))
+#endif
+		{
             ++kold;
             ++kindex;
         }

@@ -65,7 +65,7 @@ static inline void import_vigranumpy()
     // cyclic imports (from within vigra itself) are avoided.
     char const * load_vigra = 
         "import sys\n"
-        "if not sys.modules.has_key('vigra.vigranumpycore'):\n"
+        "if 'vigra.vigranumpycore' not in sys.modules:\n"
         "    import vigra\n";
     pythonToCppException(PyRun_SimpleString(load_vigra) == 0);
 }
@@ -186,9 +186,15 @@ void numpyParseSlicing(Shape const & shape, PyObject * idx, Shape & start, Shape
     for(int k=0; k < N; ++k)
     {
         PyObject * item = PyTuple_GET_ITEM((PyTupleObject *)index.ptr(), kindex);
+#if PY_MAJOR_VERSION < 3
         if(PyInt_Check(item))
-        {
-            MultiArrayIndex i = PyInt_AsLong(item);
+		{
+			MultiArrayIndex i = PyInt_AsLong(item);
+#else
+		if(PyLong_Check(item))
+		{
+			MultiArrayIndex i = PyLong_AsLong(item);
+#endif
             start[k] = i;
             if(start[k] < 0)
                 start[k] += shape[k];
@@ -198,7 +204,11 @@ void numpyParseSlicing(Shape const & shape, PyObject * idx, Shape & start, Shape
         else if(PySlice_Check(item))
         {
             Py_ssize_t sstart, sstop, step;
+#if PY_MAJOR_VERSION < 3
             if(PySlice_GetIndices((PySliceObject *)item, shape[k], &sstart, &sstop, &step) != 0)
+#else
+            if(PySlice_GetIndices(item, shape[k], &sstart, &sstop, &step) != 0)
+#endif
                 pythonToCppException(0);
             vigra_precondition(step == 1,
                 "numpyParseSlicing(): only unit steps are supported.");
@@ -325,8 +335,12 @@ class NumpyAnyArray
                 "NumpyArray::operator=(): Cannot assign from empty array.");
 
             python_ptr arraytype = getArrayTypeObject();
+#if PY_MAJOR_VERSION < 3
             python_ptr f(PyString_FromString("_copyValuesImpl"), python_ptr::keep_count);
-            if(PyObject_HasAttr(arraytype, f))
+#else
+			python_ptr f(PyBytes_FromString("_copyValuesImpl"), python_ptr::keep_count);
+#endif
+			if(PyObject_HasAttr(arraytype, f))
             {
                 python_ptr res(PyObject_CallMethodObjArgs(arraytype, f.get(),
                                                           pyArray_.get(), other.pyArray_.get(), NULL),
@@ -496,20 +510,32 @@ class NumpyAnyArray
             PyObject * item = 0;
             if(start[k] == stop[k])
             {
+#if PY_MAJOR_VERSION < 3
                 item = PyInt_FromLong(start[k]);
-            }
+#else
+				item = PyLong_FromLong(start[k]);
+#endif
+			}
             else
             {
+#if PY_MAJOR_VERSION < 3
                 python_ptr s0(PyInt_FromLong(start[k]), python_ptr::new_nonzero_reference);
                 python_ptr s1(PyInt_FromLong(stop[k]), python_ptr::new_nonzero_reference);
-                item = PySlice_New(s0, s1, 0);
+#else
+				python_ptr s0(PyLong_FromLong(start[k]), python_ptr::new_nonzero_reference);
+				python_ptr s1(PyLong_FromLong(stop[k]), python_ptr::new_nonzero_reference);
+#endif
+				item = PySlice_New(s0, s1, 0);
             }
             pythonToCppException(item);
             PyTuple_SET_ITEM((PyTupleObject *)index.ptr(), k, item); // steals reference to item
         }
-        
+#if PY_MAJOR_VERSION < 3
         python_ptr func(PyString_FromString("__getitem__"), python_ptr::new_nonzero_reference);
-        python_ptr res(PyObject_CallMethodObjArgs(pyObject(), func.ptr(), index.ptr(), NULL),
+#else
+		python_ptr func(PyBytes_FromString("__getitem__"), python_ptr::new_nonzero_reference);
+#endif
+		python_ptr res(PyObject_CallMethodObjArgs(pyObject(), func.ptr(), index.ptr(), NULL),
                        python_ptr::new_nonzero_reference);
         return NumpyAnyArray(res.ptr());
     }
@@ -524,8 +550,12 @@ class NumpyAnyArray
         python_ptr axistags;
         if(pyObject())
         {
+#if PY_MAJOR_VERSION < 3
             python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
-            axistags.reset(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
+#else
+			python_ptr key(PyBytes_FromString("axistags"), python_ptr::keep_count);
+#endif
+			axistags.reset(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
             if(!axistags)
                 PyErr_Clear();
         }

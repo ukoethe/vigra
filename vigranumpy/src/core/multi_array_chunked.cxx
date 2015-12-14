@@ -251,8 +251,12 @@ ptr_to_python(Array * array, python::object axistags)
     if(axistags != python::object())
     {
         AxisTags at;
+#if PY_MAJOR_VERSION < 3
         if(PyString_Check(axistags.ptr()))
-            at = AxisTags(python::extract<std::string>(axistags)());
+#else
+		if(PyBytes_Check(axistags.ptr()))
+#endif
+			at = AxisTags(python::extract<std::string>(axistags)());
         else
             at = AxisTags(python::extract<AxisTags const &>(axistags)());
         int N = Array::shape_type::static_size;
