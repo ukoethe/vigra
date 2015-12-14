@@ -348,16 +348,16 @@ ThreadPool::enqueue(F&& f)
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
-    const ptrdiff_t nItems,
+    const std::ptrdiff_t nItems,
     ITER iter,
     ITER end,
     F && f,
     std::random_access_iterator_tag
 ){
-    ptrdiff_t workload = std::distance(iter, end);
+    std::ptrdiff_t workload = std::distance(iter, end);
     vigra_precondition(workload == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
     const float workPerThread = float(workload)/pool.nThreads();
-    const ptrdiff_t chunkedWorkPerThread = std::max<ptrdiff_t>(roundi(workPerThread/3.0), 1);
+    const std::ptrdiff_t chunkedWorkPerThread = std::max<std::ptrdiff_t>(roundi(workPerThread/3.0), 1);
 
     std::vector<std::future<void> > futures;
     for( ;iter<end; iter+=chunkedWorkPerThread)
@@ -387,7 +387,7 @@ inline void parallel_foreach_impl(
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
-    const ptrdiff_t nItems,
+    const std::ptrdiff_t nItems,
     ITER iter,
     ITER end,
     F && f,
@@ -396,9 +396,9 @@ inline void parallel_foreach_impl(
     if (nItems == 0)
         nItems = std::distance(iter, end);
 
-    ptrdiff_t workload = nItems;
+    std::ptrdiff_t workload = nItems;
     const float workPerThread = float(workload)/pool.nThreads();
-    const ptrdiff_t chunkedWorkPerThread = std::max<ptrdiff_t>(roundi(workPerThread/3.0), 1);
+    const std::ptrdiff_t chunkedWorkPerThread = std::max<std::ptrdiff_t>(roundi(workPerThread/3.0), 1);
 
     std::vector<std::future<void> > futures;
     for(;;)
@@ -440,7 +440,7 @@ inline void parallel_foreach_impl(
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
-    const ptrdiff_t nItems,
+    const std::ptrdiff_t nItems,
     ITER iter,
     ITER end,
     F && f,
@@ -472,7 +472,7 @@ inline void parallel_foreach_single_thread(
     ITER begin,
     ITER end,
     F && f,
-    const ptrdiff_t nItems = 0
+    const std::ptrdiff_t nItems = 0
 ){
     size_t n = 0;
     for (; begin != end; ++begin)
@@ -590,7 +590,7 @@ inline void parallel_foreach(
     ITER begin,
     ITER end,
     F && f,
-    const ptrdiff_t nItems = 0)
+    const std::ptrdiff_t nItems = 0)
 {
     if(pool.nThreads()>1)
     {
@@ -609,7 +609,7 @@ inline void parallel_foreach(
     ITER begin,
     ITER end,
     F && f,
-    const ptrdiff_t nItems = 0)
+    const std::ptrdiff_t nItems = 0)
 {
 
     ThreadPool pool(nThreads);
@@ -619,7 +619,7 @@ inline void parallel_foreach(
 template<class F>
 inline void parallel_foreach(
     int64_t nThreads,
-    ptrdiff_t nItems,
+    std::ptrdiff_t nItems,
     F && f)
 {
     auto iter = range(nItems);
@@ -630,7 +630,7 @@ inline void parallel_foreach(
 template<class F>
 inline void parallel_foreach(
     ThreadPool & threadpool,
-    ptrdiff_t nItems,
+    std::ptrdiff_t nItems,
     F && f)
 {
     auto iter = range(nItems);
