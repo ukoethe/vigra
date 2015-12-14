@@ -89,186 +89,6 @@ struct BlockwiseLabelingResult
     typedef typename LabelBlocksIterator::value_type::value_type type;
 };
 
-// template <class DataBlocksIterator, class LabelBlocksIterator, class Equal, class Value, class Mapping>
-// typename BlockwiseLabelingResult<LabelBlocksIterator>::type
-// blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_blocks_end,
-                  // LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
-                  // NeighborhoodType neighborhood, Equal equal,
-                  // const Value* background_value,
-                  // Mapping& mapping,
-                  // const int nThreads = ParallelOptions::Auto)
-// {
-    // typedef typename LabelBlocksIterator::value_type::value_type Label;
-    // typedef typename DataBlocksIterator::shape_type Shape;
-
-    // Shape blocks_shape = data_blocks_begin.shape();
-    // vigra_precondition(blocks_shape == label_blocks_begin.shape() &&
-                       // blocks_shape == mapping.shape(),
-                       // "shapes of blocks of blocks do not match");
-
-    // static const unsigned int Dimensions = DataBlocksIterator::dimension + 1;
-    // MultiArray<Dimensions, Label> label_offsets(label_blocks_begin.shape());
-
-    // // mapping stage: label each block and save number of labels assigned in blocks before the current block in label_offsets
-    // Label unmerged_label_number;
-    // {
-        // DataBlocksIterator data_blocks_it = data_blocks_begin;
-        // LabelBlocksIterator label_blocks_it = label_blocks_begin;
-        // typename MultiArray<Dimensions, Label>::iterator offsets_it = label_offsets.begin();
-        // Label current_offset = 0;
-        // // a la OPENMP_PRAGMA FOR
-
-        // auto d = std::distance(data_blocks_begin, data_blocks_end);
-
-
-        // std::vector<UInt32> nSeg(d);
-        // //std::vector<int> ids(d);
-        // //std::iota(ids.begin(), ids.end(), 0 );
-
-        // parallel_foreach(nThreads,d,
-            // [&](const int threadId, const uint64_t i){
-                // int resVal;
-                // if(background_value){
-                    // resVal = 1 + labelMultiArrayWithBackground(data_blocks_it[i], label_blocks_it[i],
-                                                                        // neighborhood, *background_value, equal);
-                // }
-                // else{
-                    // resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
-                                                      // neighborhood, equal);
-                // }
-                // nSeg[i] = resVal;
-            // }
-        // );
-
-
-        // /*
-        // #pragma omp parallel for
-        // for(int i=0; i<d; ++i){
-            // int resVal;
-            // if(background_value){
-                // resVal = 1 + labelMultiArrayWithBackground(data_blocks_it[i], label_blocks_it[i],
-                                                                    // neighborhood, *background_value, equal);
-            // }
-            // else{
-                // resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
-                                                  // neighborhood, equal);
-            // }
-            // nSeg[i] = resVal;
-        // }
-        // */
-        // for(int i=0; i<d;++i){
-            // offsets_it[i] = current_offset;
-            // current_offset+=nSeg[i];
-        // }
-
-
-        // unmerged_label_number = current_offset;
-        // if(!background_value)
-            // ++unmerged_label_number;
-    // }
-
-    // // reduce stage: merge adjacent labels if the region overlaps
-    // UnionFindArray<Label> global_unions(unmerged_label_number);
-    // if(background_value)
-    // {
-        // // merge all labels that refer to background
-        // for(typename MultiArray<Dimensions, Label>::iterator offsets_it = label_offsets.begin();
-                // offsets_it != label_offsets.end();
-                // ++offsets_it)
-        // {
-            // global_unions.makeUnion(0, *offsets_it);
-        // }
-    // }
-
-    // typedef GridGraph<Dimensions, undirected_tag> Graph;
-    // typedef typename Graph::edge_iterator EdgeIterator;
-    // Graph blocks_graph(blocks_shape, neighborhood);
-    // for(EdgeIterator it = blocks_graph.get_edge_iterator(); it != blocks_graph.get_edge_end_iterator(); ++it)
-    // {
-        // Shape u = blocks_graph.u(*it);
-        // Shape v = blocks_graph.v(*it);
-        // Shape difference = v - u;
-
-        // BorderVisitor<Equal, Label> border_visitor;
-        // border_visitor.u_label_offset = label_offsets[u];
-        // border_visitor.v_label_offset = label_offsets[v];
-        // border_visitor.global_unions = &global_unions;
-        // border_visitor.equal = &equal;
-        // visitBorder(data_blocks_begin[u], label_blocks_begin[u],
-                    // data_blocks_begin[v], label_blocks_begin[v],
-                    // difference, neighborhood, border_visitor);
-    // }
-
-    // // fill mapping (local labels) -> (global labels)
-    // Label last_label = global_unions.makeContiguous();
-    // {
-        // typename MultiArray<Dimensions, Label>::iterator offsets_it = label_offsets.begin();
-        // Label offset = *offsets_it;
-        // ++offsets_it;
-        // typename Mapping::iterator mapping_it = mapping.begin();
-        // for( ; offsets_it != label_offsets.end(); ++offsets_it, ++mapping_it)
-        // {
-            // mapping_it->clear();
-            // Label next_offset = *offsets_it;
-            // if(background_value)
-            // {
-                // for(Label current_label = offset; current_label != next_offset; ++current_label)
-                // {
-                    // mapping_it->push_back(global_unions.findLabel(current_label));
-                // }
-            // }
-            // else
-            // {
-                // mapping_it->push_back(0); // local labels start at 1
-                // for(Label current_label = offset + 1; current_label != next_offset + 1; ++current_label)
-                // {
-                    // mapping_it->push_back(global_unions.findLabel(current_label));
-                // }
-            // }
-
-            // offset = next_offset;
-        // }
-        // // last block:
-        // // instead of next_offset, use last_label+1
-        // mapping_it->clear();
-        // if(background_value)
-        // {
-            // for(Label current_label = offset; current_label != unmerged_label_number; ++current_label)
-            // {
-                // mapping_it->push_back(global_unions.findLabel(current_label));
-            // }
-        // }
-        // else
-        // {
-            // mapping_it->push_back(0);
-            // for(Label current_label = offset + 1; current_label != unmerged_label_number; ++current_label)
-            // {
-                // mapping_it->push_back(global_unions.findLabel(current_label));
-            // }
-        // }
-    // }
-    // return last_label;
-// }
-
-
-// template <class LabelBlocksIterator, class MappingIterator>
-// void toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
-                    // MappingIterator mapping_begin, MappingIterator mapping_end)
-// {
-    // typedef typename LabelBlocksIterator::value_type LabelBlock;
-    // for( ; label_blocks_begin != label_blocks_end; ++label_blocks_begin, ++mapping_begin)
-    // {
-        // vigra_assert(mapping_begin != mapping_end, "");
-        // for(typename LabelBlock::iterator labels_it = label_blocks_begin->begin();
-            // labels_it != label_blocks_begin->end();
-            // ++labels_it)
-        // {
-            // vigra_assert(*labels_it < mapping_begin->size(), "");
-            // *labels_it = (*mapping_begin)[*labels_it];
-        // }
-    // }
-// }
-
 template <class DataBlocksIterator, class LabelBlocksIterator,
           class Equal, class Mapping>
 typename BlockwiseLabelingResult<LabelBlocksIterator>::type
@@ -551,7 +371,7 @@ Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
     <b> Declarations:</b>
 
     \code
-    namespace vigra {
+    namespace vigra { namespace blockwise {
         // assign local labels and generate mapping (local labels) -> (global labels) for each chunk
         template <unsigned int N, class Data, class S1,
                                   class Label, class S2,
@@ -589,7 +409,7 @@ Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
                                        ChunkedArray<N, Label>& labels,
                                        const BlockwiseLabelOptions& options = BlockwiseLabelOptions(),
                                        Equal equal = std::equal_to<T>());
-    }
+    }}
     \endcode
 
     The resulting labeling is equivalent to a labeling by \ref labelMultiArray, that is, the connected components are the same but may have different ids.
