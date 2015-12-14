@@ -46,6 +46,109 @@
 
 namespace vigra {
 
+namespace detail  {
+
+template <class T, bool is_float=false>
+struct CountingIteratorCompare
+{
+    // use exact comparison for integer counting
+    static bool equal(T left, T right, T /* step */)
+    {
+        return left == right;
+    }
+    static bool not_equal(T left, T right, T /* step */)
+    {
+        return left != right;
+    }
+    static bool less(T left, T right, T step)
+    {
+        // NOTE: the more efficient '(right - left)*step > 0'
+        //       fails for unsigned arguments
+        return step > 0
+                ? left < right
+                : left > right;
+    }
+    static bool less_equal(T left, T right, T step)
+    {
+        return step > 0
+                ? left <= right
+                : left >= right;
+    }
+    static bool greater(T left, T right, T step)
+    {
+        return step > 0
+                ? left > right
+                : left < right;
+    }
+    static bool greater_equal(T left, T right, T step)
+    {
+        return step > 0
+                ? left >= right
+                : left <= right;
+    }
+    // integer counting: if the raw distance is not divisible by step,
+    // we must round upwards
+    static std::ptrdiff_t distance(T from, T to, T step)
+    {
+        const double diff = (double(to) - double(from)) / double(step);
+        return diff > 0.0
+                 ? (std::ptrdiff_t)std::ceil(diff)
+                 : (std::ptrdiff_t)std::floor(diff);
+    }
+};
+
+template <class T>
+struct CountingIteratorCompare<T, true>
+{
+    typedef std::numeric_limits<T> limit;
+
+    // use comparison with tolerance for floating-point counting
+    // (the natural epsilon is 0.5*step)
+    static bool equal(T left, T right, T step)
+    {
+        return std::fabs(right-left) <= 0.5*std::fabs(step);
+    }
+    static bool not_equal(T left, T right, T step)
+    {
+        return std::fabs(right-left) > 0.5*std::fabs(step);
+    }
+    static bool less(T left, T right, T step)
+    {
+        return step > 0.0
+                ? right - left > 0.5*step
+                : right - left < 0.5*step;
+    }
+    static bool less_equal(T left, T right, T step)
+    {
+        return step > 0.0
+                ? left - right < 0.5*step
+                : left - right > 0.5*step;
+    }
+    static bool greater(T left, T right, T step)
+    {
+        return step > 0.0
+                ? left - right > 0.5*step
+                : left - right < 0.5*step;
+    }
+    static bool greater_equal(T left, T right, T step)
+    {
+        return step > 0.0
+                ? right - left < 0.5*step
+                : right - left > 0.5*step;
+    }
+    // floating-point counting: if the raw distance is not divisible by step,
+    // we round to nearest if the difference is small, otherwise upwards
+    static std::ptrdiff_t distance(T from, T to, T step)
+    {
+        const double diff = (double(to) - double(from)) / double(step);
+        return diff > 0.0
+                 ? (std::ptrdiff_t)std::ceil(diff*(1.0-2.0*limit::epsilon()))
+                 : (std::ptrdiff_t)std::floor(diff*(1.0-2.0*limit::epsilon()));
+    }
+};
+
+} // namespace detail
+
 /** \addtogroup MathFunctions
 */
 //@{
@@ -269,106 +372,8 @@ class CountingIterator
     }
 
   private:
-    template <bool is_float=false>
-    struct CompareImpl
-    {
-        // use exact comparison for integer counting
-        static bool equal(T left, T right, T /* step */)
-        {
-            return left == right;
-        }
-        static bool not_equal(T left, T right, T /* step */)
-        {
-            return left != right;
-        }
-        static bool less(T left, T right, T step)
-        {
-            // NOTE: the more efficient '(right - left)*step > 0'
-            //       fails for unsigned arguments
-            return step > 0
-                    ? left < right
-                    : left > right;
-        }
-        static bool less_equal(T left, T right, T step)
-        {
-            return step > 0
-                    ? left <= right
-                    : left >= right;
-        }
-        static bool greater(T left, T right, T step)
-        {
-            return step > 0
-                    ? left > right
-                    : left < right;
-        }
-        static bool greater_equal(T left, T right, T step)
-        {
-            return step > 0
-                    ? left >= right
-                    : left <= right;
-        }
-        // integer counting: if the raw distance is not divisible by step,
-        // we must round upwards
-        static std::ptrdiff_t distance(T from, T to, T step)
-        {
-            const double diff = (double(to) - double(from)) / double(step);
-            return diff > 0.0
-                     ? (std::ptrdiff_t)std::ceil(diff)
-                     : (std::ptrdiff_t)std::floor(diff);
-        }
-    };
 
-    template <>
-    struct CompareImpl<true>
-    {
-        typedef std::numeric_limits<T> limit;
-
-        // use comparison with tolerance for floating-point counting
-        // (the natural epsilon is 0.5*step)
-        static bool equal(T left, T right, T step)
-        {
-            return std::fabs(right-left) <= 0.5*std::fabs(step);
-        }
-        static bool not_equal(T left, T right, T step)
-        {
-            return std::fabs(right-left) > 0.5*std::fabs(step);
-        }
-        static bool less(T left, T right, T step)
-        {
-            return step > 0.0
-                    ? right - left > 0.5*step
-                    : right - left < 0.5*step;
-        }
-        static bool less_equal(T left, T right, T step)
-        {
-            return step > 0.0
-                    ? left - right < 0.5*step
-                    : left - right > 0.5*step;
-        }
-        static bool greater(T left, T right, T step)
-        {
-            return step > 0.0
-                    ? left - right > 0.5*step
-                    : left - right < 0.5*step;
-        }
-        static bool greater_equal(T left, T right, T step)
-        {
-            return step > 0.0
-                    ? right - left < 0.5*step
-                    : right - left > 0.5*step;
-        }
-        // floating-point counting: if the raw distance is not divisible by step,
-        // we round to nearest if the difference is small, otherwise upwards
-        static std::ptrdiff_t distance(T from, T to, T step)
-        {
-            const double diff = (double(to) - double(from)) / double(step);
-            return diff > 0.0
-                     ? (std::ptrdiff_t)std::ceil(diff*(1.0-2.0*limit::epsilon()))
-                     : (std::ptrdiff_t)std::floor(diff*(1.0-2.0*limit::epsilon()));
-        }
-    };
-
-    typedef CompareImpl<std::is_floating_point<T>::value> Compare;
+    typedef detail::CountingIteratorCompare<T, std::is_floating_point<T>::value> Compare;
 
     T begin_, end_, step_;
 };
