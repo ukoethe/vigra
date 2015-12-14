@@ -852,8 +852,8 @@ public:
         return vigra::get<TARGET_INDEX>(*this);
     }
 
-    template <class U>
-    void internal_reset(U const & p)
+    template <class V>
+    void internal_reset(V const & p)
     {
         vigra_fail("CoupledHandle<ChunkedMemory<T>>::internal_reset(): not implemented.");
     }
