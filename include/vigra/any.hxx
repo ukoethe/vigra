@@ -45,6 +45,150 @@
 
 namespace vigra {
 
+namespace detail {
+
+struct AnyHandle
+{
+    AnyHandle() {}
+    virtual ~AnyHandle() {}
+    virtual const std::type_info & type() const = 0;
+    virtual AnyHandle * clone() const = 0;
+    virtual bool equal(AnyHandle const *) const = 0;
+
+  private:
+    AnyHandle(AnyHandle const &);
+    AnyHandle & operator=(AnyHandle const &);
+};
+
+template <class T>
+struct TypedAnyHandle
+: public AnyHandle
+{
+    T value_;
+
+    TypedAnyHandle(T const & t)
+    : value_(t)
+    {}
+
+    const std::type_info & type() const
+    {
+        return typeid(T);
+    }
+
+    AnyHandle * clone() const
+    {
+        return new TypedAnyHandle(value_);
+    }
+
+    bool equal(AnyHandle const * h) const
+    {
+        TypedAnyHandle const * ptr = dynamic_cast<TypedAnyHandle const *>(h);
+        return ptr != 0 && value_ == ptr->value_;
+    }
+};
+
+struct ConvertibleAnyHandle
+: public AnyHandle
+{
+    template <class T>
+    struct TypeTag {};
+
+    ConvertibleAnyHandle() {}
+
+    virtual signed char      cast(TypeTag<signed char>) const = 0;
+    virtual signed short     cast(TypeTag<signed short>) const = 0;
+    virtual signed int       cast(TypeTag<signed int>) const = 0;
+    virtual signed long      cast(TypeTag<signed long>) const = 0;
+    virtual signed long long cast(TypeTag<signed long long>) const = 0;
+
+    virtual unsigned char      cast(TypeTag<unsigned char>) const = 0;
+    virtual unsigned short     cast(TypeTag<unsigned short>) const = 0;
+    virtual unsigned int       cast(TypeTag<unsigned int>) const = 0;
+    virtual unsigned long      cast(TypeTag<unsigned long>) const = 0;
+    virtual unsigned long long cast(TypeTag<unsigned long long>) const = 0;
+
+    virtual float       cast(TypeTag<float>) const = 0;
+    virtual double      cast(TypeTag<double>) const = 0;
+    virtual long double cast(TypeTag<long double>) const = 0;
+};
+
+#define VIGRA_ANY_OF_CONVERTIBLE(TYPE) \
+template <> \
+struct TypedAnyHandle<TYPE> \
+: public ConvertibleAnyHandle \
+{ \
+    TYPE value_; \
+    \
+    TypedAnyHandle(TYPE const & t) \
+    : value_(t) \
+    {} \
+    \
+    const std::type_info & type() const \
+    { \
+        return typeid(value_); \
+    } \
+    \
+    AnyHandle * clone() const \
+    { \
+        return new TypedAnyHandle(value_); \
+    } \
+    \
+    bool equal(AnyHandle const * h) const \
+    { \
+        TypedAnyHandle const * ptr = dynamic_cast<TypedAnyHandle const *>(h); \
+        return ptr != 0 && value_ == ptr->value_; \
+    } \
+    \
+    virtual signed char      cast(TypeTag<signed char>) const \
+    { return static_cast<signed char>(value_); } \
+    virtual signed short     cast(TypeTag<signed short>) const \
+    { return static_cast<signed short>(value_); } \
+    virtual signed int       cast(TypeTag<signed int>) const \
+    { return static_cast<signed int>(value_); } \
+    virtual signed long      cast(TypeTag<signed long>) const \
+    { return static_cast<signed long>(value_); } \
+    virtual signed long long cast(TypeTag<signed long long>) const \
+    { return static_cast<signed long long>(value_); } \
+    \
+    virtual unsigned char      cast(TypeTag<unsigned char>) const \
+    { return static_cast<unsigned char>(value_); } \
+    virtual unsigned short     cast(TypeTag<unsigned short>) const \
+    { return static_cast<unsigned short>(value_); } \
+    virtual unsigned int       cast(TypeTag<unsigned int>) const \
+    { return static_cast<unsigned int>(value_); } \
+    virtual unsigned long      cast(TypeTag<unsigned long>) const \
+    { return static_cast<unsigned long>(value_); } \
+    virtual unsigned long long cast(TypeTag<unsigned long long>) const \
+    { return static_cast<unsigned long long>(value_); } \
+    \
+    virtual float       cast(TypeTag<float>) const \
+    { return static_cast<float>(value_); } \
+    virtual double      cast(TypeTag<double>) const \
+    { return static_cast<double>(value_); } \
+    virtual long double cast(TypeTag<long double>) const \
+    { return static_cast<long double>(value_); } \
+};
+
+VIGRA_ANY_OF_CONVERTIBLE(signed char     )
+VIGRA_ANY_OF_CONVERTIBLE(signed short    )
+VIGRA_ANY_OF_CONVERTIBLE(signed int      )
+VIGRA_ANY_OF_CONVERTIBLE(signed long     )
+VIGRA_ANY_OF_CONVERTIBLE(signed long long)
+
+VIGRA_ANY_OF_CONVERTIBLE(unsigned char     )
+VIGRA_ANY_OF_CONVERTIBLE(unsigned short    )
+VIGRA_ANY_OF_CONVERTIBLE(unsigned int      )
+VIGRA_ANY_OF_CONVERTIBLE(unsigned long     )
+VIGRA_ANY_OF_CONVERTIBLE(unsigned long long)
+
+VIGRA_ANY_OF_CONVERTIBLE(float      )
+VIGRA_ANY_OF_CONVERTIBLE(double     )
+VIGRA_ANY_OF_CONVERTIBLE(long double)
+
+#undef VIGRA_ANY_OF_CONVERTIBLE
+
+} // namespace detail
+
     /** \brief Typesafe storage of arbitrary values.
 
         Items are always stored by value, but it is of course possible
@@ -85,167 +229,28 @@ namespace vigra {
     */
 class Any
 {
-    struct Handle
-    {
-        Handle() {}
-        virtual ~Handle() {}
-        virtual const std::type_info & type() const = 0;
-        virtual Handle * clone() const = 0;
-        virtual bool equal(Handle const *) const = 0;
 
-      private:
-        Handle(Handle const &);
-        Handle & operator=(Handle const &);
-    };
-
-    template <class T>
-    struct TypedHandle
-    : public Handle
-    {
-        T value_;
-
-        TypedHandle(T const & t)
-        : value_(t)
-        {}
-
-        const std::type_info & type() const
-        {
-            return typeid(T);
-        }
-
-        Handle * clone() const
-        {
-            return new TypedHandle(value_);
-        }
-
-        bool equal(Handle const * h) const
-        {
-            TypedHandle const * ptr = dynamic_cast<TypedHandle const *>(h);
-            return ptr != 0 && value_ == ptr->value_;
-        }
-    };
-
-    struct ConvertibleHandle
-    : public Handle
-    {
-        template <class T>
-        struct TypeTag {};
-
-        ConvertibleHandle() {}
-
-        virtual signed char      cast(TypeTag<signed char>) const = 0;
-        virtual signed short     cast(TypeTag<signed short>) const = 0;
-        virtual signed int       cast(TypeTag<signed int>) const = 0;
-        virtual signed long      cast(TypeTag<signed long>) const = 0;
-        virtual signed long long cast(TypeTag<signed long long>) const = 0;
-
-        virtual unsigned char      cast(TypeTag<unsigned char>) const = 0;
-        virtual unsigned short     cast(TypeTag<unsigned short>) const = 0;
-        virtual unsigned int       cast(TypeTag<unsigned int>) const = 0;
-        virtual unsigned long      cast(TypeTag<unsigned long>) const = 0;
-        virtual unsigned long long cast(TypeTag<unsigned long long>) const = 0;
-
-        virtual float       cast(TypeTag<float>) const = 0;
-        virtual double      cast(TypeTag<double>) const = 0;
-        virtual long double cast(TypeTag<long double>) const = 0;
-    };
-
-    #define VIGRA_ANY_OF_CONVERTIBLE(TYPE) \
-    template <> \
-    struct TypedHandle<TYPE> \
-    : public ConvertibleHandle \
-    { \
-        TYPE value_; \
-        \
-        TypedHandle(TYPE const & t) \
-        : value_(t) \
-        {} \
-        \
-        const std::type_info & type() const \
-        { \
-            return typeid(value_); \
-        } \
-        \
-        Handle * clone() const \
-        { \
-            return new TypedHandle(value_); \
-        } \
-        \
-        bool equal(Handle const * h) const \
-        { \
-            TypedHandle const * ptr = dynamic_cast<TypedHandle const *>(h); \
-            return ptr != 0 && value_ == ptr->value_; \
-        } \
-        \
-        virtual signed char      cast(TypeTag<signed char>) const \
-        { return static_cast<signed char>(value_); } \
-        virtual signed short     cast(TypeTag<signed short>) const \
-        { return static_cast<signed short>(value_); } \
-        virtual signed int       cast(TypeTag<signed int>) const \
-        { return static_cast<signed int>(value_); } \
-        virtual signed long      cast(TypeTag<signed long>) const \
-        { return static_cast<signed long>(value_); } \
-        virtual signed long long cast(TypeTag<signed long long>) const \
-        { return static_cast<signed long long>(value_); } \
-        \
-        virtual unsigned char      cast(TypeTag<unsigned char>) const \
-        { return static_cast<unsigned char>(value_); } \
-        virtual unsigned short     cast(TypeTag<unsigned short>) const \
-        { return static_cast<unsigned short>(value_); } \
-        virtual unsigned int       cast(TypeTag<unsigned int>) const \
-        { return static_cast<unsigned int>(value_); } \
-        virtual unsigned long      cast(TypeTag<unsigned long>) const \
-        { return static_cast<unsigned long>(value_); } \
-        virtual unsigned long long cast(TypeTag<unsigned long long>) const \
-        { return static_cast<unsigned long long>(value_); } \
-        \
-        virtual float       cast(TypeTag<float>) const \
-        { return static_cast<float>(value_); } \
-        virtual double      cast(TypeTag<double>) const \
-        { return static_cast<double>(value_); } \
-        virtual long double cast(TypeTag<long double>) const \
-        { return static_cast<long double>(value_); } \
-    };
-
-    VIGRA_ANY_OF_CONVERTIBLE(signed char     )
-    VIGRA_ANY_OF_CONVERTIBLE(signed short    )
-    VIGRA_ANY_OF_CONVERTIBLE(signed int      )
-    VIGRA_ANY_OF_CONVERTIBLE(signed long     )
-    VIGRA_ANY_OF_CONVERTIBLE(signed long long)
-
-    VIGRA_ANY_OF_CONVERTIBLE(unsigned char     )
-    VIGRA_ANY_OF_CONVERTIBLE(unsigned short    )
-    VIGRA_ANY_OF_CONVERTIBLE(unsigned int      )
-    VIGRA_ANY_OF_CONVERTIBLE(unsigned long     )
-    VIGRA_ANY_OF_CONVERTIBLE(unsigned long long)
-
-    VIGRA_ANY_OF_CONVERTIBLE(float      )
-    VIGRA_ANY_OF_CONVERTIBLE(double     )
-    VIGRA_ANY_OF_CONVERTIBLE(long double)
-
-    #undef VIGRA_ANY_OF_CONVERTIBLE
-
-    VIGRA_UNIQUE_PTR<Handle> handle_;
+    VIGRA_UNIQUE_PTR<detail::AnyHandle> handle_;
 
   public:
 
         /** Construct empty 'Any' object.
         */
     Any()
-    : handle_((Handle*)0)
+    : handle_((detail::AnyHandle*)0)
     {}
 
         /** Construct 'Any' object holding the given value.
         */
     template <class T>
     Any(T const & t)
-    : handle_(new TypedHandle<T>(t))
+    : handle_(new detail::TypedAnyHandle<T>(t))
     {}
 
         /** Construct 'Any' object holding a copy of other's value.
         */
     Any(Any const & other)
-    : handle_(other.handle_ ? other.handle_->clone() : (Handle*)0)
+    : handle_(other.handle_ ? other.handle_->clone() : (detail::AnyHandle*)0)
     {}
 
         /** Assign the given value to this 'Any' object
@@ -254,7 +259,7 @@ class Any
     template <class T>
     Any & operator=(T const & t)
     {
-        handle_.reset(new TypedHandle<T>(t));
+        handle_.reset(new detail::TypedAnyHandle<T>(t));
         return *this;
     }
 
@@ -264,7 +269,7 @@ class Any
     Any & operator=(Any const & other)
     {
         if(this != &other)
-            handle_.reset(other.handle_ ? other.handle_->clone() : (Handle*)0);
+            handle_.reset(other.handle_ ? other.handle_->clone() : (detail::AnyHandle*)0);
         return *this;
     }
 
@@ -334,7 +339,7 @@ class Any
     template <class T>
     bool is_type() const
     {
-        return bool(handle_) && dynamic_cast<TypedHandle<T> const *>(handle_.get()) != 0;
+        return bool(handle_) && dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get()) != 0;
     }
 
         /** Check if this object's value is convertible to the given type.
@@ -344,7 +349,7 @@ class Any
     bool is_convertible() const
     {
         return std::is_arithmetic<T>::value && bool(handle_) &&
-               dynamic_cast<ConvertibleHandle const *>(handle_.get()) != 0;
+               dynamic_cast<detail::ConvertibleAnyHandle const *>(handle_.get()) != 0;
     }
 
         /** Read-write access to the contained value. This throws an exception
@@ -354,7 +359,7 @@ class Any
     T & get()
     {
         vigra_precondition(bool(handle_), "Any::get(): object empty.");
-        TypedHandle<T> * ptr = dynamic_cast<TypedHandle<T> *>(handle_.get());
+        detail::TypedAnyHandle<T> * ptr = dynamic_cast<detail::TypedAnyHandle<T> *>(handle_.get());
         vigra_precondition(ptr != 0, "Any::get(): object is not an instance of the target type.");
         return ptr->value_;
     }
@@ -366,7 +371,7 @@ class Any
     T const & get() const
     {
         vigra_precondition(bool(handle_), "Any::get(): object empty.");
-        TypedHandle<T> const * ptr = dynamic_cast<TypedHandle<T> const *>(handle_.get());
+        detail::TypedAnyHandle<T> const * ptr = dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get());
         vigra_precondition(ptr != 0, "Any::get(): object is not an instance of the target type.");
         return ptr->value_;
     }
@@ -378,9 +383,10 @@ class Any
     T cast() const
     {
         vigra_precondition(bool(handle_), "Any::cast(): object empty.");
-        ConvertibleHandle const * ptr = dynamic_cast<ConvertibleHandle const *>(handle_.get());
+        detail::ConvertibleAnyHandle const * ptr =
+                      dynamic_cast<detail::ConvertibleAnyHandle const *>(handle_.get());
         vigra_precondition(ptr != 0, "Any::cast(): object is not covertible to the target type.");
-        return ptr->cast(ConvertibleHandle::TypeTag<T>());
+        return ptr->cast(detail::ConvertibleAnyHandle::TypeTag<T>());
     }
 };
 
