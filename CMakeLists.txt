@@ -26,7 +26,7 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 include(VigraSetDefaults)
 include(VigraCMakeUtils)
 
-INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include "C:\conda\pkgs\python-3.5.0-3\include") #TODO python include hack 
 
 IF(VIGRA_STATIC_LIB)
     SET(LIBTYPE STATIC)
