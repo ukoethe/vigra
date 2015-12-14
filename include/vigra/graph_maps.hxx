@@ -234,11 +234,11 @@ private:
 };
 
 
-
-template<class G,class RESULT>
-class ZeroNodeMap{
-
-public:
+// node map that returns zero (specifically, <tt>RESULT()</tt>) for all keys
+template<class G, class RESULT>
+class ZeroNodeMap
+{
+  public:
     typedef G  Graph;
     typedef typename Graph::Node Key;
     typedef RESULT   Value;
@@ -248,16 +248,14 @@ public:
     typedef Value           value_type;
     typedef ConstReference  const_reference;
     typedef boost::readable_property_map_tag category;
-    ZeroNodeMap(){
-    }
-    ConstReference operator[](const Key & key){
-        return static_cast<RESULT>(0);
-    }
 
-    ConstReference operator[](const Key & key)const{
-        return static_cast<RESULT>(0);
+    ZeroNodeMap()
+    {}
+
+    value_type operator[](const Key & key) const
+    {
+        return value_type();
     }
-private:
 };
 
 
@@ -357,7 +355,7 @@ private:
 
 
 
-
+// encapsulate a MultiArrayView indexed by node/edge ID
 template<class T,class GRAPH, class KEY>
 struct ArrayMap{
 
@@ -390,7 +388,7 @@ struct ArrayMap{
     }
     const GRAPH & graph_;
     MultiArrayView<1, T> view_;
-   
+
 };
 
 

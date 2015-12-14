@@ -504,7 +504,7 @@ namespace vigra{
         }
 
         void reserveEdges(const size_t size ){
-            if(size>edgeNum())
+            if(size>(size_t)edgeNum())
                 edges_.reserve(size);
         }
 
