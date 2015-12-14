@@ -1,5 +1,7 @@
+﻿from __future__ import division, print_function
 import sys
-print >> sys.stderr, "\nexecuting test file", __file__
+print("\nexecuting test file", __file__, file=sys.stderr)
+exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
 import vigra
 import numpy as np
@@ -19,4 +21,4 @@ def test_rf_learn():
     RF.learnRF(fmat,lmat,0,1,100)
 
 def ok_():
-    print >> sys.stderr, ".",
+    print(".", file=sys.stderr)
