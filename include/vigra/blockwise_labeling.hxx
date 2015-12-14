@@ -59,7 +59,53 @@ namespace blockwise{
 */
 //@{
 
-class BlockwiseLabelOptions;
+    /** Options object for labelMultiArrayBlockwise().
+
+        It is simply a subclass of both \ref vigra::LabelOptions
+        and \ref vigra::blockwise::BlockwiseOptions. See there for
+        detailed documentation.
+    */
+class BlockwiseLabelOptions
+: public LabelOptions
+, public BlockwiseOptions
+{
+public:
+    typedef BlockwiseOptions::Shape Shape;
+
+    // reimplement setter functions to allow chaining
+
+    template <class T>
+    BlockwiseLabelOptions& ignoreBackgroundValue(const T& value)
+    {
+        LabelOptions::ignoreBackgroundValue(value);
+        return *this;
+    }
+
+    BlockwiseLabelOptions & neighborhood(NeighborhoodType n)
+    {
+        LabelOptions::neighborhood(n);
+        return *this;
+    }
+
+    BlockwiseLabelOptions & blockShape(const Shape & shape)
+    {
+        BlockwiseOptions::blockShape(shape);
+        return *this;
+    }
+
+    template <class T, int N>
+    BlockwiseLabelOptions & blockShape(const TinyVector<T, N> & shape)
+    {
+        BlockwiseOptions::blockShape(shape);
+        return *this;
+    }
+
+    BlockwiseLabelOptions & numThreads(const int n)
+    {
+        BlockwiseOptions::numThreads(n);
+        return *this;
+    }
+};
 
 namespace blockwise_labeling_detail
 {
@@ -254,54 +300,6 @@ void toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator 
 static const MultiArrayIndex default_block_side_length = 128;
 
 } // namespace blockwise_labeling_detail
-
-    /** Options object for labelMultiArrayBlockwise().
-
-        It is simply a subclass of both \ref vigra::LabelOptions
-        and \ref vigra::blockwise::BlockwiseOptions. See there for
-        detailed documentation.
-    */
-class BlockwiseLabelOptions
-: public LabelOptions
-, public BlockwiseOptions
-{
-public:
-    typedef BlockwiseOptions::Shape Shape;
-
-    // reimplement setter functions to allow chaining
-
-    template <class T>
-    BlockwiseLabelOptions& ignoreBackgroundValue(const T& value)
-    {
-        LabelOptions::ignoreBackgroundValue(value);
-        return *this;
-    }
-
-    BlockwiseLabelOptions & neighborhood(NeighborhoodType n)
-    {
-        LabelOptions::neighborhood(n);
-        return *this;
-    }
-
-    BlockwiseLabelOptions & blockShape(const Shape & shape)
-    {
-        BlockwiseOptions::blockShape(shape);
-        return *this;
-    }
-
-    template <class T, int N>
-    BlockwiseLabelOptions & blockShape(const TinyVector<T, N> & shape)
-    {
-        BlockwiseOptions::blockShape(shape);
-        return *this;
-    }
-
-    BlockwiseLabelOptions & numThreads(const int n)
-    {
-        BlockwiseOptions::numThreads(n);
-        return *this;
-    }
-};
 
 template <unsigned int N, class Data, class S1,
                           class Label, class S2,
