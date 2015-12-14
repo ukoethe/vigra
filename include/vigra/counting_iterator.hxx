@@ -136,10 +136,10 @@ namespace vigra {
             std::cout << *iter << " ";  // prints '1.6 1.5 1.4 1.3 1.2 1.1 1'
         \endcode
     */
-template<class T = ptrdiff_t>
+template<class T = std::ptrdiff_t>
 class CountingIterator
 : public std::iterator<std::random_access_iterator_tag,
-                       T, ptrdiff_t, T const *, T>
+                       T, std::ptrdiff_t, T const *, T>
 {
   public:
     CountingIterator()
@@ -199,29 +199,29 @@ class CountingIterator
     CountingIterator& operator--()    {begin_ -= step_; return *this;} // prefix--
     CountingIterator  operator--(int) {CountingIterator tmp(*this); --(*this); return tmp;} // postfix--
 
-    CountingIterator& operator+=(ptrdiff_t n)
+    CountingIterator& operator+=(std::ptrdiff_t n)
     {
         begin_ += n*step_;
         return *this;
     }
 
-    CountingIterator operator+(ptrdiff_t n) const
+    CountingIterator operator+(std::ptrdiff_t n) const
     {
         return CountingIterator(*this) += n;
     }
 
-    CountingIterator& operator-=(ptrdiff_t n)
+    CountingIterator& operator-=(std::ptrdiff_t n)
     {
         begin_ -= n*step_;
         return *this;
     }
 
-    CountingIterator operator-(ptrdiff_t n) const
+    CountingIterator operator-(std::ptrdiff_t n) const
     {
         return CountingIterator(*this) -= n;
     }
 
-    ptrdiff_t operator-(const CountingIterator& other) const
+    std::ptrdiff_t operator-(const CountingIterator& other) const
     {
         return Compare::distance(other.begin_, begin_, step_);
     }
@@ -256,7 +256,7 @@ class CountingIterator
         return Compare::not_equal(begin_, other.begin_, step_);
     }
 
-    T operator[](ptrdiff_t n) const {
+    T operator[](std::ptrdiff_t n) const {
         return begin_ + n*step_;
     }
 
@@ -309,12 +309,12 @@ class CountingIterator
         }
         // integer counting: if the raw distance is not divisible by step,
         // we must round upwards
-        static ptrdiff_t distance(T from, T to, T step)
+        static std::ptrdiff_t distance(T from, T to, T step)
         {
             const double diff = (double(to) - double(from)) / double(step);
             return diff > 0.0
-                     ? (ptrdiff_t)std::ceil(diff)
-                     : (ptrdiff_t)std::floor(diff);
+                     ? (std::ptrdiff_t)std::ceil(diff)
+                     : (std::ptrdiff_t)std::floor(diff);
         }
     };
 
@@ -359,12 +359,12 @@ class CountingIterator
         }
         // floating-point counting: if the raw distance is not divisible by step,
         // we round to nearest if the difference is small, otherwise upwards
-        static ptrdiff_t distance(T from, T to, T step)
+        static std::ptrdiff_t distance(T from, T to, T step)
         {
             const double diff = (double(to) - double(from)) / double(step);
             return diff > 0.0
-                     ? (ptrdiff_t)std::ceil(diff*(1.0-2.0*limit::epsilon()))
-                     : (ptrdiff_t)std::floor(diff*(1.0-2.0*limit::epsilon()));
+                     ? (std::ptrdiff_t)std::ceil(diff*(1.0-2.0*limit::epsilon()))
+                     : (std::ptrdiff_t)std::floor(diff*(1.0-2.0*limit::epsilon()));
         }
     };
 
