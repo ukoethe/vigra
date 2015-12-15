@@ -51,67 +51,67 @@ namespace vigra{
 
     template<unsigned int DIM, class T_IN, class T_OUT>
     NumpyAnyArray pyBlockwiseGaussianSmoothMultiArray(
-        const NumpyArray<DIM, T_IN> &  source, 
-        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        const NumpyArray<DIM, T_IN> &  source,
+        const BlockwiseConvolutionOptions<DIM>  & opt,
         NumpyArray<DIM, T_OUT>  dest
     ){
         dest.reshapeIfEmpty(source.taggedShape());
-        blockwise::gaussianSmoothMultiArray(source, dest, opt);
+        gaussianSmoothMultiArray(source, dest, opt);
         return dest;
     }
 
     template<unsigned int DIM, class T_IN, class T_OUT>
     NumpyAnyArray pyBlockwiseGaussianGradientMagnitudeMultiArray(
-        const NumpyArray<DIM, T_IN> &  source, 
-        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        const NumpyArray<DIM, T_IN> &  source,
+        const BlockwiseConvolutionOptions<DIM>  & opt,
         NumpyArray<DIM, T_OUT>  dest
     ){
         dest.reshapeIfEmpty(source.taggedShape());
-        blockwise::gaussianGradientMagnitudeMultiArray(source, dest, opt);
+        gaussianGradientMagnitudeMultiArray(source, dest, opt);
         return dest;
     }
 
     template<unsigned int DIM, class T_IN, class T_OUT>
     NumpyAnyArray pyBlockwiseGaussianGradientMultiArray(
-        const NumpyArray<DIM, T_IN> &  source, 
-        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        const NumpyArray<DIM, T_IN> &  source,
+        const BlockwiseConvolutionOptions<DIM>  & opt,
         NumpyArray<DIM, T_OUT>  dest
     ){
         dest.reshapeIfEmpty(source.taggedShape());
-        blockwise::gaussianGradientMultiArray(source, dest, opt);
+        gaussianGradientMultiArray(source, dest, opt);
         return dest;
     }
 
     template<unsigned int DIM, class T_IN, class T_OUT>
     NumpyAnyArray pyBlockwiseHessianOfGaussianEigenvaluesMultiArray(
-        const NumpyArray<DIM, T_IN> &  source, 
-        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        const NumpyArray<DIM, T_IN> &  source,
+        const BlockwiseConvolutionOptions<DIM>  & opt,
         NumpyArray<DIM, T_OUT>  dest
     ){
         dest.reshapeIfEmpty(source.taggedShape());
-        blockwise::hessianOfGaussianEigenvaluesMultiArray(source, dest, opt);
+        hessianOfGaussianEigenvaluesMultiArray(source, dest, opt);
         return dest;
     }
 
     template<unsigned int DIM, class T_IN, class T_OUT>
     NumpyAnyArray pyBlockwiseHessianOfGaussianFirstEigenvalueMultiArray(
-        const NumpyArray<DIM, T_IN> &  source, 
-        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        const NumpyArray<DIM, T_IN> &  source,
+        const BlockwiseConvolutionOptions<DIM>  & opt,
         NumpyArray<DIM, T_OUT>  dest
     ){
         dest.reshapeIfEmpty(source.taggedShape());
-        blockwise::hessianOfGaussianFirstEigenvalueMultiArray(source, dest, opt);
+        hessianOfGaussianFirstEigenvalueMultiArray(source, dest, opt);
         return dest;
     }
 
     template<unsigned int DIM, class T_IN, class T_OUT>
     NumpyAnyArray pyBlockwiseHessianOfGaussianLastEigenvalueMultiArray(
-        const NumpyArray<DIM, T_IN> &  source, 
-        const blockwise::BlockwiseConvolutionOptions<DIM>  & opt,
+        const NumpyArray<DIM, T_IN> &  source,
+        const BlockwiseConvolutionOptions<DIM>  & opt,
         NumpyArray<DIM, T_OUT>  dest
     ){
         dest.reshapeIfEmpty(source.taggedShape());
-        blockwise::hessianOfGaussianLastEigenvalueMultiArray(source, dest, opt);
+        hessianOfGaussianLastEigenvalueMultiArray(source, dest, opt);
         return dest;
     }
 
@@ -120,7 +120,7 @@ namespace vigra{
 
     template<unsigned int DIM, class T_IN>
     void defineBlockwiseFilters(){
-        //typedef blockwise::BlockwiseConvolutionOptions<DIM> Opt;
+        //typedef BlockwiseConvolutionOptions<DIM> Opt;
 
         python::def("_gaussianSmooth",registerConverters(&pyBlockwiseGaussianSmoothMultiArray<DIM, T_IN, float>),
             (
@@ -258,14 +258,14 @@ namespace vigra{
     template<unsigned int DIM>
     void defineBlockwiseConvolutionOptions(const std::string & clsName){
 
-        typedef blockwise::BlockwiseConvolutionOptions<DIM> Opt;
+        typedef BlockwiseConvolutionOptions<DIM> Opt;
         python::class_<Opt>(clsName.c_str(), python::init<>())
         .add_property("stdDev", &Opt::getStdDev, &Opt::setStdDev)
         //.add_property("scale", &Opt::getScale, &Opt::setScale)
-        .add_property("innerScale", &Opt::getInnerScale, &Opt::setInnerScale)
-        .add_property("outerScale", &Opt::getOuterScale, &Opt::setOuterScale)
-        .add_property("blockShape", &Opt::getBlockShape, &Opt::setBlockShape)
-        .add_property("numThreads", &Opt::getNumThreads, &Opt::setNumThreads)
+        .add_property("innerScale", &Opt::getInnerScale,  &Opt::setInnerScale)
+        .add_property("outerScale", &Opt::getOuterScale,  &Opt::setOuterScale)
+        .add_property("blockShape", &Opt::readBlockShape, &Opt::setBlockShape)
+        .add_property("numThreads", &Opt::getNumThreads,  &Opt::setNumThreads)
         ;
     }
 

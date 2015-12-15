@@ -39,10 +39,11 @@
 
 #include <cmath>
 #include <vector>
-#include "vigra/multi_blocking.hxx"
-#include "vigra/multi_convolution.hxx"
-#include "vigra/multi_tensorutilities.hxx"
-#include "vigra/threadpool.hxx"
+#include "multi_blocking.hxx"
+#include "multi_convolution.hxx"
+#include "multi_tensorutilities.hxx"
+#include "threadpool.hxx"
+#include "array_vector.hxx"
 
 namespace vigra{
 
@@ -54,7 +55,7 @@ class BlockwiseOptions
 : public ParallelOptions
 {
 public:
-    typedef std::vector<MultiArrayIndex> Shape;
+    typedef ArrayVector<MultiArrayIndex> Shape;
 
     BlockwiseOptions()
     :   ParallelOptions()
@@ -68,6 +69,12 @@ public:
             <tt>getBlockShape()[0]</tt> should be used.
         */
     Shape const & getBlockShape() const
+    {
+        return blockShape_;
+    }
+
+        // for Python bindings
+    Shape readBlockShape() const
     {
         return blockShape_;
     }
@@ -109,6 +116,11 @@ public:
         return *this;
     }
 
+        // for Python bindings
+    void setBlockShape(const Shape & blockShape){
+        blockShape_ = blockShape;
+    }
+
         /** Specify block shape by a fixed-size shape object.
         */
     template <class T, int N>
@@ -128,6 +140,11 @@ public:
     {
         ParallelOptions::numThreads(n);
         return *this;
+    }
+
+    void setNumThreads(const int n)
+    {
+        ParallelOptions::numThreads(n);
     }
 
 private:

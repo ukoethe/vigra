@@ -1086,21 +1086,21 @@ vigra::NumpyAnyArray pySizeFilterSegInplace(vigra::NumpyArray<3, T>  seg, const 
 
     std::vector<bool > atBorder(maxLabel+1, false);
 
-    if (not checkAtBorder){
-        for(size_t z=0;z<seg.shape(2); ++z)
-        for(size_t y=0;y<seg.shape(1); ++y){
+    if (! checkAtBorder){
+        for(std::ptrdiff_t z=0;z<seg.shape(2); ++z)
+        for(std::ptrdiff_t y=0;y<seg.shape(1); ++y){
             atBorder[seg(0,y,z)] = true;
             atBorder[seg(seg.shape(0)-1,y,z)] = true;
         }
 
-        for(size_t z=0;z<seg.shape(2); ++z)
-        for(size_t x=0;x<seg.shape(0); ++x){
+        for(std::ptrdiff_t z=0;z<seg.shape(2); ++z)
+        for(std::ptrdiff_t x=0;x<seg.shape(0); ++x){
             atBorder[seg(x,0,z)] = true;
             atBorder[seg(x,seg.shape(1)-1,z)] = true;
         }
 
-        for(size_t y=0;y<seg.shape(1); ++y)
-        for(size_t x=0;x<seg.shape(0); ++x){
+        for(std::ptrdiff_t y=0;y<seg.shape(1); ++y)
+        for(std::ptrdiff_t x=0;x<seg.shape(0); ++x){
             atBorder[seg(x,y,0)] = true;
             atBorder[seg(x,y,seg.shape(2)-1)] = true;
         }
@@ -1135,7 +1135,9 @@ python::tuple  pyUnionFindWatershedsBlockwise(
     NumpyArray<DIM, UInt32 > out
 ){
     out.reshapeIfEmpty(data.shape());
-    UInt64 nSeg =  unionFindWatershedsBlockwise(data, out,DirectNeighborhood, blockShape);
+    UInt64 nSeg =  unionFindWatershedsBlockwise(data, out,
+                                                BlockwiseLabelOptions().neighborhood(DirectNeighborhood)
+                                                                       .blockShape(blockShape));
     return python::make_tuple(out, nSeg);
 }
 

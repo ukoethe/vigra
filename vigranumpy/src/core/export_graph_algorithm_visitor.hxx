@@ -287,7 +287,7 @@ public:
         Node nodes[3];
         Edge edges[3];
 
-        for(size_t i=0; i<cyclesNodes.size(); ++i){
+        for(std::ptrdiff_t i=0; i<cyclesNodes.size(); ++i){
             for(size_t j=0; j<3; ++j){
                 nodes[j] = graph.nodeFromId(cyclesNodes(i)[j]);
             }
@@ -310,10 +310,9 @@ public:
 
         Node nodes[3];
         Edge edges[3];
-        Int32 ids[3];
 
         edgesOut.reshapeIfEmpty(cycles.shape());
-        for(size_t i=0; i<cycles.size(); ++i){
+        for(std::ptrdiff_t i=0; i<cycles.size(); ++i){
             for(size_t j=0; j<3; ++j){
                 nodes[j] = graph.nodeFromId(cycles(i)[j]);
             }

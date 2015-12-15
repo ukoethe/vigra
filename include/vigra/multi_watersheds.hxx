@@ -336,7 +336,7 @@ watershedsGraph(Graph const & g,
     {
         typedef typename graph_detail::NeighborIndexFunctor<Graph>::index_type index_type;
 
-        vigra_precondition(g.maxDegree() <= NumericTraits<index_type>::max(),
+        vigra_precondition((index_type)g.maxDegree() <= NumericTraits<index_type>::max(),
             "watershedsGraph(): cannot handle nodes with degree > 65535.");
 
         typename Graph::template NodeMap<index_type>  lowestNeighborIndex(g);
