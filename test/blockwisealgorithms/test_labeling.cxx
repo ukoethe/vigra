@@ -55,7 +55,6 @@ template <class DatasIterator, class ShapesIterator>
 void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                   ShapesIterator shapes_begin, ShapesIterator shapes_end)
 {
-    using namespace blockwise;
     for(DatasIterator datas_it = datas_begin ; datas_it != datas_end; ++datas_it)
     {
         typedef typename DatasIterator::reference DataRef;

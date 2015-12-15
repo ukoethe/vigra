@@ -371,13 +371,9 @@ class LabelOptions
     {
         if(background_value_.empty())
             return T();
-        if(background_value_.template is_convertible<T>())
-            return background_value_.template cast<T>();
-        if(background_value_.template is_type<T>())
-            return background_value_.template get<T>();
-        vigra_precondition(false,
+        vigra_precondition(background_value_.template is_readable<T>(),
             "LabelOptions::getBackgroundValue<T>(): stored background value is not convertible to T.");
-        return T(); // unreachable
+        return background_value_.template read<T>();
     }
 };
 
@@ -388,6 +384,8 @@ class LabelOptions
 /********************************************************/
 
 /** \brief Find the connected components of a MultiArray with arbitrary many dimensions.
+
+    See also \ref labelMultiArrayBlockwise() for a parallel version of this algorithm.
 
     <b> Declaration:</b>
 

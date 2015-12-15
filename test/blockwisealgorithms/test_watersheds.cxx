@@ -49,8 +49,6 @@
 
 using namespace std;
 using namespace vigra;
-using namespace vigra::blockwise;
-using namespace vigra::blockwise::blockwise_watersheds_detail;
 
 struct BlockwiseWatershedTest
 {

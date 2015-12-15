@@ -53,8 +53,6 @@
 namespace vigra
 {
 
-namespace blockwise{
-
 /** \addtogroup Labeling
 */
 //@{
@@ -502,8 +500,6 @@ Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
 }
 
 //@}
-
-} // namespace blockwise
 
 } // namespace vigra
 

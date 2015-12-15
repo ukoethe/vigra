@@ -48,8 +48,6 @@
 namespace vigra
 {
 
-namespace blockwise {
-
 /** \addtogroup SeededRegionGrowing
 */
 //@{
@@ -254,8 +252,6 @@ unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
 }
 
 //@}
-
-} // namespace blockwise
 
 } // namespace vigra
 

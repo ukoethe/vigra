@@ -51,107 +51,113 @@
 
 namespace vigra{
 
-namespace blockwise{
+    /** Option base class for blockwise algorithms.
 
-    /// base option class for blockwise algorithms
-    /// attaches blockshape to ParallelOptions
-    class BlockwiseOptions
-    : public ParallelOptions
+        Attaches blockshape to ParallelOptions.
+    */
+class BlockwiseOptions
+: public ParallelOptions
+{
+public:
+    typedef std::vector<MultiArrayIndex> Shape;
+
+    BlockwiseOptions()
+    :   ParallelOptions()
+    ,   blockShape_()
+    {}
+
+        /** Retrieve block shape as a std::vector.
+
+            If the returned vector is empty, a default block shape should be used.
+            If the returned vector has length 1, square blocks of size
+            <tt>getBlockShape()[0]</tt> should be used.
+        */
+    Shape const & getBlockShape() const
     {
-    public:
-        typedef std::vector<MultiArrayIndex> Shape;
+        return blockShape_;
+    }
 
-        BlockwiseOptions()
-        :   ParallelOptions()
-        ,   blockShape_()
-        {}
+        /** Retrieve block shape as a fixed-size vector.
 
-            /** Retrieve block shape as a std::vector.
-
-                If the returned vector is empty, a default block shape should be used.
-                If the returned vector has length 1, square blocks of size
-                <tt>getBlockShape()[0]</tt> should be used.
-            */
-        Shape const & getBlockShape() const
+            Default shape specifications are appropriately expanded.
+            An exception is raised if the stored shape's length is
+            incompatible with dimension <tt>N</tt>.
+        */
+    template <int N>
+    TinyVector<MultiArrayIndex, N> getBlockShapeN() const
+    {
+        if(blockShape_.size() > 1)
         {
-            return blockShape_;
+            vigra_precondition(blockShape_.size() == (size_t)N,
+                "BlockwiseOptions::getBlockShapeN(): dimension mismatch between N and stored block shape.");
+            return TinyVector<MultiArrayIndex, N>(blockShape_.data());
         }
-
-            /** Retrieve block shape as a fixed-size vector.
-
-                Default shape specifications are appropriately expanded.
-                An exception is raised if the stored shape's length is
-                incompatible with dimension <tt>N</tt>.
-            */
-        template <int N>
-        TinyVector<MultiArrayIndex, N> getBlockShapeN() const
+        else if(blockShape_.size() == 1)
         {
-            if(blockShape_.size() > 1)
-            {
-                vigra_precondition(blockShape_.size() == (size_t)N,
-                    "BlockwiseOptions::getBlockShapeN(): dimension mismatch between N and stored block shape.");
-                return TinyVector<MultiArrayIndex, N>(blockShape_.data());
-            }
-            else if(blockShape_.size() == 1)
-            {
-                return TinyVector<MultiArrayIndex, N>(blockShape_[0]);
-            }
-            else
-            {
-                // FIXME: replace VIGRA_DEFAULT_BLOCK_SHAPE with existing chunk shape metafunctions
-                return TinyVector<MultiArrayIndex, N>(VIGRA_DEFAULT_BLOCK_SHAPE);
-            }
+            return TinyVector<MultiArrayIndex, N>(blockShape_[0]);
         }
-
-            /** Specify block shape as a std::vector of appropriate length.
-                If <tt>blockShape.size() == 0</tt>, the default shape is used.
-                If <tt>blockShape.size() == 1</tt>, square blocks of size
-                <tt>blockShape[0]</tt> are used.
-
-                Default: Use square blocks with side length <tt>VIGRA_DEFAULT_BLOCK_SHAPE</tt>.
-            */
-        BlockwiseOptions & blockShape(const Shape & blockShape){
-            blockShape_ = blockShape;
-            return *this;
-        }
-
-            /** Specify block shape by a fixed-size shape object.
-            */
-        template <class T, int N>
-        BlockwiseOptions & blockShape(const TinyVector<T, N> & blockShape){
-            Shape(blockShape.begin(), blockShape.end()).swap(blockShape_);
-            return *this;
-        }
-
-            /** Specify square block shape by its side length.
-            */
-        BlockwiseOptions & blockShape(MultiArrayIndex blockShape){
-            Shape(1, blockShape).swap(blockShape_);
-            return *this;
-        }
-
-        BlockwiseOptions & numThreads(const int n)
+        else
         {
-            ParallelOptions::numThreads(n);
-            return *this;
+            // FIXME: replace VIGRA_DEFAULT_BLOCK_SHAPE with existing chunk shape metafunctions
+            return TinyVector<MultiArrayIndex, N>(VIGRA_DEFAULT_BLOCK_SHAPE);
         }
+    }
 
-    private:
-        Shape blockShape_;
-    };
+        /** Specify block shape as a std::vector of appropriate length.
+            If <tt>blockShape.size() == 0</tt>, the default shape is used.
+            If <tt>blockShape.size() == 1</tt>, square blocks of size
+            <tt>blockShape[0]</tt> are used.
 
-    template<unsigned int N>
-    class BlockwiseConvolutionOptions
-    :   public  BlockwiseOptions
-    ,   public vigra::ConvolutionOptions<N>{
-    public:
-        BlockwiseConvolutionOptions()
-        :   BlockwiseOptions(),
-            vigra::ConvolutionOptions<N>(){
-        }
-    private:
+            Default: Use square blocks with side length <tt>VIGRA_DEFAULT_BLOCK_SHAPE</tt>.
+        */
+    BlockwiseOptions & blockShape(const Shape & blockShape){
+        blockShape_ = blockShape;
+        return *this;
+    }
 
-    };
+        /** Specify block shape by a fixed-size shape object.
+        */
+    template <class T, int N>
+    BlockwiseOptions & blockShape(const TinyVector<T, N> & blockShape){
+        Shape(blockShape.begin(), blockShape.end()).swap(blockShape_);
+        return *this;
+    }
+
+        /** Specify square block shape by its side length.
+        */
+    BlockwiseOptions & blockShape(MultiArrayIndex blockShape){
+        Shape(1, blockShape).swap(blockShape_);
+        return *this;
+    }
+
+    BlockwiseOptions & numThreads(const int n)
+    {
+        ParallelOptions::numThreads(n);
+        return *this;
+    }
+
+private:
+    Shape blockShape_;
+};
+
+    /** Option class for blockwise convolution algorithms.
+
+        Simply derives from \ref vigra::BlockwiseOptions and
+        \ref vigra::ConvolutionOptions to join their capabilities.
+    */
+template<unsigned int N>
+class BlockwiseConvolutionOptions
+:   public  BlockwiseOptions
+,   public  ConvolutionOptions<N>{
+public:
+    BlockwiseConvolutionOptions()
+    :   BlockwiseOptions(),
+        ConvolutionOptions<N>()
+    {}
+};
+
+
+namespace blockwise{
 
     /**
         helper function to create blockwise parallel filters.
@@ -395,41 +401,52 @@ namespace blockwise{
         return res;
     }
 
-
-    #define BLOCKWISE_FUNCTION_GEN(FUNCTOR, FUNCTION, ORDER, USES_OUTER_SCALE) \
-    template <unsigned int N, class T1, class S1, class T2, class S2> \
-    void FUNCTION( \
-        MultiArrayView<N, T1, S1> const & source, \
-        MultiArrayView<N, T2, S2> dest, \
-        const BlockwiseConvolutionOptions<N> & options \
-    ) \
-    {  \
-        typedef  MultiBlocking<N, vigra::MultiArrayIndex> Blocking; \
-        typedef typename Blocking::Shape Shape; \
-        const Shape border = getBorder(options, ORDER, USES_OUTER_SCALE); \
-        BlockwiseConvolutionOptions<N> subOptions(options); \
-        subOptions.subarray(Shape(0), Shape(0));  \
-        const Blocking blocking(source.shape(), options.template getBlockShapeN<N>()); \
-        FUNCTOR f(subOptions); \
-        blockwiseCaller(source, dest, f, blocking, border, options); \
-    }
-
-    BLOCKWISE_FUNCTION_GEN(GaussianSmoothFunctor<N> ,                   gaussianSmoothMultiArray,                   0, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianGradientFunctor<N> ,                 gaussianGradientMultiArray,                 1, false );
-    BLOCKWISE_FUNCTION_GEN(SymmetricGradientFunctor<N> ,                symmetricGradientMultiArray,                1, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianDivergenceFunctor<N> ,               gaussianDivergenceMultiArray,               1, false );
-    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFunctor<N> ,                hessianOfGaussianMultiArray,                2, false );
-    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianEigenvaluesFunctor<N> ,     hessianOfGaussianEigenvaluesMultiArray,     2, false );
-    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianFirstEigenvalueFunctor<N> , hessianOfGaussianFirstEigenvalueMultiArray, 2, false );
-    BLOCKWISE_FUNCTION_GEN(HessianOfGaussianLastEigenvalueFunctor<N> ,  hessianOfGaussianLastEigenvalueMultiArray,  2, false );
-    BLOCKWISE_FUNCTION_GEN(LaplacianOfGaussianFunctor<N> ,              laplacianOfGaussianMultiArray,              2, false );
-    BLOCKWISE_FUNCTION_GEN(GaussianGradientMagnitudeFunctor<N>,         gaussianGradientMagnitudeMultiArray,        1, false );
-    BLOCKWISE_FUNCTION_GEN(StructureTensorFunctor<N> ,                  structureTensorMultiArray,                  1, true  );
-
-
-    #undef  BLOCKWISE_FUNCTION_GEN
-
 } // end namespace blockwise
+
+#define VIGRA_BLOCKWISE(FUNCTOR, FUNCTION, ORDER, USES_OUTER_SCALE) \
+template <unsigned int N, class T1, class S1, class T2, class S2> \
+void FUNCTION( \
+    MultiArrayView<N, T1, S1> const & source, \
+    MultiArrayView<N, T2, S2> dest, \
+    BlockwiseConvolutionOptions<N> const & options \
+) \
+{  \
+    typedef  MultiBlocking<N, vigra::MultiArrayIndex> Blocking; \
+    typedef typename Blocking::Shape Shape; \
+    const Shape border = blockwise::getBorder(options, ORDER, USES_OUTER_SCALE); \
+    BlockwiseConvolutionOptions<N> subOptions(options); \
+    subOptions.subarray(Shape(0), Shape(0));  \
+    const Blocking blocking(source.shape(), options.template getBlockShapeN<N>()); \
+    blockwise::FUNCTOR<N> f(subOptions); \
+    blockwise::blockwiseCaller(source, dest, f, blocking, border, options); \
+}
+
+VIGRA_BLOCKWISE(GaussianSmoothFunctor,                   gaussianSmoothMultiArray,                   0, false );
+VIGRA_BLOCKWISE(GaussianGradientFunctor,                 gaussianGradientMultiArray,                 1, false );
+VIGRA_BLOCKWISE(SymmetricGradientFunctor,                symmetricGradientMultiArray,                1, false );
+VIGRA_BLOCKWISE(GaussianDivergenceFunctor,               gaussianDivergenceMultiArray,               1, false );
+VIGRA_BLOCKWISE(HessianOfGaussianFunctor,                hessianOfGaussianMultiArray,                2, false );
+VIGRA_BLOCKWISE(HessianOfGaussianEigenvaluesFunctor,     hessianOfGaussianEigenvaluesMultiArray,     2, false );
+VIGRA_BLOCKWISE(HessianOfGaussianFirstEigenvalueFunctor, hessianOfGaussianFirstEigenvalueMultiArray, 2, false );
+VIGRA_BLOCKWISE(HessianOfGaussianLastEigenvalueFunctor,  hessianOfGaussianLastEigenvalueMultiArray,  2, false );
+VIGRA_BLOCKWISE(LaplacianOfGaussianFunctor,              laplacianOfGaussianMultiArray,              2, false );
+VIGRA_BLOCKWISE(GaussianGradientMagnitudeFunctor,        gaussianGradientMagnitudeMultiArray,        1, false );
+VIGRA_BLOCKWISE(StructureTensorFunctor,                  structureTensorMultiArray,                  1, true  );
+
+#undef  VIGRA_BLOCKWISE
+
+    // alternative name for backward compatibility
+template <unsigned int N, class T1, class S1, class T2, class S2>
+inline void
+gaussianGradientMagnitude(
+    MultiArrayView<N, T1, S1> const & source,
+    MultiArrayView<N, T2, S2> dest,
+    BlockwiseConvolutionOptions<N> const & options)
+{
+    gaussianGradientMagnitudeMultiArray(source, dest, options);
+}
+
+
 } // end namespace vigra
 
 #endif // VIGRA_MULTI_BLOCKWISE_HXX
