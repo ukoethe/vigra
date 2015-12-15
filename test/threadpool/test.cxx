@@ -192,7 +192,7 @@ struct ThreadPoolTests
         size_t const n = 2000;
         std::vector<size_t> input(n);
         std::iota(input.begin(), input.end(), 0);
-        std::vector<size_t> results(n_threads, 0);
+        std::vector<size_t> results(std::max<size_t>(n_threads, 1), 0);
 
         parallel_foreach(n_threads, input.begin(), input.end(),
             [&results](size_t thread_id, size_t x)
