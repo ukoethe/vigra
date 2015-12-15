@@ -339,17 +339,19 @@ class Any
     template <class T>
     bool is_type() const
     {
-        return bool(handle_) && dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get()) != 0;
+        return dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get()) != 0;
     }
 
         /** Check if this object's value is convertible to the given type.
-            At present, this is only implemented for arithmetic types.
+            At present, this only succeeds if <tt>T</tt> matches the stored
+            type exactly or is an arithmetic type convertible from the stored type.
         */
     template <class T>
-    bool is_convertible() const
+    bool is_readable() const
     {
-        return std::is_arithmetic<T>::value && bool(handle_) &&
-               dynamic_cast<detail::ConvertibleAnyHandle const *>(handle_.get()) != 0;
+        return  (dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get()) != 0) ||
+                (std::is_arithmetic<T>::value &&
+                 dynamic_cast<detail::ConvertibleAnyHandle const *>(handle_.get()) != 0);
     }
 
         /** Read-write access to the contained value. This throws an exception
@@ -359,7 +361,7 @@ class Any
     T & get()
     {
         vigra_precondition(bool(handle_), "Any::get(): object empty.");
-        detail::TypedAnyHandle<T> * ptr = dynamic_cast<detail::TypedAnyHandle<T> *>(handle_.get());
+        auto ptr = dynamic_cast<detail::TypedAnyHandle<T> *>(handle_.get());
         vigra_precondition(ptr != 0, "Any::get(): object is not an instance of the target type.");
         return ptr->value_;
     }
@@ -371,22 +373,25 @@ class Any
     T const & get() const
     {
         vigra_precondition(bool(handle_), "Any::get(): object empty.");
-        detail::TypedAnyHandle<T> const * ptr = dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get());
+        auto ptr = dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get());
         vigra_precondition(ptr != 0, "Any::get(): object is not an instance of the target type.");
         return ptr->value_;
     }
 
-        /** Convert the contained value to the given type. This throws an exception
-            if <tt>T</tt> or the contained type are not arithmetic types.
+        /** By-value access to the stored value. This throws an exception
+            if the stored type doesn't match <tt>T</tt> and <tt>T</tt> is
+            not an arithmetic type.
         */
     template <class T>
-    T cast() const
+    T read() const
     {
-        vigra_precondition(bool(handle_), "Any::cast(): object empty.");
-        detail::ConvertibleAnyHandle const * ptr =
-                      dynamic_cast<detail::ConvertibleAnyHandle const *>(handle_.get());
-        vigra_precondition(ptr != 0, "Any::cast(): object is not covertible to the target type.");
-        return ptr->cast(detail::ConvertibleAnyHandle::TypeTag<T>());
+        vigra_precondition(bool(handle_), "Any::read(): object empty.");
+        auto ptr1 = dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get());
+        if(ptr1 != 0)
+            return ptr1->value_;
+        auto ptr2 = dynamic_cast<detail::ConvertibleAnyHandle const *>(handle_.get());
+        vigra_precondition(ptr2 != 0, "Any::read(): object is not covertible to the target type.");
+        return ptr2->cast(detail::ConvertibleAnyHandle::TypeTag<T>());
     }
 };
 

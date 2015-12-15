@@ -1437,8 +1437,8 @@ struct AnyTest
         should(a != c);
 
         should(a.is_type<int>());
-        should(a.is_convertible<int>());
-        should(a.is_convertible<float>());
+        should(a.is_readable<int>());
+        should(a.is_readable<float>());
         shouldNot(c.is_type<int>());
 
         c = a;
@@ -1475,9 +1475,9 @@ struct AnyTest
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
 
-        shouldEqual(a.cast<unsigned int>(), 10u);
-        shouldEqual(a.cast<float>(), 10.0f);
-        shouldEqual(a.cast<double>(), 10.0);
+        shouldEqual(a.read<unsigned int>(), 10u);
+        shouldEqual(a.read<float>(), 10.0f);
+        shouldEqual(a.read<double>(), 10.0);
 
         a.get<int>() = 11;
         shouldEqual(a.get<int>(), 11);
@@ -1496,9 +1496,9 @@ struct AnyTest
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
 
-        shouldEqual(a.cast<int>(), 12);
-        shouldEqual(a.cast<unsigned int>(), 12u);
-        shouldEqual(a.cast<float>(), 12.25f);
+        shouldEqual(a.read<int>(), 12);
+        shouldEqual(a.read<unsigned int>(), 12u);
+        shouldEqual(a.read<float>(), 12.25f);
 
         swap(a, c);
         shouldEqual(a.get<int>(), 10);
@@ -1509,12 +1509,12 @@ struct AnyTest
         shouldEqual(s.get<P>().get(), t.get<P>().get());
         shouldEqual(*(s.get<P>()), 5);
         try {
-            s.cast<int>();
+            s.read<int>();
             failTest("no exception thrown");
         }
         catch(std::exception & e)
         {
-            std::string expected("\nPrecondition violation!\nAny::cast(): object is not covertible to the target type.");
+            std::string expected("\nPrecondition violation!\nAny::read(): object is not covertible to the target type.");
             std::string message(e.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
