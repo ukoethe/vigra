@@ -44,11 +44,6 @@
 #include "vigra/multi_tensorutilities.hxx"
 #include "vigra/threadpool.hxx"
 
-#ifndef VIGRA_DEFAULT_BLOCK_SHAPE
-    #define VIGRA_DEFAULT_BLOCK_SHAPE 64
-#endif
-
-
 namespace vigra{
 
     /** Option base class for blockwise algorithms.
@@ -98,8 +93,7 @@ public:
         }
         else
         {
-            // FIXME: replace VIGRA_DEFAULT_BLOCK_SHAPE with existing chunk shape metafunctions
-            return TinyVector<MultiArrayIndex, N>(VIGRA_DEFAULT_BLOCK_SHAPE);
+            return detail::ChunkShape<N>::defaultShape();
         }
     }
 

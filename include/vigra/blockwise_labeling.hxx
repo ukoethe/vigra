@@ -294,9 +294,6 @@ void toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator 
     }
 }
 
-
-static const MultiArrayIndex default_block_side_length = 128;
-
 } // namespace blockwise_labeling_detail
 
 template <unsigned int N, class Data, class S1,
