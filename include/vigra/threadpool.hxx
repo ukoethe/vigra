@@ -63,8 +63,9 @@ namespace vigra
         <b>\#include</b> \<vigra/threadpool.hxx\><br>
         Namespace: vigra
     */
-class ParallelOptions{
-public:
+class ParallelOptions
+{
+  public:
 
         /** Constants for special settings.
         */
@@ -78,9 +79,26 @@ public:
     :   numThreads_(actualNumThreads(Auto))
     {}
 
+        /** \brief Get desired number of threads.
+
+            <b>Note:</b> This function may return 0, which means that multi-threading
+            shall be switched off entirely. If an algorithm receives this value,
+            it should revert to a sequential implementation. In contrast, if
+            <tt>numThread() == 1</tt>, the parallel algorithm version shall be
+            executed with a single thread.
+        */
     int getNumThreads() const
     {
         return numThreads_;
+    }
+
+        /** \brief Get desired number of threads.
+
+            In contrast to <tt>numThread()</tt>, this will always return a value <tt>>=1</tt>.
+        */
+    int getActualNumThreads() const
+    {
+        return std::max(1,numThreads_);
     }
 
         /** \brief Set the number of threads or one of the constants <tt>Auto</tt>,
@@ -89,8 +107,11 @@ public:
             Default: <tt>ParallelOptions::Auto</tt> (use system default)
 
             This setting is ignored if the preprocessor flag <tt>VIGRA_NO_PARALLELISM</tt>
-            is defined. Then, the number of threads is set to 0 and all tasks are
-            executed sequentially (useful for debugging).
+            is defined. Then, the number of threads is set to 0 and all tasks revert to
+            sequential algorithm implementations. The same can be achieved at runtime
+            by passing <tt>n = 0</tt> to this function. In contrast, passing <tt>n = 1</tt>
+            causes the parallel algorithm versions to be executed with a single thread.
+            Both possibilities are mainly useful for debugging.
         */
     ParallelOptions & numThreads(const int n)
     {
@@ -98,6 +119,8 @@ public:
         return *this;
     }
 
+
+  private:
         // helper function to compute the actual number of threads
     static size_t actualNumThreads(const int userNThreads)
     {
@@ -112,7 +135,6 @@ public:
         #endif
     }
 
-  private:
     int numThreads_;
 };
 
@@ -141,7 +163,7 @@ class ThreadPool
         busy(0),
         processed(0)
     {
-        init(options.getNumThreads());
+        init(options);
     }
 
     /** Create a thread pool with n threads. The constructor just launches
@@ -159,7 +181,7 @@ class ThreadPool
         busy(0),
         processed(0)
     {
-        init(n);
+        init(ParallelOptions().numThreads(n));
     }
 
     /**
@@ -203,7 +225,7 @@ class ThreadPool
 private:
 
     // helper function to init the thread pool
-    void init(const int n);
+    void init(const ParallelOptions & options);
 
     // need to keep track of threads so we can join them
     std::vector<std::thread> workers;
@@ -219,10 +241,9 @@ private:
     std::atomic<unsigned int> busy, processed;
 };
 
-inline void ThreadPool::init(const int threads)
+inline void ThreadPool::init(const ParallelOptions & options)
 {
-    const size_t actualNThreads = ParallelOptions::actualNumThreads(threads);
-    //vigra_precondition(threads > 0, "ThreadPool::ThreadPool(): n_threads must not be zero.");
+    const size_t actualNThreads = options.getNumThreads();
     for(size_t ti = 0; ti<actualNThreads; ++ti)
     {
         workers.emplace_back(
