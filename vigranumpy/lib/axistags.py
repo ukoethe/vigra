@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 
 class TaggedArray(np.ndarray):
 
@@ -229,7 +229,7 @@ class TaggedArray(np.ndarray):
                'max', 'mean', 'min', 'nonzero', 'prod', 'ptp', 'ravel', 'repeat', 
                'reshape', 'resize', 'squeeze', 'std', 'sum', 'swapaxes', 'take', 
                'transpose', 'var']:
-        exec k + '.__doc__ = np.ndarray.' + k + '.__doc__'
+        exec(k + '.__doc__ = np.ndarray.' + k + '.__doc__')
 
         
 def benchmark(expression):
@@ -245,6 +245,6 @@ def benchmark(expression):
          "import numpy, axistags\na = numpy.ndarray((2,3,4), dtype=numpy.uint8)")
     t3 = timeit.Timer(expression, 
          "import numpy, axistags\na = axistags.TaggedArray((2,3,4), axistags='zyx', dtype=numpy.uint8).view(numpy.ndarray)")
-    print "TaggedArray:", t1.timeit(repetitions)/repetitions*1e6,"musec"
-    print "ndarray:", t2.timeit(repetitions)/repetitions*1e6,"musec"
-    print "TaggedArray as ndarray:", t3.timeit(repetitions)/repetitions*1e6,"musec"
+    print("TaggedArray:", t1.timeit(repetitions)/repetitions*1e6,"musec")
+    print("ndarray:", t2.timeit(repetitions)/repetitions*1e6,"musec")
+    print("TaggedArray as ndarray:", t3.timeit(repetitions)/repetitions*1e6,"musec")
