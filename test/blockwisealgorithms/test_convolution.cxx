@@ -3,9 +3,10 @@
 
 #include <vigra/multi_convolution.hxx>
 #include <vigra/unittest.hxx>
+#include <vigra/multi_blocking.hxx>
+#include <vigra/multi_blockwise.hxx>
 
 #include <iostream>
-
 #include "utils.hxx"
 
 using namespace std;
@@ -67,6 +68,42 @@ struct BlockwiseConvolutionTest
             shouldEqual(data[i], checked_out_data[i]);
         }
     }
+
+    void testParallel()
+    {
+        double sigma = 1.0;
+        BlockwiseConvolutionOptions<2>   opt;
+        TinyVector<double, 2> sigmaV(sigma, sigma);
+
+        opt.setStdDev(sigmaV);
+        opt.blockShape(TinyVector<int, 2>(5,7));
+        opt.numThreads(ParallelOptions::Nice);
+        std::cout << "running testParallel() with " << opt.getNumThreads() << " threads." << std::endl;
+
+        typedef MultiArray<2, double> Array;
+        typedef Array::difference_type Shape;
+        
+        // random array
+        Shape shape(200,200);
+        Array data(shape);
+        fillRandom(data.begin(), data.end(), 2000);
+
+        // blockwise
+        Array resB(shape);
+        gaussianSmoothMultiArray(data, resB, opt);
+
+        // sequential
+        Array res(shape);
+        gaussianSmoothMultiArray(data, res, sigma);
+
+        shouldEqualSequenceTolerance(
+            res.begin(), 
+            res.end(), 
+            resB.begin(), 
+            1e-14
+        );
+
+    }
 };
 
 struct BlockwiseConvolutionTestSuite
@@ -77,6 +114,7 @@ struct BlockwiseConvolutionTestSuite
     {
         add(testCase(&BlockwiseConvolutionTest::simpleTest));
         add(testCase(&BlockwiseConvolutionTest::chunkedTest));
+        add(testCase(&BlockwiseConvolutionTest::testParallel));
     }
 };
 

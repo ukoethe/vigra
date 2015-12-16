@@ -79,6 +79,13 @@ namespace vigra{
         return new GridGraph<DIM,DTAG>(shape,directNeighborhood?DirectNeighborhood:IndirectNeighborhood);
     }
 
+
+
+    template<unsigned int DIM>
+    void defineGridGraphRagSerialization();
+
+
+
     template<unsigned int DIM>
     void defineGridGraphT2d(const std::string & clsName){
 
@@ -102,6 +109,7 @@ namespace vigra{
 
     void defineGridGraph2d(){
         defineGridGraphT2d<2>("GridGraphUndirected2d");
+        defineGridGraphRagSerialization<2>();
         //defineGridGraphT<3>("GridGraphUndirected3d");
     }
 

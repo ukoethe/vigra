@@ -54,7 +54,7 @@ namespace vigra{
         const NumpyArray<1,UInt32> indices,
         const NumpyArray<1,float>  priorities
     ){
-        for(size_t i=0;i<indices.shape(0);++i){
+        for(std::ptrdiff_t i=0;i<indices.shape(0);++i){
             pq.push(indices(i),priorities(i));
         }
     }

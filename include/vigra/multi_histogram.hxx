@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -46,7 +46,7 @@ namespace vigra{
 
 
     template< unsigned int DIM , class T_DATA ,unsigned int CHANNELS, class T_HIST >
-    void multi_gaussian_histogram(
+    void multiGaussianHistogram(
         const MultiArrayView<DIM, TinyVector<T_DATA,CHANNELS> > & image,
         const TinyVector<T_DATA,CHANNELS> minVals,
         const TinyVector<T_DATA,CHANNELS> maxVals,
@@ -84,7 +84,7 @@ namespace vigra{
             }
         }
 
-        MultiArray<DIM+2 , T_HIST>    histogramBuffer(histogram);
+        //MultiArray<DIM+2 , T_HIST>    histogramBuffer(histogram);
         Kernel1D<float> gauss,gaussBin;
         gauss.initGaussian(sigma);
         gaussBin.initGaussian(sigmaBin);
@@ -92,41 +92,22 @@ namespace vigra{
 
             // histogram for one channel
             MultiArrayView<DIM+1,T_HIST> histc       = histogram.bindOuter(c);
-            MultiArrayView<DIM+1,T_HIST> histcBuffer = histogram.bindOuter(c);
+            //MultiArrayView<DIM+1,T_HIST> histcBuffer = histogram.bindOuter(c);
 
-            // convolve along all spatial axis and bin axis
-            // - refactor me
-            if(DIM==2){
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 0, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 1, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 2, gaussBin);
-                histc=histcBuffer;
-            }
-            else if(DIM==3){
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 0, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 1, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 2, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 3, gaussBin);
-                histc=histcBuffer;
-            }
-            else if(DIM==4){
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 0, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 1, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 2, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histcBuffer), destMultiArray(histc), 3, gauss);
-                convolveMultiArrayOneDimension(srcMultiArrayRange(histc), destMultiArray(histcBuffer), 4, gaussBin);
-                histc=histcBuffer;
-            }
-            else{
-                throw std::runtime_error("not yet implemented for arbitrary dimension");
-            }
+            ConvolutionOptions<DIM+1> opts;
+            TinyVector<double, DIM+1> sigmaVec(sigma);
+            sigmaVec[DIM] = sigmaBin;
+            opts.stdDev(sigmaVec);
+
+            // convolve spatial dimensions
+            gaussianSmoothMultiArray(histc, histc, opts);
+
         }
-
 
     }
 
     template< unsigned int DIM , class T_DATA, class T_HIST >
-    void multi_gaussian_co_histogram(
+    void multiGaussianCoHistogram(
         const MultiArrayView<DIM, T_DATA > & imageA,
         const MultiArrayView<DIM, T_DATA > & imageB,
         const TinyVector<T_DATA,2> & minVals,
@@ -159,7 +140,7 @@ namespace vigra{
             HistCoord histCoord;
             for(size_t d=0;d<DIM;++d)
                 histCoord[d]=node[d];
-            
+
             histCoord[DIM]=binIndexA;
             histCoord[DIM+1]=binIndexB;
 
@@ -170,7 +151,7 @@ namespace vigra{
             histCoord[DIM]=std::min(biA,static_cast<unsigned int>(nBins[0]-1));
             histCoord[DIM+1]=std::min(biB,static_cast<unsigned int>(nBins[1]-1));
             histogram[histCoord]+=1.0;
-            
+
         }
 
         MultiArray<DIM+2 , T_HIST>    histogramBuffer(histogram);
@@ -205,10 +186,146 @@ namespace vigra{
             throw std::runtime_error("not yet implemented for arbitrary dimension");
         }
 
-
-
     }
 
+
+
+
+    template< unsigned int DIM , class T, class V, class U>
+    void multiGaussianRankOrder(
+        const MultiArrayView<DIM, T > & image,
+        const T minVal,
+        const T maxVal,
+        const size_t bins,
+        const TinyVector<double, DIM+1> sigmas,
+        const MultiArrayView<1, V> & ranks,
+        MultiArrayView<DIM+1, U> out
+    ){
+        typedef MultiArray<DIM, T> ImgType;
+        typedef typename ImgType::difference_type ImgCoord;
+
+        typedef MultiArray<DIM+1, float> HistType;
+        typedef typename HistType::difference_type HistCoord;
+
+        typedef MultiArray<DIM+1, U> OutType;
+        typedef typename OutType::difference_type OutCoord;
+
+
+        HistCoord histShape;
+        std::copy(image.shape().begin(), image.shape().end(), histShape.begin());
+        histShape[DIM] = bins;
+        HistType histA(histShape);
+
+        histA = 0.0;
+
+        // collect values
+        HistCoord histCoord,nextHistCoord;
+        {
+            MultiCoordinateIterator<DIM> iter(image.shape());
+            for(std::ptrdiff_t i=0 ;i<image.size(); ++i, ++iter){
+                const ImgCoord imgCoord(*iter);
+                std::copy(imgCoord.begin(),imgCoord.end(),histCoord.begin() );
+
+                const T value = image[imgCoord];
+                const T fbinIndex = ((value-minVal)/(maxVal-minVal))*bins;
+                const T fFloorBin = std::floor(fbinIndex);
+                const int floorBin = static_cast<int>(fFloorBin);
+                const int ceilBin = static_cast<int>(std::ceil(fbinIndex));
+
+                if(floorBin==ceilBin){
+                   histCoord[DIM] = floorBin;
+                   histA[histCoord] += 1.0;
+                }
+                else{
+                    const T floorBin = std::floor(fbinIndex);
+                    const T ceilBin = std::ceil(fbinIndex);
+                    const double ceilW = (fbinIndex - fFloorBin);
+                    const double floorW = 1.0 - ceilW;
+                    histCoord[DIM] = floorBin;
+                    histA[histCoord] += floorW;
+                    histCoord[DIM] = ceilBin;
+                    histA[histCoord] += ceilW;
+                }
+
+            }
+        }
+        //
+        ConvolutionOptions<DIM+1> opts;
+        opts.stdDev(sigmas);
+
+        // convolve spatial dimensions
+        gaussianSmoothMultiArray(histA, histA, opts);
+
+        OutCoord outCoord;
+
+
+        std::vector<float> histBuffer(bins);
+        //std::cout<<"normalize and compute ranks\n";
+        {
+            MultiCoordinateIterator<DIM> iter(image.shape());
+            for(std::ptrdiff_t i=0 ;i<image.size(); ++i, ++iter){
+
+                // normalize
+                const ImgCoord imgCoord(*iter);
+                //std::cout<<"at pixel "<<imgCoord<<"\n";
+
+                std::copy(imgCoord.begin(),imgCoord.end(),histCoord.begin() );
+                nextHistCoord = histCoord;
+                std::copy(imgCoord.begin(),imgCoord.end(),outCoord.begin() );
+                double sum = 0;
+                for(size_t bi=0; bi<bins; ++bi){
+                    histCoord[DIM] = bi;
+                    sum += histA[histCoord];
+                }
+                for(size_t bi=0; bi<bins; ++bi){
+                    histCoord[DIM] = bi;
+                    histA[histCoord] /= sum;
+                }
+                histCoord[DIM] = 0;
+                histBuffer[0] = histA[histCoord];
+                for(size_t bi=1; bi<bins; ++bi){
+
+                    double prevVal =  histA[histCoord];
+                    histCoord[DIM] = bi;
+                    histA[histCoord] +=prevVal;
+                    histBuffer[bi] = histA[histCoord];
+                }
+
+
+
+                size_t bi=0;
+                for(std::ptrdiff_t r=0; r<ranks.size(); ++r){
+                    outCoord[DIM] = r;
+                    const V rank = ranks[r];
+                    histCoord[DIM] = bi;
+                    nextHistCoord[DIM] = bi +1;
+                    //std::cout<<"    bi "<<bi<<" rank "<<rank<<" "<<histA[histCoord]<<"\n";
+                    // corner cases
+                    if(rank < histA[histCoord] ||
+                       std::abs(rank-histA[histCoord])< 0.0000001 ||
+                       bi==bins-1
+                    ){
+                        out[outCoord] = static_cast<U>((maxVal-minVal)*bi*bins + minVal);
+                        break;
+                    }
+                    else{
+                        // with binary search
+                        const size_t upperBinIndex =
+                            std::distance(histBuffer.begin(),std::lower_bound(histBuffer.begin()+bi, histBuffer.end(),float(rank)));
+                        bi = upperBinIndex - 1;
+                        histCoord[DIM] = bi;
+                        nextHistCoord[DIM] = upperBinIndex;
+                        const double rankVal0 = static_cast<U>((maxVal-minVal)*bi*bins + minVal);
+                        const double rankVal1 = static_cast<U>((maxVal-minVal)*(bi+1)*bins + minVal);
+                        const double dd = histA[nextHistCoord] - histA[histCoord];
+                        const double relD0 = (rank - histA[histCoord])/dd;
+                        out[outCoord] = rankVal1 * relD0  + (1.0 - relD0)*rankVal0;
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 //end namespace vigra
 

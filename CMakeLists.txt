@@ -80,6 +80,10 @@ IF(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
     ENDIF()
 ENDIF()
 
+if(MSVC)
+    string(REGEX MATCH "[0-9.]+" MSVC_VERSION ${CMAKE_GENERATOR})
+endif()
+
 if(MACOSX)
     set(CMAKE_MACOSX_RPATH 1)
 endif()

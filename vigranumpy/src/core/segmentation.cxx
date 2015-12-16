@@ -41,6 +41,7 @@
 #include <vigra/localminmax.hxx>
 #include <vigra/labelimage.hxx>
 #include <vigra/watersheds.hxx>
+#include <vigra/blockwise_watersheds.hxx>
 #include <vigra/seededregiongrowing.hxx>
 #include <vigra/labelvolume.hxx>
 #include <vigra/watersheds3d.hxx>
@@ -61,6 +62,7 @@ namespace python = boost::python;
 
 namespace vigra
 {
+
 
 template < class PixelType >
 NumpyAnyArray 
@@ -1078,7 +1080,66 @@ NumpyAnyArray  pythonShrinkLabels(
 }
 
 
+template<class T>
+vigra::NumpyAnyArray pySizeFilterSegInplace(vigra::NumpyArray<3, T>  seg, const vigra::UInt32 maxLabel, const vigra::UInt32 sizeLimit, bool checkAtBorder=false){
+    
 
+    std::vector<bool > atBorder(maxLabel+1, false);
+
+    if (! checkAtBorder){
+        for(std::ptrdiff_t z=0;z<seg.shape(2); ++z)
+        for(std::ptrdiff_t y=0;y<seg.shape(1); ++y){
+            atBorder[seg(0,y,z)] = true;
+            atBorder[seg(seg.shape(0)-1,y,z)] = true;
+        }
+
+        for(std::ptrdiff_t z=0;z<seg.shape(2); ++z)
+        for(std::ptrdiff_t x=0;x<seg.shape(0); ++x){
+            atBorder[seg(x,0,z)] = true;
+            atBorder[seg(x,seg.shape(1)-1,z)] = true;
+        }
+
+        for(std::ptrdiff_t y=0;y<seg.shape(1); ++y)
+        for(std::ptrdiff_t x=0;x<seg.shape(0); ++x){
+            atBorder[seg(x,y,0)] = true;
+            atBorder[seg(x,y,seg.shape(2)-1)] = true;
+        }
+    }
+
+
+
+    std::vector<size_t > counts(maxLabel+1,0);
+
+    for(auto iter = seg.begin(); iter!=seg.end(); ++iter){
+        counts[*iter] += 1;
+    }
+
+
+
+    for(auto iter = seg.begin(); iter!=seg.end(); ++iter){
+        const auto l = *iter;
+        const auto c = counts[l];
+        if(c<sizeLimit && atBorder[l] == false){
+            *iter = 0;
+        }
+    }
+
+    return seg;
+}
+
+
+template<unsigned int DIM>
+python::tuple  pyUnionFindWatershedsBlockwise(
+    NumpyArray<DIM,float> data,
+    TinyVector<Int64, DIM> blockShape,
+    NumpyArray<DIM, UInt32 > out
+){
+    out.reshapeIfEmpty(data.shape());
+    UInt64 nSeg =  unionFindWatershedsBlockwise(data, out,
+                                                BlockwiseLabelOptions().neighborhood(DirectNeighborhood)
+                                                                       .blockShape(blockShape));
+    return python::make_tuple(out, nSeg);
+}
 
 void defineSegmentation()
 {
@@ -1086,6 +1147,15 @@ void defineSegmentation()
     
     docstring_options doc_options(true, true, false);
 
+
+    python::def("unionFindWatershed3D",
+        registerConverters(&pyUnionFindWatershedsBlockwise<3>),
+        (
+            python::arg("image"),
+            python::arg("blockShape"),
+            python::arg("out") = python::object()
+        )
+    );
 
     python::def("segToSeeds", registerConverters(pythonShrinkLabels<2>),
         (
@@ -1256,6 +1326,19 @@ void defineSegmentation()
         registerConverters(&pythonLabelMultiArrayWithBackground<float, 5>),
         (arg("volume"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()), "");
 
+    def("sizeFilterSegInplace",registerConverters(&pySizeFilterSegInplace<UInt32>),
+        (
+            arg("seg"),
+            arg("maxLabel"),
+            arg("sizeLimit"),
+            arg("checkAtBorder") = false
+        ),
+        "replace every occurance of each number in the array 'seg' with zeros if this number"
+        " occures less than 'sizeLimit' times in the array. If 'checkAtBorder' is false (default) "
+        "segments that touch the border of the array will not be changed.\n"
+        "'maxLabel' is the maximum label in seg\n"
+    );
+
     /******************************************************************************/
     
     def("localMinima",
@@ -1283,7 +1366,6 @@ void defineSegmentation()
          arg("allowPlateaus") = false,
          arg("out") = python::object()),
         "Find local minima in a volume and mark them with the given 'marker'. Parameter "
-        "'neighborhood' specifies the pixel neighborhood to be used and can be "
         "6 (default) or 26.\n"
         "If 'allowAtBorder' is set to 'True' local minima at the volume border will be detected.\n"
         "If 'allowPlateaus' is set to 'True' regions of constant gray value whose neighbors are all higher than the value of the region will be detected."
@@ -1502,6 +1584,7 @@ void defineSegmentation()
        arg("iterations")=10,
        arg("out")=python::object()),
        "Likewise compute Slic superpixels for a 3D volume, either single- or threeband.\n");
+
 }
 
 void defineEdgedetection();

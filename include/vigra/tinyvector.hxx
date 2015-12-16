@@ -163,7 +163,7 @@ struct ExecLoop
     VIGRA_EXEC_LOOP_SCALAR(subScalar, -)
     VIGRA_EXEC_LOOP_SCALAR(mulScalar, *)
     VIGRA_EXEC_LOOP_SCALAR(divScalar, /)
-    
+
     VIGRA_EXEC_LOOP_MINMAX(min, >)
     VIGRA_EXEC_LOOP_MINMAX(max, <)
 
@@ -218,7 +218,7 @@ struct ExecLoop
         }
         return false;
     }
-    
+
     template <class T>
     static bool closeAtTolerance(T const * left, T const * right, T epsilon)
     {
@@ -229,7 +229,7 @@ struct ExecLoop
         }
         return res;
     }
-    
+
     template <class T>
     static typename NumericTraits<T>::Promote
     dot(T const * d)
@@ -277,7 +277,7 @@ struct UnrollScalarResult
     {
         return *left * *right + UnrollScalarResult<LEVEL-1>::dot(left+1, right+1);
     }
-    
+
     template <class T>
     static typename NormTraits<T>::SquaredNormType
     squaredNorm(T const * d)
@@ -290,7 +290,7 @@ struct UnrollScalarResult
     {
         return (*d)*(*d) + UnrollScalarResult<LEVEL-1>::squaredNorm(d+1);
     }
-    
+
     template <class T>
     static T const & minimum(T const * p)
     {
@@ -456,7 +456,7 @@ struct UnrollLoop
     VIGRA_UNROLL_LOOP_SCALAR(subScalar, -)
     VIGRA_UNROLL_LOOP_SCALAR(mulScalar, *)
     VIGRA_UNROLL_LOOP_SCALAR(divScalar, /)
-    
+
     VIGRA_UNROLL_LOOP_MINMAX(min, >)
     VIGRA_UNROLL_LOOP_MINMAX(max, <)
 
@@ -503,10 +503,10 @@ struct UnrollLoop
     template <class T>
     static bool closeAtTolerance(T const * left, T const * right, T epsilon)
     {
-        return vigra::closeAtTolerance(*left, *right, epsilon) && 
+        return vigra::closeAtTolerance(*left, *right, epsilon) &&
                   UnrollLoop<LEVEL - 1>::closeAtTolerance(left+1, right+1, epsilon);
     }
-    
+
     template <class T>
     static typename NumericTraits<T>::Promote
     dot(T const * d)
@@ -825,14 +825,14 @@ class TinyVectorBase
     {
         return Loop::maximum(data_);
     }
-    
+
         /** Check that all elements of this vector are non-zero (or 'true' if T is bool).
         */
     bool all() const
     {
         return Loop::all(data_, VALUETYPE());
     }
-    
+
         /** Check that at least one element of this vector is non-zero (or 'true' if T is bool).
         */
     bool any() const
@@ -878,7 +878,7 @@ class TinyVectorBase
         /** Get const random access iterator past-the-end of vector.
         */
     const_iterator cend() const { return data_ + SIZE; }
-    
+
         /** Get a view to the subarray with length <tt>(TO-FROM)</tt> starting at <tt>FROM</tt>.
             The bounds must fullfill <tt>0 <= FROM < TO <= SIZE</tt>, but this is only
             checked when <tt>VIGRA_CHECK_BOUNDS</tt> is \#define'd.
@@ -893,7 +893,7 @@ class TinyVectorBase
 #endif
         return TinyVectorView<VALUETYPE, TO-FROM>(data_+FROM);
     }
-    
+
     TinyVector<VALUETYPE, SIZE-1>
     dropIndex(int m) const
     {
@@ -915,27 +915,27 @@ class TinyVectorBase
     pointer data() { return data_; }
 
     const_pointer data() const { return data_; }
-    
+
     reference front()
     {
         return data_[0];
     }
-    
+
     const_reference front() const
     {
         return data_[0];
     }
-    
+
     reference back()
     {
         return data_[SIZE-1];
     }
-    
+
     const_reference back() const
     {
         return data_[SIZE-1];
     }
-    
+
         /** \brief Factory function for a unit vector for dimension \a k.
         */
     static TinyVector<VALUETYPE, SIZE> unitVector(int k)
@@ -945,9 +945,9 @@ class TinyVectorBase
         ret[k] = 1;
         return ret;
     }
-    
+
         /** \brief Factory function for a linear sequence.
-        
+
             The result will be initialized as <tt>res[k] = start + k*step</tt>.
         */
     static TinyVector<VALUETYPE, SIZE> linearSequence(VALUETYPE start=VALUETYPE(), VALUETYPE step=VALUETYPE(1))
@@ -959,7 +959,7 @@ class TinyVectorBase
     }
 
   protected:
-  
+
     DATA data_;
 };
 
@@ -971,6 +971,8 @@ struct TinyVector_constructor_has_wrong_number_of_arguments
 {};
 
 #endif /* DOXYGEN */
+
+enum ReverseCopyTag { ReverseCopy };
 
 /** \brief Class for fixed size vectors.
     \ingroup RangesAndPoints
@@ -1021,11 +1023,9 @@ class TinyVector
     typedef typename BaseType::scalar_multiplier scalar_multiplier;
     typedef typename BaseType::SquaredNormType SquaredNormType;
     typedef typename BaseType::NormType NormType;
-    
-    enum ReverseCopyTag { ReverseCopy };
 
         /** Construction with constant value.
-        
+
             Initializes all vector elements with the given value.
         */
     explicit TinyVector(value_type const & initial)
@@ -1035,7 +1035,7 @@ class TinyVector
     }
 
         /** Construction from lemon::Invalid.
-        
+
             Initializes all vector elements with -1.
         */
     TinyVector(lemon::Invalid const &)
@@ -1045,7 +1045,7 @@ class TinyVector
     }
 
         /** Construction with Diff2D.
-        
+
             Use only when <tt>SIZE == 2</tt>.
         */
     explicit TinyVector(Diff2D const & initial)
@@ -1107,7 +1107,7 @@ class TinyVector
         BaseType::data_[3] = i4;
         BaseType::data_[4] = i5;
     }
-    
+
        /** Default constructor (initializes all elements with zero).
         */
     TinyVector()
@@ -1144,7 +1144,7 @@ class TinyVector
     }
 
         /** Constructor by reverse copy from C array.
-            
+
             Usage:
             \code
             TinyVector<int, 3> v(1,2,3);
@@ -1184,7 +1184,7 @@ class TinyVector
     }
 
         /** Assignment from Diff2D.
-        
+
             Use only when <tt>SIZE == 2</tt>.
         */
     TinyVector & operator=(Diff2D const & r)
@@ -1203,7 +1203,7 @@ class TinyVector
     }
 
         /** Copy from a TinyVector with a different number of elements.
-        
+
             Only the first <tt>min(SIZE, USIZE)</tt> elements are copied.
         */
     template <class U, int USIZE, class DATA, class DERIVED>
@@ -1212,7 +1212,7 @@ class TinyVector
         static const int minSize = USIZE < SIZE
                                         ? USIZE
                                         : SIZE;
-        
+
         typedef typename detail::LoopType<minSize>::type MinLoop;
         MinLoop::assignCast(BaseType::data_, r.begin());
         return *this;
@@ -1418,9 +1418,9 @@ allGreaterEqual(TinyVectorBase<V1, SIZE, D1, D2> const & l,
 }
 
 template <class V, int SIZE, class D1, class D2, class D3, class D4>
-bool 
+bool
 closeAtTolerance(TinyVectorBase<V, SIZE, D1, D2> const & l,
-                 TinyVectorBase<V, SIZE, D3, D4> const & r, 
+                 TinyVectorBase<V, SIZE, D3, D4> const & r,
                  V epsilon = NumericTraits<V>::epsilon())
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
@@ -1428,9 +1428,9 @@ closeAtTolerance(TinyVectorBase<V, SIZE, D1, D2> const & l,
 }
 
 template <class V, int SIZE>
-bool 
+bool
 closeAtTolerance(TinyVector<V, SIZE> const & l,
-                 TinyVector<V, SIZE> const & r, 
+                 TinyVector<V, SIZE> const & r,
                  V epsilon = NumericTraits<V>::epsilon())
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
@@ -2238,11 +2238,11 @@ inline
 TinyVector<V, SIZE>
 reverse(TinyVector<V, SIZE> const & t)
 {
-    return TinyVector<V, SIZE>(t.begin(), TinyVector<V, SIZE>::ReverseCopy);
+    return TinyVector<V, SIZE>(t.begin(), ReverseCopy);
 }
 
     /** \brief transposed copy
-    
+
         Elements are arranged such that <tt>res[k] = t[permutation[k]]</tt>.
     */
 template <class V, int SIZE, class T>
@@ -2260,7 +2260,7 @@ transpose(TinyVector<V, SIZE> const & t, TinyVector<T, SIZE> const & permutation
 }
 
     /** \brief Clip negative values.
-    
+
         All elements smaller than 0 are set to zero.
     */
 template<class V,int SIZE>
@@ -2270,7 +2270,7 @@ TinyVector<V, SIZE> clipLower(TinyVector<V, SIZE> const & t){
 }
 
     /** \brief Clip values below a threshold.
-    
+
         All elements smaller than \a val are set to \a val.
     */
 template<class V,int SIZE>
@@ -2284,7 +2284,7 @@ TinyVector<V, SIZE> clipLower(TinyVector<V, SIZE> const & t,const V val){
 }
 
     /** \brief Clip values above a threshold.
-    
+
         All elements bigger than \a val are set to \a val.
     */
 template<class V,int SIZE>
@@ -2298,7 +2298,7 @@ TinyVector<V, SIZE> clipUpper(TinyVector<V, SIZE> const & t,const V val){
 }
 
     /** \brief Clip values to an interval.
-    
+
         All elements less than \a valLower are set to \a valLower, all elements
         bigger than \a valUpper are set to \a valUpper.
     */
@@ -2308,7 +2308,7 @@ TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,const V valLower, const V
     TinyVector<V, SIZE> res(SkipInitialization);
     for(int k=0; k<SIZE; ++k){
         res[k] =  (t[k] < valLower)
-                       ? valLower 
+                       ? valLower
                        : (t[k] > valUpper)
                              ? valUpper
                              : t[k];
@@ -2317,22 +2317,22 @@ TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,const V valLower, const V
 }
 
     /** \brief Clip values to a vector of intervals.
-    
+
         All elements less than \a valLower are set to \a valLower, all elements
         bigger than \a valUpper are set to \a valUpper.
     */
 template<class V,int SIZE>
 inline
 TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,
-                         TinyVector<V, SIZE> const & valLower, 
+                         TinyVector<V, SIZE> const & valLower,
                          TinyVector<V, SIZE> const & valUpper)
 {
     TinyVector<V, SIZE> res(SkipInitialization);
     for(int k=0; k<SIZE; ++k){
         res[k] =  (t[k] < valLower[k])
-                       ? valLower[k] 
+                       ? valLower[k]
                        : (t[k] > valUpper[k])
-                             ? valUpper[k] 
+                             ? valUpper[k]
                              : t[k];
     }
     return res;

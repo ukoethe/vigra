@@ -123,8 +123,8 @@ namespace vigra{
         );
     };
 
-
-    template void defineGridGraphRagSerialization< 3 >();
+    template void defineGridGraphRagSerialization< 2 >();
+    template void defineGridGraphRagSerialization< 3  >();
 
 } 
 
