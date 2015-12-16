@@ -1,4 +1,4 @@
-#######################################################################
+﻿#######################################################################
 #                                                                      
 #         Copyright 2009-2010 by Ullrich Koethe                        
 #                                                                      
@@ -129,7 +129,7 @@ class Function(object):
         if maxSize == 0:
             return None
         priorities = [(getattr(x, '__array_priority__', -1.0), x) for x in args if getattr(x, 'size', 0) == maxSize]
-        priorities.sort(key = lambda (p, x): p)
+        priorities = sorted(priorities,key = lambda tuplepx: tuplepx[0])
         if priorities[-1][0] == -1.0:
             return None
         else:
@@ -307,17 +307,17 @@ class BinaryFunction(Function):
         
 __all__ = []
 
-for _k in numpy.__dict__.itervalues():
+for _k in numpy.__dict__.values():
      if type(_k) == numpy.ufunc:
         if _k.nin == 1 and _k.nout == 1:
-            exec _k.__name__ + " = UnaryFunction(_k)"
+            exec(_k.__name__ + " = UnaryFunction(_k)")
         if _k.nin == 1 and _k.nout == 2:
-            exec _k.__name__ + " = UnaryFunctionOut2(_k)"
+            exec(_k.__name__ + " = UnaryFunctionOut2(_k)")
         if _k.nin == 2:
-            exec _k.__name__ + " = BinaryFunction(_k)"
+            exec(_k.__name__ + " = BinaryFunction(_k)")
         __all__.append(_k.__name__)
 
-__all__.sort()
+__all__ = sorted(__all__)
 
 def _prepareDoc():
     doc = '''

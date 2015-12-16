@@ -53,7 +53,11 @@ namespace vigra {
 UInt32 pychecksum(python::str const & s)
 {
     unsigned int size = len(s);
+#if PY_MAJOR_VERSION < 3
     return checksum(PyString_AsString(s.ptr()), size);
+#else
+	return checksum(PyBytes_AsString(s.ptr()), size);
+#endif
 }
 
 void registerNumpyArrayConverters();
@@ -67,8 +71,9 @@ using namespace vigra;
 
 BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 {
-    import_array();
-    registerNumpyArrayConverters();
+	if (_import_array() < 0)
+		pythonToCppException(0);
+	registerNumpyArrayConverters();
     defineAxisTags();
     defineChunkedArray();
     

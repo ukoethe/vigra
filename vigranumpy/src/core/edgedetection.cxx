@@ -80,7 +80,11 @@ PyObject * Edgel__repr__(Edgel const & e)
         std::stringstream s;
         s << std::setprecision(14)
           << "Edgel(x=" << e.x << ", y=" << e.y << ", strength=" << e.strength << ", angle=" << e.orientation << ")";
+#if PY_MAJOR_VERSION < 3
         return PyString_FromString(s.str().c_str());
+#else
+		return PyBytes_FromString(s.str().c_str());
+#endif
 }
 
 template < class PixelType>

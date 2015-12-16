@@ -1,4 +1,4 @@
-#######################################################################
+﻿#######################################################################
 #
 #         Copyright 2009-2010 by Ullrich Koethe
 #
@@ -33,6 +33,7 @@
 #
 #######################################################################
 
+from __future__ import division, print_function
 import sys, os, time
 from numbers import Number
 from multiprocessing import cpu_count
@@ -102,22 +103,22 @@ The following sub-modules group related functionality:
 * utilities  (priority queues)
 ''' % _vigra_doc_path
 
-from __version__ import version
-import vigranumpycore
-import arraytypes
-import impex
-import sampling
-import filters
-import analysis
-import learning
-import colors
-import noise
-import geometry
-import optimization
-import histogram
-import graphs
-import utilities
-import blockwise
+from .__version__ import version
+import vigra.vigranumpycore
+import vigra.arraytypes as arraytypes
+import vigra.impex as impex
+import vigra.sampling as sampling
+import vigra.filters as filters
+import vigra.analysis as analysis
+import vigra.learning as learning
+import vigra.colors as colors
+import vigra.noise as noise
+import vigra.geometry as geometry
+import vigra.optimization as optimization
+import vigra.histogram as histogram
+import vigra.graphs as graphs
+import vigra.utilities as utilities
+import vigra.blockwise as blockwise
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 
@@ -130,7 +131,7 @@ class Timer:
 
     def __enter__(self):
         if self.verbose:
-            print self.name, "..."
+            print(self.name, "...")
         self.start = time.time()
         return self
 
@@ -138,7 +139,7 @@ class Timer:
         self.end = time.time()
         self.interval = self.end - self.start
         if self.verbose  :
-            print "... took ", self.interval, "sec"
+            print("... took ", self.interval, "sec")
 
 
 
@@ -148,28 +149,28 @@ class Timer:
 
 try:
     import fourier
-except Exception, e:
+except Exception as e:
     _fallbackModule('vigra.fourier',
     '''
     %s
 
     Make sure that the fftw3 libraries are found during compilation and import.
     They may be downloaded at http://www.fftw.org/.''' % str(e))
-    import fourier
+    #TODO import fourier
 
 # import most frequently used functions
-from arraytypes import *
+from .arraytypes import *
 standardArrayType = arraytypes.VigraArray
 defaultAxistags = arraytypes.VigraArray.defaultAxistags
 
-from vigranumpycore import ChunkedArrayFull, ChunkedArrayLazy, ChunkedArrayCompressed, ChunkedArrayTmpFile, Compression
+from .vigranumpycore import ChunkedArrayFull, ChunkedArrayLazy, ChunkedArrayCompressed, ChunkedArrayTmpFile, Compression
 try:
     from vigranumpycore import ChunkedArrayHDF5, HDF5Mode
 except:
     pass
 
 
-from impex import readImage, readVolume
+from vigra.impex import readImage, readVolume
 
 def readHDF5(filenameOrGroup, pathInFile, order=None):
     '''Read an array from an HDF5 file.
@@ -287,8 +288,8 @@ readHDF5.__module__ = 'vigra.impex'
 impex.writeHDF5 = writeHDF5
 writeHDF5.__module__ = 'vigra.impex'
 
-from filters import convolve, gaussianSmoothing
-from sampling import resize
+from .filters import convolve, gaussianSmoothing
+from .sampling import resize
 
 def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
     '''
@@ -337,7 +338,7 @@ def searchfor(searchstring):
       contents = dir(_selfdict[attr])
       for cont in contents:
          if ( cont.upper().find(searchstring.upper()) ) >= 0:
-            print attr+"."+cont
+            print(attr+"."+cont)
 
 # FIXME: use axistags here
 def imshow(image,show=True):
@@ -478,7 +479,7 @@ def _genKernelFactories(name):
 %(newName)s.__doc__ = filters.%(name)s.%(oldName)s.__doc__
 filters.%(newName)s=%(newName)s
 ''' % {'oldName': oldName, 'newName': newName, 'name': name}
-        exec code
+        exec(code)
 
 _genKernelFactories('Kernel1D')
 _genKernelFactories('Kernel2D')
@@ -1776,29 +1777,29 @@ def _genGraphSegmentationFunctions():
 
         assert edgeWeights is not None or nodeFeatures is not None
 
-        print "prepare "
+        print("prepare ")
 
         if nodeNumStop is None:
             nodeNumStop = max(graph.nodeNum/2,min(graph.nodeNum,2))
 
 
         if edgeLengths is None :
-            print "get edge length"
+            print("get edge length")
             edgeLengths = graphs.getEdgeLengths(graph)
 
 
         if nodeSizes is None:
-            print "get node size"
+            print("get node size")
             nodeSizes = graphs.getNodeSizes(graph)
 
 
         if edgeWeights is None :
-            print "get wegihts length"
+            print("get wegihts length")
             edgeWeights = graphs.graphMap(graph,'edge')
             edgeWeights[:]=0
 
         if nodeFeatures is None :
-            print "get node feat"
+            print("get node feat")
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 
@@ -1885,7 +1886,7 @@ def _genGraphSegmentationFunctions():
                 raise RuntimeError("'%s' is not a supported distance type"%str(metric))
 
             # call unsave c++ function and make it sav
-            print "nodeLabels ",nodeLabels.shape, nodeLabels.dtype
+            print("nodeLabels ",nodeLabels.shape, nodeLabels.dtype)
             op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,nodeLabels,
                 float(beta),nd,float(wardness),float(gamma))
 
@@ -2119,8 +2120,8 @@ def loadBSDGt(filename):
         gt =  matContents['groundTruth'][0][gti][0]['Segmentation'][0]
         gt = numpy.swapaxes(gt,0,1)
         gt = gt.astype(numpy.uint32)
-        print gt.min(),gt.max()
+        print(gt.min(),gt.max())
         gts.append(gt[:,:,None])
     gtArray = numpy.concatenate(gts,axis=2)
-    print gtArray.shape
+    print(gtArray.shape)
     return gtArray

@@ -1,6 +1,7 @@
+﻿from __future__ import division, print_function
 import sys
-print >> sys.stderr, "\nexecuting test file", __file__
-execfile('set_paths.py')
+print("\nexecuting test file", __file__, file=sys.stderr)
+exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
 import numpy
 import vigra

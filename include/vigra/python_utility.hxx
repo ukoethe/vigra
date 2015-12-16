@@ -54,11 +54,17 @@ void pythonToCppException(PYOBJECT_PTR obj)
     if(type == 0)
         return;
     std::string message(((PyTypeObject *)type)->tp_name);
-    if(PyString_Check(value))
+#if PY_MAJOR_VERSION < 3
+	if(PyString_Check(value))
     {
         message += std::string(": ") + PyString_AS_STRING(value);
-    }
-
+	}
+#else
+	if (PyBytes_Check(value))
+	{
+		message += std::string(": ") + PyBytes_AS_STRING(value);
+	}
+#endif
     Py_XDECREF(type);
     Py_XDECREF(value);
     Py_XDECREF(trace);
@@ -246,7 +252,11 @@ inline python_ptr pythonFromData(bool t)
 
 inline python_ptr pythonFromData(std::string const & s)
 {
-    python_ptr res(PyString_FromString(s.c_str()), python_ptr::keep_count);
+#if PY_MAJOR_VERSION < 3
+	python_ptr res(PyString_FromString(s.c_str()), python_ptr::keep_count);
+#else
+	python_ptr res(PyBytes_FromString(s.c_str()), python_ptr::keep_count);
+#endif
     pythonToCppException(res);
     return res;
 }
@@ -257,7 +267,11 @@ inline python_ptr pythonFromData(long long t)
     if(t > (long long)NumericTraits<long>::max() || t < (long long)NumericTraits<long>::min())
         res = python_ptr(PyLong_FromLongLong(t), python_ptr::keep_count);
     else
-        res = python_ptr(PyInt_FromLong((long)t), python_ptr::keep_count);
+#if PY_MAJOR_VERSION < 3
+		res = python_ptr(PyInt_FromLong((long)t), python_ptr::keep_count);
+#else
+		res = python_ptr(PyLong_FromLong((long)t), python_ptr::keep_count);
+#endif
     pythonToCppException(res);
     return res;
 }
@@ -268,8 +282,12 @@ inline python_ptr pythonFromData(unsigned long long t)
     if(t > (unsigned long long)NumericTraits<long>::max())
         res = python_ptr(PyLong_FromUnsignedLongLong(t), python_ptr::keep_count);
     else
-        res = python_ptr(PyInt_FromLong((long)t), python_ptr::keep_count);
-    pythonToCppException(res);
+#if PY_MAJOR_VERSION < 3
+		res = python_ptr(PyInt_FromLong((long)t), python_ptr::keep_count);
+#else
+		res = python_ptr(PyLong_FromLong((long)t), python_ptr::keep_count);
+#endif
+	pythonToCppException(res);
     return res;
 }
 
@@ -281,18 +299,31 @@ inline python_ptr pythonFromData(type t) \
     return res; \
 }
 
-VIGRA_PYTHON_FROM_DATA(signed char, PyInt_FromLong, long)
-VIGRA_PYTHON_FROM_DATA(unsigned char, PyInt_FromLong, long)
-VIGRA_PYTHON_FROM_DATA(short, PyInt_FromLong, long)
-VIGRA_PYTHON_FROM_DATA(unsigned short, PyInt_FromLong, long)
-VIGRA_PYTHON_FROM_DATA(long, PyInt_FromLong, long)
-VIGRA_PYTHON_FROM_DATA(unsigned long, PyInt_FromSize_t, size_t)
-VIGRA_PYTHON_FROM_DATA(int, PyInt_FromSsize_t, Py_ssize_t)
-VIGRA_PYTHON_FROM_DATA(unsigned int, PyInt_FromSize_t, size_t)
-VIGRA_PYTHON_FROM_DATA(float, PyFloat_FromDouble, double)
-VIGRA_PYTHON_FROM_DATA(double, PyFloat_FromDouble, double)
-VIGRA_PYTHON_FROM_DATA(char const *, PyString_FromString, char const *)
-
+#if PY_MAJOR_VERSION < 3
+	VIGRA_PYTHON_FROM_DATA(signed char, PyInt_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(unsigned char, PyInt_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(short, PyInt_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(unsigned short, PyInt_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(long, PyInt_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(unsigned long, PyInt_FromSize_t, size_t)
+	VIGRA_PYTHON_FROM_DATA(int, PyInt_FromSsize_t, Py_ssize_t)
+	VIGRA_PYTHON_FROM_DATA(unsigned int, PyInt_FromSize_t, size_t)
+	VIGRA_PYTHON_FROM_DATA(float, PyFloat_FromDouble, double)
+	VIGRA_PYTHON_FROM_DATA(double, PyFloat_FromDouble, double)
+	VIGRA_PYTHON_FROM_DATA(char const *, PyString_FromString, char const *)
+#else
+	VIGRA_PYTHON_FROM_DATA(signed char, PyLong_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(unsigned char, PyLong_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(short, PyLong_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(unsigned short, PyLong_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(long, PyLong_FromLong, long)
+	VIGRA_PYTHON_FROM_DATA(unsigned long, PyLong_FromSize_t, size_t)
+	VIGRA_PYTHON_FROM_DATA(int, PyLong_FromSsize_t, Py_ssize_t)
+	VIGRA_PYTHON_FROM_DATA(unsigned int, PyLong_FromSize_t, size_t)
+	VIGRA_PYTHON_FROM_DATA(float, PyFloat_FromDouble, double)
+	VIGRA_PYTHON_FROM_DATA(double, PyFloat_FromDouble, double)
+	VIGRA_PYTHON_FROM_DATA(char const *, PyBytes_FromString, char const *)
+#endif
 #undef VIGRA_PYTHON_FROM_DATA
 
 /****************************************************************/
@@ -305,31 +336,54 @@ inline type dataFromPython(PyObject * data, type const & defaultVal) \
              : defaultVal; \
 }
 
-VIGRA_DATA_FROM_PYTHON(signed char, PyInt_Check, PyInt_AsLong)
-VIGRA_DATA_FROM_PYTHON(unsigned char, PyInt_Check, PyInt_AsLong)
-VIGRA_DATA_FROM_PYTHON(short, PyInt_Check, PyInt_AsLong)
-VIGRA_DATA_FROM_PYTHON(unsigned short, PyInt_Check, PyInt_AsLong)
-VIGRA_DATA_FROM_PYTHON(long, PyInt_Check, PyInt_AsLong)
-VIGRA_DATA_FROM_PYTHON(unsigned long, PyInt_Check, PyInt_AsUnsignedLongMask)
-VIGRA_DATA_FROM_PYTHON(int, PyInt_Check, PyInt_AsLong)
-VIGRA_DATA_FROM_PYTHON(unsigned int, PyInt_Check, PyInt_AsUnsignedLongMask)
-VIGRA_DATA_FROM_PYTHON(long long, PyInt_Check, PyInt_AsSsize_t)
-VIGRA_DATA_FROM_PYTHON(unsigned long long, PyInt_Check, PyInt_AsUnsignedLongLongMask)
+#if PY_MAJOR_VERSION < 3
+	VIGRA_DATA_FROM_PYTHON(signed char, PyInt_Check, PyInt_AsLong)
+	VIGRA_DATA_FROM_PYTHON(unsigned char, PyInt_Check, PyInt_AsLong)
+	VIGRA_DATA_FROM_PYTHON(short, PyInt_Check, PyInt_AsLong)
+	VIGRA_DATA_FROM_PYTHON(unsigned short, PyInt_Check, PyInt_AsLong)
+	VIGRA_DATA_FROM_PYTHON(long, PyInt_Check, PyInt_AsLong)
+	VIGRA_DATA_FROM_PYTHON(unsigned long, PyInt_Check, PyInt_AsUnsignedLongMask)
+	VIGRA_DATA_FROM_PYTHON(int, PyInt_Check, PyInt_AsLong)
+	VIGRA_DATA_FROM_PYTHON(unsigned int, PyInt_Check, PyInt_AsUnsignedLongMask)
+	VIGRA_DATA_FROM_PYTHON(long long, PyInt_Check, PyInt_AsSsize_t)
+	VIGRA_DATA_FROM_PYTHON(unsigned long long, PyInt_Check, PyInt_AsUnsignedLongLongMask)
+#else
+	VIGRA_DATA_FROM_PYTHON(signed char, PyLong_Check, PyLong_AsLong)
+	VIGRA_DATA_FROM_PYTHON(unsigned char, PyLong_Check, PyLong_AsLong)
+	VIGRA_DATA_FROM_PYTHON(short, PyLong_Check, PyLong_AsLong)
+	VIGRA_DATA_FROM_PYTHON(unsigned short, PyLong_Check, PyLong_AsLong)
+	VIGRA_DATA_FROM_PYTHON(long, PyLong_Check, PyLong_AsLong)
+	VIGRA_DATA_FROM_PYTHON(unsigned long, PyLong_Check, PyLong_AsUnsignedLongMask)
+	VIGRA_DATA_FROM_PYTHON(int, PyLong_Check, PyLong_AsLong)
+	VIGRA_DATA_FROM_PYTHON(unsigned int, PyLong_Check, PyLong_AsUnsignedLongMask)
+	VIGRA_DATA_FROM_PYTHON(long long, PyLong_Check, PyLong_AsSsize_t)
+	VIGRA_DATA_FROM_PYTHON(unsigned long long, PyLong_Check, PyLong_AsUnsignedLongLongMask)
+#endif
 VIGRA_DATA_FROM_PYTHON(float, PyFloat_Check, PyFloat_AsDouble)
 VIGRA_DATA_FROM_PYTHON(double, PyFloat_Check, PyFloat_AsDouble)
 
 inline std::string dataFromPython(PyObject * data, const char * defaultVal) 
 { 
-    return data && PyString_Check(data) 
-             ? std::string(PyString_AsString(data)) 
-             : std::string(defaultVal); 
+#if PY_MAJOR_VERSION < 3
+	return data && PyString_Check(data) 
+		? std::string(PyString_AsString(data))  
+#else
+	return data && PyBytes_Check(data)
+		? std::string(PyBytes_AsString(data))
+#endif
+		: std::string(defaultVal);
 }
 
 inline std::string dataFromPython(PyObject * data, std::string const & defaultVal) 
 { 
+#if PY_MAJOR_VERSION < 3
     return data && PyString_Check(data) 
-             ? std::string(PyString_AsString(data)) 
-             : defaultVal; 
+		? std::string(PyString_AsString(data)) 
+#else
+	return data && PyBytes_Check(data)
+		? std::string(PyBytes_AsString(data))
+#endif
+		: defaultVal;
 }
 
 inline python_ptr dataFromPython(PyObject * data, python_ptr defaultVal) 
@@ -349,8 +403,12 @@ T pythonGetAttr(PyObject * obj, const char * key, T defaultValue)
     if(!obj)
         return defaultValue;
         
+#if PY_MAJOR_VERSION < 3
     python_ptr k(PyString_FromString(key), python_ptr::keep_count);
-    pythonToCppException(k);
+#else
+	python_ptr k(PyBytes_FromString(key), python_ptr::keep_count);
+#endif
+	pythonToCppException(k);
     python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
     if(!pres)
         PyErr_Clear();
@@ -362,9 +420,13 @@ pythonGetAttr(PyObject * obj, const char * key, const char * defaultValue)
 {
     if(!obj)
         return std::string(defaultValue);
-        
-    python_ptr k(PyString_FromString(key), python_ptr::keep_count);
-    pythonToCppException(k);
+    
+#if PY_MAJOR_VERSION < 3
+	python_ptr k(PyString_FromString(key), python_ptr::keep_count);
+#else
+	python_ptr k(PyBytes_FromString(key), python_ptr::keep_count);
+#endif
+	pythonToCppException(k);
     python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
     if(!pres)
         PyErr_Clear();
