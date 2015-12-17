@@ -387,6 +387,9 @@ class LabelOptions
 
     See also \ref labelMultiArrayBlockwise() for a parallel version of this algorithm.
 
+    By specifying a background value in the \ref vigra::LabelOptions, this function
+    can also realize the behavior of \ref labelMultiArrayWithBackground().
+
     <b> Declaration:</b>
 
     \code
@@ -531,6 +534,11 @@ labelMultiArray(MultiArrayView<N, T, S1> const & data,
 
 /** \brief Find the connected components of a MultiArray with arbitrary many dimensions,
      excluding the background from labeling.
+
+    From a user's point of view, this function is no longer needed because
+    \ref labelMultiArray() can realizes the same behavior when an appropriate
+    background value is specified in its \ref vigra::LabelOptions. Similarly,
+    \ref labelMultiArrayBlockwise() implements a parallel version of this algorithm.
 
     <b> Declaration:</b>
 
