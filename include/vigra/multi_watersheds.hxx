@@ -213,7 +213,7 @@ generateWatershedSeeds(Graph const & g,
             extendedLocalMinMaxGraph(g, data, minima, MarkerType(1), threshold,
                                      std::less<DataType>(), std::equal_to<DataType>(), true);
         else
-            localMinMaxGraph(g, data, minima, MarkerType(1), threshold,
+            lemon_graph::localMinMaxGraph(g, data, minima, MarkerType(1), threshold,
                              std::less<DataType>(), true);
     }
     return labelGraphWithBackground(g, minima, seeds, MarkerType(0), std::equal_to<MarkerType>());
