@@ -55,7 +55,7 @@ namespace vigra{
         const float sigmaBin,
         MultiArrayView<DIM+2 , T_HIST>    histogram
     ){
-        typedef vigra::GridGraph< DIM , boost::undirected_tag> Graph;
+        typedef vigra::GridGraph< DIM , undirected_tag> Graph;
         typedef typename Graph::NodeIt graph_scanner;
         typedef typename Graph::Node   Node;
         typedef T_HIST ValueType;
@@ -116,7 +116,7 @@ namespace vigra{
         const TinyVector<float,3> & sigma,
         MultiArrayView<DIM+2, T_HIST> histogram
     ){
-        typedef vigra::GridGraph< DIM , boost::undirected_tag> Graph;
+        typedef vigra::GridGraph< DIM , undirected_tag> Graph;
         typedef typename Graph::NodeIt graph_scanner;
         typedef typename Graph::Node   Node;
         typedef typename MultiArrayView<DIM+2 , T_HIST>::difference_type HistCoord;
