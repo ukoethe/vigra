@@ -74,7 +74,7 @@ public:
 
         prepareRows(features, features, ZeroMean);
 
-        principleComponents(features, fz, zv);
+        principalComponents(features, fz, zv);
 
         Matrix<double> model = fz*zv;
         shouldEqualTolerance(squaredNorm(model-features), 1530214.34284834, 1e-10);
@@ -85,7 +85,7 @@ public:
         char hdf5group_3[] = "ZV";
         writeHDF5(hdf5File_2, hdf5group_2, fz);
         writeHDF5(hdf5File_2, hdf5group_3, zv);
-#endif    
+#endif
     }
 
     void testPLSADecomposition()
@@ -147,7 +147,7 @@ public:
 
         // test if reconstruction is close to original
         // tricky - how to properly test that? it will never be identical!
-        Matrix<double> model = fz*zv; 
+        Matrix<double> model = fz*zv;
         double meanError = (features - model).squaredNorm() / columnCount(features);
         should ( meanError < 5000 );
 
@@ -157,7 +157,7 @@ public:
         char hdf5group_3[] = "ZV";
         writeHDF5(hdf5File_2, hdf5group_2, fz);
         writeHDF5(hdf5File_2, hdf5group_3, zv);
-#endif    
+#endif
     }
 };
 
