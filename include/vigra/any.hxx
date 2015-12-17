@@ -284,7 +284,14 @@ class Any
         */
     void swap(Any & other)
     {
+#ifdef VIGRA_NO_UNIQUE_PTR  // fallback for old compilers
+        detail::AnyHandle *t = handle_.release(),
+                          *o = other.handle_.release();
+        handle_.reset(o);
+        other.handle_.reset(t);
+#else
         handle_.swap(other.handle_);
+#endif
     }
 
         /** Exchange the value of objects l and r.
