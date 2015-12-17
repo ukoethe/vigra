@@ -2729,13 +2729,17 @@ isInside(GridGraph<N, DirectedTag> const & g,
 
 //@}
 
+#ifdef WITH_BOOST_GRAPH
+
+} // namespace vigra
+
+namespace boost {
+
+#else
+
 namespace boost_graph {
 
-/** \addtogroup BoostGraphExtensions GridGraph additions to namespace <tt>boost</tt>
-        
-        provides the required functionality to make \ref vigra::GridGraph compatible to the boost::graph library.
-*/
-//@{
+#endif 
 
 
 
@@ -2778,6 +2782,21 @@ struct property_traits<vigra::MultiArrayView<N, T, Stride> const>
     typedef typename type::const_reference                reference;
     typedef readable_property_map_tag                     category;
 };
+
+#ifdef WITH_BOOST_GRAPH
+
+} // namespace boost
+
+namespace vigra {
+namespace boost_graph {
+
+#endif 
+
+/** \addtogroup BoostGraphExtensions GridGraph additions to namespace <tt>boost</tt>
+        
+        provides the required functionality to make \ref vigra::GridGraph compatible to the boost::graph library.
+*/
+//@{
 
     /** \brief Return number of outgoing edges of vertex \a v (API: boost).
     */
