@@ -250,7 +250,7 @@ class Any
         /** Construct 'Any' object holding a copy of other's value.
         */
     Any(Any const & other)
-    : handle_(other.handle_ ? other.handle_->clone() : (detail::AnyHandle*)0)
+    : handle_(bool(other) ? other.handle_->clone() : (detail::AnyHandle*)0)
     {}
 
         /** Assign the given value to this 'Any' object
@@ -269,7 +269,7 @@ class Any
     Any & operator=(Any const & other)
     {
         if(this != &other)
-            handle_.reset(other.handle_ ? other.handle_->clone() : (detail::AnyHandle*)0);
+            handle_.reset(bool(other) ? other.handle_->clone() : (detail::AnyHandle*)0);
         return *this;
     }
 
@@ -360,7 +360,7 @@ class Any
     template <class T>
     T & get()
     {
-        vigra_precondition(bool(handle_), "Any::get(): object empty.");
+        vigra_precondition(bool(*this), "Any::get(): object empty.");
         auto ptr = dynamic_cast<detail::TypedAnyHandle<T> *>(handle_.get());
         vigra_precondition(ptr != 0, "Any::get(): object is not an instance of the target type.");
         return ptr->value_;
@@ -372,7 +372,7 @@ class Any
     template <class T>
     T const & get() const
     {
-        vigra_precondition(bool(handle_), "Any::get(): object empty.");
+        vigra_precondition(bool(*this), "Any::get(): object empty.");
         auto ptr = dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get());
         vigra_precondition(ptr != 0, "Any::get(): object is not an instance of the target type.");
         return ptr->value_;
@@ -385,7 +385,7 @@ class Any
     template <class T>
     T read() const
     {
-        vigra_precondition(bool(handle_), "Any::read(): object empty.");
+        vigra_precondition(bool(*this), "Any::read(): object empty.");
         auto ptr1 = dynamic_cast<detail::TypedAnyHandle<T> const *>(handle_.get());
         if(ptr1 != 0)
             return ptr1->value_;
