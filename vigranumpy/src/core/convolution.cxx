@@ -586,11 +586,19 @@ void defineConvolutionFunctions()
         (arg("volume"), arg("kernel"), arg("out")=python::object()),
         "Convolve a volume with the same 1D kernel along all dimensions.\n");
 
+    def("convolve", registerConverters(&pythonSeparableConvolveND_1Kernel<float,5>),
+        (arg("volume"), arg("kernel"), arg("out")=python::object()),
+        "Convolve a volume with the same 1D kernel along all dimensions.\n");
+
     def("convolve", registerConverters(&pythonSeparableConvolveND_NKernels<float,3>),
         (arg("image"), arg("kernels"), arg("out")=python::object()),
         "Convolve an image with a different 1D kernel along each dimensions.\n");
 
     def("convolve", registerConverters(&pythonSeparableConvolveND_NKernels<float,4>),
+        (arg("volume"), arg("kernels"), arg("out")=python::object()),
+        "Convolve a volume with a different 1D kernel along each dimensions.\n");
+
+    def("convolve", registerConverters(&pythonSeparableConvolveND_NKernels<float,5>),
         (arg("volume"), arg("kernels"), arg("out")=python::object()),
         "Convolve a volume with a different 1D kernel along each dimensions.\n");
 
