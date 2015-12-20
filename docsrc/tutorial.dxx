@@ -175,7 +175,7 @@
         image(1,i) = 13;
     \endcode
 
-    On first sight, individual coordinates may be necessary to iterator of the image or parts of it. But the following example shows that the same effect can be achieved with a shape object that is allocated outside the loop:
+    On first sight, individual coordinates may seem to be necessary for iterating over the image or parts of it. But the following example shows that the same effect can be achieved with a shape object that is allocated outside the loop:
     3rd column of a 8x4-matrix (initialized with 5) to 7.
 
     \code

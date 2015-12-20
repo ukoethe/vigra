@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -57,18 +57,20 @@ namespace vigra{
 
 /** \brief Find the connected components of a segmented volume.
 
+    Deprecated. Use \ref labelMultiArray() instead.
+
     Connected components are defined as regions with uniform voxel
-    values. Thus, <TT>T1</TT> either must be equality comparable, 
-    or an EqualityFunctor must be provided explicitly that realizes 
-    the desired equivalence predicate. The destination's value type 
+    values. Thus, <TT>T1</TT> either must be equality comparable,
+    or an EqualityFunctor must be provided explicitly that realizes
+    the desired equivalence predicate. The destination's value type
     <tt>T2</tt> should be large enough to hold the labels
     without overflow. Region numbers will be a consecutive sequence
     starting with one and ending with the region number returned by
     the function (inclusive).
 
     Return:  the number of regions found (= largest region label)
-    
-    See \ref labelMultiArray() for a dimension-independent implementation of 
+
+    See \ref labelMultiArray() for a dimension-independent implementation of
     connected components labelling.
 
     <b> Declarations:</b>
@@ -78,7 +80,7 @@ namespace vigra{
     namespace vigra {
         template <class T1, class S1,
                   class T2, class S2,
-                  class Neighborhood3D, 
+                  class Neighborhood3D,
                   class EqualityFunctor = std::equal_to<T1> >
         unsigned int
         labelVolume(MultiArrayView<3, T1, S1> const & source,
@@ -132,16 +134,16 @@ namespace vigra{
     \endcode
     use with 3D-Six-Neighborhood:
     \code
-    namespace vigra {    
-    
+    namespace vigra {
+
         template <class SrcIterator, class SrcAccessor,class SrcShape,
                   class DestIterator, class DestAccessor>
         unsigned int labelVolumeSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
                                     pair<DestIterator, DestAccessor> dest);
-                                    
+
     }
     \endcode
-    \deprecatedEnd    
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -152,7 +154,7 @@ namespace vigra{
     typedef MultiArray<3,int> IntVolume;
     IntVolume src(Shape3(w,h,d));
     IntVolume dest(Shape3(w,h,d));
-    
+
     // find 6-connected regions
     int max_region_label = labelVolumeSix(src, dest);
 
@@ -165,7 +167,7 @@ namespace vigra{
     typedef vigra::MultiArray<3,int> IntVolume;
     IntVolume src(IntVolume::difference_type(w,h,d));
     IntVolume dest(IntVolume::difference_type(w,h,d));
-    
+
     // find 6-connected regions
     int max_region_label = vigra::labelVolumeSix(srcMultiArrayRange(src), destMultiArray(dest));
 
@@ -204,14 +206,14 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                          Neighborhood3D, EqualityFunctor equal)
 {
     typedef typename DestAccessor::value_type LabelType;
-    
+
     //basically needed for iteration and border-checks
     int w = srcShape[0], h = srcShape[1], d = srcShape[2];
-    int x,y,z;       
-        
+    int x,y,z;
+
     // temporary image to store region labels
     UnionFindArray<LabelType>  label;
-        
+
     //Declare traversers for all three dims at target
     SrcIterator zs = s_Iter;
     DestIterator zd = d_Iter;
@@ -253,9 +255,9 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 if(atBorder == NotAtBorder)
                 {
                     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
-                
+
                     do
-                    {            
+                    {
                         // if colors are equal
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
@@ -264,7 +266,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                         ++nc;
                     }
                     while(nc!=nce);
-                }               
+                }
                 else //we are at a border - handle this!!
                 {
                     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
@@ -273,7 +275,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                     {
                         int dummy = x+(*nc)[0];  // prevents an apparently incorrect optimization in gcc 4.8
                         if (dummy<0)
-                        {  
+                        {
                             std::cerr << "internal error " << dummy << std::endl;
                         }
                         //   colors equal???
@@ -288,7 +290,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
             }
         }
     }
-    
+
     LabelType count = label.makeContiguous();
 
     // pass 2: assign one label to each region (tree)
@@ -321,7 +323,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
         return labelVolume(s_Iter, srcShape, sa, d_Iter, da, neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class Neighborhood3D>
 unsigned int labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
@@ -341,7 +343,7 @@ unsigned int labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
     return labelVolume(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, equal);
 }
 
-template <class T1, class S1, 
+template <class T1, class S1,
           class T2, class S2,
           class Neighborhood3D, class EqualityFunctor>
 inline unsigned int
@@ -355,7 +357,7 @@ labelVolume(MultiArrayView<3, T1, S1> const & source,
     return labelVolume(srcMultiArrayRange(source), destMultiArray(dest), neighborhood3D, equal);
 }
 
-template <class T1, class S1, 
+template <class T1, class S1,
           class T2, class S2,
           class Neighborhood3D>
 inline unsigned int
@@ -376,7 +378,7 @@ labelVolume(MultiArrayView<3, T1, S1> const & source,
 
 /** \brief Find the connected components of a segmented volume
      using the 6-neighborhood.
-     
+
      See \ref labelVolume() for detailed documentation.
 
 */
@@ -393,7 +395,7 @@ template <class T1, class S1,
 unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
                             MultiArrayView<3, T2, S2> dest)
 {
-    return labelVolume(srcMultiArrayRange(source), destMultiArray(dest), 
+    return labelVolume(srcMultiArrayRange(source), destMultiArray(dest),
                        NeighborCode3DSix(), std::equal_to<T1>());
 }
 
@@ -405,6 +407,8 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
 
 /** \brief Find the connected components of a segmented volume,
      excluding the background from labeling.
+
+    Deprecated. Use \ref labelMultiArray() instead.
 
     This function works like \ref labelVolume(), but considers all background voxels
     (i.e. voxels having the given '<TT>background_value</TT>') as a single region that
@@ -488,7 +492,7 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
 
     \code
     typedef vigra::MultiArray<3,int> IntVolume;
-    
+
     IntVolume src(Shape3(w,h,d));
     IntVolume dest(Shape3(w,h,d));
 
@@ -539,14 +543,14 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                                        ValueType backgroundValue, EqualityFunctor equal)
 {
     typedef typename DestAccessor::value_type LabelType;
-    
+
     //basically needed for iteration and border-checks
     int w = srcShape[0], h = srcShape[1], d = srcShape[2];
-    int x,y,z;       
-        
+    int x,y,z;
+
     // temporary image to store region labels
     UnionFindArray<LabelType>  label;
-        
+
     //Declare traversers for all three dims at target
     SrcIterator zs = s_Iter;
     DestIterator zd = d_Iter;
@@ -590,14 +594,14 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
 
                 //check whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
-                    
+
                 //We are not at the border!
                 if(atBorder == NotAtBorder)
                 {
                     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
-                
+
                     do
-                    {            
+                    {
                         // if colors are equal
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
@@ -606,7 +610,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                         ++nc;
                     }
                     while(nc!=nce);
-                }               
+                }
                 else //we are at a border - handle this!!
                 {
                     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
@@ -615,7 +619,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                     {
                         int dummy = x+(*nc)[0];  // prevents an apparently incorrect optimization in gcc 4.8
                         if (dummy<0)
-                        {  
+                        {
                             std::cerr << "internal error " << dummy << std::endl;
                         }
                         //   colors equal???
@@ -630,7 +634,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
             }
         }
     }
-    
+
     LabelType count = label.makeContiguous();
 
     // pass 2: assign one label to each region (tree)
@@ -657,7 +661,7 @@ template <class SrcIterator, class SrcAccessor,class SrcShape,
           class DestIterator, class DestAccessor,
           class Neighborhood3D,
           class ValueType>
-inline unsigned int 
+inline unsigned int
 labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                           DestIterator d_Iter, DestAccessor da,
                           Neighborhood3D neighborhood3D, ValueType backgroundValue)
@@ -687,7 +691,7 @@ labelVolumeWithBackground(triple<SrcIterator, SrcShape, SrcAccessor> src,
                           pair<DestIterator, DestAccessor> dest,
                           Neighborhood3D neighborhood3D, ValueType backgroundValue)
 {
-    return labelVolumeWithBackground(src.first, src.second, src.third, dest.first, dest.second, 
+    return labelVolumeWithBackground(src.first, src.second, src.third, dest.first, dest.second,
                                      neighborhood3D, backgroundValue, std::equal_to<typename SrcAccessor::value_type>());
 }
 
@@ -705,7 +709,7 @@ labelVolumeWithBackground(MultiArrayView<3, T1, S1> const & source,
 {
     vigra_precondition(source.shape() == dest.shape(),
         "labelVolumeWithBackground(): shape mismatch between input and output.");
-    return labelVolumeWithBackground(srcMultiArrayRange(source), destMultiArray(dest), 
+    return labelVolumeWithBackground(srcMultiArrayRange(source), destMultiArray(dest),
                                      neighborhood3D, backgroundValue, equal);
 }
 
@@ -721,7 +725,7 @@ labelVolumeWithBackground(MultiArrayView<3, T1, S1> const & source,
 {
     vigra_precondition(source.shape() == dest.shape(),
         "labelVolumeWithBackground(): shape mismatch between input and output.");
-    return labelVolumeWithBackground(srcMultiArrayRange(source), destMultiArray(dest), 
+    return labelVolumeWithBackground(srcMultiArrayRange(source), destMultiArray(dest),
                                      neighborhood3D, backgroundValue,
                                      std::equal_to<T1>());
 }

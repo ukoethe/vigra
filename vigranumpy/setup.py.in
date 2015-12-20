@@ -16,12 +16,12 @@ for d in dlls:
         continue
     dll = ctypes.util.find_library(os.path.splitext(os.path.basename(d))[0])
     shutil.copy(dll, '@vigranumpy_tmp_dir@/dlls')
-vigraimpex_dll='@VIGRAIMPEX_LOCATION@'.replace('$(OutDir)', 'release').replace('$(Configuration)', 'release')
+vigraimpex_dll = r'$<TARGET_FILE:vigraimpex>'
 shutil.copy(vigraimpex_dll, '@vigranumpy_tmp_dir@/dlls')
 msvc_runtime = ctypes.util.find_library(ctypes.util.find_msvcrt())
 shutil.copy(msvc_runtime, '@vigranumpy_tmp_dir@/dlls')
 
-docdir = '@DOCDIR@'    
+docdir = '@DOCDIR@'
 
 setup(name = 'vigranumpy',
       description = 'VIGRA Computer Vision Library',
@@ -32,6 +32,6 @@ setup(name = 'vigranumpy',
       version = '@vigra_version@',
       packages = ['vigra', 'vigra.pyqt'],
       package_dir = {'vigra': 'vigra', 'vigra.pyqt': 'vigra/pyqt'},
-      package_data = {'vigra': ['*.pyd', 'dlls/*.dll', 
-                  'doc/vigra/*.*', 'doc/vigra/documents/*.*', 
+      package_data = {'vigra': ['*.pyd', 'dlls/*.dll',
+                  'doc/vigra/*.*', 'doc/vigra/documents/*.*',
                   'doc/vigranumpy/*.*', 'doc/vigranumpy/_static/*.*']})

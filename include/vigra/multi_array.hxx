@@ -832,6 +832,16 @@ public:
         return MultiArrayView<N, T, StridedArrayTag>(m_shape, m_stride, m_ptr);
     }
 
+	/** Reset this <tt>MultiArrayView</tt> to an invalid state (as after default construction).
+		Can e.g. be used prior to assignment to make a view object point to new data.
+         */
+    void reset() {
+	m_shape = diff_zero_t(0);
+	m_stride = diff_zero_t(0);
+	m_ptr = 0;
+    }
+
+
         /** Assignment. There are 3 cases:
 
             <ul>
@@ -1166,6 +1176,35 @@ public:
         this->copyImpl(rhs);
     }
 
+        /** Swap the pointers, shaes and strides between two array views.
+        
+            This function must be used with care. Never swap a MultiArray
+            (which owns data) with a MultiArrayView:
+            \code
+                MultiArray<2, int> a(3,2), b(3,2);
+                MultiArrayView<2, int> va(a);
+                
+                va.swap(b);   // danger!
+            \endcode
+            Now, <tt>a</tt> and <tt>b</tt> refer to the same memory. This may lead
+            to a crash in their destructor, and in any case leaks <tt>b</tt>'s original 
+            memory. Only use swap() on copied MultiArrayViews:
+            \code
+                MultiArray<2, int> a(3,2), b(3,2);
+                MultiArrayView<2, int> va(a), vb(b);
+                
+                va.swap(vb);   // OK
+            \endcode
+         */
+    void swap(MultiArrayView & other)
+    {
+        if (this == &other)
+            return;
+        std::swap(this->m_shape,  other.m_shape);
+        std::swap(this->m_stride, other.m_stride);
+        std::swap(this->m_ptr,    other.m_ptr);
+    }
+
         /** swap the data between two MultiArrayView objects.
 
             The shapes of the two array must match.
@@ -1475,8 +1514,8 @@ public:
     MultiArrayView <N, T, StridedArrayTag>
     transpose () const
     {
-        difference_type shape(m_shape.begin(), difference_type::ReverseCopy),
-                        stride(m_stride.begin(), difference_type::ReverseCopy);
+        difference_type shape(m_shape.begin(),   ReverseCopy),
+                        stride(m_stride.begin(), ReverseCopy);
         return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
     }
 
@@ -2980,9 +3019,7 @@ MultiArray <N, T, A>::swap (MultiArray & other)
 {
     if (this == &other)
         return;
-    std::swap(this->m_shape,  other.m_shape);
-    std::swap(this->m_stride, other.m_stride);
-    std::swap(this->m_ptr,    other.m_ptr);
+    this->view_type::swap(other);
     std::swap(this->m_alloc,  other.m_alloc);
 }
 

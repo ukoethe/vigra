@@ -51,11 +51,11 @@ namespace python = boost::python;
 
 namespace vigra
 {
-    
+
 template < class PixelType >
-NumpyAnyArray 
-pythonResampleImage(NumpyArray<3, Multiband<PixelType> > image, 
-                    double factor, 
+NumpyAnyArray
+pythonResampleImage(NumpyArray<3, Multiband<PixelType> > image,
+                    double factor,
                     NumpyArray<3, Multiband<PixelType> > res)
 {
     vigra_precondition((image.shape(0) > 1) && (image.shape(1) > 1),
@@ -84,7 +84,7 @@ pythonResampleImage(NumpyArray<3, Multiband<PixelType> > image,
             resampleImage(srcImageRange(bimage), destImage(bres), factor);
         }
     }
-    
+
     return res;
 }
 
@@ -96,9 +96,9 @@ enum RotationDirection
 };
 
 template < class PixelType>
-NumpyAnyArray 
-pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image, 
-                       RotationDirection dir, 
+NumpyAnyArray
+pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
+                       RotationDirection dir,
                        NumpyArray<3,Multiband<PixelType> > res)
 {
     int degree=0;
@@ -114,7 +114,7 @@ pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
         degree=180;
         break;
     }
-    
+
     TaggedShape newShape(image.taggedShape());
     if(degree % 180 == 0)
     {
@@ -126,9 +126,9 @@ pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
         res.reshapeIfEmpty(image.taggedShape().transposeShape(permute),
                      "rotateImage(): Output image has wrong dimensions");
     }
-    
+
     {
-        PyAllowThreads _pythread;    
+        PyAllowThreads _pythread;
         for(int k=0;k<image.shape(2);++k)
         {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -140,8 +140,8 @@ pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template < class PixelType>
-NumpyAnyArray 
-pythonFreeRotateImageDegree(NumpyArray<3, Multiband<PixelType> > image, 
+NumpyAnyArray
+pythonFreeRotateImageDegree(NumpyArray<3, Multiband<PixelType> > image,
                             double degree,RotationDirection dir, int splineOrder,
                             NumpyArray<3,Multiband<PixelType> > res)
 {
@@ -149,8 +149,8 @@ pythonFreeRotateImageDegree(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template < class PixelType>
-NumpyAnyArray 
-pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > image, 
+NumpyAnyArray
+pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > image,
                              double radiant, RotationDirection dir, int splineOrder,
                              NumpyArray<3,Multiband<PixelType> > res)
 {
@@ -203,7 +203,7 @@ pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > image,
                     break;
                 }
                 case 3:
-                { 
+                {
                     SplineImageView< 3, PixelType > spline(srcImageRange(bimage));
                     affineWarpImage(spline,destImageRange(bres),transform);
                     break;
@@ -227,23 +227,23 @@ pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template <class PixelType, unsigned int dim>
-void pythonResizeImagePrepareOutput(NumpyArray<dim, Multiband<PixelType> > const & image, 
+void pythonResizeImagePrepareOutput(NumpyArray<dim, Multiband<PixelType> > const & image,
                                     python::object destSize,
                                     NumpyArray<dim, Multiband<PixelType> > & res)
 {
     for(unsigned int k=0; k<dim-1; ++k)
-        vigra_precondition(image.shape(k),
+        vigra_precondition(image.shape(k) > 1,
             "resizeImage(): Each input axis must have length > 1.");
-        
+
     typedef typename MultiArrayShape<dim-1>::type Shape;
     if(destSize != python::object())
     {
         vigra_precondition(!res.hasData(),
                "resizeImage(): you cannot provide both 'shape' and 'out'.");
-                       
+
         Shape shape = image.permuteLikewise(python::extract<Shape>(destSize)());
-              
-        res.reshapeIfEmpty(image.taggedShape().resize(shape), 
+
+        res.reshapeIfEmpty(image.taggedShape().resize(shape),
                            "resizeImage(): Output image has wrong dimensions");
     }
     else
@@ -253,15 +253,19 @@ void pythonResizeImagePrepareOutput(NumpyArray<dim, Multiband<PixelType> > const
         vigra_precondition(res.shape(dim-1) == image.shape(dim-1),
                "resizeImage(): number of channels of image and result must be equal.");
     }
+
+    for(unsigned int k=0; k<dim-1; ++k)
+        vigra_precondition(res.shape(k) > 1,
+            "resizeImage(): Each output axis must have length > 1.");
 }
 
 template < class PixelType>
-NumpyAnyArray pythonResizeImageNoInterpolation(NumpyArray<3, Multiband<PixelType> > image, 
+NumpyAnyArray pythonResizeImageNoInterpolation(NumpyArray<3, Multiband<PixelType> > image,
                                                python::object destSize,
                                                NumpyArray<3, Multiband<PixelType> > res)
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0;k<image.shape(2);++k)
@@ -280,7 +284,7 @@ NumpyAnyArray pythonResizeImageLinearInterpolation(NumpyArray<3, Multiband<Pixel
                                                    NumpyArray<3, Multiband<PixelType> > res)
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0;k<image.shape(2);++k)
@@ -294,10 +298,10 @@ NumpyAnyArray pythonResizeImageLinearInterpolation(NumpyArray<3, Multiband<Pixel
 }
 
 template < class PixelType, int dim >
-NumpyAnyArray 
+NumpyAnyArray
 pythonResizeImageSplineInterpolation(NumpyArray<dim, Multiband<PixelType> > image,
                                      python::object destSize,
-                                     int splineOrder=3, 
+                                     int splineOrder=3,
                                      NumpyArray<dim, Multiband<PixelType> > res=python::object())
 {
     if(splineOrder < 0 || splineOrder > 5)
@@ -305,14 +309,14 @@ pythonResizeImageSplineInterpolation(NumpyArray<dim, Multiband<PixelType> > imag
         PyErr_SetString(PyExc_ValueError, "resize(): Spline order not supported.");
         python::throw_error_already_set();
     }
-    
+
     pythonResizeImagePrepareOutput(image, destSize, res);
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0;k<image.shape(dim-1);++k)
         {
-            
+
             MultiArrayView<dim-1, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
             switch (splineOrder)
@@ -371,12 +375,12 @@ NumpyAnyArray pythonResizeImageCatmullRomInterpolation(NumpyArray<3, Multiband<P
                                                        NumpyArray<3, Multiband<PixelType> > res)
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0;k<image.shape(2);++k)
         {
-            
+
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
 
@@ -392,12 +396,12 @@ NumpyAnyArray pythonResizeImageCoscotInterpolation(NumpyArray<3, Multiband<Pixel
                                                    NumpyArray<3, Multiband<PixelType> > res)
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0;k<image.shape(2);++k)
         {
-            
+
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
             resizeImageCoscotInterpolation(srcImageRange(bimage),destImageRange(bres));
@@ -407,17 +411,17 @@ NumpyAnyArray pythonResizeImageCoscotInterpolation(NumpyArray<3, Multiband<Pixel
 }
 
 template <class PixelType>
-NumpyAnyArray 
-resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image, 
+NumpyAnyArray
+resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
     double sigmax, unsigned int derivativeOrderX, double samplingRatioX, double offsetX,
-    double sigmay, unsigned int derivativeOrderY, double samplingRatioY, double offsetY, 
+    double sigmay, unsigned int derivativeOrderY, double samplingRatioY, double offsetY,
     NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
     vigra_precondition(samplingRatioX > 0 ,
        "resamplingGaussian(): samplingRatioX must be > 0.");
     vigra_precondition(samplingRatioY > 0 ,
        "resamplingGaussian(): samplingRatioY must be > 0.");
-       
+
     Rational<int> xratio(samplingRatioX), yratio(samplingRatioY),
                   xoffset(offsetX), yoffset(offsetY);
     Gaussian< double > smoothx(sigmax, derivativeOrderX);
@@ -425,7 +429,7 @@ resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
 
     int width = rational_cast< int >(image.shape(0)*xratio);
     int height = rational_cast< int >(image.shape(1)*yratio);
-    res.reshapeIfEmpty(image.taggedShape().resize(width, height), 
+    res.reshapeIfEmpty(image.taggedShape().resize(width, height),
              "resamplingGaussian2D(): Output array has wrong shape.");
 
     {
@@ -483,10 +487,10 @@ SplineView_interpolatedImage(SplineView const & self, double xfactor, double yfa
 {
     vigra_precondition(xfactor > 0.0 && yfactor > 0.0,
         "SplineImageView.interpolatedImage(xfactor, yfactor): factors must be positive.");
-        
+
     int wn = int((self.width() - 1.0) * xfactor + 1.5);
     int hn = int((self.height() - 1.0) * yfactor + 1.5);
-    
+
     typedef typename BindSplineConstructor<typename SplineView::value_type>::type ResType;
     NumpyArray<2, ResType> res(Shape2(wn, hn));
 
@@ -585,11 +589,11 @@ defSplineView(char const * name)
     using namespace python;
 
     docstring_options doc_options(true, true, false);
-    
+
     typedef typename SplineView::value_type Value;
     typedef typename SplineView::SquaredNormType SNormValue;
     typedef typename SplineView::difference_type Shape;
-    
+
     Value (SplineView::*callfct)(double, double) const = &SplineView::operator();
     Value (SplineView::*callfct2)(double, double, unsigned int, unsigned int) const = &SplineView::operator();
 
@@ -610,10 +614,10 @@ defSplineView(char const * name)
         .def("shape", &SplineView::shape, "The shape of the underlying image.\n\n")
         .def("width", &SplineView::width, "The width of the underlying image.\n\n")
         .def("height", &SplineView::height, "The height of the underlying image.\n\n")
-        .def("isInside", &SplineView::isInside, 
+        .def("isInside", &SplineView::isInside,
              "Check if a coordinate is inside the underlying image.\n\n"
              "SplineImageView.isInside(x, y) -> bool\n\n")
-        .def("isValid", &SplineView::isValid, 
+        .def("isValid", &SplineView::isValid,
              "Check if a coordinate is within the valid range of the SplineImageView.\n\n"
              "SplineImageView.isValid(x, y) -> bool\n\n"
              "Thanks to reflective boundary conditions, the valid range is three times "
@@ -753,7 +757,7 @@ defSplineView(char const * name)
 void defineSampling()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
 
     enum_<RotationDirection>("RotationDirection")
@@ -769,7 +773,7 @@ void defineSampling()
         "The parameter 'splineOrder' indicates the order of the splines used for interpolation.\n"
         "If the 'out' parameter is given, the image is cropped for it's dimensions. If the 'out'\n"
         "parameter is not given, an output image with the same dimensions as the input image is created.\n\n"
-        "For more details, see GeometricTransformations.rotationMatrix2DRadians_ in the vigra C++ documentation.\n" 
+        "For more details, see GeometricTransformations.rotationMatrix2DRadians_ in the vigra C++ documentation.\n"
         );
     def("rotateImageDegree",
         registerConverters(&pythonFreeRotateImageDegree<float>),
@@ -780,7 +784,7 @@ void defineSampling()
         "The parameter 'splineOrder' indicates the order of the splines used for interpolation.\n"
         "If the 'out' parameter is given, the image is cropped for it's dimensions. If the 'out'\n"
         "parameter is not given, an output image with the same dimensions as the input image is created.\n\n"
-        "For more details, see GeometricTransformations.rotationMatrix2DDegrees_ in the vigra C++ documentation.\n"  
+        "For more details, see GeometricTransformations.rotationMatrix2DDegrees_ in the vigra C++ documentation.\n"
         );
     def("rotateImageSimple",
         registerConverters(&pythonFixedRotateImage<float>),
@@ -790,7 +794,7 @@ void defineSampling()
         "The 'orientation' parameter (which must be one of CLOCKWISE, COUNTER_CLOCKWISE and UPSIDE_DOWN\n"
         "indicates the rotation direction. The 'out' parameter must, if given, have the according dimensions.\n"
         "This function also works for multiband images, it is then executed on every band.\n\n"
-        "For more details, see rotateImage_ in the vigra C++ documentation.\n" 
+        "For more details, see rotateImage_ in the vigra C++ documentation.\n"
         );
 
 //    def("rotateImageAboutCenter",
@@ -804,13 +808,13 @@ void defineSampling()
         "\n"
         "The 'out' parameter must have, if given, the according dimensions.\n"
         "This function also works for multiband images, it is then executed on every band.\n\n"
-        "For more details, see resampleImage_ in the vigra C++ documentation.\n" 
+        "For more details, see resampleImage_ in the vigra C++ documentation.\n"
         );
 
     def("resamplingGaussian", registerConverters(&resamplingGaussian2D<float>),
-          (arg("image"), 
-           arg("sigmaX")=1.0, arg("derivativeOrderX")=0, arg("samplingRatioX")=2.0, arg("offsetX")=0.0, 
-           arg("sigmaY")=1.0, arg("derivativeOrderY")=0, arg("samplingRatioY")=2.0, arg("offsetY")=0.0, 
+          (arg("image"),
+           arg("sigmaX")=1.0, arg("derivativeOrderX")=0, arg("samplingRatioX")=2.0, arg("offsetX")=0.0,
+           arg("sigmaY")=1.0, arg("derivativeOrderY")=0, arg("samplingRatioY")=2.0, arg("offsetY")=0.0,
            arg("out") = python::object()),
           "Resample image using a gaussian filter::\n\n"
           "   resamplingGaussian(image,\n"
@@ -838,7 +842,7 @@ void defineSampling()
         (arg("image"), arg("shape")=object(), arg("out")=object()),
         "Resize image using linear interpolation.\n"
         "The function uses the standard separable bilinear interpolation algorithm to obtain a good compromise between quality and speed.\n"
-        "\n" 
+        "\n"
         "The desired shape of the output image is taken either from 'shape' or 'out'.\n"
         "If both are given, they must agree.\n"
         "This function also works for multiband images, it is then executed on every band.\n\n"
@@ -861,7 +865,7 @@ void defineSampling()
         registerConverters(&pythonResizeImageCatmullRomInterpolation<float>),               // also multiband
         (arg("image"), arg("shape")=object(), arg("out")=object()),
         "Resize image using the Catmull/Rom interpolation function.\n"
-        "\n" 
+        "\n"
         "The desired shape of the output image is taken either from 'shape' or 'out'.\n"
         "If both are given, they must agree.\n"
         "This function also works for multiband images, it is then executed on every band.\n\n"
@@ -871,8 +875,8 @@ void defineSampling()
     def("resizeImageCoscotInterpolation",
         registerConverters(&pythonResizeImageCoscotInterpolation<float>),               // also multiband
         (arg("image"), arg("shape")=object(), arg("out")=object()),
-        "Resize image using the Coscot interpolation function.\n" 
-        "\n" 
+        "Resize image using the Coscot interpolation function.\n"
+        "\n"
         "The desired shape of the output image is taken either from 'shape' or 'out'.\n"
         "If both are given, they must agree.\n"
         "This function also works for multiband images, it is then executed on every band.\n\n"

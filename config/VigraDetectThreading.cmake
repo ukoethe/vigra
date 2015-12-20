@@ -23,19 +23,26 @@ else()
     set(ORIG_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
     if (CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0")
-        SET(CMAKE_CXX_FLAGS "-pthread -std=c++0x ${CMAKE_CXX_FLAGS}")
+        SET(CXX_THREADING_FLAGS "-pthread -std=c++0x")
     elseif(CMAKE_COMPILER_IS_GNUCXX)
-        SET(CMAKE_CXX_FLAGS "-pthread -std=c++11 ${CMAKE_CXX_FLAGS}")
+        SET(CXX_THREADING_FLAGS "-pthread -std=c++11")
     elseif(NOT MSVC)
-        SET(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+        SET(CXX_THREADING_FLAGS "-std=c++11")
     endif()
 
-    TRY_COMPILE(STD_THREADING_FOUND 
+    # add the threading flags if they are not already there
+    if(CXX_THREADING_FLAGS AND NOT ("${CMAKE_CXX_FLAGS}" MATCHES "pthread"))
+         SET(CMAKE_CXX_FLAGS "${CXX_THREADING_FLAGS} ${CMAKE_CXX_FLAGS}")
+    endif()
+    TRY_COMPILE(STD_THREADING_FOUND
         ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/config/check_std_thread.cxx
         OUTPUT_VARIABLE THREADING_TEST_OUTPUT )
-    
+
     if(STD_THREADING_FOUND)
         MESSAGE(STATUS "Checking for threading support:   std::thread")
+        if(CXX_THREADING_FLAGS)
+            MESSAGE(STATUS "    (added compiler flags: ${CXX_THREADING_FLAGS})")
+        endif()
         set_property(GLOBAL PROPERTY THREADING_IMPLEMENTATION "std")
     else()
         MESSAGE(STATUS "Checking for threading support:   NOT FOUND")

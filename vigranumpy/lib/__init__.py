@@ -223,7 +223,8 @@ def readHDF5(filenameOrGroup, pathInFile, order=None):
             file.close()
     return data
 
-def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
+
+def writeHDF5(data, filenameOrGroup, pathInFile, compression=None, chunks=None):
     '''Write an array to an HDF5 file.
 
        'filenameOrGroup' can contain a filename or a group object
@@ -243,6 +244,11 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
        lzf (very fast compression, all types).
        The 'lzf' compression filter is many times faster than 'gzip'
        at the cost of a lower compresion ratio.
+
+       Chunking is disabled by default. When 'chunks' is set to True
+       chunking is enabled and a chunk shape is determined automatically.
+       Alternatively a chunk shape can be specified explicitly by passing
+       a tuple of the desired shape.
 
        Requirements: the 'h5py' module must be installed.
     '''
@@ -275,7 +281,7 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
             data = data.transposeToNumpyOrder()
         except:
             pass
-        dataset = group.create_dataset(levels[-1], data=data, compression=compression)
+        dataset = group.create_dataset(levels[-1], data=data, compression=compression, chunks=chunks)
         if hasattr(data, 'axistags'):
             dataset.attrs['axistags'] = data.axistags.toJSON()
     finally:
@@ -289,6 +295,36 @@ writeHDF5.__module__ = 'vigra.impex'
 
 from filters import convolve, gaussianSmoothing
 from sampling import resize
+
+def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
+    '''
+        Convolve 'array' with a Gaussian derivate kernel of the given 'orders'.
+        'orders' must contain a list of integers >= 0 for each non-channel axis.
+        Each channel of the array is treated independently. If 'sigma' is a single
+        value, the kernel size is equal in each dimension. If 'sigma' is a tuple
+        or list of values of appropriate length, a different size is used for each axis.
+
+        'window_size' specifies the ratio between the filter scale and the size of
+        the filter window. Use values around 2.0 to speed-up the computation for the
+        price of increased cut-off error, and values >= 4.0 for vary accurate results.
+        The window size is automatically determined for the default value 0.0.
+    '''
+    if hasattr(array, 'dropChannelAxis'):
+        if array.dropChannelAxis().ndim != len(orders):
+            raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
+    else:
+        if array.ndim == len(orders):
+            raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
+    try:
+        len(sigma)
+    except:
+        sigma = [sigma]*len(orders)
+    kernels = tuple([filters.gaussianDerivativeKernel(s, o, window_size=window_size) \
+                     for s, o in zip(sigma, orders)])
+    return filters.convolve(array, kernels, out)
+
+filters.gaussianDerivative = gaussianDerivative
+gaussianDerivative.__module__ = 'vigra.filters'
 
 # import enums
 CLOCKWISE = sampling.RotationDirection.CLOCKWISE
@@ -324,15 +360,17 @@ def imshow(image,show=True, **kwargs):
             matplotlib.pylab.show()
         return plot
 
+
     image = image.transposeToNumpyOrder()
     if image.channels == 1:
         image = image.dropChannelAxis().view(numpy.ndarray)
         if 'cmap' in kwargs.keys():
-            cmap = kwargs['cmap']
-        elif 'norm' in kwargs.keys():
-            norm = kwargs['norm']
+            cmap = kwargs.pop('cmap')
         else:
             cmap = matplotlib.cm.gray
+        if 'norm' in kwargs.keys():
+            norm = kwargs.pop('norm')
+        else:
             norm = matplotlib.cm.colors.Normalize()
         plot = matplotlib.pyplot.imshow(image, cmap=cmap, norm=norm, **kwargs)
         if show:
@@ -466,9 +504,9 @@ def _genKernelFactories(name):
         newName = newPrefix + 'Kernel'
         if name == 'Kernel2D':
             newName += '2D'
-        code = '''def %(newName)s(*args):
+        code = '''def %(newName)s(*args, **kw):
         k = filters.%(name)s()
-        k.%(oldName)s(*args)
+        k.%(oldName)s(*args, **kw)
         return k
 %(newName)s.__doc__ = filters.%(name)s.%(oldName)s.__doc__
 filters.%(newName)s=%(newName)s
@@ -1257,7 +1295,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 # identity segmentation on this level
                 labels = self.nodeIdMap()
 
-            if steps == current :
+            if steps == _current :
                 return labels
             else :
                 labels = self.projectLabelsToBaseGraph(labels)
@@ -2251,29 +2289,29 @@ def _genGraphSegmentationFunctions():
 
         assert edgeWeights is not None or nodeFeatures is not None
 
-        print "prepare "
+        #print "prepare "
 
         if nodeNumStop is None:
             nodeNumStop = max(graph.nodeNum/2,min(graph.nodeNum,2))
 
 
         if edgeLengths is None :
-            print "get edge length"
+            #print "get edge length"
             edgeLengths = graphs.getEdgeLengths(graph)
 
 
         if nodeSizes is None:
-            print "get node size"
+            #print "get node size"
             nodeSizes = graphs.getNodeSizes(graph)
 
 
         if edgeWeights is None :
-            print "get wegihts length"
+            #print "get wegihts length"
             edgeWeights = graphs.graphMap(graph,'edge')
             edgeWeights[:]=0
 
         if nodeFeatures is None :
-            print "get node feat"
+            #print "get node feat"
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 
@@ -2524,52 +2562,6 @@ def _genGraphMiscFunctions():
 
     nodeFeaturesToEdgeWeights.__module__ = 'vigra.graphs'
     graphs.nodeFeaturesToEdgeWeights = nodeFeaturesToEdgeWeights
-
-    def eccentricityTransform(labels, out=None):
-        """ Compute eccentricity transform on labeled image.
-
-            Keyword Arguments :
-                - labels : input image (labeled)
-
-            Returns :
-                eccentricity transform
-        """
-        return graphs._eccentricityTransform(labels=labels, out=out)
-
-    eccentricityTransform.__module__ = 'vigra.graphs'
-    graphs.eccentricityTransform = eccentricityTransform
-
-    def eccentricityCenters(labels, out=None):
-        """ Compute eccentricity centers on labeled image.
-            Output is of shape (m, N), where m is the largest label in labels and N is the dimension.
-            Since labels start with 1, column i of the output contains the center of the region with label i+1.
-
-            Keyword Arguments :
-                - labels : input image (labeled)
-
-            Returns :
-                centers of the labeled regions
-        """
-        return graphs._eccentricityCenters(labels=labels, out=out)
-
-    eccentricityCenters.__module__ = 'vigra.graphs'
-    graphs.eccentricityCenters = eccentricityCenters
-
-    def eccentricityTransformWithCenters(labels, ecc=None, centers=None):
-        """ Compute eccentricity transform and centers on labeled image.
-            Shape of centers is (m, N), where m is the largest label in labels and N is the dimension.
-            Since labels start with 1, column i of the centers contains the center of the region with label i+1.
-
-            Keyword Arguments :
-                - labels : input image (labeled)
-
-            Returns :
-                2-tuple with eccentricity transform and centers
-        """
-        return graphs._eccentricityTransformWithCenters(labels=labels, ecc=ecc, centers=centers)
-
-    eccentricityTransformWithCenters.__module__ = 'vigra.graphs'
-    graphs.eccentricityTransformWithCenters = eccentricityTransformWithCenters
 
 _genGraphMiscFunctions()
 del _genGraphMiscFunctions

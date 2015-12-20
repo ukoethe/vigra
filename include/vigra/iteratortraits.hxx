@@ -165,7 +165,7 @@ struct IteratorTraitsBase
 
     The argument objects are created via a number of factory functions.
     Since these functions have descriptive names, they also serve
-    to improve readability: the name of each factory tells te purpose of its
+    to improve readability: the name of each factory tells the purpose of its
     argument object.
 
     Consider the following example. Without argument objects we had to

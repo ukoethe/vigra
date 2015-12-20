@@ -392,7 +392,7 @@ void SamplerTests::testSamplingWithReplacementChi2()
     The expectation value of a binomial distribution is n*p ==>
     The percentage of samples not used is (n*p)/k = p
     For large n p converges to 0.366 => numpositives should be
-    around 0.63 +/- 0.01 */
+    around 0.63 +/- 0.015 */
     totalDataCount = 10000;
     {
         Sampler<> sampler( totalDataCount, 
@@ -400,7 +400,7 @@ void SamplerTests::testSamplingWithReplacementChi2()
         sampler.sample();
         double numPositives = double(totalDataCount - sampler.oobIndices().size()) / totalDataCount;
 
-        shouldEqualTolerance (0, numPositives-0.63, 0.01);
+        shouldEqualTolerance (0, numPositives-0.63, 0.015);
     }
 }
 

@@ -59,7 +59,7 @@ class Kernel1D;
 
 // This function assumes that the input array is actually larger than
 // the range [is, iend), so that it can safely access values outside
-// this range. This is useful if (1) we work on a small ROI, or 
+// this range. This is useful if (1) we work on a small ROI, or
 // (2) we enlarge the input by copying with border treatment.
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
@@ -96,7 +96,7 @@ namespace detail {
 // dest array must have size = stop - start + kright - kleft
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void 
+void
 copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                             DestIterator id, DestAccessor da,
                             int start, int stop,
@@ -107,7 +107,7 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     int leftBorder = start - kright;
     int rightBorder = stop - kleft;
     int copyEnd = std::min(w, rightBorder);
-    
+
     if(leftBorder < 0)
     {
         switch(borderTreatment)
@@ -154,13 +154,13 @@ copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             }
         }
     }
-    
+
     SrcIterator iss = is + leftBorder;
     vigra_invariant( leftBorder < copyEnd,
         "copyLineWithBorderTreatment(): assertion failed.");
     for(; leftBorder<copyEnd; ++leftBorder, ++id, ++iss)
         da.set(sa(iss), id);
-    
+
     if(copyEnd < rightBorder)
     {
         switch(borderTreatment)
@@ -235,7 +235,7 @@ void internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
-    
+
     if(stop == 0)
         stop = w;
     is += start;
@@ -336,11 +336,11 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
-    
+
     if(stop == 0)
         stop = w;
     is += start;
-    
+
     for(int x=start; x<stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
@@ -380,7 +380,7 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                     sum += ka(ik) * sa(iss);
                 }
             }
-            
+
             sum = norm / (norm - clipped) * sum;
         }
         else if(w-x <= -kleft)
@@ -412,7 +412,7 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                 sum += ka(ik) * sa(iss);
             }
         }
-        
+
         da.set(detail::RequiresExplicitCast<typename
                       DestAccessor::value_type>::cast(sum), id);
     }
@@ -430,7 +430,7 @@ template <class SrcIterator, class SrcAccessor,
 void internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                                  DestIterator id, DestAccessor da,
                                  KernelIterator kernel, KernelAccessor ka,
-                                 int kleft, int kright, 
+                                 int kleft, int kright,
                                  int start = 0, int stop = 0)
 {
     int w = std::distance( is, iend );
@@ -440,11 +440,11 @@ void internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor s
             typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
-    
+
     if(stop == 0)
         stop = w;
     is += start;
-    
+
     for(int x=start; x<stop; ++x, ++is, ++id)
     {
         SumType sum = NumericTraits<SumType>::zero();
@@ -453,7 +453,7 @@ void internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor s
         {
             KernelIterator ik = kernel + x;
             SrcIterator iss = ibegin;
-            
+
             if(w-x <= -kleft)
             {
                 SrcIterator isend = iend;
@@ -491,7 +491,7 @@ void internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor s
                 sum += ka(ik) * sa(iss);
             }
         }
-        
+
         da.set(detail::RequiresExplicitCast<typename
                       DestAccessor::value_type>::cast(sum), id);
     }
@@ -519,11 +519,11 @@ void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor s
             typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
-    
+
     if(stop == 0)
         stop = w;
     is += start;
-    
+
     for(int x=start; x<stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
@@ -618,7 +618,7 @@ void internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa
             typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
-    
+
     if(stop == 0)
         stop = w;
     is += start;
@@ -785,13 +785,13 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     The kernel's value_type must be an algebraic field,
     i.e. the arithmetic operations (+, -, *, /) and NumericTraits must
     be defined.
-    
+
     If <tt>start</tt> and <tt>stop</tt> are non-zero, the relation
     <tt>0 <= start < stop <= width</tt> must hold (where <tt>width</tt>
-    is the length of the input array). The convolution is then restricted to that 
+    is the length of the input array). The convolution is then restricted to that
     subrange, and it is assumed that the output array only refers to that
-    subrange (i.e. <tt>id</tt> points to the element corresponding to 
-    <tt>start</tt>). If <tt>start</tt> and <tt>stop</tt> are both zero 
+    subrange (i.e. <tt>id</tt> points to the element corresponding to
+    <tt>start</tt>). If <tt>start</tt> and <tt>stop</tt> are both zero
     (the default), the entire array is convolved.
 
     <b> Declarations:</b>
@@ -912,7 +912,7 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     vigra_precondition(w >= std::max(kright, -kleft) + 1,
                  "convolveLine(): kernel longer than line.\n");
-                 
+
     if(stop != 0)
         vigra_precondition(0 <= start && start < stop && stop <= w,
                         "convolveLine(): invalid subrange (start, stop).\n");
@@ -920,7 +920,7 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     typedef typename PromoteTraits<
             typename SrcAccessor::value_type,
             typename KernelAccessor::value_type>::Promote SumType;
-    ArrayVector<SumType> a(iend - is); 
+    ArrayVector<SumType> a(iend - is);
     switch(border)
     {
       case BORDER_TREATMENT_WRAP:
@@ -996,7 +996,7 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Performs a 1 dimensional convolution in x direction.
 
-    It calls \ref convolveLine() for every row of the image. See \ref convolveLine() 
+    It calls \ref convolveLine() for every row of the image. See \ref convolveLine()
     for more information about required interfaces and vigra_preconditions.
 
     <b> Declarations:</b>
@@ -1072,9 +1072,9 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
     \endcode
     \deprecatedEnd
-    
+
     <b>Preconditions:</b>
-    
+
     <ul>
     <li> The x-axis must be longer than the kernel radius: <tt>w > std::max(kernel.right(), -kernel.left())</tt>.
     <li> If <tt>border == BORDER_TREATMENT_CLIP</tt>: The sum of kernel elements must be != 0.
@@ -1151,7 +1151,7 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Performs a 1 dimensional convolution in y direction.
 
-    It calls \ref convolveLine() for every column of the image. See \ref convolveLine() 
+    It calls \ref convolveLine() for every column of the image. See \ref convolveLine()
     for more information about required interfaces and vigra_preconditions.
 
     <b> Declarations:</b>
@@ -1227,9 +1227,9 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
     vigra::separableConvolveY(srcImageRange(src), destImage(dest), kernel1d(kernel));
     \endcode
     \deprecatedEnd
-    
+
     <b>Preconditions:</b>
-    
+
     <ul>
     <li> The y-axis must be longer than the kernel radius: <tt>h > std::max(kernel.right(), -kernel.left())</tt>.
     <li> If <tt>border == BORDER_TREATMENT_CLIP</tt>: The sum of kernel elements must be != 0.
@@ -1408,9 +1408,11 @@ class Kernel1D
           norm_(norm)
         {}
 
-        ~InitProxy() 
+        ~InitProxy()
 #ifndef _MSC_VER
-             throw(PreconditionViolation)
+            throw(PreconditionViolation)
+#elif _MSC_VER >= 1900
+            noexcept(false)
 #endif
         {
             vigra_precondition(count_ == 1 || count_ == sum_,
@@ -1420,7 +1422,7 @@ class Kernel1D
 
         InitProxy & operator,(value_type const & v)
         {
-            if(sum_ == count_) 
+            if(sum_ == count_)
                 norm_ = *iter_;
 
             norm_ += v;
@@ -1476,7 +1478,7 @@ class Kernel1D
       border_treatment_(k.borderTreatment()),
       norm_(k.norm())
     {}
-    
+
         /** Copy assignment.
         */
     Kernel1D & operator=(Kernel1D const & k)
@@ -1530,10 +1532,10 @@ class Kernel1D
             if <tt>norm</tt> is 0.0, the kernel is normalized to 1 by the analytic
             expression for the Gaussian, and <b>no</b> correction for the windowing
             error is performed. If <tt>windowRatio = 0.0</tt>, the radius of the filter
-            window is <tt>radius = round(3.0 * std_dev)</tt>, otherwise it is 
+            window is <tt>radius = round(3.0 * std_dev)</tt>, otherwise it is
             <tt>radius = round(windowRatio * std_dev)</tt> (where <tt>windowRatio > 0.0</tt>
             is required).
-            
+
             Precondition:
             \code
             std_dev >= 0.0
@@ -1598,9 +1600,9 @@ class Kernel1D
             by windowing the Gaussian to a finite interval. However,
             if <tt>norm</tt> is 0.0, the kernel is normalized to 1 by the analytic
             expression for the Gaussian derivative, and <b>no</b> correction for the
-            windowing error is performed. If <tt>windowRatio = 0.0</tt>, the radius 
-            of the filter window is <tt>radius = round(3.0 * std_dev + 0.5 * order)</tt>, 
-            otherwise it is <tt>radius = round(windowRatio * std_dev)</tt> (where 
+            windowing error is performed. If <tt>windowRatio = 0.0</tt>, the radius
+            of the filter window is <tt>radius = round(3.0 * std_dev + 0.5 * order)</tt>,
+            otherwise it is <tt>radius = round(windowRatio * std_dev)</tt> (where
             <tt>windowRatio > 0.0</tt> is required).
 
             Preconditions:
@@ -1628,16 +1630,16 @@ class Kernel1D
 
         /**
             Init an optimal 3-tap smoothing filter.
-            The filter values are 
-            
+            The filter values are
+
             \code
             [0.216, 0.568, 0.216]
             \endcode
-            
+
             These values are optimal in the sense that the 3x3 filter obtained by separable application
             of this filter is the best possible 3x3 approximation to a Gaussian filter.
             The equivalent Gaussian has sigma = 0.680.
- 
+
             Postconditions:
             \code
             1. left()  == -1
@@ -1654,18 +1656,18 @@ class Kernel1D
 
         /**
             Init an optimal 3-tap smoothing filter to be used in the context of first derivative computation.
-            This filter must be used in conjunction with the symmetric difference filter (see initSymmetricDifference()), 
+            This filter must be used in conjunction with the symmetric difference filter (see initSymmetricDifference()),
             such that the difference filter is applied along one dimension, and the smoothing filter along the other.
-            The filter values are 
-            
+            The filter values are
+
             \code
             [0.224365, 0.55127, 0.224365]
             \endcode
-            
-            These values are optimal in the sense that the 3x3 filter obtained by combining 
-            this filter with the symmetric difference is the best possible 3x3 approximation to a 
+
+            These values are optimal in the sense that the 3x3 filter obtained by combining
+            this filter with the symmetric difference is the best possible 3x3 approximation to a
             Gaussian first derivative filter. The equivalent Gaussian has sigma = 0.675.
- 
+
             Postconditions:
             \code
             1. left()  == -1
@@ -1682,18 +1684,18 @@ class Kernel1D
 
         /**
             Init an optimal 3-tap smoothing filter to be used in the context of second derivative computation.
-            This filter must be used in conjunction with the 3-tap second difference filter (see initSecondDifference3()), 
+            This filter must be used in conjunction with the 3-tap second difference filter (see initSecondDifference3()),
             such that the difference filter is applied along one dimension, and the smoothing filter along the other.
-            The filter values are 
-            
+            The filter values are
+
             \code
             [0.13, 0.74, 0.13]
             \endcode
-            
-            These values are optimal in the sense that the 3x3 filter obtained by combining 
-            this filter with the 3-tap second difference is the best possible 3x3 approximation to a 
+
+            These values are optimal in the sense that the 3x3 filter obtained by combining
+            this filter with the 3-tap second difference is the best possible 3x3 approximation to a
             Gaussian second derivative filter. The equivalent Gaussian has sigma = 0.433.
- 
+
             Postconditions:
             \code
             1. left()  == -1
@@ -1710,16 +1712,16 @@ class Kernel1D
 
         /**
             Init an optimal 5-tap smoothing filter.
-            The filter values are 
-            
+            The filter values are
+
             \code
             [0.03134, 0.24, 0.45732, 0.24, 0.03134]
             \endcode
-            
+
             These values are optimal in the sense that the 5x5 filter obtained by separable application
             of this filter is the best possible 5x5 approximation to a Gaussian filter.
             The equivalent Gaussian has sigma = 0.867.
- 
+
             Postconditions:
             \code
             1. left()  == -2
@@ -1736,18 +1738,18 @@ class Kernel1D
 
         /**
             Init an optimal 5-tap smoothing filter to be used in the context of first derivative computation.
-           This filter must be used in conjunction with the optimal 5-tap first derivative filter 
-           (see initOptimalFirstDerivative5()),  such that the derivative filter is applied along one dimension, 
-           and the smoothing filter along the other. The filter values are 
-            
+           This filter must be used in conjunction with the optimal 5-tap first derivative filter
+           (see initOptimalFirstDerivative5()),  such that the derivative filter is applied along one dimension,
+           and the smoothing filter along the other. The filter values are
+
             \code
             [0.04255, 0.241, 0.4329, 0.241, 0.04255]
             \endcode
-            
-            These values are optimal in the sense that the 5x5 filter obtained by combining 
-            this filter with the optimal 5-tap first derivative is the best possible 5x5 approximation to a 
+
+            These values are optimal in the sense that the 5x5 filter obtained by combining
+            this filter with the optimal 5-tap first derivative is the best possible 5x5 approximation to a
             Gaussian first derivative filter. The equivalent Gaussian has sigma = 0.906.
- 
+
             Postconditions:
             \code
             1. left()  == -2
@@ -1764,18 +1766,18 @@ class Kernel1D
 
         /**
             Init an optimal 5-tap smoothing filter to be used in the context of second derivative computation.
-           This filter must be used in conjunction with the optimal 5-tap second derivative filter 
-           (see initOptimalSecondDerivative5()), such that the derivative filter is applied along one dimension, 
-           and the smoothing filter along the other. The filter values are 
-            
+           This filter must be used in conjunction with the optimal 5-tap second derivative filter
+           (see initOptimalSecondDerivative5()), such that the derivative filter is applied along one dimension,
+           and the smoothing filter along the other. The filter values are
+
             \code
             [0.0243, 0.23556, 0.48028, 0.23556, 0.0243]
             \endcode
-            
-            These values are optimal in the sense that the 5x5 filter obtained by combining 
-            this filter with the optimal 5-tap second derivative is the best possible 5x5 approximation to a 
+
+            These values are optimal in the sense that the 5x5 filter obtained by combining
+            this filter with the optimal 5-tap second derivative is the best possible 5x5 approximation to a
             Gaussian second derivative filter. The equivalent Gaussian has sigma = 0.817.
- 
+
             Postconditions:
             \code
             1. left()  == -2
@@ -1793,19 +1795,19 @@ class Kernel1D
         /**
             Init a 5-tap filter as defined by Peter Burt in the context of pyramid creation.
             The filter values are
-            
+
             \code
             [a, 0.25, 0.5-2*a, 0.25, a]
             \endcode
-            
+
             The default <tt>a = 0.04785</tt> is optimal in the sense that it minimizes the difference
-            to a true Gaussian filter (which would have sigma = 0.975). For other values of <tt>a</tt>, the scale 
+            to a true Gaussian filter (which would have sigma = 0.975). For other values of <tt>a</tt>, the scale
             of the most similar Gaussian can be approximated by
-            
+
             \code
             sigma = 5.1 * a + 0.731
             \endcode
- 
+
             Preconditions:
             \code
             0 <= a <= 0.125
@@ -1882,7 +1884,7 @@ class Kernel1D
         /**
             Init as a symmetric gradient filter of the form
             <TT>[ 0.5 * norm, 0.0 * norm, -0.5 * norm]</TT>
-           
+
             <b>Deprecated</b>. Use initSymmetricDifference() instead.
 
             Postconditions:
@@ -1900,7 +1902,7 @@ class Kernel1D
     }
 
         /** Init as a symmetric gradient filter with norm 1.
-           
+
            <b>Deprecated</b>. Use initSymmetricDifference() instead.
          */
     void initSymmetricGradient()
@@ -1910,11 +1912,11 @@ class Kernel1D
 
         /** Init as the 2-tap forward difference filter.
              The filter values are
-             
+
             \code
             [1.0, -1.0]
             \endcode
-             
+
             (note that filters are reflected by the convolution algorithm,
              and we get a forward difference after reflection).
 
@@ -1934,11 +1936,11 @@ class Kernel1D
 
         /** Init as the 2-tap backward difference filter.
             The filter values are
-             
+
             \code
             [1.0, -1.0]
             \endcode
-             
+
             (note that filters are reflected by the convolution algorithm,
              and we get a forward difference after reflection).
 
@@ -1960,7 +1962,7 @@ class Kernel1D
 
         /** Init as the 3-tap symmetric difference filter
             The filter values are
-             
+
             \code
             [0.5, 0, -0.5]
             \endcode
@@ -1981,7 +1983,7 @@ class Kernel1D
         /**
             Init the 3-tap second difference filter.
             The filter values are
-             
+
             \code
             [1, -2, 1]
             \endcode
@@ -1999,25 +2001,25 @@ class Kernel1D
         this->initExplicitly(-1, 1) = 1.0, -2.0, 1.0;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
     }
-    
+
         /**
             Init an optimal 5-tap first derivative filter.
-            This filter must be used in conjunction with the corresponding 5-tap smoothing filter 
+            This filter must be used in conjunction with the corresponding 5-tap smoothing filter
             (see initOptimalFirstDerivativeSmoothing5()), such that the derivative filter is applied along one dimension,
             and the smoothing filter along the other.
-            The filter values are 
-            
+            The filter values are
+
             \code
             [0.1, 0.3, 0.0, -0.3, -0.1]
             \endcode
-            
-            These values are optimal in the sense that the 5x5 filter obtained by combining 
-            this filter with the corresponding 5-tap smoothing filter is the best possible 5x5 approximation to a 
+
+            These values are optimal in the sense that the 5x5 filter obtained by combining
+            this filter with the corresponding 5-tap smoothing filter is the best possible 5x5 approximation to a
             Gaussian first derivative filter. The equivalent Gaussian has sigma = 0.906.
-            
+
             If the filter is instead separably combined with itself, an almost optimal approximation of the
             mixed second Gaussian derivative at scale sigma = 0.899 results.
- 
+
             Postconditions:
             \code
             1. left()  == -2
@@ -2031,22 +2033,22 @@ class Kernel1D
         this->initExplicitly(-2, 2) = 0.1, 0.3, 0.0, -0.3, -0.1;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
     }
-    
+
         /**
             Init an optimal 5-tap second derivative filter.
-            This filter must be used in conjunction with the corresponding 5-tap smoothing filter 
+            This filter must be used in conjunction with the corresponding 5-tap smoothing filter
             (see initOptimalSecondDerivativeSmoothing5()), such that the derivative filter is applied along one dimension,
             and the smoothing filter along the other.
-            The filter values are 
-            
+            The filter values are
+
             \code
             [0.22075, 0.117, -0.6755, 0.117, 0.22075]
             \endcode
-            
-            These values are optimal in the sense that the 5x5 filter obtained by combining 
-            this filter with the corresponding 5-tap smoothing filter is the best possible 5x5 approximation to a 
+
+            These values are optimal in the sense that the 5x5 filter obtained by combining
+            this filter with the corresponding 5-tap smoothing filter is the best possible 5x5 approximation to a
             Gaussian second derivative filter. The equivalent Gaussian has sigma = 0.817.
- 
+
             Postconditions:
             \code
             1. left()  == -2
@@ -2249,7 +2251,7 @@ void Kernel1D<ARITHTYPE>::normalize(value_type norm,
 template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
-                                  value_type norm, 
+                                  value_type norm,
                                   double windowRatio)
 {
     vigra_precondition(std_dev >= 0.0,
@@ -2375,7 +2377,7 @@ template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
                                             int order,
-                                            value_type norm, 
+                                            value_type norm,
                                             double windowRatio)
 {
     vigra_precondition(order >= 0,
@@ -2386,7 +2388,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
         initGaussian(std_dev, norm, windowRatio);
         return;
     }
-    
+
     vigra_precondition(std_dev > 0.0,
               "Kernel1D::initGaussianDerivative(): "
               "Standard deviation must be > 0.");

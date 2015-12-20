@@ -62,8 +62,8 @@ namespace vigra{
         outShape[DIM+1]=CHANNELS;
         histogram.reshapeIfEmpty(outShape);
         {
-             PyAllowThreads _pythread;
-            multi_gaussian_histogram<DIM,float,CHANNELS,float>(image,minVals,maxVals,bins,
+            PyAllowThreads _pythread;
+            multiGaussianHistogram<DIM,float,CHANNELS,float>(image,minVals,maxVals,bins,
                 sigma,sigmaBin,histogram);
         }
         return histogram;
@@ -89,7 +89,7 @@ namespace vigra{
         histogram.reshapeIfEmpty(outShape);
         {
             PyAllowThreads _pythread;
-            multi_gaussian_co_histogram<DIM,float,float>(imageA,imageB,minVals,maxVals,bins,
+            multiGaussianCoHistogram<DIM,float,float>(imageA,imageB,minVals,maxVals,bins,
             sigma,histogram);
         }
         return histogram;
@@ -116,13 +116,15 @@ namespace vigra{
         outShape[DIM]=ranks.size();
         out.reshapeIfEmpty(outShape);
 
+        // FIXME: check the length of sigmas and ranks
+
         {
-             PyAllowThreads _pythread;
+            PyAllowThreads _pythread;
             TinyVector<double, DIM+1> sigmaVec;
             std::copy(sigmas.begin(),sigmas.end(),sigmaVec.begin());
 
-            multi_gaussian_rank_order(image, minVal, maxVal,
-                                bins, sigmaVec, ranks, out);
+            multiGaussianRankOrder<DIM, float, float, float>(image, minVal, maxVal,
+                                   bins, sigmaVec, ranks, out);
         }
         return out;
     }
@@ -194,6 +196,7 @@ BOOST_PYTHON_MODULE_INIT(histogram)
     import_vigranumpy();
 
     // all exporters needed for graph exporters (like lemon::INVALID)
+    defineMultiGaussianHistogram<2,1>();
     defineMultiGaussianHistogram<2,3>();
     defineMultiGaussianHistogram<3,1>();
     defineMultiGaussianHistogram<3,3>();

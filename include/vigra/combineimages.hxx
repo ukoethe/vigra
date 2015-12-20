@@ -114,7 +114,7 @@ combineThreeLines(SrcIterator1 s1,
 
 /** \brief Combine two source images into destination image.
 
-    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array expressions",
     this function is rarely needed. Moreover, \ref combineTwoMultiArrays() provides the 
     same functionality for arbitrary dimensional arrays.
 
@@ -491,7 +491,7 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
 
 /** \brief Combine three source images into destination image.
 
-    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array expressions",
     this function is rarely needed. Moreover, \ref combineThreeMultiArrays() provides the 
     same functionality for arbitrary dimensional arrays.
 

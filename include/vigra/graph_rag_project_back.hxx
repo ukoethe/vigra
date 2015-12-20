@@ -107,12 +107,12 @@ namespace vigra{
         class BASE_GRAPH_FEATURES
     >
     struct RagProjectBack<
-        vigra::GridGraph<3, boost::undirected_tag>,
+        vigra::GridGraph<3, undirected_tag>,
         BASE_GRAPH_LABELS,
         RAG_FEATURES,
         BASE_GRAPH_FEATURES
     >{
-        typedef vigra::GridGraph<3, boost::undirected_tag> BASE_GRAPH;
+        typedef vigra::GridGraph<3, undirected_tag> BASE_GRAPH;
 
         static void projectBack(
             const AdjacencyListGraph & rag,
@@ -131,7 +131,7 @@ namespace vigra{
 
             if(ignoreLabel==-1){
                 
-                #pragma omp parallel for
+// FIXME: replace with threadpool                #pragma omp parallel for
                 for(Int64 z=0; z<shape[2]; ++z){    
                     BgNode node;
                     node[2]=z;
@@ -143,7 +143,7 @@ namespace vigra{
 
             }
             else{
-                #pragma omp parallel for
+// FIXME: replace with threadpool                #pragma omp parallel for
                 for(Int64 z=0; z<shape[2]; ++z){    
                     BgNode node;
                     node[2]=z;

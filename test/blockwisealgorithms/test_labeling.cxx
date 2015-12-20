@@ -87,16 +87,16 @@ void testOnData(DatasIterator datas_begin, DatasIterator datas_end,
                     Data correct_labels(data.shape());
                     Data tested_labels(data.shape());
                     
-                    LabelOptions options;
+                    BlockwiseLabelOptions options;
                     options.neighborhood(neighborhood);
                     options.blockShape(shape);
-                    
+
                     int correct_label_number;
                     int tested_label_number;
                     if(with_background)
                     {
                         correct_label_number = labelMultiArrayWithBackground(data, correct_labels, neighborhood, 1u);
-                        options.background(1u);
+                        options.ignoreBackgroundValue(1u);
                     }
                     else
                     {
@@ -221,10 +221,13 @@ struct BlockwiseLabelingTest
         //TinyVector<MultiArrayIndex, 3> block_shape(1, 1, 1);
 
         NeighborhoodType neighborhood = IndirectNeighborhood;
+        using namespace vigra::blockwise;
     
         size_t count = labelMultiArrayWithBackground(data, labels, neighborhood, 1);
         size_t blockwise_count = labelMultiArrayBlockwise(data, blockwise_labels, 
-                                                          LabelOptions().neighborhood(neighborhood).background(1).blockShape(block_shape));
+                                                          BlockwiseLabelOptions().neighborhood(neighborhood)
+                                                                                 .ignoreBackgroundValue(1)
+                                                                                 .blockShape(block_shape));
         shouldEqual(count, blockwise_count);
         shouldEqual(equivalentLabels(labels.begin(), labels.end(),
                                      blockwise_labels.begin(), blockwise_labels.end()),
@@ -242,9 +245,11 @@ struct BlockwiseLabelingTest
         DataArray data(shape, chunk_shape);
         fillRandom(data.begin(), data.end(), 3);
         LabelArray labels(shape, chunk_shape);
+
+        using namespace vigra::blockwise;
         
-        LabelOptions options;
-        options.neighborhood(IndirectNeighborhood).background(1);
+        BlockwiseLabelOptions options;
+        options.neighborhood(IndirectNeighborhood).ignoreBackgroundValue(1);
 
         size_t tested_label_number = labelMultiArrayBlockwise(data, labels, options);
         MultiArray<3, size_t> checked_out_labels(shape);
@@ -285,9 +290,9 @@ struct BlockwiseLabelingTestSuite
     BlockwiseLabelingTestSuite()
       : test_suite("blockwise labeling test")
     {
-        add(testCase(&BlockwiseLabelingTest::fiveDimensionalRandomTest));
-        add(testCase(&BlockwiseLabelingTest::twoDimensionalRandomTest));
         add(testCase(&BlockwiseLabelingTest::oneDimensionalRandomTest));
+        add(testCase(&BlockwiseLabelingTest::twoDimensionalRandomTest));
+        add(testCase(&BlockwiseLabelingTest::fiveDimensionalRandomTest));
         add(testCase(&BlockwiseLabelingTest::debugTest));
         add(testCase(&BlockwiseLabelingTest::chunkedArrayTest));
     }

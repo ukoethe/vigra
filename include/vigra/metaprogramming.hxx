@@ -49,6 +49,11 @@ namespace vigra {
 #pragma warning( disable : 4503 )
 #endif
 
+#ifdef __APPLE__
+#include <AssertMacros.h>
+#undef check
+#endif
+
 template <int N>
 class MetaInt
 {

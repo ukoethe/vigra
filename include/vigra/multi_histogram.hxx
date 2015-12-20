@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -46,7 +46,7 @@ namespace vigra{
 
 
     template< unsigned int DIM , class T_DATA ,unsigned int CHANNELS, class T_HIST >
-    void multi_gaussian_histogram(
+    void multiGaussianHistogram(
         const MultiArrayView<DIM, TinyVector<T_DATA,CHANNELS> > & image,
         const TinyVector<T_DATA,CHANNELS> minVals,
         const TinyVector<T_DATA,CHANNELS> maxVals,
@@ -55,7 +55,7 @@ namespace vigra{
         const float sigmaBin,
         MultiArrayView<DIM+2 , T_HIST>    histogram
     ){
-        typedef vigra::GridGraph< DIM , boost::undirected_tag> Graph;
+        typedef vigra::GridGraph< DIM , undirected_tag> Graph;
         typedef typename Graph::NodeIt graph_scanner;
         typedef typename Graph::Node   Node;
         typedef T_HIST ValueType;
@@ -107,7 +107,7 @@ namespace vigra{
     }
 
     template< unsigned int DIM , class T_DATA, class T_HIST >
-    void multi_gaussian_co_histogram(
+    void multiGaussianCoHistogram(
         const MultiArrayView<DIM, T_DATA > & imageA,
         const MultiArrayView<DIM, T_DATA > & imageB,
         const TinyVector<T_DATA,2> & minVals,
@@ -116,7 +116,7 @@ namespace vigra{
         const TinyVector<float,3> & sigma,
         MultiArrayView<DIM+2, T_HIST> histogram
     ){
-        typedef vigra::GridGraph< DIM , boost::undirected_tag> Graph;
+        typedef vigra::GridGraph< DIM , undirected_tag> Graph;
         typedef typename Graph::NodeIt graph_scanner;
         typedef typename Graph::Node   Node;
         typedef typename MultiArrayView<DIM+2 , T_HIST>::difference_type HistCoord;
@@ -140,7 +140,7 @@ namespace vigra{
             HistCoord histCoord;
             for(size_t d=0;d<DIM;++d)
                 histCoord[d]=node[d];
-            
+
             histCoord[DIM]=binIndexA;
             histCoord[DIM+1]=binIndexB;
 
@@ -151,7 +151,7 @@ namespace vigra{
             histCoord[DIM]=std::min(biA,static_cast<unsigned int>(nBins[0]-1));
             histCoord[DIM+1]=std::min(biB,static_cast<unsigned int>(nBins[1]-1));
             histogram[histCoord]+=1.0;
-            
+
         }
 
         MultiArray<DIM+2 , T_HIST>    histogramBuffer(histogram);
@@ -191,15 +191,15 @@ namespace vigra{
 
 
 
-    template< unsigned int DIM , class T, class U, class V>
-    void multi_gaussian_rank_order(
+    template< unsigned int DIM , class T, class V, class U>
+    void multiGaussianRankOrder(
         const MultiArrayView<DIM, T > & image,
         const T minVal,
         const T maxVal,
         const size_t bins,
         const TinyVector<double, DIM+1> sigmas,
         const MultiArrayView<1, V> & ranks,
-        MultiArrayView<DIM+1, U> & out
+        MultiArrayView<DIM+1, U> out
     ){
         typedef MultiArray<DIM, T> ImgType;
         typedef typename ImgType::difference_type ImgCoord;
@@ -222,7 +222,7 @@ namespace vigra{
         HistCoord histCoord,nextHistCoord;
         {
             MultiCoordinateIterator<DIM> iter(image.shape());
-            for(size_t i=0 ;i<image.size(); ++i, ++iter){
+            for(std::ptrdiff_t i=0 ;i<image.size(); ++i, ++iter){
                 const ImgCoord imgCoord(*iter);
                 std::copy(imgCoord.begin(),imgCoord.end(),histCoord.begin() );
 
@@ -234,7 +234,7 @@ namespace vigra{
 
                 if(floorBin==ceilBin){
                    histCoord[DIM] = floorBin;
-                   histA[histCoord] += 1.0; 
+                   histA[histCoord] += 1.0;
                 }
                 else{
                     const T floorBin = std::floor(fbinIndex);
@@ -242,9 +242,9 @@ namespace vigra{
                     const double ceilW = (fbinIndex - fFloorBin);
                     const double floorW = 1.0 - ceilW;
                     histCoord[DIM] = floorBin;
-                    histA[histCoord] += floorW; 
+                    histA[histCoord] += floorW;
                     histCoord[DIM] = ceilBin;
-                    histA[histCoord] += ceilW; 
+                    histA[histCoord] += ceilW;
                 }
 
             }
@@ -263,7 +263,7 @@ namespace vigra{
         //std::cout<<"normalize and compute ranks\n";
         {
             MultiCoordinateIterator<DIM> iter(image.shape());
-            for(size_t i=0 ;i<image.size(); ++i, ++iter){
+            for(std::ptrdiff_t i=0 ;i<image.size(); ++i, ++iter){
 
                 // normalize
                 const ImgCoord imgCoord(*iter);
@@ -284,7 +284,7 @@ namespace vigra{
                 histCoord[DIM] = 0;
                 histBuffer[0] = histA[histCoord];
                 for(size_t bi=1; bi<bins; ++bi){
-                    
+
                     double prevVal =  histA[histCoord];
                     histCoord[DIM] = bi;
                     histA[histCoord] +=prevVal;
@@ -294,15 +294,15 @@ namespace vigra{
 
 
                 size_t bi=0;
-                for(size_t r=0; r<ranks.size(); ++r){
+                for(std::ptrdiff_t r=0; r<ranks.size(); ++r){
                     outCoord[DIM] = r;
                     const V rank = ranks[r];
                     histCoord[DIM] = bi;
                     nextHistCoord[DIM] = bi +1;
                     //std::cout<<"    bi "<<bi<<" rank "<<rank<<" "<<histA[histCoord]<<"\n";
                     // corner cases
-                    if(rank < histA[histCoord] || 
-                       std::abs(rank-histA[histCoord])< 0.0000001 || 
+                    if(rank < histA[histCoord] ||
+                       std::abs(rank-histA[histCoord])< 0.0000001 ||
                        bi==bins-1
                     ){
                         out[outCoord] = static_cast<U>((maxVal-minVal)*bi*bins + minVal);
@@ -310,7 +310,7 @@ namespace vigra{
                     }
                     else{
                         // with binary search
-                        const size_t upperBinIndex = 
+                        const size_t upperBinIndex =
                             std::distance(histBuffer.begin(),std::lower_bound(histBuffer.begin()+bi, histBuffer.end(),float(rank)));
                         bi = upperBinIndex - 1;
                         histCoord[DIM] = bi;
