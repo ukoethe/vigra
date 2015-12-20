@@ -59,7 +59,7 @@ public:
     {}
     size_t operator()(MultiArrayView<1, T> const & features) const
     {
-        return features(dim_) < val_ ? 0 : 1;
+        return features(dim_) <= val_ ? 0 : 1;
     }
     size_t dim_;
     T val_;
