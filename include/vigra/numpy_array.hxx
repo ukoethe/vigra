@@ -188,12 +188,12 @@ void numpyParseSlicing(Shape const & shape, PyObject * idx, Shape & start, Shape
         PyObject * item = PyTuple_GET_ITEM((PyTupleObject *)index.ptr(), kindex);
 #if PY_MAJOR_VERSION < 3
         if(PyInt_Check(item))
-		{
-			MultiArrayIndex i = PyInt_AsLong(item);
+        {
+            MultiArrayIndex i = PyInt_AsLong(item);
 #else
-		if(PyLong_Check(item))
-		{
-			MultiArrayIndex i = PyLong_AsLong(item);
+        if(PyLong_Check(item))
+        {
+            MultiArrayIndex i = PyLong_AsLong(item);
 #endif
             start[k] = i;
             if(start[k] < 0)
@@ -338,9 +338,9 @@ class NumpyAnyArray
 #if PY_MAJOR_VERSION < 3
             python_ptr f(PyString_FromString("_copyValuesImpl"), python_ptr::keep_count);
 #else
-			python_ptr f(PyBytes_FromString("_copyValuesImpl"), python_ptr::keep_count);
+            python_ptr f(PyUnicode_FromString("_copyValuesImpl"), python_ptr::keep_count);
 #endif
-			if(PyObject_HasAttr(arraytype, f))
+            if(PyObject_HasAttr(arraytype, f))
             {
                 python_ptr res(PyObject_CallMethodObjArgs(arraytype, f.get(),
                                                           pyArray_.get(), other.pyArray_.get(), NULL),
@@ -513,19 +513,19 @@ class NumpyAnyArray
 #if PY_MAJOR_VERSION < 3
                 item = PyInt_FromLong(start[k]);
 #else
-				item = PyLong_FromLong(start[k]);
+                item = PyLong_FromLong(start[k]);
 #endif
-			}
+            }
             else
             {
 #if PY_MAJOR_VERSION < 3
                 python_ptr s0(PyInt_FromLong(start[k]), python_ptr::new_nonzero_reference);
                 python_ptr s1(PyInt_FromLong(stop[k]), python_ptr::new_nonzero_reference);
 #else
-				python_ptr s0(PyLong_FromLong(start[k]), python_ptr::new_nonzero_reference);
-				python_ptr s1(PyLong_FromLong(stop[k]), python_ptr::new_nonzero_reference);
+                python_ptr s0(PyLong_FromLong(start[k]), python_ptr::new_nonzero_reference);
+                python_ptr s1(PyLong_FromLong(stop[k]), python_ptr::new_nonzero_reference);
 #endif
-				item = PySlice_New(s0, s1, 0);
+                item = PySlice_New(s0, s1, 0);
             }
             pythonToCppException(item);
             PyTuple_SET_ITEM((PyTupleObject *)index.ptr(), k, item); // steals reference to item
@@ -533,9 +533,9 @@ class NumpyAnyArray
 #if PY_MAJOR_VERSION < 3
         python_ptr func(PyString_FromString("__getitem__"), python_ptr::new_nonzero_reference);
 #else
-		python_ptr func(PyBytes_FromString("__getitem__"), python_ptr::new_nonzero_reference);
+        python_ptr func(PyUnicode_FromString("__getitem__"), python_ptr::new_nonzero_reference);
 #endif
-		python_ptr res(PyObject_CallMethodObjArgs(pyObject(), func.ptr(), index.ptr(), NULL),
+        python_ptr res(PyObject_CallMethodObjArgs(pyObject(), func.ptr(), index.ptr(), NULL),
                        python_ptr::new_nonzero_reference);
         return NumpyAnyArray(res.ptr());
     }
@@ -553,9 +553,9 @@ class NumpyAnyArray
 #if PY_MAJOR_VERSION < 3
             python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
 #else
-			python_ptr key(PyBytes_FromString("axistags"), python_ptr::keep_count);
+            python_ptr key(PyUnicode_FromString("axistags"), python_ptr::keep_count);
 #endif
-			axistags.reset(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
+            axistags.reset(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
             if(!axistags)
                 PyErr_Clear();
         }

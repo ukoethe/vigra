@@ -83,7 +83,7 @@ PyObject * Edgel__repr__(Edgel const & e)
 #if PY_MAJOR_VERSION < 3
         return PyString_FromString(s.str().c_str());
 #else
-		return PyBytes_FromString(s.str().c_str());
+        return PyUnicode_FromString(s.str().c_str());
 #endif
 }
 
