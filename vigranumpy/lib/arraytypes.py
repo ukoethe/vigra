@@ -887,12 +887,12 @@ class VigraArray(numpy.ndarray):
         return self.axistags.axisTypeCount(AxisType.Space)
 
     def iterImpl(self, type):
-        axes = [k for k in xrange(self.ndim) if self.axistags[k].isType(type)]
+        axes = [k for k in range(self.ndim) if self.axistags[k].isType(type)]
         if axes:
             axes.sort(key=lambda x: self.axistags[x], reverse=True)
             slices = [slice(None)]*self.ndim
             for point in numpy.ndindex(*(self.shape[k] for k in axes)):
-                for j in xrange(len(point)):
+                for j in range(len(point)):
                     slices[axes[j]] = point[j]
                 yield self[tuple(slices)]
         else:
@@ -964,7 +964,7 @@ class VigraArray(numpy.ndarray):
         if i < self.ndim:
             if not self.axistags[i].isSpatial():
                 raise RuntimeError("VigraArray.sliceIter(): %s is not a spatial axis." % key)
-            for k in xrange(self.shape[i]):
+            for k in range(self.shape[i]):
                 yield self.bindAxis(i, k)
         else:
             yield self
@@ -1101,7 +1101,7 @@ class VigraArray(numpy.ndarray):
                 else:
                     axisinfo.append(tag)
                     slicing.append(axisinfo[-1])
-            for k in xrange(self.ndim):
+            for k in range(self.ndim):
                 if self.axistags[k].isType(AxisType.UnknownAxisType):
                     raise RuntimeError("VigraArray.withAxes(): array must not contain axes of unknown type (key '?').")
                 if slicing[k] == 0 and self.shape[k] != 1:
@@ -1252,8 +1252,9 @@ class VigraArray(numpy.ndarray):
         except:
             if not isinstance(index, collections.Iterable):
                 raise
-            res = numpy.ndarray.__getitem__(self,
-                     map(lambda x: None if isinstance(x, AxisInfo) else x, index))
+            #create temporary index without AxisInfor in order to use np.ndarray.__getitem__
+            tmpindex = [None if isinstance(x, AxisInfo) else x for x in index]
+            res = numpy.ndarray.__getitem__(self, tmpindex)
         if res is not self and hasattr(res, 'axistags'):
             if res.base is self or res.base is self.base:
                 res.axistags = res._transform_axistags(index)
@@ -1401,7 +1402,7 @@ class VigraArray(numpy.ndarray):
     @_preserve_doc
     def nonzero(self):
         res = tuple(k.view(type(self)) for k in numpy.ndarray.nonzero(self))
-        for k in xrange(len(res)):
+        for k in range(len(res)):
             res[k].axistags = AxisTags(AxisInfo(self.axistags[k]))
         return res
 
@@ -1501,7 +1502,7 @@ class VigraArray(numpy.ndarray):
         res = numpy.ndarray.squeeze(self)
         if self.ndim != res.ndim:
             res.axistags = res._copy_axistags()
-            for k in xrange(self.ndim-1, -1, -1):
+            for k in range(self.ndim-1, -1, -1):
                 if self.shape[k] == 1:
                     del res.axistags[k]
         return res

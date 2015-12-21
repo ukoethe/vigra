@@ -183,7 +183,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert_equal(img.min(), 99.0)
         assert_equal(img.max(), 99.0)
         img.flat[:] = range(img.size)
-        assert_equal(img.flatten().tolist(), range(img.size))
+        assert_equal(img.flatten().tolist(), list(range(img.size)))
         img[1,2] = value
         assert_equal((img[1,2]==value).all(), True)
 
@@ -1342,7 +1342,7 @@ def testZMQ():
 
 def testSlicing():
     a = arraytypes.Vector2Volume((5,4,3))
-    a.flat[...] = xrange(a.size)
+    a.flat[...] = range(a.size)
 
     tags = arraytypes.VigraArray.defaultAxistags('xyzc')
     assert_equal(tags, a.axistags)
@@ -1408,7 +1408,7 @@ def testMethods():
 
     a.ravel()[...] = range(a.size)
 
-    for k, i in zip(a.flat, xrange(a.size)):
+    for k, i in zip(a.flat, range(a.size)):
         assert_equal(k, i)
 
     assert (a.flatten() == range(a.size)).all()
