@@ -221,7 +221,7 @@ void random_forest_single_tree(
     }
 
     // Call the visitor.
-    visitor.visit_before_tree(instance_weights);
+    visitor.visit_before_tree(features, labels, instance_weights);
 
     // Split the nodes.
     detail::RFMapUpdater<ACC> node_map_updater;

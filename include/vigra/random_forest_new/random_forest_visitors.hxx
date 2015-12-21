@@ -90,8 +90,8 @@ public:
      * 
      * @param weights the actual instance weights (after bootstrap sampling and class weights)
      */
-    template <typename WEIGHTS>
-    void visit_before_tree(WEIGHTS & weights)
+    template <typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_before_tree(FEATURES & features, LABELS & labels, WEIGHTS & weights)
     {}
 
     /**
@@ -169,9 +169,8 @@ public:
     /**
      * Save whether a data point is in-bag (weight > 0) or out-of-bag (weight == 0).
      */
-    template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_after_tree(
-            RF & rf,
+    template <typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_before_tree(
             FEATURES & features,
             LABELS & labels,
             WEIGHTS & weights
@@ -369,12 +368,12 @@ public:
         next_.visit_after_training(nexts, rf, features, labels);
     }
 
-    template <typename WEIGHTS>
-    void visit_before_tree(WEIGHTS & weights)
+    template <typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_before_tree(FEATURES & features, LABELS & labels, WEIGHTS & weights)
     {
         if (visitor_.is_active())
-            visitor_.visit_before_tree(weights);
-        next_.visit_before_tree(weights);
+            visitor_.visit_before_tree(features, labels, weights);
+        next_.visit_before_tree(features, labels, weights);
     }
 
     template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
