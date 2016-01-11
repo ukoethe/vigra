@@ -26,7 +26,7 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 include(VigraSetDefaults)
 include(VigraCMakeUtils)
 
-INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include "C:\conda\pkgs\python-3.5.0-3\include") #TODO python include hack 
+INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include "C:/conda/pkgs/python-3.5.0-3/include") #TODO python include hack 
 
 IF(VIGRA_STATIC_LIB)
     SET(LIBTYPE STATIC)
@@ -147,7 +147,7 @@ ENDIF()
 
 SET(DOXYGEN_SKIP_DOT TRUE)
 FIND_PACKAGE(Doxygen)
-FIND_PACKAGE(PythonInterp 2)
+FIND_PACKAGE(PythonInterp 3)
 
 IF(WITH_VIGRANUMPY)
     FIND_PACKAGE( VIGRANUMPY_DEPENDENCIES )
