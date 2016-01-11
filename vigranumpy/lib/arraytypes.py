@@ -42,6 +42,10 @@ import vigra.vigranumpycore as vigranumpycore
 
 from vigra.vigranumpycore import AxisType, AxisInfo, AxisTags
 
+if sys.version_info[0] > 2:
+    def xrange(obj):
+        return range(obj)
+
 def _preserve_doc(f):
     npy_doc = eval('numpy.ndarray.%s.__doc__' % f.__name__)
     f.__doc__ =  ("" if npy_doc is None else npy_doc) + \
@@ -1252,8 +1256,9 @@ class VigraArray(numpy.ndarray):
         except:
             if not isinstance(index, collections.Iterable):
                 raise
-            res = numpy.ndarray.__getitem__(self,
-                     map(lambda x: None if isinstance(x, AxisInfo) else x, index))
+            #create temporary index without AxisInfor in order to use np.ndarray.__getitem__
+            tmpindex = [None if isinstance(x, AxisInfo) else x for x in index]
+            res = numpy.ndarray.__getitem__(self, tmpindex)
         if res is not self and hasattr(res, 'axistags'):
             if res.base is self or res.base is self.base:
                 res.axistags = res._transform_axistags(index)

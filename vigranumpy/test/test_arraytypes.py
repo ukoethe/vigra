@@ -49,6 +49,10 @@ from nose.tools import assert_equal, raises, assert_true
 
 from vigra.arraytypes import AxisTags, AxisInfo
 
+if sys.version_info[0] > 2:
+    def xrange(obj):
+        return range(obj)
+
 numpyHasComplexNegateBug = numpy.version.version.startswith('1.0')
 
 try:
@@ -183,7 +187,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert_equal(img.min(), 99.0)
         assert_equal(img.max(), 99.0)
         img.flat[:] = range(img.size)
-        assert_equal(img.flatten().tolist(), range(img.size))
+        assert_equal(img.flatten().tolist(), list(range(img.size)))
         img[1,2] = value
         assert_equal((img[1,2]==value).all(), True)
 
