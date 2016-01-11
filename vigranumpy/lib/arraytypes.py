@@ -43,8 +43,8 @@ import vigra.vigranumpycore as vigranumpycore
 from vigra.vigranumpycore import AxisType, AxisInfo, AxisTags
 
 if sys.version_info[0] > 2:
-    def xrange(obj):
-        return range(obj)
+    def xrange(*args):
+        return range(*args)
 
 def _preserve_doc(f):
     npy_doc = eval('numpy.ndarray.%s.__doc__' % f.__name__)

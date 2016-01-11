@@ -50,8 +50,8 @@ from nose.tools import assert_equal, raises, assert_true
 from vigra.arraytypes import AxisTags, AxisInfo
 
 if sys.version_info[0] > 2:
-    def xrange(obj):
-        return range(obj)
+    def xrange(*args):
+        return range(*args)
 
 numpyHasComplexNegateBug = numpy.version.version.startswith('1.0')
 
