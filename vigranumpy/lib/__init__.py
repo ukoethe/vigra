@@ -34,8 +34,6 @@
 #######################################################################
 
 from __future__ import division, print_function
-from builtins import int    #use int() like long() for Python2 as int() is long() for Python3
-
 import sys, os, time
 from numbers import Number
 from multiprocessing import cpu_count
@@ -524,7 +522,7 @@ def _genWatershedsReoptimization():
         #  pylab.show()
 
 
-        seeds=analysis.segToSeeds(labels,int(shrinkN))
+        seeds=analysis.segToSeeds(labels,long(shrinkN))
 
         if visu :
           import matplotlib,numpy
@@ -1099,7 +1097,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
             """
             if(graph is not None and labels is not None):
-                super(RegionAdjacencyGraph,self).__init__(int(labels.max()+1),int(reserveEdges))
+                super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
 
                 if ignoreLabel is None and isDense is not None and isDense == True:
                     if ignoreLabel is None:
@@ -1919,7 +1917,7 @@ def _genGraphSegmentationFunctions():
 
     def hierarchicalClustering(clusterOperator,nodeNumStopCond,buildMergeTreeEncoding=True):
         # call unsave c++ function and make it save
-        hc = graphs.__hierarchicalClustering(clusterOperator,int(nodeNumStopCond),bool(buildMergeTreeEncoding))
+        hc = graphs.__hierarchicalClustering(clusterOperator,long(nodeNumStopCond),bool(buildMergeTreeEncoding))
         #hc.__dict__['__base_object__']=clusterOperator
         hc.__base_object__ = clusterOperator
         return hc
