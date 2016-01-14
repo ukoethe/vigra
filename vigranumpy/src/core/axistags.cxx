@@ -81,7 +81,7 @@ generic__deepcopy__(python::object copyable, python::dict memo)
 {
     python::object copyMod = python::import("copy");
     python::object deepcopy = copyMod.attr("deepcopy");
-    python::object builtin = python::import("__builtin__");
+    python::object builtin = python::import("builtins");
     python::object globals = builtin.attr("__dict__");
     
     Copyable* newCopyable(new Copyable(python::extract<const Copyable &>(copyable)()));
