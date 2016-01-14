@@ -33,6 +33,8 @@
 #
 #######################################################################
 
+from functools import reduce
+
 import sys
 import copy
 import numpy
