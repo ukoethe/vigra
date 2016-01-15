@@ -51,22 +51,25 @@
 #include "tinyvector.hxx"
 #include "filter_iterator.hxx"
 
-#ifdef USE_BOOST_THREAD
-// If boost is available, go ahead and include its tuple implementation
-// to avoid naming conflicts with our own definition of tie(), below.
-#include <boost/tuple/tuple.hpp>
-#endif
-
 #ifdef WITH_BOOST_GRAPH
 
 #  include <boost/tuple/tuple.hpp>
 #  include <boost/graph/graph_traits.hpp>
 #  include <boost/graph/properties.hpp>
 
+namespace vigra {
+namespace boost_graph {
+
+// vigra::boost_graph contains algorithms that are compatible to the Boost Graph Library
+using namespace boost;
+
+}} // namespace vigra::boost_graph
+
 #else // not WITH_BOOST_GRAPH
 
 // emulate the BGL-style interface
-namespace boost {
+namespace vigra {
+namespace boost_graph {
 
 struct no_property {};
 
@@ -92,26 +95,22 @@ struct disallow_parallel_edge_tag { };
 struct readable_property_map_tag { };
 struct writable_property_map_tag { };
 struct read_write_property_map_tag
-    : public readable_property_map_tag, 
+    : public readable_property_map_tag,
       public writable_property_map_tag {};
 struct lvalue_property_map_tag
     : public read_write_property_map_tag {};
 
-struct vertex_index_t {}; 
+struct vertex_index_t {};
 
 struct edge_property_tag {};
-
-
-#if 1
-#ifndef BOOST_TUPLE_HPP
 
 // tie() support for std::pair, similar to Boost's one:
 // (necessary because std::pair doesn't define a suitable assignment operator)
 template<class T1, class T2>
-class tie_adapter 
+class tie_adapter
 {
   public:
-    tie_adapter(T1 &x, T2 &y) 
+    tie_adapter(T1 &x, T2 &y)
         : x_(x), y_(y)
     {}
 
@@ -122,7 +121,7 @@ class tie_adapter
         y_ = pair.second;
         return *this;
     }
-    
+
   protected:
     T1 &x_;
     T2 &y_;
@@ -131,12 +130,10 @@ class tie_adapter
 template<class T1, class T2>
 inline
 tie_adapter<T1, T2>
-tie(T1& t1, T2& t2) 
+tie(T1& t1, T2& t2)
 {
     return tie_adapter<T1, T2>(t1, t2);
 }
-#endif
-#endif
 
 // graph_traits class template
 template <typename G>
@@ -165,67 +162,17 @@ struct graph_traits {
 
 // property_traits class template
 template <typename PropMap>
-struct property_traits 
+struct property_traits
 {
     typedef typename PropMap::key_type    key_type;
-    typedef typename PropMap::value_type  value_type; 
+    typedef typename PropMap::value_type  value_type;
     typedef typename PropMap::reference   reference;
     typedef typename PropMap::category    category;
 };
 
-} // namespace boost
-
-#endif // WITH_BOOST_GRAPH
-
-namespace vigra {
-namespace boost_graph { 
-
-// vigra::boost_graph contains algorithms that are compatible to the Boost Graph Library
-using namespace boost;
-
 }} // namespace vigra::boost_graph
 
-
-
-
-#if 0
-namespace vigragraph {
-
-// custom get_helper for read-only property maps (by-value)
-
-template <class ValueType, class ReadablePropertyMap>
-struct get_helper { };
-
-template <class PropertyMap, class ValueType, class K>
-inline ValueType
-get(const get_helper<ValueType, PropertyMap>& pa, const K& k)
-{
-    const ValueType v = static_cast<const PropertyMap&>(pa)[k];
-    return v;
-}
-
-
-// ! A fallback template for adjacent_vertices() called with
-// a vertex_iterator 
-// (which may be specialized to be implemented more efficiently;
-//  the reason is that the iterator may have more information than
-//  the plain vertex_descriptor, e.g. it knows the neighborhood
-//  already which otherwise needs to be reconstructed.)
-template<class GRAPH>
-inline
-std::pair<typename graph_traits<GRAPH>::adjacency_iterator, 
-          typename graph_traits<GRAPH>::adjacency_iterator >
-adjacent_vertices_at_iterator(typename graph_traits<GRAPH>::vertex_iterator const &v,
-                              GRAPH const &g) 
-{    
-    // the default implementation just derefences the iterator
-    // to yield a vertex_descriptor and forwards the call
-    std::cout << "FB" << std::endl;
-    return adjacent_vertices(*v, g);
-}
-
-} // namespace vigragraph
-#endif
+#endif // WITH_BOOST_GRAPH
 
 #ifdef WITH_LEMON
 #  include <lemon/core.h>
@@ -350,7 +297,7 @@ struct GraphItemHelper<GRAPH,typename GRAPH::Arc>{
 
 
 
-namespace lemon_graph { 
+namespace lemon_graph {
 
 // vigra::lemon_graph contains algorithms that are compatible to the LEMON graph library
 using namespace lemon;

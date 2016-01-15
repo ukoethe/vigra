@@ -65,13 +65,13 @@ struct NumpyArrayConverter<NumpyArray<N, T, Stride> >
 {
     typedef NumpyArray<N, T, Stride> ArrayType;
     typedef typename ArrayType::ArrayTraits ArrayTraits;
-    
+
     NumpyArrayConverter();
-        
+
     static void* convertible(PyObject* obj);
 
     // from Python
-    static void construct(PyObject* obj, 
+    static void construct(PyObject* obj,
         boost::python::converter::rvalue_from_python_stage1_data* data);
 
     // to Python
@@ -85,9 +85,9 @@ template <unsigned int N, class T, class Stride>
 NumpyArrayConverter<NumpyArray<N, T, Stride> >::NumpyArrayConverter()
 {
     using namespace boost::python;
-    
+
     converter::registration const * reg = converter::registry::query(type_id<ArrayType>());
-    
+
     // register the to_python_converter only once
     // FIXME: I'm not sure if this is correct.
     if(!reg || !reg->rvalue_chain)
@@ -96,7 +96,7 @@ NumpyArrayConverter<NumpyArray<N, T, Stride> >::NumpyArrayConverter()
     }
     converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
 }
-    
+
 template <unsigned int N, class T, class Stride>
 void * NumpyArrayConverter<NumpyArray<N, T, Stride> >::convertible(PyObject* obj)
 {
@@ -109,10 +109,10 @@ void * NumpyArrayConverter<NumpyArray<N, T, Stride> >::convertible(PyObject* obj
 
 // from Python
 template <unsigned int N, class T, class Stride>
-void NumpyArrayConverter<NumpyArray<N, T, Stride> >::construct(PyObject* obj, 
+void NumpyArrayConverter<NumpyArray<N, T, Stride> >::construct(PyObject* obj,
                    boost::python::converter::rvalue_from_python_stage1_data* data)
 {
-    void* const storage =   
+    void* const storage =
         ((boost::python::converter::rvalue_from_python_storage<ArrayType>* ) data)->storage.bytes;
 
     ArrayType * array = new (storage) ArrayType();
@@ -128,11 +128,11 @@ struct NumpyArrayConverter<MultiArrayView<N, T, Stride> >
 {
     typedef NumpyArrayConverter<NumpyArray<N, T, Stride> > BaseType;
     typedef MultiArrayView<N, T, Stride> ArrayType;
-    
+
     NumpyArrayConverter()
     {
         using namespace boost::python;
-        converter::registry::insert(&BaseType::convertible, &BaseType::construct, 
+        converter::registry::insert(&BaseType::convertible, &BaseType::construct,
                                     type_id<ArrayType>());
     }
 };
@@ -158,7 +158,7 @@ struct RegisterNumpyArrayConverters<End, End>
 template <class Typelist>
 void registerNumpyArrayConverters(Typelist)
 {
-    RegisterNumpyArrayConverters<typename boost::mpl::begin<Typelist>::type, 
+    RegisterNumpyArrayConverters<typename boost::mpl::begin<Typelist>::type,
                                  typename boost::mpl::end<Typelist>::type >::exec();
 }
 
@@ -235,6 +235,71 @@ struct functor_name \
          boost::python::TypeList<typename functor_name##Impl<T10>::type, \
          boost::python::TypeList<typename functor_name##Impl<T11>::type, \
          boost::python::TypeList<typename functor_name##Impl<T12>::type, \
+         boost::python::TypeList<void, void> > > > > > > > > > > > > \
+{};
+
+#define VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(functor_name, function) \
+template <class T, int N> \
+struct functor_name##Impl \
+{ \
+    typedef functor_name##Impl type; \
+     \
+    static void def(const char * pythonName) \
+    { \
+        boost::python::def(pythonName, vigra::registerConverters(&function<T, N>)); \
+    } \
+     \
+    template <class A1> \
+    static void def(const char * pythonName, A1 const & a1) \
+    { \
+        boost::python::def(pythonName, vigra::registerConverters(&function<T, N>), a1); \
+    } \
+     \
+    template <class A1, class A2> \
+    static void def(const char * pythonName, A1 const & a1, A2 const & a2) \
+    { \
+        boost::python::def(pythonName, vigra::registerConverters(&function<T, N>), a1, a2); \
+    } \
+     \
+    template <class A1, class A2, class A3> \
+    static void def(const char * pythonName, A1 const & a1, A2 const & a2, A3 const & a3) \
+    { \
+        boost::python::def(pythonName, vigra::registerConverters(&function<T, N>), a1, a2, a3); \
+    } \
+}; \
+ \
+template <int N> \
+struct functor_name##Impl<void, N> \
+{ \
+    typedef void type; \
+}; \
+ \
+template <int N, \
+          class T1, \
+          class T2 = void, \
+          class T3 = void, \
+          class T4 = void, \
+          class T5 = void, \
+          class T6 = void, \
+          class T7 = void, \
+          class T8 = void, \
+          class T9 = void, \
+          class T10 = void, \
+          class T11 = void, \
+          class T12 = void> \
+struct functor_name \
+: public boost::python::TypeList<typename functor_name##Impl<T1, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T2, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T3, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T4, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T5, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T6, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T7, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T8, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T9, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T10, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T11, N>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T12, N>::type, \
          boost::python::TypeList<void, void> > > > > > > > > > > > > \
 {};
 

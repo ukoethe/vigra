@@ -39,7 +39,7 @@ IF (MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
 ENDIF ()
 
-IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
+IF(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
     set(SUFFICIENT_TEMPLATE_DEPTH FALSE)
     TRY_COMPILE(SUFFICIENT_TEMPLATE_DEPTH
                 ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/config/checkTemplateDepth.cxx
@@ -48,7 +48,7 @@ IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
     IF(SUFFICIENT_TEMPLATE_DEPTH)
         MESSAGE(STATUS "Checking template recursion depth: ok")
     ELSE()
-        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+        if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
             # As of cmake 2.8.10, there is a variable CMAKE_CXX_COMPILER_VERSION.
             # Emulate it by a compiler call if not present.
             IF(NOT CMAKE_CXX_COMPILER_VERSION)
@@ -79,6 +79,14 @@ IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
         endif()
     ENDIF()
 ENDIF()
+
+if(MSVC)
+    string(REGEX MATCH "[0-9.]+" MSVC_VERSION ${CMAKE_GENERATOR})
+endif()
+
+if(MACOSX)
+    set(CMAKE_MACOSX_RPATH 1)
+endif()
 
 ##################################################
 #

@@ -55,7 +55,7 @@ namespace vigra
 {
 
 template < class VoxelType, unsigned int ndim >
-NumpyAnyArray 
+NumpyAnyArray
 pythonConvolveOneDimensionND(NumpyArray<ndim, Multiband<VoxelType> > array,
                              unsigned int dim,
                              Kernel const & kernel,
@@ -64,16 +64,16 @@ pythonConvolveOneDimensionND(NumpyArray<ndim, Multiband<VoxelType> > array,
     vigra_precondition(dim < ndim-1,
            "convolveOneDimension(): dim out of range.");
 
-    res.reshapeIfEmpty(array.taggedShape(), 
+    res.reshapeIfEmpty(array.taggedShape(),
             "convolveOneDimension(): Output array has wrong shape.");
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0;k<array.shape(ndim-1);++k)
         {
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-            convolveMultiArrayOneDimension(srcMultiArrayRange(barray), 
+            convolveMultiArrayOneDimension(srcMultiArrayRange(barray),
                                            destMultiArray(bres), dim, kernel);
         }
     }
@@ -81,14 +81,14 @@ pythonConvolveOneDimensionND(NumpyArray<ndim, Multiband<VoxelType> > array,
 }
 
 template < class VoxelType, unsigned int ndim >
-NumpyAnyArray 
+NumpyAnyArray
 pythonSeparableConvolveND_1Kernel(NumpyArray<ndim, Multiband<VoxelType> > array,
                                   Kernel const & kernel,
                                   NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
 {
-    res.reshapeIfEmpty(array.taggedShape(), 
+    res.reshapeIfEmpty(array.taggedShape(),
             "convolve(): Output array has wrong shape.");
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0;k<array.shape(ndim-1);++k)
@@ -102,36 +102,36 @@ pythonSeparableConvolveND_1Kernel(NumpyArray<ndim, Multiband<VoxelType> > array,
 }
 
 template < class VoxelType, unsigned int ndim >
-NumpyAnyArray 
+NumpyAnyArray
 pythonSeparableConvolveND_NKernels(NumpyArray<ndim, Multiband<VoxelType> > array,
                                    python::tuple pykernels,
                                    NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
 {
     if(python::len(pykernels) == 1)
     {
-        return pythonSeparableConvolveND_1Kernel(array, 
+        return pythonSeparableConvolveND_1Kernel(array,
                     python::extract<Kernel1D<KernelValueType> const &>(pykernels[0]), res);
     }
-    
+
     vigra_precondition(python::len(pykernels) == ndim-1,
        "convolve(): Number of kernels must be 1 or equal to the number of spatial dimensions.");
-       
+
     ArrayVector<Kernel1D<KernelValueType> > kernels;
     for(unsigned int k=0; k < ndim-1; ++k)
         kernels.push_back(python::extract<Kernel1D<KernelValueType> const &>(pykernels[k]));
-        
+
     kernels = array.permuteLikewise(kernels);
 
-    res.reshapeIfEmpty(array.taggedShape(), 
+    res.reshapeIfEmpty(array.taggedShape(),
             "convolve(): Output array has wrong shape.");
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0; k < array.shape(ndim-1); ++k)
         {
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-            separableConvolveMultiArray(srcMultiArrayRange(barray), 
+            separableConvolveMultiArray(srcMultiArrayRange(barray),
                                         destMultiArray(bres), kernels.begin());
         }
     }
@@ -139,12 +139,12 @@ pythonSeparableConvolveND_NKernels(NumpyArray<ndim, Multiband<VoxelType> > array
 }
 
 template <class PixelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
-                    TwoDKernel const & kernel, 
+                    TwoDKernel const & kernel,
                     NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.taggedShape(), 
+    res.reshapeIfEmpty(image.taggedShape(),
             "convolve(): Output array has wrong shape.");
 
     {
@@ -161,10 +161,10 @@ pythonConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template <class PixelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonNormalizedConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
                               NumpyArray<3, Multiband<PixelType> > mask,
-                              TwoDKernel const & kernel, 
+                              TwoDKernel const & kernel,
                               NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
     vigra_precondition(mask.shape(2)==1 || mask.shape(2)==image.shape(2),
@@ -172,7 +172,7 @@ pythonNormalizedConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
     vigra_precondition(mask.shape(0)==image.shape(0) && mask.shape(1)==image.shape(1),
                "normalizedConvolveImage(): mask dimensions must be same as image dimensions");
 
-    res.reshapeIfEmpty(image.taggedShape(), 
+    res.reshapeIfEmpty(image.taggedShape(),
            "normalizedConvolveImage(): Output array has wrong shape.");
 
     {
@@ -190,38 +190,38 @@ pythonNormalizedConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template < class VoxelType, unsigned int ndim >
-NumpyAnyArray 
+NumpyAnyArray
 pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > array,
                         python::object sigma,
                         NumpyArray<ndim, Multiband<VoxelType> > res=python::object(),
-                        python::object sigma_d = python::object(0.0), 
+                        python::object sigma_d = python::object(0.0),
                         python::object step_size = python::object(1.0),
-                        double window_size = 0.0, 
+                        double window_size = 0.0,
                         python::object roi = python::object())
 {
     static const unsigned int N = ndim - 1;
-    
+
     pythonScaleParam<N> params(sigma, sigma_d, step_size, "gaussianSmoothing");
-    
+
     params.permuteLikewise(array);
-    
+
     ConvolutionOptions<N> opt(params().filterWindowSize(window_size));
-    
+
     if(roi != python::object())
     {
         typedef typename MultiArrayShape<N>::type Shape;
         Shape start = array.permuteLikewise(python::extract<Shape>(roi[0])());
         Shape stop  = array.permuteLikewise(python::extract<Shape>(roi[1])());
         opt.subarray(start, stop);
-        res.reshapeIfEmpty(array.taggedShape().resize(stop-start), 
+        res.reshapeIfEmpty(array.taggedShape().resize(stop-start),
                 "gaussianSmoothing(): Output array has wrong shape.");
     }
     else
     {
-        res.reshapeIfEmpty(array.taggedShape(), 
+        res.reshapeIfEmpty(array.taggedShape(),
                 "gaussianSmoothing(): Output array has wrong shape.");
     }
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0; k<array.shape(ndim-1); ++k)
@@ -231,12 +231,12 @@ pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > array,
             gaussianSmoothMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), opt);
         }
     }
-    
+
     return res;
 }
 
 template < class VoxelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRecursiveGaussian(NumpyArray<3, Multiband<VoxelType> > image,
                         python::tuple sigmas,
                         NumpyArray<3, Multiband<VoxelType> > res=python::object())
@@ -247,19 +247,19 @@ pythonRecursiveGaussian(NumpyArray<3, Multiband<VoxelType> > image,
     unsigned int sigmaCount = python::len(sigmas);
     vigra_precondition(sigmaCount == 1 || sigmaCount == ndim-1,
        "recursiveGaussianSmoothing(): Number of kernels must be 1 or equal to the number of spatial dimensions.");
-       
+
     ArrayVector<double> scales;
     for(unsigned int k=0; k < sigmaCount; ++k)
     {
-        scales.push_back(python::extract<double>(sigmas[k]));        
+        scales.push_back(python::extract<double>(sigmas[k]));
     }
     for(unsigned int k=sigmaCount; k < ndim-1; ++k)
     {
         scales.push_back(scales.back());
     }
     scales = image.permuteLikewise(scales);
-    
-    res.reshapeIfEmpty(image.taggedShape(), 
+
+    res.reshapeIfEmpty(image.taggedShape(),
             "recursiveGaussianSmoothing(): Output array has wrong shape.");
 
     {
@@ -279,7 +279,7 @@ pythonRecursiveGaussian(NumpyArray<3, Multiband<VoxelType> > image,
 }
 
 template < class VoxelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonRecursiveGaussianIsotropic(NumpyArray<3, Multiband<VoxelType> > image,
                                  double sigma,
                                  NumpyArray<3, Multiband<VoxelType> > res=python::object())
@@ -288,17 +288,17 @@ pythonRecursiveGaussianIsotropic(NumpyArray<3, Multiband<VoxelType> > image,
 }
 
 template <class PixelType>
-NumpyAnyArray 
-pythonSimpleSharpening2D(NumpyArray<3, Multiband<PixelType> > image, 
+NumpyAnyArray
+pythonSimpleSharpening2D(NumpyArray<3, Multiband<PixelType> > image,
                          double sharpeningFactor,
                          NumpyArray<3, Multiband<PixelType> > res=python::object() )
 {
     vigra_precondition(sharpeningFactor >= 0 ,
        "simpleSharpening2D(): sharpeningFactor must be >= 0.");
-       
-    res.reshapeIfEmpty(image.taggedShape(), 
+
+    res.reshapeIfEmpty(image.taggedShape(),
           "simpleSharpening2D(): Output array has wrong shape.");
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0;k<image.shape(2);++k)
@@ -313,19 +313,19 @@ pythonSimpleSharpening2D(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template <class PixelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonGaussianSharpening2D(NumpyArray<3, Multiband<PixelType> > image,
-                           double sharpeningFactor, double scale, 
+                           double sharpeningFactor, double scale,
                            NumpyArray<3, Multiband<PixelType> > res=python::object() )
 {
     vigra_precondition(sharpeningFactor >= 0 ,
        "gaussianSharpening2D(): sharpeningFactor must be >= 0.");
     vigra_precondition(sharpeningFactor >= 0 ,
        "gaussianSharpening2D(): scale must be >= 0.");
-       
-    res.reshapeIfEmpty(image.taggedShape(), 
+
+    res.reshapeIfEmpty(image.taggedShape(),
              "gaussianSharpening2D(): Output array has wrong shape.");
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0;k<image.shape(2);++k)
@@ -340,38 +340,38 @@ pythonGaussianSharpening2D(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template <class PixelType, unsigned int N>
-NumpyAnyArray 
+NumpyAnyArray
 pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
                           python::object scale,
                           NumpyArray<N, Multiband<PixelType> > res=python::object(),
-                          python::object sigma_d = python::object(0.0), 
+                          python::object sigma_d = python::object(0.0),
                           python::object step_size = python::object(1.0),
-                          double window_size = 0.0, 
+                          double window_size = 0.0,
                           python::object roi = python::object())
 {
     pythonScaleParam<N - 1> params(scale, sigma_d, step_size, "laplacianOfGaussian");
     params.permuteLikewise(array);
-    
+
     std::string description("channel-wise Laplacian of Gaussian, scale=");
     description += asString(scale);
-    
+
     ConvolutionOptions<N-1> opt(params().filterWindowSize(window_size));
-    
+
     if(roi != python::object())
     {
         typedef typename MultiArrayShape<N-1>::type Shape;
         Shape start = array.permuteLikewise(python::extract<Shape>(roi[0])());
         Shape stop  = array.permuteLikewise(python::extract<Shape>(roi[1])());
         opt.subarray(start, stop);
-        res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description), 
+        res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description),
                 "laplacianOfGaussian(): Output array has wrong shape.");
     }
     else
     {
-        res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
+        res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description),
                 "laplacianOfGaussian(): Output array has wrong shape.");
     }
-    
+
     {
         PyAllowThreads _pythread;
         for(int k=0; k<array.shape(N-1); ++k)
@@ -381,58 +381,58 @@ pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
             laplacianOfGaussianMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), opt);
         }
     }
-    
+
     return res;
 }
 
 template <class PixelType, unsigned int N>
-NumpyAnyArray 
+NumpyAnyArray
 pythonGaussianDivergence(NumpyArray<N, TinyVector<PixelType, N> > array,
                          python::object scale,
                          NumpyArray<N, Singleband<PixelType> > res=python::object(),
-                         python::object sigma_d = python::object(0.0), 
+                         python::object sigma_d = python::object(0.0),
                          python::object step_size = python::object(1.0),
-                         double window_size = 0.0, 
+                         double window_size = 0.0,
                          python::object roi = python::object())
 {
     pythonScaleParam<N> params(scale, sigma_d, step_size, "gaussianDivergence");
     params.permuteLikewise(array);
-    
+
     std::string description("divergence of a vector field using Gaussian derivatives, scale=");
     description += asString(scale);
-    
+
     ConvolutionOptions<N> opt(params().filterWindowSize(window_size));
-    
+
     if(roi != python::object())
     {
         typedef typename MultiArrayShape<N>::type Shape;
         Shape start = array.permuteLikewise(python::extract<Shape>(roi[0])());
         Shape stop  = array.permuteLikewise(python::extract<Shape>(roi[1])());
         opt.subarray(start, stop);
-        res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description), 
+        res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description),
                 "gaussianDivergence(): Output array has wrong shape.");
     }
     else
     {
-        res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
+        res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description),
                 "gaussianDivergence(): Output array has wrong shape.");
     }
-    
+
     {
         PyAllowThreads _pythread;
         gaussianDivergenceMultiArray(array, res, opt);
     }
-    
+
     return res;
 }
 
 template <class PixelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRecursiveFilter1(NumpyArray<3, Multiband<PixelType> > image,
-                       double b, BorderTreatmentMode borderTreatment, 
+                       double b, BorderTreatmentMode borderTreatment,
                        NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.taggedShape(), 
+    res.reshapeIfEmpty(image.taggedShape(),
             "recursiveFilter2D(): Output array has wrong shape.");
 
     {
@@ -449,12 +449,12 @@ pythonRecursiveFilter1(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template <class PixelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRecursiveFilter2(NumpyArray<3, Multiband<PixelType> > image,
-                       double b1, double b2, 
+                       double b1, double b2,
                        NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.taggedShape(), 
+    res.reshapeIfEmpty(image.taggedShape(),
             "recursiveFilter2D(): Output array has wrong shape.");
 
     {
@@ -472,24 +472,24 @@ pythonRecursiveFilter2(NumpyArray<3, Multiband<PixelType> > image,
 
 
 template <class PixelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRecursiveSmooth(NumpyArray<3, Multiband<PixelType> > image,
-                      double scale, BorderTreatmentMode borderTreatment, 
+                      double scale, BorderTreatmentMode borderTreatment,
                       NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
     return pythonRecursiveFilter1(image, std::exp(-1.0/scale), borderTreatment, res);
 }
 
 template <class PixelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRecursiveGradient(NumpyArray<2, Singleband<PixelType> > image,
-                        double scale, 
+                        double scale,
                         NumpyArray<2, TinyVector<PixelType, 2> > res = python::object())
 {
     std::string description("recursive gradient, scale=");
     description += asString(scale);
-    
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
             "recursiveGradient2D(): Output array has wrong shape.");
 
     {
@@ -502,22 +502,22 @@ pythonRecursiveGradient(NumpyArray<2, Singleband<PixelType> > image,
         recursiveSmoothX(srcImageRange(image), destImage(res, band), scale);
         recursiveFirstDerivativeY(srcImageRange(res, band), destImage(res, band), scale);
     }
-    
+
     return res;
 }
 
 template <class PixelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRecursiveLaplacian(NumpyArray<3, Multiband<PixelType> > image,
-                         double scale, 
+                         double scale,
                          NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
     using namespace vigra::functor;
-    
+
     std::string description("channel-wise recursive Laplacian, scale=");
     description += asString(scale);
-    
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
             "recursiveLaplacian2D(): Output array has wrong shape.");
 
     {
@@ -534,7 +534,7 @@ pythonRecursiveLaplacian(NumpyArray<3, Multiband<PixelType> > image,
 
             recursiveSmoothX(srcImageRange(bimage), destImage(tmp), scale);
             recursiveSecondDerivativeY(srcImageRange(tmp), destImage(tmp), scale);
-            
+
             combineTwoImages(srcImageRange(bres), srcImage(tmp), destImage(bres), Arg1()+Arg2());
         }
     }
@@ -544,7 +544,7 @@ pythonRecursiveLaplacian(NumpyArray<3, Multiband<PixelType> > image,
 void defineConvolutionFunctions()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
 
     def("convolveOneDimension",
@@ -557,12 +557,12 @@ void defineConvolutionFunctions()
 
     def("convolveOneDimension",
         registerConverters(&pythonConvolveOneDimensionND<float,4>),
-        (arg("volume"), arg("dim"), arg("kernel"), arg("out")=python::object()), 
+        (arg("volume"), arg("dim"), arg("kernel"), arg("out")=python::object()),
         "Likewise for a 3D scalar or multiband volume.\n");
 
     def("convolveOneDimension",
         registerConverters(&pythonConvolveOneDimensionND<float,5>),
-        (arg("volume"), arg("dim"), arg("kernel"), arg("out")=python::object()), 
+        (arg("volume"), arg("dim"), arg("kernel"), arg("out")=python::object()),
         "Likewise for a 4D scalar or multiband volume.\n");
 
     def("convolve", registerConverters(&pythonSeparableConvolveND_1Kernel<float,3>),
@@ -586,11 +586,19 @@ void defineConvolutionFunctions()
         (arg("volume"), arg("kernel"), arg("out")=python::object()),
         "Convolve a volume with the same 1D kernel along all dimensions.\n");
 
+    def("convolve", registerConverters(&pythonSeparableConvolveND_1Kernel<float,5>),
+        (arg("volume"), arg("kernel"), arg("out")=python::object()),
+        "Convolve a volume with the same 1D kernel along all dimensions.\n");
+
     def("convolve", registerConverters(&pythonSeparableConvolveND_NKernels<float,3>),
         (arg("image"), arg("kernels"), arg("out")=python::object()),
         "Convolve an image with a different 1D kernel along each dimensions.\n");
 
     def("convolve", registerConverters(&pythonSeparableConvolveND_NKernels<float,4>),
+        (arg("volume"), arg("kernels"), arg("out")=python::object()),
+        "Convolve a volume with a different 1D kernel along each dimensions.\n");
+
+    def("convolve", registerConverters(&pythonSeparableConvolveND_NKernels<float,5>),
         (arg("volume"), arg("kernels"), arg("out")=python::object()),
         "Convolve a volume with a different 1D kernel along each dimensions.\n");
 
@@ -609,13 +617,13 @@ void defineConvolutionFunctions()
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,2>),
-        (arg("array"), arg("sigma"), arg("out")=python::object(), 
+        (arg("array"), arg("sigma"), arg("out")=python::object(),
          arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
         "Smooth 1D sequence with Gaussian.\n");
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,3>),
-        (arg("array"), arg("sigma"), arg("out")=python::object(), 
+        (arg("array"), arg("sigma"), arg("out")=python::object(),
          arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
         "Perform Gaussian smoothing of a 2D or 3D scalar or multiband array.\n\n"
         "Each channel of the array is smoothed independently. "
@@ -645,12 +653,18 @@ void defineConvolutionFunctions()
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,4>),
-        (arg("array"), arg("sigma"), arg("out")=python::object(), 
+        (arg("array"), arg("sigma"), arg("out")=python::object(),
          arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
         "Smooth volume with Gaussian.\n");
 
+    def("gaussianSmoothing",
+        registerConverters(&pythonGaussianSmoothing<float,5>),
+        (arg("array"), arg("sigma"), arg("out")=python::object(),
+         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
+        "Smooth 5D array with Gaussian.\n");
+
     def("recursiveGaussianSmoothing2D",
-        registerConverters(&pythonRecursiveGaussian<float>),               
+        registerConverters(&pythonRecursiveGaussian<float>),
         (arg("image"), arg("sigma"), arg("out")=python::object()),
         "Compute a fast approximate Gaussian smoothing of a 2D scalar or multiband image.\n\n"
         "This function uses the third-order recursive filter approximation to the "
@@ -660,31 +674,31 @@ void defineConvolutionFunctions()
         "applied (i.e. each dimension is smoothed in the same way). "
         "If 'sigma' is a tuple of values, the amount of smoothing will be different "
         "for each spatial dimension. The length of the tuple must be equal to the "
-        "number of spatial dimensions.\n\n"        
+        "number of spatial dimensions.\n\n"
         "For details see recursiveGaussianFilterLine_ in the vigra C++ documentation.\n");
 
     def("recursiveGaussianSmoothing2D",
-        registerConverters(&pythonRecursiveGaussianIsotropic<float>),               
+        registerConverters(&pythonRecursiveGaussianIsotropic<float>),
         (arg("image"), arg("sigma"), arg("out")=python::object()),
         "Compute isotropic fast approximate Gaussian smoothing.\n");
 
-    def("simpleSharpening2D", 
+    def("simpleSharpening2D",
         registerConverters(&pythonSimpleSharpening2D<float>),
         (arg("image"), arg("sharpeningFactor")=1.0, arg("out") = python::object()),
         "Perform simple sharpening function.\n"
         "\n"
         "For details see simpleSharpening_ in the vigra C++ documentation.\n");
 
-    def("gaussianSharpening2D", 
+    def("gaussianSharpening2D",
         registerConverters(&pythonGaussianSharpening2D<float>),
         (arg("image"), arg("sharpeningFactor")=1.0, arg("scale")=1.0, arg("out") = python::object()),
           "Perform sharpening function with gaussian filter."
           "\n\n"
           "For details see gaussianSharpening_ in the vigra C++ documentation.\n");
-          
-    def("laplacianOfGaussian", 
+
+    def("laplacianOfGaussian",
          registerConverters(&pythonLaplacianOfGaussian<float,3>),
-         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(),
           arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0, arg("roi")=python::object()),
           "Filter 2D or 3D scalar array with the Laplacian of Gaussian operator at the given scale.\n\n"
           "If 'sigma' is a single value, an isotropic filter at this scale is "
@@ -695,19 +709,19 @@ void defineConvolutionFunctions()
           "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
           "pixels for each dimension. "
           "The length of the tuples or lists must be equal to the "
-          "number of spatial dimensions.\n\n" 
+          "number of spatial dimensions.\n\n"
           "'window_size' and 'roi' have the same meaning as in :func:`gaussianSmoothing`.\n\n"
           "For details see laplacianOfGaussianMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
-    def("laplacianOfGaussian", 
+    def("laplacianOfGaussian",
          registerConverters(&pythonLaplacianOfGaussian<float,4>),
-         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(),
          arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0, arg("roi")=python::object()),
          "Likewise for a scalar volume.\n");
 
-    def("gaussianDivergence", 
+    def("gaussianDivergence",
          registerConverters(&pythonGaussianDivergence<float,2>),
-         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(),
           arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0, arg("roi")=python::object()),
           "Compute the divergence of a 2D vector field with a first derivative of Gaussian at the given scale.\n\n"
           "If 'sigma' is a single value, an isotropic filter at this scale is "
@@ -718,13 +732,13 @@ void defineConvolutionFunctions()
           "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
           "pixels for each dimension. "
           "The length of the tuples or lists must be equal to the "
-          "number of spatial dimensions.\n\n" 
+          "number of spatial dimensions.\n\n"
           "'window_size' and 'roi' have the same meaning as in :func:`gaussianSmoothing`.\n\n"
           "For details see gaussianDivergenceMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
-    def("gaussianDivergence", 
+    def("gaussianDivergence",
          registerConverters(&pythonGaussianDivergence<float,3>),
-         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(),
          arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0, arg("roi")=python::object()),
          "Likewise for a 3D vector field.\n");
 

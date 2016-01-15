@@ -48,7 +48,7 @@
 #include <cctype>
 #include <tuple>
 
-/*! \file */ 
+/*! \file */
 
 namespace vigra {
 
@@ -87,7 +87,7 @@ template <class T>
 std::string operator<<(std::string const & s, T const & t)
 {
     std::stringstream ss;
-    ss << t; 
+    ss << t;
     return s + ss.str();
 }
 
@@ -110,7 +110,7 @@ inline std::string tolower(const char * s)
 inline std::string normalizeString(std::string const & s)
 {
     std::string res;
-    
+
     for(unsigned int k=0; k<s.size(); ++k)
     {
         if(std::isspace(s[k]))
@@ -131,11 +131,11 @@ template <class T>
 struct FinallyImpl
 {
     T & destructor_;
-    
+
     FinallyImpl(T & destructor)
     : destructor_(destructor)
     {}
-    
+
     ~FinallyImpl()
     {
         destructor_();
@@ -155,35 +155,35 @@ struct FinallyImpl
         VIGRA_TOKEN_PASTE(_vigra_finally_, counter)(VIGRA_TOKEN_PASTE(_vigra_finally_impl_, counter))
 
     /** Emulate the 'finally' keyword as known from Python and other languages.
-    
-        This macro improves upon the famous 
-        <a href="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">Resource Acquisition Is Initialization</a> idiom, where a resource (e.g. heap memory or a mutex) is automatically free'ed when program execution leaves the current scope. Normally, this is implemented by calling a suitable function in the destructor of a dedicated helper class (e.g. <tt>std::unique_ptr</tt> or <tt>std::lock_guard<std::mutex></tt>). 
-        
+
+        This macro improves upon the famous
+        <a href="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">Resource Acquisition Is Initialization</a> idiom, where a resource (e.g. heap memory or a mutex) is automatically free'ed when program execution leaves the current scope. Normally, this is implemented by calling a suitable function in the destructor of a dedicated helper class (e.g. <tt>std::unique_ptr</tt> or <tt>std::lock_guard<std::mutex></tt>).
+
         Traditionally, a separate helper class has to be implemented for each kind of resource to be handled. In contrast, the macro <tt>VIGRA_FINALLY</tt> creates such a class on the fly by means of an embedded lambda expression.
-        
+
         <b>Usage:</b>
-        
+
         <b>\#include</b> \<vigra/utilities.hxx\><br/>
 
         \code
         std::mutex my_mutex;
         ...
         {
-            // the following two lines are equivalent to 
+            // the following two lines are equivalent to
             //     std::unique_ptr<std::string> my_string = new std::string("foo");
             std::string * my_string = new std::string("foo");
             VIGRA_FINALLY(delete my_string);
-      
-            // the following two lines are equivalent to 
+
+            // the following two lines are equivalent to
             //     std::lock_guard<std::mutex> lock(my_mutex);
             my_mutex.lock();
             VIGRA_FINALLY(my_mutex.unlock());
-      
+
             ...
         }
         // the string has been deallocated and the mutex is unlocked
         \endcode
-        
+
         You can pass any code to this macro. Multiple statements must be enclosed in braces as usual. Arbitrary many calls to <tt>VIGRA_FINALLY</tt> can be placed in the same scope. Their actions will be executed in the reversed order of declaration:
 
         \code
@@ -194,19 +194,19 @@ struct FinallyImpl
                 i = i*i;
                 ++i;
             });
-      
+
             VIGRA_FINALLY( i += 2 );  // this executes first
-            
+
             assert(i == 0);           // as yet, nothing happend
         }
         assert(i == 5);               // 'finally' code was executed in reversed order at end-of-scope
         \endcode
-        
+
         This idea was popularized by Marko Tintor in "<a href="http://blog.memsql.com/c-error-handling-with-auto/">The Auto Macro: A Clean Approach to C++ Error Handling</a>".
     */
 #define VIGRA_FINALLY(destructor) \
     VIGRA_FINALLY_IMPL(destructor, __COUNTER__)
-    
+
 namespace std {
 
 template <class T1, class T2>
@@ -295,6 +295,8 @@ void for_each_in_tuple(TPL && t, FUNCTOR && f)
     <UL style="list-style-image:url(documents/bullet.gif)">
     <LI> \ref vigra::ArrayVector
          <BR>&nbsp;&nbsp;&nbsp;<em>replacement for std::vector (always uses consecutive memory)</em>
+    <LI> \ref vigra::Any
+         <BR>&nbsp;&nbsp;&nbsp;<em>typesafe storage of arbitrary values</em>
     <LI> \ref vigra::BucketQueue and \ref vigra::MappedBucketQueue
          <BR>&nbsp;&nbsp;&nbsp;<em>efficient priority queues for integer priorities</em>
     <LI> \ref RangesAndPoints

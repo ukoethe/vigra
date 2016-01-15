@@ -264,7 +264,7 @@ public:
     ){
         const typename  ShortestPathDijkstraType::PredecessorsMap & predMap = sp.predecessors();
         const Node source = sp.source();
-        Node currentNode = target; 
+        //Node currentNode = target; 
         // comput length of the path
         const size_t length = pathLength(Node(source),Node(target),predMap);
         nodeIdPath.reshapeIfEmpty(typename NumpyArray<1,Singleband<UInt32> >::difference_type(length));

@@ -53,22 +53,22 @@ python::tuple
 pythonPCA(NumpyArray<2,U> features, int nComponents)
 {
     vigra_precondition(!features.axistags(),
-                       "principleComponents(): feature matrix must not have axistags\n"
+                       "principalComponents(): feature matrix must not have axistags\n"
                        "(use 'array.view(numpy.ndarray)' to remove them).");
-    
-    NumpyArray<2, U> fz(Shape2(features.shape(0), nComponents)); 
-    NumpyArray<2, U> zv(Shape2(nComponents, features.shape(1))); 
+
+    NumpyArray<2, U> fz(Shape2(features.shape(0), nComponents));
+    NumpyArray<2, U> zv(Shape2(nComponents, features.shape(1)));
 
     {
         PyAllowThreads _pythread;
-        principleComponents(features, fz, zv);
+        principalComponents(features, fz, zv);
     }
     return python::make_tuple(fz, zv);
 }
 
 template<class U>
 python::tuple
-pythonPLSA(NumpyArray<2,U> features, 
+pythonPLSA(NumpyArray<2,U> features,
            int nComponents,
            int nIterations,
            double minGain,
@@ -77,14 +77,14 @@ pythonPLSA(NumpyArray<2,U> features,
     vigra_precondition(!features.axistags(),
                        "pLSA(): feature matrix must not have axistags\n"
                        "(use 'array.view(numpy.ndarray)' to remove them).");
-    
-    NumpyArray<2, U> fz(Shape2(features.shape(0), nComponents)); 
-    NumpyArray<2, U> zv(Shape2(nComponents, features.shape(1))); 
+
+    NumpyArray<2, U> fz(Shape2(features.shape(0), nComponents));
+    NumpyArray<2, U> zv(Shape2(nComponents, features.shape(1)));
 
     {
         PyAllowThreads _pythread;
         pLSA(features, fz, zv,
-             RandomNumberGenerator<>(), 
+             RandomNumberGenerator<>(),
              PLSAOptions().maximumNumberOfIterations(nIterations)
                           .minimumRelativeGain(minGain)
                           .normalizedComponentWeights(normalize));
@@ -96,21 +96,21 @@ pythonPLSA(NumpyArray<2,U> features,
 void defineUnsupervised()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
 
-    def("principleComponents", registerConverters(&pythonPCA<double>),
+    def("principalComponents", registerConverters(&pythonPCA<double>),
         (arg("features"), arg("nComponents")),
-        "\nPerform principle component analysis. \n\n"
+        "\nPerform principal component analysis. \n\n"
         "The imput matrix 'features' must have shape (nFeatures*nSamples). PCA will\n"
         "reduce it to a smaller matrix 'C' with shape (nComponents*nSamples) that \n"
         "preserves as much variance as possible. Specifically, the call::\n\n"
-        "    P, C = principleComponents(features, 3)\n\n"
+        "    P, C = principalComponents(features, 3)\n\n"
         "returns a projection matrix 'P' with shape (nComponents*nFeatures)\n"
         "such that ``C = numpy.dot(numpy.transpose(P), features)``. Conversely, the\n"
         "matrix  ``f = numpy.dot(P, C)`` is the best possible rank-nComponents\n"
         "approximation to the matrix 'features' under the least-squares criterion.\n\n"
-        "See principleComponents_ in the C++ documentation for more detailed\ninformation.\n\n");
+        "See principalComponents_ in the C++ documentation for more detailed\ninformation.\n\n");
 
     PLSAOptions options;
 

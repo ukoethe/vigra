@@ -272,7 +272,7 @@ namespace vigra{
 
         // BOOST GRAPH API TYPEDEFS
         // - categories (not complete yet)
-        typedef boost::directed_tag     directed_category;
+        typedef directed_tag            directed_category;
         // iterators
         typedef NeighborNodeIt          adjacency_iterator;
         typedef EdgeIt                  edge_iterator;
@@ -285,8 +285,8 @@ namespace vigra{
         typedef size_t                  edge_size_type;
         typedef size_t                  vertex_size_type;
         // item descriptors
-        typedef Edge edge_descriptor;
-        typedef Node vertex_descriptor;
+        typedef Edge                    edge_descriptor;
+        typedef Node                    vertex_descriptor;
 
 
         /// default edge map 
@@ -504,7 +504,7 @@ namespace vigra{
         }
 
         void reserveEdges(const size_t size ){
-            if(size>edgeNum())
+            if(size>(size_t)edgeNum())
                 edges_.reserve(size);
         }
 

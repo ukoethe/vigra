@@ -1514,8 +1514,8 @@ public:
     MultiArrayView <N, T, StridedArrayTag>
     transpose () const
     {
-        difference_type shape(m_shape.begin(), difference_type::ReverseCopy),
-                        stride(m_stride.begin(), difference_type::ReverseCopy);
+        difference_type shape(m_shape.begin(),   ReverseCopy),
+                        stride(m_stride.begin(), ReverseCopy);
         return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
     }
 

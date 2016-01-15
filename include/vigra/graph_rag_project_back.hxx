@@ -107,12 +107,12 @@ namespace vigra{
         class BASE_GRAPH_FEATURES
     >
     struct RagProjectBack<
-        vigra::GridGraph<3, boost::undirected_tag>,
+        vigra::GridGraph<3, undirected_tag>,
         BASE_GRAPH_LABELS,
         RAG_FEATURES,
         BASE_GRAPH_FEATURES
     >{
-        typedef vigra::GridGraph<3, boost::undirected_tag> BASE_GRAPH;
+        typedef vigra::GridGraph<3, undirected_tag> BASE_GRAPH;
 
         static void projectBack(
             const AdjacencyListGraph & rag,
