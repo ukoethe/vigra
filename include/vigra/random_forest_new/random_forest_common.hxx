@@ -208,6 +208,8 @@ namespace detail
     {
     public:
 
+        typedef FUNCTOR Functor;
+
         GeneralScorer(std::vector<double> const & priors)
             :
             split_found_(false),
@@ -230,7 +232,7 @@ namespace detail
             if (begin == end)
                 return;
 
-            FUNCTOR score;
+            Functor score;
 
             std::vector<double> counts(priors_.size(), 0.0);
             double n_left = 0;
@@ -281,8 +283,8 @@ namespace detail
         double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
         {
             double const n_right = n_total - n_left;
-            double gini_left = 1;
-            double gini_right = 1;
+            double gini_left = 1.0;
+            double gini_right = 1.0;
             for (size_t i = 0; i < counts.size(); ++i)
             {
                 double const p_left = counts[i] / n_left;
@@ -291,6 +293,33 @@ namespace detail
                 gini_right -= (p_right*p_right);
             }
             return n_left*gini_left + n_right*gini_right;
+        }
+
+        template <typename LABELS, typename WEIGHTS, typename ITER>
+        static double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end)
+        {
+            // Count the occurences.
+            std::vector<double> counts;
+            double total = 0.0;
+            for (auto it = begin; it != end; ++it)
+            {
+                auto const d = *it;
+                auto const lbl = labels[d];
+                if (counts.size() <= lbl)
+                {
+                    counts.resize(lbl+1, 0.0);
+                }
+                counts[lbl] += weights[d];
+                total += weights[d];
+            }
+
+            // Compute the gini.
+            double gini = total;
+            for (auto x : counts)
+            {
+                gini -= x*x/total;
+            }
+            return gini;
         }
     };
 
@@ -312,6 +341,13 @@ namespace detail
                     ig -= c * std::log(c / n_right);
             }
             return ig;
+        }
+
+        template <typename LABELS, typename WEIGHTS, typename ITER>
+        double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
+        {
+            vigra_fail("EntropyScoreFunctor::region_score(): Not implemented yet.");
+            return 0.0; // FIXME
         }
     };
 
@@ -349,6 +385,13 @@ namespace detail
                 }
             }
             return ksd;
+        }
+
+        template <typename LABELS, typename WEIGHTS, typename ITER>
+        double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
+        {
+            vigra_fail("KSDScoreFunctor::region_score(): Region score not available for the Kolmogorov-Smirnov split.");
+            return 0.0;
         }
     };
 

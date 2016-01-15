@@ -221,7 +221,7 @@ void random_forest_single_tree(
     }
 
     // Call the visitor.
-    visitor.visit_before_tree(features, labels, instance_weights);
+    visitor.visit_before_tree(tree, features, labels, instance_weights);
 
     // Split the nodes.
     detail::RFMapUpdater<ACC> node_map_updater;
@@ -299,7 +299,7 @@ void random_forest_single_tree(
         );
 
         // Call the visitor.
-        visitor.visit_after_split(features, labels, instance_weights, score, begin, split_iter, end);
+        visitor.visit_after_split(tree, features, labels, instance_weights, score, begin, split_iter, end);
 
         instance_range.insert(n_left, IterPair(begin, split_iter));
         instance_range.insert(n_right, IterPair(split_iter, end));

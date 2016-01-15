@@ -164,6 +164,47 @@ struct RandomForestTests
         auto rf = random_forest(train_x, train_y, options, create_visitor(oob));
         should(oob.oob_err_ > 0.02 && oob.oob_err_ < 0.04); // FIXME: Use a statistical approach here.
     }
+
+    void test_var_importance_visitor()
+    {
+        // Create a (noisy) grid with datapoints and split the classes according to an oblique line.
+        size_t const nx = 20;
+        size_t const ny = 20;
+
+        RandomNumberGenerator<MersenneTwister> rand;
+        MultiArray<2, double> train_x(Shape2(nx*ny, 2));
+        MultiArray<1, int> train_y(Shape1(nx*ny));
+        for (size_t y = 0; y < ny; ++y)
+        {
+            for (size_t x = 0; x < nx; ++x)
+            {
+                train_x(y*nx+x, 0) = x + 2*rand.uniform()-1;
+                train_x(y*nx+x, 1) = y + 2*rand.uniform()-1;
+                if (x - nx/2.0 + 4*y - 4*ny/2.0  <  0)
+                    train_y(y*nx+x) = 0;
+                else
+                    train_y(y*nx+x) = 1;
+            }
+        }
+
+        RandomForestNewOptions const options = RandomForestNewOptions()
+                                                   .tree_count(10)
+                                                   .bootstrap_sampling(false)
+                                                   .n_threads(1);
+        VariableImportance var_imp;
+        auto rf = random_forest(train_x, train_y, options, create_visitor(var_imp));
+
+        std::cout << "variable importances:" << std::endl;
+        for (size_t y = 0; y < var_imp.variable_importance_.shape()[1]; ++y)
+        {
+            for (size_t x = 0; x < var_imp.variable_importance_.shape()[0]; ++x)
+            {
+                std::cout << var_imp.variable_importance_(x, y) << ", ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
 };
 
 struct RandomForestTestSuite : public test_suite
@@ -175,6 +216,7 @@ struct RandomForestTestSuite : public test_suite
         add(testCase(&RandomForestTests::test_base_class));
         add(testCase(&RandomForestTests::test_default_rf));
         add(testCase(&RandomForestTests::test_oob_visitor));
+        add(testCase(&RandomForestTests::test_var_importance_visitor));
     }
 };
 

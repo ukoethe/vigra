@@ -90,8 +90,8 @@ public:
      * 
      * @param weights the actual instance weights (after bootstrap sampling and class weights)
      */
-    template <typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_before_tree(FEATURES & features, LABELS & labels, WEIGHTS & weights)
+    template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_before_tree(TREE & tree, FEATURES & features, LABELS & labels, WEIGHTS & weights)
     {}
 
     /**
@@ -107,12 +107,14 @@ public:
     /**
      * @brief Do something after the split was made.
      */
-    template <typename FEATURES,
+    template <typename TREE,
+              typename FEATURES,
               typename LABELS,
               typename WEIGHTS,
               typename SCORER,
               typename ITER>
-    void visit_after_split(FEATURES & features,
+    void visit_after_split(TREE & tree,
+                           FEATURES & features,
                            LABELS & labels,
                            WEIGHTS & weights,
                            SCORER & scorer,
@@ -169,8 +171,9 @@ public:
     /**
      * Save whether a data point is in-bag (weight > 0) or out-of-bag (weight == 0).
      */
-    template <typename FEATURES, typename LABELS, typename WEIGHTS>
+    template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
     void visit_before_tree(
+            TREE & tree,
             FEATURES & features,
             LABELS & labels,
             WEIGHTS & weights
@@ -190,7 +193,7 @@ public:
         }
 
         if (!found)
-            throw std::runtime_error("OOBError::visit_after_tree(): The tree has no out-of-bags.");
+            throw std::runtime_error("OOBError::visit_before_tree(): The tree has no out-of-bags.");
     }
 
     /**
@@ -250,12 +253,55 @@ class VariableImportance : public RFVisitorBase
 {
 public:
 
-    template <typename FEATURES,
+    VariableImportance(int repetition_count = 10)
+        :
+        repetition_count_(repetition_count)
+    {}
+
+    /**
+     * Resize the variable importance array and store in-bag / out-of-bag information.
+     */
+    template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_before_tree(
+            TREE & tree,
+            FEATURES & features,
+            LABELS & labels,
+            WEIGHTS & weights
+    ){
+        // Resize the variable importance array.
+        variable_importance_.reshape(Shape2(features.shape()[1], tree.num_classes()+2), 0.0);
+
+        // Save the in-bags.
+        double const EPS = 1e-20;
+        bool found = false;
+        // is_in_bag_.resize(weights.size(), true);
+        // for (size_t i = 0; i < weights.size(); ++i)
+        // {
+        //     if (std::abs(weights[i]) < EPS)
+        //     {
+        //         is_in_bag_[i] = false;
+        //         found = true;
+        //     }
+        // }
+        if (!found)
+        {
+            std::cout << "!found" << std::endl;
+            // FIXME: This exception is not caught.
+            throw std::runtime_error("VariableImportance::visit_before_tree(): The tree has no out-of-bags.");
+        }
+    }
+
+    /**
+     * @brief Calculate the impurity decrease based variable importance after every split.
+     */
+    template <typename TREE,
+              typename FEATURES,
               typename LABELS,
               typename WEIGHTS,
               typename SCORER,
               typename ITER>
-    void visit_after_split(FEATURES & features,
+    void visit_after_split(TREE & tree,
+                           FEATURES & features,
                            LABELS & labels,
                            WEIGHTS & weights,
                            SCORER & scorer,
@@ -263,13 +309,63 @@ public:
                            ITER split,
                            ITER end)
     {
-
-
-
+        // Update the impurity decrease.
+        typename SCORER::Functor functor;
+        auto const region_impurity = functor.region_score(labels, weights, begin, end);
+        auto const split_impurity = scorer.best_score_;
+        variable_importance_(scorer.best_dim_, tree.num_classes()+1) += region_impurity - split_impurity;
     }
 
     /**
-     * the variable importance
+     * Compute the permuation importance and accumulate the impurity decreases from the single trees.
+     */
+    template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
+    void visit_after_training(
+            VISITORS & visitors,
+            RF & rf,
+            FEATURES & features,
+            LABELS & labels
+    ){
+        // Accumulate the impurity decreases.
+        auto const num_features = features.shape()[1];
+        variable_importance_.reshape(Shape2(num_features, rf.num_classes()+2), 0.0);
+        for (auto vptr : visitors)
+        {
+            vigra_precondition(vptr->variable_importance_.shape() == variable_importance_.shape(),
+                               "VariableImportance::visit_after_training(): Shape mismatch.");
+            variable_importance_.subarray(Shape2(0, rf.num_classes()+1), Shape2(num_features, rf.num_classes()+2))
+                += vptr->variable_importance_.subarray(Shape2(0, rf.num_classes()+1), Shape2(num_features, rf.num_classes()+2));
+        }
+
+
+        variable_importance_ /= rf.num_trees();
+    }
+
+    /**
+     * This Array has the same entries as the R - random forest variable
+     * importance.
+     * Matrix is   featureCount by (classCount +2)
+     * variable_importance_(ii,jj) is the variable importance measure of 
+     * the ii-th variable according to:
+     * jj = 0 - (classCount-1)
+     *     classwise permutation importance 
+     * jj = rowCount(variable_importance_) -2
+     *     permutation importance
+     * jj = rowCount(variable_importance_) -1
+     *     gini decrease importance.
+     *     
+     * permutation importance:
+     * The difference between the fraction of OOB samples classified correctly
+     * before and after permuting (randomizing) the ii-th column is calculated.
+     * The ii-th column is permuted rep_cnt times.
+     *
+     * class wise permutation importance:
+     * same as permutation importance. We only look at those OOB samples whose 
+     * response corresponds to class jj.
+     *
+     * gini decrease importance:
+     * row ii corresponds to the sum of all gini decreases induced by variable ii 
+     * in each node of the random forest.
      */
     MultiArray<2, double> variable_importance_;
 
@@ -278,6 +374,8 @@ public:
      */
     int repetition_count_;
 
+private:
+    std::vector<bool> is_in_bag_; // whether a data point is in-bag or out-of-bag
 };
 
 
@@ -368,12 +466,12 @@ public:
         next_.visit_after_training(nexts, rf, features, labels);
     }
 
-    template <typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_before_tree(FEATURES & features, LABELS & labels, WEIGHTS & weights)
+    template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_before_tree(TREE & tree, FEATURES & features, LABELS & labels, WEIGHTS & weights)
     {
         if (visitor_.is_active())
-            visitor_.visit_before_tree(features, labels, weights);
-        next_.visit_before_tree(features, labels, weights);
+            visitor_.visit_before_tree(tree, features, labels, weights);
+        next_.visit_before_tree(tree, features, labels, weights);
     }
 
     template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
@@ -387,12 +485,14 @@ public:
         next_.visit_after_tree(rf, features, labels, weights);
     }
 
-    template <typename FEATURES,
+    template <typename TREE,
+              typename FEATURES,
               typename LABELS,
               typename WEIGHTS,
               typename SCORER,
               typename ITER>
-    void visit_after_split(FEATURES & features,
+    void visit_after_split(TREE & tree,
+                           FEATURES & features,
                            LABELS & labels,
                            WEIGHTS & weights,
                            SCORER & scorer,
@@ -401,8 +501,8 @@ public:
                            ITER end)
     {
         if (visitor_.is_active())
-            visitor_.visit_after_split(features, labels, weights, scorer, begin, split, end);
-        next_.visit_after_split(features, labels, weights, scorer, begin, split, end);
+            visitor_.visit_after_split(tree, features, labels, weights, scorer, begin, split, end);
+        next_.visit_after_split(tree, features, labels, weights, scorer, begin, split, end);
     }
 
 };

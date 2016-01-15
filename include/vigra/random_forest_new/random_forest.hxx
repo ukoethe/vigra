@@ -65,7 +65,6 @@ public:
     typedef typename ACC::input_type AccInputType;
     typedef BinaryForest Graph;
     typedef Graph::Node Node;
-    typedef std::vector<size_t> DistributionType;
 
     static ContainerTag const container_tag = CTag;
 
