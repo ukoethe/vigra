@@ -209,8 +209,8 @@ public:
         // Check the input sizes.
         vigra_precondition(rf.num_trees() > 0, "OOBError::visit_after_training(): Number of trees must be greater than zero after training.");
         vigra_precondition(visitors.size() == rf.num_trees(), "OOBError::visit_after_training(): Number of visitors must be equal to number of trees.");
-        size_t const num_instances = features.shape()[0];//visitors[0]->is_in_bag_.size();
-        size_t const num_features = features.shape()[1];
+        auto const num_instances = features.shape()[0];
+        auto const num_features = features.shape()[1];
         for (auto vptr : visitors)
             vigra_precondition(vptr->is_in_bag_.size() == num_instances, "OOBError::visit_after_training(): Some visitors have the wrong number of data points.");
 
@@ -269,26 +269,24 @@ public:
             WEIGHTS & weights
     ){
         // Resize the variable importance array.
-        variable_importance_.reshape(Shape2(features.shape()[1], tree.num_classes()+2), 0.0);
+        // The shape differs from the shape of the actual output, since the single trees
+        // only store the impurity decrease without the permutation importances.
+        variable_importance_.reshape(Shape2(features.shape()[1], 1), 0.0);
 
         // Save the in-bags.
         double const EPS = 1e-20;
         bool found = false;
-        // is_in_bag_.resize(weights.size(), true);
-        // for (size_t i = 0; i < weights.size(); ++i)
-        // {
-        //     if (std::abs(weights[i]) < EPS)
-        //     {
-        //         is_in_bag_[i] = false;
-        //         found = true;
-        //     }
-        // }
-        if (!found)
+        is_in_bag_.resize(weights.size(), true);
+        for (size_t i = 0; i < weights.size(); ++i)
         {
-            std::cout << "!found" << std::endl;
-            // FIXME: This exception is not caught.
-            throw std::runtime_error("VariableImportance::visit_before_tree(): The tree has no out-of-bags.");
+            if (std::abs(weights[i]) < EPS)
+            {
+                is_in_bag_[i] = false;
+                found = true;
+            }
         }
+        if (!found)
+            throw std::runtime_error("VariableImportance::visit_before_tree(): The tree has no out-of-bags.");
     }
 
     /**
@@ -313,7 +311,7 @@ public:
         typename SCORER::Functor functor;
         auto const region_impurity = functor.region_score(labels, weights, begin, end);
         auto const split_impurity = scorer.best_score_;
-        variable_importance_(scorer.best_dim_, tree.num_classes()+1) += region_impurity - split_impurity;
+        variable_importance_(scorer.best_dim_, 0) += region_impurity - split_impurity;
     }
 
     /**
@@ -326,18 +324,52 @@ public:
             FEATURES & features,
             LABELS & labels
     ){
+        vigra_precondition(rf.num_trees() > 0, "VariableImportance::visit_after_training(): Number of trees must be greater than zero after training.");
+        vigra_precondition(visitors.size() == rf.num_trees(), "VariableImportance::visit_after_training(): Number of visitors must be equal to number of trees.");
+
         // Accumulate the impurity decreases.
+        auto const num_instances = features.shape()[0];
         auto const num_features = features.shape()[1];
         variable_importance_.reshape(Shape2(num_features, rf.num_classes()+2), 0.0);
         for (auto vptr : visitors)
         {
-            vigra_precondition(vptr->variable_importance_.shape() == variable_importance_.shape(),
+            vigra_precondition(vptr->variable_importance_.shape() == Shape2(num_features, 1),
                                "VariableImportance::visit_after_training(): Shape mismatch.");
+            vigra_precondition(vptr->is_in_bag_.size() == num_instances,
+                               "VariableImportance::visit_after_training(): Some visitors have the wrong number of data points.");
             variable_importance_.subarray(Shape2(0, rf.num_classes()+1), Shape2(num_features, rf.num_classes()+2))
-                += vptr->variable_importance_.subarray(Shape2(0, rf.num_classes()+1), Shape2(num_features, rf.num_classes()+2));
+                += vptr->variable_importance_;
         }
 
+        // Compute the out-of-bag error.
+        typedef typename std::remove_const<LABELS>::type Labels;
+        Labels pred(Shape1(1));
+        oob_err_ = 0.0;
+        for (size_t i = 0; i < num_instances; ++i)
+        {
+            // Get the indices of the trees where the data points is out of bag.
+            std::vector<size_t> tree_indices;
+            for (size_t k = 0; k < visitors.size(); ++k)
+                if (!visitors[k]->is_in_bag_[i])
+                    tree_indices.push_back(k);
 
+            // Get the prediction using the above trees.
+            auto const sub_features = features.subarray(Shape2(i, 0), Shape2(i+1, num_features));
+            rf.predict(sub_features, pred, 1, tree_indices);
+            if (pred(0) != labels(i))
+                oob_err_ += 1.0;
+        }
+        oob_err_ /= num_instances;
+
+        // Compute the permutation importance.
+
+
+
+
+
+
+
+        // Normalize the variable importance.
         variable_importance_ /= rf.num_trees();
     }
 
@@ -373,6 +405,11 @@ public:
      * how often the permutation takes place
      */
     int repetition_count_;
+
+    /**
+     * the out-of-bag-error
+     */
+    double oob_err_;
 
 private:
     std::vector<bool> is_in_bag_; // whether a data point is in-bag or out-of-bag
