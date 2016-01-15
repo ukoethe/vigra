@@ -66,6 +66,11 @@
 #define VIGRA_TOLERANCE_MESSAGE "If this test fails, please adjust the tolerance threshold and report\n" \
                        "your findings (including compiler information etc.) to the VIGRA mailing list:"
 
+
+#define NegativeShift(i, s)\
+(vigra::Int32)((vigra::UInt32) i << s)
+
+
 static double coefficients[][12] =
 {
     { 5.0, -416.0, 720.0, -464.0, 136.0, -18.0, 1.0 },
@@ -1297,7 +1302,7 @@ struct FixedPointTest
         shouldEqual(-vigra::fixedPoint(3).value, -3);
 
         shouldEqual((vigra::FixedPoint<3,4>(3).value), 3 << 4);
-        shouldEqual((vigra::FixedPoint<3,4>(-3).value), -3 << 4);
+        shouldEqual((vigra::FixedPoint<3,4>(-3).value), NegativeShift(-3, 4));
         shouldEqual((-vigra::FixedPoint<3,4>(3).value), -3 << 4);
 
         shouldEqual((vigra::FixedPoint<3,4>(3.5).value), 56);
