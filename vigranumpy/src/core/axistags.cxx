@@ -36,6 +36,7 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
 #define NO_IMPORT_ARRAY
 
+#include <typeinfo>
 #include <vigra/numpy_array.hxx>
 #include <vigra/axistags.hxx>
 #include <boost/python.hpp>
@@ -194,6 +195,7 @@ AxisTags_create(python::object i1, python::object i2,
     VIGRA_UNIQUE_PTR<AxisTags> res(new AxisTags());
     
     python::extract<AxisTags const &> tags(i1);
+	//std::cout << "Deebug" << std::endl << typeid(i1.ptr()).name() << std::endl;
     if(tags.check())
     {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(tags()));
@@ -201,7 +203,7 @@ AxisTags_create(python::object i1, python::object i2,
 #if PY_MAJOR_VERSION < 3
     else if(PyString_Check(i1.ptr()))
 #else
-	else if (PyBytes_Check(i1.ptr()))
+	else if (PyUnicode_Check(i1.ptr())) // double check if this really works. PyBytes might be another candidate. 
 #endif
 	{
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(python::extract<std::string>(i1)()));
