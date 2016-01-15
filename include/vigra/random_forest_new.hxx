@@ -440,15 +440,19 @@ random_forest_impl(
 
     // Train the trees.
     ThreadPool pool((size_t)n_threads);
+    std::vector<std::future<void> > futures;
     for (size_t i = 0; i < tree_count; ++i)
     {
-        pool.enqueue([&features, &transformed_labels, &options, &tree_visitors, &stop, &trees, i, &rand_engines](size_t thread_id)
-            {
-                random_forest_single_tree<RF, SCORER, VisitorCopyType, STOP>(features, transformed_labels, options, tree_visitors[i], stop, trees[i], rand_engines[thread_id]);
-            }
+        futures.emplace_back(
+            pool.enqueue([&features, &transformed_labels, &options, &tree_visitors, &stop, &trees, i, &rand_engines](size_t thread_id)
+                {
+                    random_forest_single_tree<RF, SCORER, VisitorCopyType, STOP>(features, transformed_labels, options, tree_visitors[i], stop, trees[i], rand_engines[thread_id]);
+                }
+            )
         );
     }
-    pool.waitFinished();
+    for (auto & fut : futures)
+        fut.get();
 
     // Merge the trees together.
     RF rf(trees[0]);
