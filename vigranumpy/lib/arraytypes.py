@@ -45,6 +45,7 @@ import vigra.vigranumpycore as vigranumpycore
 from vigra.vigranumpycore import AxisType, AxisInfo, AxisTags
 
 if sys.version_info[0] > 2:
+    buffer = memoryview
     def xrange(*args):
         return range(*args)
 
@@ -642,7 +643,7 @@ class VigraArray(numpy.ndarray):
             permutation = self.permutationFromNumpyOrder()
         )
         socket.send_json(metadata, flags|zmq.SNDMORE)
-        socket.send(self.axistags.toJSON(), flags|zmq.SNDMORE)
+        socket.send(self.axistags.toJSON().encode('ascii'), flags|zmq.SNDMORE)
         return socket.send(transposed, flags, copy=copy, track=track)
 
     def imshow(self):
@@ -776,7 +777,7 @@ class VigraArray(numpy.ndarray):
                 clip = False
             if m == M:
                 return res
-            f = 255.0 / (M - m)
+            f = 255.0 // (M - m)
             img = f * (img - m)
             if clip:
                 img = numpy.minimum(255.0, numpy.maximum(0.0, img))
@@ -2118,7 +2119,7 @@ class ImagePyramid(list):
         if level > self.highestLevel:
             image = list.__getitem__(self, -1)
             for i in range(self.highestLevel, level):
-                newShape = [int((k + 1) / 2) for k in image.shape]
+                newShape = [int((k + 1) // 2) for k in image.shape]
                 if hasChannels:
                     newShape[channelIndex] = image.shape[channelIndex]
                 if axistags:
