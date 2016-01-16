@@ -409,20 +409,32 @@ class EdgeWeightedUcm
         /// \brief will be called via callbacks from mergegraph
         void mergeEdges(const Edge & a,const Edge & b){
             // update features / weigts etc
+            bool done = false;
             const BaseGraphEdge aa=EdgeHelper::itemToGraphItem(mergeGraph_,a);
             const BaseGraphEdge bb=EdgeHelper::itemToGraphItem(mergeGraph_,b);
-            EdgeIndicatorReference va=edgeIndicatorMap_[aa];
-            EdgeIndicatorReference vb=edgeIndicatorMap_[bb];
-            va*=edgeSizeMap_[aa];
-            vb*=edgeSizeMap_[bb];
-
-
-            va+=vb;
-            edgeSizeMap_[aa]+=edgeSizeMap_[bb];
-            va/=(edgeSizeMap_[aa]);
-            vb/=edgeSizeMap_[bb];
-            // delete b from pq
-            pq_.deleteItem(b.id());
+            if(!isLifted_.empty()){
+                auto isLiftedA =  isLifted_[mergeGraph_.graph().id(aa)];
+                auto isLiftedB =  isLifted_[mergeGraph_.graph().id(bb)];
+                if(isLiftedA && isLiftedB){
+                    pq_.deleteItem(b.id());
+                    done = true;
+                }
+                isLifted_[mergeGraph_.graph().id(aa)] = isLiftedA && isLiftedB;
+            }
+            if(!done){
+                
+                EdgeIndicatorReference va=edgeIndicatorMap_[aa];
+                EdgeIndicatorReference vb=edgeIndicatorMap_[bb];
+                va*=edgeSizeMap_[aa];
+                vb*=edgeSizeMap_[bb];
+                
+                va+=vb;
+                edgeSizeMap_[aa]+=edgeSizeMap_[bb];
+                va/=(edgeSizeMap_[aa]);
+                vb/=edgeSizeMap_[bb];
+                // delete b from pq
+                pq_.deleteItem(b.id());
+            }
         }
 
         /// \brief will be called via callbacks from mergegraph
@@ -497,6 +509,11 @@ class EdgeWeightedUcm
                 pq_.deleteItem(minLabel);
                 minLabel = pq_.top();
             }
+            //std::cout<<"mg e"<<mergeGraph_.edgeNum()<<" mg n"<<mergeGraph_.nodeNum()<<" cw"<< this->contractionWeight()<<"\n";
+            if(!isLifted_.empty()){
+                if(isLifted_[minLabel])
+                    throw std::runtime_error("use lifted edges only if you are DerThorsten or know what you are doing\n");
+            }
             return Edge(minLabel);
         }
 
@@ -529,15 +546,35 @@ class EdgeWeightedUcm
             return p>= gamma_;
         }
 
+
+        template<class ITER>
+        void setLiftedEdges(ITER idsBegin, ITER idsEnd){
+            if(isLifted_.size()<mergeGraph_.graph().maxEdgeId()+1){
+                isLifted_.resize(mergeGraph_.graph().maxEdgeId()+1,false);
+                std::fill(isLifted_.begin(), isLifted_.end(), false);
+            }
+            while(idsBegin!=idsEnd){
+                isLifted_[*idsBegin] = true;
+
+                const ValueType currentWeight = this->getEdgeWeight(Edge(*idsBegin));
+                pq_.push(*idsBegin,currentWeight);
+                minWeightEdgeMap_[mergeGraph_.graph().edgeFromId(*idsBegin)]=currentWeight;
+
+
+                ++idsBegin;
+            }
+        }
     private:
         ValueType getEdgeWeight(const Edge & e){
+            const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
+            if(!isLifted_.empty() && isLifted_[mergeGraph_.graph().id(ee)]){
+                //std::cout<<"found lifted edge\n";
+                return 10000000.0;// std::numeric_limits<ValueType>::infinity();
+            }
 
             const Node u = mergeGraph_.u(e);
             const Node v = mergeGraph_.v(e);
-
-            const size_t dU = mergeGraph_.degree(u);
-            const size_t dV = mergeGraph_.degree(u);
-            const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
+           
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
@@ -545,7 +582,7 @@ class EdgeWeightedUcm
             const float sizeV = nodeSizeMap_[vv];
 
 
-            const ValueType wardFac = 2.0 / ( 1.0/std::pow(sizeU,wardness_) + 1/std::pow(sizeV,wardness_) );
+            const ValueType wardFac = 2.0 / ( 1.0/std::pow(sizeU,wardness_) + 1.0/std::pow(sizeV,wardness_) );
 
             const ValueType fromEdgeIndicator = edgeIndicatorMap_[ee];
             ValueType fromNodeDist = metric_(nodeFeatureMap_[uu],nodeFeatureMap_[vv]);
@@ -580,7 +617,15 @@ class EdgeWeightedUcm
         ValueType gamma_;
         ValueType sameLabelMultiplier_;
         metrics::Metric<float> metric_;
+
+        std::vector<bool> isLifted_;
     };
+
+
+
+
+
+
 
 
 
@@ -644,25 +689,8 @@ class EdgeWeightedUcm
             clusterOperator_(clusterOperator),
             param_(parameter),
             mergeGraph_(clusterOperator_.mergeGraph()),
-            graph_(mergeGraph_.graph()),
-            timestamp_(graph_.maxNodeId()+1),
-            toTimeStamp_(),
-            timeStampIndexToMergeIndex_(),
-            mergeTreeEndcoding_()
+            graph_(mergeGraph_.graph())
         {
-            if(param_.buildMergeTreeEncoding_){
-                // this can be be made smater since user can pass
-                // stoping condition based on nodeNum
-                mergeTreeEndcoding_.reserve(graph_.nodeNum()*2);
-                toTimeStamp_.resize(graph_.maxNodeId()+1);
-                timeStampIndexToMergeIndex_.resize(graph_.maxNodeId()+1);
-                for(MergeGraphIndexType nodeId=0;nodeId<=mergeGraph_.maxNodeId();++nodeId){
-                    toTimeStamp_[nodeId]=nodeId;
-                }
-            }
-
-
-
         }
 
         /// \brief start the clustering
@@ -672,24 +700,13 @@ class EdgeWeightedUcm
             while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0 && !clusterOperator_.done()){
 
                 const Edge edgeToRemove = clusterOperator_.contractionEdge();
-                if(param_.buildMergeTreeEncoding_){
-                    const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove));
-                    const MergeGraphIndexType vid = mergeGraph_.id(mergeGraph_.v(edgeToRemove));
-                    const ValueType w             = clusterOperator_.contractionWeight();
-                    // do the merge
-                    mergeGraph_.contractEdge( edgeToRemove);
-                    const MergeGraphIndexType aliveNodeId = mergeGraph_.hasNodeId(uid) ? uid : vid;
-                    const MergeGraphIndexType deadNodeId  = aliveNodeId==vid ? uid : vid;
-                    timeStampIndexToMergeIndex_[timeStampToIndex(timestamp_)]=mergeTreeEndcoding_.size();
-                    mergeTreeEndcoding_.push_back(MergeItem( toTimeStamp_[aliveNodeId],toTimeStamp_[deadNodeId],timestamp_,w));
-                    toTimeStamp_[aliveNodeId]=timestamp_;
-                    timestamp_+=1;
-                }
-                else{
-                    //std::cout<<"constract\n";
-                    // do the merge
-                    mergeGraph_.contractEdge( edgeToRemove );
-                }
+                           
+                // const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove));
+                // const MergeGraphIndexType vid = mergeGraph_.id(mergeGraph_.v(edgeToRemove));
+                
+                mergeGraph_.contractEdge( edgeToRemove );
+
+
                 if(param_.verbose_ && mergeGraph_.nodeNum()%1==0){
                     std::cout<<"\rNodes: "<<std::setw(10)<<mergeGraph_.nodeNum()<<std::flush;
                 }
@@ -699,10 +716,6 @@ class EdgeWeightedUcm
                 std::cout<<"\n";
         }
 
-        /// \brief get the encoding of the merge tree
-        const MergeTreeEncoding & mergeTreeEndcoding()const{
-            return mergeTreeEndcoding_;
-        }
 
         template<class EDGE_MAP>
         void ucmTransform(EDGE_MAP & edgeMap)const{
@@ -714,40 +727,7 @@ class EdgeWeightedUcm
             }
         }
 
-        /// \brief get the node id's which are the leafes of a treeNodeId
-        template<class OUT_ITER>
-        size_t leafNodeIds(const MergeGraphIndexType treeNodeId, OUT_ITER begin)const{
-            if(treeNodeId<=graph_.maxNodeId()){
-                *begin=treeNodeId;
-                ++begin;
-                return 1;
-            }
-            else{
-                size_t leafNum=0;
-                std::queue<MergeGraphIndexType>     queue;
-                queue.push(treeNodeId);
 
-                while(!queue.empty()){
-
-                    const MergeGraphIndexType id = queue.front();
-                    queue.pop();
-                    const MergeGraphIndexType mergeIndex = timeStampToMergeIndex(id);
-                    const MergeGraphIndexType ab[]= { mergeTreeEndcoding_[mergeIndex].a_, mergeTreeEndcoding_[mergeIndex].b_};
-
-                    for(size_t i=0;i<2;++i){
-                        if(ab[i]<=graph_.maxNodeId()){
-                            *begin=ab[i];
-                            ++begin;
-                            ++leafNum;
-                        }
-                        else{
-                            queue.push(ab[i]);
-                        }
-                    }
-                }
-                return leafNum;
-            }
-        }
 
         /// \brief get the graph the merge graph is based on
         const Graph & graph()const{
@@ -765,14 +745,7 @@ class EdgeWeightedUcm
         }
     private:
 
-        MergeGraphIndexType timeStampToIndex(const MergeGraphIndexType timestamp)const{
-            return timestamp- graph_.maxNodeId();
-        }
 
-
-        MergeGraphIndexType timeStampToMergeIndex(const MergeGraphIndexType timestamp)const{
-            return timeStampIndexToMergeIndex_[timeStampToIndex(timestamp)];
-        }
 
         ClusterOperator & clusterOperator_;
         Parameter          param_;
@@ -780,13 +753,6 @@ class EdgeWeightedUcm
         const Graph  & graph_;
         // parameter object
 
-
-        // timestamp
-        MergeGraphIndexType timestamp_;
-        std::vector<MergeGraphIndexType> toTimeStamp_;
-        std::vector<MergeGraphIndexType> timeStampIndexToMergeIndex_;
-        // data which can reconstruct the merge tree
-        MergeTreeEncoding mergeTreeEndcoding_;
 
 
     };

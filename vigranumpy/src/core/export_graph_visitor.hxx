@@ -293,18 +293,17 @@ public:
 
     static NumpyAnyArray findEdges(
         const Graph & g,
-        NumpyArray<2,UInt32> nodeIdPairs, 
+        NumpyArray<1, TinyVector<uint32_t, 2> > nodeIdPairs, 
         NumpyArray<1,Int32> out =(NumpyArray<1,Int32>())
     ){
         out.reshapeIfEmpty(typename NumpyArray<1,Int32>::difference_type(  nodeIdPairs.shape(0)  ));
         for(MultiArrayIndex i=0; i<nodeIdPairs.shape(0); ++i){
             const Edge e = g.findEdge(
-                g.nodeFromId(nodeIdPairs(i,0)),
-                g.nodeFromId(nodeIdPairs(i,1))
+                g.nodeFromId(nodeIdPairs[i][0]),
+                g.nodeFromId(nodeIdPairs[i][1])
             );
             out(i) = e==lemon::INVALID ? -1 : g.id(e);
         }
-       
         return out;
     }
 

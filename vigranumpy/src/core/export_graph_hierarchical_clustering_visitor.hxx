@@ -132,11 +132,18 @@ public:
         ;
     }
 
+    static void setLiftedEdges(DefaultClusterOperator & op,
+        NumpyArray<1, uint32_t> liftedEdgeIds
+    ){
+        op.setLiftedEdges(liftedEdgeIds.begin(), liftedEdgeIds.end());
+    }
+
     void exportHierarchicalClusteringOperators()const{
         {   
             const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("MinEdgeWeightNodeDistOperator");
             python::class_<DefaultClusterOperator  >(operatorName.c_str(),python::no_init)
             .def("__init__", python::make_constructor(&pyEdgeWeightNodeFeaturesConstructor))
+                .def("setLiftedEdges",registerConverters(&setLiftedEdges))
             ;
             python::def("__minEdgeWeightNodeDistOperator",registerConverters(&pyEdgeWeightNodeFeaturesConstructor),
                 python::with_custodian_and_ward_postcall< 0,1 ,
@@ -193,6 +200,7 @@ public:
         )
         .def("cluster",&HCluster::cluster)
         .def("reprNodeIds",registerConverters(&pyReprNodeIds<HCluster>))
+        .def("ucmTransform",registerConverters(&pyUcmTransform<HCluster>))
         .def("resultLabels",registerConverters(&pyResultLabels<HCluster>),
             (
                 python::arg("out")=python::object()
@@ -399,6 +407,28 @@ public:
         //TOC;
         return resultArray;
     }
+
+
+
+    template<class HCLUSTER>
+    static void pyUcmTransform(
+        const HCLUSTER  & hcluster,
+        FloatEdgeArray  inputArray
+    ){
+        FloatEdgeArrayMap inputArrayMap(hcluster.graph(),inputArray);
+        hcluster.ucmTransform(inputArrayMap);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     template<class HCLUSTER>
     static python::tuple mergeTreeEncodingAsNumpyArray(const HCLUSTER & hcluster) {
