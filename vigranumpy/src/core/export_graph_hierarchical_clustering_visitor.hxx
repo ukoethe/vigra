@@ -189,6 +189,16 @@ public:
         }
     }
 
+    template<class HC>
+    static void pyCluster(HC & hc){
+        {
+            PyAllowThreads _pythread;
+            hc.cluster();
+        }
+    }
+
+
+
     template<class CLUSTER_OPERATOR>
     void exportHierarchicalClustering(const std::string & opClsName)const{
         typedef CLUSTER_OPERATOR ClusterOperator;
@@ -198,7 +208,8 @@ public:
         python::class_<HCluster,boost::noncopyable>(
             clsName.c_str(),python::init<ClusterOperator &>()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()]
         )
-        .def("cluster",&HCluster::cluster)
+        //.def("cluster",&HCluster::cluster)
+        .def("cluster",&pyCluster<HCluster>)
         .def("reprNodeIds",registerConverters(&pyReprNodeIds<HCluster>))
         .def("ucmTransform",registerConverters(&pyUcmTransform<HCluster>))
         .def("resultLabels",registerConverters(&pyResultLabels<HCluster>),
@@ -322,7 +333,7 @@ public:
         typename HierarchicalClustering<CLUSTER_OP>::Parameter param;
         param.nodeNumStopCond_=nodeNumStopCond;
         param.buildMergeTreeEncoding_=buildMergeTreeEncoding;
-        param.verbose_=true;
+        param.verbose_=false;
         return new  HierarchicalClustering<CLUSTER_OP>(clusterOp,param);
     }
 

@@ -1258,7 +1258,13 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
               weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
               weights[:]=1
 
-            return graphs._ragNodeFeatures(self,graph,labels,nodeFeatures,weights,acc,ignoreLabel,out)
+            return graphs._ragNodeFeatures(self,graph,
+                                           labels,
+                                           nodeFeatures,
+                                           weights,
+                                           acc,
+                                           ignoreLabel,
+                                           out)
 
         def projectNodeFeatureToBaseGraph(self,features,out=None):
             """ project node features from this graph, to the base graph of this graph.
@@ -1798,7 +1804,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
     def loadGridRagHDF5(filename , dset):
 
         #print "load labels and make grid graph"
-        labels = readHDF5(filename,  dset+'/labels')
+        labels = readHDF5(filename,  dset+'/labels').squeeze()
         shape = labels.shape
         gridGraph = graphs.gridGraph(shape)
         #print gridGraph
@@ -1824,9 +1830,9 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
         ignoreLabel =  readHDF5(filename, dset+'/ignore_label')
 
         gridRag.affiliatedEdges = affiliatedEdges
-        gridRag.labels          = taggedView(labels,"xyz")
+        gridRag.labels          = labels
         gridRag.ignoreLabel     = int(ignoreLabel[0])
-        gridRag.baseGraphLabels = taggedView(labels,"xyz")
+        gridRag.baseGraphLabels = labels
         gridRag.baseGraph       = gridGraph
 
         return gridRag
@@ -2398,7 +2404,7 @@ def _genGraphSegmentationFunctions():
                 raise RuntimeError("'%s' is not a supported distance type"%str(metric))
 
             # call unsave c++ function and make it sav
-            print "nodeLabels ",nodeLabels.shape, nodeLabels.dtype
+            #print "nodeLabels ",nodeLabels.shape, nodeLabels.dtype
             op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,nodeLabels,
                 float(beta),nd,float(wardness),float(gamma))
 
