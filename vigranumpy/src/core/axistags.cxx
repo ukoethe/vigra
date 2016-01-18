@@ -203,7 +203,7 @@ AxisTags_create(python::object i1, python::object i2,
 #if PY_MAJOR_VERSION < 3
     else if(PyString_Check(i1.ptr()))
 #else
-	else if (PyUnicode_Check(i1.ptr())) // double check if this really works. PyBytes might be another candidate. 
+	else if (PyUnicode_Check(i1.ptr()))
 #endif
 	{
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(python::extract<std::string>(i1)()));

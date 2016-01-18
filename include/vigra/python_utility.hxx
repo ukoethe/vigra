@@ -399,17 +399,40 @@ inline python_ptr dataFromPython(PyObject * data, python_ptr defaultVal)
 
 /****************************************************************/
 
+inline
+python_ptr longToPython(long nbr)
+{
+#if PY_MAJOR_VERSION < 3
+	return python_ptr(PyInt_FromLong(nbr), python_ptr::new_nonzero_reference);
+#else
+	return python_ptr(PyLong_FromLong(nbr), python_ptr::new_nonzero_reference);
+#endif
+}
+
+inline
+python_ptr stringToPython(char const * str)
+{
+#if PY_MAJOR_VERSION < 3
+	return python_ptr(PyString_FromString(str), python_ptr::new_nonzero_reference);
+#else
+	return python_ptr(PyUnicode_FromString(str), python_ptr::new_nonzero_reference);
+#endif
+}
+
+inline
+python_ptr stringToPython(std::string const * str)
+{
+	return stringToPython(str->c_str());
+}
+
+
+
 template <class T>
 T pythonGetAttr(PyObject * obj, const char * key, T defaultValue)
 {
     if(!obj)
-        return defaultValue;
-        
-#if PY_MAJOR_VERSION < 3
-    python_ptr k(PyString_FromString(key), python_ptr::keep_count);
-#else
-    python_ptr k(PyUnicode_FromString(key), python_ptr::keep_count);
-#endif
+        return defaultValue;        
+    python_ptr k(stringToPython(key));
     pythonToCppException(k);
     python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
     if(!pres)
@@ -422,12 +445,7 @@ pythonGetAttr(PyObject * obj, const char * key, const char * defaultValue)
 {
     if(!obj)
         return std::string(defaultValue);
-    
-#if PY_MAJOR_VERSION < 3
-    python_ptr k(PyString_FromString(key), python_ptr::keep_count);
-#else
-    python_ptr k(PyUnicode_FromString(key), python_ptr::keep_count);
-#endif
+    python_ptr k(stringToPython(key));
     pythonToCppException(k);
     python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
     if(!pres)

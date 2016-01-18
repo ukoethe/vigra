@@ -530,7 +530,7 @@ bool pythonActivateTags(Accu & a, python::object tags)
 #if PY_MAJOR_VERSION < 3
     if(PyString_Check(tags.ptr()))
 #else
-	if (PyBytes_Check(tags.ptr()))
+	if (PyUnicode_Check(tags.ptr()))
 #endif	
 		{
         std::string tag = python::extract<std::string>(tags)();
@@ -557,7 +557,7 @@ void pythonHistogramOptions(Accu & a, python::object minmax, int binCount)
 #if PY_MAJOR_VERSION < 3
     if(PyString_Check(minmax.ptr()))
 #else
-	if (PyBytes_Check(minmax.ptr()))
+	if (PyUnicode_Check(minmax.ptr()))
 #endif
 	{
         std::string spec = normalizeString(python::extract<std::string>(minmax)());

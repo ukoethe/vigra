@@ -254,7 +254,7 @@ ptr_to_python(Array * array, python::object axistags)
 #if PY_MAJOR_VERSION < 3
         if(PyString_Check(axistags.ptr()))
 #else
-		if(PyBytes_Check(axistags.ptr()))
+		if(PyUnicode_Check(axistags.ptr()))
 #endif
 			at = AxisTags(python::extract<std::string>(axistags)());
         else

@@ -335,11 +335,7 @@ class NumpyAnyArray
                 "NumpyArray::operator=(): Cannot assign from empty array.");
 
             python_ptr arraytype = getArrayTypeObject();
-#if PY_MAJOR_VERSION < 3
-            python_ptr f(PyString_FromString("_copyValuesImpl"), python_ptr::keep_count);
-#else
-            python_ptr f(PyUnicode_FromString("_copyValuesImpl"), python_ptr::keep_count);
-#endif
+            python_ptr f(stringToPython("_copyValuesImpl"));
             if(PyObject_HasAttr(arraytype, f))
             {
                 python_ptr res(PyObject_CallMethodObjArgs(arraytype, f.get(),
@@ -510,31 +506,18 @@ class NumpyAnyArray
             PyObject * item = 0;
             if(start[k] == stop[k])
             {
-#if PY_MAJOR_VERSION < 3
-                item = PyInt_FromLong(start[k]);
-#else
-                item = PyLong_FromLong(start[k]);
-#endif
+                item = longToPython(start[k]);
             }
             else
             {
-#if PY_MAJOR_VERSION < 3
-                python_ptr s0(PyInt_FromLong(start[k]), python_ptr::new_nonzero_reference);
-                python_ptr s1(PyInt_FromLong(stop[k]), python_ptr::new_nonzero_reference);
-#else
-                python_ptr s0(PyLong_FromLong(start[k]), python_ptr::new_nonzero_reference);
-                python_ptr s1(PyLong_FromLong(stop[k]), python_ptr::new_nonzero_reference);
-#endif
+                python_ptr s0(longToPython(start[k]));
+                python_ptr s1(longToPython(stop[k]));
                 item = PySlice_New(s0, s1, 0);
             }
             pythonToCppException(item);
             PyTuple_SET_ITEM((PyTupleObject *)index.ptr(), k, item); // steals reference to item
         }
-#if PY_MAJOR_VERSION < 3
-        python_ptr func(PyString_FromString("__getitem__"), python_ptr::new_nonzero_reference);
-#else
-        python_ptr func(PyUnicode_FromString("__getitem__"), python_ptr::new_nonzero_reference);
-#endif
+        python_ptr func(stringToPython("__getitem__"));
         python_ptr res(PyObject_CallMethodObjArgs(pyObject(), func.ptr(), index.ptr(), NULL),
                        python_ptr::new_nonzero_reference);
         return NumpyAnyArray(res.ptr());
@@ -550,11 +533,7 @@ class NumpyAnyArray
         python_ptr axistags;
         if(pyObject())
         {
-#if PY_MAJOR_VERSION < 3
-            python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
-#else
-            python_ptr key(PyUnicode_FromString("axistags"), python_ptr::keep_count);
-#endif
+            python_ptr key(stringToPython("axistags"));
             axistags.reset(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
             if(!axistags)
                 PyErr_Clear();
