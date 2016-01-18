@@ -1029,6 +1029,9 @@ def _genGraphConvenienceFunctions():
             self.graph=graph
             self.source = None
             self.target = None
+        def runLifted(self, weights, uvIds):
+            return self.pathFinder.runLifted(weights, uvIds)
+            
         def run(self,weights,source,target=None):
             """ run shortest path search
 

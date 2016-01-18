@@ -196,7 +196,12 @@ public:
                 python::arg("out")=python::object()
             )
         )
-        ;
+        .def("runLifted",registerConverters(&pyShortestPathLifted),
+            (
+                python::arg("weights"),
+                python::arg("uvIds")
+            )
+        );
 
         python::def("_shortestPathDijkstra",&pyShortestPathDijkstraTypeFactory,
             python::return_value_policy<python::manage_new_object>() 
@@ -215,6 +220,70 @@ public:
         static ShortestPathDijkstraType * pyShortestPathDijkstraTypeFactory(const Graph & g){
         return new ShortestPathDijkstraType(g);
     }
+
+
+
+    static python::tuple
+    pyShortestPathLifted(
+        ShortestPathDijkstraType & sp,
+        FloatEdgeArray edgeWeightsArray,
+        NumpyArray<1, TinyVector<uint32_t,2> > uvIds
+    ){
+
+        // numpy arrays => lemon maps
+        FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
+
+        NumpyArray<1, float> distancesOut(uvIds.shape());
+        NumpyArray<1, int>   pathLengthOut(uvIds.shape());
+        std::vector< std::vector< Node > >  liftedAdj(sp.graph().maxNodeId()+1);
+        std::vector< std::vector< size_t > >  liftedAdjEdges(sp.graph().maxNodeId()+1);
+
+        {
+            PyAllowThreads _pythread;
+            auto e = 0;
+            for(const auto & uv : uvIds){
+                auto u = std::min(uv[0],uv[1]);
+                auto v = std::max(uv[0],uv[1]);
+                liftedAdj[u].push_back(sp.graph().nodeFromId(v));
+                liftedAdjEdges[u].push_back(e);
+                ++e;
+            }
+            bool first = true;
+            for(NodeIt n(sp.graph());n!=lemon::INVALID;++n){
+                const Node source(*n);
+                auto id = sp.graph().id(source);
+                const auto & targets = liftedAdj[id];
+                const auto & edges = liftedAdjEdges[id];
+
+                if(first){
+                    sp.runMultiTarget(edgeWeightsArrayMap,
+                                      source, 
+                                      targets.begin(),
+                                      targets.end());
+                }
+                else{
+                    sp.reRunMultiTarget(edgeWeightsArrayMap,
+                                      source, 
+                                      targets.begin(),
+                                      targets.end());
+                }
+                first = false;
+                for(size_t i=0; i<targets.size(); ++i){
+                    auto target = targets[i];
+                    auto edge = edges[i];
+                    auto d  = sp.distances()[target];
+                    auto l  = pathLength(source, target,sp.predecessors());
+
+                    distancesOut[edge] = d;
+                    pathLengthOut[edge] = l;
+                }
+
+            }
+        }
+
+        return python::make_tuple(NumpyAnyArray(distancesOut),NumpyAnyArray(pathLengthOut));
+    }
+
 
     static NumpyAnyArray pyShortestPathDistance(
         const ShortestPathDijkstraType & sp,

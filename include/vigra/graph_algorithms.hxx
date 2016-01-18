@@ -339,6 +339,23 @@ namespace vigra{
             runImpl(weights, target, maxDistance);
         }
 
+        template<class WEIGHTS, class TARGET_ITER>
+        void runMultiTarget(const WEIGHTS & weights, const Node & source,
+                 TARGET_ITER targetsBegin, TARGET_ITER targetsEnd,
+                 WeightType maxDistance=NumericTraits<WeightType>::max())
+        {
+            this->initializeMaps(source);
+            runImplMultiTargets(weights, targetsBegin, targetsEnd, maxDistance);
+        }
+
+        template<class WEIGHTS, class TARGET_ITER>
+        void reRunMultiTarget(const WEIGHTS & weights, const Node & source,
+                 TARGET_ITER targetsBegin, TARGET_ITER targetsEnd,
+                 WeightType maxDistance=NumericTraits<WeightType>::max())
+        {
+            this->reInitializeMaps(source);
+            runImplMultiTargets(weights, targetsBegin, targetsEnd, maxDistance);
+        }
         /// \brief run shortest path in a region of interest of a \ref GridGraph.
         ///
         /// \param start : first point in the desired ROI.
@@ -366,6 +383,7 @@ namespace vigra{
             this->initializeMaps(source, start, stop);
             runImpl(weights, target, maxDistance);
         }
+
 
         /// \brief run shortest path again with given edge weights
         ///
@@ -414,6 +432,8 @@ namespace vigra{
             this->initializeMapsMultiSource(source_begin, source_end);
             runImplWithNodeWeights(edgeWeights, nodeWeights, target, maxDistance);
         }
+
+
 
         /// \brief get the graph
         const Graph & graph()const{
@@ -464,7 +484,15 @@ namespace vigra{
             ZeroNodeMap<Graph, WEIGHT_TYPE> zeroNodeMap;
             this->runImplWithNodeWeights(weights,zeroNodeMap, target, maxDistance);
         }
-
+        template<class WEIGHTS, class TARGET_ITER>
+        void runImplMultiTargets(const WEIGHTS & weights,
+                    const TARGET_ITER & targetsBegin, 
+                    const TARGET_ITER & targetsEnd, 
+                    WeightType maxDistance=NumericTraits<WeightType>::max())
+        {
+            ZeroNodeMap<Graph, WEIGHT_TYPE> zeroNodeMap;
+            this->runImplWithNodeWeightsMultiTarget(weights,zeroNodeMap, targetsBegin, targetsEnd, maxDistance);
+        }
 
         template<class EDGE_WEIGHTS, class NODE_WEIGHTS>
         void runImplWithNodeWeights(
@@ -518,6 +546,69 @@ namespace vigra{
                 target_ = discoveryOrder_.back(); // Means that target was reached. If, to the contrary, target 
                                                   // was unreachable within maxDistance, target_ remains INVALID.
         }
+
+
+        template<class EDGE_WEIGHTS, class NODE_WEIGHTS, class TARGET_ITER>
+        void runImplWithNodeWeightsMultiTarget(
+            const EDGE_WEIGHTS & edgeWeights,
+            const NODE_WEIGHTS & nodeWeights,
+            const TARGET_ITER & targetsBegin, 
+            const TARGET_ITER & targetsEnd, 
+            WeightType maxDistance=NumericTraits<WeightType>::max())
+        {
+            target_ = lemon::INVALID;
+
+            std::set<Node> targetsSet(targetsBegin, targetsEnd);
+
+            while(!pq_.empty() ){ //&& !finished){
+                const Node topNode(graph_.nodeFromId(pq_.top()));
+                if(distMap_[topNode] > maxDistance)
+                    break; // distance threshold exceeded
+                pq_.pop();
+                discoveryOrder_.push_back(topNode);
+                //if(topNode == target)
+                if(targetsSet.find(topNode) != targetsSet.end()){
+                    targetsSet.erase(topNode);
+                    if(targetsSet.empty())
+                        break;
+                }
+                // loop over all neigbours
+                for(OutArcIt outArcIt(graph_,topNode);outArcIt!=lemon::INVALID;++outArcIt){
+                    const Node otherNode = graph_.target(*outArcIt);
+                    const size_t otherNodeId = graph_.id(otherNode);
+                    const WeightType otherNodeWeight = nodeWeights[otherNode];
+                    if(pq_.contains(otherNodeId)){
+                        const Edge edge(*outArcIt);
+                        const WeightType currentDist     = distMap_[otherNode];
+                        const WeightType alternativeDist = distMap_[topNode]+edgeWeights[edge]+otherNodeWeight;
+                        if(alternativeDist<currentDist){
+                            pq_.push(otherNodeId,alternativeDist);
+                            distMap_[otherNode]=alternativeDist;
+                            predMap_[otherNode]=topNode;
+                        }
+                    }
+                    else if(predMap_[otherNode]==lemon::INVALID){
+                        const Edge edge(*outArcIt);
+                        const WeightType initialDist = distMap_[topNode]+edgeWeights[edge]+otherNodeWeight;
+                        if(initialDist<=maxDistance)
+                        {
+                            pq_.push(otherNodeId,initialDist);
+                            distMap_[otherNode]=initialDist;
+                            predMap_[otherNode]=topNode;
+                        }
+                    }
+                }
+            }
+            while(!pq_.empty() ){
+                const Node topNode(graph_.nodeFromId(pq_.top()));
+                predMap_[topNode]=lemon::INVALID;
+                pq_.pop();
+            }
+            target_ = lemon::INVALID;
+        }
+
+
+
 
         void initializeMaps(Node const & source){
             for(NodeIt n(graph_); n!=lemon::INVALID; ++n){
