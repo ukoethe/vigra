@@ -368,8 +368,9 @@ inline std::string dataFromPython(PyObject * data, const char * defaultVal)
     return data && PyString_Check(data) 
         ? std::string(PyString_AsString(data))  
 #else
-    return data && PyBytes_Check(data)
-        ? std::string(PyBytes_AsString(data))
+	python_ptr ascii(PyUnicode_AsASCIIString(data), python_ptr::keep_count);
+    return data && PyBytes_Check(ascii)
+        ? std::string(PyBytes_AsString(ascii))
 #endif
         : std::string(defaultVal);
 }
@@ -380,8 +381,9 @@ inline std::string dataFromPython(PyObject * data, std::string const & defaultVa
     return data && PyString_Check(data) 
         ? std::string(PyString_AsString(data)) 
 #else
-    return data && PyBytes_Check(data)
-        ? std::string(PyBytes_AsString(data))
+	python_ptr ascii(PyUnicode_AsASCIIString(data), python_ptr::keep_count);
+	return data && PyBytes_Check(ascii)
+		? std::string(PyBytes_AsString(ascii))
 #endif
         : defaultVal;
 }

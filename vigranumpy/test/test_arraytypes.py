@@ -425,10 +425,6 @@ def checkCompatibility(obj, compatible):
                         assert_equal(arraytypes.VigraArray, default_ordering.__class__)
                         dobj = obj.transposeToOrder(arraytypes.VigraArray.defaultOrder)
                         dshape = dobj.shape
-                        print("\n\n\n\nDEB\n\n\n\n", type(default_ordering.axistags), "\n\n\n", default_ordering, file=sys.stderr)
-
-                        print("\n\tDEB\n", default_ordering.axistags, "\n", arraytypes.VigraArray.defaultAxistags(default_ordering.ndim), file=sys.stderr)
-
                         assert_equal(default_ordering.axistags,
                                      arraytypes.VigraArray.defaultAxistags(default_ordering.ndim))
                         if obj.ndim == default_ordering.ndim:
@@ -436,7 +432,7 @@ def checkCompatibility(obj, compatible):
                             assert(dobj.view(numpy.ndarray) == default_ordering.view(numpy.ndarray)).all()
                         else:
                             assert_equal(dshape + (1,), default_ordering.shape)
-                            assert(fobj.view(numpy.ndarray) == default_ordering[...,0].view(numpy.ndarray)).all()
+                            assert(dobj.view(numpy.ndarray) == default_ordering[...,0].view(numpy.ndarray)).all()
         except Exception:
             print("exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides,
                                             repr(getattr(obj, "axistags", "none"))))
@@ -450,7 +446,7 @@ def checkCompatibility(obj, compatible):
         except Exception:
             print("exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides,
                                             repr(getattr(obj, "axistags", "none"))))
-            raise
+            raise     
 
 def testAxisTags():
     axistags = AxisTags(AxisInfo.c(description="RGB"),
@@ -553,7 +549,7 @@ def testAxisTags():
         assert_equal(defaultTags.permutationToOrder(order), (0, 1, 2))
         assert (defaultTags.channelIndex == 3)
 
-def todotestImage1():
+def testImage1():
     checkArray(arraytypes.Image, 1, 2)
 
     shape = (10, 20)
@@ -591,7 +587,7 @@ def todotestImage1():
     checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
 
-def todotestImage2():
+def testImage2():
     checkArray(arraytypes.Image, 2, 2)
 
     shape = (10, 20, 2)
@@ -676,7 +672,7 @@ def testScalarImage():
     checkShape(vt.viewArray2Strided(img), shape)
     assert_equal(img[0,0], 1)
 
-def todotestRGBImage():
+def testRGBImage():
     checkArray(arraytypes.RGBImage, 3, 2)
 
     cshape = (20, 10)
@@ -723,7 +719,7 @@ def todotestRGBImage():
     assert_equal(vt.viewImageRGBStrided(img), shape)
     assert (img[0,0]==(1,1,1)).all()
 
-def todotestVector2Image():
+def testVector2Image():
     checkArray(arraytypes.Vector2Image, 2, 2)
 
     cshape = (20, 10)
@@ -770,13 +766,13 @@ def todotestVector2Image():
     assert_equal(vt.viewImageVector2Unstrided(img), shape)
     assert (img[0,0]==(1,1)).all()
 
-def todotestVector3Image():
+def testVector3Image():
     checkArray(arraytypes.Vector3Image, 3, 2)
 
-def todotestVector4Image():
+def testVector4Image():
     checkArray(arraytypes.Vector4Image, 4, 2)
 
-def todotestVolume1():
+def testVolume1():
     checkArray(arraytypes.Volume, 1, 3)
 
     shape = (5, 10, 20)
@@ -815,7 +811,7 @@ def todotestVolume1():
     checkShape(vt.viewArray3Unstrided(vol), shape)
     assert_equal(vol[0,0,0], 1)
 
-def todotestVolume2():
+def testVolume2():
     checkArray(arraytypes.Volume, 2, 3)
 
     shape = (5, 10, 20, 2)
@@ -862,7 +858,7 @@ def todotestVolume2():
     assert_equal(vt.viewVolumeVector2Unstrided(vol), shape[:-1])
     assert (vol[0,0,0]==(1,1)).all()
 
-def todotestScalarVolume():
+def testScalarVolume():
     checkArray(arraytypes.ScalarVolume, 1, 3, False)
 
     cshape = (20, 10, 5)
@@ -899,7 +895,7 @@ def todotestScalarVolume():
     checkShape(vt.viewArray3Strided(vol), shape)
     assert_equal(vol[0,0,0], 1)
 
-def todotestRGBVolume():
+def testRGBVolume():
     checkArray(arraytypes.RGBVolume, 3, 3)
 
     cshape = (20, 10, 5)
@@ -944,7 +940,7 @@ def todotestRGBVolume():
     checkShape(vt.viewVolumeRGBUnstrided(vol), shape)
     assert (vol[0,0,0]==(1,1,1)).all()
 
-def todotestVector2Volume():
+def testVector2Volume():
     checkArray(arraytypes.Vector2Volume, 2, 3)
 
     cshape = (20, 10, 5)
@@ -989,7 +985,7 @@ def todotestVector2Volume():
     checkShape(vt.viewVolumeVector2Unstrided(vol), shape)
     assert (vol[0,0,0]==(1,1)).all()
 
-def todotestVector3Volume():
+def testVector3Volume():
     checkArray(arraytypes.Vector3Volume, 3, 3)
 
 def testVector4Volume():

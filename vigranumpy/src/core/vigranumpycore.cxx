@@ -52,11 +52,13 @@ namespace vigra {
 
 UInt32 pychecksum(python::str const & s)
 {
-    unsigned int size = len(s);
 #if PY_MAJOR_VERSION < 3
-    return checksum(PyString_AsString(s.ptr()), size);
+	unsigned int size = len(s);
+	return checksum(PyString_AsString(s.ptr()), size);
 #else
-	return checksum(PyBytes_AsString(s.ptr()), size);
+	Py_ssize_t size = 0;
+	char * data = PyUnicode_AsUTF8AndSize(s.ptr(), &size);
+	return checksum(data, size);
 #endif
 }
 
