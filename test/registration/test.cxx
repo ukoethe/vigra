@@ -162,8 +162,8 @@ struct EstimateGlobalRotationTranslationTest
         s_img.resize(size,size);
         d_img.resize(size,size);
         
-        for(int y=(size-fill_size_v)/2; y<(size+fill_size_v)/2; ++y)
-            for(int x=(size-fill_size_h)/2; x<(size+fill_size_h)/2; ++x)
+        for(MultiArrayIndex y=(size-fill_size_v)/2; y<(MultiArrayIndex)(size+fill_size_v)/2; ++y)
+            for(MultiArrayIndex x=(size-fill_size_h)/2; x<(MultiArrayIndex)(size+fill_size_h)/2; ++x)
                 s_img(x,y) = 255;
         
         gaussianSmoothing(srcImageRange(s_img),destImage(s_img), 1.0);
@@ -469,7 +469,7 @@ struct PolynomialRegistrationTest
          */
         BImage temp = d_img;
         polynomialWarpImage<1>(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), poly);
-        exportImage(srcImageRange(temp), ImageExportInfo("res-poly<1>.png"));
+        exportImage(srcImageRange(temp), ImageExportInfo("res-poly-degree1.png"));
     }
     
     void testDegree2()
@@ -497,7 +497,7 @@ struct PolynomialRegistrationTest
          */
         BImage temp = d_img;
         polynomialWarpImage<2>(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), poly);
-        exportImage(srcImageRange(temp), ImageExportInfo("res-poly<2>.png"));
+        exportImage(srcImageRange(temp), ImageExportInfo("res-poly-degree2.png"));
     }
     
     void testDegree3()
@@ -529,7 +529,7 @@ struct PolynomialRegistrationTest
          */
         BImage temp = d_img;
         polynomialWarpImage<3>(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), poly);
-        exportImage(srcImageRange(temp), ImageExportInfo("res-poly<3>.png"));
+        exportImage(srcImageRange(temp), ImageExportInfo("res-poly-degree3.png"));
     }
 };
 
@@ -567,7 +567,7 @@ struct RBFNameTraits<DistancePowerFunctor<N> >
     {
         char num_string[16];
         sprintf ( num_string, "%d", N );
-        return std::string("dist<") + std::string(num_string) + std::string(">"); 
+        return std::string("dist-") + std::string(num_string); 
     }
 };
 

@@ -100,7 +100,7 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
     {   
         weights = detail::polynomWeights((*d)[0], (*d)[1], PolynomOrder);
 		
-        for(unsigned int c=0; c<poly_count; c++)
+        for(int c=0; c<poly_count; c++)
         {
             A(i,c) = weights[c];
         }
