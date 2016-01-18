@@ -1,7 +1,36 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2014 by Benjamin Seppke                    */      
-/*                                                                      */
+/*                 Copyright 2014 by Benjamin Seppke                    */
+/*																		*/
+/*	  This file is part of the VIGRA computer vision library.			*/
+/*	  The VIGRA Website is												*/
+/*		  http://hci.iwr.uni-heidelberg.de/vigra/						*/
+/*	  Please direct questions, bug reports, and contributions to		*/
+/*		  ullrich.koethe@iwr.uni-heidelberg.de	  or					*/
+/*		  vigra@informatik.uni-hamburg.de								*/
+/*																		*/
+/*	  Permission is hereby granted, free of charge, to any person		*/
+/*	  obtaining a copy of this software and associated documentation	*/
+/*	  files (the "Software"), to deal in the Software without			*/
+/*	  restriction, including without limitation the rights to use,		*/
+/*	  copy, modify, merge, publish, distribute, sublicense, and/or		*/
+/*	  sell copies of the Software, and to permit persons to whom the	*/
+/*	  Software is furnished to do so, subject to the following			*/
+/*	  conditions:														*/
+/*																		*/
+/*	  The above copyright notice and this permission notice shall be	*/
+/*	  included in all copies or substantial portions of the				*/
+/*	  Software.															*/
+/*																		*/
+/*	  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND	*/
+/*	  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES	*/
+/*	  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND			*/
+/*	  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT		*/
+/*	  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,		*/
+/*	  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING		*/
+/*	  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR		*/
+/*	  OTHER DEALINGS IN THE SOFTWARE.									*/
+/*																		*/
 /************************************************************************/
 
 #include <iostream>
@@ -96,37 +125,37 @@ static double rbf_test_epsilon = 1.0e-2;
 static std::vector<TinyVector<double,2> > srcPoints()
 {
     std::vector<TinyVector<double,2> >  result(point_count);
-    
+
     for (int i=0; i<pointdata_size; i+=4)
     {
         result[i/4][0] = pointdata[i  ];
         result[i/4][1] = pointdata[i+1];
     }
-    
+
     return result;
 }
 
 static std::vector<TinyVector<double,2> > destPoints()
 {
     std::vector<TinyVector<double,2> >  result(point_count);
-    
+
     for (int i=0; i<pointdata_size; i+=4)
     {
         result[i/4][0] = pointdata[i+2];
         result[i/4][1] = pointdata[i+3];
-    }  
-    
+    }
+
     return result;
 }
 
 void printMatrix(const Matrix<double> & m)
-{    
+{
     for (int i=0; i<m.rowCount(); ++i)
     {
         for (int j=0; j<m.columnCount(); ++j)
         {
             printf("m(%d,%d) = %10.15f;\n", i , j , m(i,j));
-        }        
+        }
     }
 }
 
@@ -134,26 +163,26 @@ void shouldEqualToleranceMatrices(const Matrix<double> & m1, const Matrix<double
 {
     should(m1.rowCount() == m2.rowCount());
     should(m1.columnCount() == m2.columnCount());
-    
+
     for (int i=0; i<m1.rowCount(); ++i)
     {
         for (int j=0; j<m1.columnCount(); ++j)
         {
             shouldEqualTolerance(m1(i,j), m2(i,j), eps);
-        }        
+        }
     }
 }
 
 struct EstimateGlobalRotationTranslationTest
 {
-    
+
     unsigned int size;
     unsigned int fill_size_h;
     unsigned int fill_size_v;
-    
+
     BImage s_img;
     BImage d_img;
-    
+
     EstimateGlobalRotationTranslationTest()
     : size(200),
       fill_size_h(20),
@@ -161,112 +190,112 @@ struct EstimateGlobalRotationTranslationTest
     {
         s_img.resize(size,size);
         d_img.resize(size,size);
-        
+
         for(MultiArrayIndex y=(size-fill_size_v)/2; y<(MultiArrayIndex)(size+fill_size_v)/2; ++y)
             for(MultiArrayIndex x=(size-fill_size_h)/2; x<(MultiArrayIndex)(size+fill_size_h)/2; ++x)
                 s_img(x,y) = 255;
-        
+
         gaussianSmoothing(srcImageRange(s_img),destImage(s_img), 1.0);
     }
     void testInit()
-    {            
+    {
         TinyVector<double,2> trans(-25,30);
         double theta = 24.75;
-        
+
         Matrix<double> t_m = translationMatrix2D(trans);
         Matrix<double> r_m = rotationMatrix2DDegrees(theta, TinyVector<double,2>(size,size)/2.0);
-        
+
         //Normaly, we would write t*r. since the matrix is reversed to transform I2 based on tranformed I1,
         // we have to change our point of view and reverse the order here to.
         Matrix<double> known_transformation =  r_m * t_m;
-        std::cerr << "Known transformation: " << known_transformation << "\n"; 
-        
+        std::cerr << "Known transformation: " << known_transformation << "\n";
+
         Matrix<double> estimated_transformation;
-        
+
         affineWarpImage(SplineImageView<2,double>(srcImageRange(s_img)), destImageRange(d_img), known_transformation);
-        
+
         exportImage(srcImageRange(s_img), ImageExportInfo("img_quad_1.png"));
         exportImage(srcImageRange(d_img), ImageExportInfo("img_quad_2.png"));
-        
+
         double corr_rot, corr_trans;
-        
-        estimateGlobalRotationTranslation(srcImageRange(s_img), 
-        								  destImageRange(d_img), 
-        								  estimated_transformation, 
-        								  corr_rot, 
+
+        estimateGlobalRotationTranslation(srcImageRange(s_img),
+        								  destImageRange(d_img),
+        								  estimated_transformation,
+        								  corr_rot,
         								  corr_trans);
-        
+
         std::cerr << "Estimated transformation: \n" << estimated_transformation << "(rot-certainty: " << corr_rot << ", trans-certainty: " << corr_trans << ")\n\n\n";
-        
+
         d_img=0;
         affineWarpImage(SplineImageView<2,double>(srcImageRange(s_img)), destImageRange(d_img), estimated_transformation);
         exportImage(srcImageRange(d_img), ImageExportInfo("img_quad_corr_1.png"));
-        
+
         shouldEqualToleranceMatrices(known_transformation, estimated_transformation, 0.1);
         should(corr_rot   > 0.95);
         should(corr_trans > 0.99);
-        
+
     }
 };
 struct EstimateGlobalRotationTranslationRealImageTest
-{    
+{
     BImage s_img;
     BImage d_img;
-    
+
     double rotation;
     TinyVector<double,2> translation;
-    
+
     Diff2D border;
-    
+
     EstimateGlobalRotationTranslationRealImageTest()
     : rotation(24.25),
       translation(10,-30),
       border(400,200)
-    {        
+    {
 		ImageImportInfo info1("nuernberg-1995.png");
 		s_img.resize(info1.width(), info1.height());
 		d_img.resize(info1.width(), info1.height());
 		importImage(info1, destImage(s_img));
     }
-    
+
     void testInit()
     {
         Matrix<double> r_m = rotationMatrix2DDegrees(rotation, TinyVector<double,2>(s_img.width(), s_img.height())/2.0);
         Matrix<double> t_m = translationMatrix2D(translation);
-        
+
         //Normaly, we would write t*r. since the matrix is reversed to transform I2 based on transformed I1,
         // we have to change our point of view and reverse the order here to.
         Matrix<double> known_transformation =  r_m * t_m;
-        std::cerr << "Known transformation: \n" << known_transformation << "\n"; 
-        
+        std::cerr << "Known transformation: \n" << known_transformation << "\n";
+
         affineWarpImage(SplineImageView<2,double>(srcImageRange(s_img)), destImageRange(d_img), known_transformation);
-        
+
         exportImage(srcIterRange(s_img.upperLeft()+border, s_img.lowerRight()-border, s_img.accessor()),
                            ImageExportInfo("img_nb_1.png"));
         exportImage(srcIterRange(d_img.upperLeft()+border, d_img.lowerRight()-border, d_img.accessor()),
                            ImageExportInfo("img_nb_2.png"));
-        
+
         Matrix<double> estimated_transformation;
-        
+
         double corr_rot, corr_trans;
-        
-        
+
+
         estimateGlobalRotationTranslation(srcImageRange(s_img),
                                           srcImageRange(d_img),
                                           estimated_transformation,
-                                          corr_rot, 
+                                          corr_rot,
                                           corr_trans,
                                           border);
-        
+
         std::cerr << "Estimated transformation: \n" << estimated_transformation << "(rot-certainty: " << corr_rot << ", trans-certainty: " << corr_trans << ")\n\n\n";
-        
+
         d_img=0;
         affineWarpImage(SplineImageView<2,double>(srcImageRange(s_img)),
-                        destImageRange(d_img), 
+                        destImageRange(d_img),
                         estimated_transformation);
         exportImage(srcIterRange(d_img.upperLeft()+border, d_img.lowerRight()-border, d_img.accessor()),
                     ImageExportInfo("img_nb_corr_1.png"));
-        
+
         shouldEqualToleranceMatrices(known_transformation, estimated_transformation, 0.1);
         should(corr_rot   > 0.85);
         should(corr_trans > 0.95);
@@ -287,32 +316,32 @@ struct EstimateGlobalRotationTranslationTestSuite
 struct ProjectiveIdentityTest
 {
     std::vector<TinyVector<double,2> > s_points;
-    
+
     ProjectiveIdentityTest()
     : s_points(srcPoints())
     {
     }
-    
+
     void testInit()
     {
         /**
          * First test: If point sets are equal -> identity matrix should be the result!
          */
         Matrix<double> identity = projectiveMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), s_points.begin());
-        
+
         shouldEqualToleranceMatrices(identity, linalg::identityMatrix<double>(3), test_epsilon);
     }
-    
+
 };
 
 struct ProjectiveRegistrationTest
 {
     BImage s_img;
     BImage d_img;
-    
+
     std::vector<TinyVector<double,2> > s_points;
     std::vector<TinyVector<double,2> > d_points;
-    
+
     ProjectiveRegistrationTest()
     : s_points(srcPoints()),
       d_points(destPoints())
@@ -320,44 +349,44 @@ struct ProjectiveRegistrationTest
 		ImageImportInfo info1("nuernberg-1991.png");
 		s_img.resize(info1.width(), info1.height());
 		importImage(info1, destImage(s_img));
-		
+
 		ImageImportInfo info2("nuernberg-1995.png");
 		d_img.resize(info2.width(), info2.height());
 		importImage(info2, destImage(d_img));
     }
-    
+
     void testInit()
-    {        
+    {
         /**
          * Test with well-known point sets and a known result matrix
          */
         Matrix<double> proj = projectiveMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), d_points.begin());
-        
-        /** 
+
+        /**
          * Estimated result:
          *
-         *  0.7908564596 -0.2771243619 -246.1575689662 
-         * -0.0156283750  0.6189887443 -195.9746959403 
-         * -0.0000258457 -0.0006847562    1.0000000000 
+         *  0.7908564596 -0.2771243619 -246.1575689662
+         * -0.0156283750  0.6189887443 -195.9746959403
+         * -0.0000258457 -0.0006847562    1.0000000000
          */
-        
+
         Matrix<double> reference(3,3);
-        reference(0,0) =  0.7908564596; reference(0,1) = -0.2771243619; reference(0,2) = -246.1575689662; 
-        reference(1,0) = -0.0156283750; reference(1,1) =  0.6189887443; reference(1,2) = -195.9746959403; 
-        reference(2,0) = -0.0000258457; reference(2,1) = -0.0006847562; reference(2,2) =    1.000000; 
-        
+        reference(0,0) =  0.7908564596; reference(0,1) = -0.2771243619; reference(0,2) = -246.1575689662;
+        reference(1,0) = -0.0156283750; reference(1,1) =  0.6189887443; reference(1,2) = -195.9746959403;
+        reference(2,0) = -0.0000258457; reference(2,1) = -0.0006847562; reference(2,2) =    1.000000;
+
         shouldEqualToleranceMatrices(proj, reference, test_epsilon);
-        
+
         /**
          * visual interpretation by means of the warped image:
          */
-        
+
          BImage temp = d_img;
          projectiveWarpImage(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), proj);
          exportImage(srcImageRange(temp), ImageExportInfo("res-proj.png"));
-         
+
     }
-    
+
 };
 struct ProjectiveRegistrationTestSuite
 : public test_suite
@@ -372,52 +401,52 @@ struct ProjectiveRegistrationTestSuite
 struct PolynomialIdentityTest
 {
     std::vector<TinyVector<double,2> > s_points;
-    
+
     PolynomialIdentityTest()
     : s_points(srcPoints())
     {
     }
-    
+
     void testInit()
     {
         /**
          * First test: If point sets are equal -> identity w.r.t polynom matrix representation should be the result!
          */
         Matrix<double> identity = polynomialMatrix2DFromCorrespondingPoints<3>(s_points.begin(), s_points.end(), s_points.begin());
-        
-        /** 
+
+        /**
          * Estimated result:
          *
          * Simple polygon: x -> (0 + 1*x + 0*y + 0*x^2 + 0*x*y + 0*y^2 + 0*x^3 + 0*x^2*y + 0*x*y^2 + 0*y^3)
          *                 y -> (0 + 0*x + 1*y + 0*x^2 + 0*x*y + 0*y^2 + 0*x^3 + 0*x^2*y + 0*x*y^2 + 0*y^3)
          *
          * In matrix notation: [0.00, 0.00]
-         *                     [1.00, 0.00] x^1 , y^0  
-         *                     [0.00, 1.00] x^0 , y^1 
-         *                     [0.00, 0.00] x^2 , y^0  
-         *                     [0.00, 0.00] x^1 , y^1 
-         *                     [0.00, 0.00] x^0 , y^2  
-         *                     [0.00, 0.00] x^3 , y^0  
-         *                     [0.00, 0.00] x^2 , y^1  
-         *                     [0.00, 0.00] x^1 , y^2  
-         *                     [0.00, 0.00] x^0 , y^3 
+         *                     [1.00, 0.00] x^1 , y^0
+         *                     [0.00, 1.00] x^0 , y^1
+         *                     [0.00, 0.00] x^2 , y^0
+         *                     [0.00, 0.00] x^1 , y^1
+         *                     [0.00, 0.00] x^0 , y^2
+         *                     [0.00, 0.00] x^3 , y^0
+         *                     [0.00, 0.00] x^2 , y^1
+         *                     [0.00, 0.00] x^1 , y^2
+         *                     [0.00, 0.00] x^0 , y^3
          */
-         
+
         Matrix<double> reference(10,2, 0.0);
         reference(1,0) = 1.0; reference(2,1) = 1.0;
         shouldEqualToleranceMatrices(identity, reference, test_epsilon);
     }
 };
-        
-        
+
+
 struct PolynomialRegistrationTest
 {
     BImage s_img;
     BImage d_img;
-    
+
     std::vector<TinyVector<double,2> > s_points;
     std::vector<TinyVector<double,2> > d_points;
-    
+
     PolynomialRegistrationTest()
     : s_points(srcPoints()),
       d_points(destPoints())
@@ -425,45 +454,45 @@ struct PolynomialRegistrationTest
         ImageImportInfo info1("nuernberg-1991.png");
         s_img.resize(info1.width(), info1.height());
         importImage(info1, destImage(s_img));
-        
+
         ImageImportInfo info2("nuernberg-1995.png");
         d_img.resize(info2.width(), info2.height());
         importImage(info2, destImage(d_img));
     }
-    
+
     void testDegree0()
-    {                
+    {
         /**
          * Test with well-known point sets and a known result matrix
          */
         Matrix<double> poly = polynomialMatrix2DFromCorrespondingPoints<0>(s_points.begin(), s_points.end(), d_points.begin());
-        
-        /** 
+
+        /**
          * Estimated result:
-         */        
+         */
         Matrix<double> reference(1,2);
-        reference(0,0) =  571.1969696970; reference(0,1) = 313.2727272727; 
-        
+        reference(0,0) =  571.1969696970; reference(0,1) = 313.2727272727;
+
         shouldEqualToleranceMatrices(poly, reference, test_epsilon);
     }
-    
+
     void testDegree1()
-    {                
+    {
         /**
          * Test with well-known point sets and a known result matrix
          */
         Matrix<double> poly = polynomialMatrix2DFromCorrespondingPoints<1>(s_points.begin(), s_points.end(), d_points.begin());
-        
-        /** 
+
+        /**
          * Estimated result:
-         */        
+         */
         Matrix<double> reference(3,2);
-        reference(0,0) =  -824.6829238728; reference(0,1) = -431.5519142745; 
+        reference(0,0) =  -824.6829238728; reference(0,1) = -431.5519142745;
         reference(1,0) =     1.4856474242; reference(1,1) =   -0.0376429179;
-        reference(2,0) =     0.0350960498; reference(2,1) =    1.2727692988;  
-        
+        reference(2,0) =     0.0350960498; reference(2,1) =    1.2727692988;
+
         shouldEqualToleranceMatrices(poly, reference, test_epsilon);
-        
+
         /**
          * visual interpretation by means of the warped image:
          */
@@ -471,27 +500,27 @@ struct PolynomialRegistrationTest
         polynomialWarpImage<1>(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), poly);
         exportImage(srcImageRange(temp), ImageExportInfo("res-poly-degree1.png"));
     }
-    
+
     void testDegree2()
-    {                
+    {
         /**
          * Test with well-known point sets and a known result matrix
          */
         Matrix<double> poly = polynomialMatrix2DFromCorrespondingPoints<2>(s_points.begin(), s_points.end(), d_points.begin());
-        
-        /** 
+
+        /**
          * Estimated result:
-         */        
+         */
         Matrix<double> reference(6,2);
-        reference(0,0) =  -929.9603797537; reference(0,1) = 62.7580017829; 
+        reference(0,0) =  -929.9603797537; reference(0,1) = 62.7580017829;
         reference(1,0) =     1.7368027425; reference(1,1) =  0.1279186082;
-        reference(2,0) =     0.0013088970; reference(2,1) = -1.0443071694; 
+        reference(2,0) =     0.0013088970; reference(2,1) = -1.0443071694;
         reference(3,0) =    -0.0001356183; reference(3,1) = -0.0000165442;
-        reference(4,0) =    -0.0000115962; reference(4,1) = -0.0001563045; 
-        reference(5,0) =     0.0000516651; reference(5,1) =  0.0022927547; 
-        
+        reference(4,0) =    -0.0000115962; reference(4,1) = -0.0001563045;
+        reference(5,0) =     0.0000516651; reference(5,1) =  0.0022927547;
+
         shouldEqualToleranceMatrices(poly, reference, test_epsilon);
-        
+
         /**
          * visual interpretation by means of the warped image:
          */
@@ -499,31 +528,31 @@ struct PolynomialRegistrationTest
         polynomialWarpImage<2>(SplineImageView<2,unsigned char>(srcImageRange(s_img)), destImageRange(temp), poly);
         exportImage(srcImageRange(temp), ImageExportInfo("res-poly-degree2.png"));
     }
-    
+
     void testDegree3()
-    {                
+    {
         /**
          * Test with well-known point sets and a known result matrix
          */
         Matrix<double> poly = polynomialMatrix2DFromCorrespondingPoints<3>(s_points.begin(), s_points.end(), d_points.begin());
-        
-        /** 
+
+        /**
          * Estimated result:
-         */        
+         */
         Matrix<double> reference(10,2);
-        reference(0,0) =  -694.265682659954450; reference(0,1) = -762.451820047407978; 
+        reference(0,0) =  -694.265682659954450; reference(0,1) = -762.451820047407978;
         reference(1,0) =     0.931229115560906; reference(1,1) =   -0.268572962775846;
-        reference(2,0) =     0.048740058262766; reference(2,1) =    4.944397113671227; 
+        reference(2,0) =     0.048740058262766; reference(2,1) =    4.944397113671227;
         reference(3,0) =     0.000541326855916; reference(3,1) =   -0.000071716238508;
-        reference(4,0) =     0.000742558256144; reference(4,1) =    0.001026085249118; 
-        reference(5,0) =    -0.000725321990759; reference(5,1) =   -0.010416513068178; 
-        reference(6,0) =    -0.000000240139823; reference(6,1) =    0.000000135932974; 
+        reference(4,0) =     0.000742558256144; reference(4,1) =    0.001026085249118;
+        reference(5,0) =    -0.000725321990759; reference(5,1) =   -0.010416513068178;
+        reference(6,0) =    -0.000000240139823; reference(6,1) =    0.000000135932974;
         reference(7,0) =    -0.000000079399077; reference(7,1) =   -0.000000426260228;
-        reference(8,0) =    -0.000000502113506; reference(8,1) =   -0.000000232882327; 
-        reference(9,0) =     0.000000746973881; reference(9,1) =    0.000008095034260;  
-        
+        reference(8,0) =    -0.000000502113506; reference(8,1) =   -0.000000232882327;
+        reference(9,0) =     0.000000746973881; reference(9,1) =    0.000008095034260;
+
         shouldEqualToleranceMatrices(poly, reference, test_epsilon);
-        
+
         /**
          * visual interpretation by means of the warped image:
          */
@@ -563,25 +592,25 @@ struct RBFNameTraits<ThinPlateSplineFunctor>
 template<int N>
 struct RBFNameTraits<DistancePowerFunctor<N> >
 {
-    static std::string name() 
+    static std::string name()
     {
         char num_string[16];
         sprintf ( num_string, "%d", N );
-        return std::string("dist-") + std::string(num_string); 
+        return std::string("dist-") + std::string(num_string);
     }
 };
 
-        
-        
+
+
 template<class RadialBasisFunctor>
 struct RadialBasisRegistrationTest
 {
     BImage s_img;
     BImage d_img;
-    
+
     std::vector<TinyVector<double,2> > s_points;
     std::vector<TinyVector<double,2> > d_points;
-    
+
     RadialBasisRegistrationTest()
     : s_points(srcPoints()),
     d_points(destPoints())
@@ -589,12 +618,12 @@ struct RadialBasisRegistrationTest
         ImageImportInfo info1("nuernberg-1991.png");
         s_img.resize(info1.width(), info1.height());
         importImage(info1, destImage(s_img));
-        
+
         ImageImportInfo info2("nuernberg-1995.png");
         d_img.resize(info2.width(), info2.height());
         importImage(info2, destImage(d_img));
-    }   
-    
+    }
+
     void testIdentity()
     {
         /**
@@ -602,15 +631,15 @@ struct RadialBasisRegistrationTest
          */
         RadialBasisFunctor rbf;
         Matrix<double> identity_weight_matrix = rbfMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), s_points.begin(),rbf);
-        
+
         //Reference
         Matrix<double> m(69, 2, 0.0);
-        
-        m(67,0) = 1;  
+
+        m(67,0) = 1;
         m(68,1) = 1;
         shouldEqualToleranceMatrices(identity_weight_matrix, m, rbf_test_epsilon);
     }
-    
+
     void testEssential()
     {
         /**
@@ -618,15 +647,15 @@ struct RadialBasisRegistrationTest
          */
         RadialBasisFunctor rbf;
         Matrix<double> weight_matrix = rbfMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), d_points.begin(),rbf);
-        
+
         for(int j=0; j< d_points.size(); j++)
         {
             double x = d_points[j][0];
             double y = d_points[j][1];
-            //Affine part		
+            //Affine part
             double	sx = weight_matrix(point_count,0)+weight_matrix(point_count+1,0)*x+ weight_matrix(point_count+2,0)*y,
                     sy = weight_matrix(point_count,1)+weight_matrix(point_count+1,1)*x+ weight_matrix(point_count+2,1)*y;
-            
+
             //RBS part
             for(int i=0; i<d_points.size(); i++)
             {
@@ -637,13 +666,13 @@ struct RadialBasisRegistrationTest
             shouldEqualTolerance(sx, s_points[j][0], rbf_test_epsilon);
             shouldEqualTolerance(sy, s_points[j][1], rbf_test_epsilon);
         }
-        
+
         /**
-         * visual interpretation by means of the warped image: 
+         * visual interpretation by means of the warped image:
          */
         BImage temp = d_img;
-        rbfWarpImage(SplineImageView<2,unsigned char>(srcImageRange(s_img)), 
-                                        destImageRange(temp), 
+        rbfWarpImage(SplineImageView<2,unsigned char>(srcImageRange(s_img)),
+                                        destImageRange(temp),
                                         d_points.begin(), d_points.end(),
                                         weight_matrix,
                                         rbf);
@@ -656,10 +685,10 @@ struct ThinPlateSplineRegistrationTest
 {
     BImage s_img;
     BImage d_img;
-    
+
     std::vector<TinyVector<double,2> > s_points;
     std::vector<TinyVector<double,2> > d_points;
-    
+
     ThinPlateSplineRegistrationTest()
     : s_points(srcPoints()),
       d_points(destPoints())
@@ -667,12 +696,12 @@ struct ThinPlateSplineRegistrationTest
         ImageImportInfo info1("nuernberg-1991.png");
         s_img.resize(info1.width(), info1.height());
         importImage(info1, destImage(s_img));
-        
+
         ImageImportInfo info2("nuernberg-1995.png");
         d_img.resize(info2.width(), info2.height());
         importImage(info2, destImage(d_img));
-    }   
-    
+    }
+
     void testInit()
     {
         /**
@@ -680,7 +709,7 @@ struct ThinPlateSplineRegistrationTest
          */
         ThinPlateSplineFunctor rbf;
         Matrix<double> weight_matrix = rbfMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), d_points.begin(),rbf);
-        
+
         //Reference
         Matrix<double> m(69,2);
         m(0,0)  = -0.001377498384002;        m(0,1)  =  0.009226600866451;
@@ -752,7 +781,7 @@ struct ThinPlateSplineRegistrationTest
         m(66,0) =  0.000539075187236;        m(66,1) =  0.000035460307110;
         m(67,0) =  1.033807852169952;        m(67,1) = -0.676702412782481;
         m(68,0) = -0.260446157273618;        m(68,1) =  1.130619201887931;
-        
+
         shouldEqualToleranceMatrices(weight_matrix, m, test_epsilon);
     }
 };
@@ -772,7 +801,7 @@ struct RadialBasisRegistrationTestSuite
         add( testCase( &RadialBasisRegistrationTest<DistancePowerFunctor<1> >::testIdentity));
         add( testCase( &RadialBasisRegistrationTest<DistancePowerFunctor<1> >::testEssential));
         add( testCase( &RadialBasisRegistrationTest<DistancePowerFunctor<3> >::testIdentity));
-        add( testCase( &RadialBasisRegistrationTest<DistancePowerFunctor<3> >::testEssential));        
+        add( testCase( &RadialBasisRegistrationTest<DistancePowerFunctor<3> >::testEssential));
     }
 };
 
@@ -794,7 +823,7 @@ struct RegistrationTestCollection
 int main(int argc, char ** argv)
 {
     RegistrationTestCollection test;
- 
+
     int failed = test.run(testsToBeExecuted(argc, argv));
 
     std::cout << test.report() << std::endl;
