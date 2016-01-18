@@ -5,7 +5,7 @@ import glob
 import sys
 
 if len(sys.argv) != 3:
-    print 'usage: python post.py directory versionNumber'
+    print('usage: python post.py directory versionNumber')
     sys.exit(1)
 
 path = str(sys.argv[1])
@@ -157,8 +157,8 @@ def insertMissingTemplateDeclarations(text):
     return text
 
 def processFile(fileName):
-    print fileName          # log message
-    f = open(fileName)
+    print(fileName)          # log message
+    f = open(fileName,encoding = "ISO-8859-1")
     text = f.read()
     f.close()
     
@@ -167,9 +167,9 @@ def processFile(fileName):
     if re.search('.*/index.html', fileName) or re.search('.*\\index.html', fileName):
         text = re.sub(r'<h3 (align="center"|class="version")>\d+\.\d+\.\d+ </h3>', '', text)
         text = indexPageHeading.sub(indexPageHeadingReplacement, text)
-        
+
     text = convertHeadings(text)
-    
+
     text = insertMissingTemplateDeclarations(text)
 
     f = open(fileName, 'w+')
