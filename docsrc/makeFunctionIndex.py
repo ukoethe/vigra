@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from itertools import chain
 
 if len(sys.argv) != 2:
-    print 'usage: python makeFunctionIndex.py directory'
+    print('usage: python makeFunctionIndex.py directory')
     sys.exit(1)
 
 path = str(sys.argv[1])
@@ -27,7 +27,7 @@ def getClassList():
             namespace = long_name[:long_name.rfind('::')]
             class_list.append([html, short_name, namespace])
 
-    class_list.sort(lambda a,b: cmp(a[1], b[1]))
+    class_list.sort(key = lambda a: a[1])
     return class_list
 
 
@@ -54,19 +54,19 @@ def getFunctionList():
 
     unique = set()
     set_add = unique.add
-    function_list = [ x for x in function_list if x not in unique and not set_add(x)]    
-    function_list.sort(lambda a,b: cmp(a[1], b[1]))
+    function_list = [ x for x in function_list if x not in unique and not set_add(x)]
+    function_list.sort(key = lambda a: a[1])
     function_list = disambiguateOverloadedFunctions(function_list)
     return function_list
 
-def addHeading(index, initial):    
+def addHeading(index, initial):
     index = index + '<p><a name="index_' + initial + \
     '"><table class="function_index"><tr><th> ' + initial.upper() + \
     ' </th><td align="right" width="100%">VIGRA_NAVIGATOR_PLACEHOLDER</td></tr></table><p>\n'
     return index
 
 def disambiguateOverloadedFunctions(functionList):
-    for i in xrange(len(functionList)):
+    for i in range(len(functionList)):
         overloaded = False
         functionName = functionList[i][1]
         if i > 0:
@@ -84,7 +84,7 @@ def disambiguateOverloadedFunctions(functionList):
         else:
             group = ""
         functionList[i] = functionList[i] + (group,)
-    
+
     return functionList
 
 
@@ -103,7 +103,7 @@ def generateFunctionIndex(functionList):
         else:
             initials.append(initial)
             index = addHeading(index, initial)
-            
+
         index = index + '<a href="'+ link + '">' + functionName + '</a>()'
         overloadDisambiguation = functionList[i][2]
         if overloadDisambiguation != "":
@@ -139,9 +139,9 @@ classList = getClassList()
 functionList = getFunctionList()
 generateFunctionIndex(functionList)
 
-# Export class and function list to c_api_replaces.txt for 
+# Export class and function list to c_api_replaces.txt for
 # crosslinking of vigranumpy documentation.
-# Note that '::' are not allowed in reStructuedText link names, 
+# Note that '::' are not allowed in reStructuedText link names,
 # so we have to use '.' instead.
 replaces=open("../vigranumpy/docsrc/c_api_replaces.txt","w")
 lowercase_names = set()
