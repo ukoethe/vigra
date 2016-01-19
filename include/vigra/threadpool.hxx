@@ -106,7 +106,7 @@ class ParallelOptions
 
             Default: <tt>ParallelOptions::Auto</tt> (use system default)
 
-            This setting is ignored if the preprocessor flag <tt>VIGRA_NO_PARALLELISM</tt>
+            This setting is ignored if the preprocessor flag <tt>VIGRA_SINGLE_THREADED</tt>
             is defined. Then, the number of threads is set to 0 and all tasks revert to
             sequential algorithm implementations. The same can be achieved at runtime
             by passing <tt>n = 0</tt> to this function. In contrast, passing <tt>n = 1</tt>
@@ -124,7 +124,7 @@ class ParallelOptions
         // helper function to compute the actual number of threads
     static size_t actualNumThreads(const int userNThreads)
     {
-        #ifdef VIGRA_NO_PARALLELISM
+        #ifdef VIGRA_SINGLE_THREADED
             return 0;
         #else
             return userNThreads >= 0
@@ -172,7 +172,7 @@ class ThreadPool
         <tt>ParallelOptions::Nice</tt> will create half as many threads.
         If <tt>n = 0</tt>, no workers are started, and all tasks will be executed
         synchronously in the present thread. If the preprocessor flag
-        <tt>VIGRA_NO_PARALLELISM</tt> is defined, the number of threads is always set
+        <tt>VIGRA_SINGLE_THREADED</tt> is defined, the number of threads is always set
         to zero (i.e. synchronous execution), regardless of the value of \arg n. This
         is useful for debugging.
      */
@@ -523,7 +523,7 @@ inline void parallel_foreach_single_thread(
 
     If <tt>nThreads = 0</tt>, the function will not use threads,
     but will call the functor sequentially. This can also be enforced by setting the
-    preprocessor flag <tt>VIGRA_NO_PARALLELISM</tt>, ignoring the value of
+    preprocessor flag <tt>VIGRA_SINGLE_THREADED</tt>, ignoring the value of
     <tt>nThreads</tt> (useful for debugging).
 
     <b> Declarations:</b>
