@@ -1,36 +1,36 @@
 /************************************************************************/
 /*                                                                      */
 /*               Copyright 2007-2014 by Benjamin Seppke                 */
-/*																		*/
-/*	  This file is part of the VIGRA computer vision library.			*/
-/*	  The VIGRA Website is												*/
-/*		  http://hci.iwr.uni-heidelberg.de/vigra/						*/
-/*	  Please direct questions, bug reports, and contributions to		*/
-/*		  ullrich.koethe@iwr.uni-heidelberg.de	  or					*/
-/*		  vigra@informatik.uni-hamburg.de								*/
-/*																		*/
-/*	  Permission is hereby granted, free of charge, to any person		*/
-/*	  obtaining a copy of this software and associated documentation	*/
-/*	  files (the "Software"), to deal in the Software without			*/
-/*	  restriction, including without limitation the rights to use,		*/
-/*	  copy, modify, merge, publish, distribute, sublicense, and/or		*/
-/*	  sell copies of the Software, and to permit persons to whom the	*/
-/*	  Software is furnished to do so, subject to the following			*/
-/*	  conditions:														*/
-/*																		*/
-/*	  The above copyright notice and this permission notice shall be	*/
-/*	  included in all copies or substantial portions of the				*/
-/*	  Software.															*/
-/*																		*/
-/*	  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND	*/
-/*	  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES	*/
-/*	  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND			*/
-/*	  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT		*/
-/*	  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,		*/
-/*	  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING		*/
-/*	  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR		*/
-/*	  OTHER DEALINGS IN THE SOFTWARE.									*/
-/*																		*/
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
 /************************************************************************/
 
 #ifndef VIGRA_PROJECTIVE_REGISTRATION_HXX
@@ -64,37 +64,37 @@ template <class SrcPointIterator, class DestPointIterator>
 linalg::TemporaryMatrix<double>
 projectiveMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator send, DestPointIterator d)
 {
-	//Calculate the matrix using least squares of all points of points like the result is:
-	// ( x2 )   ( s_x		r1		t_x )   ( x1 )
-	// ( y2 ) = (  r2		s_y		t_y ) * ( y1 )
-	// (  1 )   (  p1		p2		1   )   (  1 )
-	int size = send - s;
+    //Calculate the matrix using least squares of all points of points like the result is:
+    // ( x2 )   ( s_x        r1        t_x )   ( x1 )
+    // ( y2 ) = (  r2        s_y        t_y ) * ( y1 )
+    // (  1 )   (  p1        p2        1   )   (  1 )
+    int size = send - s;
 
     vigra_assert(size >= 4,
                  "projectiveMatrix2DFromCorrespondingPoints(): need at least four corresponding points.");
 
-	vigra::Matrix<double> A(2*size,8, 0.0), b(2*size,1),  res(8,1);
-	for (int i =0; i<size; ++i, ++s, ++d)
+    vigra::Matrix<double> A(2*size,8, 0.0), b(2*size,1),  res(8,1);
+    for (int i =0; i<size; ++i, ++s, ++d)
     {
-		//m_00				m_01				m_02				m_10					m_11					m_12				m_20								m_21
-		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		A(i,0)=(*d)[0];		A(i,1)=(*d)[1];		A(i,2)=1;			A(i,3)=0;				A(i,4)=0;				A(i,5)=0;			A(i,6)=-1*((*d)[0])*((*s)[0]);			A(i,7)=-1*((*d)[1])*((*s)[0]);
-		b(i,0)=(*s)[0];
+        //m_00                m_01                m_02                m_10                    m_11                    m_12                m_20                                m_21
+        //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        A(i,0)=(*d)[0];        A(i,1)=(*d)[1];        A(i,2)=1;            A(i,3)=0;                A(i,4)=0;                A(i,5)=0;            A(i,6)=-1*((*d)[0])*((*s)[0]);            A(i,7)=-1*((*d)[1])*((*s)[0]);
+        b(i,0)=(*s)[0];
 
-		A(size+i,0)=0;		A(size+i,1)=0;		A(size+i,2)=0;		A(size+i,3)=(*d)[0];	A(size+i,4)=(*d)[1];	A(size+i,5)=1;		A(size+i,6)=-1*((*d)[0])*((*s)[1]);		A(size+i,7)=-1*((*d)[1])*((*s)[1]);
-		b(size+i,0)=(*s)[1];
+        A(size+i,0)=0;        A(size+i,1)=0;        A(size+i,2)=0;        A(size+i,3)=(*d)[0];    A(size+i,4)=(*d)[1];    A(size+i,5)=1;        A(size+i,6)=-1*((*d)[0])*((*s)[1]);        A(size+i,7)=-1*((*d)[1])*((*s)[1]);
+        b(size+i,0)=(*s)[1];
 
-	}
+    }
 
-	vigra_assert(linearSolve(A, b, res),
-				"projectiveMatrix2DFromCorrespondingPoints(): singular solution matrix.");
+    vigra_assert(linearSolve(A, b, res),
+                "projectiveMatrix2DFromCorrespondingPoints(): singular solution matrix.");
 
     linalg::TemporaryMatrix<double> projectiveMat(3,3);
-	projectiveMat(0,0) = res(0,0);		projectiveMat(0,1) = res(1,0);		projectiveMat(0,2) = res(2,0);
-	projectiveMat(1,0) = res(3,0);		projectiveMat(1,1) = res(4,0);		projectiveMat(1,2) = res(5,0);
-	projectiveMat(2,0) = res(6,0);		projectiveMat(2,1) = res(7,0);		projectiveMat(2,2) = 1;
+    projectiveMat(0,0) = res(0,0);        projectiveMat(0,1) = res(1,0);        projectiveMat(0,2) = res(2,0);
+    projectiveMat(1,0) = res(3,0);        projectiveMat(1,1) = res(4,0);        projectiveMat(1,2) = res(5,0);
+    projectiveMat(2,0) = res(6,0);        projectiveMat(2,1) = res(7,0);        projectiveMat(2,2) = 1;
 
-	return projectiveMat;
+    return projectiveMat;
 }
 
 /********************************************************/
@@ -107,26 +107,26 @@ projectiveMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
 
     Sorry, no \ref detailedDocumentation() available yet.
 
-	<b> Declarations:</b>
+    <b> Declarations:</b>
 
-	<b>\#include</b> \<vigra/projective_registration.hxx\><br>
-	Namespace: vigra
+    <b>\#include</b> \<vigra/projective_registration.hxx\><br>
+    Namespace: vigra
 
-	pass 2D array views:
-	\code
-	namespace vigra {
+    pass 2D array views:
+    \code
+    namespace vigra {
         template <int ORDER, class T,
                   class T2, class S2,
                   class C>
-		void
-		projectiveWarpImage(SplineImageView<ORDER, T> const & src,
-							MultiArrayView<2, T2, S2> dest,
+        void
+        projectiveWarpImage(SplineImageView<ORDER, T> const & src,
+                            MultiArrayView<2, T2, S2> dest,
                             MultiArrayView<2, double, C> const & projectiveMatrix);
-	}
-	\endcode
+    }
+    \endcode
 
-	\deprecatedAPI{projectiveWarpImage}
-	pass \ref ImageIterators and \ref DataAccessors :
+    \deprecatedAPI{projectiveWarpImage}
+    pass \ref ImageIterators and \ref DataAccessors :
 
     pass arguments explicitly:
     \code
@@ -135,8 +135,8 @@ projectiveMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
                 class DestIterator, class DestAccessor,
                 class C>
         void projectiveWarpImage(SplineImageView<ORDER, T> const & src,
-                            	 DestIterator dul, DestIterator dlr, DestAccessor dest,
-                            	 MultiArrayView<2, double, C> const & projectiveMatrix);
+                                 DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                 MultiArrayView<2, double, C> const & projectiveMatrix);
     }
     \endcode
 
@@ -147,11 +147,11 @@ projectiveMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
                 class DestIterator, class DestAccessor,
                 class C>
         void projectiveWarpImage(SplineImageView<ORDER, T> const & src,
-                            	 triple<DestIterator, DestIterator, DestAccessor> dest,
-                            	 MultiArrayView<2, double, C> const & projectiveMatrix);
+                                 triple<DestIterator, DestIterator, DestAccessor> dest,
+                                 MultiArrayView<2, double, C> const & projectiveMatrix);
     }
     \endcode
-	\deprecatedEnd
+    \deprecatedEnd
 
     The algorithm applies the given \a projectiveMatrix to the <i>destination coordinates</i> and copies
     the image value from the resulting source coordinates, using the given SplineImageView \a src for interpolation.
@@ -203,7 +203,7 @@ void projectiveWarpImage(SplineImageView<ORDER, T> const & src,
         typename DestIterator::row_iterator rd = dul.rowIterator();
         for(double x=0.0; x < w; ++x, ++rd)
         {
-        	double fac = 1.0/(x*projectiveMatrix(2,0) + y*projectiveMatrix(2,1) + 1);
+            double fac = 1.0/(x*projectiveMatrix(2,0) + y*projectiveMatrix(2,1) + 1);
             double sx = (x*projectiveMatrix(0,0) + y*projectiveMatrix(0,1) + projectiveMatrix(0,2)) * fac;
             double sy = (x*projectiveMatrix(1,0) + y*projectiveMatrix(1,1) + projectiveMatrix(1,2)) * fac;
             if(src.isInside(sx, sy))
@@ -229,8 +229,8 @@ template <int ORDER, class T,
           class C>
 inline
 void projectiveWarpImage(SplineImageView<ORDER, T> const & src,
-                     	 MultiArrayView<2, T2, S2> dest,
-                     	 MultiArrayView<2, double, C> const & projectiveMatrix)
+                          MultiArrayView<2, T2, S2> dest,
+                          MultiArrayView<2, double, C> const & projectiveMatrix)
 {
     projectiveWarpImage(src, destImageRange(dest), projectiveMatrix);
 }

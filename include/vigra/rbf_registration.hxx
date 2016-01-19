@@ -1,36 +1,36 @@
 /************************************************************************/
 /*                                                                      */
 /*               Copyright 2007-2014 by Benjamin Seppke                 */
-/*																		*/
-/*	  This file is part of the VIGRA computer vision library.			*/
-/*	  The VIGRA Website is												*/
-/*		  http://hci.iwr.uni-heidelberg.de/vigra/						*/
-/*	  Please direct questions, bug reports, and contributions to		*/
-/*		  ullrich.koethe@iwr.uni-heidelberg.de	  or					*/
-/*		  vigra@informatik.uni-hamburg.de								*/
-/*																		*/
-/*	  Permission is hereby granted, free of charge, to any person		*/
-/*	  obtaining a copy of this software and associated documentation	*/
-/*	  files (the "Software"), to deal in the Software without			*/
-/*	  restriction, including without limitation the rights to use,		*/
-/*	  copy, modify, merge, publish, distribute, sublicense, and/or		*/
-/*	  sell copies of the Software, and to permit persons to whom the	*/
-/*	  Software is furnished to do so, subject to the following			*/
-/*	  conditions:														*/
-/*																		*/
-/*	  The above copyright notice and this permission notice shall be	*/
-/*	  included in all copies or substantial portions of the				*/
-/*	  Software.															*/
-/*																		*/
-/*	  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND	*/
-/*	  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES	*/
-/*	  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND			*/
-/*	  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT		*/
-/*	  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,		*/
-/*	  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING		*/
-/*	  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR		*/
-/*	  OTHER DEALINGS IN THE SOFTWARE.									*/
-/*																		*/
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
 /************************************************************************/
 
 #ifndef VIGRA_RBF_REGISTRATION_HXX
@@ -68,20 +68,20 @@ inline double distance2(SrcPoint const & p1, DestPoint const & p2)
  */
 struct ThinPlateSplineFunctor
 {
-	template <class SrcPoint, class DestPoint>
-	inline double operator()(SrcPoint const & p1, DestPoint const & p2) const
+    template <class SrcPoint, class DestPoint>
+    inline double operator()(SrcPoint const & p1, DestPoint const & p2) const
     {
-		double dist2 = detail::distance2(p1, p2);
+        double dist2 = detail::distance2(p1, p2);
 
         if(dist2 == 0 )
-		{
+        {
             return 0;
         }
         else
         {
             return dist2*log(dist2);
         }
-	}
+    }
 };
 
 /**
@@ -90,20 +90,20 @@ struct ThinPlateSplineFunctor
 template<int N>
 struct DistancePowerFunctor
 {
-	template <class SrcPoint, class DestPoint>
-	inline double operator()(SrcPoint const & p1, DestPoint const & p2) const
+    template <class SrcPoint, class DestPoint>
+    inline double operator()(SrcPoint const & p1, DestPoint const & p2) const
     {
         double dist2 = detail::distance2(p1, p2);
 
-		if(dist2 == 0)
-		{
-			return 0;
-		}
-		else
-		{
-			return pow(dist2, N/2.0);
-		}
-	}
+        if(dist2 == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return pow(dist2, N/2.0);
+        }
+    }
 };
 
 /********************************************************/
@@ -128,8 +128,8 @@ rbfMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s_end, D
     int point_count = s_end - s;
 
     Matrix<double> L(point_count+3, point_count+3, 0.0);
-    Matrix<double> Y(point_count+3,			   2, 0.0);
-    Matrix<double> W(point_count+3,		       2, 0.0);
+    Matrix<double> Y(point_count+3,               2, 0.0);
+    Matrix<double> W(point_count+3,               2, 0.0);
 
     //fill P (directly into K) and V (directly into Y)
     for(int i=0; i<point_count; ++i)
@@ -155,7 +155,7 @@ rbfMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s_end, D
     //Results are okay, even if vigra reports failure...
     //so I commented this out
     //    if(!linearSolve(L, Y, W))
-    //		vigra_fail("radialBasisMatrix2DFromCorrespondingPoints(): singular solution matrix.");
+    //        vigra_fail("radialBasisMatrix2DFromCorrespondingPoints(): singular solution matrix.");
 
     return W;
 };
@@ -255,7 +255,7 @@ rbfWarpImage(SplineImageView<ORDER, T> const & src,
         for(double x=0.0; x < w; ++x, ++rd)
         {
             //Affine part
-            double	sx = W(point_count,0)+W(point_count+1,0)*x+ W(point_count+2,0)*y,
+            double    sx = W(point_count,0)+W(point_count+1,0)*x+ W(point_count+2,0)*y,
                     sy = W(point_count,1)+W(point_count+1,1)*x+ W(point_count+2,1)*y;
 
             //RBS part

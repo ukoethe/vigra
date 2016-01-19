@@ -1,36 +1,36 @@
 /************************************************************************/
 /*                                                                      */
 /*               Copyright 2007-2013 by Benjamin Seppke                 */
-/*																		*/
-/*	  This file is part of the VIGRA computer vision library.			*/
-/*	  The VIGRA Website is												*/
-/*		  http://hci.iwr.uni-heidelberg.de/vigra/						*/
-/*	  Please direct questions, bug reports, and contributions to		*/
-/*		  ullrich.koethe@iwr.uni-heidelberg.de	  or					*/
-/*		  vigra@informatik.uni-hamburg.de								*/
-/*																		*/
-/*	  Permission is hereby granted, free of charge, to any person		*/
-/*	  obtaining a copy of this software and associated documentation	*/
-/*	  files (the "Software"), to deal in the Software without			*/
-/*	  restriction, including without limitation the rights to use,		*/
-/*	  copy, modify, merge, publish, distribute, sublicense, and/or		*/
-/*	  sell copies of the Software, and to permit persons to whom the	*/
-/*	  Software is furnished to do so, subject to the following			*/
-/*	  conditions:														*/
-/*																		*/
-/*	  The above copyright notice and this permission notice shall be	*/
-/*	  included in all copies or substantial portions of the				*/
-/*	  Software.															*/
-/*																		*/
-/*	  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND	*/
-/*	  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES	*/
-/*	  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND			*/
-/*	  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT		*/
-/*	  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,		*/
-/*	  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING		*/
-/*	  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR		*/
-/*	  OTHER DEALINGS IN THE SOFTWARE.									*/
-/*																		*/
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
 /************************************************************************/
 
 #ifndef VIGRA_POLYNOMIAL_REGISTRATION_HXX
@@ -78,8 +78,8 @@ std::vector<double> polynomWeights(double x, double y, unsigned int polynom_orde
     {
         for(unsigned int i=0; i<=order; i++, weight_idx++)
         {
-			weights[weight_idx] = pow(x,(double)order-i)*pow(y,(double)i);
-		}
+            weights[weight_idx] = pow(x,(double)order-i)*pow(y,(double)i);
+        }
     }
     return weights;
 }
@@ -113,8 +113,8 @@ std::vector<double> polynomWeights(double x, double y, unsigned int polynom_orde
     \ref detail::polynomWeights() function and follows the intuitive scheme.
 */
 template <int PolynomOrder,
-		  class SrcPointIterator,
-		  class DestPointIterator>
+          class SrcPointIterator,
+          class DestPointIterator>
 linalg::TemporaryMatrix<double>
 polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s_end,
                                           DestPointIterator d)
@@ -122,7 +122,7 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
     int point_count = s_end - s;
     int poly_count = (PolynomOrder+1)*(PolynomOrder+2)/2;
 
-	vigra::Matrix<double> A(point_count,poly_count), b1(point_count,1), res1(poly_count,1), b2(point_count,1), res2(poly_count,1);
+    vigra::Matrix<double> A(point_count,poly_count), b1(point_count,1), res1(poly_count,1), b2(point_count,1), res2(poly_count,1);
     std::vector<double> weights;
 
     for (int i =0; i<point_count; ++i, ++s, ++d)
@@ -134,11 +134,11 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
             A(i,c) = weights[c];
         }
 
-		b1(i,0)=(*s)[0];b2(i,0)=(*s)[1];
+        b1(i,0)=(*s)[0];b2(i,0)=(*s)[1];
     }
 
     if(!vigra::linearSolve(  A, b1, res1 ) || !vigra::linearSolve(  A, b2, res2 ))
-		vigra_fail("polynomialMatrix2DFromCorrespondingPoints(): singular solution matrix.");
+        vigra_fail("polynomialMatrix2DFromCorrespondingPoints(): singular solution matrix.");
 
     vigra::Matrix<double> res(poly_count,2);
 
@@ -160,25 +160,25 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
 
 /** \brief Warp an image according to an polynomial transformation.
 
- 	To get more information about the structure of the matrix, see \ref polynomialMatrix2DFromCorrespondingPoints()
+     To get more information about the structure of the matrix, see \ref polynomialMatrix2DFromCorrespondingPoints()
 
     <b>\#include</b> \<vigra/polynomial_registration.hxx\><br>
-	Namespace: vigra
+    Namespace: vigra
 
-	pass 2D array views:
-	\code
-	namespace vigra {
+    pass 2D array views:
+    \code
+    namespace vigra {
         template <int ORDER, class T,
                   class T2, class S2,
                   class C>
-		void
-		polynomialWarpImage(SplineImageView<ORDER, T> const & src,
-							MultiArrayView<2, T2, S2> dest,
+        void
+        polynomialWarpImage(SplineImageView<ORDER, T> const & src,
+                            MultiArrayView<2, T2, S2> dest,
                             MultiArrayView<2, double, C> const & polynomialMatrix);
-	}
-	\endcode
+    }
+    \endcode
 
-	\deprecatedAPI{polynomialWarpImage}
+    \deprecatedAPI{polynomialWarpImage}
 
     pass arguments explicitly:
     \code
@@ -203,7 +203,7 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
                                  MultiArrayView<2, double, C> const & polynomialMatrix);
     }
     \endcode
-	\deprecatedEnd
+    \deprecatedEnd
  */
 doxygen_overloaded_function(template <...> void polynomialWarpImage)
 
@@ -235,11 +235,11 @@ void polynomialWarpImage(SplineImageView<ORDER, T> const & src,
             double sx=0;
             double sy=0;
 
-			for(int c=0; c<poly_count; c++)
+            for(int c=0; c<poly_count; c++)
             {
-				sx += weights[c]*polynomialMatrix(c,0);
-				sy += weights[c]*polynomialMatrix(c,1);
-			}
+                sx += weights[c]*polynomialMatrix(c,0);
+                sy += weights[c]*polynomialMatrix(c,1);
+            }
 
             if(src.isInside(sx, sy))
                 dest.set(src(sx, sy), rd);
@@ -266,8 +266,8 @@ template <int PolynomOrder,
           class C>
 inline
 void polynomialWarpImage(SplineImageView<ORDER, T> const & src,
-                     	 MultiArrayView<2, T2, S2> dest,
-                     	 MultiArrayView<2, double, C> const & polynomialMatrix)
+                          MultiArrayView<2, T2, S2> dest,
+                          MultiArrayView<2, double, C> const & polynomialMatrix)
 {
     polynomialWarpImage<PolynomOrder>(src, destImageRange(dest), polynomialMatrix);
 }
