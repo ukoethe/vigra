@@ -1,36 +1,36 @@
 /************************************************************************/
 /*                                                                      */
 /*                 Copyright 2014 by Benjamin Seppke                    */
-/*																		*/
-/*	  This file is part of the VIGRA computer vision library.			*/
-/*	  The VIGRA Website is												*/
-/*		  http://hci.iwr.uni-heidelberg.de/vigra/						*/
-/*	  Please direct questions, bug reports, and contributions to		*/
-/*		  ullrich.koethe@iwr.uni-heidelberg.de	  or					*/
-/*		  vigra@informatik.uni-hamburg.de								*/
-/*																		*/
-/*	  Permission is hereby granted, free of charge, to any person		*/
-/*	  obtaining a copy of this software and associated documentation	*/
-/*	  files (the "Software"), to deal in the Software without			*/
-/*	  restriction, including without limitation the rights to use,		*/
-/*	  copy, modify, merge, publish, distribute, sublicense, and/or		*/
-/*	  sell copies of the Software, and to permit persons to whom the	*/
-/*	  Software is furnished to do so, subject to the following			*/
-/*	  conditions:														*/
-/*																		*/
-/*	  The above copyright notice and this permission notice shall be	*/
-/*	  included in all copies or substantial portions of the				*/
-/*	  Software.															*/
-/*																		*/
-/*	  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND	*/
-/*	  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES	*/
-/*	  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND			*/
-/*	  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT		*/
-/*	  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,		*/
-/*	  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING		*/
-/*	  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR		*/
-/*	  OTHER DEALINGS IN THE SOFTWARE.									*/
-/*																		*/
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
 /************************************************************************/
 
 #include <iostream>
@@ -40,7 +40,9 @@
 #include <vigra/convolution.hxx>
 #include <vigra/impex.hxx>
 
-#include <vigra/affine_registration.hxx>
+#ifdef HasFFTW3
+# include <vigra/affine_registration_fft.hxx>
+#endif
 #include <vigra/projective_registration.hxx>
 #include <vigra/polynomial_registration.hxx>
 #include <vigra/rbf_registration.hxx>
@@ -173,6 +175,7 @@ void shouldEqualToleranceMatrices(const Matrix<double> & m1, const Matrix<double
     }
 }
 
+#ifdef HasFFTW3
 struct EstimateGlobalRotationTranslationTest
 {
 
@@ -220,10 +223,10 @@ struct EstimateGlobalRotationTranslationTest
         double corr_rot, corr_trans;
 
         estimateGlobalRotationTranslation(srcImageRange(s_img),
-        								  destImageRange(d_img),
-        								  estimated_transformation,
-        								  corr_rot,
-        								  corr_trans);
+                                          destImageRange(d_img),
+                                          estimated_transformation,
+                                          corr_rot,
+                                          corr_trans);
 
         std::cerr << "Estimated transformation: \n" << estimated_transformation << "(rot-certainty: " << corr_rot << ", trans-certainty: " << corr_trans << ")\n\n\n";
 
@@ -252,10 +255,10 @@ struct EstimateGlobalRotationTranslationRealImageTest
       translation(10,-30),
       border(400,200)
     {
-		ImageImportInfo info1("nuernberg-1995.png");
-		s_img.resize(info1.width(), info1.height());
-		d_img.resize(info1.width(), info1.height());
-		importImage(info1, destImage(s_img));
+        ImageImportInfo info1("nuernberg-1995.png");
+        s_img.resize(info1.width(), info1.height());
+        d_img.resize(info1.width(), info1.height());
+        importImage(info1, destImage(s_img));
     }
 
     void testInit()
@@ -312,6 +315,7 @@ struct EstimateGlobalRotationTranslationTestSuite
         add( testCase( &EstimateGlobalRotationTranslationRealImageTest::testInit));
     }
 };
+#endif
 
 struct ProjectiveIdentityTest
 {
@@ -346,13 +350,13 @@ struct ProjectiveRegistrationTest
     : s_points(srcPoints()),
       d_points(destPoints())
     {
-		ImageImportInfo info1("nuernberg-1991.png");
-		s_img.resize(info1.width(), info1.height());
-		importImage(info1, destImage(s_img));
+        ImageImportInfo info1("nuernberg-1991.png");
+        s_img.resize(info1.width(), info1.height());
+        importImage(info1, destImage(s_img));
 
-		ImageImportInfo info2("nuernberg-1995.png");
-		d_img.resize(info2.width(), info2.height());
-		importImage(info2, destImage(d_img));
+        ImageImportInfo info2("nuernberg-1995.png");
+        d_img.resize(info2.width(), info2.height());
+        importImage(info2, destImage(d_img));
     }
 
     void testInit()
@@ -653,7 +657,7 @@ struct RadialBasisRegistrationTest
             double x = d_points[j][0];
             double y = d_points[j][1];
             //Affine part
-            double	sx = weight_matrix(point_count,0)+weight_matrix(point_count+1,0)*x+ weight_matrix(point_count+2,0)*y,
+            double    sx = weight_matrix(point_count,0)+weight_matrix(point_count+1,0)*x+ weight_matrix(point_count+2,0)*y,
                     sy = weight_matrix(point_count,1)+weight_matrix(point_count+1,1)*x+ weight_matrix(point_count+2,1)*y;
 
             //RBS part
@@ -813,7 +817,9 @@ struct RegistrationTestCollection
     RegistrationTestCollection()
     : test_suite("RegistrationTestCollection")
     {
+#ifdef HasFFTW3
         add( new EstimateGlobalRotationTranslationTestSuite);
+#endif
         add( new ProjectiveRegistrationTestSuite);
         add( new PolynomialRegistrationTestSuite);
         add( new RadialBasisRegistrationTestSuite);

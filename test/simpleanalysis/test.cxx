@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -144,7 +144,7 @@ struct LabelingTest
     {
         Image res(img1);
         int count = labelImage(srcImageRange(img1), destImage(res), false);
-        
+
         should(2 == count);
 
         Image::ScanOrderIterator i1 = img1.begin();
@@ -265,10 +265,10 @@ struct LabelingTest
         regionImageToEdgeImage(View(tmp), View(res2), 1.0);
 
         static const double edges[] = {
-            0, 1, 1, 1, 0, 
-            1, 0, 0, 1, 0, 
-            1, 0, 0, 1, 0, 
-            1, 1, 1, 1, 0, 
+            0, 1, 1, 1, 0,
+            1, 0, 0, 1, 0,
+            1, 0, 0, 1, 0,
+            1, 1, 1, 1, 0,
             0, 0, 0, 0, 0};
 
         shouldEqualSequence(res2.begin(), res2.end(), edges);
@@ -651,7 +651,7 @@ struct EdgeDetectionTest
     {
         double scale = 1.0;
         double threshold = -1.0;
-        
+
         try
         {
             std::vector<vigra::Edgel> edgels;
@@ -874,12 +874,12 @@ struct EqualWithToleranceFunctor
     EqualWithToleranceFunctor(T tolerance = 2.0 * NumericTraits<T>::epsilon())
     : t(tolerance)
     {}
-    
+
     bool operator()(T l, T r) const
     {
         return abs(l-r) <= t;
     }
-    
+
     T t;
 };
 
@@ -991,7 +991,7 @@ struct LocalMinMaxTest
         should(4 == localMinima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1).allowPlateaus()));
         should(res == res2);
     }
-    
+
     void extendedLocalMinimum3DTest2()
     {
         Volume res(vol.shape()), res2(vol.shape());
@@ -1068,7 +1068,7 @@ struct LocalMinMaxTest
         should(3 == localMaxima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1).allowPlateaus()));
         should(res == res2);
     }
-    
+
     void extendedLocalMaximum3DTest2()
     {
         Volume res(vol.shape()), res2(vol.shape());
@@ -1117,7 +1117,7 @@ struct LocalMinMaxTest
         should(res == res2);
 
         res.init(0);
-        localMinima(srcImageRange(img), destImage(res), 
+        localMinima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().allowAtBorder());
         desired[8] = 1.0;
         desired[26] = 1.0;
@@ -1151,7 +1151,7 @@ struct LocalMinMaxTest
         should(res == res2);
 
         res.init(0);
-        localMinima(srcImageRange(img), destImage(res), 
+        localMinima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().neighborhood(0).allowAtBorder());
         desired[8] = 1.0;
         desired[26] = 1.0;
@@ -1188,13 +1188,13 @@ struct LocalMinMaxTest
         should(res == res2);
 
         res.init(0);
-        localMinima(srcImageRange(img), destImage(res), 
+        localMinima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().neighborhood(8).threshold(-1.0).allowAtBorder());
         desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res2.init(0);
-        should(2 == localMinima(img, res2, 
+        should(2 == localMinima(img, res2,
                                 LocalMinmaxOptions().neighborhood(8).threshold(-1.0).allowAtBorder()));
         should(res == res2);
     }
@@ -1222,14 +1222,14 @@ struct LocalMinMaxTest
         should(res == res2);
 
         res.init(0);
-        localMaxima(srcImageRange(img), destImage(res), 
+        localMaxima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().allowAtBorder());
         desired[0] = 1.0;
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res2.init(0);
-        should(4 == localMaxima(img, res2, 
+        should(4 == localMaxima(img, res2,
                                 LocalMinmaxOptions().allowAtBorder()));
         should(res == res2);
     }
@@ -1238,7 +1238,7 @@ struct LocalMinMaxTest
     {
         Image res(img.shape()), res2(img.shape());
 
-        localMaxima(srcImageRange(img), destImage(res), 
+        localMaxima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().neighborhood(4));
 
         double desired[] = {
@@ -1259,7 +1259,7 @@ struct LocalMinMaxTest
         should(res == res2);
 
         res.init(0);
-        localMaxima(srcImageRange(img), destImage(res), 
+        localMaxima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().neighborhood(DirectNeighborhood).allowAtBorder());
         desired[0] = 1.0;
         desired[27] = 1.0;
@@ -1267,7 +1267,7 @@ struct LocalMinMaxTest
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res2.init(0);
-        should(7 == localMaxima(img, res2, 
+        should(7 == localMaxima(img, res2,
                                 LocalMinmaxOptions().neighborhood(DirectNeighborhood).allowAtBorder()));
         should(res == res2);
     }
@@ -1276,7 +1276,7 @@ struct LocalMinMaxTest
     {
         Image res(img.shape()), res2(img.shape());
 
-        localMaxima(srcImageRange(img), destImage(res), 
+        localMaxima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().markWith(1.0).neighborhood(8).threshold(0.2));
 
         double desired[] = {
@@ -1297,13 +1297,13 @@ struct LocalMinMaxTest
         should(res == res2);
 
         res.init(0);
-        localMaxima(srcImageRange(img), destImage(res), 
+        localMaxima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().allowAtBorder().threshold(0.2));
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res2.init(0);
-        should(2 == localMaxima(img, res2, 
+        should(2 == localMaxima(img, res2,
                                 LocalMinmaxOptions().neighborhood(IndirectNeighborhood).threshold(0.2).allowAtBorder()));
         should(res == res2);
     }
@@ -1328,23 +1328,23 @@ struct LocalMinMaxTest
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res.init(0);
-        localMinima(srcImageRange(img), destImage(res), 
+        localMinima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().allowPlateaus());
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-        should(4 == localMinima(img, res2, 
+        should(4 == localMinima(img, res2,
                                 LocalMinmaxOptions().allowPlateaus()));
         should(res == res2);
 
         res.init(0);
-        localMinima(srcImageRange(img), destImage(res), 
+        localMinima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().allowAtBorder().allowPlateaus());
         desired[8] = 1.0;
         desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res2.init(0);
-        should(6 == localMinima(img, res2, 
+        should(6 == localMinima(img, res2,
                                 LocalMinmaxOptions().allowAtBorder().allowPlateaus()));
         should(res == res2);
     }
@@ -1367,18 +1367,18 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
         shouldEqualSequence(res.begin(), res.end(), desired);
- 
+
         res.init(0);
-        localMinima(srcImageRange(img), destImage(res), 
+        localMinima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().allowPlateaus().neighborhood(4));
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-        should(7 == localMinima(img, res2, 
+        should(7 == localMinima(img, res2,
                                 LocalMinmaxOptions().allowPlateaus().neighborhood(0)));
         should(res == res2);
 
         res.init(0);
-        localMinima(srcImageRange(img), destImage(res), 
+        localMinima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
         desired[8] = 1.0;
         desired[26] = 1.0;
@@ -1386,7 +1386,7 @@ struct LocalMinMaxTest
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res2.init(0);
-        should(10 == localMinima(img, res2, 
+        should(10 == localMinima(img, res2,
                                 LocalMinmaxOptions().allowAtBorder().allowPlateaus().neighborhood(4)));
         should(res == res2);
    }
@@ -1410,23 +1410,23 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
         res.init(0);
-        localMaxima(srcImageRange(img), destImage(res), 
+        localMaxima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().allowPlateaus());
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-        should(4 == localMaxima(img, res2, 
+        should(4 == localMaxima(img, res2,
                                 LocalMinmaxOptions().allowPlateaus()));
         should(res == res2);
 
         res.init(0);
-        localMaxima(srcImageRange(img), destImage(res), 
+        localMaxima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().allowAtBorder().allowPlateaus());
         desired[0] = 1.0;
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res2.init(0);
-        should(6 == localMaxima(img, res2, 
+        should(6 == localMaxima(img, res2,
                                 LocalMinmaxOptions().allowAtBorder().allowPlateaus()));
         should(res == res2);
    }
@@ -1451,16 +1451,16 @@ struct LocalMinMaxTest
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res.init(0);
-        localMaxima(srcImageRange(img), destImage(res), 
+        localMaxima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().allowPlateaus().neighborhood(4));
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-        should(6 == localMaxima(img, res2, 
+        should(6 == localMaxima(img, res2,
                                 LocalMinmaxOptions().allowPlateaus().neighborhood(DirectNeighborhood)));
         should(res == res2);
 
         res.init(0);
-        localMaxima(srcImageRange(img), destImage(res), 
+        localMaxima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
         desired[0] = 1.0;
         desired[27] = 1.0;
@@ -1468,7 +1468,7 @@ struct LocalMinMaxTest
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         res2.init(0);
-        should(9 == localMaxima(img, res2, 
+        should(9 == localMaxima(img, res2,
                                 LocalMinmaxOptions().allowAtBorder().allowPlateaus().neighborhood(4)));
         should(res == res2);
    }
@@ -1492,7 +1492,7 @@ struct LocalMinMaxTest
         extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0,
                             EightNeighborCode(),
                             EqualWithToleranceFunctor<Image::value_type>(0.2));
-        
+
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -1546,7 +1546,7 @@ struct WatershedsTest
         IntImage res(img.shape()), res2(img.shape());
 
         /*******************************************************************/
-        
+
         static const double desired[] = {
             1.0,  1.0,  1.0,  2.0,  3.0,  3.0,  3.0,  3.0,  4.0,
             1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  3.0,  3.0,  4.0,
@@ -1559,12 +1559,12 @@ struct WatershedsTest
             7.0,  7.0,  7.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0};
 
         int count = watershedsUnionFind(srcImageRange(img), destImage(res));
-        
+
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         /*******************************************************************/
-        
+
         // break ties explicitly to make the test independent of tie breaking rules
         img(3,1) -= 0.01;
         img(3,2) -= 0.01;
@@ -1574,14 +1574,14 @@ struct WatershedsTest
         img(8,5) += 0.01;
 
         static const double desiredSeeds[] = {
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
-            0.0,  2.0,  0.0,  3.0,  0.0,  1.0,  0.0,  1.0,  1.0,  
-            0.0,  0.0,  0.0,  3.0,  0.0,  0.0,  0.0,  1.0,  1.0,  
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
-            0.0,  0.0,  4.0,  4.0,  4.0,  0.0,  5.0,  0.0,  0.0,  
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,
+            0.0,  2.0,  0.0,  3.0,  0.0,  1.0,  0.0,  1.0,  1.0,
+            0.0,  0.0,  0.0,  3.0,  0.0,  0.0,  0.0,  1.0,  1.0,
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+            0.0,  0.0,  4.0,  4.0,  4.0,  0.0,  5.0,  0.0,  0.0,
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
 
 
@@ -1596,16 +1596,16 @@ struct WatershedsTest
         shouldEqualSequence(res2.begin(), res2.end(), desiredSeeds);
 
         /*******************************************************************/
-        
+
         static const double desiredRG[] = {
-            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  3.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  1.0,  1.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  3.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  1.0,  1.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,
             4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0};
 
         count = watershedsRegionGrowing(srcImageRange(img), destImage(res));
@@ -1614,16 +1614,16 @@ struct WatershedsTest
         shouldEqualSequence(res.begin(), res.end(), desiredRG);
 
         /*******************************************************************/
-        
+
         static const double desiredRGC[] = {
-            2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  
-            0.0,  0.0,  0.0,  4.0,  4.0,  0.0,  5.0,  0.0,  0.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  5.0,  5.0,  5.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  5.0,  5.0,  5.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  0.0,  0.0,  0.0,  
+            2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,
+            0.0,  0.0,  0.0,  4.0,  4.0,  0.0,  5.0,  0.0,  0.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  5.0,  5.0,  5.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  5.0,  5.0,  5.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  0.0,  0.0,  0.0,
             4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0};
 
         res.init(0);
@@ -1639,16 +1639,16 @@ struct WatershedsTest
         should(res == res2);
 
         /*******************************************************************/
-        
+
         static const double desiredTRG[] = {
-            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  3.0,  3.0,  3.0,  5.0,  1.0,  1.0,  1.0,  
-            4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  1.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
-            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  3.0,  3.0,  3.0,  5.0,  1.0,  1.0,  1.0,
+            4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  1.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,
             4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0};
 
         res.init(0);
@@ -1684,7 +1684,7 @@ struct WatershedsTest
         IntImage res(img.shape()), res2(img.shape());
 
         /*******************************************************************/
-        
+
         static const double desired[] = {
             1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  4.0,  4.0,  5.0,
             1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  3.0,  4.0,  5.0,
@@ -1702,7 +1702,7 @@ struct WatershedsTest
         shouldEqualSequence(res.begin(), res.end(), desired);
 
         /*******************************************************************/
-        
+
         // break ties explicitly to make the test independent of tie breaking rules
         img(3,0) += 0.01;
         img(3,4) += 0.01;
@@ -1715,14 +1715,14 @@ struct WatershedsTest
         img(8,8) += 0.01;
 
         static const double desiredSeeds[] = {
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
-            0.0,  2.0,  0.0,  3.0,  0.0,  4.0,  0.0,  1.0,  1.0,  
-            0.0,  0.0,  0.0,  3.0,  0.0,  0.0,  0.0,  1.0,  1.0,  
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
-            0.0,  0.0,  0.0,  0.0,  0.0,  5.0,  0.0,  0.0,  0.0,  
-            0.0,  0.0,  6.0,  6.0,  6.0,  0.0,  7.0,  0.0,  0.0,  
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,
+            0.0,  2.0,  0.0,  3.0,  0.0,  4.0,  0.0,  1.0,  1.0,
+            0.0,  0.0,  0.0,  3.0,  0.0,  0.0,  0.0,  1.0,  1.0,
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+            0.0,  0.0,  0.0,  0.0,  0.0,  5.0,  0.0,  0.0,  0.0,
+            0.0,  0.0,  6.0,  6.0,  6.0,  0.0,  7.0,  0.0,  0.0,
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
 
         res.init(0);
@@ -1736,16 +1736,16 @@ struct WatershedsTest
         shouldEqualSequence(res2.begin(), res2.end(), desiredSeeds);
 
         /*******************************************************************/
-        
+
         static const double desiredRG[] = {
-            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  3.0,  3.0,  4.0,  4.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  3.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  2.0,  3.0,  5.0,  5.0,  1.0,  1.0,  1.0,  
-            6.0,  6.0,  6.0,  6.0,  5.0,  5.0,  5.0,  1.0,  1.0,  
-            6.0,  6.0,  6.0,  6.0,  5.0,  5.0,  5.0,  7.0,  7.0,  
-            6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  7.0,  
-            6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  3.0,  3.0,  4.0,  4.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  3.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  2.0,  3.0,  5.0,  5.0,  1.0,  1.0,  1.0,
+            6.0,  6.0,  6.0,  6.0,  5.0,  5.0,  5.0,  1.0,  1.0,
+            6.0,  6.0,  6.0,  6.0,  5.0,  5.0,  5.0,  7.0,  7.0,
+            6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  7.0,
+            6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,
             6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0};
 
         count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode());
@@ -1754,16 +1754,16 @@ struct WatershedsTest
         shouldEqualSequence(res.begin(), res.end(), desiredRG);
 
         /*******************************************************************/
-        
+
         static const double desiredRGC[] = {
-            2.0,  2.0,  2.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  0.0,  3.0,  0.0,  4.0,  0.0,  1.0,  1.0,  
-            2.0,  2.0,  0.0,  3.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  2.0,  0.0,  5.0,  5.0,  0.0,  1.0,  1.0,  
-            0.0,  0.0,  0.0,  0.0,  5.0,  5.0,  5.0,  0.0,  0.0,  
-            6.0,  6.0,  6.0,  6.0,  0.0,  5.0,  0.0,  7.0,  7.0,  
-            6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0,  7.0,  
-            6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0,  7.0,  
+            2.0,  2.0,  2.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  0.0,  3.0,  0.0,  4.0,  0.0,  1.0,  1.0,
+            2.0,  2.0,  0.0,  3.0,  0.0,  0.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  2.0,  0.0,  5.0,  5.0,  0.0,  1.0,  1.0,
+            0.0,  0.0,  0.0,  0.0,  5.0,  5.0,  5.0,  0.0,  0.0,
+            6.0,  6.0,  6.0,  6.0,  0.0,  5.0,  0.0,  7.0,  7.0,
+            6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0,  7.0,
+            6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0,  7.0,
             6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0};
 
         res.init(0);
@@ -1779,16 +1779,16 @@ struct WatershedsTest
         should(res == res2);
 
         /*******************************************************************/
-        
+
         static const double desiredTRG[] = {
-            2.0,  2.0,  2.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  2.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  3.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
-            2.0,  2.0,  2.0,  3.0,  6.0,  5.0,  7.0,  1.0,  1.0,  
-            6.0,  6.0,  6.0,  6.0,  6.0,  5.0,  7.0,  7.0,  1.0,  
-            6.0,  6.0,  6.0,  6.0,  6.0,  5.0,  7.0,  7.0,  7.0,  
-            6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  7.0,  
-            6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  
+            2.0,  2.0,  2.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  2.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  3.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,
+            2.0,  2.0,  2.0,  3.0,  6.0,  5.0,  7.0,  1.0,  1.0,
+            6.0,  6.0,  6.0,  6.0,  6.0,  5.0,  7.0,  7.0,  1.0,
+            6.0,  6.0,  6.0,  6.0,  6.0,  5.0,  7.0,  7.0,  7.0,
+            6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  7.0,
+            6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,
             6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  6.0};
 
         res.init(0);
@@ -2151,7 +2151,7 @@ struct NoiseNormalizationTest
         vigra::ImageImportInfo info("noiseNormalizationTest.xv");
         vigra_precondition(info.width() == 400 && info.height() == 20,
            "NoiseNormalizationTest: input image has wrong size.");
-           
+
         u8image.resize(info.size());
         importImage(info, destImage(u8image));
         image.resize(info.size());
@@ -2163,7 +2163,7 @@ struct NoiseNormalizationTest
             importImage(info, destImage(rgb, dband));
         }
     }
-    
+
     template <class Iterator, class Accessor>
     void checkVariance(Iterator ul, Accessor const & a, double tolerance)
     {
@@ -2178,14 +2178,14 @@ struct NoiseNormalizationTest
                     sum2 += sq(a(ul, Diff2D(x, y)));
                 }
             }
-            
+
             sum /= 400.0;
             sum2 /= 400.0;
-            
+
             shouldEqualTolerance(VIGRA_CSTD::sqrt(sum2 - sq(sum))-1.0, 0.0, tolerance);
        }
     }
-    
+
     void testParametricNoiseNormalizationU8()
     {
         GrayImage res(image.size());
@@ -2198,7 +2198,7 @@ struct NoiseNormalizationTest
         quadraticNoiseNormalization(srcImageRange(u8image), destImage(res));
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
     }
-  
+
     void testParametricNoiseNormalization()
     {
         GrayImage res(image.size());
@@ -2211,7 +2211,7 @@ struct NoiseNormalizationTest
         quadraticNoiseNormalization(View(image), View(res));
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
    }
-  
+
     void testParametricNoiseNormalizationRGB()
     {
         RGBImage res(rgb.size());
@@ -2240,24 +2240,24 @@ struct NoiseNormalizationTest
             checkVariance(res.upperLeft(), dband, 0.1);
         }
     }
-  
+
     void testNonparametricNoiseNormalizationU8()
     {
-        GrayImage res(image.size());        
+        GrayImage res(image.size());
         nonparametricNoiseNormalization(srcImageRange(u8image), destImage(res));
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
     }
-  
+
     void testNonparametricNoiseNormalization()
     {
-        GrayImage res(image.size());        
+        GrayImage res(image.size());
         nonparametricNoiseNormalization(srcImageRange(image), destImage(res));
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
    }
-  
+
     void testNonparametricNoiseNormalizationRGB()
     {
-        RGBImage res(rgb.size());        
+        RGBImage res(rgb.size());
         nonparametricNoiseNormalization(srcImageRange(rgb), destImage(res));
         for(unsigned int band = 0; band < 3; ++band)
         {
@@ -2273,17 +2273,17 @@ struct SlantedEdgeMTFTest
     typedef vigra::MultiArray<2, double> Image;
     typedef vigra::ArrayVector<vigra::TinyVector<double, 2> > Result;
     typedef Result::value_type Pair;
-    
+
     Image image;
     Result reference;
 
     SlantedEdgeMTFTest()
     {
         vigra::ImageImportInfo info("slantedEdgeMTF.xv");
-           
+
         image.reshape(info.shape());
         importImage(info, destImage(image));
-        
+
         reference.push_back(Pair(0, 1));
         reference.push_back(Pair(0.0564351, 0.981739));
         reference.push_back(Pair(0.11287, 0.929577));
@@ -2302,20 +2302,20 @@ struct SlantedEdgeMTFTest
         reference.push_back(Pair(0.846526, 0.021419));
         reference.push_back(Pair(0.902961, 0));
     }
-    
+
     void testSlantedEdgeMTF()
     {
         Result res;
         slantedEdgeMTF(image, res);
-        
+
         shouldEqual(res.size(), reference.size());
-        
+
         for(unsigned int k = 0; k < res.size(); ++k)
         {
             shouldEqualTolerance(res[k][0], reference[k][0], 1e-5);
             shouldEqualTolerance(res[k][1], reference[k][1], 1e-5);
         }
-        
+
         shouldEqualTolerance(mtfFitGaussian(res), 0.5, 1e-2);
     }
 };
@@ -2327,7 +2327,7 @@ struct AffineRegistrationTest
     typedef vigra::MultiArrayView<2, double> View;
     typedef vigra::TinyVector<double, 2> Vector2;
     typedef vigra::ArrayVector<Vector2> PointList;
-    
+
     Image image;
 
     AffineRegistrationTest()
@@ -2336,22 +2336,22 @@ struct AffineRegistrationTest
         image.resize(info.size());
         importImage(info, destImage(image));
     }
-    
+
     void testCorrespondingPoints()
     {
         Matrix<double> point(3,1), res(3,1);
         point(2,0) = 1.0;
-        
+
         PointList src(3), dest(3);
-        src[0] = Vector2(1.6, 2.9);     
-        src[1] = Vector2(-1.3, -4.0);     
-        src[2] = Vector2(7.1, -0.4);     
-        dest[0] = Vector2(-2.9, 1.6);     
-        dest[1] = Vector2(12.6, -3.4);     
+        src[0] = Vector2(1.6, 2.9);
+        src[1] = Vector2(-1.3, -4.0);
+        src[2] = Vector2(7.1, -0.4);
+        dest[0] = Vector2(-2.9, 1.6);
+        dest[1] = Vector2(12.6, -3.4);
         dest[2] = Vector2(-3.3, 4.2);
-        
+
         for(int k=1; k<=3; ++k)
-        {     
+        {
             Matrix<double> a = affineMatrix2DFromCorrespondingPoints(src.begin(), src.begin()+k, dest.begin());
             for(int i=0; i<k; ++i)
             {
@@ -2370,25 +2370,25 @@ struct AffineRegistrationTest
         Matrix<double> m = translationMatrix2D(Vector2(5.0, 10.0));
         Image timg(image.size());
         affineWarpImage(SplineImageView<2, double>(srcImageRange(image)), destImageRange(timg), m);
-        
+
         Matrix<double> estimated = identityMatrix<double>(3);
         estimateTranslation(srcImageRange(image), srcImageRange(timg), estimated,
                             AffineMotionEstimationOptions<1>().highestPyramidLevel(3));
-        
+
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
-        
+
         estimated = identityMatrix<double>(3);
         estimateTranslation(View(image), View(timg), estimated,
                             AffineMotionEstimationOptions<1>().highestPyramidLevel(3));
-        
+
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
     }
 
     void testSimilarityRegistration()
     {
-        Matrix<double> m = translationMatrix2D(Vector2(5.0, 10.0)) * 
+        Matrix<double> m = translationMatrix2D(Vector2(5.0, 10.0)) *
                              rotationMatrix2DDegrees(5.0)* scalingMatrix2D(0.9);
         Image timg(image.size());
         affineWarpImage(SplineImageView<2, double>(srcImageRange(image)), destImageRange(timg), m);
@@ -2396,42 +2396,42 @@ struct AffineRegistrationTest
         Matrix<double> estimated = identityMatrix<double>(3);
         estimateSimilarityTransform(srcImageRange(image), srcImageRange(timg), estimated,
                             AffineMotionEstimationOptions<>().useLaplacianPyramid(false));
-        
+
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
 
         estimated = identityMatrix<double>(3);
-        estimateSimilarityTransform(srcImageRange(image), 
+        estimateSimilarityTransform(srcImageRange(image),
                             srcIterRange(timg.upperLeft(), timg.lowerRight()-Diff2D(20,20)), estimated,
                             AffineMotionEstimationOptions<>().useLaplacianPyramid(true));
-        
+
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] , estimated.data()[i], 1e-2);
 
         estimated = identityMatrix<double>(3);
         estimateSimilarityTransform(View(image),View(timg).subarray(Shape2(), Shape2(-20)), estimated,
                             AffineMotionEstimationOptions<>().useLaplacianPyramid(true));
-        
+
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] , estimated.data()[i], 1e-2);
     }
 
     void testAffineRegistration()
     {
-        Matrix<double> m = translationMatrix2D(Vector2(5.0, 10.0)) * 
+        Matrix<double> m = translationMatrix2D(Vector2(5.0, 10.0)) *
                              rotationMatrix2DDegrees(5.0)* scalingMatrix2D(1.0, 0.9);
         Image timg(image.size());
         affineWarpImage(SplineImageView<2, double>(srcImageRange(image)), destImageRange(timg), m);
 
         Matrix<double> estimated = identityMatrix<double>(3);
         estimateAffineTransform(srcImageRange(image), srcImageRange(timg), estimated);
-        
+
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
 
         estimated = identityMatrix<double>(3);
         estimateAffineTransform(View(image), View(timg), estimated);
-        
+
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
     }
