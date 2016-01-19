@@ -30,6 +30,8 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>Convert between RGB and other color spaces, such as L*u*v*, Y'PbPr</em>
     <LI> \ref ImageProcessing
         <BR>&nbsp;&nbsp;&nbsp;<em>Point operators, image arithmetic, convolution, morphology</em>
+    <LI> \ref Registration
+         <BR>&nbsp;&nbsp;&nbsp;<em>Transforming different image into a common coordinate system</em>
     <LI> \ref ImageAnalysis
         <BR>&nbsp;&nbsp;&nbsp;<em>Segmentation and feature extraction algorithms</em>
     <LI> \ref MachineLearning

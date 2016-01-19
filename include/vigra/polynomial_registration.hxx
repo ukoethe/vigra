@@ -49,8 +49,6 @@ namespace vigra
  */
 //@{
 
-namespace detail
-{
 /**
  * Iterative function for determinination of the polynom weights:
  *
@@ -66,7 +64,7 @@ namespace detail
  * corresponding weight for the current x- and y-coordinate, given by this
  * function.
  */
-std::vector<double> polynomWeights(double x, double y, unsigned int polynom_order)
+std::vector<double> polynomialWarpWeights(double x, double y, unsigned int polynom_order)
 {
     unsigned int poly_count = (polynom_order+1)*(polynom_order+2)/2;
 
@@ -83,8 +81,6 @@ std::vector<double> polynomWeights(double x, double y, unsigned int polynom_orde
     }
     return weights;
 }
-
-} //namespace detail
 
 /********************************************************/
 /*                                                      */
@@ -110,7 +106,7 @@ std::vector<double> polynomWeights(double x, double y, unsigned int polynom_orde
     y' = a_y + b_y*x + c_y*y + d_y*x^2 + e_y*x*y + f_y*y^2
 
     Note that the order of the polynom's factors is directly influenced by the
-    \ref detail::polynomWeights() function and follows the intuitive scheme.
+    \ref polynomialWarpWeights() function and follows the intuitive scheme.
 */
 template <int PolynomOrder,
           class SrcPointIterator,
@@ -127,7 +123,7 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
 
     for (int i =0; i<point_count; ++i, ++s, ++d)
     {
-        weights = detail::polynomWeights((*d)[0], (*d)[1], PolynomOrder);
+        weights = polynomialWarpWeights((*d)[0], (*d)[1], PolynomOrder);
 
         for(int c=0; c<poly_count; c++)
         {
@@ -160,7 +156,8 @@ polynomialMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
 
 /** \brief Warp an image according to an polynomial transformation.
 
-     To get more information about the structure of the matrix, see \ref polynomialMatrix2DFromCorrespondingPoints()
+    To get more information about the structure of the matrix, 
+    see \ref polynomialMatrix2DFromCorrespondingPoints().
 
     <b>\#include</b> \<vigra/polynomial_registration.hxx\><br>
     Namespace: vigra
@@ -230,7 +227,7 @@ void polynomialWarpImage(SplineImageView<ORDER, T> const & src,
         typename DestIterator::row_iterator rd = dul.rowIterator();
         for(double x=0.0; x < w; ++x, ++rd)
         {
-            weights = detail::polynomWeights(x,y, PolynomOrder);
+            weights = polynomialWarpWeights(x,y, PolynomOrder);
 
             double sx=0;
             double sy=0;

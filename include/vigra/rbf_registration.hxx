@@ -114,7 +114,7 @@ struct DistancePowerFunctor
 
 /** \brief Create a matrix that maps corresponding points onto each other using a given RBF.
 
- For use with \ref radialBasisWarpImage(). For n given (corresponding) points,
+ For use with \ref rbfWarpImage(). For n given (corresponding) points,
  the matrix will be of size (n+3,2). Note that the representation of this matrix is exactly
  the same as the "W" matrix of Bookstein. More information can be found in the following article:
 

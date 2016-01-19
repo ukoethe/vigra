@@ -887,6 +887,7 @@ namespace vigra{
     /// \param seeds : seed must be non empty!
     /// \param backgroundLabel : which label is background
     /// \param backgroundBias  : bias for background
+    /// \param noPriorBelow  : don't bias the background if edge indicator is below this value
     /// \param[out] labels : resulting  nodeLabeling (not necessarily dense)
     template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
     void carvingSegmentation(
@@ -1260,7 +1261,7 @@ namespace vigra{
     /// \brief Find indices of points on the edges
     ///
     /// \param rag : Region adjacency graph of the labels array
-    /// \param g : Graph of labels array
+    /// \param graph : Graph of labels array
     /// \param affiliatedEdges : The affiliated edges of the region adjacency graph
     /// \param labelsArray : The label image
     /// \param node : The node (of the region adjacency graph), whose edges shall be found
