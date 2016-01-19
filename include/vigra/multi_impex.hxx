@@ -66,9 +66,9 @@ namespace vigra {
 
 /** \brief Argument object for the function importVolume().
 
-    See \ref importVolume() for usage example. This object can be used
-    to define the properties of a volume data set to be read from disk.
-    Sorry, no \ref detailedDocumentation() available yet.
+    This object can be used to define the properties of a volume
+    data set to be read from disk. It works like \ref vigra::ImageImportInfo,
+    but for 3-dimensional data. See \ref importVolume() for usage example.
 
     <b>\#include</b> \<vigra/multi_impex.hxx\> <br/>
     Namespace: vigra
@@ -88,14 +88,14 @@ class VolumeImportInfo
     typedef TinyVector<float, 3>       Resolution;
 
         /** Construct VolumeImportInfo from a single filename.
-        
+
             The \a filename (which may contain a path) can be interpreted in three different ways:
             <ul>
             <li>If the name refers to a file that contains volume data, the header information
                 of this file is read. Two file formats are currently supported: Andor .SIF
                 and multi-page TIFF.
             <li>If the name refers to a textfile, the constructor will attempt to interpret the file
-                in the ".info" format to obtain the header information. The volume data 
+                in the ".info" format to obtain the header information. The volume data
                 are then expected to be located in an accompanying RAW file. The ".info" file must
                 contain the following key-value pairs:
                 <UL>
@@ -107,9 +107,9 @@ class VolumeImportInfo
                 <li> depth = [positive integer] (required)
                 <li> datatype = [ UINT8 | INT16 | UINT16 | INT32 | UINT32 | FLOAT | DOUBLE ] (required)
                 </UL>
-                Lines starting with "#" are ignored. To read the data correctly, the 
-                value_type of the target MultiArray must match the datatype stored in the file. 
-                Only single-band files are currently supported. 
+                Lines starting with "#" are ignored. To read the data correctly, the
+                value_type of the target MultiArray must match the datatype stored in the file.
+                Only single-band files are currently supported.
             <li>If the name refers to a 2D image file, the constructor will attempt to decompose
                 the filename into the format <tt>base_name + slice_number + name_extension</tt>.
                 If this decomposition succeeds, all images with the same base_name and name_extension
@@ -122,12 +122,12 @@ class VolumeImportInfo
     VIGRA_EXPORT VolumeImportInfo(const std::string &filename);
 
         /** Construct VolumeImportInfo for a stack of images.
-        
+
             The constructor will look for filenames of the form <tt>base_name + slice_number + name_extension</tt>.
-            All images conforming to this pattern will be considered as the slices of an image stack. 
-            Slice numbers need not be consecutive (i.e. gaps are allowed) and will be interpreted according 
+            All images conforming to this pattern will be considered as the slices of an image stack.
+            Slice numbers need not be consecutive (i.e. gaps are allowed) and will be interpreted according
             to their numerical order (i.e. "009", "010", "011" are read in the same order as "9", "10", "11").
-            The number of images found determines the depth of the volume, the remaining header data are read 
+            The number of images found determines the depth of the volume, the remaining header data are read
             from the given image. \a name_base may contain a path.
          */
     VIGRA_EXPORT VolumeImportInfo(const std::string &base_name, const std::string &name_extension);
@@ -196,7 +196,7 @@ class VolumeImportInfo
 
         /** Query the pixel type of the volume data.
 
-            Same as getPixelType(), but the result is returned as a 
+            Same as getPixelType(), but the result is returned as a
             ImageImportInfo::PixelType enum. This is useful to implement
             a switch() on the pixel type.
 
@@ -259,29 +259,29 @@ class VolumeExportInfo
   public:
         /** Construct VolumeExportInfo object to output volume data as a multi-page tiff.
 
-            The filename must refer to a TIFF file (extension '.tif' or '.tiff'). This function 
+            The filename must refer to a TIFF file (extension '.tif' or '.tiff'). This function
             is only available when libtiff is installed.
          **/
     VIGRA_EXPORT VolumeExportInfo( const char * filename );
-    
+
         /** Construct VolumeExportInfo object to output volume data as an image stack.
 
-            The volume will be stored in a by-slice manner, where the number of slices 
+            The volume will be stored in a by-slice manner, where the number of slices
             equals the depth of the volume. The file names will be enumerated like
             <tt>name_base+"000"+name_ext</tt>, <tt>name_base+"001"+name_ext</tt> etc.
             (the actual number of zeros depends on the depth). If the target image type
-            does not support the source voxel type, all slices will be mapped 
+            does not support the source voxel type, all slices will be mapped
             simultaneously to the appropriate target range.
             The file type will be guessed from the extension unless overridden
-            by \ref setFileType(). 
-            
+            by \ref setFileType().
+
             Recognized extensions: '.bmp', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            
+
             JPEG support requires libjpeg, PNG support requires libpng, and
             TIFF support requires libtiff.
-            
+
             If \a name_ext is an empty string, the data is written as a multi-page tiff.
          **/
     VIGRA_EXPORT VolumeExportInfo( const char * name_base, const char * name_ext );
@@ -291,14 +291,14 @@ class VolumeExportInfo
 
         **/
     VIGRA_EXPORT VolumeExportInfo & setFileNameBase(const char * name_base);
-    
+
         /** Set volume file name extension.
 
             The file type will be guessed from the extension unless overridden
             by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            
+
             JPEG support requires libjpeg, PNG support requires libpng, and
             TIFF support requires libtiff.
         **/
@@ -389,15 +389,15 @@ class VolumeExportInfo
             </DL>
          **/
     VIGRA_EXPORT const char * getPixelType() const;
-    
+
     VIGRA_EXPORT VolumeExportInfo & setForcedRangeMapping(double fromMin, double fromMax,
-                                                     double toMin, double toMax);    
+                                                     double toMin, double toMax);
     VIGRA_EXPORT bool hasForcedRangeMapping() const;
     VIGRA_EXPORT double getFromMin() const;
     VIGRA_EXPORT double getFromMax() const;
     VIGRA_EXPORT double getToMin() const;
     VIGRA_EXPORT double getToMax() const;
-    
+
         /** Set the volume resolution in horizontal direction
          **/
     VIGRA_EXPORT VolumeExportInfo & setXResolution( float );
@@ -594,38 +594,38 @@ VIGRA_EXPORT void findImageSequence(const std::string &name_base,
 /** \brief Function for importing a 3D volume.
 
     <b>Declarations: </b>
-    
+
     \code
     namespace vigra {
         // variant 1: read data specified by the given VolumeImportInfo object
         template <class T, class Stride>
-        void 
-        importVolume(VolumeImportInfo const & info, 
+        void
+        importVolume(VolumeImportInfo const & info,
                      MultiArrayView <3, T, Stride> &volume);
-                     
+
         // variant 2: read data using a single filename, resize volume automatically
         template <class T, class Allocator>
-        void 
+        void
         importVolume(MultiArray <3, T, Allocator> & volume,
                      const std::string &filename);
-                           
+
         // variant 3: read data from an image stack, resize volume automatically
         template <class T, class Allocator>
-        void 
+        void
         importVolume(MultiArray <3, T, Allocator> & volume,
                      const std::string &name_base,
                      const std::string &name_ext);
     }
     \endcode
 
-    Data can be read either from a single file containing 3D data (supported formats: 
-    Andor .SIF or multi-page TIFF), a ".info" text file which describes the contents of 
-    an accompanying raw data file, or a stack of 2D images (numbered according to the 
-    scheme <tt>name_base+"[0-9]+"+name_extension</tt>) each representing a slice of 
-    the volume. The decision which of these possibilities applies is taken in the 
+    Data can be read either from a single file containing 3D data (supported formats:
+    Andor .SIF or multi-page TIFF), a ".info" text file which describes the contents of
+    an accompanying raw data file, or a stack of 2D images (numbered according to the
+    scheme <tt>name_base+"[0-9]+"+name_extension</tt>) each representing a slice of
+    the volume. The decision which of these possibilities applies is taken in the
     \ref vigra::VolumeImportInfo::VolumeImportInfo(const std::string &) "VolumeImportInfo constructor",
     see there for full details.
-    
+
     Variant 1 is the basic version of this function. Here, the info object and a destination
     array of approriate size must already be constructed. The other variants are just abbreviations
     provided for your convenience:
@@ -634,46 +634,46 @@ VIGRA_EXPORT void findImageSequence(const std::string &name_base,
     VolumeImportInfo info(filename);
     volume.reshape(info.shape());
     importVolume(info, volume);    // call variant 1
-    
+
     // variant 3 is equivalent to
     VolumeImportInfo info(name_base, name_ext);
     volume.reshape(info.shape());
     importVolume(info, volume);    // call variant 1
     \endcode
-    
+
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/multi_impex.hxx\> <br/>
     Namespace: vigra
-    
+
     \code
     // read data from a multi-page TIFF file, using variant 1
     VolumeImportInfo info("multipage.tif");
     MultiArray<3, float> volume(info.shape());
     importVolume(info, volume);
-    
+
     // read data from a stack of 2D png-images, using variant 1
     VolumeImportInfo info("my_data", ".png");  // looks for files 'my_data0.png', 'my_data1.png' etc.
     MultiArray<3, float> volume(info.shape());
     importVolume(info, volume);
     \endcode
-    Notice that slice numbers in a stack need not be consecutive (i.e. gaps are allowed) and 
-    will be interpreted according to their numerical order (i.e. "009", "010", "011" 
+    Notice that slice numbers in a stack need not be consecutive (i.e. gaps are allowed) and
+    will be interpreted according to their numerical order (i.e. "009", "010", "011"
     are read in the same order as "9", "10", "11"). The number of images
     found determines the depth of the volume.
 */
 doxygen_overloaded_function(template <...> void importVolume)
 
 template <class T, class Stride>
-void 
-importVolume(VolumeImportInfo const & info, 
+void
+importVolume(VolumeImportInfo const & info,
              MultiArrayView <3, T, Stride> &volume)
 {
     info.importImpl(volume);
 }
 
 template <class T, class Allocator>
-void 
+void
 importVolume(MultiArray <3, T, Allocator> &volume,
              const std::string &filename)
 {
@@ -775,21 +775,21 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
 /** \brief Function for exporting a 3D volume.
 
     <b> Declarations:</b>
-    
+
     \code
     namespace vigra {
         // variant 1: writa data as specified in the given VolumeExportInfo object
         template <class T, class Tag>
-        void 
+        void
         exportVolume (MultiArrayView <3, T, Tag> const & volume,
                       const VolumeExportInfo & info);
-                     
+
         // variant 2: write data to a multi-page TIFF file
         template <class T, class Tag>
         void
         exportVolume (MultiArrayView <3, T, Tag> const & volume,
                       const std::string &filename);
-                           
+
         // variant 3: write data to an image stack
         template <class T, class Tag>
         void
@@ -800,24 +800,24 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
     \endcode
 
     The volume can either be exported as a multi-page TIFF file (variant 2, only available if
-    libtiff is installed), or as a stack of 2D images, one image per slice (variant 3, files are named 
+    libtiff is installed), or as a stack of 2D images, one image per slice (variant 3, files are named
     according to the scheme <tt>name_base+"000"+name_ext</tt>, <tt>name_base+"001"+name_ext</tt> etc.).
-    If the target image format does not support the source <tt>value_type</tt>, all slices will 
+    If the target image format does not support the source <tt>value_type</tt>, all slices will
     be mapped to the appropriate target range in the same way.
-    
+
     Variant 1 is the basic version of the function. It allows full control over the export via
     an already constructed \ref vigra::VolumeExportInfo object. The other two are just abbreviations
-    that construct the VolumeExportInfo object internally. 
-    
+    that construct the VolumeExportInfo object internally.
+
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/multi_impex.hxx\> <br/>
     Namespace: vigra
-    
+
     \code
     MultiArray<3, RGBValue<UInt8> > volume(shape);
     ... // fill in data
-    
+
     // export a stack named "my_data01.jpg", "my_data02.jpg" etc.
     VolumeExportInfo info("my_data", ".jpg");
     info.setCompression("JPEG QUALITY=95");
@@ -827,7 +827,7 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
 doxygen_overloaded_function(template <...> void exportVolume)
 
 template <class T, class Tag>
-void 
+void
 exportVolume (MultiArrayView <3, T, Tag> const & volume,
               const VolumeExportInfo & volinfo)
 {
@@ -837,7 +837,7 @@ exportVolume (MultiArrayView <3, T, Tag> const & volume,
         std::string compression = "LZW";
         if(volinfo.getCompression() != std::string())
             compression = volinfo.getCompression();
-            
+
         for(MultiArrayIndex k=0; k<volume.shape(2); ++k)
         {
             ImageExportInfo info(volinfo.getFileNameBase(), mode);
@@ -875,7 +875,7 @@ exportVolume (MultiArrayView <3, T, Tag> const & volume,
 
             // export the image
             info.setFileName(sliceFilename.c_str ());
-            exportImage(srcImageRange(view), info); 
+            exportImage(srcImageRange(view), info);
         }
     }
 }
