@@ -9,14 +9,10 @@ IF(PYTHONINTERP_FOUND)
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                          "import sys; print(sys.version[0])"
                           OUTPUT_VARIABLE PYTHON_MAJOR_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
-    SET(PYTHONINTERP_FOUND 1)
-ELSE()
-    MESSAGE(STATUS "Python not found. Make sure that Python is in your PATH or use 'cmake_gui' to set the PYTHON_EXECUTABLE variable manually.")
-    SET(PYTHONINTERP_V3_FOUND 0)
-ENDIF()
-
-IF(PYTHONINTERP_FOUND)
-
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+                         "import sys; print(sys.version)"
+                          OUTPUT_VARIABLE PYTHON_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+    MESSAGE(STATUS "Found Python ${PYTHON_VERSION}")
 #    this command cannot be used because its results are often inconsistent
 #    with the Python interpreter found previously (e.g. libraries or includes
 #    from incompatible installations)
@@ -166,4 +162,7 @@ IF(PYTHONINTERP_FOUND)
     SET(VIGRANUMPY_LIBRARIES ${VIGRANUMPY_LIBRARIES}
         CACHE FILEPATH "libraries needed by VIGRA Python bindings"
         FORCE)
+ELSE()
+    MESSAGE(STATUS "Python not found. Make sure that Python is in your PATH or use 'cmake_gui' to set the PYTHON_EXECUTABLE variable manually.")
+    SET(PYTHONINTERP_V3_FOUND 0)
 ENDIF()
