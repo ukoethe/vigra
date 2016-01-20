@@ -26,7 +26,7 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 include(VigraSetDefaults)
 include(VigraCMakeUtils)
 
-INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include "C:/conda/pkgs/python-3.5.0-3/include") #TODO python include hack 
+INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
 IF(VIGRA_STATIC_LIB)
     SET(LIBTYPE STATIC)
@@ -79,6 +79,10 @@ IF(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
         endif()
     ENDIF()
 ENDIF()
+
+if(MSVC)
+    string(REGEX MATCH "[0-9.]+" MSVC_VERSION ${CMAKE_GENERATOR})
+endif()
 
 if(MACOSX)
     set(CMAKE_MACOSX_RPATH 1)
@@ -147,7 +151,7 @@ ENDIF()
 
 SET(DOXYGEN_SKIP_DOT TRUE)
 FIND_PACKAGE(Doxygen)
-FIND_PACKAGE(PythonInterp 3)
+FIND_PACKAGE(PythonInterp)
 
 IF(WITH_VIGRANUMPY)
     FIND_PACKAGE( VIGRANUMPY_DEPENDENCIES )

@@ -2,25 +2,20 @@
 #
 MESSAGE(STATUS "Checking VIGRANUMPY_DEPENDENCIES")
 
-FIND_PACKAGE(PythonInterp 3)
+FIND_PACKAGE(PythonInterp)
 
 IF(PYTHONINTERP_FOUND)
-    # check that Python version 3.x is used
+    # print out found Python version
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                          "import sys; print(sys.version[0])"
                           OUTPUT_VARIABLE PYTHON_MAJOR_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
-    IF(${PYTHON_MAJOR_VERSION} EQUAL 3)
-        SET(PYTHONINTERP_V3_FOUND 1)
-    ELSE()
-        MESSAGE(STATUS "vigranumpy currently requires Python 3.x.")
-        MESSAGE(STATUS "Make sure that Python 3 is in your PATH or use 'cmake_gui' to set the PYTHON_EXECUTABLE variable manually.")
-        SET(PYTHONINTERP_V3_FOUND 0)
-    ENDIF()
+    SET(PYTHONINTERP_FOUND 1)
 ELSE()
+    MESSAGE(STATUS "Python not found. Make sure that Python is in your PATH or use 'cmake_gui' to set the PYTHON_EXECUTABLE variable manually.")
     SET(PYTHONINTERP_V3_FOUND 0)
 ENDIF()
 
-IF(PYTHONINTERP_V3_FOUND)
+IF(PYTHONINTERP_FOUND)
 
 #    this command cannot be used because its results are often inconsistent
 #    with the Python interpreter found previously (e.g. libraries or includes
@@ -153,7 +148,7 @@ IF(PYTHONINTERP_V3_FOUND)
     ######################################################################
     INCLUDE(FindPackageHandleStandardArgs)
     FIND_PACKAGE_HANDLE_STANDARD_ARGS(VIGRANUMPY_DEPENDENCIES DEFAULT_MSG
-                         PYTHONINTERP_V3_FOUND PYTHONLIBS_FOUND
+                         PYTHONINTERP_FOUND PYTHONLIBS_FOUND
                          Boost_PYTHON_FOUND PYTHON_NUMPY_INCLUDE_DIR VIGRANUMPY_INSTALL_DIR)
 
     IF(NOT VIGRANUMPY_INCLUDE_DIRS OR VIGRANUMPY_INCLUDE_DIRS MATCHES "-NOTFOUND")
