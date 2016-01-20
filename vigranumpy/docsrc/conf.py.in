@@ -12,8 +12,7 @@
 # serve to show the default.
 
 from __future__ import division, print_function
-
-import sys, os
+import sys, os, re
 
 # silent lots of 'arg is not a Python function' warnings
 import inspect

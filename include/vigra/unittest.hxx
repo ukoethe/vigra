@@ -240,8 +240,6 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
 
 #elif defined(__unix)
 
-extern "C" {
-
 inline jmp_buf & unit_test_jump_buffer()
 {
     static jmp_buf unit_test_jump_buffer_;
@@ -252,8 +250,6 @@ static void unit_test_signal_handler(int sig)
 {
     longjmp(unit_test_jump_buffer(), sig);
 }
-
-} // extern "C"
 
 template< class Generator >  // Generator is function object returning int
 int catch_signals( Generator function_object, detail::errstream & err, int timeout)

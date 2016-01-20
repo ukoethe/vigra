@@ -47,21 +47,142 @@
 #include <stdexcept>
 #include <cmath>
 #include "mathutil.hxx"
-
+#include "counting_iterator.hxx"
 
 
 namespace vigra
 {
 
+/** \addtogroup ParallelProcessing Functions and classes for parallel processing.
+*/
+
+//@{
+
+    /**\brief Option base class for parallel algorithms.
+
+        <b>\#include</b> \<vigra/threadpool.hxx\><br>
+        Namespace: vigra
+    */
+class ParallelOptions
+{
+  public:
+
+        /** Constants for special settings.
+        */
+    enum {
+        Auto       = -1, ///< Determine number of threads automatically (from <tt>std::thread::hardware_concurrency()</tt>)
+        Nice       = -2, ///< Use half as many threads as <tt>Auto</tt> would.
+        NoThreads  =  0  ///< Switch off multi-threading (i.e. execute tasks sequentially)
+    };
+
+    ParallelOptions()
+    :   numThreads_(actualNumThreads(Auto))
+    {}
+
+        /** \brief Get desired number of threads.
+
+            <b>Note:</b> This function may return 0, which means that multi-threading
+            shall be switched off entirely. If an algorithm receives this value,
+            it should revert to a sequential implementation. In contrast, if
+            <tt>numThread() == 1</tt>, the parallel algorithm version shall be
+            executed with a single thread.
+        */
+    int getNumThreads() const
+    {
+        return numThreads_;
+    }
+
+        /** \brief Get desired number of threads.
+
+            In contrast to <tt>numThread()</tt>, this will always return a value <tt>>=1</tt>.
+        */
+    int getActualNumThreads() const
+    {
+        return std::max(1,numThreads_);
+    }
+
+        /** \brief Set the number of threads or one of the constants <tt>Auto</tt>,
+                   <tt>Nice</tt> and <tt>NoThreads</tt>.
+
+            Default: <tt>ParallelOptions::Auto</tt> (use system default)
+
+            This setting is ignored if the preprocessor flag <tt>VIGRA_SINGLE_THREADED</tt>
+            is defined. Then, the number of threads is set to 0 and all tasks revert to
+            sequential algorithm implementations. The same can be achieved at runtime
+            by passing <tt>n = 0</tt> to this function. In contrast, passing <tt>n = 1</tt>
+            causes the parallel algorithm versions to be executed with a single thread.
+            Both possibilities are mainly useful for debugging.
+        */
+    ParallelOptions & numThreads(const int n)
+    {
+        numThreads_ = actualNumThreads(n);
+        return *this;
+    }
 
 
-class ThreadPool {
-public:
+  private:
+        // helper function to compute the actual number of threads
+    static size_t actualNumThreads(const int userNThreads)
+    {
+        #ifdef VIGRA_SINGLE_THREADED
+            return 0;
+        #else
+            return userNThreads >= 0
+                       ? userNThreads
+                       : userNThreads == Nice
+                               ? std::thread::hardware_concurrency() / 2
+                               : std::thread::hardware_concurrency();
+        #endif
+    }
 
-    /**
-     * Create a thread pool with n threads. The constructor just launches some workers.
+    int numThreads_;
+};
+
+/********************************************************/
+/*                                                      */
+/*                      ThreadPool                      */
+/*                                                      */
+/********************************************************/
+
+    /**\brief Thread pool class to manage a set of parallel workers.
+
+        <b>\#include</b> \<vigra/threadpool.hxx\><br>
+        Namespace: vigra
+    */
+class ThreadPool
+{
+  public:
+
+    /** Create a thread pool from ParallelOptions. The constructor just launches
+        the desired number of workers. If the number of threads is zero,
+        no workers are started, and all tasks will be executed in synchronously
+        in the present thread.
      */
-    ThreadPool(size_t n);
+    ThreadPool(const ParallelOptions & options)
+    :   stop(false),
+        busy(0),
+        processed(0)
+    {
+        init(options);
+    }
+
+    /** Create a thread pool with n threads. The constructor just launches
+        the desired number of workers. If \arg n is <tt>ParallelOptions::Auto</tt>,
+        the number of threads is determined by <tt>std::thread::hardware_concurrency()</tt>.
+        <tt>ParallelOptions::Nice</tt> will create half as many threads.
+        If <tt>n = 0</tt>, no workers are started, and all tasks will be executed
+        synchronously in the present thread. If the preprocessor flag
+        <tt>VIGRA_SINGLE_THREADED</tt> is defined, the number of threads is always set
+        to zero (i.e. synchronous execution), regardless of the value of \arg n. This
+        is useful for debugging.
+     */
+    ThreadPool(const int n)
+    :   stop(false),
+        busy(0),
+        processed(0)
+    {
+        init(ParallelOptions().numThreads(n));
+    }
 
     /**
      * The destructor joins all threads.
@@ -79,7 +200,7 @@ public:
     /**
      * Enqueue function for tasks without return value.
      * This is a special case of the enqueueReturning template function, but
-     * some compilers fail on std::result_of<F(int)>::type for void(int)functions.
+     * some compilers fail on <tt>std::result_of<F(int)>::type</tt> for void(int) functions.
      */
     template<class F>
     std::future<void> enqueue(F&& f) ;
@@ -103,12 +224,15 @@ public:
 
 private:
 
+    // helper function to init the thread pool
+    void init(const ParallelOptions & options);
+
     // need to keep track of threads so we can join them
     std::vector<std::thread> workers;
 
     // the task queue
     std::queue<std::function<void(int)> > tasks;
-    
+
     // synchronization
     std::mutex queue_mutex;
     std::condition_variable worker_condition;
@@ -117,13 +241,10 @@ private:
     std::atomic<unsigned int> busy, processed;
 };
 
-inline ThreadPool::ThreadPool(size_t threads)
-    :   stop(false),
-        busy(0),
-        processed(0)
+inline void ThreadPool::init(const ParallelOptions & options)
 {
-    vigra_precondition(threads > 0, "ThreadPool::ThreadPool(): n_threads must not be zero.");
-    for(size_t ti = 0; ti<threads; ++ti)
+    const size_t actualNThreads = options.getNumThreads();
+    for(size_t ti = 0; ti<actualNThreads; ++ti)
     {
         workers.emplace_back(
             [ti,this]
@@ -174,7 +295,7 @@ inline ThreadPool::~ThreadPool()
 }
 
 template<class F>
-inline std::future<typename std::result_of<F(int)>::type> 
+inline std::future<typename std::result_of<F(int)>::type>
 ThreadPool::enqueueReturning(F&& f)
 {
     typedef typename std::result_of<F(int)>::type result_type;
@@ -182,21 +303,28 @@ ThreadPool::enqueueReturning(F&& f)
 
     auto task = std::make_shared<PackageType>(f);
     auto res = task->get_future();
-    {
-        std::unique_lock<std::mutex> lock(queue_mutex);
 
-        // don't allow enqueueing after stopping the pool
-        if(stop)
-            throw std::runtime_error("enqueue on stopped ThreadPool");
+    if(workers.size()>0){
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
 
-        tasks.emplace(
-            [task](int tid)
-            {
-                (*task)(tid);
-            }
-        );
+            // don't allow enqueueing after stopping the pool
+            if(stop)
+                throw std::runtime_error("enqueue on stopped ThreadPool");
+
+            tasks.emplace(
+                [task](int tid)
+                {
+                    (*task)(tid);
+                }
+            );
+        }
+        worker_condition.notify_one();
     }
-    worker_condition.notify_one();
+    else{
+        (*task)(0);
+    }
+
     return res;
 }
 
@@ -208,40 +336,49 @@ ThreadPool::enqueue(F&& f)
 
     auto task = std::make_shared<PackageType>(f);
     auto res = task->get_future();
-    {
-        std::unique_lock<std::mutex> lock(queue_mutex);
+    if(workers.size()>0){
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
 
-        // don't allow enqueueing after stopping the pool
-        if(stop)
-            throw std::runtime_error("enqueue on stopped ThreadPool");
+            // don't allow enqueueing after stopping the pool
+            if(stop)
+                throw std::runtime_error("enqueue on stopped ThreadPool");
 
-        tasks.emplace(
-            [task](int tid)
-            {
-                (*task)(tid);
-            }
-        );
+            tasks.emplace(
+                [task](int tid)
+                {
+                    (*task)(tid);
+                }
+            );
+        }
+        worker_condition.notify_one();
     }
-    worker_condition.notify_one();
+    else{
+        (*task)(0);
+    }
     return res;
 }
 
-
+/********************************************************/
+/*                                                      */
+/*                   parallel_foreach                   */
+/*                                                      */
+/********************************************************/
 
 // nItems must be either zero or std::distance(iter, end).
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
-    const uint64_t nItems,                   
-    ITER iter, 
-    ITER end, 
+    const std::ptrdiff_t nItems,
+    ITER iter,
+    ITER end,
     F && f,
     std::random_access_iterator_tag
 ){
-    uint64_t workload = std::distance(iter, end);
+    std::ptrdiff_t workload = std::distance(iter, end);
     vigra_precondition(workload == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
     const float workPerThread = float(workload)/pool.nThreads();
-    const uint64_t chunkedWorkPerThread = std::max<uint64_t>(roundi(workPerThread/3.0), 1);
+    const std::ptrdiff_t chunkedWorkPerThread = std::max<std::ptrdiff_t>(roundi(workPerThread/3.0), 1);
 
     std::vector<std::future<void> > futures;
     for( ;iter<end; iter+=chunkedWorkPerThread)
@@ -260,7 +397,9 @@ inline void parallel_foreach_impl(
         );
     }
     for (auto & fut : futures)
+    {
         fut.get();
+    }
 }
 
 
@@ -269,18 +408,18 @@ inline void parallel_foreach_impl(
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
-    const uint64_t nItems,                   
-    ITER iter, 
-    ITER end, 
+    const std::ptrdiff_t nItems,
+    ITER iter,
+    ITER end,
     F && f,
     std::forward_iterator_tag
 ){
     if (nItems == 0)
         nItems = std::distance(iter, end);
 
-    uint64_t workload = nItems;
+    std::ptrdiff_t workload = nItems;
     const float workPerThread = float(workload)/pool.nThreads();
-    const uint64_t chunkedWorkPerThread = std::max<uint64_t>(roundi(workPerThread/3.0), 1);
+    const std::ptrdiff_t chunkedWorkPerThread = std::max<std::ptrdiff_t>(roundi(workPerThread/3.0), 1);
 
     std::vector<std::future<void> > futures;
     for(;;)
@@ -322,9 +461,9 @@ inline void parallel_foreach_impl(
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
-    const uint64_t nItems,
-    ITER iter, 
-    ITER end, 
+    const std::ptrdiff_t nItems,
+    ITER iter,
+    ITER end,
     F && f,
     std::input_iterator_tag
 ){
@@ -347,17 +486,14 @@ inline void parallel_foreach_impl(
         fut.get();
 }
 
-
-
-/**
- * Runs the parallel foreach on a single thread.
- */
+// Runs foreach on a single thread.
+// Used for API compatibility when the numbe of threads is 0.
 template<class ITER, class F>
 inline void parallel_foreach_single_thread(
-    ITER begin, 
-    ITER end, 
+    ITER begin,
+    ITER end,
     F && f,
-    const uint64_t nItems = 0
+    const std::ptrdiff_t nItems = 0
 ){
     size_t n = 0;
     for (; begin != end; ++begin)
@@ -368,20 +504,115 @@ inline void parallel_foreach_single_thread(
     vigra_postcondition(n == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
 }
 
+/** \brief Apply a functor to all items in a range in parallel.
 
+    Create a thread pool (or use an existing one) to apply the functor \arg f
+    to all items in the range <tt>[begin, end)</tt> in parallel. \arg f must
+    be callable with two arguments of type <tt>size_t</tt> and <tt>T</tt>, where
+    the first argument is the thread index (starting at 0) and T is convertible
+    from the iterator's <tt>reference_type</tt> (i.e. the result of <tt>*begin</tt>).
 
-/**
- * Just like the other parallel_foreach overload, but use the given threadpool
- * instead of creating a new one.
+    If the iterators are forward iterators (<tt>std::forward_iterator_tag</tt>), you
+    can provide the optional argument <tt>nItems</tt> to avoid the a
+    <tt>std::distance(begin, end)</tt> call to compute the range's length.
+
+    Parameter <tt>nThreads</tt> controls the number of threads. <tt>parallel_foreach</tt>
+    will split the work into about three times as many parallel tasks.
+    If <tt>nThreads = ParallelOptions::Auto</tt>, the number of threads is set to
+    the machine default (<tt>std::thread::hardware_concurrency()</tt>).
+
+    If <tt>nThreads = 0</tt>, the function will not use threads,
+    but will call the functor sequentially. This can also be enforced by setting the
+    preprocessor flag <tt>VIGRA_SINGLE_THREADED</tt>, ignoring the value of
+    <tt>nThreads</tt> (useful for debugging).
+
+    <b> Declarations:</b>
+
+    \code
+    namespace vigra {
+        // pass the desired number of threads or ParallelOptions::Auto
+        // (creates an internal thread pool accordingly)
+        template<class ITER, class F>
+        void parallel_foreach(int64_t nThreads,
+                              ITER begin, ITER end,
+                              F && f,
+                              const uint64_t nItems = 0);
+
+        // use an existing thread pool
+        template<class ITER, class F>
+        void parallel_foreach(ThreadPool & pool,
+                              ITER begin, ITER end,
+                              F && f,
+                              const uint64_t nItems = 0);
+
+        // pass the integers from 0 ... (nItems-1) to the functor f,
+        // using the given number of threads or ParallelOptions::Auto
+        template<class F>
+        void parallel_foreach(int64_t nThreads,
+                              uint64_t nItems,
+                              F && f);
+
+        // likewise with an existing thread pool
+        template<class F>
+        void parallel_foreach(ThreadPool & threadpool,
+                              uint64_t nItems,
+                              F && f);
+    }
+    \endcode
+
+    <b>Usage:</b>
+
+    \code
+    #include <iostream>
+    #include <algorithm>
+    #include <vector>
+    #include <vigra/threadpool.hxx>
+
+    using namespace std;
+    using namespace vigra;
+
+    int main()
+    {
+        size_t const n_threads = 4;
+        size_t const n = 2000;
+        vector<int> input(n);
+
+        auto iter = input.begin(),
+             end  = input.end();
+
+        // fill input with 0, 1, 2, ...
+        iota(iter, end, 0);
+
+        // compute the sum of the elements in the input vector.
+        // (each thread computes the partial sum of the items it sees
+        //  and stores the sum at the appropriate index of 'results')
+        vector<int> results(n_threads, 0);
+        parallel_foreach(n_threads, iter, end,
+            // the functor to be executed, defined as a lambda function
+            // (first argument: thread ID, second argument: result of *iter)
+            [&results](size_t thread_id, int items)
+            {
+                results[thread_id] += items;
+            }
+        );
+
+        // collect the partial sums of all threads
+        int sum = accumulate(results.begin(), results.end(), 0);
+
+        cout << "The sum " << sum << " should be equal to " << (n*(n-1))/2 << endl;
+    }
+    \endcode
  */
+doxygen_overloaded_function(template <...> void parallel_foreach)
+
 template<class ITER, class F>
 inline void parallel_foreach(
     ThreadPool & pool,
-    ITER begin, 
-    ITER end, 
+    ITER begin,
+    ITER end,
     F && f,
-    const uint64_t nItems = 0
-){
+    const std::ptrdiff_t nItems = 0)
+{
     if(pool.nThreads()>1)
     {
         parallel_foreach_impl(pool,nItems, begin, end, f,
@@ -393,64 +624,41 @@ inline void parallel_foreach(
     }
 }
 
-
-
-/**
- * Create a threadpool to apply the functor F to all items in [begin, end) in
- * parallel. F must be callable with two arguments of type size_t and T, where
- * the first argument is the thread index (starting by 0) and T is the value
- * type of the iterators.
- * 
- * If ITER is a forward iterator (std::forward_iterator_tag) and the optional
- * argument nItems is not set, nItems is computed with std::distance(begin, end).
- * 
- * Example:
- * \code
- * #include <iostream>
- * #include <algorithm>
- * #include <vector>
- * #include <vigra/threadpool.hxx>
- * 
- * using namespace std;
- * using namespace vigra;
- * 
- * int main()
- * {
- *     size_t const n_threads = 4;
- *     size_t const n = 2000;
- *     vector<size_t> input(n);
- *     iota(input.begin(), input.end(), 0);
- *     
- *     // Compute the sum of the elements in the input vector.
- *     vector<size_t> results(n_threads, 0);
- *     parallel_foreach(n_threads, input.begin(), input.end(),
- *         [&results](size_t thread_id, size_t x)
- *         {
- *             results[thread_id] += x;
- *         }
- *     );
- *     size_t const sum = accumulate(results.begin(), results.end(), 0);
- *     
- *     cout << "The sum " << sum << " should be equal to " << (n*(n-1))/2 << endl;
- * }
- * \endcode
- */
 template<class ITER, class F>
 inline void parallel_foreach(
     int64_t nThreads,
-    ITER begin, 
-    ITER end, 
-    F && f,                  
-    const uint64_t nItems = 0
-){
-    nThreads = nThreads==-1 ? std::thread::hardware_concurrency() : nThreads;
-    vigra_precondition(nThreads > 0, "parallel_foreach(): nThreads must be > 0 or -1.");
-    
+    ITER begin,
+    ITER end,
+    F && f,
+    const std::ptrdiff_t nItems = 0)
+{
+
     ThreadPool pool(nThreads);
     parallel_foreach(pool, begin, end, f, nItems);
 }
 
+template<class F>
+inline void parallel_foreach(
+    int64_t nThreads,
+    std::ptrdiff_t nItems,
+    F && f)
+{
+    auto iter = range(nItems);
+    parallel_foreach(nThreads, iter, iter.end(), f, nItems);
+}
 
+
+template<class F>
+inline void parallel_foreach(
+    ThreadPool & threadpool,
+    std::ptrdiff_t nItems,
+    F && f)
+{
+    auto iter = range(nItems);
+    parallel_foreach(threadpool, iter, iter.end(), f, nItems);
+}
+
+//@}
 
 } // namespace vigra
 

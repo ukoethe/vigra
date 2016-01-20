@@ -449,9 +449,12 @@ public:
     An ImagePyramid manages an array of images of the type given as
     template parameter, where each level has half the width and height
     of its predecessor.  It actually represents a sequence of pyramid
-    levels whose start and end index are configurable.  For Burt-style
-    pyramids, see also \ref pyramidReduceBurtFilter and \ref
-    pyramidExpandBurtFilter.
+    levels whose start and end index are configurable.  
+    
+    To initialize all pyramid levels in the sense of a Gaussian pyramid,
+    use \ref pyramidReduceBurtFilter() and \ref pyramidExpandBurtFilter().
+    To create and reconstruct a Laplcaian pyramid, use 
+    \ref pyramidReduceBurtLaplacian() and \ref pyramidExpandBurtLaplacian().
 
     A customized allocator can be passed as a template argument and
     via the constructor.  By default, the allocator of the

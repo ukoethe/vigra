@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import division, print_function
 
 import re
 import glob
@@ -158,8 +157,11 @@ def insertMissingTemplateDeclarations(text):
     return text
 
 def processFile(fileName):
-    print(fileName)         # log message
-    f = open(fileName)
+    print(fileName)          # log message
+    if sys.version_info[0] < 3:
+        f = open(fileName)
+    else:
+        f = open(fileName,encoding = "ISO-8859-1")
     text = f.read()
     f.close()
     
@@ -168,9 +170,9 @@ def processFile(fileName):
     if re.search('.*/index.html', fileName) or re.search('.*\\index.html', fileName):
         text = re.sub(r'<h3 (align="center"|class="version")>\d+\.\d+\.\d+ </h3>', '', text)
         text = indexPageHeading.sub(indexPageHeadingReplacement, text)
-        
+
     text = convertHeadings(text)
-    
+
     text = insertMissingTemplateDeclarations(text)
 
     f = open(fileName, 'w+')

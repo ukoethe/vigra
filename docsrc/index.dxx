@@ -30,6 +30,8 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>Convert between RGB and other color spaces, such as L*u*v*, Y'PbPr</em>
     <LI> \ref ImageProcessing
         <BR>&nbsp;&nbsp;&nbsp;<em>Point operators, image arithmetic, convolution, morphology</em>
+    <LI> \ref Registration
+         <BR>&nbsp;&nbsp;&nbsp;<em>Transforming different images into a common coordinate system</em>
     <LI> \ref ImageAnalysis
         <BR>&nbsp;&nbsp;&nbsp;<em>Segmentation and feature extraction algorithms</em>
     <LI> \ref MachineLearning
@@ -318,6 +320,10 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>1D, 2D, and nD filters, including separable and recursive convolution</em>
     <LI> \ref NonLinearDiffusion
          <BR>&nbsp;&nbsp;&nbsp;<em>Edge-preserving smoothing and denoising</em>
+    <LI> \ref Correlation
+         <BR>&nbsp;&nbsp;&nbsp;<em>Fast and slow algorithms to estimate the correlation between images</em>
+    <LI> \ref Registration
+         <BR>&nbsp;&nbsp;&nbsp;<em>Transforming different images into a common coordinate system</em>
     <LI> \ref FourierTransform
          <BR>&nbsp;&nbsp;&nbsp;<em>forward and backward FFT, cosine transform, and related
                  functionality</em>

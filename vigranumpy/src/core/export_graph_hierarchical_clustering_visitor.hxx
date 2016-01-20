@@ -116,6 +116,13 @@ public:
         .def("contractEdge",&pyContractEdgeA)
         .def("contractEdge",&pyContractEdgeB)
         .def("hasEdgeId",&pyHasEdgeId)
+
+        .def("graphLabels",registerConverters(&pyCurrentLabeling<MergeGraph>),
+            (
+                python::arg("out")=python::object()
+            )
+        )
+
         ;
 
         python::def("__mergeGraph",&pyMergeGraphConstructor ,  
@@ -209,6 +216,26 @@ public:
         return new MergeGraphAdaptor<GRAPH>(graph);
     }
 
+
+    template<class MG>
+    static NumpyAnyArray pyCurrentLabeling(
+        const MG  & mergeGraph,
+        UInt32NodeArray   resultArray
+    ){
+        resultArray.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(mergeGraph.graph()));
+
+        UInt32NodeArrayMap resultArrayMap(mergeGraph.graph(),resultArray);
+        //std::cout<<"find result labels\n";
+
+        //USETICTOC;
+
+        //TIC;
+        for(NodeIt iter(mergeGraph.graph());iter!=lemon::INVALID;++iter ){
+            resultArrayMap[*iter]=mergeGraph.reprNodeId(mergeGraph.graph().id(*iter));
+        }
+        //TOC;
+        return resultArray;
+    }
 
 
     template <class classT>
@@ -361,15 +388,15 @@ public:
         resultArray.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(hcluster.graph()));
 
         UInt32NodeArrayMap resultArrayMap(hcluster.graph(),resultArray);
-        std::cout<<"find result labels\n";
+        //std::cout<<"find result labels\n";
 
-        USETICTOC;
+        //USETICTOC;
 
-        TIC;
+        //TIC;
         for(NodeIt iter(hcluster.graph());iter!=lemon::INVALID;++iter ){
             resultArrayMap[*iter]=hcluster.mergeGraph().reprNodeId(hcluster.graph().id(*iter));
         }
-        TOC;
+        //TOC;
         return resultArray;
     }
 
