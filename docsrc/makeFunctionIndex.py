@@ -143,28 +143,32 @@ generateFunctionIndex(functionList)
 # crosslinking of vigranumpy documentation.
 # Note that '::' are not allowed in reStructuedText link names,
 # so we have to use '.' instead.
-replaces=open("../vigranumpy/docsrc/c_api_replaces.txt","w")
-lowercase_names = set()
-for i in range(len(functionList)):
-    functionName = functionList[i][1]
-    overloadDisambiguation = functionList[i][2]
-    if i > 0 and functionName == functionList[i-1][1] and \
-                   overloadDisambiguation == functionList[i-1][2]:
-        continue
-    if overloadDisambiguation != "":
-        functionName = overloadDisambiguation +'.' + functionName
-    link = functionList[i][0]
-    replaces.write(functionName+":"+link+"\n")
-    lowercase_names.add(functionName.lower())
-for i in range(len(classList)):
-    className = classList[i][1]
-    namespace = classList[i][2]
-    if (i > 0 and className == classList[i-1][1]) or \
-       (i < len(classList)-1 and className == classList[i+1][1]):
-        namespace = namespace.replace('::', '.')
-        className = namespace +'.' + className
-    if className.lower() in lowercase_names:
-        className = className + 'Class'
-    link = classList[i][0]
-    replaces.write(className+":"+link+"\n")
-replaces.close()
+try:
+    replaces=open("../vigranumpy/docsrc/c_api_replaces.txt","w")
+except IOError:
+    print("Cannot open the 'c_api_replaces.txt' file, skipping.")
+else:
+    lowercase_names = set()
+    for i in range(len(functionList)):
+        functionName = functionList[i][1]
+        overloadDisambiguation = functionList[i][2]
+        if i > 0 and functionName == functionList[i-1][1] and \
+                    overloadDisambiguation == functionList[i-1][2]:
+            continue
+        if overloadDisambiguation != "":
+            functionName = overloadDisambiguation +'.' + functionName
+        link = functionList[i][0]
+        replaces.write(functionName+":"+link+"\n")
+        lowercase_names.add(functionName.lower())
+    for i in range(len(classList)):
+        className = classList[i][1]
+        namespace = classList[i][2]
+        if (i > 0 and className == classList[i-1][1]) or \
+        (i < len(classList)-1 and className == classList[i+1][1]):
+            namespace = namespace.replace('::', '.')
+            className = namespace +'.' + className
+        if className.lower() in lowercase_names:
+            className = className + 'Class'
+        link = classList[i][0]
+        replaces.write(className+":"+link+"\n")
+    replaces.close()
