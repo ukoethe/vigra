@@ -110,7 +110,7 @@ The following sub-modules group related functionality:
 ''' % _vigra_doc_path
 
 from .__version__ import version
-import vigra.vigranumpycore
+import vigra.vigranumpycore as vigranumpycore
 import vigra.arraytypes as arraytypes
 import vigra.impex as impex
 import vigra.sampling as sampling
@@ -128,7 +128,16 @@ import vigra.blockwise as blockwise
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 
+try:
+    import vigra.fourier as fourier
+except Exception as e:
+    _fallbackModule('fourier',
+    '''
+    %s
 
+    Make sure that the fftw3 libraries are found during compilation and import.
+    They may be downloaded at http://www.fftw.org/.''' % str(e))
+    import fourier
 
 class Timer:
     def __init__(self, name, verbose=True):
@@ -148,33 +157,16 @@ class Timer:
             print("... took ", self.interval, "sec")
 
 
-
-
-
-
-
-try:
-    import fourier
-except Exception as e:
-    _fallbackModule('vigra.fourier',
-    '''
-    %s
-
-    Make sure that the fftw3 libraries are found during compilation and import.
-    They may be downloaded at http://www.fftw.org/.''' % str(e))
-    import fourier
-
 # import most frequently used functions
-from .arraytypes import *
+from vigra.arraytypes import *
 standardArrayType = arraytypes.VigraArray
 defaultAxistags = arraytypes.VigraArray.defaultAxistags
 
-from .vigranumpycore import ChunkedArrayFull, ChunkedArrayLazy, ChunkedArrayCompressed, ChunkedArrayTmpFile, Compression
+from vigra.vigranumpycore import ChunkedArrayFull, ChunkedArrayLazy, ChunkedArrayCompressed, ChunkedArrayTmpFile, Compression
 try:
-    from vigranumpycore import ChunkedArrayHDF5, HDF5Mode
+    from vigra.vigranumpycore import ChunkedArrayHDF5, HDF5Mode
 except:
     pass
-
 
 from vigra.impex import readImage, readVolume
 
