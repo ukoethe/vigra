@@ -144,7 +144,7 @@ bindNumpyArray(NumpyAnyArray self, Shape const & stop)
     if(stop == Shape())
         return python::object(self);
 
-    python_ptr func(PyString_FromString("__getitem__"), python_ptr::keep_count);
+    python_ptr func(pythonFromData("__getitem__"));
     pythonToCppException(func);
     python_ptr index(PyTuple_New(stop.size()), python_ptr::keep_count);
     pythonToCppException(index);

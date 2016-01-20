@@ -80,20 +80,20 @@ PyObject * Edgel__repr__(Edgel const & e)
         std::stringstream s;
         s << std::setprecision(14)
           << "Edgel(x=" << e.x << ", y=" << e.y << ", strength=" << e.strength << ", angle=" << e.orientation << ")";
-        return stringToPython(s.str().c_str());
+        return pythonFromData(s.str().c_str());
 }
 
 template < class PixelType>
 python::list
 pythonFindEdgelsFromGrad(NumpyArray<2, TinyVector<PixelType, 2> > grad,
-                         double threshold) 
+                         double threshold)
 {
     std::vector<Edgel> edgels;
     {
         PyAllowThreads _pythread;
         cannyEdgelList(srcImageRange(grad), edgels);
     }
-    
+
     python::list pyEdgels;
     for(unsigned int i = 0; i < edgels.size(); ++i)
     {
@@ -113,7 +113,7 @@ pythonFindEdgels(NumpyArray<2, Singleband<PixelType> > image,
         PyAllowThreads _pythread;
         cannyEdgelList(srcImageRange(image), edgels, scale);
     }
-    
+
     python::list pyEdgels;
     for(unsigned int i = 0; i < edgels.size(); ++i)
     {
@@ -126,14 +126,14 @@ pythonFindEdgels(NumpyArray<2, Singleband<PixelType> > image,
 template < class PixelType>
 python::list
 pythonFindEdgels3x3FromGrad(NumpyArray<2, TinyVector<PixelType, 2> > grad,
-                            double threshold) 
+                            double threshold)
 {
     std::vector<Edgel> edgels;
     {
         PyAllowThreads _pythread;
         cannyEdgelList3x3(srcImageRange(grad), edgels);
     }
-    
+
     python::list pyEdgels;
     for(unsigned int i = 0; i < edgels.size(); ++i)
     {
@@ -163,154 +163,154 @@ pythonFindEdgels3x3(NumpyArray<2, Singleband<PixelType> > image,
 }
 
 template < class SrcPixelType, typename DestPixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonCannyEdgeImage(NumpyArray<2, Singleband<SrcPixelType> > image,
-                     double scale, double threshold, DestPixelType edgeMarker, 
+                     double scale, double threshold, DestPixelType edgeMarker,
                      NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
     std::string description("Canny edges, scale=");
     description += asString(scale) + ", threshold=" + asString(threshold);
 
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
-            "cannyEdgeImage(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "cannyEdgeImage(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
-        cannyEdgeImage(srcImageRange(image), destImage(res), 
+        cannyEdgeImage(srcImageRange(image), destImage(res),
                        scale, threshold, edgeMarker);
     }
-    
+
     return res;
 }
 
 template < class SrcPixelType, typename DestPixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonCannyEdgeImageWithThinning(NumpyArray<2, Singleband<SrcPixelType> > image,
-                                 double scale, double threshold, 
+                                 double scale, double threshold,
                                  DestPixelType edgeMarker, bool addBorder = true,
                                  NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
     std::string description("Canny edges with thinning, scale=");
     description += asString(scale) + ", threshold=" + asString(threshold);
 
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
-            "cannyEdgeImageWithThinning(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "cannyEdgeImageWithThinning(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
         cannyEdgeImageWithThinning(srcImageRange(image), destImage(res),
                                    scale, threshold, edgeMarker, addBorder);
     }
-    
+
     return res;
 }
 
 template < class SrcPixelType, typename DestPixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonShenCastanEdgeImage(NumpyArray<2, Singleband<SrcPixelType> > image,
-                          double scale, double threshold, DestPixelType edgeMarker, 
+                          double scale, double threshold, DestPixelType edgeMarker,
                           NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
     std::string description("Shen/Castan edges, scale=");
     description += asString(scale) + ", threshold=" + asString(threshold);
 
-    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
-            "shenCastanEdgeImage(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "shenCastanEdgeImage(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
-        differenceOfExponentialEdgeImage(srcImageRange(image), destImage(res), 
+        differenceOfExponentialEdgeImage(srcImageRange(image), destImage(res),
                                          scale, threshold, edgeMarker);
     }
-    
+
     return res;
 }
 
 template < class SrcPixelType, typename DestPixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonShenCastanCrackEdgeImage(NumpyArray<2, Singleband<SrcPixelType> > image,
-                               double scale, double threshold, DestPixelType edgeMarker, 
+                               double scale, double threshold, DestPixelType edgeMarker,
                                NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
     std::string description("Shen/Castan crack edges, scale=");
     description += asString(scale) + ", threshold=" + asString(threshold);
 
     MultiArrayShape<2>::type newShape = 2*image.shape() - MultiArrayShape<2>::type(1,1);
-    res.reshapeIfEmpty(image.taggedShape().resize(newShape).setChannelDescription(description), 
-                       "shenCastanCrackEdgeImage(): Output array has wrong shape. Needs to be (w,h)*2 - 1.");    
-    
+    res.reshapeIfEmpty(image.taggedShape().resize(newShape).setChannelDescription(description),
+                       "shenCastanCrackEdgeImage(): Output array has wrong shape. Needs to be (w,h)*2 - 1.");
+
     {
         PyAllowThreads _pythread;
-        differenceOfExponentialCrackEdgeImage(srcImageRange(image), destImage(res), 
+        differenceOfExponentialCrackEdgeImage(srcImageRange(image), destImage(res),
                                               scale, threshold, edgeMarker);
     }
-    
+
     return res;
 }
 
 template < class PixelType>
-NumpyAnyArray 
+NumpyAnyArray
 pythonRemoveShortEdges(NumpyArray<2, Singleband<PixelType> > image,
-                       int minEdgeLength, PixelType nonEdgeMarker, 
+                       int minEdgeLength, PixelType nonEdgeMarker,
                        NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.taggedShape(), 
-            "removeShortEdges(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape(),
+            "removeShortEdges(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
         copyImage(srcImageRange(image), destImage(res));
         removeShortEdges(destImageRange(res), minEdgeLength, nonEdgeMarker);
     }
-    
+
     return res;
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonBeautifyCrackEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
-                             PixelType edgeMarker, 
+                             PixelType edgeMarker,
                              PixelType backgroundMarker,
                              NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.taggedShape(), 
-            "beautifyCrackEdgeImage(): Output array has wrong shape.");    
-    
+    res.reshapeIfEmpty(image.taggedShape(),
+            "beautifyCrackEdgeImage(): Output array has wrong shape.");
+
     {
         PyAllowThreads _pythread;
         copyImage(srcImageRange(image), destImage(res));
         beautifyCrackEdgeImage(destImageRange(res), edgeMarker, backgroundMarker);
     }
-    
+
     return res;
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonCloseGapsInCrackEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
                                 PixelType edgeMarker,
                                 NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.taggedShape(), 
+    res.reshapeIfEmpty(image.taggedShape(),
             "closeGapsInCrackEdgeImage(): Output array has wrong shape.");
-    
+
     {
         PyAllowThreads _pythread;
         copyImage(srcImageRange(image), destImage(res));
         closeGapsInCrackEdgeImage(destImageRange(res), edgeMarker);
     }
-    
+
     return res;
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonRegionImageToCrackEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
                                   PixelType edgeLabel = 0,
                                   NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
     MultiArrayShape<2>::type newShape = 2*image.shape() - MultiArrayShape<2>::type(1,1);
-    res.reshapeIfEmpty(image.taggedShape().resize(newShape), 
+    res.reshapeIfEmpty(image.taggedShape().resize(newShape),
             "regionImageToCrackEdgeImage(): Output array has wrong shape. Needs to be (w,h)*2 - 1.");
 
     {
@@ -321,12 +321,12 @@ pythonRegionImageToCrackEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonRegionImageToEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
                              PixelType edgeLabel = 1,
                              NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.taggedShape(), 
+    res.reshapeIfEmpty(image.taggedShape(),
             "regionImageToEdgeImage2D(): Output array has wrong shape.");
 
     {
@@ -348,7 +348,7 @@ void defineEdgedetection()
                                   "For details, see Edgel_ in the vigra C++ documentation.\n",
                          init<>("Standard constructor::\n\n   Edgel()\n\n"));
     edgel
-       .def(init<float, float, float, float>(args("x", "y", "strength", "orientation"), 
+       .def(init<float, float, float, float>(args("x", "y", "strength", "orientation"),
             "Constructor::\n\n    Edgel(x, y, strength, orientation)\n\n"))
        .def_readwrite("x", &Edgel::x, "The edgel's x position.")
        .def_readwrite("y", &Edgel::y, "The edgel's y position.")
@@ -360,7 +360,7 @@ void defineEdgedetection()
        .def("__len__", &Edgel__len__)
        ;
 
-    def("cannyEdgelList", 
+    def("cannyEdgelList",
         registerConverters(&pythonFindEdgelsFromGrad<float>),
         args("gradient", "threshold"),
         "Return a list of :class:`Edgel` objects whose strength is at least 'threshold'.\n\n"
@@ -372,12 +372,12 @@ void defineEdgedetection()
         "gradient internally at 'scale'.\n\n"
         "For details see cannyEdgelList_ in the vigra C++ documentation.\n");
 
-    def("cannyEdgelList",  
+    def("cannyEdgelList",
         registerConverters(&pythonFindEdgels<float>),
         args("image", "scale", "threshold"),
          "Compute edgels of a 2D scalar image, given the filter scale.\n");
 
-    def("cannyEdgelList3x3", 
+    def("cannyEdgelList3x3",
         registerConverters(&pythonFindEdgels3x3FromGrad<float>),
         args("gradient", "threshold"),
         "Return a list of :class:`Edgel` objects whose strength is at least 'threshold'.\n\n"
@@ -390,7 +390,7 @@ void defineEdgedetection()
         "those of :func:`cannyEdgelList`.\n\n"
         "For details see cannyEdgelList3x3_ in the vigra C++ documentation.\n");
 
-    def("cannyEdgelList3x3",  
+    def("cannyEdgelList3x3",
         registerConverters(&pythonFindEdgels3x3<float>),
         args("image", "scale", "threshold"),
          "Compute edgels of a 2D scalar image, given the filter scale.\n");
@@ -440,7 +440,7 @@ void defineEdgedetection()
 
     def("regionImageToEdgeImage",
         registerConverters(&pythonRegionImageToEdgeImage<npy_uint32>),
-        (arg("image"), 
+        (arg("image"),
          arg("edgeLabel") = 1,
          arg("out")=python::object()),
         "Transform a labeled uint32 image into an edge image.\n\n"
@@ -448,23 +448,23 @@ void defineEdgedetection()
 
     def("regionImageToEdgeImage",
         registerConverters(&pythonRegionImageToEdgeImage<npy_uint64>),
-        (arg("image"), 
+        (arg("image"),
          arg("edgeLabel") = 1,
          arg("out")=python::object()),
          "Likewise for a uint64 image.\n");
 
     def("regionImageToCrackEdgeImage",
          registerConverters(&pythonRegionImageToCrackEdgeImage<npy_uint32>),
-         (arg("image"), 
-          arg("edgeLabel") = 0, 
+         (arg("image"),
+          arg("edgeLabel") = 0,
           arg("out")=python::object()),
          "Transform a labeled uint32 image into a crack edge image. \n\n"
          "For details see regionImageToCrackEdgeImage_ in the vigra C++ documentation.\n");
 
     def("regionImageToCrackEdgeImage",
          registerConverters(&pythonRegionImageToCrackEdgeImage<npy_uint64>),
-         (arg("image"), 
-          arg("edgeLabel") = 0, 
+         (arg("image"),
+          arg("edgeLabel") = 0,
           arg("out")=python::object()),
          "Likewise for a uint64 image.\n");
 

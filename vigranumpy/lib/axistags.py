@@ -241,6 +241,7 @@ def benchmark(expression):
        when getitem returns a value, the slowdown is about 3 (due to Python calls)
     '''
     import timeit, axistags
+    from imp import reload
     reload(axistags)
     repetitions = 100000
     t1 = timeit.Timer(expression,

@@ -225,13 +225,12 @@ inline void swap(python_ptr & a, python_ptr & b)
 
 /****************************************************************/
 
-inline python_ptr 
+inline python_ptr
 makePythonDictionary(char const * k1 = 0, PyObject * a1 = 0,
                     char const * k2 = 0, PyObject * a2 = 0,
                     char const * k3 = 0, PyObject * a3 = 0)
 {
-    python_ptr dict(PyDict_New(), python_ptr::keep_count);
-    pythonToCppException(dict);
+    python_ptr dict(PyDict_New(), python_ptr::new_nonzero_reference);
     if(k1 && a1)
         PyDict_SetItemString(dict, k1, a1);
     if(k2 && a2)
@@ -245,58 +244,27 @@ makePythonDictionary(char const * k1 = 0, PyObject * a1 = 0,
 
 inline python_ptr pythonFromData(bool t)
 {
-    python_ptr res(PyBool_FromLong(t ? 1 : 0), python_ptr::keep_count);
-    pythonToCppException(res);
-    return res;
+    return python_ptr(PyBool_FromLong(t ? 1 : 0), python_ptr::new_nonzero_reference);
 }
 
-inline python_ptr pythonFromData(std::string const & s)
+inline python_ptr pythonFromData(char const * str)
 {
 #if PY_MAJOR_VERSION < 3
-    python_ptr res(PyString_FromString(s.c_str()), python_ptr::keep_count);
+	return python_ptr(PyString_FromString(str), python_ptr::new_nonzero_reference);
 #else
-    python_ptr res(PyUnicode_FromString(s.c_str()), python_ptr::keep_count);
+	return python_ptr(PyUnicode_FromString(str), python_ptr::new_nonzero_reference);
 #endif
-    pythonToCppException(res);
-    return res;
 }
 
-inline python_ptr pythonFromData(long long t)
+inline python_ptr pythonFromData(std::string const & str)
 {
-    python_ptr res;
-    if(t > (long long)NumericTraits<long>::max() || t < (long long)NumericTraits<long>::min())
-        res = python_ptr(PyLong_FromLongLong(t), python_ptr::keep_count);
-    else
-#if PY_MAJOR_VERSION < 3
-        res = python_ptr(PyInt_FromLong((long)t), python_ptr::keep_count);
-#else
-        res = python_ptr(PyLong_FromLong((long)t), python_ptr::keep_count);
-#endif
-    pythonToCppException(res);
-    return res;
-}
-
-inline python_ptr pythonFromData(unsigned long long t)
-{
-    python_ptr res;
-    if(t > (unsigned long long)NumericTraits<long>::max())
-        res = python_ptr(PyLong_FromUnsignedLongLong(t), python_ptr::keep_count);
-    else
-#if PY_MAJOR_VERSION < 3
-        res = python_ptr(PyInt_FromLong((long)t), python_ptr::keep_count);
-#else
-        res = python_ptr(PyLong_FromLong((long)t), python_ptr::keep_count);
-#endif
-    pythonToCppException(res);
-    return res;
+	return pythonFromData(str.c_str());
 }
 
 #define VIGRA_PYTHON_FROM_DATA(type, fct, cast_type) \
 inline python_ptr pythonFromData(type t) \
 { \
-    python_ptr res(fct((cast_type)t), python_ptr::keep_count); \
-    pythonToCppException(res); \
-    return res; \
+    return python_ptr(fct((cast_type)t), python_ptr::new_nonzero_reference); \
 }
 
 #if PY_MAJOR_VERSION < 3
@@ -310,7 +278,6 @@ inline python_ptr pythonFromData(type t) \
     VIGRA_PYTHON_FROM_DATA(unsigned int, PyInt_FromSize_t, size_t)
     VIGRA_PYTHON_FROM_DATA(float, PyFloat_FromDouble, double)
     VIGRA_PYTHON_FROM_DATA(double, PyFloat_FromDouble, double)
-    VIGRA_PYTHON_FROM_DATA(char const *, PyString_FromString, char const *)
 #else
     VIGRA_PYTHON_FROM_DATA(signed char, PyLong_FromLong, long)
     VIGRA_PYTHON_FROM_DATA(unsigned char, PyLong_FromLong, long)
@@ -322,9 +289,24 @@ inline python_ptr pythonFromData(type t) \
     VIGRA_PYTHON_FROM_DATA(unsigned int, PyLong_FromSize_t, size_t)
     VIGRA_PYTHON_FROM_DATA(float, PyFloat_FromDouble, double)
     VIGRA_PYTHON_FROM_DATA(double, PyFloat_FromDouble, double)
-    VIGRA_PYTHON_FROM_DATA(char const *, PyUnicode_FromString, char const *)
 #endif
 #undef VIGRA_PYTHON_FROM_DATA
+
+inline python_ptr pythonFromData(long long t)
+{
+    if(t > (long long)NumericTraits<long>::max() || t < (long long)NumericTraits<long>::min())
+        return python_ptr(PyLong_FromLongLong(t), python_ptr::new_nonzero_reference);
+    else
+        return pythonFromData((long)t);
+}
+
+inline python_ptr pythonFromData(unsigned long long t)
+{
+    if(t > (unsigned long long)NumericTraits<long>::max())
+        return python_ptr(PyLong_FromUnsignedLongLong(t), python_ptr::new_nonzero_reference);
+    else
+        return pythonFromData((long)t);
+}
 
 /****************************************************************/
 
@@ -362,11 +344,11 @@ inline type dataFromPython(PyObject * data, type const & defaultVal) \
 VIGRA_DATA_FROM_PYTHON(float, PyFloat_Check, PyFloat_AsDouble)
 VIGRA_DATA_FROM_PYTHON(double, PyFloat_Check, PyFloat_AsDouble)
 
-inline std::string dataFromPython(PyObject * data, const char * defaultVal) 
-{ 
+inline std::string dataFromPython(PyObject * data, const char * defaultVal)
+{
 #if PY_MAJOR_VERSION < 3
-    return data && PyString_Check(data) 
-        ? std::string(PyString_AsString(data))  
+    return data && PyString_Check(data)
+        ? std::string(PyString_AsString(data))
 #else
 	python_ptr ascii(PyUnicode_AsASCIIString(data), python_ptr::keep_count);
     return data && PyBytes_Check(ascii)
@@ -375,11 +357,11 @@ inline std::string dataFromPython(PyObject * data, const char * defaultVal)
         : std::string(defaultVal);
 }
 
-inline std::string dataFromPython(PyObject * data, std::string const & defaultVal) 
-{ 
+inline std::string dataFromPython(PyObject * data, std::string const & defaultVal)
+{
 #if PY_MAJOR_VERSION < 3
-    return data && PyString_Check(data) 
-        ? std::string(PyString_AsString(data)) 
+    return data && PyString_Check(data)
+        ? std::string(PyString_AsString(data))
 #else
 	python_ptr ascii(PyUnicode_AsASCIIString(data), python_ptr::keep_count);
 	return data && PyBytes_Check(ascii)
@@ -388,51 +370,23 @@ inline std::string dataFromPython(PyObject * data, std::string const & defaultVa
         : defaultVal;
 }
 
-inline python_ptr dataFromPython(PyObject * data, python_ptr defaultVal) 
-{ 
+inline python_ptr dataFromPython(PyObject * data, python_ptr defaultVal)
+{
     return data
-             ? python_ptr(data) 
-             : defaultVal; 
+             ? python_ptr(data)
+             : defaultVal;
 }
 
 #undef VIGRA_DATA_FROM_PYTHON
 
 /****************************************************************/
 
-inline
-python_ptr longToPython(long nbr)
-{
-#if PY_MAJOR_VERSION < 3
-	return python_ptr(PyInt_FromLong(nbr), python_ptr::new_nonzero_reference);
-#else
-	return python_ptr(PyLong_FromLong(nbr), python_ptr::new_nonzero_reference);
-#endif
-}
-
-inline
-python_ptr stringToPython(char const * str)
-{
-#if PY_MAJOR_VERSION < 3
-	return python_ptr(PyString_FromString(str), python_ptr::new_nonzero_reference);
-#else
-	return python_ptr(PyUnicode_FromString(str), python_ptr::new_nonzero_reference);
-#endif
-}
-
-inline
-python_ptr stringToPython(std::string const * str)
-{
-	return stringToPython(str->c_str());
-}
-
-
-
 template <class T>
 T pythonGetAttr(PyObject * obj, const char * key, T defaultValue)
 {
     if(!obj)
-        return defaultValue;        
-    python_ptr k(stringToPython(key));
+        return defaultValue;
+    python_ptr k(pythonFromData(key));
     pythonToCppException(k);
     python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
     if(!pres)
@@ -440,12 +394,12 @@ T pythonGetAttr(PyObject * obj, const char * key, T defaultValue)
     return dataFromPython(pres, defaultValue);
 }
 
-inline std::string 
+inline std::string
 pythonGetAttr(PyObject * obj, const char * key, const char * defaultValue)
 {
     if(!obj)
         return std::string(defaultValue);
-    python_ptr k(stringToPython(key));
+    python_ptr k(pythonFromData(key));
     pythonToCppException(k);
     python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
     if(!pres)
@@ -484,16 +438,16 @@ python_ptr shapeToPythonTuple(ArrayVectorView<T> const & shape)
 class PyAllowThreads
 {
     PyThreadState * save_;
-    
+
     // make it non-copyable
     PyAllowThreads(PyAllowThreads const &);
     PyAllowThreads & operator=(PyAllowThreads const &);
-  
+
   public:
     PyAllowThreads()
     : save_(PyEval_SaveThread())
     {}
-    
+
     ~PyAllowThreads()
     {
         PyEval_RestoreThread(save_);
