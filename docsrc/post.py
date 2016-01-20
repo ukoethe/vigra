@@ -158,7 +158,7 @@ def insertMissingTemplateDeclarations(text):
 
 def processFile(fileName):
     print(fileName)          # log message
-    f = open(fileName,encoding = "ISO-8859-1")
+    f = open(fileName,'rb')
     text = f.read()
     f.close()
     
