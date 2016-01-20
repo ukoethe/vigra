@@ -1444,3 +1444,9 @@ DOT_CLEANUP            = YES
 # used. If set to NO the values of all tags below this one will be ignored.
 
 SEARCHENGINE           = NO
+
+# In recent versions of Doxygen, the documentation files with extension .dxx
+# are not recognised any more if we do not also add this option (in addition
+# to the file extension options elsewhere in the file). See here:
+# https://www.stack.nl/~dimitri/doxygen/manual/config.html#cfg_extension_mapping
+EXTENSION_MAPPING = dxx=C++
