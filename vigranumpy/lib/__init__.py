@@ -729,15 +729,23 @@ def _genFeaturConvenienceFunctions():
         return len(self.keys())
     def __iter__(self):
         return self.keys().__iter__()
-    def has_key(self, key):
+    def __contains__(self, key):
         try:
             return self.isActive(key)
         except:
             return False
-    def values(self):
-        return [self[k] for k in self.keys()]
-    def items(self):
-        return [(k, self[k]) for k in self.keys()]
+    def has_key(self, key):
+        self.__contains__(key)
+    if sys.version_info[0] < 3:
+        def values(self):
+            return [self[k] for k in self.keys()]
+        def items(self):
+            return [(k, self[k]) for k in self.keys()]
+    else:
+        def values(self):
+            return self.itervalues()
+        def items(self):
+            return self.iteritems()
     def iterkeys(self):
         return self.keys().__iter__()
     def itervalues(self):
@@ -747,7 +755,7 @@ def _genFeaturConvenienceFunctions():
         for k in self.keys():
             yield (k, self[k])
 
-    for k in ['__len__', '__iter__', 'has_key', 'values', 'items', 'iterkeys', 'itervalues', 'iteritems']:
+    for k in ['__len__', '__iter__', '__contains__', 'has_key', 'values', 'items', 'iterkeys', 'itervalues', 'iteritems']:
         setattr(analysis.FeatureAccumulator, k, eval(k))
         setattr(analysis.RegionFeatureAccumulator, k, eval(k))
 

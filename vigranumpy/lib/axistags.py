@@ -1,4 +1,8 @@
-﻿import numpy as np
+﻿import sys
+import numpy as np
+
+if sys.version_info[0] > 2:
+    xrange = range
 
 class TaggedArray(np.ndarray):
 
@@ -33,29 +37,29 @@ class TaggedArray(np.ndarray):
         if axis is not None:
             del res.axistags[axis]
         return res
-        
+
     def argmin(self, axis=None, out=None):
         res = np.ndarray.argmin(self, axis, out)
         if axis is not None:
             del res.axistags[axis]
         return res
-    
+
     def cumsum(self, axis=None, dtype=None, out=None):
         res = np.ndarray.cumsum(self, axis, dtype, out)
         if res.ndim != self.ndim:
             res.axistags = [None]*res.ndim
-        return res        
+        return res
 
     def cumprod(self, axis=None, dtype=None, out=None):
         res = np.ndarray.cumprod(self, axis, dtype, out)
         if res.ndim != self.ndim:
             res.axistags = [None]*res.ndim
-        return res        
+        return res
 
     def flatten(self, order='C'):
         res = np.ndarray.flatten(self, order)
         res.axistags = [None]
-        return res        
+        return res
 
     def max(self, axis=None, out=None):
         res = np.ndarray.max(self, axis, out)
@@ -68,13 +72,13 @@ class TaggedArray(np.ndarray):
         if axis is not None:
             del res.axistags[axis]
         return res
-    
+
     def min(self, axis=None, out=None):
         res = np.ndarray.min(self, axis, out)
         if axis is not None:
             del res.axistags[axis]
         return res
-    
+
     def nonzero(self):
         res = np.ndarray.nonzero(self)
         for k in xrange(len(res)):
@@ -96,30 +100,30 @@ class TaggedArray(np.ndarray):
     def ravel(self, order='C'):
         res = np.ndarray.ravel(self, order)
         res.axistags = [None]
-        return res        
+        return res
 
     def repeat(self, repeats, axis=None):
         res = np.ndarray.repeat(self, repeats, axis)
         if axis is None:
             res.axistags = [None]*res.ndim
-        return res        
+        return res
 
     def reshape(self, shape, order='C'):
         res = np.ndarray.reshape(self, shape, order)
         res.axistags = [None]*res.ndim
-        return res        
+        return res
 
     def resize(self, new_shape, refcheck=True, order=False):
         res = np.ndarray.reshape(self, new_shape, refcheck, order)
         res.axistags = [None]*res.ndim
-        return res        
-            
+        return res
+
     def squeeze(self):
         res = np.ndarray.squeeze(self)
         for k in xrange(self.ndim-1, -1, -1):
             if self.shape[k] == 1:
                 del res.axistags[k]
-        return res        
+        return res
 
     def std(self, axis=None, dtype=None, out=None, ddof=0):
         res = np.ndarray.std(self, axis, dtype, out, ddof)
@@ -134,19 +138,19 @@ class TaggedArray(np.ndarray):
         if axis is not None:
             del res.axistags[axis]
         return res
-            
+
     def swapaxes(self, i, j):
         res = np.ndarray.swapaxes(self, i, j)
         res.axistags[i] = self.axistags[j]
         res.axistags[j] = self.axistags[i]
-        return res        
- 
+        return res
+
     def take(self, indices, axis=None, out=None, mode='raise'):
         res = np.ndarray.take(self, indices, axis, out, mode)
         if axis is None:
             res.axistags = [None]*res.ndim
-        return res        
-           
+        return res
+
     def transpose(self, *axes):
         res = np.ndarray.transpose(self, *axes)
         if len(axes) == 1:
@@ -164,14 +168,14 @@ class TaggedArray(np.ndarray):
         if len(res.shape) == 0:
             res = res.item()
         return res
-    
+
     @property
     def T(self):
         return self.transpose()
 
     def __getitem__(self, index):
         '''x.__getitem__(y) <==> x[y]
-         
+
            In addition to the usual indexing functionality, this function
            also updates the axistags of the result array. There are three cases:
              * getitem creates a value => no axistags are required
@@ -198,15 +202,15 @@ class TaggedArray(np.ndarray):
                 if lindex < self.ndim and index.count(Ellipsis) == 0:
                     index += (Ellipsis,)
                     lindex += 1
-                
+
                 # how many missing axes are represented by an Ellipsis ?
                 lellipsis = self.ndim - lindex
-                
+
                 knew, kold, kindex = 0, 0, 0
                 while knew < lnew:
                     try:
                         # if index[kindex] is int, the dimension is bound => drop this axis
-                        int(index[kindex]) 
+                        int(index[kindex])
                         kold += 1
                         kindex += 1
                     except:
@@ -224,14 +228,14 @@ class TaggedArray(np.ndarray):
                         else:
                             kindex += 1
         return res
-    
-    for k in ['all', 'any', 'argmax', 'argmin', 'cumsum', 'cumprod', 'flatten', 
-               'max', 'mean', 'min', 'nonzero', 'prod', 'ptp', 'ravel', 'repeat', 
-               'reshape', 'resize', 'squeeze', 'std', 'sum', 'swapaxes', 'take', 
+
+    for k in ['all', 'any', 'argmax', 'argmin', 'cumsum', 'cumprod', 'flatten',
+               'max', 'mean', 'min', 'nonzero', 'prod', 'ptp', 'ravel', 'repeat',
+               'reshape', 'resize', 'squeeze', 'std', 'sum', 'swapaxes', 'take',
                'transpose', 'var']:
         exec(k + '.__doc__ = np.ndarray.' + k + '.__doc__')
 
-        
+
 def benchmark(expression):
     '''transfer of axistags causes a slowdown by a factor of about 10,
        when getitem returns a value, the slowdown is about 3 (due to Python calls)
@@ -239,11 +243,11 @@ def benchmark(expression):
     import timeit, axistags
     reload(axistags)
     repetitions = 100000
-    t1 = timeit.Timer(expression, 
+    t1 = timeit.Timer(expression,
          "import numpy, axistags\na = axistags.TaggedArray((2,3,4), axistags='zyx', dtype=numpy.uint8)")
-    t2 = timeit.Timer(expression, 
+    t2 = timeit.Timer(expression,
          "import numpy, axistags\na = numpy.ndarray((2,3,4), dtype=numpy.uint8)")
-    t3 = timeit.Timer(expression, 
+    t3 = timeit.Timer(expression,
          "import numpy, axistags\na = axistags.TaggedArray((2,3,4), axistags='zyx', dtype=numpy.uint8).view(numpy.ndarray)")
     print("TaggedArray:", t1.timeit(repetitions)/repetitions*1e6,"musec")
     print("ndarray:", t2.timeit(repetitions)/repetitions*1e6,"musec")

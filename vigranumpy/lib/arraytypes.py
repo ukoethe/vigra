@@ -46,8 +46,7 @@ from vigra.vigranumpycore import AxisType, AxisInfo, AxisTags
 
 if sys.version_info[0] > 2:
     buffer = memoryview
-    def xrange(*args):
-        return range(*args)
+    xrange = range
 
 def _preserve_doc(f):
     npy_doc = eval('numpy.ndarray.%s.__doc__' % f.__name__)
