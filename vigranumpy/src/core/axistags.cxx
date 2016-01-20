@@ -607,12 +607,12 @@ void defineAxisTags()
              "    >>> a = vigra.RGBImage((200,100))\n"
              "    >>> a.axistags['x'].resolution = 1.0\n"
              "    >>> a.axistags['y'].resolution = 1.2\n"
-             "    >>> print a.axistags\n"
+		     "    >>> print(a.axistags)\n"
              "    AxisInfo: 'x' (type: Space, resolution=1)\n"
              "    AxisInfo: 'y' (type: Space, resolution=1.2)\n"
              "    AxisInfo: 'c' (type: Channels) RGB\n"
              "    >>> b = a[::2, ::4, :]\n"
-             "    >>> print b.axistags\n"
+			 "    >>> print(b.axistags)\n"
              "    AxisInfo: 'x' (type: Space, resolution=2)\n"
              "    AxisInfo: 'y' (type: Space, resolution=4.8)\n"
              "    AxisInfo: 'c' (type: Channels) RGB\n\n")
@@ -683,12 +683,12 @@ void defineAxisTags()
             "The entries of an axistags object (i.e. the individual axisinfo objects)\n"
             "can be accessed via the index operator, where the argument can either be\n"
             "the axis index or the axis key::\n\n"
-            "    >>> print array.axistags[0]\n"
+            "    >>> print(array.axistags[0])\n"
             "    AxisInfo: 'x' (type: Space, resolution=1.2)\n"
-            "    >>> print array.axistags['x']\n"
+            "    >>> print(array.axistags['x'])\n"
             "    AxisInfo: 'x' (type: Space, resolution=1.2)\n"
             "    >>> array.axistags['x'].resolution = 2.0\n"
-            "    >>> print array.axistags['x']\n"
+            "    >>> print(array.axistags['x'])\n"
             "    AxisInfo: 'x' (type: Space, resolution=2)\n\n",
             no_init)
         .def("__init__", make_constructor(&AxisTags_create,

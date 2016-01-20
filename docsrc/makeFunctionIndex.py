@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import division, print_function
 
 import re
 import glob
@@ -7,7 +8,7 @@ import xml.etree.ElementTree as ET
 from itertools import chain
 
 if len(sys.argv) != 2:
-    print 'usage: python makeFunctionIndex.py directory'
+    print('usage: python makeFunctionIndex.py directory')
     sys.exit(1)
 
 path = str(sys.argv[1])

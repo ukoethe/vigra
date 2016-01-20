@@ -70,7 +70,7 @@ While vigranumpy can directly work on numpy.ndarrays, this would not give us the
     (300, 200, 3)
     >>> rgb.axistags             # short output: only axis keys
     x y c
-    >>> print rgb.axistags       # long output
+    >>> print(rgb.axistags)      # long output
     AxisInfo: 'x' (type: Space)
     AxisInfo: 'y' (type: Space)
     AxisInfo: 'c' (type: Channels) RGB
@@ -81,7 +81,7 @@ While vigranumpy can directly work on numpy.ndarrays, this would not give us the
     (300, 200, 3)        # same shape as before
     >>> volume.axistags
     x y z                # but different semantic interpretation
-    >>> print volume.axistags
+    >>> print(volume.axistags)
     AxisInfo: 'x' (type: Space)
     AxisInfo: 'y' (type: Space)
     AxisInfo: 'z' (type: Space)
@@ -91,14 +91,14 @@ It is also possible to attach additional information to the axistags, in particu
     >>> rgb.axistags['x'].resolution = 1.2  # in some unit of length
     >>> rgb.axistags['y'].resolution = 1.4  # in some unit of length
     >>> rgb.axistags['c'].description = 'fluorescence microscopy, DAPI and GFP staining'
-    >>> print rgb.axistags
+    >>> print(rgb.axistags)
     AxisInfo: 'x' (type: Space, resolution=1.2)
     AxisInfo: 'y' (type: Space, resolution=1.4)
     AxisInfo: 'c' (type: Channels) fluorescence microscopy, DAPI and GFP staining
     
     # interpolate the image to twice its original size
     >>> rgb2 = vigra.sampling.resize(rgb, shape=(2*width-1, 2*height-1))
-    >>> print rgb2.axistags
+    >>> print(rgb2.axistags)
     AxisInfo: 'x' (type: Space, resolution=0.6)
     AxisInfo: 'y' (type: Space, resolution=0.7)
     AxisInfo: 'c' (type: Channels) fluorescence microscopy, DAPI and GFP staining

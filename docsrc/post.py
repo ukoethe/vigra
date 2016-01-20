@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+from __future__ import division, print_function
 
 import re
 import glob
 import sys
 
 if len(sys.argv) != 3:
-    print 'usage: python post.py directory versionNumber'
+    print('usage: python post.py directory versionNumber')
     sys.exit(1)
 
 path = str(sys.argv[1])
@@ -157,7 +158,7 @@ def insertMissingTemplateDeclarations(text):
     return text
 
 def processFile(fileName):
-    print fileName          # log message
+    print(fileName)         # log message
     f = open(fileName)
     text = f.read()
     f.close()
