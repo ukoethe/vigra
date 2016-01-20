@@ -82,7 +82,11 @@ generic__deepcopy__(python::object copyable, python::dict memo)
 {
     python::object copyMod = python::import("copy");
     python::object deepcopy = copyMod.attr("deepcopy");
+#if PY_MAJOR_VERSION < 3
+    python::object builtin = python::import("__builtin__");
+#else
     python::object builtin = python::import("builtins");
+#endif
     python::object globals = builtin.attr("__dict__");
     
     Copyable* newCopyable(new Copyable(python::extract<const Copyable &>(copyable)()));
@@ -195,7 +199,7 @@ AxisTags_create(python::object i1, python::object i2,
     VIGRA_UNIQUE_PTR<AxisTags> res(new AxisTags());
     
     python::extract<AxisTags const &> tags(i1);
-	//std::cout << "Deebug" << std::endl << typeid(i1.ptr()).name() << std::endl;
+    //std::cout << "Deebug" << std::endl << typeid(i1.ptr()).name() << std::endl;
     if(tags.check())
     {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(tags()));
@@ -203,9 +207,9 @@ AxisTags_create(python::object i1, python::object i2,
 #if PY_MAJOR_VERSION < 3
     else if(PyString_Check(i1.ptr()))
 #else
-	else if (PyUnicode_Check(i1.ptr()))
+    else if (PyUnicode_Check(i1.ptr()))
 #endif
-	{
+    {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(python::extract<std::string>(i1)()));
     }
     else if(PySequence_Check(i1.ptr()))
@@ -225,9 +229,9 @@ AxisTags_create(python::object i1, python::object i2,
 #if PY_MAJOR_VERSION < 3
     else if(PyInt_Check(i1.ptr()))
 #else
-	else if (PyLong_Check(i1.ptr()))
+    else if (PyLong_Check(i1.ptr()))
 #endif
-	{
+    {
         int size = python::extract<int>(i1)();
         for(int k=0; k<size; ++k)
             res->push_back(AxisInfo());
@@ -451,9 +455,9 @@ AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
 #if PY_MAJOR_VERSION < 3
         if(PyInt_Check(item.ptr()))
 #else
-		if(PyLong_Check(item.ptr()))
+        if(PyLong_Check(item.ptr()))
 #endif
-		{
+        {
             ++kold;
             ++kindex;
         }
@@ -607,12 +611,12 @@ void defineAxisTags()
              "    >>> a = vigra.RGBImage((200,100))\n"
              "    >>> a.axistags['x'].resolution = 1.0\n"
              "    >>> a.axistags['y'].resolution = 1.2\n"
-		     "    >>> print(a.axistags)\n"
+             "    >>> print(a.axistags)\n"
              "    AxisInfo: 'x' (type: Space, resolution=1)\n"
              "    AxisInfo: 'y' (type: Space, resolution=1.2)\n"
              "    AxisInfo: 'c' (type: Channels) RGB\n"
              "    >>> b = a[::2, ::4, :]\n"
-			 "    >>> print(b.axistags)\n"
+             "    >>> print(b.axistags)\n"
              "    AxisInfo: 'x' (type: Space, resolution=2)\n"
              "    AxisInfo: 'y' (type: Space, resolution=4.8)\n"
              "    AxisInfo: 'c' (type: Channels) RGB\n\n")

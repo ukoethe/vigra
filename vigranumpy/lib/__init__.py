@@ -33,9 +33,8 @@
 #
 #######################################################################
 
-import sys, os, time, math
 from __future__ import division, print_function
-from builtins import int    #use int() like long() for Python2 as int() is long() for Python3
+import sys, os, time, math
 
 from numbers import Number
 from multiprocessing import cpu_count
@@ -1752,7 +1751,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             if event.xdata != None and event.ydata != None:
                 xRaw,yRaw = event.xdata,event.ydata
                 if xRaw >=0.0 and yRaw>=0.0 and xRaw<img.shape[0] and yRaw<img.shape[1]:
-                    x,y = long(math.floor(event.xdata)),long(math.floor(event.ydata))
+                    x,y = int(math.floor(event.xdata)),int(math.floor(event.ydata))
 
                     #print("X,Y",x,y)
                     l = labels[x,y]
@@ -1768,7 +1767,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                                     yy >=0 and yy<shape[0]:
                                     otherLabel = labels[xx, yy]
                                     if l != otherLabel:
-                                        edge = rag.findEdge(long(l), long(otherLabel))
+                                        edge = rag.findEdge(int(l), int(otherLabel))
                                     #print(edge)
                                         others.append((xx,yy,edge))
                                         #break
