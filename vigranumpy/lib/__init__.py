@@ -383,7 +383,7 @@ def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False,r=
 
     labels = numpy.squeeze(labels)
     crackedEdges = analysis.regionImageToCrackEdgeImage(labels).squeeze()
-    #print "cracked shape",crackedEdges.shape
+    #print("cracked shape",crackedEdges.shape)
     whereEdge    =  numpy.where(crackedEdges==0)
     whereNoEdge  =  numpy.where(crackedEdges!=0)
     crackedEdges[whereEdge] = 1
@@ -605,7 +605,7 @@ def _genFeaturConvenienceFunctions():
            just the first two features in the list, use::
 
                 f = vigra.analysis.supportedFeatures(array)
-                print "Computing features:", f[:2]
+                print("Computing features:", f[:2])
                 r = vigra.analysis.extractFeatures(array, features=f[:2])
         '''
 
@@ -621,7 +621,7 @@ def _genFeaturConvenienceFunctions():
            list, use::
 
                 f = vigra.analysis.supportedRegionFeatures(array, labels)
-                print "Computing features:", f[:2]
+                print("Computing features:", f[:2])
                 r = vigra.analysis.extractRegionFeatures(array, labels, features=f[:2])
         '''
         return analysis.extractRegionFeatures(array, labels, None).supportedFeatures()
@@ -636,7 +636,7 @@ def _genFeaturConvenienceFunctions():
            list, use::
 
                 f = vigra.analysis.supportedConvexHullFeatures(labels)
-                print "Computing Convex Hull features:", f[:2]
+                print("Computing Convex Hull features:", f[:2])
                 r = vigra.analysis.extractConvexHullFeatures(labels, features=f[:2])
         '''
         try:
@@ -654,7 +654,7 @@ def _genFeaturConvenienceFunctions():
            list, use::
 
                 f = vigra.analysis.supportedSkeletonFeatures(labels)
-                print "Computing Skeleton features:", f[:2]
+                print("Computing Skeleton features:", f[:2])
                 r = vigra.analysis.extractSkeletonFeatures(labels, features=f[:2])
         '''
         try:
@@ -1193,9 +1193,9 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             labels = self.baseGraphLabels
             ignoreLabel = self.ignoreLabel
             if acc == 'mean':
-              #print "get node size..."
+              #print("get node size...")
               weights = self.baseGraph.nodeSize()
-              #print "weights == ", weights
+              #print("weights == ", weights)
             else :
               weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
               weights[:]=1
@@ -1221,7 +1221,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 ignoreLabel=self.ignoreLabel,
                 out=out
             )
-            #print "out",out.shape,out.dtype
+            #print("out",out.shape,out.dtype)
             return out
 
         def projectLabelsBack(self,steps,labels=None,_current=0):
@@ -1469,26 +1469,26 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
     def loadGridRagHDF5(filename , dset):
 
-        #print "load labels and make grid graph"
+        #print("load labels and make grid graph")
         labels = readHDF5(filename,  dset+'/labels')
         shape = labels.shape
         gridGraph = graphs.gridGraph(shape)
-        #print gridGraph
+        #print(gridGraph)
 
 
-        #print "load graph serialization"
+        #print("load graph serialization")
         graphSerialization = readHDF5(filename, dset+'/graph')
 
-        #print "make empty grid rag"
+        #print("make empty grid rag")
         gridRag = GridRegionAdjacencyGraph()
 
-        #print "deserialize"
+        #print("deserialize")
         gridRag.deserialize(graphSerialization)
 
 
-        #print "load affiliatedEdges"
+        #print("load affiliatedEdges")
         affEdgeSerialization = readHDF5(filename, dset+'/affiliated_edges')
-        #print "deserialize"
+        #print("deserialize")
         affiliatedEdges = graphs._deserialzieGridGraphAffiliatedEdges(gridGraph, gridRag, affEdgeSerialization)
 
 
@@ -1811,15 +1811,15 @@ def _genGraphSegmentationFunctions():
 
 
         #import sys
-        #print "graph refcout", sys.getrefcount(graph)
+        #print("graph refcout", sys.getrefcount(graph))
         mg = graphs.mergeGraph(graph)
-        #print "graph refcout", sys.getrefcount(graph)
+        #print("graph refcout", sys.getrefcount(graph))
         #mg = []
         #del mg
         #import gc
         #gc.collect()
 
-        #print "graph refcout", sys.getrefcount(graph)
+        #print("graph refcout", sys.getrefcount(graph))
         #sys.exit(0)
 
 

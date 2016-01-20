@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import vigra
 from vigra import graphs
 from vigra import numpy
@@ -28,10 +30,10 @@ else :
     # load the region adjacency graph
     rag = graphs.loadGridRagHDF5("bla.h5","dset")
 
-print rag.labels.shape, rag.labels.dtype ,type(rag.labels)
+print(rag.labels.shape, rag.labels.dtype ,type(rag.labels))
 
 
-print "accumulate edge and node features"
+print("accumulate edge and node features")
 
 
 edgeCuesMean = rag.accumulateEdgeFeatures( iEdgeMap(rag.baseGraph, data) )
@@ -48,7 +50,7 @@ mergeGraph = graphs.mergeGraph(rag)
 featureManager = graphs.NeuroDynamicFeatures(rag, mergeGraph)
 
 # assign features
-print "edgeCuesShape", edgeCuesMean.shape
+print("edgeCuesShape", edgeCuesMean.shape)
 
 featureManager.assignEdgeCues(edgeCuesMean)
 featureManager.assignNodeCues(nodeCuesMean)
@@ -60,12 +62,12 @@ featureManager.registerCallbacks()
 
 mgEdge = mergeGraph.edgeFromId(1)
 
-print "edge features", featureManager.getFeatures( mergeGraph.edgeFromId(27885))
+print("edge features", featureManager.getFeatures( mergeGraph.edgeFromId(27885)))
 mergeGraph.contractEdge(mgEdge)
-print "edge features", featureManager.getFeatures( mergeGraph.edgeFromId(27885))
+print("edge features", featureManager.getFeatures( mergeGraph.edgeFromId(27885)))
 
 
 #for edge in mergeGraph.edgeIter():
-#    print "edge features", featureManager.getFeatures(edge)
+#    print("edge features", featureManager.getFeatures(edge))
 
 

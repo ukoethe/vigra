@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import vigra
 import vigra.graphs as vigraph
 import pylab
@@ -11,8 +13,8 @@ from matplotlib.widgets import Slider, Button, RadioButtons
 
 def makeWeights(gamma):
     global hessian,gradmag,gridGraph
-    print "hessian",hessian.min(),hessian.max()
-    print "raw ",raw.min(),raw.max()
+    print("hessian",hessian.min(),hessian.max())
+    print("raw ",raw.min(),raw.max())
     wImg= numpy.exp((gradmag**0.5)*gamma*-1.0)#**0.5
     wImg = numpy.array(wImg).astype(numpy.float32)
     w=vigra.graphs.implicitMeanEdgeMap(gridGraph,wImg)
@@ -40,7 +42,7 @@ f       = '69015.jpg'
 img     = vigra.impex.readImage(f)
 
 
-print img.shape
+print(img.shape)
 
 if(img.shape[2]==1):
     img    = numpy.concatenate([img]*3,axis=2)
@@ -59,10 +61,10 @@ img-=img.min()
 img/=img.max()
 img*=255
 
-print imgLab.shape
+print(imgLab.shape)
 
 
-print "interpolate image"
+print("interpolate image")
 imgLabSmall = imgLab
 
 # make a few edge weights
@@ -131,9 +133,9 @@ def unfreeze(event):
 def onslide(event):
     global img,gradmag,weights,clickList,sgamma
     weights  = makeWeights(sgamma.val)
-    print "onslide",clickList
+    print("onslide",clickList)
     if len(clickList)>=2:
-        print "we have  path"
+        print("we have  path")
         source = gridGraph.coordinateToNode(clickList[0])
         target = gridGraph.coordinateToNode(clickList[1])
         path = pathFinder.run(weights, source,target).path(pathType='coordinates')

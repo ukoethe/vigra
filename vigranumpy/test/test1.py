@@ -191,7 +191,7 @@ def test_Region2Crack():
 def test_transforms():
     res = distanceTransform2D(img_scalar_f)
     checkShape(img_scalar_i, res)
-    #print >> sys.stderr, res.dtype,
+    #print(res.dtype, file=sys.stderr)
     checkType(res, np.float32)
     
     res = distanceTransform2D(img_scalar_ui8)
@@ -276,5 +276,5 @@ def test_edges():
     
     
 def ok_():
-    print >> sys.stderr, ".",
+    print(".", file=sys.stderr)
         

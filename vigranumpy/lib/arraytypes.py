@@ -32,7 +32,7 @@
 #    OTHER DEALINGS IN THE SOFTWARE.
 #
 #######################################################################
-
+from __future__ import print_function
 from functools import reduce
 
 import sys
@@ -933,7 +933,7 @@ class VigraArray(numpy.ndarray):
             >>> s = vigra.ScalarImage((2,2))
             >>> s.ravel()[...] = range(4)
             >>> for p in s.spaceIter():
-            ....    print p
+            ....    print(p)
             0.0
             1.0
             2.0

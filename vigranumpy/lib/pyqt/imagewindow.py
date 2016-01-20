@@ -32,6 +32,7 @@
 #    OTHER DEALINGS IN THE SOFTWARE.
 #
 #######################################################################
+from __future__ import print_function
 
 import math, os, numpy, PyQt4
 
@@ -175,14 +176,14 @@ class ImageViewer(OverlayViewer):
                 self.overlays.pop(overlay)
                 self.update()
             except IndexError, e:
-                print "No such overlay."
+                print("No such overlay.")
         else:
             try:
                 self.overlays.remove(overlay)
                 OverlayViewer.removeOverlay(self, overlay)
                 self.update()
             except ValueError, e:
-                print "No such overlay."
+                print("No such overlay.")
 
     def _slideAfterZoom(self, shift):
         if self.zoomLevel() > 0:

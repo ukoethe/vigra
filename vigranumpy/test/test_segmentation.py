@@ -35,4 +35,4 @@ def test_labelMultiArray():
     _impl_test_labelMultiArray(numpy.float32)
     
 def ok_():
-    print >> sys.stderr, ".",
+    print(".", file=sys.stderr)
