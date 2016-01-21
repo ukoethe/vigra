@@ -391,11 +391,13 @@ Classes
 .. autoclass:: vigra.vigranumpycore.ChunkedArrayBase
    :special-members:
    :members:
+
 -------------
 
 .. autoclass:: vigra.vigranumpycore.ChunkedArrayHDF5Base
    :show-inheritance:
    :members:
+
 -------------
 
 .. autoclass:: vigra.Compression
