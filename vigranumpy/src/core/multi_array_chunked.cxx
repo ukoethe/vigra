@@ -646,9 +646,10 @@ void defineChunkedArrayImpl()
     docstring_options doc_options(true, false, false);
 
     typedef ChunkedArray<N, T> Array;
-    class_<Array, boost::noncopyable>("ChunkedArray",
+    class_<Array, boost::noncopyable>("ChunkedArrayBase",
          "\n"
-         "Base class for chunked arrays.\n\n",
+         "Base class for chunked arrays, can only be created via factory functions\n"
+         "like :func:`~vigra.ChunkedArrayCompressed` or :func:`~vigra.ChunkedArrayHDF5`.\n\n",
          no_init)
         .add_property("shape", &ChunkedArray_shape<N, T>,
              "\nshape of the array.\n")
@@ -682,29 +683,61 @@ void defineChunkedArrayImpl()
         .def("checkoutSubarray",
              registerConverters(&ChunkedArray_checkoutSubarray<N, T>),
              (arg("start"), arg("stop"), arg("out")=python::object()),
-             "\nobtain a copy of the specified subarray.\n")
+             "\n    checkoutSubarray(start, stop, res=None) => array\n\n"
+             "Obtain a copy of the subarray in the ROI '[start, stop)'.\n"
+             "If 'res' is given, it must have matching shape and will be used\n"
+             "to store the data instead of allocating new storage for 'array'.\n\n"
+             "The index operator provides a shorthand for this function, e.g.\n"
+             "for a 2-dimensional array you can equivalently write::\n\n"
+             "    roi = chunked_array.checkoutSubarray((5,10), (12,19))\n"
+             "    roi = chunked_array[5:12, 10:19]\n\n"
+             "to read the ROI from 'start=(5,10)' to 'stop=(12,19)' (exclusive).\n"
+             "Note that 'roi' is a copy, so overwriting it has no effect on the\n"
+             "chunked array. Use 'commitSubarray()' to overwrite data.\n")
         .def("commitSubarray",
              registerConverters(&ChunkedArray_commitSubarray<N, T>),
              (arg("start"), arg("array")),
-             "\nwrite the given array at offset 'start'.\n")
+             "\n    commitSubarray(start, array)\n\n"
+             "Write the given 'array' at offset 'start'.\n"
+             "The index operator provides a shorthand for this function, e.g.\n"
+             "for a 2-dimensional array you can equivalently write::\n\n"
+             "    chunked_array.commitSubarray((5,10), roi)\n"
+             "    chunked_array[5:12, 10:19] = roi\n\n"
+             "to write an ROI with shape (5,7) starting at 'start=(5,10)'.\n")
         .def("releaseChunks",
              &Array::releaseChunks,
              (arg("start"), arg("stop"),arg("destroy")=false),
+             "\n    releaseChunks(start, stop, destroy=False)\n\n"
              "\nrelease or destroy all chunks that are completely contained in [start, stop).\n")
-        .def("__getitem__", &ChunkedArray_getitem<N, T>)
+        .def("__getitem__", &ChunkedArray_getitem<N, T>,
+             "\nRead data from a chunked array with the usual index or slicing syntax::\n\n"
+             "    value = chunked_array[5, 20]\n"
+             "    roi   = chunked_array[5:12, 10:19]\n\n"
+             "Note that the roi is not a slice view of the original array\n"
+             "(as in numpy.ndarray), but a copy of the data.\n")
         .def("__setitem__", &ChunkedArray_setitem<N, T>)
-        .def("__setitem__", &ChunkedArray_setitem2<N, T>)
+        .def("__setitem__", &ChunkedArray_setitem2<N, T>,
+             "\nWrite data to a chunked array with the usual index or slicing syntax::\n\n"
+             "    chunked_array[5, 20] = value\n"
+             "    chunked_array[5:12, 10:19] = roi\n")
         ;
 
 #ifdef HasHDF5
     typedef ChunkedArrayHDF5<N, T> ArrayHDF5;
-    class_<ChunkedArrayHDF5<N, T>, bases<Array>, boost::noncopyable>("ChunkedArrayHDF5", no_init)
-        .def("close", &ArrayHDF5::close)
-        .def("flush", &ArrayHDF5::flushToDisk)
+    class_<ChunkedArrayHDF5<N, T>, bases<Array>, boost::noncopyable>(
+         "ChunkedArrayHDF5Base",
+         "\n"
+         "Base class for HDF5-based chunked arrays, can only be created via\n"
+         "the factory function :func:`~vigra.ChunkedArrayHDF5`.\n\n",
+         no_init)
+        .def("close", &ArrayHDF5::close,
+             "\nFlush data to disk and close the underlying HDF5 file.\n")
+        .def("flush", &ArrayHDF5::flushToDisk,
+             "\nFlush data to disk.\n")
         .add_property("filename", &ArrayHDF5::fileName,
-             "\nname of the file backend of this array.\n")
+             "\nName of the file backend of this array.\n")
         .add_property("dataset_name", &ArrayHDF5::datasetName,
-             "\nname of the dataset backend of this array.\n")
+             "\nName of the dataset backend of this array.\n")
         .add_property("readonly", &ArrayHDF5::isReadOnly,
              "\nTrue if this array is read-only.\n")
     ;
@@ -712,7 +745,7 @@ void defineChunkedArrayImpl()
 }
 
 template <unsigned int N>
-void defineChunkedArrayFactories()
+void defineChunkedArrayFactories(bool export_docu=false)
 {
     using namespace boost::python;
     typedef typename MultiArrayShape<N>::type shape_type;
@@ -720,16 +753,84 @@ void defineChunkedArrayFactories()
     docstring_options doc_options(true, false, false);
 
     def("ChunkedArrayFull", &construct_ChunkedArrayFull<N>,
-        (arg("shape"), arg("dtype")=defaultDtype(), arg("fill_value")=0.0, arg("axistags")=python::object()));
-    def("ChunkedArrayLazy", &construct_ChunkedArrayLazy<N>,
         (arg("shape"), arg("dtype")=defaultDtype(),
-         arg("chunk_shape")=shape_type(), arg("fill_value")=0.0, arg("axistags")=python::object()));
+         arg("fill_value")=0.0, arg("axistags")=python::object()),
+        !export_docu ? "" :
+        "Create a chunked array (type :class:`~vigra.vigranumpycore.ChunkedArrayBase`)\n"
+        "backed by a plain (consecutive) array::\n\n"
+        "  ChunkedArrayFull(shape, dtype=float32, fill_value=0, axistags=None)\n\n"
+        "'shape' can be up to 5-dimensional.\n\n"
+        "'dtype' can currently be ``uint8``, ``uint32``, and ``float32``.\n\n"
+        "'fill_value' is returned for all array elements that have never been written.\n\n"
+        "For more details see ChunkedArray_ in the vigra C++ documentation.\n");
+    def("ChunkedArrayLazy", &construct_ChunkedArrayLazy<N>,
+        (arg("shape"), arg("dtype")=defaultDtype(), arg("chunk_shape")=shape_type(),
+         arg("fill_value")=0.0, arg("axistags")=python::object()),
+        !export_docu ? "" :
+        "Create a chunked array (type :class:`~vigra.vigranumpycore.ChunkedArrayBase`)\n"
+        "backed by one plain array for each chunk (rectangular data block)::\n\n"
+        "  ChunkedArrayLazy(shape, dtype=float32, chunk_shape=None, fill_value=0, axistags=None)\n\n"
+        "The individual chunks are allocated lazily upon first write. Reads before the\n"
+        "first write will simply return the 'fill_value' without allocating memory.\n"
+        "All allocated chunks reside in memory.\n\n"
+        "'shape' can be up to 5-dimensional.\n\n"
+        "'chunk_shape' must have the same dimension as 'shape', and its elements must\n"
+        "be powers of 2.\n\n"
+        "'dtype' can currently be ``uint8``, ``uint32``, and ``float32``.\n\n"
+        "'fill_value' is returned for all array elements that have never been written.\n\n"
+        "For more details see ChunkedArray_ in the vigra C++ documentation.\n");
     def("ChunkedArrayCompressed", &construct_ChunkedArrayCompressed<N>,
-        (arg("shape"), arg("compression")=LZ4, arg("dtype")=defaultDtype(), arg("chunk_shape")=shape_type(),
-         arg("cache_max")=-1, arg("fill_value")=0.0, arg("axistags")=python::object()));
+        (arg("shape"), arg("compression")=LZ4, arg("dtype")=defaultDtype(),
+         arg("chunk_shape")=shape_type(), arg("cache_max")=-1, arg("fill_value")=0.0,
+         arg("axistags")=python::object()),
+        !export_docu ? "" :
+        "Create a chunked array (type :class:`~vigra.vigranumpycore.ChunkedArrayBase`)\n"
+        "backed by one plain array for each chunk (rectangular data block)::\n\n"
+        "  ChunkedArrayCompressed(shape, compression=LZ4, dtype=float32, chunk_shape=None, \n"
+        "                         cache_max=-1, fill_value=0, axistags=None)\n\n"
+        "The individual chunks are allocated lazily upon first write. Reads before the\n"
+        "first write will simply return the 'fill_value' without allocating memory.\n"
+        "All allocated chunks reside in memory, but may be compressed when not in use.\n"
+        "This is especially beneficial for highly compressible data like label images.\n\n"
+        "'shape' can be up to 5-dimensional.\n\n"
+        "'chunk_shape' must have the same dimension as 'shape', and its elements must\n"
+        "be powers of 2.\n\n"
+        "'dtype' can currently be ``uint8``, ``uint32``, and ``float32``.\n\n"
+        "'fill_value' is returned for all array elements that have never been written.\n\n"
+        "'compression' can be any of the flags defined in the :class:`~vigra.Compression` enum.\n\n"
+        "'cache_max' specifies how many uncompressed chunks may reside in memory at the\n"
+        "same time. If it is '-1', vigra will choose a sensible default, but other values\n"
+        "may better fit your data access patterns. This is a soft limit, i.e. may be\n"
+        "exceeded temporarily if more chunks are needed simultaneously in a single\n"
+        "operation.\n\n"
+        "For more details see ChunkedArray_ in the vigra C++ documentation.\n");
     def("ChunkedArrayTmpFile", &construct_ChunkedArrayTmpFile<N>,
         (arg("shape"), arg("dtype")=defaultDtype(), arg("chunk_shape")=shape_type(),
-         arg("cache_max")=-1, arg("path")="", arg("fill_value")=0.0, arg("axistags")=python::object()));
+         arg("cache_max")=-1, arg("path")="", arg("fill_value")=0.0,
+         arg("axistags")=python::object()),
+        !export_docu ? "" :
+        "Create a chunked array (type :class:`~vigra.vigranumpycore.ChunkedArrayBase`)\n"
+        "backed by a temporary file::\n\n"
+        "  ChunkedArrayTmpFile(shape, dtype=float32, chunk_shape=None, cache_max=-1,\n"
+        "                      path="", fill_value=0, axistags=None)\n\n"
+        "The individual chunks are allocated lazily upon first write. Reads before the\n"
+        "first write will simply return the 'fill_value' without allocating memory.\n"
+        "Unused chunks will be moved to the file to free their memory. The file is\n"
+        "automatically deleted when the object is deleted. Use :func:`~vigra.ChunkedArrayHDF5` if\n"
+        "you need persistent storage.\n\n"
+        "'shape' can be up to 5-dimensional.\n\n"
+        "'chunk_shape' must have the same dimension as 'shape', and its elements must\n"
+        "be powers of 2.\n\n"
+        "'dtype' can currently be ``uint8``, ``uint32``, and ``float32``.\n\n"
+        "'cache_max' specifies how many uncompressed chunks may reside in memory at the\n"
+        "same time. If it is '-1', vigra will choose a sensible default, but other values\n"
+        "may better fit your data access patterns. This is a soft limit, i.e. may be\n"
+        "exceeded temporarily if more chunks are needed simultaneously in a single\n"
+        "operation.\n\n"
+        "'fill_value' is returned for all array elements that have never been written.\n\n"
+        "'path' is the directory where the file is located (default: the system's TMP\n"
+        "directory).\n\n"
+        "For more details see ChunkedArray_ in the vigra C++ documentation.\n");
 }
 
 void defineChunkedArray()
@@ -740,7 +841,7 @@ void defineChunkedArray()
 
     enum_<CompressionMethod>("Compression",
          "\nEnum to encode the type of compression for\n"
-         "ChunkedArrayCompressed and ChunkedArrayHDF5:\n\n"
+         ":func:`~vigra.ChunkedArrayCompressed` and :func:`~vigra.ChunkedArrayHDF5`:\n\n"
          "   ``Compression.ZLIB:``\n      ZLIB default compression\n"
          "   ``Compression.ZLIB_NONE:``\n      ZLIB no compression (level = 0)\n"
          "   ``Compression.ZLIB_FAST:``\n      ZLIB fast compression (level = 1)\n"
@@ -755,8 +856,8 @@ void defineChunkedArray()
 
 #ifdef HasHDF5
     enum_<HDF5File::OpenMode>("HDF5Mode",
-         "\nEnum to encode open mode for ChunkedArrayHDF5:\n\n"
-         "   ``HDF5Mode.Default:``\n  Use the default strategy (ReadOnly when file and dataset exist, New otherwise)\n"
+         "\nEnum to encode open mode for :func:`~vigra.ChunkedArrayHDF5`:\n\n"
+         "   ``HDF5Mode.Default:``\n      Use the default strategy (ReadOnly when file and dataset exist, New otherwise)\n"
          "   ``HDF5Mode.New:``\n      Create new file (existing file will be deleted)\n"
          "   ``HDF5Mode.ReadWrite:``\n      Open file (create when not existing) and allow creation of new datasets.\n"
          "                                  Contents of existing datasets may be changed, but not their shape.\n"
@@ -788,19 +889,43 @@ void defineChunkedArray()
     defineChunkedArrayFactories<2>();
     defineChunkedArrayFactories<3>();
     defineChunkedArrayFactories<4>();
-    defineChunkedArrayFactories<5>();
+    defineChunkedArrayFactories<5>(true);
 
 #ifdef HasHDF5
     def("ChunkedArrayHDF5", &construct_ChunkedArrayHDF5id,
         (arg("file_id"), arg("dataset_name"), arg("shape")=python::object(),
          arg("dtype")=python::object(), arg("mode")=HDF5File::ReadOnly, arg("compression")=ZLIB_FAST,
          arg("chunk_shape")=python::object(), arg("cache_max")=-1, arg("fill_value")=0.0,
-         arg("axistags")=python::object()));
+         arg("axistags")=python::object()),
+        "");
     def("ChunkedArrayHDF5", &construct_ChunkedArrayHDF5,
         (arg("file_name"), arg("dataset_name"), arg("shape")=python::object(),
          arg("dtype")=python::object(), arg("mode")=HDF5File::Default, arg("compression")=ZLIB_FAST,
          arg("chunk_shape")=python::object(), arg("cache_max")=-1, arg("fill_value")=0.0,
-         arg("axistags")=python::object()));
+         arg("axistags")=python::object()),
+        "Create a chunked array (type :class:`~vigra.vigranumpycore.ChunkedArrayHDF5Base`)\n"
+        "backed by a HDF5 file::\n\n"
+        "  ChunkedArrayHDF5(file, dataset_name, shape=None, dtype=None,\n"
+        "                   mode=HDF5Mode.Default, compression=Compression.ZLIB_FAST, \n"
+        "                   chunk_shape=None, cache_max=-1, fill_value=0, axistags=None)\n\n"
+        "Parameters 'shape', 'dtype', 'compression', 'chunk_shape', 'fill_value', and\n"
+        "'axistags' may only be provided when a new dataset is created.\n\n"
+        "'file' can be either a file name or a file ID as returned by ``h5py.File.id.id``.\n\n"
+        "'shape' can be up to 5-dimensional.\n\n"
+        "'chunk_shape' must have the same dimension as 'shape', and its elements must\n"
+        "be powers of 2.\n\n"
+        "'dtype' can currently be ``uint8``, ``uint32``, and ``float32``.\n\n"
+        "'fill_value' is returned for all array elements that have never been written.\n\n"
+        "'compression' can be any of the flags defined in the :class:`~vigra.Compression` enum\n"
+        "except for `LZ4`.\n\n"
+        "'cache_max' specifies how many chunks may reside in memory at the same time.\n"
+        "If it is '-1', vigra will choose a sensible default, but other values may\n"
+        "better fit your data access patterns. This is a soft limit, i.e. may be exceeded\n"
+        "temporarily if more chunks are needed simultaneously in a single operation.\n\n"
+        "'mode' defines the access rights to the file and may be any of the flags defined\n"
+        "in the :class:`~vigra.HDF5Mode` enum. By default, you get read permission for an existing\n"
+        "dataset and read/write permission for a new dataset.\n\n"
+        "For more details see ChunkedArray_ in the vigra C++ documentation.\n");
 #endif
 }
 
