@@ -797,14 +797,20 @@ def _genGridGraphConvenienceFunctions():
 
         metaCls = cls.__class__
 
-        class gridGraphInjector(object):
-            class __metaclass__(metaCls):
-                def __init__(self, name, bases, dict):
-                    for b in bases:
-                        if type(b) not in (self, type):
-                            for k,v in dict.items():
-                                setattr(b,k,v)
-                    return type.__init__(self, name, bases, dict)
+        class gridGraphInjectorMeta(metaCls):
+            def __init__(self, name, bases, dict):
+                for b in bases:
+                    if type(b) not in (self, type):
+                        for k,v in dict.items():
+                            setattr(b,k,v)
+                return type.__init__(self, name, bases, dict)
+
+        if sys.version_info[0] < 3:
+            class gridGraphInjector(object):
+                __metaclass__ = gridGraphInjectorMeta
+        else:
+            class gridGraphInjector(object, metaclass=gridGraphInjectorMeta):
+                pass
 
         ##inject some methods in the point foo
         class moreGridGraph(gridGraphInjector, cls):

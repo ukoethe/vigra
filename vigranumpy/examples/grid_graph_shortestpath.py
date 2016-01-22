@@ -108,7 +108,7 @@ def onclick(event):
     if event.xdata != None and event.ydata != None:
         xRaw,yRaw = event.xdata,event.ydata
         if not frozen and xRaw >=0.0 and yRaw>=0.0 and xRaw<img.shape[0] and yRaw<img.shape[1]:
-            x,y = long(math.floor(event.xdata)),long(math.floor(event.ydata))
+            x,y = int(math.floor(event.xdata)),int(math.floor(event.ydata))
             clickList.append((x,y))
             if len(clickList)==2:
                 source = gridGraph.coordinateToNode(clickList[0])
