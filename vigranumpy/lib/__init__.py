@@ -436,6 +436,10 @@ def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False,r=
 
 def nestedSegShow(img,labels,edgeColors=None,scale=1,show=False,returnImg=False):
 
+    if len(img.squeeze().shape)==2:
+        img = numpy.concatenate([img[:,:,None]]*3,axis=2)
+    img = taggedView(img,'xyc').astype('float32')
+
     shape=(labels.shape[0]*scale,labels.shape[1]*scale)
     if scale!=1:
         img=vigra.resize(img,shape)
@@ -463,7 +467,8 @@ def nestedSegShow(img,labels,edgeColors=None,scale=1,show=False,returnImg=False)
     imgToDisplay-=imgToDisplay.min()
     imgToDisplay/=imgToDisplay.max()
 
-    imgIn = imgToDisplay.copy()
+    imgIn = imgToDisplay.copy().squeeze()
+
 
     for si in range(nSegs):
         l = labels[:,:,si].copy()
@@ -2373,12 +2378,12 @@ def _genGraphSegmentationFunctions():
             assert edgeWeights is not None or nodeFeatures is not None
 
             if edgeLengths is None :
-                edgeLengths = graphs.getEdgeLengths(graph,addChannelDim=True)
+                edgeLengths = graphs.getEdgeLengths(graph)
             if nodeSizes is None:
-                nodeSizes = graphs.getNodeSizes(graph,addChannelDim=True)
+                nodeSizes = graphs.getNodeSizes(graph)
 
             if edgeWeights is None :
-                edgeWeights = graphs.graphMap(graph,'edge',addChannelDim=True)
+                edgeWeights = graphs.graphMap(graph,'edge')
                 edgeWeights[:]=0
 
             if nodeFeatures is None :

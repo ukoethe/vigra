@@ -144,6 +144,7 @@ public:
             python::class_<DefaultClusterOperator  >(operatorName.c_str(),python::no_init)
             .def("__init__", python::make_constructor(&pyEdgeWeightNodeFeaturesConstructor))
                 .def("setLiftedEdges",registerConverters(&setLiftedEdges))
+                .def("enableStopWeight",&DefaultClusterOperator::enableStopWeight)
             ;
             python::def("__minEdgeWeightNodeDistOperator",registerConverters(&pyEdgeWeightNodeFeaturesConstructor),
                 python::with_custodian_and_ward_postcall< 0,1 ,

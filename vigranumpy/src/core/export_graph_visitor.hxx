@@ -45,6 +45,8 @@ public:
     typedef typename Graph::NodeIt              NodeIt;
     typedef typename Graph::EdgeIt              EdgeIt;
     typedef typename Graph::ArcIt               ArcIt;
+    typedef typename Graph::OutArcIt OutArcIt;
+
     //typedef typename Graph::NeighborNodeIt      NeighborNodeIt;
     //typedef EdgeIteratorHolder<Graph> EdgeIteratorHolderType;
     //typedef NodeIteratorHolder<Graph> NodeIteratorHolderType;
@@ -225,6 +227,8 @@ public:
             .def("arcIds" ,registerConverters(&itemIds<Arc ,ArcIt >),( python::arg("out")=python::object() ) )
 
             .def("nodeIdMap",registerConverters(&nodeIdMap),( python::arg("out")=python::object() ) )
+            .def("nodeDegreeMap",registerConverters(&nodeDegreeMap),( python::arg("out")=python::object() ) )
+
 
             .def("findEdges",registerConverters(&findEdges),( python::arg("nodeIdPairs"), python::arg("out")=python::object() ) )
 
@@ -502,6 +506,24 @@ public:
         return idArray;
     }
 
+    static NumpyAnyArray nodeDegreeMap(
+        const Graph & graph,
+        typename PyNodeMapTraits<Graph,   UInt32>::Array  degreeArray
+    ){  
+        //reshape output
+        degreeArray.reshapeIfEmpty(IntrinsicGraphShape<Graph>::intrinsicNodeMapShape(graph));
+        // array to lemon map
+        typename PyNodeMapTraits<Graph,   UInt32>::Map degreeArrayMap(graph, degreeArray);
+        for(NodeIt iter(graph);iter!=lemon::INVALID;++iter){
+            auto c = 0;
+            for(OutArcIt a(graph,*iter);a!=lemon::INVALID;++a){
+                ++c;
+            }
+            degreeArrayMap[*iter]=c;
+        }
+        return degreeArray;
+    }
+           
 };
 
 

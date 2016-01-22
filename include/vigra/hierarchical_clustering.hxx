@@ -278,7 +278,7 @@ class EdgeWeightedUcm
     NODE_SIZE_MAP nodeSizeMap_;
     MIN_WEIGHT_MAP minWeightEdgeMap_;
     vigra::ChangeablePriorityQueue< ValueType > pq_;
-    ValueType wardness_;;
+    ValueType wardness_;
 };
 
     /// \brief  This Cluster Operator is a MONSTER.
@@ -378,7 +378,9 @@ class EdgeWeightedUcm
             wardness_(wardness),
             gamma_(gamma),
             sameLabelMultiplier_(sameLabelMultiplier),
-            metric_(metricType)
+            metric_(metricType),
+            useStopWeight_(false),
+            stopWeight_()
         {
             typedef typename MergeGraph::MergeNodeCallBackType MergeNodeCallBackType;
             typedef typename MergeGraph::MergeEdgeCallBackType MergeEdgeCallBackType;
@@ -542,7 +544,11 @@ class EdgeWeightedUcm
                 minLabel = pq_.top();
             }
             const ValueType p =  pq_.topPriority();
-
+            if(useStopWeight_){
+                if(p >= stopWeight_){
+                    return true;
+                }
+            }
             return p>= gamma_;
         }
 
@@ -563,6 +569,10 @@ class EdgeWeightedUcm
 
                 ++idsBegin;
             }
+        }
+        void enableStopWeight(const ValueType stopWeight){
+            useStopWeight_ = true;
+            stopWeight_ = stopWeight;
         }
     private:
         ValueType getEdgeWeight(const Edge & e){
@@ -619,6 +629,8 @@ class EdgeWeightedUcm
         metrics::Metric<float> metric_;
 
         std::vector<bool> isLifted_;
+        bool useStopWeight_;
+        ValueType stopWeight_;
     };
 
 
