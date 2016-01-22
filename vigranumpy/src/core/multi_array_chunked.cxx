@@ -44,6 +44,7 @@
 #include <vigra/multi_array_chunked_hdf5.hxx>
 #endif
 #include <vigra/compression.hxx>
+#include <vigra/python_utility.hxx>
 #include <boost/python.hpp>
 #include <boost/python/slice.hpp>
 
@@ -151,7 +152,7 @@ bindNumpyArray(NumpyAnyArray self, Shape const & stop)
     for(unsigned int k=0; k<stop.size(); ++k)
     {
         PyObject * item = stop[k] == 0
-                            ? PyInt_FromLong(0)
+                            ? pythonFromData(0)
                             : PySlice_New(0,0,0);
         pythonToCppException(item);
         PyTuple_SET_ITEM((PyTupleObject *)index.ptr(), k, item);
