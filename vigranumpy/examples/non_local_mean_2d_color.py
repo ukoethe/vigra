@@ -50,7 +50,7 @@ for img in imgs:
 f = pylab.figure()
 for n, arr in enumerate(imgs):
     arr = arr.squeeze()
-    f.add_subplot(1, len(imgs), n)
+    f.add_subplot(1, len(imgs), n+1)
     pylab.imshow(arr.swapaxes(0,1))
 
 pylab.title('denoised')
