@@ -210,6 +210,7 @@ namespace vigra{
         typedef MultiArray<DIM+1, U> OutType;
         typedef typename OutType::difference_type OutCoord;
 
+		// FIXME: crashes on Python3
 
         HistCoord histShape;
         std::copy(image.shape().begin(), image.shape().end(), histShape.begin());
