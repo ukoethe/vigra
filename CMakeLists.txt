@@ -110,35 +110,6 @@ IF(WITH_HDF5)
     VIGRA_FIND_PACKAGE(HDF5)
 ENDIF()
 
-set(WITH_BOOST "OFF")
-set(WITH_BOOST_COMPONENTS "")
-
-IF(WITH_BOOST_GRAPH)
-    set(WITH_BOOST "ON")
-ENDIF()
-
-IF(WITH_BOOST_THREAD)
-    set(WITH_BOOST "ON")
-    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
-    ADD_DEFINITIONS(-DUSE_BOOST_THREAD)
-ENDIF()
-
-IF(WITH_BOOST)
-    VIGRA_FIND_PACKAGE( Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
-
-    if(Boost_FOUND)
-        INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-        if(WITH_BOOST_COMPONENTS)
-            # configure boost's autolink magic to use the right library name
-            # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
-            if(("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib") OR
-               ("${Boost_SYSTEM_LIBRARY}" MATCHES "boost_system\\.lib"))
-                ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
-            endif()
-        endif()
-    endif()
-ENDIF()
-
 IF(WITH_LEMON)
     VIGRA_FIND_PACKAGE(LEMON)
 ENDIF()
@@ -179,7 +150,7 @@ if(WITH_BOOST AND Boost_FOUND)
     IF(WITH_BOOST_THREAD)
         ADD_DEFINITIONS(-DUSE_BOOST_THREAD)
     ENDIF()
-    if(WITH_BOOST_COMPONENTS)
+    if(WITH_VIGRANUMPY OR WITH_BOOST_THREAD)
         # configure boost's autolink magic to use the right library name
         # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
         if(("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib") OR
