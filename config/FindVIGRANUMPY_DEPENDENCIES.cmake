@@ -22,7 +22,8 @@ IF(PYTHONINTERP_FOUND)
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                      "import sys; print(sys.exec_prefix)"
                       OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
-                      
+    MESSAGE(STATUS "Using Python ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR} at ${PYTHON_EXECUTABLE}")
+    
     ######################################################################
     #
     #      find Python includes
