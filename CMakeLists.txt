@@ -117,11 +117,6 @@ IF(WITH_BOOST_GRAPH)
     set(WITH_BOOST "ON")
 ENDIF()
 
-IF(WITH_VIGRANUMPY)
-    set(WITH_BOOST "ON")
-    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} python)
-ENDIF()
-
 IF(WITH_BOOST_THREAD)
     set(WITH_BOOST "ON")
     set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
@@ -150,11 +145,49 @@ ENDIF()
 
 SET(DOXYGEN_SKIP_DOT TRUE)
 FIND_PACKAGE(Doxygen)
-FIND_PACKAGE(PythonInterp)
+
+FIND_PACKAGE(PythonInterp ${PYTHON_VERSION_MAJOR})
+
+##################################################
+#
+#     configure boost dependency
+#
+##################################################
+
+set(WITH_BOOST "OFF")
+set(WITH_BOOST_COMPONENTS "")
+
+IF(WITH_BOOST_GRAPH OR WITH_VIGRANUMPY)
+    set(WITH_BOOST "ON")
+ENDIF()
+
+IF(WITH_BOOST_THREAD)
+    set(WITH_BOOST "ON")
+    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
+ENDIF()
+
+IF(WITH_BOOST)
+    VIGRA_FIND_PACKAGE(Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
+ENDIF()
 
 IF(WITH_VIGRANUMPY)
-    FIND_PACKAGE( VIGRANUMPY_DEPENDENCIES )
+    FIND_PACKAGE(VIGRANUMPY_DEPENDENCIES )
 ENDIF()
+
+if(WITH_BOOST AND Boost_FOUND)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+    IF(WITH_BOOST_THREAD)
+        ADD_DEFINITIONS(-DUSE_BOOST_THREAD)
+    ENDIF()
+    if(WITH_BOOST_COMPONENTS)
+        # configure boost's autolink magic to use the right library name
+        # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
+        if(("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib") OR
+           ("${Boost_SYSTEM_LIBRARY}" MATCHES "boost_system\\.lib"))
+            ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
+        endif()
+    endif()
+endif()
 
 IF(WITH_VALGRIND)
     FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)

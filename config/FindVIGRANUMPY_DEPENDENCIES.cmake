@@ -2,40 +2,32 @@
 #
 MESSAGE(STATUS "Checking VIGRANUMPY_DEPENDENCIES")
 
-FIND_PACKAGE(PythonInterp)
+IF(NOT PYTHONINTERP_FOUND)
+    FIND_PACKAGE(PythonInterp ${PYTHON_VERSION_MAJOR})
+ENDIF()
 
 IF(PYTHONINTERP_FOUND)
-    # print out found Python version
-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                         "import sys; print(sys.version[0])"
-                          OUTPUT_VARIABLE PYTHON_MAJOR_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                         "import sys; print(sys.version)"
-                          OUTPUT_VARIABLE PYTHON_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
-    MESSAGE(STATUS "Found Python ${PYTHON_VERSION}")
-#    this command cannot be used because its results are often inconsistent
-#    with the Python interpreter found previously (e.g. libraries or includes
-#    from incompatible installations)
-#    FIND_PACKAGE(PythonLibs)
-
-    # find Python library
+    
+    # Note:
+    #  'FIND_PACKAGE(PythonLibs)' is unreliable because results are often inconsistent
+    #  with the Python interpreter found previously (e.g. libraries or includes
+    #  from incompatible installations). Thus, we ask Python itself for the information.
+    #
+    
+    ######################################################################
+    #
+    #      find Python prefix
+    #
+    ######################################################################
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                      "import sys; print(sys.exec_prefix)"
                       OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-    IF(APPLE AND ${PYTHON_PREFIX} MATCHES ".*framework.*")
-        SET(PYTHON_LIBRARIES "${PYTHON_PREFIX}/Python"
-            CACHE FILEPATH "Python libraries"
-            FORCE)
-    ELSE()
-        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                         "import sys; skip = 2 if sys.platform.startswith('win') else 1; print('python' + sys.version[0:3:skip])"
-                          OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
-        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} HINTS "${PYTHON_PREFIX}" 
-                     PATH_SUFFIXES lib lib64 libs DOC "Python libraries")
-    ENDIF()
-
-    # find Python includes
+                      
+    ######################################################################
+    #
+    #      find Python includes
+    #
+    ######################################################################
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                     "from distutils.sysconfig import *; print(get_python_inc())"
                     OUTPUT_VARIABLE PYTHON_INCLUDE OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -43,15 +35,58 @@ IF(PYTHONINTERP_FOUND)
         CACHE PATH "Path to Python include files"
         FORCE)
 
-    IF(PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
-        MESSAGE(STATUS "Found Python libraries: ${PYTHON_LIBRARIES}")
-        MESSAGE(STATUS "Found Python includes:  ${PYTHON_INCLUDE_PATH}")
-        SET(PYTHONLIBS_FOUND TRUE)
+    IF(PYTHON_INCLUDE_PATH)
+        MESSAGE(STATUS "Found Python includes:  ${PYTHON_INCLUDE_PATH}")    
     ELSE()
-        MESSAGE(STATUS "Could NOT find Python libraries and/or includes")
+        MESSAGE(STATUS "Could NOT find Python includes")
+    ENDIF()
+                      
+    ######################################################################
+    #
+    #      find Python library
+    #
+    ######################################################################
+    IF(APPLE AND ${PYTHON_PREFIX} MATCHES ".*framework.*")
+        SET(PYTHON_LIBRARIES "${PYTHON_PREFIX}/Python"
+            CACHE FILEPATH "Python libraries"
+            FORCE)
+    ELSE()
+        IF(WIN32)
+            set(PYTHON_LIBRARY_NAME python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+        ELSE()
+            execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+                             "from distutils.sysconfig import *; print(get_config_var('LDLIBRARY'))"
+                              OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
+        ENDIF()
+        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} HINTS "${PYTHON_PREFIX}" 
+                     PATH_SUFFIXES lib lib64 libs DOC "Python libraries")
     ENDIF()
 
-    VIGRA_FIND_PACKAGE( Boost 1.40.0 COMPONENTS python )
+    IF(PYTHON_LIBRARIES)
+        MESSAGE(STATUS "Found Python library: ${PYTHON_LIBRARIES}")
+    ELSE()
+        MESSAGE(STATUS "Could NOT find Python library")
+    ENDIF()
+
+    ######################################################################
+    #
+    #      find boost::python library
+    #
+    ######################################################################
+    # 'FIND_PACKAGE(Boost COMPONENTS python)' is unreliable because it often selects
+    # boost_python for the wrong Python version
+    IF(Boost_FOUND)
+        FIND_LIBRARY(Boost_PYTHON_LIBRARY
+                     NAMES boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR} boost_python
+                     HINTS "${Boost_LIBRARY_DIR}"
+                     DOC "boost_python libraries")
+    ENDIF()
+    
+    if(Boost_PYTHON_LIBRARY)
+        MESSAGE(STATUS "Found boost_python library: ${Boost_PYTHON_LIBRARY}")
+    else()
+        MESSAGE(STATUS "Could NOT find boost_python library")
+    endif()
 
     ######################################################################
     #
@@ -144,8 +179,8 @@ IF(PYTHONINTERP_FOUND)
     ######################################################################
     INCLUDE(FindPackageHandleStandardArgs)
     FIND_PACKAGE_HANDLE_STANDARD_ARGS(VIGRANUMPY_DEPENDENCIES DEFAULT_MSG
-                         PYTHONINTERP_FOUND PYTHONLIBS_FOUND
-                         Boost_PYTHON_FOUND PYTHON_NUMPY_INCLUDE_DIR VIGRANUMPY_INSTALL_DIR)
+                         PYTHONINTERP_FOUND PYTHON_INCLUDE_PATH PYTHON_LIBRARIES
+                         Boost_PYTHON_LIBRARY PYTHON_NUMPY_INCLUDE_DIR VIGRANUMPY_INSTALL_DIR)
 
     IF(NOT VIGRANUMPY_INCLUDE_DIRS OR VIGRANUMPY_INCLUDE_DIRS MATCHES "-NOTFOUND")
         #note that the numpy include dir is set _before_ the python include dir, such that
@@ -156,13 +191,7 @@ IF(PYTHONINTERP_FOUND)
     SET(VIGRANUMPY_INCLUDE_DIRS ${VIGRANUMPY_INCLUDE_DIRS}
         CACHE PATH "include directories needed by VIGRA Python bindings"
         FORCE)
-    IF(NOT VIGRANUMPY_LIBRARIES OR VIGRANUMPY_LIBRARIES MATCHES "-NOTFOUND")
-        SET(VIGRANUMPY_LIBRARIES ${PYTHON_LIBRARIES} ${Boost_PYTHON_LIBRARY})
-    ENDIF()
-    SET(VIGRANUMPY_LIBRARIES ${VIGRANUMPY_LIBRARIES}
-        CACHE FILEPATH "libraries needed by VIGRA Python bindings"
-        FORCE)
+    SET(VIGRANUMPY_LIBRARIES ${PYTHON_LIBRARIES} ${Boost_PYTHON_LIBRARY})
 ELSE()
-    MESSAGE(STATUS "Python not found. Make sure that Python is in your PATH or use 'cmake_gui' to set the PYTHON_EXECUTABLE variable manually.")
-    SET(PYTHONINTERP_V3_FOUND 0)
+    MESSAGE(STATUS "Python not found. Make sure that Python is in your PATH or use 'cmake-gui' to set the PYTHON_EXECUTABLE variable manually.")
 ENDIF()
