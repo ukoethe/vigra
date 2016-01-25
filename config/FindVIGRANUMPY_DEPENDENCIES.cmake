@@ -77,9 +77,9 @@ IF(PYTHONINTERP_FOUND)
     # boost_python for the wrong Python version
     IF(Boost_FOUND)
         FIND_LIBRARY(Boost_PYTHON_LIBRARY
-                     NAMES boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR} 
-                           boost_python-mt
-                           boost_python
+                     NAMES boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}   # Linux with multiple Python versions
+                           boost_python-mt                                                 # Mac
+                           boost_python                                                    # default
                      HINTS "${Boost_LIBRARY_DIR}"
                      DOC "boost_python libraries")
     ENDIF()
