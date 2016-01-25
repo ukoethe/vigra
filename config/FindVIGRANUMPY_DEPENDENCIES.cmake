@@ -2,15 +2,13 @@
 #
 MESSAGE(STATUS "Checking VIGRANUMPY_DEPENDENCIES")
 
-FIND_PACKAGE(PythonInterp)
-
 IF(PYTHONINTERP_FOUND)
     # print out found Python version
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                          "import sys; print(sys.version[0])"
                           OUTPUT_VARIABLE PYTHON_MAJOR_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                         "import sys; print(sys.version)"
+                         "import sys; print(sys.version.split()[0])"
                           OUTPUT_VARIABLE PYTHON_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
     MESSAGE(STATUS "Found Python ${PYTHON_VERSION}")
 #    this command cannot be used because its results are often inconsistent
@@ -31,7 +29,16 @@ IF(PYTHONINTERP_FOUND)
         execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                          "import sys; skip = 2 if sys.platform.startswith('win') else 1; print('python' + sys.version[0:3:skip])"
                           OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
-        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} HINTS "${PYTHON_PREFIX}" 
+        # NOTE: recent Python versions may add a trailing letter to the library name:
+        # https://www.python.org/dev/peps/pep-3149/
+        # We don't test for the debug version of the library, that adds the possibility
+        # of another "d" suffix.
+        FIND_LIBRARY(PYTHON_LIBRARIES
+                     "${PYTHON_LIBRARY_NAME}"
+                     "${PYTHON_LIBRARY_NAME}m"
+                     "${PYTHON_LIBRARY_NAME}u"
+                     "${PYTHON_LIBRARY_NAME}mu"
+                     HINTS "${PYTHON_PREFIX}"
                      PATH_SUFFIXES lib lib64 libs DOC "Python libraries")
     ENDIF()
 
