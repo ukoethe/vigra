@@ -2,6 +2,7 @@ language: python
 
 python:
   - "2.7"
+  - "3.5"
 
 before_script:
   - sudo apt-get update -qq
@@ -11,6 +12,6 @@ before_script:
 
 script:
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DVIGRANUMPY_LIBRARIES="/opt/python/${TRAVIS_PYTHON_VERSION}*/lib/libpython${TRAVIS_PYTHON_VERSION}.so;/usr/lib/libboost_python.so" ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DPYTHON_VERSION_MAJOR=${TRAVIS_PYTHON_VERSION:0:1} ..
   - make
   - ctest || ctest -V
