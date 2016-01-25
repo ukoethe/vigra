@@ -7,13 +7,13 @@ IF(NOT PYTHONINTERP_FOUND)
 ENDIF()
 
 IF(PYTHONINTERP_FOUND)
-    
+
     # Note:
     #  'FIND_PACKAGE(PythonLibs)' is unreliable because results are often inconsistent
     #  with the Python interpreter found previously (e.g. libraries or includes
     #  from incompatible installations). Thus, we ask Python itself for the information.
     #
-    
+
     ######################################################################
     #
     #      find Python prefix
@@ -22,8 +22,18 @@ IF(PYTHONINTERP_FOUND)
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                      "import sys; print(sys.exec_prefix)"
                       OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
-    MESSAGE(STATUS "Using Python ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR} at ${PYTHON_EXECUTABLE}")
-    
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+                     "import sys; print(sys.version.split()[0])"
+                      OUTPUT_VARIABLE PYTHON_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+                     "import sys; print(sys.version_info[0])"
+                      OUTPUT_VARIABLE PYTHON_VERSION_MAJOR OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+                     "import sys; print(sys.version_info[1])"
+                      OUTPUT_VARIABLE PYTHON_VERSION_MINOR OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    MESSAGE(STATUS "Using Python ${PYTHON_VERSION} at ${PYTHON_EXECUTABLE}")
+
     ######################################################################
     #
     #      find Python includes
@@ -37,11 +47,11 @@ IF(PYTHONINTERP_FOUND)
         FORCE)
 
     IF(PYTHON_INCLUDE_PATH)
-        MESSAGE(STATUS "Found Python includes:  ${PYTHON_INCLUDE_PATH}")    
+        MESSAGE(STATUS "Found Python includes:  ${PYTHON_INCLUDE_PATH}")
     ELSE()
         MESSAGE(STATUS "Could NOT find Python includes")
     ENDIF()
-                      
+
     ######################################################################
     #
     #      find Python library
@@ -59,7 +69,7 @@ IF(PYTHONINTERP_FOUND)
                              "from distutils.sysconfig import *; print(get_config_var('LDLIBRARY'))"
                               OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
         ENDIF()
-        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} HINTS "${PYTHON_PREFIX}" 
+        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} HINTS "${PYTHON_PREFIX}"
                      PATH_SUFFIXES lib lib64 libs DOC "Python libraries")
     ENDIF()
 
@@ -84,7 +94,7 @@ IF(PYTHONINTERP_FOUND)
                      HINTS "${Boost_LIBRARY_DIR}"
                      DOC "boost_python libraries")
     ENDIF()
-    
+
     if(Boost_PYTHON_LIBRARY)
         MESSAGE(STATUS "Found boost_python library: ${Boost_PYTHON_LIBRARY}")
     else()
@@ -172,7 +182,7 @@ IF(PYTHONINTERP_FOUND)
     #
     ######################################################################
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                     "import sys; p = sys.platform; print('windows') if p.startswith('win') else p"	
+                     "import sys; p = sys.platform; print('windows') if p.startswith('win') else p"
                       OUTPUT_VARIABLE PYTHON_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     ######################################################################

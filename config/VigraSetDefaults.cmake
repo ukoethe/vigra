@@ -123,7 +123,7 @@ IF(NOT VIGRA_DEFAULTS_INIT)
         IF(NOT CMAKE_C_FLAGS)
             SET(CMAKE_C_FLAGS "-W -Wall -Wextra -pedantic -std=c99 -Wno-sign-compare")
         ENDIF()
-    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+    ENDIF()
 
     SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING
         "Flags used by the compiler during all build types."
