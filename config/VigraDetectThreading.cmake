@@ -22,9 +22,13 @@ else()
     # Save original flags before we add new ones, in case there's no need for the new ones.
     set(ORIG_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        SET(CMAKE_COMPILER_IS_CLANGXX 1)
+    endif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
     if (CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0")
         SET(CXX_THREADING_FLAGS "-pthread -std=c++0x")
-    elseif(CMAKE_COMPILER_IS_GNUCXX)
+    elseif(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
         SET(CXX_THREADING_FLAGS "-pthread -std=c++11")
     elseif(NOT MSVC)
         SET(CXX_THREADING_FLAGS "-std=c++11")
