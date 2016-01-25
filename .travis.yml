@@ -3,9 +3,21 @@ language: python
 python:
   - "2.7"
 
+
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - libhdf5-serial-dev
+      - libboost-python-dev
+      - libjpeg-dev
+      - libtiff4-dev
+      - libpng12-dev
+      - libfftw3-dev
+      - cmake
+
 before_script:
-  - sudo apt-get update -qq
-  - sudo apt-get install --assume-yes libhdf5-serial-dev libboost-python-dev libjpeg-dev libtiff4-dev libpng12-dev libfftw3-dev cmake
   - pip install nose
   - pip install numpy
 
