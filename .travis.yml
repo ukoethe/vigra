@@ -29,6 +29,7 @@ addons:
       - cmake
 
 before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                        ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv || true                       ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install ${TRAVIS_PYTHON_VERSION}           ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                     ; fi
