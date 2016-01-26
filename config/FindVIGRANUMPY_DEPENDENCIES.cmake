@@ -93,6 +93,7 @@ IF(PYTHONINTERP_FOUND)
     IF(Boost_FOUND)
         FIND_LIBRARY(Boost_PYTHON_LIBRARY
                      NAMES boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}   # Linux with multiple Python versions
+                           boost_python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}
                            boost_python-mt                                                 # Mac
                            boost_python                                                    # default
                      HINTS "${Boost_LIBRARY_DIR}"
