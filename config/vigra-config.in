@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import division, print_function
+
 from optparse import OptionParser
 import sys
 
@@ -58,10 +60,10 @@ def filename2ldflags(libFilename):
     return result
 
 if op.version:
-    print "@vigra_version@"
+    print("@vigra_version@")
 
 if op.cppflags: # was: --cppflags|--cxxincludes|--cxxflags|--cincludes|--cflags
-    print '-I@CMAKE_INSTALL_PREFIX@/include'
+    print('-I@CMAKE_INSTALL_PREFIX@/include')
 
 if op.impex_lib: # was: --impex_lib|--impex-lib|--libs
     ldflags = []
@@ -79,16 +81,16 @@ if op.impex_lib: # was: --impex_lib|--impex-lib|--libs
             if fl not in ldflags:
                 ldflags.append(fl)
 
-    print " ".join(ldflags)
+    print(" ".join(ldflags))
 
 if op.fftw_lib:
     if not hasFFTW:
         sys.stderr.write("VIGRA was configured without FFTW switches, libpath unknown!\n")
         sys.exit(1)
-    print " ".join(filename2ldflags('@FFTW3_LIBRARY@'))
+    print(" ".join(filename2ldflags('@FFTW3_LIBRARY@')))
 
 if op.include_path: # was: --include_path|--include-path|--includepath
-    print '@CMAKE_INSTALL_PREFIX@/include'
+    print('@CMAKE_INSTALL_PREFIX@/include')
 
 if op.docdir:
-    print '@DOCDIR@'
+    print('@DOCDIR@')

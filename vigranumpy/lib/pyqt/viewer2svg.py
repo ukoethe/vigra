@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os 
 from PyQt4 import QtCore, QtGui
 
@@ -66,7 +68,7 @@ def viewer2svg(viewer, basepath, onlyVisible = False, moveBy = QtCore.QPointF(0.
                 else:
                     outvec.extend(writeText(text = element[0], position = element[1]))
         else:
-            print str(overlay[0]) + " not supported yet.\n"
+            print(str(overlay[0]) + " not supported yet.\n")
 
     outvec.append('\n</g>\n')
     outvec.append('</svg>\n')

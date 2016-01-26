@@ -1,4 +1,4 @@
-#######################################################################
+﻿#######################################################################
 #
 #         Copyright 2009-2011 by Ullrich Koethe
 #
@@ -32,15 +32,21 @@
 #    OTHER DEALINGS IN THE SOFTWARE.
 #
 #######################################################################
+from __future__ import print_function
+from functools import reduce
 
 import sys
 import copy
 import numpy
-import ufunc
+import vigra.ufunc as ufunc
 import collections
-import vigranumpycore
+import vigra.vigranumpycore as vigranumpycore
 
-from vigranumpycore import AxisType, AxisInfo, AxisTags
+from vigra.vigranumpycore import AxisType, AxisInfo, AxisTags
+
+if sys.version_info[0] > 2:
+    buffer = memoryview
+    xrange = range
 
 def _preserve_doc(f):
     npy_doc = eval('numpy.ndarray.%s.__doc__' % f.__name__)
@@ -636,7 +642,7 @@ class VigraArray(numpy.ndarray):
             permutation = self.permutationFromNumpyOrder()
         )
         socket.send_json(metadata, flags|zmq.SNDMORE)
-        socket.send(self.axistags.toJSON(), flags|zmq.SNDMORE)
+        socket.send(self.axistags.toJSON().encode('ascii'), flags|zmq.SNDMORE)
         return socket.send(transposed, flags, copy=copy, track=track)
 
     def imshow(self):
@@ -710,7 +716,7 @@ class VigraArray(numpy.ndarray):
         '''
         try:
             import qimage2ndarray
-        except Exception, e:
+        except Exception as e:
             from vigra import _fallbackModule
             _fallbackModule('qimage2ndarray',
             '''
@@ -770,7 +776,7 @@ class VigraArray(numpy.ndarray):
                 clip = False
             if m == M:
                 return res
-            f = 255.0 / (M - m)
+            f = 255.0 // (M - m)
             img = f * (img - m)
             if clip:
                 img = numpy.minimum(255.0, numpy.maximum(0.0, img))
@@ -926,7 +932,7 @@ class VigraArray(numpy.ndarray):
             >>> s = vigra.ScalarImage((2,2))
             >>> s.ravel()[...] = range(4)
             >>> for p in s.spaceIter():
-            ....    print p
+            ....    print(p)
             0.0
             1.0
             2.0
@@ -1252,8 +1258,9 @@ class VigraArray(numpy.ndarray):
         except:
             if not isinstance(index, collections.Iterable):
                 raise
-            res = numpy.ndarray.__getitem__(self,
-                     map(lambda x: None if isinstance(x, AxisInfo) else x, index))
+            #create temporary index without AxisInfor in order to use np.ndarray.__getitem__
+            tmpindex = [None if isinstance(x, AxisInfo) else x for x in index]
+            res = numpy.ndarray.__getitem__(self, tmpindex)
         if res is not self and hasattr(res, 'axistags'):
             if res.base is self or res.base is self.base:
                 res.axistags = res._transform_axistags(index)
@@ -2111,7 +2118,7 @@ class ImagePyramid(list):
         if level > self.highestLevel:
             image = list.__getitem__(self, -1)
             for i in range(self.highestLevel, level):
-                newShape = [int((k + 1) / 2) for k in image.shape]
+                newShape = [int((k + 1) // 2) for k in image.shape]
                 if hasChannels:
                     newShape[channelIndex] = image.shape[channelIndex]
                 if axistags:
