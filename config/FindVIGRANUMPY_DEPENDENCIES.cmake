@@ -3,7 +3,7 @@
 MESSAGE(STATUS "Checking VIGRANUMPY_DEPENDENCIES")
 
 IF(NOT PYTHONINTERP_FOUND)
-    FIND_PACKAGE(PythonInterp ${PYTHON_VERSION_MAJOR})
+    FIND_PACKAGE(PythonInterp "${PYTHON_VERSION}")
 ENDIF()
 
 IF(PYTHONINTERP_FOUND)
@@ -68,10 +68,10 @@ IF(PYTHONINTERP_FOUND)
             execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                              "from distutils.sysconfig import *; print(get_config_var('LDLIBRARY'))"
                               OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
+            execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+                             "from distutils.sysconfig import *; print(get_config_var('LIBDIR'))"
+        			           OUTPUT_VARIABLE PYTHON_LIBRARY_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
         ENDIF()
-        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-		        "from distutils.sysconfig import *; print(get_config_var('LIBDIR'))"
-			OUTPUT_VARIABLE PYTHON_LIBRARY_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
         FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} HINTS "${PYTHON_LIBRARY_PREFIX}" "${PYTHON_PREFIX}"
                      PATH_SUFFIXES lib lib64 libs DOC "Python libraries")
         unset(PYTHON_LIBRARY_PREFIX)
