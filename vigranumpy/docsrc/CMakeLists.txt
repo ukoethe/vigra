@@ -57,7 +57,8 @@ IF(PYTHON_SPHINX)
         SET(VIGRA_CONFIGURATION)
     ENDIF()
 
-    ADD_CUSTOM_TARGET (doc_python
+    # just rerun sphinx (useful to debug the vigranumpy docu)
+    ADD_CUSTOM_TARGET (doc_sphinx
         COMMAND ${CMAKE_COMMAND} -E make_directory
             ${VIGRANUMPY_DOCDIR}
         COMMAND ${PYTHON_SPHINX} -b html
@@ -66,6 +67,19 @@ IF(PYTHON_SPHINX)
             ${CMAKE_CURRENT_SOURCE_DIR}
             ${VIGRANUMPY_DOCDIR}
         COMMENT "Generating vigranumpy documentation")
+
+    # create vigranumpy documentation after updating C++ docu and vigranumpy modules
+    ADD_CUSTOM_TARGET(doc_python
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+            ${VIGRANUMPY_DOCDIR}
+        COMMAND ${PYTHON_SPHINX} -b html
+            ${SPHINX_ALLOPTS}
+            ${VIGRA_CONFIGURATION}
+            ${CMAKE_CURRENT_SOURCE_DIR}
+            ${VIGRANUMPY_DOCDIR}
+        COMMENT "Generating vigranumpy documentation")
+    ADD_DEPENDENCIES(doc_python vigranumpy)
+    ADD_DEPENDENCIES(doc_python doc_cpp)
 
 ELSE(PYTHON_SPHINX)
     # no vigranumpy documentation if sphinx not available
@@ -77,6 +91,4 @@ ELSE(PYTHON_SPHINX)
 
 ENDIF(PYTHON_SPHINX)
 
-ADD_DEPENDENCIES(doc_python vigranumpy)
-ADD_DEPENDENCIES(doc_python doc_cpp)
 ADD_DEPENDENCIES(doc doc_python)

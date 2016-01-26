@@ -1,4 +1,4 @@
-#######################################################################
+﻿#######################################################################
 #                                                                      
 #         Copyright 2009-2010 by Ullrich Koethe                        
 #                                                                      
@@ -33,9 +33,10 @@
 #                                                                      
 #######################################################################
 
+from __future__ import division, print_function
 import sys
-print >> sys.stderr, "\nexecuting test file", __file__
-execfile('set_paths.py')
+print("\nexecuting test file", __file__, file=sys.stderr)
+exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
 from nose.tools import assert_equal, raises, assert_raises
 import vigra
@@ -190,7 +191,7 @@ def test_Region2Crack():
 def test_transforms():
     res = distanceTransform2D(img_scalar_f)
     checkShape(img_scalar_i, res)
-    #print >> sys.stderr, res.dtype,
+    #print(res.dtype, file=sys.stderr)
     checkType(res, np.float32)
     
     res = distanceTransform2D(img_scalar_ui8)
@@ -275,5 +276,5 @@ def test_edges():
     
     
 def ok_():
-    print >> sys.stderr, ".",
+    print(".", file=sys.stderr)
         

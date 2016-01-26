@@ -11,6 +11,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from __future__ import division, print_function
+
 import sys, os
 
 # silent lots of 'arg is not a Python function' warnings
@@ -33,7 +35,7 @@ _getargspec_workaround.__module__ = 'inspect'
 # set the PATH of the current build, so that we don't create
 # documentation for a possibly outdated installation
 vigranumpy_path=r'@VIGRANUMPY_TMP_PATH@'
-print "Working directory:", vigranumpy_path
+print("Working directory:", vigranumpy_path)
 sys.path.insert(0,vigranumpy_path)
 
 # find the build configuration ('release' or 'debug' on Windows, nothing on Linux)
@@ -44,7 +46,7 @@ for a in sys.argv:
         outdir = '/' + a[len(match):]
 
 vigraimpex_path=r'@VIGRAIMPEX_PATH@%s' % outdir
-print "vigraimpex path:", vigraimpex_path
+print("vigraimpex path:", vigraimpex_path)
 os.environ['PATH'] = os.pathsep.join([vigraimpex_path, os.environ['PATH']])
 
 

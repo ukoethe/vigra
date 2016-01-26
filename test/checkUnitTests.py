@@ -3,7 +3,7 @@ def hook(ui, repo, **args):
     repoPath = repo.url()[5:] + '/' # cut-off 'file:' prefix
     testSuccessFile = repoPath + 'test/testSuccess'
     if not os.path.exists(testSuccessFile):
-        print "File 'test/testSuccess' is missing. Run the test suite before committing."
+        print("File 'test/testSuccess' is missing. Run the test suite before committing.")
         return True
     testTime = os.path.getmtime(testSuccessFile)
     stat = repo.status()
@@ -16,9 +16,9 @@ def hook(ui, repo, **args):
         if fileTime > testTime:
             modified.append(file)
     if len(modified) > 0:
-        print "Run the test suite before committing. The following files are untested:" 
+        print("Run the test suite before committing. The following files are untested:")
         for file in modified:
-            print '   ',file
+            print('   ',file)
         return True
     return False
     
