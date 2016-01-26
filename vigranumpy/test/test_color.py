@@ -1,4 +1,4 @@
-#######################################################################
+﻿#######################################################################
 #                                                                      
 #         Copyright 2009-2013 by Ullrich Koethe and Thorben Kroeger
 #                                                                      
@@ -33,9 +33,10 @@
 #                                                                      
 #######################################################################
 
+from __future__ import division, print_function
 import sys
-print >> sys.stderr, "\nexecuting test file", __file__
-execfile('set_paths.py')
+print("\nexecuting test file", __file__, file=sys.stderr)
+exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
 from nose.tools import assert_equal, raises, assert_raises, assert_true
 import vigra

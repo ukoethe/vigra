@@ -2,6 +2,7 @@ import vigra
 from vigra import graphs
 from vigra import numpy
 import pylab
+
 # parameter
 filepath = '12003.jpg'  # input image path
 sigmaGradMag = 5.0      # sigma Gaussian gradient

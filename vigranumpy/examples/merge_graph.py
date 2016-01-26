@@ -1,3 +1,4 @@
+from __future__ import print_function
 import vigra
 from vigra import graphs
 from vigra import numpy
@@ -27,26 +28,20 @@ rag = graphs.regionAdjacencyGraph(gridGraph, labels)
 # get the merge graph
 mg = graphs.mergeGraph(rag)
 
-
-
-
-
-
 # do n runs where we erase k edges in each run
-
 n = 3
 k = 200
 for r in range(n):
 
-    erased = 0 
+    erased = 0
 
     while(erased<k):
 
         # get a random edge
         randEdgeId = numpy.random.randint(rag.edgeNum)
 
-        print "random edge:",randEdgeId
-        # edge could be gone 
+        print("random edge:",randEdgeId)
+        # edge could be gone
         # -since we could have merged it already
         # - or due to transitivity of other merges
         if mg.hasEdgeId(randEdgeId):
@@ -64,5 +59,3 @@ for r in range(n):
     # get the result as pixels wise labeling
     asImage = rag.projectLabelsToGridGraph(labels)
     asImage = vigra.taggedView(asImage, "xy")
-    
-    

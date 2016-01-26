@@ -11,7 +11,22 @@ SET(PYSOURCES
 
 INSTALL(FILES ${PYSOURCES} DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
 
-ADD_CUSTOM_TARGET(vigranumpy_lib)
+SET(TIMESTAMP "${CMAKE_CURRENT_BINARY_DIR}/TIMESTAMP.cxx")
+FILE(GLOB TIMESTAMP_FOUND ${TIMESTAMP})
+IF(NOT TIMESTAMP_FOUND)
+    FILE(WRITE ${TIMESTAMP}
+     "// auto-generated dummy file to ensure dependency on Python files. 
+// ADD_CUSTOM_TARGET(vigranumpy_lib SOURCES 'dollarsign'{PYSOURCES}) does not seem to be sufficient.
+")
+ENDIF()
+
+add_custom_command(
+    OUTPUT ${TIMESTAMP}
+    DEPENDS ${PYSOURCES}
+    COMMAND ${CMAKE_COMMAND}
+    ARGS -E touch ${TIMESTAMP})
+
+ADD_CUSTOM_TARGET(vigranumpy_lib SOURCES ${TIMESTAMP} ${PYSOURCES})
 ADD_DEPENDENCIES(vigranumpy vigranumpy_lib)
 
 FOREACH(lib_file ${PYSOURCES})
