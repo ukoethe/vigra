@@ -31,7 +31,7 @@ addons:
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew uninstall boost --force || true             ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew upgrade                                     ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew upgrade; brew cleanup          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv || brew upgrade pyenv         ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install ${TRAVIS_PYTHON_VERSION}           ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                     ; fi
