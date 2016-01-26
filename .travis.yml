@@ -42,6 +42,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff || brew upgrade libtiff           ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng || brew upgrade libpng             ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw || brew upgrade fftw                 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew upgrade; brew cleanup                             ; fi
   - pip install nose
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                           ; fi
   - pip install numpy
