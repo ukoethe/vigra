@@ -32,8 +32,9 @@
 #    OTHER DEALINGS IN THE SOFTWARE.
 #
 #######################################################################
+from __future__ import print_function
 
-import math, os, numpy, PyQt4
+import math, os, sys, numpy, PyQt4
 
 import PyQt4.QtCore as qcore
 import PyQt4.QtGui  as qt
@@ -42,9 +43,12 @@ from PyQt4.QtCore import SIGNAL
 import vigra
 import vigra.ufunc
 
+if sys.version_info[0] > 2:
+    xrange = range
+
 try:
     from VigraQt import OverlayViewer, ImageCursor
-except Exception, e:
+except Exception as e:
     vigra._fallbackModule('VigraQt',
     '''
     %s
@@ -174,15 +178,15 @@ class ImageViewer(OverlayViewer):
                 OverlayViewer.removeOverlay(self, self.overlays[overlay])
                 self.overlays.pop(overlay)
                 self.update()
-            except IndexError, e:
-                print "No such overlay."
+            except IndexError as e:
+                print("No such overlay.")
         else:
             try:
                 self.overlays.remove(overlay)
                 OverlayViewer.removeOverlay(self, overlay)
                 self.update()
-            except ValueError, e:
-                print "No such overlay."
+            except ValueError as e:
+                print("No such overlay.")
 
     def _slideAfterZoom(self, shift):
         if self.zoomLevel() > 0:
@@ -299,7 +303,7 @@ class ImageViewer(OverlayViewer):
 
         try:
             image, normalized = self.getDisplayedImage()
-        except Exception, e:
+        except Exception as e:
             qt.QMessageBox.critical(self, "Error Applying Expression", str(e))
             return
 
@@ -319,10 +323,10 @@ class ImageViewer(OverlayViewer):
             image = self.image
         else:
             for f in vigra.ufunc.__all__:
-                exec 'from vigra.ufunc import %s' % f
+                exec('from vigra.ufunc import %s' % f)
             for f in dir(vigra.colors):
                 if not f.startswith('__'):
-                    exec 'from vigra.colors import %s' % f
+                    exec('from vigra.colors import %s' % f)
             x = self.image
             image = eval(self._savedExpression)
 
@@ -370,7 +374,7 @@ class ImageViewer(OverlayViewer):
                     image = self.getDisplay()[0]
                 try:
                     image.writeImage(filename, pixelType)
-                except RuntimeError, e:
+                except RuntimeError as e:
                     qt.QMessageBox.critical(self, "Error", str(e))
                 else:
                     return
@@ -426,7 +430,7 @@ class ImageViewer(OverlayViewer):
                     viewer2svg.viewer2svg(self, basename, not allOVs)
                 else:
                     viewer2svg.viewer2svg(self, filename, not allOVs)
-            except RuntimeError, e:
+            except RuntimeError as e:
                 qt.QMessageBox.critical(self, "Error", str(e))
             return
 

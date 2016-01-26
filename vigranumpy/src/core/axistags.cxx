@@ -36,6 +36,7 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
 #define NO_IMPORT_ARRAY
 
+#include <typeinfo>
 #include <vigra/numpy_array.hxx>
 #include <vigra/axistags.hxx>
 #include <boost/python.hpp>
@@ -81,7 +82,11 @@ generic__deepcopy__(python::object copyable, python::dict memo)
 {
     python::object copyMod = python::import("copy");
     python::object deepcopy = copyMod.attr("deepcopy");
+#if PY_MAJOR_VERSION < 3
     python::object builtin = python::import("__builtin__");
+#else
+    python::object builtin = python::import("builtins");
+#endif
     python::object globals = builtin.attr("__dict__");
     
     Copyable* newCopyable(new Copyable(python::extract<const Copyable &>(copyable)()));
@@ -194,11 +199,16 @@ AxisTags_create(python::object i1, python::object i2,
     VIGRA_UNIQUE_PTR<AxisTags> res(new AxisTags());
     
     python::extract<AxisTags const &> tags(i1);
+    //std::cout << "Deebug" << std::endl << typeid(i1.ptr()).name() << std::endl;
     if(tags.check())
     {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(tags()));
     }
+#if PY_MAJOR_VERSION < 3
     else if(PyString_Check(i1.ptr()))
+#else
+    else if (PyUnicode_Check(i1.ptr()))
+#endif
     {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(python::extract<std::string>(i1)()));
     }
@@ -216,7 +226,11 @@ AxisTags_create(python::object i1, python::object i2,
             res->push_back(info());
         }
     }
+#if PY_MAJOR_VERSION < 3
     else if(PyInt_Check(i1.ptr()))
+#else
+    else if (PyLong_Check(i1.ptr()))
+#endif
     {
         int size = python::extract<int>(i1)();
         for(int k=0; k<size; ++k)
@@ -438,7 +452,11 @@ AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
     while(knew < lnew)
     {
         python::object item = index[kindex];
+#if PY_MAJOR_VERSION < 3
         if(PyInt_Check(item.ptr()))
+#else
+        if(PyLong_Check(item.ptr()))
+#endif
         {
             ++kold;
             ++kindex;
@@ -593,12 +611,12 @@ void defineAxisTags()
              "    >>> a = vigra.RGBImage((200,100))\n"
              "    >>> a.axistags['x'].resolution = 1.0\n"
              "    >>> a.axistags['y'].resolution = 1.2\n"
-             "    >>> print a.axistags\n"
+             "    >>> print(a.axistags)\n"
              "    AxisInfo: 'x' (type: Space, resolution=1)\n"
              "    AxisInfo: 'y' (type: Space, resolution=1.2)\n"
              "    AxisInfo: 'c' (type: Channels) RGB\n"
              "    >>> b = a[::2, ::4, :]\n"
-             "    >>> print b.axistags\n"
+             "    >>> print(b.axistags)\n"
              "    AxisInfo: 'x' (type: Space, resolution=2)\n"
              "    AxisInfo: 'y' (type: Space, resolution=4.8)\n"
              "    AxisInfo: 'c' (type: Channels) RGB\n\n")
@@ -669,12 +687,12 @@ void defineAxisTags()
             "The entries of an axistags object (i.e. the individual axisinfo objects)\n"
             "can be accessed via the index operator, where the argument can either be\n"
             "the axis index or the axis key::\n\n"
-            "    >>> print array.axistags[0]\n"
+            "    >>> print(array.axistags[0])\n"
             "    AxisInfo: 'x' (type: Space, resolution=1.2)\n"
-            "    >>> print array.axistags['x']\n"
+            "    >>> print(array.axistags['x'])\n"
             "    AxisInfo: 'x' (type: Space, resolution=1.2)\n"
             "    >>> array.axistags['x'].resolution = 2.0\n"
-            "    >>> print array.axistags['x']\n"
+            "    >>> print(array.axistags['x'])\n"
             "    AxisInfo: 'x' (type: Space, resolution=2)\n\n",
             no_init)
         .def("__init__", make_constructor(&AxisTags_create,

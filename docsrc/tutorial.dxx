@@ -951,22 +951,22 @@
     
     \code
     >>> a = vigra.ScalarImage((30, 20))
-    >>> print "%s \n %r" % (a.shape, a.axistags)
+    >>> print("%s \n %r" % (a.shape, a.axistags))
     (30L, 20L)
      x y
 
     >>> a = vigra.RGBImage((30, 20))
-    >>> print "%s \n %r" % (a.shape, a.axistags)
+    >>> print("%s \n %r" % (a.shape, a.axistags))
     (30L, 20L, 3L)
      x y c
 
     >>> a = vigra.ScalarVolume((30, 20, 10))
-    >>> print "%s \n %r" % (a.shape, a.axistags)
+    >>> print("%s \n %r" % (a.shape, a.axistags))
     (30L, 20L, 10L)
      x y z
 
     >>> a = vigra.RGBVolume((30, 20, 10))
-    >>> print "%s \n %r" % (a.shape, a.axistags)
+    >>> print("%s \n %r" % (a.shape, a.axistags))
     (30L, 20L, 10L, 3L)
      x y z c
     \endcode
