@@ -1,16 +1,18 @@
-language: python
-
 matrix:
   include:
     - os: linux
       sudo: false
+      language: python
       python: "2.7"
     - os: linux
       sudo: false
+      language: python
       python: "3.2"
     - os: osx
+      language: generic
       env: PYTHON_VERSION="2.7"
     - os: osx
+      language: generic
       env: PYTHON_VERSION="3.2"
 
 
