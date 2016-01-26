@@ -1,15 +1,18 @@
 language: python
 
-os:
-  - linux
-  - osx
+matrix:
+  include:
+    - os: linux
+      sudo: false
+      python: "2.7"
+    - os: linux
+      sudo: false
+      python: "3.2"
+    - os: osx
+      python: "2.7"
+    - os: osx
+      python: "3.2"
 
-python:
-  - "2.7"
-  - "3.2"
-
-
-sudo: false
 
 addons:
   apt:
