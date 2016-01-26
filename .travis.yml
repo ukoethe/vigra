@@ -24,6 +24,12 @@ addons:
       - cmake
 
 before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5                         ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost --with-python          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg                      ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff                      ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng                       ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw                         ; fi
   - pip install nose
   - pip install numpy
 
