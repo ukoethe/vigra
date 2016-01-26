@@ -9,9 +9,9 @@ matrix:
       sudo: false
       python: "3.2"
     - os: osx
-      env: TRAVIS_PYTHON_VERSION="2.7"
+      env: PYTHON_VERSION="2.7"
     - os: osx
-      env: TRAVIS_PYTHON_VERSION="3.2"
+      env: PYTHON_VERSION="3.2"
 
 
 addons:
@@ -27,14 +27,15 @@ addons:
       - cmake
 
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv                        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install ${TRAVIS_PYTHON_VERSION}    ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5                         ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost --with-python          ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg                      ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff                      ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng                       ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw                         ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export TRAVIS_PYTHON_VERSION=PYTHON_VERSION      ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv                               ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install ${TRAVIS_PYTHON_VERSION}           ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5                                ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost --with-python                 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg                             ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff                             ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng                              ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw                                ; fi
   - pip install nose
   - pip install numpy
 
