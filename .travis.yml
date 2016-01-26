@@ -10,10 +10,10 @@ matrix:
       python: "3.2"
     - os: osx
       language: generic
-      env: TRAVIS_PYTHON_VERSION="2.7" CXXFLAGS="--std=c++11"
+      env: TRAVIS_PYTHON_VERSION="2.7"
     - os: osx
       language: generic
-      env: TRAVIS_PYTHON_VERSION="3.4.1" CXXFLAGS="--std=c++11"
+      env: TRAVIS_PYTHON_VERSION="3.4.1"
 
 
 addons:
