@@ -29,19 +29,19 @@ addons:
       - cmake
 
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew uninstall boost --force || true             ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew upgrade; brew cleanup          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update                                      ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv || brew upgrade pyenv         ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install ${TRAVIS_PYTHON_VERSION}           ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                     ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv global ${TRAVIS_PYTHON_VERSION}            ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5 || true                        ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5 || brew upgrade hdf5           ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew uninstall boost --force || true             ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost --with-python                 ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg || true                     ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff || true                     ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng  || true                     ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw || true                        ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg || brew upgrade libjpeg     ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff || brew upgrade libtiff     ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng || brew upgrade libpng       ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw || brew upgrade fftw           ; fi
   - pip install nose
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                     ; fi
   - pip install numpy
