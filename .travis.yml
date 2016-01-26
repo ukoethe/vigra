@@ -50,7 +50,7 @@ before_script:
   - pip install nose
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
   - pip install numpy
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                           ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CC=$(which gcc-4.2); export CXX=$(which g++-4.2)                             ; fi
 
 script:
