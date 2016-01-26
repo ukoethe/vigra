@@ -2,7 +2,7 @@ language: python
 
 python:
   - "2.7"
-  - "3.4"
+  - "3.2"
 
 before_script:
   - sudo apt-get update -qq
@@ -12,6 +12,6 @@ before_script:
 
 script:
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DPYTHON_VERSION_MAJOR=${TRAVIS_PYTHON_VERSION:0:1} ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DPYTHON_VERSION_MAJOR=${TRAVIS_PYTHON_VERSION:0:1} -DPYTHON_VERSION_MINOR=${TRAVIS_PYTHON_VERSION:2:1} ..
   - make
   - ctest || ctest -V

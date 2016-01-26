@@ -55,6 +55,10 @@ UInt32 pychecksum(python::str const & s)
 #if PY_MAJOR_VERSION < 3
 	unsigned int size = len(s);
 	return checksum(PyString_AsString(s.ptr()), size);
+#elif (PY_MAJOR_VERSION == 3) && (PY_MINOR_VERSION < 3)
+	Py_ssize_t size = PyUnicode_GET_DATA_SIZE(s.ptr());
+	const char * data = PyUnicode_AS_DATA(s.ptr());
+	return checksum(data, size);
 #else
 	Py_ssize_t size = 0;
 	char * data = PyUnicode_AsUTF8AndSize(s.ptr(), &size);
