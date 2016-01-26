@@ -31,6 +31,7 @@ addons:
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv                               ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install ${TRAVIS_PYTHON_VERSION}           ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                     ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv global ${TRAVIS_PYTHON_VERSION}            ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost --with-python                 ; fi
@@ -39,7 +40,9 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng                              ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw                                ; fi
   - pip install nose
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                     ; fi
   - pip install numpy
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                     ; fi
 
 script:
   - mkdir build && cd build
