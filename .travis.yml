@@ -34,6 +34,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                              ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install readline                                  ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv                                     ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(pyenv init -)"                                 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install ${TRAVIS_PYTHON_VERSION}                 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                           ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv global ${TRAVIS_PYTHON_VERSION}                  ; fi
