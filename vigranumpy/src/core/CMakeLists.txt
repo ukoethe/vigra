@@ -47,6 +47,8 @@ VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     accumulator.cxx
     accumulator-region-singleband.cxx
     accumulator-region-multiband.cxx
+  LIBRARIES
+    ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES
