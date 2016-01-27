@@ -10,10 +10,10 @@ matrix:
       python: "3.2"
     - os: osx
       language: generic
-      env: TRAVIS_PYTHON_VERSION="2.7"
+      env: TRAVIS_PYTHON_VERSION="2.7" WITH_BOOST_THREAD=1 CXX_FLAGS="-std=c++11"
     - os: osx
       language: generic
-      env: TRAVIS_PYTHON_VERSION="3.4.1"
+      env: TRAVIS_PYTHON_VERSION="3.4.1" WITH_BOOST_THREAD=1 CXX_FLAGS="-std=c++11"
 
 
 addons:
@@ -57,6 +57,6 @@ before_script:
 
 script:
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DWITH_BOOST_THREAD=1 -DPYTHON_VERSION=${TRAVIS_PYTHON_VERSION:0:3} ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DPYTHON_VERSION=${TRAVIS_PYTHON_VERSION:0:3} ..
   - make
   - ctest --output-on-failure
