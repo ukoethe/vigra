@@ -92,9 +92,12 @@ IF(PYTHONINTERP_FOUND)
     # boost_python for the wrong Python version
     IF(Boost_FOUND)
         FIND_LIBRARY(Boost_PYTHON_LIBRARY
-                     NAMES boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}   # Linux with multiple Python versions
-                           boost_python${PYTHON_VERSION_MAJOR}                             # Mac with Python 3
-                           boost_python                                                    # default
+                     NAMES boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}      # Linux with multiple Python versions
+                           boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}-mt   # Linux with multiple Python versions (multithreaded)
+                           boost_python${PYTHON_VERSION_MAJOR}                                # Mac with Python 3
+                           boost_python${PYTHON_VERSION_MAJOR}-mt                             # Mac with Python 3 (multithreaded)
+                           boost_python                                                       # default
+                           boost_python-mt                                                    # Mac with Python (multithreaded)
                      HINTS "${Boost_LIBRARY_DIR}"
                      DOC "boost_python libraries")
     ENDIF()
