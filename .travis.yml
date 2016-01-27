@@ -42,7 +42,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which python; python -V; which pip; pip -V                                          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5                                                                   ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost                                                                  ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install -v --build-from-source boost-python --without-python ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install -v --build-from-source boost-python --with-python ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install -v --build-from-source boost-python --without-python --with-python3 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg                                                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff                                                                ; fi
