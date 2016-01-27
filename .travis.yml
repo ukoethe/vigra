@@ -42,7 +42,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv global ${TRAVIS_PYTHON_VERSION}                                               ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which python; python -V; which pip; pip -V                                          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5                                                                   ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost --c++11 --with-python                                            ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then travis_wait brew install boost --c++11 --with-python                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg                                                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff                                                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng                                                                 ; fi
