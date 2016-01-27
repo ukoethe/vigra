@@ -36,18 +36,18 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                                                           ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install cmake                                                                  ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install readline                                                               ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv                                                                  ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(pyenv init -)"                                                              ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then PYTHON_CONFIGURE_OPTS='--enable-shared' pyenv install ${TRAVIS_PYTHON_VERSION}      ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv global ${TRAVIS_PYTHON_VERSION}                                               ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which python; python -V; which pip; pip -V                                          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5                                                                   ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost                                                                  ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg                                                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff                                                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng                                                                 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw                                                                   ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv                                                                  ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(pyenv init -)"                                                              ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then PYTHON_CONFIGURE_OPTS='--enable-shared' pyenv install ${TRAVIS_PYTHON_VERSION}      ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv global ${TRAVIS_PYTHON_VERSION}                                               ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which python; python -V; which pip; pip -V                                          ; fi
   - pip install nose
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
   - pip install numpy
