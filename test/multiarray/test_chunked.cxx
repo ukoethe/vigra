@@ -33,6 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
+#include <atomic>
 #include <stdio.h>
 
 #include "vigra/unittest.hxx"
@@ -738,9 +739,9 @@ public:
         shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
     }
     
-    static void testMultiThreadedRun(BaseArray * v, int startIndex, int d, int * go)
+    static void testMultiThreadedRun(BaseArray * v, int startIndex, int d, std::atomic<int> * go)
     {
-        while(*go == 0)
+        while(go->load() == 0)
             threading::this_thread::yield();
             
         Shape3 s = v->shape();
@@ -761,14 +762,15 @@ public:
         array.reset(0); // close the file if backend is HDF5
         ArrayPtr a = createArray(Shape3(200, 201, 202), Shape3(), (Array *)0);
     
-        int go = 0;
+        std::atomic<int> go;
+        go.store(0);
         
         threading::thread t1(testMultiThreadedRun, a.get(), 0, 4, &go);
         threading::thread t2(testMultiThreadedRun, a.get(), 1, 4, &go);
         threading::thread t3(testMultiThreadedRun, a.get(), 2, 4, &go);
         threading::thread t4(testMultiThreadedRun, a.get(), 3, 4, &go);
      
-        go = 1;
+        go.store(1);
      
         t4.join();
         t3.join();
