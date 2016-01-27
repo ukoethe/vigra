@@ -37,6 +37,8 @@
 
 #include <vector>
 #include <memory>
+#include "../multi_array.hxx"
+#include "../multi_shape.hxx"
 
 
 namespace vigra
@@ -271,7 +273,8 @@ public:
         // Resize the variable importance array.
         // The shape differs from the shape of the actual output, since the single trees
         // only store the impurity decrease without the permutation importances.
-        variable_importance_.reshape(Shape2(features.shape()[1], 1), 0.0);
+        auto const num_features = features.shape()[1];
+        variable_importance_.reshape(Shape2(num_features, tree.num_classes()+2), 0.0);
 
         // Save the in-bags.
         double const EPS = 1e-20;
@@ -290,7 +293,7 @@ public:
     }
 
     /**
-     * @brief Calculate the impurity decrease based variable importance after every split.
+     * Calculate the impurity decrease based variable importance after every split.
      */
     template <typename TREE,
               typename FEATURES,
@@ -311,11 +314,87 @@ public:
         typename SCORER::Functor functor;
         auto const region_impurity = functor.region_score(labels, weights, begin, end);
         auto const split_impurity = scorer.best_score_;
-        variable_importance_(scorer.best_dim_, 0) += region_impurity - split_impurity;
+        variable_importance_(scorer.best_dim_, tree.num_classes()+1) += region_impurity - split_impurity;
     }
 
     /**
-     * Compute the permuation importance and accumulate the impurity decreases from the single trees.
+     * Compute the permutation importance.
+     */
+    template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
+    void visit_after_tree(RF & rf,
+                          FEATURES & features,
+                          LABELS & labels,
+                          WEIGHTS & weights)
+    {
+        // Non-const types of features and labels.
+        typedef typename std::remove_const<FEATURES>::type Features;
+        typedef typename std::remove_const<LABELS>::type Labels;
+
+        typedef typename Features::value_type FeatureType;
+
+        auto const num_features = features.shape()[1];
+
+        // For the permutation importance, the features must be permuted (obviously).
+        // This cannot be done on the original feature matrix, since it would interfere
+        // with other threads in concurrent training. Therefore, we have to make a copy.
+        Features feats;
+        Labels labs;
+        copy_out_of_bags(features, labels, feats, labs);
+        auto const num_oobs = feats.shape()[0];
+
+        // Compute (standard and class-wise) out-of-bag success rate with the original sample.
+        MultiArray<1, double> oob_right(Shape1(rf.num_classes()+1), 0.0);
+        Labels pred(( Shape1(num_oobs) )); // extra parantheses due to "most vexing parse"
+        rf.predict(feats, pred, 1);
+        for (size_t i = 0; i < labs.size(); ++i)
+        {
+            if (labs(i) == pred(i))
+            {
+                oob_right(labs(i)) += 1.0; // per class
+                oob_right(rf.num_classes()) += 1.0; // total
+            }
+        }
+
+        // Get out-of-bag success rate after permuting the j'th dimension.
+        UniformIntRandomFunctor<MersenneTwister> randint;
+        for (size_t j = 0; j < num_features; ++j)
+        {
+            MultiArray<1, FeatureType> backup(( Shape1(num_oobs) ));
+            backup = feats.template bind<1>(j);
+            MultiArray<2, double> perm_oob_right(Shape2(1, rf.num_classes()+1), 0.0);
+
+            for (size_t k = 0; k < repetition_count_; ++k)
+            {
+                // Permute the current dimension.
+                for (int ii = num_oobs-1; ii >= 1; --ii)
+                    std::swap(feats(ii, j), feats(randint(ii+1), j));
+
+                // Get the out-of-bag success rate after permuting.
+                rf.predict(feats, pred, 1);
+                for (size_t i = 0; i < labs.size(); ++i)
+                {
+                    if (labs(i) == pred(i))
+                    {
+                        perm_oob_right(0, labs(i)) += 1.0; // per class
+                        perm_oob_right(0, rf.num_classes()) += 1.0; // total
+                    }
+                }
+            }
+
+            // Normalize and add to the importance matrix.
+            perm_oob_right /= repetition_count_;
+            perm_oob_right.bind<0>(0) -= oob_right;
+            perm_oob_right *= -1;
+            perm_oob_right /= num_oobs;
+            variable_importance_.subarray(Shape2(j, 0), Shape2(j+1, rf.num_classes()+1)) += perm_oob_right;
+
+            // Copy back the permuted dimension.
+            feats.template bind<1>(j) = backup;
+        }
+    }
+
+    /**
+     * Accumulate the variable importances from the single trees.
      */
     template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
     void visit_after_training(
@@ -327,47 +406,15 @@ public:
         vigra_precondition(rf.num_trees() > 0, "VariableImportance::visit_after_training(): Number of trees must be greater than zero after training.");
         vigra_precondition(visitors.size() == rf.num_trees(), "VariableImportance::visit_after_training(): Number of visitors must be equal to number of trees.");
 
-        // Accumulate the impurity decreases.
-        auto const num_instances = features.shape()[0];
+        // Sum the variable importances from the single trees.
         auto const num_features = features.shape()[1];
         variable_importance_.reshape(Shape2(num_features, rf.num_classes()+2), 0.0);
         for (auto vptr : visitors)
         {
-            vigra_precondition(vptr->variable_importance_.shape() == Shape2(num_features, 1),
+            vigra_precondition(vptr->variable_importance_.shape() == variable_importance_.shape(),
                                "VariableImportance::visit_after_training(): Shape mismatch.");
-            vigra_precondition(vptr->is_in_bag_.size() == num_instances,
-                               "VariableImportance::visit_after_training(): Some visitors have the wrong number of data points.");
-            variable_importance_.subarray(Shape2(0, rf.num_classes()+1), Shape2(num_features, rf.num_classes()+2))
-                += vptr->variable_importance_;
+            variable_importance_ += vptr->variable_importance_;
         }
-
-        // Compute the out-of-bag error.
-        typedef typename std::remove_const<LABELS>::type Labels;
-        Labels pred(Shape1(1));
-        oob_err_ = 0.0;
-        for (size_t i = 0; i < num_instances; ++i)
-        {
-            // Get the indices of the trees where the data points is out of bag.
-            std::vector<size_t> tree_indices;
-            for (size_t k = 0; k < visitors.size(); ++k)
-                if (!visitors[k]->is_in_bag_[i])
-                    tree_indices.push_back(k);
-
-            // Get the prediction using the above trees.
-            auto const sub_features = features.subarray(Shape2(i, 0), Shape2(i+1, num_features));
-            rf.predict(sub_features, pred, 1, tree_indices);
-            if (pred(0) != labels(i))
-                oob_err_ += 1.0;
-        }
-        oob_err_ /= num_instances;
-
-        // Compute the permutation importance.
-
-
-
-
-
-
 
         // Normalize the variable importance.
         variable_importance_ /= rf.num_trees();
@@ -406,12 +453,44 @@ public:
      */
     int repetition_count_;
 
-    /**
-     * the out-of-bag-error
-     */
-    double oob_err_;
-
 private:
+
+    /**
+     * Copy the out-of-bag features and labels.
+     */
+    template <typename F0, typename L0, typename F1, typename L1>
+    void copy_out_of_bags(
+            F0 const & features_in,
+            L0 const & labels_in,
+            F1 & features_out,
+            L1 & labels_out
+    ) const {
+        auto const num_instances = features_in.shape()[0];
+        auto const num_features = features_in.shape()[1];
+
+        // Count the out-of-bags.
+        size_t num_oobs = 0;
+        for (auto x : is_in_bag_)
+            if (!x)
+                ++num_oobs;
+
+        // Copy the out-of-bags.
+        features_out.reshape(Shape2(num_oobs, num_features));
+        labels_out.reshape(Shape1(num_oobs));
+        size_t current = 0;
+        for (size_t i = 0; i < num_instances; ++i)
+        {
+            if (!is_in_bag_[i])
+            {
+                auto const src = features_in.template bind<0>(i);
+                auto out = features_out.template bind<0>(current);
+                out = src;
+                labels_out(current) = labels_in(i);
+                ++current;
+            }
+        }
+    }
+
     std::vector<bool> is_in_bag_; // whether a data point is in-bag or out-of-bag
 };
 
