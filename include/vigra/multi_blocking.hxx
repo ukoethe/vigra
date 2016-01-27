@@ -304,7 +304,7 @@ namespace vigra{
                 }
                 ++i;
             }
-            return std::move(iBlocks);
+            return iBlocks;
         }
 
 

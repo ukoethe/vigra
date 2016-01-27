@@ -126,7 +126,7 @@
     MultiArray<2, RGBValue<UInt8> > rgb_image(Shape2(256, 128));
     \endcode
 
-    vigra::RGBValue<ValueType> is a specialised 3-dimensional vector containing ValueType elements. Arbitrary short vectors can be stored in the <tt>TinyVector<ValueType, SIZE></tt> class, which is the base class of RGBValue. It's length must be specified at compile time in the template parameter <tt>SIZE</tt>. Vectors whose length is known at compile time are very useful for the compiler to produce highly optimized code. Therefore, <tt>Shape2</tt> and it's higher-dimensional coursins are instances of <tt>TinyVector</tt> as well.
+    vigra::RGBValue<ValueType> is a specialised 3-dimensional vector containing ValueType elements. Arbitrary short vectors can be stored in the <tt>TinyVector<ValueType, SIZE></tt> class, which is the base class of RGBValue. It's length must be specified at compile time in the template parameter <tt>SIZE</tt>. Vectors whose length is known at compile time are very useful for the compiler to produce highly optimized code. Therefore, <tt>Shape2</tt> and it's higher-dimensional cousins are instances of <tt>TinyVector</tt> as well.
 
     Alternatively you can use a 3-dimensional array <tt>vigra::MultiArray<3, unsigned
     char></tt> to represent a color image. The third dimension has size 3 and contains the
