@@ -44,8 +44,6 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which python; python -V; which pip; pip -V                                          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5                                                                   ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost                                                                  ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install -v --build-from-source boost-python --with-python ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install -v --build-from-source boost-python --without-python --with-python3 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg                                                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff                                                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng                                                                 ; fi
@@ -56,6 +54,8 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install homebrew/versions/gcc49                                                ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CC=$(which gcc-4.9); export CXX=$(which g++-4.9)                             ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install -v --build-from-source boost-python --with-python ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install -v --build-from-source boost-python --without-python --with-python3 ; fi
 
 script:
   - mkdir build && cd build
