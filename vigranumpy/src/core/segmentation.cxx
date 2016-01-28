@@ -1222,37 +1222,39 @@ void defineSegmentation()
         "shrink / ungrow a labeling / segmentation"
     );
 
-    multidef("labelImage", pyLabelMultiArray<2, 2, npy_uint8, npy_uint32, float>(),
+    multidef("labelImage",
+        pyLabelMultiArray<2, 2, npy_uint8, npy_uint32, float>(true),
         (arg("image"),
-        arg("neighborhood") = 4,
-        arg("out")=python::object()),
+         arg("neighborhood") = 4,
+         arg("out")=python::object()),
         "Find the connected components of a segmented image. Parameter 'neighborhood' specifies "
         "the pixel neighborhood to be used and can be 4 (default) or 8.\n\n"
         "For details see labelMultiArray_ in the vigra C++ documentation.\n");
 
     multidef("labelImageWithBackground",
-         pyLabelMultiArrayWithBackground<2, 2, npy_uint8, npy_uint32, float>(),
+        pyLabelMultiArrayWithBackground<2, 2, npy_uint8, npy_uint32, float>(true),
         (arg("image"),
-        arg("neighborhood") = 4,
-        arg("background_value") = 0,
-        arg("out")=python::object()),
+         arg("neighborhood") = 4,
+         arg("background_value") = 0,
+         arg("out")=python::object()),
         "Find the connected components of a segmented image, excluding the "
         "background from labeling, where the background is the set of all pixels with "
         "the given 'background_value'. Parameter 'neighborhood' specifies "
         "the pixel neighborhood to be used and can be 4 (default) or 8.\n\n"
         "For details see labelMultiArrayWithBackground_ in the vigra C++ documentation.\n");
 
-    multidef("labelVolume", pyLabelMultiArray<3, 3, npy_uint8, npy_uint32, float>(),
+    multidef("labelVolume",
+        pyLabelMultiArray<3, 3, npy_uint8, npy_uint32, float>(true),
         (arg("volume"),
-        arg("neighborhood")=6,
-        arg("out")=python::object()),
+         arg("neighborhood")=6,
+         arg("out")=python::object()),
         "Find the connected components of a segmented volume. Parameter 'neighborhood' specifies "
         "the pixel neighborhood to be used and can be 6 (default) or 26.\n"
         "\n"
         "For details see labelMultiArray_ in the vigra C++ documentation.\n");
 
     multidef("labelVolumeWithBackground",
-        pyLabelMultiArrayWithBackground<3, 3, npy_uint8, npy_uint32, float>(),
+        pyLabelMultiArrayWithBackground<3, 3, npy_uint8, npy_uint32, float>(true),
         (arg("volume"),
          arg("neighborhood")=6,
          arg("background_value")=0,
@@ -1264,45 +1266,11 @@ void defineSegmentation()
         "\n"
         "For details see labelMultiArrayWithBackground_ in the vigra C++ documentation.\n");
 
-    // multidef("labelMultiArray", pyLabelMultiArray<2, npy_uint8, npy_uint32, float>(),
-        // (arg("array"), arg("neighborhood")="", arg("out")=python::object()),
-        // "Find the connected components of a segmented image."
-        // "Parameter 'neighborhood' specifies the pixel neighborhood "
-        // "to be used and can be 'direct' (default) or 'indirect' or 4 or 8.\n"
-        // "\n"
-        // "For details see labelMultiArray_ in the vigra C++ documentation.\n");
-
-    // multidef("labelMultiArray", pyLabelMultiArray<3, npy_uint8, npy_uint32, float>(),
-        // (arg("array"), arg("neighborhood")="", arg("out")=python::object()),
-        // "Find the connected components of a segmented volume."
-        // "Parameter 'neighborhood' specifies the voxel neighborhood "
-        // "to be used and can be 'direct' (default) or 'indirect' or 6 or 26.\n");
-
-    // multidef("labelMultiArray", pyLabelMultiArray<4, npy_uint8, npy_uint32, float>(),
-        // (arg("array"), arg("neighborhood")="", arg("out")=python::object()),
-        // "Find the connected components of a segmented 4D array."
-        // "Parameter 'neighborhood' specifies the pixel neighborhood "
-        // "to be used and can be 'direct' (default) or 'indirect' or 8 or 80.\n");
-
-    // multidef("labelMultiArray", pyLabelMultiArray<5, npy_uint8, npy_uint32, float>(),
-        // (arg("array"), arg("neighborhood")="", arg("out")=python::object()),
-        // "Find the connected components of a segmented 5D array."
-        // "Parameter 'neighborhood' specifies the pixel neighborhood "
-        // "to be used and can be 'direct' (default) or 'indirect' or 10 or 242.\n");
-
-    // multidef("labelMultiArrayWithBackground",
-        // pyLabelMultiArrayWithBackground<2, npy_uint8, npy_uint32, float>(),
-        // (arg("array"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()),
-        // "Find the connected components of a segmented image, excluding the "
-        // "background from labeling, where the background is the set of all pixels with "
-        // "the given 'background_value'. Parameter 'neighborhood' specifies "
-        // "the pixel neighborhood to be used and can be 'direct' (default) or 'indirect'\n"
-        // " or 4 or 8.\n"
-        // "\n"
-        // "For details see labelMultiArrayWithBackground_ in the vigra C++ documentation.\n");
-
-    multidef("labelMultiArray", pyLabelMultiArray<2, 5, npy_uint8, npy_uint32, float>(),
-        (arg("array"), arg("neighborhood")="", arg("out")=python::object()),
+    multidef("labelMultiArray",
+        pyLabelMultiArray<2, 5, npy_uint8, npy_uint32, float>(true),
+        (arg("array"),
+         arg("neighborhood")="",
+         arg("out")=python::object()),
         "Find the connected components of a segmented multi-dimensional array\n"
         "(supported dimensions: 2 to 5).\n"
         "Parameter 'neighborhood' specifies the pixel neighborhood to be used\n"
@@ -1312,8 +1280,11 @@ void defineSegmentation()
         "For details see labelMultiArray_ in the vigra C++ documentation.\n");
 
     multidef("labelMultiArrayWithBackground",
-        pyLabelMultiArrayWithBackground<2, 5, npy_uint8, npy_uint32, float>(),
-        (arg("array"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()),
+        pyLabelMultiArrayWithBackground<2, 5, npy_uint8, npy_uint32, float>(true),
+        (arg("array"),
+         arg("neighborhood")="",
+         arg("background_value")=0,
+         arg("out")=python::object()),
         "Find the connected components of a segmented multi-dimensional array\n"
         "(supported dimensions: 2 to 5), excluding the background from labeling,\n"
         "where background is the set of all pixels with the given 'background_value'.\n"
@@ -1323,51 +1294,11 @@ void defineSegmentation()
         "\n"
         "For details see labelMultiArrayWithBackground_ in the vigra C++ documentation.\n");
 
-    // multidef("labelMultiArrayWithBackground",
-        // pyLabelMultiArrayWithBackground<2, npy_uint8, npy_uint32, float>(),
-        // (arg("array"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()),
-        // "Find the connected components of a segmented image, excluding the "
-        // "background from labeling, where the background is the set of all pixels with "
-        // "the given 'background_value'. Parameter 'neighborhood' specifies "
-        // "the pixel neighborhood to be used and can be 'direct' (default) or 'indirect'\n"
-        // " or 4 or 8.\n"
-        // "\n"
-        // "For details see labelMultiArrayWithBackground_ in the vigra C++ documentation.\n");
-
-    // multidef("labelMultiArrayWithBackground",
-        // pyLabelMultiArrayWithBackground<3, npy_uint8, npy_uint32, float>(),
-        // (arg("array"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()),
-        // "Find the connected components of a segmented volume, excluding the "
-        // "background from labeling, where the background is the set of all pixels with "
-        // "the given 'background_value'. Parameter 'neighborhood' specifies "
-        // "the pixel neighborhood to be used and can be 'direct' (default) or 'indirect'\n"
-        // " or 6 or 26.\n");
-
-    // multidef("labelMultiArrayWithBackground",
-        // pyLabelMultiArrayWithBackground<4, npy_uint8, npy_uint32, float>(),
-        // (arg("array"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()),
-        // "Find the connected components of a segmented 4D array, excluding the "
-        // "background from labeling, where the background is the set of all pixels with "
-        // "the given 'background_value'. Parameter 'neighborhood' specifies "
-        // "the pixel neighborhood to be used and can be 'direct' (default) or 'indirect'\n"
-        // " or 8 or 80.\n");
-
-    // multidef("labelMultiArrayWithBackground",
-        // pyLabelMultiArrayWithBackground<5, npy_uint8, npy_uint32, float>(),
-        // (arg("array"), arg("neighborhood")="", arg("background_value")=0, arg("out")=python::object()),
-        // "Find the connected components of a segmented 5D array, excluding the "
-        // "background from labeling, where the background is the set of all pixels with "
-        // "the given 'background_value'. Parameter 'neighborhood' specifies "
-        // "the pixel neighborhood to be used and can be 'direct' (default) or 'indirect'\n"
-        // " or 10 or 242.\n");
-
     def("sizeFilterSegInplace",registerConverters(&pySizeFilterSegInplace<UInt32>),
-        (
-            arg("seg"),
-            arg("maxLabel"),
-            arg("sizeLimit"),
-            arg("checkAtBorder") = false
-        ),
+        (arg("seg"),
+         arg("maxLabel"),
+         arg("sizeLimit"),
+         arg("checkAtBorder") = false),
         "replace every occurance of each number in the array 'seg' with zeros if this number"
         " occures less than 'sizeLimit' times in the array. If 'checkAtBorder' is false (default) "
         "segments that touch the border of the array will not be changed.\n"
@@ -1420,7 +1351,7 @@ void defineSegmentation()
         // );
 
     multidef("extendedLocalMinima",
-        pyExtendedLocalMinima2D<npy_uint8, float>(),
+        pyExtendedLocalMinima2D<npy_uint8, float>(true),
         (arg("image"),
          arg("marker")=1.0,
          arg("neighborhood") = 8,
@@ -1432,8 +1363,11 @@ void defineSegmentation()
         );
 
     multidef("extendedLocalMinima3D",
-        pyExtendedLocalMinima3D<float, npy_uint8>(),
-        (arg("volume"), arg("marker") = 1, arg("neighborhood") = 6, arg("out") = python::object()),
+        pyExtendedLocalMinima3D<float, npy_uint8>(true),
+        (arg("volume"),
+         arg("marker") = 1,
+         arg("neighborhood") = 6,
+         arg("out") = python::object()),
         "Find local minima and minimal plateaus in a volume and mark them with "
         "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
         "neighborhood to be used and can be 6(default) or 26 .\n\n"
@@ -1498,14 +1432,15 @@ void defineSegmentation()
         ;
 
     /*  FIXME: int64 is unsupported by the C++ code (hard-coded int) */
-    multidef("watersheds", pywatersheds2D< npy_uint8, float >(/*overload_fallback*/true),
-      (arg("image"),
-       arg("neighborhood") = 4,
-       arg("seeds")=python::object(),
-       arg("method")="",
-       arg("terminate")=CompleteGrow,
-       arg("max_cost")=0,
-       arg("out")=python::object()),
+    multidef("watersheds",
+        pywatersheds2D< npy_uint8, float >(/*overload_fallback*/true),
+        (arg("image"),
+         arg("neighborhood") = 4,
+         arg("seeds")=python::object(),
+         arg("method")="",
+         arg("terminate")=CompleteGrow,
+         arg("max_cost")=0,
+         arg("out")=python::object()),
         "Compute the watersheds of a 2D image.\n"
         "\n"
         "   watersheds(image, neighborhood=4, seeds = None, methods = 'RegionGrowing', \n"
@@ -1552,48 +1487,52 @@ void defineSegmentation()
         " out:\n"
         "    the label image (with dtype=numpy.uint32) to be filled by the algorithm. "
         "    It will be allocated by the watershed function if not provided)\n\n"
-         "The function returns a Python tuple (labelImage, maxRegionLabel)\n\n"
-         );
+        "The function returns a Python tuple (labelImage, maxRegionLabel)\n\n"
+    );
 
-    multidef("watersheds", pywatersheds3D< npy_uint8, float >(),
-      (arg("volume"),
-       arg("neighborhood") = 6,
-       arg("seeds")=python::object(),
-       arg("method")="",
-       arg("terminate")=CompleteGrow,
-       arg("max_cost")=0,
-       arg("out")=python::object()),
-       "Likewise, compute watersheds of a volume.\n");
+    multidef("watersheds",
+        pywatersheds3D< npy_uint8, float >(),
+        (arg("volume"),
+         arg("neighborhood") = 6,
+         arg("seeds")=python::object(),
+         arg("method")="",
+         arg("terminate")=CompleteGrow,
+         arg("max_cost")=0,
+         arg("out")=python::object()),
+        "Likewise, compute watersheds of a volume.\n");
 
-    multidef("watershedsNew", pywatersheds2DNew< npy_uint8, float >(),
-      (arg("image"),
-       arg("neighborhood") = 4,
-       arg("seeds")=python::object(),
-       arg("method")="",
-       arg("terminate")=CompleteGrow,
-       arg("max_cost")=0,
-       arg("out")=python::object()),
+    multidef("watershedsNew",
+        pywatersheds2DNew< npy_uint8, float >(true),
+        (arg("image"),
+         arg("neighborhood") = 4,
+         arg("seeds")=python::object(),
+         arg("method")="",
+         arg("terminate")=CompleteGrow,
+         arg("max_cost")=0,
+         arg("out")=python::object()),
+        "graph-based watershed");
+
+    multidef("watershedsNew",
+        pywatersheds3DNew< npy_uint8, float >(),
+        (arg("image"),
+         arg("neighborhood") = 6,
+         arg("seeds")=python::object(),
+         arg("method")="",
+         arg("terminate")=CompleteGrow,
+         arg("max_cost")=0,
+         arg("out")=python::object()),
        "graph-based watershed");
 
-    multidef("watershedsNew", pywatersheds3DNew< npy_uint8, float >(),
-      (arg("image"),
-       arg("neighborhood") = 6,
-       arg("seeds")=python::object(),
-       arg("method")="",
-       arg("terminate")=CompleteGrow,
-       arg("max_cost")=0,
-       arg("out")=python::object()),
-       "graph-based watershed");
-
-    multidef("slicSuperpixels", pySlic2D< TinyVector<float, 3>, Singleband<float> >(),
-      (arg("image"),
-       arg("intensityScaling"),
-       arg("seedDistance"),
-       arg("minSize")=0,
-       arg("iterations")=10,
-       arg("out")=python::object()),
-        "Compute Slic superpixels for a 2D image.\n\n"
-
+    multidef("slicSuperpixels",
+        pySlic2D< TinyVector<float, 3>, Singleband<float> >(true),
+        (arg("image"),
+         arg("intensityScaling"),
+         arg("seedDistance"),
+         arg("minSize")=0,
+         arg("iterations")=10,
+         arg("out")=python::object()),
+        "Compute Slic superpixels for a 2D image.\n"
+        "\n"
         "Parameters:\n\n"
         " image:\n"
         "    The 2D-image on which the superpixels will be calculated. Accepts single- and threeband images. \n\n"
@@ -1611,15 +1550,15 @@ void defineSegmentation()
         "    It will be allocated by the slicSuperpixels function if not provided)\n\n"
         "The function returns a Python tuple (labelImage, maxRegionLabel)\n\n");
 
-    multidef("slicSuperpixels", pySlic3D< TinyVector<float, 3>, Singleband<float> >(),
-      (arg("image"),
-       arg("intensityScaling"),
-       arg("seedDistance"),
-       arg("minSize")=0,
-       arg("iterations")=10,
-       arg("out")=python::object()),
-       "Likewise compute Slic superpixels for a 3D volume, either single- or threeband.\n");
-
+    multidef("slicSuperpixels",
+        pySlic3D< TinyVector<float, 3>, Singleband<float> >(),
+        (arg("image"),
+         arg("intensityScaling"),
+         arg("seedDistance"),
+         arg("minSize")=0,
+         arg("iterations")=10,
+         arg("out")=python::object()),
+        "Likewise compute Slic superpixels for a 3D volume, either single- or threeband.\n");
 }
 
 void defineEdgedetection();

@@ -617,58 +617,40 @@ void defineConvolutionFunctions()
         "used for all channels input channels) or as many channels as the input image.\n\n"
         "For details, see normalizedConvolveImage_ in the C++ documentation.\n");
 
-    multidef("gaussianSmoothing2", pyGaussianSmoothing<3, 5, float>(/*overload_fallback*/true),
-        (arg("array"), arg("sigma"), arg("out")=python::object(),
-         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
-        "Smooth 2D array with Gaussian.\n");
-
-    def("gaussianSmoothing",
-        registerConverters(&pythonGaussianSmoothing<float,2>),
-        (arg("array"), arg("sigma"), arg("out")=python::object(),
-         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
-        "Smooth 1D sequence with Gaussian.\n");
-
-    def("gaussianSmoothing",
-        registerConverters(&pythonGaussianSmoothing<float,3>),
-        (arg("array"), arg("sigma"), arg("out")=python::object(),
-         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
-        "Perform Gaussian smoothing of a 2D or 3D scalar or multiband array.\n\n"
-        "Each channel of the array is smoothed independently. "
-        "If 'sigma' is a single value, an isotropic Gaussian filter at this scale is "
-        "applied (i.e. each dimension is smoothed in the same way). "
-        "If 'sigma' is a tuple or list of values, the amount of smoothing will be different "
-        "for each spatial dimension.\n"
-        "The optional 'sigma_d' (single, tuple, or list) (single, tuple, or list) denotes the resolution standard deviation "
-        "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
-        "pixels for each dimension. "
-        "The length of the tuples or lists must be equal to the "
-        "number of spatial dimensions.\n\n"
-        "'window_size' specifies the ratio between the effective filter scale and "
-        "the size of the filter window. Use a value around 2.0 to speed-up "
-        "the computation by increasing the error resulting from cutting off the Gaussian. "
+    multidef("gaussianSmoothing",
+        pyGaussianSmoothing<2, 5, npy_uint8, float, double>(/*overload_fallback*/true),
+        (arg("array"),
+         arg("sigma"),
+         arg("out")=python::object(),
+         arg("sigma_d")=0.0,
+         arg("step_size")=1.0,
+         arg("window_size")=0.0,
+         arg("roi")=python::object()),
+        "Perform Gaussian smoothing of an array with up to five dimensions.\n\n"
+        "If the array has multiple channels, each channel is smoothed independently.\n"
+        "If 'sigma' is a single value, an isotropic Gaussian filter at this scale is\n"
+        "applied (i.e. each dimension is smoothed in the same way).\n"
+        "If 'sigma' is a tuple or list of values, the amount of smoothing will be\n"
+        "different for each spatial dimension.\n"
+        "The optional 'sigma_d' (single, tuple, or list) (single, tuple, or list)\n"
+        "denotes the resolution standard deviation per axis, the optional 'step_size'\n"
+        "(single, tuple, or list) the distance between two adjacent pixels for each\n"
+        "dimension. The length of the tuples or lists must be equal to the number\n"
+        "of spatial dimensions.\n\n"
+        "'window_size' specifies the ratio between the effective filter scale and\n"
+        "the size of the filter window. Use a value around 2.0 to speed-up\n"
+        "the computation by increasing the error resulting from cutting off the Gaussian.\n"
         "For the default 0.0, the window size is automatically determined.\n"
         "\n"
-        "If 'roi' is not None, it must specify the desired region-of-interest as "
-        "a pair '(first_point, beyond_last_point)' (e.g. 'roi=((10,20), (200,250))'). "
-        "As usual, the second point is the first point outside the ROI, and the ROI "
-        "must not be outside the input array dimensions. "
-        "The coordinates refer only to non-channel axes - if your array has an explicit "
-        "channel axis, the ROI dimension must be one less than the array dimension. "
-        "If you pass in an explicit 'out' array and specify an ROI, the 'out' array "
+        "If 'roi' is not None, it must specify the desired region-of-interest as\n"
+        "a pair '(first_point, beyond_last_point)' (e.g. 'roi=((10,20), (200,250))').\n"
+        "As usual, the second point is the first point outside the ROI, and the ROI\n"
+        "must not be outside the input array dimensions.\n"
+        "The coordinates refer only to non-channel axes - if your array has an explicit\n"
+        "channel axis, the ROI dimension must be one less than the array dimension.\n"
+        "If you pass in an explicit 'out' array and specify an ROI, the 'out' array\n"
         "must have the shape of the ROI.\n\n"
         "For details see gaussianSmoothing_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
-
-    def("gaussianSmoothing",
-        registerConverters(&pythonGaussianSmoothing<float,4>),
-        (arg("array"), arg("sigma"), arg("out")=python::object(),
-         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
-        "Smooth volume with Gaussian.\n");
-
-    def("gaussianSmoothing",
-        registerConverters(&pythonGaussianSmoothing<float,5>),
-        (arg("array"), arg("sigma"), arg("out")=python::object(),
-         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
-        "Smooth 5D array with Gaussian.\n");
 
     def("recursiveGaussianSmoothing2D",
         registerConverters(&pythonRecursiveGaussian<float>),

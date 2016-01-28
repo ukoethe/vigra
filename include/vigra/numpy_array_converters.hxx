@@ -629,13 +629,6 @@ struct functor_name \
 
 struct PythonMultidefFunctor {};
 
-template <class Head, class Tail>
-struct TypeList
-{
-    typedef Head head;
-    typedef Tail tail;
-};
-
 template <class T1,
           class T2 = void,
           class T3 = void,
@@ -685,8 +678,9 @@ struct ArgumentMismatchMessage
         res +=
             "\n\n"
             " * The dimension of your array(s) is currently unsupported (consult the\n"
-            "   function's documentation for supported dimensions).\n\n"
-            " * You provided an unrecognized argument, or an argument with incorrect type.\n\n"
+            "   function's documentation for information about supported dimensions).\n\n"
+            " * You provided an unrecognized argument, or an argument with incorrect type\n"
+            "   (consult the documentation for valid function signatures).\n\n"
             "Additional overloads can easily be added in the vigranumpy C++ sources.\n"
             "Please submit an issue at http://github.com/ukoethe/vigra/ to let us know\n"
             "what you need (or a pull request if you solved it on your own :-).\n\n";
@@ -727,58 +721,6 @@ struct ArgumentMismatchMessage
 
 // in the sequel, the doc string is only registered with the last
 // overload, so that it shows up only once
-template <class Head, class Tail>
-inline void multidef(char const* functor_name, TypeList<Head, Tail>)
-{
-    Head::def(functor_name);
-    multidef(functor_name, Tail());
-}
-
-template <class Head, class Tail>
-inline void multidef(char const* functor_name, TypeList<Head, Tail>, const char * help)
-{
-    Head::def(functor_name);
-    multidef(functor_name, Tail(), help);
-}
-
-template <class Head, class Tail, class Args>
-inline void multidef(char const* functor_name, TypeList<Head, Tail>, Args const& args)
-{
-    Head::def(functor_name, args);
-    multidef(functor_name, Tail(), args);
-}
-
-template <class Head, class Tail, class Args>
-inline void multidef(char const* functor_name, TypeList<Head, Tail>, Args const& args, char const * help)
-{
-    Head::def(functor_name, args);
-    multidef(functor_name, Tail(), args, help);
-}
-
-template <class Head, class Tail>
-inline void multidef(char const* functor_name, TypeList<Head, TypeList<void, Tail> >)
-{
-    Head::def(functor_name);
-}
-
-template <class Head, class Tail, class Args>
-inline void multidef(char const* functor_name, TypeList<Head, TypeList<void, Tail> >, Args const& args)
-{
-    Head::def(functor_name, args);
-}
-
-template <class Head, class Tail>
-inline void multidef(char const* functor_name, TypeList<Head, TypeList<void, Tail> >, const char * help)
-{
-    Head::def(functor_name, help);
-}
-
-template <class Head, class Tail, class Args>
-inline void multidef(char const* functor_name, TypeList<Head, TypeList<void, Tail> >, Args const& args, const char * help)
-{
-    Head::def(functor_name, args, help);
-}
-
 template <class Functor>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
