@@ -12,10 +12,10 @@ matrix:
       env: WITH_BOOST_THREAD=0
     - os: osx
       language: generic
-      env: TRAVIS_PYTHON_VERSION="2.7" WITH_BOOST_THREAD=1 CXXFLAGS="-std=c++11"
+      env: TRAVIS_PYTHON_VERSION="2.7"
     - os: osx
       language: generic
-      env: TRAVIS_PYTHON_VERSION="3.4.1" WITH_BOOST_THREAD=1 CXXFLAGS="-std=c++11"
+      env: TRAVIS_PYTHON_VERSION="3.4.1"
 
 
 addons:
