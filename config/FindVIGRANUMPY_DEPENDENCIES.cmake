@@ -91,13 +91,25 @@ IF(PYTHONINTERP_FOUND)
     # 'FIND_PACKAGE(Boost COMPONENTS python)' is unreliable because it often selects
     # boost_python for the wrong Python version
     IF(Boost_FOUND)
+        IF(Boost_USE_MULTITHREADED)
+            # define names for thread-safe library variants
+            SET(BOOST_PYTHON_NAMES
+                    boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}-mt
+                    boost_python${PYTHON_VERSION_MAJOR}-mt
+                    boost_python-mt)
+        ENDIF()
+        # define names for boost_python library variants
+        # (may or may not be thread-safe)
+        SET(BOOST_PYTHON_NAMES ${BOOST_PYTHON_NAMES}
+                # Linux with multiple Python versions
+                boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
+                # Mac with Python 3
+                boost_python${PYTHON_VERSION_MAJOR}
+                # default
+                boost_python)
+
         FIND_LIBRARY(Boost_PYTHON_LIBRARY
-                     NAMES boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}      # Linux with multiple Python versions
-                           boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}-mt   # Linux with multiple Python versions (multithreaded)
-                           boost_python${PYTHON_VERSION_MAJOR}                                # Mac with Python 3
-                           boost_python${PYTHON_VERSION_MAJOR}-mt                             # Mac with Python 3 (multithreaded)
-                           boost_python                                                       # default
-                           boost_python-mt                                                    # Mac with Python (multithreaded)
+                     NAMES ${BOOST_PYTHON_NAMES}
                      HINTS "${Boost_LIBRARY_DIR}"
                      DOC "boost_python libraries")
     ENDIF()
