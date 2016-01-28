@@ -5,19 +5,6 @@ ENDIF()
 include(VigraConfigureThreading)
 VIGRA_CONFIGURE_THREADING(REQUIRED) # We require a working threading implementation.
 
-if(WITH_BOOST_THREAD)
-    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-    SET(VIGRANUMPY_THREAD_LIBRARIES ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_DATE_TIME_LIBRARY} ${Boost_CHRONO_LIBRARY})
-elseif(NOT MSVC)
-    IF (CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0")
-        SET(CMAKE_CXX_FLAGS "-pthread -std=c++0x ${CMAKE_CXX_FLAGS}")
-    elseif(CMAKE_COMPILER_IS_GNUCXX)
-        SET(CMAKE_CXX_FLAGS "-pthread -std=c++11 ${CMAKE_CXX_FLAGS}")
-    else()
-        SET(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
-    endif()
-endif()
-
 # note special treatment of target vigranumpy_core:
 # module name is automatically changed into vigranumpycore
 VIGRA_ADD_NUMPY_MODULE(core
