@@ -44,6 +44,14 @@
 
 namespace vigra {
 
+/****************************************************************/
+/*                                                              */
+/*                     exception conversion                     */
+/*                                                              */
+/****************************************************************/
+
+inline std::string dataFromPython(PyObject * data, const char * defaultVal);
+
 template <class PYOBJECT_PTR>
 void pythonToCppException(PYOBJECT_PTR obj)
 {
@@ -54,17 +62,7 @@ void pythonToCppException(PYOBJECT_PTR obj)
     if(type == 0)
         return;
     std::string message(((PyTypeObject *)type)->tp_name);
-#if PY_MAJOR_VERSION < 3
-    if(PyString_Check(value))
-    {
-        message += std::string(": ") + PyString_AS_STRING(value);
-    }
-#else
-    if (PyBytes_Check(value))
-    {
-        message += std::string(": ") + PyBytes_AS_STRING(value);
-    }
-#endif
+    message += ": " + dataFromPython(value, "<no error message>");
     Py_XDECREF(type);
     Py_XDECREF(value);
     Py_XDECREF(trace);
@@ -224,22 +222,9 @@ inline void swap(python_ptr & a, python_ptr & b)
 }
 
 /****************************************************************/
-
-inline python_ptr
-makePythonDictionary(char const * k1 = 0, PyObject * a1 = 0,
-                    char const * k2 = 0, PyObject * a2 = 0,
-                    char const * k3 = 0, PyObject * a3 = 0)
-{
-    python_ptr dict(PyDict_New(), python_ptr::new_nonzero_reference);
-    if(k1 && a1)
-        PyDict_SetItemString(dict, k1, a1);
-    if(k2 && a2)
-        PyDict_SetItemString(dict, k2, a2);
-    if(k3 && a3)
-        PyDict_SetItemString(dict, k3, a3);
-    return dict;
-}
-
+/*                                                              */
+/*                   data conversion to python                  */
+/*                                                              */
 /****************************************************************/
 
 inline python_ptr pythonFromData(bool t)
@@ -308,6 +293,10 @@ inline python_ptr pythonFromData(unsigned long long t)
         return pythonFromData((long)t);
 }
 
+/****************************************************************/
+/*                                                              */
+/*                 data conversion from python                  */
+/*                                                              */
 /****************************************************************/
 
 #define VIGRA_DATA_FROM_PYTHON(type, check, extract) \
@@ -380,6 +369,10 @@ inline python_ptr dataFromPython(PyObject * data, python_ptr defaultVal)
 #undef VIGRA_DATA_FROM_PYTHON
 
 /****************************************************************/
+/*                                                              */
+/*         access utilities and factory functions               */
+/*                                                              */
+/****************************************************************/
 
 template <class T>
 T pythonGetAttr(PyObject * obj, const char * key, T defaultValue)
@@ -405,6 +398,23 @@ pythonGetAttr(PyObject * obj, const char * key, const char * defaultValue)
     if(!pres)
         PyErr_Clear();
     return dataFromPython(pres, defaultValue);
+}
+
+/****************************************************************/
+
+inline python_ptr
+makePythonDictionary(char const * k1 = 0, PyObject * a1 = 0,
+                    char const * k2 = 0, PyObject * a2 = 0,
+                    char const * k3 = 0, PyObject * a3 = 0)
+{
+    python_ptr dict(PyDict_New(), python_ptr::new_nonzero_reference);
+    if(k1 && a1)
+        PyDict_SetItemString(dict, k1, a1);
+    if(k2 && a2)
+        PyDict_SetItemString(dict, k2, a2);
+    if(k3 && a3)
+        PyDict_SetItemString(dict, k3, a3);
+    return dict;
 }
 
 /****************************************************************/

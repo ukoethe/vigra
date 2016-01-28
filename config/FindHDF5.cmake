@@ -33,8 +33,8 @@ if(HDF5_INCLUDE_DIR)
     # Only configure HDF5 if a suitable version of the library was found
     if(HDF5_SUFFICIENT_VERSION)
 
-        FIND_LIBRARY(HDF5_CORE_LIBRARY NAMES hdf5dll hdf5  )
-        FIND_LIBRARY(HDF5_HL_LIBRARY NAMES hdf5_hldll hdf5_hl  )
+        FIND_LIBRARY(HDF5_CORE_LIBRARY NAMES hdf5dll hdf5 PATH_SUFFIXES hdf5/serial )
+        FIND_LIBRARY(HDF5_HL_LIBRARY NAMES hdf5_hldll hdf5_hl PATH_SUFFIXES hdf5/serial )
 
         # FIXME: as of version 1.8.9 and 1.8.10-patch1 (but NOT 1.8.10), these flags are
         #        already set correctly => remove or set conditionally according to version
