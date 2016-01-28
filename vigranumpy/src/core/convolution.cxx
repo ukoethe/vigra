@@ -235,6 +235,8 @@ pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > array,
     return res;
 }
 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyGaussianSmoothing, pythonGaussianSmoothing)
+
 template < class VoxelType>
 NumpyAnyArray
 pythonRecursiveGaussian(NumpyArray<3, Multiband<VoxelType> > image,
@@ -614,6 +616,11 @@ void defineConvolutionFunctions()
         "are ignored in the convolution. The mask must have one channel (which is then "
         "used for all channels input channels) or as many channels as the input image.\n\n"
         "For details, see normalizedConvolveImage_ in the C++ documentation.\n");
+
+    multidef("gaussianSmoothing2", pyGaussianSmoothing<3, 5, float>(/*overload_fallback*/true),
+        (arg("array"), arg("sigma"), arg("out")=python::object(),
+         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
+        "Smooth 2D array with Gaussian.\n");
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,2>),
