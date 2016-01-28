@@ -40,6 +40,7 @@
 #include "metaprogramming.hxx"
 #include <boost/python.hpp>
 #include <boost/python/to_python_converter.hpp>
+#include <boost/python/raw_function.hpp>
 #include <set>
 
 namespace vigra {
@@ -169,6 +170,79 @@ FN registerConverters(FN f)
     return f;
 }
 
+namespace detail {
+
+template <class T>
+struct TypeName;
+
+template <>
+struct TypeName<void>
+{
+    static std::string name() {
+        return std::string("void");
+    }
+    static std::string sized_name() {
+        return std::string("void");
+    }
+};
+
+#define VIGRA_SIGNED_INT_NAME(type) \
+template <> \
+struct TypeName<type> \
+{ \
+    static std::string name() { \
+        return std::string(#type); \
+    } \
+    static std::string sized_name() { \
+        return std::string("int") + std::to_string(sizeof(type)*8); \
+    } \
+};
+
+VIGRA_SIGNED_INT_NAME(signed char)
+VIGRA_SIGNED_INT_NAME(short)
+VIGRA_SIGNED_INT_NAME(int)
+VIGRA_SIGNED_INT_NAME(long)
+VIGRA_SIGNED_INT_NAME(long long)
+
+#define VIGRA_UNSIGNED_INT_NAME(type) \
+template <> \
+struct TypeName<type> \
+{ \
+    static std::string name() { \
+        return std::string(#type); \
+    } \
+    static std::string sized_name() { \
+        return std::string("uint") + std::to_string(sizeof(type)*8); \
+    } \
+};
+
+VIGRA_UNSIGNED_INT_NAME(unsigned char)
+VIGRA_UNSIGNED_INT_NAME(unsigned short)
+VIGRA_UNSIGNED_INT_NAME(unsigned int)
+VIGRA_UNSIGNED_INT_NAME(unsigned long)
+VIGRA_UNSIGNED_INT_NAME(unsigned long long)
+
+#define VIGRA_FLOAT_NAME(type) \
+template <> \
+struct TypeName<type> \
+{ \
+    static std::string name() { \
+        return std::string(#type); \
+    } \
+    static std::string sized_name() { \
+        return std::string("float") + std::to_string(sizeof(type)*8); \
+    } \
+};
+
+VIGRA_FLOAT_NAME(float)
+VIGRA_FLOAT_NAME(double)
+VIGRA_FLOAT_NAME(long double)
+
+#undef VIGRA_SIGNED_INT_NAME
+#undef VIGRA_UNSIGNED_INT_NAME
+#undef VIGRA_FLOAT_NAME
+
+} // namespace detail
 
 } // namespace vigra
 
@@ -223,7 +297,9 @@ template <class T1, \
           class T11 = void, \
           class T12 = void> \
 struct functor_name \
-: public boost::python::TypeList<typename functor_name##Impl<T1>::type, \
+: public boost::python::TypeList<boost::python::ArgumentMismatchMessage\
+                                 <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, \
+         boost::python::TypeList<typename functor_name##Impl<T1>::type, \
          boost::python::TypeList<typename functor_name##Impl<T2>::type, \
          boost::python::TypeList<typename functor_name##Impl<T3>::type, \
          boost::python::TypeList<typename functor_name##Impl<T4>::type, \
@@ -235,7 +311,7 @@ struct functor_name \
          boost::python::TypeList<typename functor_name##Impl<T10>::type, \
          boost::python::TypeList<typename functor_name##Impl<T11>::type, \
          boost::python::TypeList<typename functor_name##Impl<T12>::type, \
-         boost::python::TypeList<void, void> > > > > > > > > > > > > \
+         boost::python::TypeList<void, void> > > > > > > > > > > > > > \
 {};
 
 #define VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(functor_name, function) \
@@ -288,7 +364,9 @@ template <int N, \
           class T11 = void, \
           class T12 = void> \
 struct functor_name \
-: public boost::python::TypeList<typename functor_name##Impl<T1, N>::type, \
+: public boost::python::TypeList<boost::python::ArgumentMismatchMessage\
+                                 <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, \
+         boost::python::TypeList<typename functor_name##Impl<T1, N>::type, \
          boost::python::TypeList<typename functor_name##Impl<T2, N>::type, \
          boost::python::TypeList<typename functor_name##Impl<T3, N>::type, \
          boost::python::TypeList<typename functor_name##Impl<T4, N>::type, \
@@ -300,7 +378,7 @@ struct functor_name \
          boost::python::TypeList<typename functor_name##Impl<T10, N>::type, \
          boost::python::TypeList<typename functor_name##Impl<T11, N>::type, \
          boost::python::TypeList<typename functor_name##Impl<T12, N>::type, \
-         boost::python::TypeList<void, void> > > > > > > > > > > > > \
+         boost::python::TypeList<void, void> > > > > > > > > > > > > > \
 {};
 
 template <class Head, class Tail>
@@ -308,6 +386,105 @@ struct TypeList
 {
     typedef Head head;
     typedef Tail tail;
+};
+
+template <class T1,
+          class T2 = void,
+          class T3 = void,
+          class T4 = void,
+          class T5 = void,
+          class T6 = void,
+          class T7 = void,
+          class T8 = void,
+          class T9 = void,
+          class T10 = void,
+          class T11 = void,
+          class T12 = void>
+struct ArgumentMismatchMessage
+{
+    static std::string message()
+    {
+        std::string res("No overload matches the arguments. You may need to convert\n"
+                        "your array(s) to another element type using 'array.astype(...)'.\n"
+                        "The function currently supports the following types:\n\n  ");
+        res += vigra::detail::TypeName<T1>::sized_name();
+
+        if(vigra::detail::TypeName<T2>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T2>::sized_name();
+        if(vigra::detail::TypeName<T3>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T3>::sized_name();
+        if(vigra::detail::TypeName<T4>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T4>::sized_name();
+        if(vigra::detail::TypeName<T5>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T5>::sized_name();
+        if(vigra::detail::TypeName<T6>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T6>::sized_name();
+        if(vigra::detail::TypeName<T7>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T7>::sized_name();
+        if(vigra::detail::TypeName<T8>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T8>::sized_name();
+        if(vigra::detail::TypeName<T9>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T9>::sized_name();
+        if(vigra::detail::TypeName<T10>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T10>::sized_name();
+        if(vigra::detail::TypeName<T11>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T11>::sized_name();
+        if(vigra::detail::TypeName<T12>::sized_name() != "void")
+            res += ", " + vigra::detail::TypeName<T12>::sized_name();
+
+        res += "\n\nAdditional overloads can easily be added in the vigranumpy C++ sources.\n"
+               "Please submit an issue at http://github.com/ukoethe/vigra/ to let us know\n"
+               "what you need (or a pull request if you solved it for yourself :-).\n\n";
+
+        return res;
+    }
+
+    static void def(const char * pythonName)
+    {
+        boost::python::def(pythonName,
+            raw_function([pythonName](tuple, dict) -> object {
+                std::string msg = message();
+                msg += std::string("Type 'help(") + pythonName + ")' to get full documentation.\n";
+                throw std::invalid_argument(msg);
+                object();
+            }, 0));
+    }
+
+    template <class A1>
+    static void def(const char * pythonName, A1 const &)
+    {
+        boost::python::def(pythonName,
+            raw_function([pythonName](tuple, dict) -> object {
+                std::string msg = message();
+                msg += std::string("Type 'help(") + pythonName + ")' to get full documentation.\n";
+                throw std::invalid_argument(msg);
+                object();
+            }, 0));
+    }
+
+    template <class A1, class A2>
+    static void def(const char * pythonName, A1 const &, A2 const &)
+    {
+        boost::python::def(pythonName,
+            raw_function([pythonName](tuple, dict) -> object {
+                std::string msg = message();
+                msg += std::string("Type 'help(") + pythonName + ")' to get full documentation.\n";
+                throw std::invalid_argument(msg);
+                object();
+            }, 0));
+    }
+
+    template <class A1, class A2, class A3>
+    static void def(const char * pythonName, A1 const &, A2 const &, A3 const &)
+    {
+        boost::python::def(pythonName,
+            raw_function([pythonName](tuple, dict) -> object {
+                std::string msg = message();
+                msg += std::string("Type 'help(") + pythonName + ")' to get full documentation.\n";
+                throw std::invalid_argument(msg);
+                object();
+            }, 0));
+    }
 };
 
 // in the sequel, the doc string is only registered with the last

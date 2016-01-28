@@ -147,10 +147,6 @@ IF(WITH_BOOST)
     VIGRA_FIND_PACKAGE(Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
 ENDIF()
 
-IF(WITH_VIGRANUMPY)
-    FIND_PACKAGE(VIGRANUMPY_DEPENDENCIES)
-ENDIF()
-
 if(WITH_BOOST AND Boost_FOUND)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
     IF(WITH_BOOST_THREAD)
@@ -166,10 +162,6 @@ if(WITH_BOOST AND Boost_FOUND)
     endif()
 endif()
 
-IF(WITH_VALGRIND)
-    FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)
-ENDIF()
-
 # Must be included AFTER boost is found.
 include(VigraDetectThreading)
 include(VigraConfigureThreading)
@@ -177,6 +169,14 @@ include(VigraConfigureThreading)
 # Should come after VigraDetectThreading, since that updates the -std flag.
 include(VigraDetectCppVersion)
 VIGRA_DETECT_CPP_VERSION()
+
+IF(WITH_VIGRANUMPY)
+    FIND_PACKAGE(VIGRANUMPY_DEPENDENCIES)
+ENDIF()
+
+IF(WITH_VALGRIND)
+    FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)
+ENDIF()
 
 ########################################
 #  finalize compiler flags
