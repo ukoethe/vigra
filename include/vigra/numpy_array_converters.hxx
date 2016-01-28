@@ -175,6 +175,21 @@ namespace detail {
 template <class T>
 struct TypeName;
 
+template <class T>
+struct TypeName<Singleband<T>>
+: public TypeName<T>
+{};
+
+template <class T>
+struct TypeName<Multiband<T>>
+: public TypeName<T>
+{};
+
+template <class T, int N>
+struct TypeName<TinyVector<T, N>>
+: public TypeName<T>
+{};
+
 template <>
 struct TypeName<void>
 {
@@ -404,9 +419,11 @@ struct ArgumentMismatchMessage
 {
     static std::string message()
     {
-        std::string res("No overload matches the arguments. You may need to convert\n"
-                        "your array(s) to another element type using 'array.astype(...)'.\n"
-                        "The function currently supports the following types:\n\n  ");
+        std::string res(
+            "No C++ overload matches the arguments. This can have three reasons:\n\n"
+            " * The array arguments may have an unsupported element type. You may need\n"
+            "   to convert your array(s) to another element type using 'array.astype(...)'.\n"
+            "   The function currently supports the following types:\n\n     ");
         res += vigra::detail::TypeName<T1>::sized_name();
 
         if(vigra::detail::TypeName<T2>::sized_name() != "void")
@@ -432,58 +449,45 @@ struct ArgumentMismatchMessage
         if(vigra::detail::TypeName<T12>::sized_name() != "void")
             res += ", " + vigra::detail::TypeName<T12>::sized_name();
 
-        res += "\n\nAdditional overloads can easily be added in the vigranumpy C++ sources.\n"
-               "Please submit an issue at http://github.com/ukoethe/vigra/ to let us know\n"
-               "what you need (or a pull request if you solved it for yourself :-).\n\n";
+        res +=
+            "\n\n"
+            " * The dimension of your array(s) is currently unsupported.\n\n"
+            " * You provided an unrecognized argument, or it has an incorrect type.\n\n"
+            "Additional overloads can easily be added in the vigranumpy C++ sources.\n"
+            "Please submit an issue at http://github.com/ukoethe/vigra/ to let us know\n"
+            "what you need (or a pull request if you solved it on your own :-).\n\n";
 
         return res;
     }
 
     static void def(const char * pythonName)
     {
+        std::string msg    = message(),
+                    module = extract<std::string>(scope().attr("__name__"))() + ".";
+        msg += "Type 'help(" + module + pythonName + ")' to get full documentation.\n";
         boost::python::def(pythonName,
-            raw_function([pythonName](tuple, dict) -> object {
-                std::string msg = message();
-                msg += std::string("Type 'help(") + pythonName + ")' to get full documentation.\n";
+            raw_function([msg](tuple, dict) {
                 throw std::invalid_argument(msg);
-                object();
+                return object();
             }, 0));
     }
 
     template <class A1>
     static void def(const char * pythonName, A1 const &)
     {
-        boost::python::def(pythonName,
-            raw_function([pythonName](tuple, dict) -> object {
-                std::string msg = message();
-                msg += std::string("Type 'help(") + pythonName + ")' to get full documentation.\n";
-                throw std::invalid_argument(msg);
-                object();
-            }, 0));
+        def(pythonName);
     }
 
     template <class A1, class A2>
     static void def(const char * pythonName, A1 const &, A2 const &)
     {
-        boost::python::def(pythonName,
-            raw_function([pythonName](tuple, dict) -> object {
-                std::string msg = message();
-                msg += std::string("Type 'help(") + pythonName + ")' to get full documentation.\n";
-                throw std::invalid_argument(msg);
-                object();
-            }, 0));
+        def(pythonName);
     }
 
     template <class A1, class A2, class A3>
     static void def(const char * pythonName, A1 const &, A2 const &, A3 const &)
     {
-        boost::python::def(pythonName,
-            raw_function([pythonName](tuple, dict) -> object {
-                std::string msg = message();
-                msg += std::string("Type 'help(") + pythonName + ")' to get full documentation.\n";
-                throw std::invalid_argument(msg);
-                object();
-            }, 0));
+        def(pythonName);
     }
 };
 
