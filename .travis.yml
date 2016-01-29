@@ -11,9 +11,11 @@ matrix:
       python: "3.2"
       env: WITH_BOOST_THREAD=0
     - os: osx
+      osx_image: xcode6.4
       language: generic
       env: TRAVIS_PYTHON_VERSION="2.7"
     - os: osx
+      osx_image: xcode6.4
       language: generic
       env: TRAVIS_PYTHON_VERSION="3.4.1"
 
@@ -52,13 +54,10 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
   - pip install numpy
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install homebrew/versions/gcc49                                                ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CC=$(which gcc-4.9); export CXX=$(which g++-4.9)                             ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export HOMEBREW_CC=gcc-4.9; export HOMEBREW_CXX=g++-4.9                             ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install "mac_homebrew_bottles/python/${TRAVIS_PYTHON_VERSION}/boost-python-1.60.0.mavericks.bottle.1.tar.gz" || brew install -v --build-from-source boost-python --with-python ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install -v --build-from-source boost-python --with-python ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then sudo install_name_tool -change /usr/lib/libpython2.7.dylib /Users/travis/.pyenv/versions/2.7/lib/libpython2.7.dylib /usr/local/Cellar/boost-python/1.60.0/lib/libboost_python.dylib ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then sudo install_name_tool -change /usr/lib/libpython2.7.dylib /Users/travis/.pyenv/versions/2.7/lib/libpython2.7.dylib /usr/local/Cellar/boost-python/1.60.0/lib/libboost_python-mt.dylib ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install "mac_homebrew_bottles/python/${TRAVIS_PYTHON_VERSION}/boost-python-1.60.0.mavericks.bottle.1.tar.gz" || brew install -v --build-from-source boost-python --without-python --with-python3 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install -v --build-from-source boost-python --without-python --with-python3 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cleanup --force -s; rm -rf $(brew --cache)                                     ; fi
 
 script:
