@@ -95,6 +95,7 @@ IF(PYTHONINTERP_FOUND)
             # define names for thread-safe library variants
             SET(BOOST_PYTHON_NAMES
                     boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}-mt
+                    boost_python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}-mt
                     boost_python${PYTHON_VERSION_MAJOR}-mt
                     boost_python-mt)
         ENDIF()
@@ -103,6 +104,8 @@ IF(PYTHONINTERP_FOUND)
         SET(BOOST_PYTHON_NAMES ${BOOST_PYTHON_NAMES}
                 # Linux with multiple Python versions
                 boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
+                # Gentoo
+                boost_python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}
                 # Mac with Python 3
                 boost_python${PYTHON_VERSION_MAJOR}
                 # default
