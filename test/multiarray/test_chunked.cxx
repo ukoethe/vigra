@@ -29,10 +29,11 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
+#include <atomic>
 #include <stdio.h>
 
 #include "vigra/unittest.hxx"
@@ -70,15 +71,15 @@ public:
     typedef ChunkedArray<3, T> BaseArray;
     typedef VIGRA_UNIQUE_PTR<BaseArray> ArrayPtr;
     typedef typename BaseArray::iterator Iterator;
-    
-    static const int channelCount = NumericTraits<T>::isScalar::value 
+
+    static const int channelCount = NumericTraits<T>::isScalar::value
                                        ? 1
                                        : 3;
-    
+
     Shape3 shape, chunk_shape;
     ArrayPtr empty_array, array;
     PlainArray ref;
-    
+
     static const int fill_value = 42;
 
     ChunkedMultiArrayTest ()
@@ -92,92 +93,92 @@ public:
         array = createArray(shape, chunk_shape, (Array *)0);
         linearSequence(array->begin(), array->end());
     }
-    
-    static ArrayPtr createArray(Shape3 const & shape, 
+
+    static ArrayPtr createArray(Shape3 const & shape,
                                 Shape3 const & chunk_shape,
                                 ChunkedArrayFull<3, T> *,
                                 std::string const & = "chunked_test.h5")
     {
         return ArrayPtr(new ChunkedArrayFull<3, T>(shape, ChunkedArrayOptions().fillValue(fill_value)));
     }
-    
-    static ArrayPtr createArray(Shape3 const & shape, 
+
+    static ArrayPtr createArray(Shape3 const & shape,
                                 Shape3 const & chunk_shape,
                                 ChunkedArrayLazy<3, T> *,
                                 std::string const & = "chunked_test.h5")
     {
-        return ArrayPtr(new ChunkedArrayLazy<3, T>(shape, chunk_shape, 
+        return ArrayPtr(new ChunkedArrayLazy<3, T>(shape, chunk_shape,
                                                    ChunkedArrayOptions().fillValue(fill_value)));
     }
-    
-    static ArrayPtr createArray(Shape3 const & shape, 
+
+    static ArrayPtr createArray(Shape3 const & shape,
                                 Shape3 const & chunk_shape,
                                 ChunkedArrayCompressed<3, T> *,
                                 std::string const & = "chunked_test.h5")
     {
-        return ArrayPtr(new ChunkedArrayCompressed<3, T>(shape, chunk_shape, 
+        return ArrayPtr(new ChunkedArrayCompressed<3, T>(shape, chunk_shape,
                                                          ChunkedArrayOptions().fillValue(fill_value)
                                                                               .compression(LZ4)));
     }
-    
+
 #ifdef HasHDF5
-    static ArrayPtr createArray(Shape3 const & shape, 
+    static ArrayPtr createArray(Shape3 const & shape,
                                 Shape3 const & chunk_shape,
                                 ChunkedArrayHDF5<3, T> *,
                                 std::string const & name = "chunked_test.h5")
     {
         HDF5File hdf5_file(name, HDF5File::New);
-        return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New, 
-                                                   shape, chunk_shape, 
+        return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New,
+                                                   shape, chunk_shape,
                                                    ChunkedArrayOptions().fillValue(fill_value)));
     }
 #endif
-    
-    static ArrayPtr createArray(Shape3 const & shape, 
+
+    static ArrayPtr createArray(Shape3 const & shape,
                                 Shape3 const & chunk_shape,
                                 ChunkedArrayTmpFile<3, T> *,
                                 std::string const & = "chunked_test.h5")
     {
-        return ArrayPtr(new ChunkedArrayTmpFile<3, T>(shape, chunk_shape, 
+        return ArrayPtr(new ChunkedArrayTmpFile<3, T>(shape, chunk_shape,
                                                       ChunkedArrayOptions().fillValue(fill_value), ""));
     }
-    
+
     void test_construction ()
     {
         bool isFullArray = IsSameType<Array, ChunkedArrayFull<3, T> >::value;
-        
+
         should(array->isInside(Shape3(1,2,3)));
         should(!array->isInside(Shape3(1,23,3)));
         should(!array->isInside(Shape3(1,2,-3)));
-        
+
         shouldEqual(array->shape(), ref.shape());
         shouldEqual(array->shape(0), ref.shape(0));
         shouldEqual(array->shape(1), ref.shape(1));
         shouldEqual(array->shape(2), ref.shape(2));
-        
+
         if(isFullArray)
             shouldEqual(array->chunkArrayShape(), Shape3(1));
         else
             shouldEqual(array->chunkArrayShape(), Shape3(3));
-        
+
         shouldEqualSequence(array->begin(), array->end(), ref.begin());
         shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
-        
+
         should(*array == ref);
         should(*array != ref.subarray(Shape3(1),ref.shape()));
-        
+
         shouldEqual(array->getItem(Shape3(1,8,17)), ref[Shape3(1,8,17)]);
-        
+
         ref[ref.size()-1] = ref[ref.size()-1] + T(1);
         should(*array != ref);
         array->setItem(ref.shape()-Shape3(1), ref[ref.size()-1]);
         should(*array == ref);
-        
+
         if(isFullArray)
             shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
         else
             shouldEqual(empty_array->dataBytes(), 0);
-            
+
         PlainArray empty(shape, T(fill_value));
         // const_iterator should simply use the fill_value_chunk_
         shouldEqualSequence(empty_array->cbegin(), empty_array->cend(), empty.begin());
@@ -185,14 +186,14 @@ public:
             shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
         else
             shouldEqual(empty_array->dataBytes(), 0);
-            
+
         // non-const iterator should allocate the array and initialize with fill_value_
         shouldEqualSequence(empty_array->begin(), empty_array->end(), empty.begin());
         if(IsSameType<Array, ChunkedArrayTmpFile<3, T> >::value)
             should(empty_array->dataBytes() >= ref.size()*sizeof(T)); // must pad to a full memory page
         else
             shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
-        
+
         // make sure the central chunk is loaded, so that releaseChunks() will have an effect
         array->getItem(Shape3(10,10,10));
         int dataBytesBefore = array->dataBytes();
@@ -208,7 +209,7 @@ public:
         shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
 
         // FIXME: test copy construction?
-        
+
         // should(array3 != array3.subarray(Shape(1,1,1), Shape(2,2,2)));
         // should(array3.subarray(Shape(0,0,0), Shape(10,1,1)) != array3.subarray(Shape(0,1,0), Shape(10,2,1)));
 
@@ -228,34 +229,34 @@ public:
     void test_assignment()
     {
         MultiArrayView <3, T, ChunkedArrayTag> v;
-        should(!v.hasData());    
-        
+        should(!v.hasData());
+
         v = array->subarray(Shape3(), ref.shape());
-        should(v.hasData());        
-        
+        should(v.hasData());
+
         MultiArrayView <3, T, ChunkedArrayTag> vc;
         should(!vc.hasData());
-        
+
         vc = v;
         should(vc.hasData());
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-        
+
         vc = T(7);
         std::vector<T> v7ref(vc.size(), T(7));
         should(vc.hasData());
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), v7ref.begin());
         shouldEqualSequence(v.begin(), v.end(), v7ref.begin());
-        
+
         vc = ref;
         should(vc.hasData());
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-        
+
         MultiArrayView <3, T, ChunkedArrayTag> vs(array->subarray(Shape3(), Shape3(4)));
         should(vs.hasData());
-        
+
         try
         {
             vc = vs;
@@ -267,47 +268,47 @@ public:
                         actual(e.what());
             shouldEqual(actual.substr(0, expected.size()), expected);
         }
-        
+
         vc += T(1);
         ref += T(1);
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-        
+
         vc += v;
         ref *= T(2);
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-         
+
         vc += T(42);
         ref += T(42);
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-        
+
         vc -= T(42);
         ref -= T(42);
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-       
+
         ref /= T(2);
         vc -= ref;
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-        
+
         vc *= v;
         ref *= ref;
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-        
+
         vc *= T(4);
         ref *= T(4);
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-         
+
         vc /= T(4);
         ref /= T(4);
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
-       
+
         vc /= PlainArray(ref.shape(), T(1));
         shouldEqual(vc.shape(), ref.shape());
         shouldEqualSequence(vc.begin(), vc.end(), ref.begin());
@@ -318,69 +319,69 @@ public:
         MultiArrayView <2, T, ChunkedArrayTag> v = array->bindAt (1, 4);
         MultiArrayView <2, T, ChunkedArrayTag> vv = array->template bind<1>(4);
         MultiArrayView <2, T, StridedArrayTag> vr = ref.bindAt (1, 4);
-        
+
         shouldEqual(v.shape(), vr.shape());
         shouldEqual(vv.shape(), vr.shape());
         should(v == vr);
         should(vv == vr);
         shouldEqualSequence(v.begin(), v.end(), vr.begin());
         shouldEqualIndexing(2, v, vr);
-        
+
         MultiArrayView <2, T, ChunkedArrayTag> vt = v.transpose();
         MultiArrayView <2, T, StridedArrayTag> vtr = vr.transpose();
-        
+
         shouldEqual(vt.shape(), vtr.shape());
         should(vt == vtr);
         shouldEqualSequence(vt.begin(), vt.end(), vtr.begin());
         shouldEqualIndexing(2, vt, vtr);
-        
+
         MultiArrayView <1, T, ChunkedArrayTag> v1 = v.bindAt (0, 11);
         MultiArrayView <1, T, StridedArrayTag> v1r = vr.bindAt (0, 11);
-        
+
         shouldEqual(v1.shape(), v1r.shape());
         should(v1 == v1r);
         shouldEqualSequence(v1.begin(), v1.end(), v1r.begin());
         shouldEqualIndexing(1, v1, v1r);
-        
+
         MultiArrayView <1, T, ChunkedArrayTag> v1t = v1.transpose();
-        
+
         shouldEqual(v1t.shape(), v1r.shape());
         should(v1t == v1r);
         shouldEqualSequence(v1t.begin(), v1t.end(), v1r.begin());
         shouldEqualIndexing(1, v1t, v1r);
     }
-    
+
     void test_bindInner ()
     {
         MultiArrayView <2, T, ChunkedArrayTag> v = array->bindInner(2);
         MultiArrayView <2, T, StridedArrayTag> vr = ref.bindInner(2);
         shouldEqual(v.shape(), vr.shape());
         should(v == vr);
-        
+
         TinyVector <int, 2> inner_indices (2, 5);
         MultiArrayView <1, T, ChunkedArrayTag> v1 = array->bindInner(inner_indices);
         MultiArrayView <1, T, StridedArrayTag> v1r = ref.bindInner(inner_indices);
         shouldEqual(v1.shape(), v1r.shape());
         should(v1 == v1r);
-        
+
         MultiArrayView <1, T, ChunkedArrayTag> v21 = v.bindInner(5);
         shouldEqual(v21.shape(), v1r.shape());
         should(v21 == v1r);
     }
-    
+
     void test_bindOuter ()
     {
         MultiArrayView <2, T, ChunkedArrayTag> v = array->bindOuter(2);
         MultiArrayView <2, T, StridedArrayTag> vr = ref.bindOuter(2);
         shouldEqual(v.shape(), vr.shape());
         should(v == vr);
-        
+
         TinyVector <int, 2> inner_indices (5, 2);
         MultiArrayView <1, T, ChunkedArrayTag> v1 = array->bindOuter(inner_indices);
         MultiArrayView <1, T, StridedArrayTag> v1r = ref.bindOuter(inner_indices);
         shouldEqual(v1.shape(), v1r.shape());
         should(v1 == v1r);
-        
+
         MultiArrayView <1, T, ChunkedArrayTag> v21 = v.bindOuter(5);
         shouldEqual(v21.shape(), v1r.shape());
         should(v21 == v1r);
@@ -391,21 +392,21 @@ public:
         {
             Shape3 start, stop(ref.shape());  // empty array
             bool isFullArray = IsSameType<Array, ChunkedArrayFull<3, T> >::value;
-        
+
             MultiArrayView <3, T const, ChunkedArrayTag> vc(empty_array->const_subarray(start, stop));
 
             MultiArray <3, T> c(stop-start);
             empty_array->checkoutSubarray(start, c);
-            
+
             if(isFullArray)
                 shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
             else
                 shouldEqual(empty_array->dataBytes(), 0);
-                
+
             PlainArray empty(shape, T(fill_value));
             shouldEqualSequence(vc.begin(), vc.end(), empty.begin());
             shouldEqualSequence(c.begin(), c.end(), empty.begin());
-            
+
             MultiArrayView <3, T, ChunkedArrayTag> v(empty_array->subarray(start, stop));
             if(IsSameType<Array, ChunkedArrayTmpFile<3, T> >::value)
                 should(empty_array->dataBytes() >= ref.size()*sizeof(T)); // must pad to a full memory page
@@ -413,7 +414,7 @@ public:
                 shouldEqual(empty_array->dataBytes(), ref.size()*sizeof(T));
             shouldEqualSequence(v.begin(), v.end(), empty.begin());
         }
-        
+
         {
             Shape3 start, stop(ref.shape());  // whole array
             MultiArrayView <3, T, ChunkedArrayTag> v(array->subarray(start, stop));
@@ -421,26 +422,26 @@ public:
 
             MultiArray <3, T> c(stop-start);
             array->checkoutSubarray(start, c);
-            
+
             MultiArrayView <3, T, StridedArrayTag> vr = ref.subarray(start, stop);
             MultiArrayView <3, T, StridedArrayTag> vtr = vr.transpose();
-            
+
             shouldEqual(v.shape(), vr.shape());
             should(v == vr);
             shouldEqualSequence(v.begin(), v.end(), vr.begin());
             shouldEqualIndexing(3, v, vr);
-            
+
             shouldEqual(vt.shape(), vtr.shape());
             should(vt == vtr);
             shouldEqualSequence(vt.begin(), vt.end(), vtr.begin());
             shouldEqualIndexing(3, vt, vtr);
-            
+
             shouldEqual(c.shape(), vr.shape());
             should(c == vr);
             shouldEqualSequence(c.begin(), c.end(), vr.begin());
             shouldEqualIndexing(3, c, vr);
         }
-        
+
         {
             Shape3 start(3,2,1), stop(4,5,6);  // single chunk
             MultiArrayView <3, T, ChunkedArrayTag> v(array->subarray(start, stop));
@@ -448,48 +449,48 @@ public:
 
             MultiArray <3, T> c(stop-start);
             array->checkoutSubarray(start, c);
-            
+
             MultiArrayView <3, T, StridedArrayTag> vr = ref.subarray(start, stop);
             MultiArrayView <3, T, StridedArrayTag> vtr = vr.transpose();
-            
+
             shouldEqual(v.shape(), vr.shape());
             should(v == vr);
             shouldEqualSequence(v.begin(), v.end(), vr.begin());
             shouldEqualIndexing(3, v, vr);
-            
+
             shouldEqual(vt.shape(), vtr.shape());
             should(vt == vtr);
             shouldEqualSequence(vt.begin(), vt.end(), vtr.begin());
             shouldEqualIndexing(3, vt, vtr);
-            
+
             shouldEqual(c.shape(), vr.shape());
             should(c == vr);
             shouldEqualSequence(c.begin(), c.end(), vr.begin());
             shouldEqualIndexing(3, c, vr);
         }
-        
+
         {
             Shape3 start(7,6,5), stop(9,10,11); // across chunk borders
             MultiArrayView <3, T, ChunkedArrayTag> v(array->subarray(start, stop));
             MultiArrayView <3, T, ChunkedArrayTag> vt(v.transpose());
-            
+
             MultiArray <3, T> c(stop-start);
             array->checkoutSubarray(start, c);
-            
+
             MultiArrayView <3, T, StridedArrayTag> vr = ref.subarray(start, stop);
-            
+
             shouldEqual(v.shape(), vr.shape());
             should(v == vr);
             shouldEqualSequence(v.begin(), v.end(), vr.begin());
             shouldEqualIndexing(3, v, vr);
-            
+
             shouldEqual(c.shape(), vr.shape());
             should(c == vr);
             shouldEqualSequence(c.begin(), c.end(), vr.begin());
             shouldEqualIndexing(3, c, vr);
         }
     }
-    
+
     void test_iterator ()
     {
         Shape3 s(ref.shape());
@@ -503,7 +504,7 @@ public:
         should(i1.isValid() && !i1.atEnd());
         should(!iend.isValid() && iend.atEnd());
         should(iend.getEndIterator() == iend);
-        
+
         shouldEqual(i1.point(), *c);
         shouldEqual((i1+0).point(), c[0]);
         shouldEqual((i1+1).point(), c[1]);
@@ -553,7 +554,7 @@ public:
         shouldEqual(&iend[-2], &v[Shape3(18,20,21)]);
         shouldEqual(&iend[-10], &v[Shape3(10,20,21)]);
         shouldEqual(&iend[-s[0]-1], &v[Shape3(19,19,21)]);
-        
+
         Iterator i2;
         i2 = iend;
         should(i2 == iend);
@@ -594,16 +595,16 @@ public:
         Iterator i5 = array->begin();
         Iterator i6 = array->begin();
 
-        for (p[2]=0, i3.resetDim(2), i4.setDim(2, 0), i5.template dim<2>() = 0, i6.resetDim(2); 
-                i3.point(2) != s[2]; 
-                i3.incDim(2), i4.addDim(2, 1), ++i5.template dim<2>(), i6.template dim<2>() += 1, ++p[2]) 
+        for (p[2]=0, i3.resetDim(2), i4.setDim(2, 0), i5.template dim<2>() = 0, i6.resetDim(2);
+                i3.point(2) != s[2];
+                i3.incDim(2), i4.addDim(2, 1), ++i5.template dim<2>(), i6.template dim<2>() += 1, ++p[2])
         {
-            for (p[1]=0, i3.resetDim(1), i4.setDim(1, 0), i5.template dim<1>() = 0, i6.resetDim(1); 
-                    i3.point(1) != s[1]; 
-                    i3.incDim(1), i4.addDim(1, 1), ++i5.template dim<1>(), i6.template dim<1>() += 1, ++p[1]) 
+            for (p[1]=0, i3.resetDim(1), i4.setDim(1, 0), i5.template dim<1>() = 0, i6.resetDim(1);
+                    i3.point(1) != s[1];
+                    i3.incDim(1), i4.addDim(1, 1), ++i5.template dim<1>(), i6.template dim<1>() += 1, ++p[1])
             {
-                for (p[0]=0, i3.resetDim(0), i4.setDim(0, 0), i5.template dim<0>() = 0, i6.resetDim(0); 
-                        i3.point(0) != s[0]; 
+                for (p[0]=0, i3.resetDim(0), i4.setDim(0, 0), i5.template dim<0>() = 0, i6.resetDim(0);
+                        i3.point(0) != s[0];
                         i3.incDim(0), i4.addDim(0, 1), ++i5.template dim<0>(), i6.template dim<0>() += 1, ++p[0], ++i1, ++c, i2 += 1, ++count)
                 {
                     shouldEqual(&*i1, &v[p]);
@@ -698,15 +699,15 @@ public:
         shouldEqual(&*i1, &v[Shape3(19,20,21)]);
         shouldEqual(&*i2, &v[Shape3(19,20,21)]);
     }
-    
+
     void testChunkIterator()
     {
         Shape3 start(5,0,3), stop(shape[0], shape[1], shape[2]-3);
         MultiArrayView <3, T, ChunkedArrayTag> v(array->subarray(Shape3(), shape));
-        
+
         typename Array::chunk_iterator i = array->chunk_begin(start, stop),
                                        end = array->chunk_end(start, stop);
-        typename MultiArrayView <3, T, ChunkedArrayTag>::chunk_const_iterator 
+        typename MultiArrayView <3, T, ChunkedArrayTag>::chunk_const_iterator
                                        vi = v.chunk_cbegin(start, stop),
                                        vend = v.chunk_cend(start, stop);
         int count = -1;
@@ -714,14 +715,14 @@ public:
         {
             shouldEqual(i->data(), i[0].data());
             shouldEqual(i->data(), vi->data());
-            
+
             *i = T(count);
             ref.subarray(i.chunkStart(), i.chunkStop()) = T(count);
             should(*vi == ref.subarray(i.chunkStart(), i.chunkStop()));
         }
         should(vi == vend);
         shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
-        
+
         for(;;)
         {
             --i;
@@ -737,15 +738,16 @@ public:
         ref.subarray(start, stop) = T(fill_value);
         shouldEqualSequence(array->cbegin(), array->cend(), ref.begin());
     }
-    
-    static void testMultiThreadedRun(BaseArray * v, int startIndex, int d, int * go)
+
+    static void testMultiThreadedRun(BaseArray * v, int startIndex, int d,
+                                     threading::atomic_long * go)
     {
-        while(*go == 0)
+        while(go->load() == 0)
             threading::this_thread::yield();
-            
+
         Shape3 s = v->shape();
         int sliceSize = s[0]*s[1];
-        
+
         Iterator bi(v->begin());
         T count(startIndex*sliceSize), start((d-1)*sliceSize), inc(1);
         for(bi.setDim(2,startIndex); bi.coord(2) < s[2]; bi.addDim(2, d), count += start)
@@ -760,27 +762,28 @@ public:
     {
         array.reset(0); // close the file if backend is HDF5
         ArrayPtr a = createArray(Shape3(200, 201, 202), Shape3(), (Array *)0);
-    
-        int go = 0;
-        
+
+        threading::atomic_long go;
+        go.store(0);
+
         threading::thread t1(testMultiThreadedRun, a.get(), 0, 4, &go);
         threading::thread t2(testMultiThreadedRun, a.get(), 1, 4, &go);
         threading::thread t3(testMultiThreadedRun, a.get(), 2, 4, &go);
         threading::thread t4(testMultiThreadedRun, a.get(), 3, 4, &go);
-     
-        go = 1;
-     
+
+        go.store(1);
+
         t4.join();
         t3.join();
         t2.join();
         t1.join();
-        
+
         PlainArray ref(a->shape());
         linearSequence(ref.begin(), ref.end());
-        
+
         shouldEqualSequence(a->begin(), a->end(), ref.begin());
     }
-        
+
     // void testIsUnstrided()
     // {
         // typedef difference3_type Shape;
@@ -804,12 +807,12 @@ public:
     // void testMethods ()
     // {
         // shouldEqual(array3.squaredNorm(), 332833500);
-        
+
         // shouldEqual(array3.norm(), std::sqrt(332833500.0));
         // shouldEqual(array3.norm(0), 999.0);
         // shouldEqual(array3.norm(1), 499500.0);
         // shouldEqualTolerance(array3.norm(2, false), std::sqrt(332833500.0), 1e-14);
-        
+
         // difference3_type first(0,0,0), last(1,1,1);
         // shouldEqual(array3.subarray(first, last).norm(), 0.0);
         // shouldEqual(array3.subarray(first, last).norm(0), 0.0);
@@ -930,7 +933,7 @@ public:
     // void testCopy()
     // {
         // Image3D res(img.shape(), 1.0), res1(img.shape(), 1.0);
-        
+
         // copyMultiArray(srcMultiArrayRange(img), destMultiArray(res));
         // copyMultiArray(img, res1);
 
@@ -943,7 +946,7 @@ public:
         // Image3D res(img.shape());
 
         // copyMultiArray(img.subarray(Size3(0,0,0), Size3(5,1,1)), res);
-        
+
         // int x,y,z;
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
@@ -956,7 +959,7 @@ public:
         // Image3D res(img.shape());
 
         // copyMultiArray(img.subarray(Size3(0,0,0), Size3(1,1,3)), res);
-        
+
         // int x,y,z;
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
@@ -970,7 +973,7 @@ public:
         // transformMultiArray(srcMultiArrayRange(img), destMultiArray(res),
                             // Arg1() + Arg1());
         // transformMultiArray(img, res1, Arg1() + Arg1());
-        
+
         // using namespace multi_math;
         // should(all(2.0*img == res));
         // should(all(2.0*img == res1));
@@ -981,7 +984,7 @@ public:
         // Image3D res(img.shape());
         // transformMultiArray(img.subarray(Size3(0,0,0), Size3(5,1,1)), res,
                             // Arg1() + Arg1());
-        
+
         // int x,y,z;
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
@@ -995,7 +998,7 @@ public:
 
         // transformMultiArray(img.subarray(Size3(0,0,0), Size3(1,1,3)), res,
                             // Arg1() + Arg1());
-        
+
         // int x,y,z;
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
@@ -1008,7 +1011,7 @@ public:
         // Image3D res(Size3(5,1,1));
 
         // transformMultiArray(img, res, reduceFunctor(Arg1() + Arg2(), 0.0));
-        
+
         // int x,y,z;
         // for(x=0; x<img.shape(0); ++x)
         // {
@@ -1018,19 +1021,19 @@ public:
                     // sum += img(x,y,z);
             // shouldEqual(res(x,0,0), sum);
         // }
-        
+
         // Image1D res1(Size1(5));
         // MultiArrayView<3,PixelType> res3 = res1.insertSingletonDimension(1).insertSingletonDimension(2);
         // transformMultiArray(img, res3, FindSum<PixelType>());
-        // shouldEqualSequenceTolerance(res1.data(), res1.data()+5, res.data(), 1e-7);       
+        // shouldEqualSequenceTolerance(res1.data(), res1.data()+5, res.data(), 1e-7);
     // }
 
     // void testTransformInnerReduce()
     // {
         // Image3D res(Size3(1,1,3));
-        
+
         // transformMultiArray(img, res, reduceFunctor(Arg1() + Arg2(), 0.0));
-        
+
         // int x,y,z;
         // for(z=0; z<img.shape(2); ++z)
         // {
@@ -1040,22 +1043,22 @@ public:
                     // sum += img(x,y,z);
             // shouldEqual(res(0,0,z), sum);
         // }
-        
+
         // Image1D res1(Size1(3));
         // MultiArrayView<3,PixelType> res3 = res1.insertSingletonDimension(0).insertSingletonDimension(0);
         // transformMultiArray(img, res3, FindSum<PixelType>());
-        // shouldEqualSequenceTolerance(res1.data(), res1.data()+3, res.data(), 1e-6);       
+        // shouldEqualSequenceTolerance(res1.data(), res1.data()+3, res.data(), 1e-6);
     // }
 
     // void testCombine2()
     // {
         // Image3D res(img.shape()), res1(img.shape());
-        
-        // combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArray(img), 
+
+        // combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArray(img),
                               // destMultiArray(res),
                               // Arg1() + Arg2());
         // combineTwoMultiArrays(img, img, res1, Arg1() + Arg2());
-        
+
         // using namespace multi_math;
         // should(all(2.0*img == res));
         // should(all(2.0*img == res1));
@@ -1064,9 +1067,9 @@ public:
     // void testCombine2OuterExpand()
     // {
         // Image3D res(img.shape());
-        
+
         // combineTwoMultiArrays(img.subarray(Size3(0,0,0), Size3(5,1,1)), img, res,
-                              // Arg1() + Param(2.0)*Arg2());       
+                              // Arg1() + Param(2.0)*Arg2());
         // int x,y,z;
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
@@ -1074,16 +1077,16 @@ public:
                     // shouldEqual(res(x,y,z), 2.0*img(x,y,z) + img(x,0,0));
 
         // combineTwoMultiArrays(img, img.subarray(Size3(0,0,0), Size3(5,1,1)), res,
-                              // Arg1() + Param(2.0)*Arg2());       
+                              // Arg1() + Param(2.0)*Arg2());
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
                 // for(x=0; x<img.shape(0); ++x)
                     // shouldEqual(res(x,y,z), img(x,y,z) + 2.0*img(x,0,0));
 
         // View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
-        // combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view), 
+        // combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view),
                               // destMultiArrayRange(res),
-                              // Arg1() + Param(2.0)*Arg2());       
+                              // Arg1() + Param(2.0)*Arg2());
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
                 // for(x=0; x<img.shape(0); ++x)
@@ -1093,10 +1096,10 @@ public:
     // void testCombine2InnerExpand()
     // {
         // Image3D res(img.shape());
-        
+
         // View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
         // combineTwoMultiArrays(view, img, res,
-                              // Arg1() + Param(2.0)*Arg2());       
+                              // Arg1() + Param(2.0)*Arg2());
         // int x,y,z;
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
@@ -1104,15 +1107,15 @@ public:
                     // shouldEqual(res(x,y,z), 2.0*img(x,y,z) + img(0,0,z));
 
         // combineTwoMultiArrays(img, view, res,
-                              // Arg1() + Param(2.0)*Arg2());       
+                              // Arg1() + Param(2.0)*Arg2());
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
                 // for(x=0; x<img.shape(0); ++x)
                     // shouldEqual(res(x,y,z), img(x,y,z) + 2.0*img(0,0,z));
 
-        // combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view), 
+        // combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view),
                               // destMultiArrayRange(res),
-                              // Arg1() + Param(2.0)*Arg2());       
+                              // Arg1() + Param(2.0)*Arg2());
         // for(z=0; z<img.shape(2); ++z)
             // for(y=0; y<img.shape(1); ++y)
                 // for(x=0; x<img.shape(0); ++x)
@@ -1122,10 +1125,10 @@ public:
     // void testCombine2OuterReduce()
     // {
         // Image3D res(Size3(5,1,1));
-        
+
         // combineTwoMultiArrays(img, img, res,
                               // reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
-        
+
         // int x,y,z;
         // for(x=0; x<img.shape(0); ++x)
         // {
@@ -1140,10 +1143,10 @@ public:
     // void testCombine2InnerReduce()
     // {
         // Image3D res(Size3(1,1,3));
-        
+
         // combineTwoMultiArrays(img, img, res,
                               // reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
-        
+
         // int x,y,z;
         // for(z=0; z<img.shape(2); ++z)
         // {
@@ -1158,9 +1161,9 @@ public:
     // void testCombine3()
     // {
         // Image3D res(img.shape()), res1(img.shape());
-        
-        // combineThreeMultiArrays(srcMultiArrayRange(img), 
-                                // srcMultiArray(img), srcMultiArray(img), 
+
+        // combineThreeMultiArrays(srcMultiArrayRange(img),
+                                // srcMultiArray(img), srcMultiArray(img),
                                 // destMultiArray(res),
                                 // Arg1() + Arg2() + Arg3());
         // combineThreeMultiArrays(img, img, img, res1,
@@ -1175,12 +1178,12 @@ public:
                     // shouldEqual(res1(x,y,z), 3.0*img(x,y,z));
                 // }
     // }
-    
+
     // void testInitMultiArrayBorder(){
         // typedef vigra::MultiArray<1,int> IntLine;
         // typedef vigra::MultiArray<2,int> IntImage;
         // typedef vigra::MultiArray<3,int> IntVolume;
-        
+
         // const int desired_vol[] ={  0, 0, 0, 0, 0, 0,
                                     // 0, 0, 0, 0, 0, 0,
                                     // 0, 0, 0, 0, 0, 0,
@@ -1235,32 +1238,32 @@ public:
         // const int desired_vol2[] ={  0, 0,
                                      // 0, 0,
 
-                                     // 0, 0, 
+                                     // 0, 0,
                                      // 0, 0};
 
         // IntVolume vol(IntVolume::difference_type(6,6,6));
-        
+
         // for(IntVolume::iterator iter=vol.begin(); iter!=vol.end(); ++iter)
             // *iter=5;
         // initMultiArrayBorder(destMultiArrayRange(vol),2,0);
         // shouldEqualSequence(vol.begin(), vol.end(), desired_vol);
 
         // IntImage img(IntImage::difference_type(6,6));
-        
+
         // for(IntImage::iterator iter=img.begin(); iter!=img.end(); ++iter)
             // *iter=5;
         // initMultiArrayBorder(destMultiArrayRange(img),1,0);
         // shouldEqualSequence(img.begin(), img.end(), desired_img);
 
         // IntLine lin(IntLine::difference_type(7));
-        
+
         // for(IntLine::iterator iter=lin.begin(); iter!=lin.end(); ++iter)
             // *iter=5;
         // initMultiArrayBorder(destMultiArrayRange(lin),3,0);
         // shouldEqualSequence(lin.begin(), lin.end(), desired_lin);
 
         // IntVolume vol2(IntVolume::difference_type(2,2,2));
-        
+
         // for(IntVolume::iterator iter=vol2.begin(); iter!=vol2.end(); ++iter)
             // *iter=5;
         // initMultiArrayBorder(vol2, 9, 0);
@@ -1292,17 +1295,17 @@ public:
         // shouldEqual(stats[1].min, 1.1f);
         // shouldEqual(stats[1].max, 58.1f);
     // }
-    
+
     // void testTensorUtilities()
     // {
         // MultiArrayShape<2>::type shape(3,4);
         // int size = shape[0]*shape[1];
-        
+
         // MultiArray<2, TinyVector<double, 2> > vector(shape), rvector(shape);
         // MultiArray<2, TinyVector<double, 3> > tensor1(shape), tensor2(shape), rtensor(shape);
         // MultiArray<2, double > trace(shape), rtrace(shape);
         // MultiArray<2, double > determinant(shape), rdet(shape);
-        
+
         // for(int k=0; k<size; ++k)
         // {
             // for(int l=0; l<2; ++l)
@@ -1311,27 +1314,27 @@ public:
                 // tensor1[k][l] = randomMT19937().uniform();
             // rdet[k] = tensor1[k][0]*tensor1[k][2] - sq(tensor1[k][1]);
         // }
-        
+
         // vectorToTensor(srcImageRange(vector), destImage(rtensor));
         // vectorToTensorMultiArray(srcMultiArrayRange(vector), destMultiArray(tensor2));
         // shouldEqualSequence(tensor2.data(), tensor2.data()+size, rtensor.data());
         // tensor2.init(TinyVector<double, 3>());
         // vectorToTensorMultiArray(vector, tensor2);
         // shouldEqualSequence(tensor2.data(), tensor2.data()+size, rtensor.data());
-                
+
         // tensorTrace(srcImageRange(tensor1), destImage(rtrace));
         // tensorTraceMultiArray(srcMultiArrayRange(tensor1), destMultiArray(trace));
         // shouldEqualSequence(trace.data(), trace.data()+size, rtrace.data());
         // trace = 0;
         // tensorTraceMultiArray(tensor1, trace);
         // shouldEqualSequence(trace.data(), trace.data()+size, rtrace.data());
-                
+
         // tensorDeterminantMultiArray(srcMultiArrayRange(tensor1), destMultiArray(determinant));
         // shouldEqualSequence(determinant.data(), determinant.data()+size, rdet.data());
         // determinant = 0;
         // tensorDeterminantMultiArray(tensor1, determinant);
         // shouldEqualSequence(determinant.data(), determinant.data()+size, rdet.data());
-                
+
         // determinant = 1000.0;
         // tensorDeterminantMultiArray(srcMultiArrayRange(tensor2), destMultiArray(determinant));
         // shouldEqualTolerance(norm(determinant), 0.0, 1e-14);
@@ -1355,7 +1358,7 @@ public:
     typedef ChunkedArray<3, T> BaseArray;
     typedef VIGRA_UNIQUE_PTR<BaseArray> ArrayPtr;
     typedef typename BaseArray::iterator Iterator;
-    
+
     Shape3 shape;
     ArrayPtr array;
 
@@ -1364,44 +1367,44 @@ public:
     {
         array = createArray(shape, (Array *)0);
         linearSequence(array->begin(), array->end());
-        std::cerr << "chunked multi array test for type " << typeid(Array).name() << ": \n";        
+        std::cerr << "chunked multi array test for type " << typeid(Array).name() << ": \n";
     }
-    
-    static ArrayPtr createArray(Shape3 const & shape, 
+
+    static ArrayPtr createArray(Shape3 const & shape,
                                 ChunkedArrayFull<3, T> *)
     {
         return ArrayPtr(new ChunkedArrayFull<3, T>(shape));
     }
-    
-    static ArrayPtr createArray(Shape3 const & shape, 
+
+    static ArrayPtr createArray(Shape3 const & shape,
                                 ChunkedArrayLazy<3, T> *)
     {
         return ArrayPtr(new ChunkedArrayLazy<3, T>(shape));
     }
-    
-    static ArrayPtr createArray(Shape3 const & shape, 
+
+    static ArrayPtr createArray(Shape3 const & shape,
                                 ChunkedArrayCompressed<3, T> *)
     {
         return ArrayPtr(new ChunkedArrayCompressed<3, T>(shape));
     }
-    
+
 #ifdef HasHDF5
-    static ArrayPtr createArray(Shape3 const & shape, 
+    static ArrayPtr createArray(Shape3 const & shape,
                                 ChunkedArrayHDF5<3, T> *)
     {
         HDF5File hdf5_file("chunked_test.h5", HDF5File::New);
-        return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New, 
-                                                   shape, Shape3(), 
+        return ArrayPtr(new ChunkedArrayHDF5<3, T>(hdf5_file, "test", HDF5File::New,
+                                                   shape, Shape3(),
                                                    ChunkedArrayOptions().compression(NO_COMPRESSION)));
     }
 #endif
-    
-    static ArrayPtr createArray(Shape3 const & shape, 
+
+    static ArrayPtr createArray(Shape3 const & shape,
                                 ChunkedArrayTmpFile<3, T> *)
     {
         return ArrayPtr(new ChunkedArrayTmpFile<3, T>(shape));
     }
-    
+
     void testBaselineSpeed()
     {
         std::cerr << "############ chunked iterator speed #############\n";
@@ -1421,7 +1424,7 @@ public:
         std::string t = TOCS;
         std::cerr << "    baseline:  " << t << "\n";
     }
-    
+
     void testIteratorSpeed()
     {
         Iterator i   = array->begin(),
@@ -1439,7 +1442,7 @@ public:
         std::string t = TOCS;
         std::cerr << "    read time: " << t << " (cache: " << array->cacheSize() << ")\n";
     }
-    
+
     void testNestedLoopSpeed()
     {
         Iterator i   = array->begin(),
@@ -1459,7 +1462,7 @@ public:
         std::string t = TOCS;
         std::cerr << "    loop time: " << t << " (cache: " << array->cacheSize() << ")\n";
     }
-    
+
     void testIteratorSpeed_LargeCache()
     {
         array.reset(0);
@@ -1468,7 +1471,7 @@ public:
         linearSequence(array->begin(), array->end());
         testIteratorSpeed();
     }
-    
+
     void testIndexingBaselineSpeed()
     {
         std::cerr << "################## indexing speed ####################\n";
@@ -1488,7 +1491,7 @@ public:
         std::string t = TOCS;
         std::cerr << "    baseline:  " << t << "\n";
     }
-    
+
     void testIndexingSpeed()
     {
         MultiArrayView<3, T, ChunkedArrayTag> sub(array->subarray(Shape3(), shape));
@@ -1525,7 +1528,7 @@ struct ChunkedMultiArrayTestSuite
         add( testCase( &ChunkedMultiArrayTest<Array>::testChunkIterator ) );
         add( testCase( &ChunkedMultiArrayTest<Array>::testMultiThreaded ) );
     }
-    
+
     template <class T>
     void testSpeedImpl()
     {
@@ -1541,7 +1544,7 @@ struct ChunkedMultiArrayTestSuite
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayHDF5<3, T> >::testIteratorSpeed_LargeCache )));
 #endif
     }
-    
+
     template <class T>
     void testIndexingSpeedImpl()
     {
@@ -1554,7 +1557,7 @@ struct ChunkedMultiArrayTestSuite
         add( testCase( (&ChunkedMultiArraySpeedTest<ChunkedArrayHDF5<3, T> >::testIndexingSpeed )));
 #endif
     }
-    
+
     ChunkedMultiArrayTestSuite()
     : vigra::test_suite("ChunkedMultiArrayTestSuite")
     {
@@ -1565,7 +1568,7 @@ struct ChunkedMultiArrayTestSuite
 #ifdef HasHDF5
         testImpl<ChunkedArrayHDF5<3, float> >();
 #endif
-        
+
         testImpl<ChunkedArrayFull<3, TinyVector<float, 3> > >();
         testImpl<ChunkedArrayLazy<3, TinyVector<float, 3> > >();
         testImpl<ChunkedArrayCompressed<3, TinyVector<float, 3> > >();
@@ -1573,15 +1576,15 @@ struct ChunkedMultiArrayTestSuite
 #ifdef HasHDF5
         testImpl<ChunkedArrayHDF5<3, TinyVector<float, 3> > >();
 #endif
-        
+
         testSpeedImpl<unsigned char>();
         testSpeedImpl<float>();
         testSpeedImpl<double>();
-        
+
         testIndexingSpeedImpl<unsigned char>();
         testIndexingSpeedImpl<float>();
         testIndexingSpeedImpl<double>();
-        
+
         //add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
         //add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
         //add( testCase( &MultiArrayPointoperatorsTest::testCopyOuterExpansion ) );
@@ -1611,7 +1614,7 @@ int main(int argc, char ** argv)
     ChunkedMultiArrayTestSuite test0;
     failed += test0.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test0.report() << std::endl;
-    
+
     return (failed != 0);
 }
 
