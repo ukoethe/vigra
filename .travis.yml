@@ -13,11 +13,11 @@ matrix:
     - os: osx
       osx_image: xcode6.4
       language: generic
-      env: TRAVIS_PYTHON_VERSION="2.7"
+      env: TRAVIS_PYTHON_VERSION="2"
     - os: osx
       osx_image: xcode6.4
       language: generic
-      env: TRAVIS_PYTHON_VERSION="3.4.1"
+      env: TRAVIS_PYTHON_VERSION="3"
 
 
 addons:
@@ -45,20 +45,13 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng                                                                 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw                                                                   ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install readline                                                               ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv                                                                  ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(pyenv init -)"                                                              ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then PYTHON_CONFIGURE_OPTS='--enable-shared' pyenv install ${TRAVIS_PYTHON_VERSION}      ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv global ${TRAVIS_PYTHON_VERSION}                                               ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which python; python -V; which pip; pip -V                                          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install python                     ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install python3                    ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then ln -s /usr/local/bin/python3 /usr/local/bin/python ; fi
   - pip install nose
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
   - pip install numpy
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv rehash                                                                        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install -v --build-from-source boost-python --with-python ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then sudo install_name_tool -change /usr/lib/libpython2.7.dylib /Users/travis/.pyenv/versions/2.7/lib/libpython2.7.dylib /usr/local/Cellar/boost-python/1.60.0/lib/libboost_python.dylib ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then sudo install_name_tool -change /usr/lib/libpython2.7.dylib /Users/travis/.pyenv/versions/2.7/lib/libpython2.7.dylib /usr/local/Cellar/boost-python/1.60.0/lib/libboost_python-mt.dylib ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install -v --build-from-source boost-python --without-python --with-python3 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install boost-python --with-python ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install boost-python --without-python --with-python3 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cleanup --force -s; rm -rf $(brew --cache)                                     ; fi
 
 script:
