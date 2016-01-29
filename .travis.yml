@@ -53,7 +53,7 @@ before_script:
   - pip install numpy
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install boost-python --with-python ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install boost-python --without-python --with-python3 ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cleanup --force -s; rm -rf $(brew --cache)                                     ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cleanup --force -s; sudo rm -rf $(brew --cache)                                     ; fi
 
 script:
   - mkdir build && cd build
