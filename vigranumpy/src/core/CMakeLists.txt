@@ -2,9 +2,6 @@ IF(MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 ENDIF()
 
-include(VigraConfigureThreading)
-VIGRA_CONFIGURE_THREADING(REQUIRED) # We require a working threading implementation.
-
 # note special treatment of target vigranumpy_core:
 # module name is automatically changed into vigranumpycore
 VIGRA_ADD_NUMPY_MODULE(core
@@ -47,6 +44,8 @@ VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     accumulator.cxx
     accumulator-region-singleband.cxx
     accumulator-region-multiband.cxx
+  LIBRARIES
+    ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES
@@ -84,7 +83,7 @@ VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     grid_graph_implicit_edge_maps.cxx
     #eccentricity.cxx
   LIBRARIES
-    ${VIGRANUMPY_IMPEX_LIBRARIES}  ${VIGRANUMPY_THREAD_LIBRARIES}
+    ${VIGRANUMPY_IMPEX_LIBRARIES} ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(histogram SOURCES
