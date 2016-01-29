@@ -33,6 +33,7 @@ addons:
       - cmake
 
 before_script:
+  - env
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew remove --force $(brew list); brew cleanup --force                              ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then travis_retry brew update                                                            ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                                                           ; fi
