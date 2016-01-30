@@ -156,6 +156,7 @@ if(WITH_BOOST AND Boost_FOUND)
         # configure boost's autolink magic to use the right library name
         # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
         if(("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib") OR
+           ("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python${PYTHON_VERSION_MAJOR}\\.lib") OR
            ("${Boost_SYSTEM_LIBRARY}" MATCHES "boost_system\\.lib"))
             ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
         endif()
