@@ -99,6 +99,16 @@ IF(PYTHONINTERP_FOUND)
                     boost_python${PYTHON_VERSION_MAJOR}-mt
                     boost_python-mt)
         ENDIF()
+        IF(Boost_MANGLED_NAMES)
+            string(REGEX REPLACE ".*boost_system" "" Boost_LIB_SUFFIX "${Boost_SYSTEM_LIBRARY}")
+            string(REPLACE ".lib" "" Boost_LIB_SUFFIX "${Boost_LIB_SUFFIX}")
+
+            SET(BOOST_PYTHON_NAMES ${BOOST_PYTHON_NAMES}
+                # Windows with mangled library names
+                boost_python${PYTHON_VERSION_MAJOR}${Boost_LIB_SUFFIX}
+                boost_python${Boost_LIB_SUFFIX})
+        ENDIF()
+
         # define names for boost_python library variants
         # (may or may not be thread-safe)
         SET(BOOST_PYTHON_NAMES ${BOOST_PYTHON_NAMES}

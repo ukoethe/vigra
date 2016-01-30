@@ -126,7 +126,7 @@ FIND_PACKAGE(PythonInterp ${PYTHON_VERSION})
 ##################################################
 
 set(WITH_BOOST "OFF")
-set(WITH_BOOST_COMPONENTS "")
+set(WITH_BOOST_COMPONENTS system)
 
 IF(WITH_BOOST_GRAPH)
     set(WITH_BOOST "ON")
@@ -140,7 +140,7 @@ ENDIF()
 
 IF(WITH_BOOST_THREAD)
     set(WITH_BOOST "ON")
-    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
+    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread date_time chrono)
 ENDIF()
 
 IF(WITH_BOOST)
@@ -154,11 +154,12 @@ if(WITH_BOOST AND Boost_FOUND)
     ENDIF()
     if(WITH_VIGRANUMPY OR WITH_BOOST_THREAD)
         # configure boost's autolink magic to use the right library name
-        # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
-        if(("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib") OR
-           ("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python${PYTHON_VERSION_MAJOR}\\.lib") OR
-           ("${Boost_SYSTEM_LIBRARY}" MATCHES "boost_system\\.lib"))
+        # (default on Windows is a mangled name like 'boost_system-vc110-mt-1_51.lib')
+        if(${Boost_SYSTEM_LIBRARY} MATCHES "boost_system\\.lib")
+            set(Boost_MANGLED_NAMES 0)
             ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
+        else()
+            set(Boost_MANGLED_NAMES 1)
         endif()
     endif()
 endif()
