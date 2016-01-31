@@ -1,0 +1,13 @@
+platform:
+    - x64
+
+build_script:
+    - set PATH=C:\\Miniconda3-x64\\Scripts;%PATH%
+    - conda create -q --yes -n python3 python=3.5 jpeg libpng libtiff hdf5 numpy nose
+    - activate python3
+    - conda install -q --yes -c ukoethe --override-channels visual-studio=14.0 fftw boost
+    - cd %APPVEYOR_BUILD_FOLDER%
+    - mkdir build
+    - cd build
+    - cmake .. -G "Visual Studio 14 Win64" -DVIGRANUMPY_REQUIRED=1 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_ACTIVE_ENV%/Library"
+    - cmake --build . --target check --config Release
