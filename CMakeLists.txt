@@ -126,7 +126,7 @@ FIND_PACKAGE(PythonInterp ${PYTHON_VERSION})
 ##################################################
 
 set(WITH_BOOST "OFF")
-set(WITH_BOOST_COMPONENTS system)
+set(WITH_BOOST_COMPONENTS "")
 
 IF(WITH_BOOST_GRAPH)
     set(WITH_BOOST "ON")
@@ -140,11 +140,13 @@ ENDIF()
 
 IF(WITH_BOOST_THREAD)
     set(WITH_BOOST "ON")
-    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread date_time chrono)
+    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
 ENDIF()
 
 IF(WITH_BOOST)
     VIGRA_FIND_PACKAGE(Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
+    # FIXME: the following may be unstable between cmake version
+    SET(Boost_LIB_SUFFIX "${_boost_COMPILER}${_boost_MULTITHREADED}-${Boost_LIB_VERSION}")
 ENDIF()
 
 if(WITH_BOOST AND Boost_FOUND)
@@ -152,16 +154,6 @@ if(WITH_BOOST AND Boost_FOUND)
     IF(WITH_BOOST_THREAD)
         ADD_DEFINITIONS(-DUSE_BOOST_THREAD)
     ENDIF()
-    if(WITH_VIGRANUMPY OR WITH_BOOST_THREAD)
-        # configure boost's autolink magic to use the right library name
-        # (default on Windows is a mangled name like 'boost_system-vc110-mt-1_51.lib')
-        if(${Boost_SYSTEM_LIBRARY} MATCHES "boost_system\\.lib")
-            set(Boost_MANGLED_NAMES 0)
-            ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
-        else()
-            set(Boost_MANGLED_NAMES 1)
-        endif()
-    endif()
 endif()
 
 # Must be included AFTER boost is found.
@@ -175,6 +167,19 @@ VIGRA_DETECT_CPP_VERSION()
 IF(WITH_VIGRANUMPY)
     FIND_PACKAGE(VIGRANUMPY_DEPENDENCIES)
 ENDIF()
+
+if(WITH_BOOST AND Boost_FOUND)
+    # configure boost's autolink magic to use the right library name
+    # (default on Windows is a mangled name like 'boost_system-vc110-mt-1_51.lib')
+    if((Boost_SYSTEM_LIBRARY MATCHES "boost_system\\.lib") OR
+       (Boost_PYTHON_LIBRARY MATCHES "boost_python\\.lib") OR
+       (Boost_PYTHON_LIBRARY MATCHES "boost_python${PYTHON_VERSION_MAJOR}\\.lib"))
+        set(Boost_MANGLED_NAMES 0)
+        ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
+    else()
+        set(Boost_MANGLED_NAMES 1)
+    endif()
+endif()
 
 IF(WITH_VALGRIND)
     FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)

@@ -99,10 +99,7 @@ IF(PYTHONINTERP_FOUND)
                     boost_python${PYTHON_VERSION_MAJOR}-mt
                     boost_python-mt)
         ENDIF()
-        IF(Boost_MANGLED_NAMES)
-            string(REGEX REPLACE ".*boost_system" "" Boost_LIB_SUFFIX "${Boost_SYSTEM_LIBRARY}")
-            string(REPLACE ".lib" "" Boost_LIB_SUFFIX "${Boost_LIB_SUFFIX}")
-
+        IF(Boost_LIB_SUFFIX)
             SET(BOOST_PYTHON_NAMES ${BOOST_PYTHON_NAMES}
                 # Windows with mangled library names
                 boost_python${PYTHON_VERSION_MAJOR}${Boost_LIB_SUFFIX}
@@ -237,6 +234,10 @@ IF(PYTHONINTERP_FOUND)
         CACHE PATH "include directories needed by VIGRA Python bindings"
         FORCE)
     SET(VIGRANUMPY_LIBRARIES ${PYTHON_LIBRARIES} ${Boost_PYTHON_LIBRARY})
+
+    if(VIGRANUMPY_REQUIRED AND NOT VIGRANUMPY_DEPENDENCIES_FOUND)
+        MESSAGE(FATAL_ERROR "  vigranumpy dependencies NOT found while VIGRANUMPY_REQUIRED=1")
+    endif()
 ELSE()
     MESSAGE(STATUS "Python not found. Make sure that Python is in your PATH or use 'cmake-gui' to set the PYTHON_EXECUTABLE variable manually.")
 ENDIF()
