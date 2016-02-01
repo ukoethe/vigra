@@ -41,9 +41,9 @@ OPTION(WITH_BOOST_GRAPH "Support for the BOOST Graph library " OFF)
 
 OPTION(WITH_BOOST_THREAD "Use boost::thread instead of std::thread" OFF)
 
-OPTION(VIGRANUMPY_REQUIRED "Consider lack of vigranumpy dependencies an error (useful for testing) ?" OFF)
+OPTION(TEST_VIGRANUMPY "Consider lack of vigranumpy or failed vigranumpy test an error?" OFF)
 
-IF(VIGRANUMPY_REQUIRED OR NOT DEFINED WITH_VIGRANUMPY)
+IF(TEST_VIGRANUMPY OR NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()
 SET(WITH_VIGRANUMPY ${WITH_VIGRANUMPY}
