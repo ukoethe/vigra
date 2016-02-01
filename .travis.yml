@@ -1,0 +1,60 @@
+matrix:
+  include:
+    - os: linux
+      sudo: false
+      language: python
+      python: "2.7"
+    - os: linux
+      sudo: false
+      language: python
+      python: "3.2"
+    - os: osx
+      osx_image: xcode7.3
+      language: generic
+      env: TRAVIS_PYTHON_VERSION="2"
+    - os: osx
+      osx_image: xcode7.3
+      language: generic
+      env: TRAVIS_PYTHON_VERSION="3"
+
+
+addons:
+  apt:
+    packages:
+      - libhdf5-serial-dev
+      - libboost-python-dev
+      - libjpeg-dev
+      - libtiff4-dev
+      - libpng12-dev
+      - libfftw3-dev
+      - libatlas-base-dev
+      - cmake
+
+before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="/usr/local/bin:${PATH}"                                                ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew remove --force $(brew list); brew cleanup --force                              ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then travis_retry brew update                                                            ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                                                           ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install cmake                                                                  ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install hdf5                                                                   ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost                                                                  ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libjpeg                                                                ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libtiff                                                                ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libpng                                                                 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install fftw                                                                   ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install readline                                                               ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install python                     ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install python3                    ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then sudo ln -s /usr/local/bin/pip3 /usr/local/bin/pip ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then sudo ln -s /usr/local/bin/python3 /usr/local/bin/python ; fi
+  - pip install nose
+  - pip install numpy
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install boost-python --with-python ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then brew install boost-python --without-python --with-python3 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cleanup --force -s; sudo rm -rf $(brew --cache)                                     ; fi
+
+script:
+  - mkdir build && cd build
+  - cmake -DCMAKE_BUILD_TYPE=Release -DVIGRANUMPY_REQUIRED=1 -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DWITH_BOOST_THREAD=$WITH_BOOST_THREAD -DPYTHON_VERSION=${TRAVIS_PYTHON_VERSION:0:3} ..
+  - make
+  - ctest --output-on-failure
