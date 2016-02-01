@@ -1,2 +1,5 @@
-VIGRA_ADD_TEST(test_threadpool test.cxx)
-
+if (WITH_BOOST_THREAD)
+    VIGRA_ADD_TEST(test_threadpool test.cxx LIBRARIES ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY})
+else()
+    VIGRA_ADD_TEST(test_threadpool test.cxx LIBRARIES)
+endif()
