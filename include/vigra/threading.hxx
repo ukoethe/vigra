@@ -60,10 +60,7 @@
 #endif
 
 #ifdef USE_BOOST_THREAD
-// NOTE: see here why this definition is necessary if we want to use boost::future and std::future together:
-// http://www.boost.org/doc/libs/1_50_0/doc/html/thread/build.html
-#define BOOST_THREAD_PROVIDES_FUTURE
-#define BOOST_THREAD_PROVIDES_SIGNATURE_PACKAGED_TASK
+// Use the latest API version for Boost.Thread.
 #define BOOST_THREAD_VERSION 4
 #  include <boost/thread.hpp>
 #  if BOOST_VERSION >= 105300

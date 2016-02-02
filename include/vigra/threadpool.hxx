@@ -36,12 +36,7 @@
 #ifndef VIGRA_THREADPOOL_HXX
 #define VIGRA_THREADPOOL_HXX
 
-#include <functional>
-#include <thread>
-#include <atomic>
 #include <vector>
-#include <future>
-#include <mutex>
 #include <queue>
 #include <stdexcept>
 #include <cmath>
@@ -228,7 +223,7 @@ private:
     void init(const ParallelOptions & options);
 
     // need to keep track of threads so we can join them
-    std::vector<std::thread> workers;
+    std::vector<threading::thread> workers;
 
     // the task queue
     std::queue<std::function<void(int)> > tasks;
@@ -238,7 +233,7 @@ private:
     threading::condition_variable worker_condition;
     threading::condition_variable finish_condition;
     bool stop;
-    std::atomic<unsigned int> busy, processed;
+    threading::atomic<unsigned int> busy, processed;
 };
 
 inline void ThreadPool::init(const ParallelOptions & options)
@@ -290,7 +285,7 @@ inline ThreadPool::~ThreadPool()
         stop = true;
     }
     worker_condition.notify_all();
-    for(std::thread &worker: workers)
+    for(threading::thread &worker: workers)
         worker.join();
 }
 
@@ -298,7 +293,7 @@ template<class F>
 inline auto
 ThreadPool::enqueueReturning(F&& f) -> threading::future<decltype(f(0))>
 {
-    typedef typename std::result_of<F(int)>::type result_type;
+    typedef decltype(f(0)) result_type;
     typedef threading::packaged_task<result_type(int)> PackageType;
 
     auto task = std::make_shared<PackageType>(f);
@@ -315,7 +310,7 @@ ThreadPool::enqueueReturning(F&& f) -> threading::future<decltype(f(0))>
             tasks.emplace(
                 [task](int tid)
                 {
-                    (*task)(tid);
+                    (*task)(std::move(tid));
                 }
             );
         }
@@ -347,7 +342,7 @@ ThreadPool::enqueue(F&& f)
             tasks.emplace(
                 [task](int tid)
                 {
-                    (*task)(tid);
+                    (*task)(std::move(tid));
                 }
             );
         }
