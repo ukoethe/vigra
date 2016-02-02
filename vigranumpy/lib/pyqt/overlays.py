@@ -155,8 +155,7 @@ class TextOverlay(Overlay):
         if self.coordinateSystem() & VigraQt.Overlay.Scaled:
             position = QtCore.QPointF(*self.pos)
         else:
-            position = QtCore.QPointF(*map(
-              lambda x: (x+0.5) * self.parent().zoomFactor(), self.pos))
+            position = QtCore.QPointF(*[(x+0.5) * self.parent().zoomFactor() for x in self.pos])
 
         self._setupPainter(p)
         if self.pointsize:

@@ -103,9 +103,22 @@ using VIGRA_THREADING_NAMESPACE::this_thread::sleep_until;
 // contents of <mutex>
 
 using VIGRA_THREADING_NAMESPACE::mutex;
-using VIGRA_THREADING_NAMESPACE::timed_mutex;
 using VIGRA_THREADING_NAMESPACE::recursive_mutex;
-using VIGRA_THREADING_NAMESPACE::recursive_timed_mutex;
+
+#ifdef __APPLE__
+#  ifdef __GNUC__
+#    ifdef USE_BOOST_THREAD
+       using VIGRA_THREADING_NAMESPACE::timed_mutex;
+       using VIGRA_THREADING_NAMESPACE::recursive_timed_mutex;
+#    endif
+#  else
+       using VIGRA_THREADING_NAMESPACE::timed_mutex;
+       using VIGRA_THREADING_NAMESPACE::recursive_timed_mutex;
+#  endif
+#else
+       using VIGRA_THREADING_NAMESPACE::timed_mutex;
+       using VIGRA_THREADING_NAMESPACE::recursive_timed_mutex;
+#endif
 
 using VIGRA_THREADING_NAMESPACE::lock_guard;
 using VIGRA_THREADING_NAMESPACE::unique_lock;
