@@ -6,7 +6,7 @@ if(FFTW3_FOUND)
 
     VIGRA_ADD_TEST(test_registration test.cxx LIBRARIES ${FFTW3_LIBRARIES} ${FFTW3F_LIBRARIES} ${THREADING_LIBRARIES} vigraimpex)
 else()
-    MESSAGE(STATUS "** WARNING: tests of correlation-based registration will not be executed")
+    MESSAGE(STATUS "** WARNING: fftw not found. Fourier-domain registration tests will not be executed")
 
     VIGRA_ADD_TEST(test_registration test.cxx LIBRARIES ${THREADING_LIBRARIES} vigraimpex)
 endif()
