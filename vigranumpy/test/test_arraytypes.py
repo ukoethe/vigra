@@ -97,8 +97,6 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
             assert_equal(sys.getrefcount(b), 2)
             assert b.__class__ is img.__class__
             assert_equal(b.shape, img.shape)
-            # print(b.shape, img.shape, b.strides, img.strides)
-            # assert False
             assert_equal(b.strides, img.strides)
             assert_equal(b.order, img.order)
             assert_equal(b.flags.c_contiguous, img.flags.c_contiguous)

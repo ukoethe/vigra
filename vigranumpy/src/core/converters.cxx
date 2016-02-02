@@ -368,8 +368,6 @@ PyObject *
 constructArrayFromAxistags(python::object type, ArrayVector<npy_intp> const & shape, 
                            NPY_TYPES typeCode, AxisTags const & axistags, bool init)
 {
-	
-	//std::cerr << "Deeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeebug  " << typeCode << std::endl;
     PyAxisTags pyaxistags(python_ptr(python::object(axistags).ptr()));
     
     ArrayVector<npy_intp> norm_shape(shape);

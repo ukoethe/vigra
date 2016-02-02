@@ -199,7 +199,6 @@ AxisTags_create(python::object i1, python::object i2,
     VIGRA_UNIQUE_PTR<AxisTags> res(new AxisTags());
     
     python::extract<AxisTags const &> tags(i1);
-    //std::cout << "Deebug" << std::endl << typeid(i1.ptr()).name() << std::endl;
     if(tags.check())
     {
         res = VIGRA_UNIQUE_PTR<AxisTags>(new AxisTags(tags()));
