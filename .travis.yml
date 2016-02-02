@@ -27,6 +27,7 @@ addons:
   apt:
     packages:
       - libhdf5-serial-dev
+      - libboost-dev
       - libboost-python-dev
       - libjpeg-dev
       - libtiff4-dev
