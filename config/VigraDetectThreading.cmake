@@ -11,13 +11,7 @@ if(THREADING_IMPLEMENTATION)
 endif()
 
 if(WITH_BOOST_THREAD)
-    if(Boost_FOUND)
-        # See boost library list, below.
-        MESSAGE(STATUS "Checking for threading support:   boost::thread")
-        set_property(GLOBAL PROPERTY THREADING_IMPLEMENTATION "boost")
-    else()
-        MESSAGE(FATAL_ERROR "Cmake was run with '-DWITH_BOOST_THREAD=1', but required boost components were not found.")
-    endif()
+    MESSAGE(FATAL_ERROR "The option 'WITH_BOOST_THREAD' is no longer supported, always use std::thread.")
 else()
     # Save original flags before we add new ones, in case there's no need for the new ones.
     set(ORIG_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})

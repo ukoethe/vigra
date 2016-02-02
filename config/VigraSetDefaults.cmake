@@ -39,8 +39,6 @@ OPTION(WITH_OPENEXR "Support for the OpenEXR graphics format" OFF)
 OPTION(WITH_LEMON "Support for the Lemon Graph library " OFF)
 OPTION(WITH_BOOST_GRAPH "Support for the BOOST Graph library " OFF)
 
-OPTION(WITH_BOOST_THREAD "Use boost::thread instead of std::thread" OFF)
-
 OPTION(TEST_VIGRANUMPY "Consider lack of vigranumpy or failed vigranumpy test an error?" OFF)
 
 IF(TEST_VIGRANUMPY OR NOT DEFINED WITH_VIGRANUMPY)

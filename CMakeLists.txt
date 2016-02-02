@@ -138,11 +138,6 @@ IF(WITH_VIGRANUMPY)
     # reliabe to use 'FIND_LIBRARY' in FindVIGRANUMPY_DEPENDENCIES.
 ENDIF()
 
-IF(WITH_BOOST_THREAD)
-    set(WITH_BOOST "ON")
-    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
-ENDIF()
-
 IF(WITH_BOOST)
     VIGRA_FIND_PACKAGE(Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
     # FIXME: the following may be unstable between cmake version
@@ -151,9 +146,6 @@ ENDIF()
 
 if(WITH_BOOST AND Boost_FOUND)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-    IF(WITH_BOOST_THREAD)
-        ADD_DEFINITIONS(-DUSE_BOOST_THREAD)
-    ENDIF()
 endif()
 
 # Must be included AFTER boost is found.
@@ -171,15 +163,18 @@ ENDIF()
 if(WITH_BOOST AND Boost_FOUND)
     # configure boost's autolink magic to use the right library name
     # (default on Windows is a mangled name like 'boost_system-vc110-mt-1_51.lib')
-    if((Boost_SYSTEM_LIBRARY MATCHES "boost_system\\.lib") OR
-       (Boost_PYTHON_LIBRARY MATCHES "boost_python\\.lib") OR
+    if((Boost_PYTHON_LIBRARY MATCHES "boost_python\\.lib") OR
        (Boost_PYTHON_LIBRARY MATCHES "boost_python${PYTHON_VERSION_MAJOR}\\.lib"))
         set(Boost_MANGLED_NAMES 0)
         ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
     else()
         set(Boost_MANGLED_NAMES 1)
     endif()
-endif()
+    if((Boost_PYTHON_LIBRARY AND
+        NOT Boost_PYTHON_LIBRARY MATCHES "libboost_python"))
+         ADD_DEFINITIONS(-DBOOST_ALL_DYN_LINK)
+    endif()
+ endif()
 
 IF(WITH_VALGRIND)
     FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)
