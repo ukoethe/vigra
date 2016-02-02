@@ -1,6 +1,6 @@
 VIGRA_CONFIGURE_THREADING()
 
-if(THREADING_IMPLEMENTATION MATCHES "std")
+if(THREADING_FOUND)
     VIGRA_ADD_TEST(test_threadpool test.cxx)
 else()
     MESSAGE(STATUS "** WARNING: Your compiler does not support std::thread.")

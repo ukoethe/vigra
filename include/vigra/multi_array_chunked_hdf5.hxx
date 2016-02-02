@@ -365,7 +365,7 @@ class ChunkedArrayHDF5
         if(file_.isReadOnly())
             return;
 
-        threading::lock_guard<threading::mutex> guard(*this->chunk_lock_);
+        std::lock_guard<std::mutex> guard(*this->chunk_lock_);
         typename ChunkStorage::iterator i   = this->handle_array_.begin(),
                                         end = this->handle_array_.end();
         if(destroy && !force_destroy)

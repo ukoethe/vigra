@@ -131,13 +131,15 @@
 
 #include <queue>
 #include <string>
+#include <thread>
+#include <mutex>
+#include <atomic>
 
 #include "multi_fwd.hxx"
 #include "multi_handle.hxx"
 #include "multi_array.hxx"
 #include "memory.hxx"
 #include "metaprogramming.hxx"
-#include "threading.hxx"
 #include "compression.hxx"
 
 // // FIXME: why is this needed when compiling the Python bindng,
@@ -381,7 +383,7 @@ class SharedChunkHandle
     }
 
     ChunkBase<N, T> * pointer_;
-    mutable threading::atomic_long chunk_state_;
+    mutable std::atomic_long chunk_state_;
 
   private:
     SharedChunkHandle & operator=(SharedChunkHandle const & rhs);
@@ -1631,7 +1633,7 @@ class ChunkedArray
     , bits_(initBitMask(this->chunk_shape_))
     , mask_(this->chunk_shape_ -shape_type(1))
     , cache_max_size_(options.cache_max)
-    , chunk_lock_(new threading::mutex())
+    , chunk_lock_(new std::mutex())
     , fill_value_(T(options.fill_value))
     , fill_scalar_(options.fill_value)
     , handle_array_(detail::computeChunkArrayShape(shape, bits_, mask_))
@@ -1853,7 +1855,7 @@ class ChunkedArray
 
         if(cacheMaxSize() > 0)
         {
-            threading::lock_guard<threading::mutex> guard(*chunk_lock_);
+            std::lock_guard<std::mutex> guard(*chunk_lock_);
             cleanCache(cache_.size());
         }
     }
@@ -1868,12 +1870,12 @@ class ChunkedArray
         // very rare.
         //
         // the function returns the old value of chunk_state_
-        long rc = handle->chunk_state_.load(threading::memory_order_acquire);
+        long rc = handle->chunk_state_.load(std::memory_order_acquire);
         while(true)
         {
             if(rc >= 0)
             {
-                if(handle->chunk_state_.compare_exchange_weak(rc, rc+1, threading::memory_order_seq_cst))
+                if(handle->chunk_state_.compare_exchange_weak(rc, rc+1, std::memory_order_seq_cst))
                 {
                     return rc;
                 }
@@ -1888,10 +1890,10 @@ class ChunkedArray
                 else if(rc == chunk_locked)
                 {
                     // cache management in progress => try again later
-                    threading::this_thread::yield();
-                    rc = handle->chunk_state_.load(threading::memory_order_acquire);
+                    std::this_thread::yield();
+                    rc = handle->chunk_state_.load(std::memory_order_acquire);
                 }
-                else if(handle->chunk_state_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
+                else if(handle->chunk_state_.compare_exchange_weak(rc, chunk_locked, std::memory_order_seq_cst))
                 {
                     return rc;
                 }
@@ -1908,7 +1910,7 @@ class ChunkedArray
         if(rc >= 0)
             return handle->pointer_->pointer_;
 
-        threading::lock_guard<threading::mutex> guard(*chunk_lock_);
+        std::lock_guard<std::mutex> guard(*chunk_lock_);
         try
         {
             T * p = self->loadChunk(&handle->pointer_, chunk_index);
@@ -1927,7 +1929,7 @@ class ChunkedArray
                 // (note that we still hold the chunk_lock_)
                 self->cleanCache(2);
             }
-            handle->chunk_state_.store(1, threading::memory_order_release);
+            handle->chunk_state_.store(1, std::memory_order_release);
             return p;
         }
         catch(...)
@@ -2067,12 +2069,12 @@ class ChunkedArray
             }
 
             Handle * handle = this->lookupHandle(*i);
-            threading::lock_guard<threading::mutex> guard(*chunk_lock_);
+            std::lock_guard<std::mutex> guard(*chunk_lock_);
             releaseChunk(handle, destroy);
         }
 
         // remove all chunks from the cache that are asleep or unitialized
-        threading::lock_guard<threading::mutex> guard(*chunk_lock_);
+        std::lock_guard<std::mutex> guard(*chunk_lock_);
         int cache_size = cache_.size();
         for(int k=0; k < cache_size; ++k)
         {
@@ -2373,7 +2375,7 @@ class ChunkedArray
         cache_max_size_ = c;
         if(c < cache_.size())
         {
-            threading::lock_guard<threading::mutex> guard(*chunk_lock_);
+            std::lock_guard<std::mutex> guard(*chunk_lock_);
             cleanCache();
         }
     }
@@ -2477,7 +2479,7 @@ class ChunkedArray
 
     shape_type bits_, mask_;
     int cache_max_size_;
-    VIGRA_SHARED_PTR<threading::mutex> chunk_lock_;
+    VIGRA_SHARED_PTR<std::mutex> chunk_lock_;
     CacheType cache_;
     Chunk fill_value_chunk_;
     Handle fill_value_handle_;

@@ -11,7 +11,7 @@ VIGRA_ADD_NUMPY_MODULE(core
     axistags.cxx
     multi_array_chunked.cxx
   LIBRARIES
-    ${VIGRANUMPY_IMPEX_LIBRARIES} ${VIGRANUMPY_THREAD_LIBRARIES}
+    ${VIGRANUMPY_IMPEX_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(impex
@@ -33,8 +33,6 @@ VIGRA_ADD_NUMPY_MODULE(filters SOURCES
     tensors.cxx
     morphology.cxx
     non_local_mean.cxx
-  LIBRARIES
-    ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
@@ -44,8 +42,6 @@ VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     accumulator.cxx
     accumulator-region-singleband.cxx
     accumulator-region-multiband.cxx
-  LIBRARIES
-    ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES
@@ -72,8 +68,6 @@ VIGRA_ADD_NUMPY_MODULE(optimization SOURCES
     optimization.cxx
   VIGRANUMPY)
 
-
-
 VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     graphs.cxx
     adjacencyListGraph.cxx
@@ -83,7 +77,7 @@ VIGRA_ADD_NUMPY_MODULE(graphs SOURCES
     grid_graph_implicit_edge_maps.cxx
     #eccentricity.cxx
   LIBRARIES
-    ${VIGRANUMPY_IMPEX_LIBRARIES} ${VIGRANUMPY_THREAD_LIBRARIES}
+    ${VIGRANUMPY_IMPEX_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(histogram SOURCES
@@ -93,7 +87,6 @@ VIGRA_ADD_NUMPY_MODULE(histogram SOURCES
 VIGRA_ADD_NUMPY_MODULE(utilities SOURCES
     utilities.cxx
   VIGRANUMPY)
-
 
 VIGRA_ADD_NUMPY_MODULE(blockwise SOURCES
     blockwise.cxx

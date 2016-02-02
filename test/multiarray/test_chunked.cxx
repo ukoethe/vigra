@@ -740,10 +740,10 @@ public:
     }
 
     static void testMultiThreadedRun(BaseArray * v, int startIndex, int d,
-                                     threading::atomic_long * go)
+                                     std::atomic_long * go)
     {
         while(go->load() == 0)
-            threading::this_thread::yield();
+            std::this_thread::yield();
 
         Shape3 s = v->shape();
         int sliceSize = s[0]*s[1];
@@ -763,13 +763,13 @@ public:
         array.reset(0); // close the file if backend is HDF5
         ArrayPtr a = createArray(Shape3(200, 201, 202), Shape3(), (Array *)0);
 
-        threading::atomic_long go;
+        std::atomic_long go;
         go.store(0);
 
-        threading::thread t1(testMultiThreadedRun, a.get(), 0, 4, &go);
-        threading::thread t2(testMultiThreadedRun, a.get(), 1, 4, &go);
-        threading::thread t3(testMultiThreadedRun, a.get(), 2, 4, &go);
-        threading::thread t4(testMultiThreadedRun, a.get(), 3, 4, &go);
+        std::thread t1(testMultiThreadedRun, a.get(), 0, 4, &go);
+        std::thread t2(testMultiThreadedRun, a.get(), 1, 4, &go);
+        std::thread t3(testMultiThreadedRun, a.get(), 2, 4, &go);
+        std::thread t4(testMultiThreadedRun, a.get(), 3, 4, &go);
 
         go.store(1);
 
