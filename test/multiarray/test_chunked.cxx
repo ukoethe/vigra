@@ -33,6 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
+#include <functional>
 #include <stdio.h>
 
 #include "vigra/unittest.hxx"
@@ -763,10 +764,10 @@ public:
     
         int go = 0;
         
-        threading::thread t1(testMultiThreadedRun, a.get(), 0, 4, &go);
-        threading::thread t2(testMultiThreadedRun, a.get(), 1, 4, &go);
-        threading::thread t3(testMultiThreadedRun, a.get(), 2, 4, &go);
-        threading::thread t4(testMultiThreadedRun, a.get(), 3, 4, &go);
+        threading::thread t1(std::bind(testMultiThreadedRun,a.get(),0,4,&go));
+        threading::thread t2(std::bind(testMultiThreadedRun,a.get(),1,4,&go));
+        threading::thread t3(std::bind(testMultiThreadedRun,a.get(),2,4,&go));
+        threading::thread t4(std::bind(testMultiThreadedRun,a.get(),3,4,&go));
      
         go = 1;
      

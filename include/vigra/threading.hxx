@@ -60,6 +60,8 @@
 #endif
 
 #ifdef USE_BOOST_THREAD
+// Use the latest API version for Boost.Thread.
+#define BOOST_THREAD_VERSION 4
 #  include <boost/thread.hpp>
 #  if BOOST_VERSION >= 105300
 #    include <boost/atomic.hpp>
@@ -69,6 +71,8 @@
 #elif defined(VIGRA_NO_STD_THREADING)
 #  error "Your compiler does not support std::thread. If the boost libraries are available, consider running cmake with -DWITH_BOOST_THREAD=1"
 #else
+#  include <condition_variable>
+#  include <future>
 #  include <thread>
 #  include <mutex>
 // #  include <shared_mutex>  // C++14
@@ -124,6 +128,18 @@ using VIGRA_THREADING_NAMESPACE::call_once;
 
 // using VIGRA_THREADING_NAMESPACE::shared_mutex;   // C++14
 // using VIGRA_THREADING_NAMESPACE::shared_lock;  // C++14
+
+// Futures.
+
+using VIGRA_THREADING_NAMESPACE::future;
+
+// Condition variables.
+
+using VIGRA_THREADING_NAMESPACE::condition_variable;
+
+// Packaged task.
+
+using VIGRA_THREADING_NAMESPACE::packaged_task;
 
 #ifdef VIGRA_HAS_ATOMIC
 

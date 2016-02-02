@@ -36,18 +36,13 @@
 #ifndef VIGRA_THREADPOOL_HXX
 #define VIGRA_THREADPOOL_HXX
 
-#include <functional>
-#include <thread>
-#include <atomic>
 #include <vector>
-#include <future>
-#include <mutex>
 #include <queue>
-#include <condition_variable>
 #include <stdexcept>
 #include <cmath>
 #include "mathutil.hxx"
 #include "counting_iterator.hxx"
+#include "threading.hxx"
 
 
 namespace vigra
@@ -70,7 +65,7 @@ class ParallelOptions
         /** Constants for special settings.
         */
     enum {
-        Auto       = -1, ///< Determine number of threads automatically (from <tt>std::thread::hardware_concurrency()</tt>)
+        Auto       = -1, ///< Determine number of threads automatically (from <tt>threading::thread::hardware_concurrency()</tt>)
         Nice       = -2, ///< Use half as many threads as <tt>Auto</tt> would.
         NoThreads  =  0  ///< Switch off multi-threading (i.e. execute tasks sequentially)
     };
@@ -130,8 +125,8 @@ class ParallelOptions
             return userNThreads >= 0
                        ? userNThreads
                        : userNThreads == Nice
-                               ? std::thread::hardware_concurrency() / 2
-                               : std::thread::hardware_concurrency();
+                               ? threading::thread::hardware_concurrency() / 2
+                               : threading::thread::hardware_concurrency();
         #endif
     }
 
@@ -168,7 +163,7 @@ class ThreadPool
 
     /** Create a thread pool with n threads. The constructor just launches
         the desired number of workers. If \arg n is <tt>ParallelOptions::Auto</tt>,
-        the number of threads is determined by <tt>std::thread::hardware_concurrency()</tt>.
+        the number of threads is determined by <tt>threading::thread::hardware_concurrency()</tt>.
         <tt>ParallelOptions::Nice</tt> will create half as many threads.
         If <tt>n = 0</tt>, no workers are started, and all tasks will be executed
         synchronously in the present thread. If the preprocessor flag
@@ -195,7 +190,7 @@ class ThreadPool
      * If the task throws an exception, it will be raised on the call to get().
      */
     template<class F>
-    std::future<typename std::result_of<F(int)>::type>  enqueueReturning(F&& f) ;
+    auto enqueueReturning(F&& f) -> threading::future<decltype(f(0))>;
 
     /**
      * Enqueue function for tasks without return value.
@@ -203,14 +198,14 @@ class ThreadPool
      * some compilers fail on <tt>std::result_of<F(int)>::type</tt> for void(int) functions.
      */
     template<class F>
-    std::future<void> enqueue(F&& f) ;
+    threading::future<void> enqueue(F&& f) ;
 
     /**
      * Block until all tasks are finished.
      */
     void waitFinished()
     {
-        std::unique_lock<std::mutex> lock(queue_mutex);
+        threading::unique_lock<threading::mutex> lock(queue_mutex);
         finish_condition.wait(lock, [this](){ return tasks.empty() && (busy == 0); });
     }
 
@@ -228,17 +223,17 @@ private:
     void init(const ParallelOptions & options);
 
     // need to keep track of threads so we can join them
-    std::vector<std::thread> workers;
+    std::vector<threading::thread> workers;
 
     // the task queue
     std::queue<std::function<void(int)> > tasks;
 
     // synchronization
-    std::mutex queue_mutex;
-    std::condition_variable worker_condition;
-    std::condition_variable finish_condition;
+    threading::mutex queue_mutex;
+    threading::condition_variable worker_condition;
+    threading::condition_variable finish_condition;
     bool stop;
-    std::atomic<unsigned int> busy, processed;
+    threading::atomic<unsigned int> busy, processed;
 };
 
 inline void ThreadPool::init(const ParallelOptions & options)
@@ -253,7 +248,7 @@ inline void ThreadPool::init(const ParallelOptions & options)
                 {
                     std::function<void(int)> task;
                     {
-                        std::unique_lock<std::mutex> lock(this->queue_mutex);
+                        threading::unique_lock<threading::mutex> lock(this->queue_mutex);
 
                         // will wait if : stop == false  AND queue is empty
                         // if stop == true AND queue is empty thread function will return later
@@ -286,27 +281,27 @@ inline void ThreadPool::init(const ParallelOptions & options)
 inline ThreadPool::~ThreadPool()
 {
     {
-        std::unique_lock<std::mutex> lock(queue_mutex);
+        threading::unique_lock<threading::mutex> lock(queue_mutex);
         stop = true;
     }
     worker_condition.notify_all();
-    for(std::thread &worker: workers)
+    for(threading::thread &worker: workers)
         worker.join();
 }
 
 template<class F>
-inline std::future<typename std::result_of<F(int)>::type>
-ThreadPool::enqueueReturning(F&& f)
+inline auto
+ThreadPool::enqueueReturning(F&& f) -> threading::future<decltype(f(0))>
 {
-    typedef typename std::result_of<F(int)>::type result_type;
-    typedef std::packaged_task<result_type(int)> PackageType;
+    typedef decltype(f(0)) result_type;
+    typedef threading::packaged_task<result_type(int)> PackageType;
 
     auto task = std::make_shared<PackageType>(f);
     auto res = task->get_future();
 
     if(workers.size()>0){
         {
-            std::unique_lock<std::mutex> lock(queue_mutex);
+            threading::unique_lock<threading::mutex> lock(queue_mutex);
 
             // don't allow enqueueing after stopping the pool
             if(stop)
@@ -315,7 +310,7 @@ ThreadPool::enqueueReturning(F&& f)
             tasks.emplace(
                 [task](int tid)
                 {
-                    (*task)(tid);
+                    (*task)(std::move(tid));
                 }
             );
         }
@@ -329,16 +324,16 @@ ThreadPool::enqueueReturning(F&& f)
 }
 
 template<class F>
-inline std::future<void>
+inline threading::future<void>
 ThreadPool::enqueue(F&& f)
 {
-    typedef std::packaged_task<void(int)> PackageType;
+    typedef threading::packaged_task<void(int)> PackageType;
 
     auto task = std::make_shared<PackageType>(f);
     auto res = task->get_future();
     if(workers.size()>0){
         {
-            std::unique_lock<std::mutex> lock(queue_mutex);
+            threading::unique_lock<threading::mutex> lock(queue_mutex);
 
             // don't allow enqueueing after stopping the pool
             if(stop)
@@ -347,7 +342,7 @@ ThreadPool::enqueue(F&& f)
             tasks.emplace(
                 [task](int tid)
                 {
-                    (*task)(tid);
+                    (*task)(std::move(tid));
                 }
             );
         }
@@ -380,7 +375,7 @@ inline void parallel_foreach_impl(
     const float workPerThread = float(workload)/pool.nThreads();
     const std::ptrdiff_t chunkedWorkPerThread = std::max<std::ptrdiff_t>(roundi(workPerThread/3.0), 1);
 
-    std::vector<std::future<void> > futures;
+    std::vector<threading::future<void> > futures;
     for( ;iter<end; iter+=chunkedWorkPerThread)
     {
         const size_t lc = std::min(workload, chunkedWorkPerThread);
@@ -421,7 +416,7 @@ inline void parallel_foreach_impl(
     const float workPerThread = float(workload)/pool.nThreads();
     const std::ptrdiff_t chunkedWorkPerThread = std::max<std::ptrdiff_t>(roundi(workPerThread/3.0), 1);
 
-    std::vector<std::future<void> > futures;
+    std::vector<threading::future<void> > futures;
     for(;;)
     {
         const size_t lc = std::min(chunkedWorkPerThread, workload);
@@ -468,7 +463,7 @@ inline void parallel_foreach_impl(
     std::input_iterator_tag
 ){
     size_t num_items = 0;
-    std::vector<std::future<void> > futures;
+    std::vector<threading::future<void> > futures;
     for (; iter != end; ++iter)
     {
         auto item = *iter;

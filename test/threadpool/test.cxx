@@ -33,6 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 #include <vigra/unittest.hxx>
+#include <vigra/threading.hxx>
 #include <vigra/threadpool.hxx>
 #include <vigra/timing.hxx>
 #include <numeric>
@@ -74,7 +75,7 @@ struct ThreadPoolTests
         std::string exception_string = "the test exception";
         std::vector<int> v(10000);
         ThreadPool pool(4);
-        std::vector<std::future<void> > futures;
+        std::vector<threading::future<void> > futures;
         for (size_t i = 0; i < v.size(); ++i)
         {
             futures.emplace_back(
