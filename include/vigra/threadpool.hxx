@@ -233,7 +233,7 @@ private:
     threading::condition_variable worker_condition;
     threading::condition_variable finish_condition;
     bool stop;
-    threading::atomic<unsigned int> busy, processed;
+    threading::atomic_long busy, processed;
 };
 
 inline void ThreadPool::init(const ParallelOptions & options)
@@ -327,9 +327,21 @@ template<class F>
 inline threading::future<void>
 ThreadPool::enqueue(F&& f)
 {
+#if defined(USE_BOOST_THREAD) && \
+    !defined(BOOST_THREAD_PROVIDES_VARIADIC_THREAD)
+    // Without variadic templates, boost:thread::packaged_task only
+    // supports the signature 'R()' (functions with no arguments).
+    // We bind the thread_id parameter to 0, so this parameter
+    // must NOT be used in function f (fortunately, this is the case
+    // for the blockwise versions of convolution, labeling and
+    // watersheds).
+    typedef threading::packaged_task<void()> PackageType;
+    auto task = std::make_shared<PackageType>(std::bind(f, 0));
+#else
     typedef threading::packaged_task<void(int)> PackageType;
-
     auto task = std::make_shared<PackageType>(f);
+#endif
+
     auto res = task->get_future();
     if(workers.size()>0){
         {
@@ -340,16 +352,26 @@ ThreadPool::enqueue(F&& f)
                 throw std::runtime_error("enqueue on stopped ThreadPool");
 
             tasks.emplace(
-                [task](int tid)
-                {
+               [task](int tid)
+               {
+#if defined(USE_BOOST_THREAD) && \
+    !defined(BOOST_THREAD_PROVIDES_VARIADIC_THREAD)
+                    (*task)();
+#else
                     (*task)(std::move(tid));
-                }
+#endif
+               }
             );
         }
         worker_condition.notify_one();
     }
     else{
+#if defined(USE_BOOST_THREAD) && \
+    !defined(BOOST_THREAD_PROVIDES_VARIADIC_THREAD)
+        (*task)();
+#else
         (*task)(0);
+#endif
     }
     return res;
 }

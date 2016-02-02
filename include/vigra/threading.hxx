@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -43,7 +43,7 @@
     // ignore all threading if VIGRA_SINGLE_THREADED is defined
 #ifndef VIGRA_SINGLE_THREADED
 
-#ifndef VIGRA_NO_STD_THREADING 
+#ifndef VIGRA_NO_STD_THREADING
 # if defined(__clang__)
 #  if (!__has_include(<thread>) || !__has_include(<mutex>) || !__has_include(<atomic>))
 #    define VIGRA_NO_STD_THREADING
@@ -64,6 +64,8 @@
 #define BOOST_THREAD_VERSION 4
 #  include <boost/thread.hpp>
 #  if BOOST_VERSION >= 105300
+     // At the moment, we only need the atomic headers, not the library.
+#    define BOOST_ATOMIC_NO_LIB 1
 #    include <boost/atomic.hpp>
 #    define VIGRA_HAS_ATOMIC 1
 #  endif
@@ -226,7 +228,7 @@ using VIGRA_THREADING_NAMESPACE::atomic_signal_fence;
 // using VIGRA_THREADING_NAMESPACE::atomic_flag_clearatomic_flag_clear_explicit;
 // using VIGRA_THREADING_NAMESPACE::atomic_init;
 // using VIGRA_THREADING_NAMESPACE::kill_dependency;
-    
+
 #else  // VIGRA_HAS_ATOMIC not defined
 
 enum memory_order {
@@ -244,30 +246,30 @@ template <int SIZE=4>
 struct atomic_long_impl
 {
     typedef LONG value_type;
-    
+
     static long load(value_type const & val)
     {
         long res = val;
         MemoryBarrier();
         return res;
     }
-    
+
     static void store(value_type & dest, long val)
     {
         MemoryBarrier();
         dest = val;
     }
-    
+
     static long add(value_type & dest, long val)
     {
         return InterlockedExchangeAdd(&dest, val);
     }
-    
+
     static long sub(value_type & dest, long val)
     {
         return InterlockedExchangeAdd(&dest, -val);
     }
-    
+
     static bool compare_exchange(value_type & dest, long & old_val, long new_val)
     {
         long check_val = old_val;
@@ -280,30 +282,30 @@ template <>
 struct atomic_long_impl<8>
 {
     typedef LONGLONG value_type;
-    
+
     static long load(value_type const & val)
     {
         long res = val;
         MemoryBarrier();
         return res;
     }
-    
+
     static void store(value_type & dest, long val)
     {
         MemoryBarrier();
         dest = val;
     }
-    
+
     static long add(value_type & dest, long val)
     {
         return InterlockedExchangeAdd64(&dest, val);
     }
-    
+
     static long sub(value_type & dest, long val)
     {
         return InterlockedExchangeAdd64(&dest, -val);
     }
-    
+
     static bool compare_exchange(value_type & dest, long & old_val, long new_val)
     {
         long check_val = old_val;
@@ -318,30 +320,30 @@ template <int SIZE=4>
 struct atomic_long_impl
 {
     typedef long value_type;
-    
+
     static long load(value_type const & val)
     {
         long res = val;
         __sync_synchronize();
         return res;
     }
-    
+
     static void store(value_type & dest, long val)
     {
         __sync_synchronize();
         dest = val;
     }
-    
+
     static long add(value_type & dest, long val)
     {
         return __sync_fetch_and_add(&dest, val);
     }
-    
+
     static long sub(value_type & dest, long val)
     {
         return __sync_fetch_and_sub(&dest, val);
     }
-    
+
     static bool compare_exchange(value_type & dest, long & old_val, long new_val)
     {
         long check_val = old_val;
@@ -355,42 +357,57 @@ struct atomic_long_impl
 struct atomic_long
 {
     typedef atomic_long_impl<sizeof(long)>::value_type value_type;
-    
+
     atomic_long(long v = 0)
     : value_(v)
     {}
-    
+
     atomic_long & operator=(long val)
     {
         store(val);
         return *this;
     }
-    
+
+    bool operator==(long val) const
+    {
+        return load() == val;
+    }
+
+    void operator++()
+    {
+        fetch_add(1);
+    }
+
+    void operator--()
+    {
+        fetch_sub(1);
+    }
+
     long load(memory_order = memory_order_seq_cst) const
     {
         return atomic_long_impl<sizeof(long)>::load(value_);
     }
-    
+
     void store(long v, memory_order = memory_order_seq_cst)
     {
         atomic_long_impl<sizeof(long)>::store(value_, v);
     }
-    
+
     long fetch_add(long v, memory_order = memory_order_seq_cst)
     {
         return atomic_long_impl<sizeof(long)>::add(value_, v);
     }
-    
+
     long fetch_sub(long v, memory_order = memory_order_seq_cst)
     {
         return atomic_long_impl<sizeof(long)>::sub(value_, v);
     }
-    
+
     bool compare_exchange_strong(long & old_val, long new_val, memory_order = memory_order_seq_cst)
     {
         return atomic_long_impl<sizeof(long)>::compare_exchange(value_, old_val, new_val);
     }
-    
+
     bool compare_exchange_weak(long & old_val, long new_val, memory_order = memory_order_seq_cst)
     {
         return atomic_long_impl<sizeof(long)>::compare_exchange(value_, old_val, new_val);
