@@ -155,8 +155,8 @@ class ThreadPool
      */
     ThreadPool(const ParallelOptions & options)
     :   stop(false),
-        busy(0),
-        processed(0)
+        busy((long)0),
+        processed((long)0)
     {
         init(options);
     }
@@ -173,8 +173,8 @@ class ThreadPool
      */
     ThreadPool(const int n)
     :   stop(false),
-        busy(0),
-        processed(0)
+        busy((long)0),
+        processed((long)0)
     {
         init(ParallelOptions().numThreads(n));
     }

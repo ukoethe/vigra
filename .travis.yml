@@ -27,7 +27,10 @@ addons:
   apt:
     packages:
       - libhdf5-serial-dev
-      - libboost-dev
+      - libboost-thread-dev
+      - libboost-system-dev
+      - libboost-date_time-dev
+      - libboost-chrono-dev
       - libboost-python-dev
       - libjpeg-dev
       - libtiff4-dev
@@ -61,6 +64,6 @@ before_script:
 
 script:
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DWITH_BOOST_THREAD=$WITH_BOOST_THREAD -DPYTHON_VERSION=${TRAVIS_PYTHON_VERSION:0:3} ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DWITH_BOOST_THREAD=$WITH_BOOST_THREAD -DBoost_DEBUG=1 -DPYTHON_VERSION=${TRAVIS_PYTHON_VERSION:0:3} ..
   - make
   - ctest --output-on-failure
