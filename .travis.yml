@@ -8,6 +8,11 @@ matrix:
       sudo: false
       language: python
       python: "3.2"
+    - os: linux
+      sudo: false
+      language: python
+      python: "3.2"
+      env: WITH_BOOST_THREAD=1 CXXFLAGS="-pthread -std=c++0x"
     - os: osx
       osx_image: xcode7.3
       language: generic
@@ -20,15 +25,21 @@ matrix:
 
 addons:
   apt:
+    sources:
+      - boost-latest
     packages:
       - libhdf5-serial-dev
-      - libboost-python-dev
       - libjpeg-dev
       - libtiff4-dev
       - libpng12-dev
       - libfftw3-dev
       - libatlas-base-dev
       - cmake
+      - libboost-thread1.55-dev
+      - libboost-system1.55-dev
+      - libboost-date-time1.55-dev
+      - libboost-chrono1.55-dev
+      - libboost-python1.55-dev
 
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="/usr/local/bin:${PATH}"                                                ; fi
@@ -55,6 +66,6 @@ before_script:
 
 script:
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DWITH_BOOST_THREAD=$WITH_BOOST_THREAD -DPYTHON_VERSION=${TRAVIS_PYTHON_VERSION:0:3} ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DWITH_BOOST_THREAD=$WITH_BOOST_THREAD -DBoost_DEBUG=1 -DPYTHON_VERSION=${TRAVIS_PYTHON_VERSION:0:3} ..
   - make
   - ctest --output-on-failure

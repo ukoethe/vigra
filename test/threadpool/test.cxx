@@ -32,7 +32,9 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
+
 #include <vigra/unittest.hxx>
+#include <vigra/threading.hxx>
 #include <vigra/threadpool.hxx>
 #include <vigra/timing.hxx>
 #include <numeric>
@@ -74,14 +76,14 @@ struct ThreadPoolTests
         std::string exception_string = "the test exception";
         std::vector<int> v(10000);
         ThreadPool pool(4);
-        std::vector<std::future<void> > futures;
+        std::vector<threading::future<void> > futures;
         for (size_t i = 0; i < v.size(); ++i)
         {
             futures.emplace_back(
                 pool.enqueue(
                     [&v, &exception_string, i](size_t thread_id)
                     {
-                        v[i] = thread_id;
+                        v[i] = 1;
                         if (i == 5000)
                             throw std::runtime_error(exception_string);
                     }
@@ -164,7 +166,7 @@ struct ThreadPoolTests
         );
 
         size_t const sum = std::accumulate(results.begin(), results.end(), 0);
-        should(sum == (n*(n-1))/2);
+        shouldEqual(sum, (n*(n-1))/2);
     }
 
     void test_parallel_foreach_sum_serial()
@@ -183,7 +185,7 @@ struct ThreadPoolTests
         );
 
         size_t const sum = std::accumulate(results.begin(), results.end(), 0);
-        should(sum == (n*(n-1))/2);
+        shouldEqual(sum, (n*(n-1))/2);
     }
 
     void test_parallel_foreach_sum_auto()
@@ -204,7 +206,7 @@ struct ThreadPoolTests
         );
 
         size_t const sum = std::accumulate(results.begin(), results.end(), 0);
-        should(sum == (n*(n-1))/2);
+        shouldEqual(sum, (n*(n-1))/2);
     }
 
     void test_parallel_foreach_timing()
@@ -227,7 +229,7 @@ struct ThreadPoolTests
         std::cout << "parallel_foreach took " << TOCS << std::endl;
 
         size_t const sum = std::accumulate(results.begin(), results.end(), 0);
-        should(sum == n);
+        shouldEqual(sum, n);
     }
 };
 
@@ -241,10 +243,13 @@ struct ThreadPoolTestSuite : public test_suite
         add(testCase(&ThreadPoolTests::test_threadpool_exception));
         add(testCase(&ThreadPoolTests::test_parallel_foreach));
         add(testCase(&ThreadPoolTests::test_parallel_foreach_exception));
-        add(testCase(&ThreadPoolTests::test_parallel_foreach_sum));
         add(testCase(&ThreadPoolTests::test_parallel_foreach_sum_serial));
+#if !defined(USE_BOOST_THREAD) || \
+    defined(BOOST_THREAD_PROVIDES_VARIADIC_THREAD)
+        add(testCase(&ThreadPoolTests::test_parallel_foreach_sum));
         add(testCase(&ThreadPoolTests::test_parallel_foreach_sum_auto));
         add(testCase(&ThreadPoolTests::test_parallel_foreach_timing));
+#endif
     }
 };
 

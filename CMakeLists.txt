@@ -145,7 +145,7 @@ ENDIF()
 
 IF(WITH_BOOST)
     VIGRA_FIND_PACKAGE(Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
-    # FIXME: the following may be unstable between cmake version
+    # FIXME: the following may be unstable between cmake versions
     SET(Boost_LIB_SUFFIX "${_boost_COMPILER}${_boost_MULTITHREADED}-${Boost_LIB_VERSION}")
 ENDIF()
 
@@ -178,6 +178,12 @@ if(WITH_BOOST AND Boost_FOUND)
         ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
     else()
         set(Boost_MANGLED_NAMES 1)
+    endif()
+    if((Boost_SYSTEM_LIBRARY AND
+        NOT Boost_SYSTEM_LIBRARY MATCHES "libboost_system") OR
+       (Boost_PYTHON_LIBRARY AND
+        NOT Boost_PYTHON_LIBRARY MATCHES "libboost_python"))
+        ADD_DEFINITIONS(-DBOOST_ALL_DYN_LINK)
     endif()
 endif()
 
