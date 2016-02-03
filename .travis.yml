@@ -25,6 +25,8 @@ matrix:
 
 addons:
   apt:
+    sources:
+      - boost-latest
     packages:
       - libhdf5-serial-dev
       - libboost-thread1.55-dev
