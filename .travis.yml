@@ -25,13 +25,15 @@ matrix:
 
 addons:
   apt:
+    sources:
+      - boost-latest
     packages:
       - libhdf5-serial-dev
-      - libboost-thread-dev
-      - libboost-system-dev
-      - libboost-date_time-dev
-      - libboost-chrono-dev
-      - libboost-python-dev
+      - libboost-thread1.55-dev
+      - libboost-system1.55-dev
+      - libboost-date-time1.55-dev
+      - libboost-chrono1.55-dev
+      - libboost-python1.55-dev
       - libjpeg-dev
       - libtiff4-dev
       - libpng12-dev
