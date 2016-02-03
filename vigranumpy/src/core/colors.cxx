@@ -153,7 +153,7 @@ pythonBrightnessTransform(NumpyArray<N, Multiband<PixelType> > image,
 
     double min = 0.0, max = 0.0;
     bool computeRange = !parseRange(range, &min, &max, "brightness(): Invalid range argument.");
-    
+
     {
         PyAllowThreads _pythread;
         if(computeRange)
@@ -215,7 +215,7 @@ pythonGammaTransform(NumpyArray<N, Multiband<PixelType> > image,
             "gamma_correction(): Output images has wrong dimensions");
 
     double min = 0.0, max = 0.0;
-    bool computeRange = !parseRange(range, &min, &max, "gamma_correction(): Invalid range argument.");    
+    bool computeRange = !parseRange(range, &min, &max, "gamma_correction(): Invalid range argument.");
     {
         PyAllowThreads _pythread;
         if(computeRange)
@@ -247,14 +247,14 @@ pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType> > image,
 
     double oldMin = 0.0, oldMax = 0.0,
            newMin = 0.0, newMax = 0.0;
-    bool computeRange = !parseRange(oldRange, &oldMin, &oldMax, 
+    bool computeRange = !parseRange(oldRange, &oldMin, &oldMax,
                                     "linearRangeMapping(): Argument 'oldRange' is invalid.");
     if(!parseRange(newRange, &newMin, &newMax, "linearRangeMapping(): Argument 'newRange' is invalid."))
     {
         newMin = 0.0;
         newMax = 255.0;
     }
-    
+
     {
         PyAllowThreads _pythread;
         if(computeRange)
@@ -264,14 +264,14 @@ pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType> > image,
             oldMin = minmax.min;
             oldMax = minmax.max;
         }
-        
+
         vigra_precondition(oldMin < oldMax && newMin < newMax,
               "linearRangeMapping(): Range upper bound must be greater than lower bound.");
 
         transformMultiArray(srcMultiArrayRange(image), destMultiArray(res),
                             linearRangeMapping(oldMin, oldMax, newMin, newMax));
     }
-    
+
     return res;
 }
 
@@ -310,22 +310,22 @@ def("transform_" #name, registerConverters(&pythonColorTransform<float, 2, name#
     "For details see " #name "Functor_ in the C++ documentation.\n")
 
 template<class T>
-NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueImage, 
+NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueImage,
                                     const NumpyArray<2, UInt8>& colortable,
                                     NumpyArray<3, Multiband<npy_uint8> > res =  NumpyArray<3, Multiband<npy_uint8> >())
 {
     vigra_precondition(!colortable.axistags(),
                        "applyColortable(): colortable must not have axistags\n"
                        "(use 'array.view(numpy.ndarray)' to remove them).");
-    
+
     // Singleband: there is only a singleton channel axis (which is removed when converted from python numpy array to C++
     // Multiband: channel axis is allowed to be singleband, but does not have to be,
     //            will be last when converted Python -> C++ and channel axis is counted in the dimension ('3')
     typedef NumpyArray<2, Singleband<T> > InputType;
-    
+
     res.reshapeIfEmpty(valueImage.taggedShape().setChannelCount(colortable.shape(1)),
                        "pythonApplyColortable: shape of res is wrong");
-    
+
     const unsigned int N = colortable.shape(0);
 
     bool startsWithTransparent = (colortable(0,3) == 0);
@@ -333,10 +333,10 @@ NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueIm
     for(MultiArrayIndex c=0; c<colortable.shape(1); ++c)
     {
         MultiArrayView<2, UInt8>::iterator channelIter = res.bind<2>(c).begin();
-        
+
         //make an unstrided copy of the current column of the colortable
         ArrayVector<UInt8> ctable(colortable.bind<1>(c).begin(), colortable.bind<1>(c).end());
-        
+
         for(typename InputType::const_iterator v = valueImage.begin(); v != valueImage.end(); ++v, ++channelIter)
         {
             if (*v == 0)
@@ -359,52 +359,52 @@ NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueIm
             }
         }
     }
-    
+
     return res;
 }
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyApplyColortable, pythonApplyColortable)
 
 template<class T>
 void pythonGray2QImage_ARGB32Premultiplied(
-    const NumpyArray<2, Singleband<T> >& image, 
+    const NumpyArray<2, Singleband<T> >& image,
     NumpyArray<3, Multiband<npy_uint8> > qimageView,
     NumpyArray<1, T> normalize = boost::python::object()
-) 
+)
 {
     vigra_precondition(image.isUnstrided() || image.transpose().isUnstrided(),
         "gray2qimage_ARGB32Premultiplied(): Can only handle arrays with contiguous memory.");
     typedef typename NumericTraits<T>::RealPromote TmpType;
-    
-    T* data = image.data(); 
+
+    T* data = image.data();
     const T* dataEnd = data+image.size();
     UInt8* imgData = qimageView.data();
     UInt8 pixel = 0;
     TmpType pixelF;
-    
-    TmpType normalizeLow, normalizeHigh; 
+
+    TmpType normalizeLow, normalizeHigh;
     if(normalize.pyObject() != Py_None)
     {
         vigra_precondition(normalize.shape(0) == 2,
             "gray2qimage_ARGB32Premultiplied(): normalize.shape[0] == 2 required.");
-            
+
         //normalize = None
         normalizeLow = normalize[0];
         normalizeHigh = normalize[1];
-        
+
         vigra_precondition(normalizeHigh > normalizeLow,
             "gray2qimage_ARGB32Premultiplied(): normalize[0] < normalize[1] is required.");
-            
+
         const TmpType f = TmpType(255) / static_cast<TmpType>(normalizeHigh-normalizeLow);
-        
-        while(data < dataEnd) 
+
+        while(data < dataEnd)
         {
             pixelF = detail::RequiresExplicitCast<TmpType>::cast(*data);
-            
-            if(pixelF < normalizeLow) 
+
+            if(pixelF < normalizeLow)
             {
                 pixel = 0;
             }
-            else if(pixelF > normalizeHigh) 
+            else if(pixelF > normalizeHigh)
             {
                 pixel = 255;
             }
@@ -419,9 +419,9 @@ void pythonGray2QImage_ARGB32Premultiplied(
             ++data;
         }
     }
-    else 
+    else
     {
-        while(data < dataEnd) 
+        while(data < dataEnd)
         {
             pixel = detail::RequiresExplicitCast<UInt8>::cast(*data);
             *imgData = pixel; ++imgData; //B
@@ -436,37 +436,37 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyGray2QImage_ARGB32Premultiplied, pythonGray2QIm
 
 template<class T>
 void pythonAlphaModulated2QImage_ARGB32Premultiplied(
-    const NumpyArray<2, Singleband<T> >& image, 
+    const NumpyArray<2, Singleband<T> >& image,
     NumpyArray<3, Multiband<npy_uint8> > qimageView,
     NumpyArray<1, float> tintColor,
     NumpyArray<1, T> normalize
-) 
+)
 {
     vigra_precondition(image.isUnstrided() || image.transpose().isUnstrided(),
         "alphamodulated2qimage_ARGB32Premultiplied(): Can only handle arrays with contiguous memory.");
     typedef typename NumericTraits<T>::RealPromote TmpType;
-    
+
     vigra_precondition(normalize.shape(0) == 2,
         "alphamodulated2qimage_ARGB32Premultiplied(): normalize.shape[0] == 2 required.");
     vigra_precondition(tintColor.shape(0) == 3,
         "alphamodulated2qimage_ARGB32Premultiplied(): tintColor.shape[0] == 3 required.");
-            
+
     const TmpType l = normalize[0];
     const TmpType h = normalize[1];
-    
+
     vigra_precondition(h > l,
         "alphamodulated2qimage_ARGB32Premultiplied(): normalize[0] < normalize[1] is required.");
-    
+
     const TmpType r = tintColor[0];
     const TmpType g = tintColor[1];
     const TmpType b = tintColor[2];
-    
+
     T* data = image.data();
     const T* dataEnd = image.data()+image.size();
     unsigned char* imgData = qimageView.data();
     TmpType pixelF;
     const TmpType f = TmpType(255) / static_cast<TmpType>(h-l);
-    while(data < dataEnd) 
+    while(data < dataEnd)
     {
         pixelF = detail::RequiresExplicitCast<TmpType>::cast(*data);
         if(pixelF < l)
@@ -496,33 +496,36 @@ void defineColors()
 
     docstring_options doc_options(true, true, false);
 
-    multidef("applyColortable", pyApplyColortable<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32>(),
-        (arg("valueImage"), 
-        arg("colortable"),
-        arg("out")=python::object()), 
+    multidef("applyColortable",
+        pyApplyColortable<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32>().installFallback(),
+        (arg("valueImage"),
+         arg("colortable"),
+         arg("out")=python::object()),
         "Applies a colortable to the given 2D valueImage.\n\n"
         "Colortable must have 4 columns, each row represents a color (for example, RGBA). \n"
         "Values in valueImage are first taken modulo the length of the colortable. \n"
         "In the special case where the first color in the table is transparent, that value "
         "is NOT repeated for values outside the colortable length.\n\n"
         "Returns: uint8 image with 4 channels\n");
-    
-    multidef("gray2qimage_ARGB32Premultiplied", pyGray2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
-        (arg("image"), 
-        arg("qimage"),
-        arg("normalize")=python::object()), 
+
+    multidef("gray2qimage_ARGB32Premultiplied",
+        pyGray2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>().installFallback(),
+        (arg("image"),
+         arg("qimage"),
+         arg("normalize")=python::object()),
         "Convert the image (single-band) into a QImage of format Format_ARGB32_Premultiplied.\n"
         "\n"
         "import qimage2ndarray\n"
         "qimg = QImage(a.shape[0], a.shape[1], QImage.Format_ARGB32_Premultiplied)\n"
         "normalize = numpy.asarray([10, 217], dtype=image.dtype)\n"
         "vigra.colors.gray2qimage_ARGB32Premultiplied(a, qimage2ndarray.byte_view(qimg), normalize)\n");
-    
-    multidef("alphamodulated2qimage_ARGB32Premultiplied", pyAlphaModulated2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
-        (arg("image"), 
-        arg("qimage"),
-        arg("tintColor"),
-        arg("normalize")), 
+
+    multidef("alphamodulated2qimage_ARGB32Premultiplied",
+        pyAlphaModulated2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>().installFallback(),
+        (arg("image"),
+         arg("qimage"),
+         arg("tintColor"),
+         arg("normalize")),
         "Convert the image (single-band) into a QImage of format Format_ARGB32_Premultiplied.\n"
         "\n"
         "import qimage2ndarray\n"
@@ -530,7 +533,7 @@ void defineColors()
         "normalize = numpy.asarray([10, 217], dtype=image.dtype)\n"
         "tintColor = numpy.asarray([1.0, 0.0, 0.0], dtype=numpy.float32) #RGB\n"
         "vigra.colors.alphamodulated2qimage_ARGB32Premultiplied(a, qimage2ndarray.byte_view(qimg), tintColor, normalize)\n");
-    
+
     def("brightness",
          registerConverters(&pythonBrightnessTransform<float, 3>),
          (arg("image"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
@@ -589,8 +592,12 @@ void defineColors()
          (arg("volume"), arg("gamma"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
          "Likewise for a 3D scalar or multiband volume.\n");
 
-    multidef("linearRangeMapping", pyLinearRangeMapping2D<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(),
-         (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
+    multidef("linearRangeMapping",
+        pyLinearRangeMapping2D<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>().installFallback(),
+        (arg("image"),
+         arg("oldRange")="auto",
+         arg("newRange")=make_tuple(0.0, 255.0),
+         arg("out")=object()),
         "Convert the intensity range of a 2D scalar or multiband image. The function applies a linear transformation "
         "to the intensities such that the value oldRange[0] is mapped onto newRange[0], "
         "and oldRange[1] is mapped onto newRange[1]. That is, the algorithm applies the formula::\n"

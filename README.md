@@ -1,7 +1,8 @@
 VIGRA Computer Vision Library
 =============================
 
-[![Build Status](https://travis-ci.org/ukoethe/vigra.png?branch=master)](https://travis-ci.org/ukoethe/vigra)
+[![Travis CI Status](https://travis-ci.org/ukoethe/vigra.svg?branch=master)](https://travis-ci.org/ukoethe/vigra)
+[![AppVeyor Status](https://ci.appveyor.com/api/projects/status/github/ukoethe/vigra?branch=master&svg=true)](https://ci.appveyor.com/project/ukoethe/vigra/branch/master)
 
                 Copyright 1998-2013 by Ullrich Koethe
 

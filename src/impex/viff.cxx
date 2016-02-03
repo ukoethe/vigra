@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -72,7 +72,7 @@
 /* definitions for data storage type,
    unsigned long data_storage_type; */
 #define VFF_TYP_BIT     0   /* pixels are on or off (binary image)*/
-                                        /* Note: This is an X11 XBitmap 
+                                        /* Note: This is an X11 XBitmap
                        with bits packed into a byte and
                        padded to a byte */
 #define VFF_TYP_1_BYTE      1   /* pixels are byte (unsigned char) */
@@ -114,13 +114,13 @@
                        by groups of maps_per_cycle, allowing
                        "rotating the color map" */
 #define VFF_MS_SHARED       3   /* All data band share the same map */
-#define VFF_MS_GROUP        4   /* All data bands are "grouped" 
+#define VFF_MS_GROUP        4   /* All data bands are "grouped"
                        together to point into one map */
 /* definitions for enabling the map,
    unsigned long map_enable; */
 #define VFF_MAP_OPTIONAL    1   /* The data is valid without being
                        sent thru the color map. If a
-                       map is defined, the data may 
+                       map is defined, the data may
                        optionally be sent thru it. */
 #define VFF_MAP_FORCE       2   /* The data MUST be sent thru the map
                        to be interpreted */
@@ -138,8 +138,8 @@
     HSV:  hue, saturation, value
     IHS:  intensity, hue, saturation
     XYZ:
-    UVW:  
-    SOW:  
+    UVW:
+    SOW:
     Lab:
     Luv:
 
@@ -176,7 +176,7 @@
                         or the vectors is explicit */
 
 namespace vigra {
-    
+
     template< class T1, class T2 >
     class colormap
     {
@@ -262,7 +262,7 @@ namespace vigra {
     {
         vigra_precondition(src_bands == 1u,
                "map_multiband(): Source image must have one band.");
-        
+
         typedef colormap< storage_type, map_storage_type > colormap_type;
         const unsigned int num_pixels = src_width * src_height;
 
@@ -321,7 +321,7 @@ namespace vigra {
 
         desc.bandNumbers.resize(1);
         desc.bandNumbers[0] = 0;
-        
+
         return desc;
     }
 
@@ -426,7 +426,7 @@ namespace vigra {
             read_field( stream, bo, map_row_size );
             read_field( stream, bo, map_col_size );
         }
-            
+
         // seek behind the header. (skip colorspace and pointers)
         stream.seekg( 1024, std::ios::beg );
     }
@@ -443,7 +443,7 @@ namespace vigra {
 
         // magic number
         stream.put((VIGRA_STREAM_CHAR_TYPE)0xAB);
-            
+
         // file type
         stream.put((VIGRA_STREAM_CHAR_TYPE)0x01);
 
@@ -459,7 +459,7 @@ namespace vigra {
             bo.set("big endian" );
             stream.put(VFF_DEP_BIGENDIAN);
         }
-        else 
+        else
         {
             bo.set("little endian" );
             stream.put(VFF_DEP_LITENDIAN);
@@ -537,7 +537,7 @@ namespace vigra {
 #else
         std::ifstream stream( filename.c_str() );
 #endif
-        
+
         if(!stream.good())
         {
             std::string msg("Unable to open file '");
@@ -634,7 +634,7 @@ namespace vigra {
     void ViffDecoderImpl::color_map()
     {
         void_vector_base temp_bands;
-        unsigned int temp_num_bands;
+        unsigned int temp_num_bands = 0;
 
         if ( header.map_storage_type == VFF_MAPTYP_1_BYTE ) {
             typedef UInt8 map_storage_type;
@@ -794,7 +794,7 @@ namespace vigra {
                                components, width, height,
                                static_cast< const maps_type & >(maps),
                                num_maps, map_width, map_height );
- 
+
             } else
                 vigra_precondition( false, "storage type unsupported" );
 
@@ -905,9 +905,9 @@ namespace vigra {
 
         ViffEncoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-            : stream( filename.c_str(), std::ios::binary ), 
+            : stream( filename.c_str(), std::ios::binary ),
 #else
-            : stream( filename.c_str() ), 
+            : stream( filename.c_str() ),
 #endif
               bo( "big endian" ),
               pixelType("undefined"), current_scanline(0), finalized(false)

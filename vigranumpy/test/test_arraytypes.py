@@ -1,4 +1,4 @@
-#######################################################################
+﻿#######################################################################
 #
 #         Copyright 2009-2010 by Ullrich Koethe
 #
@@ -36,10 +36,12 @@
 # run with a simple 'nosetests' in this directory
 # (and nose installed, i.e. 'easy_install nose')
 
-import sys
-print >> sys.stderr, "\nexecuting test file", __file__
-execfile('set_paths.py')
+from __future__ import division, print_function
+from functools import reduce
 
+import sys
+print("\nexecuting test file", __file__, file=sys.stderr)
+exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 # import vigra  # FIXME: without this line, C++ constructors don't find VigraArray
 import vigra.arraytypes as arraytypes
 import vigra.ufunc as ufunc
@@ -49,11 +51,21 @@ from nose.tools import assert_equal, raises, assert_true
 
 from vigra.arraytypes import AxisTags, AxisInfo
 
+if sys.version_info[0] > 2:
+    def xrange(*args):
+        return range(*args)
+
+    def iteritems(dictionary, **kwargs):
+        return dictionary.items(**kwargs)
+else:
+    def iteritems(dictionary, **kwargs):
+        return dictionary.iteritems(**kwargs)
+
 numpyHasComplexNegateBug = numpy.version.version.startswith('1.0')
 
 try:
     vt.testAny()
-except Exception, e:
+except Exception as e:
     ArgumentError = type(e)
 
 allTests = set()
@@ -85,8 +97,6 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
             assert_equal(sys.getrefcount(b), 2)
             assert b.__class__ is img.__class__
             assert_equal(b.shape, img.shape)
-            # print b.shape, img.shape, b.strides, img.strides
-            # assert False
             assert_equal(b.strides, img.strides)
             assert_equal(b.order, img.order)
             assert_equal(b.flags.c_contiguous, img.flags.c_contiguous)
@@ -171,7 +181,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         else:
             try:
                 img.withAxes('y', 'z', 'x')
-                raise AssertionError, "img.withAxes() failed to throw on non-singleton channel."
+                raise AssertionError("img.withAxes() failed to throw on non-singleton channel.")
             except RuntimeError:
                 pass
         # FIXME: add more tests
@@ -183,7 +193,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert_equal(img.min(), 99.0)
         assert_equal(img.max(), 99.0)
         img.flat[:] = range(img.size)
-        assert_equal(img.flatten().tolist(), range(img.size))
+        assert_equal(img.flatten().tolist(), list(range(img.size)))
         img[1,2] = value
         assert_equal((img[1,2]==value).all(), True)
 
@@ -356,14 +366,13 @@ def checkFailure(obj, n):
         f(obj)
     except ArgumentError:
         return
-    raise AssertionError, "%r did not throw ArgumentError as expected when passed a %r with shape %s, stride %s, axistags '%s'" % (n, type(obj), str(obj.shape), str(obj.strides), repr(getattr(obj, "axistags", "none")))
+    raise AssertionError("%r did not throw ArgumentError as expected when passed a %r with shape %s, stride %s, axistags '%s'" % (n, type(obj), str(obj.shape), str(obj.strides), repr(getattr(obj, "axistags", "none"))))
 
 def checkCompatibility(obj, compatible):
     for n in compatible:
         try:
             f = getattr(vt, n)
             shape, acopy, default_ordering, same_ordering = f(obj)
-
 
             assert_equal(obj.shape, shape)
 
@@ -421,10 +430,10 @@ def checkCompatibility(obj, compatible):
                             assert(dobj.view(numpy.ndarray) == default_ordering.view(numpy.ndarray)).all()
                         else:
                             assert_equal(dshape + (1,), default_ordering.shape)
-                            assert(fobj.view(numpy.ndarray) == default_ordering[...,0].view(numpy.ndarray)).all()
+                            assert(dobj.view(numpy.ndarray) == default_ordering[...,0].view(numpy.ndarray)).all()
         except Exception:
-            print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides,
-                                            repr(getattr(obj, "axistags", "none")))
+            print("exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides,
+                                            repr(getattr(obj, "axistags", "none"))))
             raise
 
     incompatible = allTests.difference(compatible)
@@ -433,9 +442,9 @@ def checkCompatibility(obj, compatible):
         try:
             checkFailure(obj, n)
         except Exception:
-            print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides,
-                                            repr(getattr(obj, "axistags", "none")))
-            raise
+            print("exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides,
+                                            repr(getattr(obj, "axistags", "none"))))
+            raise     
 
 def testAxisTags():
     axistags = AxisTags(AxisInfo.c(description="RGB"),
@@ -1186,7 +1195,7 @@ def testTaggedShape():
 
     try:
         r = arraytypes.taggedView(a, 'cxy', order='C')
-        raise AssertionError, "arraytypes.taggedView() failed to throw."
+        raise AssertionError("arraytypes.taggedView() failed to throw.")
     except RuntimeError:
         pass
 
@@ -1211,13 +1220,13 @@ def testTaggedShape():
 
     try:
         r = arraytypes.taggedView(a, 'xcz')
-        raise AssertionError, "arraytypes.taggedView() failed to throw."
+        raise AssertionError("arraytypes.taggedView() failed to throw.")
     except RuntimeError:
         pass
 
     try:
         r = arraytypes.taggedView(a, 'xcz', force=True)
-        raise AssertionError, "arraytypes.taggedView() failed to throw."
+        raise AssertionError("arraytypes.taggedView() failed to throw.")
     except RuntimeError:
         pass
 
@@ -1438,7 +1447,7 @@ def testMethods():
 
     assert_equal(a.mean(dtype=numpy.longdouble), (a.size - 1.0) / 2.0)
     assert (a.mean(axis='y', dtype=numpy.longdouble) ==
-            range((a.size-a.shape[0])/2, (a.size+a.shape[0])/2)).all()
+            range((a.size-a.shape[0])//2, (a.size+a.shape[0])//2)).all()
 
     assert_equal(a.min(), 0)
     assert (a.min(axis='y') == range(a.shape[0])).all()
@@ -1533,7 +1542,7 @@ def testUfuncs():
     for t in types:
         arrays[t] = arraytypes.ScalarImage((2,2), t, value=2)
         ones[t] = arraytypes.ScalarImage((1,1), t, value=1)
-    for t, a in arrays.iteritems():
+    for t, a in iteritems(arrays):
         b = -a
         assert_equal(t, b.dtype)
         assert_equal(a.axistags, b.axistags)

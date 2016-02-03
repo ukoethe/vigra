@@ -25,7 +25,6 @@ SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
 include(VigraSetDefaults)
 include(VigraCMakeUtils)
-
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
 IF(VIGRA_STATIC_LIB)
@@ -111,7 +110,23 @@ IF(WITH_HDF5)
     VIGRA_FIND_PACKAGE(HDF5)
 ENDIF()
 
+IF(WITH_LEMON)
+    VIGRA_FIND_PACKAGE(LEMON)
+ENDIF()
+
+SET(DOXYGEN_SKIP_DOT TRUE)
+FIND_PACKAGE(Doxygen)
+
+FIND_PACKAGE(PythonInterp ${PYTHON_VERSION})
+
+##################################################
+#
+#     configure boost dependency
+#
+##################################################
+
 set(WITH_BOOST "OFF")
+set(BOOST_MINIMUM_VERSION "1.40.0")
 set(WITH_BOOST_COMPONENTS "")
 
 IF(WITH_BOOST_GRAPH)
@@ -120,46 +135,28 @@ ENDIF()
 
 IF(WITH_VIGRANUMPY)
     set(WITH_BOOST "ON")
-    set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} python)
+    # Do not add "python" to WITH_BOOST_COMPONENTS. It is more
+    # reliabe to use 'FIND_LIBRARY' in FindVIGRANUMPY_DEPENDENCIES.
 ENDIF()
 
 IF(WITH_BOOST_THREAD)
     set(WITH_BOOST "ON")
     set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
-    ADD_DEFINITIONS(-DUSE_BOOST_THREAD)
+    set(BOOST_MINIMUM_VERSION "1.55.0")
 ENDIF()
 
 IF(WITH_BOOST)
-    VIGRA_FIND_PACKAGE( Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
-
-    if(Boost_FOUND)
-        INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-        if(WITH_BOOST_COMPONENTS)
-            # configure boost's autolink magic to use the right library name
-            # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
-            if(("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib") OR
-               ("${Boost_SYSTEM_LIBRARY}" MATCHES "boost_system\\.lib"))
-                ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
-            endif()
-        endif()
-    endif()
+    VIGRA_FIND_PACKAGE(Boost ${BOOST_MINIMUM_VERSION} COMPONENTS ${WITH_BOOST_COMPONENTS})
+    # FIXME: the following may be unstable between cmake versions
+    SET(Boost_LIB_SUFFIX "${_boost_COMPILER}${_boost_MULTITHREADED}-${Boost_LIB_VERSION}")
 ENDIF()
 
-IF(WITH_LEMON)
-    VIGRA_FIND_PACKAGE(LEMON)
-ENDIF()
-
-SET(DOXYGEN_SKIP_DOT TRUE)
-FIND_PACKAGE(Doxygen)
-FIND_PACKAGE(PythonInterp 2)
-
-IF(WITH_VIGRANUMPY)
-    FIND_PACKAGE( VIGRANUMPY_DEPENDENCIES )
-ENDIF()
-
-IF(WITH_VALGRIND)
-    FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)
-ENDIF()
+if(WITH_BOOST AND Boost_FOUND)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+    IF(WITH_BOOST_THREAD)
+        ADD_DEFINITIONS(-DUSE_BOOST_THREAD)
+    ENDIF()
+endif()
 
 # Must be included AFTER boost is found.
 include(VigraDetectThreading)
@@ -168,6 +165,33 @@ include(VigraConfigureThreading)
 # Should come after VigraDetectThreading, since that updates the -std flag.
 include(VigraDetectCppVersion)
 VIGRA_DETECT_CPP_VERSION()
+
+IF(WITH_VIGRANUMPY)
+    FIND_PACKAGE(VIGRANUMPY_DEPENDENCIES)
+ENDIF()
+
+if(WITH_BOOST AND Boost_FOUND)
+    # configure boost's autolink magic to use the right library name
+    # (default on Windows is a mangled name like 'boost_system-vc110-mt-1_51.lib')
+    if((Boost_SYSTEM_LIBRARY MATCHES "boost_system\\.lib") OR
+       (Boost_PYTHON_LIBRARY MATCHES "boost_python\\.lib") OR
+       (Boost_PYTHON_LIBRARY MATCHES "boost_python${PYTHON_VERSION_MAJOR}\\.lib"))
+        set(Boost_MANGLED_NAMES 0)
+        ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
+    else()
+        set(Boost_MANGLED_NAMES 1)
+    endif()
+    if((Boost_SYSTEM_LIBRARY AND
+        NOT Boost_SYSTEM_LIBRARY MATCHES "libboost_system") OR
+       (Boost_PYTHON_LIBRARY AND
+        NOT Boost_PYTHON_LIBRARY MATCHES "libboost_python"))
+        ADD_DEFINITIONS(-DBOOST_ALL_DYN_LINK)
+    endif()
+endif()
+
+IF(WITH_VALGRIND)
+    FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)
+ENDIF()
 
 ########################################
 #  finalize compiler flags

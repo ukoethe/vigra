@@ -508,7 +508,6 @@ void estimateGlobalTranslation(SrcIterator    s_ul, SrcIterator  s_lr, SrcAccess
                                Diff2D border = Diff2D(0,0))
 {
     typename SrcIterator::difference_type s_shape = s_lr - s_ul;
-    typename DestIterator::difference_type d_shape = d_lr - d_ul;
 
     //determine matrix by using 5 quater-matches and a maximum likelihood decision:
     Diff2D q_shape = (s_shape - border - border)/2;
@@ -684,7 +683,6 @@ estimateGlobalRotationTranslation(SrcIterator s_ul, SrcIterator s_lr, SrcAccesso
                                   double & translation_correlation,
                                   Diff2D border = Diff2D(0,0))
 {
-    typename SrcIterator::difference_type s_shape = s_lr - s_ul;
     typename DestIterator::difference_type d_shape = d_lr - d_ul;
 
     //First step: Estimate rotation from img2 -> img1.
@@ -702,8 +700,8 @@ estimateGlobalRotationTranslation(SrcIterator s_ul, SrcIterator s_lr, SrcAccesso
     //Third step: find rotation between temp image (of step 2) and dest:
     Matrix<double> translation_matrix;
     estimateGlobalTranslation(srcImageRange(tmp),
-                                 srcIterRange(d_ul, d_lr, d_acc),
-                                 translation_matrix,
+                              srcIterRange(d_ul, d_lr, d_acc),
+                              translation_matrix,
                               translation_correlation,
                               border);
 

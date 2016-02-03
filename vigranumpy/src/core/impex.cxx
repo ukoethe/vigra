@@ -56,7 +56,7 @@ template <class T>
 NumpyAnyArray readImageImpl(ImageImportInfo const & info, std::string order = "")
 {
     typedef UnstridedArrayTag Stride;
-    
+
     if(order == "")
         order = detail::defaultOrder();
 
@@ -116,7 +116,7 @@ std::string numpyTypeIdToImpexString(NPY_TYPES typeID)
 
 } // namespace detail
 
-NumpyAnyArray 
+NumpyAnyArray
 readImage(const char * filename, python::object import_type, unsigned int index, std::string order = "")
 {
     ImageImportInfo info(filename, index);
@@ -204,7 +204,7 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteImage, writeImage)
 namespace detail {
 
 template <class T>
-NumpyAnyArray 
+NumpyAnyArray
 readVolumeImpl(VolumeImportInfo const & info, std::string order = "")
 {
     if(order == "")
@@ -254,7 +254,7 @@ readVolumeImpl(VolumeImportInfo const & info, std::string order = "")
 
 } // namespace detail
 
-NumpyAnyArray 
+NumpyAnyArray
 readVolume(const char * filename, python::object import_type, std::string order = "")
 {
     VolumeImportInfo info(filename);
@@ -293,16 +293,16 @@ readVolume(const char * filename, python::object import_type, std::string order 
 
 template <class T>
 void writeVolume(NumpyArray<3, T > const & volume,
-                    const char * filename_base, 
-                    const char * filename_ext, 
-                    python::object export_type,  
+                    const char * filename_base,
+                    const char * filename_ext,
+                    python::object export_type,
                     const char * compression = "")
 {
     VolumeExportInfo info(filename_base, filename_ext);
-    
+
     if(python::extract<std::string>(export_type).check())
     {
-        std::string type = python::extract<std::string>(export_type)();        
+        std::string type = python::extract<std::string>(export_type)();
         if(type == "NBYTE")
         {
             info.setForcedRangeMapping(0.0, 0.0, 0.0, 255.0);
@@ -319,7 +319,7 @@ void writeVolume(NumpyArray<3, T > const & volume,
     }
     else if(export_type)
         vigra_precondition(false, "writeVolume(filename, export_type): export_type must be a string or a numpy dtype.");
-        
+
     if(std::string(compression) == "RunLength")
         info.setCompression("RLE");
     else if(std::string(compression) != "")
@@ -375,7 +375,7 @@ void defineImpexFunctions()
         .def("getShape", &pythonGetShape, "Get shape of image in the file.")
         .def("getAxisTags", &pythonGetAxisTags, "Get axistags of image in the file.")
     ;
-    
+
     // FIXME: add an order parameter to the import functions
     def("readVolume", &readVolume, (arg("filename"), arg("dtype") = "FLOAT", arg("order") = ""),
         "Read a 3D volume from a directory::\n"
@@ -416,15 +416,21 @@ void defineImpexFunctions()
         "etc.), the returned volume will have the requested pixel type. \n"
         "\n"
         "The order parameter determines the axis ordering of the resulting array\n"
-        "(allowed values: 'C', 'F', 'V'). When order == '' (the default), " 
+        "(allowed values: 'C', 'F', 'V'). When order == '' (the default), "
         "vigra.VigraArray.defaultOrder is used.\n"
         "\n"
         "For details see the help for :func:`readImage`.\n");
-        
-    multidef("writeVolume", pywriteVolume<Singleband<Int8>, Singleband<UInt64>, Singleband<Int64>, Singleband<UInt16>, 
-                                          Singleband<Int16>, Singleband<UInt32>, Singleband<Int32>, Singleband<double>, 
-                                          Singleband<float>, Singleband<UInt8>, TinyVector<float, 3>, TinyVector<UInt8, 3> >(), 
-       (arg("volume"), arg("filename_base"), arg("filename_ext"), arg("dtype") = "", arg("compression") = ""),
+
+    multidef("writeVolume",
+        pywriteVolume<Singleband<Int8>, Singleband<UInt64>, Singleband<Int64>,
+                      Singleband<UInt16>, Singleband<Int16>, Singleband<UInt32>,
+                      Singleband<Int32>, Singleband<double>, Singleband<float>,
+                      Singleband<UInt8>, TinyVector<float, 3>, TinyVector<UInt8, 3> >().installFallback(),
+       (arg("volume"),
+        arg("filename_base"),
+        arg("filename_ext"),
+        arg("dtype") = "",
+        arg("compression") = ""),
        "Write a volume as a sequence of images::\n\n"
        "   writeVolume(volume, filename_base, filename_ext, dtype='', compression='')\n\n"
        "The resulting image sequence will be enumerated in the form::\n\n"
@@ -432,8 +438,8 @@ void defineImpexFunctions()
        "Write a volume as a multi-page tiff (filename_ext must be an empty string)::\n\n"
        "   writeVolume(volume, filename, '', dtype='', compression='')\n\n"
        "Parameters 'dtype' and 'compression' will be handled as in :func:`writeImage`.\n\n");
-    
-    def("readImage", &readImage, 
+
+    def("readImage", &readImage,
         (arg("filename"), arg("dtype") = "FLOAT", arg("index") = 0, arg("order") = ""),
         "Read an image from a file::\n"
         "\n"
@@ -455,16 +461,22 @@ void defineImpexFunctions()
         "an entire multi-page TIFF in one go.\n"
         "\n"
         "The 'order' parameter determines the axis ordering of the resulting array\n"
-        "(allowed values: 'C', 'F', 'V'). When order == '' (the default), \n" 
+        "(allowed values: 'C', 'F', 'V'). When order == '' (the default), \n"
         "'vigra.VigraArray.defaultOrder' is used.\n"
         "\n"
         "Supported file formats are listed by the function :func:`listFormats`.\n"
         "When 'filename' does not refer to a recognized image file format, an\n"
         "exception is raised. The file can be checked beforehand with the function\n"
         ":func:`isImage`.\n");
-        
-    multidef("writeImage", pywriteImage<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(),
-       (arg("image"), arg("filename"), arg("dtype") = "", arg("compression") = "", arg("mode") = "w"),
+
+    multidef("writeImage",
+        pywriteImage<Int8, UInt64, Int64, UInt16, Int16, UInt32,
+                     Int32, double, float, UInt8>().installFallback(),
+        (arg("image"),
+         arg("filename"),
+         arg("dtype") = "",
+         arg("compression") = "",
+         arg("mode") = "w"),
         "Save an image to a file::\n"
         "\n"
         "   writeImage(image, filename, dtype='', compression='', mode='w')\n"
@@ -542,21 +554,21 @@ void defineImpexFunctions()
         "   VIFF:\n"
         "       Khoros Visualization image file (pixel types: UINT8, INT16\n"
         "       INT32, FLOAT, DOUBLE with arbitrary many channels).\n\n");
-        
+
     def("listFormats", &impexListFormats,
         "Ask for the image file formats that vigra.impex understands::\n\n"
         "    listFormats() -> string\n\n"
         "This function returns a string containing the supported image file "
         "formats for reading and writing with the functions :func:`readImage` and "
         ":func:`writeImage`.\n");
-        
+
     def("listExtensions", &impexListExtensions,
         "Ask for the image file extensions that vigra.impex understands::\n\n"
         "    listExtensions() -> string\n\n"
         "This function returns a string containing the supported image file "
         "extensions for reading and writing with the functions :func:`readImage` and "
         ":func:`writeImage`.\n");
-        
+
     def("isImage", &isImage, args("filename"),
         "Check whether the given file name contains image data::\n\n"
         "   isImage(filename) -> bool\n\n"
