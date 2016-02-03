@@ -810,7 +810,8 @@ inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::
                                void>::type
 def(char const* python_name, Functor const & f)
 {
-    static_assert(false, "def(): use multidef() to export multiple overloads.");
+    static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value, 
+                  "def(): use multidef() to export multiple overloads.");
 }
 
 template <class Functor, class Args>
@@ -818,7 +819,8 @@ inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::
                                void>::type
 def(char const* python_name, Functor const & f, Args const& args)
 {
-    static_assert(false, "def(): use multidef() to export multiple overloads.");
+    static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value,
+                  "def(): use multidef() to export multiple overloads.");
 }
 
 template <class Functor>
@@ -826,7 +828,8 @@ inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::
                                void>::type
 def(char const* python_name, Functor const & f, const char * help)
 {
-    static_assert(false, "def(): use multidef() to export multiple overloads.");
+    static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value,
+                  "def(): use multidef() to export multiple overloads.");
 }
 
 template <class Functor, class Args>
@@ -834,7 +837,8 @@ inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::
                                void>::type
 def(char const* python_name, Functor const & f, Args const& args, const char * help)
 {
-    static_assert(false, "def(): use multidef() to export multiple overloads.");
+    static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value,
+                  "def(): use multidef() to export multiple overloads.");
 }
 
 }} // namespace boost::python
