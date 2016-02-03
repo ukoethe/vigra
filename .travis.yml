@@ -12,7 +12,7 @@ matrix:
       sudo: false
       language: python
       python: "3.2"
-      env: WITH_BOOST_THREAD=1
+      env: WITH_BOOST_THREAD=1 CXXFLAGS="-pthread -std=c++0x"
     - os: osx
       osx_image: xcode7.3
       language: generic
@@ -27,11 +27,11 @@ addons:
   apt:
     packages:
       - libhdf5-serial-dev
-      - libboost-thread-dev
-      - libboost-system-dev
-      - libboost-date_time-dev
-      - libboost-chrono-dev
-      - libboost-python-dev
+      - libboost-thread1.55-dev
+      - libboost-system1.55-dev
+      - libboost-date-time1.55-dev
+      - libboost-chrono1.55-dev
+      - libboost-python1.55-dev
       - libjpeg-dev
       - libtiff4-dev
       - libpng12-dev
