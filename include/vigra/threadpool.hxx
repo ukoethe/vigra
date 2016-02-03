@@ -154,9 +154,7 @@ class ThreadPool
         in the present thread.
      */
     ThreadPool(const ParallelOptions & options)
-    :   stop(false),
-        busy((long)0),
-        processed((long)0)
+    :   stop(false)
     {
         init(options);
     }
@@ -172,9 +170,7 @@ class ThreadPool
         is useful for debugging.
      */
     ThreadPool(const int n)
-    :   stop(false),
-        busy((long)0),
-        processed((long)0)
+    :   stop(false)
     {
         init(ParallelOptions().numThreads(n));
     }
@@ -238,6 +234,9 @@ private:
 
 inline void ThreadPool::init(const ParallelOptions & options)
 {
+    busy.store(0);
+    processed.store(0);
+
     const size_t actualNThreads = options.getNumThreads();
     for(size_t ti = 0; ti<actualNThreads; ++ti)
     {
