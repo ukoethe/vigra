@@ -126,6 +126,7 @@ FIND_PACKAGE(PythonInterp ${PYTHON_VERSION})
 ##################################################
 
 set(WITH_BOOST "OFF")
+set(BOOST_MINIMUM_VERSION "1.40.0")
 set(WITH_BOOST_COMPONENTS "")
 
 IF(WITH_BOOST_GRAPH)
@@ -141,10 +142,11 @@ ENDIF()
 IF(WITH_BOOST_THREAD)
     set(WITH_BOOST "ON")
     set(WITH_BOOST_COMPONENTS ${WITH_BOOST_COMPONENTS} thread system date_time chrono)
+    set(BOOST_MINIMUM_VERSION "1.55.0")
 ENDIF()
 
 IF(WITH_BOOST)
-    VIGRA_FIND_PACKAGE(Boost 1.40.0 COMPONENTS ${WITH_BOOST_COMPONENTS})
+    VIGRA_FIND_PACKAGE(Boost ${BOOST_MINIMUM_VERSION} COMPONENTS ${WITH_BOOST_COMPONENTS})
     # FIXME: the following may be unstable between cmake versions
     SET(Boost_LIB_SUFFIX "${_boost_COMPILER}${_boost_MULTITHREADED}-${Boost_LIB_VERSION}")
 ENDIF()
