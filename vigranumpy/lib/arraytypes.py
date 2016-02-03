@@ -2009,7 +2009,7 @@ class ImagePyramid(list):
         self[level][...] = image[...]
 
     def expandImpl(self, src, dest, centerValue):
-        import filters
+        import vigra.filters as filters
 
         ss, ds = src.shape, dest.shape
         s = [ss[k] if 2*ss[k] == ds[k] else -1 for k in range(len(ss))]
@@ -2030,7 +2030,7 @@ class ImagePyramid(list):
         '''
         # FIXME: This should be implemented in C++
         # FIXME: This should be implemented for arbitrary dimensions
-        import filters
+        import vigra.filters as filters
 
         if srcLevel > destLevel:
             raise RuntimeError("ImagePyramid::reduce(): srcLevel <= destLevel required.")
@@ -2069,7 +2069,7 @@ class ImagePyramid(list):
         '''
         # FIXME: This should be implemented in C++
         # FIXME: This should be implemented for arbitrary dimensions
-        import filters
+        import vigra.filters as filters
 
         if srcLevel > destLevel:
             raise RuntimeError("ImagePyramid::reduceLaplacian(): srcLevel <= destLevel required.")
@@ -2093,7 +2093,7 @@ class ImagePyramid(list):
         '''
         # FIXME: This should be implemented in C++
         # FIXME: This should be implemented for arbitrary dimensions
-        import filters
+        import vigra.filters as filters
 
         if srcLevel < destLevel:
             raise RuntimeError("ImagePyramid::expandLaplacian(): srcLevel >= destLevel required.")
