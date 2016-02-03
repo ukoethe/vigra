@@ -202,6 +202,17 @@ struct TypeName<void>
     }
 };
 
+template <>
+struct TypeName<bool>
+{
+    static std::string name() {
+        return std::string("bool");
+    }
+    static std::string sized_name() {
+        return std::string("bool8");
+    }
+};
+
 #define VIGRA_SIGNED_INT_NAME(type) \
 template <> \
 struct TypeName<type> \
@@ -258,11 +269,28 @@ VIGRA_FLOAT_NAME(long double)
 #undef VIGRA_UNSIGNED_INT_NAME
 #undef VIGRA_FLOAT_NAME
 
+template <class T = void>
+struct ExportDoc
+{
+    static char const * exec(char const *) { return 0; }
+};
+
+template <>
+struct ExportDoc<void>
+{
+    static char const * exec(char const * h) { return h; }
+};
+
 } // namespace detail
 
 } // namespace vigra
 
 namespace boost { namespace python {
+
+// Note: Due to a bug in boost::python::docstring_options,
+//       the documentation must always be associated with the
+//       *last* overload, making the functors defined below a
+//       bit more complicated.
 
 #define VIGRA_PYTHON_MULTITYPE_FUNCTOR(functor_name, function) \
 template <class T> \
@@ -270,25 +298,34 @@ struct functor_name##Impl \
 { \
     static void def(const char * pythonName) \
     { \
+        boost::python::docstring_options doc(false); \
         boost::python::def(pythonName, vigra::registerConverters(&function<T>)); \
     } \
-     \
-    template <class A1> \
-    static void def(const char * pythonName, A1 const & a1) \
+    \
+    template <class Args> \
+    static void def(const char * pythonName, Args const & args) \
     { \
-        boost::python::def(pythonName, vigra::registerConverters(&function<T>), a1); \
+        boost::python::docstring_options doc(false); \
+        boost::python::def(pythonName, vigra::registerConverters(&function<T>), args); \
     } \
-     \
-    template <class A1, class A2> \
-    static void def(const char * pythonName, A1 const & a1, A2 const & a2) \
+    \
+    static void def(const char * pythonName, char const * help) \
     { \
-        boost::python::def(pythonName, vigra::registerConverters(&function<T>), a1, a2); \
+        if(help) \
+            boost::python::def(pythonName, \
+                         vigra::registerConverters(&function<T>), help); \
+        else \
+            def(pythonName); \
     } \
-     \
-    template <class A1, class A2, class A3> \
-    static void def(const char * pythonName, A1 const & a1, A2 const & a2, A3 const & a3) \
+    \
+    template <class Args> \
+    static void def(const char * pythonName, Args const & args, char const * help) \
     { \
-        boost::python::def(pythonName, vigra::registerConverters(&function<T>), a1, a2, a3); \
+        if(help) \
+            boost::python::def(pythonName, \
+                         vigra::registerConverters(&function<T>), args, help); \
+        else \
+            def(pythonName, args); \
     } \
 }; \
  \
@@ -302,9 +339,6 @@ struct functor_name##Impl<void> \
      \
     template <class A1, class A2> \
     static void def(const char *, A1 const &, A2 const &) {} \
-     \
-    template <class A1, class A2, class A3> \
-    static void def(const char *, A1 const &, A2 const &, A3 const &) {} \
 }; \
  \
 template <class T1, \
@@ -322,11 +356,24 @@ template <class T1, \
 struct functor_name \
 : public boost::python::PythonMultidefFunctor \
 { \
-    bool install_fallback_; \
+    bool install_fallback_, show_python_signature_; \
     \
-    functor_name(bool install_fallback = false) \
-    : install_fallback_(install_fallback) \
+    functor_name() \
+    : install_fallback_(false) \
+    , show_python_signature_(true) \
     {} \
+    \
+    functor_name & installFallback() \
+    { \
+        install_fallback_ = true; \
+        return *this; \
+    } \
+    \
+    functor_name & noPythonSignature() \
+    { \
+        show_python_signature_ = false; \
+        return *this; \
+    } \
     \
     typedef boost::python::ArgumentMismatchMessage\
         <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Message; \
@@ -345,6 +392,7 @@ struct functor_name \
     \
     void def(const char * pythonName) const \
     { \
+        boost::python::docstring_options doc(false, false, false); \
         if(install_fallback_) \
             Message::def(pythonName); \
         F1 ::def(pythonName); \
@@ -360,62 +408,64 @@ struct functor_name \
         F11::def(pythonName); \
         F12::def(pythonName); \
     } \
-     \
-    template <class A1> \
-    void def(const char * pythonName, A1 const & a1) const \
+    \
+    template <class Args> \
+    void def(const char * pythonName, Args const & args) const \
     { \
+        boost::python::docstring_options doc(false, false, false); \
         if(install_fallback_) \
-            Message::def(pythonName, a1); \
-        F1 ::def(pythonName, a1); \
-        F2 ::def(pythonName, a1); \
-        F3 ::def(pythonName, a1); \
-        F4 ::def(pythonName, a1); \
-        F5 ::def(pythonName, a1); \
-        F6 ::def(pythonName, a1); \
-        F7 ::def(pythonName, a1); \
-        F8 ::def(pythonName, a1); \
-        F9 ::def(pythonName, a1); \
-        F10::def(pythonName, a1); \
-        F11::def(pythonName, a1); \
-        F12::def(pythonName, a1); \
+            Message::def(pythonName); \
+        F1 ::def(pythonName, args); \
+        F2 ::def(pythonName, args); \
+        F3 ::def(pythonName, args); \
+        F4 ::def(pythonName, args); \
+        F5 ::def(pythonName, args); \
+        F6 ::def(pythonName, args); \
+        F7 ::def(pythonName, args); \
+        F8 ::def(pythonName, args); \
+        F9 ::def(pythonName, args); \
+        F10::def(pythonName, args); \
+        F11::def(pythonName, args); \
+        F12::def(pythonName, args); \
     } \
-     \
-    template <class A1, class A2> \
-    void def(const char * pythonName, A1 const & a1, A2 const & a2) const \
+    \
+    void def(const char * pythonName, const char * help) const \
     { \
         if(install_fallback_) \
-            Message::def(pythonName, a1, a2); \
-        F1 ::def(pythonName, a1, a2); \
-        F2 ::def(pythonName, a1, a2); \
-        F3 ::def(pythonName, a1, a2); \
-        F4 ::def(pythonName, a1, a2); \
-        F5 ::def(pythonName, a1, a2); \
-        F6 ::def(pythonName, a1, a2); \
-        F7 ::def(pythonName, a1, a2); \
-        F8 ::def(pythonName, a1, a2); \
-        F9 ::def(pythonName, a1, a2); \
-        F10::def(pythonName, a1, a2); \
-        F11::def(pythonName, a1, a2); \
-        F12::def(pythonName, a1, a2); \
+            Message::def(pythonName); \
+        boost::python::docstring_options doc(true, show_python_signature_, false); \
+        F1 ::def(pythonName, detail::ExportDoc<T2 >::exec(help)); \
+        F2 ::def(pythonName, detail::ExportDoc<T3 >::exec(help)); \
+        F3 ::def(pythonName, detail::ExportDoc<T4 >::exec(help)); \
+        F4 ::def(pythonName, detail::ExportDoc<T5 >::exec(help)); \
+        F5 ::def(pythonName, detail::ExportDoc<T6 >::exec(help)); \
+        F6 ::def(pythonName, detail::ExportDoc<T7 >::exec(help)); \
+        F7 ::def(pythonName, detail::ExportDoc<T8 >::exec(help)); \
+        F8 ::def(pythonName, detail::ExportDoc<T9 >::exec(help)); \
+        F9 ::def(pythonName, detail::ExportDoc<T10>::exec(help)); \
+        F10::def(pythonName, detail::ExportDoc<T11>::exec(help)); \
+        F11::def(pythonName, detail::ExportDoc<T12>::exec(help)); \
+        F12::def(pythonName, detail::ExportDoc<   >::exec(help)); \
     } \
-     \
-    template <class A1, class A2, class A3> \
-    void def(const char * pythonName, A1 const & a1, A2 const & a2, A3 const & a3) const \
+    \
+    template <class Args> \
+    void def(const char * pythonName, Args const & args, char const * help) const \
     { \
         if(install_fallback_) \
-            Message::def(pythonName, a1, a2, a3); \
-        F1 ::def(pythonName, a1, a2, a3); \
-        F2 ::def(pythonName, a1, a2, a3); \
-        F3 ::def(pythonName, a1, a2, a3); \
-        F4 ::def(pythonName, a1, a2, a3); \
-        F5 ::def(pythonName, a1, a2, a3); \
-        F6 ::def(pythonName, a1, a2, a3); \
-        F7 ::def(pythonName, a1, a2, a3); \
-        F8 ::def(pythonName, a1, a2, a3); \
-        F9 ::def(pythonName, a1, a2, a3); \
-        F10::def(pythonName, a1, a2, a3); \
-        F11::def(pythonName, a1, a2, a3); \
-        F12::def(pythonName, a1, a2, a3); \
+            Message::def(pythonName); \
+        boost::python::docstring_options doc(true, show_python_signature_, false); \
+        F1 ::def(pythonName, args, detail::ExportDoc<T2 >::exec(help)); \
+        F2 ::def(pythonName, args, detail::ExportDoc<T3 >::exec(help)); \
+        F3 ::def(pythonName, args, detail::ExportDoc<T4 >::exec(help)); \
+        F4 ::def(pythonName, args, detail::ExportDoc<T5 >::exec(help)); \
+        F5 ::def(pythonName, args, detail::ExportDoc<T6 >::exec(help)); \
+        F6 ::def(pythonName, args, detail::ExportDoc<T7 >::exec(help)); \
+        F7 ::def(pythonName, args, detail::ExportDoc<T8 >::exec(help)); \
+        F8 ::def(pythonName, args, detail::ExportDoc<T9 >::exec(help)); \
+        F9 ::def(pythonName, args, detail::ExportDoc<T10>::exec(help)); \
+        F10::def(pythonName, args, detail::ExportDoc<T11>::exec(help)); \
+        F11::def(pythonName, args, detail::ExportDoc<T12>::exec(help)); \
+        F12::def(pythonName, args, detail::ExportDoc<   >::exec(help)); \
     } \
 };
 
@@ -430,88 +480,90 @@ struct functor_name##Impl \
         functor_name##Impl<T, FROM, FROM>::def(pythonName); \
         functor_name##Impl<T, FROM+1, TO>::def(pythonName); \
     } \
-     \
-    template <class A1> \
-    static void def(const char * pythonName, A1 const & a1) \
+    \
+    template <class Args> \
+    static void def(const char * pythonName, Args const & args) \
     { \
-        functor_name##Impl<T, FROM, FROM>::def(pythonName, a1); \
-        functor_name##Impl<T, FROM+1, TO>::def(pythonName, a1); \
+        functor_name##Impl<T, FROM, FROM>::def(pythonName, args); \
+        functor_name##Impl<T, FROM+1, TO>::def(pythonName, args); \
     } \
-     \
-    template <class A1, class A2> \
-    static void def(const char * pythonName, A1 const & a1, A2 const & a2) \
+    \
+    static void def(const char * pythonName, char const * help) \
     { \
-        functor_name##Impl<T, FROM, FROM>::def(pythonName, a1, a2); \
-        functor_name##Impl<T, FROM+1, TO>::def(pythonName, a1, a2); \
+        functor_name##Impl<T, FROM, FROM>::def(pythonName); \
+        functor_name##Impl<T, FROM+1, TO>::def(pythonName, help); \
     } \
-     \
-    template <class A1, class A2, class A3> \
-    static void def(const char * pythonName, A1 const & a1, A2 const & a2, A3 const & a3) \
+    \
+    template <class Args> \
+    static void def(const char * pythonName, Args const & args, char const * help) \
     { \
-        functor_name##Impl<T, FROM, FROM>::def(pythonName, a1, a2, a3); \
-        functor_name##Impl<T, FROM+1, TO>::def(pythonName, a1, a2, a3); \
+        functor_name##Impl<T, FROM, FROM>::def(pythonName, args); \
+        functor_name##Impl<T, FROM+1, TO>::def(pythonName, args, help); \
     } \
 }; \
- \
+\
 template <class T, int N> \
 struct functor_name##Impl<T, N, N> \
 { \
     typedef functor_name##Impl type; \
-     \
+    \
     static void def(const char * pythonName) \
     { \
+        boost::python::docstring_options doc(false); \
         boost::python::def(pythonName, vigra::registerConverters(&function<T, N>)); \
     } \
-     \
-    template <class A1> \
-    static void def(const char * pythonName, A1 const & a1) \
+    \
+    template <class Args> \
+    static void def(const char * pythonName, Args const & args) \
     { \
-        boost::python::def(pythonName, vigra::registerConverters(&function<T, N>), a1); \
+        boost::python::docstring_options doc(false); \
+        boost::python::def(pythonName, vigra::registerConverters(&function<T, N>), args); \
     } \
-     \
-    template <class A1, class A2> \
-    static void def(const char * pythonName, A1 const & a1, A2 const & a2) \
+    \
+    static void def(const char * pythonName, char const * help) \
     { \
-        boost::python::def(pythonName, vigra::registerConverters(&function<T, N>), a1, a2); \
+        if(help) \
+            boost::python::def(pythonName, \
+                         vigra::registerConverters(&function<T, N>), help); \
+        else \
+            def(pythonName); \
     } \
-     \
-    template <class A1, class A2, class A3> \
-    static void def(const char * pythonName, A1 const & a1, A2 const & a2, A3 const & a3) \
+    \
+    template <class Args> \
+    static void def(const char * pythonName, Args const & args, char const * help) \
     { \
-        boost::python::def(pythonName, vigra::registerConverters(&function<T, N>), a1, a2, a3); \
+        if(help) \
+            boost::python::def(pythonName, \
+                         vigra::registerConverters(&function<T, N>), args, help); \
+        else \
+            def(pythonName, args); \
     } \
 }; \
- \
+\
 template <int FROM, int TO> \
 struct functor_name##Impl<void, FROM, TO> \
 { \
     static void def(const char *) {} \
-     \
+    \
     template <class A1> \
     static void def(const char *, A1 const &) {} \
-     \
+    \
     template <class A1, class A2> \
     static void def(const char *, A1 const &, A2 const &) {} \
-     \
-    template <class A1, class A2, class A3> \
-    static void def(const char *, A1 const &, A2 const &, A3 const &) {} \
 }; \
- \
+\
 template <int N> \
 struct functor_name##Impl<void, N, N> \
 { \
     static void def(const char *) {} \
-     \
+    \
     template <class A1> \
     static void def(const char *, A1 const &) {} \
-     \
+    \
     template <class A1, class A2> \
     static void def(const char *, A1 const &, A2 const &) {} \
-     \
-    template <class A1, class A2, class A3> \
-    static void def(const char *, A1 const &, A2 const &, A3 const &) {} \
 }; \
- \
+\
 template <int FROM, int TO, \
           class T1, \
           class T2 = void, \
@@ -528,12 +580,25 @@ template <int FROM, int TO, \
 struct functor_name \
 : public boost::python::PythonMultidefFunctor \
 { \
-    bool install_fallback_; \
+    bool install_fallback_, show_python_signature_; \
     \
-    functor_name(bool install_fallback = false) \
-    : install_fallback_(install_fallback) \
+    functor_name() \
+    : install_fallback_(false) \
+    , show_python_signature_(true) \
     { \
         static_assert(FROM <= TO, #functor_name ": dimension range empty (FROM > TO)"); \
+    } \
+    \
+    functor_name & installFallback() \
+    { \
+        install_fallback_ = true; \
+        return *this; \
+    } \
+    \
+    functor_name & noPythonSignature() \
+    { \
+        show_python_signature_ = false; \
+        return *this; \
     } \
     \
     typedef boost::python::ArgumentMismatchMessage\
@@ -553,6 +618,7 @@ struct functor_name \
     \
     void def(const char * pythonName) const \
     { \
+        boost::python::docstring_options doc(false, false, false); \
         if(install_fallback_) \
             Message::def(pythonName); \
         F1 ::def(pythonName); \
@@ -568,62 +634,64 @@ struct functor_name \
         F11::def(pythonName); \
         F12::def(pythonName); \
     } \
-     \
-    template <class A1> \
-    void def(const char * pythonName, A1 const & a1) const \
+    \
+    template <class Args> \
+    void def(const char * pythonName, Args const & args) const \
     { \
+        boost::python::docstring_options doc(false, false, false); \
         if(install_fallback_) \
-            Message::def(pythonName, a1); \
-        F1 ::def(pythonName, a1); \
-        F2 ::def(pythonName, a1); \
-        F3 ::def(pythonName, a1); \
-        F4 ::def(pythonName, a1); \
-        F5 ::def(pythonName, a1); \
-        F6 ::def(pythonName, a1); \
-        F7 ::def(pythonName, a1); \
-        F8 ::def(pythonName, a1); \
-        F9 ::def(pythonName, a1); \
-        F10::def(pythonName, a1); \
-        F11::def(pythonName, a1); \
-        F12::def(pythonName, a1); \
+            Message::def(pythonName); \
+        F1 ::def(pythonName, args); \
+        F2 ::def(pythonName, args); \
+        F3 ::def(pythonName, args); \
+        F4 ::def(pythonName, args); \
+        F5 ::def(pythonName, args); \
+        F6 ::def(pythonName, args); \
+        F7 ::def(pythonName, args); \
+        F8 ::def(pythonName, args); \
+        F9 ::def(pythonName, args); \
+        F10::def(pythonName, args); \
+        F11::def(pythonName, args); \
+        F12::def(pythonName, args); \
     } \
-     \
-    template <class A1, class A2> \
-    void def(const char * pythonName, A1 const & a1, A2 const & a2) const \
+    \
+    void def(const char * pythonName, const char * help) const \
     { \
         if(install_fallback_) \
-            Message::def(pythonName, a1, a2); \
-        F1 ::def(pythonName, a1, a2); \
-        F2 ::def(pythonName, a1, a2); \
-        F3 ::def(pythonName, a1, a2); \
-        F4 ::def(pythonName, a1, a2); \
-        F5 ::def(pythonName, a1, a2); \
-        F6 ::def(pythonName, a1, a2); \
-        F7 ::def(pythonName, a1, a2); \
-        F8 ::def(pythonName, a1, a2); \
-        F9 ::def(pythonName, a1, a2); \
-        F10::def(pythonName, a1, a2); \
-        F11::def(pythonName, a1, a2); \
-        F12::def(pythonName, a1, a2); \
+            Message::def(pythonName); \
+        boost::python::docstring_options doc(true, show_python_signature_, false); \
+        F1 ::def(pythonName, detail::ExportDoc<T2 >::exec(help)); \
+        F2 ::def(pythonName, detail::ExportDoc<T3 >::exec(help)); \
+        F3 ::def(pythonName, detail::ExportDoc<T4 >::exec(help)); \
+        F4 ::def(pythonName, detail::ExportDoc<T5 >::exec(help)); \
+        F5 ::def(pythonName, detail::ExportDoc<T6 >::exec(help)); \
+        F6 ::def(pythonName, detail::ExportDoc<T7 >::exec(help)); \
+        F7 ::def(pythonName, detail::ExportDoc<T8 >::exec(help)); \
+        F8 ::def(pythonName, detail::ExportDoc<T9 >::exec(help)); \
+        F9 ::def(pythonName, detail::ExportDoc<T10>::exec(help)); \
+        F10::def(pythonName, detail::ExportDoc<T11>::exec(help)); \
+        F11::def(pythonName, detail::ExportDoc<T12>::exec(help)); \
+        F12::def(pythonName, detail::ExportDoc<   >::exec(help)); \
     } \
-     \
-    template <class A1, class A2, class A3> \
-    void def(const char * pythonName, A1 const & a1, A2 const & a2, A3 const & a3) const \
+    \
+    template <class Args> \
+    void def(const char * pythonName, Args const & args, char const * help) const \
     { \
         if(install_fallback_) \
-            Message::def(pythonName, a1, a2, a3); \
-        F1 ::def(pythonName, a1, a2, a3); \
-        F2 ::def(pythonName, a1, a2, a3); \
-        F3 ::def(pythonName, a1, a2, a3); \
-        F4 ::def(pythonName, a1, a2, a3); \
-        F5 ::def(pythonName, a1, a2, a3); \
-        F6 ::def(pythonName, a1, a2, a3); \
-        F7 ::def(pythonName, a1, a2, a3); \
-        F8 ::def(pythonName, a1, a2, a3); \
-        F9 ::def(pythonName, a1, a2, a3); \
-        F10::def(pythonName, a1, a2, a3); \
-        F11::def(pythonName, a1, a2, a3); \
-        F12::def(pythonName, a1, a2, a3); \
+            Message::def(pythonName); \
+        boost::python::docstring_options doc(true, show_python_signature_, false); \
+        F1 ::def(pythonName, args, detail::ExportDoc<T2 >::exec(help)); \
+        F2 ::def(pythonName, args, detail::ExportDoc<T3 >::exec(help)); \
+        F3 ::def(pythonName, args, detail::ExportDoc<T4 >::exec(help)); \
+        F4 ::def(pythonName, args, detail::ExportDoc<T5 >::exec(help)); \
+        F5 ::def(pythonName, args, detail::ExportDoc<T6 >::exec(help)); \
+        F6 ::def(pythonName, args, detail::ExportDoc<T7 >::exec(help)); \
+        F7 ::def(pythonName, args, detail::ExportDoc<T8 >::exec(help)); \
+        F8 ::def(pythonName, args, detail::ExportDoc<T9 >::exec(help)); \
+        F9 ::def(pythonName, args, detail::ExportDoc<T10>::exec(help)); \
+        F10::def(pythonName, args, detail::ExportDoc<T11>::exec(help)); \
+        F11::def(pythonName, args, detail::ExportDoc<T12>::exec(help)); \
+        F12::def(pythonName, args, detail::ExportDoc<   >::exec(help)); \
     } \
 };
 
@@ -690,6 +758,7 @@ struct ArgumentMismatchMessage
 
     static void def(const char * pythonName)
     {
+        docstring_options doc(false, false, false);
         std::string msg    = message(),
                     module = extract<std::string>(scope().attr("__name__"))() + ".";
         msg += "Type 'help(" + module + pythonName + ")' to get full documentation.\n";
@@ -699,24 +768,6 @@ struct ArgumentMismatchMessage
                 return object();
             }, 0));
     }
-
-    template <class A1>
-    static void def(const char * pythonName, A1 const &)
-    {
-        def(pythonName);
-    }
-
-    template <class A1, class A2>
-    static void def(const char * pythonName, A1 const &, A2 const &)
-    {
-        def(pythonName);
-    }
-
-    template <class A1, class A2, class A3>
-    static void def(const char * pythonName, A1 const &, A2 const &, A3 const &)
-    {
-        def(pythonName);
-    }
 };
 
 // in the sequel, the doc string is only registered with the last
@@ -724,33 +775,66 @@ struct ArgumentMismatchMessage
 template <class Functor>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
-multidef(char const* functor_name, Functor const & f)
+multidef(char const* python_name, Functor const & f)
 {
-    f.def(functor_name);
+    f.def(python_name);
 }
 
 template <class Functor, class Args>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
-multidef(char const* functor_name, Functor const & f, Args const& args)
+multidef(char const* python_name, Functor const & f, Args const& args)
 {
-    f.def(functor_name, args);
+    f.def(python_name, args);
 }
 
 template <class Functor>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
-multidef(char const* functor_name, Functor const & f, const char * help)
+multidef(char const* python_name, Functor const & f, const char * help)
 {
-    f.def(functor_name, help);
+    f.def(python_name, help);
 }
 
 template <class Functor, class Args>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
-multidef(char const* functor_name, Functor const & f, Args const& args, const char * help)
+multidef(char const* python_name, Functor const & f, Args const& args, const char * help)
 {
-    f.def(functor_name, args, help);
+    f.def(python_name, args, help);
+}
+
+// overload def() such that it advises to use multidef() instead
+template <class Functor>
+inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
+                               void>::type
+def(char const* python_name, Functor const & f)
+{
+    static_assert(false, "def(): use multidef() to export multiple overloads.");
+}
+
+template <class Functor, class Args>
+inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
+                               void>::type
+def(char const* python_name, Functor const & f, Args const& args)
+{
+    static_assert(false, "def(): use multidef() to export multiple overloads.");
+}
+
+template <class Functor>
+inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
+                               void>::type
+def(char const* python_name, Functor const & f, const char * help)
+{
+    static_assert(false, "def(): use multidef() to export multiple overloads.");
+}
+
+template <class Functor, class Args>
+inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
+                               void>::type
+def(char const* python_name, Functor const & f, Args const& args, const char * help)
+{
+    static_assert(false, "def(): use multidef() to export multiple overloads.");
 }
 
 }} // namespace boost::python

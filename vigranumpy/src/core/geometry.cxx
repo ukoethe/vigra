@@ -75,7 +75,7 @@ void defineGeometry()
     docstring_options doc_options(true, true, false);
 
     multidef("convexHull",
-        pythonConvexHull<double, float, Int32>(/*overload_fallback*/true),
+        pythonConvexHull<double, float, Int32>().installFallback(),
         args("points"),
         "Compute the convex hull of a point set.\n"
         "\n"

@@ -425,7 +425,7 @@ void defineImpexFunctions()
         pywriteVolume<Singleband<Int8>, Singleband<UInt64>, Singleband<Int64>,
                       Singleband<UInt16>, Singleband<Int16>, Singleband<UInt32>,
                       Singleband<Int32>, Singleband<double>, Singleband<float>,
-                      Singleband<UInt8>, TinyVector<float, 3>, TinyVector<UInt8, 3> >(true),
+                      Singleband<UInt8>, TinyVector<float, 3>, TinyVector<UInt8, 3> >().installFallback(),
        (arg("volume"),
         arg("filename_base"),
         arg("filename_ext"),
@@ -471,7 +471,7 @@ void defineImpexFunctions()
 
     multidef("writeImage",
         pywriteImage<Int8, UInt64, Int64, UInt16, Int16, UInt32,
-                     Int32, double, float, UInt8>(/*overload_fallback*/true),
+                     Int32, double, float, UInt8>().installFallback(),
         (arg("image"),
          arg("filename"),
          arg("dtype") = "",

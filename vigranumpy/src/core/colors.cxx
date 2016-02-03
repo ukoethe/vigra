@@ -497,7 +497,7 @@ void defineColors()
     docstring_options doc_options(true, true, false);
 
     multidef("applyColortable",
-        pyApplyColortable<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32>(/*overload_fallback*/true),
+        pyApplyColortable<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32>().installFallback(),
         (arg("valueImage"),
          arg("colortable"),
          arg("out")=python::object()),
@@ -509,7 +509,7 @@ void defineColors()
         "Returns: uint8 image with 4 channels\n");
 
     multidef("gray2qimage_ARGB32Premultiplied",
-        pyGray2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(/*overload_fallback*/true),
+        pyGray2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>().installFallback(),
         (arg("image"),
          arg("qimage"),
          arg("normalize")=python::object()),
@@ -521,7 +521,7 @@ void defineColors()
         "vigra.colors.gray2qimage_ARGB32Premultiplied(a, qimage2ndarray.byte_view(qimg), normalize)\n");
 
     multidef("alphamodulated2qimage_ARGB32Premultiplied",
-        pyAlphaModulated2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(/*overload_fallback*/true),
+        pyAlphaModulated2QImage_ARGB32Premultiplied<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>().installFallback(),
         (arg("image"),
          arg("qimage"),
          arg("tintColor"),
@@ -593,7 +593,7 @@ void defineColors()
          "Likewise for a 3D scalar or multiband volume.\n");
 
     multidef("linearRangeMapping",
-        pyLinearRangeMapping2D<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>(/*overload_fallback*/true),
+        pyLinearRangeMapping2D<vigra::Int8, vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32, float, double>().installFallback(),
         (arg("image"),
          arg("oldRange")="auto",
          arg("newRange")=make_tuple(0.0, 255.0),

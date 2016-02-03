@@ -52,9 +52,9 @@ namespace vigra
 {
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonDiscRankOrderFilter(NumpyArray<3, Multiband<PixelType> > image,
-                          int radius, float rank, 
+                          int radius, float rank,
                           NumpyArray<3, Multiband<PixelType> > res)
 {
     vigra_precondition((rank >= 0.0) && (rank <= 1.0),
@@ -67,10 +67,10 @@ pythonDiscRankOrderFilter(NumpyArray<3, Multiband<PixelType> > image,
     {
         PyAllowThreads _pythread;
         for(int k=0; k<image.shape(2); ++k)
-        { 
+        {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-            discRankOrderFilter(srcImageRange(bimage,StandardValueAccessor<UInt8>()), 
+            discRankOrderFilter(srcImageRange(bimage,StandardValueAccessor<UInt8>()),
                                 destImage(bres), radius, rank);
         }
     }
@@ -78,7 +78,7 @@ pythonDiscRankOrderFilter(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonDiscRankOrderFilterWithMask(NumpyArray<3, Multiband<PixelType> > image,
                                   NumpyArray<3, Multiband<PixelType> > mask,
                                   int radius, float rank,
@@ -98,50 +98,50 @@ pythonDiscRankOrderFilterWithMask(NumpyArray<3, Multiband<PixelType> > image,
     {
         PyAllowThreads _pythread;
         for(int k=0; k<image.shape(2); ++k)
-        { 
+        {
             MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
             MultiArrayView<2, PixelType, StridedArrayTag> bmask = mask.bindOuter(mask.shape(2)==1?0:k);
-            discRankOrderFilterWithMask(srcImageRange(bimage,StandardValueAccessor<UInt8>()), 
+            discRankOrderFilterWithMask(srcImageRange(bimage,StandardValueAccessor<UInt8>()),
                                         srcImage(bmask),
                                         destImage(bres), radius, rank);
         }
     }
-    
+
     return res;
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonDiscErosion(NumpyArray<3, Multiband<PixelType> > image,
-                  int radius, 
+                  int radius,
                   NumpyArray<3, Multiband<PixelType> > res)
 {
     return pythonDiscRankOrderFilter(image, radius, 0.0f, res);
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonDiscDilation(NumpyArray<3, Multiband<PixelType> > image,
-                   int radius, 
+                   int radius,
                    NumpyArray<3, Multiband<PixelType> > res)
 {
     return pythonDiscRankOrderFilter(image, radius, 1.0f, res);
 }
 
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonDiscMedian(NumpyArray<3, Multiband<PixelType> > image,
-                 int radius, 
+                 int radius,
                  NumpyArray<3, Multiband<PixelType> > res)
 {
     return pythonDiscRankOrderFilter(image, radius, 0.5f, res);
 }
 
 template < class PixelType >
-NumpyAnyArray 
-pythonDiscOpening(NumpyArray<3, Multiband<PixelType> > image, 
-                  int radius, 
+NumpyAnyArray
+pythonDiscOpening(NumpyArray<3, Multiband<PixelType> > image,
+                  int radius,
                   NumpyArray<3, Multiband<PixelType> > res)
 {
     vigra_precondition(radius >= 0, "Radius must be >=0.");
@@ -165,9 +165,9 @@ pythonDiscOpening(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template < class PixelType >
-NumpyAnyArray 
-pythonDiscClosing(NumpyArray<3, Multiband<PixelType> > image, 
-                  int radius, 
+NumpyAnyArray
+pythonDiscClosing(NumpyArray<3, Multiband<PixelType> > image,
+                  int radius,
                   NumpyArray<3, Multiband<PixelType> > res)
 {
     vigra_precondition(radius >= 0, "Radius must be >=0.");
@@ -190,10 +190,10 @@ pythonDiscClosing(NumpyArray<3, Multiband<PixelType> > image,
     return res;
 }
 
-template < int dim, class PixelType >
-NumpyAnyArray 
+template < class PixelType, int dim >
+NumpyAnyArray
 pythonMultiBinaryErosion(NumpyArray<dim, Multiband<PixelType> > array,
-                         double radius, 
+                         double radius,
                          NumpyArray<dim, Multiband<PixelType> > res)
 {
     res.reshapeIfEmpty(array.taggedShape(),
@@ -211,10 +211,12 @@ pythonMultiBinaryErosion(NumpyArray<dim, Multiband<PixelType> > array,
     return res;
 }
 
-template < int dim, class PixelType >
-NumpyAnyArray 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiBinaryErosion, pythonMultiBinaryErosion)
+
+template < class PixelType, int dim >
+NumpyAnyArray
 pythonMultiBinaryDilation(NumpyArray<dim, Multiband<PixelType> > array,
-                          double radius, 
+                          double radius,
                           NumpyArray<dim, Multiband<PixelType> > res)
 {
     res.reshapeIfEmpty(array.taggedShape(),
@@ -232,10 +234,12 @@ pythonMultiBinaryDilation(NumpyArray<dim, Multiband<PixelType> > array,
     return res;
 }
 
-template <int dim, class PixelType >
-NumpyAnyArray 
-pythonMultiBinaryOpening(NumpyArray<dim, Multiband<PixelType> > array, 
-                         double radius, 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiBinaryDilation, pythonMultiBinaryDilation)
+
+template <class PixelType, int dim >
+NumpyAnyArray
+pythonMultiBinaryOpening(NumpyArray<dim, Multiband<PixelType> > array,
+                         double radius,
                          NumpyArray<dim, Multiband<PixelType> > res)
 {
     res.reshapeIfEmpty(array.taggedShape(),
@@ -256,10 +260,12 @@ pythonMultiBinaryOpening(NumpyArray<dim, Multiband<PixelType> > array,
     return res;
 }
 
-template <int dim, class PixelType >
-NumpyAnyArray 
-pythonMultiBinaryClosing(NumpyArray<dim, Multiband<PixelType> > array, 
-                         double radius, 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiBinaryOpening, pythonMultiBinaryOpening)
+
+template <class PixelType, int dim >
+NumpyAnyArray
+pythonMultiBinaryClosing(NumpyArray<dim, Multiband<PixelType> > array,
+                         double radius,
                          NumpyArray<dim, Multiband<PixelType> > res)
 {
     res.reshapeIfEmpty(array.taggedShape(),
@@ -280,10 +286,12 @@ pythonMultiBinaryClosing(NumpyArray<dim, Multiband<PixelType> > array,
     return res;
 }
 
-template < int dim , class PixelType>
-NumpyAnyArray 
-pythonMultiGrayscaleErosion(NumpyArray<dim, Multiband<PixelType> > array, 
-                            double sigma, 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiBinaryClosing, pythonMultiBinaryClosing)
+
+template <class PixelType, int dim>
+NumpyAnyArray
+pythonMultiGrayscaleErosion(NumpyArray<dim, Multiband<PixelType> > array,
+                            double sigma,
                             NumpyArray<dim, Multiband<PixelType> > res)
 {
     res.reshapeIfEmpty(array.taggedShape(),
@@ -300,10 +308,13 @@ pythonMultiGrayscaleErosion(NumpyArray<dim, Multiband<PixelType> > array,
     }
     return res;
 }
-template < int dim, class PixelType >
-NumpyAnyArray 
-pythonMultiGrayscaleDilation(NumpyArray<dim, Multiband<PixelType> > array, 
-                             double sigma, 
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiGrayscaleErosion, pythonMultiGrayscaleErosion)
+
+template <class PixelType, int dim >
+NumpyAnyArray
+pythonMultiGrayscaleDilation(NumpyArray<dim, Multiband<PixelType> > array,
+                             double sigma,
                              NumpyArray<dim, Multiband<PixelType> > res)
 {
     res.reshapeIfEmpty(array.taggedShape(),
@@ -321,10 +332,12 @@ pythonMultiGrayscaleDilation(NumpyArray<dim, Multiband<PixelType> > array,
     return res;
 }
 
-template <int dim, class PixelType>
-NumpyAnyArray 
-pythonMultiGrayscaleOpening(NumpyArray<dim, Multiband<PixelType> > array, 
-                            double sigma, 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiGrayscaleDilation, pythonMultiGrayscaleDilation)
+
+template <class PixelType, int dim>
+NumpyAnyArray
+pythonMultiGrayscaleOpening(NumpyArray<dim, Multiband<PixelType> > array,
+                            double sigma,
                             NumpyArray<dim, Multiband<PixelType> > res)
 {
     res.reshapeIfEmpty(array.taggedShape(),
@@ -345,10 +358,12 @@ pythonMultiGrayscaleOpening(NumpyArray<dim, Multiband<PixelType> > array,
     return res;
 }
 
-template <int dim, class PixelType>
-NumpyAnyArray 
-pythonMultiGrayscaleClosing(NumpyArray<dim, Multiband<PixelType> > array, 
-                            double sigma, 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiGrayscaleOpening, pythonMultiGrayscaleOpening)
+
+template <class PixelType, int dim>
+NumpyAnyArray
+pythonMultiGrayscaleClosing(NumpyArray<dim, Multiband<PixelType> > array,
+                            double sigma,
                             NumpyArray<dim, Multiband<PixelType> > res)
 {
     res.reshapeIfEmpty(array.taggedShape(),
@@ -369,13 +384,15 @@ pythonMultiGrayscaleClosing(NumpyArray<dim, Multiband<PixelType> > array,
     return res;
 }
 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyMultiGrayscaleClosing, pythonMultiGrayscaleClosing)
+
 namespace detail {
 
 template <class PixelType>
 struct IsBackgroundAccessor
 {
     typedef bool value_type;
-    
+
     template <class Iterator>
     value_type operator()(Iterator const & i) const
     {
@@ -386,27 +403,27 @@ struct IsBackgroundAccessor
 } // namespace detail
 
 template < class PixelType, typename DestPixelType >
-NumpyAnyArray 
+NumpyAnyArray
 pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
-                          bool background, 
+                          bool background,
                           int norm,
                           ArrayVector<double> pixelPitch = ArrayVector<double>(),
                           NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.taggedShape(), 
+    res.reshapeIfEmpty(image.taggedShape(),
             "distanceTransform2D(): Output array has wrong shape.");
-    
+
     if(pixelPitch.size() == 0)
     {
         PyAllowThreads _pythread;
         if(background)
         {
-            distanceTransform(srcImageRange(image), destImage(res), 
+            distanceTransform(srcImageRange(image), destImage(res),
                               NumericTraits<PixelType>::zero(), norm);
         }
         else
         {
-            distanceTransform(srcImageRange(image, detail::IsBackgroundAccessor<PixelType>()), 
+            distanceTransform(srcImageRange(image, detail::IsBackgroundAccessor<PixelType>()),
                               destImage(res), false, norm);
         }
     }
@@ -415,7 +432,7 @@ pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
         vigra_precondition(norm == 2,
              "distanceTransform2D(): Anisotropic transform is only supported for norm=2.");
         pixelPitch = image.permuteLikewise(pixelPitch);
-        
+
         PyAllowThreads _pythread;
         separableMultiDistance(srcMultiArrayRange(image), destMultiArray(res), background, pixelPitch);
     }
@@ -423,16 +440,16 @@ pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
     return res;
 }
 
-template < unsigned int N, class VoxelType >
-NumpyAnyArray 
-pythonDistanceTransformND(NumpyArray<N, Singleband<VoxelType> > volume, 
-                          bool background, 
-                          ArrayVector<double> pixelPitch = ArrayVector<double>(),
-                          NumpyArray<N, Singleband<VoxelType> > res=python::object())
+template <class VoxelType, int N>
+NumpyAnyArray
+pythonDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
+                        bool background,
+                        ArrayVector<double> pixelPitch = ArrayVector<double>(),
+                        NumpyArray<N, Singleband<float> > res=python::object())
 {
-    res.reshapeIfEmpty(volume.taggedShape(), 
-            "distanceTransform3D(): Output array has wrong shape.");
-    
+    res.reshapeIfEmpty(volume.taggedShape(),
+            "distanceTransform(): Output array has wrong shape.");
+
     if (pixelPitch.size() == 0)
     {
         pixelPitch = ArrayVector<double>(N, 1.0);
@@ -441,7 +458,7 @@ pythonDistanceTransformND(NumpyArray<N, Singleband<VoxelType> > volume,
     {
         pixelPitch = volume.permuteLikewise(pixelPitch);
     }
-    
+
     {
         PyAllowThreads _pythread;
         separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background, pixelPitch);
@@ -449,26 +466,28 @@ pythonDistanceTransformND(NumpyArray<N, Singleband<VoxelType> > volume,
     return res;
 }
 
-template < unsigned int N, class VoxelType >
-NumpyAnyArray 
-pythonVectorDistanceTransformND(NumpyArray<N, Singleband<VoxelType> > volume, 
-                                bool background, 
-                                ArrayVector<double> pyPixelPitch = ArrayVector<double>(),
-                                NumpyArray<N, TinyVector<float, N> > res=python::object())
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyDistanceTransform, pythonDistanceTransform)
+
+template <class VoxelType, int N>
+NumpyAnyArray
+pythonVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
+                              bool background,
+                              ArrayVector<double> pyPixelPitch = ArrayVector<double>(),
+                              NumpyArray<N, TinyVector<float, N> > res=python::object())
 {
     vigra_precondition(pyPixelPitch.size() == 0 || pyPixelPitch.size() == N,
         "vectorDistanceTransform(): pixel_pitch has wrong shape.");
-    
-    res.reshapeIfEmpty(volume.taggedShape(), 
+
+    res.reshapeIfEmpty(volume.taggedShape(),
             "vectorDistanceTransform(): Output array has wrong shape.");
-            
+
     TinyVector<double, N> pixelPitch(1.0);
     if (pyPixelPitch.size() > 0)
     {
         pixelPitch.init(pyPixelPitch.begin(), pyPixelPitch.end());
         pixelPitch = volume.permuteLikewise(pixelPitch);
     }
-    
+
     {
         PyAllowThreads _pythread;
         separableVectorDistance(volume, res, background, pixelPitch);
@@ -476,7 +495,9 @@ pythonVectorDistanceTransformND(NumpyArray<N, Singleband<VoxelType> > volume,
     return res;
 }
 
-template < unsigned int N, class VoxelType >
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyVectorDistanceTransform, pythonVectorDistanceTransform)
+
+template <class VoxelType, int N>
 NumpyAnyArray
 pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
                                 bool array_border_is_active,
@@ -485,7 +506,7 @@ pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
 {
     res.reshapeIfEmpty(volume.taggedShape(),
             "boundaryDistanceTransform(): Output array has wrong shape.");
-            
+
     boundary = tolower(boundary);
     BoundaryDistanceTag boundary_tag = InterpixelBoundary;
     if(boundary == "outerboundary")
@@ -495,7 +516,7 @@ pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
     else if(boundary == "innerboundary")
         boundary_tag = InnerBoundary;
     else
-        vigra_precondition(false, 
+        vigra_precondition(false,
                            "boundaryDistanceTransform(): invalid 'boundary' specification.");
     {
         PyAllowThreads _pythread;
@@ -504,7 +525,9 @@ pythonboundaryDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
     return res;
 }
 
-template < unsigned int N, class VoxelType >
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyboundaryDistanceTransform, pythonboundaryDistanceTransform)
+
+template <class VoxelType, int N>
 NumpyAnyArray
 pythonboundaryVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volume,
                                 bool array_border_is_active,
@@ -513,7 +536,7 @@ pythonboundaryVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volu
 {
     res.reshapeIfEmpty(volume.taggedShape(),
             "boundaryVectorDistanceTransform(): Output array has wrong shape.");
-            
+
     boundary = tolower(boundary);
     BoundaryDistanceTag boundary_tag = InterpixelBoundary;
     if(boundary == "outerboundary")
@@ -523,7 +546,7 @@ pythonboundaryVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volu
     else if(boundary == "innerboundary")
         boundary_tag = InnerBoundary;
     else
-        vigra_precondition(false, 
+        vigra_precondition(false,
                            "boundaryVectorDistanceTransform(): invalid 'boundary' specification.");
     {
         PyAllowThreads _pythread;
@@ -532,10 +555,12 @@ pythonboundaryVectorDistanceTransform(NumpyArray<N, Singleband<VoxelType> > volu
     return res;
 }
 
-template < unsigned int N, class T, class S >
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyboundaryVectorDistanceTransform, pythonboundaryVectorDistanceTransform)
+
+template <class T, int N>
 NumpyAnyArray
 pythonEccentricityTransform(const NumpyArray<N, T> & image,
-                            NumpyArray<N, S> res)
+                            NumpyArray<N, float> res)
 {
     res.reshapeIfEmpty(image.taggedShape(),
                        "eccentricityTransform(): Output array has wrong shape.");
@@ -543,7 +568,9 @@ pythonEccentricityTransform(const NumpyArray<N, T> & image,
     return res;
 }
 
-template < unsigned int N, class T >
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyEccentricityTransform, pythonEccentricityTransform)
+
+template <class T, int N>
 python::list
 pythonEccentricityCenters(const NumpyArray<N, T> & image)
 {
@@ -558,10 +585,12 @@ pythonEccentricityCenters(const NumpyArray<N, T> & image)
     return centerlist;
 }
 
-template < unsigned int N, class T, class S >
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyEccentricityCenters, pythonEccentricityCenters)
+
+template <class T, int N>
 python::tuple
 pythonEccentricityTransformWithCenters(const NumpyArray<N, T> & image,
-                                       NumpyArray<N, S> res)
+                                       NumpyArray<N, float> res)
 {
     typedef typename MultiArrayShape<N>::type Point;
     res.reshapeIfEmpty(image.taggedShape(),
@@ -576,16 +605,18 @@ pythonEccentricityTransformWithCenters(const NumpyArray<N, T> & image,
     return python::make_tuple(res, centerlist);
 }
 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyEccentricityTransformWithCenters, pythonEccentricityTransformWithCenters)
+
 template <unsigned int N, class T>
 NumpyAnyArray
 pySkeletonizeImage(NumpyArray<N, Singleband<T> > const & labels,
-              std::string mode,
-              double pruning_threshold)
+                   std::string mode,
+                   double pruning_threshold)
 {
     mode = tolower(mode);
     SkeletonOptions options;
     bool returnFloat = false;
-    
+
     if(mode == "dontprune")
     {
         options.dontPrune();
@@ -628,29 +659,29 @@ pySkeletonizeImage(NumpyArray<N, Singleband<T> > const & labels,
     {
         vigra_precondition(false, "skeletonizeImage(): invalid mode.");
     }
-    
+
     if(returnFloat)
     {
         NumpyArray<N, Singleband<float> > res(labels.taggedShape());
-        
+
         {
             PyAllowThreads _pythread;
-            
+
             skeletonizeImage(labels, res, options);
         }
-        
+
         return res;
     }
     else
     {
         NumpyArray<N, Singleband<T> > res(labels.taggedShape());
-        
+
         {
             PyAllowThreads _pythread;
-            
+
             skeletonizeImage(labels, res, options);
         }
-        
+
         return res;
     }
 }
@@ -658,7 +689,7 @@ pySkeletonizeImage(NumpyArray<N, Singleband<T> > const & labels,
 void defineMorphology()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
 
     def("discRankOrderFilter",
@@ -669,7 +700,7 @@ void defineMorphology()
         "Rank must be in the range 0.0 <= rank <= 1.0. The filter acts as a minimum filter if rank = 0.0, as a median "
         "if rank = 0.5, and as a maximum filter if rank = 1.0. "
         "This function also works for multiband images, it is then executed on every band.\n"
-        "\n" 
+        "\n"
         "For details see discRankOrderFilter_ in the C++ documentation.\n"
        );
 
@@ -696,7 +727,7 @@ void defineMorphology()
         "the same number of bands, as the image the bands are used for the corresponding image bands.\n\n"
         "For details see discRankOrderFilterWithMask_ in the C++ documentation.\n"
         );
-    
+
     def("discRankOrderFilterWithMask",
         registerConverters(&pythonDiscRankOrderFilterWithMask<UInt8>),
         (arg("image"), arg("mask"), arg("radius"), arg("rank"), arg("out")=object()),
@@ -747,193 +778,142 @@ void defineMorphology()
         "See discRankOrderFilter_ in the C++ documentation for more information.\n"
        );
 
-    def("multiBinaryErosion",
-        registerConverters(&pythonMultiBinaryErosion<4, UInt8>),
-        (arg("volume"), arg("radius"), arg("out")=object()),
-       "Binary erosion on a 3D scalar or multiband uint8 array.\n"
-       "\n"
-       "This function applies a flat circular erosion operator with a given radius. "
-       "The operation is isotropic. The input is a uint8 or boolean multi-dimensional array "
-       "where non-zero pixels represent foreground and zero pixels represent background. "
-       "This function also works for multiband arrays, it is then executed on every band.\n"
-       "\n"
-       "For details see multiBinaryErosion_ in the C++ documentation.\n"
+    multidef("multiBinaryErosion",
+        pyMultiBinaryErosion<3, 4, UInt8, bool>().installFallback(),
+        (arg("array"),
+         arg("radius"),
+         arg("out")=object()),
+        "\n"
+        "Binary erosion on a scalar or multiband array (up to 3D, uint8 or bool).\n"
+        "Multiple channels are treated independently.\n"
+        "\n"
+        "This function applies a flat circular erosion operator with a given radius.\n"
+        "The operation is isotropic. The input is a uint8 or boolean multi-dimensional\n"
+        "array where non-zero elements represent foreground and zero elements represent\n"
+        "background.\n"
+        "\n"
+        "For details see multiBinaryErosion_ in the C++ documentation.\n"
         );
-        
-    def("multiBinaryErosion",
-        registerConverters(&pythonMultiBinaryErosion<4, bool>),
-        (arg("volume"), arg("radius"), arg("out")=object()),
-        "Likewise for a bool array.\n");
 
-    def("multiBinaryDilation",
-        registerConverters(&pythonMultiBinaryDilation<4, UInt8>),
-        (arg("volume"), arg("radius"), arg("out")=object()),
-       "Binary dilation on a 3D scalar or multiband uint8 array.\n"
-       "\n"
-       "This function applies a flat circular dilation operator with a given radius. "
-       "The operation is isotropic. The input is a uint8 or boolean multi-dimensional array "
-       "where non-zero pixels represent foreground and zero pixels represent background. "
-       "This function also works for multiband arrays, it is then executed on every band.\n"
-       "\n"
-       "For details see multiBinaryDilation_ in the C++ documentation.\n"
+    multidef("multiBinaryDilation",
+        pyMultiBinaryDilation<3, 4, UInt8, bool>().installFallback(),
+        (arg("array"),
+         arg("radius"),
+         arg("out")=object()),
+        "\n"
+        "Binary dilation on a scalar or multiband array (up to 3D, uint8 or bool).\n"
+        "Multiple channels are treated independently.\n"
+        "\n"
+        "This function applies a flat circular dilation operator with a given radius.\n"
+        "The operation is isotropic. The input is a uint8 or boolean multi-dimensional\n"
+        "array where non-zero elements represent foreground and zero elements represent\n"
+        "background.\n"
+        "\n"
+        "For details see multiBinaryDilation_ in the C++ documentation.\n"
        );
-       
-    def("multiBinaryDilation",
-        registerConverters(&pythonMultiBinaryDilation<4, bool>),
-        (arg("volume"), arg("radius"), arg("out")=object()),
-        "Likewise for bool arrays.\n");
-    
-    def("multiBinaryOpening",
-        registerConverters(&pythonMultiBinaryOpening<4, UInt8>),
-        (arg("volume"), arg("radius"), arg("out")=object()),
-        "Binary opening on a 3D scalar or multiband uint8 array.\n"
+
+    multidef("multiBinaryOpening",
+        pyMultiBinaryOpening<3, 4, UInt8, bool>().installFallback(),
+        (arg("array"),
+         arg("radius"),
+         arg("out")=object()),
         "\n"
-        "This function applies a flat circular opening operator (sequential erosion "
-        "and dilation) with a given radius. The operation is isotropic. "
-        "The input is a uint8 or boolean multi-dimensional array where non-zero pixels represent "
-        "foreground and zero pixels represent background. "
-        "This function also works for multiband arrays, it is then executed on every band.\n"
+        "Binary opening on a scalar or multiband array (up to 3D, uint8 or bool).\n"
+        "Multiple channels are treated independently.\n"
+        "\n"
+        "This function applies a flat circular opening operator (sequential erosion\n"
+        "and dilation) with a given radius. The operation is isotropic. The input is a\n"
+        "uint8 or boolean multi-dimensional array where non-zero elements represent\n"
+        "foreground and zero elements represent background.\n"
         "\n"
         "For details see vigra C++ documentation (multiBinaryDilation_ and multiBinaryErosion_).\n"
         );
-        
-    def("multiBinaryOpening",
-        registerConverters(&pythonMultiBinaryOpening<4, bool>),
-        (arg("volume"), arg("radius"), arg("out")=object()),
-        "Likewise for a bool array.\n");
-        
-    def("multiBinaryClosing",
-        registerConverters(&pythonMultiBinaryClosing<4, UInt8>),
-        (arg("volume"), arg("radius"), arg("out")=object()),
-        "Binary closing on a 3D scalar or multiband uint8 array.\n"
+
+    multidef("multiBinaryClosing",
+        pyMultiBinaryClosing<3, 4, UInt8, bool>().installFallback(),
+        (arg("array"),
+         arg("radius"),
+         arg("out")=object()),
         "\n"
-        "This function applies a flat circular opening operator (sequential dilation "
-        "and erosion) with a given radius. The operation is isotropic. "
-        "The input is a uint8 or boolean multi-dimensional array where non-zero pixels represent "
-        "foreground and zero pixels represent background. "
-        "This function also works for multiband arrays, it is then executed on every band.\n"
+        "Binary closing on a scalar or multiband array (up to 3D, uint8 or bool).\n"
+        "Multiple channels are treated independently.\n"
+        "\n"
+        "This function applies a flat circular closing operator (sequential dilation\n"
+        "and erosion) with a given radius. The operation is isotropic. The input is a\n"
+        "uint8 or boolean multi-dimensional array where non-zero elements represent\n"
+        "foreground and zero elements represent background.\n"
         "\n"
         "For details see vigra C++ documentation (multiBinaryDilation_ and multiBinaryErosion_).\n"
         );
-        
-    def("multiBinaryClosing",
-        registerConverters(&pythonMultiBinaryClosing<4, bool>),
-        (arg("volume"), arg("radius"), arg("out")=object()),
-        "Likewise for a bool array.\n");
-    
-    def("multiGrayscaleErosion",
-        registerConverters(&pythonMultiGrayscaleErosion<4,UInt8>),
-        (arg("volume"), arg("sigma"), arg("out")=object()),
-        "Parabolic grayscale erosion on a 3D scalar or multiband uint8 array.\n"
+
+    multidef("multiGrayscaleErosion",
+        pyMultiGrayscaleErosion<3, 4, UInt8, float, double>().installFallback(),
+        (arg("array"),
+         arg("sigma"),
+         arg("out")=object()),
         "\n"
-        "This function applies a parabolic erosion operator with a given spread 'sigma' on a grayscale array. "
-        "The operation is isotropic. The input is a grayscale multi-dimensional array. "
-        "This function also works for multiband arrays, it is then executed on every band.\n"
+        "Parabolic grayscale erosion on a scalar or multiband array (up to 3D).\n"
+        "Multiple channels are treated independently.\n"
+        "\n"
+        "This function applies a parabolic erosion operator with a given spread 'sigma'\n"
+        "on a grayscale array. The operation is isotropic.\n"
         "\n"
         "For details see multiGrayscaleErosion_ in the C++ documentation.\n"
         );
-                
-    def("multiGrayscaleErosion",
-        registerConverters(&pythonMultiGrayscaleErosion<4,float>),
-        (arg("volume"), arg("sigma"), arg("out")=object()),
-        "Likewise for a 3D float array.\n");
 
-    def("multiGrayscaleErosion",
-        registerConverters(&pythonMultiGrayscaleErosion<3,UInt8>),
-        (arg("image"), arg("sigma"), arg("out")=object()),
-        "Likewise for a 2D uint8 array.\n");
-    
-    def("multiGrayscaleErosion",
-        registerConverters(&pythonMultiGrayscaleErosion<3,float>),
-        (arg("image"), arg("sigma"), arg("out")=object()),
-        "Likewise for a 2D float array.\n");
-
-    def("multiGrayscaleDilation",
-        registerConverters(&pythonMultiGrayscaleDilation<4,UInt8>),
-        (arg("volume"), arg("sigma"), arg("out")=object()),
-        "Parabolic grayscale dilation on multi-dimensional arrays.\n"
+    multidef("multiGrayscaleDilation",
+        pyMultiGrayscaleDilation<3, 4, UInt8, float, double>().installFallback(),
+        (arg("array"),
+         arg("sigma"),
+         arg("out")=object()),
         "\n"
-        "This function applies a parabolic dilation operator with a given spread 'sigma' on a grayscale array. "
-        "The operation is isotropic. The input is a grayscale multi-dimensional array. "
-        "This function also works for multiband arrays, it is then executed on every band.\n"
+        "Parabolic grayscale dilation on a scalar or multiband array (up to 3D).\n"
+        "Multiple channels are treated independently.\n"
+        "\n"
+        "This function applies a parabolic dilation operator with a given spread 'sigma'\n"
+        "on a grayscale array. The operation is isotropic.\n"
         "\n"
         "For details see multiGrayscaleDilation_ in the C++ documentation.\n"
         );
-        
-    def("multiGrayscaleDilation",
-        registerConverters(&pythonMultiGrayscaleDilation<4,float>),
-        (arg("volume"), arg("sigma"), arg("out")=object()),
-        "Likewise for a 3D float array.\n");
 
-    def("multiGrayscaleDilation",
-        registerConverters(&pythonMultiGrayscaleDilation<3,UInt8>),
-        (arg("image"), arg("sigma"), arg("out")=object()),
-        "Likewise for a 2D uint8 array.\n");
-
-    def("multiGrayscaleDilation",
-        registerConverters(&pythonMultiGrayscaleDilation<3,float>),
-        (arg("image"), arg("sigma"), arg("out")=object()));
-
-    def("multiGrayscaleOpening",
-        registerConverters(&pythonMultiGrayscaleOpening<4,UInt8>),
-        (arg("volume"), arg("sigma"), arg("out")=object()),
-        "Parabolic grayscale opening on multi-dimensional arrays.\n"
+    multidef("multiGrayscaleOpening",
+        pyMultiGrayscaleOpening<3, 4, UInt8, float, double>().installFallback(),
+        (arg("array"),
+         arg("sigma"),
+         arg("out")=object()),
         "\n"
-        "This function applies a parabolic opening (sequential erosion and dilation) "
-        "operator with a given spread 'sigma' on a grayscale array. "
-        "The operation is isotropic. The input is a grayscale multi-dimensional array. "
-        "This function also works for multiband arrays, it is then executed on every band.\n"
+        "Parabolic grayscale opening on a scalar or multiband array (up to 3D).\n"
+        "Multiple channels are treated independently.\n"
+        "\n"
+        "This function applies a parabolic opening (sequential erosion and dilation)\n"
+        "operator with a given spread 'sigma' on a grayscale array. The operation is\n"
+        "isotropic.\n"
         "\n"
         "For details see multiGrayscaleDilation_ and multiGrayscaleErosion_ in the C++ documentation.\n"
         );
 
-    def("multiGrayscaleOpening",
-        registerConverters(&pythonMultiGrayscaleOpening<4,float>),
-        (arg("volume"), arg("sigma"), arg("out")=object()),
-        "Likewise for a 3D float array.\n");
-
-    def("multiGrayscaleOpening",
-        registerConverters(&pythonMultiGrayscaleOpening<3,UInt8>),
-        (arg("image"), arg("sigma"), arg("out")=object()),
-        "Likewise for a 2D uint8 array.\n");
-
-    def("multiGrayscaleOpening",
-        registerConverters(&pythonMultiGrayscaleOpening<3,float>),
-        (arg("image"), arg("sigma"), arg("out")=object()));
-
-    def("multiGrayscaleClosing",
-        registerConverters(&pythonMultiGrayscaleClosing<4,UInt8>),
-        (arg("volume"), arg("sigma"), arg("out")=object()),
-        "Parabolic grayscale closing on multi-dimensional arrays.\n"
+    multidef("multiGrayscaleClosing",
+        pyMultiGrayscaleClosing<3, 4, UInt8, float, double>().installFallback(),
+        (arg("array"),
+         arg("sigma"),
+         arg("out")=object()),
         "\n"
-        "This function applies a parabolic closing (sequential dilation and erosion) "
-        "operator with a given spread 'sigma' on a grayscale array. "
-        "The operation is isotropic. The input is a grayscale multi-dimensional array. "
-        "This function also works for multiband arrays, it is then executed on every band.\n"
+        "Parabolic grayscale closing on a scalar or multiband array (up to 3D).\n"
+        "Multiple channels are treated independently.\n"
+        "\n"
+        "This function applies a parabolic closing (sequential dilation and erosion)\n"
+        "operator with a given spread 'sigma' on a grayscale array. The operation is\n"
+        "isotropic.\n"
         "\n"
         "For details see multiGrayscaleDilation_ and multiGrayscaleErosion_ in the C++ documentation.\n"
         );
-    
-    def("multiGrayscaleClosing",
-        registerConverters(&pythonMultiGrayscaleClosing<4,float>),
-        (arg("volume"), arg("sigma"), arg("out")=object()),
-        "Likewise for a 3D float array.\n");
-
-    def("multiGrayscaleClosing",
-        registerConverters(&pythonMultiGrayscaleClosing<3,UInt8>),
-        (arg("image"), arg("sigma"), arg("out")=object()),
-        "Likewise for a 2D uint8 array.\n");
-
-    def("multiGrayscaleClosing",
-        registerConverters(&pythonMultiGrayscaleClosing<3,float>),
-        (arg("image"), arg("sigma"), arg("out")=object()));
 
     def("distanceTransform2D",
         registerConverters(&pythonDistanceTransform2D<float, float>),
-        (arg("image"), 
-         arg("background")=true, 
+        (arg("image"),
+         arg("background")=true,
          arg("norm")=2,
-         arg("pixel_pitch") = ArrayVector<double>(), 
+         arg("pixel_pitch") = ArrayVector<double>(),
          arg("out")=python::object()),
         "Compute the distance transform of a 2D scalar float image.\n"
         "All pixels with a value of 0.0 are considered to be background pixels,\n"
@@ -955,78 +935,62 @@ void defineMorphology()
 
     def("distanceTransform2D",
         registerConverters(&pythonDistanceTransform2D<UInt8,float>),
-        (arg("image"), 
-         arg("background")=true, 
+        (arg("image"),
+         arg("background")=true,
          arg("norm")=2,
-         arg("pixel_pitch") = ArrayVector<double>(), 
+         arg("pixel_pitch") = ArrayVector<double>(),
          arg("out")=python::object()),
         "Likewise for a 2D uint8 input array.\n");
 
-    def("distanceTransform3D",
-        registerConverters(&pythonDistanceTransformND<3, float>),
-        (arg("array"), 
-         arg("background") = true, 
-         arg("pixel_pitch") = ArrayVector<double>(), 
+    multidef("distanceTransform",
+        pyDistanceTransform<2, 3, npy_uint32, float>().installFallback(),
+        (arg("array"),
+         arg("background") = true,
+         arg("pixel_pitch") = ArrayVector<double>(),
          arg("out")=python::object()),
-        "Compute the Euclidean distance transform of a 3D scalar float volume.\n"
-        "All voxels with a value of 0.0 are considered to be background voxels,\n"
-        "while all voxels with a nonzero value are considered to be foreground voxels.\n"
+        "\n"
+        "Compute the Euclidean distance transform of a scalar array (up to 3D).\n"
+        "\n"
+        "All pixels with a value of 0.0 are considered background,\n"
+        "while all pixels with a nonzero value are considered foreground.\n"
         "The parameter 'background' is a Boolean scalar that specifies whether to\n"
-        "compute the distance of all background voxels to the nearest foreground voxel\n"
+        "compute the distance of all background pixels to the nearest foreground pixel\n"
         "(if it is 'True', default) or vice versa (if it is 'False').\n"
-        "Hence in the destination volume, for background==True all background voxels\n"
-        "will be assigned their distance value, while all foreground voxels will be assigned 0.\n"
-        "For background==False, it is exactly the other way around.\n\n"
+        "Hence in the destination array, for background==True all background elements\n"
+        "will be assigned their distance value, while all foreground elements will be assigned 0.\n"
+        "For background==False, it is exactly the other way around.\n"
+        "\n"
         "If 'pixel_pitch' is given, it must contain the pixel distance along the three axes.\n"
         "They are then used to compute the distance anisotropically. If no 'pixel_pitch' is\n"
         "given, the data is treated isotropically with unit distance between pixels.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
-        
-    def("vectorDistanceTransform",
-        registerConverters(&pythonVectorDistanceTransformND<2, float>),
-        (arg("array"), 
-         arg("background") = true, 
-         arg("pixel_pitch") = ArrayVector<double>(), 
+
+    multidef("vectorDistanceTransform",
+        pyVectorDistanceTransform<2, 3, npy_uint32, float>().installFallback(),
+        (arg("array"),
+         arg("background") = true,
+         arg("pixel_pitch") = ArrayVector<double>(),
          arg("out")=python::object()),
-        "Perform a Euclidean distance transform and return, for each background pixel, the\n"
-        "difference vector to the nearest foreground pixel (when 'background=True', the\n"
-        "default), or the other way around (when 'background=False').\n"
-        "Otherwise, this function behaves like :func:`distanceTransform2D` (which just\n"
+        "\n"
+        "Compute the Euclidean vector distance transform of a scalar array (up to 3D).\n"
+        "The function returns an array with a many channels as the input dimension.\n"
+        "\n"
+        "In contrast to the plain distance transform, this function returns the difference\n"
+        "vector of each background pixel to the nearest foreground pixel (when\n"
+        "'background=True', the default), or the other way around (when 'background=False').\n"
+        "Otherwise, this function behaves like :func:`distanceTransform` (which just\n"
         "returns the magnitude of the difference vectors).\n"
         "\n"
         "For more detailed documentation, see :func:`distanceTransform2D` and\n" "separableVectorDistance_ in the vigra C++ documentation.\n");
-        
-    def("vectorDistanceTransform",
-        registerConverters(&pythonVectorDistanceTransformND<2, npy_uint32>),
-        (arg("array"), 
-         arg("background") = true, 
-         arg("pixel_pitch") = ArrayVector<double>(), 
+
+    multidef("boundaryDistanceTransform",
+        pyboundaryDistanceTransform<2, 3, npy_uint32, float>().installFallback(),
+        (arg("array"),
+         arg("array_border_is_active") = false,
+         arg("boundary") = "InterpixelBoundary",
          arg("out")=python::object()),
-        "Likewise for uint32 images.\n");
-        
-    def("vectorDistanceTransform",
-        registerConverters(&pythonVectorDistanceTransformND<3, float>),
-        (arg("array"), 
-         arg("background") = true, 
-         arg("pixel_pitch") = ArrayVector<double>(), 
-         arg("out")=python::object()),
-        "Likewise for 3D arrays.\n");
-        
-    def("vectorDistanceTransform",
-        registerConverters(&pythonVectorDistanceTransformND<3, npy_uint32>),
-        (arg("array"), 
-         arg("background") = true, 
-         arg("pixel_pitch") = ArrayVector<double>(), 
-         arg("out")=python::object()),
-        "Likewise for 3D uint32 arrays.\n");
-        
-    def("boundaryDistanceTransform",
-       registerConverters(&pythonboundaryDistanceTransform<2, npy_uint32>),
-       (arg("image"),
-        arg("array_border_is_active") = false,
-        arg("boundary") = "InterpixelBoundary",
-        arg("out")=python::object()),
+        "\n"
         "Compute the Euclidean distance transform of all regions in a 2D or 3D label\n"
         "array with respect to the region boundaries. The 'boundary' parameter must be\n"
         "one of the following strings:\n\n"
@@ -1041,36 +1005,13 @@ void defineMorphology()
         "\n"
         "For more details see boundaryMultiDistance_ in the vigra C++ documentation.\n");
 
-    def("boundaryDistanceTransform",
-       registerConverters(&pythonboundaryDistanceTransform<3, npy_uint32>),
-       (arg("volume"),
+    multidef("boundaryVectorDistanceTransform",
+       pyboundaryVectorDistanceTransform<2, 3, npy_uint32, float>().installFallback(),
+       (arg("array"),
         arg("array_border_is_active") = false,
         arg("boundary") = "InterpixelBoundary",
         arg("out")=python::object()),
-         "Likewise for a 3D uint32 input array.\n");
-
-    def("boundaryDistanceTransform",
-       registerConverters(&pythonboundaryDistanceTransform<2, float>),
-       (arg("image"),
-        arg("array_border_is_active") = false,
-        arg("boundary") = "InterpixelBoundary",
-        arg("out")=python::object()),
-         "Likewise for a 2D float32 input array.\n");
-
-    def("boundaryDistanceTransform",
-       registerConverters(&pythonboundaryDistanceTransform<3, float>),
-       (arg("volume"),
-        arg("array_border_is_active") = false,
-        arg("boundary") = "InterpixelBoundary",
-        arg("out")=python::object()),
-         "Likewise for a 3D float32 input array.\n");
-
-    def("boundaryVectorDistanceTransform",
-       registerConverters(&pythonboundaryVectorDistanceTransform<2, npy_uint32>),
-       (arg("image"),
-        arg("array_border_is_active") = false,
-        arg("boundary") = "InterpixelBoundary",
-        arg("out")=python::object()),
+        "\n"
         "Compute the Euclidean distance transform of all regions in a 2D or 3D label\n"
         "array with respect to the region boundaries and return, in each pixel,\n"
         "the difference vector to the nearest boundary point.\n"
@@ -1087,102 +1028,31 @@ void defineMorphology()
         "For more details see :func:`boundaryDistanceTransform` and boundaryVectorDistance_ in\n"
         "the vigra C++ documentation.\n");
 
-    def("boundaryVectorDistanceTransform",
-       registerConverters(&pythonboundaryVectorDistanceTransform<3, npy_uint32>),
-       (arg("volume"),
-        arg("array_border_is_active") = false,
-        arg("boundary") = "InterpixelBoundary",
-        arg("out")=python::object()),
-         "Likewise for a 3D uint32 input array.\n");
-
-    def("boundaryVectorDistanceTransform",
-       registerConverters(&pythonboundaryVectorDistanceTransform<2, float>),
-       (arg("image"),
-        arg("array_border_is_active") = false,
-        arg("boundary") = "InterpixelBoundary",
-        arg("out")=python::object()),
-         "Likewise for a 2D float32 input array.\n");
-
-    def("boundaryVectorDistanceTransform",
-       registerConverters(&pythonboundaryVectorDistanceTransform<3, float>),
-       (arg("volume"),
-        arg("array_border_is_active") = false,
-        arg("boundary") = "InterpixelBoundary",
-        arg("out")=python::object()),
-         "Likewise for a 3D float32 input array.\n");
-
-    def("eccentricityTransform",
-        registerConverters(&pythonEccentricityTransform<2, UInt32, float>),
-        (arg("image"),
+    multidef("eccentricityTransform",
+        pyEccentricityTransform<2, 3, npy_uint8, npy_uint32, float>().installFallback(),
+        (arg("array"),
          arg("out")=python::object()),
-        "Compute the eccentricity transform of a 2D uint32 label array.\n\n"
+        "\n"
+        "Compute the eccentricity transform of a label array (2D or 3D).\n\n"
         "For more details see eccentricityTransformOnLabels_ in the vigra C++ documentation.\n");
 
-    def("eccentricityTransform",
-        registerConverters(&pythonEccentricityTransform<2, UInt8, float>),
-        (arg("image"),
-         arg("out")=python::object()),
-         "Likewise for a 2D uint8 input array.\n");
-
-    def("eccentricityTransform",
-        registerConverters(&pythonEccentricityTransform<3, UInt32, float>),
-        (arg("image"),
-         arg("out")=python::object()),
-         "Likewise for a 3D uint32 label array.\n");
-
-    def("eccentricityTransform",
-        registerConverters(&pythonEccentricityTransform<3, UInt8, float>),
-        (arg("image"),
-         arg("out")=python::object()),
-         "Likewise for a 3D uint8 input array.\n");
-
-    def("eccentricityCenters",
-        registerConverters(&pythonEccentricityCenters<2, UInt32>),
-        (arg("image")),
+    multidef("eccentricityCenters",
+        pyEccentricityCenters<2, 3, npy_uint8, npy_uint32, float>().installFallback(),
+        (arg("array")),
+         "\n"
          "Compute a list holding the eccentricity center of each region in\n"
-         "a 2D uint32 label array.\n\n"
+         "a label array (2D or 3D).\n\n"
          "For more details see eccentricityCenters_ in the vigra C++ documentation.\n");
 
-    def("eccentricityCenters",
-        registerConverters(&pythonEccentricityCenters<2, UInt8>),
-        (arg("image")),
-         "Likewise for a 2D uint8 input array.\n");
-
-    def("eccentricityCenters",
-        registerConverters(&pythonEccentricityCenters<3, UInt32>),
-        (arg("image")),
-         "Likewise for a 3D uint32 label array.\n");
-
-    def("eccentricityCenters",
-        registerConverters(&pythonEccentricityCenters<3, UInt8>),
-        (arg("image")),
-         "Likewise for a 3D uint8 array.\n");
-
-    def("eccentricityTransformWithCenters",
-        registerConverters(&pythonEccentricityTransformWithCenters<2, UInt32, float>),
-        (arg("image"),
+    multidef("eccentricityTransformWithCenters",
+        pyEccentricityTransformWithCenters<2, 3, npy_uint8, npy_uint32, float>().installFallback(),
+        (arg("array"),
          arg("out")=python::object()),
-         "Compute the eccentricity transform and eccentricity centers of a 2D uint32 label array.\n"
          "\n"
-         "Returns the tuple (ecc_image, centers).\n");
-
-    def("eccentricityTransformWithCenters",
-        registerConverters(&pythonEccentricityTransformWithCenters<2, UInt8, float>),
-        (arg("image"),
-         arg("out")=python::object()),
-         "Likewise for a 2D uint8 input array.\n");
-
-    def("eccentricityTransformWithCenters",
-        registerConverters(&pythonEccentricityTransformWithCenters<3, UInt32, float>),
-        (arg("image"),
-         arg("out")=python::object()),
-         "Likewise for a 3D uint32 label array.\n");
-
-    def("eccentricityTransformWithCenters",
-        registerConverters(&pythonEccentricityTransformWithCenters<3, UInt8, float>),
-        (arg("image"),
-         arg("out")=python::object()),
-         "Likewise for a 2D uint8 input array.\n");
+         "Compute the eccentricity transform and eccentricity centers of a label array (2D and 3D).\n"
+         "\n"
+         "Returns the tuple (ecc_image, centers). See :func:`eccentricityTransform` and\n"
+         ":func:`eccentricityCenters`.\n");
 
     def("skeletonizeImage",
         registerConverters(&pySkeletonizeImage<2, UInt32>),

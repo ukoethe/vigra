@@ -1223,7 +1223,7 @@ void defineSegmentation()
     );
 
     multidef("labelImage",
-        pyLabelMultiArray<2, 2, npy_uint8, npy_uint32, float>(true),
+        pyLabelMultiArray<2, 2, npy_uint8, npy_uint32, float>().installFallback(),
         (arg("image"),
          arg("neighborhood") = 4,
          arg("out")=python::object()),
@@ -1232,7 +1232,7 @@ void defineSegmentation()
         "For details see labelMultiArray_ in the vigra C++ documentation.\n");
 
     multidef("labelImageWithBackground",
-        pyLabelMultiArrayWithBackground<2, 2, npy_uint8, npy_uint32, float>(true),
+        pyLabelMultiArrayWithBackground<2, 2, npy_uint8, npy_uint32, float>().installFallback(),
         (arg("image"),
          arg("neighborhood") = 4,
          arg("background_value") = 0,
@@ -1244,7 +1244,7 @@ void defineSegmentation()
         "For details see labelMultiArrayWithBackground_ in the vigra C++ documentation.\n");
 
     multidef("labelVolume",
-        pyLabelMultiArray<3, 3, npy_uint8, npy_uint32, float>(true),
+        pyLabelMultiArray<3, 3, npy_uint8, npy_uint32, float>().installFallback(),
         (arg("volume"),
          arg("neighborhood")=6,
          arg("out")=python::object()),
@@ -1254,7 +1254,7 @@ void defineSegmentation()
         "For details see labelMultiArray_ in the vigra C++ documentation.\n");
 
     multidef("labelVolumeWithBackground",
-        pyLabelMultiArrayWithBackground<3, 3, npy_uint8, npy_uint32, float>(true),
+        pyLabelMultiArrayWithBackground<3, 3, npy_uint8, npy_uint32, float>().installFallback(),
         (arg("volume"),
          arg("neighborhood")=6,
          arg("background_value")=0,
@@ -1267,7 +1267,7 @@ void defineSegmentation()
         "For details see labelMultiArrayWithBackground_ in the vigra C++ documentation.\n");
 
     multidef("labelMultiArray",
-        pyLabelMultiArray<2, 5, npy_uint8, npy_uint32, float>(true),
+        pyLabelMultiArray<2, 5, npy_uint8, npy_uint32, float>().installFallback(),
         (arg("array"),
          arg("neighborhood")="",
          arg("out")=python::object()),
@@ -1280,7 +1280,7 @@ void defineSegmentation()
         "For details see labelMultiArray_ in the vigra C++ documentation.\n");
 
     multidef("labelMultiArrayWithBackground",
-        pyLabelMultiArrayWithBackground<2, 5, npy_uint8, npy_uint32, float>(true),
+        pyLabelMultiArrayWithBackground<2, 5, npy_uint8, npy_uint32, float>().installFallback(),
         (arg("array"),
          arg("neighborhood")="",
          arg("background_value")=0,
@@ -1351,7 +1351,7 @@ void defineSegmentation()
         // );
 
     multidef("extendedLocalMinima",
-        pyExtendedLocalMinima2D<npy_uint8, float>(true),
+        pyExtendedLocalMinima2D<npy_uint8, float>().installFallback(),
         (arg("image"),
          arg("marker")=1.0,
          arg("neighborhood") = 8,
@@ -1363,7 +1363,7 @@ void defineSegmentation()
         );
 
     multidef("extendedLocalMinima3D",
-        pyExtendedLocalMinima3D<float, npy_uint8>(true),
+        pyExtendedLocalMinima3D<float, npy_uint8>().installFallback(),
         (arg("volume"),
          arg("marker") = 1,
          arg("neighborhood") = 6,
@@ -1433,7 +1433,7 @@ void defineSegmentation()
 
     /*  FIXME: int64 is unsupported by the C++ code (hard-coded int) */
     multidef("watersheds",
-        pywatersheds2D< npy_uint8, float >(/*overload_fallback*/true),
+        pywatersheds2D< npy_uint8, float >().installFallback(),
         (arg("image"),
          arg("neighborhood") = 4,
          arg("seeds")=python::object(),
@@ -1441,6 +1441,7 @@ void defineSegmentation()
          arg("terminate")=CompleteGrow,
          arg("max_cost")=0,
          arg("out")=python::object()),
+        "\n"
         "Compute the watersheds of a 2D image.\n"
         "\n"
         "   watersheds(image, neighborhood=4, seeds = None, methods = 'RegionGrowing', \n"
@@ -1502,7 +1503,7 @@ void defineSegmentation()
         "Likewise, compute watersheds of a volume.\n");
 
     multidef("watershedsNew",
-        pywatersheds2DNew< npy_uint8, float >(true),
+        pywatersheds2DNew< npy_uint8, float >().installFallback(),
         (arg("image"),
          arg("neighborhood") = 4,
          arg("seeds")=python::object(),
@@ -1524,13 +1525,14 @@ void defineSegmentation()
        "graph-based watershed");
 
     multidef("slicSuperpixels",
-        pySlic2D< TinyVector<float, 3>, Singleband<float> >(true),
+        pySlic2D< TinyVector<float, 3>, Singleband<float> >().installFallback(),
         (arg("image"),
          arg("intensityScaling"),
          arg("seedDistance"),
          arg("minSize")=0,
          arg("iterations")=10,
          arg("out")=python::object()),
+        "\n"
         "Compute Slic superpixels for a 2D image.\n"
         "\n"
         "Parameters:\n\n"

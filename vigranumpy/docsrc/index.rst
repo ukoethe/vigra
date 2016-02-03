@@ -573,6 +573,7 @@ The module vigra.histogram provides histograms and channel representation
    :members:
 
 
+.. _sec-graph-algorithms:
 
 Graphs and Algorithms on Graphs
 -------------------------------
@@ -589,18 +590,16 @@ The module vigra.graphs provides graphs and graph algorithms
    :members:
 
 .. autoclass:: vigra.graphs.AdjacencyListGraph
-    :members:
+   :members:
 
 .. autoclass:: vigra.graphs.RegionAdjacencyGraph
-    :members:
+   :members:
 
 .. autoclass:: vigra.graphs.GridRegionAdjacencyGraph
-    :members:
-
+   :members:
 
 .. autoclass:: vigra.graphs.ShortestPathPathDijkstra
-    :members:
-
+   :members:
 
 
 Utilities
@@ -611,10 +610,6 @@ like priority queues with changeable priorities
 
 .. automodule:: vigra.utilities
    :members:
-
-
-
-
 
 
 .. _sec-own-modules:
