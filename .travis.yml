@@ -25,19 +25,21 @@ matrix:
 
 addons:
   apt:
+    sources:
+      - boost-latest
     packages:
       - libhdf5-serial-dev
-      - libboost-thread1.55-dev
-      - libboost-system1.55-dev
-      - libboost-date-time1.55-dev
-      - libboost-chrono1.55-dev
-      - libboost-python1.55-dev
       - libjpeg-dev
       - libtiff4-dev
       - libpng12-dev
       - libfftw3-dev
       - libatlas-base-dev
       - cmake
+      - libboost-thread1.55-dev
+      - libboost-system1.55-dev
+      - libboost-date-time1.55-dev
+      - libboost-chrono1.55-dev
+      - libboost-python1.55-dev
 
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="/usr/local/bin:${PATH}"                                                ; fi
