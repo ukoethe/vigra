@@ -134,20 +134,23 @@ struct WrapDoubleIteratorTriple
              vigra_precondition(false, function_name + msg);
         }
     }
-    double sigma_scaled(const char *const function_name = "unknown function ") const
+    double sigma_scaled(const char *const function_name = "unknown function ",
+                        bool allow_zero = false) const
     {
         sigma_precondition(sigma_eff(), function_name);
         sigma_precondition(sigma_d(), function_name);
         double sigma_squared = sq(sigma_eff()) - sq(sigma_d());
-        if (sigma_squared > 0.0)
+        if (sigma_squared > 0.0 || (allow_zero && sigma_squared == 0.0))
         {
             return std::sqrt(sigma_squared) / step_size();
         }
         else
         {
-             std::string msg = "(): Scale would be imaginary or zero.";
-             vigra_precondition(false, function_name + msg);
-             return 0;
+            std::string msg = "(): Scale would be imaginary";
+            if(!allow_zero)
+                msg += " or zero";
+            vigra_precondition(false, function_name + msg + ".");
+            return 0;
         }
     }
 };
@@ -1308,7 +1311,8 @@ gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src
     ArrayVector<Kernel1D<double> > kernels(N);
 
     for (int dim = 0; dim < N; ++dim, ++params)
-        kernels[dim].initGaussian(params.sigma_scaled(function_name), 1.0, opt.window_ratio);
+        kernels[dim].initGaussian(params.sigma_scaled(function_name, true),
+                                  1.0, opt.window_ratio);
 
     separableConvolveMultiArray(s, shape, src, d, dest, kernels.begin(), opt.from_point, opt.to_point);
 }
