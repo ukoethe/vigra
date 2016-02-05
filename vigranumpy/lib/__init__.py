@@ -318,7 +318,7 @@ def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
         if array.dropChannelAxis().ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     else:
-        if array.ndim == len(orders):
+        if array.ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     try:
         len(sigma)
