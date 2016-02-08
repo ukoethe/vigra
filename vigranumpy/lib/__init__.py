@@ -311,14 +311,17 @@ def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
 
         'window_size' specifies the ratio between the filter scale and the size of
         the filter window. Use values around 2.0 to speed-up the computation for the
-        price of increased cut-off error, and values >= 4.0 for vary accurate results.
+        price of increased cut-off error, and values >= 4.0 for very accurate results.
         The window size is automatically determined for the default value 0.0.
+
+        For the first and second derivatives, you can also use :func:`gaussianGradient`
+        and :func:`hessianOfGaussian`.
     '''
     if hasattr(array, 'dropChannelAxis'):
         if array.dropChannelAxis().ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     else:
-        if array.ndim == len(orders):
+        if array.ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     try:
         len(sigma)
