@@ -42,8 +42,6 @@ from nose.tools import assert_equal, raises, assert_raises
 import vigra
 import numpy as np
 
-# FIXME: Should there be tests for writeVolume, writeImage?
-
 def checkAboutSame(i1,i2):
     assert(i1.shape==i2.shape)
     difference=np.sum(np.abs(i1-i2))/float(np.size(i1))
@@ -72,9 +70,11 @@ def test_convolveOneDimension():
     imc = np.array([[0, 0, 0, 0, 0],
                     [0, 1, 2, 3, 0],
                     [0, 0, 0, 0, 0]], dtype=np.float64)
-    k = vigra.filters.explictKernel(-1, 1, np.array([1, 2, 3], dtype=np.float64))  # FIXME: Typo in explictKernel.
+    k = vigra.filters.explictKernel(-1, 1, np.array([1, 2, 3], dtype=np.float64))
     res = vigra.filters.convolveOneDimension(im, 0, k)
     checkAboutSame(res, imc)
+    assert_raises(ValueError, vigra.filters.convolveOneDimension, im)
+    assert_raises(ValueError, vigra.filters.convolveOneDimension, im, 0)
     assert_raises(ValueError, vigra.filters.convolveOneDimension, im.astype(np.uint8), 0, k)
     assert_raises(ValueError, vigra.filters.convolveOneDimension, [0, 1], 0, k)
 
@@ -96,6 +96,7 @@ def test_convolve():
                                                  [7, 8, 9]], dtype=np.float64))
     res = vigra.filters.convolve(im, k)
     checkAboutSame(res, imc0)
+    assert_raises(ValueError, vigra.filters.convolve, im)
     assert_raises(ValueError, vigra.filters.convolve, im.astype(np.uint8), k)
     assert_raises(ValueError, vigra.filters.convolve, [0, 1], k)
 
@@ -130,6 +131,7 @@ def test_gaussianSmoothing():
                     [ 0.04532707,  0.16757448,  0.04532707]])
     res = vigra.filters.gaussianSmoothing(im, 0.5)
     checkAboutSame(res, imc)
+    assert_raises(ValueError, vigra.filters.gaussianSmoothing, im)
     assert_raises(ValueError, vigra.filters.gaussianSmoothing, im.astype(np.int8), 0.5)
 
 def test_laplacianOfGaussian():
@@ -173,20 +175,24 @@ def test_multiBinaryErosionDilation():
                     [0, 0, 1, 0, 0]], dtype=np.uint8)
     res = vigra.filters.multiBinaryErosion(imc, 1)
     checkEqual(res, im)
+    assert_raises(ValueError, vigra.filters.multiBinaryErosion, imc)
     assert_raises(ValueError, vigra.filters.multiBinaryErosion, imc.astype(np.float64))
     res = vigra.filters.multiBinaryDilation(im, 1)
     checkEqual(res, imc)
+    assert_raises(ValueError, vigra.filters.multiBinaryDilation, im)
     assert_raises(ValueError, vigra.filters.multiBinaryDilation, im.astype(np.float64))
 
     res = vigra.filters.multiBinaryOpening(im, 1)
     checkEqual(res, np.zeros((4, 5), dtype=np.uint8))
     res = vigra.filters.multiBinaryOpening(imc, 1)
     checkEqual(res, imc)
+    assert_raises(ValueError, vigra.filters.multiBinaryOpening, im)
     assert_raises(ValueError, vigra.filters.multiBinaryOpening, im.astype(np.float64))
     res = vigra.filters.multiBinaryClosing(im, 1)
     checkEqual(res, im)
     res = vigra.filters.multiBinaryClosing(imc, 1)
     checkEqual(res, imc2)
+    assert_raises(ValueError, vigra.filters.multiBinaryClosing, im)
     assert_raises(ValueError, vigra.filters.multiBinaryClosing, im.astype(np.float64))
 
 def test_multiGrayscaleErosionDilation():
@@ -208,16 +214,20 @@ def test_multiGrayscaleErosionDilation():
                      [0, 0, 47, 0, 0]], dtype=np.uint8)
     res = vigra.filters.multiGrayscaleErosion(im, 9)
     checkEqual(res, imc0)
+    assert_raises(ValueError, vigra.filters.multiGrayscaleErosion, im)
     assert_raises(ValueError, vigra.filters.multiGrayscaleErosion, im.astype(np.int16), 9)
     res = vigra.filters.multiGrayscaleDilation(im, 6)
     checkEqual(res, imc1)
+    assert_raises(ValueError, vigra.filters.multiGrayscaleDilation, im)
     assert_raises(ValueError, vigra.filters.multiGrayscaleDilation, im.astype(np.int16), 6)
 
     res = vigra.filters.multiGrayscaleOpening(im, 9)
     checkEqual(res, imc0)
+    assert_raises(ValueError, vigra.filters.multiGrayscaleOpening, im)
     assert_raises(ValueError, vigra.filters.multiGrayscaleOpening, im.astype(np.int16), 9)
     res = vigra.filters.multiGrayscaleClosing(im, 9)
     checkEqual(res, imc2)
+    assert_raises(ValueError, vigra.filters.multiGrayscaleClosing, im)
     assert_raises(ValueError, vigra.filters.multiGrayscaleClosing, im.astype(np.int16), 9)
 
 def test_distanceTransform():
@@ -236,8 +246,7 @@ def test_distanceTransform():
     checkAboutSame(res, imd)
     res = vigra.filters.distanceTransform2D(im)
     checkAboutSame(res, imd)
-    assert_raises(RuntimeError, vigra.filters.distanceTransform, np.zeros((5, 6, 7, 8), dtype=np.float32))  # FIXME: Why does it throw RuntimeError instead of ValueError?
-    # FIXME: 3D array as input: vigra.filters.distanceTransform calls vigra.filters.distanceTransform3D, which does not exist.
+    assert_raises(RuntimeError, vigra.filters.distanceTransform, np.zeros((5, 6, 7, 8), dtype=np.float32))
 
     # Test vectorDistanceTransform.
     im = im.astype(np.float32)
@@ -248,9 +257,7 @@ def test_distanceTransform():
     res = vigra.filters.vectorDistanceTransform(im)
     checkAboutSame(res, imd)
     assert_raises(ValueError, vigra.filters.vectorDistanceTransform, np.zeros((5, 6, 7, 8), dtype=np.float32))
-    # FIXME: vectorDistanceTransform is only defined for np.uint32 and np.float32. Why? Compare to distanceTransform.
-    # FIxME: Why is the output type float? Some integer type would also be ok.
-
+    
 def test_boundaryDistanceTransform():
     # Test boundaryDistanceTransform.
     im = np.array([[2, 2, 2, 2, 2, 2],
@@ -356,11 +363,13 @@ def test_gaussianGradient():
                      [  5.94896474e-19 , 1.88750139e-01 , 1.21313252e-01 , 8.61150404e-02 , 1.13399844e-17]], dtype=np.float64)
     res = vigra.filters.gaussianGradient(im, 1)
     checkAboutSame(res, imd0)
+    assert_raises(ValueError, vigra.filters.gaussianGradient, im)
     assert_raises(ValueError, vigra.filters.gaussianGradient, im.astype(np.uint8), 1)
     assert_raises(ValueError, vigra.filters.gaussianGradient, np.zeros((5, 6, 7, 8, 9), dtype=np.float64), 1)
 
     res = vigra.filters.gaussianGradientMagnitude(im, 1)
     checkAboutSame(res, imd1)
+    assert_raises(ValueError, vigra.filters.gaussianGradientMagnitude, im)
     assert_raises(ValueError, vigra.filters.gaussianGradientMagnitude, im.astype(np.uint8), 1)
     assert_raises(ValueError, vigra.filters.gaussianGradientMagnitude, np.zeros((5, 6, 7, 8, 9, 10), dtype=np.float64), 1)
 
@@ -397,6 +406,7 @@ def test_hessianOfGaussian():
                      [  2.03117070e-01,  4.84491752e-34,  2.03117070e-01]]], dtype=np.float64)
     res = vigra.filters.hessianOfGaussian(im, 1)
     checkAboutSame(res, imd)
+    assert_raises(ValueError, vigra.filters.hessianOfGaussian, im)
     assert_raises(ValueError, vigra.filters.hessianOfGaussian, im.astype(np.uint8), 1)
     assert_raises(ValueError, vigra.filters.hessianOfGaussian, np.zeros((5, 6, 7, 8, 9), dtype=np.float32), 1)
 
@@ -411,5 +421,164 @@ def test_structureTensor():
                      [0, 0, 0.01856249]]], dtype=np.float64)
     res = vigra.filters.structureTensor(im, 0.2, 0.4)
     checkAboutSame(imd, res)
+    assert_raises(ValueError, vigra.filters.structureTensor, im)
+    assert_raises(ValueError, vigra.filters.structureTensor, im, 0.2)
     assert_raises(ValueError, vigra.filters.structureTensor, im.astype(np.uint8), 0.2, 0.4)
     assert_raises(ValueError, vigra.filters.structureTensor, np.zeros((5, 6, 7, 8, 9, 10), dtype=np.float64), 0.5, 0.75)
+
+def test_vectorToTensor():
+    im = np.zeros((2, 3, 2), dtype=np.float32)
+    im[0, 1] = [4, 5]
+    im[1, 1] = [3, 7]
+    imd = np.array([[[0, 0, 0],
+                     [16, 20, 25],
+                     [0, 0, 0]],
+                    [[0, 0, 0],
+                     [9, 21, 49],
+                     [0, 0, 0]]], dtype=np.float32)
+    res = vigra.filters.vectorToTensor(im)
+    checkAboutSame(res, imd)
+    vigra.filters.vectorToTensor(np.zeros((3, 4, 5, 3), dtype=np.float32))
+    assert_raises(ValueError, vigra.filters.vectorToTensor, im.astype(np.uint32))
+    assert_raises(ValueError, vigra.filters.vectorToTensor, np.zeros((2, 3, 4), dtype=np.float32))
+    assert_raises(ValueError, vigra.filters.vectorToTensor, np.zeros((3, 4, 5, 4), dtype=np.float32))
+
+def test_tensorTraceDetEigen():
+    # Test tensorTrace.
+    im = np.array([[0, 0, 0],
+                   [0, 1, 1]], dtype=np.float64)
+    im = vigra.filters.structureTensor(im, 0.2, 0.4)
+    imd = np.array([[ 0.00163116,  0.01856249,  0.00163116],
+                    [ 0.01856249,  0.21124014,  0.01856249]], dtype=np.float64)
+    res = vigra.filters.tensorTrace(im)
+    checkAboutSame(res, imd)
+    assert_raises(ValueError, vigra.filters.tensorTrace, im.astype(np.uint32))
+    assert_raises(ValueError, vigra.filters.tensorTrace, np.zeros((3, 4, 5), dtype=np.float64))
+
+    # Test tensorDeterminant.
+    vigra.filters.tensorDeterminant(im)
+    assert_raises(ValueError, vigra.filters.tensorDeterminant, im.astype(np.uint32))
+    assert_raises(ValueError, vigra.filters.tensorDeterminant, np.zeros((3, 4, 5), dtype=np.float64))
+
+    # Test tensorEigenvalues.
+    imd = np.array([[[ 0.00163116, 0 ],
+                     [ 0.01856249, 0 ],
+                     [ 0.00163116, 0 ]],
+                    [[ 0.01856249, 0 ],
+                     [ 0.21124014, 0 ],
+                     [ 0.01856249, 0 ]]], dtype=np.float64)
+    res = vigra.filters.tensorEigenvalues(im)
+    checkAboutSame(res, imd)
+    assert_raises(ValueError, vigra.filters.tensorEigenvalues, im.astype(np.uint32))
+    assert_raises(ValueError, vigra.filters.tensorEigenvalues, np.zeros((3, 4, 5), dtype=np.float64))
+
+def test_applyColortable():
+    vigra.colors.applyColortable(np.zeros((10, 11), dtype=np.uint8), np.zeros((10, 4), dtype=np.uint8))
+    assert_raises(ValueError, vigra.colors.applyColortable, np.zeros((10, 11), dtype=np.uint8))
+    assert_raises(ValueError, vigra.colors.applyColortable, np.zeros((10, 11), dtype=np.uint8), np.zeros((10, 4), dtype=np.uint32))
+    assert_raises(ValueError, vigra.colors.applyColortable, np.zeros((10, 11, 12), dtype=np.uint8), np.zeros((10, 4), dtype=np.uint8))
+
+def test_linearRangeMapping():
+    im = np.zeros((10, 11), dtype=np.uint8)
+    im[5, 5] = 128
+    vigra.colors.linearRangeMapping(im)
+    im = np.zeros((10, 11, 12, 13), dtype=np.uint8)
+    im[5, 5, 5, 6] = 128
+    assert_raises(ValueError, vigra.colors.linearRangeMapping, im)
+
+def test_labelImage():
+    im = np.array([[1, 1, 2, 2],
+                   [1, 0, 2, 2],
+                   [0, 0, 1, 1]], dtype=np.uint8)
+    imd0 = np.array([[1, 1, 3, 3],
+                    [1, 2, 3, 3],
+                    [2, 2, 4, 4]], dtype=np.uint8)
+    imd1 = np.array([[1, 1, 2, 2],
+                     [1, 0, 2, 2],
+                     [0, 0, 3, 3]], dtype=np.uint8)
+    res = vigra.analysis.labelImage(im)
+    checkEqual(res, imd0)
+    vigra.analysis.labelImage(im, "direct")
+    assert_raises(ValueError, vigra.analysis.labelImage, im.astype(np.float64))
+    assert_raises(ValueError, vigra.analysis.labelImage, np.zeros((3, 4, 5), dtype=np.uint8))
+    res = vigra.analysis.labelImageWithBackground(im)
+    checkEqual(res, imd1)
+    vigra.analysis.labelImageWithBackground(im, "direct")
+    assert_raises(ValueError, vigra.analysis.labelImageWithBackground, im.astype(np.float64))
+    assert_raises(ValueError, vigra.analysis.labelImageWithBackground, np.zeros((3, 4, 5), dtype=np.uint8))
+
+def test_labelVolume():
+    im = np.zeros((4, 5, 6), dtype=np.uint8)
+    vigra.analysis.labelVolume(im)
+    vigra.analysis.labelVolume(im, "direct")
+    assert_raises(ValueError, vigra.analysis.labelVolume, im.astype(np.float64))
+    assert_raises(ValueError, vigra.analysis.labelVolume, np.zeros((3, 4, 5, 6), dtype=np.uint8))
+    vigra.analysis.labelVolumeWithBackground(im)
+    vigra.analysis.labelVolumeWithBackground(im, "direct")
+    assert_raises(ValueError, vigra.analysis.labelVolumeWithBackground, im.astype(np.float64))
+    assert_raises(ValueError, vigra.analysis.labelVolumeWithBackground, np.zeros((3, 4, 5, 6), dtype=np.uint8))
+
+def test_labelMultiArray():
+    im = np.zeros((4, 5, 6, 7), dtype=np.uint8)
+    vigra.analysis.labelMultiArray(im)
+    vigra.analysis.labelMultiArray(im, "direct")
+    assert_raises(ValueError, vigra.analysis.labelMultiArray, im, "direct", 0)
+    assert_raises(ValueError, vigra.analysis.labelMultiArray, im.astype(np.float64))
+    vigra.analysis.labelMultiArrayWithBackground(im)
+    vigra.analysis.labelMultiArrayWithBackground(im, "direct")
+    vigra.analysis.labelMultiArrayWithBackground(im, "direct", 0)
+    assert_raises(ValueError, vigra.analysis.labelMultiArrayWithBackground, im, "direct", 0, 1)
+    assert_raises(ValueError, vigra.analysis.labelMultiArrayWithBackground, im.astype(np.float64))
+
+def test_extendedLocalMinima():
+    im = np.array([[5, 4, 5, 6],
+                   [6, 3, 4, 5],
+                   [7, 4, 5, 6]], dtype=np.uint8)
+    imd = np.array([[0, 0, 0, 0],
+                    [0, 1, 0, 0],
+                    [0, 0, 0, 0]], dtype=np.uint8)
+    res = vigra.analysis.extendedLocalMinima(im, 1)
+    checkEqual(res, imd)
+    vigra.analysis.extendedLocalMinima(im, 1, 8)
+    vigra.analysis.extendedLocalMinima(im.astype(np.float32))
+    vigra.analysis.extendedLocalMinima(im.astype(np.float32), 1.5)
+    assert_raises(ValueError, vigra.analysis.extendedLocalMinima, im)
+    assert_raises(ValueError, vigra.analysis.extendedLocalMinima, im, 1, 8, 1)
+    assert_raises(ValueError, vigra.analysis.extendedLocalMinima, im, 1.0)
+
+def test_extendedLocalMinima3D():
+    im = np.zeros((3, 4, 5), dtype=np.uint8)
+    vigra.analysis.extendedLocalMinima3D(im)
+    vigra.analysis.extendedLocalMinima3D(im, 5)
+    vigra.analysis.extendedLocalMinima3D(im, 5, 6)
+    assert_raises(ValueError, vigra.analysis.extendedLocalMinima3D, im, 1.5)
+    assert_raises(ValueError, vigra.analysis.extendedLocalMinima3D, im, 5, 6, 1)
+
+def test_watersheds():
+    im_f = vigra.arraytypes.ScalarImage(np.random.rand(100, 200)*255, dtype=np.float32)
+    im_i = vigra.arraytypes.ScalarImage(np.random.rand(100, 200)*255, dtype=np.uint32)
+
+    vigra.analysis.watersheds(im_f)
+    vigra.analysis.watersheds(im_f, seeds=im_i)
+    vigra.analysis.watersheds(im_f, method="RegionGrowing")
+    vigra.analysis.watersheds(im_f, seeds=im_i, method="RegionGrowing")
+    assert_raises(ValueError, vigra.analysis.watersheds, im_f, seeds=im_i.astype(np.float32), method="RegionGrowing")
+    assert_raises(ValueError, vigra.analysis.watersheds, im_f, seeds=np.zeros((100, 200, 3), dtype=np.uint32), method="RegionGrowing")
+    assert_raises(ValueError, vigra.analysis.watersheds, np.zeros((100, 200, 3), dtype=np.float32), seeds=np.zeros((100, 200), dtype=np.uint32), method="RegionGrowing")
+
+    vigra.analysis.watershedsNew(im_f)
+    vigra.analysis.watershedsNew(im_f, seeds=im_i)
+    vigra.analysis.watershedsNew(im_f, method="RegionGrowing")
+    vigra.analysis.watershedsNew(im_f, seeds=im_i, method="RegionGrowing")
+    assert_raises(ValueError, vigra.analysis.watershedsNew, im_f, seeds=im_i.astype(np.float32), method="RegionGrowing")
+    assert_raises(ValueError, vigra.analysis.watershedsNew, im_f, seeds=np.zeros((100, 200, 3), dtype=np.uint32), method="RegionGrowing")
+    assert_raises(ValueError, vigra.analysis.watershedsNew, np.zeros((100, 200, 3), dtype=np.float32), seeds=np.zeros((100, 200), dtype=np.uint32), method="RegionGrowing")
+
+def test_superpixels():
+    im_f = vigra.arraytypes.ScalarImage(np.random.rand(100, 200)*255, dtype=np.float32)
+    im_i = vigra.arraytypes.ScalarImage(np.random.rand(100, 200)*255, dtype=np.uint32)
+
+    vigra.analysis.slicSuperpixels(im_f, 0.5, 1)
+    assert_raises(ValueError, vigra.analysis.slicSuperpixels, im_f)
+    assert_raises(ValueError, vigra.analysis.slicSuperpixels, im_f, 0.5)
+    assert_raises(ValueError, vigra.analysis.slicSuperpixels, np.zeros((100, 200, 10, 20), dtype=np.float32), 0.5, 1)
