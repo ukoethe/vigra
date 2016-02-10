@@ -633,32 +633,6 @@ _genTensorConvenienceFunctions()
 del _genTensorConvenienceFunctions
 
 
-
-
-
-# define tensor convenience functions
-def _genDistanceTransformFunctions():
-
-    def distanceTransform(array,background=True,norm=2,pixel_pitch=None, out=None):
-        if array.squeeze().ndim == 2:
-            return filters.distanceTransform2D(array,background=background,norm=norm,
-                                               pixel_pitch=pixel_pitch, out=out)
-        elif array.squeeze().ndim == 3:
-            return filters.distanceTransform3D(array.astype('float32'),background=background,norm=2)
-        else:
-            raise RuntimeError("distanceTransform is only implemented for 2D and 3D arrays")
-
-    distanceTransform.__module__ = 'vigra.filters'
-    filters.distanceTransform = distanceTransform
-
-
-
-_genDistanceTransformFunctions()
-del _genDistanceTransformFunctions
-
-
-
-
 # define feature convenience functions
 def _genFeaturConvenienceFunctions():
     def supportedFeatures(array):
