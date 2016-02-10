@@ -235,7 +235,7 @@ def test_distanceTransform():
     im = np.array([[0, 0, 0, 0, 0],
                    [0, 1, 1, 0, 0],
                    [0, 0, 1, 0, 0],
-                   [0, 0, 0, 0, 0]], dtype=np.uint8)
+                   [0, 0, 0, 0, 0]], dtype=np.uint32)
     s2 = 1.41421354
     s5 = 2.23606801
     imd = np.array([[s2, 1, 1, s2, s5],
@@ -244,9 +244,7 @@ def test_distanceTransform():
                     [s5, s2, 1, s2, s5]], dtype=np.float32)
     res = vigra.filters.distanceTransform(im)
     checkAboutSame(res, imd)
-    res = vigra.filters.distanceTransform2D(im)
-    checkAboutSame(res, imd)
-    assert_raises(RuntimeError, vigra.filters.distanceTransform, np.zeros((5, 6, 7, 8), dtype=np.float32))
+    assert_raises(ValueError, vigra.filters.distanceTransform, np.zeros((5, 6, 7, 8), dtype=np.float32))
 
     # Test vectorDistanceTransform.
     im = im.astype(np.float32)
