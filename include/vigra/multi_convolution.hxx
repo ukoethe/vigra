@@ -38,7 +38,9 @@
 #ifndef VIGRA_MULTI_CONVOLUTION_H
 #define VIGRA_MULTI_CONVOLUTION_H
 
+#include "kerneltraits.hxx"
 #include "separableconvolution.hxx"
+#include "recursive_multi_convolution.hxx"
 #include "array_vector.hxx"
 #include "multi_array.hxx"
 #include "accessor.hxx"
@@ -53,6 +55,7 @@
 
 
 #include <iostream>
+#include <type_traits>
 
 namespace vigra
 {
@@ -204,6 +207,94 @@ struct multiArrayScaleParam
 
 } // namespace detail
 
+enum MultiConvolutionKernel
+{
+    MULTI_CONVOLUTION_KERNEL_AUTO = 0,
+    MULTI_CONVOLUTION_KERNEL_FIR,
+    MULTI_CONVOLUTION_KERNEL_IIR_DERICHE,
+    MULTI_CONVOLUTION_KERNEL_IIR_VYV
+};
+
+template <class ARITHTYPE = double>
+class GaussianConvolutionKernel
+{
+public:
+
+    typedef detail::gaussian_kernel_tag vigra_kernel_category;
+
+    typedef ARITHTYPE value_type;
+
+    unsigned deriv_order;
+    double windowRatio;
+    double norm;
+    double std_dev;
+    double scale_;
+    BorderTreatmentMode border_treatment;
+    MultiConvolutionKernel approx;
+
+    // TODO: set approx to MULTI_CONVOLUTION_KERNEL_AUTO once we're confident that the recursive IIR approximations can be used as a drop-in replacement
+    GaussianConvolutionKernel() : deriv_order(0), windowRatio(0.0), norm(1.0), scale_(1.0), border_treatment(BORDER_TREATMENT_REFLECT), approx(MULTI_CONVOLUTION_KERNEL_FIR) {};
+
+    void initGaussian(double std_dev_, value_type norm_, double windowRatio_ = 0.0)
+    {
+        initGaussianDerivative(std_dev_, 0, norm_, windowRatio_);
+    }
+
+    void initGaussian(double std_dev)
+    {
+        initGaussian(std_dev, 1.0);
+    }
+
+    void initGaussianDerivative(double std_dev_, int order)
+    {
+        initGaussianDerivative(std_dev_, order, 1.0);
+    }
+
+    void initGaussianDerivative(double std_dev_, int order, value_type norm_, double windowRatio_ = 0.0)
+    {
+        deriv_order = order;
+        std_dev = std_dev_;
+        windowRatio = windowRatio_;
+        border_treatment = BORDER_TREATMENT_REFLECT;
+        scale_ = 1.0;
+        norm = norm_;
+    }
+
+    int left() {
+        double windowRatio_ = windowRatio;
+        if (windowRatio_ == 0.0)
+            windowRatio_ = 3.0 + 0.5 * deriv_order;
+        return round(-windowRatio_ * std_dev);
+    }
+
+    int right() {
+        double windowRatio_ = windowRatio;
+        if (windowRatio_ == 0.0)
+            windowRatio_ = 3.0 + 0.5 * deriv_order;
+        return round(windowRatio_ * std_dev);
+    }
+
+    void scale(double new_scale)
+    { scale_ *= new_scale; }
+
+
+        /** current border treatment mode
+        */
+    BorderTreatmentMode borderTreatment() const
+    { return border_treatment; }
+
+        /** Set border treatment mode.
+        */
+    void setBorderTreatment( BorderTreatmentMode new_mode)
+    { border_treatment = new_mode; }
+
+    MultiConvolutionKernel kernelApproximation() const
+    { return approx; }
+
+    void setKernelApproximation(MultiConvolutionKernel new_approx)
+    { approx = new_approx; }
+};
+
 #define VIGRA_CONVOLUTION_OPTIONS(function_name, default_value, member_name, getter_setter_name) \
     template <class Param> \
     ConvolutionOptions & function_name(const Param & val) \
@@ -346,12 +437,16 @@ class ConvolutionOptions
     double window_ratio;
     Shape from_point, to_point;
 
+    enum MultiConvolutionKernel kernel;
+
     ConvolutionOptions()
     : sigma_eff(0.0),
       sigma_d(0.0),
       step_size(1.0),
       outer_scale(0.0),
-      window_ratio(0.0)
+      window_ratio(0.0),
+      // TODO: set this to MULTI_CONVOLUTION_KERNEL_AUTO once we are confident that the recursive IIR approximations can be used as a drop-in replacement
+      kernel(MULTI_CONVOLUTION_KERNEL_FIR)
     {}
 
     typedef typename detail::WrapDoubleIteratorTriple<ParamIt, ParamIt, ParamIt>
@@ -485,6 +580,17 @@ class ConvolutionOptions
       return window_ratio;
     }
 
+    ConvolutionOptions<dim> & setKernelApproximation(enum MultiConvolutionKernel aprox)
+    {
+      kernel = aprox;
+      return *this;
+    }
+
+    enum MultiConvolutionKernel kernelApproximation(void) const
+    {
+      return kernel;
+    }
+
         /** Restrict the filter to a subregion of the input array.
 
             This is useful for speeding up computations by ignoring irrelevant
@@ -519,6 +625,156 @@ namespace detail
 /*                                                      */
 /********************************************************/
 
+template <class K, typename std::enable_if<detail::is_fir_kernel<K>::value>::type* = nullptr>
+void
+scaleKernel(K & kernel, double a)
+{
+    for(int i = kernel.left(); i <= kernel.right(); ++i)
+        kernel[i] = detail::RequiresExplicitCast<typename K::value_type>::cast(kernel[i] * a);
+}
+
+template <class K, typename std::enable_if<detail::is_iir_kernel<K>::value>::type* = nullptr>
+void
+scaleKernel(K & kernel, double a)
+{
+    kernel.scale(a);
+}
+
+template <class K, typename std::enable_if<detail::is_gaussian_kernel<K>::value>::type* = nullptr>
+void
+scaleKernel(K & kernel, double a)
+{
+    kernel.scale(a);
+}
+
+template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel,
+ typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type* = nullptr>
+inline void internalSeparableConvolveLineHelper(
+        SrcNavigator snav, SrcAccessor srca, TmpArray tmp, TmpAcessor tmpa,
+        DestNavigator dnav, DestAccessor dsta, Kernel kernel,
+        int start, int stop
+    )
+{
+    for ( ; snav.hasMore(); snav++, dnav++) {
+        copyLine(snav.begin(), snav.end(), srca, tmp.begin(), tmpa);
+        convolveLine(srcIterRange(tmp.begin(), tmp.end(), tmpa),
+                     destIter(dnav.begin(), dsta),
+                     kernel1d(kernel), start, stop);
+    }
+}
+
+template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel,
+ typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type* = nullptr>
+inline void internalSeparableConvolveLineHelper2(
+        TmpArray tmp, TmpAcessor tmpa,
+        DestNavigator dnav, DestAccessor dsta, Kernel kernel,
+        int start, int stop
+    )
+{
+    for ( ; dnav.hasMore(); dnav++) {
+        copyLine(dnav.begin(), dnav.end(), dsta, tmp.begin(), tmpa);
+        convolveLine(srcIterRange(tmp.begin(), tmp.end(), tmpa),
+                     destIter(dnav.begin() + start, dsta),
+                     kernel1d(kernel), start, stop);
+    }
+}
+
+inline MultiConvolutionKernel internalSelectKernelApproximation(MultiConvolutionKernel k, double sigma)
+{
+    // suggestions from Recursive Gaussian filters by Dave Hale
+    // https://inside.mines.edu/~dhale/papers/Hale06RecursiveGaussianFilters.pdf
+    if (k == MULTI_CONVOLUTION_KERNEL_AUTO) {
+        if (sigma <= 3.0)
+            k = MULTI_CONVOLUTION_KERNEL_FIR;
+        else if (sigma < 32.0)
+            k = MULTI_CONVOLUTION_KERNEL_IIR_DERICHE;
+        else
+            k = MULTI_CONVOLUTION_KERNEL_IIR_VYV;
+    }
+    
+    // IIR kernels are highly inaccurate and don't result in any speed advantages for very small std devs
+    if (sigma <= 1.0)
+        k = MULTI_CONVOLUTION_KERNEL_FIR;
+
+    return k;
+}
+
+template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel,
+ typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type* = nullptr>
+inline void internalSeparableConvolveLineHelper(
+        SrcNavigator snav, SrcAccessor srca, TmpArray tmp, TmpAcessor tmpa,
+        DestNavigator dnav, DestAccessor dsta, Kernel kernel,
+        int start, int stop
+    )
+{
+    Kernel1D<typename Kernel::value_type> kernel_fir;
+    RecursiveConvolutionKernel<4, false, false, false, double> kernel_iir_deriche;
+    RecursiveConvolutionKernel<4, true, false, false, double> kernel_iir_vyv;
+
+    MultiConvolutionKernel k = internalSelectKernelApproximation(kernel.kernelApproximation(), kernel.std_dev);
+
+    switch (k) {
+        case MULTI_CONVOLUTION_KERNEL_FIR:
+            kernel_fir.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
+            kernel_fir.setBorderTreatment(kernel.border_treatment);
+            scaleKernel(kernel_fir, kernel.scale_);
+            internalSeparableConvolveLineHelper(snav, srca, tmp, tmpa, dnav, dsta, kernel_fir, start, stop);
+            break;
+        case MULTI_CONVOLUTION_KERNEL_IIR_DERICHE:
+            kernel_iir_deriche.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
+            kernel_iir_deriche.setBorderTreatment(kernel.border_treatment);
+            scaleKernel(kernel_iir_deriche, kernel.scale_);
+            internalSeparableConvolveLineHelper(snav, srca, tmp, tmpa, dnav, dsta, kernel_iir_deriche, start, stop);
+            break;
+        case MULTI_CONVOLUTION_KERNEL_IIR_VYV:
+            kernel_iir_vyv.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
+            kernel_iir_vyv.setBorderTreatment(kernel.border_treatment);
+            scaleKernel(kernel_iir_vyv, kernel.scale_);
+            internalSeparableConvolveLineHelper(snav, srca, tmp, tmpa, dnav, dsta, kernel_iir_vyv, start, stop);
+            break;       
+        default:
+            break;
+    }
+}
+
+template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel,
+ typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type* = nullptr>
+inline void internalSeparableConvolveLineHelper2(
+        TmpArray tmp, TmpAcessor tmpa,
+        DestNavigator dnav, DestAccessor dsta, Kernel kernel,
+        int start, int stop
+    )
+{
+    Kernel1D<typename Kernel::value_type> kernel_fir;
+    RecursiveConvolutionKernel<4, false, false, false, typename Kernel::value_type> kernel_iir_deriche;
+    RecursiveConvolutionKernel<4, true, false, false, typename Kernel::value_type> kernel_iir_vyv;
+
+    MultiConvolutionKernel k = internalSelectKernelApproximation(kernel.kernelApproximation(), kernel.std_dev);
+
+    switch (k) {
+        case MULTI_CONVOLUTION_KERNEL_FIR:
+            kernel_fir.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
+            kernel_fir.setBorderTreatment(kernel.border_treatment);
+            scaleKernel(kernel_fir, kernel.scale_);
+            internalSeparableConvolveLineHelper2(tmp, tmpa, dnav, dsta, kernel_fir, start, stop);
+            break;
+        case MULTI_CONVOLUTION_KERNEL_IIR_DERICHE:
+            kernel_iir_deriche.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
+            kernel_iir_deriche.setBorderTreatment(kernel.border_treatment);
+            scaleKernel(kernel_iir_deriche, kernel.scale_);
+            internalSeparableConvolveLineHelper2(tmp, tmpa, dnav, dsta, kernel_iir_deriche, start, stop);
+            break;
+        case MULTI_CONVOLUTION_KERNEL_IIR_VYV:
+            kernel_iir_vyv.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
+            kernel_iir_vyv.setBorderTreatment(kernel.border_treatment);
+            scaleKernel(kernel_iir_vyv, kernel.scale_);
+            internalSeparableConvolveLineHelper2(tmp, tmpa, dnav, dsta, kernel_iir_vyv, start, stop); 
+            break;      
+        default:
+            break;
+    }
+}
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
 void
@@ -544,15 +800,8 @@ internalSeparableConvolveMultiArrayTmp(
         SNavigator snav( si, shape, 0 );
         DNavigator dnav( di, shape, 0 );
 
-        for( ; snav.hasMore(); snav++, dnav++ )
-        {
-             // first copy source to tmp for maximum cache efficiency
-             copyLine(snav.begin(), snav.end(), src, tmp.begin(), acc);
+        internalSeparableConvolveLineHelper(snav, src, tmp, acc, dnav, dest, *kit, 0, 0);
 
-             convolveLine(srcIterRange(tmp.begin(), tmp.end(), acc),
-                          destIter( dnav.begin(), dest ),
-                          kernel1d( *kit ) );
-        }
         ++kit;
     }
 
@@ -563,17 +812,12 @@ internalSeparableConvolveMultiArrayTmp(
 
         tmp.resize( shape[d] );
 
-        for( ; dnav.hasMore(); dnav++ )
-        {
-             // first copy source to tmp since convolveLine() cannot work in-place
-             copyLine(dnav.begin(), dnav.end(), dest, tmp.begin(), acc);
-
-             convolveLine(srcIterRange(tmp.begin(), tmp.end(), acc),
-                          destIter( dnav.begin(), dest ),
-                          kernel1d( *kit ) );
-        }
+        internalSeparableConvolveLineHelper2(tmp, acc, dnav, dest, *kit, 0, 0);
     }
 }
+
+
+
 
 /********************************************************/
 /*                                                      */
@@ -632,15 +876,8 @@ internalSeparableConvolveSubarray(
         int lstart = start[axisorder[0]] - sstart[axisorder[0]];
         int lstop  = lstart + (stop[axisorder[0]] - start[axisorder[0]]);
 
-        for( ; snav.hasMore(); snav++, tnav++ )
-        {
-            // first copy source to tmp for maximum cache efficiency
-            copyLine(snav.begin(), snav.end(), src, tmpline.begin(), acc);
 
-            convolveLine(srcIterRange(tmpline.begin(), tmpline.end(), acc),
-                         destIter(tnav.begin(), acc),
-                         kernel1d( kit[axisorder[0]] ), lstart, lstop);
-        }
+        internalSeparableConvolveLineHelper(snav, src, tmpline, acc, tnav, acc, kit[axisorder[0]], lstart, lstop);
     }
 
     // operate on further dimensions
@@ -653,15 +890,8 @@ internalSeparableConvolveSubarray(
         int lstart = start[axisorder[d]] - sstart[axisorder[d]];
         int lstop  = lstart + (stop[axisorder[d]] - start[axisorder[d]]);
 
-        for( ; tnav.hasMore(); tnav++ )
-        {
-            // first copy source to tmp because convolveLine() cannot work in-place
-            copyLine(tnav.begin(), tnav.end(), acc, tmpline.begin(), acc );
+        internalSeparableConvolveLineHelper2(tmpline, acc, tnav, acc, kit[axisorder[d]], lstart, lstop);
 
-            convolveLine(srcIterRange(tmpline.begin(), tmpline.end(), acc),
-                         destIter( tnav.begin() + lstart, acc ),
-                         kernel1d( kit[axisorder[d]] ), lstart, lstop);
-        }
 
         dstart[axisorder[d]] = lstart;
         dstop[axisorder[d]] = lstop;
@@ -670,14 +900,6 @@ internalSeparableConvolveSubarray(
     copyMultiArray(tmp.traverser_begin()+dstart, stop-start, acc, di, dest);
 }
 
-
-template <class K>
-void
-scaleKernel(K & kernel, double a)
-{
-    for(int i = kernel.left(); i <= kernel.right(); ++i)
-        kernel[i] = detail::RequiresExplicitCast<typename K::value_type>::cast(kernel[i] * a);
-}
 
 
 } // namespace detail
@@ -865,7 +1087,8 @@ scaleKernel(K & kernel, double a)
 doxygen_overloaded_function(template <...> void separableConvolveMultiArray)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class KernelIterator>
+          class DestIterator, class DestAccessor, class KernelIterator,
+          typename std::enable_if<!detail::is_kernel<KernelIterator>::value>::type* = nullptr>
 void
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest,
@@ -905,21 +1128,23 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class T>
+          class DestIterator, class DestAccessor, class ConvolutionKernel,
+          typename std::enable_if<detail::is_kernel<ConvolutionKernel>::value>::type* = nullptr>
 inline void
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest,
-                             Kernel1D<T> const & kernel,
+                             ConvolutionKernel const & kernel,
                              SrcShape const & start = SrcShape(),
                              SrcShape const & stop = SrcShape())
 {
-    ArrayVector<Kernel1D<T> > kernels(shape.size(), kernel);
+    ArrayVector<ConvolutionKernel > kernels(shape.size(), kernel);
 
     separableConvolveMultiArray( s, shape, src, d, dest, kernels.begin(), start, stop);
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class KernelIterator>
+          class DestIterator, class DestAccessor, class KernelIterator,
+          typename std::enable_if<!detail::is_kernel<KernelIterator>::value>::type* = nullptr>
 inline void
 separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                             pair<DestIterator, DestAccessor> const & dest,
@@ -932,15 +1157,16 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class T>
+          class DestIterator, class DestAccessor, class ConvolutionKernel,
+          typename std::enable_if<detail::is_kernel<ConvolutionKernel>::value>::type* = nullptr>
 inline void
 separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                             pair<DestIterator, DestAccessor> const & dest,
-                            Kernel1D<T> const & kernel,
+                            ConvolutionKernel const & kernel,
                             SrcShape const & start = SrcShape(),
                             SrcShape const & stop = SrcShape())
 {
-    ArrayVector<Kernel1D<T> > kernels(source.second.size(), kernel);
+    ArrayVector<ConvolutionKernel > kernels(source.second.size(), kernel);
 
     separableConvolveMultiArray( source.first, source.second, source.third,
                                  dest.first, dest.second, kernels.begin(), start, stop);
@@ -948,7 +1174,8 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
-          class KernelIterator>
+          class KernelIterator,
+          typename std::enable_if<!detail::is_kernel<KernelIterator>::value>::type* = nullptr>
 inline void
 separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest,
@@ -974,15 +1201,16 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
-          class T>
+          class ConvolutionKernel,
+          typename std::enable_if<detail::is_kernel<ConvolutionKernel>::value>::type* = nullptr>
 inline void
 separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest,
-                            Kernel1D<T> const & kernel,
+                            ConvolutionKernel const & kernel,
                             typename MultiArrayShape<N>::type const & start = typename MultiArrayShape<N>::type(),
                             typename MultiArrayShape<N>::type const & stop = typename MultiArrayShape<N>::type())
 {
-    ArrayVector<Kernel1D<T> > kernels(N, kernel);
+    ArrayVector<ConvolutionKernel > kernels(N, kernel);
     separableConvolveMultiArray(source, dest, kernels.begin(), start, stop);
 }
 
@@ -1076,11 +1304,11 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
 doxygen_overloaded_function(template <...> void convolveMultiArrayOneDimension)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class T>
+          class DestIterator, class DestAccessor, class ConvolutionKernel>
 void
 convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccessor src,
                                DestIterator d, DestAccessor dest,
-                               unsigned int dim, vigra::Kernel1D<T> const & kernel,
+                               unsigned int dim, ConvolutionKernel const & kernel,
                                SrcShape const & start = SrcShape(),
                                SrcShape const & stop = SrcShape())
 {
@@ -1090,7 +1318,6 @@ convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccesso
                         "than the data dimensionality" );
 
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
-    typedef typename AccessorTraits<TmpType>::default_const_accessor TmpAccessor;
     ArrayVector<TmpType> tmp( shape[dim] );
 
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
@@ -1110,25 +1337,16 @@ convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccesso
     SNavigator snav( s, sstart, sstop, dim );
     DNavigator dnav( d, dstart, dstop, dim );
 
-    for( ; snav.hasMore(); snav++, dnav++ )
-    {
-        // first copy source to temp for maximum cache efficiency
-        copyLine(snav.begin(), snav.end(), src,
-                 tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
-
-        convolveLine(srcIterRange( tmp.begin(), tmp.end(), TmpAccessor()),
-                     destIter( dnav.begin(), dest ),
-                     kernel1d( kernel), start[dim], stop[dim]);
-    }
+    detail::internalSeparableConvolveLineHelper(snav, src, tmp, typename AccessorTraits<TmpType>::default_accessor(), dnav, dest, kernel, start[dim], stop[dim]);
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class T>
+          class DestIterator, class DestAccessor, class ConvolutionKernel>
 inline void
 convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                pair<DestIterator, DestAccessor> const & dest,
                                unsigned int dim,
-                               Kernel1D<T> const & kernel,
+                               ConvolutionKernel const & kernel,
                                SrcShape const & start = SrcShape(),
                                SrcShape const & stop = SrcShape())
 {
@@ -1138,12 +1356,12 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
-          class T>
+          class ConvolutionKernel>
 inline void
 convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
                                MultiArrayView<N, T2, S2> dest,
                                unsigned int dim,
-                               Kernel1D<T> const & kernel,
+                               ConvolutionKernel const & kernel,
                                typename MultiArrayShape<N>::type start = typename MultiArrayShape<N>::type(),
                                typename MultiArrayShape<N>::type stop = typename MultiArrayShape<N>::type())
 {
@@ -1162,6 +1380,7 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
     convolveMultiArrayOneDimension(srcMultiArrayRange(source),
                                    destMultiArray(dest), dim, kernel, start, stop);
 }
+
 
 /********************************************************/
 /*                                                      */
@@ -1308,11 +1527,12 @@ gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src
     static const int N = SrcShape::static_size;
 
     typename ConvolutionOptions<N>::ScaleIterator params = opt.scaleParams();
-    ArrayVector<Kernel1D<double> > kernels(N);
+    ArrayVector<GaussianConvolutionKernel<double> > kernels(N);
 
-    for (int dim = 0; dim < N; ++dim, ++params)
-        kernels[dim].initGaussian(params.sigma_scaled(function_name, true),
-                                  1.0, opt.window_ratio);
+    for (int dim = 0; dim < N; ++dim, ++params) {
+        kernels[dim].initGaussian(params.sigma_scaled(function_name, true), 1.0, opt.window_ratio);
+        kernels[dim].setKernelApproximation(opt.kernelApproximation());
+    }
 
     separableConvolveMultiArray(s, shape, src, d, dest, kernels.begin(), opt.from_point, opt.to_point);
 }
@@ -1530,11 +1750,12 @@ gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor s
     ParamType params = opt.scaleParams();
     ParamType params2(params);
 
-    ArrayVector<Kernel1D<KernelType> > plain_kernels(N);
+    ArrayVector<GaussianConvolutionKernel<KernelType> > plain_kernels(N);
     for (int dim = 0; dim < N; ++dim, ++params)
     {
         double sigma = params.sigma_scaled(function_name);
         plain_kernels[dim].initGaussian(sigma, 1.0, opt.window_ratio);
+        plain_kernels[dim].setKernelApproximation(opt.kernelApproximation());
     }
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
@@ -1542,13 +1763,19 @@ gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor s
     // compute gradient components
     for (int dim = 0; dim < N; ++dim, ++params2)
     {
-        ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
+        ArrayVector<GaussianConvolutionKernel<KernelType> > kernels(plain_kernels);
         kernels[dim].initGaussianDerivative(params2.sigma_scaled(), 1, 1.0, opt.window_ratio);
+        kernels[dim].setKernelApproximation(opt.kernelApproximation());
         detail::scaleKernel(kernels[dim], 1.0 / params2.step_size());
         separableConvolveMultiArray(si, shape, src, di, ElementAccessor(dim, dest), kernels.begin(),
                                     opt.from_point, opt.to_point);
     }
 }
+
+
+
+//DEFINE_MULTI_CONVOLUTION(gaussianGradientMultiArray, internalGaussianGradientMultiArray)
+
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -2043,11 +2270,12 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
     ParamType params = opt.scaleParams();
     ParamType params2(params);
 
-    ArrayVector<Kernel1D<KernelType> > plain_kernels(N);
+    ArrayVector<GaussianConvolutionKernel<KernelType> > plain_kernels(N);
     for (int dim = 0; dim < N; ++dim, ++params)
     {
         double sigma = params.sigma_scaled("laplacianOfGaussianMultiArray");
         plain_kernels[dim].initGaussian(sigma, 1.0, opt.window_ratio);
+        plain_kernels[dim].setKernelApproximation(opt.kernelApproximation());
     }
 
     SrcShape dshape(shape);
@@ -2059,8 +2287,9 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
     // compute 2nd derivatives and sum them up
     for (int dim = 0; dim < N; ++dim, ++params2)
     {
-        ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
+        ArrayVector<GaussianConvolutionKernel<KernelType> > kernels(plain_kernels);
         kernels[dim].initGaussianDerivative(params2.sigma_scaled(), 2, 1.0, opt.window_ratio);
+        kernels[dim].setKernelApproximation(opt.kernelApproximation());
         detail::scaleKernel(kernels[dim], 1.0 / sq(params2.step_size()));
 
         if (dim == 0)
@@ -2078,6 +2307,8 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
         }
     }
 }
+
+//DEFINE_MULTI_CONVOLUTION(laplacianOfGaussianMultiArray, internalLaplacianOfGaussianMultiArray)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -2262,7 +2493,6 @@ gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
     typedef typename std::iterator_traits<Iterator>::value_type  ArrayType;
     typedef typename ArrayType::value_type                       SrcType;
     typedef typename NumericTraits<SrcType>::RealPromote         TmpType;
-    typedef Kernel1D<double>                                     Kernel;
 
     vigra_precondition(std::distance(vectorField, vectorFieldEnd) == N,
         "gaussianDivergenceMultiArray(): wrong number of input arrays.");
@@ -2270,11 +2500,12 @@ gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
 
     typename ConvolutionOptions<N>::ScaleIterator params = opt.scaleParams();
     ArrayVector<double> sigmas(N);
-    ArrayVector<Kernel> kernels(N);
+    ArrayVector<GaussianConvolutionKernel<double>> kernels(N);
     for(unsigned int k = 0; k < N; ++k, ++params)
     {
         sigmas[k] = params.sigma_scaled("gaussianDivergenceMultiArray");
         kernels[k].initGaussian(sigmas[k], 1.0, opt.window_ratio);
+        kernels[k].setKernelApproximation(opt.kernelApproximation());
     }
 
     MultiArray<N, TmpType> tmpDeriv(divergence.shape());
@@ -2294,6 +2525,7 @@ gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
         kernels[k].initGaussian(sigmas[k], 1.0, opt.window_ratio);
     }
 }
+ 
 
 template <class Iterator,
           unsigned int N, class T, class S>
@@ -2456,10 +2688,6 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
                             DestIterator di, DestAccessor dest,
                             ConvolutionOptions<SrcShape::static_size> const & opt )
 {
-    typedef typename DestAccessor::value_type DestType;
-    typedef typename DestType::value_type     DestValueType;
-    typedef typename NumericTraits<DestValueType>::RealPromote KernelType;
-
     static const int N = SrcShape::static_size;
     static const int M = N*(N+1)/2;
     typedef typename ConvolutionOptions<N>::ScaleIterator ParamType;
@@ -2473,12 +2701,13 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
 
     ParamType params_init = opt.scaleParams();
 
-    ArrayVector<Kernel1D<KernelType> > plain_kernels(N);
+    ArrayVector<GaussianConvolutionKernel<double> > plain_kernels(N);
     ParamType params(params_init);
     for (int dim = 0; dim < N; ++dim, ++params)
     {
         double sigma = params.sigma_scaled("hessianOfGaussianMultiArray");
         plain_kernels[dim].initGaussian(sigma, 1.0, opt.window_ratio);
+        plain_kernels[dim].setKernelApproximation(opt.kernelApproximation());
     }
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
@@ -2490,15 +2719,18 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
         ParamType params_j(params_i);
         for (int j=i; j<N; ++j, ++b, ++params_j)
         {
-            ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
+            ArrayVector<GaussianConvolutionKernel<double> > kernels(plain_kernels);
             if(i == j)
             {
                 kernels[i].initGaussianDerivative(params_i.sigma_scaled(), 2, 1.0, opt.window_ratio);
+                kernels[i].setKernelApproximation(opt.kernelApproximation());
             }
             else
             {
                 kernels[i].initGaussianDerivative(params_i.sigma_scaled(), 1, 1.0, opt.window_ratio);
                 kernels[j].initGaussianDerivative(params_j.sigma_scaled(), 1, 1.0, opt.window_ratio);
+                kernels[i].setKernelApproximation(opt.kernelApproximation());
+                kernels[j].setKernelApproximation(opt.kernelApproximation());
             }
             detail::scaleKernel(kernels[i], 1 / params_i.step_size());
             detail::scaleKernel(kernels[j], 1 / params_j.step_size());
@@ -2757,8 +2989,9 @@ structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor sr
 
         for(int k=0; k<N; ++k, ++params)
         {
-            Kernel1D<double> gauss;
+            GaussianConvolutionKernel<KernelType> gauss;
             gauss.initGaussian(params.sigma_scaled("structureTensorMultiArray"), 1.0, opt.window_ratio);
+            gauss.setKernelApproximation(opt.kernelApproximation());
             int dilation = gauss.right();
             innerOptions.from_point[k] = std::max<MultiArrayIndex>(0, opt.from_point[k] - dilation);
             innerOptions.to_point[k] = std::min<MultiArrayIndex>(shape[k], opt.to_point[k] + dilation);
@@ -2783,6 +3016,7 @@ structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor sr
                              di, dest, outerOptions,
                              "structureTensorMultiArray");
 }
+
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
