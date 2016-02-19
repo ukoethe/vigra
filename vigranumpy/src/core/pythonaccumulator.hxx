@@ -331,7 +331,7 @@ struct PythonRegionFeatureAccumulator
 {
     virtual MultiArrayIndex maxRegionLabel() { throw std::runtime_error("abstract function called."); }
     virtual void mergeAll(PythonRegionFeatureAccumulator const & o) { throw std::runtime_error("abstract function called."); }
-    virtual void remappingMerge(PythonFeatureAccumulator const & o, NumpyArray<1, npy_uint32> labelMapping) { throw std::runtime_error("abstract function called."); }
+    virtual void remappingMerge(PythonRegionFeatureAccumulator const & o, NumpyArray<1, npy_uint32> labelMapping) { throw std::runtime_error("abstract function called."); }
     virtual void mergeRegions(npy_uint32 i, npy_uint32 j) { throw std::runtime_error("abstract function called."); }
     virtual PythonRegionFeatureAccumulator * create() const { throw std::runtime_error("abstract function called."); return 0; }
     
@@ -455,7 +455,7 @@ struct PythonAccumulator
         merge(o);
     }
     
-    void remappingMerge(PythonFeatureAccumulator const & o, NumpyArray<1, npy_uint32> labelMapping)
+    void remappingMerge(PythonRegionFeatureAccumulator const & o, NumpyArray<1, npy_uint32> labelMapping)
     {
         PythonAccumulator const * p = dynamic_cast<PythonAccumulator const *>(&o);
         if(p == 0)
