@@ -1223,6 +1223,13 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 else:
                     return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
 
+        def accumulateEdgeFeaturesNew(self, edgeFeatures, out=None):
+            if not isinstance(self, RegionAdjacencyGraph):
+                raise AttributeError("accumulateEdgeFeaturesNew not implemented for " + type(self))
+            graph = self.baseGraph
+            affiliatedEdges = self.affiliatedEdges
+            out = graphs._ragEdgeFeaturesNew(self, graph, affiliatedEdges, edgeFeatures, out)
+            return out
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
             """ accumulate edge features from base graphs edges features
