@@ -61,7 +61,7 @@ public:
     typedef Value           value_type;
     typedef Reference       reference;
     typedef ConstReference  const_reference;
-    typedef boost::read_write_property_map_tag category;
+    typedef boost_graph::read_write_property_map_tag category;
 
 
     typedef typename MultiArray<1,T>::difference_type Shape1Type;
@@ -207,7 +207,7 @@ public:
     typedef Value           value_type;
     typedef ConstReference  const_reference;
 
-    typedef boost::readable_property_map_tag category;
+    typedef boost_graph::readable_property_map_tag category;
 
     OnTheFlyEdgeMap(const Graph & graph,const NodeMap & nodeMap,FUNCTOR & f)
     :   graph_(graph),
@@ -231,6 +231,31 @@ private:
     const Graph & graph_;
     const NodeMap & nodeMap_;
     FUNCTOR & f_;
+};
+
+
+// node map that returns zero (specifically, <tt>RESULT()</tt>) for all keys
+template<class G, class RESULT>
+class ZeroNodeMap
+{
+  public:
+    typedef G  Graph;
+    typedef typename Graph::Node Key;
+    typedef RESULT   Value;
+    typedef RESULT   ConstReference;
+
+    typedef Key             key_type;
+    typedef Value           value_type;
+    typedef ConstReference  const_reference;
+    typedef boost_graph::readable_property_map_tag category;
+
+    ZeroNodeMap()
+    {}
+
+    value_type operator[](const Key & key) const
+    {
+        return value_type();
+    }
 };
 
 
@@ -266,7 +291,7 @@ public:
     typedef Value           value_type;
     typedef ConstReference  const_reference;
 
-    typedef boost::readable_property_map_tag category;
+    typedef boost_graph::readable_property_map_tag category;
 
     OnTheFlyEdgeMap2(const Graph & graph,const NodeMap & nodeMap,FUNCTOR  f)
     :   graph_(graph),
@@ -306,7 +331,7 @@ public:
     typedef Value           value_type;
     typedef ConstReference  const_reference;
 
-    typedef boost::readable_property_map_tag category;
+    typedef boost_graph::readable_property_map_tag category;
 
     BinaryOpEdgeMap(const Graph & graph,const EDGE_MAP_A & edgeMapA,const EDGE_MAP_B & edgeMapB,FUNCTOR & f)
     :   graph_(graph),
@@ -326,6 +351,44 @@ private:
     const EDGE_MAP_A & edgeMapA_;
     const EDGE_MAP_B & edgeMapB_;
     FUNCTOR & f_;
+};
+
+
+
+// encapsulate a MultiArrayView indexed by node/edge ID
+template<class T,class GRAPH, class KEY>
+struct ArrayMap{
+
+    typedef MultiArrayView<1, T>  View;
+    typedef KEY    Key;
+    typedef typename View::value_type  Value;
+    typedef typename View::const_reference  ConstReference;
+    typedef typename View::reference  Reference;
+
+    ArrayMap(const GRAPH & graph)
+    :   graph_(graph),
+        view_(){
+    }
+
+    ArrayMap(const GRAPH & graph, const View & view)
+    :   graph_(graph),
+        view_(view){
+    }
+
+    void setArray(const MultiArrayView<1, T> & view){
+        view_ = view;
+    }
+
+    Reference operator[](const Key & key){
+       return view_(graph_.id(key));
+    }
+
+    ConstReference operator[](const Key & key)const{
+        return view_(graph_.id(key));
+    }
+    const GRAPH & graph_;
+    MultiArrayView<1, T> view_;
+
 };
 
 

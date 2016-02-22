@@ -2,9 +2,10 @@ import vigra
 from vigra import graphs
 from vigra import numpy
 import pylab
+
 # parameter
 filepath = '12003.jpg'  # input image path
-sigmaGradMag = 2.0      # sigma Gaussian gradient
+sigmaGradMag = 5.0      # sigma Gaussian gradient
 superpixelDiameter = 10 # super-pixel size
 slicWeight = 10.0       # SLIC color - spatial weight
 beta = 0.5              # node vs edge weight
@@ -42,7 +43,7 @@ nodeFeatures = rag.accumulateNodeFeatures(imgLab)
 # do agglomerativeClustering
 labels = graphs.agglomerativeClustering(graph=rag, edgeWeights=edgeWeights,
                                         beta=beta, nodeFeatures=nodeFeatures,
-                                        nodeNumStop=nodeNumStop)
+                                        nodeNumStop=nodeNumStop,wardness=0.8)
 
 # show result
 f = pylab.figure()

@@ -549,7 +549,7 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testBasics()
     {
-        using namespace boost;
+        using namespace boost_graph;
         typedef GridGraph<N, DirectedTag> G;
         
         static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
@@ -594,7 +594,7 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testVertexIterator()
     {
-        using namespace boost;
+        using namespace boost_graph;
         
         typedef GridGraph<N, DirectedTag> Graph;
 
@@ -636,8 +636,8 @@ struct GridGraphTests
                 shouldEqual(g.forward_degree(j) + g.back_degree(j), g.out_degree(j));
                 shouldEqual(g.in_degree(j), g.out_degree(j));
                 shouldEqual(g.degree(j), g.isDirected() ? 2*g.out_degree(j) : g.out_degree(j));
-                shouldEqual(g.out_degree(j), boost::out_degree(*j, g));
-                shouldEqual(g.in_degree(j), boost::in_degree(*j, g));
+                shouldEqual(g.out_degree(j), boost_graph::out_degree(*j, g));
+                shouldEqual(g.in_degree(j), boost_graph::in_degree(*j, g));
                 shouldEqual(g.out_degree(j), outDegreeMap[*j]);
                 shouldEqual(g.in_degree(j), inDegreeMap[*j]);
 
@@ -663,7 +663,7 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testNeighborIterator()
     {
-        using namespace boost;
+        using namespace boost_graph;
         
         static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
         
@@ -871,7 +871,7 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testBackNeighborIterator()
     {
-        using namespace boost;
+        using namespace boost_graph;
         
         static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
         
@@ -1023,7 +1023,7 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testEdgeIterator()
     {
-        using namespace boost;
+        using namespace boost_graph;
         
         static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
         
@@ -1108,7 +1108,7 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testArcIterator()
     {
-        using namespace boost;
+        using namespace boost_graph;
         
         static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
         

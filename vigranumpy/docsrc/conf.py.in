@@ -11,7 +11,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+from __future__ import division, print_function
+import sys, os, re
 
 # silent lots of 'arg is not a Python function' warnings
 import inspect
@@ -33,7 +34,7 @@ _getargspec_workaround.__module__ = 'inspect'
 # set the PATH of the current build, so that we don't create
 # documentation for a possibly outdated installation
 vigranumpy_path=r'@VIGRANUMPY_TMP_PATH@'
-print "Working directory:", vigranumpy_path
+print("Working directory:", vigranumpy_path)
 sys.path.insert(0,vigranumpy_path)
 
 # find the build configuration ('release' or 'debug' on Windows, nothing on Linux)
@@ -43,9 +44,9 @@ for a in sys.argv:
     if a.startswith(match):
         outdir = '/' + a[len(match):]
 
-vigraimpex_path=r'@VIGRAIMPEX_PATH@%s' % outdir
-print "vigraimpex path:", vigraimpex_path
-os.environ['PATH'] = os.pathsep.join([vigraimpex_path, os.environ['PATH']])
+vigraimpex_path = re.sub('/Release$', outdir, r'$<TARGET_FILE_DIR:vigraimpex>')
+print("vigraimpex path:", vigraimpex_path)
+os.environ['PATH'] = os.pathsep.join([vigraimpex_path.replace('/', os.sep), os.environ['PATH']])
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -234,7 +235,7 @@ replace_file=open("./c_api_replaces.txt")
 for l in replace_file:
     replacement=l.split(":")
     k = replacement[0].rfind('.')
-    if k >= 0:        
+    if k >= 0:
         rst_epilog += """
     .. |%s| replace:: %s
 """% (replacement[0],replacement[0][k+1:])

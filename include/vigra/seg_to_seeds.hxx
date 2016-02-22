@@ -50,7 +50,7 @@ namespace vigra {
     ){
         shrinkedLabels = labels;
 
-        typedef GridGraph<DIM,boost::undirected_tag> Graph;
+        typedef GridGraph<DIM, undirected_tag> Graph;
         typedef typename Graph::Node Node;
         //typedef typename Graph::Edge Edge;
         typedef typename Graph::NodeIt graph_scanner;

@@ -159,7 +159,6 @@ class RGBValue
     typedef typename Base::size_type size_type;
     typedef typename Base::difference_type difference_type;
     typedef typename Base::scalar_multiplier scalar_multiplier;
-    typedef typename Base::ReverseCopyTag ReverseCopyTag;
 
         /** Color index positions
         */

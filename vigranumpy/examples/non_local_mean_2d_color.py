@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import vigra
 from vigra import numpy
 from matplotlib import pylab
@@ -12,7 +14,7 @@ data = vigra.impex.readImage(path).astype(numpy.float32)
 
 cpus = multiprocessing.cpu_count()
 
-print "nCpus",cpus
+print("nCpus",cpus)
 
 t0 =time()
 
@@ -36,7 +38,7 @@ res = vigra.taggedView(res,'xyc')
 gma = vigra.filters.gaussianGradientMagnitude(res,4.0)
 gmb = vigra.filters.gaussianGradientMagnitude(data,4.0)
 #data+=100.0
-print t1-t0
+print(t1-t0)
 imgs  = [data,res,gma,gmb]
 
 for img in imgs:
@@ -48,7 +50,7 @@ for img in imgs:
 f = pylab.figure()
 for n, arr in enumerate(imgs):
     arr = arr.squeeze()
-    f.add_subplot(1, len(imgs), n)
+    f.add_subplot(1, len(imgs), n+1)
     pylab.imshow(arr.swapaxes(0,1))
 
 pylab.title('denoised')

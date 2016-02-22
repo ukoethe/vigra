@@ -65,7 +65,7 @@ struct GraphAlgorithmTest{
 
     void testShortestPathGridGraph2()
     {
-        typedef GridGraph<2, boost::undirected_tag> GridGraph2d;
+        typedef GridGraph<2, boost_graph::undirected_tag> GridGraph2d;
         typedef TinyVector< MultiArrayIndex, 2> Shape2;
         typedef GridGraph2d::EdgeMap<float> EdgeMap;
 

@@ -66,6 +66,11 @@
 #define VIGRA_TOLERANCE_MESSAGE "If this test fails, please adjust the tolerance threshold and report\n" \
                        "your findings (including compiler information etc.) to the VIGRA mailing list:"
 
+
+#define NegativeShift(i, s)\
+(vigra::Int32)((vigra::UInt32) i << s)
+
+
 static double coefficients[][12] =
 {
     { 5.0, -416.0, 720.0, -464.0, 136.0, -18.0, 1.0 },
@@ -1297,8 +1302,8 @@ struct FixedPointTest
         shouldEqual(-vigra::fixedPoint(3).value, -3);
 
         shouldEqual((vigra::FixedPoint<3,4>(3).value), 3 << 4);
-        shouldEqual((vigra::FixedPoint<3,4>(-3).value), -3 << 4);
-        shouldEqual((-vigra::FixedPoint<3,4>(3).value), -3 << 4);
+        shouldEqual((vigra::FixedPoint<3,4>(-3).value), NegativeShift(-3, 4));
+        shouldEqual((-vigra::FixedPoint<3,4>(3).value), NegativeShift(-3, 4));
 
         shouldEqual((vigra::FixedPoint<3,4>(3.5).value), 56);
         shouldEqual((vigra::FixedPoint<3,4>(-3.5).value), -56);
@@ -1317,8 +1322,8 @@ struct FixedPointTest
         shouldEqual((vigra::FixedPoint<2, 2>(v).value), 15);
         shouldEqual((vigra::FixedPoint<2, 0>(v).value), 4);
 
-        shouldEqual((vigra::FixedPoint<2, 8>(-v).value), -15 << 6);
-        shouldEqual((vigra::FixedPoint<3, 10>(-v).value), -15 << 8);
+        shouldEqual((vigra::FixedPoint<2, 8>(-v).value), NegativeShift(-15, 6));
+        shouldEqual((vigra::FixedPoint<3, 10>(-v).value), NegativeShift(-15, 8));
         shouldEqual((vigra::FixedPoint<2, 2>(-v).value), -15);
         shouldEqual((vigra::FixedPoint<2, 0>(-v).value), -4);
 
@@ -1340,7 +1345,7 @@ struct FixedPointTest
 
         vigra::FixedPoint<3, 10> v1;
         shouldEqual((v1 = v).value, 15 << 8);
-        shouldEqual((v1 = -v).value, -15 << 8);
+        shouldEqual((v1 = -v).value, NegativeShift(-15, 8));
 
         vigra::FixedPoint<2, 0> v2;
         shouldEqual((v2 = v).value, 4);
@@ -1398,10 +1403,10 @@ struct FixedPointTest
 
         shouldEqual((t1 * vigra::fixedPoint(v1)).value, 3 << 14);
         shouldEqual((t2 * vigra::fixedPoint(v1)).value, 1 << 14);
-        shouldEqual((-t1 * vigra::fixedPoint(v1)).value, -3 << 14);
-        shouldEqual((-t2 * vigra::fixedPoint(v1)).value, -1 << 14);
-        shouldEqual((t1 * -vigra::fixedPoint(v1)).value, -3 << 14);
-        shouldEqual((t2 * -vigra::fixedPoint(v1)).value, -1 << 14);
+        shouldEqual((-t1 * vigra::fixedPoint(v1)).value, NegativeShift(-3, 14));
+        shouldEqual((-t2 * vigra::fixedPoint(v1)).value, NegativeShift(-1, 14));
+        shouldEqual((t1 * -vigra::fixedPoint(v1)).value, NegativeShift(-3, 14));
+        shouldEqual((t2 * -vigra::fixedPoint(v1)).value, NegativeShift(-1, 14));
 
         shouldEqual((vigra::FixedPoint<8, 2>(t1 * vigra::fixedPoint(v1))).value, 3);
         shouldEqual((vigra::FixedPoint<8, 2>(t2 * vigra::fixedPoint(v1))).value, 1);
@@ -1451,8 +1456,8 @@ struct FixedPoint16Test
     void testConstruction()
     {
         shouldEqual((vigra::FixedPoint16<3>(3).value), 3 << 12);
-        shouldEqual((vigra::FixedPoint16<3>(-3).value), -3 << 12);
-        shouldEqual((-vigra::FixedPoint16<3>(3).value), -3 << 12);
+        shouldEqual((vigra::FixedPoint16<3>(-3).value), NegativeShift(-3, 12));
+        shouldEqual((-vigra::FixedPoint16<3>(3).value), NegativeShift(-3, 12));
 
         shouldEqual((vigra::FixedPoint16<8>(3).value), 3 << 7);
 
@@ -1474,14 +1479,14 @@ struct FixedPoint16Test
 
         vigra::FixedPoint16<4> v(3.75);
         shouldEqual((v.value), 15 << 9);
-        shouldEqual(((-v).value), -15 << 9);
+        shouldEqual(((-v).value), NegativeShift(-15, 9));
         shouldEqual((vigra::FixedPoint16<4>(v).value), 15 << 9);
         shouldEqual((vigra::FixedPoint16<6>(v).value), 15 << 7);
         shouldEqual((vigra::FixedPoint16<13>(v).value), 15);
         shouldEqual((vigra::FixedPoint16<15>(v).value), 4);
 
-        shouldEqual((vigra::FixedPoint16<4>(-v).value), -15 << 9);
-        shouldEqual((vigra::FixedPoint16<6>(-v).value), -15 << 7);
+        shouldEqual((vigra::FixedPoint16<4>(-v).value), NegativeShift(-15, 9));
+        shouldEqual((vigra::FixedPoint16<6>(-v).value), NegativeShift(-15, 7));
         shouldEqual((vigra::FixedPoint16<13>(-v).value), -15);
         shouldEqual((vigra::FixedPoint16<15>(-v).value), -4);
 
@@ -1504,7 +1509,7 @@ struct FixedPoint16Test
 
         vigra::FixedPoint16<2> v1;
         shouldEqual((v1 = v).value, 15 << 11);
-        shouldEqual((v1 = -v).value, -15 << 11);
+        shouldEqual((v1 = -v).value, NegativeShift(-15, 11));
 
         vigra::FixedPoint16<15> v2;
         shouldEqual((v2 = v).value, 4);
@@ -1582,10 +1587,10 @@ struct FixedPoint16Test
 
         shouldEqual((t1 * FP7(v1)).value, 3 << 6);
         shouldEqual((t2 * FP7(v1)).value, 1 << 6);
-        shouldEqual((-t1 * FP7(v1)).value, -3 << 6);
-        shouldEqual((-t2 * FP7(v1)).value, -1 << 6);
-        shouldEqual((t1 * -FP7(v1)).value, -3 << 6);
-        shouldEqual((t2 * -FP7(v1)).value, -1 << 6);
+        shouldEqual((-t1 * FP7(v1)).value, NegativeShift(-3, 6));
+        shouldEqual((-t2 * FP7(v1)).value, NegativeShift(-1, 6));
+        shouldEqual((t1 * -FP7(v1)).value, NegativeShift(-3, 6));
+        shouldEqual((t2 * -FP7(v1)).value, NegativeShift(-1, 6));
 
         shouldEqual((vigra::FixedPoint16<2, vigra::FPOverflowSaturate>(t1*FP7(v8)).value), (1 << 15)-1);
         shouldEqual((vigra::FixedPoint16<2, vigra::FPOverflowSaturate>(t1*FP7(-v8)).value), -(1 << 15));

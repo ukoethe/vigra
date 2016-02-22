@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2004 by Ullrich Koethe                     */
+/*             Copyright 2011-2012 by Ullrich Koethe                    */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -29,94 +29,90 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 #include <iostream>
-#include "vigra/unittest.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/multi_array.hxx"
-#include "vigra/multi_resize.hxx"
+#include <sstream>
+#include <map>
+#include <set>
 
-#include "vigra/multi_blocking.hxx"
-#include "vigra/multi_blockwise.hxx"
+#include <vigra/unittest.hxx>
+#include <vigra/multi_array.hxx>
+#include <vigra/accumulator.hxx>
+
 
 using namespace vigra;
 
+// mask cl.exe shortcomings
+#if defined(_MSC_VER)
+#pragma warning( disable : 4503 )
+#endif
 
-template <class Iterator>
-void myFillRandom(Iterator begin, Iterator end, int maximum)
+struct StandAloneAccChainTest
 {
-    using namespace std;
-
-    for( ; begin != end; ++begin)
-        *begin = rand() % maximum;
-}
-
-struct BlockwiseConvolutionTest{
-
-
-
-
-    BlockwiseConvolutionTest(){       
-
-    }
-
-
-    void test1()
+    StandAloneAccChainTest()
+    {}
+    
+    void testStandardizeTag()
     {
-        double sigma = 1.0;
-        blockwise::BlockwiseConvolutionOptions<2>   opt;
-        TinyVector<double, 2> sigmaV(sigma, sigma);
+        using namespace vigra::acc;
 
-        opt.setStdDev(sigmaV);
-        opt.setBlockShape(TinyVector<int, 2>(5,7));
+        typedef double DataType;
+        typedef MultiArrayShape<3>::type CoordType;
+        typedef MultiArrayShape<3>::type   Point;
 
+        typedef Select< 
+            DataArg<1>,
+            Variance, 
+            Mean, 
+            StdDev, 
+            Minimum, 
+            Maximum, 
+            RootMeanSquares, 
+            Skewness,
+            Covariance,
+            RegionCenter
+        >  SelectType;
 
-        typedef MultiArray<2, double> Array;
-        typedef Array::difference_type Shape;
+        typedef StandAloneAccumulatorChain<3, DataType, SelectType> FreeChain;
+        FreeChain a;
+
+        a.updatePassN(1.0, Point(3,0,0), 1);
+        a.updatePassN(2.0, Point(0,3,0), 1);
+        a.updatePassN(3.0, Point(0,0,3), 1);
         
-        // random array
-        Shape shape(200,200);
-        Array data(shape);
-        myFillRandom(data.begin(), data.end(), 2000);
 
-        // blockwise
-        Array resB(shape);
-        blockwise::gaussianSmoothMultiArray(data, resB, opt);
 
-        Array res(shape);
-        gaussianSmoothMultiArray(data, res, sigma);
+        a.updatePassN(1.0, Point(3,0,0), 2);
+        a.updatePassN(2.0, Point(0,3,0), 2);
+        a.updatePassN(3.0, Point(0,0,3), 2);
 
-        shouldEqualSequenceTolerance(
-            res.begin(), 
-            res.end(), 
-            resB.begin(), 
-            1e-14
-        );
+        shouldEqualTolerance( get<Mean>(a), 2.0, 0.000001);
 
-    }
-};
- 
-struct BlockwiseConvolutionTestSuite
-: public vigra::test_suite
-{
-    BlockwiseConvolutionTestSuite()
-    : vigra::test_suite("BlockwiseConvolutionTestSuite")
-    {   
-        add( testCase( &BlockwiseConvolutionTest::test1));
+        CoordType rCenter = get<RegionCenter>(a);
+        CoordType trueCenter(1,1,1);
+        shouldEqualSequence(rCenter.begin(),rCenter.end(), trueCenter.begin());
     }
 };
 
-int main(int argc, char ** argv)
+
+
+struct StandAloneAccChainTestSuite : public vigra::test_suite
 {
-    BlockwiseConvolutionTestSuite test;
+    StandAloneAccChainTestSuite()
+        : vigra::test_suite("StandAloneAccChainTestSuite")
+    {
+        add(testCase(&StandAloneAccChainTest::testStandardizeTag));
+    }
+};
 
-    int failed = test.run(vigra::testsToBeExecuted(argc, argv));
-
+int main(int argc, char** argv)
+{
+    StandAloneAccChainTestSuite test;
+    const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
-    return (failed != 0);
+    return failed != 0;
 }
-

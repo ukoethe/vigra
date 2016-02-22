@@ -184,19 +184,41 @@ namespace vigra{
             roiBlock_(roiBegin,roiEnd == Shape(0) ? shape : roiEnd),
             blockShape_(blockShape),
             blocksPerAxis_(vigra::SkipInitialization),
-            blockDescIter_(),
             numBlocks_(1)
         {
             const Shape roiShape = roiBlock_.size();
             blocksPerAxis_ = roiShape / blockShape_;
 
+
+            // blocking
             for(size_t d=0; d<DIM; ++d){
                 if(blocksPerAxis_[d]*blockShape_[d] < roiShape[d] ){
                     ++blocksPerAxis_[d];
                 }
                 numBlocks_ *= blocksPerAxis_[d];
             }
-            blockDescIter_ = MultiCoordIter(blocksPerAxis_);
+
+            // total image border blocks
+            Shape beginCA(0),endCB(shape);
+            for(size_t d=0; d<DIM; ++d){
+                {
+                    // fix coordinate d to zero
+                    Shape endCA(shape);
+                    endCA[d] = 1;
+                    volumeBorderBlocks_.push_back(Block(beginCA,endCA));
+                }
+                {
+                    // fix coordinate d to shape[dim]-1
+                    Shape beginCB(shape);
+                    beginCB[d] -= 1;
+                    volumeBorderBlocks_.push_back(Block(beginCB,endCB));
+                }
+            }
+
+            insideVolBlock_.setBegin(Shape(1));
+            Shape insideVolBlockShapeEnd(shape);
+            insideVolBlockShapeEnd -= Shape(1);
+            insideVolBlock_.setEnd(insideVolBlockShapeEnd);
         }
 
         /// total number of blocks
@@ -215,14 +237,34 @@ namespace vigra{
                                        CoordToBwb(*this, width));
         }
 
+        Block blockDescToBlock(const BlockDesc & desc){
+            MultiCoordIter beginIter(blocksPerAxis_);
+            beginIter+=desc;
+            return *BlockIter(beginIter,CoordToB(*this));
+        }
         BlockIter blockBegin()const{
             return BlockIter(MultiCoordIter(blocksPerAxis_),CoordToB(*this));
         }
+
 
         BlockIter blockEnd()const{
             const MultiCoordIter beginIter(blocksPerAxis_);
             return BlockIter(beginIter.getEndIterator(),CoordToB(*this));
         }
+
+
+        Block blockDescToBlock(const BlockDesc & blockDesc)const{
+            MultiCoordIter iter(blocksPerAxis_);
+            iter+=blockDesc;
+            return *BlockIter(iter,CoordToB(*this));
+        }
+
+
+        /// does this block intersect with the volume border
+        bool containsVolumeBorder(const Block & block) const {
+            return !insideVolBlock_.contains(block);
+        }
+
 
         const Shape & roiBegin()const{
             return roiBlock_.begin();
@@ -244,6 +286,29 @@ namespace vigra{
             return blocksPerAxis_;
         }
 
+        const std::vector<Block> & volumeBorderBlocks()const{
+            return volumeBorderBlocks_;
+        }
+
+
+        std::vector<UInt32> intersectingBlocks(
+            const Shape roiBegin,
+            const Shape roiEnd
+        )const{
+            size_t i=0;
+            std::vector<UInt32> iBlocks;
+            const Block testBlock(roiBegin, roiEnd);
+            for(BlockIter iter=blockBegin(); iter!=blockEnd(); ++iter){
+                if(testBlock.intersects(*iter)){
+                    iBlocks.push_back(i);
+                }
+                ++i;
+            }
+            return iBlocks;
+        }
+
+
+
     private:
 
         /// get a block with border
@@ -264,12 +329,15 @@ namespace vigra{
             return Block(blockStart, blockEnd) & roiBlock_;
         }
 
-        Shape shape_;
-        Block roiBlock_;
-        Shape blockShape_;
-        Shape blocksPerAxis_;
-        MultiCoordIter blockDescIter_;
-        size_t numBlocks_;
+        Shape shape_;           // total shape of the input volume
+        Block roiBlock_;        // ROI in which to compute filters/algorithms
+        Shape blockShape_;      // shape sub-block for each thread (without border pixels)
+        Shape blocksPerAxis_;   // how many blocks are on each axis
+        size_t numBlocks_;      // total number of blocks
+
+
+        std::vector<Block> volumeBorderBlocks_;
+        Block insideVolBlock_;
     };
 
 }

@@ -378,8 +378,9 @@ constructArrayFromAxistags(python::object type, ArrayVector<npy_intp> const & sh
     }
     
     TaggedShape tagged_shape(norm_shape, pyaxistags);
-    // FIXME: check that type is an array class?
-    return constructArray(tagged_shape, typeCode, init, python_ptr(type.ptr()));
+    
+	// FIXME: check that type is an array class?
+	return constructArray(tagged_shape, typeCode, init, python_ptr(type.ptr()));
 }
 
 template <class T>

@@ -78,12 +78,12 @@ struct MapTargetToSourceCoordinate
     {
         return Rational<int>(i * a + b, c);
     }
-    
+
     bool isExpand2() const
     {
         return a == 1 && b == 0 && c == 2;
     }
-    
+
     bool isReduce2() const
     {
         return a == 2 && b == 0 && c == 1;
@@ -121,7 +121,7 @@ resamplingExpandLine2(SrcIter s, SrcIter send, SrcAcc src,
     int wo = send - s;
     int wn = dend - d;
     int wo2 = 2*wo - 2;
-    
+
     int ileft = std::max(kernels[0].right(), kernels[1].right());
     int iright = wo + std::min(kernels[0].left(), kernels[1].left()) - 1;
     for(int i = 0; i < wn; ++i, ++d)
@@ -129,26 +129,26 @@ resamplingExpandLine2(SrcIter s, SrcIter send, SrcAcc src,
         int is = i / 2;
         KernelRef kernel = kernels[i & 1];
         KernelIter k = kernel.center() + kernel.right();
-        TmpType sum = NumericTraits<TmpType>::zero();        
+        TmpType sum = NumericTraits<TmpType>::zero();
         if(is < ileft)
         {
             for(int m=is-kernel.right(); m <= is-kernel.left(); ++m, --k)
             {
-                int mm = (m < 0) 
-                        ? -m 
+                int mm = (m < 0)
+                        ? -m
                         : m;
                 sum += *k * src(s, mm);
-            }        
+            }
         }
         else if(is > iright)
         {
             for(int m=is-kernel.right(); m <= is-kernel.left(); ++m, --k)
             {
-                int mm =  (m >= wo) 
+                int mm =  (m >= wo)
                             ? wo2 - m
                             : m;
                 sum += *k * src(s, mm);
-            }        
+            }
         }
         else
         {
@@ -156,7 +156,7 @@ resamplingExpandLine2(SrcIter s, SrcIter send, SrcAcc src,
             for(int m = 0; m < kernel.size(); ++m, --k, ++ss)
             {
                 sum += *k * src(ss);
-            }        
+            }
         }
         dest.set(sum, d);
     }
@@ -184,33 +184,33 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
     int wo = send - s;
     int wn = dend - d;
     int wo2 = 2*wo - 2;
-    
+
     int ileft = kernel.right();
     int iright = wo + kernel.left() - 1;
     for(int i = 0; i < wn; ++i, ++d)
     {
         int is = 2 * i;
         KernelIter k = kbegin;
-        TmpType sum = NumericTraits<TmpType>::zero();        
+        TmpType sum = NumericTraits<TmpType>::zero();
         if(is < ileft)
         {
             for(int m=is-kernel.right(); m <= is-kernel.left(); ++m, --k)
             {
-                int mm = (m < 0) 
-                        ? -m 
+                int mm = (m < 0)
+                        ? -m
                         : m;
                 sum += *k * src(s, mm);
-            }        
+            }
         }
         else if(is > iright)
         {
             for(int m=is-kernel.right(); m <= is-kernel.left(); ++m, --k)
             {
-                int mm =  (m >= wo) 
+                int mm =  (m >= wo)
                             ? wo2 - m
                             : m;
                 sum += *k * src(s, mm);
-            }        
+            }
         }
         else
         {
@@ -218,7 +218,7 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
             for(int m = 0; m < kernel.size(); ++m, --k, ++ss)
             {
                 sum += *k * src(ss);
-            }        
+            }
         }
         dest.set(sum, d);
     }
@@ -243,7 +243,7 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
 /** \brief Performs a 1-dimensional resampling convolution of the source signal using the given
     set of kernels.
 
-    This function is mainly used internally: It is called for each dimension of a 
+    This function is mainly used internally: It is called for each dimension of a
     higher dimensional array in order to perform a separable resize operation.
 
     <b> Declaration:</b>
@@ -261,7 +261,7 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
         resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
                                DestIter d, DestIter dend, DestAcc dest,
                                KernelArray const & kernels,
-                               Functor mapTargetToSourceCoordinate)    
+                               Functor mapTargetToSourceCoordinate)
     }
     \endcode
 
@@ -288,7 +288,7 @@ resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
         resamplingReduceLine2(s, send, src, d, dend, dest, kernels);
         return;
     }
-    
+
     typedef typename
         NumericTraits<typename SrcAcc::value_type>::RealPromote
         TmpType;
@@ -872,7 +872,24 @@ resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Two-fold down-sampling for image pyramid construction.
 
-    Sorry, no \ref detailedDocumentation() available yet.
+    This function implements the reduction by one resolution level (first signature)
+    or across several pyramid levels (last signature) of a Gaussian pyramid as described in
+
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+
+    That is, it applies the smoothing filter
+    \code
+    [0.25 - centerValue / 2.0, 0.25, centerValue, 0.25, 0.25 - centerValue / 2.0]
+    \endcode
+    to the source image and then copies all pixels with even coordinates to the destination
+    image. The destination image shape must be <tt>dest_shape = ceil(src_shape / 2.0)</tt>.
+    <tt>centerValue</tt> must be between 0.25 and 0.5 and determines the strength of smoothing
+    (bigger values correspond to less smoothing). If <tt>toLevel - fromLevel > 1</tt> in the
+    pyramid variant of the function, this process is repeated until <tt>toLevel</tt> is
+    reached.
+
+    Typically, this functions is used in connection with a \ref vigra::ImagePyramid
+    (last signature below) to perform several levels of reduction in one go.
 
     <b> Declarations:</b>
 
@@ -917,7 +934,8 @@ resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
     \code
     namespace vigra {
         template <class Image, class Alloc>
-        void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+        void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid,
+                                     int fromLevel, int toLevel,
                                      double centerValue = 0.4);
     }
     \endcode
@@ -932,32 +950,29 @@ void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 {
     vigra_precondition(0.25 <= centerValue && centerValue <= 0.5,
              "pyramidReduceBurtFilter(): centerValue must be between 0.25 and 0.5.");
-             
+
     int wold = slr.x - sul.x;
     int wnew = dlr.x - dul.x;
     int hold = slr.y - sul.y;
     int hnew = dlr.y - dul.y;
-    
+
     vigra_precondition(wnew == (wold + 1) / 2 && hnew == (hold + 1) / 2,
-       "pyramidReduceBurtFilter(): oldSize = ceil(newSize / 2) required.");
-    
-    vigra_precondition(wnew == (wold + 1) / 2 && hnew == (hold + 1) / 2,
-       "pyramidReduceBurtFilter(): oldSize = ceil(newSize / 2) required.");
-    
+       "pyramidReduceBurtFilter(): destSize = ceil(srcSize / 2) required.");
+
     Rational<int> samplingRatio(1,2), offset(0);
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
-    
+
     ArrayVector<Kernel1D<double> > kernels(1);
     kernels[0].initExplicitly(-2, 2) = 0.25 - centerValue / 2.0, 0.25, centerValue, 0.25, 0.25 - centerValue / 2.0;
-   
+
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
     typedef BasicImage<TmpType> TmpImage;
     typedef typename TmpImage::traverser TmpIterator;
-    
+
     BasicImage<TmpType> tmp(wnew, hold);
-    
+
     TmpIterator tul = tmp.upperLeft();
 
     for(; sul.y < slr.y; ++sul.y, ++tul.y)
@@ -968,7 +983,7 @@ void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
         resamplingConvolveLine(sr, sr+wold, src, tr, tr+wnew, tmp.accessor(),
                                kernels, mapCoordinate);
     }
-    
+
     tul  = tmp.upperLeft();
 
     for(; dul.x < dlr.x; ++dul.x, ++tul.x)
@@ -987,13 +1002,14 @@ void pyramidReduceBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                              triple<DestIterator, DestIterator, DestAccessor> dest,
                              double centerValue = 0.4)
 {
-    pyramidReduceBurtFilter(src.first, src.second, src.third, 
+    pyramidReduceBurtFilter(src.first, src.second, src.third,
                             dest.first, dest.second, dest.third, centerValue);
 }
 
 template <class Image, class Alloc>
 inline
-void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid,
+                             int fromLevel, int toLevel,
                              double centerValue = 0.4)
 {
     vigra_precondition(fromLevel  < toLevel,
@@ -1007,7 +1023,27 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
 
 /** \brief Two-fold up-sampling for image pyramid reconstruction.
 
-    Sorry, no \ref detailedDocumentation() available yet.
+    This function implements the expansion by one resolution level (first signature)
+    or across several pyramid levels (last signature) of a Gaussian pyramid as described in
+
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+
+    That is, the function first places the pixel values of the low-resolution
+    image at the even pixel coordinates of the high-resolution image (pixels with
+    at least one odd coordinate are zero-initialized) and then applies the
+    interpolation filter
+    \code
+    [0.5 - centerValue, 0.5, 2*centerValue, 0.5, 0.5 - centerValue]
+    \endcode
+    to the high-resolution image. The source image shape must be
+    <tt>src_shape = ceil(dest_shape / 2.0)</tt>.
+    <tt>centerValue</tt> must be between 0.25 and 0.5 and determines the sharpness
+    of the interpolation (bigger values correspond to sharper images).
+    If <tt>fromLevel - toLevel > 1</tt> in the pyramid variant of the function,
+    this process is repeated until <tt>toLevel</tt> is reached.
+
+    Typically, this functions is used in connection with a \ref vigra::ImagePyramid
+    (last signature below) to perform several levels of expansion in one go.
 
     <b> Declarations:</b>
 
@@ -1052,7 +1088,8 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
     \code
     namespace vigra {
         template <class Image, class Alloc>
-        void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+        void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid,
+                                     int fromLevel, int toLevel,
                                      double centerValue = 0.4);
     }
     \endcode
@@ -1067,33 +1104,30 @@ void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 {
     vigra_precondition(0.25 <= centerValue && centerValue <= 0.5,
              "pyramidExpandBurtFilter(): centerValue must be between 0.25 and 0.5.");
-             
+
     int wold = slr.x - sul.x;
     int wnew = dlr.x - dul.x;
     int hold = slr.y - sul.y;
     int hnew = dlr.y - dul.y;
-    
+
     vigra_precondition(wold == (wnew + 1) / 2 && hold == (hnew + 1) / 2,
        "pyramidExpandBurtFilter(): oldSize = ceil(newSize / 2) required.");
-    
-    vigra_precondition(wold == (wnew + 1) / 2 && hold == (hnew + 1) / 2,
-       "pyramidExpandBurtFilter(): oldSize = ceil(newSize / 2) required.");
-    
+
     Rational<int> samplingRatio(2), offset(0);
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
-    
+
     ArrayVector<Kernel1D<double> > kernels(2);
     kernels[0].initExplicitly(-1, 1) = 0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue;
     kernels[1].initExplicitly(-1, 0) = 0.5, 0.5;
-   
+
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
     typedef BasicImage<TmpType> TmpImage;
     typedef typename TmpImage::traverser TmpIterator;
-    
+
     BasicImage<TmpType> tmp(wnew, hold);
-    
+
     TmpIterator tul = tmp.upperLeft();
 
     for(; sul.y < slr.y; ++sul.y, ++tul.y)
@@ -1104,7 +1138,7 @@ void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
         resamplingConvolveLine(sr, sr+wold, src, tr, tr+wnew, tmp.accessor(),
                                kernels, mapCoordinate);
     }
-    
+
     tul  = tmp.upperLeft();
 
     for(; dul.x < dlr.x; ++dul.x, ++tul.x)
@@ -1123,7 +1157,7 @@ void pyramidExpandBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                              triple<DestIterator, DestIterator, DestAccessor> dest,
                              double centerValue = 0.4)
 {
-    pyramidExpandBurtFilter(src.first, src.second, src.third, 
+    pyramidExpandBurtFilter(src.first, src.second, src.third,
                             dest.first, dest.second, dest.third, centerValue);
 }
 
@@ -1144,42 +1178,61 @@ void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
 
 /** \brief Create a Laplacian pyramid.
 
-    Sorry, no \ref detailedDocumentation() available yet.
+    This function implements the reduction across several resolution levels of
+    a Laplacian pyramid as described in
+
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+
+    It first creates a Gaussian pyramid using \ref pyramidReduceBurtFilter(), then
+    upsamples each level once using \ref pyramidExpandBurtFilter(), and finally
+    stores the difference between the upsampled and original versions of
+    each level (i.e. the Laplacian of Gaussian is approximated by a difference
+    of Gaussian).
 
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 */
 template <class Image, class Alloc>
 inline void
-pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid,
+                           int fromLevel, int toLevel,
                            double centerValue = 0.4)
 {
     using namespace functor;
-    
+
     pyramidReduceBurtFilter(pyramid, fromLevel, toLevel, centerValue);
     for(int i=fromLevel; i < toLevel; ++i)
     {
         typename ImagePyramid<Image, Alloc>::value_type tmpImage(pyramid[i].size());
         pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(tmpImage), centerValue);
         combineTwoImages(srcImageRange(tmpImage), srcImage(pyramid[i]), destImage(pyramid[i]),
-                       Arg1() - Arg2()); 
+                       Arg1() - Arg2());
     }
 }
 
 /** \brief Reconstruct a Laplacian pyramid.
 
-    Sorry, no \ref detailedDocumentation() available yet.
+    This function implements the reconstruction of a Gaussian pyramid
+    across several resolution levels of a Laplacian pyramid as described in
+
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+
+    At each level starting from <tt>fromLevel</tt>, this function calls
+    \ref pyramidExpandBurtFilter() to interpolate the image to the next highest
+    resolution, and then adds the interpolated image to the image stored at the
+    next level.
 
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 */
 template <class Image, class Alloc>
 inline void
-pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid,
+                           int fromLevel, int toLevel,
                            double centerValue = 0.4)
 {
     using namespace functor;
-    
+
     vigra_precondition(fromLevel  > toLevel,
        "pyramidExpandBurtLaplacian(): fromLevel must be larger than toLevel.");
     vigra_precondition(pyramid.lowestLevel() <= toLevel && fromLevel <= pyramid.highestLevel(),
@@ -1190,7 +1243,7 @@ pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, 
         typename ImagePyramid<Image, Alloc>::value_type tmpImage(pyramid[i].size());
         pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(tmpImage), centerValue);
         combineTwoImages(srcImageRange(tmpImage), srcImage(pyramid[i]), destImage(pyramid[i]),
-                       Arg1() - Arg2()); 
+                       Arg1() - Arg2());
     }
 }
 

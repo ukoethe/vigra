@@ -267,7 +267,12 @@ struct VolumeLabelingTest
 
         should(18 == labelMultiArray(vol4, res2, DirectNeighborhood));
         should(res == res2);
-    }
+ 
+        res2 = 0;
+        should(18 == labelMultiArray(vol4, res2, 
+                                     LabelOptions().neighborhood(DirectNeighborhood)));
+        should(res == res2);
+   }
 
     void labelingSixWithBackgroundTest1()
     {
@@ -292,6 +297,11 @@ struct VolumeLabelingTest
         }
 
         should(4 == labelMultiArrayWithBackground(vol5, res2, DirectNeighborhood));
+        should(res == res2);
+
+        res2 = 0;
+        should(4 == labelMultiArray(vol5, res2, 
+                                    LabelOptions().neighborhood(DirectNeighborhood).ignoreBackgroundValue(0)));
         should(res == res2);
 
         res2 = 0;

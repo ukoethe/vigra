@@ -148,7 +148,12 @@ ArrayVector<double> CoscotFunction<T>::prefilterCoefficients_;
 /** \addtogroup GeometricTransformations Geometric Transformations
     Zoom up and down by repeating pixels, or using various interpolation schemes.
 
-    See also: \ref resamplingConvolveImage(), \ref resampleImage(), \ref resizeMultiArraySplineInterpolation()
+    See also: 
+    <ul>
+    <li> \ref ResamplingConvolutionFilters to resize by means of pyramids or smoothing filters</li>
+    <li> \ref resampleImage() to just drop or repeat pixels</li>
+    <li> \ref resizeMultiArraySplineInterpolation() for multi-dimensional interpolation</li>
+    </ul>
 
     <b>\#include</b> \<vigra/stdimagefunctions.hxx\><br>
     <b>or</b><br>

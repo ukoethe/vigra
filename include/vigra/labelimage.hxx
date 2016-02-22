@@ -61,6 +61,8 @@ namespace vigra {
 
 /** \brief Find the connected components of a segmented image.
 
+    Deprecated. Use \ref labelMultiArray() instead.
+
     Connected components are defined as regions with uniform pixel
     values. Thus, <TT>T1</TT> either must be
     equality comparable, or a suitable EqualityFunctor must be
@@ -70,13 +72,13 @@ namespace vigra {
     starting with one and ending with the region number returned by
     the function (inclusive). The parameter '<TT>eight_neighbors</TT>'
     determines whether the regions should be 4-connected (false) or
-    8-connected (true). 
+    8-connected (true).
 
     Return:  the number of regions found (= largest region label)
-    
-    See \ref labelMultiArray() for a dimension-independent implementation of 
+
+    See \ref labelMultiArray() for a dimension-independent implementation of
     connected components labelling.
-    
+
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -191,7 +193,7 @@ unsigned int labelImage(SrcIterator upperlefts,
                         bool eight_neighbors, EqualityFunctor equal)
 {
     typedef typename DestAccessor::value_type LabelType;
-    
+
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
     int x,y,i;
@@ -208,8 +210,8 @@ unsigned int labelImage(SrcIterator upperlefts,
 
     SrcIterator ys = upperlefts;
     DestIterator yd = upperleftd;
-    
-    UnionFindArray<LabelType>  label;    
+
+    UnionFindArray<LabelType>  label;
 
     // pass 1: scan image from upper left to lower right
     // to find connected components
@@ -266,8 +268,8 @@ unsigned int labelImage(SrcIterator upperlefts,
 
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
-    unsigned int count = label.makeContiguous();    
-    
+    unsigned int count = label.makeContiguous();
+
     yd = upperleftd;
     for(y=0; y != h; ++y, ++yd.y)
     {
@@ -352,6 +354,8 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
 /** \brief Find the connected components of a segmented image,
     excluding the background from labeling.
 
+    Deprecated. Use \ref labelMultiArray() instead.
+
     This function works like \ref labelImage(), but considers all background pixels
     (i.e. pixels having the given '<TT>background_value</TT>') as a single region that
     is ignored when determining connected components and remains untouched in the
@@ -359,7 +363,7 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
     the background gets label 0 (remember that actual region labels start at one).
 
     Return:  the number of non-background regions found (= largest region label)
-    
+
     See \ref labelMultiArrayWithBackground() for a dimension-independent implementation
     if this algorithm.
 
@@ -370,13 +374,13 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
     namespace vigra {
         template <class T1, class S1,
                   class T2, class S2,
-                  class ValueType, 
+                  class ValueType,
                   class EqualityFunctor = std::equal_to<T1> >
-        unsigned int 
+        unsigned int
         labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
                                  MultiArrayView<2, T2, S2> dest,
                                  bool eight_neighbors,
-                                 ValueType background_value, 
+                                 ValueType background_value,
                                  EqualityFunctor equal = EqualityFunctor());
     }
     \endcode
@@ -480,7 +484,7 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
     \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> unsigned int labelImageWithBackground)
-    
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class ValueType, class EqualityFunctor>
@@ -507,7 +511,7 @@ unsigned int labelImageWithBackground(
 
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
-    
+
     // temporary image to store region labels
     typedef BasicImage<IntBiggest> TmpImage;
     TmpImage labelimage(w, h);
@@ -638,7 +642,7 @@ unsigned int labelImageWithBackground(
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class ValueType, class EqualityFunctor>
-inline unsigned int 
+inline unsigned int
 labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          pair<DestIterator, DestAccessor> dest,
                          bool eight_neighbors,
@@ -667,7 +671,7 @@ labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 template <class T1, class S1,
           class T2, class S2,
           class ValueType, class EqualityFunctor>
-inline unsigned int 
+inline unsigned int
 labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
                          MultiArrayView<2, T2, S2> dest,
                          bool eight_neighbors,
@@ -712,7 +716,7 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
     namespace vigra {
         template <class T1, class S1,
                   class T2, class S2, class DestValue>
-        void 
+        void
         regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                                     MultiArrayView<2, T2, S2> dest,
                                     DestValue edge_marker);
@@ -932,7 +936,7 @@ void regionImageToCrackEdgeImage(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
-inline void 
+inline void
 regionImageToCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<DestIterator, DestAccessor> dest,
                             DestValue edge_marker)
@@ -944,7 +948,7 @@ regionImageToCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 template <class T1, class S1,
           class T2, class S2, class DestValue>
-inline void 
+inline void
 regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                             MultiArrayView<2, T2, S2> dest,
                             DestValue edge_marker)
@@ -971,7 +975,7 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     namespace vigra {
         template <class T1, class S1,
                   class T2, class S2, class DestValue>
-        void 
+        void
         regionImageToEdgeImage(MultiArrayView<2, T1, S1> const & src,
                                MultiArrayView<2, T2, S2> dest,
                                DestValue edge_marker);
@@ -1136,7 +1140,7 @@ void regionImageToEdgeImage(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
-inline void 
+inline void
 regionImageToEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        pair<DestIterator, DestAccessor> dest,
                        DestValue edge_marker)
@@ -1148,7 +1152,7 @@ regionImageToEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 template <class T1, class S1,
           class T2, class S2, class DestValue>
-inline void 
+inline void
 regionImageToEdgeImage(MultiArrayView<2, T1, S1> const & src,
                        MultiArrayView<2, T2, S2> dest,
                        DestValue edge_marker)

@@ -1,4 +1,4 @@
-#######################################################################
+﻿#######################################################################
 #                                                                      
 #         Copyright 2009-2010 by Ullrich Koethe                        
 #                                                                      
@@ -33,9 +33,10 @@
 #                                                                      
 #######################################################################
 
+from __future__ import division, print_function
 import sys
-print >> sys.stderr, "\nexecuting test file", __file__
-execfile('set_paths.py')
+print("\nexecuting test file", __file__, file=sys.stderr)
+exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
 from nose.tools import assert_equal, raises
 import numpy as np
@@ -97,7 +98,7 @@ def test_writeAndReadImageHDF5():
     try:
         import h5py
     except:
-        print "Warning: 'import h5py' failed, not executing HDF5 import/export tests"
+        print("Warning: 'import h5py' failed, not executing HDF5 import/export tests")
         return
     
     # positive tests

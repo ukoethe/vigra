@@ -482,12 +482,12 @@ namespace {
             in_code,
             old_code;
 
-        register int
+        int
             bits,
             code,
             count;
 
-        register unsigned long
+        unsigned long
         datum;
 
         void_vector<Int16> prefix(MaxStackSize);
@@ -496,8 +496,8 @@ namespace {
         void_vector<UInt8> packet(256);
         void_vector<UInt16> indices(header.width*header.height);
 
-        register UInt8 *c;
-        register UInt16 *p = indices.begin();
+        UInt8 *c;
+        UInt16 *p = indices.begin();
 
         UInt8
         data_size,
@@ -624,7 +624,7 @@ namespace {
 
             int pass, x, y;
 
-            register UInt16 *q;
+            UInt16 *q;
 
             static int
               interlace_rate[4] = { 8, 8, 4, 2 },
@@ -891,9 +891,9 @@ namespace {
         long
           datum;
 
-        register int k;
+        int k;
 
-        register UInt8 *p;
+        UInt8 *p;
 
         void_vector<Int16> hash_code(MaxHashTable);
         void_vector<Int16> hash_prefix(MaxHashTable);

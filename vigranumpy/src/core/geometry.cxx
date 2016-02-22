@@ -55,7 +55,7 @@ pyconvexHull(NumpyArray<1, TinyVector<Coordinate, 2>, UnstridedArrayTag > points
     ArrayVector<TinyVector<Coordinate, 2> > hull;
     {
         PyAllowThreads _pythread;
-    
+
         convexHull(ArrayVectorView<TinyVector<Coordinate, 2> >(points.shape(0), points.data()), hull);
     }
 
@@ -75,8 +75,8 @@ void defineGeometry()
     docstring_options doc_options(true, true, false);
 
     multidef("convexHull",
-         pythonConvexHull<double, float, Int32>(),
-         args("points"),
+        pythonConvexHull<double, float, Int32>().installFallback(),
+        args("points"),
         "Compute the convex hull of a point set.\n"
         "\n"
         "For details see convexHull_ in the vigra C++ documentation.\n\n");
