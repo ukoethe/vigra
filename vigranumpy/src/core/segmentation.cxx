@@ -56,6 +56,9 @@
 #include <string>
 #include <cmath>
 
+#include <boost/python/stl_iterator.hpp>
+#include <boost/unordered_map.hpp>
+
 #include "tws.hxx"
 
 namespace python = boost::python;
@@ -1188,6 +1191,72 @@ python::tuple  pyUnionFindWatershedsBlockwise(
     return python::make_tuple(out, nSeg);
 }
 
+/** \brief Map all values in src to new values using the given mapping (a dict).
+ *  See python docstring for details.
+*/
+template <unsigned int NDIM, class SrcVoxelType, class DestVoxelType>
+NumpyAnyArray
+pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
+                   python::dict mapping,
+                   bool allow_incomplete_mapping = false,
+                   NumpyArray<NDIM, Singleband<DestVoxelType> > res = NumpyArray<NDIM, Singleband<SrcVoxelType> >())
+{
+    using namespace boost::python;
+
+    res.reshapeIfEmpty(src.taggedShape(), "applyMapping(): Output array has wrong shape.");
+
+    // Copy dict into a c++ unordered_map of ints,
+    // which is ~10x faster than using a Python dict
+    typedef boost::unordered_map<SrcVoxelType, DestVoxelType> labelmap_t;
+    labelmap_t labelmap(2*len(mapping)); // Using 2*N buckets seems to speed things up by 10%
+
+    typedef stl_input_iterator<tuple> dict_iter_t;
+
+#if PY_MAJOR_VERSION < 3
+    dict_iter_t map_iter = mapping.iteritems();
+#else
+    dict_iter_t map_iter = mapping.items();
+#endif
+
+    for (; map_iter != dict_iter_t(); ++map_iter)
+    {
+        object key = (*map_iter)[0];
+        object value = (*map_iter)[1];
+        labelmap[extract<SrcVoxelType>(key)] = extract<DestVoxelType>(value);
+    }
+
+    {
+        PyAllowThreads _pythread;
+
+        if (allow_incomplete_mapping)
+        {
+            transformMultiArray(src, res,
+                [&labelmap](SrcVoxelType px) -> DestVoxelType {
+                    typename labelmap_t::const_iterator iter = labelmap.find(px);
+                    if (iter == labelmap.end())
+                    {
+                        // Key is missing. Return the original value.
+                        return static_cast<DestVoxelType>(px);
+                    }
+                    return iter->second;
+                });
+        }
+        else
+        {
+            transformMultiArray(src, res,
+                [&labelmap](SrcVoxelType px) -> DestVoxelType {
+                    return labelmap.at(px);
+                });
+        }
+    }
+
+    return res;
+}
+
+// Unfortunately, can't use this macro because the template args uses TWO dtypes
+//VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyApplyMapping, pythonApplyMapping)
+
+
 void defineSegmentation()
 {
     using namespace python;
@@ -1561,6 +1630,79 @@ void defineSegmentation()
          arg("iterations")=10,
          arg("out")=python::object()),
         "Likewise compute Slic superpixels for a 3D volume, either single- or threeband.\n");
+
+    // Lots of overloads here to allow mapping between arrays of different dtypes.
+    // -- 3D
+    // 8 <--> 8, 32 <--> 32, 64 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint32, npy_uint32>),
+        (arg("labels"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()),
+        "Map all values in `labels` to new values using the given mapping (a dict).\n"
+        "Useful for maps with large values, for which a numpy index array would need too much RAM.\n"
+        "To relabel in-place, set `out=labels`.\n"
+        "\n"
+        "Parameters\n"
+        "----------\n"
+        "labels: ndarray\n"
+        "mapping: dict of ``{old_label : new_label}``\n"
+        "allow_incomplete_mapping: If True, then any voxel values in the original data that are missing\n"
+        "                          from the mapping dict will be copied (and casted) into the output.\n"
+        "                          Otherwise, an ``IndexError`` will be raised if the map is incomplete\n"
+        "                          for the input data.\n"
+        "out: ndarray to hold the data. If None, it will be allocated for you.\n"
+        "     The dtype of ``out`` is allowed to be smaller (or bigger) than the dtype of ``labels``.\n"
+        "\n"
+        "Note: As with other vigra functions, you should provide accurate axistags for optimal performance.\n");
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 32
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint32, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 32 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint32, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // -- 2D
+    // 8 <--> 8, 32 <--> 32, 64 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint32, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 32
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint32, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 32 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint32, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint64, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint64, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // -- 1D
+    // 8 <--> 8, 32 <--> 32, 64 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint32, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 32
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint32, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 32 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint32, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint64, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint64, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
 }
 
 void defineEdgedetection();
