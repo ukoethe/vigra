@@ -68,4 +68,5 @@ script:
   - mkdir build && cd build
   - cmake -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DWITH_BOOST_THREAD=$WITH_BOOST_THREAD -DBoost_DEBUG=1 -DPYTHON_VERSION=${TRAVIS_PYTHON_VERSION:0:3} ..
   - make
+  - find . -name "*.o" | xargs rm -v
   - ctest --output-on-failure
