@@ -38,8 +38,6 @@ def test_labelMultiArray():
 def _impl_test_applyMapping(dtype):
     original = numpy.arange(100, dtype=dtype ).reshape(10,10)
     mapping = dict( zip( original.flat[:], original.flat[:] + 100 ) )
-    # convert to int to avoid errors in boost::python::extract<>()
-    mapping = { int(k) : int(v) for k,v in mapping.items() }
 
     # Not in-place
     remapped = vigra.analysis.applyMapping(original, mapping)
@@ -52,16 +50,12 @@ def _impl_test_applyMapping(dtype):
 
     # Different dtypes
     mapping = dict( zip( original.flat[:], (original.flat[:] + 100).astype(numpy.uint64) ) )
-    # convert to int to avoid errors in boost::python::extract<>()
-    mapping = { int(k) : int(v) for k,v in mapping.items() }
 
     result = numpy.zeros_like( original, dtype=numpy.uint64 )
     vigra.analysis.applyMapping(original, mapping, out=result)
     assert (result == original+100).all()
 
     mapping = dict( zip( original.flat[:], (original.flat[:] + 100).astype(numpy.uint8) ) )
-    # convert to int to avoid errors in boost::python::extract<>()
-    mapping = { int(k) : int(v) for k,v in mapping.items() }
 
     result = numpy.zeros_like( original, dtype=numpy.uint8 )
     vigra.analysis.applyMapping(original, mapping, out=result)
