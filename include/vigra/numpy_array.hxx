@@ -1260,6 +1260,9 @@ void NumpyArray<N, T, Stride>::setupArrayView()
         }
 
         this->m_stride /= sizeof(value_type);
+        // make sure that singleton axes have non-zero stride
+        this->m_stride = max(this->m_stride, difference_type(1));
+
         this->m_ptr = reinterpret_cast<pointer>(PyArray_DATA(pyArray()));
         vigra_precondition(this->checkInnerStride(Stride()),
             "NumpyArray<..., UnstridedArrayTag>::setupArrayView(): First dimension of given array is not unstrided (should never happen).");
