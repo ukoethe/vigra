@@ -56,6 +56,9 @@
 #include <string>
 #include <cmath>
 
+#include <boost/python/stl_iterator.hpp>
+#include <boost/unordered_map.hpp>
+
 #include "tws.hxx"
 
 namespace python = boost::python;
@@ -617,89 +620,6 @@ pythonExtendedLocalMaxima3D(NumpyArray<3, Singleband<PixelType> > volume,
 
 /*************************************************************************/
 
-#if 0
-template < class PixelType >
-python::tuple
-pythonWatersheds2DOld(NumpyArray<2, Singleband<PixelType> > image,
-                   int neighborhood = 4,
-                   NumpyArray<2, Singleband<npy_uint32> > seeds = python::object(),
-                   std::string method = "RegionGrowing",
-                   SRGType srgType = CompleteGrow,
-                   PixelType max_cost = 0.0,
-                   NumpyArray<2, Singleband<npy_uint32> > res = NumpyArray<2, Singleband<npy_uint32> >())
-{
-    vigra_precondition(neighborhood == 4 || neighborhood == 8,
-           "watersheds2D(): neighborhood must be 4 or 8.");
-
-    method = tolower(method);
-
-    bool haveSeeds = seeds.hasData();
-    unsigned int maxRegionLabel = 0;
-
-    if(method == "")
-        method = "regiongrowing";
-
-    if(method == "regiongrowing")
-    {
-        seeds.reshapeIfEmpty(image.shape(),
-                "watersheds(): Seed array has wrong shape.");
-
-        if(!haveSeeds)
-        {
-            MultiArray<2, UInt8> minima(image.shape());
-            localMinima(srcImageRange(image), destImage(minima), 1, EightNeighborCode());
-            maxRegionLabel = labelImageWithBackground(srcImageRange(minima), destImage(seeds), true, 0);
-        }
-        else
-        {
-            FindMinMax< npy_uint32 > minmax;
-            inspectImage(srcImageRange(seeds), minmax);
-            maxRegionLabel = minmax.max;
-        }
-
-        res.reshapeIfEmpty(image.shape(), "watersheds(): Output array has wrong shape.");
-
-        ArrayOfRegionStatistics< SeedRgDirectValueFunctor< PixelType > > stats(maxRegionLabel);
-        if(neighborhood == 4)
-        {
-            seededRegionGrowing(srcImageRange(image), srcImage(seeds), destImage(res),
-                                stats, srgType, FourNeighborCode(), max_cost);
-        }
-        else
-        {
-            seededRegionGrowing(srcImageRange(image), srcImage(seeds), destImage(res),
-                                stats, srgType, EightNeighborCode(), max_cost);
-        }
-    }
-    else if(method == "unionfind")
-    {
-        vigra_precondition(!haveSeeds,
-           "watersheds(): UnionFind does not support seed images.");
-        vigra_precondition(srgType == CompleteGrow,
-           "watersheds(): UnionFind only supports 'CompleteGrow' mode.");
-
-        res.reshapeIfEmpty(image.shape(), "watersheds(): Output array has wrong shape.");
-
-        if(neighborhood == 4)
-        {
-            maxRegionLabel = watershedsUnionFind(srcImageRange(image), destImage(res),
-                                        FourNeighborCode());
-        }
-        else
-        {
-            maxRegionLabel = watershedsUnionFind(srcImageRange(image), destImage(res),
-                                        EightNeighborCode());
-        }
-    }
-    else
-    {
-        vigra_precondition(false, "watersheds(): Unknown watershed method requested.");
-    }
-
-    return python::make_tuple(res, maxRegionLabel);
-}
-#endif
-
 template < class PixelType >
 python::tuple
 pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
@@ -1050,7 +970,7 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds3D, pythonWatersheds3D)
 
-template <unsigned int N, class PixelType >
+template <class PixelType, int N>
 python::tuple
 pythonSlic(NumpyArray<N, PixelType > array,
            double intensityScaling,
@@ -1086,34 +1006,7 @@ pythonSlic(NumpyArray<N, PixelType > array,
     return python::make_tuple(res, maxRegionLabel);
 }
 
-template <class PixelType >
-python::tuple
-pythonSlic2D(NumpyArray<2, PixelType > image,
-             double intensityScaling,
-             unsigned int seedDistance,
-             unsigned int minSize = 0,            // choose minSize automatically
-             unsigned int iterations = 10,
-             NumpyArray<2, Singleband<npy_uint32> > res = NumpyArray<2, Singleband<npy_uint32> >())
-{
-    return pythonSlic(image, intensityScaling, seedDistance, minSize, iterations, res);
-}
-
-VIGRA_PYTHON_MULTITYPE_FUNCTOR(pySlic2D, pythonSlic2D)
-
-template <class PixelType >
-python::tuple
-pythonSlic3D(NumpyArray<3, PixelType > image,
-             double intensityScaling,
-             unsigned int seedDistance,
-             unsigned int minSize = 0,            // choose minSize automatically
-             unsigned int iterations = 10,
-             NumpyArray<3, Singleband<npy_uint32> > res = NumpyArray<3, Singleband<npy_uint32> >())
-{
-    return pythonSlic(image, intensityScaling, seedDistance, minSize, iterations, res);
-}
-
-VIGRA_PYTHON_MULTITYPE_FUNCTOR(pySlic3D, pythonSlic3D)
-
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pySlic, pythonSlic)
 
 template<unsigned int DIM>
 NumpyAnyArray  pythonShrinkLabels(
@@ -1187,6 +1080,72 @@ python::tuple  pyUnionFindWatershedsBlockwise(
                                                                        .blockShape(blockShape));
     return python::make_tuple(out, nSeg);
 }
+
+/** \brief Map all values in src to new values using the given mapping (a dict).
+ *  See python docstring for details.
+*/
+template <unsigned int NDIM, class SrcVoxelType, class DestVoxelType>
+NumpyAnyArray
+pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
+                   python::dict mapping,
+                   bool allow_incomplete_mapping = false,
+                   NumpyArray<NDIM, Singleband<DestVoxelType> > res = NumpyArray<NDIM, Singleband<SrcVoxelType> >())
+{
+    using namespace boost::python;
+
+    res.reshapeIfEmpty(src.taggedShape(), "applyMapping(): Output array has wrong shape.");
+
+    // Copy dict into a c++ unordered_map of ints,
+    // which is ~10x faster than using a Python dict
+    typedef boost::unordered_map<SrcVoxelType, DestVoxelType> labelmap_t;
+    labelmap_t labelmap(2*len(mapping)); // Using 2*N buckets seems to speed things up by 10%
+
+    typedef stl_input_iterator<tuple> dict_iter_t;
+
+#if PY_MAJOR_VERSION < 3
+    dict_iter_t map_iter = mapping.iteritems();
+#else
+    dict_iter_t map_iter = mapping.items();
+#endif
+
+    for (; map_iter != dict_iter_t(); ++map_iter)
+    {
+        object key = (*map_iter)[0];
+        object value = (*map_iter)[1];
+        labelmap[extract<SrcVoxelType>(key)] = extract<DestVoxelType>(value);
+    }
+
+    {
+        PyAllowThreads _pythread;
+
+        if (allow_incomplete_mapping)
+        {
+            transformMultiArray(src, res,
+                [&labelmap](SrcVoxelType px) -> DestVoxelType {
+                    typename labelmap_t::const_iterator iter = labelmap.find(px);
+                    if (iter == labelmap.end())
+                    {
+                        // Key is missing. Return the original value.
+                        return static_cast<DestVoxelType>(px);
+                    }
+                    return iter->second;
+                });
+        }
+        else
+        {
+            transformMultiArray(src, res,
+                [&labelmap](SrcVoxelType px) -> DestVoxelType {
+                    return labelmap.at(px);
+                });
+        }
+    }
+
+    return res;
+}
+
+// Unfortunately, can't use this macro because the template args uses TWO dtypes
+//VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyApplyMapping, pythonApplyMapping)
+
 
 void defineSegmentation()
 {
@@ -1433,7 +1392,7 @@ void defineSegmentation()
 
     /*  FIXME: int64 is unsupported by the C++ code (hard-coded int) */
     multidef("watersheds",
-        pywatersheds2D< npy_uint8, float >().installFallback(),
+        pywatersheds2D< npy_uint8, float >().installFallback().noPythonSignature(),
         (arg("image"),
          arg("neighborhood") = 4,
          arg("seeds")=python::object(),
@@ -1492,7 +1451,7 @@ void defineSegmentation()
     );
 
     multidef("watersheds",
-        pywatersheds3D< npy_uint8, float >(),
+        pywatersheds3D< npy_uint8, float >().noPythonSignature(),
         (arg("volume"),
          arg("neighborhood") = 6,
          arg("seeds")=python::object(),
@@ -1525,42 +1484,116 @@ void defineSegmentation()
        "graph-based watershed");
 
     multidef("slicSuperpixels",
-        pySlic2D< TinyVector<float, 3>, Singleband<float> >().installFallback(),
-        (arg("image"),
+        pySlic<2, 3, TinyVector<float, 3>, Singleband<float> >().installFallback(),
+        (arg("array"),
          arg("intensityScaling"),
          arg("seedDistance"),
          arg("minSize")=0,
          arg("iterations")=10,
          arg("out")=python::object()),
         "\n"
-        "Compute Slic superpixels for a 2D image.\n"
+        "Compute Slic superpixels for a 2D or 3D image.\n"
         "\n"
         "Parameters:\n\n"
-        " image:\n"
-        "    The 2D-image on which the superpixels will be calculated. Accepts single- and threeband images. \n\n"
+        " array:\n"
+        "    The array on which the superpixels will be calculated. Accepts single- and\n"
+        "    threeband images/volumes. \n"
+        "\n"
         " intensityScaling:\n"
-        "    Scale (divide) color/intensity difference by this parameter before comparing to spatial distance. \n\n"
+        "    Scale (divide) color/intensity difference by this parameter before comparing\n"
+        "    to spatial distance. \n"
+        "\n"
         " seedDistance:\n"
-        "    specify the radius of the window around each seed in which the algorithm looks for potential members of the corresponding superpixel"
-        " thus limiting the superpixel size. The grid spacing for seed placement is determined by this parameter.\n\n"
+        "    specify the radius of the window around each seed in which the algorithm looks\n"
+        "    for potential members of the corresponding superpixel thus limiting the\n"
+        "    superpixel size. The grid spacing for seed placement is determined by this parameter.\n"
+        "\n"
         " minSize:\n"
-        "    Minimum size for superpixels. By default the algorithm merges all regions smaller than a quarter of the average superpixel size.\n\n"
+        "    Minimum size for superpixels. By default the algorithm merges all regions smaller\n"
+        "    than a quarter of the average superpixel size.\n"
+        "\n"
         " iterations:\n"
-        "    Specify number of iterations. The default is 10."
+        "    Specify number of iterations. The default is 10.\n"
+        "\n"
         " out:\n"
         "    The label image (with dtype=numpy.uint32) to be filled by the algorithm. "
-        "    It will be allocated by the slicSuperpixels function if not provided)\n\n"
-        "The function returns a Python tuple (labelImage, maxRegionLabel)\n\n");
+        "    It will be allocated by the slicSuperpixels function if not provided)\n"
+        "\n"
+        "The function returns a Python tuple (labelImage, maxRegionLabel)\n"
+        "\n");
 
-    multidef("slicSuperpixels",
-        pySlic3D< TinyVector<float, 3>, Singleband<float> >(),
-        (arg("image"),
-         arg("intensityScaling"),
-         arg("seedDistance"),
-         arg("minSize")=0,
-         arg("iterations")=10,
-         arg("out")=python::object()),
-        "Likewise compute Slic superpixels for a 3D volume, either single- or threeband.\n");
+    // Lots of overloads here to allow mapping between arrays of different dtypes.
+    // -- 3D
+    // 8 <--> 8, 32 <--> 32, 64 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint32, npy_uint32>),
+        (arg("labels"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()),
+        "Map all values in `labels` to new values using the given mapping (a dict).\n"
+        "Useful for maps with large values, for which a numpy index array would need too much RAM.\n"
+        "To relabel in-place, set `out=labels`.\n"
+        "\n"
+        "Parameters\n"
+        "----------\n"
+        "labels: ndarray\n"
+        "mapping: dict of ``{old_label : new_label}``\n"
+        "allow_incomplete_mapping: If True, then any voxel values in the original data that are missing\n"
+        "                          from the mapping dict will be copied (and casted) into the output.\n"
+        "                          Otherwise, an ``IndexError`` will be raised if the map is incomplete\n"
+        "                          for the input data.\n"
+        "out: ndarray to hold the data. If None, it will be allocated for you.\n"
+        "     The dtype of ``out`` is allowed to be smaller (or bigger) than the dtype of ``labels``.\n"
+        "\n"
+        "Note: As with other vigra functions, you should provide accurate axistags for optimal performance.\n");
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 32
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint32, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 32 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint32, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // -- 2D
+    // 8 <--> 8, 32 <--> 32, 64 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint32, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 32
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint32, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 32 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint32, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint64, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint64, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // -- 1D
+    // 8 <--> 8, 32 <--> 32, 64 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint32, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 32
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint32, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 32 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint32, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint64, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // 8 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint64, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
 }
 
 void defineEdgedetection();
