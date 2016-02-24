@@ -50,6 +50,8 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install $(echo -e $BREW_DEPS) || true                                          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then sudo ln -s /usr/local/bin/pip3 /usr/local/bin/pip ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then sudo ln -s /usr/local/bin/python3 /usr/local/bin/python ; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.2" ]]; then pip install --upgrade 'pip<8' 'setuptools<19'                                ; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" != "3.2" ]]; then pip install --upgrade pip setuptools                                         ; fi
   - pip install nose
   - pip install numpy
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install boost-python --with-python ; fi
