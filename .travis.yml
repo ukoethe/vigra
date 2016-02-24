@@ -43,7 +43,6 @@ addons:
 
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="/usr/local/bin:${PATH}"                                                ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then travis_retry brew update                                                            ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                                                           ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew remove --force $(grep -v -F -x -f <(cat <(brew deps --skip-optional --union $(echo -e $BREW_DEPS)) <(echo -e $BREW_DEPS))  <(cat <(brew leaves) <(brew deps --skip-optional --union $(brew leaves)))); brew cleanup --force ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew upgrade --cleanup $(echo -e $BREW_DEPS) || true                                ; fi
