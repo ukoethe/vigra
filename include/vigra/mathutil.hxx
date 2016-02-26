@@ -170,7 +170,7 @@ using std::isfinite;
 template <class REAL>
 inline bool isinf(REAL v)
 {
-    return _finite(v) == 0;
+    return _finite(v) == 0 && _isnan(v) == 0;
 }
 
 template <class REAL>
@@ -182,7 +182,7 @@ inline bool isnan(REAL v)
 template <class REAL>
 inline bool isfinite(REAL v)
 {
-    return isinf(v) == 0 && isnan(v) == 0;
+    return _finite(v) != 0;
 }
 
 #endif
