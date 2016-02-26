@@ -81,7 +81,6 @@ def test_applyMapping():
     _impl_test_applyMapping(numpy.uint32)
     _impl_test_applyMapping(numpy.uint64)
 
-
 def _impl_test_unique(dtype):
     a = numpy.array([2,3,5,7,11,13,17,19,23,29] + [2,3,5,7,11,13,17,19,23,29], dtype=dtype)
     u = vigra.analysis.unique(a)
@@ -91,6 +90,36 @@ def test_unique():
     _impl_test_unique(numpy.uint8)
     _impl_test_unique(numpy.uint32)
     _impl_test_unique(numpy.uint64)
+
+def _impl_relabelConsecutive(dtype):
+    start = 17
+    a = numpy.random.randint(start,start+100, size=(100,100) ).astype(dtype)
+    a[-1] = numpy.arange(start,start+100, dtype=dtype) # Make sure every number is used
+    a[:] *= 3
+    consecutive = vigra.analysis.relabelConsecutive(a, start)
+
+    assert (numpy.unique(consecutive) == numpy.arange(start,start+100)).all(), \
+        "relabeled array does not have consecutive labels"
+    
+    first_label_a = a[0,0]
+    first_label_c = consecutive[0,0]
+    assert ((a == first_label_a) == (consecutive == first_label_c)).all()
+
+    # Now in-place
+    orig = a.copy()
+    vigra.analysis.relabelConsecutive(a, start, out=a)
+    
+    assert (numpy.unique(a) == numpy.arange(start,start+100)).all(), \
+        "relabeled array does not have consecutive labels"
+    
+    first_label_orig = orig[0,0]
+    first_label_a = a[0,0]
+    assert ((orig == first_label_orig) == (a == first_label_a)).all()
+
+def test_relabelConsecutive():
+    _impl_relabelConsecutive(numpy.uint8)
+    _impl_relabelConsecutive(numpy.uint32)
+    _impl_relabelConsecutive(numpy.uint64)
 
 def ok_():
     print(".", file=sys.stderr)
