@@ -956,7 +956,7 @@ namespace std {
 template <class T>
 ostream & operator<<(ostream & s, vigra::ArrayVectorView<T> const & a)
 {
-    for(std::size_t k=0; k<a.size()-1; ++k)
+    for(std::ptrdiff_t k=0; k<(std::ptrdiff_t)a.size()-1; ++k)
         s << a[k] << ", ";
     if(a.size())
             s << a.back();
