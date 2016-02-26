@@ -51,13 +51,14 @@
 #include <vigra/multi_convolution.hxx>
 #include <vigra/slic.hxx>
 #include <vigra/seg_to_seeds.hxx>
-
+#include <vigra/multi_pointoperators.hxx>
 
 #include <string>
 #include <cmath>
 
 #include <boost/python/stl_iterator.hpp>
 #include <boost/unordered_map.hpp>
+#include <boost/unordered_set.hpp>
 
 #include "tws.hxx"
 
@@ -1147,6 +1148,24 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
 //VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyApplyMapping, pythonApplyMapping)
 
 
+/** \brief Find unique values in the given array.
+*/
+template <class VoxelType, unsigned int NDIM>
+NumpyAnyArray
+pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src)
+{
+    boost::unordered_set<VoxelType> labelset;
+    auto f = [&labelset](VoxelType px) { labelset.insert(px); };
+    inspectMultiArray(src, f);
+
+    NumpyArray<1, VoxelType> result;
+    result.reshape( Shape1(labelset.size()) );
+    std::copy( labelset.begin(), labelset.end(), result.begin() );
+    return result;
+}
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyUnique, pythonUnique)
+
 void defineSegmentation()
 {
     using namespace python;
@@ -1521,6 +1540,14 @@ void defineSegmentation()
         "\n"
         "The function returns a Python tuple (labelImage, maxRegionLabel)\n"
         "\n");
+
+    multidef("unique",
+        pyUnique<1,5,npy_uint8, npy_uint32, npy_uint64>(),
+        (arg("arr")),
+        "Find unique values in the given label array.\n"
+        "Result is not sorted.\n"
+        "Faster then numpy.unique().\n");
+
 
     // Lots of overloads here to allow mapping between arrays of different dtypes.
     // -- 3D
