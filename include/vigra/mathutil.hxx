@@ -163,6 +163,7 @@ VIGRA_DEFINE_MISSING_ABS(signed long long)
 
 using std::isinf;
 using std::isnan;
+using std::isfinite;
 
 #else
 
@@ -176,6 +177,12 @@ template <class REAL>
 inline bool isnan(REAL v)
 {
     return _isnan(v) != 0;
+}
+
+template <class REAL>
+inline bool isfinite(REAL v)
+{
+    return isinf(v) == 0 && isnan(v) == 0;
 }
 
 #endif
