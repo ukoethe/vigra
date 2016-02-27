@@ -96,7 +96,9 @@ def _impl_relabelConsecutive(dtype):
     a = numpy.random.randint(start,start+100, size=(100,100) ).astype(dtype)
     a[-1] = numpy.arange(start,start+100, dtype=dtype) # Make sure every number is used
     a[:] *= 3
-    consecutive = vigra.analysis.relabelConsecutive(a, start)
+    consecutive, maxlabel, mapping = vigra.analysis.relabelConsecutive(a, start)
+    assert maxlabel == consecutive.max()
+    assert (vigra.analysis.applyMapping(a, mapping) == consecutive).all()
 
     assert (numpy.unique(consecutive) == numpy.arange(start,start+100)).all(), \
         "relabeled array does not have consecutive labels"
@@ -107,7 +109,10 @@ def _impl_relabelConsecutive(dtype):
 
     # Now in-place
     orig = a.copy()
-    vigra.analysis.relabelConsecutive(a, start, out=a)
+    consecutive, maxlabel, mapping = vigra.analysis.relabelConsecutive(a, start, out=a)
+    assert consecutive is a
+    assert maxlabel == consecutive.max()
+    assert (vigra.analysis.applyMapping(orig, mapping) == consecutive).all()
     
     assert (numpy.unique(a) == numpy.arange(start,start+100)).all(), \
         "relabeled array does not have consecutive labels"
