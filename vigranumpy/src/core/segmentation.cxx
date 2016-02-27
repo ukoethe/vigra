@@ -1184,12 +1184,11 @@ pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
         PyAllowThreads _pythread;
 
         boost::unordered_map<SrcVoxelType, DestVoxelType> labelmap;
-        auto labelmap_end = labelmap.end();
 
         transformMultiArray(src, res,
             [&](SrcVoxelType px) -> DestVoxelType {
                 auto iter = labelmap.find(px);
-                if (iter != labelmap_end)
+                if (iter != labelmap.end())
                 {
                     return iter->second;
                 }
