@@ -55,10 +55,10 @@
 
 #include <string>
 #include <cmath>
+#include <unordered_set>
+#include <unordered_map>
 
 #include <boost/python/stl_iterator.hpp>
-#include <boost/unordered_map.hpp>
-#include <boost/unordered_set.hpp>
 
 #include "tws.hxx"
 
@@ -1098,7 +1098,7 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
 
     // Copy dict into a c++ unordered_map of ints,
     // which is ~10x faster than using a Python dict
-    typedef boost::unordered_map<SrcVoxelType, DestVoxelType> labelmap_t;
+    typedef std::unordered_map<SrcVoxelType, DestVoxelType> labelmap_t;
     labelmap_t labelmap(2*len(mapping)); // Using 2*N buckets seems to speed things up by 10%
 
     typedef stl_input_iterator<tuple> dict_iter_t;
@@ -1154,7 +1154,7 @@ template <class VoxelType, unsigned int NDIM>
 NumpyAnyArray
 pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src)
 {
-    boost::unordered_set<VoxelType> labelset;
+    std::unordered_set<VoxelType> labelset;
     auto f = [&labelset](VoxelType px) { labelset.insert(px); };
     inspectMultiArray(src, f);
 
@@ -1180,7 +1180,7 @@ pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
     using namespace boost::python;
     res.reshapeIfEmpty(src.taggedShape(), "relabelConsecutive(): Output array has wrong shape.");
 
-    boost::unordered_map<SrcVoxelType, DestVoxelType> labelmap;
+    std::unordered_map<SrcVoxelType, DestVoxelType> labelmap;
     {
         PyAllowThreads _pythread;
 
