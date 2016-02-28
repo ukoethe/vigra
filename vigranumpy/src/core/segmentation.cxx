@@ -51,13 +51,14 @@
 #include <vigra/multi_convolution.hxx>
 #include <vigra/slic.hxx>
 #include <vigra/seg_to_seeds.hxx>
-
+#include <vigra/multi_pointoperators.hxx>
 
 #include <string>
 #include <cmath>
+#include <unordered_set>
+#include <unordered_map>
 
 #include <boost/python/stl_iterator.hpp>
-#include <boost/unordered_map.hpp>
 
 #include "tws.hxx"
 
@@ -1097,7 +1098,7 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
 
     // Copy dict into a c++ unordered_map of ints,
     // which is ~10x faster than using a Python dict
-    typedef boost::unordered_map<SrcVoxelType, DestVoxelType> labelmap_t;
+    typedef std::unordered_map<SrcVoxelType, DestVoxelType> labelmap_t;
     labelmap_t labelmap(2*len(mapping)); // Using 2*N buckets seems to speed things up by 10%
 
     typedef stl_input_iterator<tuple> dict_iter_t;
@@ -1145,6 +1146,72 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
 
 // Unfortunately, can't use this macro because the template args uses TWO dtypes
 //VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyApplyMapping, pythonApplyMapping)
+
+
+/** \brief Find unique values in the given array.
+*/
+template <class VoxelType, unsigned int NDIM>
+NumpyAnyArray
+pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src)
+{
+    std::unordered_set<VoxelType> labelset;
+    auto f = [&labelset](VoxelType px) { labelset.insert(px); };
+    inspectMultiArray(src, f);
+
+    NumpyArray<1, VoxelType> result;
+    result.reshape( Shape1(labelset.size()) );
+    std::copy( labelset.begin(), labelset.end(), result.begin() );
+    return result;
+}
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyUnique, pythonUnique)
+
+
+/** \brief Relabel an array such that all labels are consecutive
+ * (i.e. there are no gaps in the label values used by the array)
+ * See python docstring below for details.
+*/
+template <unsigned int NDIM, class SrcVoxelType, class DestVoxelType>
+boost::python::tuple
+pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
+                         DestVoxelType start_label = 0,
+                         NumpyArray<NDIM, Singleband<DestVoxelType> > res = NumpyArray<NDIM, Singleband<SrcVoxelType> >())
+{
+    using namespace boost::python;
+    res.reshapeIfEmpty(src.taggedShape(), "relabelConsecutive(): Output array has wrong shape.");
+
+    std::unordered_map<SrcVoxelType, DestVoxelType> labelmap;
+    {
+        PyAllowThreads _pythread;
+
+        transformMultiArray(src, res,
+            [&](SrcVoxelType px) -> DestVoxelType {
+                auto iter = labelmap.find(px);
+                if (iter != labelmap.end())
+                {
+                    return iter->second;
+                }
+                // We haven't seen this label yet.
+                // Create a new entry in the hash table.
+                DestVoxelType newlabel = labelmap.size() + start_label;
+                labelmap[px] = newlabel;
+                return newlabel;
+            });
+    }
+
+    // Convert labelmap to dict
+    dict labelmap_dict;
+    for (auto old_new_pair : labelmap)
+    {
+        labelmap_dict[old_new_pair.first] = old_new_pair.second;
+    }
+
+    DestVoxelType max_label = labelmap.size() - 1 + start_label;
+    return make_tuple(res, max_label, labelmap_dict);
+}
+
+// Unfortunately, can't use this macro because the template args uses TWO dtypes
+//VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyRelabelConsecutive, pythonRelabelConsecutive)
 
 
 void defineSegmentation()
@@ -1521,6 +1588,47 @@ void defineSegmentation()
         "\n"
         "The function returns a Python tuple (labelImage, maxRegionLabel)\n"
         "\n");
+
+    multidef("unique",
+        pyUnique<1,5,npy_uint8, npy_uint32, npy_uint64>(),
+        (arg("arr")),
+        "Find unique values in the given label array.\n"
+        "Result is not sorted.\n"
+        "Faster then numpy.unique().\n");
+
+    //-- 3D relabelConsecutive
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint32, npy_uint32>),
+        (arg("labels"), arg("start_label")=0, arg("out")=python::object()),
+        "Relabel the given label image to have consecutive label values.\n"
+        "Note: The relative order between label values will not necessarily be preserved.\n"
+        "\n"
+        "Parameters\n"
+        "----------\n"
+        "labels: ndarray\n"
+        "start_label: The lowest label of the output array.\n"
+        "out: ndarray to hold the data. If None, it will be allocated for you.\n"
+        "     A combination of uint64 labels and uint32 'out' is permitted.\n"
+        "\n"
+        "Returns a tuple of ``(newlabels, maxlabel, mapping)``, where:\n"
+        "``maxlabel`` is the maximum label of the new labels, and\n"
+        "``mapping`` is a dict showing how the old labels were converted to the new label values.\n"
+        "\n"
+        "Note: As with other vigra functions, you should provide accurate axistags for optimal performance.\n");
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint64, npy_uint64>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint8, npy_uint8>),   (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint64, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+
+    //-- 2D relabelConsecutive
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint32, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint64, npy_uint64>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint8, npy_uint8>),   (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint64, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+
+    //-- 1D relabelConsecutive
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint32, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint64, npy_uint64>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint8, npy_uint8>),   (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint64, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
 
     // Lots of overloads here to allow mapping between arrays of different dtypes.
     // -- 3D
