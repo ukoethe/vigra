@@ -1387,6 +1387,51 @@ struct MultiArraySeparableRecursiveConvolutionTest
         shouldEqualSequence(res.begin(), res.end(), res_scaled.begin());
     }
 
+    void testGaussian(unsigned int order, double sigma) {
+        ConvolutionKernel kernel_iir;
+        Kernel1D<double> kernel_fir;
+        MultiArray<1, double> src(100), res_iir(100), res_fir(100);
+
+        for (unsigned int i = 0; i < 100; ++i) {
+            src[i] = res_iir[i] = res_fir[i] = 0.0;
+        }
+
+        src[50] = 1.0;
+
+        kernel_iir.initGaussianDerivative(sigma, order);
+        kernel_fir.initGaussianDerivative(sigma, order, 1.0, 9);
+
+        separableConvolveMultiArray(srcMultiArrayRange(src), destMultiArray(res_iir), kernel_iir);
+        separableConvolveMultiArray(srcMultiArrayRange(src), destMultiArray(res_fir), kernel_fir);
+
+        double diff;
+        double tol = 1e-4;
+        for (unsigned int i = 0; i < 100; ++i) {
+            diff = abs(res_fir[i] - res_iir[i]);
+            if (diff > tol) {
+                std::ostringstream msg;
+                msg << "Assertion failed: Sequence items differ at index " << i << " abs(" << res_iir[i] << " - " << res_fir[i] << ") > " << tol;
+                vigra_fail(msg.str());
+            }
+
+        }
+    }
+
+    void testSmoothing(void) {
+        testGaussian(0, 5.0);
+        testGaussian(0, 10.0);
+    }
+
+    void test1stDeriv(void) {
+        testGaussian(1, 5.0);
+        testGaussian(1, 10.0);
+    }
+
+    void test2ndDeriv(void) {
+        testGaussian(2, 5.0);
+        testGaussian(2, 10.0);       
+    }
+
     MultiArraySeparableRecursiveConvolutionTest()
     {
     }
@@ -1402,6 +1447,9 @@ struct MultiArraySeparableRecursiveConvolutionTestSuite
         {
                 add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::testBorder ) );
                 add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::testScaling ) );
+                add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::testSmoothing ) );
+                add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::test1stDeriv ) );
+                add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::test2ndDeriv ) );
     }
 }; // struct MultiArraySeparableRecursiveConvolutionTestSuite
 
