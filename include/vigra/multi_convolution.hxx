@@ -689,7 +689,8 @@ inline MultiConvolutionKernel internalSelectKernelApproximation(MultiConvolution
         else if (sigma < 32.0)
             k = MULTI_CONVOLUTION_KERNEL_IIR_DERICHE;
         else
-            k = MULTI_CONVOLUTION_KERNEL_IIR_VYV;
+            //k = MULTI_CONVOLUTION_KERNEL_IIR_VYV;
+          k = MULTI_CONVOLUTION_KERNEL_FIR;
     }
     
     // IIR kernels are highly inaccurate and don't result in any speed advantages for very small std devs

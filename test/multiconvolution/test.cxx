@@ -1405,15 +1405,22 @@ struct MultiArraySeparableRecursiveConvolutionTest
         separableConvolveMultiArray(srcMultiArrayRange(src), destMultiArray(res_fir), kernel_fir);
 
         double diff;
-        double tol = 1e-4;
+        double tol = 1e-12;
+
+        if (kernel_iir.order == 2)
+            tol = 3e-3;
+        else if(kernel_iir.order == 3)
+            tol = 1e-3;
+        else if(kernel_iir.order == 4)
+            tol = 1e-4;
+
         for (unsigned int i = 0; i < 100; ++i) {
             diff = abs(res_fir[i] - res_iir[i]);
             if (diff > tol) {
                 std::ostringstream msg;
-                msg << "Assertion failed: Sequence items differ at index " << i << " abs(" << res_iir[i] << " - " << res_fir[i] << ") > " << tol;
+                msg << "Assertion failed: Sequence items differ at index " << i << " abs(" << res_iir[i] << " - " << res_fir[i] << ") = " << diff << " > " << tol;
                 vigra_fail(msg.str());
             }
-
         }
     }
 
@@ -1475,20 +1482,21 @@ int main(int argc, char ** argv)
     failed += test_mascsts_iir_deriche.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test_mascsts_iir_deriche.report() << std::endl;
 
-    // run the multi-array separable scaled-convolution test suite for VYV IIR filters
-    MultiArraySeparableConvolutionScaledTestSuite test_mascsts_iir_vyv(MULTI_CONVOLUTION_KERNEL_IIR_VYV, "MultiArraySeparableConvolutionScaledTestSuiteRecursiveVYV");
-    failed += test_mascsts_iir_vyv.run(vigra::testsToBeExecuted(argc, argv));
-    std::cout << test_mascsts_iir_vyv.report() << std::endl;
+    // run the multi-array separable recursive scaled-convolution test suite for Deriche filters
+    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<2, false, false, false, double>> test_masrcts_deriche2nd("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche2ndOrder");
+    failed += test_masrcts_deriche2nd.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_masrcts_deriche2nd.report() << std::endl;
 
     // run the multi-array separable recursive scaled-convolution test suite for Deriche filters
-    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<4, false, false, false, double>> test_masrcts_deriche("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche");
-    failed += test_masrcts_deriche.run(vigra::testsToBeExecuted(argc, argv));
-    std::cout << test_masrcts_deriche.report() << std::endl;
+    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<3, false, false, false, double>> test_masrcts_deriche3rd("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche3rdOrder");
+    failed += test_masrcts_deriche3rd.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_masrcts_deriche3rd.report() << std::endl;
 
-    // run the multi-array separable recursive scaled-convolution test suite for VYV filters
-    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<4, true, false, false, double>> test_masrcts_vyv("MultiArraySeparableRecursiveConvolutionTestSuiteVYV");
-    failed += test_masrcts_vyv.run(vigra::testsToBeExecuted(argc, argv));
-    std::cout << test_masrcts_vyv.report() << std::endl;
+    // run the multi-array separable recursive scaled-convolution test suite for Deriche filters
+    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<4, false, false, false, double>> test_masrcts_deriche4th("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche4thOrder");
+    failed += test_masrcts_deriche4th.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_masrcts_deriche4th.report() << std::endl;
+
 
     return (failed != 0);
 }
