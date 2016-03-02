@@ -66,8 +66,7 @@ namespace vigra {
 
 namespace detail {
 // Rachid Deriche. Recursively implementating the Gaussian and its derivatives.
-// [Research Report]
-// RR-1893, 1993, pp.24. <inria-00074778>
+// [Research Report] RR-1893, 1993, pp.24. <inria-00074778>
 
 struct DerichePrecomputed
 {
@@ -754,7 +753,6 @@ recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     switch(kernel.border_treatment) {
         case BORDER_TREATMENT_ZEROPAD:
             recursiveConvolveLineDericheZeroBorder(is, iend, sa, id, da, kernel, start, stop);
-            //recursiveConvolveLineDericheBorder<BORDER_TREATMENT_ZEROPAD>(is, iend, sa, id, da, kernel, start, stop);
             break;
 
         case BORDER_TREATMENT_REPEAT:
