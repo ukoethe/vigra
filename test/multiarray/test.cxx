@@ -1193,7 +1193,7 @@ public:
         shouldEqual (countx, 30);
         shouldEqual (county, 15);
         shouldEqual (countz, 5);
-        shouldEqual (seqi, a3.end());
+        should (seqi == a3.end());
         
         // test direct navigation
         traverser3_t i3 = a3.traverser_begin();
@@ -1328,7 +1328,7 @@ public:
         shouldEqual (countx, 30);
         shouldEqual (county, 15);
         shouldEqual (countz, 5);
-        shouldEqual (seqi, a3.end());
+        should (seqi == a3.end());
         //
         //// test direct navigation
         //traverser3_t i3 = a3.traverser_begin();

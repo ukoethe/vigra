@@ -1449,7 +1449,7 @@ struct AnyTest
         shouldEqual(a.get<int>(), 10);
         shouldEqual(b.get<int>(), 10);
 
-        b.release();
+        b.destroy();
         shouldNot(bool(b));
         should(b.empty());
 
