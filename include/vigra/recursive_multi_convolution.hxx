@@ -158,16 +158,17 @@ namespace detail
 struct deriche_tag {};
 struct vyv_tag {};
 
-template<typename X, typename Y>
-struct is_specific_iir_kernel
+template<typename X>
+struct is_deriche_kernel
 {
-  static const bool value = std::is_same<typename X::vigra_recursive_kernel_type, Y>::value;
+  static const bool value = std::is_same<typename X::vigra_recursive_kernel_type, deriche_tag>::value;
 };
 
 template<typename X>
-using is_deriche_kernel = is_specific_iir_kernel<X, deriche_tag>;
-template<typename X>
-using is_vyv_kernel = is_specific_iir_kernel<X, vyv_tag>;
+struct is_vyv_kernel
+{
+  static const bool value = std::is_same<typename X::vigra_recursive_kernel_type, vyv_tag>::value;
+};
 
 
 // based on code Copyright (c) 2012-2013, Pascal Getreuer
@@ -314,29 +315,29 @@ protected:
 private:
     std::complex<ARITHTYPE> poles[order];
 
-    double compute_q(double sigma) {
-        double q = sigma / 2;
-        double sigma2 = sigma * sigma;
+    ARITHTYPE compute_q(ARITHTYPE sigma) {
+        ARITHTYPE q = sigma / 2;
+        ARITHTYPE sigma2 = sigma * sigma;
 
         for (unsigned int i = 0; i < 20; ++i)
             q -= (variance(q) - sigma2) / dq_variance(q);
         return q;
     }
 
-    double variance(double q) {
+    ARITHTYPE variance(ARITHTYPE q) {
         const std::complex<ARITHTYPE> one(1, 0);
         std::complex<ARITHTYPE> sum(0, 0);
         std::complex<ARITHTYPE> z;
 
         for (unsigned int i = 0; i < order; ++i) {
             z = pow(poles[i], 1 / q);
-            sum += z / (pow(z - one, 2));
+            sum += z / (std::complex<ARITHTYPE>)pow(z - one, 2);
         }
 
         return 2.0 * sum.real();
     }
 
-    double dq_variance(double q) {
+    ARITHTYPE dq_variance(ARITHTYPE q) {
         const std::complex<ARITHTYPE> one(1, 0);
         std::complex<ARITHTYPE> sum(0, 0);
         std::complex<ARITHTYPE> z;
@@ -344,7 +345,7 @@ private:
         for (unsigned int i = 0; i < order; ++i) {
             z = pow(poles[i], 1 / q);
 
-            sum += z * log(z) * (z + one) / (pow(z - one, 3));
+            sum += z * log(z) * (z + one) / (std::complex<ARITHTYPE>)pow(z - one, 3);
         }
 
         return (2.0 / q) * sum.real();
@@ -507,8 +508,7 @@ public:
 };
 
 template <class SrcIterator, class SrcAccessor, class DestIterator,
-          class DestAccessor, class RecursiveConvolutionKernel, class SumType,
-          typename std::enable_if<is_deriche_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
+          class DestAccessor, class RecursiveConvolutionKernel, class SumType>
 void dericheApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                         DestIterator id, DestAccessor da,
                         RecursiveConvolutionKernel kernel, SumType xtmp[],
@@ -541,8 +541,7 @@ void dericheApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 }
 
 template <class SrcIterator, class SrcAccessor, class DestIterator,
-          class DestAccessor, class RecursiveConvolutionKernel, class SumType,
-          typename std::enable_if<is_deriche_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
+          class DestAccessor, class RecursiveConvolutionKernel, class SumType>
 void dericheApplyAntiCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                             DestIterator id, DestAccessor da,
                             RecursiveConvolutionKernel kernel, SumType xtmp[],
@@ -576,6 +575,7 @@ void dericheApplyAntiCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 }
 
 // SSE
+#if 0
 template <class SrcIterator, class SrcAccessor, class DestIterator,
           class DestAccessor, class RecursiveConvolutionKernel, class SumType,
           typename std::enable_if<is_deriche_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr,
@@ -649,13 +649,12 @@ inline void dericheApplyAntiCausalSIMD(SrcIterator is, SrcIterator iend, SrcAcce
 {
     dericheApplyAntiCausal(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
 }
+#endif
 
 template <unsigned BorderTreatmentType,
           class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class RecursiveConvolutionKernel,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr,
-          typename std::enable_if<is_deriche_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
+          class RecursiveConvolutionKernel>
 inline void recursiveConvolveLineDericheBorder(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel kernel,
@@ -674,20 +673,18 @@ inline void recursiveConvolveLineDericheBorder(SrcIterator is, SrcIterator iend,
     for (unsigned int i = 0; i < kernel.order; ++i)
         xtmp[i] = ytmp[i] = NumericTraits<SumType>::zero();
     dericheApplyCausal(is, iend, sa_causal, id, da_fake, kernel, xtmp, ytmp, start + kernel.left(), start);
-    dericheApplyCausalSIMD(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
+    dericheApplyCausal(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
 
     for (unsigned int i = 0; i < kernel.order; ++i)
         xtmp[i] = ytmp[i] = NumericTraits<SumType>::zero();
     dericheApplyAntiCausal(is, iend, sa_anticausal, id, da_fake, kernel, xtmp, ytmp, stop, stop + kernel.right());
-    dericheApplyAntiCausalSIMD(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
+    dericheApplyAntiCausal(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
 
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class RecursiveConvolutionKernel,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr,
-          typename std::enable_if<is_deriche_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
+          class RecursiveConvolutionKernel>
 inline void recursiveConvolveLineDericheZeroBorder(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel kernel,
@@ -701,20 +698,19 @@ inline void recursiveConvolveLineDericheZeroBorder(SrcIterator is, SrcIterator i
 
     for (unsigned int i = 0; i < kernel.order; ++i)
         xtmp[i] = ytmp[i] = NumericTraits<SumType>::zero();
-    dericheApplyCausalSIMD(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
+    dericheApplyCausal(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
 
     for (unsigned int i = 0; i < kernel.order; ++i)
         xtmp[i] = ytmp[i] = NumericTraits<SumType>::zero();
-    dericheApplyAntiCausalSIMD(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
+    dericheApplyAntiCausal(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
 
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class RecursiveConvolutionKernel,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr,
-          typename std::enable_if<is_deriche_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
-inline void recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+          class RecursiveConvolutionKernel>
+inline typename std::enable_if<is_deriche_kernel<RecursiveConvolutionKernel>::value>::type
+recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel kernel,
                   BorderTreatmentMode border,
@@ -751,9 +747,7 @@ inline void recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RecursiveConvolutionKernel,
-          class SumType,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr,
-          typename std::enable_if<is_vyv_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
+          class SumType>
 void vyvApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel kernel,
@@ -788,9 +782,7 @@ void vyvApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 template <class DestIterator, class DestAccessor,
           class RecursiveConvolutionKernel,
-          class SumType,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr,
-          typename std::enable_if<is_vyv_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
+          class SumType>
 void vyvApplyAntiCausal(DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel kernel,
                   SumType xtmp, SumType ytmp[],
@@ -818,30 +810,12 @@ void vyvApplyAntiCausal(DestIterator id, DestAccessor da,
 }
 
 
-template <class T, class A, int N, int M>
-TinyVector<TinyVector<T, N> , M>
-operator*(const Matrix<T, A> &a, const TinyVector<TinyVector<T, N>, M> &b)
-{
-    vigra_precondition(N == rowCount(a) && N == columnCount(a),
-         "operator*(Matrix, TinyVector): Shape mismatch.");
-
-    typedef TinyVector<T, N> InnerVector;
-
-    TinyVector<InnerVector, M> res = TinyVectorView<InnerVector, M>();
-    for(MultiArrayIndex i = 0; i < N; ++i) {
-        for (unsigned j = 0; j < M; ++j)
-            res[j] += TinyVectorView<T, N>(&a(0,i)) * b[i][j];
-    }
-    return res;
-}
 
 
 template <unsigned BorderTreatmentType, class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RecursiveConvolutionKernel,
-          class SumType,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr,
-          typename std::enable_if<is_vyv_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
+          class SumType>
 inline void recursiveConvolveLineVYVBorder(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel kernel,
@@ -895,10 +869,9 @@ inline void recursiveConvolveLineVYVBorder(SrcIterator is, SrcIterator iend, Src
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class RecursiveConvolutionKernel,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr,
-          typename std::enable_if<is_vyv_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
-inline void recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+          class RecursiveConvolutionKernel>
+inline typename std::enable_if<is_vyv_kernel<RecursiveConvolutionKernel>::value>::type
+recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel kernel,
                   BorderTreatmentMode border,
@@ -1209,8 +1182,9 @@ void dericheApplyAntiCasual(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 
 
-template<typename RecursiveConvolutionKernel, typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
-inline RecursiveConvolutionKernel kernel1d(RecursiveConvolutionKernel k)
+template<typename RecursiveConvolutionKernel>
+inline typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value, RecursiveConvolutionKernel>::type
+kernel1d(RecursiveConvolutionKernel k)
 {
     return k;
 }
@@ -1218,9 +1192,9 @@ inline RecursiveConvolutionKernel kernel1d(RecursiveConvolutionKernel k)
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class RecursiveConvolutionKernel,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
-void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+          class RecursiveConvolutionKernel>
+typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type
+convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel ik,
                   BorderTreatmentMode border,
@@ -1234,9 +1208,9 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class RecursiveConvolutionKernel,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
-inline void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+          class RecursiveConvolutionKernel>
+inline typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type 
+convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel ik,
                   int start = 0, int stop = 0)
@@ -1247,9 +1221,9 @@ inline void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class RecursiveConvolutionKernel,
-          typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type * = nullptr>
-inline void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+          class RecursiveConvolutionKernel>
+inline typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type
+convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   pair<DestIterator, DestAccessor> dest,
                   RecursiveConvolutionKernel kernel,
                   int start = 0, int stop = 0)

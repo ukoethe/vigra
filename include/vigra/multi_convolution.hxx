@@ -625,31 +625,31 @@ namespace detail
 /*                                                      */
 /********************************************************/
 
-template <class K, typename std::enable_if<detail::is_fir_kernel<K>::value>::type* = nullptr>
-void
+template <class K>
+typename std::enable_if<detail::is_fir_kernel<K>::value>::type
 scaleKernel(K & kernel, double a)
 {
     for(int i = kernel.left(); i <= kernel.right(); ++i)
         kernel[i] = detail::RequiresExplicitCast<typename K::value_type>::cast(kernel[i] * a);
 }
 
-template <class K, typename std::enable_if<detail::is_iir_kernel<K>::value>::type* = nullptr>
-void
+template <class K>
+typename std::enable_if<detail::is_iir_kernel<K>::value>::type
 scaleKernel(K & kernel, double a)
 {
     kernel.scale(a);
 }
 
-template <class K, typename std::enable_if<detail::is_gaussian_kernel<K>::value>::type* = nullptr>
-void
+template <class K>
+typename std::enable_if<detail::is_gaussian_kernel<K>::value>::type
 scaleKernel(K & kernel, double a)
 {
     kernel.scale(a);
 }
 
-template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel,
- typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type* = nullptr>
-inline void internalSeparableConvolveLineHelper(
+template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
+inline typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type
+internalSeparableConvolveLineHelper(
         SrcNavigator snav, SrcAccessor srca, TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
         int start, int stop
@@ -663,9 +663,9 @@ inline void internalSeparableConvolveLineHelper(
     }
 }
 
-template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel,
- typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type* = nullptr>
-inline void internalSeparableConvolveLineHelper2(
+template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
+inline typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type
+internalSeparableConvolveLineHelper2(
         TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
         int start, int stop
@@ -699,9 +699,9 @@ inline MultiConvolutionKernel internalSelectKernelApproximation(MultiConvolution
     return k;
 }
 
-template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel,
- typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type* = nullptr>
-inline void internalSeparableConvolveLineHelper(
+template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
+inline typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type
+internalSeparableConvolveLineHelper(
         SrcNavigator snav, SrcAccessor srca, TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
         int start, int stop
@@ -737,9 +737,9 @@ inline void internalSeparableConvolveLineHelper(
     }
 }
 
-template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel,
- typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type* = nullptr>
-inline void internalSeparableConvolveLineHelper2(
+template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
+inline typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type
+internalSeparableConvolveLineHelper2(
         TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
         int start, int stop
@@ -1087,9 +1087,8 @@ internalSeparableConvolveSubarray(
 doxygen_overloaded_function(template <...> void separableConvolveMultiArray)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class KernelIterator,
-          typename std::enable_if<!detail::is_kernel<KernelIterator>::value>::type* = nullptr>
-void
+          class DestIterator, class DestAccessor, class KernelIterator>
+typename std::enable_if<!detail::is_kernel<KernelIterator>::value>::type
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest,
                              KernelIterator kernels,
@@ -1128,9 +1127,8 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class ConvolutionKernel,
-          typename std::enable_if<detail::is_kernel<ConvolutionKernel>::value>::type* = nullptr>
-inline void
+          class DestIterator, class DestAccessor, class ConvolutionKernel>
+inline typename std::enable_if<detail::is_kernel<ConvolutionKernel>::value>::type
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest,
                              ConvolutionKernel const & kernel,
@@ -1143,9 +1141,8 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class KernelIterator,
-          typename std::enable_if<!detail::is_kernel<KernelIterator>::value>::type* = nullptr>
-inline void
+          class DestIterator, class DestAccessor, class KernelIterator>
+inline typename std::enable_if<!detail::is_kernel<KernelIterator>::value>::type
 separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                             pair<DestIterator, DestAccessor> const & dest,
                             KernelIterator kit,
@@ -1157,9 +1154,8 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class ConvolutionKernel,
-          typename std::enable_if<detail::is_kernel<ConvolutionKernel>::value>::type* = nullptr>
-inline void
+          class DestIterator, class DestAccessor, class ConvolutionKernel>
+inline typename std::enable_if<detail::is_kernel<ConvolutionKernel>::value>::type
 separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                             pair<DestIterator, DestAccessor> const & dest,
                             ConvolutionKernel const & kernel,
@@ -1174,9 +1170,8 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
-          class KernelIterator,
-          typename std::enable_if<!detail::is_kernel<KernelIterator>::value>::type* = nullptr>
-inline void
+          class KernelIterator>
+inline typename std::enable_if<!detail::is_kernel<KernelIterator>::value>::type
 separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest,
                             KernelIterator kit,
@@ -1201,9 +1196,8 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
-          class ConvolutionKernel,
-          typename std::enable_if<detail::is_kernel<ConvolutionKernel>::value>::type* = nullptr>
-inline void
+          class ConvolutionKernel>
+inline typename std::enable_if<detail::is_kernel<ConvolutionKernel>::value>::type
 separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest,
                             ConvolutionKernel const & kernel,
