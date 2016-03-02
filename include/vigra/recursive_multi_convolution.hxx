@@ -54,6 +54,7 @@
 #include "tinyvector.hxx"
 #include "algorithm.hxx"
 #include "matrix.hxx"
+#include "linear_algebra.hxx"
 #include "linear_solve.hxx"
 
 #include <xmmintrin.h>
@@ -374,6 +375,7 @@ private:
 
     void compute_border_mtx(void) {
         Matrix<ARITHTYPE> A(Shape2(order, order));
+        Matrix<ARITHTYPE> Apow(Shape2(order, order));
         Matrix<ARITHTYPE> Asum(Shape2(order, order));
         Matrix<ARITHTYPE> Asuminv(Shape2(order, order));
 
@@ -386,19 +388,19 @@ private:
         for (unsigned int i = 0; i < order - 1; ++i)
             A(1+i,i) = 1.0;
 
-        for (unsigned int i = 0; i < order; ++i)
-            Asum -= coefs[1+i] * pow(A, 1+i);
+        Apow = A;
+        for (unsigned int i = 0; i < order; ++i) {
+            Asum -= coefs[1+i] * Apow;
+            Apow = Apow * A;
+        }
 
         linalg::inverse(Asum, Asuminv);        
     
         M.rowVector(0) = Asuminv.rowVector(0);
-        for (unsigned int i = 1; i < order; ++i)
-            M.rowVector(i) = M.rowVector(0) * pow(A, i);
-
-        for (unsigned int i = 0; i < order; ++i) {
-            for (unsigned int j = 0; j < order; ++j)
-                std::cout << M(i,j) << " ";
-            std::cout << std::endl;
+        Apow = A;
+        for (unsigned int i = 1; i < order; ++i){
+            M.rowVector(i) = M.rowVector(0) * Apow;
+            Apow = Apow * A;
         }
     }
 };
@@ -872,18 +874,20 @@ inline void recursiveConvolveLineVYVBorder(SrcIterator is, SrcIterator iend, Src
     for (unsigned int i = 0; i < kernel.order; ++i)
         boundary[i] = ytmp[i];
 
-    boundary = kernel.M * boundary;
-
     for (unsigned int i = 0; i < kernel.order; ++i) {
-        std::cout << "HUH " << ytmp[i] << " " << boundary[i] << std::endl;
-        ytmp[i] = boundary[i];
-        v[kernel.right() - 5 + i] = boundary[i];
+        ytmp[i] = NumericTraits<SumType>::zero();
+        for (unsigned int j = 0; j < kernel.order; ++j)
+            ytmp[i] += kernel.M(i,j) * boundary[j];
     }
+
+    //boundary = kernel.M * boundary;
+
+    //for (unsigned int i = 0; i < kernel.order; ++i)
+    //    ytmp[i] = boundary[i];
 
     xtmp = NumericTraits<SumType>::zero();
 
-
-    vyvApplyAntiCausal(v.begin(), va, kernel, xtmp, ytmp, 0, kernel.right() - 4);
+    vyvApplyAntiCausal(v.begin(), va, kernel, xtmp, ytmp, 0, kernel.right() - kernel.order);
 
     // anticausal filter
     vyvApplyAntiCausal(id, da, kernel, xtmp, ytmp, start, stop);
