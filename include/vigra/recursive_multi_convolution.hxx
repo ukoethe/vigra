@@ -71,23 +71,49 @@ namespace detail {
 
 struct DerichePrecomputed
 {
-    const std::complex<double> alpha[4];
-    const std::complex<double> lambda[4];
+    const std::complex<double> alpha0, alpha1, alpha2, alpha3;
+    const std::complex<double> lambda0, lambda1, lambda2, lambda3;
 
     DerichePrecomputed(const double a0, const double a1, const double a2, const double a3, const double l0, const double l1, const double l2, const double l3) :
-    alpha{std::complex<double>(a0 / 2.0, a1 / 2.0), std::complex<double>(a0 / 2.0, -a1 / 2.0), std::complex<double>(a2 / 2.0, a3 / 2.0), std::complex<double>(a2 / 2.0, -a3 / 2.0)},
-    lambda{std::complex<double>(l0, l1), std::complex<double>(l0, -l1), std::complex<double>(l2, l3), std::complex<double>(l2, -l3)}
+    alpha0(std::complex<double>(a0 / 2.0, a1 / 2.0)), alpha1(std::complex<double>(a0 / 2.0, -a1 / 2.0)), alpha2(std::complex<double>(a2 / 2.0, a3 / 2.0)), alpha3(std::complex<double>(a2 / 2.0, -a3 / 2.0)),
+    lambda0(std::complex<double>(l0, l1)), lambda1(std::complex<double>(l0, -l1)), lambda2(std::complex<double>(l2, l3)), lambda3(std::complex<double>(l2, -l3))
     {
     }
 
     DerichePrecomputed(const double a0, const double a1, const double a2, const double l0, const double l1, const double l2) :
-    DerichePrecomputed(a0, a1, 2*a2, 0, l0, l1, l2, 0)
+    alpha0(std::complex<double>(a0 / 2.0, a1 / 2.0)), alpha1(std::complex<double>(a0 / 2.0, -a1 / 2.0)), alpha2(std::complex<double>(a2, 0)), alpha3(std::complex<double>(a2, 0)),
+    lambda0(std::complex<double>(l0, l1)), lambda1(std::complex<double>(l0, -l1)), lambda2(std::complex<double>(l2, 0)), lambda3(std::complex<double>(l2, 0))
     {
     }
 
     DerichePrecomputed(const double a0, const double a1, const double l0, const double l1) :
-    DerichePrecomputed(a0, a1, 0, 0, l0, l1, 0, 0)
+    alpha0(std::complex<double>(a0 / 2.0, a1 / 2.0)), alpha1(std::complex<double>(a0 / 2.0, -a1 / 2.0)), alpha2(std::complex<double>(0, 0)), alpha3(std::complex<double>(0, 0)),
+    lambda0(std::complex<double>(l0, l1)), lambda1(std::complex<double>(l0, -l1)), lambda2(std::complex<double>(0, 0)), lambda3(std::complex<double>(0, 0))
     {
+    }
+
+    const std::complex<double> get_alpha(const unsigned int idx) const {
+        switch (idx) {
+            case 0: return alpha0;
+            case 1: return alpha1;
+            case 2: return alpha2;
+            case 3: return alpha3;
+        }
+
+        vigra_fail("DerichePrecomputed::get_alpha: index out of bounds.");
+        return 0;
+    }
+
+    const std::complex<double> get_lambda(const unsigned int idx) const {
+        switch (idx) {
+            case 0: return lambda0;
+            case 1: return lambda1;
+            case 2: return lambda2;
+            case 3: return lambda3;
+        }
+
+        vigra_fail("DerichePrecomputed::get_lambda: index out of bounds.");
+        return 0;
     }
 };
 
@@ -116,39 +142,69 @@ static const DerichePrecomputed deriche_precomputed_coefs[3][3] = {
 // Van Vliet, Lucas J., Ian T. Young, and Piet W. Verbeek. "Recursive Gaussian
 // derivative filters." Pattern Recognition, 1998. Proceedings. Fourteenth
 // International Conference on. Vol. 1. IEEE, 1998.
+struct VYVPrecomputed
+{
+    const double pole0, pole1, pole2, pole3, pole4;
+
+    VYVPrecomputed(const double p0, const double p1, const double p2, const double p3 = 0, const double p4 = 0) :
+    pole0(p0), pole1(p1), pole2(p2), pole3(p3), pole4(p4)
+    {
+    }
+
+    double get_pole(const unsigned int idx) const {
+        switch (idx) {
+            case 0: return pole0;
+            case 1: return pole1;
+            case 2: return pole2;
+            case 3: return pole3;
+            case 4: return pole4;
+        }
+
+        return 0;
+    }
+
+    std::complex<double> get_complex_pole(const unsigned int idx) const {
+        double real, imag;
+        unsigned int offset = idx & ~1;
+
+        real = get_pole(offset);
+        imag = get_pole(offset + 1);
+
+        if (idx % 2)
+            imag = -imag;
+
+        return std::complex<double>(real, imag);
+    }
+};
+
+
 // Table 1 and 2
-static const double vyv_poles[3][3][5] = {
+static const VYVPrecomputed vyv_poles[3][3] = {
 #if 1
-    // smoothing, L_2
-    {// 3rd order
-     {1.4165, 1.00829, 1.86543, 0, 0},
-     // 4th order
-     {1.13228, 1.28114, 1.78534, 0.46763, 0},
-     // 5th order
-     {0.8643, 1.45389, 1.61433, 0.83134, 1.87504}},
+    { // smoothing, L_2
+        VYVPrecomputed(1.4165, 1.00829, 1.86543),
+        VYVPrecomputed(1.13228, 1.28114, 1.78534, 0.46763),
+        VYVPrecomputed(0.8643, 1.45389, 1.61433, 0.83134, 1.87504)
+    },
 #else
-    // smoothing, L_infinity
-    {// 3rd order
-     {1.40098, 1.00236, 1.85132, 0, 0},
-     // 4th order
-     {1.12075, 1.27788, 1.76952, 0.46611, 0},
-     // 5th order
-     {0.85480, 1.43749, 1.161231, 0.82053, 1.87415}},
+    { // smoothing, L_infinity
+        VYVPrecomputed(1.40098, 1.00236, 1.85132),
+        VYVPrecomputed(1.12075, 1.27788, 1.76952, 0.46611),
+        VYVPrecomputed(0.85480, 1.43749, 1.161231, 0.82053, 1.87415)
+    },
 #endif
-    // 1st deriv, L_infinity
-    {// 3rd order
-     {1.31553, 0.97057, 1.77635, 0, 0},
-     // 4th order
-     {1.04185, 1.24034, 1.69747, 0.44790},
-     // 5th order
-     {0.77934, 1.41423, 1.50941, 0.80828, 1.77181}},
-    // 2nd deriv, L_infinity
-    {// 3rd order
-     {1.22886, 0.93058, 1.70493, 0, 0},
-     // 4th order
-     {0.94570, 1.21064, 1.60161, 0.42647},
-     // 5th order
-     {0.69843, 1.37655, 1.42631, 0.77399, 1.69668}}};
+    { // 1st deriv, L_infinity
+        VYVPrecomputed(1.31553, 0.97057, 1.77635),
+        VYVPrecomputed(1.04185, 1.24034, 1.69747, 0.44790),
+        VYVPrecomputed(0.77934, 1.41423, 1.50941, 0.80828, 1.77181)
+
+    },
+    { // 2nd deriv, L_infinity
+        VYVPrecomputed(1.22886, 0.93058, 1.70493),
+        VYVPrecomputed(0.94570, 1.21064, 1.60161, 0.42647),
+        VYVPrecomputed(0.69843, 1.37655, 1.42631, 0.77399, 1.69668)
+    }
+};
 
 } // namespace detail
 
@@ -206,14 +262,8 @@ protected:
         std::complex<ARITHTYPE> beta[order];
 
         for (unsigned int i = 0; i < order; ++i) {
-            alpha[i] = detail::deriche_precomputed_coefs[deriv_order][order - 2]
-                           .alpha[i];
-            lambda[i] = detail::deriche_precomputed_coefs[deriv_order][order - 2]
-                            .lambda[i];
-        }
-
-        for (unsigned int i = 0; i < order; ++i) {
-            lambda[i] /= sigma;
+            alpha[i] = detail::deriche_precomputed_coefs[deriv_order][order - 2].get_alpha(i);
+            lambda[i] = detail::deriche_precomputed_coefs[deriv_order][order - 2].get_lambda(i) / sigma;
             beta[i] = std::complex<ARITHTYPE>(
                 -exp(-lambda[i].real()) * cos(lambda[i].imag()),
                 exp(-lambda[i].real()) * sin(lambda[i].imag()));
@@ -283,25 +333,10 @@ public:
 
 protected:
     void compute_coefs(unsigned deriv_order, double sigma) {
-        for (unsigned int i = 0; i < order; ++i) {
-            unsigned int offset = i & ~1;
-            ARITHTYPE real;
-            ARITHTYPE imag;
-
-            real = detail::vyv_poles[deriv_order][order - 3][offset];
-
-            if (offset + 1 == order)
-                imag = 0;
-            else
-                imag = detail::vyv_poles[deriv_order][order - 3][offset + 1];
-
-            if (i % 2)
-                imag = -imag;
-
-            poles[i] = std::complex<ARITHTYPE>(real, imag);
-        }
-
         ARITHTYPE q;
+
+        for (unsigned int i = 0; i < order; ++i)
+            poles[i] = (std::complex<ARITHTYPE>)detail::vyv_poles[deriv_order][order - 3].get_complex_pole(i);
 
         q = compute_q(sigma);
 
@@ -515,7 +550,7 @@ void dericheApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                         SumType ytmp[], int start, int stop) {
     const unsigned int order = kernel.order;
 
-    SumType xi, yi, dyi;
+    SumType xi, dyi;
 
     for (int x = start; x < stop; ++x) {
         xi = sa(is + x);
@@ -854,16 +889,12 @@ inline void recursiveConvolveLineVYVBorder(SrcIterator is, SrcIterator iend, Src
             ytmp[i] += kernel.M(i,j) * boundary[j];
     }
 
-    //boundary = kernel.M * boundary;
-
-    //for (unsigned int i = 0; i < kernel.order; ++i)
-    //    ytmp[i] = boundary[i];
-
     xtmp = NumericTraits<SumType>::zero();
 
     vyvApplyAntiCausal(v.begin(), va, kernel, xtmp, ytmp, 0, kernel.right() - kernel.order);
 
     // anticausal filter
+    xtmp = NumericTraits<SumType>::zero();
     vyvApplyAntiCausal(id, da, kernel, xtmp, ytmp, start, stop);
 }
 
