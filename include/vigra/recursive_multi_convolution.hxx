@@ -75,8 +75,8 @@ struct DerichePrecomputed
     const std::complex<double> lambda[4];
 
     DerichePrecomputed(const double a0, const double a1, const double a2, const double a3, const double l0, const double l1, const double l2, const double l3) :
-    alpha ({std::complex<double>(a0 / 2.0, a1 / 2.0), std::complex<double>(a0 / 2.0, -a1 / 2.0), std::complex<double>(a2 / 2.0, a3 / 2.0), std::complex<double>(a2 / 2.0, -a3 / 2.0)}),
-    lambda ({std::complex<double>(l0, l1), std::complex<double>(l0, -l1), std::complex<double>(l2, l3), std::complex<double>(l2, -l3)})
+    alpha{std::complex<double>(a0 / 2.0, a1 / 2.0), std::complex<double>(a0 / 2.0, -a1 / 2.0), std::complex<double>(a2 / 2.0, a3 / 2.0), std::complex<double>(a2 / 2.0, -a3 / 2.0)},
+    lambda{std::complex<double>(l0, l1), std::complex<double>(l0, -l1), std::complex<double>(l2, l3), std::complex<double>(l2, -l3)}
     {
     }
 
