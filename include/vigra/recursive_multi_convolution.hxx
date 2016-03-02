@@ -68,83 +68,49 @@ namespace detail {
 // [Research Report]
 // RR-1893, 1993, pp.24. <inria-00074778>
 
-#define DERICHE_LAMBDA_FROM_BW(b0, w0) std::complex<double>(b0, w0)
-#define DERICHE_LAMBDA_CONJ_FROM_BW(b0, w0) std::complex<double>(b0, -w0)
-#define DERICHE_ALPHA_FROM_AC(ac0, ac1)                                        \
-    std::complex<double>(ac0 / 2.0, ac1 / 2.0)
-#define DERICHE_ALPHA_CONJ_FROM_AC(ac0, ac1)                                   \
-    std::complex<double>(ac0 / 2.0, -ac1 / 2.0)
-
-#define DERICHE_LAMBDAS_FROM_BW(b0, w0)                                        \
-    DERICHE_LAMBDA_FROM_BW(b0, w0), DERICHE_LAMBDA_CONJ_FROM_BW(b0, w0)
-#define DERICHE_ALPHAS_FROM_AC(ac0, ac1)                                       \
-    DERICHE_ALPHA_FROM_AC(ac0, ac1), DERICHE_ALPHA_CONJ_FROM_AC(ac0, ac1)
-
-typedef struct deriche_precomputed {
+struct DerichePrecomputed
+{
     const std::complex<double> alpha[4];
     const std::complex<double> lambda[4];
-} deriche_precomputed;
+
+    DerichePrecomputed(const double a0, const double a1, const double a2, const double a3, const double l0, const double l1, const double l2, const double l3) :
+    alpha ({std::complex<double>(a0 / 2.0, a1 / 2.0), std::complex<double>(a0 / 2.0, -a1 / 2.0), std::complex<double>(a2 / 2.0, a3 / 2.0), std::complex<double>(a2 / 2.0, -a3 / 2.0)}),
+    lambda ({std::complex<double>(l0, l1), std::complex<double>(l0, -l1), std::complex<double>(l2, l3), std::complex<double>(l2, -l3)})
+    {
+    }
+
+    DerichePrecomputed(const double a0, const double a1, const double a2, const double l0, const double l1, const double l2) :
+    DerichePrecomputed(a0, a1, 2*a2, 0, l0, l1, l2, 0)
+    {
+    }
+
+    DerichePrecomputed(const double a0, const double a1, const double l0, const double l1) :
+    DerichePrecomputed(a0, a1, 0, 0, l0, l1, 0, 0)
+    {
+    }
+};
 
 // eq. 35 - 46
 // 4th order coefficients from The Mines Java Toolkit
 // https://github.com/dhale/jtk/blob/master/core/src/main/java/edu/mines/jtk/dsp/RecursiveGaussianFilter.java
-static const deriche_precomputed deriche_precomputed_filters[3][3] = {
-    // smoothing
-    {// 2nd order
-     {.alpha = {DERICHE_ALPHAS_FROM_AC(0.9629, 1.942),
-                DERICHE_ALPHAS_FROM_AC(0, 0)},
-      .lambda = {DERICHE_LAMBDAS_FROM_BW(1.26, 0.8448),
-                 DERICHE_LAMBDAS_FROM_BW(0, 0)}},
-     // 3rd order
-     {.alpha = {DERICHE_ALPHAS_FROM_AC(-0.8929, 1.021),
-                std::complex<double>(1.898, 0), std::complex<double>(0, 0)},
-      .lambda = {DERICHE_LAMBDAS_FROM_BW(1.512, 1.475),
-                 std::complex<double>(1.556, 0), std::complex<double>(0, 0)}},
-     // 4th order
-     {.alpha = {
-          DERICHE_ALPHAS_FROM_AC(1.6797292232361107, 3.7348298269103580),
-          DERICHE_ALPHAS_FROM_AC(-0.6802783501806897, -0.2598300478959625)},
-      .lambda = {
-          DERICHE_LAMBDAS_FROM_BW(1.7831906544515104, 0.6318113174569493),
-          DERICHE_LAMBDAS_FROM_BW(1.7228297663338028, 1.9969276832487770)}}},
-    // first derivative
-    {// 2nd order
-     {.alpha = {DERICHE_ALPHAS_FROM_AC(0.1051, -1.898),
-                DERICHE_ALPHAS_FROM_AC(0, 0)},
-      .lambda = {DERICHE_LAMBDAS_FROM_BW(0.9338, 0.9459),
-                 DERICHE_LAMBDAS_FROM_BW(0, 0)}},
-     // 3rd order
-     {.alpha = {DERICHE_ALPHAS_FROM_AC(1.666, -0.4557),
-                std::complex<double>(-1.682, 0), std::complex<double>(0, 0)},
 
-      .lambda = {DERICHE_LAMBDAS_FROM_BW(1.266, 1.558),
-                 std::complex<double>(1.244, 0), std::complex<double>(0, 0)}},
-     // 4th order
-     {.alpha = {
-          DERICHE_ALPHAS_FROM_AC(0.6494024008440620, 0.9557370760729773),
-          DERICHE_ALPHAS_FROM_AC(-0.6472105276644291, -4.5306923044570760)},
-      .lambda = {
-          DERICHE_LAMBDAS_FROM_BW(1.5159726670750566, 2.0718953658782650),
-          DERICHE_LAMBDAS_FROM_BW(1.5267608734791140, 0.6719055957689513)}}},
-    // second derivative
-    {// 2nd order
-     {.alpha = {DERICHE_ALPHAS_FROM_AC(-1.228, 0.2976),
-                DERICHE_ALPHAS_FROM_AC(0, 0)},
-      .lambda = {DERICHE_LAMBDAS_FROM_BW(0.6134, 1.332),
-                 DERICHE_LAMBDAS_FROM_BW(0, 0)}},
-     // 3rd order
-     {.alpha = {DERICHE_ALPHAS_FROM_AC(-1.773, -1.129),
-                std::complex<double>(0.8309, 0), std::complex<double>(0, 0)},
-
-      .lambda = {DERICHE_LAMBDAS_FROM_BW(1.032, 1.664),
-                 std::complex<double>(0.8459, 0), std::complex<double>(0, 0)}},
-     // 4th order
-     {.alpha = {
-          DERICHE_ALPHAS_FROM_AC(0.3224570510072559, -1.7382843963561239),
-          DERICHE_ALPHAS_FROM_AC(-1.3312275593739595, 3.6607035671974897)},
-      .lambda = {
-          DERICHE_LAMBDAS_FROM_BW(1.3138054926516880, 2.1656041357418863),
-          DERICHE_LAMBDAS_FROM_BW(1.2402181393295362, 0.7479888745408682)}}}};
+static const DerichePrecomputed deriche_precomputed_coefs[3][3] = {
+    { // smoothing
+        DerichePrecomputed(0.9629, 1.942, 1.26, 0.8448),
+        DerichePrecomputed(-0.8929, 1.021, 1.898, 1.512, 1.475, 1.556),
+        DerichePrecomputed(1.6797292232361107, 3.7348298269103580, -0.6802783501806897, -0.2598300478959625, 1.7831906544515104, 0.6318113174569493, 1.7228297663338028, 1.9969276832487770)
+    },
+    { // first derivative
+        DerichePrecomputed(0.9629, 1.942, 1.26, 0.8448),
+        DerichePrecomputed(1.666, -0.4557, -1.682, 1.266, 1.558, 1.244),
+        DerichePrecomputed(0.6494024008440620, 0.9557370760729773, -0.6472105276644291, -4.5306923044570760, 1.5159726670750566, 2.0718953658782650, 1.5267608734791140, 0.6719055957689513)
+    },
+    { // second derivative
+        DerichePrecomputed(-1.228, 0.2976, 0.6134, 1.332),
+        DerichePrecomputed(-1.773, -1.129, 0.8309, 1.032, 1.664, 0.8459),
+        DerichePrecomputed(0.3224570510072559, -1.7382843963561239, -1.3312275593739595, 3.6607035671974897, 1.3138054926516880, 2.1656041357418863, 1.2402181393295362, 0.7479888745408682)
+    }
+};
 
 // Van Vliet, Lucas J., Ian T. Young, and Piet W. Verbeek. "Recursive Gaussian
 // derivative filters." Pattern Recognition, 1998. Proceedings. Fourteenth
@@ -238,9 +204,9 @@ protected:
         std::complex<ARITHTYPE> beta[order];
 
         for (unsigned int i = 0; i < order; ++i) {
-            alpha[i] = detail::deriche_precomputed_filters[deriv_order][order - 2]
+            alpha[i] = detail::deriche_precomputed_coefs[deriv_order][order - 2]
                            .alpha[i];
-            lambda[i] = detail::deriche_precomputed_filters[deriv_order][order - 2]
+            lambda[i] = detail::deriche_precomputed_coefs[deriv_order][order - 2]
                             .lambda[i];
         }
 
