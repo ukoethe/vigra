@@ -440,8 +440,10 @@ private:
     }
 };
 
-template <unsigned BorderTreatmentType, bool left_border, typename SrcIterator, typename SrcAccessor>
-class IIRBorderSrcAccessor
+
+
+template <typename SrcIterator, typename SrcAccessor>
+class IIRBorderSrcAccessorZero
 {
 public:
     typedef typename SrcAccessor::value_type value_type;
@@ -449,61 +451,127 @@ public:
     SrcAccessor sa_;
     SrcIterator is_;
     SrcIterator iend_;
-    BorderTreatmentMode border_;
-    bool left_border_;
     int start_, stop_;
 
-    IIRBorderSrcAccessor(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop)
-    {  
-    }
+    IIRBorderSrcAccessorZero(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
 
-    template<unsigned T = BorderTreatmentType>
-    typename std::enable_if<T == BORDER_TREATMENT_ZEROPAD, value_type>::type
-    inline operator()( SrcIterator i )
+    inline value_type operator()( SrcIterator i )
     {
             return NumericTraits<value_type>::zero();
     }
+};
 
-    template<unsigned T = BorderTreatmentType>
-    typename std::enable_if<T == BORDER_TREATMENT_REPEAT && left_border, value_type>::type
-    inline operator()( SrcIterator i )
+template <typename SrcIterator, typename SrcAccessor>
+class IIRBorderSrcAccessorRepeatLeft
+{
+public:
+    typedef typename SrcAccessor::value_type value_type;
+
+    SrcAccessor sa_;
+    SrcIterator is_;
+    SrcIterator iend_;
+    int start_, stop_;
+
+    IIRBorderSrcAccessorRepeatLeft(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
+
+    inline value_type operator()( SrcIterator i )
     {
-            return sa_(is_ + start_);
+            return this->sa_(this->is_ + this->start_);
     }
+};
 
-    template<unsigned T = BorderTreatmentType>
-    typename std::enable_if<T == BORDER_TREATMENT_REPEAT && !left_border, value_type>::type
-    inline operator()( SrcIterator i )
+template <typename SrcIterator, typename SrcAccessor>
+class IIRBorderSrcAccessorRepeatRight
+{
+public:
+    typedef typename SrcAccessor::value_type value_type;
+
+    SrcAccessor sa_;
+    SrcIterator is_;
+    SrcIterator iend_;
+    int start_, stop_;
+
+    IIRBorderSrcAccessorRepeatRight(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
+
+    inline value_type operator()( SrcIterator i )
     {
-            return sa_(is_ + stop_ - 1);
+            return this->sa_(this->is_ + this->stop_ - 1);
     }
+};
 
-    template<unsigned T = BorderTreatmentType>
-    typename std::enable_if<T == BORDER_TREATMENT_REFLECT && left_border, value_type>::type
-    inline operator()( SrcIterator i )
+template <typename SrcIterator, typename SrcAccessor>
+class IIRBorderSrcAccessorReflectLeft
+{
+public:
+    typedef typename SrcAccessor::value_type value_type;
+
+    SrcAccessor sa_;
+    SrcIterator is_;
+    SrcIterator iend_;
+    int start_, stop_;
+
+    IIRBorderSrcAccessorReflectLeft(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
+
+    inline value_type operator()( SrcIterator i )
     {
-        return sa_(is_ + start_ + std::distance(i, is_) + start_);
+            return this->sa_(this->is_ + this->start_ + std::distance(i, this->is_) + this->start_);
     }
+};
 
-    template<unsigned T = BorderTreatmentType>
-    typename std::enable_if<T == BORDER_TREATMENT_REFLECT && !left_border, value_type>::type
-    inline operator()( SrcIterator i )
+template <typename SrcIterator, typename SrcAccessor>
+class IIRBorderSrcAccessorReflectRight
+{
+public:
+    typedef typename SrcAccessor::value_type value_type;
+
+    SrcAccessor sa_;
+    SrcIterator is_;
+    SrcIterator iend_;
+    int start_, stop_;
+
+    IIRBorderSrcAccessorReflectRight(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
+
+    inline value_type operator()( SrcIterator i )
     {
-        return sa_(iend_ - std::distance(iend_, i) - 2);
+            return this->sa_(this->iend_ - std::distance(this->iend_, i) - 2);
     }
+};
 
-    template<unsigned T = BorderTreatmentType>
-    typename std::enable_if<T == BORDER_TREATMENT_WRAP && left_border, value_type>::type
-    inline operator()( SrcIterator i )
+template <typename SrcIterator, typename SrcAccessor>
+class IIRBorderSrcAccessorWrapLeft
+{
+public:
+    typedef typename SrcAccessor::value_type value_type;
+
+    SrcAccessor sa_;
+    SrcIterator is_;
+    SrcIterator iend_;
+    int start_, stop_;
+
+    IIRBorderSrcAccessorWrapLeft(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
+
+    inline value_type operator()( SrcIterator i )
     {
-        return sa_(iend_ - std::distance(i, is_) + start_);
+            return this->sa_(this->iend_ - std::distance(i, this->is_) + this->start_);
     }
+};
 
-    template<unsigned T = BorderTreatmentType>
-    typename std::enable_if<T == BORDER_TREATMENT_WRAP && !left_border, value_type>::type
-    inline operator()( SrcIterator i )
+template <typename SrcIterator, typename SrcAccessor>
+class IIRBorderSrcAccessorWrapRight
+{
+public:
+    typedef typename SrcAccessor::value_type value_type;
+
+    SrcAccessor sa_;
+    SrcIterator is_;
+    SrcIterator iend_;
+    int start_, stop_;
+
+    IIRBorderSrcAccessorWrapRight(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
+
+    inline value_type operator()( SrcIterator i )
     {
-        return sa_(is_ + start_ + std::distance(iend_, i));
+            return this->sa_(this->is_ + this->start_ + std::distance(this->iend_, i));
     }
 };
 
@@ -685,7 +753,7 @@ inline void dericheApplyAntiCausalSIMD(SrcIterator is, SrcIterator iend, SrcAcce
 }
 #endif
 
-template <unsigned BorderTreatmentType,
+template <class BorderTreatmentLeft, class BorderTreatmentRight,
           class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RecursiveConvolutionKernel>
@@ -700,8 +768,8 @@ inline void recursiveConvolveLineDericheBorder(SrcIterator is, SrcIterator iend,
     SumType xtmp[kernel.order];
     SumType ytmp[kernel.order];
 
-    auto sa_causal = IIRBorderSrcAccessor<BorderTreatmentType, true, SrcIterator, SrcAccessor>(is, iend, sa, start, stop);
-    auto sa_anticausal = IIRBorderSrcAccessor<BorderTreatmentType, false, SrcIterator, SrcAccessor>(is, iend, sa, start, stop);
+    BorderTreatmentLeft sa_causal = BorderTreatmentLeft(is, iend, sa, start, stop);
+    BorderTreatmentRight sa_anticausal = BorderTreatmentRight(is, iend, sa, start, stop);
     auto da_fake = DericheBorderDstAccessor<DestIterator, DestAccessor>();
 
     for (unsigned int i = 0; i < kernel.order; ++i)
@@ -756,15 +824,15 @@ recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             break;
 
         case BORDER_TREATMENT_REPEAT:
-            recursiveConvolveLineDericheBorder<BORDER_TREATMENT_REPEAT>(is, iend, sa, id, da, kernel, start, stop);
+            recursiveConvolveLineDericheBorder<detail::IIRBorderSrcAccessorRepeatLeft<SrcIterator, SrcAccessor>, detail::IIRBorderSrcAccessorRepeatRight<SrcIterator, SrcAccessor>>(is, iend, sa, id, da, kernel, start, stop);
             break;
 
         case BORDER_TREATMENT_REFLECT:
-            recursiveConvolveLineDericheBorder<BORDER_TREATMENT_REFLECT>(is, iend, sa, id, da, kernel, start, stop);
+            recursiveConvolveLineDericheBorder<detail::IIRBorderSrcAccessorReflectLeft<SrcIterator, SrcAccessor>, detail::IIRBorderSrcAccessorReflectRight<SrcIterator, SrcAccessor>>(is, iend, sa, id, da, kernel, start, stop);
             break;
 
         case BORDER_TREATMENT_WRAP:
-            recursiveConvolveLineDericheBorder<BORDER_TREATMENT_WRAP>(is, iend, sa, id, da, kernel, start, stop);
+            recursiveConvolveLineDericheBorder<detail::IIRBorderSrcAccessorWrapLeft<SrcIterator, SrcAccessor>, detail::IIRBorderSrcAccessorWrapRight<SrcIterator, SrcAccessor>>(is, iend, sa, id, da, kernel, start, stop);
             break;
 
         case BORDER_TREATMENT_AVOID:
@@ -845,7 +913,8 @@ void vyvApplyAntiCausal(DestIterator id, DestAccessor da,
 
 
 
-template <unsigned BorderTreatmentType, class SrcIterator, class SrcAccessor,
+template <class BorderTreatmentLeft, class BorderTreatmentRight,
+          class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RecursiveConvolutionKernel,
           class SumType>
@@ -855,8 +924,8 @@ inline void recursiveConvolveLineVYVBorder(SrcIterator is, SrcIterator iend, Src
                   SumType xtmp, SumType ytmp[],
                   int start = 0, int stop = 0)
 {
-    auto sa_left = IIRBorderSrcAccessor<BorderTreatmentType, true, SrcIterator, SrcAccessor>(is, iend, sa, start, stop);
-    auto sa_right = IIRBorderSrcAccessor<BorderTreatmentType, false, SrcIterator, SrcAccessor>(is, iend, sa, start, stop);
+    BorderTreatmentLeft sa_left = BorderTreatmentLeft(is, iend, sa, start, stop);
+    BorderTreatmentRight sa_right = BorderTreatmentRight(is, iend, sa, start, stop);
     auto da_fake = VYVBorderDstAccessor<DestIterator, DestAccessor>();
 
 
@@ -916,19 +985,19 @@ recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     switch(kernel.border_treatment) {
         case BORDER_TREATMENT_ZEROPAD:
             //recursiveConvolveLineVYVBorderZero(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
-            recursiveConvolveLineVYVBorder<BORDER_TREATMENT_ZEROPAD>(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
+            recursiveConvolveLineVYVBorder<detail::IIRBorderSrcAccessorZero<SrcIterator, SrcAccessor>, detail::IIRBorderSrcAccessorZero<SrcIterator, SrcAccessor>>(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
             break;
 
         case BORDER_TREATMENT_REPEAT:
-            recursiveConvolveLineVYVBorder<BORDER_TREATMENT_REPEAT>(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
+            recursiveConvolveLineVYVBorder<detail::IIRBorderSrcAccessorRepeatLeft<SrcIterator, SrcAccessor>, detail::IIRBorderSrcAccessorRepeatRight<SrcIterator, SrcAccessor>>(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
             break;
 
         case BORDER_TREATMENT_REFLECT:
-            recursiveConvolveLineVYVBorder<BORDER_TREATMENT_REFLECT>(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
+            recursiveConvolveLineVYVBorder<detail::IIRBorderSrcAccessorReflectLeft<SrcIterator, SrcAccessor>, detail::IIRBorderSrcAccessorReflectRight<SrcIterator, SrcAccessor>>(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
             break;
 
         case BORDER_TREATMENT_WRAP:
-            recursiveConvolveLineVYVBorder<BORDER_TREATMENT_WRAP>(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
+            recursiveConvolveLineVYVBorder<detail::IIRBorderSrcAccessorWrapLeft<SrcIterator, SrcAccessor>, detail::IIRBorderSrcAccessorWrapRight<SrcIterator, SrcAccessor>>(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
             break;
 
         case BORDER_TREATMENT_AVOID:
