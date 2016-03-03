@@ -84,6 +84,10 @@
     #ifndef M_EULER_GAMMA
     #    define M_EULER_GAMMA  0.5772156649015329
     #endif
+
+    #ifndef M_SQRT2PI
+    #    define M_SQRT2PI 2.50662827463100050241576528481104525
+    #endif
     \endcode
 */
 #ifndef M_PI
@@ -112,6 +116,10 @@
 
 #ifndef M_EULER_GAMMA
 #    define M_EULER_GAMMA  0.5772156649015329
+#endif
+
+#ifndef M_SQRT2PI
+#    define M_SQRT2PI 2.50662827463100050241576528481104525
 #endif
 
 namespace vigra {
