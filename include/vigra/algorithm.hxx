@@ -499,7 +499,7 @@ namespace detail {
 static bool isLittleEndian()
 {
     static const UIntBiggest testint = 0x01;
-    return ((UInt8 *)&testint)[0] == 0x01;
+    return reinterpret_cast<const UInt8 *>(&testint)[0] == 0x01;
 }
 
 template <class INT>
@@ -735,13 +735,13 @@ UInt32 ChecksumImpl<INT>::exec(InIterator i, unsigned int size, UInt32 crc)
     if(isLittleEndian() && size > 3)
     {
         // take care of alignment
-        for(; (std::size_t)i % 4 != 0; ++i)
+        for(; reinterpret_cast<std::size_t>(i) % 4 != 0; ++i)
         {
             crc = (crc >> 8) ^ table0[(crc ^ *i) & 0xFF];
         }
         for(; i < end-3; i+=4)
         {
-            crc ^= *((UInt32 *)i);
+            crc ^= *(reinterpret_cast<const UInt32 *>(i));
             crc = table3[crc & 0xFF] ^
                   table2[(crc >> 8) & 0xFF] ^
                   table1[(crc >> 16) & 0xFF] ^

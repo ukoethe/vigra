@@ -463,7 +463,7 @@ template <class DestIterator, class Shape, class T>
 inline void
 readVolumeImpl(DestIterator d, Shape const & shape, std::ifstream & s, ArrayVector<T> & buffer, MetaInt<0>)
 {
-    s.read((char*)buffer.begin(), shape[0]*sizeof(T));
+    s.read(reinterpret_cast<char*>(buffer.begin()), shape[0]*sizeof(T));
 
     DestIterator dend = d + shape[0];
     int k = 0;
