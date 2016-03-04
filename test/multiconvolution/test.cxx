@@ -1463,6 +1463,92 @@ struct MultiArraySeparableRecursiveConvolutionTestSuite
 //--------------------------------------------------------
 
 
+struct MultiArraySeparableRecursiveConvolutionImageTest
+: public vigra::test_suite
+{
+    typedef MultiArray<2, float> Image;
+    typedef vigra::MultiArrayShape<2>::type shape_2d;
+    typedef RecursiveConvolutionKernel<2, false, false, false, double> DericheKernel2nd;
+    typedef RecursiveConvolutionKernel<3, false, false, false, double> DericheKernel3rd;
+    typedef RecursiveConvolutionKernel<4, false, false, false, double> DericheKernel4th;
+
+    template <class RecursiveConvolutionKernel>
+    static void convolve(Image &srcimg, Image &destimg, unsigned order, double sigma)
+    {
+        RecursiveConvolutionKernel kernel;
+        kernel.initGaussianDerivative(sigma, order);
+        separableConvolveMultiArray(srcMultiArrayRange(srcimg), destMultiArray(destimg), kernel);
+    }
+
+    template<class RecursiveConvolutionKernel>
+    static void test_equal(const char * src, const char *dst, unsigned order, double sigma)
+    {
+        ImageImportInfo src_info(src);
+
+        Image srcimg(shape_2d(src_info.width(), src_info.height()));
+        Image dstimg(shape_2d(src_info.width(), src_info.height()));
+        Image resimg(shape_2d(src_info.width(), src_info.height()));
+
+        importImage(src_info, destImage(srcimg));
+        importImage(ImageImportInfo(dst), destImage(dstimg));
+        resimg.init(42.42);
+
+        convolve<RecursiveConvolutionKernel>(srcimg, resimg, order, sigma);
+        //exportImage(srcImageRange(resimg), vigra::ImageExportInfo(dst));
+
+        shouldEqualSequence(dstimg.data(), dstimg.data()+dstimg.size(), resimg.data());
+    }
+
+    static void test_deriche(unsigned deriche_order, unsigned deriv_order, double sigma)
+    {
+        const char *srcname = "lenna.gif";
+        std::ostringstream dstname;
+
+        dstname << "deriche_" << deriche_order << "_" << deriv_order << "_" << sigma << ".xv";
+
+        switch (deriche_order) {
+            case 2: test_equal<DericheKernel2nd>(srcname, dstname.str().c_str(), deriv_order, sigma); break;
+            case 3: test_equal<DericheKernel3rd>(srcname, dstname.str().c_str(), deriv_order, sigma); break;
+            case 4: test_equal<DericheKernel4th>(srcname, dstname.str().c_str(), deriv_order, sigma); break;
+            default: vigra_fail("MultiArraySeparableRecursiveConvolutionImageTest::test_deriche: Invalid deriv_order.");
+        } 
+    }
+
+    static void test_deriche_nth(unsigned deriche_order)
+    {
+        for (unsigned deriv_order = 0; deriv_order < 3; ++deriv_order) {
+            test_deriche(deriche_order, deriv_order, 5.0);
+            test_deriche(deriche_order, deriv_order, 10.0);
+            test_deriche(deriche_order, deriv_order, 15.0);
+        }
+    }
+
+    static void test_deriche_2nd(void)
+    {
+        test_deriche_nth(2);
+    }
+
+    static void test_deriche_3rd(void)
+    {
+        test_deriche_nth(3);
+    }
+
+    static void test_deriche_4th(void)
+    {
+        test_deriche_nth(4);
+    }
+
+    MultiArraySeparableRecursiveConvolutionImageTest(const char *name = "MultiArraySeparableRecursiveConvolutionImageTest")
+        : vigra::test_suite(name)
+        {
+                add( testCase( &test_deriche_2nd) );
+                add( testCase( &test_deriche_3rd) );
+                add( testCase( &test_deriche_4th) );
+    }
+};
+
+
+
 int main(int argc, char ** argv)
 {
     int failed = 0;
@@ -1496,6 +1582,11 @@ int main(int argc, char ** argv)
     MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<4, false, false, false, double>> test_masrcts_deriche4th("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche4thOrder");
     failed += test_masrcts_deriche4th.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test_masrcts_deriche4th.report() << std::endl;
+
+    // run the multi-array separable recursive image test suite
+    MultiArraySeparableRecursiveConvolutionImageTest test_recursive_image;
+    failed += test_recursive_image.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_recursive_image.report() << std::endl;
 
 
     return (failed != 0);

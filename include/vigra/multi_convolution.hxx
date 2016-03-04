@@ -1770,11 +1770,6 @@ gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor s
     }
 }
 
-
-
-//DEFINE_MULTI_CONVOLUTION(gaussianGradientMultiArray, internalGaussianGradientMultiArray)
-
-
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -2305,8 +2300,6 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
         }
     }
 }
-
-//DEFINE_MULTI_CONVOLUTION(laplacianOfGaussianMultiArray, internalLaplacianOfGaussianMultiArray)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
