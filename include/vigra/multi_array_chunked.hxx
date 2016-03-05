@@ -140,13 +140,6 @@
 #include "threading.hxx"
 #include "compression.hxx"
 
-// // FIXME: why is this needed when compiling the Python bindng,
-// //        but not when compiling test_multiarray_chunked?
-// #if defined(__GNUC__)
-// #  define memory_order_release memory_order_seq_cst
-// #  define memory_order_acquire memory_order_seq_cst
-// #endif
-
 #ifdef _WIN32
 # include "windows.h"
 #else
@@ -1868,7 +1861,7 @@ class ChunkedArray
         // very rare.
         //
         // the function returns the old value of chunk_state_
-        long rc = handle->chunk_state_.load(threading::memory_order_acquire);
+        long rc = handle->chunk_state_.load(threading::memory_order_seq_cst);
         while(true)
         {
             if(rc >= 0)
@@ -1889,7 +1882,7 @@ class ChunkedArray
                 {
                     // cache management in progress => try again later
                     threading::this_thread::yield();
-                    rc = handle->chunk_state_.load(threading::memory_order_acquire);
+                    rc = handle->chunk_state_.load(threading::memory_order_seq_cst);
                 }
                 else if(handle->chunk_state_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
                 {
@@ -1927,7 +1920,7 @@ class ChunkedArray
                 // (note that we still hold the chunk_lock_)
                 self->cleanCache(2);
             }
-            handle->chunk_state_.store(1, threading::memory_order_release);
+            handle->chunk_state_.store(1, threading::memory_order_seq_cst);
             return p;
         }
         catch(...)
