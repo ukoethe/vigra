@@ -1158,7 +1158,7 @@ struct MetaprogrammingTest
 
     struct FinallyTester
     {
-        mutable int & v_;
+        int & v_;
 
         FinallyTester(int & v)
             : v_(v)
@@ -1166,7 +1166,7 @@ struct MetaprogrammingTest
 
         void sq() const
         {
-            v_ = v_*v_;
+            const_cast<int &>(v_) = v_*v_;
         }
     };
 
