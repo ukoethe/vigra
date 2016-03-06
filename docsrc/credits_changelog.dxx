@@ -20,7 +20,7 @@
       <li> Gunnar Kedenburg
       (<a href="mailto:gunnar@haquebright.de">gunnar@haquebright.de</a>)
       completely rewrote the image import/export library and implemented
-      much of the \ref vigra::MultiArray functionality.
+      the initial version of the \ref vigra::MultiArray functionality.
 
       <li> Yevgen Reznichenko
       (<a href="mailto:rezniche@kogs.informatik.uni-hamburg.de">rezniche@kogs.informatik.uni-hamburg.de</a>)
@@ -469,7 +469,7 @@ Many thanks to all!
 <b> Changes from Version 1.2.0 to 1.3.0</b>
 
 <ul>
-      <li> Added algorithms for \ref MultiDimensionalArrays :
+      <li> Added algorithms for multi-dimensional arrays:
            \ref MultiPointoperators and \ref MultiArrayConvolutionFilters
            and the \link vigra::MultiArrayNavigator navigator utility\endlink.
 
@@ -545,7 +545,7 @@ Many thanks to all!
           "metaprogramming.hxx", "tuple.hxx". "utilities.hxx" now includes
           these other files.
 
-      <li> Added \ref MultiDimensionalArrays and \ref VolumeImpex
+      <li> Added multi-dimensional arrays and \ref VolumeImpex
 
       <li> Redesigned \ref vigra::TinyVector, added \ref vigra::TinyVectorView
 </ul>

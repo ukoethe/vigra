@@ -5,9 +5,9 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>how to get started</em>
 	<LI> \ref Tutorial
 		<BR>&nbsp;&nbsp;&nbsp;<em>first steps with VIGRA</em>
-    <LI> <b>Concepts</b>
+    <LI> <span style="font-weight:bold; color:#0040b0">Concepts</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>generic interface definitions</em>
-        <UL style="list-style-image:url(documents/bullet.gif)">
+        <UL>
         <LI> \ref AlgebraicConcepts
              <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for types that implement arithmetic operations</em>
         <LI> \ref ImageIterators
@@ -20,11 +20,35 @@
              <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for functor traits</em>
         <LI> \ref CrackEdgeImage
         </UL>
-    <LI> \ref Utilities
+    <LI> <span style="font-weight:bold; color:#0040b0">Utilities</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>Basic helper functionality needed throughout</em>
+        <UL>
+        <LI> \ref vigra::ArrayVector
+             <BR>&nbsp;&nbsp;&nbsp;<em>replacement for std::vector (always uses consecutive memory)</em>
+        <LI> \ref vigra::Any
+             <BR>&nbsp;&nbsp;&nbsp;<em>typesafe storage of arbitrary values</em>
+        <LI> \ref vigra::BucketQueue and \ref vigra::MappedBucketQueue
+             <BR>&nbsp;&nbsp;&nbsp;<em>efficient priority queues for integer priorities</em>
+        <LI> \ref RangesAndPoints
+             <BR>&nbsp;&nbsp;&nbsp;<em>2-D and N-D positions, extents, and boxes</em>
+        <LI> \ref PixelNeighborhood
+             <BR>&nbsp;&nbsp;&nbsp;<em>4- and 8-neighborhood definitions and circulators</em>
+        <LI> \ref VoxelNeighborhood
+             <BR>&nbsp;&nbsp;&nbsp;<em>6- and 26-neighborhood definitions and circulators</em>
+        <LI> \ref vigra::IteratorAdaptor
+             <BR>&nbsp;&nbsp;&nbsp;<em>Quickly create STL-compatible 1D iterator adaptors</em>
+        <LI> \ref TupleTypes
+             <BR>&nbsp;&nbsp;&nbsp;<em>pair, triple, tuple4, tuple5</em>
+        <LI> \ref MathConstants
+             <BR>&nbsp;&nbsp;&nbsp;<em>M_PI, M_SQRT2</em>
+        <LI> \ref TimingMacros
+             <BR>&nbsp;&nbsp;&nbsp;<em>Macros for taking execution speed measurements</em>
+        <LI> \ref VIGRA_FINALLY
+             <BR>&nbsp;&nbsp;&nbsp;<em>Emulation of the 'finally' keyword from Python</em>
+        </UL>
     <LI> \ref ErrorReporting
         <BR>&nbsp;&nbsp;&nbsp;<em>Exceptions and assertions</em>
-    <LI> <b>Mathematical Tools</b>
+    <LI> <span style="font-weight:bold; color:#0040b0">Mathematical Tools</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>Number types, mathematical constants and functions, linear algebra etc.</em>
         <UL>
             <LI> \ref AlgebraicConcepts
@@ -33,13 +57,13 @@
                  <BR>&nbsp;&nbsp;&nbsp;<em>Meta-information about arithmetic types</em>
             <LI> \ref MathConstants
                  <BR>&nbsp;&nbsp;&nbsp;<em>M_PI, M_SQRT2</em>
-            <LI> <b>Grid Neighborhood Specification</b>
+            <LI> <span style="font-weight:bold; color:#0040b0">Grid Neighborhood Specification</span>
                  <UL style="list-style-image:url(documents/bullet.gif)">
                  <LI> \ref PixelNeighborhood "2-dimensional" (4- and 8-neighborhood)
                  <LI> \ref VoxelNeighborhood "3-dimensional" (6- and 26-neighborhood)
                  </UL>
-            <LI> <b>Number Types</b>
-                <UL style="list-style-image:url(documents/bullet.gif)">
+            <LI> <span style="font-weight:bold; color:#0040b0">Number Types</span>
+                <UL>
                 <LI> \ref vigra::Rational
                 <LI> \ref vigra::TinyVector
                 <LI> \ref vigra::autodiff::DualVector
@@ -62,50 +86,39 @@
             <LI> \ref Optimization "Optimization and Regression"
                  <BR>&nbsp;&nbsp;&nbsp;<em>ordinary and non-negative least squares, ridge regression, least angle regression (LARS and LASSO)</em>
         </UL>
-    <LI> <b>Pixel Types</b>
+    <LI> <span style="font-weight:bold; color:#0040b0">Pixel Types</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>Non-scalar types such as RGBValue and TinyVector</em>
-        <DL>
-        <DT>
-        <b>Scalar types</b>
-        <DD>
-            <UL style="list-style-image:url(documents/bullet.gif)">
+        <UL>
+        <LI> <span style="font-weight:bold; color:#0040b0">Scalar types</span>
+            <UL>
             <LI> \ref FixedSizeInt
             <LI> \ref vigra::Rational
             <LI> \ref vigra::FixedPoint
             <LI> \ref vigra::FixedPoint16
             </UL>
-            <p>
-        <DT>
-        <b>RGB colors and related functionality</b>
-        <DD>
-            <UL style="list-style-image:url(documents/bullet.gif)">
+        <LI> <span style="font-weight:bold; color:#0040b0">RGB colors and related functionality</span>
+            <UL>
             <LI> \ref vigra::RGBValue
             <LI> \ref RGBValueTraits
             <LI> \ref RGBValueOperators
             <LI> \ref RGBValueAccessors
             </UL>
-            <p>
-        <DT>
-        <b>Fixed-size vectors and related functionality</b>
-        <DD>
-            <UL style="list-style-image:url(documents/bullet.gif)">
+        <LI> <span style="font-weight:bold; color:#0040b0">Fixed-size vectors and related functionality</span>
+            <UL>
             <LI> \ref vigra::TinyVector
             <LI> \ref vigra::TinyVectorView
             <LI> \ref TinyVectorTraits
             <LI> \ref TinyVectorOperators
             </UL>
-            <p>
-        <DT>
-        <b>Complex Numbers</b>
-        <DD>
-            <UL style="list-style-image:url(documents/bullet.gif)">
+        <LI> <span style="font-weight:bold; color:#0040b0">Complex Numbers</span>
+            <UL>
             <LI> \ref vigra::FFTWComplex
             <LI> \ref FFTWComplexTraits
             <LI> \ref FFTWComplexOperators
             <LI> \ref FFTWComplexAccessors
             </UL>
-        </DL>
-    <LI> <b>Image Data Structures</b>
+        </UL>
+    <LI> <span style="font-weight:bold; color:#0040b0">Image Data Structures</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>Images, image iterators, and supporting types and functions</em>
         <UL>
         <LI> \ref vigra::BasicImage
@@ -131,7 +144,7 @@
         <LI> \ref ArgumentObjectFactories
              <BR>&nbsp;&nbsp;&nbsp;<em>Factory functions to create argument objects which simplify long argument lists </em>
         </UL>
-    <LI> \ref MultiDimensionalArrays
+    <LI> <span style="font-weight:bold; color:#0040b0">Multi Dimensional Arrays</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>Arrays, iterators, and supporting types and functions
              for arbitrary dimensions</em>
         <UL>
@@ -172,7 +185,7 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>Store big data (potentially larger than RAM) as a collection of rectangular blocks</em>
     <LI> \ref GraphDataStructures
         <BR>&nbsp;&nbsp;&nbsp;<em>Graph-based algorithms (e.g. segmentation) and underlying graph classes (e.g. grid graphs for arbitrary dimensions)</em>
-    <LI> <b>Image I/O</b>
+    <LI> <span style="font-weight:bold; color:#0040b0">Image I/O</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>Conversion from and to other image data types</em>
         <UL>
         <LI> \ref VigraImpex
@@ -187,7 +200,7 @@
         </UL>
     <LI> \ref ColorConversions
         <BR>&nbsp;&nbsp;&nbsp;<em>Convert between RGB and other color spaces, such as L*u*v*, Y'PbPr</em>
-    <LI> <b>Image Processing</b>
+    <LI> <span style="font-weight:bold; color:#0040b0">Image Processing</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>Point operators, image arithmetic, convolution, morphology</em>
         <UL>
         <LI> \ref PointOperators
@@ -225,7 +238,7 @@
         </UL>
     <LI> \ref Registration
          <BR>&nbsp;&nbsp;&nbsp;<em>Transforming different images into a common coordinate system</em>
-    <LI> <b>Image Analysis</b>
+    <LI> <span style="font-weight:bold; color:#0040b0">Image Analysis</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>Segmentation and feature extraction algorithms</em>
         <UL>
         <LI> \ref InspectAlgo and \ref InspectFunctor
@@ -257,7 +270,7 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>Demonstration programs for VIGRA's usage </em>
     <LI> \ref VigraMatlab
         <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA Matlab bindings</em>
-    <LI> <b><a href="../vigranumpy/index.html">vigranumpy</a></b>
+    <LI> <a href="../vigranumpy/index.html" style="text-decoration:none; font-weight:bold; color:#0040b0">vigranumpy</a>
         <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA Python bindings</em>
     <LI> \ref CreditsChangelog
         <BR>&nbsp;&nbsp;&nbsp;<em>Who contributed what?</em>
@@ -307,182 +320,6 @@
 
 */
 
-/** \page Concepts Concepts
-
-    <DL>
-    <DT>
-    Description of the generic interface concepts used within VIGRA.
-    <DD>
-        <UL style="list-style-image:url(documents/bullet.gif)">
-        <LI> \ref AlgebraicConcepts
-             <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for types that implement arithmetic operations</em>
-        <LI> \ref ImageIterators
-             <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for 2D iterators</em>
-        <LI> \ref MultiIteratorPage
-             <BR>&nbsp;&nbsp;&nbsp;<em>Iterators for multi-dimensional arrays</em>
-        <LI> \ref DataAccessors
-             <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for data accessors</em>
-        <LI> \ref vigra::FunctorTraits
-             <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for functor traits</em>
-        <LI> \ref CrackEdgeImage
-        </UL>
-    </DL>
-*/
-
-/** \page MathFunctionality Mathematical Tools
-
-    <b>Number types, mathematical constants, special functions, linear algebra</b>
-    <p>
-    <UL style="list-style-image:url(documents/bullet.gif)">
-        <LI> \ref AlgebraicConcepts
-             <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for types that implement arithmetic operations</em>
-        <LI> \ref NumericPromotionTraits
-             <BR>&nbsp;&nbsp;&nbsp;<em>Meta-information about arithmetic types</em>
-        <LI> \ref MathConstants
-             <BR>&nbsp;&nbsp;&nbsp;<em>M_PI, M_SQRT2</em>
-        <LI> <b>Grid Neighborhood Specification</b>
-             <UL style="list-style-image:url(documents/bullet.gif)">
-             <LI> \ref PixelNeighborhood "2-dimensional" (4- and 8-neighborhood)
-             <LI> \ref VoxelNeighborhood "3-dimensional" (6- and 26-neighborhood)
-             </UL>
-        <LI> <b>Number Types</b>
-            <UL style="list-style-image:url(documents/bullet.gif)">
-            <LI> \ref vigra::Rational
-            <LI> \ref vigra::TinyVector
-            <LI> \ref vigra::autodiff::DualVector
-            <LI> \ref vigra::FFTWComplex
-            <LI> \ref vigra::FixedPoint16
-            <LI> \ref vigra::Quaternion
-            </UL>
-        <LI> \ref RandomNumberGeneration
-             <BR>&nbsp;&nbsp;&nbsp;<em>Mersenne twister class and random number functors</em>
-        <LI> \ref Polynomials
-             <BR>&nbsp;&nbsp;&nbsp;<em>Polynomials and root determination</em>
-        <LI> \ref MathFunctions
-             <BR>&nbsp;&nbsp;&nbsp;<em>and functors</em>
-        <LI> \ref vigra::linalg::Matrix "Matrix class"
-             <BR>&nbsp;&nbsp;&nbsp;<em>the matrix class</em>
-        <LI> \ref LinearAlgebraModule "Linear Algebra"
-             <BR>&nbsp;&nbsp;&nbsp;<em>matrix algebra, solution of linear systems, eigenvalue calculation etc.</em>
-        <LI> \ref Unsupervised_Decomposition "Unsupervised Decomposition"
-             <BR>&nbsp;&nbsp;&nbsp;<em>Unsupervised matrix decomposition methods (pLSA)</em>
-        <LI> \ref Optimization "Optimization and Regression"
-             <BR>&nbsp;&nbsp;&nbsp;<em>ordinary and non-negative least squares, ridge regression, least angle regression (LARS and LASSO)</em>
-    </UL>
-
-*/
-
-/** \page PixelTypes Pixel Types
-
-    <DL>
-    <DT>
-    <b>Scalar types</b>
-    <DD>
-        <UL style="list-style-image:url(documents/bullet.gif)">
-        <LI> \ref FixedSizeInt
-        <LI> \ref vigra::Rational
-        <LI> \ref vigra::FixedPoint
-        <LI> \ref vigra::FixedPoint16
-        </UL>
-        <p>
-    <DT>
-    <b>RGB colors and related functionality</b>
-    <DD>
-        <UL style="list-style-image:url(documents/bullet.gif)">
-        <LI> \ref vigra::RGBValue
-        <LI> \ref RGBValueTraits
-        <LI> \ref RGBValueOperators
-        <LI> \ref RGBValueAccessors
-        </UL>
-        <p>
-    <DT>
-    <b>Fixed-size vectors and related functionality</b>
-    <DD>
-        <UL style="list-style-image:url(documents/bullet.gif)">
-        <LI> \ref vigra::TinyVector
-        <LI> \ref vigra::TinyVectorView
-        <LI> \ref TinyVectorTraits
-        <LI> \ref TinyVectorOperators
-        </UL>
-        <p>
-    <DT>
-    <b>Complex Numbers</b>
-    <DD>
-        <UL style="list-style-image:url(documents/bullet.gif)">
-        <LI> \ref vigra::FFTWComplex
-        <LI> \ref FFTWComplexTraits
-        <LI> \ref FFTWComplexOperators
-        <LI> \ref FFTWComplexAccessors
-        </UL>
-    </DL>
-*/
-
-/** \page ImageDataStructures Image Data Structures and Iterators
-
-    <UL style="list-style-image:url(documents/bullet.gif)">
-    <LI> \ref vigra::BasicImage
-         <BR>&nbsp;&nbsp;&nbsp;<em>Fundamental class template for images </em>
-    <LI> \ref vigra::BasicImageView
-         <BR>&nbsp;&nbsp;&nbsp;<em>Class template for images that use external memory</em>
-    <LI> \ref StandardImageTypes
-         <BR>&nbsp;&nbsp;&nbsp;<em>The most common instantiations of \ref vigra::BasicImage</em>
-    <LI> \ref vigra::SplineImageView
-         <BR>&nbsp;&nbsp;&nbsp;<em>Wrap a discrete image as a continous function</em>
-    <LI> \ref VigraImpex
-         <BR>&nbsp;&nbsp;&nbsp;<em>Image import/export</em>
-    <LI> \ref ImageContainers
-         <BR>&nbsp;&nbsp;&nbsp;<em>Classes to manage multiple images (ImageArray..)</em>
-    <LI> \ref PixelNeighborhood
-         <BR>&nbsp;&nbsp;&nbsp;<em>Easy access to the 4- and 8-neighbors of a pixel</em>
-    <LI> \ref ImageIterators
-         <BR>&nbsp;&nbsp;&nbsp;<em>Basic image iterator implementations </em>
-    <LI> \ref ImageIteratorAdapters
-         <BR>&nbsp;&nbsp;&nbsp;<em>Iterate over rows, columns, and other image subsets </em>
-    <LI> \ref DataAccessors
-         <BR>&nbsp;&nbsp;&nbsp;<em>Basic templates to encapsulate access to the data of an iterator</em>
-    <LI> \ref ArgumentObjectFactories
-         <BR>&nbsp;&nbsp;&nbsp;<em>Factory functions to create argument objects which simplify long argument lists </em>
-    </UL>
-*/
-
-/** \page MultiDimensionalArrays Multi-Dimensional Arrays and Iterators
-
-    <UL style="list-style-image:url(documents/bullet.gif)">
-    <LI> \ref vigra::MultiArrayView
-         <BR>&nbsp;&nbsp;&nbsp;<em>Interface for multi-dimensional arrays </em>
-    <LI> \ref vigra::MultiArray
-         <BR>&nbsp;&nbsp;&nbsp;<em>Array class that holds the actual memory</em>
-    <LI> \ref MultiMathModule
-         <BR>&nbsp;&nbsp;&nbsp;<em>Arithmetic and algebraic expressions for multi-dimensional arrays</em>
-    <LI> \ref MultiArrayTags
-         <BR>&nbsp;&nbsp;&nbsp;<em>Meta-programming tags to mark array's as strided or unstrided</em>
-    <LI> \ref MultiIteratorPage
-         <BR>&nbsp;&nbsp;&nbsp;<em>Iterators for multi-dimensional arrays</em>
-    <LI> \ref vigra::MultiArrayNavigator
-         <BR>&nbsp;&nbsp;&nbsp;<em>Navigator utility for multi-dimensional arrays</em>
-    <LI> \ref VolumeImpex
-         <BR>&nbsp;&nbsp;&nbsp;<em>Import/export of volume data.</em>
-    <LI> \ref MultiPointoperators
-         <BR>&nbsp;&nbsp;&nbsp;<em>Point operators on multi-dimensional arrays</em>
-    <LI> \ref MultiArrayConvolutionFilters
-         <BR>&nbsp;&nbsp;&nbsp;<em>Convolution filters in arbitrary dimensions</em>
-    <LI> \ref FourierTransform
-         <BR>&nbsp;&nbsp;&nbsp;<em>Fast Fourier transform for arrays of arbitrary dimension</em>
-    <LI> \ref resizeMultiArraySplineInterpolation()
-         <BR>&nbsp;&nbsp;&nbsp;<em>Interpolation of arrays in arbitrary dimensions</em>
-    <LI> \ref MultiArrayDistanceTransform
-         <BR>&nbsp;&nbsp;&nbsp;<em>Separable distance transform for arrays of arbitrary dimension</em>
-    <LI> \ref MultiArrayMorphology
-         <BR>&nbsp;&nbsp;&nbsp;<em>Separable morphology with parabola structuring function for arrays of arbitrary dimension</em>
-    <LI> \ref labelVolume(), \ref seededRegionGrowing3D(), \ref watersheds3D(), \ref localMinima3D(), \ref localMaxima3D(),
-         <BR>&nbsp;&nbsp;&nbsp;<em>3-dimensional image (i.e. volume) analysis</em>
-    <LI> \ref VoxelNeighborhood
-         <BR>&nbsp;&nbsp;&nbsp;<em>Easy access to the 6- and 26-neighbors of a voxel</em>
-    <LI> \ref vigra::NumpyArray and \ref vigra::NumpyAnyArray
-         <BR>&nbsp;&nbsp;&nbsp;<em>Provide the VIGRA multi array interface Python arrays</em>
-    </UL>
-*/
-
 /** \page ImportExport Image Import and Export
 
     Conversion from and to other image data types
@@ -518,72 +355,6 @@
 
     Use the data structures provided within VIGRA and use one of the import/export facilities above.
 
-*/
-
-/** \page ImageProcessing Image Processing
-
-    <UL style="list-style-image:url(documents/bullet.gif)">
-    <LI> \ref PointOperators
-         <BR>&nbsp;&nbsp;&nbsp;<em>algorithms and functors for image arithmetic, inspection, transformations etc.</em>
-    <LI> \ref MultiMathModule
-         <BR>&nbsp;&nbsp;&nbsp;<em>Arithmetic and algebraic expressions for multi-dimensional arrays</em>
-    <LI> \ref FunctorExpressions
-         <BR>&nbsp;&nbsp;&nbsp;<em>Expression templates for automated functor creation</em>
-    <LI> \ref GeometricTransformations "Resize and Other Geometric Image Transformations"
-         <BR>&nbsp;&nbsp;&nbsp;<em>resize and interpolation, image mirroring, rotation, arbitrary affine transformations</em>
-    <LI> \ref vigra::SplineImageView
-         <BR>&nbsp;&nbsp;&nbsp;<em>Wrap a discrete image as a continous function</em>
-    <LI> \ref Convolution
-         <BR>&nbsp;&nbsp;&nbsp;<em>1D, 2D, and nD filters, including separable and recursive convolution</em>
-    <LI> \ref NonLinearDiffusion
-         <BR>&nbsp;&nbsp;&nbsp;<em>Edge-preserving smoothing and denoising</em>
-    <LI> \ref Correlation
-         <BR>&nbsp;&nbsp;&nbsp;<em>Fast and slow algorithms to estimate the correlation between images</em>
-    <LI> \ref Registration
-         <BR>&nbsp;&nbsp;&nbsp;<em>Transforming different images into a common coordinate system</em>
-    <LI> \ref FourierTransform
-         <BR>&nbsp;&nbsp;&nbsp;<em>forward and backward FFT, cosine transform, and related
-                 functionality</em>
-    <LI> \ref GaborFilter
-         <BR>&nbsp;&nbsp;&nbsp;<em>Gabor filter generation and related
-                 functionality</em>
-    <LI> \ref TensorImaging
-         <BR>&nbsp;&nbsp;&nbsp;<em>Tensor image processing</em>
-    <LI> \ref Morphology
-         <BR>&nbsp;&nbsp;&nbsp;<em>erosion, dilation, and median with disc structuring functions</em>
-    <LI> \ref NoiseNormalization
-         <BR>&nbsp;&nbsp;&nbsp;<em>transform intensity-dependent noise into additive Gaussian noise</em>
-    <LI> \ref SlantedEdgeMTF
-         <BR>&nbsp;&nbsp;&nbsp;<em>determine the magnitude transfer function (MTF) of a camera using the slanted edge method</em>
-    </UL>
-*/
-
-/** \page ImageAnalysis Image Analysis
-
-    <UL style="list-style-image:url(documents/bullet.gif)">
-    <LI> \ref InspectAlgo and \ref InspectFunctor
-         <BR>&nbsp;&nbsp;&nbsp;<em>Statistical analysis of images and regions</em>
-     <LI> \ref FeatureAccumulators
-         <BR>&nbsp;&nbsp;&nbsp;<em>Computation of global and per-region statistics of multi arrays via accumulators framework</em>
-   <LI> \ref vigra::Threshold
-         <BR>&nbsp;&nbsp;&nbsp;<em>Good old thresholding</em>
-    <LI> \ref Labeling
-         <BR>&nbsp;&nbsp;&nbsp;<em>Connected components labeling using 4 or 8 connectivity </em>
-    <LI> \ref LocalMinMax
-         <BR>&nbsp;&nbsp;&nbsp;<em>Including extremal plateaus larger than 1 pixel</em>
-    <LI> \ref DistanceTransform
-         <BR>&nbsp;&nbsp;&nbsp;<em>Distance transform using Euclidean, Manhattan, or chessboard metrics </em>
-    <LI> \ref TensorImaging
-         <BR>&nbsp;&nbsp;&nbsp;<em>Tensor image analysis</em>
-    <LI> \ref EdgeDetection
-         <BR>&nbsp;&nbsp;&nbsp;<em>Edge detectors based on first and second derivatives</em>
-    <LI> \ref CornerDetection
-         <BR>&nbsp;&nbsp;&nbsp;<em>Measure the 'cornerness' at each pixel </em>
-    <LI> \ref SymmetryDetection
-         <BR>&nbsp;&nbsp;&nbsp;<em>Measure the local symmetry at each pixel </em>
-    <LI> \ref SeededRegionGrowing
-         <BR>&nbsp;&nbsp;&nbsp;<em>Region growing, watersheds, and voronoi tesselation</em>
-    </UL>
 */
 
 /** \page AlgebraicConcepts Algebraic Concepts
