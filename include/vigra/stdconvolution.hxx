@@ -1148,6 +1148,33 @@ public:
     {
         return initExplicitly(Shape2(upperleft), Shape2(lowerright));
     }
+	
+        /** Init the kernel by providing a BasicImage with the kernel values.
+
+            The norm is set to the sum of the image values. 
+
+            <b> Preconditions:</b>
+
+            odd image width and height;
+        */
+    Kernel2D & initExplicitly(BasicImage<value_type> const & image)
+    {
+        vigra_precondition(image.width() % 2 != 0 && image.height() % 2 != 0,
+                           "Kernel2D::initExplicitly(): kernel sizes must be odd.");
+
+        left_  = Point2D((image.width() - 1) / -2, (image.height() - 1) / -2);
+        right_ = Point2D((image.width() - 1) /  2, (image.height() - 1) /  2);
+
+		norm_ = 0;
+		for (typename BasicImage<value_type>::const_iterator iter = image.begin(); iter != image.end(); ++iter)
+		{
+			norm_ += *iter;
+		}
+
+		kernel_ = image;
+
+        return *this;
+    }
 
         /** Coordinates of the upper left corner of the kernel.
          */
