@@ -855,11 +855,11 @@ public:
     {
         if(this != &k)
         {
-        kernel_ = k.kernel_;
+            kernel_ = k.kernel_;
             left_ = k.left_;
             right_ = k.right_;
             norm_ = k.norm_;
-        border_treatment_ = k.border_treatment_;
+            border_treatment_ = k.border_treatment_;
         }
         return *this;
     }
@@ -1148,10 +1148,11 @@ public:
     {
         return initExplicitly(Shape2(upperleft), Shape2(lowerright));
     }
-	
+
         /** Init the kernel by providing a BasicImage with the kernel values.
 
-            The norm is set to the sum of the image values. 
+            The kernel's origin is placed at the center of the given image.
+            The norm is set to the sum of the image values.
 
             <b> Preconditions:</b>
 
@@ -1165,13 +1166,13 @@ public:
         left_  = Point2D((image.width() - 1) / -2, (image.height() - 1) / -2);
         right_ = Point2D((image.width() - 1) /  2, (image.height() - 1) /  2);
 
-		norm_ = 0;
-		for (typename BasicImage<value_type>::const_iterator iter = image.begin(); iter != image.end(); ++iter)
-		{
-			norm_ += *iter;
-		}
+        norm_ = 0;
+        for (auto iter = image.begin(); iter != image.end(); ++iter)
+        {
+            norm_ += *iter;
+        }
 
-		kernel_ = image;
+        kernel_ = image;
 
         return *this;
     }
