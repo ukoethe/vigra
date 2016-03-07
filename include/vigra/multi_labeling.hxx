@@ -86,7 +86,7 @@ bool callEqualImpl(Equal& equal, const Data& u_data, const Data& v_data, const S
     return equal(u_data, v_data, diff);
 }
 template <class Equal, class Data, class Shape>
-bool callEqualImpl(Equal& equal, const Data& u_data, const Data& v_data, const Shape& diff, VigraFalseType)
+bool callEqualImpl(Equal& equal, const Data& u_data, const Data& v_data, const Shape&, VigraFalseType)
 {
     return equal(u_data, v_data);
 }

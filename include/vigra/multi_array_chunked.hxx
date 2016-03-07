@@ -1831,6 +1831,7 @@ class ChunkedArray
         if(chunk)
         {
             long rc = chunk->chunk_state_.fetch_sub(1);
+            ignore(rc);
           #ifdef VIGRA_CHECK_BOUNDS
             vigra_invariant(rc >= 0,
                             "ChunkedArray::unrefChunk(): chunk refcount got negative!");
@@ -2614,7 +2615,7 @@ class ChunkedArrayFull
         return false; // never destroys the data
     }
 
-    virtual std::size_t dataBytes(Chunk * c) const
+    virtual std::size_t dataBytes(Chunk *) const
     {
         return prod(this->shape());
     }
@@ -3115,6 +3116,7 @@ class ChunkedArrayTmpFile
     , file_size_()
     , file_capacity_()
     {
+        ignore(path);
     #ifdef VIGRA_NO_SPARSE_FILE
         file_capacity_ = 4*prod(this->chunk_shape_)*sizeof(T);
     #else

@@ -157,7 +157,6 @@ class HistogramView
     
     void getBinCenters(ArrayVector<DataType> * centers) const
     {
-        double invScale = 1.0 / scale_;
         for(int k=0; k < size_; ++k)
         {
             (*centers)[k] = mapItemInverse(k + 0.5) ;
@@ -348,7 +347,7 @@ class Histogram
     
   public:
     Histogram(DataType const & min, DataType const & max, int binCount, 
-                  BinType * bins = 0, int stride = 1)
+                  BinType * /*bins*/ = 0, int /*stride*/ = 1)
     : BaseType(min, max, binCount),
       data_(binCount)
     {

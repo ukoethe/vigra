@@ -70,7 +70,7 @@ void Edgel__setitem__(Edgel & e, unsigned int i, double v)
         e.y = Edgel::value_type(v);
 }
 
-unsigned int Edgel__len__(Edgel const & e)
+unsigned int Edgel__len__(Edgel const &)
 {
     return 2;
 }

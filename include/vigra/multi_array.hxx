@@ -2286,7 +2286,7 @@ MultiArrayView <N, T, StrideTag>::expandElements(difference_type_1 d) const
     newShape[d] = elementSize;
     newStrides[d] = 1;
     
-    for(int k=d; k<N; ++k)
+    for(unsigned k=d; k<N; ++k)
     {
         newShape[k+1] = m_shape[k];
         newStrides[k+1] = m_stride[k]*elementSize;

@@ -41,6 +41,7 @@
 #include "multi_gridgraph.hxx"
 #include "blockify.hxx"
 #include "blockwise_labeling.hxx"
+#include "metaprogramming.hxx"
 #include "overlapped_blocks.hxx"
 
 #include <limits>
@@ -61,6 +62,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
                                 BlockwiseLabelOptions const & options)
 {
     static const unsigned int N = DataArray::actual_dimension;
+    ignore(N);
     typedef typename MultiArrayShape<DataArray::actual_dimension>::type Shape;
     typedef typename DirectionsBlocksIterator::value_type DirectionsBlock;
     Shape shape = overlaps.shape();
@@ -72,7 +74,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
 
     parallel_foreach(options.getNumThreads(),
         itBegin,end,
-        [&](const int threadId, const Coordinate  iterVal){
+        [&](const int, const Coordinate  iterVal){
 
             DirectionsBlock directions_block = directions_blocks_begin[iterVal];
             OverlappingBlock<DataArray> data_block = overlaps[iterVal];

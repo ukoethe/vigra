@@ -137,7 +137,7 @@ template <class DataBlocksIterator, class LabelBlocksIterator,
           class Equal, class Mapping>
 typename BlockwiseLabelingResult<LabelBlocksIterator>::type
 blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_blocks_end,
-                  LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
+                  LabelBlocksIterator label_blocks_begin, LabelBlocksIterator,
                   BlockwiseLabelOptions const & options,
                   Equal equal,
                   Mapping& mapping)
@@ -172,7 +172,7 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         //std::iota(ids.begin(), ids.end(), 0 );
 
         parallel_foreach(options.getNumThreads(), d,
-            [&](const int threadId, const uint64_t i){
+            [&](const int, const uint64_t i){
                 Label resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
                                                options, equal);
                 if(has_background) // FIXME: reversed condition?

@@ -62,7 +62,7 @@ struct GetTag_Visitor
     {}
     
     template <class Permutation>
-    GetTag_Visitor(Permutation const & p)
+    GetTag_Visitor(Permutation const &)
     {}
 
     python::object to_python(signed char t) const { return python::object(t); }
@@ -191,7 +191,7 @@ struct GetArrayTag_Visitor
     struct ToPythonArray<TAG, Error__Attempt_to_access_inactive_statistic<T>, Accu>
     {
         template <class Permutation>
-        static python::object exec(Accu & a, Permutation const & p)
+        static python::object exec(Accu &, Permutation const &)
         {
             vigra_precondition(false, "PythonAccumulator::get(): Attempt to access inactive statistic.");
             return python::object();
@@ -202,7 +202,7 @@ struct GetArrayTag_Visitor
     struct ToPythonArray<TAG, std::pair<T1, T2>, Accu>
     {
         template <class Permutation>
-        static python::object exec(Accu & a, Permutation const & p)
+        static python::object exec(Accu &, Permutation const &)
         {
             vigra_precondition(false, "PythonAccumulator::get(): Export for this statistic is not implemented, sorry.");
             return python::object();
@@ -283,12 +283,12 @@ ArrayVector<std::string> * createSortedNames(AliasMap const & tagToAlias);
 
 struct PythonFeatureAccumulator
 {
-    virtual void activate(std::string const & tag) { throw std::runtime_error("abstract function called."); }   
-    virtual bool isActive(std::string const & tag) const { throw std::runtime_error("abstract function called."); return false; }
+    virtual void activate(std::string const &) { throw std::runtime_error("abstract function called."); }
+    virtual bool isActive(std::string const &) const { throw std::runtime_error("abstract function called."); return false; }
     virtual python::list activeNames() const { throw std::runtime_error("abstract function called."); return python::list(); }
     virtual python::list names() const { throw std::runtime_error("abstract function called."); return python::list(); }
-    virtual python::object get(std::string const & tag) { throw std::runtime_error("abstract function called."); return python::object(); }
-    virtual void merge(PythonFeatureAccumulator const & o) { throw std::runtime_error("abstract function called."); }
+    virtual python::object get(std::string const &) { throw std::runtime_error("abstract function called."); return python::object(); }
+    virtual void merge(PythonFeatureAccumulator const &) { throw std::runtime_error("abstract function called."); }
     virtual PythonFeatureAccumulator * create() const { throw std::runtime_error("abstract function called."); return 0; }
     virtual ~PythonFeatureAccumulator() {}
     
@@ -330,9 +330,9 @@ struct PythonRegionFeatureAccumulator
 : public PythonFeatureAccumulator
 {
     virtual MultiArrayIndex maxRegionLabel() { throw std::runtime_error("abstract function called."); }
-    virtual void mergeAll(PythonRegionFeatureAccumulator const & o) { throw std::runtime_error("abstract function called."); }
-    virtual void remappingMerge(PythonRegionFeatureAccumulator const & o, NumpyArray<1, npy_uint32> labelMapping) { throw std::runtime_error("abstract function called."); }
-    virtual void mergeRegions(npy_uint32 i, npy_uint32 j) { throw std::runtime_error("abstract function called."); }
+    virtual void mergeAll(PythonRegionFeatureAccumulator const &) { throw std::runtime_error("abstract function called."); }
+    virtual void remappingMerge(PythonRegionFeatureAccumulator const &, NumpyArray<1, npy_uint32>) { throw std::runtime_error("abstract function called."); }
+    virtual void mergeRegions(npy_uint32, npy_uint32) { throw std::runtime_error("abstract function called."); }
     virtual PythonRegionFeatureAccumulator * create() const { throw std::runtime_error("abstract function called."); return 0; }
     
     static void definePythonClass()

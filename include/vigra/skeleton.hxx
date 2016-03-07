@@ -676,7 +676,6 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
                         continue;
                     
                     // use Dijkstra to find the loop
-                    WeightType edge_length = weights[*arc];
                     weights[*arc] = infiniteWeight;
                     pathFinder.reRun(weights, p1, p2);
                     Polygon<Shape2> poly;
@@ -749,7 +748,6 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
             Node p1 = raw_skeleton[k];
             SNode & n1 = skeleton[p1];
             Node p2 = n1.parent;
-            SNode & n2 = skeleton[p2];
             if(n1.principal_child == lemon::INVALID && 
                n1.salience >= threshold && 
                !n1.is_loop)

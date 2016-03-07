@@ -84,7 +84,7 @@ struct blockify_impl<0>
                      Shape current_block_begin,
                      Shape current_block_end,
                      Shape current_block_pos,
-                     Shape block_shape)
+                     Shape)
     {
         blocks[current_block_pos] = source.subarray(current_block_begin, current_block_end);
     }
