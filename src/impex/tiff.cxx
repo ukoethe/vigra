@@ -642,7 +642,10 @@ namespace vigra {
                 {
                     *bitpointer = ((currentByte & (1 << bit)) ? photometric : 1 - photometric);
                     ++bitpointer;
-                    if (byte * 8 + 7 - bit == width - 1) break;
+                    // NOTE: byte * 8 + 7 - bit is promoted to int by C++'s promotion rules.
+                    // The cast to unsigned should be safe given the bounds of the looping
+                    // variables bit and bytes.
+                    if (static_cast<unsigned>(byte * 8 + 7 - bit) == width - 1) break;
                 }
             }
             // XXX probably right

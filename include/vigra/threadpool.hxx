@@ -497,7 +497,7 @@ inline void parallel_foreach_impl(
         );
         ++num_items;
     }
-    vigra_postcondition(num_items == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
+    vigra_postcondition((nItems >= 0 && num_items == static_cast<size_t>(nItems)) || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
     for (auto & fut : futures)
         fut.get();
 }
@@ -517,7 +517,7 @@ inline void parallel_foreach_single_thread(
         f(0, *begin);
         ++n;
     }
-    vigra_postcondition(n == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
+    vigra_postcondition((nItems >=0 && n == static_cast<size_t>(nItems)) || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
 }
 
 /** \brief Apply a functor to all items in a range in parallel.

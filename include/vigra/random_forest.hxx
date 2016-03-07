@@ -47,6 +47,7 @@
 #include "array_vector.hxx"
 #include "sized_int.hxx"
 #include "matrix.hxx"
+#include "metaprogramming.hxx"
 #include "random.hxx"
 #include "functorexpression.hxx"
 #include "random_forest/rf_common.hxx"
@@ -233,7 +234,7 @@ class RandomForest
         ext_param_(problem_spec),
         options_(options)
     {
-        for(unsigned int k=0; k<treeCount; ++k, ++topology_begin, ++parameter_begin)
+        for(int k=0; k<treeCount; ++k, ++topology_begin, ++parameter_begin)
         {
             trees_[k].topology_ = *topology_begin;
             trees_[k].parameters_ = *parameter_begin;
@@ -273,6 +274,7 @@ class RandomForest
      */
     void set_ext_param(ProblemSpec_t const & in)
     {
+        ignore(in);
         vigra_precondition(ext_param_.used() == false,
             "RandomForest::set_ext_param():"
             "Random forest has been trained! Call reset()"

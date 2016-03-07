@@ -57,7 +57,7 @@ struct ERROR_NumpyArrayValuetypeTraits_not_specialized_for_ { };
 template<class ValueType>
 struct NumpyArrayValuetypeTraits
 {
-    static bool isValuetypeCompatible(PyArrayObject const * obj)
+    static bool isValuetypeCompatible(PyArrayObject const *)
     {
         return ERROR_NumpyArrayValuetypeTraits_not_specialized_for_<ValueType>();
     }

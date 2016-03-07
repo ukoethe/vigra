@@ -3346,7 +3346,7 @@ inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, StrideTag>
 }
 
 template<unsigned int N, class T, class StrideTag>
-void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, StrideTag> array, const hid_t datatype, const int numBandsOfType)
+void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, StrideTag> array, const hid_t, const int)
 {
     HDF5File file(info.getFilePath(), HDF5File::OpenReadOnly);
     file.read(info.getPathInFile(), array);
@@ -3561,7 +3561,7 @@ inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiA
 }
 
 template<unsigned int N, class T, class StrideTag>
-void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, StrideTag> & array, const hid_t datatype, const int numBandsOfType)
+void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, StrideTag> & array, const hid_t, const int)
 {
     HDF5File file(filePath, HDF5File::Open);
     file.write(pathInFile, array);

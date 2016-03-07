@@ -357,7 +357,7 @@ class AxisTags
     
     AxisTags(std::string const & tags)
     {
-        for(int k=0; k<tags.size(); ++k)
+        for(std::string::size_type k=0; k<tags.size(); ++k)
         {
             switch(tags[k])
             {

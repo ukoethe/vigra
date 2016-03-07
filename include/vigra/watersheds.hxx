@@ -496,7 +496,7 @@ template <class SrcIterator, class SrcAccessor,
 unsigned int
 generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
                        DestIterator upperleftd, DestAccessor da, 
-                       Neighborhood neighborhood,
+                       Neighborhood,
                        SeedOptions const & options = SeedOptions())
 {
     using namespace functor;
@@ -981,12 +981,12 @@ class WatershedStatistics
 
         /** read the statistics functor for a region via its label
         */
-    const_reference operator[](argument_type label) const
+    const_reference operator[](argument_type) const
         { return stats; }
 
         /** access the statistics functor for a region via its label
         */
-    reference operator[](argument_type label)
+    reference operator[](argument_type)
         { return stats; }
 
     value_type stats;
