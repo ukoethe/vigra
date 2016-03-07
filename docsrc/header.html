@@ -6,16 +6,16 @@
 <script type="text/javascript">
 function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 { 
-	if( document.getElementById(textID).style.display == 'none' )
+    if( document.getElementById(textID).style.display == 'none' )
     {
-		document.getElementById(textID).style.display = 'block';
+        document.getElementById(textID).style.display = 'block';
         document.getElementById(toggleID).innerHTML = "hide " + toggleMessage;
     }
     else
     {
-		document.getElementById(textID).style.display = 'none';
+        document.getElementById(textID).style.display = 'none';
         document.getElementById(toggleID).innerHTML = "show " + toggleMessage;
-	}
+    }
     return false;
 }
 </script>
@@ -29,4 +29,12 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
  <a href="namespaces.html">Namespaces</a> |
  <a href="files.html">File List</a> |
  <a href="index.html">Main Page</a> ]
+</p>
+<p align=right>
+ <style>
+ p {
+ z-index: -10; 
+ }
+ </style>
+ <img src="documents/vigra.gif" position=right alt="logo"/>
 </p>
