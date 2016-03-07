@@ -1156,10 +1156,9 @@ struct MetaprogrammingTest
         should(typeid(UnqualifiedType<const int*&>::type) == typeid(int));
     }
 
-#if 0
     struct FinallyTester
     {
-        mutable int & v_;
+        int & v_;
 
         FinallyTester(int & v)
             : v_(v)
@@ -1167,15 +1166,12 @@ struct MetaprogrammingTest
 
         void sq() const
         {
-            v_ = v_*v_;
+            const_cast<int &>(v_) = v_*v_;
         }
     };
-#endif
 
     void testFinally()
     {
-        std::cout << "testFinally() is disabled because many compilers do not yet support it." << std::endl;
-#if 0
         int v = 0;
         {
             FinallyTester finally_tester(v);
@@ -1197,7 +1193,6 @@ struct MetaprogrammingTest
         }
         catch(std::runtime_error &) {}
         shouldEqual(v, 2);
-#endif
     }
 };
 
