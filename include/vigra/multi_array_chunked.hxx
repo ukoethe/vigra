@@ -1332,6 +1332,10 @@ class ChunkedArrayOptions
     CompressionMethod compression_method;
 };
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArray
+ */
+ 
 /** \brief Interface and base class for chunked arrays.
 
 Very big data arrays (possibly bigger than the available RAM) can
