@@ -808,7 +808,7 @@ public:
                 python::arg("image"),
                 python::arg("out")=python::object()
             ),
-            "convert an image with with ``shape = graph.shape*2 - 1`` to an edge weight array"
+            "convert an image with ``shape = graph.shape*2 - 1`` to an edge weight array"
         );
 
         python::def("edgeFeaturesFromImage",registerConverters(&pyEdgeWeightsFromImage),
@@ -817,7 +817,7 @@ public:
                 python::arg("image"),
                 python::arg("out")=python::object()
             ),
-            "convert an image with with shape = graph.shape OR shape = graph.shape *2 -1 to an edge weight array"
+            "convert an image with shape = graph.shape OR shape = graph.shape *2 -1 to an edge weight array"
         );
 
         python::def("edgeFeaturesFromImage",registerConverters(&pyEdgeWeightsFromImageMb),
@@ -826,7 +826,7 @@ public:
                 python::arg("image"),
                 python::arg("out")=python::object()
             ),
-            "convert an image with with shape = graph.shape OR shape = graph.shape *2 -1 to an edge weight array"
+            "convert an image with shape = graph.shape OR shape = graph.shape *2 -1 to an edge weight array"
         );
 
 
