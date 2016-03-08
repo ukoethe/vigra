@@ -1466,7 +1466,7 @@ struct MultiArraySeparableRecursiveConvolutionTestSuite
 struct MultiArraySeparableRecursiveConvolutionImageTest
 : public vigra::test_suite
 {
-    typedef MultiArray<2, float> Image;
+    typedef MultiArray<2, double> Image;
     typedef vigra::MultiArrayShape<2>::type shape_2d;
     typedef RecursiveConvolutionKernel<2, false, false, false, double> DericheKernel2nd;
     typedef RecursiveConvolutionKernel<3, false, false, false, double> DericheKernel3rd;
@@ -1496,7 +1496,7 @@ struct MultiArraySeparableRecursiveConvolutionImageTest
         convolve<RecursiveConvolutionKernel>(srcimg, resimg, order, sigma);
         //exportImage(srcImageRange(resimg), vigra::ImageExportInfo(dst));
 
-        shouldEqualSequence(dstimg.data(), dstimg.data()+dstimg.size(), resimg.data());
+        shouldEqualSequenceTolerance(dstimg.data(), dstimg.data()+dstimg.size(), resimg.data(), 1e-14);
     }
 
     static void test_deriche(unsigned deriche_order, unsigned deriv_order, double sigma)
