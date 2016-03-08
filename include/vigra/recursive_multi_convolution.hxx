@@ -1075,11 +1075,11 @@ public:
     }
 
     int left() {
-        return round(-kernel_radius);
+        return rational_cast<int>(-kernel_radius);
     }
 
     int right() {
-        return round(kernel_radius);
+        return rational_cast<int>(kernel_radius);
     }
 
 

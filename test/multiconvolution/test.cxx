@@ -1496,7 +1496,7 @@ struct MultiArraySeparableRecursiveConvolutionImageTest
         convolve<RecursiveConvolutionKernel>(srcimg, resimg, order, sigma);
         //exportImage(srcImageRange(resimg), vigra::ImageExportInfo(dst));
 
-        shouldEqualSequenceTolerance(dstimg.data(), dstimg.data()+dstimg.size(), resimg.data(), 1e-14);
+        shouldEqualSequence(dstimg.data(), dstimg.data()+dstimg.size(), resimg.data());
     }
 
     static void test_deriche(unsigned deriche_order, unsigned deriv_order, double sigma)

@@ -263,14 +263,14 @@ public:
         double windowRatio_ = windowRatio;
         if (windowRatio_ == 0.0)
             windowRatio_ = 3.0 + 0.5 * deriv_order;
-        return round(-windowRatio_ * std_dev);
+        return rational_cast<int>(-windowRatio_ * std_dev);
     }
 
     int right() {
         double windowRatio_ = windowRatio;
         if (windowRatio_ == 0.0)
             windowRatio_ = 3.0 + 0.5 * deriv_order;
-        return round(windowRatio_ * std_dev);
+        return rational_cast<int>(windowRatio_ * std_dev);
     }
 
     void scale(double new_scale)
@@ -2484,6 +2484,7 @@ gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
     typedef typename std::iterator_traits<Iterator>::value_type  ArrayType;
     typedef typename ArrayType::value_type                       SrcType;
     typedef typename NumericTraits<SrcType>::RealPromote         TmpType;
+    typedef GaussianConvolutionKernel<double>                    Kernel;
 
     vigra_precondition(std::distance(vectorField, vectorFieldEnd) == N,
         "gaussianDivergenceMultiArray(): wrong number of input arrays.");
@@ -2491,7 +2492,7 @@ gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
 
     typename ConvolutionOptions<N>::ScaleIterator params = opt.scaleParams();
     ArrayVector<double> sigmas(N);
-    ArrayVector<GaussianConvolutionKernel<double>> kernels(N);
+    ArrayVector<Kernel> kernels(N);
     for(unsigned int k = 0; k < N; ++k, ++params)
     {
         sigmas[k] = params.sigma_scaled("gaussianDivergenceMultiArray");
@@ -2679,6 +2680,10 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
                             DestIterator di, DestAccessor dest,
                             ConvolutionOptions<SrcShape::static_size> const & opt )
 {
+    typedef typename DestAccessor::value_type DestType;
+    typedef typename DestType::value_type     DestValueType;
+    typedef typename NumericTraits<DestValueType>::RealPromote KernelType;
+
     static const int N = SrcShape::static_size;
     static const int M = N*(N+1)/2;
     typedef typename ConvolutionOptions<N>::ScaleIterator ParamType;
@@ -2692,7 +2697,7 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
 
     ParamType params_init = opt.scaleParams();
 
-    ArrayVector<GaussianConvolutionKernel<double> > plain_kernels(N);
+    ArrayVector<GaussianConvolutionKernel<KernelType> > plain_kernels(N);
     ParamType params(params_init);
     for (int dim = 0; dim < N; ++dim, ++params)
     {
@@ -2710,7 +2715,7 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
         ParamType params_j(params_i);
         for (int j=i; j<N; ++j, ++b, ++params_j)
         {
-            ArrayVector<GaussianConvolutionKernel<double> > kernels(plain_kernels);
+            ArrayVector<GaussianConvolutionKernel<KernelType> > kernels(plain_kernels);
             if(i == j)
             {
                 kernels[i].initGaussianDerivative(params_i.sigma_scaled(), 2, 1.0, opt.window_ratio);
