@@ -219,6 +219,10 @@ generateWatershedSeeds(Graph const & g,
     return labelGraphWithBackground(g, minima, seeds, MarkerType(0), std::equal_to<MarkerType>());
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
 
 template <class Graph, class T1Map, class T2Map>
 typename T2Map::value_type
@@ -322,6 +326,10 @@ seededWatersheds(Graph const & g,
 
     return maxRegionLabel;
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 } // namespace graph_detail
 

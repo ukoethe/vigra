@@ -164,7 +164,7 @@ public:
                     sum_m = 0.0,
                     sum_pm = 0.0,
                     m = 0.0,
-                    dist = 0.0,
+//                     dist = 0.0,
                     p = 0.0;
         
         SrcIterator ys = s_ul;
@@ -372,7 +372,7 @@ public:
                         sum_m = 0.0,
                         sum_pm = 0.0,
                         m = 0.0,
-                        dist = 0.0,
+//                         dist = 0.0,
                         p = 0.0;
         
         SrcIterator ys = s_ul;

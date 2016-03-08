@@ -652,7 +652,7 @@ struct RadialBasisRegistrationTest
         RadialBasisFunctor rbf;
         Matrix<double> weight_matrix = rbfMatrix2DFromCorrespondingPoints(s_points.begin(), s_points.end(), d_points.begin(),rbf);
 
-        for(int j=0; j< d_points.size(); j++)
+        for(decltype(d_points.size()) j=0; j< d_points.size(); j++)
         {
             double x = d_points[j][0];
             double y = d_points[j][1];
@@ -661,7 +661,7 @@ struct RadialBasisRegistrationTest
                     sy = weight_matrix(point_count,1)+weight_matrix(point_count+1,1)*x+ weight_matrix(point_count+2,1)*y;
 
             //RBS part
-            for(int i=0; i<d_points.size(); i++)
+            for(decltype(d_points.size()) i=0; i<d_points.size(); i++)
             {
                 double weight = rbf(d_points[i], d_points[j]);
                 sx += weight_matrix(i,0)*weight;

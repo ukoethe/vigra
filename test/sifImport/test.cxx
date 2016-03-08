@@ -144,11 +144,11 @@ public:
         SIFImportInfo infoSIF(sifFile);
 
         // compare
-        should (infoSIF.shape()[0] == infoSIF.width());
-        should (infoSIF.shape()[1] == infoSIF.height());
-        should (infoSIF.shape()[2] == infoSIF.stacksize());
+        should (infoSIF.shape()[0] == (unsigned)infoSIF.width());
+        should (infoSIF.shape()[1] == (unsigned)infoSIF.height());
+        should (infoSIF.shape()[2] == (unsigned)infoSIF.stacksize());
         for (int i = 0; i < 3; ++i) {
-            should (infoSIF.shape()[i] == infoSIF.shapeOfDimension(i));
+            should (infoSIF.shape()[i] == (unsigned)infoSIF.shapeOfDimension(i));
         }
     }
 

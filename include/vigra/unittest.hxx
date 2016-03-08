@@ -147,6 +147,11 @@
 
 #define failTest VIGRA_ERROR
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
+
 namespace vigra {
 
 class test_suite;
@@ -1173,6 +1178,10 @@ std::ostream & operator,(std::ostream & o,
     return (o << t);
 }
 
+#endif
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
 #endif
 
 

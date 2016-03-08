@@ -313,6 +313,11 @@ Slic<N, T, Label>::updateAssigments()
     }
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
+
 template <unsigned int N, class T, class Label>
 unsigned int 
 Slic<N, T, Label>::postProcessing()
@@ -383,6 +388,10 @@ Slic<N, T, Label>::postProcessing()
     
     return newMaxLabel;
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 } // namespace detail
 
