@@ -1733,6 +1733,11 @@ inline bool greaterEqualAtTolerance(T1 l, T2 r)
     }
 
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wtype-limits"
+#endif
+
 VIGRA_MATH_FUNC_HELPER(unsigned char)
 VIGRA_MATH_FUNC_HELPER(unsigned short)
 VIGRA_MATH_FUNC_HELPER(unsigned int)
@@ -1747,7 +1752,9 @@ VIGRA_MATH_FUNC_HELPER(float)
 VIGRA_MATH_FUNC_HELPER(double)
 VIGRA_MATH_FUNC_HELPER(long double)
 
-
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 #undef VIGRA_MATH_FUNC_HELPER
 
