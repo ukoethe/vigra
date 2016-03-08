@@ -244,7 +244,7 @@ public:
 
     std::string clsName_;
     template <class classT>
-    void visit(classT& c) const
+    void visit(classT& /*c*/) const
     {   
         // - watersheds-segmentation
         // - carving-segmentation
@@ -785,7 +785,7 @@ public:
     typedef typename GraphDescriptorToMultiArrayIndex<Graph>::IntrinsicNodeMapShape NodeCoordinate;
     typedef NumpyArray<1,NodeCoordinate>  NodeCoorinateArray;
 
-    LemonGridGraphAlgorithmAddonVisitor(const std::string & clsName){}
+    LemonGridGraphAlgorithmAddonVisitor(const std::string & /*clsName*/){}
 
 
     template <class classT>

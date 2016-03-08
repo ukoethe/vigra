@@ -148,7 +148,7 @@ class VisitorBase
                             Feature_t     & features,
                             Label_t       & labels)
     {
-        ignore(tree,split,parent,leftChild,rightChild,features,labels);
+        ignore_argument(tree,split,parent,leftChild,rightChild,features,labels);
     }
     
     /** do something after each tree has been learned
@@ -163,7 +163,7 @@ class VisitorBase
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF & rf, PR & pr, SM & sm, ST & st, int index)
     {
-        ignore(rf,pr,sm,st,index);
+        ignore_argument(rf,pr,sm,st,index);
     }
     
     /** do something after all trees have been learned
@@ -175,7 +175,7 @@ class VisitorBase
     template<class RF, class PR>
     void visit_at_end(RF const & rf, PR const & pr)
     {
-        ignore(rf,pr);
+        ignore_argument(rf,pr);
     }
     
     /** do something before learning starts 
@@ -187,7 +187,7 @@ class VisitorBase
     template<class RF, class PR>
     void visit_at_beginning(RF const & rf, PR const & pr)
     {
-        ignore(rf,pr);
+        ignore_argument(rf,pr);
     }
     /** do some thing while traversing tree after it has been learned 
      *  (external nodes)
@@ -205,7 +205,7 @@ class VisitorBase
     template<class TR, class IntT, class TopT,class Feat>
     void visit_external_node(TR & tr, IntT index, TopT node_t, Feat & features)
     {
-        ignore(tr,index,node_t,features);
+        ignore_argument(tr,index,node_t,features);
     }
     
     /** do something when visiting a internal node after it has been learned

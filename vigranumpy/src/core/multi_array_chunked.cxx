@@ -261,9 +261,9 @@ ptr_to_python(Array * array, python::object axistags)
         else
             at = AxisTags(python::extract<AxisTags const &>(axistags)());
         int N = Array::shape_type::static_size;
-        vigra_precondition(at.size() == 0 || at.size() == N,
+        vigra_precondition(at.size() == 0 || at.size() == unsigned(N),
             "ChunkedArray(): axistags have invalid length.");
-        if(at.size() == N)
+        if(at.size() == unsigned(N))
         {
             int res = PyObject_SetAttrString(py_array, "axistags", python::object(at).ptr());
             pythonToCppException(res != 0);

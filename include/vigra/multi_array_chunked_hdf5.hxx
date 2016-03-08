@@ -301,7 +301,7 @@ class ChunkedArrayHDF5
             {
                 vigra_precondition(fileShape.size() == N+1,
                     "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
-                vigra_precondition(fileShape[0] == TypeTraits::numberOfBands(),
+                vigra_precondition(fileShape[0] == static_cast<unsigned>(TypeTraits::numberOfBands()),
                     "ChunkedArrayHDF5(file, dataset): dataset has wrong number of bands.");
                 shape_type shape(fileShape.begin()+1);
                 if(this->size() > 0)

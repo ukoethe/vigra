@@ -152,7 +152,7 @@ class RatioPolicy{
             return (m > meanRatio_ && m < (1.0 / meanRatio_) && v > varRatio_ && v < (1.0 / varRatio_));
         }
 
-        ValueType distanceToWeight(const PixelType & meanA, const PixelType & varA, const ValueType distance){
+        ValueType distanceToWeight(const PixelType & /*meanA*/, const PixelType & /*varA*/, const ValueType distance){
             return  exp(-distance /sigmaSquared_);
         }
 
@@ -263,7 +263,7 @@ class NormPolicy{
 
         }
 
-        bool usePixel(const PixelType & meanA, const PixelType & varA)const{
+        bool usePixel(const PixelType & /*meanA*/, const PixelType & varA)const{
             return sum(varA)>epsilon_;
         }
 
@@ -279,7 +279,7 @@ class NormPolicy{
             return (m < meanDist_ && v > varRatio_ && v < (1.0 / varRatio_));
         }
 
-        ValueType distanceToWeight(const PixelType & meanA, const PixelType & varA, const ValueType distance){
+        ValueType distanceToWeight(const PixelType & /*meanA*/, const PixelType & /*varA*/, const ValueType distance){
             return  exp(-distance /sigmaSquared_);
         }
 
@@ -550,7 +550,6 @@ inline void BlockWiseNonLocalMeanThreadObject<DIM, PIXEL_TYPE_IN, SMOOTH_POLICY>
     const Coordinate & xyz
 ){
         Coordinate nxyz(SkipInitialization);
-        const int searchRadius = param_.searchRadius_;
         std::fill(average_.begin(),average_.end(),RealPromotePixelType(0.0));
         RealPromoteScalarType totalweight = 0.0;
 
@@ -936,7 +935,7 @@ void nonLocalMean(
     if(param.iterations_>1){
 
         vigra::MultiArray<DIM,PIXEL_TYPE_OUT> tmp(outImage.shape());        
-        for(size_t i=0;i<param.iterations_-1;++i){
+        for(size_t i=0;i<static_cast<size_t>(param.iterations_-1);++i){
             tmp=outImage;
             detail_non_local_means::nonLocalMean1Run<DIM,PIXEL_TYPE_OUT,PIXEL_TYPE_OUT,SMOOTH_POLICY>(tmp,smoothPolicy,param,outImage);
         }

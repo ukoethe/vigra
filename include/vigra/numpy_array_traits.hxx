@@ -549,7 +549,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             {
                 // rotate channel axis to last position
                 int channelIndex = permute[0];
-                for(int k=1; k<N; ++k)
+                for(unsigned k=1; k<N; ++k)
                     permute[k-1] = permute[k];
                 permute[N-1] = channelIndex;
             }

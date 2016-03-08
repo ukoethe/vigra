@@ -37,6 +37,7 @@
 #define VIGRA_MULTI_FFT_HXX
 
 #include "fftw3.hxx"
+#include "metaprogramming.hxx"
 #include "multi_array.hxx"
 #include "multi_math.hxx"
 #include "navigator.hxx"
@@ -2068,7 +2069,9 @@ public:
                      bool useFourierKernel = false,
                      unsigned int planner_flags = FFTW_ESTIMATE)
     : BaseType(inOut, kernel, false, planner_flags)
-    {}
+    {
+        ignore_argument(useFourierKernel);
+    }
     
         /** \brief Init a plan to convolve a real array with a real kernel.
          

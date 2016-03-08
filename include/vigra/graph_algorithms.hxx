@@ -980,7 +980,7 @@ namespace vigra{
                         nodeSizeAcc[newRepNode] = sizeRu+sizeRv;
                     }
                 }
-                if(nodeNum==nodeNumStopCond){
+                if(nodeNumStopCond >= 0 && nodeNum==static_cast<size_t>(nodeNumStopCond)){
                     break;
                 }
             }
@@ -988,7 +988,7 @@ namespace vigra{
                 break;
             }
             else{
-                if(nodeNum>nodeNumStopCond){
+                if(nodeNumStopCond >= 0 && nodeNum>static_cast<size_t>(nodeNumStopCond)){
                     k *= 1.2f;
                 }
                 else{

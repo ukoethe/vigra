@@ -816,7 +816,7 @@ internalBoundaryMultiArrayDist(
     typedef MultiArrayNavigator<DestIterator, N> DNavigator;
     
     dest = dmax;
-    for( int d = 0; d < N; ++d )
+    for( unsigned d = 0; d < N; ++d )
     {
         LabelNavigator lnav( labels.traverser_begin(), labels.shape(), d );
         DNavigator dnav( dest.traverser_begin(), dest.shape(), d );

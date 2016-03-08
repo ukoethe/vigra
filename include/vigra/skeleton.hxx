@@ -697,7 +697,7 @@ skeletonizeImageImpl(MultiArrayView<2, T1, S1> const & labels,
                         ++hole_count;
                         total_length += n1.length + n2->length;
                         double max_salience = max(n1.salience, n2->salience);
-                        for(int p=1; p<poly.size(); ++p)
+                        for(decltype(poly.size()) p=1; p<poly.size(); ++p)
                         {
                             SNode & n = skeleton[poly[p]];
                             n.is_loop = true;

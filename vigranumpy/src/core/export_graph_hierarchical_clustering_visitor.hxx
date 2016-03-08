@@ -239,7 +239,7 @@ public:
 
 
     template <class classT>
-    void visit(classT& c) const
+    void visit(classT& /*c*/) const
     {   
         // the merge graph itself and factory functions to get a merge graph
         exportMergeGraph();

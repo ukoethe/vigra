@@ -2958,7 +2958,7 @@ herr_t HDF5File::writeBlock_(HDF5HandleShared datasetHandle,
         boffset.resize(N);
     }
 
-    for(int i = 0; i < N; ++i)
+    for(unsigned i = 0; i < N; ++i)
     {
         // vigra and hdf5 use different indexing
         bshape[N-1-i] = array.shape(i);
@@ -3211,7 +3211,7 @@ herr_t HDF5File::readBlock_(HDF5HandleShared datasetHandle,
         boffset.resize(N);
     }
 
-    for(int i = 0; i < N; ++i)
+    for(unsigned i = 0; i < N; ++i)
     {
         // vigra and hdf5 use different indexing
         bshape[N-1-i] = blockShape[i];

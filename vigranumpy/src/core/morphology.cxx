@@ -579,7 +579,7 @@ pythonEccentricityCenters(const NumpyArray<N, T> & image)
     eccentricityCenters(image, centers);
 
     python::list centerlist = python::list();
-    for (int i=0; i<centers.size(); ++i) {
+    for (decltype(centers.size()) i=0; i<centers.size(); ++i) {
         centerlist.append(centers[i]);
     }
     return centerlist;
@@ -599,7 +599,7 @@ pythonEccentricityTransformWithCenters(const NumpyArray<N, T> & image,
     eccentricityTransformOnLabels(image, res, centers);
 
     python::list centerlist = python::list();
-    for (int i=0; i<centers.size(); ++i) {
+    for (decltype(centers.size()) i=0; i<centers.size(); ++i) {
         centerlist.append(centers[i]);
     }
     return python::make_tuple(res, centerlist);

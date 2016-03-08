@@ -126,7 +126,7 @@ public:
 
 
     template <class classT>
-    void visit(classT& c) const
+    void visit(classT& /*c*/) const
     {   
 
         // something like RagEdgeMap< std::vector< Edge > >
@@ -581,7 +581,7 @@ public:
     template<class T_PIXEL, class T, class OTF_EDGES>
     static NumpyAnyArray pyRagEdgeMeanFromImplicit(
         const RagGraph &           rag,
-        const Graph &              graph,
+        const Graph &              /*graph*/,
         const RagAffiliatedEdges & affiliatedEdges,
         const OTF_EDGES & otfEdgeMap,
         const std::string & accumulator,
@@ -644,7 +644,7 @@ public:
     template<class T_PIXEL, class T, class OTF_EDGES>
     static NumpyAnyArray pyRagEdgeFeaturesFromImplicit(
         const RagGraph &           rag,
-        const Graph &              graph,
+        const Graph &              /*graph*/,
         const RagAffiliatedEdges & affiliatedEdges,
         const OTF_EDGES & otfEdgeMap,
         NumpyArray<RagEdgeMapDim+1, T> ragEdgeFeaturesArray
@@ -674,7 +674,7 @@ public:
         //in parallel with threadpool
         // -1 = use all cores
         parallel_foreach( -1, rag.edgeNum(),
-            [&](size_t thread_id, int id) 
+            [&](size_t /*thread_id*/, int id) 
             {
                 auto feat = ragEdgeFeaturesArray.bindInner(id);
                 // init the accumulator chain with the appropriate statistics

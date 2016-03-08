@@ -193,7 +193,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
                                                        : reverse(transpose(get<ConvexHull>(acc, k).hull()));
             for(int p=0; p<hull_size; ++p)
             {
-                for(int j=0; j<N; ++j)
+                for(unsigned j=0; j<N; ++j)
                     array(p, j) = poly[p][j];
             }
             hulls.append(array);
@@ -221,7 +221,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
         { \
             if(k == ignored_label || get<Count>(acc, k) == 0)        \
                 continue; \
-            for(int j=0; j<N; ++j) \
+            for(unsigned j=0; j<N; ++j) \
                 array(k, permutation[j]) = get<ConvexHull>(acc, k).FUNCTION()[j]; \
         } \
         res[XSTR(NAME)] = array; \
@@ -234,7 +234,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
         { \
             if(k == ignored_label || get<Count>(acc, k) == 0)        \
                 continue; \
-            for(int j=0; j<N; ++j) \
+            for(unsigned j=0; j<N; ++j) \
                 array(k, permutation[j]) = get<ConvexHull>(acc, k).FUNCTION()[j]; \
         } \
         res[XSTR(NAME)] = array; \
@@ -322,7 +322,7 @@ pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T> > const & labels,
         NumpyArray<2, double> array(Shape2(size, N)); \
         for(int k=0; k<size; ++k) \
         { \
-            for(int j=0; j<N; ++j) \
+            for(unsigned j=0; j<N; ++j) \
                 array(k, permutation[j]) = features[k].ATTRIBUTE[j]; \
         } \
         res[XSTR(NAME)] = array; \

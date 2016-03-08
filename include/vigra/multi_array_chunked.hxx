@@ -450,7 +450,7 @@ class ChunkedArrayBase
 
     bool isInside(shape_type const & p) const
     {
-        for(int d=0; d<N; ++d)
+        for(unsigned d=0; d<N; ++d)
             if(p[d] < 0 || p[d] >= shape_[d])
                 return false;
         return true;
@@ -2538,7 +2538,7 @@ class ChunkedArrayFull
 
     static shape_type computeChunkShape(shape_type s)
     {
-        for(int k=0; k<N; ++k)
+        for(unsigned k=0; k<N; ++k)
             s[k] = ceilPower2(s[k]);
         return s;
     }
