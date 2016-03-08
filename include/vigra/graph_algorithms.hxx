@@ -736,8 +736,8 @@ namespace vigra{
     namespace detail_watersheds_segmentation{
 
     struct RawPriorityFunctor{
-        template<class L, class T>
-        T operator()(const L,const T  priority)const{
+        template<class LabelType, class T>
+        T operator()(const LabelType /*label*/,const T  priority)const{
             return priority;
         }
     };

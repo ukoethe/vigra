@@ -865,43 +865,43 @@ struct MakeTypeListUnique
 };
 
 template <typename T0>
-inline void ignore(const T0 &)
+inline void ignore_argument(const T0 &)
 {}
 
 template <typename T0, typename T1>
-inline void ignore(const T0 &, const T1 &)
+inline void ignore_argument(const T0 &, const T1 &)
 {}
 
 template <typename T0, typename T1, typename T2>
-inline void ignore(const T0 &, const T1 &, const T2 &)
+inline void ignore_argument(const T0 &, const T1 &, const T2 &)
 {}
 
 template <typename T0, typename T1, typename T2, typename T3>
-inline void ignore(const T0 &, const T1 &, const T2 &, const T3 &)
+inline void ignore_argument(const T0 &, const T1 &, const T2 &, const T3 &)
 {}
 
 template <typename T0, typename T1, typename T2, typename T3, typename T4>
-inline void ignore(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &)
+inline void ignore_argument(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &)
 {}
 
 template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5>
-inline void ignore(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &)
+inline void ignore_argument(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &)
 {}
 
 template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
-inline void ignore(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &, const T6 &)
+inline void ignore_argument(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &, const T6 &)
 {}
 
 template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
-inline void ignore(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &, const T6 &, const T7 &)
+inline void ignore_argument(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &, const T6 &, const T7 &)
 {}
 
 template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
-inline void ignore(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &, const T6 &, const T7 &, const T8 &)
+inline void ignore_argument(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &, const T6 &, const T7 &, const T8 &)
 {}
 
 template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9>
-inline void ignore(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &, const T6 &, const T7 &, const T8 &, const T9 &)
+inline void ignore_argument(const T0 &, const T1 &, const T2 &, const T3 &, const T4 &, const T5 &, const T6 &, const T7 &, const T8 &, const T9 &)
 {}
 
 // mask cl.exe shortcomings [end]

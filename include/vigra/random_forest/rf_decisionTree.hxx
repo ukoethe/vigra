@@ -451,7 +451,7 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
         //copy the newly created node form the split functor to the
         //decision tree.
         NodeBase node(split.createNode(), topology_, parameters_ );
-        ignore(node);
+        ignore_argument(node);
     }
     if(garbaged_child!=-1)
     {

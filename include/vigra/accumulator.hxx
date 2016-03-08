@@ -710,7 +710,7 @@ template <>
 struct CollectAccumulatorNames<void>
 {
     template <class BackInsertable>
-    static void exec(BackInsertable &, bool = true)
+    static void exec(BackInsertable &, bool /* skipInternals */ = true)
     {}
 };
 

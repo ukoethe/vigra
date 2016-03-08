@@ -45,7 +45,7 @@ namespace vigra{
             static bool valid(
                 const GRAPH &,
                 const AdjacencyElement &,
-                const typename GRAPH::index_type
+                const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return true;
             }
@@ -54,7 +54,7 @@ namespace vigra{
              static ResultType transform(
                 const GRAPH & g,
                 const AdjacencyElement & adj,
-                const typename GRAPH::index_type
+                const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return g.nodeFromId(adj.nodeId());    
             }
@@ -70,7 +70,7 @@ namespace vigra{
             static bool valid(
                 const GRAPH &,
                 const AdjacencyElement &,
-                const typename GRAPH::index_type
+                const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return true;
             }
@@ -78,7 +78,7 @@ namespace vigra{
             static ResultType transform(
                 const GRAPH & g,
                 const AdjacencyElement & adj,
-                const typename GRAPH::index_type
+                const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return g.edgeFromId(adj.edgeId());    
             }
@@ -102,7 +102,7 @@ namespace vigra{
             static ResultType transform(
                 const GRAPH & g,
                 const AdjacencyElement & adj,
-                const typename GRAPH::index_type
+                const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return g.edgeFromId(adj.edgeId());
             }
@@ -139,7 +139,7 @@ namespace vigra{
             static bool valid(
                 const GRAPH &,
                 const AdjacencyElement &,
-                const typename GRAPH::index_type
+                const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return  true;
             } 
@@ -164,14 +164,14 @@ namespace vigra{
             static bool valid(
                 const GRAPH &,
                 const AdjacencyElement &,
-                const typename GRAPH::index_type
+                const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return  true;
             } 
             ResultType static transform(
                 const GRAPH & g,
                 const AdjacencyElement & adj,
-                const typename GRAPH::index_type
+                const typename GRAPH::index_type /*ownNodeId*/
             ){
                 return g.direct(g.edgeFromId(adj.edgeId()) ,g.nodeFromId(adj.nodeId()));
             }
