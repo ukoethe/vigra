@@ -3349,15 +3349,8 @@ doxygen_overloaded_function(template <...> void readHDF5)
 template<unsigned int N, class T, class StrideTag>
 inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, StrideTag> array)
 {
-    readHDF5(info, array, 0, 0); // last two arguments are not used
-}
-
-template<unsigned int N, class T, class StrideTag>
-void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, StrideTag> array, const hid_t, const int)
-{
     HDF5File file(info.getFilePath(), HDF5File::OpenReadOnly);
     file.read(info.getPathInFile(), array);
-    file.close();
 }
 
 inline hid_t openGroup(hid_t parent, std::string group_name)
@@ -3563,18 +3556,9 @@ doxygen_overloaded_function(template <...> void writeHDF5)
 template<unsigned int N, class T, class StrideTag>
 inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, StrideTag> & array)
 {
-    //last two arguments are not used
-    writeHDF5(filePath, pathInFile, array, 0, 0);
-}
-
-template<unsigned int N, class T, class StrideTag>
-void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, StrideTag> & array, const hid_t, const int)
-{
     HDF5File file(filePath, HDF5File::Open);
     file.write(pathInFile, array);
-    file.close();
 }
-
 
 namespace detail
 {

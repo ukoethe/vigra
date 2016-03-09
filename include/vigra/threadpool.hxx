@@ -382,6 +382,9 @@ ThreadPool::enqueue(F&& f)
 /********************************************************/
 
 // nItems must be either zero or std::distance(iter, end).
+// NOTE: the redundancy of nItems and iter,end here is due to the fact that, for forward iterators,
+// computing the distance from iterators is costly, and, for input iterators, we might not know in advance
+// how many items there are  (e.g., stream iterators).
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
@@ -483,7 +486,7 @@ inline void parallel_foreach_impl(
     F && f,
     std::input_iterator_tag
 ){
-    size_t num_items = 0;
+    std::ptrdiff_t num_items = 0;
     std::vector<threading::future<void> > futures;
     for (; iter != end; ++iter)
     {
@@ -497,7 +500,7 @@ inline void parallel_foreach_impl(
         );
         ++num_items;
     }
-    vigra_postcondition((nItems >= 0 && num_items == static_cast<size_t>(nItems)) || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
+    vigra_postcondition(num_items == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
     for (auto & fut : futures)
         fut.get();
 }
@@ -511,13 +514,13 @@ inline void parallel_foreach_single_thread(
     F && f,
     const std::ptrdiff_t nItems = 0
 ){
-    size_t n = 0;
+    std::ptrdiff_t n = 0;
     for (; begin != end; ++begin)
     {
         f(0, *begin);
         ++n;
     }
-    vigra_postcondition((nItems >=0 && n == static_cast<size_t>(nItems)) || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
+    vigra_postcondition(n == nItems || nItems == 0, "parallel_foreach(): Mismatch between num items and begin/end.");
 }
 
 /** \brief Apply a functor to all items in a range in parallel.

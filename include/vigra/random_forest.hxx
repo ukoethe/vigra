@@ -274,7 +274,7 @@ class RandomForest
      */
     void set_ext_param(ProblemSpec_t const & in)
     {
-        ignore(in);
+        ignore_argument(in);
         vigra_precondition(ext_param_.used() == false,
             "RandomForest::set_ext_param():"
             "Random forest has been trained! Call reset()"

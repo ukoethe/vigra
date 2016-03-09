@@ -234,7 +234,7 @@ class DecisionTree
     }
 
     template<class Visitor_t>
-    void traverse_post_order(Visitor_t visitor,  TreeInt = 2) const
+    void traverse_post_order(Visitor_t visitor,  TreeInt /*start*/ = 2) const
     {
         typedef TinyVector<double, 2> Entry; 
         std::vector<Entry > stack;
