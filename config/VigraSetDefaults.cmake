@@ -43,6 +43,8 @@ OPTION(WITH_BOOST_THREAD "Use boost::thread instead of std::thread" OFF)
 
 OPTION(TEST_VIGRANUMPY "Consider lack of vigranumpy or failed vigranumpy test an error?" OFF)
 
+OPTION(SUPPRESS_3RD_PARTY_WARNINGS "Switch-off compiler warnings originating from dependencies?" ON)
+
 IF(TEST_VIGRANUMPY OR NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()
