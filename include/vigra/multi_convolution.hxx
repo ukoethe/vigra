@@ -712,8 +712,8 @@ internalSeparableConvolveLineHelper(
     )
 {
     Kernel1D<typename Kernel::value_type> kernel_fir;
-    RecursiveConvolutionKernel<4, false, false, false, double> kernel_iir_deriche;
-    RecursiveConvolutionKernel<4, true, false, false, double> kernel_iir_vyv;
+    RecursiveConvolutionKernel<4, false, typename Kernel::value_type> kernel_iir_deriche;
+    RecursiveConvolutionKernel<4, true, typename Kernel::value_type> kernel_iir_vyv;
 
     MultiConvolutionKernel k = internalSelectKernelApproximation(kernel.kernelApproximation(), kernel.std_dev);
 
@@ -750,8 +750,8 @@ internalSeparableConvolveLineHelper2(
     )
 {
     Kernel1D<typename Kernel::value_type> kernel_fir;
-    RecursiveConvolutionKernel<4, false, false, false, typename Kernel::value_type> kernel_iir_deriche;
-    RecursiveConvolutionKernel<4, true, false, false, typename Kernel::value_type> kernel_iir_vyv;
+    RecursiveConvolutionKernel<4, false, typename Kernel::value_type> kernel_iir_deriche;
+    RecursiveConvolutionKernel<4, true, typename Kernel::value_type> kernel_iir_vyv;
 
     MultiConvolutionKernel k = internalSelectKernelApproximation(kernel.kernelApproximation(), kernel.std_dev);
 

@@ -1011,26 +1011,14 @@ recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 } // namespace detail
 
 
-template <unsigned t_order, bool is_vyv, bool use_sse, bool use_avx, class ARITHTYPE = double>
+template <unsigned t_order, bool is_vyv, class ARITHTYPE = double>
 class RecursiveConvolutionKernel :
 public std::conditional<is_vyv, detail::RecursiveConvolutionKernelVYVMembers<t_order,ARITHTYPE>, detail::RecursiveConvolutionKernelDericheMembers<t_order,ARITHTYPE>>::type
 {
-#ifndef __SSE2__
-    static_assert(!use_sse, "SSE requested but compiled without SSE support!");
-#endif
-#ifndef __AVX__
-    static_assert(!use_avx, "AVX requested but compiled without AVX support!");
-#endif
-    static_assert(!(use_avx && is_vyv), "VYV filters do not support AVX");
-    static_assert(!(use_sse && is_vyv), "VYV filters do not support SSE");
-    static_assert(!(use_sse || use_avx) || std::is_same<ARITHTYPE, float>::value, "SSE/AVX require single precision arithmetic.");
-    static_assert(!(use_sse || use_avx) || (use_sse ^ use_avx), "SSE and AVX cannot both be enabled at the same time.");
     static_assert(is_vyv || (t_order >= 2 && t_order <= 4), "Deriche order must be between two and four.");
     static_assert(!is_vyv || (t_order >= 3 && t_order <= 5), "VYV order must be between three and five.");
 
 public:
-    static const bool sse = use_sse;
-    static const bool avx = use_avx;
     static const unsigned int order = t_order;
 
     typedef detail::iir_kernel_tag vigra_kernel_category;

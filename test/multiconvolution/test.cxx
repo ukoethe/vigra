@@ -1468,9 +1468,9 @@ struct MultiArraySeparableRecursiveConvolutionImageTest
 {
     typedef MultiArray<2, double> Image;
     typedef vigra::MultiArrayShape<2>::type shape_2d;
-    typedef RecursiveConvolutionKernel<2, false, false, false, double> DericheKernel2nd;
-    typedef RecursiveConvolutionKernel<3, false, false, false, double> DericheKernel3rd;
-    typedef RecursiveConvolutionKernel<4, false, false, false, double> DericheKernel4th;
+    typedef RecursiveConvolutionKernel<2, false, double> DericheKernel2nd;
+    typedef RecursiveConvolutionKernel<3, false, double> DericheKernel3rd;
+    typedef RecursiveConvolutionKernel<4, false, double> DericheKernel4th;
 
     template <class RecursiveConvolutionKernel>
     static void convolve(Image &srcimg, Image &destimg, unsigned order, double sigma)
@@ -1519,7 +1519,7 @@ struct MultiArraySeparableRecursiveConvolutionImageTest
         for (unsigned deriv_order = 0; deriv_order < 3; ++deriv_order) {
             test_deriche(deriche_order, deriv_order, 5.0);
             test_deriche(deriche_order, deriv_order, 10.0);
-            test_deriche(deriche_order, deriv_order, 15.0);
+            test_deriche(deriche_order, deriv_order, 14.0);
         }
     }
 
@@ -1569,17 +1569,17 @@ int main(int argc, char ** argv)
     std::cout << test_mascsts_iir_deriche.report() << std::endl;
 
     // run the multi-array separable recursive scaled-convolution test suite for Deriche filters
-    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<2, false, false, false, double>> test_masrcts_deriche2nd("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche2ndOrder");
+    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<2, false, double>> test_masrcts_deriche2nd("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche2ndOrder");
     failed += test_masrcts_deriche2nd.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test_masrcts_deriche2nd.report() << std::endl;
 
     // run the multi-array separable recursive scaled-convolution test suite for Deriche filters
-    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<3, false, false, false, double>> test_masrcts_deriche3rd("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche3rdOrder");
+    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<3, false, double>> test_masrcts_deriche3rd("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche3rdOrder");
     failed += test_masrcts_deriche3rd.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test_masrcts_deriche3rd.report() << std::endl;
 
     // run the multi-array separable recursive scaled-convolution test suite for Deriche filters
-    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<4, false, false, false, double>> test_masrcts_deriche4th("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche4thOrder");
+    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<4, false, double>> test_masrcts_deriche4th("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche4thOrder");
     failed += test_masrcts_deriche4th.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test_masrcts_deriche4th.report() << std::endl;
 
