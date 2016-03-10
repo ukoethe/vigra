@@ -1070,6 +1070,10 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
                      destImage(dest), scale);
 }
 
+/** \weakgroup ParallelProcessing
+    \sa gaussianGradientMagnitude <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+
 /** \brief Calculate the gradient magnitude by means of a 1st derivatives of
     Gaussian filter.
 

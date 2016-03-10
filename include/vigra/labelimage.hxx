@@ -719,7 +719,8 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
         void
         regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                                     MultiArrayView<2, T2, S2> dest,
-                                    DestValue edge_marker);
+                                    DestValue edge_marker,
+                                    LabelBehavior labelBehavior = copyLabels);
     }
     \endcode
 
@@ -732,7 +733,8 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
         void regionImageToCrackEdgeImage(
                        SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                        DestIterator dul, DestAccessor da,
-                       DestValue edge_marker)
+                       DestValue edge_marker,
+                       LabelBehavior labelBehavior = copyLabels)
     }
     \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
@@ -743,7 +745,7 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
         void regionImageToCrackEdgeImage(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
-                   DestValue edge_marker)
+                   DestValue edge_marker, LabelBehavior labelBehavior = copyLabels)
     }
     \endcode
     \deprecatedEnd
@@ -763,6 +765,17 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
                                          a a a a a
     \endcode
 
+    with labelBehavior unequal to copyLabels (edgeOverlayOnly) only the edges are marked in the destination image. 
+    \code
+       original image     destination image       overlay zero cells only
+
+                              d d d d d                 d 0 d d d
+          a c c               d d d d d                 d 0 0 0 d
+          a a c       +       d d d d d       =>        d d d 0 d
+          a a a               d d d d d                 d d d 0 0
+                              d d d d d                 d d d d d
+    \endcode
+    
     The algorithm assumes that the original labeled image contains
     no background. Therefore, it is suitable as a post-processing
     operation of \ref labelImage() or \ref seededRegionGrowing().
@@ -834,6 +847,9 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
     h_dest = 2 * h_src - 1
     \endcode
 */
+
+enum LabelBehavior { copyLabels, edgeOverlayOnly };
+
 doxygen_overloaded_function(template <...> void regionImageToCrackEdgeImage)
 
 template <class SrcIterator, class SrcAccessor,
@@ -841,7 +857,7 @@ template <class SrcIterator, class SrcAccessor,
 void regionImageToCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                DestIterator dul, DestAccessor da,
-               DestValue edge_marker)
+               DestValue edge_marker, LabelBehavior labelBehavior = copyLabels)
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
@@ -863,8 +879,11 @@ void regionImageToCrackEdgeImage(
 
         for(x=0; x<w-1; ++x, ++ix.x, dx.x+=2)
         {
-            da.set(sa(ix), dx);
-            da.set(sa(ix), dx, bottomright);
+            if(labelBehavior == copyLabels)
+            {   
+                da.set(sa(ix), dx);
+                da.set(sa(ix), dx, bottomright);
+            }
 
             if(sa(ix, right) != sa(ix))
             {
@@ -872,27 +891,39 @@ void regionImageToCrackEdgeImage(
             }
             else
             {
-                da.set(sa(ix), dx, right);
+                if(labelBehavior == copyLabels)
+                {   
+                    da.set(sa(ix), dx, right);
+                }
             }
             if(sa(ix, bottom) != sa(ix))
             {
                 da.set(edge_marker, dx, bottom);
             }
             else
-            {
-                da.set(sa(ix), dx, bottom);
+            {   
+                if(labelBehavior == copyLabels)
+                {
+                    da.set(sa(ix), dx, bottom);
+                }
             }
 
         }
 
-        da.set(sa(ix), dx);
+        if(labelBehavior == copyLabels)
+        {   
+            da.set(sa(ix), dx);
+        }
         if(sa(ix, bottom) != sa(ix))
         {
             da.set(edge_marker, dx, bottom);
         }
         else
         {
-            da.set(sa(ix), dx, bottom);
+            if(labelBehavior == copyLabels)
+            {
+                da.set(sa(ix), dx, bottom);
+            }
         }
     }
 
@@ -901,18 +932,26 @@ void regionImageToCrackEdgeImage(
 
     for(x=0; x<w-1; ++x, ++ix.x, dx.x+=2)
     {
-        da.set(sa(ix), dx);
+        if(labelBehavior == copyLabels)
+        {   
+            da.set(sa(ix), dx);
+        }
         if(sa(ix, right) != sa(ix))
         {
             da.set(edge_marker, dx, right);
         }
         else
-        {
-            da.set(sa(ix), dx, right);
+        {   
+            if(labelBehavior == copyLabels)
+            {
+                da.set(sa(ix), dx, right);
+            }
         }
     }
-    da.set(sa(ix), dx);
-
+    if(labelBehavior == copyLabels)
+    {   
+        da.set(sa(ix), dx);
+    }
     dy = dul + Diff2D(1,1);
 
     const Diff2D dist[] = {right, top, left, bottom };
@@ -939,11 +978,11 @@ template <class SrcIterator, class SrcAccessor,
 inline void
 regionImageToCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<DestIterator, DestAccessor> dest,
-                            DestValue edge_marker)
+                            DestValue edge_marker, LabelBehavior labelBehavior = copyLabels)
 {
     regionImageToCrackEdgeImage(src.first, src.second, src.third,
                                 dest.first, dest.second,
-                                edge_marker);
+                                edge_marker, labelBehavior);
 }
 
 template <class T1, class S1,
@@ -951,13 +990,14 @@ template <class T1, class S1,
 inline void
 regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                             MultiArrayView<2, T2, S2> dest,
-                            DestValue edge_marker)
+                            DestValue edge_marker, LabelBehavior labelBehavior = copyLabels)
 {
     vigra_precondition(2*src.shape()-Shape2(1) == dest.shape(),
         "regionImageToCrackEdgeImage(): shape mismatch between input and output.");
     regionImageToCrackEdgeImage(srcImageRange(src),
                                 destImage(dest),
-                                edge_marker);
+                                edge_marker,
+                                labelBehavior);
 }
 
 /********************************************************/

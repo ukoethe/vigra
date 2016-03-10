@@ -532,8 +532,8 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = @PROJECT_SOURCE_DIR@/include \
-                         @PROJECT_SOURCE_DIR@/docsrc
+INPUT                  = @PROJECT_SOURCE_DIR@/docsrc \
+                         @PROJECT_SOURCE_DIR@/include
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -556,6 +556,7 @@ FILE_PATTERNS          = index.dxx \
                          installation.dxx \
                          tutorial.dxx \
                          image_processing.dxx \
+                         parallel_processing.dxx \
                          *.hxx \
                          viff.h
 
@@ -617,7 +618,8 @@ EXAMPLE_RECURSIVE      = NO
 # directories that contain image that are included in the documentation (see
 # the \image command).
 
-IMAGE_PATH             = @PROJECT_SOURCE_DIR@/src/images
+IMAGE_PATH             = @PROJECT_SOURCE_DIR@/src/images \
+                         @PROJECT_SOURCE_DIR@/docsrc/documents
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program

@@ -304,6 +304,10 @@ void toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator 
 /*                                                           */
 /*************************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa labelMultiArrayBlockwise <B>(...)</B>
+*/
+
 /** \brief Connected components labeling for MultiArrays and ChunkedArrays.
 
     <b> Declarations:</b>

@@ -139,6 +139,10 @@ struct UnionFindWatershedsEquality
 /*                                                           */
 /*************************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa unionFindWatershedsBlockwise <B>(...)</B>
+*/
+
 /** \brief Blockwise union-find watersheds transform for MultiArrays and ChunkedArrays.
 
     <b> Declaration:</b>

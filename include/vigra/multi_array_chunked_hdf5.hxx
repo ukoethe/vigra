@@ -55,6 +55,10 @@ namespace vigra {
 */
 //@{
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayHDF5
+*/
+
 /** Implement ChunkedArray as a chunked dataset in an HDF5 file.
 
     <b>\#include</b> \<vigra/multi_array_chunked_hdf5.hxx\> <br/>

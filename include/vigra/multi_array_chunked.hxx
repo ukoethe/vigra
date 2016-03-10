@@ -1325,6 +1325,10 @@ class ChunkedArrayOptions
     CompressionMethod compression_method;
 };
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArray
+ */
+
 /** \brief Interface and base class for chunked arrays.
 
 Very big data arrays (possibly bigger than the available RAM) can
@@ -2507,6 +2511,10 @@ createCoupledIterator(ChunkedArray<N, T> const & m)
                         P0(m.shape())));
 }
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayFull
+*/
+
 /** Implement ChunkedArray as an ordinary MultiArray with a single chunk.
 
     <b>\#include</b> \<vigra/multi_array_chunked.hxx\> <br/>
@@ -2668,6 +2676,10 @@ class ChunkedArrayFull
     Chunk chunk_;    // a dummy chunk to fulfill the API
 };
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayLazy
+*/
+
 /** Implement ChunkedArray as a collection of in-memory chunks.
 
     This optimizes over an ordinary MultiArray by allocating chunks only
@@ -2788,6 +2800,10 @@ class ChunkedArrayLazy
 
     Alloc alloc_;
 };
+
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayCompressed
+*/
 
 /** Implement ChunkedArray as a collection of potentially compressed
     in-memory chunks.
@@ -2979,6 +2995,10 @@ class ChunkedArrayCompressed
 
     CompressionMethod compression_method_;
 };
+
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayTmpFile
+*/
 
 /** Implement ChunkedArray as a collection of chunks that can be
     swapped out into a temporary file when asleep.

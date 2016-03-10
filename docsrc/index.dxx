@@ -5,6 +5,8 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>how to get started</em>
 	<LI> \ref Tutorial
 		<BR>&nbsp;&nbsp;&nbsp;<em>first steps with VIGRA</em>
+    <LI> \ref ParallelProcessing
+        <BR>&nbsp;&nbsp;&nbsp;<em>using std::thread</em>
     <LI> <span style="font-weight:bold; color:#0040b0">Concepts</span>
         <BR>&nbsp;&nbsp;&nbsp;<em>generic interface definitions</em>
         <UL>
@@ -315,10 +317,12 @@
     VIGRA is subject to this <a href="LICENSE.txt">LICENSE</a>.
 
     You can also subscribe to the <a href="https://mailhost.informatik.uni-hamburg.de/mailman/listinfo/vigra">VIGRA Mailing List</a> to get instant information about new releases, discuss VIGRA's features and development, and ask the experts for help.
-
-
-
 */
+
+/** \addtogroup ParallelProcessing Parallel Processing
+
+    \sa These algorithms and data structures also support parallel processing:
+ */
 
 /** \page ImportExport Image Import and Export
 
