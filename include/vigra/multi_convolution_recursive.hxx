@@ -467,7 +467,7 @@ public:
 
     IIRBorderSrcAccessorZero(SrcIterator /* is */, SrcIterator /* iend */, SrcAccessor /* sa */, int /* start */, int /* stop */) { }
 
-    inline value_type operator()( int i )
+    inline value_type operator()( int /* i */ )
     {
             return NumericTraits<value_type>::zero();
     }
@@ -484,7 +484,7 @@ public:
 
     IIRBorderSrcAccessorRepeatLeft(SrcIterator is, SrcIterator /* iend */, SrcAccessor sa, int start, int /* stop */ ) : val(sa(is + start)) { }
 
-    inline value_type operator()( int i )
+    inline value_type operator()( int /* i */ )
     {
             return val;
     }
@@ -500,7 +500,7 @@ public:
 
     IIRBorderSrcAccessorRepeatRight(SrcIterator is, SrcIterator /* iend */, SrcAccessor sa, int /* start */, int stop) : val(sa(is + stop - 1)) { }
 
-    inline value_type operator()( int i )
+    inline value_type operator()( int /* i */ )
     {
             return val;
     }
@@ -591,12 +591,12 @@ class DericheBorderDstAccessor
 public:
     typedef typename DestAccessor::value_type value_type;
 
-    inline value_type operator()( DestIterator i )
+    inline value_type operator()( DestIterator /* i */ )
     {
         return NumericTraits<value_type>::zero();
     }
 
-    inline void set(value_type dummy, DestIterator dummy2) { }
+    inline void set(value_type /* dummy */, DestIterator /* dummy2 */) { }
 };
 
 
@@ -612,7 +612,7 @@ public:
         return tmp;
     }
 
-    inline void set(value_type value, DestIterator dummy2)
+    inline void set(value_type value, DestIterator /* dummy2 */)
     {
         tmp = value;
     }
@@ -620,7 +620,7 @@ public:
 
 template <class SrcIterator, class SrcAccessor, class DestIterator,
           class DestAccessor, class RecursiveConvolutionKernel, class SumType>
-void dericheApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+void dericheApplyCausal(SrcIterator is, SrcIterator /* iend */, SrcAccessor sa,
                         DestIterator id, DestAccessor da,
                         RecursiveConvolutionKernel kernel, SumType xtmp[],
                         SumType ytmp[], int start, int stop) {
@@ -651,7 +651,7 @@ void dericheApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 template <class SrcIterator, class SrcAccessor, class DestIterator,
           class DestAccessor, class RecursiveConvolutionKernel, class SumType>
-void dericheApplyAntiCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+void dericheApplyAntiCausal(SrcIterator is, SrcIterator /* iend */, SrcAccessor sa,
                             DestIterator id, DestAccessor da,
                             RecursiveConvolutionKernel kernel, SumType xtmp[],
                             SumType ytmp[], int start, int stop) {
@@ -747,7 +747,7 @@ recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   BorderTreatmentMode border,
                   int start = 0, int stop = 0)
 { 
-    switch(kernel.border_treatment) {
+    switch(border) {
         case BORDER_TREATMENT_ZEROPAD:
             recursiveConvolveLineDericheZeroBorder(is, iend, sa, id, da, kernel, start, stop);
             break;
@@ -778,7 +778,7 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RecursiveConvolutionKernel,
           class SumType>
-void vyvApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+void vyvApplyCausal(SrcIterator is, SrcIterator /* iend */, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel kernel,
                   SumType xtmp, SumType ytmp[],
@@ -911,7 +911,7 @@ recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     SumType ytmp[kernel.order];
     SumType xtmp = NumericTraits<SumType>::zero();
 
-    switch(kernel.border_treatment) {
+    switch(border) {
         case BORDER_TREATMENT_ZEROPAD:
             recursiveConvolveLineVYVBorder<detail::IIRBorderSrcAccessorZero<SrcIterator, SrcAccessor>, detail::IIRBorderSrcAccessorZero<SrcIterator, SrcAccessor>>(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
             break;
