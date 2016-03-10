@@ -1862,7 +1862,7 @@ class ChunkedArray
         // very rare.
         //
         // the function returns the old value of chunk_state_
-        long rc = handle->chunk_state_.load(threading::memory_order_seq_cst);
+        long rc = handle->chunk_state_.load(threading::memory_order_acquire);
         while(true)
         {
             if(rc >= 0)
@@ -1883,7 +1883,7 @@ class ChunkedArray
                 {
                     // cache management in progress => try again later
                     threading::this_thread::yield();
-                    rc = handle->chunk_state_.load(threading::memory_order_seq_cst);
+                    rc = handle->chunk_state_.load(threading::memory_order_acquire);
                 }
                 else if(handle->chunk_state_.compare_exchange_weak(rc, chunk_locked, threading::memory_order_seq_cst))
                 {
@@ -1921,7 +1921,7 @@ class ChunkedArray
                 // (note that we still hold the chunk_lock_)
                 self->cleanCache(2);
             }
-            handle->chunk_state_.store(1, threading::memory_order_seq_cst);
+            handle->chunk_state_.store(1, threading::memory_order_release);
             return p;
         }
         catch(...)
