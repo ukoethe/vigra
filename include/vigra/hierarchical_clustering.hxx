@@ -47,6 +47,7 @@
 /*vigra*/
 #include "priority_queue.hxx"
 #include "metrics.hxx"
+#include "merge_graph_adaptor.hxx"
 
 namespace vigra{
 
@@ -360,9 +361,9 @@ class EdgeWeightedUcm
             NODE_LABEL_MAP nodeLabelMap,
             const ValueType beta,
             const metrics::MetricType metricType,
-            const ValueType wardness=1.0,
-            const ValueType gamma = 10000000.0,
-            const ValueType sameLabelMultiplier = 0.8
+            const ValueType wardness=static_cast<ValueType>(1.0),
+            const ValueType gamma = static_cast<ValueType>(10000000.0),
+            const ValueType sameLabelMultiplier = static_cast<ValueType>(0.8)
         )
         :   mergeGraph_(mergeGraph),
             edgeIndicatorMap_(edgeIndicatorMap),
