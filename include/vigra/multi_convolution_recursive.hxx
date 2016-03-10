@@ -467,11 +467,12 @@ public:
 
     IIRBorderSrcAccessorZero(SrcIterator /* is */, SrcIterator /* iend */, SrcAccessor /* sa */, int /* start */, int /* stop */) { }
 
-    inline value_type operator()( SrcIterator i )
+    inline value_type operator()( int i )
     {
             return NumericTraits<value_type>::zero();
     }
 };
+
 
 template <typename SrcIterator, typename SrcAccessor>
 class IIRBorderSrcAccessorRepeatLeft
@@ -483,7 +484,7 @@ public:
 
     IIRBorderSrcAccessorRepeatLeft(SrcIterator is, SrcIterator /* iend */, SrcAccessor sa, int start, int /* stop */ ) : val(sa(is + start)) { }
 
-    inline value_type operator()( SrcIterator i )
+    inline value_type operator()( int i )
     {
             return val;
     }
@@ -499,11 +500,12 @@ public:
 
     IIRBorderSrcAccessorRepeatRight(SrcIterator is, SrcIterator /* iend */, SrcAccessor sa, int /* start */, int stop) : val(sa(is + stop - 1)) { }
 
-    inline value_type operator()( SrcIterator i )
+    inline value_type operator()( int i )
     {
             return val;
     }
 };
+
 
 template <typename SrcIterator, typename SrcAccessor>
 class IIRBorderSrcAccessorReflectLeft
@@ -518,9 +520,9 @@ public:
 
     IIRBorderSrcAccessorReflectLeft(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
 
-    inline value_type operator()( SrcIterator i )
+    inline value_type operator()( int i )
     {
-            return sa_(is_ + start_ + std::distance(i, is_));
+            return sa_(is_ - i);
     }
 };
 
@@ -537,11 +539,12 @@ public:
 
     IIRBorderSrcAccessorReflectRight(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
 
-    inline value_type operator()( SrcIterator i )
+    inline value_type operator()( int i )
     {
-            return sa_(iend_ - std::distance(iend_, i) - 2);
+            return sa_(iend_ + (stop_ - i) - 2);
     }
 };
+
 
 template <typename SrcIterator, typename SrcAccessor>
 class IIRBorderSrcAccessorWrapLeft
@@ -556,9 +559,9 @@ public:
 
     IIRBorderSrcAccessorWrapLeft(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
 
-    inline value_type operator()( SrcIterator i )
+    inline value_type operator()( int i )
     {
-            return sa_(iend_ - std::distance(i, is_) + start_);
+            return sa_(iend_ + i - start_);
     }
 };
 
@@ -575,9 +578,9 @@ public:
 
     IIRBorderSrcAccessorWrapRight(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
 
-    inline value_type operator()( SrcIterator i )
+    inline value_type operator()( int i )
     {
-            return sa_(is_ + start_ + std::distance(iend_, i));
+            return sa_(is_ + start_ + (i - stop_));
     }
 };
 
@@ -678,6 +681,7 @@ void dericheApplyAntiCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     }
 }
 
+
 template <class BorderTreatmentLeft, class BorderTreatmentRight,
           class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
@@ -699,12 +703,12 @@ inline void recursiveConvolveLineDericheBorder(SrcIterator is, SrcIterator iend,
 
     for (unsigned int i = 0; i < kernel.order; ++i)
         xtmp[i] = ytmp[i] = NumericTraits<SumType>::zero();
-    dericheApplyCausal(is, iend, sa_causal, id, da_fake, kernel, xtmp, ytmp, start + kernel.left(), start);
+    dericheApplyCausal(start, stop, sa_causal, id, da_fake, kernel, xtmp, ytmp, start + kernel.left(), start);
     dericheApplyCausal(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
 
     for (unsigned int i = 0; i < kernel.order; ++i)
         xtmp[i] = ytmp[i] = NumericTraits<SumType>::zero();
-    dericheApplyAntiCausal(is, iend, sa_anticausal, id, da_fake, kernel, xtmp, ytmp, stop, stop + kernel.right());
+    dericheApplyAntiCausal(start, stop, sa_anticausal, id, da_fake, kernel, xtmp, ytmp, stop, stop + kernel.right());
     dericheApplyAntiCausal(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
 
 }
@@ -865,11 +869,11 @@ inline void recursiveConvolveLineVYVBorder(SrcIterator is, SrcIterator iend, Src
     xtmp = NumericTraits<SumType>::zero();
 
     // causal filter
-    vyvApplyCausal(is, iend, sa_left, id, da_fake, kernel, xtmp, ytmp, start + kernel.left(), start);
+    vyvApplyCausal(start, stop, sa_left, id, da_fake, kernel, xtmp, ytmp, start + kernel.left(), start);
     vyvApplyCausal(is, iend, sa, id, da, kernel, xtmp, ytmp, start, stop);
 
     // handle right border
-    vyvApplyCausal(is + stop, iend, sa_right, v.begin(), va, kernel, xtmp, ytmp, 0, kernel.right());
+    vyvApplyCausal(start + stop, stop, sa_right, v.begin(), va, kernel, xtmp, ytmp, 0, kernel.right());
 
     TinyVector<SumType, kernel.order> boundary;
     for (unsigned int i = 0; i < kernel.order; ++i)
