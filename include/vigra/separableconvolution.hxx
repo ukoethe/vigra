@@ -1401,7 +1401,9 @@ class Kernel1D
         */
     typedef StandardConstAccessor<ARITHTYPE> ConstAccessor;
 
-    typedef detail::fir_kernel_tag vigra_kernel_category;
+        /** the kernel's tag (finite impulse response, 1D)
+         */
+    typedef detail::fir_kernel1d_tag vigra_kernel_category;
 
     struct InitProxy
     {

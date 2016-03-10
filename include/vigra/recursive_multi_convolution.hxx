@@ -213,34 +213,42 @@ namespace detail
 struct deriche_tag {};
 struct vyv_tag {};
 
+struct deriche_4_tag : public deriche_tag { static const unsigned int order = 4; };
+struct deriche_3_tag : public deriche_tag { static const unsigned int order = 3; };
+struct deriche_2_tag : public deriche_tag { static const unsigned int order = 2; };
+
+struct vyv_3_tag : public vyv_tag { static const unsigned int order = 3; };
+struct vyv_4_tag : public vyv_tag { static const unsigned int order = 4; };
+struct vyv_5_tag : public vyv_tag { static const unsigned int order = 5; };
+
+
 template<typename X>
-struct is_deriche_kernel
+struct is_deriche_kernel : public std::is_base_of<deriche_tag, typename X::vigra_recursive_kernel_type>
 {
-  static const bool value = std::is_same<typename X::vigra_recursive_kernel_type, deriche_tag>::value;
 };
 
 template<typename X>
-struct is_vyv_kernel
+struct is_vyv_kernel : public std::is_base_of<vyv_tag, typename X::vigra_recursive_kernel_type>
 {
-  static const bool value = std::is_same<typename X::vigra_recursive_kernel_type, vyv_tag>::value;
 };
 
 
 // based on code Copyright (c) 2012-2013, Pascal Getreuer
 // <getreuer@cmla.ens-cachan.fr>
 // licensed under the terms of the simplified BSD license.
-template<unsigned order, typename ARITHTYPE>
+template<typename ARITHTYPE, typename kernel_type, unsigned order>
 class RecursiveConvolutionKernelDericheMembers
 {
 public:
-    typedef deriche_tag vigra_recursive_kernel_type;
-
     ARITHTYPE n_causal[order];
     ARITHTYPE n_anticausal[order];
     ARITHTYPE d[order];
 
+    static const unsigned int vigra_recursive_kernel_order = order;
+    typedef kernel_type vigra_recursive_kernel_type;
+
     RecursiveConvolutionKernelDericheMembers() {
-        for (unsigned int i = 0; i < order; ++i) {
+        for (unsigned int i = 0; i < vigra_recursive_kernel_order; ++i) {
             d[i] = 0;
             n_causal[i] = 0;
             n_anticausal[i] = 0;
@@ -248,7 +256,7 @@ public:
     }
 
     void scale(double factor) {
-        for (unsigned int i = 0; i < order; ++i) {
+        for (unsigned int i = 0; i < vigra_recursive_kernel_order; ++i) {
             n_causal[i] *= factor;
             n_anticausal[i] *= factor;
         }
@@ -260,22 +268,22 @@ protected:
         std::complex<ARITHTYPE> lambda[order];
         std::complex<ARITHTYPE> beta[order];
 
-        for (unsigned int i = 0; i < order; ++i) {
-            alpha[i] = detail::deriche_precomputed_coefs[deriv_order][order - 2].get_alpha(i);
-            lambda[i] = detail::deriche_precomputed_coefs[deriv_order][order - 2].get_lambda(i) / sigma;
+        for (unsigned int i = 0; i < vigra_recursive_kernel_order; ++i) {
+            alpha[i] = detail::deriche_precomputed_coefs[deriv_order][vigra_recursive_kernel_order - 2].get_alpha(i);
+            lambda[i] = detail::deriche_precomputed_coefs[deriv_order][vigra_recursive_kernel_order - 2].get_lambda(i) / sigma;
             beta[i] = std::complex<ARITHTYPE>(
                 -exp(-lambda[i].real()) * cos(lambda[i].imag()),
                 exp(-lambda[i].real()) * sin(lambda[i].imag()));
         }
 
-        std::complex<ARITHTYPE> a[order + 1];
-        std::complex<ARITHTYPE> b[order];
+        std::complex<ARITHTYPE> a[vigra_recursive_kernel_order + 1];
+        std::complex<ARITHTYPE> b[vigra_recursive_kernel_order];
 
         b[0] = alpha[0];
         a[0] = std::complex<ARITHTYPE>(1, 0);
         a[1] = beta[0];
 
-        for (unsigned int k = 1; k < order; ++k) {
+        for (unsigned int k = 1; k < vigra_recursive_kernel_order; ++k) {
             b[k] = beta[k] * b[k - 1];
 
             for (unsigned int j = k - 1; j > 0; --j)
@@ -290,7 +298,7 @@ protected:
                 a[j] += beta[k] * a[j - 1];
         }
 
-        for (unsigned int i = 0; i < order; ++i) {
+        for (unsigned int i = 0; i < vigra_recursive_kernel_order; ++i) {
             n_causal[i] = b[i].real() / (M_SQRT2PI * pow(sigma, deriv_order + 1));
             d[i] = a[i + 1].real();
         }
@@ -300,20 +308,22 @@ protected:
         if (deriv_order == 1)
             sign = -1;
 
-        for (unsigned int i = 0; i < order - 1; ++i)
+        for (unsigned int i = 0; i < vigra_recursive_kernel_order - 1; ++i)
             n_anticausal[i] = sign * (n_causal[i + 1] - n_causal[0] * d[i]);
-        n_anticausal[order - 1] = sign * (-1.0) * n_causal[0] * d[order - 1];
+        n_anticausal[vigra_recursive_kernel_order - 1] = sign * (-1.0) * n_causal[0] * d[vigra_recursive_kernel_order - 1];
     }
 };
+
 
 // based on code Copyright (c) 2012-2013, Pascal Getreuer
 // <getreuer@cmla.ens-cachan.fr>
 // licensed under the terms of the simplified BSD license.
-template<unsigned order, typename ARITHTYPE>
+template<typename ARITHTYPE, typename kernel_type, unsigned order>
 class RecursiveConvolutionKernelVYVMembers
 {
 public:
-    typedef vyv_tag vigra_recursive_kernel_type;
+    static const unsigned int vigra_recursive_kernel_order = order;
+    typedef kernel_type vigra_recursive_kernel_type;
 
     ARITHTYPE coefs[order + 1];
     Matrix<ARITHTYPE> M;
@@ -332,12 +342,10 @@ public:
 
 protected:
     void compute_coefs(unsigned deriv_order, double sigma) {
-        ARITHTYPE q;
-
         for (unsigned int i = 0; i < order; ++i)
             poles[i] = (std::complex<ARITHTYPE>)detail::vyv_poles[deriv_order][order - 3].get_complex_pole(i);
 
-        q = compute_q(sigma);
+        ARITHTYPE q = compute_q(sigma);
 
         for (unsigned int i = 0; i < order; ++i)
             poles[i] = pow(poles[i], 1 / q);
@@ -374,10 +382,9 @@ private:
     ARITHTYPE dq_variance(ARITHTYPE q) {
         const std::complex<ARITHTYPE> one(1, 0);
         std::complex<ARITHTYPE> sum(0, 0);
-        std::complex<ARITHTYPE> z;
 
         for (unsigned int i = 0; i < order; ++i) {
-            z = pow(poles[i], 1 / q);
+            std::complex<ARITHTYPE> z = pow(poles[i], 1 / q);
 
             sum += z * log(z) * (z + one) / (std::complex<ARITHTYPE>)pow(z - one, 3);
         }
@@ -615,8 +622,6 @@ void dericheApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                         DestIterator id, DestAccessor da,
                         RecursiveConvolutionKernel kernel, SumType xtmp[],
                         SumType ytmp[], int start, int stop) {
-    const unsigned int order = kernel.order;
-
     SumType xi, dyi;
 
     for (int x = start; x < stop; ++x) {
@@ -625,12 +630,12 @@ void dericheApplyCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         xtmp[0] = xi;
 
         dyi = NumericTraits<SumType>::zero();
-        for (unsigned int i = 0; i < order; ++i)
+        for (unsigned int i = 0; i < kernel.order; ++i)
             dyi += kernel.n_causal[i] * xtmp[i];
-        for (unsigned int i = 0; i < order; ++i)
+        for (unsigned int i = 0; i < kernel.order; ++i)
             dyi -= kernel.d[i] * ytmp[i];
 
-        for (unsigned int i = order - 1; i > 0; --i) {
+        for (unsigned int i = kernel.order - 1; i > 0; --i) {
             xtmp[i] = xtmp[i - 1];
             ytmp[i] = ytmp[i - 1];
         }
@@ -648,8 +653,6 @@ void dericheApplyAntiCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                             DestIterator id, DestAccessor da,
                             RecursiveConvolutionKernel kernel, SumType xtmp[],
                             SumType ytmp[], int start, int stop) {
-    const unsigned int order = kernel.order;
-
     SumType xi, yi, dyi;
 
     for (int x = stop - 1; x >= start; --x) {
@@ -657,12 +660,12 @@ void dericheApplyAntiCausal(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         yi = da(id + x);
 
         dyi = NumericTraits<SumType>::zero();
-        for (unsigned int i = 0; i < order; ++i)
+        for (unsigned int i = 0; i < kernel.order; ++i)
             dyi += kernel.n_anticausal[i] * xtmp[i];
-        for (unsigned int i = 0; i < order; ++i)
+        for (unsigned int i = 0; i < kernel.order; ++i)
             dyi -= kernel.d[i] * ytmp[i];
 
-        for (unsigned int i = order - 1; i > 0; --i) {
+        for (unsigned int i = kernel.order - 1; i > 0; --i) {
             xtmp[i] = xtmp[i - 1];
             ytmp[i] = ytmp[i - 1];
         }
@@ -930,20 +933,51 @@ recursiveConvolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     }
 }
 
+
+
+template<typename ARITHTYPE, typename kernel_type>
+class RecursiveConvolutionKernelMembers {
+};
+
+template<typename ARITHTYPE>
+class RecursiveConvolutionKernelMembers<ARITHTYPE, deriche_2_tag> : public RecursiveConvolutionKernelDericheMembers<ARITHTYPE, deriche_2_tag, 2>
+{
+};
+
+template<typename ARITHTYPE>
+class RecursiveConvolutionKernelMembers<ARITHTYPE, deriche_3_tag> : public RecursiveConvolutionKernelDericheMembers<ARITHTYPE, deriche_3_tag, 3>
+{
+};
+
+template<typename ARITHTYPE>
+class RecursiveConvolutionKernelMembers<ARITHTYPE, deriche_4_tag> : public RecursiveConvolutionKernelDericheMembers<ARITHTYPE, deriche_4_tag, 4>
+{
+};
+
+template<typename ARITHTYPE>
+class RecursiveConvolutionKernelMembers<ARITHTYPE, vyv_3_tag> : public RecursiveConvolutionKernelVYVMembers<ARITHTYPE, vyv_3_tag, 3>
+{
+};
+
+template<typename ARITHTYPE>
+class RecursiveConvolutionKernelMembers<ARITHTYPE, vyv_4_tag> : public RecursiveConvolutionKernelVYVMembers<ARITHTYPE, vyv_4_tag, 4>
+{
+};
+
+template<typename ARITHTYPE>
+class RecursiveConvolutionKernelMembers<ARITHTYPE, vyv_5_tag> : public RecursiveConvolutionKernelVYVMembers<ARITHTYPE, vyv_5_tag, 5>
+{
+};
+
 } // namespace detail
 
-
-template <unsigned t_order, bool is_vyv, class ARITHTYPE = double>
-class RecursiveConvolutionKernel :
-public std::conditional<is_vyv, detail::RecursiveConvolutionKernelVYVMembers<t_order,ARITHTYPE>, detail::RecursiveConvolutionKernelDericheMembers<t_order,ARITHTYPE>>::type
+template <class ARITHTYPE, typename kernel_tag>
+class RecursiveConvolutionKernel : public detail::RecursiveConvolutionKernelMembers<ARITHTYPE, kernel_tag>
 {
-    static_assert(is_vyv || (t_order >= 2 && t_order <= 4), "Deriche order must be between two and four.");
-    static_assert(!is_vyv || (t_order >= 3 && t_order <= 5), "VYV order must be between three and five.");
-
 public:
-    static const unsigned int order = t_order;
+    static const unsigned int order = kernel_tag::order;
 
-    typedef detail::iir_kernel_tag vigra_kernel_category;
+    typedef detail::iir_kernel1d_tag vigra_kernel_category;
 
     typedef ARITHTYPE value_type;
 

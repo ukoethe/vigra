@@ -42,9 +42,10 @@
 namespace vigra {
 namespace detail {
 
-struct fir_kernel_tag {};
-struct iir_kernel_tag {};
-struct gaussian_kernel_tag {};
+struct fir_kernel1d_tag {};
+struct fir_kernel2d_tag {};
+struct iir_kernel1d_tag {};
+struct gaussian_kernel1d_tag {};
 
 template<typename X>
 struct is_kernel
@@ -59,21 +60,18 @@ struct is_kernel
 };
 
 template<typename X, bool = is_kernel<X>::value >
-struct is_fir_kernel
+struct is_fir_kernel : public std::is_same<typename X::vigra_kernel_category, fir_kernel1d_tag>
 {
-	static const bool value = std::is_same<typename X::vigra_kernel_category, fir_kernel_tag>::value;
 };
 
 template<typename X, bool = is_kernel<X>::value >
-struct is_iir_kernel
+struct is_iir_kernel : public std::is_same<typename X::vigra_kernel_category, iir_kernel1d_tag>
 {
-	static const bool value = std::is_same<typename X::vigra_kernel_category, iir_kernel_tag>::value;
 };
 
 template<typename X, bool = is_kernel<X>::value >
-struct is_gaussian_kernel
+struct is_gaussian_kernel : public std::is_same<typename X::vigra_kernel_category, gaussian_kernel1d_tag>
 {
-	static const bool value = std::is_same<typename X::vigra_kernel_category, gaussian_kernel_tag>::value;
 };
 
 template<typename X>

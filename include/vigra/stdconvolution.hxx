@@ -780,6 +780,10 @@ public:
          */
     typedef typename BasicImage<value_type>::ConstAccessor ConstAccessor;
 
+        /** the kernel's tag (finite impulse response, 2D)
+         */
+    typedef detail::fir_kernel2d_tag vigra_kernel_category;
+
     struct InitProxy
     {
         typedef typename
