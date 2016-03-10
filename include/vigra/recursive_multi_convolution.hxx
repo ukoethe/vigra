@@ -392,7 +392,7 @@ private:
         return (2.0 / q) * sum.real();
     }
 
-    void expand_pole_product(void) {
+    void expand_pole_product() {
         std::complex<ARITHTYPE> denom[order + 1];
 
         denom[0] = poles[0];
@@ -415,7 +415,7 @@ private:
             coefs[0] += coefs[i];
     }
 
-    void compute_border_mtx(void) {
+    void compute_border_mtx() {
         Matrix<ARITHTYPE> A(Shape2(order, order));
         Matrix<ARITHTYPE> Apow(Shape2(order, order));
         Matrix<ARITHTYPE> Asum(Shape2(order, order));

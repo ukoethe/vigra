@@ -436,7 +436,7 @@ class ConvolutionOptions
     double window_ratio;
     Shape from_point, to_point;
 
-    enum MultiConvolutionKernel kernel;
+    MultiConvolutionKernel kernel;
 
     ConvolutionOptions()
     : sigma_eff(0.0),
@@ -578,13 +578,13 @@ class ConvolutionOptions
       return window_ratio;
     }
 
-    ConvolutionOptions<dim> & setKernelApproximation(enum MultiConvolutionKernel aprox)
+    ConvolutionOptions<dim> & setKernelApproximation(MultiConvolutionKernel aprox)
     {
       kernel = aprox;
       return *this;
     }
 
-    enum MultiConvolutionKernel kernelApproximation(void) const
+    MultiConvolutionKernel kernelApproximation(void) const
     {
       return kernel;
     }
