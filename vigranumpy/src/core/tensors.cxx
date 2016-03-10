@@ -60,7 +60,7 @@ pythonGaussianGradient(NumpyArray<ndim, Singleband<VoxelType> > array,
                        python::object step_size = python::object(1.0),
                        double window_size = 0.0,
                        python::object roi = python::object(),
-                       MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_AUTO)
+                       MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_FIR)
 {
     pythonScaleParam<ndim> params(sigma, sigma_d, step_size, "gaussianGradient");
     params.permuteLikewise(array);
@@ -178,7 +178,7 @@ pythonGaussianGradientMagnitude(NumpyArray<ndim, Multiband<VoxelType> > volume,
                                 python::object step_size,
                                 double window_size = 0.0,
                                 python::object roi = python::object(),
-                                MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_AUTO)
+                                MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_FIR)
 {
     pythonScaleParam<ndim - 1> params(sigma, sigma_d, step_size, "gaussianGradientMagnitude");
     params.permuteLikewise(volume);
@@ -249,7 +249,7 @@ pythonHessianOfGaussian(NumpyArray<N, Singleband<VoxelType> > array,
                         python::object step_size = python::object(1.0),
                         double window_size = 0.0,
                         python::object roi = python::object(),
-                        MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_AUTO)
+                        MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_FIR)
 {
     std::string description("Hessian of Gaussian (flattened upper triangular matrix), scale=");
     description += asString(sigma);
@@ -293,7 +293,7 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > array,
                       python::object step_size = python::object(1.0),
                       double window_size = 0.0,
                       python::object roi = python::object(),
-                      MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_AUTO)
+                      MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_FIR)
 {
     using namespace vigra::functor;
     static const int sdim = N - 1;
@@ -522,7 +522,7 @@ void defineTensor()
          arg("step_size")=1.0,
          arg("window_size")=0.0,
          arg("roi")=python::object(),
-         arg("multiConvolutionKernel")=MULTI_CONVOLUTION_KERNEL_AUTO),
+         arg("kernel_type")=MULTI_CONVOLUTION_KERNEL_FIR),
         "\n"
         "Calculate the gradient vector by means of a 1st derivative of\n"
         "Gaussian filter at the given scale for a scalar array (up to 4D).\n"
@@ -576,7 +576,7 @@ void defineTensor()
          arg("step_size")=1.0,
          arg("window_size")=0.0,
          arg("roi")=python::object(),
-         arg("multiConvolutionKernel")=MULTI_CONVOLUTION_KERNEL_AUTO),
+         arg("kernel_type")=MULTI_CONVOLUTION_KERNEL_FIR),
         "\n"
         "Calculate the gradient magnitude by means of a 1st derivative of\n"
         "Gaussian filter at the given scale for a scalar or multiband array\n"
@@ -653,7 +653,7 @@ void defineTensor()
          arg("step_size")=1.0,
          arg("window_size")=0.0,
          arg("roi")=python::object(),
-         arg("multiConvolutionKernel")=MULTI_CONVOLUTION_KERNEL_AUTO),
+         arg("kernel_type")=MULTI_CONVOLUTION_KERNEL_FIR),
         "\n"
         "Calculate the Hessian matrix by means of 2nd derivative of Gaussian\n"
         "filters at the given scale for scalar arrays up to 4D.\n"
@@ -739,7 +739,7 @@ void defineTensor()
          arg("step_size")=1.0,
          arg("window_size")=0.0,
          arg("roi")=python::object(),
-         arg("multiConvolutionKernel")=MULTI_CONVOLUTION_KERNEL_AUTO),
+         arg("kernel_type")=MULTI_CONVOLUTION_KERNEL_FIR),
         "\n"
         "Calculate the structure tensor of an array (up to 5D) by means of Gaussian\n"
         "(derivative) filters at the given scales. If the input has multiple channels,\n"

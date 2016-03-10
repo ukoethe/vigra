@@ -206,7 +206,7 @@ pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > array,
                         python::object step_size = python::object(1.0),
                         double window_size = 0.0,
                         python::object roi = python::object(),
-                        MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_AUTO)
+                        MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_FIR)
 {
     static const unsigned int N = ndim - 1;
 
@@ -360,7 +360,7 @@ pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
                           python::object step_size = python::object(1.0),
                           double window_size = 0.0,
                           python::object roi = python::object(),
-                          MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_AUTO)
+                          MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_FIR)
 {
     pythonScaleParam<N - 1> params(scale, sigma_d, step_size, "laplacianOfGaussian");
     params.permuteLikewise(array);
@@ -410,7 +410,7 @@ pythonGaussianDivergence(NumpyArray<N, TinyVector<PixelType, N> > array,
                          python::object step_size = python::object(1.0),
                          double window_size = 0.0,
                          python::object roi = python::object(),
-                         MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_AUTO)
+                         MultiConvolutionKernel kern = MULTI_CONVOLUTION_KERNEL_FIR)
 {
     pythonScaleParam<N> params(scale, sigma_d, step_size, "gaussianDivergence");
     params.permuteLikewise(array);
@@ -640,7 +640,7 @@ void defineConvolutionFunctions()
          arg("step_size")=1.0,
          arg("window_size")=0.0,
          arg("roi")=python::object(),
-         arg("multiConvolutionKernel")=MULTI_CONVOLUTION_KERNEL_AUTO),
+         arg("kernel_type")=MULTI_CONVOLUTION_KERNEL_FIR),
         "\n"
         "Perform Gaussian smoothing of an array with up to five dimensions.\n\n"
         "If the array has multiple channels, each channel is smoothed independently.\n"
@@ -712,7 +712,7 @@ void defineConvolutionFunctions()
          arg("step_size") = 1.0,
          arg("window_size")=0.0,
          arg("roi")=python::object(),
-         arg("multiConvolutionKernel")=MULTI_CONVOLUTION_KERNEL_AUTO),
+         arg("kernel_type")=MULTI_CONVOLUTION_KERNEL_FIR),
         "\n"
         "Filter a 2D or 3D scalar array with the Laplacian of Gaussian operator\n"
         "at the given scale. Multiple channels are filtered independently.\n"
@@ -739,7 +739,7 @@ void defineConvolutionFunctions()
          arg("step_size") = 1.0,
          arg("window_size")=0.0,
          arg("roi")=python::object(),
-         arg("multiConvolutionKernel")=MULTI_CONVOLUTION_KERNEL_AUTO),
+         arg("kernel_type")=MULTI_CONVOLUTION_KERNEL_FIR),
         "\n"
         "Compute the divergence of a 2D or 3D vector field with a first\n"
         "derivative of Gaussian at the given scale. The array must have\n"

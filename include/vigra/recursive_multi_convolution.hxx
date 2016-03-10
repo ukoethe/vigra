@@ -474,16 +474,13 @@ class IIRBorderSrcAccessorRepeatLeft
 public:
     typedef typename SrcAccessor::value_type value_type;
 
-    SrcAccessor sa_;
-    SrcIterator is_;
-    SrcIterator iend_;
-    int start_, stop_;
+    value_type val;
 
-    IIRBorderSrcAccessorRepeatLeft(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
+    IIRBorderSrcAccessorRepeatLeft(SrcIterator is, SrcIterator /* iend */, SrcAccessor sa, int start, int /* stop */ ) : val(sa(is + start)) { }
 
     inline value_type operator()( SrcIterator i )
     {
-            return this->sa_(this->is_ + this->start_);
+            return val;
     }
 };
 
@@ -493,16 +490,13 @@ class IIRBorderSrcAccessorRepeatRight
 public:
     typedef typename SrcAccessor::value_type value_type;
 
-    SrcAccessor sa_;
-    SrcIterator is_;
-    SrcIterator iend_;
-    int start_, stop_;
+    value_type val;
 
-    IIRBorderSrcAccessorRepeatRight(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
+    IIRBorderSrcAccessorRepeatRight(SrcIterator is, SrcIterator /* iend */, SrcAccessor sa, int /* start */, int stop) : val(sa(is + stop - 1)) { }
 
     inline value_type operator()( SrcIterator i )
     {
-            return this->sa_(this->is_ + this->stop_ - 1);
+            return val;
     }
 };
 
@@ -521,7 +515,7 @@ public:
 
     inline value_type operator()( SrcIterator i )
     {
-            return this->sa_(this->is_ + this->start_ + std::distance(i, this->is_) + this->start_);
+            return sa_(is_ + start_ + std::distance(i, is_) + start_);
     }
 };
 
@@ -540,7 +534,7 @@ public:
 
     inline value_type operator()( SrcIterator i )
     {
-            return this->sa_(this->iend_ - std::distance(this->iend_, i) - 2);
+            return sa_(iend_ - std::distance(iend_, i) - 2);
     }
 };
 
@@ -559,7 +553,7 @@ public:
 
     inline value_type operator()( SrcIterator i )
     {
-            return this->sa_(this->iend_ - std::distance(i, this->is_) + this->start_);
+            return sa_(iend_ - std::distance(i, is_) + start_);
     }
 };
 
@@ -578,7 +572,7 @@ public:
 
     inline value_type operator()( SrcIterator i )
     {
-            return this->sa_(this->is_ + this->start_ + std::distance(this->iend_, i));
+            return sa_(is_ + start_ + std::distance(iend_, i));
     }
 };
 
@@ -1007,6 +1001,7 @@ public:
         vigra_precondition(
             order >= 0 && order <= 2,
             "RecursiveConvolutionKernel::initGaussianDerivative(): order must be between 0 and 2.");
+        vigra_precondition(std_dev > 1, "RecursiveConvolutionKernel::initGaussianDerivative(): IIR Kernels are inaccurate and slow for sigma < 1.");
 
         deriv_order = order;
         this->compute_coefs(order, std_dev);

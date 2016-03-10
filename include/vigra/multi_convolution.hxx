@@ -232,7 +232,7 @@ public:
     BorderTreatmentMode border_treatment;
     MultiConvolutionKernel approx;
 
-    GaussianConvolutionKernel() : deriv_order(0), windowRatio(0.0), norm(1.0), scale_(1.0), border_treatment(BORDER_TREATMENT_REFLECT), approx(MULTI_CONVOLUTION_KERNEL_AUTO) {};
+    GaussianConvolutionKernel() : deriv_order(0), windowRatio(0.0), norm(1.0), scale_(1.0), border_treatment(BORDER_TREATMENT_REFLECT), approx(MULTI_CONVOLUTION_KERNEL_FIR) {};
 
     void initGaussian(double std_dev_, value_type norm_, double windowRatio_ = 0.0)
     {
@@ -444,7 +444,7 @@ class ConvolutionOptions
       step_size(1.0),
       outer_scale(0.0),
       window_ratio(0.0),
-      kernel(MULTI_CONVOLUTION_KERNEL_AUTO)
+      kernel(MULTI_CONVOLUTION_KERNEL_FIR)
     {}
 
     typedef typename detail::WrapDoubleIteratorTriple<ParamIt, ParamIt, ParamIt>
@@ -647,7 +647,7 @@ scaleKernel(K & kernel, double a)
 
 template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
 inline typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type
-internalSeparableConvolveLineHelper(
+internalSeparableConvolveLineHelperSrcDest(
         SrcNavigator snav, SrcAccessor srca, TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
         int start, int stop
@@ -663,7 +663,7 @@ internalSeparableConvolveLineHelper(
 
 template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
 inline typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type
-internalSeparableConvolveLineHelper2(
+internalSeparableConvolveLineHelperDestDest(
         TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
         int start, int stop
@@ -679,7 +679,6 @@ internalSeparableConvolveLineHelper2(
 
 inline MultiConvolutionKernel internalSelectKernelApproximation(MultiConvolutionKernel k, double sigma)
 {
-#if 0
     // suggestions from Recursive Gaussian filters by Dave Hale
     // https://inside.mines.edu/~dhale/papers/Hale06RecursiveGaussianFilters.pdf
     if (k == MULTI_CONVOLUTION_KERNEL_AUTO) {
@@ -688,24 +687,16 @@ inline MultiConvolutionKernel internalSelectKernelApproximation(MultiConvolution
         else if (sigma < 32.0)
             k = MULTI_CONVOLUTION_KERNEL_IIR_DERICHE;
         else
-            //k = MULTI_CONVOLUTION_KERNEL_IIR_VYV;
+          //k = MULTI_CONVOLUTION_KERNEL_IIR_VYV; // TODO: fix VYV border treatment
           k = MULTI_CONVOLUTION_KERNEL_FIR;
     }
-#else
-    // TODO: remove ocne we're confident that the recursive approximations can be used as a drop-in replacement
-    if (k == MULTI_CONVOLUTION_KERNEL_AUTO)
-      k = MULTI_CONVOLUTION_KERNEL_FIR;
-#endif    
-    // IIR kernels are highly inaccurate and don't result in any speed advantages for very small std devs
-    if (sigma <= 1.0)
-        k = MULTI_CONVOLUTION_KERNEL_FIR;
 
     return k;
 }
 
 template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
 inline typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type
-internalSeparableConvolveLineHelper(
+internalSeparableConvolveLineHelperSrcDest(
         SrcNavigator snav, SrcAccessor srca, TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
         int start, int stop
@@ -722,19 +713,19 @@ internalSeparableConvolveLineHelper(
             kernel_fir.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
             kernel_fir.setBorderTreatment(kernel.border_treatment);
             scaleKernel(kernel_fir, kernel.scale_);
-            internalSeparableConvolveLineHelper(snav, srca, tmp, tmpa, dnav, dsta, kernel_fir, start, stop);
+            internalSeparableConvolveLineHelperSrcDest(snav, srca, tmp, tmpa, dnav, dsta, kernel_fir, start, stop);
             break;
         case MULTI_CONVOLUTION_KERNEL_IIR_DERICHE:
             kernel_iir_deriche.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
             kernel_iir_deriche.setBorderTreatment(kernel.border_treatment);
             scaleKernel(kernel_iir_deriche, kernel.scale_);
-            internalSeparableConvolveLineHelper(snav, srca, tmp, tmpa, dnav, dsta, kernel_iir_deriche, start, stop);
+            internalSeparableConvolveLineHelperSrcDest(snav, srca, tmp, tmpa, dnav, dsta, kernel_iir_deriche, start, stop);
             break;
         case MULTI_CONVOLUTION_KERNEL_IIR_VYV:
             kernel_iir_vyv.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
             kernel_iir_vyv.setBorderTreatment(kernel.border_treatment);
             scaleKernel(kernel_iir_vyv, kernel.scale_);
-            internalSeparableConvolveLineHelper(snav, srca, tmp, tmpa, dnav, dsta, kernel_iir_vyv, start, stop);
+            internalSeparableConvolveLineHelperSrcDest(snav, srca, tmp, tmpa, dnav, dsta, kernel_iir_vyv, start, stop);
             break;       
         default:
             break;
@@ -743,7 +734,7 @@ internalSeparableConvolveLineHelper(
 
 template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
 inline typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type
-internalSeparableConvolveLineHelper2(
+internalSeparableConvolveLineHelperDestDest(
         TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
         int start, int stop
@@ -760,19 +751,19 @@ internalSeparableConvolveLineHelper2(
             kernel_fir.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
             kernel_fir.setBorderTreatment(kernel.border_treatment);
             scaleKernel(kernel_fir, kernel.scale_);
-            internalSeparableConvolveLineHelper2(tmp, tmpa, dnav, dsta, kernel_fir, start, stop);
+            internalSeparableConvolveLineHelperDestDest(tmp, tmpa, dnav, dsta, kernel_fir, start, stop);
             break;
         case MULTI_CONVOLUTION_KERNEL_IIR_DERICHE:
             kernel_iir_deriche.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
             kernel_iir_deriche.setBorderTreatment(kernel.border_treatment);
             scaleKernel(kernel_iir_deriche, kernel.scale_);
-            internalSeparableConvolveLineHelper2(tmp, tmpa, dnav, dsta, kernel_iir_deriche, start, stop);
+            internalSeparableConvolveLineHelperDestDest(tmp, tmpa, dnav, dsta, kernel_iir_deriche, start, stop);
             break;
         case MULTI_CONVOLUTION_KERNEL_IIR_VYV:
             kernel_iir_vyv.initGaussianDerivative(kernel.std_dev, kernel.deriv_order, kernel.norm, kernel.windowRatio);
             kernel_iir_vyv.setBorderTreatment(kernel.border_treatment);
             scaleKernel(kernel_iir_vyv, kernel.scale_);
-            internalSeparableConvolveLineHelper2(tmp, tmpa, dnav, dsta, kernel_iir_vyv, start, stop); 
+            internalSeparableConvolveLineHelperDestDest(tmp, tmpa, dnav, dsta, kernel_iir_vyv, start, stop); 
             break;      
         default:
             break;
@@ -804,7 +795,7 @@ internalSeparableConvolveMultiArrayTmp(
         SNavigator snav( si, shape, 0 );
         DNavigator dnav( di, shape, 0 );
 
-        internalSeparableConvolveLineHelper(snav, src, tmp, acc, dnav, dest, *kit, 0, 0);
+        internalSeparableConvolveLineHelperSrcDest(snav, src, tmp, acc, dnav, dest, *kit, 0, 0);
 
         ++kit;
     }
@@ -816,7 +807,7 @@ internalSeparableConvolveMultiArrayTmp(
 
         tmp.resize( shape[d] );
 
-        internalSeparableConvolveLineHelper2(tmp, acc, dnav, dest, *kit, 0, 0);
+        internalSeparableConvolveLineHelperDestDest(tmp, acc, dnav, dest, *kit, 0, 0);
     }
 }
 
@@ -881,7 +872,7 @@ internalSeparableConvolveSubarray(
         int lstop  = lstart + (stop[axisorder[0]] - start[axisorder[0]]);
 
 
-        internalSeparableConvolveLineHelper(snav, src, tmpline, acc, tnav, acc, kit[axisorder[0]], lstart, lstop);
+        internalSeparableConvolveLineHelperSrcDest(snav, src, tmpline, acc, tnav, acc, kit[axisorder[0]], lstart, lstop);
     }
 
     // operate on further dimensions
@@ -894,7 +885,7 @@ internalSeparableConvolveSubarray(
         int lstart = start[axisorder[d]] - sstart[axisorder[d]];
         int lstop  = lstart + (stop[axisorder[d]] - start[axisorder[d]]);
 
-        internalSeparableConvolveLineHelper2(tmpline, acc, tnav, acc, kit[axisorder[d]], lstart, lstop);
+        internalSeparableConvolveLineHelperDestDest(tmpline, acc, tnav, acc, kit[axisorder[d]], lstart, lstop);
 
 
         dstart[axisorder[d]] = lstart;
@@ -1335,7 +1326,7 @@ convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccesso
     SNavigator snav( s, sstart, sstop, dim );
     DNavigator dnav( d, dstart, dstop, dim );
 
-    detail::internalSeparableConvolveLineHelper(snav, src, tmp, typename AccessorTraits<TmpType>::default_accessor(), dnav, dest, kernel, start[dim], stop[dim]);
+    detail::internalSeparableConvolveLineHelperSrcDest(snav, src, tmp, typename AccessorTraits<TmpType>::default_accessor(), dnav, dest, kernel, start[dim], stop[dim]);
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,

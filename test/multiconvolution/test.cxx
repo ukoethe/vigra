@@ -1296,6 +1296,13 @@ struct MultiArraySeparableConvolutionScaledTestSuite : public vigra::test_suite
 
             for (test_data* p = tests; (*p)[0]; ++p)
             {
+                // skip sigma <= 1 tests for IIR kernels
+                if (kernel_approx != MULTI_CONVOLUTION_KERNEL_FIR) {
+                    if ((*p)[0] == 1)
+                        continue;
+                    if ((*p)[5] == 1.1)
+                        continue;
+                }
                 scaled_test* test
                                  = new scaled_test(*p, import_info, test_image, kernel_approx);
                 add(vigra::create_test_case(*test, test->str().c_str()));
