@@ -982,19 +982,21 @@ class RecursiveConvolutionKernelMembers<ARITHTYPE, vyv_5_tag> : public Recursive
     approximation should be used. Please note the current only Deriche's approximation provides correct
     values at the right border.
 
-    Deriche 2nd order:
-        RecursiveConvolutionKernel<double, detail::deriche_2_tag>
-    Deriche 3rd order:
-        RecursiveConvolutionKernel<double, detail::deriche_3_tag>
-    Deriche 4th order:
-        RecursiveConvolutionKernel<double, detail::deriche_4_tag>
+    This kernel is to be used with \ref vigra::separableConvolveMultiArray. 
 
-    Vliet, Young and Verbeek 3rd order:
-        RecursiveConvolutionKernel<double, detail::vyv_3_tag>
-    Vliet, Young and Verbeek 4th order:
-        RecursiveConvolutionKernel<double, detail::vyv_4_tag>
-    Vliet, Young and Verbeek 5th order:
-        RecursiveConvolutionKernel<double, detail::vyv_5_tag>
+    - Deriche 2nd order:
+        * RecursiveConvolutionKernel<double, detail::deriche_2_tag>
+    - Deriche 3rd order:
+        * RecursiveConvolutionKernel<double, detail::deriche_3_tag>
+    - Deriche 4th order:
+        * RecursiveConvolutionKernel<double, detail::deriche_4_tag>
+
+    - Vliet, Young and Verbeek 3rd order:
+        * RecursiveConvolutionKernel<double, detail::vyv_3_tag>
+    - Vliet, Young and Verbeek 4th order:
+        * RecursiveConvolutionKernel<double, detail::vyv_4_tag>
+    - Vliet, Young and Verbeek 5th order:
+        * RecursiveConvolutionKernel<double, detail::vyv_5_tag>
 
     <b>\#include</b> \<vigra/multi_convolution_recursive.hxx\><br>
     Namespace: vigra

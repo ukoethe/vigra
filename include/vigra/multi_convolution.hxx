@@ -208,29 +208,29 @@ struct multiArrayScaleParam
 } // namespace detail
 
 
-/** 
+/**
     Choose between different approximations for Gaussian kernels and
     their derivatives.
 
-    MULTI_CONVOLUTION_KERNEL_AUTO:
+    - MULTI_CONVOLUTION_KERNEL_AUTO:
       Automatically use the best tradeoff between speed and accuracy
       depending on the standard deviation. Currently:
-        sigma < 3:  MULTI_CONVOLUTION_KERNEL_FIR
-        3 < sigma < 32: MULTI_CONVOLUTION_KERNEL_IIR_DERICHE,
-        32 < sigma: MULTI_CONVOLUTION_KERNEL_FIR (should be MULTI_CONVOLUTION_KERNEL_IIR_VYV, but border treatment is broken there)
+        - sigma < 3:  MULTI_CONVOLUTION_KERNEL_FIR
+        - 3 < sigma < 32: MULTI_CONVOLUTION_KERNEL_IIR_DERICHE,
+        - 32 < sigma: MULTI_CONVOLUTION_KERNEL_FIR (should be MULTI_CONVOLUTION_KERNEL_IIR_VYV, but border treatment is broken there)
 
       These suggestions are taken from
         Dave Hale: Recursive Gaussian filters
         https://inside.mines.edu/~dhale/papers/Hale06RecursiveGaussianFilters.pdf
 
-    MULTI_CONVOLUTION_KERNEL_FIR:
+    - MULTI_CONVOLUTION_KERNEL_FIR:
        Use a finite window of the infinite discrete kernel. \see vigra::Kernel1D
-    MULTI_CONVOLUTION_KERNEL_IIR_DERICHE:
+    - MULTI_CONVOLUTION_KERNEL_IIR_DERICHE:
        Use the recursive infinite impulse response approximation suggested by 
           Rachid Deriche. Recursively implementating the Gaussian and its derivatives.
           [Research Report] RR-1893, 1993, pp.24. <inria-00074778>
        \see vigra::RecursiveConvolutionKernel
-    MULTI_CONVOLUTION_KERNEL_IIR_VYV:
+    - MULTI_CONVOLUTION_KERNEL_IIR_VYV:
        Use the recursive infinite impulse response approximation suggested by 
           Van Vliet, Lucas J., Ian T. Young, and Piet W. Verbeek. "Recursive Gaussian
           derivative filters." Pattern Recognition, 1998. Proceedings. Fourteenth
@@ -1039,9 +1039,10 @@ internalSeparableConvolveSubarray(
     The destination array is required to already have the correct size.
 
     There are two variants of this functions: one takes a single kernel
-    of type \ref vigra::Kernel1D which is then applied to all dimensions,
+    of type \ref vigra::Kernel1D, \ref vigra::RecursiveConvolutionKernel or
+    \ref vigra::GaussianConvolutionKernel which is then applied to all dimensions,
     whereas the other requires an iterator referencing a sequence of
-    \ref vigra::Kernel1D objects, one for every dimension of the data.
+    the mentioned kernel objects, one for every dimension of the data.
     Then the first kernel in this sequence is applied to the innermost
     dimension (e.g. the x-axis of an image), while the last is applied to the
     outermost dimension (e.g. the z-axis in a 3D image).
