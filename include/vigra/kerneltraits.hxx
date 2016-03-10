@@ -60,34 +60,34 @@ struct is_kernel
 };
 
 template<typename X, bool = is_kernel<X>::value >
-struct is_fir_kernel : public std::is_same<typename X::vigra_kernel_category, fir_kernel1d_tag>
+struct is_fir_kernel1d : public std::is_same<typename X::vigra_kernel_category, fir_kernel1d_tag>
 {
 };
 
 template<typename X, bool = is_kernel<X>::value >
-struct is_iir_kernel : public std::is_same<typename X::vigra_kernel_category, iir_kernel1d_tag>
+struct is_iir_kernel1d : public std::is_same<typename X::vigra_kernel_category, iir_kernel1d_tag>
 {
 };
 
 template<typename X, bool = is_kernel<X>::value >
-struct is_gaussian_kernel : public std::is_same<typename X::vigra_kernel_category, gaussian_kernel1d_tag>
+struct is_gaussian_kernel1d : public std::is_same<typename X::vigra_kernel_category, gaussian_kernel1d_tag>
 {
 };
 
 template<typename X>
-struct is_fir_kernel<X, false>
+struct is_fir_kernel1d<X, false>
 {
 	static const bool value = false;
 };
 
 template<typename X>
-struct is_iir_kernel<X, false>
+struct is_iir_kernel1d<X, false>
 {
 	static const bool value = false;
 };
 
 template<typename X>
-struct is_gaussian_kernel<X, false>
+struct is_gaussian_kernel1d<X, false>
 {
 	static const bool value = false;
 };

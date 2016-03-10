@@ -455,12 +455,7 @@ class IIRBorderSrcAccessorZero
 public:
     typedef typename SrcAccessor::value_type value_type;
 
-    SrcAccessor sa_;
-    SrcIterator is_;
-    SrcIterator iend_;
-    int start_, stop_;
-
-    IIRBorderSrcAccessorZero(SrcIterator is, SrcIterator iend, SrcAccessor sa, int start, int stop) : sa_(sa), is_(is), iend_(iend), start_(start), stop_(stop) { }
+    IIRBorderSrcAccessorZero(SrcIterator /* is */, SrcIterator /* iend */, SrcAccessor /* sa */, int /* start */, int /* stop */) { }
 
     inline value_type operator()( SrcIterator i )
     {
@@ -515,7 +510,7 @@ public:
 
     inline value_type operator()( SrcIterator i )
     {
-            return sa_(is_ + start_ + std::distance(i, is_) + start_);
+            return sa_(is_ + start_ + std::distance(i, is_));
     }
 };
 
@@ -1034,7 +1029,7 @@ public:
 };
 
 template<typename RecursiveConvolutionKernel>
-inline typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value, RecursiveConvolutionKernel>::type
+inline typename std::enable_if<detail::is_iir_kernel1d<RecursiveConvolutionKernel>::value, RecursiveConvolutionKernel>::type
 kernel1d(RecursiveConvolutionKernel k)
 {
     return k;
@@ -1044,7 +1039,7 @@ kernel1d(RecursiveConvolutionKernel k)
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RecursiveConvolutionKernel>
-typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type
+typename std::enable_if<detail::is_iir_kernel1d<RecursiveConvolutionKernel>::value>::type
 convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel ik,
@@ -1060,7 +1055,7 @@ convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RecursiveConvolutionKernel>
-inline typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type 
+inline typename std::enable_if<detail::is_iir_kernel1d<RecursiveConvolutionKernel>::value>::type 
 convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   RecursiveConvolutionKernel ik,
@@ -1073,7 +1068,7 @@ convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RecursiveConvolutionKernel>
-inline typename std::enable_if<detail::is_iir_kernel<RecursiveConvolutionKernel>::value>::type
+inline typename std::enable_if<detail::is_iir_kernel1d<RecursiveConvolutionKernel>::value>::type
 convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   pair<DestIterator, DestAccessor> dest,
                   RecursiveConvolutionKernel kernel,

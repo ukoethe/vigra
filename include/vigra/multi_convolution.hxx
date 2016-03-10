@@ -624,7 +624,7 @@ namespace detail
 /********************************************************/
 
 template <class K>
-typename std::enable_if<detail::is_fir_kernel<K>::value>::type
+typename std::enable_if<detail::is_fir_kernel1d<K>::value>::type
 scaleKernel(K & kernel, double a)
 {
     for(int i = kernel.left(); i <= kernel.right(); ++i)
@@ -632,21 +632,21 @@ scaleKernel(K & kernel, double a)
 }
 
 template <class K>
-typename std::enable_if<detail::is_iir_kernel<K>::value>::type
+typename std::enable_if<detail::is_iir_kernel1d<K>::value>::type
 scaleKernel(K & kernel, double a)
 {
     kernel.scale(a);
 }
 
 template <class K>
-typename std::enable_if<detail::is_gaussian_kernel<K>::value>::type
+typename std::enable_if<detail::is_gaussian_kernel1d<K>::value>::type
 scaleKernel(K & kernel, double a)
 {
     kernel.scale(a);
 }
 
 template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
-inline typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type
+inline typename std::enable_if<!detail::is_gaussian_kernel1d<Kernel>::value>::type
 internalSeparableConvolveLineHelperSrcDest(
         SrcNavigator snav, SrcAccessor srca, TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
@@ -662,7 +662,7 @@ internalSeparableConvolveLineHelperSrcDest(
 }
 
 template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
-inline typename std::enable_if<!detail::is_gaussian_kernel<Kernel>::value>::type
+inline typename std::enable_if<!detail::is_gaussian_kernel1d<Kernel>::value>::type
 internalSeparableConvolveLineHelperDestDest(
         TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
@@ -695,7 +695,7 @@ inline MultiConvolutionKernel internalSelectKernelApproximation(MultiConvolution
 }
 
 template <class SrcNavigator, class SrcAccessor, class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
-inline typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type
+inline typename std::enable_if<detail::is_gaussian_kernel1d<Kernel>::value>::type
 internalSeparableConvolveLineHelperSrcDest(
         SrcNavigator snav, SrcAccessor srca, TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
@@ -733,7 +733,7 @@ internalSeparableConvolveLineHelperSrcDest(
 }
 
 template <class TmpArray, class TmpAcessor, class DestNavigator, class DestAccessor, class Kernel>
-inline typename std::enable_if<detail::is_gaussian_kernel<Kernel>::value>::type
+inline typename std::enable_if<detail::is_gaussian_kernel1d<Kernel>::value>::type
 internalSeparableConvolveLineHelperDestDest(
         TmpArray tmp, TmpAcessor tmpa,
         DestNavigator dnav, DestAccessor dsta, Kernel kernel,
