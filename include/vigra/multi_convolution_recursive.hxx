@@ -63,6 +63,16 @@
 #include <type_traits>
 
 namespace vigra {
+#if 0
+/** \addtogroup RecursiveGaussianConvolution Recursive approximation to Gaussian convolution filters
+
+    These functions realize recursive approximations to Gaussian filters and their derivatives.
+    The filters proposed by R. Deriche and Vliet, Young, Verbeek are implemented but only
+    the Deriche filters currently produce correct values around the right border.
+    See \ref vigra::separableConvolveMultiArray for how to use these kernels on a MultiArray
+    and related data structures. (\ref vigra::MultiArrayView, \ref vigra::MultiArray etc.)
+*/
+#endif
 
 namespace detail {
 // Rachid Deriche. Recursively implementating the Gaussian and its derivatives.
@@ -960,6 +970,36 @@ class RecursiveConvolutionKernelMembers<ARITHTYPE, vyv_5_tag> : public Recursive
 
 } // namespace detail
 
+/** The recursive convolution kernel for the Gaussian function and its derivatives.
+
+    This class implements the convolution kernels required to approximate Gaussians
+    using either Deriche's or Vliet, Young amd Verbeek's approximation at different orders.
+    Since these kernels use a recursive approximation to the true infinite filters the
+    computation time does not depend on the selected standard deviation but remains constant.
+
+    The fourth order filters provide a good tradeoff between accurary and speedup. For 3 < sigma < 32
+    Deriche's filters provide the best approximation while for sigma > 32 Vliet, Young and Verbeek's
+    approximation should be used. Please note the current only Deriche's approximation provides correct
+    values at the right border.
+
+    Deriche 2nd order:
+        RecursiveConvolutionKernel<double, detail::deriche_2_tag>
+    Deriche 3rd order:
+        RecursiveConvolutionKernel<double, detail::deriche_3_tag>
+    Deriche 4th order:
+        RecursiveConvolutionKernel<double, detail::deriche_4_tag>
+
+    Vliet, Young and Verbeek 3rd order:
+        RecursiveConvolutionKernel<double, detail::vyv_3_tag>
+    Vliet, Young and Verbeek 4th order:
+        RecursiveConvolutionKernel<double, detail::vyv_4_tag>
+    Vliet, Young and Verbeek 5th order:
+        RecursiveConvolutionKernel<double, detail::vyv_5_tag>
+
+    <b>\#include</b> \<vigra/multi_convolution_recursive.hxx\><br>
+    Namespace: vigra
+*/
+
 template <class ARITHTYPE, typename kernel_tag>
 class RecursiveConvolutionKernel : public detail::RecursiveConvolutionKernelMembers<ARITHTYPE, kernel_tag>
 {
@@ -976,21 +1016,69 @@ public:
 
     RecursiveConvolutionKernel() : deriv_order(0), kernel_radius(0.0), border_treatment(BORDER_TREATMENT_REFLECT) {};
 
+        /**
+            Init as a Gaussian function. The radius of the kernel is
+            always 3*std_dev. '<tt>norm</tt>' denotes the norm of the Gaussian.
+            If <tt>windowRatio = 0.0</tt>, the radius of the filter
+            window is <tt>radius = round(3.0 * std_dev)</tt>, otherwise it is
+            <tt>radius = round(windowRatio * std_dev)</tt> (where <tt>windowRatio > 0.0</tt>
+            is required).
+
+            Precondition:
+            \code
+            std_dev > 1.0
+            \endcode
+
+            Postconditions:
+            \code
+            1. left()  == -(int)(3.0*std_dev)
+            2. right() ==  (int)(3.0*std_dev)
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            \endcode
+        */
     void initGaussian(double std_dev, value_type norm, double windowRatio = 0.0)
     {
         initGaussianDerivative(std_dev, 0, norm, windowRatio);
     }
 
+        /** Init as a Gaussian function with norm 1.
+         */
     void initGaussian(double std_dev)
     {
         initGaussian(std_dev, 1.0);
     }
 
+        /** Init as a Gaussian derivative of order '<tt>order</tt>' with norm 1.
+         */
     void initGaussianDerivative(double std_dev, int order)
     {
         initGaussianDerivative(std_dev, order, 1.0);
     }
 
+        /**
+            Init as a Gaussian derivative of order '<tt>order</tt>'.
+            The radius of the kernel is always <tt>3*std_dev + 0.5*order</tt>.
+            '<tt>norm</tt>' denotes the norm of the kernel determined by the
+            analytic expression for the Gaussian derivative.
+
+            If <tt>windowRatio = 0.0</tt>, the radius of the filter window used for
+            border treatment is <tt>radius = round(3.0 * std_dev + 0.5 * order)</tt>,
+            otherwise it is <tt>radius = round(windowRatio * std_dev)</tt> (where
+            <tt>windowRatio > 0.0</tt> is required).
+
+            Preconditions:
+            \code
+            1. std_dev > 1.0
+            2. order   >= 0
+            \endcode
+
+            Postconditions:
+            \code
+            1. left()  == -(int)(3.0*std_dev + 0.5*order + 0.5)
+            2. right() ==  (int)(3.0*std_dev + 0.5*order + 0.5)
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            \endcode
+        */
     void initGaussianDerivative(double std_dev, int order, value_type norm, double windowRatio = 0.0)
     {
         vigra_precondition(
@@ -1008,14 +1096,17 @@ public:
         kernel_radius = windowRatio * std_dev;
     }
 
+        /** left border of kernel (inclusive), always <= 0
+        */
     int left() {
         return rational_cast<int>(-kernel_radius);
     }
 
+        /** right border of kernel (inclusive), always >= 0
+        */
     int right() {
         return rational_cast<int>(kernel_radius);
     }
-
 
         /** current border treatment mode
         */
@@ -1034,7 +1125,6 @@ kernel1d(RecursiveConvolutionKernel k)
 {
     return k;
 }
-
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
