@@ -207,6 +207,42 @@ struct multiArrayScaleParam
 
 } // namespace detail
 
+
+/** 
+    Choose between different approximations for Gaussian kernels and
+    their derivatives.
+
+    MULTI_CONVOLUTION_KERNEL_AUTO:
+      Automatically use the best tradeoff between speed and accuracy
+      depending on the standard deviation. Currently:
+        sigma < 3:  MULTI_CONVOLUTION_KERNEL_FIR
+        3 < sigma < 32: MULTI_CONVOLUTION_KERNEL_IIR_DERICHE,
+        32 < sigma: MULTI_CONVOLUTION_KERNEL_FIR (should be MULTI_CONVOLUTION_KERNEL_IIR_VYV, but border treatment is broken there)
+
+      These suggestions are taken from
+        Dave Hale: Recursive Gaussian filters
+        https://inside.mines.edu/~dhale/papers/Hale06RecursiveGaussianFilters.pdf
+
+    MULTI_CONVOLUTION_KERNEL_FIR:
+       Use a finite window of the infinite discrete kernel. \see vigra::Kernel1D
+    MULTI_CONVOLUTION_KERNEL_IIR_DERICHE:
+       Use the recursive infinite impulse response approximation suggested by 
+          Rachid Deriche. Recursively implementating the Gaussian and its derivatives.
+          [Research Report] RR-1893, 1993, pp.24. <inria-00074778>
+       \see vigra::RecursiveConvolutionKernel
+    MULTI_CONVOLUTION_KERNEL_IIR_VYV:
+       Use the recursive infinite impulse response approximation suggested by 
+          Van Vliet, Lucas J., Ian T. Young, and Piet W. Verbeek. "Recursive Gaussian
+          derivative filters." Pattern Recognition, 1998. Proceedings. Fourteenth
+          International Conference on. Vol. 1. IEEE, 1998.
+       \see vigra::RecursiveConvolutionKernel
+
+    
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br>
+    Namespace: vigra
+
+*/
+
 enum MultiConvolutionKernel
 {
     MULTI_CONVOLUTION_KERNEL_AUTO = 0,
@@ -214,6 +250,20 @@ enum MultiConvolutionKernel
     MULTI_CONVOLUTION_KERNEL_IIR_DERICHE,
     MULTI_CONVOLUTION_KERNEL_IIR_VYV
 };
+
+
+/** Wrapper for kernels of the Gaussian function and its derivatives.
+
+    This class acts as a wrapper around the different approximations available
+    for the Gaussian function and its derivatives.
+
+    \see vigra::Kernel1D
+    \see vigra::RecursiveConvolutionKernel
+    \see vigra::MultiConvolutionKernel
+
+    <b>\#include</b> \<vigra/multi_convolution_recursive.hxx\><br>
+    Namespace: vigra
+*/
 
 template <class ARITHTYPE = double>
 class GaussianConvolutionKernel
@@ -234,21 +284,74 @@ public:
 
     GaussianConvolutionKernel() : deriv_order(0), windowRatio(0.0), norm(1.0), scale_(1.0), border_treatment(BORDER_TREATMENT_REFLECT), approx(MULTI_CONVOLUTION_KERNEL_FIR) {};
 
+        /**
+            Init as a Gaussian function. The radius of the kernel is
+            always 3*std_dev. '<tt>norm</tt>' denotes the norm of the Gaussian.
+            If <tt>windowRatio = 0.0</tt>, the radius of the filter
+            window is <tt>radius = round(3.0 * std_dev)</tt>, otherwise it is
+            <tt>radius = round(windowRatio * std_dev)</tt> (where <tt>windowRatio > 0.0</tt>
+            is required).
+
+            Precondition:
+            \code
+            std_dev >= 0.0
+            \endcode
+
+            Postconditions:
+            \code
+            1. left()  == -(int)(3.0*std_dev)
+            2. right() ==  (int)(3.0*std_dev)
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            \endcode
+        */
     void initGaussian(double std_dev_, value_type norm_, double windowRatio_ = 0.0)
     {
         initGaussianDerivative(std_dev_, 0, norm_, windowRatio_);
     }
 
+        /** Init as a Gaussian function with norm 1.
+         */
     void initGaussian(double std_dev)
     {
         initGaussian(std_dev, 1.0);
     }
 
+        /** Init as a Gaussian derivative of order '<tt>order</tt>' with norm 1.
+         */
     void initGaussianDerivative(double std_dev_, int order)
     {
         initGaussianDerivative(std_dev_, order, 1.0);
     }
 
+        /**
+            Init as a Gaussian derivative of order '<tt>order</tt>'.
+            The radius of the kernel is always <tt>3*std_dev + 0.5*order</tt>.
+            '<tt>norm</tt>' denotes the norm of the kernel determined by the
+            analytic expression for the Gaussian derivative or, if the FIR approximation
+            is used, the following expression over the kernel window:
+
+            \f[ \sum_{i=left()}^{right()}
+                         \frac{(-i)^{order}kernel[i]}{order!} = norm
+            \f]
+
+            If <tt>windowRatio = 0.0</tt>, the radius of the filter window used for
+            border treatment is <tt>radius = round(3.0 * std_dev + 0.5 * order)</tt>,
+            otherwise it is <tt>radius = round(windowRatio * std_dev)</tt> (where
+            <tt>windowRatio > 0.0</tt> is required).
+
+            Preconditions:
+            \code
+            1. std_dev > 1.0
+            2. order   >= 0
+            \endcode
+
+            Postconditions:
+            \code
+            1. left()  == -(int)(3.0*std_dev + 0.5*order + 0.5)
+            2. right() ==  (int)(3.0*std_dev + 0.5*order + 0.5)
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            \endcode
+        */
     void initGaussianDerivative(double std_dev_, int order, value_type norm_, double windowRatio_ = 0.0)
     {
         deriv_order = order;
@@ -259,6 +362,8 @@ public:
         norm = norm_;
     }
 
+        /** left border of kernel (inclusive), always <= 0
+        */
     int left() {
         double windowRatio_ = windowRatio;
         if (windowRatio_ == 0.0)
@@ -266,6 +371,8 @@ public:
         return rational_cast<int>(-windowRatio_ * std_dev);
     }
 
+        /** right border of kernel (inclusive), always >= 0
+        */
     int right() {
         double windowRatio_ = windowRatio;
         if (windowRatio_ == 0.0)
@@ -273,6 +380,8 @@ public:
         return rational_cast<int>(windowRatio_ * std_dev);
     }
 
+        /** Change the norm of the kernel by a factor '<tt>new_scale</tt>'
+        */
     void scale(double new_scale)
     { scale_ *= new_scale; }
 
@@ -287,9 +396,13 @@ public:
     void setBorderTreatment( BorderTreatmentMode new_mode)
     { border_treatment = new_mode; }
 
+        /** Set kernel approximation. \see vigra::MultiConvolutionKernel
+        */
     MultiConvolutionKernel kernelApproximation() const
     { return approx; }
 
+        /** current kernel approximation. \see vigra::MultiConvolutionKernel
+        */
     void setKernelApproximation(MultiConvolutionKernel new_approx)
     { approx = new_approx; }
 };
@@ -578,12 +691,16 @@ class ConvolutionOptions
       return window_ratio;
     }
 
+        /** Set kernel approximation. \see vigra::MultiConvolutionKernel
+        */
     ConvolutionOptions<dim> & setKernelApproximation(MultiConvolutionKernel aprox)
     {
       kernel = aprox;
       return *this;
     }
 
+        /** current kernel approximation. \see vigra::MultiConvolutionKernel
+        */
     MultiConvolutionKernel kernelApproximation(void) const
     {
       return kernel;
