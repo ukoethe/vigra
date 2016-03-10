@@ -60,7 +60,7 @@
 #include "vigra/multi_resize.hxx"
 #include "vigra/separableconvolution.hxx"
 #include "vigra/bordertreatment.hxx"
-#include "vigra/recursive_multi_convolution.hxx"
+#include "vigra/multi_convolution_recursive.hxx"
 
 using namespace vigra;
 using namespace vigra::functor;

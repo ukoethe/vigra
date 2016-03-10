@@ -40,7 +40,7 @@
 
 #include "kerneltraits.hxx"
 #include "separableconvolution.hxx"
-#include "recursive_multi_convolution.hxx"
+#include "multi_convolution_recursive.hxx"
 #include "array_vector.hxx"
 #include "multi_array.hxx"
 #include "accessor.hxx"
