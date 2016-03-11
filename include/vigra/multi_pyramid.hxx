@@ -465,6 +465,52 @@ inline void multiPyramidExpandBurtFilter(MultiArrayPyramid<MultiArrayType, Alloc
         multiPyramidExpandBurtFilter(pyramid[i+1], pyramid[i], centerValue);
 }
 
+template <class MultiArrayType, class Alloc>
+inline void
+multiPyramidReduceBurtLaplacian(MultiArrayPyramid<MultiArrayType, Alloc> & pyramid,
+                           int fromLevel, int toLevel,
+                           double centerValue = 0.4)
+{
+    using namespace functor;
+
+    vigra_precondition(toLevel  > fromLevel,
+       "multiPyramidReduceBurtLaplacian(): toLevel must be larger than fromLevel.");
+    vigra_precondition(pyramid.lowestLevel() <= toLevel && fromLevel <= pyramid.highestLevel(),
+       "multiPyramidReduceBurtLaplacian(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
+
+    multiPyramidReduceBurtFilter(pyramid, fromLevel, toLevel, centerValue);
+    for(int i=fromLevel; i < toLevel; ++i)
+    {
+        typename MultiArrayPyramid<MultiArrayType, Alloc>::value_type tmpImage(pyramid[i].shape());
+        multiPyramidExpandBurtFilter(pyramid[i+1], tmpImage, centerValue);
+        combineTwoMultiArrays(tmpImage, pyramid[i], pyramid[i],
+                       Arg1() - Arg2());
+    }
+}
+
+
+template <class MultiArrayType, class Alloc>
+inline void
+multiPyramidExpandBurtLaplacian(MultiArrayPyramid<MultiArrayType, Alloc> & pyramid,
+                           int fromLevel, int toLevel,
+                           double centerValue = 0.4)
+{
+    using namespace functor;
+
+    vigra_precondition(fromLevel  > toLevel,
+       "multiPyramidExpandBurtLaplacian(): fromLevel must be larger than toLevel.");
+    vigra_precondition(pyramid.lowestLevel() <= toLevel && fromLevel <= pyramid.highestLevel(),
+       "multiPyramidExpandBurtLaplacian(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
+
+    for(int i=fromLevel-1; i >= toLevel; --i)
+    {
+        typename MultiArrayPyramid<MultiArrayType, Alloc>::value_type tmpImage(pyramid[i].shape());
+        multiPyramidExpandBurtFilter(pyramid[i+1], tmpImage, centerValue);
+        combineTwoMultiArrays(tmpImage, pyramid[i], pyramid[i],
+                       Arg1() - Arg2());
+    }
+}
+
 }
 
 #endif
