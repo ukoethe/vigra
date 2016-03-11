@@ -40,6 +40,7 @@
 #include "array_vector.hxx"
 #include "copyimage.hxx"
 #include "multi_array.hxx"
+#include "navigator.hxx"
 
 #include <type_traits>
 

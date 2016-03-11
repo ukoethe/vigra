@@ -132,7 +132,7 @@ public:
           images_(alloc)
     {
         resize(lowestLevel, highestLevel, image.shape(), copyImageToLevel);
-        copyMultiArray(image, (*this)[copyImageToLevel]);
+        copyMultiArray(srcMultiArrayRange(image), destMultiArray((*this)[copyImageToLevel]));
     }
 
         /**
@@ -156,7 +156,7 @@ public:
           images_(alloc)
     {
         resize(lowestLevel, highestLevel, lr - ul, copyImageToLevel);
-        copyMultiArray(srcIterRange(ul, lr, src), (*this)[copyImageToLevel]);
+        copyMultiArray(srcIterRange(ul, lr, src), destMultiArray((*this)[copyImageToLevel]));
     }
 
         /** Init an empty pyramid.  Use the specified allocator.
