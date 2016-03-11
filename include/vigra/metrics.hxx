@@ -54,18 +54,18 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
-        )const{   
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
+        )const{
             T res = 0.0;
             while(iterA!=endA){
                 const T aa=static_cast<T>(*iterA);
                 const T bb=static_cast<T>(*iterB);
                 const T sum  = aa + bb;
-                const T diff = aa - bb; 
+                const T diff = aa - bb;
                 if(sum> static_cast<T>(0.0000001))
                     res+=(diff*diff)/sum;
                 ++iterA;
@@ -85,17 +85,17 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
-        )const{   
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
+        )const{
             T res = 0.0;
             while(iterA!=endA){
                 const T aa=std::sqrt(static_cast<T>(*iterA));
                 const T bb=std::sqrt(static_cast<T>(*iterB));
-                const T diff = aa - bb; 
+                const T diff = aa - bb;
                 res+=diff*diff;
                 ++iterA;
                 ++iterB;
@@ -103,7 +103,7 @@ namespace metrics{
             return std::sqrt(res)/std::sqrt(2.0);
         }
     };
-    
+
     template<class T,unsigned int NORM,bool TAKE_ROOT=true>
     class PNorm{
     public:
@@ -114,11 +114,11 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
         )const{
             T res = static_cast<T>(0.0);
             while(iterA!=endA){
@@ -170,11 +170,11 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
         )const{
             T res = static_cast<T>(0.0);
             while(iterA!=endA){
@@ -200,11 +200,11 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
         )const{
             T res = static_cast<T>(0.0);
             while(iterA!=endA){
@@ -223,7 +223,9 @@ namespace metrics{
         HellingerMetric=1,
         SquaredNormMetric=2,
         NormMetric=3,
+        L2Norm=NormMetric,
         ManhattanMetric=4,
+        L1Norm=ManhattanMetric,
         SymetricKlMetric=5,
         BhattacharyaMetric=6
     };
@@ -252,13 +254,13 @@ namespace metrics{
                 case 4:
                     return manhattan_(a,b);
                 case 5:
-                    return symetricKlDivergenz_(a,b); 
+                    return symetricKlDivergenz_(a,b);
                 case 6 :
-                    return bhattacharyaDistance_(a,b); 
+                    return bhattacharyaDistance_(a,b);
                 default :
                     return 0;
             }
-        } 
+        }
     private:
         MetricType metricType_;
         ChiSquared<T> chiSquared_;

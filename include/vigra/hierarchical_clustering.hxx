@@ -585,6 +585,78 @@ class EdgeWeightedUcm
 
 
 
+    class ClusteringOptions
+    {
+      public:
+
+        ClusteringOptions(
+            const size_t      nodeNumStopCond = 1,
+            const bool        buildMergeTree  = false,
+            const bool        verbose         = false)
+        : nodeNumStopCond_ (nodeNumStopCond)
+        , maxMergeWeight_(NumericTraits<double>::max())
+        , nodeFeatureImportance_(0.5)
+        , sizeImportance_(1.0)
+        , nodeFeatureMetric_(metrics::ManhattanMetric)
+        , buildMergeTreeEncoding_(buildMergeTree)
+        , verbose_(verbose)
+        {}
+
+        ClusteringOptions & minRegionCount(size_t count)
+        {
+            nodeNumStopCond_ = count;
+            return *this;
+        }
+
+        ClusteringOptions & maxMergeWeight(double val)
+        {
+            maxMergeWeight_ = val;
+            return *this;
+        }
+
+        ClusteringOptions & nodeFeatureImportance(double val)
+        {
+            vigra_precondition(0.0 <= val && val <= 1.0,
+                "ClusteringOptions::nodePropertyImportance(val): 0 <= val <= 1 required.");
+            nodeFeatureImportance_ = val;
+            return *this;
+        }
+
+        ClusteringOptions & sizeImportance(double val)
+        {
+            vigra_precondition(0.0 <= val && val <= 1.0,
+                "ClusteringOptions::sizeImportance(val): 0 <= val <= 1 required.");
+            sizeImportance_ = val;
+            return *this;
+        }
+
+        ClusteringOptions & nodeFeatureMetric(metrics::MetricType metric)
+        {
+            nodeFeatureMetric_ = metric;
+            return *this;
+        }
+
+        ClusteringOptions & buildMergeTreeEncoding(bool val=true)
+        {
+            buildMergeTreeEncoding_ = val;
+            return *this;
+        }
+
+        ClusteringOptions & verbose(bool val=true)
+        {
+            verbose_ = val;
+            return *this;
+        }
+
+        size_t nodeNumStopCond_;
+        double maxMergeWeight_;
+        double nodeFeatureImportance_;
+        double sizeImportance_;
+        metrics::MetricType nodeFeatureMetric_;
+        bool   buildMergeTreeEncoding_;
+        bool   verbose_;
+    };
+
     /// \brief  do hierarchical clustering with a given cluster operator
     template< class CLUSTER_OPERATOR>
     class HierarchicalClustering{
@@ -600,20 +672,7 @@ class EdgeWeightedUcm
         typedef typename CLUSTER_OPERATOR::WeightType   ValueType;
         typedef typename MergeGraph::index_type         MergeGraphIndexType;
 
-        struct Parameter{
-            Parameter(
-                const size_t      nodeNumStopCond = 1,
-                const bool        buildMergeTree  = true,
-                const bool        verbose         = false
-            )
-            :   nodeNumStopCond_ (nodeNumStopCond),
-                buildMergeTreeEncoding_(buildMergeTree),
-                verbose_(verbose){
-            }
-            size_t nodeNumStopCond_;
-            bool   buildMergeTreeEncoding_;
-            bool   verbose_;
-        };
+        typedef ClusteringOptions Parameter;
 
         struct MergeItem{
             MergeItem(
@@ -788,7 +847,62 @@ class EdgeWeightedUcm
 
     };
 
+template <class GRAPH,
+          class EDGE_WEIGHT_MAP,  class EDGE_LENGTH_MAP,
+          class NODE_FEATURE_MAP, class NOSE_SIZE_MAP,
+          class NODE_LABEL_MAP>
+void
+hierarchicalClustering(GRAPH const & graph,
+                       EDGE_WEIGHT_MAP const & edgeWeights, EDGE_LENGTH_MAP const & edgeLengths,
+                       NODE_FEATURE_MAP const & nodeFeatures, NOSE_SIZE_MAP const & nodeSizes,
+                       NODE_LABEL_MAP & labelMap,
+                       ClusteringOptions options = ClusteringOptions())
+{
+    typedef typename NODE_LABEL_MAP::Value LabelType;
+    typedef MergeGraphAdaptor<GRAPH> MergeGraph;
+    typedef typename GRAPH::template EdgeMap<float>     EdgeUltrametric;
+    typedef typename GRAPH::template NodeMap<LabelType> NodeSeeds;
 
+    MergeGraph mergeGraph(graph);
+
+    // create empty property maps for the computed ultrametric and
+    // cannot-link constraints to be enforced, as we don't use these
+    // options here
+    EdgeUltrametric edgeUltrametric(graph);
+    NodeSeeds nodeSeeds(graph);
+
+    // create an operator that stores all property maps needed for
+    // hierarchical clustering and updates them after every merge step
+    typedef cluster_operators::EdgeWeightNodeFeatures<
+        MergeGraph,
+        EDGE_WEIGHT_MAP,
+        EDGE_LENGTH_MAP,
+        NODE_FEATURE_MAP,
+        NOSE_SIZE_MAP,
+        EdgeUltrametric,
+        NodeSeeds>
+    MergeOperator;
+
+    MergeOperator mergeOperator(mergeGraph,
+                                edgeWeights, edgeLengths,
+                                nodeFeatures, nodeSizes,
+                                edgeUltrametric, nodeSeeds,
+                                options.nodeFeatureImportance_,
+                                options.nodeFeatureMetric_,
+                                options.sizeImportance_,
+                                options.maxMergeWeight_);
+
+    typedef HierarchicalClustering<MergeOperator> Clustering;
+
+    Clustering clustering(mergeOperator, options);
+    clustering.cluster();
+
+    for(typename GRAPH::NodeIt node(graph); node != lemon::INVALID; ++node)
+    {
+        labelMap[*node] = mergeGraph.reprNodeId(graph.id(*node));
+    }
 }
+
+} // namespace vigra
 
 #endif // VIGRA_HIERARCHICAL_CLUSTERING_HXX
