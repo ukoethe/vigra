@@ -381,6 +381,7 @@ void multiPyramidReduceBurtFilter(SrcIterator s, SrcShape const & shape, SrcAcce
 
     Kernel1D<double> kern;
     kern.initExplicitly(-2, 2) = 0.25 - centerValue / 2.0, 0.25, centerValue, 0.25, 0.25 - centerValue / 2.0;
+
     resamplingSeparableConvolveMultiArray(s, shape, src, d, dshape, dest, kern);
 }
 
@@ -414,6 +415,54 @@ inline void multiPyramidReduceBurtFilter(MultiArrayPyramid<MultiArrayType, Alloc
 
     for(int i=fromLevel+1; i <= toLevel; ++i)
         multiPyramidReduceBurtFilter(pyramid[i-1], pyramid[i], centerValue);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class DestShape>
+void multiPyramidExpandBurtFilter(SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                             DestIterator d, DestShape const & dshape, DestAccessor dest,
+                             double centerValue = 0.4)
+{
+    vigra_precondition(0.25 <= centerValue && centerValue <= 0.5,
+             "multiPyramidExpandBurtFilter(): centerValue must be between 0.25 and 0.5.");
+
+    ArrayVector<Kernel1D<double> > kernels(2);
+    kernels[0].initExplicitly(-1, 1) = 0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue;
+    kernels[1].initExplicitly(-1, 0) = 0.5, 0.5;
+
+    resamplingSeparableConvolveMultiArray(s, shape, src, d, dshape, dest, kernels);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor>
+void multiPyramidExpandBurtFilter(triple<SrcIterator, SrcShape, SrcAccessor> a,
+                             triple<DestIterator, DestShape, DestAccessor> b,
+                             double centerValue = 0.4)
+{
+    multiPyramidExpandBurtFilter(a.first, a.second, a.third, b.first, b.second, b.third, centerValue);
+}
+
+template <unsigned int srcN, class srcT, class srcStrideTag,
+          unsigned int destN, class destT, class destStrideTag>
+void multiPyramidExpandBurtFilter(MultiArrayView<srcN, srcT, srcStrideTag> src,
+                             MultiArrayView<destN, destT, destStrideTag> dest,
+                             double centerValue = 0.4)
+{
+    multiPyramidExpandBurtFilter(srcMultiArrayRange(src), destMultiArrayRange(dest), centerValue);
+}
+
+template <class MultiArrayType, class Alloc>
+inline void multiPyramidExpandBurtFilter(MultiArrayPyramid<MultiArrayType, Alloc> & pyramid,
+                             int fromLevel, int toLevel,
+                             double centerValue = 0.4)
+{
+    vigra_precondition(fromLevel  > toLevel,
+       "multiPyramidExpandBurtFilter(): fromLevel must be larger than toLevel.");
+    vigra_precondition(pyramid.lowestLevel() <= toLevel && fromLevel <= pyramid.highestLevel(),
+       "multiPyramidExpandBurtFilter(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
+
+    for(int i=fromLevel-1; i >= toLevel; --i)
+        multiPyramidExpandBurtFilter(pyramid[i+1], pyramid[i], centerValue);
 }
 
 }

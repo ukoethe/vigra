@@ -41,16 +41,18 @@
 #include "copyimage.hxx"
 #include "multi_array.hxx"
 
+#include <type_traits>
+
 namespace vigra {
 
 namespace detail {
 template <class SrcIterator, class Shape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Kernel>
+          class DestIterator, class DestAccessor, class KernelIterator>
 void
 internalResamplingSeparableConvolveMultiArrayOneDimension(
                       SrcIterator si, Shape const & sshape, SrcAccessor src,
                       DestIterator di, Shape const & dshape, DestAccessor dest, 
-                      Kernel const & kernel, unsigned int d)
+                      KernelIterator const & kernels, unsigned int d)
 {
     enum { N = 1 + SrcIterator::level };
 
@@ -72,8 +74,6 @@ internalResamplingSeparableConvolveMultiArrayOneDimension(
     Rational<int> ratio(dsize - 1, ssize - 1);
     Rational<int> offset(0);
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(ratio, offset);
-    ArrayVector<Kernel > kernels(1);
-    kernels[0] = kernel;
 
     // temporary array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( ssize );
@@ -124,6 +124,7 @@ void resamplingSeparableConvolveMultiArray(SrcIterator si, Shape const & shape, 
         MultiArray<N, TmpType> dtmp(tmpShape);
         detail::internalResamplingSeparableConvolveMultiArrayOneDimension(tmp.traverser_begin(), tmp.shape(), ta, 
                              dtmp.traverser_begin(), tmpShape, ta, kit[d], d);
+        dtmp.swap(tmp);
     }
     detail::internalResamplingSeparableConvolveMultiArrayOneDimension(tmp.traverser_begin(), tmp.shape(), ta, 
                          di, dshape, dest, kit[d], d);
@@ -134,11 +135,24 @@ template <class SrcIterator, class Shape, class SrcAccessor,
           class T>
 void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
                              DestIterator d, Shape const & dshape, DestAccessor dest,
-                             Kernel1D<T> const & kernel)
+                             ArrayVector<Kernel1D<T> > const & kernel)
 {
-    ArrayVector<Kernel1D<T> > kernels(shape.size(), kernel);
+    ArrayVector<ArrayVector<Kernel1D<T> > > kernels(shape.size(), kernel);
 
     resamplingSeparableConvolveMultiArray( s, shape, src, d, dshape, dest, kernels.begin());
+}
+
+
+template <class SrcIterator, class Shape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class T>
+void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
+                             DestIterator d, Shape const & dshape, DestAccessor dest,
+                             Kernel1D<T> const & kernel)
+{
+    ArrayVector<Kernel1D<T> > kernels(1, kernel);
+
+    resamplingSeparableConvolveMultiArray( s, shape, src, d, dshape, dest, kernels);
 }
 
 } // namespace vigra
