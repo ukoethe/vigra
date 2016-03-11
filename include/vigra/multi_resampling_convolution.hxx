@@ -102,7 +102,7 @@ template <class SrcIterator, class Shape, class SrcAccessor,
           class KernelIterator>
 void resamplingSeparableConvolveMultiArray(SrcIterator si, Shape const & shape, SrcAccessor src,
                              DestIterator di, Shape const & dshape, DestAccessor dest,
-                             KernelIterator kit, ArrayVector<Rational<int> > ratios = ArrayVector<Rational<int> >())
+                             KernelIterator const & kit, ArrayVector<Rational<int> > & ratios = ArrayVector<Rational<int> >())
 {
     enum { N = 1 + SrcIterator::level };
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
@@ -146,7 +146,7 @@ template <class SrcIterator, class Shape, class SrcAccessor,
           class T>
 void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
                              DestIterator d, Shape const & dshape, DestAccessor dest,
-                             ArrayVector<Kernel1D<T> > const & kernel, ArrayVector<Rational<int> > ratios = ArrayVector<Rational<int> >())
+                             ArrayVector<Kernel1D<T> > const & kernel, ArrayVector<Rational<int> > & ratios = ArrayVector<Rational<int> >())
 {
     ArrayVector<ArrayVector<Kernel1D<T> > > kernels(shape.size(), kernel);
 
@@ -159,7 +159,7 @@ template <class SrcIterator, class Shape, class SrcAccessor,
           class T>
 void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
                              DestIterator d, Shape const & dshape, DestAccessor dest,
-                             Kernel1D<T> const & kernel, ArrayVector<Rational<int> > ratios = ArrayVector<Rational<int> >())
+                             Kernel1D<T> const & kernel, ArrayVector<Rational<int> > & ratios = ArrayVector<Rational<int> >())
 {
     ArrayVector<Kernel1D<T> > kernels(1, kernel);
 
