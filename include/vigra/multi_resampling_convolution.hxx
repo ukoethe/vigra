@@ -52,7 +52,8 @@ void
 internalResamplingSeparableConvolveMultiArrayOneDimension(
                       SrcIterator si, Shape const & sshape, SrcAccessor src,
                       DestIterator di, Shape const & dshape, DestAccessor dest, 
-                      KernelIterator const & kernels, unsigned int d)
+                      KernelIterator const & kernels, unsigned int d,
+                      Rational<int> ratio = Rational<int>(0,1))
 {
     enum { N = 1 + SrcIterator::level };
 
@@ -68,11 +69,14 @@ internalResamplingSeparableConvolveMultiArrayOneDimension(
     int dsize = dshape[d];
 
     vigra_precondition(ssize > 1,
-                 "resizeMultiArraySplineInterpolation(): "
+                 "internalResamplingSeparableConvolveMultiArrayOneDimension(): "
                  "Source array too small.\n");
 
-    Rational<int> ratio(dsize - 1, ssize - 1);
+    if (!ratio.numerator())
+      ratio = Rational<int>(dsize - 1, ssize - 1);
+
     Rational<int> offset(0);
+
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(ratio, offset);
 
     // temporary array to hold the current line to enable in-place operation
@@ -98,15 +102,22 @@ template <class SrcIterator, class Shape, class SrcAccessor,
           class KernelIterator>
 void resamplingSeparableConvolveMultiArray(SrcIterator si, Shape const & shape, SrcAccessor src,
                              DestIterator di, Shape const & dshape, DestAccessor dest,
-                             KernelIterator kit)
+                             KernelIterator kit, ArrayVector<Rational<int> > ratios = ArrayVector<Rational<int> >())
 {
     enum { N = 1 + SrcIterator::level };
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
     typedef typename AccessorTraits<TmpType>::default_accessor TmpAccessor;
 
+    if (ratios.size() == 0)
+      ratios = ArrayVector<Rational<int> >(N, Rational<int>(0, 1));
+
+    vigra_precondition(ratios.size() == N,
+                 "resamplingSeparableConvolveMultiArray(): "
+                 "Number of ratios does not match number of dimensions.\n");
+
     if (N == 1) {
         detail::internalResamplingSeparableConvolveMultiArrayOneDimension(si, shape, src, 
-                      di, dshape, dest, kit[0], 0);
+                      di, dshape, dest, kit[0], 0, ratios[0]);
         return;
     }
 
@@ -117,17 +128,17 @@ void resamplingSeparableConvolveMultiArray(SrcIterator si, Shape const & shape, 
     TmpAccessor ta;
 
     detail::internalResamplingSeparableConvolveMultiArrayOneDimension(si, shape, src, 
-                         tmp.traverser_begin(), tmpShape, ta, kit[d], d);
+                         tmp.traverser_begin(), tmpShape, ta, kit[d], d, ratios[d]);
 
     for (d = 1; d < N-1; ++d) {
         tmpShape[d] = dshape[d];
         MultiArray<N, TmpType> dtmp(tmpShape);
         detail::internalResamplingSeparableConvolveMultiArrayOneDimension(tmp.traverser_begin(), tmp.shape(), ta, 
-                             dtmp.traverser_begin(), tmpShape, ta, kit[d], d);
+                             dtmp.traverser_begin(), tmpShape, ta, kit[d], d, ratios[d]);
         dtmp.swap(tmp);
     }
     detail::internalResamplingSeparableConvolveMultiArrayOneDimension(tmp.traverser_begin(), tmp.shape(), ta, 
-                         di, dshape, dest, kit[d], d);
+                         di, dshape, dest, kit[d], d, ratios[d]);
 }
 
 template <class SrcIterator, class Shape, class SrcAccessor,
@@ -135,11 +146,11 @@ template <class SrcIterator, class Shape, class SrcAccessor,
           class T>
 void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
                              DestIterator d, Shape const & dshape, DestAccessor dest,
-                             ArrayVector<Kernel1D<T> > const & kernel)
+                             ArrayVector<Kernel1D<T> > const & kernel, ArrayVector<Rational<int> > ratios = ArrayVector<Rational<int> >())
 {
     ArrayVector<ArrayVector<Kernel1D<T> > > kernels(shape.size(), kernel);
 
-    resamplingSeparableConvolveMultiArray( s, shape, src, d, dshape, dest, kernels.begin());
+    resamplingSeparableConvolveMultiArray( s, shape, src, d, dshape, dest, kernels.begin(), ratios);
 }
 
 
@@ -148,11 +159,38 @@ template <class SrcIterator, class Shape, class SrcAccessor,
           class T>
 void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
                              DestIterator d, Shape const & dshape, DestAccessor dest,
-                             Kernel1D<T> const & kernel)
+                             Kernel1D<T> const & kernel, ArrayVector<Rational<int> > ratios = ArrayVector<Rational<int> >())
 {
     ArrayVector<Kernel1D<T> > kernels(1, kernel);
 
-    resamplingSeparableConvolveMultiArray( s, shape, src, d, dshape, dest, kernels);
+    resamplingSeparableConvolveMultiArray( s, shape, src, d, dshape, dest, kernels, ratios);
+}
+
+template <class SrcIterator, class Shape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class T>
+void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
+                             DestIterator d, Shape const & dshape, DestAccessor dest,
+                             ArrayVector<Kernel1D<T> > const & kernel, Rational<int> ratio)
+{
+    ArrayVector<ArrayVector<Kernel1D<T> > > kernels(shape.size(), kernel);
+    ArrayVector<Rational<int> > ratios(shape.size(), ratio);
+
+    resamplingSeparableConvolveMultiArray( s, shape, src, d, dshape, dest, kernels.begin(), ratios);
+}
+
+
+template <class SrcIterator, class Shape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class T>
+void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
+                             DestIterator d, Shape const & dshape, DestAccessor dest,
+                             Kernel1D<T> const & kernel, Rational<int> ratio)
+{
+    ArrayVector<Kernel1D<T> > kernels(1, kernel);
+    ArrayVector<Rational<int> > ratios(shape.size(), ratio);
+
+    resamplingSeparableConvolveMultiArray( s, shape, src, d, dshape, dest, kernels, ratios);
 }
 
 } // namespace vigra

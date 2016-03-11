@@ -321,9 +321,9 @@ public:
         images[sizeAppliesToLevel - lowestLevel].reshape(multiArrayShape);
 
         for(int i=sizeAppliesToLevel + 1; i<=highestLevel; ++i)
-            images[i - lowestLevel].reshape((images[i - 1 - lowestLevel].shape() + 1) / 2);
+            images[i - lowestLevel].reshape(floor((images[i - 1 - lowestLevel].shape() + 1) / 2));
         for(int i=sizeAppliesToLevel - 1; i>=lowestLevel; --i)
-            images[i - lowestLevel].reshape(2*images[i + 1 - lowestLevel].shape() - 1);
+            images[i - lowestLevel].reshape(floor(2*images[i + 1 - lowestLevel].shape() - 1));
 
         images_.swap(images);
         lowestLevel_ = lowestLevel;
@@ -382,7 +382,7 @@ void multiPyramidReduceBurtFilter(SrcIterator s, SrcShape const & shape, SrcAcce
     Kernel1D<double> kern;
     kern.initExplicitly(-2, 2) = 0.25 - centerValue / 2.0, 0.25, centerValue, 0.25, 0.25 - centerValue / 2.0;
 
-    resamplingSeparableConvolveMultiArray(s, shape, src, d, dshape, dest, kern);
+    resamplingSeparableConvolveMultiArray(s, shape, src, d, dshape, dest, kern, Rational<int>(1, 2));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -430,7 +430,7 @@ void multiPyramidExpandBurtFilter(SrcIterator s, SrcShape const & shape, SrcAcce
     kernels[0].initExplicitly(-1, 1) = 0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue;
     kernels[1].initExplicitly(-1, 0) = 0.5, 0.5;
 
-    resamplingSeparableConvolveMultiArray(s, shape, src, d, dshape, dest, kernels);
+    resamplingSeparableConvolveMultiArray(s, shape, src, d, dshape, dest, kernels, Rational<int>(2, 1));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
