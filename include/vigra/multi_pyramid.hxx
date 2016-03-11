@@ -46,19 +46,19 @@ namespace vigra {
 
 /** \brief Class template for logarithmically tapering image pyramids.
 
-    An ImagePyramid manages an array of images of the type given as
+    An MultiArrayPyramid manages an array of multi arrays of the type given as
     template parameter, where each level has half the width and height
     of its predecessor.  It actually represents a sequence of pyramid
     levels whose start and end index are configurable.  
     
     To initialize all pyramid levels in the sense of a Gaussian pyramid,
-    use \ref pyramidReduceBurtFilter() and \ref pyramidExpandBurtFilter().
+    use \ref multiPyramidReduceBurtFilter() and \ref multiPyramidExpandBurtFilter().
     To create and reconstruct a Laplcaian pyramid, use 
-    \ref pyramidReduceBurtLaplacian() and \ref pyramidExpandBurtLaplacian().
+    \ref multiPyramidReduceBurtLaplacian() and \ref multiPyramidExpandBurtLaplacian().
 
     A customized allocator can be passed as a template argument and
     via the constructor.  By default, the allocator of the
-    <tt>ImageType</tt> is reused.
+    <tt>MultiArrayType</tt> is reused.
 
     <b>\#include</b> \<vigra/imagecontainer.hxx\> <br/>
     Namespace: vigra
@@ -266,7 +266,7 @@ public:
         return images_.rend();
     }
 
-        /** Query size of this ImageArray, that is: the number of
+        /** Query size of this MultiArrayPyramid, that is: the number of
             images. (STL-Container interface)
         */
     size_type size() const
@@ -282,9 +282,9 @@ public:
         return images_.empty();
     }
 
-        /** Returns true if and only if both ImageArrays have exactly
+        /** Returns true if and only if both MultiArrayPyramids have exactly
             the same contents and all images did compare equal with the
-            corresponding image in the other ImageArray. (STL-Forward
+            corresponding image in the other MultiArrayPyramid. (STL-Forward
             Container interface)
          */
     bool operator ==(const MultiArrayPyramid<MultiArrayType, Alloc> &other) const
@@ -302,7 +302,7 @@ public:
         highestLevel_ = -1;
     }
 
-        /** Resize this ImageArray, throwing the last images away if
+        /** Resize this MultiArrayPyramid, throwing the last images away if
             you make the array smaller or appending new images of the
             right size at the end of the array if you make it
             larger. (STL-Sequence interface)
@@ -369,6 +369,77 @@ public:
     }
 };
 
+/** \brief Two-fold down-sampling for image pyramid construction.
+
+    This function implements the reduction by one resolution level (first signature)
+    or across several pyramid levels (last signature) of a Gaussian pyramid as described in
+
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+
+    That is, it applies the smoothing filter
+    \code
+    [0.25 - centerValue / 2.0, 0.25, centerValue, 0.25, 0.25 - centerValue / 2.0]
+    \endcode
+    to the source image and then copies all pixels with even coordinates to the destination
+    image. The destination image shape must be <tt>dest_shape = ceil(src_shape / 2.0)</tt>.
+    <tt>centerValue</tt> must be between 0.25 and 0.5 and determines the strength of smoothing
+    (bigger values correspond to less smoothing). If <tt>toLevel - fromLevel > 1</tt> in the
+    pyramid variant of the function, this process is repeated until <tt>toLevel</tt> is
+    reached.
+
+    Typically, this functions is used in connection with a \ref vigra::MultiArrayPyramid
+    (last signature below) to perform several levels of reduction in one go.
+
+    <b> Declarations:</b>
+
+    <b>\#include</b> \<vigra/multi_pyramid.hxx\><br>
+    Namespace: vigra
+
+    pass multi array iterators, shapes and accessors:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class DestShape>
+        void multiPyramidReduceBurtFilter(SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                     DestIterator d, DestShape const & dshape, DestAccessor dest,
+                                     double centerValue = 0.4)
+    }
+    \endcode
+
+    pass multi array views directly:
+    \code
+    namespace vigra {
+        template <unsigned int srcN, class srcT, class srcStrideTag,
+                  unsigned int destN, class destT, class destStrideTag>
+        void multiPyramidReduceBurtFilter(MultiArrayView<srcN, srcT, srcStrideTag> src,
+                                     MultiArrayView<destN, destT, destStrideTag> dest,
+                                     double centerValue = 0.4)
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestShape, class DestAccessor>
+        void multiPyramidReduceBurtFilter(triple<SrcIterator, SrcShape, SrcAccessor> a,
+                                     triple<DestIterator, DestShape, DestAccessor> b,
+                                     double centerValue = 0.4)
+    }
+    \endcode
+
+    use a \ref vigra::MultiArrayPyramid :
+    \code
+    namespace vigra {
+        template <class MultiArrayType, class Alloc>
+        inline void multiPyramidReduceBurtFilter(MultiArrayPyramid<MultiArrayType, Alloc> & pyramid,
+                                     int fromLevel, int toLevel,
+                                     double centerValue = 0.4)
+    }
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void multiPyramidReduceBurtFilter)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestShape>
@@ -377,7 +448,7 @@ void multiPyramidReduceBurtFilter(SrcIterator s, SrcShape const & shape, SrcAcce
                              double centerValue = 0.4)
 {
     vigra_precondition(0.25 <= centerValue && centerValue <= 0.5,
-             "pyramidReduceBurtFilter(): centerValue must be between 0.25 and 0.5.");
+             "multiPyramidReduceBurtFilter(): centerValue must be between 0.25 and 0.5.");
 
     Kernel1D<double> kern;
     kern.initExplicitly(-2, 2) = 0.25 - centerValue / 2.0, 0.25, centerValue, 0.25, 0.25 - centerValue / 2.0;
@@ -416,6 +487,82 @@ inline void multiPyramidReduceBurtFilter(MultiArrayPyramid<MultiArrayType, Alloc
     for(int i=fromLevel+1; i <= toLevel; ++i)
         multiPyramidReduceBurtFilter(pyramid[i-1], pyramid[i], centerValue);
 }
+
+
+/** \brief Two-fold up-sampling for image pyramid reconstruction.
+
+    This function implements the expansion by one resolution level (first signature)
+    or across several pyramid levels (last signature) of a Gaussian pyramid as described in
+
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+
+    That is, the function first places the pixel values of the low-resolution
+    image at the even pixel coordinates of the high-resolution image (pixels with
+    at least one odd coordinate are zero-initialized) and then applies the
+    interpolation filter
+    \code
+    [0.5 - centerValue, 0.5, 2*centerValue, 0.5, 0.5 - centerValue]
+    \endcode
+    to the high-resolution image. The source image shape must be
+    <tt>src_shape = ceil(dest_shape / 2.0)</tt>.
+    <tt>centerValue</tt> must be between 0.25 and 0.5 and determines the sharpness
+    of the interpolation (bigger values correspond to sharper images).
+    If <tt>fromLevel - toLevel > 1</tt> in the pyramid variant of the function,
+    this process is repeated until <tt>toLevel</tt> is reached.
+
+    Typically, this functions is used in connection with a \ref vigra::MultiArrayPyramid
+    (last signature below) to perform several levels of expansion in one go.
+
+    <b> Declarations:</b>
+
+    <b>\#include</b> \<vigra/multi_pyramid.hxx\><br>
+    Namespace: vigra
+
+    pass multi array iterators, shapes and accessors:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class DestShape>
+        void multiPyramidExpandBurtFilter(SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                     DestIterator d, DestShape const & dshape, DestAccessor dest,
+                                     double centerValue = 0.4)
+    }
+    \endcode
+
+    pass multi array views directly:
+    \code
+    namespace vigra {
+        template <unsigned int srcN, class srcT, class srcStrideTag,
+                  unsigned int destN, class destT, class destStrideTag>
+        void multiPyramidExpandBurtFilter(MultiArrayView<srcN, srcT, srcStrideTag> src,
+                                     MultiArrayView<destN, destT, destStrideTag> dest,
+                                     double centerValue = 0.4)
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestShape, class DestAccessor>
+        void multiPyramidExpandBurtFilter(triple<SrcIterator, SrcShape, SrcAccessor> a,
+                                     triple<DestIterator, DestShape, DestAccessor> b,
+                                     double centerValue = 0.4)
+    }
+    \endcode
+
+    use a \ref vigra::MultiArrayPyramid :
+    \code
+    namespace vigra {
+        template <class MultiArrayType, class Alloc>
+        inline void multiPyramidExpandBurtFilter(MultiArrayPyramid<MultiArrayType, Alloc> & pyramid,
+                                     int fromLevel, int toLevel,
+                                     double centerValue = 0.4)
+    }
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void multiPyramidExpandBurtFilter)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestShape>
@@ -465,6 +612,22 @@ inline void multiPyramidExpandBurtFilter(MultiArrayPyramid<MultiArrayType, Alloc
         multiPyramidExpandBurtFilter(pyramid[i+1], pyramid[i], centerValue);
 }
 
+/** \brief Create a Laplacian pyramid.
+
+    This function implements the reduction across several resolution levels of
+    a Laplacian pyramid as described in
+
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+
+    It first creates a Gaussian pyramid using \ref multiPyramidReduceBurtFilter(), then
+    upsamples each level once using \ref multiPyramidExpandBurtFilter(), and finally
+    stores the difference between the upsampled and original versions of
+    each level (i.e. the Laplacian of Gaussian is approximated by a difference
+    of Gaussian).
+
+    <b>\#include</b> \<vigra/multi_pyramid.hxx\><br>
+    Namespace: vigra
+*/
 template <class MultiArrayType, class Alloc>
 inline void
 multiPyramidReduceBurtLaplacian(MultiArrayPyramid<MultiArrayType, Alloc> & pyramid,
@@ -488,7 +651,21 @@ multiPyramidReduceBurtLaplacian(MultiArrayPyramid<MultiArrayType, Alloc> & pyram
     }
 }
 
+/** \brief Reconstruct a Laplacian pyramid.
 
+    This function implements the reconstruction of a Gaussian pyramid
+    across several resolution levels of a Laplacian pyramid as described in
+
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+
+    At each level starting from <tt>fromLevel</tt>, this function calls
+    \ref multiPyramidExpandBurtFilter() to interpolate the image to the next highest
+    resolution, and then adds the interpolated image to the image stored at the
+    next level.
+
+    <b>\#include</b> \<vigra/multi_pyramid.hxx\><br>
+    Namespace: vigra
+*/
 template <class MultiArrayType, class Alloc>
 inline void
 multiPyramidExpandBurtLaplacian(MultiArrayPyramid<MultiArrayType, Alloc> & pyramid,
