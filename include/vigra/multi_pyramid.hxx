@@ -40,6 +40,7 @@
 #include "array_vector.hxx"
 #include "copyimage.hxx"
 #include "multi_array.hxx"
+#include "multi_resampling_convolution.hxx"
 
 namespace vigra {
 
@@ -109,7 +110,7 @@ public:
         : lowestLevel_(0), highestLevel_(-1),
           images_(alloc)
     {
-        //resize(lowestLevel, highestLevel, multiArrayShape, sizeAppliesToLevel);
+        resize(lowestLevel, highestLevel, multiArrayShape, sizeAppliesToLevel);
     }
 
         /**
@@ -130,8 +131,8 @@ public:
         : lowestLevel_(0), highestLevel_(-1),
           images_(alloc)
     {
-        //resize(lowestLevel, highestLevel, image.size(), copyImageToLevel);
-        //copyImage(srcImageRange(image), destImage((*this)[copyImageToLevel]));
+        resize(lowestLevel, highestLevel, image.shape(), copyImageToLevel);
+        copyMultiArray(image, (*this)[copyImageToLevel]);
     }
 
         /**
@@ -154,8 +155,8 @@ public:
         : lowestLevel_(0), highestLevel_(-1),
           images_(alloc)
     {
-        //resize(lowestLevel, highestLevel, lr - ul, copyImageToLevel);
-        //copyImage(srcIterRange(ul, lr, src), destImage((*this)[copyImageToLevel]));
+        resize(lowestLevel, highestLevel, lr - ul, copyImageToLevel);
+        copyMultiArray(srcIterRange(ul, lr, src), (*this)[copyImageToLevel]);
     }
 
         /** Init an empty pyramid.  Use the specified allocator.
@@ -367,6 +368,53 @@ public:
         std::swap(highestLevel_, other.highestLevel_);
     }
 };
+
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class DestShape>
+void multiPyramidReduceBurtFilter(SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                             DestIterator d, DestShape const & dshape, DestAccessor dest,
+                             double centerValue = 0.4)
+{
+    vigra_precondition(0.25 <= centerValue && centerValue <= 0.5,
+             "pyramidReduceBurtFilter(): centerValue must be between 0.25 and 0.5.");
+
+    Kernel1D<double> kern;
+    kern.initExplicitly(-2, 2) = 0.25 - centerValue / 2.0, 0.25, centerValue, 0.25, 0.25 - centerValue / 2.0;
+    resamplingSeparableConvolveMultiArray(s, shape, src, d, dshape, dest, kern);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor>
+void multiPyramidReduceBurtFilter(triple<SrcIterator, SrcShape, SrcAccessor> a,
+                             triple<DestIterator, DestShape, DestAccessor> b,
+                             double centerValue = 0.4)
+{
+    multiPyramidReduceBurtFilter(a.first, a.second, a.third, b.first, b.second, b.third, centerValue);
+}
+
+template <unsigned int srcN, class srcT, class srcStrideTag,
+          unsigned int destN, class destT, class destStrideTag>
+void multiPyramidReduceBurtFilter(MultiArrayView<srcN, srcT, srcStrideTag> src,
+                             MultiArrayView<destN, destT, destStrideTag> dest,
+                             double centerValue = 0.4)
+{
+    multiPyramidReduceBurtFilter(srcMultiArrayRange(src), destMultiArrayRange(dest), centerValue);
+}
+
+template <class MultiArrayType, class Alloc>
+inline void multiPyramidReduceBurtFilter(MultiArrayPyramid<MultiArrayType, Alloc> & pyramid,
+                             int fromLevel, int toLevel,
+                             double centerValue = 0.4)
+{
+    vigra_precondition(fromLevel  < toLevel,
+       "multiPyramidReduceBurtFilter(): fromLevel must be smaller than toLevel.");
+    vigra_precondition(pyramid.lowestLevel() <= fromLevel && toLevel <= pyramid.highestLevel(),
+       "multiPyramidReduceBurtFilter(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
+
+    for(int i=fromLevel+1; i <= toLevel; ++i)
+        multiPyramidReduceBurtFilter(pyramid[i-1], pyramid[i], centerValue);
+}
 
 }
 
