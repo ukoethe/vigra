@@ -95,8 +95,80 @@ internalResamplingSeparableConvolveMultiArrayOneDimension(
     }
 }
 
-};
+}; // namespace detail
 
+/** \brief Apply separable resampling filters successively tp all dimensions of
+    the given \ref vigra::MultiArray.
+
+    The KernelIterator should be an iterator which contains another iterator of kernels
+    to be used for each dimensions. The ratios should be an array of
+    the samplingRatios to be used for each dimension.
+    See \ref vigra::resamplingConvolveLine, \ref vigra::resamplingConvolveX,
+    \ref vigra::resamplingConvolveY and vigra::resamplingConvolveImage for details.
+
+    <b> Declarations:</b>
+
+    pass multi array iterators:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class Shape, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class KernelIterator>
+        void resamplingSeparableConvolveMultiArray(SrcIterator si, Shape const & shape, SrcAccessor src,
+                                     DestIterator di, Shape const & dshape, DestAccessor dest,
+                                     KernelIterator const & kit, ArrayVector<Rational<int> > & ratios = ArrayVector<Rational<int> >())
+    }
+    \endcode
+
+    pass the same vector of kernels for each dimension:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class Shape, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class T>
+        void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
+                                     DestIterator d, Shape const & dshape, DestAccessor dest,
+                                     ArrayVector<Kernel1D<T> > const & kernel, ArrayVector<Rational<int> > & ratios = ArrayVector<Rational<int> >())
+    }
+    \endcode
+
+    pass a single kernel for each dimesion:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class Shape, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class T>
+        void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
+                                     DestIterator d, Shape const & dshape, DestAccessor dest,
+                                     Kernel1D<T> const & kernel, ArrayVector<Rational<int> > & ratios = ArrayVector<Rational<int> >())
+    }
+    \endcode
+
+    pass the same vector of kernels and the same ratio for each dimension:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class Shape, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class T>
+        void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
+                                     DestIterator d, Shape const & dshape, DestAccessor dest,
+                                     ArrayVector<Kernel1D<T> > const & kernel, Rational<int> ratio)
+    }
+    \endcode
+
+    pass a single kernel and ratio for each dimesion:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class Shape, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class T>
+        void resamplingSeparableConvolveMultiArray(SrcIterator s, Shape const & shape, SrcAccessor src,
+                                     DestIterator d, Shape const & dshape, DestAccessor dest,
+                                     Kernel1D<T> const & kernel, Rational<int> ratio)
+    }
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void resamplingSeparableConvolveMultiArray)
 
 template <class SrcIterator, class Shape, class SrcAccessor,
           class DestIterator, class DestAccessor,
