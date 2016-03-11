@@ -22,11 +22,11 @@ int main (int argc, char ** argv)
     float beta = 0.5f;              // node vs edge weight
     float wardness = 0.8f;          // ???
     float gamma = 10000000.0f;      // ???
-    int nodeNumStop = 50;          // desired num. nodes in result
+    int nodeNumStop = 30;          // desired num. nodes in result
 
-    if(argc != 4)
+    if(argc != 3)
     {
-        std::cout << "Usage: " << argv[0] << " infile outfile outfile2" << std::endl;
+        std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
         std::cout << "(only color images)" << std::endl;
 
@@ -34,10 +34,10 @@ int main (int argc, char ** argv)
     }
     try
     {
-        // read image given as first argument
+        // read metadata of image file given in argv[1]
         ImageImportInfo info(argv[1]);
 
-        // instantiate arrays for image data and for smoothed image of appropriate size
+        // instantiate image arrays of appropriate size
         MultiArray<2, TinyVector<float, 3> > imageArray(info.shape()),
                                              imageArrayBig(info.shape()*2-Shape2(1));
         MultiArray<2, float>                 gradMag(info.shape());
@@ -45,13 +45,13 @@ int main (int argc, char ** argv)
         // read image data
         importImage(info, imageArray);
 
-        // upsample to twice the resolution for visualization of the results
+        // double the image resolution for better visualization of the results
         resizeMultiArraySplineInterpolation(imageArray, imageArrayBig);
 
-        // convert to Lab color space to have better color similarity estimates
+        // convert to Lab color space for better color similarity estimates
         transformMultiArray(imageArray, imageArray, RGB2LabFunctor<float>());
 
-        // compute gradient magnitude as an edge indicator
+        // compute gradient magnitude as an indicator of edge strength
         gaussianGradientMagnitude(imageArray, gradMag, sigmaGradMag);
 
         // create grid-graph of appropriate size
@@ -60,15 +60,15 @@ int main (int argc, char ** argv)
 
         // create watershed superpixels with the fast union-find algorithm;
         // we use a NodeMap (a subclass of MultiArray) to store the labels so
-        // that they can be passed to makeRegionAdjacencyGraph() ??? directly
+        // that they can be passed to hierarchicalClustering() directly
         Graph::NodeMap<unsigned int> labelArray(graph);
         unsigned int max_label =
             watershedsMultiArray(gradMag, labelArray, DirectNeighborhood,
                                  WatershedOptions().unionFind());
 
-        // visualize the watershed superpixels
-        regionImageToCrackEdgeImage(labelArray, imageArrayBig, RGBValue<float>( 255, 0, 0 ), edgeOverlayOnly);
-        exportImage(imageArrayBig, argv[2]);
+        // visualize the watersheds as a red overlay over the enlarged image
+        regionImageToCrackEdgeImage(labelArray, imageArrayBig,
+                                    RGBValue<float>( 255, 0, 0 ), EdgeOverlayOnly);
 
         // determine size and average color of each superpixel
         using namespace acc;
@@ -85,7 +85,7 @@ int main (int argc, char ** argv)
         RAG::EdgeMap<std::vector<Graph::Edge>> affiliatedEdges(rag);
         makeRegionAdjacencyGraph(graph, labelArray, rag, affiliatedEdges);
 
-        // copy superpixel features into NodeMaps to be passed to agglomerativeClustering???
+        // copy superpixel features into NodeMaps to be passed to hierarchicalClustering()
         RAG::NodeMap<TinyVector<float, 3>> means(rag);
         RAG::NodeMap<unsigned int>         sizes(rag);
         for(unsigned int k=0; k<=max_label; ++k)
@@ -94,14 +94,18 @@ int main (int argc, char ** argv)
             sizes[k] = get<Count>(stats, k);
         }
 
-        // compute edge length and strength and put into EdgeMaps
+        // create edge maps for weights and lengths of the RAG edges
         RAG::EdgeMap<float> edgeWeights(rag),
                             edgeLengths(rag);
         for(RAG::EdgeIt rag_edge(rag); rag_edge != lemon::INVALID; ++rag_edge)
         {
+            // the RAG edge length equala the number of grid edges
+            // belonging to current RAG edge
             edgeLengths[*rag_edge] = affiliatedEdges[*rag_edge].size();
-            // determine RAG edge strength by avaraging the gradients
-            // along the RAG edge, as represented by the edges affiliated grid edges
+
+            // determine RAG edge weight by avaraging the gradients
+            // along the current RAG edge, i.e. over the end pixels of the
+            // corresponding grid graph edges
             for(unsigned int k = 0; k < affiliatedEdges[*rag_edge].size(); ++k)
             {
                 auto const & grid_edge = affiliatedEdges[*rag_edge][k];
@@ -110,51 +114,29 @@ int main (int argc, char ** argv)
             edgeWeights[*rag_edge] /= (2.0 * edgeLengths[*rag_edge]);
         }
 
-        // create a merge graph that performs hierarchical clustering
-        typedef MergeGraphAdaptor<RAG> MergeGraph;
-        MergeGraph mergeGraph(rag);
-
-        RAG::EdgeMap<float> edgeIndicators(rag);
-        RAG::EdgeMap<float> edgeMinWeightMap(rag);
+        // create a node map for the new (clustered) region labels and perform
+        // clustering to remove unimportant watershed edges
         RAG::NodeMap<unsigned int>  nodeLabelMap(rag);
+        hierarchicalClustering(rag, edgeWeights, edgeLengths, means, sizes, nodeLabelMap,
+                               ClusteringOptions().minRegionCount(nodeNumStop)
+                                                  .nodeFeatureImportance(beta)
+                                                  .sizeImportance(wardness)
+                                                  .nodeFeatureMetric(metrics::L2Norm)
+                               );
 
-        // create an operator that stores all property maps needed for
-        // hierarchical clustering and updates them after every merge step
-        typedef cluster_operators::EdgeWeightNodeFeatures<
-            MergeGraph,
-            RAG::EdgeMap<float>,
-            RAG::EdgeMap<float>,
-            RAG::NodeMap<TinyVector<float, 3>>,
-            RAG::NodeMap<unsigned int>,
-            RAG::EdgeMap<float>,
-            RAG::NodeMap<unsigned int>>
-        RAGFeatures;
-        typedef HierarchicalClustering<RAGFeatures> Clustering;
-
-        // are these parameters all needed? What's their meaning?
-        RAGFeatures ragFeatures(mergeGraph,
-                                edgeIndicators, edgeLengths,
-                                means, sizes,
-                                edgeMinWeightMap, nodeLabelMap,
-                                beta, metrics::ManhattanMetric,
-                                wardness, gamma);
-
-        Clustering::Parameter param;
-        param.nodeNumStopCond_=nodeNumStop;
-        param.buildMergeTreeEncoding_=false;
-        param.verbose_=true;
-        Clustering clustering(ragFeatures, param);
-
-        clustering.cluster();
-
+        // create label image with the new labels
         transformMultiArray(labelArray, labelArray,
-            [&mergeGraph](unsigned int oldlabel)
+            [&nodeLabelMap](unsigned int oldlabel)
             {
-                return mergeGraph.reprNodeId(oldlabel);
+                return nodeLabelMap[oldlabel];
             });
 
-        regionImageToCrackEdgeImage(labelArray, imageArrayBig, RGBValue<float>( 0, 255, 0), edgeOverlayOnly);
-        exportImage(imageArrayBig, argv[3]);
+        // visualize the salient edges as a green overlay
+        regionImageToCrackEdgeImage(labelArray, imageArrayBig,
+                                    RGBValue<float>( 0, 255, 0), EdgeOverlayOnly);
+
+        // write result into image file given by argv[2]
+        exportImage(imageArrayBig, argv[2]);
 
     }
     catch (std::exception & e)
