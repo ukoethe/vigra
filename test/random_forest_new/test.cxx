@@ -189,19 +189,16 @@ struct RandomForestTests
 
         RandomForestNewOptions const options = RandomForestNewOptions()
                                                    .tree_count(10)
-                                                   .bootstrap_sampling(false)
+                                                   .bootstrap_sampling(true)
                                                    .n_threads(1);
         VariableImportance var_imp;
         auto rf = random_forest(train_x, train_y, options, create_visitor(var_imp));
 
-        std::cout << "variable importances:" << std::endl;
-        for (size_t y = 0; y < var_imp.variable_importance_.shape()[1]; ++y)
+        // The permutation importances of feature 1 should be about 
+        // 10 times as big as the importances of feature 0.
+        for (size_t i = 0; i < 4; ++i)
         {
-            for (size_t x = 0; x < var_imp.variable_importance_.shape()[0]; ++x)
-            {
-                std::cout << var_imp.variable_importance_(x, y) << ", ";
-            }
-            std::cout << std::endl;
+            should(var_imp.variable_importance_(1, i) > 5 * var_imp.variable_importance_(0, i));
         }
     }
 
