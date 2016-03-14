@@ -50,8 +50,8 @@ struct RandomForestTests
 
         // Build a forest from scratch.
         Graph gr;
-        PropertyMap<Node, SplitTest> split_tests;
-        PropertyMap<Node, size_t> leaf_responses;
+        RF::NodeMap<SplitTest>::type split_tests;
+        RF::NodeMap<size_t>::type leaf_responses;
         {
             Node n0 = gr.addNode();
             Node n1 = gr.addNode();
@@ -201,7 +201,6 @@ struct RandomForestTests
             should(var_imp.variable_importance_(1, i) > 5 * var_imp.variable_importance_(0, i));
         }
     }
-
 };
 
 struct RandomForestTestSuite : public test_suite

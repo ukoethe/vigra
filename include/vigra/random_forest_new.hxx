@@ -63,8 +63,7 @@ struct DefaultRF
     typedef RandomForest<FEATURES,
                          LABELS,
                          LessEqualSplitTest<typename FEATURES::value_type>,
-                         ArgMaxVectorAcc<double>,
-                         VectorTag> type;
+                         ArgMaxVectorAcc<double> > type;
 };
 
 

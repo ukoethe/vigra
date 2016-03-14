@@ -50,8 +50,7 @@ namespace vigra
 
 
 
-
-template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACCTYPE, ContainerTag CTag = MapTag>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACCTYPE>
 class RandomForest
 {
 public:
@@ -66,7 +65,19 @@ public:
     typedef BinaryForest Graph;
     typedef Graph::Node Node;
 
-    static ContainerTag const container_tag = CTag;
+    static ContainerTag const container_tag = VectorTag;
+
+    // FIXME:
+    // Once the support for Visual Studio 2012 is dropped, replace this struct with
+    // template <typename T>
+    // using NodeMap = PropertyMap<Node, T, container_tag>;
+    // Then the verbose typename NodeMap<T>::type, which typically shows up on NodeMap usages,
+    // can be replace with NodeMap<T>.
+    template <typename T>
+    struct NodeMap
+    {
+        typedef PropertyMap<Node, T, container_tag> type;
+    };
 
     // Default (empty) constructor.
     RandomForest();
@@ -74,8 +85,8 @@ public:
     // Default constructor (copy all of the given stuff).
     RandomForest(
         Graph const & graph,
-        PropertyMap<Node, SplitTests, CTag> const & split_tests,
-        PropertyMap<Node, AccInputType, CTag> const & node_responses,
+        typename NodeMap<SplitTests>::type const & split_tests,
+        typename NodeMap<AccInputType>::type const & node_responses,
         ProblemSpecNew<LabelType> const & problem_spec
     );
 
@@ -135,10 +146,10 @@ public:
     Graph graph_;
 
     /// \brief Contains a test for each internal node, that is used to determine whether given data goes to the left or the right child.
-    PropertyMap<Node, SplitTests, CTag> split_tests_;
+    typename NodeMap<SplitTests>::type split_tests_;
 
     /// \brief Contains the responses of each node (for example the most frequent label).
-    PropertyMap<Node, AccInputType, CTag> node_responses_;
+    typename NodeMap<AccInputType>::type node_responses_;
 
     /// \brief The specifications.
     ProblemSpecNew<LabelType> problem_spec_;
@@ -157,8 +168,8 @@ private:
 
 };
 
-template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
-RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::RandomForest()
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::RandomForest()
     :
     graph_(),
     split_tests_(),
@@ -166,11 +177,11 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::RandomForest()
     problem_spec_()
 {}
 
-template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
-RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::RandomForest(
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::RandomForest(
     Graph const & graph,
-    PropertyMap<Node, SplitTests, CTag> const & split_tests,
-    PropertyMap<Node, AccInputType, CTag> const & node_responses,
+    typename NodeMap<SplitTests>::type const & split_tests,
+    typename NodeMap<AccInputType>::type const & node_responses,
     ProblemSpecNew<LabelType> const & problem_spec
 )   :
     graph_(graph),
@@ -179,8 +190,8 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::RandomForest(
     problem_spec_(problem_spec)
 {}
 
-template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
-void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::merge(
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::merge(
     RandomForest const & other
 ){
     vigra_precondition(problem_spec_ == other.problem_spec_,
@@ -198,8 +209,8 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::merge(
     }
 }
 
-template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
-double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict(
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
     FEATURES const & features,
     LABELS & labels,
     int n_threads,
@@ -222,9 +233,9 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict(
     return average_split_counts;
 }
 
-template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
 template <typename PROBS>
-double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict_proba(
+double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_proba(
     FEATURES const & features,
     PROBS & probs,
     int n_threads,
@@ -270,9 +281,9 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::predict_proba(
     return average_split_counts;
 }
 
-template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
 template <typename IDS>
-double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids(
+double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids(
     FEATURES const & features,
     IDS & ids,
     int n_threads,
@@ -320,9 +331,9 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids(
     return sum_split_comparisons / features.shape()[0];
 }
 
-template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC, ContainerTag CTag>
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
 template <typename IDS, typename INDICES>
-double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC, CTag>::leaf_ids_impl(
+double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids_impl(
     FEATURES const & features,
     IDS & ids,
     size_t from,
