@@ -40,9 +40,15 @@
 
 #include <cmath>
 
-namespace vigra{
-namespace metrics{
+/** \addtogroup MathFunctions
+*/
+//@{
 
+
+namespace vigra{
+
+/// \brief Define functors for various common metrics.
+namespace metrics{
 
     template<class T>
     class ChiSquared{
@@ -218,23 +224,37 @@ namespace metrics{
         }
     };
 
-    enum MetricType{
-        ChiSquaredMetric=0,
-        HellingerMetric=1,
-        SquaredNormMetric=2,
-        NormMetric=3,
-        L2Norm=NormMetric,
-        ManhattanMetric=4,
-        L1Norm=ManhattanMetric,
-        SymetricKlMetric=5,
-        BhattacharyaMetric=6
+        /** \brief Tags to select a metric for vector distance computation.
+        */
+    enum MetricType
+    {
+        ChiSquaredMetric=0,     //!< chi-squared distance for histograms (sum of squared differences normalized by means)
+        HellingerMetric=1,      //!< Hellinger distance (Euclidean distance between the square-root vectors)
+        SquaredNormMetric=2,    //!< squared Euclidean distance
+        NormMetric=3,           //!< Euclidean distance (L2 norm)
+        L2Norm=NormMetric,      //!< Euclidean distance (L2 norm)
+        ManhattanMetric=4,      //!< Manhattan distance (L1 norm)
+        L1Norm=ManhattanMetric, //!< Manhattan distance (L1 norm)
+        SymetricKlMetric=5,     //!< symmetric Kullback-Leibler divergence
+        BhattacharyaMetric=6    //!< Bhattacharya distance (sum of elementwise geometric means)
     };
 
 
+       /** \brief Functor to compute a metric between two vectors.
+
+           The value type of the metric is given by template parameter <tt>T</tt>. Supported
+           metrics are defined in \ref vigra::metrics::MetricType. The functor's argument
+           must support <tt>begin()</tt> and <tt>end()</tt> to create an STL range.
+        */
     template<class T>
     class Metric{
     public:
 
+           /** \brief Construct functor for the given metric.
+
+               The value type of the metric is given by template parameter <tt>T</tt>. Supported
+               metrics are defined in \ref vigra::metrics::MetricType.
+            */
         Metric(const MetricType metricType = ManhattanMetric)
         : metricType_(metricType){
 
@@ -275,5 +295,6 @@ namespace metrics{
 } // end namespace metric
 } // end namepsace vigra
 
+//@}
 
 #endif //VIGRA_METRIC_HXX

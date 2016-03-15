@@ -618,6 +618,12 @@
     Usage: <TT>subimage_tutorial infile outfile</TT>
 */
 
+/** \example graph_agglomerative_clustering.cxx
+    Segment an image by hierarchical clustering on top of watershed superpixels
+    <br>
+    Usage: <TT>subimage_tutorial infile outfile</TT>
+*/
+
 
 /** \page ImageInputOutputTutorial Image Input and Output
 
