@@ -3081,6 +3081,22 @@ ostream& operator<<(ostream& out,
 
 } // namespace std
 
+#ifdef WITH_BOOST_GRAPH
+namespace boost {
+    using vigra::boost_graph::out_edges;
+    using vigra::boost_graph::out_degree;
+    using vigra::boost_graph::source;
+    using vigra::boost_graph::target;
+    using vigra::boost_graph::in_edges;
+    using vigra::boost_graph::in_degree;
+    using vigra::boost_graph::adjacent_vertices;
+    using vigra::boost_graph::vertices;
+    using vigra::boost_graph::edges;
+    using vigra::boost_graph::edge;
+    using vigra::boost_graph::num_vertices;
+    using vigra::boost_graph::num_edges;
+}
+#endif /* WITH_BOOST_GRAPH */
 
 
 #endif /* VIGRA_MULTI_GRIDGRAPH_HXX */

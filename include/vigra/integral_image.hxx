@@ -79,7 +79,7 @@ integralMultiArrayImpl(MultiArrayView<N, T1, S1> const & array,
         
     cumulativeSum(array, intarray, 0, f);
     
-    for(int axis=1; axis < N; ++axis)
+    for(unsigned axis=1; axis < N; ++axis)
         cumulativeSum(intarray, intarray, axis, functor::Identity());
 }
 

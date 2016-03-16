@@ -202,7 +202,7 @@ class SIFImportInfo
 VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float> array);
 
 template <unsigned int N, class T, class S>
-void readSIF(const SIFImportInfo &info, MultiArrayView<N, T, S> array)
+void readSIF(const SIFImportInfo &, MultiArrayView<N, T, S>)
 {
     vigra_precondition(false, "readSIF(): Destination array must be MultiArrayView<3, float>.");
 }
@@ -229,7 +229,7 @@ inline void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, Unstride
 VIGRA_EXPORT void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float> array);
 
 template <unsigned int N, class T, class S>
-void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<N, T, S> array)
+void readSIFBlock(const SIFImportInfo &, Shape3, Shape3, MultiArrayView<N, T, S>)
 {
     vigra_precondition(false, "readSIFBlock(): Destination array must be MultiArrayView<3, float>.");
 }

@@ -53,9 +53,9 @@ namespace vigra
 {
 
 
-template <class Graph, class WeightType, 
+template <class Graph, class WeightType,
           class EdgeMap, class Shape>
-TinyVector<MultiArrayIndex, Shape::static_size> 
+TinyVector<MultiArrayIndex, Shape::static_size>
 eccentricityCentersOneRegionImpl(ShortestPathDijkstra<Graph, WeightType> & pathFinder,
                         const EdgeMap & weights, WeightType maxWeight,
                         Shape anchor, Shape const & start, Shape const & stop)
@@ -67,7 +67,7 @@ eccentricityCentersOneRegionImpl(ShortestPathDijkstra<Graph, WeightType> & pathF
         anchor = pathFinder.target();
         // FIXME: implement early stopping when source and target don't change anymore
     }
-    
+
     Polygon<TinyVector<float, Shape::static_size> > path;
     path.push_back_unsafe(anchor);
     while(pathFinder.predecessors()[path.back()] != path.back())
@@ -77,7 +77,7 @@ eccentricityCentersOneRegionImpl(ShortestPathDijkstra<Graph, WeightType> & pathF
 
 template <unsigned int N, class T, class S, class Graph,
           class ACCUMULATOR, class DIJKSTRA, class Array>
-void 
+void
 eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
                         Graph const & g,
                         ACCUMULATOR const & r,
@@ -89,14 +89,14 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
     typedef typename Graph::Node Node;
     typedef typename Graph::EdgeIt EdgeIt;
     typedef float WeightType;
-    
+
     typename Graph::template EdgeMap<WeightType> weights(g);
     WeightType maxWeight = 0.0,
                minWeight = N;
     {
         AccumulatorChainArray<CoupledArrays<N, WeightType, T>,
                               Select< DataArg<1>, LabelArg<2>, Maximum> > a;
-    
+
         MultiArray<N, WeightType> distances(src.shape());
         boundaryMultiDistance(src, distances, true);
         extractFeatures(distances, src, a);
@@ -110,7 +110,7 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
             }
             else
             {
-                WeightType weight = norm(u - v) * 
+                WeightType weight = norm(u - v) *
                                   (get<Maximum>(a, label) + minWeight - 0.5*(distances[u] + distances[v]));
                 weights[*edge] = weight;
                 maxWeight = std::max(weight, maxWeight);
@@ -118,7 +118,7 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
         }
     }
     maxWeight *= src.size();
-    
+
     T maxLabel = r.maxRegionLabel();
     centers.resize(maxLabel+1);
 
@@ -126,35 +126,35 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
     {
         if(get<Count>(r, i) == 0)
             continue;
-        centers[i] = eccentricityCentersOneRegionImpl(pathFinder, weights, maxWeight, 
-                                             get<RegionAnchor>(r, i), 
+        centers[i] = eccentricityCentersOneRegionImpl(pathFinder, weights, maxWeight,
+                                             get<RegionAnchor>(r, i),
                                              get<Coord<Minimum> >(r, i),
                                              get<Coord<Maximum> >(r, i) + Shape(1));
     }
 }
 
-/** \addtogroup MultiArrayDistanceTransform
+/** \addtogroup DistanceTransform
 */
 //@{
 
     /** \brief Find the (approximate) eccentricity center in each region of a labeled image.
-        
+
         <b> Declarations:</b>
 
         pass arbitrary-dimensional array views:
         \code
         namespace vigra {
             template <unsigned int N, class T, class S, class Array>
-            void 
+            void
             eccentricityCenters(MultiArrayView<N, T, S> const & src,
                                 Array & centers);
         }
         \endcode
-        
+
         \param[in] src : labeled array
-        \param[out] centers : list of eccentricity centers (required interface: 
-                               <tt>centers[k] = TinyVector<int, N>()</tt> must be supported)    
-                               
+        \param[out] centers : list of eccentricity centers (required interface:
+                               <tt>centers[k] = TinyVector<int, N>()</tt> must be supported)
+
         <b> Usage:</b>
 
         <b>\#include</b> \<vigra/eccentricitytransform.hxx\><br/>
@@ -170,14 +170,14 @@ eccentricityCentersImpl(const MultiArrayView<N, T, S> & src,
         \endcode
     */
 template <unsigned int N, class T, class S, class Array>
-void 
+void
 eccentricityCenters(const MultiArrayView<N, T, S> & src,
                     Array & centers)
 {
     using namespace acc;
     typedef GridGraph<N> Graph;
     typedef float WeightType;
-    
+
     Graph g(src.shape(), IndirectNeighborhood);
     ShortestPathDijkstra<Graph, WeightType> pathFinder(g);
 
@@ -185,12 +185,12 @@ eccentricityCenters(const MultiArrayView<N, T, S> & src,
                           Select< DataArg<1>, LabelArg<1>,
                                   Count, BoundingBox, RegionAnchor> > a;
     extractFeatures(src, a);
-    
+
     eccentricityCentersImpl(src, g, a, pathFinder, centers);
 }
 
     /** \brief Computes the (approximate) eccentricity transform on each region of a labeled image.
-        
+
         <b> Declarations:</b>
 
         pass arbitrary-dimensional array views:
@@ -198,24 +198,24 @@ eccentricityCenters(const MultiArrayView<N, T, S> & src,
         namespace vigra {
             // compute only the accentricity transform
             template <unsigned int N, class T, class S>
-            void 
+            void
             eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
                                           MultiArrayView<N, S> dest);
-            
+
             // also return the eccentricity center of each region
             template <unsigned int N, class T, class S, class Array>
-            void 
+            void
             eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
                                           MultiArrayView<N, S> dest,
                                           Array & centers);
         }
         \endcode
-        
+
         \param[in] src : labeled array
         \param[out] dest : eccentricity transform of src
-        \param[out] centers : (optional) list of eccentricity centers (required interface: 
-                               <tt>centers[k] = TinyVector<int, N>()</tt> must be supported)    
-                               
+        \param[out] centers : (optional) list of eccentricity centers (required interface:
+                               <tt>centers[k] = TinyVector<int, N>()</tt> must be supported)
+
         <b> Usage:</b>
 
         <b>\#include</b> \<vigra/eccentricitytransform.hxx\><br/>
@@ -232,7 +232,7 @@ eccentricityCenters(const MultiArrayView<N, T, S> & src,
         \endcode
     */
 template <unsigned int N, class T, class S, class Array>
-void 
+void
 eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
                               MultiArrayView<N, S> dest,
                               Array & centers)
@@ -243,19 +243,19 @@ eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
     typedef typename Graph::Node Node;
     typedef typename Graph::EdgeIt EdgeIt;
     typedef float WeightType;
-    
-    vigra_precondition(src.shape() == dest.shape(), 
+
+    vigra_precondition(src.shape() == dest.shape(),
         "eccentricityTransformOnLabels(): Shape mismatch between src and dest.");
-        
+
     Graph g(src.shape(), IndirectNeighborhood);
     ShortestPathDijkstra<Graph, WeightType> pathFinder(g);
 
-    using namespace acc;        
+    using namespace acc;
     AccumulatorChainArray<CoupledArrays<N, T>,
                           Select< DataArg<1>, LabelArg<1>,
                                   Count, BoundingBox, RegionAnchor> > a;
     extractFeatures(src, a);
-    
+
     eccentricityCentersImpl(src, g, a, pathFinder, centers);
 
     typename Graph::template EdgeMap<WeightType> weights(g);
@@ -277,7 +277,7 @@ eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
 }
 
 template <unsigned int N, class T, class S>
-inline void 
+inline void
 eccentricityTransformOnLabels(MultiArrayView<N, T> const & src,
                               MultiArrayView<N, S> dest)
 {

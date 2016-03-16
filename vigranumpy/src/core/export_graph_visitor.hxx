@@ -452,12 +452,12 @@ public:
     }
 
     template<class ITEM>
-    static bool eqToInvalid(const ITEM &  item,const lemon::Invalid iv){
+    static bool eqToInvalid(const ITEM &  item,const lemon::Invalid /*iv*/){
         return item.graph_==NULL || item==lemon::INVALID;
     }
 
     template<class ITEM>
-    static bool neqToInvalid(const ITEM &  item,const lemon::Invalid iv){
+    static bool neqToInvalid(const ITEM &  item,const lemon::Invalid /*iv*/){
         return item.graph_!=NULL && item!=lemon::INVALID;
     }
     

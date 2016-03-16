@@ -430,7 +430,7 @@ public:
       indices_(maxSize_+1, -1),
       priorities_(maxSize_+1)
     {
-        for(int i = 0; i <= maxSize_; i++)
+        for(unsigned i = 0; i <= maxSize_; i++)
             indices_[i] = -1;
     }
     
@@ -552,9 +552,9 @@ private:
  
     void bubbleDown(int k)  {
         int j;
-        while(2*k <= currentSize_) {
+        while(static_cast<unsigned>(2*k) <= currentSize_) {
             j = 2*k;
-            if(j < currentSize_ && _gt(priorities_[heap_[j]] , priorities_[heap_[j+1]]) )
+            if(static_cast<unsigned>(j) < currentSize_ && _gt(priorities_[heap_[j]] , priorities_[heap_[j+1]]) )
                 j++;
             if( _leqt(priorities_[heap_[k]] , priorities_[heap_[j]]))
                 break;

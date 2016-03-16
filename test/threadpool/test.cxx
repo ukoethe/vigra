@@ -51,7 +51,7 @@ struct ThreadPoolTests
         for (size_t i = 0; i < v.size(); ++i)
         {
             pool.enqueue(
-                [&v, i](size_t thread_id)
+                [&v, i](size_t /*thread_id*/)
                 {
                     v[i] = 0;
                     for (size_t k = 0; k < i+1; ++k)
@@ -81,7 +81,7 @@ struct ThreadPoolTests
         {
             futures.emplace_back(
                 pool.enqueue(
-                    [&v, &exception_string, i](size_t thread_id)
+                    [&v, &exception_string, i](size_t /*thread_id*/)
                     {
                         v[i] = 1;
                         if (i == 5000)
@@ -110,7 +110,7 @@ struct ThreadPoolTests
         std::iota(v_in.begin(), v_in.end(), 0);
         std::vector<int> v_out(n);
         parallel_foreach(4, v_in.begin(), v_in.end(),
-            [&v_out](size_t thread_id, int x)
+            [&v_out](size_t /*thread_id*/, int x)
             {
                 v_out[x] = x*(x+1)/2;
             }
@@ -134,7 +134,7 @@ struct ThreadPoolTests
         try
         {
             parallel_foreach(4, v_in.begin(), v_in.end(),
-                [&v_out, &exception_string](size_t thread_id, int x)
+                [&v_out, &exception_string](size_t /*thread_id*/, int x)
                 {
                     if (x == 5000)
                         throw std::runtime_error(exception_string);
@@ -221,7 +221,7 @@ struct ThreadPoolTests
         std::vector<size_t> results(n_threads, 0);
         TIC;
         parallel_foreach(n_threads, input.begin(), input.end(),
-            [&results](size_t thread_id, size_t x)
+            [&results](size_t thread_id, size_t /*x*/)
             {
                 results[thread_id] += 1;
             }

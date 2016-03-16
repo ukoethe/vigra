@@ -363,7 +363,7 @@ class FoerstnerKernelBase
         }
     }   
     
-    ResultType operator()(int x, int y, VectorType const &) const
+    ResultType operator()(int /*x*/, int /*y*/, VectorType const &) const
     {
         // isotropic filtering
         return weights_(radius_, radius_);

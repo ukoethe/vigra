@@ -356,7 +356,7 @@ pythonGetShape(const ImageImportInfo& info)
 }
 
 AxisTags
-pythonGetAxisTags(const ImageImportInfo& info)
+pythonGetAxisTags(const ImageImportInfo& /*info*/)
 {
     return AxisTags(AxisInfo::x(), AxisInfo::y(), AxisInfo::c());
 }

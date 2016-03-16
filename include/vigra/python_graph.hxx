@@ -78,7 +78,7 @@ template<class GRAPH>
 struct NodeHolder :  GRAPH::Node
 {
     typedef typename GRAPH::Node Node;
-    NodeHolder(const lemon::Invalid & iv = lemon::INVALID)
+    NodeHolder(const lemon::Invalid & /*iv*/ = lemon::INVALID)
     : Node(lemon::INVALID),
       graph_(NULL)
     {}
@@ -106,7 +106,7 @@ struct EdgeHolder : GRAPH::Edge
 {
 
     typedef typename GRAPH::Edge Edge;
-    EdgeHolder(const lemon::Invalid & iv = lemon::INVALID)
+    EdgeHolder(const lemon::Invalid & /*iv*/ = lemon::INVALID)
     : Edge(lemon::INVALID),
       graph_(NULL)
     {}
@@ -139,7 +139,7 @@ struct EdgeHolder : GRAPH::Edge
 template<class GRAPH>
 struct ArcHolder: GRAPH::Arc {
     typedef typename GRAPH::Arc Arc;
-    ArcHolder(const lemon::Invalid & iv = lemon::INVALID)
+    ArcHolder(const lemon::Invalid & /*iv*/ = lemon::INVALID)
     : Arc(lemon::INVALID),
       graph_(NULL)
     {}
@@ -531,13 +531,13 @@ public:
         return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),"e");
     }
 
-    static AxisInfo  axistagsNodeMap(const Graph & graph){
+    static AxisInfo  axistagsNodeMap(const Graph & /*graph*/){
         return AxisInfo("n");
     }
-    static AxisInfo  axistagsEdgeMap(const Graph & graph){
+    static AxisInfo  axistagsEdgeMap(const Graph & /*graph*/){
         return AxisInfo("e");
     }
-    static AxisTags  axistagsArcMap(const Graph & graph){
+    static AxisTags  axistagsArcMap(const Graph & /*graph*/){
         return AxisInfo("e");
     }
 };
@@ -561,13 +561,13 @@ public: \
     static TaggedShape  taggedArcMapShape(const Graph & graph){  \
        return NumpyArray<AD,int>::ArrayTraits::taggedShape(IntrinsicGraphShape<Graph>::intrinsicArcMapShape(graph),ta);  \
     } \
-    static AxisInfo  axistagsNodeMap(const Graph & graph){ \
+    static AxisInfo  axistagsNodeMap(const Graph & /*graph*/){ \
         return AxisInfo(tn); \
     } \
-    static AxisInfo  axistagsEdgeMap(const Graph & graph){ \
+    static AxisInfo  axistagsEdgeMap(const Graph & /*graph*/){ \
         return AxisInfo(te); \
     } \
-    static AxisTags  axistagsArcMap(const Graph & graph){ \
+    static AxisTags  axistagsArcMap(const Graph & /*graph*/){ \
         return AxisInfo(ta); \
     } \
 };

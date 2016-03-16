@@ -93,7 +93,7 @@ public:
     }
     
     template <int N2>
-    void exec(argument_type const & v, result_type & r, MetaInt<N2>) const
+    void exec(argument_type const &, result_type &, MetaInt<N2>) const
     {
         vigra_fail("tensorTraceMultiArray(): Sorry, can only handle dimensions up to 3.");
     }
@@ -128,7 +128,7 @@ public:
     }
     
     template <int N2>
-    void exec(argument_type const & v, result_type & r, MetaInt<N2>) const
+    void exec(argument_type const &, result_type &, MetaInt<N2>) const
     {
         vigra_fail("tensorEigenvaluesMultiArray(): Sorry, can only handle dimensions up to 3.");
     }
@@ -168,7 +168,7 @@ public:
     }
     
     template <int N2>
-    void exec(argument_type const & v, result_type & r, MetaInt<N2>) const
+    void exec(argument_type const &, result_type &, MetaInt<N2>) const
     {
         vigra_fail("tensorDeterminantMultiArray(): Sorry, can only handle dimensions up to 3.");
     }

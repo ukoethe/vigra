@@ -179,7 +179,7 @@ public:
         SB::set_external_parameters(prob, tree_count, is_weighted);
     }
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter iter,  int k, MultiArrayView<2, T, C> const & prob, double totalCt)
+    bool after_prediction(WeightIter,  int k, MultiArrayView<2, T, C> const & prob, double)
     {
         if(k == SB::tree_count_ -1)
         {
@@ -304,8 +304,8 @@ public:
     }
 
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter iter,  int k,
-            MultiArrayView<2, T, C> const &prob, double totalCt)
+    bool after_prediction(WeightIter,  int k,
+            MultiArrayView<2, T, C> const &prob, double)
     {
         if(k == SB::tree_count_ -1)
         {
@@ -385,7 +385,7 @@ public:
     }
 
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter iter,  int k, MultiArrayView<2, T, C> prob, double totalCt)
+    bool after_prediction(WeightIter,  int k, MultiArrayView<2, T, C> prob, double)
     {
         if(k == SB::tree_count_ -1)
         {
@@ -443,7 +443,7 @@ public:
 
     template<class T>
     void set_external_parameters(ProblemSpec<T> const &,
-            int tree_count = 0, bool /* is_weighted_ */= false)
+            int /*tree_count*/ = 0, bool /* is_weighted_ */= false)
     {}
 
     template<class Region>

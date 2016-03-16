@@ -52,7 +52,7 @@ namespace detail_local_minima{
     template<class G>
     struct NodeAtBorder{
         template<class NODE_ITER>
-        static bool atBorder(const NODE_ITER & node ){
+        static bool atBorder(const NODE_ITER &){
             return false;
         }
     };

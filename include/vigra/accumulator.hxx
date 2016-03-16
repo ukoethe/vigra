@@ -710,7 +710,7 @@ template <>
 struct CollectAccumulatorNames<void>
 {
     template <class BackInsertable>
-    static void exec(BackInsertable & a, bool skipInternals=true)
+    static void exec(BackInsertable &, bool /* skipInternals */ = true)
     {}
 };
 
@@ -740,7 +740,7 @@ template <>
 struct ApplyVisitorToTag<void>
 {
     template <class Accu, class Visitor>
-    static bool exec(Accu & a, std::string const & tag, Visitor const & v)
+    static bool exec(Accu &, std::string const &, Visitor const &)
     {
         return false;
     }
@@ -776,7 +776,7 @@ template <class TAG>
 struct SetHistogramBincount
 {
     template <class Accu>
-    static void exec(Accu & a, HistogramOptions const & options)
+    static void exec(Accu &, HistogramOptions const &)
     {}
 };
 
@@ -794,7 +794,7 @@ template <class TAG>
 struct ApplyHistogramOptions
 {
     template <class Accu>
-    static void exec(Accu & a, HistogramOptions const & options)
+    static void exec(Accu &, HistogramOptions const &)
     {}
 };
 
@@ -802,7 +802,7 @@ template <class TAG>
 struct ApplyHistogramOptions<StandardQuantiles<TAG> >
 {
     template <class Accu>
-    static void exec(Accu & a, HistogramOptions const & options)
+    static void exec(Accu &, HistogramOptions const &)
     {}
 };
 
@@ -991,11 +991,11 @@ template <class A, unsigned CurrentPass, bool allowRuntimeActivation, unsigned W
 struct DecoratorImpl
 {
     template <class T>
-    static void exec(A & a, T const & t)
+    static void exec(A &, T const &)
     {}
 
     template <class T>
-    static void exec(A & a, T const & t, double weight)
+    static void exec(A &, T const &, double)
     {}
 };
 
@@ -2327,7 +2327,7 @@ class StandAloneDataFreeAccumulatorChain
 
     template<class IGNORED_DATA>
     void
-    updatePassN(const IGNORED_DATA & ignoreData,
+    updatePassN(const IGNORED_DATA &,
                 const CoordType & coord,
                 unsigned int p)
     {
@@ -3638,20 +3638,20 @@ class Central
 
         static const unsigned int workInPass = 2;
 
-        void operator+=(Impl const & o)
+        void operator+=(Impl const &)
         {
             vigra_precondition(false,
                 "Central<...>::operator+=(): not supported.");
         }
 
         template <class T>
-        void update(T const & t)
+        void update(T const &)
         {
             ImplType::update(getDependency<Centralize>(*this));
         }
 
         template <class T>
-        void update(T const & t, double weight)
+        void update(T const &, double weight)
         {
             ImplType::update(getDependency<Centralize>(*this), weight);
         }
@@ -3790,20 +3790,20 @@ class Principal
 
         static const unsigned int workInPass = 2;
 
-        void operator+=(Impl const & o)
+        void operator+=(Impl const &)
         {
             vigra_precondition(false,
                 "Principal<...>::operator+=(): not supported.");
         }
 
         template <class T>
-        void update(T const & t)
+        void update(T const &)
         {
             ImplType::update(getDependency<PrincipalProjection>(*this));
         }
 
         template <class T>
-        void update(T const & t, double weight)
+        void update(T const &, double weight)
         {
             ImplType::update(getDependency<PrincipalProjection>(*this), weight);
         }
@@ -3937,12 +3937,12 @@ class PowerSum<0>
     struct Impl
     : public SumBaseImpl<BASE, T, double, double>
     {
-        void update(T const & t)
+        void update(T const &)
         {
             ++this->value_;
         }
 
-        void update(T const & t, double weight)
+        void update(T const &, double weight)
         {
             this->value_ += weight;
         }
@@ -4356,13 +4356,13 @@ class Central<PowerSum<3> >
             }
         }
 
-        void update(U const & t)
+        void update(U const &)
         {
             using namespace vigra::multi_math;
             this->value_ += pow(getDependency<Centralize>(*this), 3);
         }
 
-        void update(U const & t, double weight)
+        void update(U const &, double weight)
         {
             using namespace vigra::multi_math;
             this->value_ += weight*pow(getDependency<Centralize>(*this), 3);
@@ -4417,13 +4417,13 @@ class Central<PowerSum<4> >
             }
         }
 
-        void update(U const & t)
+        void update(U const &)
         {
             using namespace vigra::multi_math;
             this->value_ += pow(getDependency<Centralize>(*this), 4);
         }
 
-        void update(U const & t, double weight)
+        void update(U const &, double weight)
         {
             using namespace vigra::multi_math;
             this->value_ += weight*pow(getDependency<Centralize>(*this), 4);
@@ -5326,7 +5326,7 @@ class FirstSeen
                 value_ = t;
         }
 
-        void update(U const & t, double weight)
+        void update(U const & t, double)
         {
             update(t);
         }
@@ -5425,7 +5425,7 @@ class ArgMinWeight
             }
         }
 
-        void update(U const & t)
+        void update(U const &)
         {
             vigra_precondition(false, "ArgMinWeight::update() needs weights.");
         }
@@ -5500,7 +5500,7 @@ class ArgMaxWeight
             }
         }
 
-        void update(U const & t)
+        void update(U const &)
         {
             vigra_precondition(false, "ArgMaxWeight::update() needs weights.");
         }
@@ -5815,7 +5815,7 @@ class IntegerHistogram
                 ++this->value_[index];
         }
 
-        void update(int index, double weight)
+        void update(int, double)
         {
             // cannot compute quantile from weighted integer histograms,
             // so force people to use UserRangeHistogram or AutoRangeHistogram
@@ -6138,12 +6138,12 @@ class RegionContour
         }
 
         template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t, double weight)
+        void update(CoupledHandle<U, NEXT> const & t, double)
         {
             update(t);
         }
 
-        void operator+=(Impl const & o)
+        void operator+=(Impl const &)
         {
             vigra_precondition(false,
                 "RegionContour::operator+=(): RegionContour cannot be merged.");
@@ -6395,12 +6395,12 @@ class ConvexHull
         }
 
         template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t, double weight)
+        void update(CoupledHandle<U, NEXT> const & t, double)
         {
             update(t);
         }
 
-        void operator+=(Impl const & o)
+        void operator+=(Impl const &)
         {
             vigra_precondition(false,
                 "ConvexHull::operator+=(): ConvexHull features cannot be merged.");

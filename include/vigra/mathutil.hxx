@@ -163,19 +163,26 @@ VIGRA_DEFINE_MISSING_ABS(signed long long)
 
 using std::isinf;
 using std::isnan;
+using std::isfinite;
 
 #else
 
 template <class REAL>
 inline bool isinf(REAL v)
 {
-    return _finite(v) == 0;
+    return _finite(v) == 0 && _isnan(v) == 0;
 }
 
 template <class REAL>
 inline bool isnan(REAL v)
 {
     return _isnan(v) != 0;
+}
+
+template <class REAL>
+inline bool isfinite(REAL v)
+{
+    return _finite(v) != 0;
 }
 
 #endif
@@ -1726,6 +1733,11 @@ inline bool greaterEqualAtTolerance(T1 l, T2 r)
     }
 
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wtype-limits"
+#endif
+
 VIGRA_MATH_FUNC_HELPER(unsigned char)
 VIGRA_MATH_FUNC_HELPER(unsigned short)
 VIGRA_MATH_FUNC_HELPER(unsigned int)
@@ -1740,7 +1752,9 @@ VIGRA_MATH_FUNC_HELPER(float)
 VIGRA_MATH_FUNC_HELPER(double)
 VIGRA_MATH_FUNC_HELPER(long double)
 
-
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 #undef VIGRA_MATH_FUNC_HELPER
 

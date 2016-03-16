@@ -29,7 +29,7 @@ namespace vigra{
 
 
 template<class GRAPH>
-class LemonGraphHierachicalClusteringVisitor 
+class LemonGraphHierachicalClusteringVisitor
 :   public boost::python::def_visitor<LemonGraphHierachicalClusteringVisitor<GRAPH> >
 {
 public:
@@ -41,7 +41,7 @@ public:
 
     typedef LemonGraphHierachicalClusteringVisitor<GRAPH> VisitorType;
     // Lemon Graph Typedefs
-    
+
     typedef typename Graph::index_type       index_type;
     typedef typename Graph::Edge             Edge;
     typedef typename Graph::Node             Node;
@@ -95,7 +95,7 @@ public:
 
     typedef cluster_operators::PythonOperator<MergeGraph> PythonClusterOperator;
 
-   
+
 
 
     LemonGraphHierachicalClusteringVisitor(const std::string clsName)
@@ -125,15 +125,15 @@ public:
 
         ;
 
-        python::def("__mergeGraph",&pyMergeGraphConstructor ,  
+        python::def("__mergeGraph",&pyMergeGraphConstructor ,
             python::with_custodian_and_ward_postcall< 0,1 ,
-                    python::return_value_policy<   python::manage_new_object      >  >()  
+                    python::return_value_policy<   python::manage_new_object      >  >()
         )
         ;
     }
 
     void exportHierarchicalClusteringOperators()const{
-        {   
+        {
             const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("MinEdgeWeightNodeDistOperator");
             python::class_<DefaultClusterOperator  >(operatorName.c_str(),python::no_init)
             .def("__init__", python::make_constructor(&pyEdgeWeightNodeFeaturesConstructor))
@@ -146,12 +146,12 @@ public:
                                 python::with_custodian_and_ward_postcall< 0 ,5,
                                     python::with_custodian_and_ward_postcall< 0 ,6,
                                         python::with_custodian_and_ward_postcall< 0 ,7,
-                                            python::return_value_policy<   python::manage_new_object      
-                >  >    >   >   >   >   >   >()  
+                                            python::return_value_policy<   python::manage_new_object
+                >  >    >   >   >   >   >   >()
             );
 
         }
-        //{   
+        //{
         //    const std::string operatorName = clsName_ + std::string("MergeGraph") + std::string("NeuroOperator");
         //    python::class_<NeuroClusterOperator  >(operatorName.c_str(),python::no_init)
         //    .def("__init__", python::make_constructor(&pyNeuroConstructor))
@@ -163,8 +163,8 @@ public:
         //                    python::with_custodian_and_ward_postcall< 0 ,4,
         //                        python::with_custodian_and_ward_postcall< 0 ,5,
         //                            python::with_custodian_and_ward_postcall< 0 ,6,
-        //                                python::return_value_policy<   python::manage_new_object      
-        //        >  >    >   >   >   >   >()  
+        //                                python::return_value_policy<   python::manage_new_object
+        //        >  >    >   >   >   >   >()
         //    );
         //}
         {
@@ -177,7 +177,7 @@ public:
             python::def("__pythonClusterOperator",registerConverters(&pyPythonOperatorConstructor),
                 python::with_custodian_and_ward_postcall< 0,1 ,
                     python::with_custodian_and_ward_postcall< 0,2 ,
-                        python::return_value_policy<   python::manage_new_object      >  >  >()  
+                        python::return_value_policy<   python::manage_new_object      >  >  >()
             );
         }
     }
@@ -185,7 +185,7 @@ public:
     template<class CLUSTER_OPERATOR>
     void exportHierarchicalClustering(const std::string & opClsName)const{
         typedef CLUSTER_OPERATOR ClusterOperator;
-        typedef HierarchicalClustering<ClusterOperator> HCluster;
+        typedef HierarchicalClusteringImpl<ClusterOperator> HCluster;
 
         const std::string clsName = std::string("HierarchicalClustering")+ opClsName;
         python::class_<HCluster,boost::noncopyable>(
@@ -203,7 +203,7 @@ public:
         // free function
         python::def("__hierarchicalClustering",registerConverters(&pyHierarchicalClusteringConstructor<ClusterOperator>),
             python::with_custodian_and_ward_postcall< 0,1 ,
-                    python::return_value_policy<   python::manage_new_object      >  >()  
+                    python::return_value_policy<   python::manage_new_object      >  >()
         );
     }
 
@@ -239,8 +239,8 @@ public:
 
 
     template <class classT>
-    void visit(classT& c) const
-    {   
+    void visit(classT& /*c*/) const
+    {
         // the merge graph itself and factory functions to get a merge graph
         exportMergeGraph();
 
@@ -278,7 +278,7 @@ public:
     ){
         return EdgeHolder<MergeGraph>(mg,mg.reprEdge(edge));
     }
-    
+
 
     static void pyContractEdgeA(
         MergeGraph & mg,
@@ -304,24 +304,24 @@ public:
 
 
     template<class CLUSTER_OP>
-    static HierarchicalClustering<CLUSTER_OP> * pyHierarchicalClusteringConstructor(
+    static HierarchicalClusteringImpl<CLUSTER_OP> * pyHierarchicalClusteringConstructor(
         CLUSTER_OP & clusterOp,
         const size_t nodeNumStopCond,
         const bool buildMergeTreeEncoding
 
 
     ){
-        typename HierarchicalClustering<CLUSTER_OP>::Parameter param;
+        typename HierarchicalClusteringImpl<CLUSTER_OP>::Parameter param;
         param.nodeNumStopCond_=nodeNumStopCond;
         param.buildMergeTreeEncoding_=buildMergeTreeEncoding;
         param.verbose_=true;
-        return new  HierarchicalClustering<CLUSTER_OP>(clusterOp,param);
+        return new  HierarchicalClusteringImpl<CLUSTER_OP>(clusterOp,param);
     }
 
 
 
 
-    static DefaultClusterOperator * 
+    static DefaultClusterOperator *
     pyEdgeWeightNodeFeaturesConstructor(
         MergeGraph &                mergeGraph,
         FloatEdgeArray              edgeIndicatorMapArray,
@@ -337,7 +337,7 @@ public:
     ){
 
         FloatEdgeArrayMap       edgeIndicatorMap(mergeGraph.graph(),edgeIndicatorMapArray);
-        FloatEdgeArrayMap       edgeSizeMap(mergeGraph.graph(),edgeSizeMapArray);   
+        FloatEdgeArrayMap       edgeSizeMap(mergeGraph.graph(),edgeSizeMapArray);
         MultiFloatNodeArrayMap  nodeFeatureMap(mergeGraph.graph(),nodeFeatureMapArray);
         FloatNodeArrayMap       nodeSizeMap(mergeGraph.graph(),nodeSizeMapArray);
         FloatEdgeArrayMap       edgeMinWeightMap(mergeGraph.graph(),edgeMinWeightMapArray);
@@ -357,7 +357,7 @@ public:
 
 
 
-    static PythonClusterOperator * 
+    static PythonClusterOperator *
     pyPythonOperatorConstructor(
         MergeGraph & mergeGraph,
         python::object object,
@@ -366,7 +366,7 @@ public:
         const bool useEraseEdgeCallback
     ){
         return new PythonClusterOperator(mergeGraph,object,useMergeNodeCallback,useMergeEdgesCallback,useEraseEdgeCallback);
-    }   
+    }
 
 
 
@@ -417,7 +417,7 @@ public:
             indices(m,2)=encoding[m].r_;
         }
         return python::make_tuple(indices,w);
-    } 
+    }
 
 
     template<class HCLUSTER>
@@ -425,7 +425,7 @@ public:
         const HCLUSTER &            hcluster,
         const typename HCLUSTER::MergeGraphIndexType treeNodeId,
         NumpyArray<1,UInt32>  leafes  = (NumpyArray<1,UInt32>())
-    ) {        
+    ) {
         leafes.reshapeIfEmpty( typename NumpyArray<1,UInt32>::difference_type( hcluster.graph().nodeNum()) );
         if(leafes.shape(0)!=hcluster.graph().nodeNum()){
             throw std::runtime_error("out.shape(0) must be equal nodeNum");
@@ -434,7 +434,7 @@ public:
         // todo make leafes size check
         const size_t leafNum=hcluster.leafNodeIds(treeNodeId,leafes.begin());
         return python::make_tuple(leafes,leafNum);
-    } 
+    }
 
     /*
 
@@ -449,7 +449,7 @@ public:
     ){
         // reshape out  ( last argument (out) will be reshaped if empty, and #channels is taken from second argument)
         reshapeNodeMapIfEmpty(graph,ragNodeFeaturesArray,graphNodeFeaturesArray);
-        // numpy arrays => lemon maps 
+        // numpy arrays => lemon maps
         typename PyNodeMapTraits<Graph,   UInt32>::Map labelsWhichGeneratedRagArrayMap(graph, labelsWhichGeneratedRagArray);
         typename PyNodeMapTraits<RagGraph,T     >::Map ragNodeFeaturesArrayMap(rag,ragNodeFeaturesArray);
         typename PyNodeMapTraits<Graph,   T     >::Map graphNodeFeaturesArrayMap(graph,graphNodeFeaturesArray);

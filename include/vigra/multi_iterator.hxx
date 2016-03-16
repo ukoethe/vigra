@@ -50,30 +50,30 @@ namespace vigra {
 
     /** \brief Iterate over a virtual array where each element contains its coordinate.
 
-        MultiCoordinateIterator behaves like a read-only random access iterator. 
+        MultiCoordinateIterator behaves like a read-only random access iterator.
         It moves accross the given region of interest in scan-order (with the first
-        index changing most rapidly), and dereferencing the iterator returns the 
-        coordinate (i.e. multi-dimensional index) of the current array element. 
-        The functionality is thus similar to a meshgrid in Matlab or numpy. 
-        
+        index changing most rapidly), and dereferencing the iterator returns the
+        coordinate (i.e. multi-dimensional index) of the current array element.
+        The functionality is thus similar to a meshgrid in Matlab or numpy.
+
         Internally, it is just a wrapper of a \ref CoupledScanOrderIterator that
-        has been created without any array and whose reference type is not a 
+        has been created without any array and whose reference type is not a
         \ref CoupledHandle, but the coordinate itself.
-                
-        The iterator supports all functions listed in the STL documentation for 
+
+        The iterator supports all functions listed in the STL documentation for
         <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
 
         <b>Usage:</b>
 
         <b>\#include</b> \<vigra/multi_iterator.hxx\><br/>
         Namespace: vigra
-        
+
         \code
         MultiCoordinateIterator<3> i(Shape3(3,2,1)), end = i.getEndIterator();
-        
+
         for(; i != end; ++i)
             std::cout << *i << "\n";
-            
+
         // Output:
         // (0, 0, 0)
         // (1, 0, 0)
@@ -102,28 +102,28 @@ class MultiCoordinateIterator
     typedef typename handle_type::pointer          pointer;
     typedef typename handle_type::const_pointer    const_pointer;
 
-    MultiCoordinateIterator() 
+    MultiCoordinateIterator()
         : base_type(handle_type())
     {}
 
-    explicit MultiCoordinateIterator(shape_type const & shape) 
+    explicit MultiCoordinateIterator(shape_type const & shape)
         : base_type(handle_type(shape))
     {}
 
-    explicit MultiCoordinateIterator(shape_type const & start, shape_type const & end) 
+    explicit MultiCoordinateIterator(shape_type const & start, shape_type const & end)
         : base_type(handle_type(end))
     {
         this->restrictToSubarray(start, end);
     }
 
     template<class DirectedTag>
-    explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const & g) 
+    explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const & g)
        : base_type(handle_type(g.shape()))
     {}
 
 
     template<class DirectedTag>
-    explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const & g, const typename  GridGraph<N, DirectedTag>::Node & node) 
+    explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const & g, const typename  GridGraph<N, DirectedTag>::Node & node)
        : base_type(handle_type(g.shape()))
     {
         if( isInside(g,node))
@@ -140,12 +140,12 @@ class MultiCoordinateIterator
     {
         return this->template get<0>();
     }
-    
+
     const_reference operator*() const
     {
         return this->template get<0>();
     }
-    
+
     operator value_type() const
     {
         return *(*this);
@@ -155,7 +155,7 @@ class MultiCoordinateIterator
     {
         return &this->template get<0>();
     }
-    
+
     const_pointer operator->() const
     {
         return &this->template get<0>();
@@ -171,7 +171,7 @@ class MultiCoordinateIterator
         base_type::operator++();
         return *this;
     }
-    
+
     MultiCoordinateIterator operator++(int)
     {
         MultiCoordinateIterator res(*this);
@@ -243,27 +243,27 @@ class MultiCoordinateIterator
     {
         return base_type::operator-(other);
     }
-    
+
   protected:
-    MultiCoordinateIterator(base_type const & base) 
+    MultiCoordinateIterator(base_type const & base)
         : base_type(base)
     {}
 };
 
     /** \brief Sequential iterator for MultiArrayView.
-        
-        This iterator provides STL-compatible random access iterator functionality for arbitrary 
+
+        This iterator provides STL-compatible random access iterator functionality for arbitrary
         \ref MultiArrayView instances, regardless of their shapes and strides. The
-        class uses an implementation that minimizes speed penalties that could result from 
-        non-trivial strides. The <i>scan-order</i> is defined such that dimensions are iterated 
+        class uses an implementation that minimizes speed penalties that could result from
+        non-trivial strides. The <i>scan-order</i> is defined such that dimensions are iterated
         from front to back (first to last).
-        
-        You normally construct instances of this class by calling \ref MultiArrayView::begin() 
-        and \ref MultiArrayView::end(). 
-        
-        The iterator supports all functions listed in the STL documentation for 
+
+        You normally construct instances of this class by calling \ref MultiArrayView::begin()
+        and \ref MultiArrayView::end().
+
+        The iterator supports all functions listed in the STL documentation for
         <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
-        
+
         <b>\#include</b> \<vigra/multi_iterator.hxx\><br/>
         Namespace: vigra
     */
@@ -287,20 +287,20 @@ class StridedScanOrderIterator
     typedef POINTER                                pointer;
     typedef T const *                              const_pointer;
 
-    StridedScanOrderIterator() 
+    StridedScanOrderIterator()
         : base_type()
     {}
 
     template <class S>
-    explicit StridedScanOrderIterator(MultiArrayView<N, T, S> const & view) 
+    explicit StridedScanOrderIterator(MultiArrayView<N, T, S> const & view)
         : base_type(createCoupledIterator(view))
     {}
 
-    StridedScanOrderIterator(POINTER p, shape_type const & shape, shape_type const & strides) 
+    StridedScanOrderIterator(POINTER p, shape_type const & shape, shape_type const & strides)
         : base_type(createCoupledIterator(MultiArrayView<N, T, StridedArrayTag>(shape, strides, const_cast<T *>(p))))
     {}
 
-    StridedScanOrderIterator(handle_type const & handle) 
+    StridedScanOrderIterator(handle_type const & handle)
         : base_type(handle)
     {}
 
@@ -308,7 +308,7 @@ class StridedScanOrderIterator
     {
         return this->template get<1>();
     }
-    
+
     const_reference operator*() const
     {
         return this->template get<1>();
@@ -318,7 +318,7 @@ class StridedScanOrderIterator
     {
         return &this->template get<1>();
     }
-    
+
     const_pointer operator->() const
     {
         return &this->template get<1>();
@@ -349,7 +349,7 @@ class StridedScanOrderIterator
         base_type::operator++();
         return *this;
     }
-    
+
     StridedScanOrderIterator operator++(int)
     {
         StridedScanOrderIterator res(*this);
@@ -421,21 +421,21 @@ class StridedScanOrderIterator
     {
         return StridedScanOrderIterator(*this) -= coordOffset;
     }
-    
+
     MultiArrayIndex index() const
     {
         return this->scanOrderIndex();
     }
 
-    StridedScanOrderIterator & 
+    StridedScanOrderIterator &
     restrictToSubarray(shape_type const & start, shape_type const & stop)
     {
         base_type::restrictToSubarray(start, stop);
         return *this;
     }
-    
+
   protected:
-    StridedScanOrderIterator(base_type const & base) 
+    StridedScanOrderIterator(base_type const & base)
         : base_type(base)
     {}
 };
@@ -463,9 +463,9 @@ General iterators for arrays of arbitrary dimension.
 
 <p>
     The Multidimensional Iterator concept allows navigation on arrays
-    of arbitrary dimension. It provides two modes of iteration: 
+    of arbitrary dimension. It provides two modes of iteration:
     <em>direct traversal</em>, and <em>hierarchical traversal</em>.
-    In general, hierarchical traversal will be faster, while only 
+    In general, hierarchical traversal will be faster, while only
     direct traversal allows for true random access in all dimensions.
     Via the <tt>dim<K>()</tt> function, operations applying to a particular
     dimension can be used in the direct traversal mode. In contrast,
@@ -585,10 +585,10 @@ General iterators for arrays of arbitrary dimension.
         navigation functions referring to a particular dimension.<br>
         Example (assuming <tt>i, j</tt> are 3-dimensional):<br>
         \code
-        i.dim<0>()++;   // increment dimension 0 
-        i.dim<1>()++;   // increment dimension 1 
-        i.dim<2>()++;   // increment dimension 2 
-        
+        i.dim<0>()++;   // increment dimension 0
+        i.dim<1>()++;   // increment dimension 1
+        i.dim<2>()++;   // increment dimension 2
+
         j += MultiIterator::multi_difference_type(1,1,1);    // same effect
         \endcode
     </td>
@@ -605,10 +605,10 @@ General iterators for arrays of arbitrary dimension.
 Note that it is impossible to support an <tt>operator-</tt> between two iterators which returns
 a <tt>MultiIterator::multi_difference_type</tt> because it is impossible to decide to which
 dimension a difference applies. Consider for example, a 2-dimensional iterator <tt>i</tt>, and
-let <tt>j = i + multi_difference_type(width, 0)</tt>, <tt>k = i + multi_difference_type(0,1)</tt>, 
-where <tt>width</tt> is the array's total width. In general, <tt>j</tt> and <tt>k</tt> point to 
+let <tt>j = i + multi_difference_type(width, 0)</tt>, <tt>k = i + multi_difference_type(0,1)</tt>,
+where <tt>width</tt> is the array's total width. In general, <tt>j</tt> and <tt>k</tt> point to
 the same memory location, so that the two cases cannot easily be distinguished (it is possible,
-but iterator performance will suffer significantly, as is experienced with 
+but iterator performance will suffer significantly, as is experienced with
 \ref vigra::ImageIterator where differencing is allowed).
 </p>
 
@@ -687,7 +687,7 @@ but iterator performance will suffer significantly, as is experienced with
 </tr>
 <tr>
     <td><tt>i.begin()</tt></td><td><tt>next_type</tt></td>
-    <td>create the hierarchical iterator pointing to the first element in the 
+    <td>create the hierarchical iterator pointing to the first element in the
     next lower dimension.<br>
     <em>Note:</em> The result of this operation is undefined if the iterator
     doesn't point to element 0 in all dimensions below its current dimension.<br>
@@ -706,13 +706,13 @@ but iterator performance will suffer significantly, as is experienced with
             }
         }
     }
-    
+
     \endcode
     </td>
 </tr>
 <tr>
     <td><tt>i.end()</tt></td><td><tt>next_type</tt></td>
-    <td>create the hierarchical iterator pointing to the past-the-end location in the 
+    <td>create the hierarchical iterator pointing to the past-the-end location in the
     next lower dimension.<br>
     <em>Note:</em> The result of this operation is undefined if the iterator
     doesn't point to element 0 in all dimensions below its current dimension.</td>
@@ -727,7 +727,7 @@ but iterator performance will suffer significantly, as is experienced with
 
 */
 
-/** \addtogroup MultiIteratorGroup  
+/** \addtogroup MultiIteratorGroup
 */
 //@{
 
@@ -944,7 +944,7 @@ class MultiIterator<1, T, REFERENCE, POINTER>
 
   protected:
 
-    difference_type 
+    difference_type
     total_stride(typename multi_difference_type::const_iterator d) const
     {
         return d[level];
@@ -1125,7 +1125,7 @@ class MultiIterator<2, T, REFERENCE, POINTER>
 
   protected:
 
-    difference_type 
+    difference_type
     total_stride(typename multi_difference_type::const_iterator d) const
     {
         return d[level]*m_stride[level] + base_type::total_stride(d);
@@ -1138,7 +1138,7 @@ class MultiIterator<2, T, REFERENCE, POINTER>
 /*                                                      */
 /********************************************************/
 
-/** \brief A multi-dimensional hierarchical iterator to be used with 
+/** \brief A multi-dimensional hierarchical iterator to be used with
            \ref vigra::MultiArrayView if it is not strided.
 
     See \ref MultiIteratorPage for further documentation.
@@ -1147,7 +1147,7 @@ class MultiIterator<2, T, REFERENCE, POINTER>
     Namespace: vigra
 */
 template <unsigned int N, class T, class REFERENCE, class POINTER>
-class MultiIterator 
+class MultiIterator
 #ifndef DOXYGEN  // doxygen doesn't understand this inheritance
 : public MultiIterator<N-1, T, REFERENCE, POINTER>
 #endif
@@ -1157,7 +1157,7 @@ public:
         /** the type of the parent in the inheritance hierarchy.
          */
     typedef MultiIterator<N-1, T, REFERENCE, POINTER> base_type;
-        
+
         /** the iterator's level in the dimension hierarchy
          */
     enum { level = N-1 };
@@ -1182,11 +1182,11 @@ public:
          */
     typedef const value_type *const_pointer;
 
-        /** multi difference type 
+        /** multi difference type
             (used for offsetting along all axes simultaneously)
          */
     typedef typename MultiArrayShape<N>::type multi_difference_type;
-    
+
         /** difference type (used for offsetting)
          */
 #ifndef DOXYGEN
@@ -1210,7 +1210,7 @@ public:
         /** the iterator tag (image traverser)
         */
     typedef multi_dimensional_traverser_tag iterator_category;
-            
+
     /* use default copy constructor and assignment operator */
 
         /** default constructor.
@@ -1373,13 +1373,13 @@ public:
         /** greater than.
          */
     bool operator> (const MultiIterator &rhs) const;
-    
+
         /** greater or equal.
          */
     bool operator>= (const MultiIterator &rhs) const;
 #endif
 
-        /** access the array element at the given offset in 
+        /** access the array element at the given offset in
         the current dimension.
         */
     reference operator[] (difference_type n) const
@@ -1394,8 +1394,8 @@ public:
         return this->m_ptr [total_stride(d.begin())];
     }
 
-        /** Return the (N-1)-dimensional multi-iterator that points to 
-            the first (N-1)-dimensional subarray of the 
+        /** Return the (N-1)-dimensional multi-iterator that points to
+            the first (N-1)-dimensional subarray of the
             N-dimensional array this iterator is referring to.
             The result is only valid if this iterator refers to location
             0 in <em>all</em> dimensions below its current dimension N,
@@ -1417,8 +1417,8 @@ public:
         return *this;
     }
 
-        /** Return the (N-1)-dimensional multi-iterator that points beyond 
-            the last (N-1)-dimensional subarray of the 
+        /** Return the (N-1)-dimensional multi-iterator that points beyond
+            the last (N-1)-dimensional subarray of the
             N-dimensional array this iterator is referring to.
             The result is only valid if this iterator refers to location
             0 in <em>all</em> dimensions below its current dimension N,
@@ -1445,7 +1445,7 @@ public:
             {
                 // go down the current column starting at the location of 'outer'
             }
-            \endcode            
+            \endcode
         */
     iterator iteratorForDimension(unsigned int d) const
     {
@@ -1455,25 +1455,25 @@ public:
     }
         /** Return the multi-iterator that operates on dimension K in order
             to manipulate this dimension directly. Usage:
-               
+
             \code
-                
+
             MultiIterator<3, int> i3 = ...;
-                
+
             i3.template dim<2>()++;  // increment outer dimension
             i3.template dim<0>()++;  // increment inner dimension
             \endcode
-            
+
             For convenience, the same functionality is also available
             as <tt>dim0()</tt>, <tt>dim1()</tt> etc. up to <tt>dim4()</tt>:
-            
+
             \code
-                
+
             MultiIterator<3, int> i3 = ...;
-                
+
             i3.dim2()++;  // increment outer dimension
             i3.dim0()++;  // increment inner dimension
-            \endcode            
+            \endcode
         */
     template <unsigned int K>
     MultiIterator<K+1, T, REFERENCE, POINTER> &
@@ -1495,7 +1495,7 @@ public:
 
   protected:
 
-    difference_type 
+    difference_type
     total_stride(typename multi_difference_type::const_iterator d) const
     {
         return d[level]*this->m_stride[level] + base_type::total_stride(d);
@@ -1707,7 +1707,7 @@ class StridedMultiIterator<1, T, REFERENCE, POINTER>
 
   protected:
 
-    difference_type 
+    difference_type
     total_stride(typename multi_difference_type::const_iterator d) const
     {
         return d[level] * m_stride;
@@ -1888,7 +1888,7 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
 
   protected:
 
-    difference_type 
+    difference_type
     total_stride(typename multi_difference_type::const_iterator d) const
     {
         return d[level]*m_stride[level] + base_type::total_stride(d);
@@ -1901,7 +1901,7 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
 /*                                                      */
 /********************************************************/
 
-/** \brief A multi-dimensional hierarchical iterator to be used with 
+/** \brief A multi-dimensional hierarchical iterator to be used with
            \ref vigra::MultiArrayView if it is not strided.
 
     See \ref MultiIteratorPage for further documentation.
@@ -1910,7 +1910,7 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
     Namespace: vigra
 */
 template <unsigned int N, class T, class REFERENCE, class POINTER>
-class StridedMultiIterator 
+class StridedMultiIterator
 #ifndef DOXYGEN  // doxygen doesn't understand this inheritance
 : public StridedMultiIterator<N-1, T, REFERENCE, POINTER>
 #endif
@@ -1920,7 +1920,7 @@ public:
         /** the type of the parent in the inheritance hierarchy.
          */
     typedef StridedMultiIterator<N-1, T, REFERENCE, POINTER> base_type;
-        
+
         /** the iterator's level in the dimension hierarchy
          */
     enum { level = N-1 };
@@ -1945,7 +1945,7 @@ public:
          */
     typedef const value_type *const_pointer;
 
-        /** multi difference type 
+        /** multi difference type
             (used for offsetting along all axes simultaneously)
          */
     typedef typename MultiArrayShape<N>::type multi_difference_type;
@@ -1959,7 +1959,7 @@ public:
 #else
     typedef MultiArrayIndex difference_type;
 #endif
-    
+
         /** the StridedMultiIterator for the next lower dimension.
          */
     typedef base_type next_type;
@@ -1972,7 +1972,7 @@ public:
         /** the iterator tag (image traverser)
         */
     typedef multi_dimensional_traverser_tag iterator_category;
-            
+
     /* use default copy constructor and assignment operator */
 
         /** default constructor.
@@ -2135,13 +2135,13 @@ public:
         /** greater than.
          */
     bool operator> (const StridedMultiIterator &rhs) const;
-    
+
         /** greater or equal.
          */
     bool operator>= (const StridedMultiIterator &rhs) const;
 #endif
 
-        /** access the array element at the given offset in 
+        /** access the array element at the given offset in
         the current dimension.
         */
     reference operator[] (difference_type n) const
@@ -2156,8 +2156,8 @@ public:
         return this->m_ptr [total_stride(d.begin())];
     }
 
-        /** Return the (N-1)-dimensional multi-iterator that points to 
-            the first (N-1)-dimensional subarray of the 
+        /** Return the (N-1)-dimensional multi-iterator that points to
+            the first (N-1)-dimensional subarray of the
             N-dimensional array this iterator is referring to.
             The result is only valid if this iterator refers to location
             0 in <em>all</em> dimensions below its current dimension N,
@@ -2179,8 +2179,8 @@ public:
         return *this;
     }
 
-        /** Return the (N-1)-dimensional multi-iterator that points beyond 
-            the last (N-1)-dimensional subarray of the 
+        /** Return the (N-1)-dimensional multi-iterator that points beyond
+            the last (N-1)-dimensional subarray of the
             N-dimensional array this iterator is referring to.
             The result is only valid if this iterator refers to location
             0 in <em>all</em> dimensions below its current dimension N,
@@ -2207,7 +2207,7 @@ public:
             {
                 // go down the current column starting at the location of 'outer'
             }
-            \endcode            
+            \endcode
         */
     iterator iteratorForDimension(unsigned int d) const
     {
@@ -2217,25 +2217,25 @@ public:
     }
         /** Return the multi-iterator that operates on dimension K in order
             to manipulate this dimension directly. Usage:
-               
+
             \code
-                
+
             StridedMultiIterator<3, int> i3 = ...;
-                
+
             i3.template dim<2>()++;  // increment outer dimension
             i3.template dim<0>()++;  // increment inner dimension
             \endcode
-            
+
             For convenience, the same functionality is also available
             as <tt>dim0()</tt>, <tt>dim1()</tt> etc. up to <tt>dim4()</tt>:
-            
+
             \code
-                
+
             StridedMultiIterator<3, int> i3 = ...;
-                
+
             i3.dim2()++;  // increment outer dimension
             i3.dim0()++;  // increment inner dimension
-            \endcode            
+            \endcode
         */
     template <unsigned int K>
     StridedMultiIterator<K+1, T, REFERENCE, POINTER> &
@@ -2257,7 +2257,7 @@ public:
 
   protected:
 
-    difference_type 
+    difference_type
     total_stride(typename multi_difference_type::const_iterator d) const
     {
         return d[level]*this->m_stride[level] + base_type::total_stride(d);
@@ -2271,10 +2271,12 @@ public:
 
 namespace std {
 
+    // output the current coordinate of the iterator
+    // (note: this also works when the iterator is an end-iterator)
 template <unsigned int N, class T, class REFERENCE, class POINTER>
 ostream & operator<<(ostream & o, vigra::StridedScanOrderIterator<N, T, REFERENCE, POINTER> const & i)
 {
-    o << *i;
+    o << i.point();
     return o;
 }
 

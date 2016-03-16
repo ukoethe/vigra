@@ -149,6 +149,8 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
     vigra_precondition(blocks_shape == label_blocks_begin.shape() &&
                        blocks_shape == mapping.shape(),
                        "shapes of blocks of blocks do not match");
+    vigra_precondition(std::distance(data_blocks_begin,data_blocks_end) == std::distance(label_blocks_begin,label_blocks_end),
+                       "the sizes of input ranges are different");
 
     static const unsigned int Dimensions = DataBlocksIterator::dimension + 1;
     MultiArray<Dimensions, Label> label_offsets(label_blocks_begin.shape());
@@ -172,7 +174,7 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
         //std::iota(ids.begin(), ids.end(), 0 );
 
         parallel_foreach(options.getNumThreads(), d,
-            [&](const int threadId, const uint64_t i){
+            [&](const int /*threadId*/, const uint64_t i){
                 Label resVal = labelMultiArray(data_blocks_it[i], label_blocks_it[i],
                                                options, equal);
                 if(has_background) // FIXME: reversed condition?
@@ -301,6 +303,10 @@ void toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator 
 /*                      labelMultiArrayBlockwise             */
 /*                                                           */
 /*************************************************************/
+
+/** \weakgroup ParallelProcessing
+    \sa labelMultiArrayBlockwise <B>(...)</B>
+*/
 
 /** \brief Connected components labeling for MultiArrays and ChunkedArrays.
 

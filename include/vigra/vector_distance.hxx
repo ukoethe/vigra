@@ -308,7 +308,7 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
 
 } // namespace detail
 
-/** \addtogroup MultiArrayDistanceTransform
+/** \addtogroup DistanceTransform
 */
 //@{
 
@@ -387,7 +387,7 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
         transformMultiArray( source, dest,
                                 ifThenElse( Arg1() != Param(0), Param(maxDist), Param(rzero) ));
 
-    for(int d = 0; d < N; ++d )
+    for(unsigned d = 0; d < N; ++d )
     {
         Navigator nav( dest.traverser_begin(), dest.shape(), d);
         for( ; nav.hasMore(); nav++ )
@@ -496,7 +496,7 @@ boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
 
         T2 maxDist(2*sum(labels.shape()*pixelPitch));
         dest = maxDist;
-        for( int d = 0; d < N; ++d )
+        for( unsigned d = 0; d < N; ++d )
         {
             LabelNavigator lnav( labels.traverser_begin(), labels.shape(), d );
             DNavigator dnav( dest.traverser_begin(), dest.shape(), d );

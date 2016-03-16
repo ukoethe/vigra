@@ -15,7 +15,6 @@
 /*    restriction, including without limitation the rights to use,      */
 /*    copy, modify, merge, publish, distribute, sublicense, and/or      */
 /*    sell copies of the Software, and to permit persons to whom the    */
-/*    Software is furnished to do so, subject to the following          */
 /*    conditions:                                                       */
 /*                                                                      */
 /*    The above copyright notice and this permission notice shall be    */
@@ -682,7 +681,7 @@ class PositionTest
     void testFile(const char* filename)
     {
         ImageExportInfo exportinfo(filename);
-        FRGBImage img(1, 1);
+        FVector4Image img(1, 1);
         img(0, 0) = 1;
 
         const Diff2D position(0, 100);

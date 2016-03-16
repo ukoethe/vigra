@@ -109,7 +109,7 @@ namespace vigra{
     template< unsigned int DIM , class T_DATA, class T_HIST >
     void multiGaussianCoHistogram(
         const MultiArrayView<DIM, T_DATA > & imageA,
-        const MultiArrayView<DIM, T_DATA > & imageB,
+        const MultiArrayView<DIM, T_DATA > & /*imageB*/,
         const TinyVector<T_DATA,2> & minVals,
         const TinyVector<T_DATA,2> & maxVals,
         const TinyVector<int,2> & nBins,
@@ -146,7 +146,6 @@ namespace vigra{
 
             const float fiA = binIndexA;
             const unsigned int biA = std::floor(fiA+0.5);
-            const float fiB = binIndexB;
             const unsigned int biB = std::floor(fiA+0.5);
             histCoord[DIM]=std::min(biA,static_cast<unsigned int>(nBins[0]-1));
             histCoord[DIM+1]=std::min(biB,static_cast<unsigned int>(nBins[1]-1));

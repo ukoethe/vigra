@@ -120,7 +120,7 @@ public:
     :   DenseReferenceMapType(ItemHelper::itemNum(g)==0 ? 0: ItemHelper::maxItemId(g) ){
 
     }
-    DenseGraphItemReferenceMap(const Graph & g,typename DenseReferenceMapType::ConstReference value)
+    DenseGraphItemReferenceMap(const Graph & g,typename DenseReferenceMapType::ConstReference)
     :   DenseReferenceMapType(ItemHelper::itemNum(g)==0 ? 0: ItemHelper::maxItemId(g)){
 
     }
@@ -252,7 +252,7 @@ class ZeroNodeMap
     ZeroNodeMap()
     {}
 
-    value_type operator[](const Key & key) const
+    value_type operator[](const Key &) const
     {
         return value_type();
     }

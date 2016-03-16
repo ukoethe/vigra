@@ -95,7 +95,7 @@ public:
     }
 
     static ArrayPtr createArray(Shape3 const & shape,
-                                Shape3 const & chunk_shape,
+                                Shape3 const & /*chunk_shape*/,
                                 ChunkedArrayFull<3, T> *,
                                 std::string const & = "chunked_test.h5")
     {
@@ -199,7 +199,7 @@ public:
         int dataBytesBefore = array->dataBytes();
         array->releaseChunks(Shape3(5, 0, 3), Shape3(shape[0], shape[1], shape[2]-3), true);
         if(!isFullArray)
-            should(array->dataBytes() < dataBytesBefore);
+            should(array->dataBytes() < (unsigned)dataBytesBefore);
 
         if(IsSameType<Array, ChunkedArrayLazy<3, T> >::value ||
            IsSameType<Array, ChunkedArrayCompressed<3, T> >::value)

@@ -54,13 +54,13 @@ class TestVisitor: public rf::visitors::VisitorBase
 
     //TODO split must be const
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
+    void visit_after_split( Tree          & /*tree*/, 
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
                             Region        & rightChild,
-                            Feature_t     & features,
-                            Label_t       & labels)
+                            Feature_t     & /*features*/,
+                            Label_t       & /*labels*/)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
@@ -86,7 +86,7 @@ class TestVisitor: public rf::visitors::VisitorBase
     }
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(    RF& /*rf*/, PR & /*pr*/,  SM & /*sm*/, ST & /*st*/, int index)
     {
         fout << std::endl << std::endl << "Tree Number: " << index << " finished." << std::endl << std::endl;
     }
@@ -106,13 +106,13 @@ class SetTestVisitor: public rf::visitors::VisitorBase
 
 
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
+    void visit_after_split( Tree          & /*tree*/, 
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
                             Region        & rightChild,
-                            Feature_t     & features,
-                            Label_t       & labels)
+                            Feature_t     & /*features*/,
+                            Label_t       & /*labels*/)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
@@ -133,14 +133,14 @@ class SetTestVisitor: public rf::visitors::VisitorBase
     }
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(    RF& /*rf*/, PR & /*pr*/,  SM & /*sm*/, ST & /*st*/, int /*index*/)
     {
         treesset.insert(sout.str());
         sout.str(std::string());
     }
 
     template<class RF, class PR>
-    void visit_at_end(RF & rf, PR & pr)
+    void visit_at_end(RF & /*rf*/, PR & /*pr*/)
     {
         std::ofstream fout("setTest.log");
         std::set<std::string>::iterator iter;
@@ -172,7 +172,7 @@ class AllOutputVisitor: public rf::visitors::VisitorBase
 
     //TODO split must be const
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
+    void visit_after_split( Tree          & /*tree*/, 
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
@@ -217,7 +217,7 @@ class AllOutputVisitor: public rf::visitors::VisitorBase
     }
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(    RF& /*rf*/, PR & /*pr*/,  SM & /*sm*/, ST & /*st*/, int index)
     {
         fout << std::endl << std::endl << "Tree Number: " << index << " finished." << std::endl << std::endl;
     }

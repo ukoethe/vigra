@@ -55,6 +55,10 @@ namespace vigra {
 */
 //@{
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayHDF5
+*/
+
 /** Implement ChunkedArray as a chunked dataset in an HDF5 file.
 
     <b>\#include</b> \<vigra/multi_array_chunked_hdf5.hxx\> <br/>
@@ -301,7 +305,7 @@ class ChunkedArrayHDF5
             {
                 vigra_precondition(fileShape.size() == N+1,
                     "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
-                vigra_precondition(fileShape[0] == TypeTraits::numberOfBands(),
+                vigra_precondition(fileShape[0] == static_cast<unsigned>(TypeTraits::numberOfBands()),
                     "ChunkedArrayHDF5(file, dataset): dataset has wrong number of bands.");
                 shape_type shape(fileShape.begin()+1);
                 if(this->size() > 0)

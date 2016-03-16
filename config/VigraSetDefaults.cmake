@@ -43,6 +43,8 @@ OPTION(WITH_BOOST_THREAD "Use boost::thread instead of std::thread" OFF)
 
 OPTION(TEST_VIGRANUMPY "Consider lack of vigranumpy or failed vigranumpy test an error?" OFF)
 
+OPTION(SUPPRESS_3RD_PARTY_WARNINGS "Switch-off compiler warnings originating from dependencies?" ON)
+
 IF(TEST_VIGRANUMPY OR NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()
@@ -116,11 +118,7 @@ IF(NOT VIGRA_DEFAULTS_INIT)
     # executed once in the first configure run.
     IF(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
         IF(NOT CMAKE_CXX_FLAGS)
-            if(NOT MINGW AND NOT MACOSX)
-                SET(CMAKE_CXX_FLAGS "-W -Wall -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-type-limits")
-            elseif(MACOSX)
-                SET(CMAKE_CXX_FLAGS "-W -Wall -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable")
-            endif()
+            SET(CMAKE_CXX_FLAGS "-W -Wall -Wextra")
         ENDIF()
         IF(NOT CMAKE_C_FLAGS)
             SET(CMAKE_C_FLAGS "-W -Wall -Wextra -pedantic -std=c99 -Wno-sign-compare")
