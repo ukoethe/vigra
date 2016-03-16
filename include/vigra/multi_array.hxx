@@ -3423,8 +3423,8 @@ template <class T, class Stride>
 BasicImageView <T>
 makeBasicImageView (MultiArrayView <2, T, Stride> const &array)
 {
-    vigra_precondition(array.isUnstrided(),
-       "makeBasicImageView(array): array must be unstrided (i.e. array.isUnstrided() == true).");
+    vigra_precondition(array.isUnstrided(0),
+       "makeBasicImageView(array): array must be unstrided along x (i.e. array.isUnstrided(0) == true).");
     return BasicImageView <T> (array.data (), array.shape (0),
                                array.shape (1), array.stride(1));
 }
