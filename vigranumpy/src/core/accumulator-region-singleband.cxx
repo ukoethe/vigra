@@ -73,7 +73,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
     #define VIGRA_CONVEX_HULL_FEATURE_POLYGON "Polygon"
 
     #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_INPUT_CENTER "Input Center"
-    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_CENTER "Center"
+    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_CENTER "Hull Center"
     #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_DEFECT_CENTER "Defect Center"
 
     if(list_features_only)
@@ -264,7 +264,7 @@ pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T> > const & labels,
     #define VIGRA_SKELETON_FEATURE_AVERAGE_LENGTH "Average Length"
     #define VIGRA_SKELETON_FEATURE_BRANCH_COUNT "Branch Count"
     #define VIGRA_SKELETON_FEATURE_HOLE_COUNT "Hole Count"
-    #define VIGRA_SKELETON_VECTOR_FEATURE_CENTER "Center"
+    #define VIGRA_SKELETON_VECTOR_FEATURE_CENTER "Skeleton Center"
     #define VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_1 "Terminal 1"
     #define VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_2 "Terminal 2"
 
