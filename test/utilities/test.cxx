@@ -1533,6 +1533,7 @@ struct UtilitiesTestSuite
 
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
+        add( testCase( &ArrayVectorTest::testBackInsertion_failedOnVC14));
         add( testCase( &ArrayVectorTest::testAmbiguousConstructor));
         add( testCase( &BucketQueueTest::testDescending));
         add( testCase( &BucketQueueTest::testAscending));
