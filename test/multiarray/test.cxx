@@ -1868,8 +1868,8 @@ struct ImageViewTest
     void testStridedImageView()
     {
         // create stride MultiArrayView
-        MA roi = ma.subarray(start, end);
         Shape2 start(0,0), end(2, 2);
+        typename MA::view_type roi = ma.subarray(start, end);
 
         // inspect both the MultiArrayView and the corresponding BasicImageView
         vigra::FindSum<typename Image::value_type> sum1, sum2;
