@@ -51,7 +51,7 @@ namespace vigra {
 template <class ARITHTYPE>
 class Kernel2D;
 
-/** \addtogroup CommonConvolutionFilters
+/** \addtogroup ConvolutionFilters
 */
 //@{
 

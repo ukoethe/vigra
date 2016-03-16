@@ -133,7 +133,7 @@ class CoscotFunction
     {
         return prefilterCoefficients_;
     }
-    
+
   protected:
     static ArrayVector<double> prefilterCoefficients_;
     unsigned int m_;
@@ -145,19 +145,7 @@ ArrayVector<double> CoscotFunction<T>::prefilterCoefficients_;
 
 
 
-/** \addtogroup GeometricTransformations Geometric Transformations
-    Zoom up and down by repeating pixels, or using various interpolation schemes.
-
-    See also: 
-    <ul>
-    <li> \ref ResamplingConvolutionFilters to resize by means of pyramids or smoothing filters</li>
-    <li> \ref resampleImage() to just drop or repeat pixels</li>
-    <li> \ref resizeMultiArraySplineInterpolation() for multi-dimensional interpolation</li>
-    </ul>
-
-    <b>\#include</b> \<vigra/stdimagefunctions.hxx\><br>
-    <b>or</b><br>
-    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
+/** \addtogroup GeometricTransformations
 */
 //@{
 
@@ -181,7 +169,7 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
         ad.set(as(i1), id);
         return;
     }
-    
+
     double dx = (double)(wold - 1) / (wnew - 1);
     double x = 0.5;
     for(; id != idend; ++id, x += dx)
@@ -253,7 +241,7 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     \code
     MultiArray<2, unsigned char> src(w, h);
     MultiArray<2, float>         dest(w_new, h_new);
-    
+
     resizeImageNoInterpolation(src, dest);
     \endcode
 
@@ -458,7 +446,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     \code
     MultiArray<2, unsigned char> src(w, h);
     MultiArray<2, float>         dest(w_new, h_new);
-    
+
     resizeImageLinearInterpolation(src, dest);
     \endcode
 
@@ -681,10 +669,10 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
     \code
     MultiArray<2, unsigned char> src(w, h);
     MultiArray<2, float>         dest(w_new, h_new);
-    
+
     // use default cubic spline interpolator
     resizeImageSplineInterpolation(src, dest);
-    
+
     // use 5th-order spline interpolator
     resizeImageSplineInterpolation(src, dest, BSpline<5, double>());
     \endcode
@@ -981,11 +969,11 @@ resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
 
     <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
-    
+
     \code
     MultiArray<2, unsigned char> src(w, h);
     MultiArray<2, float>         dest(w_new, h_new);
-    
+
     resizeImageCatmullRomInterpolation(src, dest);
     \endcode
 */
@@ -1073,11 +1061,11 @@ resizeImageCatmullRomInterpolation(MultiArrayView<2, T1, S1> const & src,
 
     <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
-    
+
     \code
     MultiArray<2, unsigned char> src(w, h);
     MultiArray<2, float>         dest(w_new, h_new);
-    
+
     resizeImageCoscotInterpolation(src, dest);
     \endcode
 */

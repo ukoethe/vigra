@@ -682,12 +682,7 @@ scaleKernel(K & kernel, double a)
 
 } // namespace detail
 
-/** \addtogroup MultiArrayConvolutionFilters Convolution filters for multi-dimensional arrays.
-
-    These functions realize a separable convolution on an arbitrary dimensional
-    array that is specified by iterators (compatible to \ref MultiIteratorPage)
-    and shape objects. It can therefore be applied to a wide range of data structures
-    (\ref vigra::MultiArrayView, \ref vigra::MultiArray etc.).
+/** \addtogroup ConvolutionFilters
 */
 //@{
 

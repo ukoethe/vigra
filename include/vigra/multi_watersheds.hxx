@@ -50,7 +50,7 @@
 
 namespace vigra {
 
-/** \addtogroup SeededRegionGrowing
+/** \addtogroup Superpixels
 */
 //@{
 namespace lemon_graph {

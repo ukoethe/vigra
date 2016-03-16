@@ -49,7 +49,7 @@
 namespace vigra
 {
 
-/** \addtogroup SeededRegionGrowing
+/** \addtogroup Superpixels
 */
 //@{
 

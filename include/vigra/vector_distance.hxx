@@ -308,7 +308,7 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
 
 } // namespace detail
 
-/** \addtogroup MultiArrayDistanceTransform
+/** \addtogroup DistanceTransform
 */
 //@{
 

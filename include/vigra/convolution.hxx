@@ -46,37 +46,6 @@
 #include "multi_shape.hxx"
 
 
-/** \page Convolution Functions to Convolve Images and Signals
-
-    1D and 2D filters, including separable and recursive convolution, and non-linear diffusion
-
-    <b>\#include</b> \<vigra/convolution.hxx\><br>
-    Namespace: vigra
-
-    <UL style="list-style-image:url(documents/bullet.gif)">
-    <LI> \ref CommonConvolutionFilters
-         <BR>&nbsp;&nbsp;&nbsp;<em>Short-hands for many common 2D convolution filters (including normalized convolution)</em>
-    <LI> \ref MultiArrayConvolutionFilters
-         <BR>&nbsp;&nbsp;&nbsp;<em>Convolution filters for arbitrary dimensional arrays (MultiArray etc.)</em>
-    <LI> \ref ResamplingConvolutionFilters
-         <BR>&nbsp;&nbsp;&nbsp;<em>Resampling convolution filters</em>
-    <LI> \ref vigra::Kernel2D
-         <BR>&nbsp;&nbsp;&nbsp;<em>Generic 2-dimensional discrete convolution kernel </em>
-    <LI> \ref SeparableConvolution
-         <BR>&nbsp;&nbsp;&nbsp;<em>1D convolution and separable filters in 2 dimensions </em>
-    <LI> \ref vigra::Kernel1D
-         <BR>&nbsp;&nbsp;&nbsp;<em>Generic 1-dimensional discrete convolution kernel </em>
-    <LI> \ref RecursiveConvolution
-         <BR>&nbsp;&nbsp;&nbsp;<em>Recursive filters (1st and 2nd order)</em>
-    <LI> \ref NonLinearDiffusion
-         <BR>&nbsp;&nbsp;&nbsp;<em>Edge-preserving smoothing </em>
-    <LI> \ref BorderTreatmentMode
-         <BR>&nbsp;&nbsp;&nbsp;<em>Choose between different border treatment modes </em>
-    <LI> \ref KernelArgumentObjectFactories
-         <BR>&nbsp;&nbsp;&nbsp;<em>Factory functions to create argument objects to simplify passing kernels</em>
-    </UL>
-*/
-
 /** \page KernelArgumentObjectFactories Kernel Argument Object Factories
 
     These factory functions allow to create argument objects for 1D
@@ -174,19 +143,13 @@
 
 namespace vigra {
 
-
-
 /********************************************************/
 /*                                                      */
 /*             Common convolution filters               */
 /*                                                      */
 /********************************************************/
 
-/** \addtogroup CommonConvolutionFilters Common Filters
-
-    These functions calculate common filters by appropriate sequences of calls
-    to \ref separableConvolveX() and \ref separableConvolveY() or explicit 2-dimensional
-    convolution.
+/** \addtogroup ConvolutionFilters
 */
 //@{
 

@@ -163,7 +163,7 @@ public:
 
 } // namespace detail
 
-/** \addtogroup SeededRegionGrowing
+/** \addtogroup Superpixels
 */
 //@{
 
@@ -183,10 +183,10 @@ public:
     there are no candidates, the algorithm will simply copy the seed array
     into the output array. Otherwise it will aggregate the candidates into
     the existing regions so that a cost function is minimized.
-    Candidates are taken from the neighborhood of the already assigned pixels, 
+    Candidates are taken from the neighborhood of the already assigned pixels,
     where the type of neighborhood is determined by parameter <tt>neighborhood</tt>
-    which can take the values <tt>NeighborCode3DSix()</tt> (the default) 
-    or <tt>NeighborCode3DTwentySix()</tt>. The algorithm basically works as follows 
+    which can take the values <tt>NeighborCode3DSix()</tt> (the default)
+    or <tt>NeighborCode3DTwentySix()</tt>. The algorithm basically works as follows
     (illustrated for 6-neighborhood, but 26-neighborhood works in the same way):
 
     <ol>
@@ -210,11 +210,11 @@ public:
     </ol>
 
     <tt>SRGType</tt> can take the following values:
-    
+
     <DL>
     <DT><tt>CompleteGrow</tt> <DD> produce a complete tesselation of the volume (default).
     <DT><tt>KeepContours</tt> <DD> keep a 1-voxel wide unlabeled contour between all regions.
-    <DT><tt>StopAtThreshold</tt> <DD> stop when the boundary indicator values exceed the 
+    <DT><tt>StopAtThreshold</tt> <DD> stop when the boundary indicator values exceed the
                              threshold given by parameter <tt>max_cost</tt>.
     <DT><tt>KeepContours | StopAtThreshold</tt> <DD> keep 1-voxel wide contour and stop at given <tt>max_cost</tt>.
     </DL>
@@ -239,9 +239,9 @@ public:
     the original statistics.
 
     If a candidate could be merged into more than one regions with identical
-    cost, the algorithm will favour the nearest region. If <tt>StopAtThreshold</tt> is active, 
-    and the cost of the current candidate at any point in the algorithm exceeds the optional 
-    <tt>max_cost</tt> value (which defaults to <tt>NumericTraits<double>::max()</tt>), 
+    cost, the algorithm will favour the nearest region. If <tt>StopAtThreshold</tt> is active,
+    and the cost of the current candidate at any point in the algorithm exceeds the optional
+    <tt>max_cost</tt> value (which defaults to <tt>NumericTraits<double>::max()</tt>),
     region growing is aborted, and all voxels not yet assigned to a region remain unlabeled.
 
     In some cases, the cost only depends on the feature value of the current
@@ -262,7 +262,7 @@ public:
         seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & src,
                               MultiArrayView<3, TS, AS> const & seeds,
                               MultiArrayView<3, T2, S2>         labels,
-                              RegionStatisticsArray &           stats, 
+                              RegionStatisticsArray &           stats,
                               SRGType                           srgType = CompleteGrow,
                               Neighborhood                      neighborhood = NeighborCode3DSix(),
                               double                            max_cost = NumericTraits<double>::max());
@@ -277,11 +277,11 @@ public:
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
                   class RegionStatisticsArray, class Neighborhood>
-        void 
+        void
         seededRegionGrowing3D(SrcImageIterator srcul, Shape shape, SrcAccessor as,
                               SeedImageIterator seedsul, SeedAccessor aseeds,
                               DestImageIterator destul, DestAccessor ad,
-                              RegionStatisticsArray & stats, 
+                              RegionStatisticsArray & stats,
                               SRGType srgType = CompleteGrow,
                               Neighborhood neighborhood = NeighborCode3DSix(),
                               double max_cost = NumericTraits<double>::max());
@@ -298,19 +298,19 @@ public:
         seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> src,
                               pair<SeedImageIterator, SeedAccessor> seeds,
                               pair<DestImageIterator, DestAccessor> dest,
-                              RegionStatisticsArray & stats, 
+                              RegionStatisticsArray & stats,
                               SRGType srgType = CompleteGrow,
-                              Neighborhood neighborhood = NeighborCode3DSix(), 
+                              Neighborhood neighborhood = NeighborCode3DSix(),
                               double max_cost = NumericTraits<double>::max());
     }
     \endcode
     \deprecatedEnd
 
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/seededregiongrowing3d.hxx\><br>
     Namespace: vigra
-    
+
     See \ref seededRegionGrowing() for an example
 */
 doxygen_overloaded_function(template <...> void seededRegionGrowing3D)
@@ -319,11 +319,11 @@ template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-void 
+void
 seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                       SeedImageIterator seedsul, SeedAccessor aseeds,
                       DestImageIterator destul, DestAccessor ad,
-                      RegionStatisticsArray & stats, 
+                      RegionStatisticsArray & stats,
                       SRGType srgType,
                       Neighborhood,
                       double max_cost)
@@ -356,13 +356,13 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
     IVolume regions(regionshape);
     Traverser ir = regions.traverser_begin();
     ir = ir + Diff_type(1,1,1);
-    
+
     //IVolume::Iterator iry, irx, irz;
    Traverser iry, irx, irz;
 
     //initImageBorder(destImageRange(regions), 1, SRGWatershedLabel);
-    initMultiArrayBorder(destMultiArrayRange(regions), 1, SRGWatershedLabel); 
-    
+    initMultiArrayBorder(destMultiArrayRange(regions), 1, SRGWatershedLabel);
+
     copyMultiArray(seedsul, Diff_type(w,h,d), aseeds, ir, AccessorTraits<int>::default_accessor());
 
     // allocate and init memory for the results
@@ -384,12 +384,12 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
             pos[1]++, isy.dim1()++, iry.dim1()++)
         {
             //std::cerr << "Y = " << pos[1] << std::endl;
-            
+
             for(isx=isy, irx=iry, pos[0]=0; pos[0]<w;
                 pos[0]++, isx.dim0()++, irx.dim0()++)
             {
                 //std::cerr << "X = " << pos[0] << std::endl;
-                
+
                 if(*irx == 0)
                 {
                     // find candidate pixels for growing and fill heap
@@ -409,7 +409,7 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
             }
         }
     }
-    
+
     // perform region growing
     while(pheap.size() != 0)
     {
@@ -467,7 +467,7 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
             }
         }
     }
-    
+
     // free temporary memory
     while(pheap.size() != 0)
     {
@@ -476,7 +476,7 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
     }
 
     // write result
-    transformMultiArray(ir, Diff_type(w,h,d), AccessorTraits<int>::default_accessor(), 
+    transformMultiArray(ir, Diff_type(w,h,d), AccessorTraits<int>::default_accessor(),
                         destul, ad, detail::UnlabelWatersheds());
 }
 
@@ -490,7 +490,7 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                       DestImageIterator destul, DestAccessor ad,
                       RegionStatisticsArray & stats, SRGType srgType, Neighborhood n)
 {
-    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, 
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds,
                            destul, ad, stats, srgType, n, NumericTraits<double>::max());
 }
 
@@ -504,7 +504,7 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                       DestImageIterator destul, DestAccessor ad,
                       RegionStatisticsArray & stats, SRGType srgType)
 {
-    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, 
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds,
                            destul, ad, stats, srgType, NeighborCode3DSix());
 }
 
@@ -518,7 +518,7 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                       DestImageIterator destul, DestAccessor ad,
                       RegionStatisticsArray & stats)
 {
-    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, 
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad,
                            stats, CompleteGrow);
 }
 
@@ -530,7 +530,7 @@ inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                       pair<SeedImageIterator, SeedAccessor> img3,
                       pair<DestImageIterator, DestAccessor> img4,
-                      RegionStatisticsArray & stats, 
+                      RegionStatisticsArray & stats,
                       SRGType srgType, Neighborhood n, double max_cost)
 {
     seededRegionGrowing3D(img1.first, img1.second, img1.third,
@@ -547,7 +547,7 @@ inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                       pair<SeedImageIterator, SeedAccessor> img3,
                       pair<DestImageIterator, DestAccessor> img4,
-                      RegionStatisticsArray & stats, 
+                      RegionStatisticsArray & stats,
                       SRGType srgType, Neighborhood n)
 {
     seededRegionGrowing3D(img1.first, img1.second, img1.third,
@@ -596,7 +596,7 @@ inline void
 seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
                       MultiArrayView<3, TS, AS> const & img3,
                       MultiArrayView<3, T2, S2> img4,
-                      RegionStatisticsArray & stats, 
+                      RegionStatisticsArray & stats,
                       SRGType srgType, Neighborhood n, double max_cost)
 {
     vigra_precondition(img1.shape() == img3.shape(),
@@ -615,7 +615,7 @@ inline void
 seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
                       MultiArrayView<3, TS, AS> const & img3,
                       MultiArrayView<3, T2, S2> img4,
-                      RegionStatisticsArray & stats, 
+                      RegionStatisticsArray & stats,
                       SRGType srgType, Neighborhood n)
 {
     vigra_precondition(img1.shape() == img3.shape(),

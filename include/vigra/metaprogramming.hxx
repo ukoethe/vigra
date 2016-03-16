@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -86,7 +86,18 @@ struct VigraFalseType
 };
 
 /**  \addtogroup MultiArrayTags Multi-dimensional Array Tags
-      Meta-programming tags to mark array's as strided or unstrided.
+
+     Meta-programming tags to mark array's as strided, unstrided, or chunked.
+
+     An array is unstrided if the array elements occupy consecutive
+     memory locations, strided if adjacent elements have a constant
+     offset (e.g. when a view skips every other array element),
+     and chunked if the array is stored in rectangular blocks with
+     arbitrary offsets inbetween.
+
+     These tags are used to specialize algorithms for different memory
+     layouts. Older compilers can generate faster code for unstrided arrays.
+     Normally, users don't have to worry about these tags.
 */
 
 //@{
@@ -143,7 +154,7 @@ class TypeTraits<T const>
     typedef VigraTrueType isConst;
 };
 
-template<class T> 
+template<class T>
 class TypeTraits<T *>
 {
   public:
@@ -152,7 +163,7 @@ class TypeTraits<T *>
     typedef VigraTrueType isBuiltinType;
 };
 
-template<class T> 
+template<class T>
 class TypeTraits<T const *>
 {
   public:
@@ -168,7 +179,7 @@ namespace detail {
 template <int size>
 struct SizeToType;
 
-} // namespace detail 
+} // namespace detail
 
 #define VIGRA_TYPE_TRAITS(type, size) \
 template<> \
@@ -189,7 +200,7 @@ namespace detail { \
   { \
       typedef type result; \
   }; \
-} 
+}
 
 VIGRA_TYPE_TRAITS(char, 1)
 VIGRA_TYPE_TRAITS(signed char, 2)
@@ -382,16 +393,16 @@ struct IsConvertibleTo
 {
     typedef char falseResult[1];
     typedef char trueResult[2];
-    
+
     static From const & check();
-    
+
     static falseResult * testIsConvertible(...);
     static trueResult * testIsConvertible(To const &);
-    
+
     enum { resultSize = sizeof(*testIsConvertible(check())) };
-    
+
     static const bool value = (resultSize == 2);
-    typedef typename 
+    typedef typename
         IfBool<value, VigraTrueType, VigraFalseType>::type
         type;
 };
@@ -401,14 +412,14 @@ struct IsDerivedFrom
 {
     typedef char falseResult[1];
     typedef char trueResult[2];
-    
+
     static falseResult * testIsDerivedFrom(...);
     static trueResult * testIsDerivedFrom(BASE const *);
-    
+
     enum { resultSize = sizeof(*testIsDerivedFrom(static_cast<DERIVED const *>(0))) };
-    
+
     static const bool value = (resultSize == 2);
-    typedef typename 
+    typedef typename
         IfBool<value, VigraTrueType, VigraFalseType>::type
         type;
 
@@ -474,12 +485,12 @@ struct sfinae_test
 {
     typedef char falseResult[1];
     typedef char trueResult[2];
-    
+
     static falseResult * test(...);
     static trueResult * test(USER<sfinae_void>);
-    
+
     enum { resultSize = sizeof(*test(static_cast<T*>(0))) };
-    
+
     static const bool value = (resultSize == 2);
     typedef typename
         IfBool<value, VigraTrueType, VigraFalseType>::type
@@ -547,13 +558,13 @@ struct IsArray
 {
     typedef char falseResult[1];
     typedef char trueResult[2];
-    
+
     static falseResult * test(...);
     template <class U, unsigned n>
     static trueResult * test(U (*)[n]);
-    
+
     enum { resultSize = sizeof(*test(static_cast<T*>(0))) };
-    
+
     static const bool value = (resultSize == 2);
     typedef typename
         IfBool<value, VigraTrueType, VigraFalseType>::type
