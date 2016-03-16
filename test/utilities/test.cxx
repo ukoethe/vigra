@@ -227,7 +227,7 @@ struct ArrayVectorTest
         shouldEqualSequence(vector_.begin(), vector_.end(), data);
     }
 
-    void testBackInsertion_failedOnVC14()
+    void testBackInsertionUntilReallocation()
     {
         // regression test for bug appearing with VC14,
         // see https://github.com/ukoethe/vigra/issues/256
@@ -1528,6 +1528,7 @@ struct UtilitiesTestSuite
 
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
+        add( testCase( &ArrayVectorTest::testBackInsertionUntilReallocation));
         add( testCase( &ArrayVectorTest::testAmbiguousConstructor));
         add( testCase( &BucketQueueTest::testDescending));
         add( testCase( &BucketQueueTest::testAscending));
