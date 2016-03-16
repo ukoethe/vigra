@@ -137,10 +137,14 @@ struct UnionFindWatershedsEquality
 /*                                                           */
 /*************************************************************/
 
+/** \weakgroup ParallelProcessing Functions and classes for parallel processing.
+    \sa unionFindWatershedsBlockwise <B>(...)</B>
+*/
+
 /** \brief Blockwise union-find watersheds transform for MultiArrays and ChunkedArrays.
 
     <b> Declaration:</b>
-
+    
     \code
     namespace vigra { namespace blockwise {
         template <unsigned int N, class Data, class S1,

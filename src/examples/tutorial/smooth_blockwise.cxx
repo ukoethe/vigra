@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2013 by Ullrich Koethe                  */
+/*               Copyright 1998-2002 by Ullrich Koethe                  */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -29,17 +29,74 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
 /*                                                                      */
 /************************************************************************/
+ 
+#include <vigra/multi_array.hxx>
+#include <vigra/impex.hxx>
+#include <vigra/convolution.hxx>
+#include <vigra/multi_blockwise.hxx>
+#include <iostream>
 
+using namespace vigra;
 
-#ifndef VIGRA_CONFIG_VERSION_HXX
-#define VIGRA_CONFIG_VERSION_HXX
+int main (int argc, char ** argv) 
+{
+    if(argc != 3) 
+    {
+        std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
+        std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
+        
+        return 1;
+    }
+    try
+    {
+        // read image given as first argument
+        ImageImportInfo info(argv[1]);
+        
+        // instantiate arrays for image data and for smoothed image of appropriate size
+        if (info.isGrayscale()) 
+        {
+            MultiArray<2, float> imageArray(info.shape()),
+                                            exportArray(info.shape());
 
-    #define VIGRA_VERSION_MAJOR 1
-    #define VIGRA_VERSION_MINOR 11
-    #define VIGRA_VERSION_PATCH 0
-    #define VIGRA_VERSION "1.11.0"
-
-#endif /* VIGRA_CONFIG_VERSION_HXX */
+            // copy image data into array
+            importImage(info, imageArray);
+            
+            BlockwiseConvolutionOptions<2> opt = BlockwiseConvolutionOptions<2>();
+            
+            gaussianSmoothMultiArray(imageArray, exportArray, 
+                                     BlockwiseConvolutionOptions<2>().stdDev(2.0));
+            
+            // write image data to the file given as second argument
+            exportImage(exportArray, ImageExportInfo(argv[2]));
+            
+        }
+        else
+        {
+            MultiArray<2, RGBValue<float> > imageArray(info.shape()),
+                                            exportArray(info.shape());
+        
+            // copy image data into array
+            importImage(info, imageArray);
+            
+            BlockwiseConvolutionOptions<2> opt = BlockwiseConvolutionOptions<2>();
+            
+            gaussianSmoothMultiArray(imageArray, exportArray, 
+                                     BlockwiseConvolutionOptions<2>().stdDev(2.0));
+            
+            // write image data to the file given as second argument
+            exportImage(exportArray, ImageExportInfo(argv[2]));
+        }
+        
+        
+    }
+    catch (std::exception & e) 
+    {
+        // catch any errors that might have occurred and print their reason
+        std::cout << e.what() << std::endl;
+        return 1;
+    }
+    return 0;
+}

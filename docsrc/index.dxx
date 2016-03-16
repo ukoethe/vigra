@@ -1,10 +1,13 @@
-/** \mainpage VIGRA Reference Manual
+/** \addtogroup ParallelProcessing
+    \sa These functions also use parallel processing:
+ */
 
+/** \mainpage VIGRA Reference Manual
     <UL style="list-style-image:url(documents/bullet.gif)">
     <LI> \ref Installation
         <BR>&nbsp;&nbsp;&nbsp;<em>how to get started</em>
-	<LI> \ref Tutorial
-		<BR>&nbsp;&nbsp;&nbsp;<em>first steps with VIGRA</em>
+    <LI> \ref Tutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>first steps with VIGRA</em>
     <LI> \ref Concepts
         <BR>&nbsp;&nbsp;&nbsp;<em>generic interface definitions</em>
     <LI> \ref Utilities
@@ -44,6 +47,8 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA Python bindings</em>
     <LI> \ref CreditsChangelog
         <BR>&nbsp;&nbsp;&nbsp;<em>Who contributed what?</em>
+    <LI> \ref ParallelProcessing
+        <BR>&nbsp;&nbsp;&nbsp;<em>Test ParallelProcessing</em>
     </UL>
 
     \anchor _details
@@ -85,8 +90,6 @@
     VIGRA is subject to this <a href="LICENSE.txt">LICENSE</a>.
 
     You can also subscribe to the <a href="https://mailhost.informatik.uni-hamburg.de/mailman/listinfo/vigra">VIGRA Mailing List</a> to get instant information about new releases, discuss VIGRA's features and development, and ask the experts for help.
-
-
 
 */
 

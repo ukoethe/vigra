@@ -18,10 +18,10 @@ IF(TIFF_FOUND)
   INCLUDE_DIRECTORIES(${TIFF_INCLUDE_DIR})
 ENDIF(TIFF_FOUND)
 
-IF(OPENEXR_FOUND)
-  ADD_DEFINITIONS(-DHasEXR)
+IF(OpenEXR_FOUND)
+  ADD_DEFINITIONS(-DHasEXR ${OPENEXR_CPPFLAGS})
   INCLUDE_DIRECTORIES(${OPENEXR_INCLUDE_DIR})
-ENDIF(OPENEXR_FOUND)
+ENDIF(OpenEXR_FOUND)
 
 IF(HDF5_FOUND)
   ADD_DEFINITIONS(-DHasHDF5 ${HDF5_CPPFLAGS})
@@ -64,7 +64,7 @@ ADD_LIBRARY(vigraimpex ${LIBTYPE}
     viff.cxx
     void_vector.cxx)
 
-set(SOVERSION 6)  # increment this after changing the vigraimpex library
+set(SOVERSION 11)  # increment this after changing the vigraimpex library
 IF(MACOSX)
     SET_TARGET_PROPERTIES(vigraimpex PROPERTIES VERSION ${SOVERSION}.${vigra_version}
                          SOVERSION ${SOVERSION} INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")

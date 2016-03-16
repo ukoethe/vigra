@@ -42,6 +42,10 @@
 
 namespace vigra {
 
+/** \weakgroup ParallelProcessing
+    \sa MultiArrayShape
+ */
+ 
 /** \addtogroup MultiIteratorGroup  Multi-dimensional Shapes and Array Iterators
 
     \brief Shape objects and general iterators for arrays of arbitrary dimension.

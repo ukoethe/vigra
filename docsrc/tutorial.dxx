@@ -49,6 +49,13 @@
             <li> \ref SeparableConvolveTutorial
             </ul>
         </ul>
+    
+    <li> \ref ParallelProcessingTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>Intorduction to VIGRA's parallel processing capabilities.</em>
+        <ul style="list-style-image:url(documents/bullet.gif)">
+        <li> \ref ParallelFiltering
+        <li> \ref AgglomarativeClustering
+        </ul>
 
     <li> \ref OwnFunctionsTutorial
         <BR>&nbsp;&nbsp;&nbsp;<em>... without getting confused by templates</em>
@@ -164,9 +171,9 @@
     // access via individual coordinates
     image(1,2) = 22;
     \endcode
-	
+    
     This kind of indexing is supported for dimensions up to five, and only if the array's dimension is known (this is not always the case: in a generic function where the dimension is a template parameter, you must use shape objects).
-	In combination with the method <tt>shape(n)</tt>, that returns the length of the n-th dimension, 
+    In combination with the method <tt>shape(n)</tt>, that returns the length of the n-th dimension, 
     we can use the coordinates to set the element of an entire row or column:
 
     \code
@@ -191,10 +198,10 @@
     We will discuss more powerful methods to access certain parts of an array in section \ref MultiArrayMethods.
 
     \section MultiArrayScanOrder One-dimensional Indexing and Scan-Order Iterator
-	
+    
     Regardless of the array's dimension, it is always possible to access elements with 1-dimensional index, its <i>scan-order index</i>, via the normal indexing operator. For example, <tt>array[1]</tt> refers to the index of the second array element. Defining a scan order is often called <i>flattening</i> of an array, because a high-dimensional data structure is accessed like a 1-dimensional vector. Notive that scan-order access in VIGRA does not require the data to be copied. 
     
-	VIGRA defines scan-order by considering the dimensions from front to back. Thus, items are accessed such that only the x coordinate is incremented, while y (and possibly further coordinates) are held fixed at 0. When x is exhausted, y is incremented by one and the iteration starts again at x=0. To control iteration, the function <tt>array.size()</tt> returns the total number of elements: 
+    VIGRA defines scan-order by considering the dimensions from front to back. Thus, items are accessed such that only the x coordinate is incremented, while y (and possibly further coordinates) are held fixed at 0. When x is exhausted, y is incremented by one and the iteration starts again at x=0. To control iteration, the function <tt>array.size()</tt> returns the total number of elements: 
 
     \code
     MultiArray<2, int> intArray(Shape2(3,2));
@@ -207,10 +214,10 @@
     //   1 2 3
     //   4 5 6
     \endcode
-	
+    
     Alternatively, scan-order access can be achieved with an STL-compatible iterator pair obtained by calling <tt>array.begin()</tt> and <tt>array.end()</tt>. Continuing with the example above, we can write:
 
-	\code
+    \code
     // declare an alias for the iterator type
     typedef MultiArray<2, int>::iterator Iter;
 
@@ -220,13 +227,13 @@
     std::cout << std::endl;
     
     // output: 1 2 3 4 5 6
-	\endcode
+    \endcode
 
     The iterator is implemented by class <tt>StridedScanOrderIterator</tt> which encapsulates all the bookkeeping necessary to get the elements in the correct order, even when the array was transposed (see below). 
 
-	Scan-order access is useful to implement pointwise operations, e.g. the addition of two matrices. The following code adds two matrices and stores the result in the first one: 
+    Scan-order access is useful to implement pointwise operations, e.g. the addition of two matrices. The following code adds two matrices and stores the result in the first one: 
 
-	\code
+    \code
     MultiArray<2, int> matrix1(Shape2(3,3)),
                        matrix2(Shape2(3,3));
     ... // fill in data
@@ -238,18 +245,18 @@
     // use iterators
     for (Iter i = matrix1.begin(), j = matrix2.begin(); i != matrix1.end(); ++i, ++j)
         *i += *j;
-	\endcode
+    \endcode
 
-	This is convenient because the actual high-dimensional shapes of the arrays are of no significance for point-wise operations as long as the shapes match. Be careful: the arrays themselves have no way of checking this condition. So thefollowing code using two transposed shapes is perfectly valid C++, but has probably not the intended effect:
+    This is convenient because the actual high-dimensional shapes of the arrays are of no significance for point-wise operations as long as the shapes match. Be careful: the arrays themselves have no way of checking this condition. So thefollowing code using two transposed shapes is perfectly valid C++, but has probably not the intended effect:
 
-	\code
+    \code
     MultiArray<2, int> matrix3(Shape2(3,2)),
                        matrix4(Shape2(2,3));  // transposed shape of matrix3
     ... // fill in data
 
     for (int i=0; i < matrix3.size(); ++i)
         matrix3[i] += matrix4[i];  // works, but may not have the intended effect
-	\endcode
+    \endcode
 
     By the way: VIGRA provides the += operator (and is cousins) to write this more concisely, and this operator throws an exception if the shapes don't match:
 

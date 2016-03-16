@@ -311,14 +311,17 @@ def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
 
         'window_size' specifies the ratio between the filter scale and the size of
         the filter window. Use values around 2.0 to speed-up the computation for the
-        price of increased cut-off error, and values >= 4.0 for vary accurate results.
+        price of increased cut-off error, and values >= 4.0 for very accurate results.
         The window size is automatically determined for the default value 0.0.
+
+        For the first and second derivatives, you can also use :func:`gaussianGradient`
+        and :func:`hessianOfGaussian`.
     '''
     if hasattr(array, 'dropChannelAxis'):
         if array.dropChannelAxis().ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     else:
-        if array.ndim == len(orders):
+        if array.ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     try:
         len(sigma)
@@ -631,32 +634,6 @@ def _genTensorConvenienceFunctions():
 
 _genTensorConvenienceFunctions()
 del _genTensorConvenienceFunctions
-
-
-
-
-
-# define tensor convenience functions
-def _genDistanceTransformFunctions():
-
-    def distanceTransform(array,background=True,norm=2,pixel_pitch=None, out=None):
-        if array.squeeze().ndim == 2:
-            return filters.distanceTransform2D(array,background=background,norm=norm,
-                                               pixel_pitch=pixel_pitch, out=out)
-        elif array.squeeze().ndim == 3:
-            return filters.distanceTransform3D(array.astype('float32'),background=background,norm=2)
-        else:
-            raise RuntimeError("distanceTransform is only implemented for 2D and 3D arrays")
-
-    distanceTransform.__module__ = 'vigra.filters'
-    filters.distanceTransform = distanceTransform
-
-
-
-_genDistanceTransformFunctions()
-del _genDistanceTransformFunctions
-
-
 
 
 # define feature convenience functions
@@ -1246,6 +1223,13 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 else:
                     return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
 
+        def accumulateEdgeFeaturesNew(self, edgeFeatures, out=None):
+            if not isinstance(self, RegionAdjacencyGraph):
+                raise AttributeError("accumulateEdgeFeaturesNew not implemented for " + type(self))
+            graph = self.baseGraph
+            affiliatedEdges = self.affiliatedEdges
+            out = graphs._ragEdgeFeaturesNew(self, graph, affiliatedEdges, edgeFeatures, out)
+            return out
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
             """ accumulate edge features from base graphs edges features

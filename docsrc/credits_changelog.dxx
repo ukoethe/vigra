@@ -65,6 +65,8 @@
 
       <li> Benjamin Seppke contributed various \ref Registration "image registration" algorithms.
 
+      <li> John Kirkham figured out how to configure Travis to run tests for Python3 and on OS X.
+
       <li> Numerous people reported and fixed bugs and made suggestions.
 </ul>
 

@@ -134,20 +134,23 @@ struct WrapDoubleIteratorTriple
              vigra_precondition(false, function_name + msg);
         }
     }
-    double sigma_scaled(const char *const function_name = "unknown function ") const
+    double sigma_scaled(const char *const function_name = "unknown function ",
+                        bool allow_zero = false) const
     {
         sigma_precondition(sigma_eff(), function_name);
         sigma_precondition(sigma_d(), function_name);
         double sigma_squared = sq(sigma_eff()) - sq(sigma_d());
-        if (sigma_squared > 0.0)
+        if (sigma_squared > 0.0 || (allow_zero && sigma_squared == 0.0))
         {
             return std::sqrt(sigma_squared) / step_size();
         }
         else
         {
-             std::string msg = "(): Scale would be imaginary or zero.";
-             vigra_precondition(false, function_name + msg);
-             return 0;
+            std::string msg = "(): Scale would be imaginary";
+            if(!allow_zero)
+                msg += " or zero";
+            vigra_precondition(false, function_name + msg + ".");
+            return 0;
         }
     }
 };
@@ -1166,6 +1169,10 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa gaussianSmoothMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+
 /** \brief Isotropic Gaussian smoothing of a multi-dimensional arrays.
 
     This function computes an isotropic convolution of the given N-dimensional
@@ -1209,7 +1216,7 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
                                  MultiArrayView<N, T2, S2> dest,
                                  ConvolutionOptions<N> opt);
 
-        // as above, but execute algorirhm in parallel
+        // as above, but execute algorithm in parallel
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
         void
@@ -1308,7 +1315,8 @@ gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src
     ArrayVector<Kernel1D<double> > kernels(N);
 
     for (int dim = 0; dim < N; ++dim, ++params)
-        kernels[dim].initGaussian(params.sigma_scaled(function_name), 1.0, opt.window_ratio);
+        kernels[dim].initGaussian(params.sigma_scaled(function_name, true),
+                                  1.0, opt.window_ratio);
 
     separableConvolveMultiArray(s, shape, src, d, dest, kernels.begin(), opt.from_point, opt.to_point);
 }
@@ -1380,6 +1388,10 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
 {
     gaussianSmoothMultiArray( source, dest, opt.stdDev(sigma) );
 }
+
+/** \weakgroup ParallelProcessing
+    \sa gaussianGradientMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
 
 
 /********************************************************/
@@ -1730,6 +1742,10 @@ gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<T1>, S1> const & src,
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa symmetricGradientMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+ 
 /** \brief Calculate gradient of a multi-dimensional arrays using symmetric difference filters.
 
     This function computes the gradient of the given N-dimensional
@@ -1910,6 +1926,10 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa laplacianOfGaussianMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+ 
 /** \brief Calculate Laplacian of a N-dimensional arrays using Gaussian derivative filters.
 
     This function computes the Laplacian of the given N-dimensional
@@ -2149,6 +2169,10 @@ laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa gaussianDivergenceMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+ 
 /** \brief Calculate the divergence of a vector field using Gaussian derivative filters.
 
     This function computes the divergence of the given N-dimensional vector field
@@ -2333,6 +2357,10 @@ gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & ve
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa hessianOfGaussianMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+ 
 /** \brief Calculate Hessian matrix of a N-dimensional arrays using Gaussian derivative filters.
 
     This function computes the Hessian matrix the given scalar N-dimensional
@@ -2603,6 +2631,10 @@ struct StructurTensorFunctor
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa structureTensorMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+ 
 /** \brief Calculate th structure tensor of a multi-dimensional arrays.
 
     This function computes the gradient (outer product) tensor for each element

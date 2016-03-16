@@ -154,6 +154,10 @@ class ChunkedArrayHDF5
     typedef value_type * pointer;
     typedef value_type & reference;
 
+    /** \weakgroup ParallelProcessing
+        \sa ChunkedArrayHDF5
+    */
+ 
     /** \brief Construct with given 'shape', 'chunk_shape' and 'options',
         using 'alloc' to manage the in-memory version of the data..
 
