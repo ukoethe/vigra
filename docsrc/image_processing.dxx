@@ -302,7 +302,7 @@
     It is, of course, also possible to apply different filters in the x- and y-directions.
     This is especially useful for derivative filters which are commonly used to compute
     image features, for example \ref gaussianGradient() and \ref gaussianGradientMagnitude().
-    For more information see \ref CommonConvolutionFilters and \ref Convolution.
+    For more information see \ref ConvolutionFilters.
 
     Separable filters are also the key for efficient convolution of higher-dimensional images
     and arrays: An n-dimensional filter is simply implemented by n consecutive 1-dimensional
@@ -321,7 +321,7 @@
     \endcode
 
     More information about VIGRA's multi-dimensional convolution funcions can be found in
-    the reference manual under \ref MultiArrayConvolutionFilters .
+    the reference manual under \ref ConvolutionFilters.
 
     \subsection ParallelConvolveTutorial Parallel Execution of Gaussian Filters
 
@@ -356,7 +356,7 @@
 
     The same works for Gaussian derivative filters such as \ref gaussianGradientMultiArray(),
     \ref gaussianGradientMagnitude(), and \ref hessianOfGaussianMultiArray(). Refer to section
-    \ref MultiArrayConvolutionFilters for more details.
+    \ref ConvolutionFilters for more details.
 */
 
 /** \example invert_tutorial.cxx

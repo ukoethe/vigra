@@ -240,7 +240,7 @@ struct ResolveChunkedMemory<ChunkedMemory<T> >
     /** Metafucntion to obtain the difference type of all MultiIterator, MultiArrayView, and
         MultiArray variants.
 
-        <b>Usage:<u>
+        <b>Usage:</b>
 
         This metafunction is mainly used in functions weren the array dimension <tt>N</tt> is
         provided as a templat parameter, and we need a shape object of the corresponding length.

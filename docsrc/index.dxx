@@ -112,7 +112,7 @@
              <BR>&nbsp;&nbsp;&nbsp;<em>transform images into a common coordinate system</em>
         <LI> \ref NonLinearDiffusion
              <BR>&nbsp;&nbsp;&nbsp;<em>edge-preserving smoothing and denoising</em>
-        <LI> \ref MultiArrayDistanceTransform
+        <LI> \ref DistanceTransform
              <BR>&nbsp;&nbsp;&nbsp;<em>distance transforms in arbitrary dimensions</em>
         <LI> \ref MultiArrayMorphology
              <BR>&nbsp;&nbsp;&nbsp;<em>separable morphology with parabola structuring functions in arbitrary dimensions</em>

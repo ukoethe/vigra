@@ -48,7 +48,7 @@
 namespace vigra
 {
 
-/** \addtogroup ParallelProcessing Functions and classes for parallel processing.
+/** \addtogroup ParallelProcessing
 */
 
 //@{
