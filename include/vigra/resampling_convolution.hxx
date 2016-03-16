@@ -875,7 +875,7 @@ resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
     This function implements the reduction by one resolution level (first signature)
     or across several pyramid levels (last signature) of a Gaussian pyramid as described in
 
-    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532-540, 1983
 
     That is, it applies the smoothing filter
     \code
@@ -1026,7 +1026,7 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid,
     This function implements the expansion by one resolution level (first signature)
     or across several pyramid levels (last signature) of a Gaussian pyramid as described in
 
-    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532-540, 1983
 
     That is, the function first places the pixel values of the low-resolution
     image at the even pixel coordinates of the high-resolution image (pixels with
@@ -1181,7 +1181,7 @@ void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
     This function implements the reduction across several resolution levels of
     a Laplacian pyramid as described in
 
-    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532-540, 1983
 
     It first creates a Gaussian pyramid using \ref pyramidReduceBurtFilter(), then
     upsamples each level once using \ref pyramidExpandBurtFilter(), and finally
@@ -1215,7 +1215,7 @@ pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid,
     This function implements the reconstruction of a Gaussian pyramid
     across several resolution levels of a Laplacian pyramid as described in
 
-    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532–540, 1983
+    P. Burt, E. Adelson: <i>"The Laplacian Pyramid as a Compact Image Code"</i>, IEEE Trans. Communications, 9(4):532-540, 1983
 
     At each level starting from <tt>fromLevel</tt>, this function calls
     \ref pyramidExpandBurtFilter() to interpolate the image to the next highest

@@ -268,12 +268,12 @@ class ChunkedArrayHDF5
             // H5Pset_chunk_cache (dapl, rdcc_nslots, rdcc_nbytes, rdcc_w0);
             // Chunk cache size (rdcc_nbytes) should be large
             // enough to hold all the chunks in a selection
-            // • If this is not possible, it may be best to disable chunk
+            // * If this is not possible, it may be best to disable chunk
             // caching altogether (set rdcc_nbytes to 0)
-            // • rdcc_slots should be a prime number that is at
+            // * rdcc_slots should be a prime number that is at
             // least 10 to 100 times the number of chunks that can fit
             // into rdcc_nbytes
-            // • rdcc_w0 should be set to 1 if chunks that have been
+            // * rdcc_w0 should be set to 1 if chunks that have been
             // fully read/written will never be read/written again
             //
             // the above may be WRONG in general - it may only apply if the

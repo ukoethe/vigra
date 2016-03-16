@@ -830,13 +830,13 @@ public:
         return MultiArrayView<N, T, StridedArrayTag>(m_shape, m_stride, m_ptr);
     }
 
-	/** Reset this <tt>MultiArrayView</tt> to an invalid state (as after default construction).
-		Can e.g. be used prior to assignment to make a view object point to new data.
+        /** Reset this <tt>MultiArrayView</tt> to an invalid state (as after default construction).
+                Can e.g. be used prior to assignment to make a view object point to new data.
          */
     void reset() {
-	m_shape = diff_zero_t(0);
-	m_stride = diff_zero_t(0);
-	m_ptr = 0;
+        m_shape = diff_zero_t(0);
+        m_stride = diff_zero_t(0);
+        m_ptr = 0;
     }
 
 
@@ -3421,8 +3421,8 @@ template <class T, class Stride>
 BasicImageView <T>
 makeBasicImageView (MultiArrayView <2, T, Stride> const &array)
 {
-    vigra_precondition(array.isUnstrided(),
-       "makeBasicImageView(array): array must be unstrided (i.e. array.isUnstrided() == true).");
+    vigra_precondition(array.isUnstrided(0),
+       "makeBasicImageView(array): array must be unstrided along x (i.e. array.isUnstrided(0) == true).");
     return BasicImageView <T> (array.data (), array.shape (0),
                                array.shape (1), array.stride(1));
 }

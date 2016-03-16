@@ -41,7 +41,7 @@
 /************************************************************************/
 /* The ONLM filter is described in:                                     */
 /*                                                                      */
-/* P. Coup���, P. Yger, S. Prima, P. Hellier, C. Kervrann, C. Barillot.   */
+/* P. Coupe, P. Yger, S. Prima, P. Hellier, C. Kervrann, C. Barillot.   */
 /* An Optimized Blockwise Non Local Means Denoising Filter              */ 
 /* for 3D Magnetic Resonance Images                                     */
 /* . IEEE Transactions on Medical Imaging, 27(4):425-441,               */
