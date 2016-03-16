@@ -51,9 +51,9 @@ namespace vigra{
 
     template<class MAP>
     struct GraphMapTypeTraits{
-        typedef typename MAP::Value          Value;
-        typedef typename MAP::Reference      Reference;
-        typedef typename MAP::ConstReference ConstReference;
+        typedef typename MAP::value_type      Value;
+        typedef typename MAP::reference       Reference;
+        typedef typename MAP::const_reference ConstReference;
     };
 
     // generalizes the iterator begin end accessed
