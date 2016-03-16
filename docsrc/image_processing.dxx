@@ -396,6 +396,7 @@
     <ul style="list-style-image:url(documents/diamond.gif)">
     <li> \ref SuperpixelsTutorial
     <li> \ref RAGTutorial
+    <li> \ref ClusteringTutorial
     </ul>
 
     The complete code of the example described here can be found in <a href="graph_agglomerative_clustering_8cxx-example.html">graph_agglomerative_clustering.cxx</a>.
@@ -412,11 +413,13 @@
     into the Lab colorspace, because distances in the Lab space are perceptually more meaningful:
 
     \code
+    // read the input image
     ImageImportInfo info(filename);
-    MultiArray<2, TinyVector<float, 3> > imageArrayRGB(info.shape()),
-                                         imageArrayLab(info.shape());
+    MultiArray<2, TinyVector<float, 3> > imageArrayRGB(info.shape());
     importImage(info, imageArrayRGB);
 
+    // convert into Lab color space
+    MultiArray<2, TinyVector<float, 3> > imageArrayLab(imageArrayRGB.shape());
     transformMultiArray(imageArrayRGB, imageArrayLab, RGB2LabFunctor<float>());
     \endcode
 
@@ -427,6 +430,7 @@
     gradient magnitude:
 
     \code
+    // detect edges by the Gaussian gradient magnitude
     MultiArray<2, float>  gradMag(imageArrayLab.shape());
 
     float sigmaGradMag = 3.0f;
@@ -442,8 +446,8 @@
 
     The watershed algorithm initiates a superpixel at every local minimum of the gradient
     image and then grows these seeds along increasing gradients until they meet at the
-    gradient ridges ("watersheds" when the gradient is interpreted as the altitude of a
-    landscape) which partly correspond to true image edges, but are also located
+    gradient ridges (called "watersheds" because we can interpret the gradient as the
+    altitude of a landscape) which partly correspond to true image edges, but are also located
     elsewhere. The goal of the subsequent hierarchical clustering is to identify the
     true edges and delete the spurious ones. The superpixels are represented in a label
     image that assigns the superpixel ID to every pixel. To visualize the superpixels,
@@ -483,7 +487,7 @@
     is a map from edge IDs in the RAG to vectors of edge IDs in the original graph.
     In our case, the input graph is a \ref vigra::GridGraph whose labeling is stored
     in the \a labelArray, and the output graph is a \ref vigra::AdjacencyListGraph.
-    The mapping \a affiliatedEdges is best constructed by means of embedded typed of
+    The mapping \a affiliatedEdges is best constructed by using embedded types of
     these graph classes:
 
     \code
@@ -495,15 +499,144 @@
     typedef AdjacencyListGraph RAG;
     RAG rag;
 
-    // create mapping 'affiliatedEdges' from RAG edges to
-    // corresponding edges in imageGraph and build the RAG
+    // create the mapping 'affiliatedEdges' from RAG edges to
+    // corresponding imageGraph edges and build the RAG
     RAG::EdgeMap<std::vector<ImageGraph::Edge>> affiliatedEdges(rag);
     makeRegionAdjacencyGraph(imageGraph, labelArray, rag, affiliatedEdges);
     \endcode
 
-    To control agglomeratove clustering, i.e. to define the order in which
+    Note that VIGRA's graph classes conform to the elegant API defined in the
+    <a href="https://lemon.cs.elte.hu/">LEMON Graph Library</a>. Although VIGRA
+    doesn't use LEMON's implementation of this API, it is worth reading their
+    <a href="http://lemon.cs.elte.hu/pub/tutorial/index.html">tutorial</a>
+    because VIGRA's graph classes behave in exactly the same way.
+
+    To control agglomerative clustering, i.e. to define the order in which
     edges are contracted and nodes merged, we need some features that describe
     the dissimilarity of superpixels. The more dissimilar two superpixels are,
     the more likely they will remain separated, i.e. belong to different regions
-    of the final segmentation.
+    of the final segmentation. We distinguish two kinds of features: edge weights
+    and node features.
+
+    Edge weights should be high when two superpixels are separated by an object
+    edge, i.e. when the gradient magnitude along the common superpixel boundary is high.
+    We define the edge weight as the average gradient magnitude along the boundary,
+    i.e. as the average over the grid edges that correspond to the present RAG edge.
+    However, as pointed out earlier, watershed boundaries are located between pixels,
+    i.e. on half-integer coordinates, whereas the gradient has been computed on pixels,
+    i.e. at integer coordinates. We solve this problem by linear interpolation: the
+    gradient of a grid edge is the average gradient of its two end points.
+
+    \code
+    // create edge maps for weights and lengths of the RAG edges (zero initialized)
+    RAG::EdgeMap<float> edgeWeights(rag),
+                        edgeLengths(rag);
+
+    // iterate over all RAG edges (this loop follows a standard LEMON idiom)
+    for(RAG::EdgeIt rag_edge(rag); rag_edge != lemon::INVALID; ++rag_edge)
+    {
+        // iterate over all grid edges that constitute the present RAG edge
+        for(unsigned int k = 0; k < affiliatedEdges[*rag_edge].size(); ++k)
+        {
+            // look up the current grid edge and its end points
+            auto const & grid_edge = affiliatedEdges[*rag_edge][k];
+            auto start = imageGraph.u(grid_edge),
+                 end   = imageGraph.v(grid_edge);
+
+            // compute gradient by linear interpolation between end points
+            double grid_edge_gradient = 0.5 * (gradMag[start] + gradMag[end]);
+            // aggregate the total
+            edgeWeights[*rag_edge] += grid_edge_gradient;
+        }
+
+        // the length of the RAG edge equals the number of constituent grid edges
+        edgeLengths[*rag_edge] = affiliatedEdges[*rag_edge].size();
+        // define edge weights by the average gradient
+        edgeWeights[*rag_edge] /= edgeLengths[*rag_edge];
+    }
+    \endcode
+
+    Node features are defined by the average Lab color of each superpixel.
+    Hierarchical clustering will later turn this into a node dissimilarity by
+    computing the Euclidean distance between the average colors of neighboring
+    superpixels, possibly weighted by the superpixels' sizes. To compute these
+    features, we invoke VIGRA's \ref FeatureAccumulators framework:
+
+    \code
+    // determine size and average Lab color of each superpixel
+    using namespace acc;
+    AccumulatorChainArray<CoupledArrays<2, TinyVector<float, 3>, unsigned int>,
+                          Select<DataArg<1>, LabelArg<2>, // where to look for data and region labels
+                                 Count, Mean> >           // what statistics to compute
+        features;
+    extractFeatures(imageArrayLab, labelArray, features);
+    \endcode
+
+    To be understood by hierarchicalClustering(), we must copy the features into
+    node property maps which are compatible with the RAG data structure:
+
+    \code
+    // copy superpixel features into NodeMaps to be passed to hierarchicalClustering()
+    RAG::NodeMap<TinyVector<float, 3>> meanColor(rag);
+    RAG::NodeMap<unsigned int>         regionSize(rag);
+    for(unsigned int k=0; k<=max_label; ++k) // max_label was returned from watershedsMultiArray()
+    {
+        meanColor[k] = get<Mean>(features, k);
+        regionSize[k] = get<Count>(features, k);
+    }
+    \endcode
+
+    \section ClusteringTutorial Perform Hierarchical Clustering
+
+    Now we have collected all information needed to perform agglomerative clustering.
+    We pass the superpixel adjacency graph and its feature maps to the clustering
+    function, and it returns the cluster assignment in a new property map
+    \a nodeLabels that assigns to every RAG node the ID of the cluster the node belongs
+    to. Thus, \a nodeLabels plays exactly the same role for the RAG as \a labelArray
+    did for the grid graph. Cluster IDs are identical to the node IDs of arbitrarly
+    chosen cluster representatives, i.e. they form a sparse subset of the original IDs.
+
+    \code
+    // customize parameters of the clustering algorithm
+    float beta = 0.5f;         // importance of node features relative to edge weights
+    float wardness = 0.8f;     // importance of cluster size
+    int numClusters = 30;      // desired number of resulting regions (clusters)
+
+    // create a node map for the new (clustered) region labels and perform
+    // clustering to remove unimportant watershed edges
+    RAG::NodeMap<unsigned int>  nodeLabels(rag);
+    hierarchicalClustering(rag,          // input: the superpixel adjacency graph
+                           edgeWeights, edgeLengths, meanColor, regionSize, // features
+                           nodeLabels,   // output: a cluster labeling of the RAG
+                           ClusteringOptions().minRegionCount(numClusters)
+                                              .nodeFeatureImportance(beta)
+                                              .sizeImportance(wardness)
+                                              .nodeFeatureMetric(metrics::L2Norm)
+                           );
+    \endcode
+
+    The details of the clustering algorithm can be customized by the option object
+    \ref vigra::ClusteringOptions. Here, we set the termination criterion \a numClusters,
+    the relative importance of node features and sizes (\a beta and \a wardness) and the
+    norm to be used to compute node feature dissimiliarity. Option objects like this are
+    a common idiom in the VIGRA library, because code readability matters.
+
+    Finally, we replace the original superpixel labels in \a labelArray with the new cluster
+    labels from \a nodeLabels and visualize the resulting region boundaries, this time
+    with a green overlay on the enlarged input image:
+
+    \code
+    // update label image with the new labels
+    transformMultiArray(labelArray, labelArray,
+        [&nodeLabels](unsigned int oldlabel)
+        {
+            return nodeLabels[oldlabel];
+        });
+
+    // visualize the salient edges as a green overlay
+    regionImageToCrackEdgeImage(labelArray, imageArrayBig,
+                                RGBValue<float>( 0, 255, 0), EdgeOverlayOnly);
+    \endcode
+
+    \image html bears_segmentation.png
 */

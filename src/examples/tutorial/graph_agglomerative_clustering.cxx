@@ -18,10 +18,10 @@ using namespace vigra;
 int main (int argc, char ** argv)
 {
     // parameters of the hierarchical clustering algorithm
-    float sigmaGradMag = 3.0f;        // scale of the Gaussian gradient
-    float beta = 0.5f;                // importance of node features relative to edge weights
-    float wardness = 0.8f;            // importance of cluster size
-    int nodeNumStop = 30;             // desired number of nodes in result
+    float sigmaGradMag = 3.0f;   // scale of the Gaussian gradient
+    float beta = 0.5f;           // importance of node features relative to edge weights
+    float wardness = 0.8f;       // importance of cluster size
+    int numClusters = 30;        // desired number of resulting regions (clusters)
 
     if(argc != 3)
     {
@@ -39,21 +39,18 @@ int main (int argc, char ** argv)
         vigra_precondition(info.numBands() == 3, "an RGB image is required.");
 
         // instantiate image arrays of appropriate size
-        MultiArray<2, TinyVector<float, 3> > imageArray(info.shape()),
-                                             imageArrayBig(info.shape()*2-Shape2(1));
-        MultiArray<2, float>                 gradMag(info.shape());
+        MultiArray<2, TinyVector<float, 3> > imageArrayRGB(info.shape()),
+                                             imageArrayLab(info.shape());
 
         // read image data
-        importImage(info, imageArray);
-
-        // double the image resolution for better visualization of the results
-        resizeMultiArraySplineInterpolation(imageArray, imageArrayBig);
+        importImage(info, imageArrayRGB);
 
         // convert to Lab color space for better color similarity estimates
-        transformMultiArray(imageArray, imageArray, RGB2LabFunctor<float>());
+        transformMultiArray(imageArrayRGB, imageArrayLab, RGB2LabFunctor<float>());
 
         // compute gradient magnitude as an indicator of edge strength
-        gaussianGradientMagnitude(imageArray, gradMag, sigmaGradMag);
+        MultiArray<2, float>   gradMag(imageArrayLab.shape());
+        gaussianGradientMagnitude(imageArrayLab, gradMag, sigmaGradMag);
 
         // create watershed superpixels with the fast union-find algorithm;
         // we use a NodeMap (a subclass of MultiArray) to store the labels so
@@ -63,17 +60,13 @@ int main (int argc, char ** argv)
             watershedsMultiArray(gradMag, labelArray, DirectNeighborhood,
                                  WatershedOptions().unionFind());
 
+        // double the image resolution for better visualization of the results
+        MultiArray<2, TinyVector<float, 3> > imageArrayBig(info.shape()*2-Shape2(1));
+        resizeMultiArraySplineInterpolation(imageArrayRGB, imageArrayBig);
+
         // visualize the watersheds as a red overlay over the enlarged image
         regionImageToCrackEdgeImage(labelArray, imageArrayBig,
                                     RGBValue<float>( 255, 0, 0 ), EdgeOverlayOnly);
-
-        // determine size and average color of each superpixel
-        using namespace acc;
-        AccumulatorChainArray<CoupledArrays<2, TinyVector<float, 3>, unsigned int>,
-                              Select<DataArg<1>, LabelArg<2>, // where to look for data and region labels
-                                     Count, Mean> >           // what statistics to compute
-        stats;
-        extractFeatures(imageArray, labelArray, stats);
 
         // create grid-graph of appropriate size
         typedef GridGraph<2, undirected_tag > ImageGraph;
@@ -88,40 +81,57 @@ int main (int argc, char ** argv)
         RAG::EdgeMap<std::vector<ImageGraph::Edge>> affiliatedEdges(rag);
         makeRegionAdjacencyGraph(imageGraph, labelArray, rag, affiliatedEdges);
 
-        // copy superpixel features into NodeMaps to be passed to hierarchicalClustering()
-        RAG::NodeMap<TinyVector<float, 3>> means(rag);
-        RAG::NodeMap<unsigned int>         sizes(rag);
-        for(unsigned int k=0; k<=max_label; ++k)
-        {
-            means[k] = get<Mean>(stats, k);
-            sizes[k] = get<Count>(stats, k);
-        }
-
-        // create edge maps for weights and lengths of the RAG edges
+        // create edge maps for weights and lengths of the RAG edges (zero initialized)
         RAG::EdgeMap<float> edgeWeights(rag),
                             edgeLengths(rag);
+
+        // iterate over all RAG edges (this loop follows a standard LEMON idiom)
         for(RAG::EdgeIt rag_edge(rag); rag_edge != lemon::INVALID; ++rag_edge)
         {
-            // the RAG edge length equala the number of grid edges
-            // belonging to current RAG edge
-            edgeLengths[*rag_edge] = affiliatedEdges[*rag_edge].size();
-
-            // determine RAG edge weight by avaraging the gradients
-            // along the current RAG edge, i.e. over the end pixels of the
-            // corresponding grid graph edges
+            // iterate over all grid edges that constitute the present RAG edge
             for(unsigned int k = 0; k < affiliatedEdges[*rag_edge].size(); ++k)
             {
+                // look up the current grid edge and its end points
                 auto const & grid_edge = affiliatedEdges[*rag_edge][k];
-                edgeWeights[*rag_edge] += gradMag[imageGraph.u(grid_edge)] + gradMag[imageGraph.v(grid_edge)];
+                auto start = imageGraph.u(grid_edge),
+                     end   = imageGraph.v(grid_edge);
+
+                // compute gradient by linear interpolation between end points
+                double grid_edge_gradient = 0.5 * (gradMag[start] + gradMag[end]);
+                // aggregate the total
+                edgeWeights[*rag_edge] += grid_edge_gradient;
             }
-            edgeWeights[*rag_edge] /= (2.0 * edgeLengths[*rag_edge]);
+
+            // the length of the RAG edge equals the number of constituent grid edges
+            edgeLengths[*rag_edge] = affiliatedEdges[*rag_edge].size();
+            // define edge weight by the average gradient
+            edgeWeights[*rag_edge] /= edgeLengths[*rag_edge];
+        }
+
+        // determine size and average color of each superpixel
+        using namespace acc;
+        AccumulatorChainArray<CoupledArrays<2, TinyVector<float, 3>, unsigned int>,
+                              Select<DataArg<1>, LabelArg<2>, // where to look for data and region labels
+                                     Count, Mean> >           // what statistics to compute
+            features;
+        extractFeatures(imageArrayLab, labelArray, features);
+
+        // copy superpixel features into NodeMaps to be passed to hierarchicalClustering()
+        RAG::NodeMap<TinyVector<float, 3>> meanColor(rag);
+        RAG::NodeMap<unsigned int>         regionSize(rag);
+        for(unsigned int k=0; k<=max_label; ++k)
+        {
+            meanColor[k] = get<Mean>(features, k);
+            regionSize[k] = get<Count>(features, k);
         }
 
         // create a node map for the new (clustered) region labels and perform
         // clustering to remove unimportant watershed edges
-        RAG::NodeMap<unsigned int>  nodeLabelMap(rag);
-        hierarchicalClustering(rag, edgeWeights, edgeLengths, means, sizes, nodeLabelMap,
-                               ClusteringOptions().minRegionCount(nodeNumStop)
+        RAG::NodeMap<unsigned int>  nodeLabels(rag);
+        hierarchicalClustering(rag,          // input: the superpixel adjacency graph
+                               edgeWeights, edgeLengths, meanColor, regionSize, // features
+                               nodeLabels,   // output: a cluster labeling of the RAG
+                               ClusteringOptions().minRegionCount(numClusters)
                                                   .nodeFeatureImportance(beta)
                                                   .sizeImportance(wardness)
                                                   .nodeFeatureMetric(metrics::L2Norm)
@@ -129,9 +139,9 @@ int main (int argc, char ** argv)
 
         // create label image with the new labels
         transformMultiArray(labelArray, labelArray,
-            [&nodeLabelMap](unsigned int oldlabel)
+            [&nodeLabels](unsigned int oldlabel)
             {
-                return nodeLabelMap[oldlabel];
+                return nodeLabels[oldlabel];
             });
 
         // visualize the salient edges as a green overlay
