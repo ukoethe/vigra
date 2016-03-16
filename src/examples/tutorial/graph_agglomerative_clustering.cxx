@@ -17,12 +17,11 @@ using namespace vigra;
 
 int main (int argc, char ** argv)
 {
-    // parameters
-    float sigmaGradMag = 3.0f;      // sigma Gaussian gradient
-    float beta = 0.5f;              // node vs edge weight
-    float wardness = 0.8f;          // ???
-    float gamma = 10000000.0f;      // ???
-    int nodeNumStop = 30;          // desired num. nodes in result
+    // parameters of the hierarchical clustering algorithm
+    float sigmaGradMag = 3.0f;        // scale of the Gaussian gradient
+    float beta = 0.5f;                // importance of node features relative to edge weights
+    float wardness = 0.8f;            // importance of cluster size
+    int nodeNumStop = 30;             // desired number of nodes in result
 
     if(argc != 3)
     {
@@ -36,6 +35,8 @@ int main (int argc, char ** argv)
     {
         // read metadata of image file given in argv[1]
         ImageImportInfo info(argv[1]);
+
+        vigra_precondition(info.numBands() == 3, "an RGB image is required.");
 
         // instantiate image arrays of appropriate size
         MultiArray<2, TinyVector<float, 3> > imageArray(info.shape()),
@@ -54,14 +55,10 @@ int main (int argc, char ** argv)
         // compute gradient magnitude as an indicator of edge strength
         gaussianGradientMagnitude(imageArray, gradMag, sigmaGradMag);
 
-        // create grid-graph of appropriate size
-        typedef GridGraph<2, undirected_tag > Graph;
-        Graph graph(info.shape());
-
         // create watershed superpixels with the fast union-find algorithm;
         // we use a NodeMap (a subclass of MultiArray) to store the labels so
         // that they can be passed to hierarchicalClustering() directly
-        Graph::NodeMap<unsigned int> labelArray(graph);
+        MultiArray<2, unsigned int> labelArray(gradMag.shape());
         unsigned int max_label =
             watershedsMultiArray(gradMag, labelArray, DirectNeighborhood,
                                  WatershedOptions().unionFind());
@@ -78,12 +75,18 @@ int main (int argc, char ** argv)
         stats;
         extractFeatures(imageArray, labelArray, stats);
 
-        // create region adjacency graph (RAG) for the superpixels
-        // 'affiliatedEdges' stores the grid graph edges belonging to each RAG edge
+        // create grid-graph of appropriate size
+        typedef GridGraph<2, undirected_tag > ImageGraph;
+        ImageGraph imageGraph(labelArray.shape());
+
+        // construct empty  region adjacency graph (RAG) for the superpixels
         typedef AdjacencyListGraph RAG;
         RAG rag;
-        RAG::EdgeMap<std::vector<Graph::Edge>> affiliatedEdges(rag);
-        makeRegionAdjacencyGraph(graph, labelArray, rag, affiliatedEdges);
+
+        // create mapping 'affiliatedEdges' from edges in the RAG to
+        // corresponding edges in imageGraph and build the RAG
+        RAG::EdgeMap<std::vector<ImageGraph::Edge>> affiliatedEdges(rag);
+        makeRegionAdjacencyGraph(imageGraph, labelArray, rag, affiliatedEdges);
 
         // copy superpixel features into NodeMaps to be passed to hierarchicalClustering()
         RAG::NodeMap<TinyVector<float, 3>> means(rag);
@@ -109,7 +112,7 @@ int main (int argc, char ** argv)
             for(unsigned int k = 0; k < affiliatedEdges[*rag_edge].size(); ++k)
             {
                 auto const & grid_edge = affiliatedEdges[*rag_edge][k];
-                edgeWeights[*rag_edge] += gradMag[graph.u(grid_edge)] + gradMag[graph.v(grid_edge)];
+                edgeWeights[*rag_edge] += gradMag[imageGraph.u(grid_edge)] + gradMag[imageGraph.v(grid_edge)];
             }
             edgeWeights[*rag_edge] /= (2.0 * edgeLengths[*rag_edge]);
         }

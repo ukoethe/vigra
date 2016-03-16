@@ -47,7 +47,15 @@
            <ul type="disc">
             <li> \ref Convolve2DTutorial
             <li> \ref SeparableConvolveTutorial
+            <li> \ref ParallelConvolveTutorial
             </ul>
+        </ul>
+
+    <li> \ref ImageSegmentationTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>extracting meaningful regions from pixels</em>
+        <ul style="list-style-image:url(documents/diamond.gif)">
+        <li> \ref SuperpixelsTutorial
+        <li> \ref RAGTutorial
         </ul>
 
     <li> \ref OwnFunctionsTutorial

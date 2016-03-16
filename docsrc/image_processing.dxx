@@ -1,48 +1,49 @@
 /** \page ImageProcessingTutorial Image Processing
 
     <h2>Section Contents</h2>
-    
+
     In this chapter we'll use VIGRA's methods for some applications of Image Processing.
 
-    <ul style="list-style-image:url(documents/bullet.gif)">
+    <ul style="list-style-image:url(documents/diamond.gif)">
     <li> \ref CallingConventions
     <li> \ref ImageInversion
     <li> \ref ImageBlending
     <li> \ref CompositeImage
     <li> \ref SmoothingTutorial
-       <ul type="disc">
+       <ul>
         <li> \ref Convolve2DTutorial
         <li> \ref SeparableConvolveTutorial
+        <li> \ref ParallelConvolveTutorial
         </ul>
     </ul>
 
     \section CallingConventions Calling Conventions
-    
+
     VIGRA's image processing functions follow a uniform calling convention: The argument list start with the input images or arrays, followed by the output images or arrays, followed by the function's parameters (if any). Some functions additionally accept an option object that allows more fine-grained control of the function's actions and must be passed as the last argument. Most functions assume that the output arrays already have the appropriate shape.
-    
+
     All functions working on arrays expect their arguments to be passed as \ref vigra::MultiArrayView instances. Functions that only support 2-dimensional images usually contain the term "Image" in their name, whereas functions that act on arbitrary many dimensions usually contain the term "Multi" in their name. <br/>
-    Examples: 
+    Examples:
     \code
     // determine the connected components in a binary image, using the 8-neighborhood
     MultiArray<2, UInt8>   image(width, height);
     MultiArray<2, UInt32>  labels(width, height);
     ... // fill image
     labelImage(image, labels, true);
-    
+
     // smooth a 3D array with a gaussian filter with sigma=2.0
     MultiArray<3, float> volume(Shape3(300, 200, 100)),
                          smoothed(Shape3(300, 200, 100));
     ... // fill volume
     gaussianSmoothMultiArray(volume, smoothed, 2.0);
-    
+
      // compute the determinant of a 5x5 matrix
     MultiArray<2, float> matrix(Shape2(5, 5));
     ... // fill matrix with data
     float det = linalg::determinant(matrix);
     \endcode
-    
+
     For historical reasons, VIGRA also supports two alternative APIs in terms of iterators. These APIs used to be considerably faster, but meanwhile compilers and processors have improved to the point where the much simpler MultiArrayView API no longer imposes a significant abstraction penalty. While there are no plans to remove support for the old APIs, they should not be used in new code.
-    
+
     <ul>
     <li> Functions on 2-dimensional images may support an \ref ImageIterators API. These iterators are best passed to the functions via the convenience functions <tt>srcImageRange(array)</tt>, <tt>srcImage(array)</tt>, and <tt>destImage(array)</tt>. A detailed description of the convenience functions can be found in section \ref ArgumentObjectFactories. Example:
     \code
@@ -52,7 +53,7 @@
     ... // fill input with data
     transformImage(srcImageRange(input), destImage(result), &sqrt);  // deprecated API
     \endcode
-    
+
     <li> Functions for arbitrary-dimensional arrays may support hierarchical \ref MultiIteratorPage. These iterators are best passed to the functions via the convenience functions <tt>srcMultiArrayRange(array)</tt>, <tt>srcMultiArray(array)</tt>, and <tt>destMultiArray(array)</tt>. A detailed description of these convenience functions can also be found in section \ref ArgumentObjectFactories. Example:
     \code
     // compute the element-wise square root of a 4-dimensional array
@@ -61,11 +62,11 @@
     ... // fill input with data
     transformMultiArray(srcMultiArrayRange(input), destMultiArray(result), &sqrt);  // deprecated API
     \endcode
-    
+
     \section ImageInversion Inverting an Image
-    
-    Inverting an (gray scale) image is quite easy. We just need to subtract every pixel's 
-    value from white (255). This simple task doesn't need an explicit function call at all, but is best solved with a arithmetic expression implemented in namespace \ref MultiMathModule. To avoid possible overload ambiguities, 
+
+    Inverting an (gray scale) image is quite easy. We just need to subtract every pixel's
+    value from white (255). This simple task doesn't need an explicit function call at all, but is best solved with a arithmetic expression implemented in namespace \ref MultiMathModule. To avoid possible overload ambiguities,
     you must explicitly activate array arithmetic via the command <tt>using namespace vigra::multi_math</tt> before use. To invert <tt>imageArray</tt> and overwrite its original contents, you write:
 
     \code
@@ -85,8 +86,8 @@
     </Table>
 
     \section ImageBlending Image Blending
-    
-    In this example, we have two input images and want to blend them into one another. 
+
+    In this example, we have two input images and want to blend them into one another.
     In the combined output image every pixel value is the mean of the two appropriate original pixels. This is also best solved with array arithmetic:
 
     \code
@@ -95,9 +96,9 @@
     \endcode
 
     Since it is not guaranteed that the two input images have the same shape, we first
-    determine the maximum possible shape of the blended image, which equals the minimum 
-    size along each axis. With the help of subarray-method we just blend the appropriate 
-    parts of the two images. These parts (subimages) are aligned around the centers 
+    determine the maximum possible shape of the blended image, which equals the minimum
+    size along each axis. With the help of subarray-method we just blend the appropriate
+    parts of the two images. These parts (subimages) are aligned around the centers
     of the original images.
 
     Here's the code:
@@ -113,11 +114,11 @@
     </table>
 
     \section CompositeImage Creating a Composite Image
-    
-    Let's come to a little gimmick. Given one input image we want to create a composite image 
+
+    Let's come to a little gimmick. Given one input image we want to create a composite image
     of 4 images reflected with respect to each other. The result resembles the effect of a
-    kaleidoscope. Two of VIGRA's functions are sufficient for this purpose: \ref MultiArray_subarray 
-    and \ref reflectImage(). Input and output images of reflectImage() are specified by MultiArrayViews. 
+    kaleidoscope. Two of VIGRA's functions are sufficient for this purpose: \ref MultiArray_subarray
+    and \ref reflectImage(). Input and output images of reflectImage() are specified by MultiArrayViews.
     The third parameter specifies the desired reflection axis. The axis can either
     be horizontal, vertical or both (as in this example):
 
@@ -137,16 +138,16 @@
     </Table>
 
     \section SmoothingTutorial Smoothing
-    
+
     \subsection Convolve2DTutorial 2-dimensional Convolution
-    
-    There are many different ways to smooth an image. Before we use VIGRA's methods, we 
-    want to write a smoothing code of our own. The idea is to choose each pixel in turn and 
+
+    There are many different ways to smooth an image. Before we use VIGRA's methods, we
+    want to write a smoothing code of our own. The idea is to choose each pixel in turn and
     replace it with the mean of itself and the pixels in 5x5 window around it.
-    To calculate the mean in a window, we can just devide the sum of the pixel values 
-    within the corresponding subarray by their number. MultiArrayView provides two useful 
-    methods for doing this: <tt>sum</tt> and <tt>size</tt>. 
-    In our code we iterate over every pixel, construct the surrounding 5x5 window via 
+    To calculate the mean in a window, we can just devide the sum of the pixel values
+    within the corresponding subarray by their number. MultiArrayView provides two useful
+    methods for doing this: <tt>sum</tt> and <tt>size</tt>.
+    In our code we iterate over every pixel, construct the surrounding 5x5 window via
     <tt>subarray</tt>, and write the average of the window into the corresponding output pixel.
     Near the borders of the image we truncate the window appropriately so that it remains
     inside the image, and only take the average over the actually existing neighbours of the pixel.
@@ -162,8 +163,8 @@
     </TR>
     </Table>
 
-    The technical term for this kind of operation is <i>convolution</i>. VIGRA provides 
-    <dfn>convolveImage</dfn> as a comfortable way to perform 2-dimensional convolutions 
+    The technical term for this kind of operation is <i>convolution</i>. VIGRA provides
+    <dfn>convolveImage</dfn> as a comfortable way to perform 2-dimensional convolutions
     with arbitrary filters. You may use it as follows:
 
     \code
@@ -171,113 +172,113 @@
     \endcode
 
     The filter of <i>convolution kernel</i> is given as argument object by <dfn>kernel2d()</dfn>.
-    To implement the above smoothing by taking averages in 3x3 windows, you need an averaging 
-    kernel with radius 1. Kernel truncation near the image borders is performed when the 
+    To implement the above smoothing by taking averages in 3x3 windows, you need an averaging
+    kernel with radius 1. Kernel truncation near the image borders is performed when the
     filter's border treatment mode is set to <tt>BORDER_TREATMENT_CLIP</tt>:
-    
+
     \code
     Kernel2D<double> filter;
     filter.initAveraging(1);
     filter.setBorderTreatment(BORDER_TREATMENT_CLIP);
     \endcode
-    
+
     By default, VIGRA's convolution functions use <tt>BORDER_TREATMENT_REFLECT</tt> (i.e. the
     image is virtually enlarged by reflecting the pixel values about the border), which usually
-    leads to superior results. The strength of smoothing can be controlled by increasing the filter 
+    leads to superior results. The strength of smoothing can be controlled by increasing the filter
     radius.
-    
-    Another improvement over simple averaging can be achieved when one takes a <i>weighted 
+
+    Another improvement over simple averaging can be achieved when one takes a <i>weighted
     average</i> such that pixels near the center have more influence on the result.
     A popular choice here is the 5x5 binomial filter. VIGRA allows to specify arbitrary filter
     shapes and coefficients via the <tt>Kernel2D::initExplicitly()</tt>:
-    
+
     \code
     Kernel2D<float> filter;
-    
+
     // specify filter shape (lower right corner is inclusive here!)
     filter.initExplicitly(Shape2(-2,-2), Shape2(2,2));
-    
+
     // specify filter coefficients
     filter =  1.0/256.0,  4.0/256.0,  6.0/256.0,  4.0/256.0,  1.0/256.0,
               4.0/256.0, 16.0/256.0, 24.0/256.0, 16.0/256.0,  4.0/256.0,
               6.0/256.0, 24.0/256.0, 36.0/256.0, 24.0/256.0,  6.0/256.0,
               4.0/256.0, 16.0/256.0, 24.0/256.0, 16.0/256.0,  4.0/256.0,
               1.0/256.0,  4.0/256.0,  6.0/256.0,  4.0/256.0,  1.0/256.0;
-              
+
     // apply filter
     convolveImage(inputImage, resultImage, filter);
     \endcode
-   
-    <tt>initExplicitly()</tt> receives the upper left and lower right corners of the 
-    filter window. Note that the lower right corner here is <i>included</i> in the window,
-    in contrast to <tt>MultiArray::subarray()</tt> where the end point is not included. 
 
-    The filter weights are provided in a comma separated list. Normally, the sum of the 
-    coefficients should to be 1 in order to preserve the average intensity of the image. 
-    You must provide either as many coefficients as needed for the given filter size, 
-    or exactly one value which will be used for all filter coefficients. Thus, the 3x3 
+    <tt>initExplicitly()</tt> receives the upper left and lower right corners of the
+    filter window. Note that the lower right corner here is <i>included</i> in the window,
+    in contrast to <tt>MultiArray::subarray()</tt> where the end point is not included.
+
+    The filter weights are provided in a comma separated list. Normally, the sum of the
+    coefficients should to be 1 in order to preserve the average intensity of the image.
+    You must provide either as many coefficients as needed for the given filter size,
+    or exactly one value which will be used for all filter coefficients. Thus, the 3x3
     averaging filter can also be created like this:
-    
+
     \code
     Kernel2D<double> filter;
     filter.initExplicitly(Shape2(-1,-1), Shape2(1,1)) = 1.0/9.0;
     \endcode
 
     For various theoretical and practical reasons, the Gaussian filter is the best choice
-    in most situations. Its coefficients are chosen according to a Gaussian (i.e. 
-    bell-shaped) function with given standard deviation. The kernel class has a 
-    convenient <dfn>initGaussian(std_dev)</dfn> method that creates the appropriate 
+    in most situations. Its coefficients are chosen according to a Gaussian (i.e.
+    bell-shaped) function with given standard deviation. The kernel class has a
+    convenient <dfn>initGaussian(std_dev)</dfn> method that creates the appropriate
     coefficients:
 
     \code
-    vigra::Kernel2D<float> filter; 
+    vigra::Kernel2D<float> filter;
     filter.initGaussian(1.5);
     convolveImage(inputImage, resultImage, filter);
     \endcode
-    
+
     A complete example using these possibilities can be found in <a href="smooth_convolve_8cxx-example.html">smooth_convolve.cxx</a>.
 
     <hr>
 
     \subsection SeparableConvolveTutorial Separable Convolution in 2D and nD Images
-    
-    When filtering is implemented with 2-dimensional windows as in the previous section, 
-    we need as many multiplications per pixel as there are coefficients in the filter. 
-    Fortunately, many important filters (including averaging and Gaussian smoothing) 
-    have the property of beeing <i>separable</i>, which allows a much more efficient 
-    implementation in terms  of 1-dimensional windows. A 2-dimensional filter is 
-    separable if its coefficients \f$f_{ij}\f$ can be expressend as an outer product 
+
+    When filtering is implemented with 2-dimensional windows as in the previous section,
+    we need as many multiplications per pixel as there are coefficients in the filter.
+    Fortunately, many important filters (including averaging and Gaussian smoothing)
+    have the property of beeing <i>separable</i>, which allows a much more efficient
+    implementation in terms  of 1-dimensional windows. A 2-dimensional filter is
+    separable if its coefficients \f$f_{ij}\f$ can be expressend as an outer product
     of two 1-dimensional filters \f$h_i\f$ and \f$c_j\f$:
 
     \f[
         f_{ij} = h_i \cdot c_j
     \f]
-    
-    For example, the 3x3 averaging filter (with coefficients 1/9) is obtained as the outer 
+
+    For example, the 3x3 averaging filter (with coefficients 1/9) is obtained as the outer
     product of two 3x1 filters (with coefficients 1/3):
-    
-    \f[ \left( \begin{array}{ccc} \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\[1ex] 
-                                  \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\[1ex] 
-                                  \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \end{array} \right) = 
+
+    \f[ \left( \begin{array}{ccc} \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\[1ex]
+                                  \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\[1ex]
+                                  \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \end{array} \right) =
     \left( \begin{array}{c} \frac{1}{3} \\[1ex]  \frac{1}{3} \\[1ex]  \frac{1}{3} \end{array} \right)  \cdot
     \left( \begin{array}{ccc} \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \end{array} \right)
     \f]
-    
+
     The convolution with separable filters can be implemented by two consecutive 1-dimensional
     convolutions: first, one filters all rows of the image with the horizontal filter, and then
     all columns of the result with the vertical filter. Instead of the (n x m) operations required
     for a 2-dimensional window, we now only need (n + m) operations for the two 1-dimensional ones.
     Already for a 5x5 window, this reduces the number of operations from 25 to 10, and the difference
     becomes even bigger with increasing window size.
-    
+
     To construct and apply 1-dimensional filters, VIGRA provides the class \ref vigra::Kernel1D and
     the functions separableConvolveX() resp. separableConvolveY(). To compute a 2D Gaussian filter
     we use the following code:
 
     \code
-    Kernel1D<double> filter; 
+    Kernel1D<double> filter;
     filter.initGaussian(1.5);
-    
+
     MultiArray<2, float> tmpImage(inputImage.shape());
     separateConvolveX(inputImage, tmpImage, filter);
     separateConvolveY(tmpImage, resultImage, filter);
@@ -287,40 +288,75 @@
     The same result is more conveniently achieved by the functions \ref convolveImage() and
     \ref gaussianSmoothing() (see <a href="smooth_convolve_8cxx-example.html">smooth_convolve.cxx</a>
     for a working example):
-    
+
     \code
-    // apply 'filter' to both the x- and y-axis 
+    // apply 'filter' to both the x- and y-axis
     // (calls separateConvolveX() and separateConvolveY() internally)
     convolveImage(inputImage, resultImage, filter, filter);
-    
+
     // smooth image with Gaussian filter with sigma=1.5
     // (calls convolveImage() with Gaussian filter internally)
     gaussianSmoothing(inputImage, resultImage, 1.5);
     \endcode
 
-    It is, of course, also possible to apply different filters in the x- and y-directions. 
+    It is, of course, also possible to apply different filters in the x- and y-directions.
     This is especially useful for derivative filters which are commonly used to compute
     image features, for example \ref gaussianGradient() and \ref gaussianGradientMagnitude().
     For more information see \ref CommonConvolutionFilters and \ref Convolution.
-    
+
     Separable filters are also the key for efficient convolution of higher-dimensional images
-    and arrays: An n-dimensional filter is simply implemented by n consecutive 1-dimensional 
-    filter applications, regardsless of the size of n. This is the basis for VIGRA's 
+    and arrays: An n-dimensional filter is simply implemented by n consecutive 1-dimensional
+    filter applications, regardless of the size of n. This is the basis for VIGRA's
     multi-dimensional filter functions. For example, Gaussian smoothing in arbitrary many
     dimensions is implemented in \ref gaussianSmoothMultiArray():
-    
+
     \code
     MultiArray<3, UInt8> inputArray(Shape3(100, 100, 100));
     ... // fill inputArray with data
-    
+
     MultiArray<3, float> resultArray(inputArray.shape());
-    
+
     // perform isotropic Gaussian smoothing at scale 1.5
     gaussianSmoothMultiArray(inputArray, resultArray, 1.5);
     \endcode
-    
+
     More information about VIGRA's multi-dimensional convolution funcions can be found in
     the reference manual under \ref MultiArrayConvolutionFilters .
+
+    \subsection ParallelConvolveTutorial Parallel Execution of Gaussian Filters
+
+    The computation of Gaussian filters and their derivatives can be accelerated significantly
+    when rectangular blocks of a large image as processed in parallel.
+    This is easily achieved in VIGRA by passing the option object
+    \ref vigra::BlockwiseConvolutionOptions to the convolution functions:
+
+    \code
+    // create a big array
+    MultiArray<3, UInt8> inputArray(Shape3(1000, 1000, 100));
+    ... // fill inputArray with data
+
+    MultiArray<3, float> resultArray(inputArray.shape());
+
+    // perform isotropic Gaussian smoothing at scale 1.5 in parallel
+    gaussianSmoothMultiArray(inputArray, resultArray, 1.5,
+                             BlockwiseConvolutionOptions<3>());
+    \endcode
+
+    This call will spawn the standard number of threads for the present platform
+    (as returned by <tt>std::thread::hardware_concurrency()</tt>) and distributes
+    the work across these threads in blocks with a suitable default shape.
+    You can customize the number of threads and the block shape via the option
+    object:
+
+    \code
+    gaussianSmoothMultiArray(inputArray, resultArray, 1.5,
+                             BlockwiseConvolutionOptions<3>().numThreads(6)
+                                                             .blockShape(Shape3(128, 128, 100)));
+    \endcode
+
+    The same works for Gaussian derivative filters such as \ref gaussianGradientMultiArray(),
+    \ref gaussianGradientMagnitude(), and \ref hessianOfGaussianMultiArray(). Refer to section
+    \ref MultiArrayConvolutionFilters for more details.
 */
 
 /** \example invert_tutorial.cxx
@@ -351,4 +387,123 @@
     Convolve an image in different ways (gray scale or color)
     <br>
     Usage: <TT>smooth_convolve infile outfile</TT>
+*/
+
+/** \page ImageSegmentationTutorial Image Segmentation
+
+    <h2>Section Contents</h2>
+
+    <ul style="list-style-image:url(documents/diamond.gif)">
+    <li> \ref SuperpixelsTutorial
+    <li> \ref RAGTutorial
+    </ul>
+
+    The complete code of the example described here can be found in <a href="graph_agglomerative_clustering_8cxx-example.html">graph_agglomerative_clustering.cxx</a>.
+
+    \section SuperpixelsTutorial Computing Superpixels
+
+    Hierarchical or agglomerative clustering can be applied either to the pixels directly
+    by using a \ref vigra::GridGraph, or on an initial oversegmentation into superpixels
+    whose region adjacency graph is represented in a \ref vigra::AdjacencyListGraph. We
+    describe the second variant here, as it offers more possibilities, but the first
+    works essentially in the same way.
+
+    Before computing superpixels, it is useful to transform the data from the RGB colorspace
+    into the Lab colorspace, because distances in the Lab space are perceptually more meaningful:
+
+    \code
+    ImageImportInfo info(filename);
+    MultiArray<2, TinyVector<float, 3> > imageArrayRGB(info.shape()),
+                                         imageArrayLab(info.shape());
+    importImage(info, imageArrayRGB);
+
+    transformMultiArray(imageArrayRGB, imageArrayLab, RGB2LabFunctor<float>());
+    \endcode
+
+    VIGRA offers two superpixel algorithms: watersheds and SLIC superpixels. We use
+    the watershed algorithm here, see \ref slicSuperpixels() for more information on
+    the alternative. To run the watershed algorithm, we first need an edge indicator
+    (i.e. an image with big values along edges and small values elsewhere) like the
+    gradient magnitude:
+
+    \code
+    MultiArray<2, float>  gradMag(imageArrayLab.shape());
+
+    float sigmaGradMag = 3.0f;
+    gaussianGradientMagnitude(imageArrayLab, gradMag, sigmaGradMag);
+    \endcode
+
+    <Table cellspacing = "10">
+    <TR valign = "bottom">
+    <TD> \image html bears.jpg "input image" </TD>
+    <TD> \image html bears_gradient.png "gradient magnitude" </TD>
+    </TR>
+    </Table>
+
+    The watershed algorithm initiates a superpixel at every local minimum of the gradient
+    image and then grows these seeds along increasing gradients until they meet at the
+    gradient ridges ("watersheds" when the gradient is interpreted as the altitude of a
+    landscape) which partly correspond to true image edges, but are also located
+    elsewhere. The goal of the subsequent hierarchical clustering is to identify the
+    true edges and delete the spurious ones. The superpixels are represented in a label
+    image that assigns the superpixel ID to every pixel. To visualize the superpixels,
+    it is useful to display the watershed lines as an overlay on an enlarged version
+    of the input image (Enlarging the image is necessary because the watersheds are
+    actually between pixels, i.e. at half-integer coordinates. Doubling maps these
+    to odd-valued coordinates in the enlarged image, so that rounding is avoided.).
+    In this example, we use the fast union-find watershed algorithm, which is also
+    available in a parallel version in function \ref unionFindWatershedsBlockwise():
+
+    \code
+    // create watershed superpixels with the fast union-find algorithm
+    MultiArray<2, unsigned int> labelArray(gradMag.shape());
+    unsigned int max_label = watershedsMultiArray(gradMag, labelArray, DirectNeighborhood,
+                                                  WatershedOptions().unionFind());
+
+    // double the image resolution and create watershed overlay
+    MultiArray<2, TinyVector<float, 3> > imageArrayBig(imageArrayRGB.shape()*2-Shape2(1));
+    resizeMultiArraySplineInterpolation(imageArrayRGB, imageArrayBig);
+    regionImageToCrackEdgeImage(labelArray, imageArrayBig,
+                                RGBValue<float>(255, 0, 0), EdgeOverlayOnly);
+    \endcode
+
+    \image html bears_superpixels.png
+
+    \section RAGTutorial Constructing the Region Adjacency Graph and its Feature Maps
+
+    Next, we invoke \ref makeRegionAdjacencyGraph() to construct the region adjacency
+    graph (RAG) of the superpixels. This function takes any graph along with a connected
+    components labeling and creates a new graph that has exactly one node per connected
+    component, and nodes are connected by an edge whenever the corresponding components are
+    neighbors in the original graph, i.e. the original graph contains at least one edge
+    with one end point in the first and the other in the second component. In general,
+    each pair of components has several edges with this property, and all of them are
+    mapped onto a single edge in the RAG. To keep track of this mapping,
+    makeRegionAdjacencyGraph() accepts an additional parameter \a affiliatedEdges, which
+    is a map from edge IDs in the RAG to vectors of edge IDs in the original graph.
+    In our case, the input graph is a \ref vigra::GridGraph whose labeling is stored
+    in the \a labelArray, and the output graph is a \ref vigra::AdjacencyListGraph.
+    The mapping \a affiliatedEdges is best constructed by means of embedded typed of
+    these graph classes:
+
+    \code
+    // create grid-graph of appropriate size
+    typedef GridGraph<2, undirected_tag> ImageGraph;
+    ImageGraph imageGraph(labelArray.shape());
+
+    // construct an empty graph to hold the region adjacency graph for the superpixels
+    typedef AdjacencyListGraph RAG;
+    RAG rag;
+
+    // create mapping 'affiliatedEdges' from RAG edges to
+    // corresponding edges in imageGraph and build the RAG
+    RAG::EdgeMap<std::vector<ImageGraph::Edge>> affiliatedEdges(rag);
+    makeRegionAdjacencyGraph(imageGraph, labelArray, rag, affiliatedEdges);
+    \endcode
+
+    To control agglomeratove clustering, i.e. to define the order in which
+    edges are contracted and nodes merged, we need some features that describe
+    the dissimilarity of superpixels. The more dissimilar two superpixels are,
+    the more likely they will remain separated, i.e. belong to different regions
+    of the final segmentation.
 */
