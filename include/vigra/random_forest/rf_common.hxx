@@ -490,7 +490,7 @@ class RandomForestOptions
 
     /** How many trees to create?
      *
-     * <br> Default: 255.
+     * <br> Default: 256.
      */
     RandomForestOptions & tree_count(int in)
     {
