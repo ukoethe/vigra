@@ -38,6 +38,7 @@
 #define VIGRA_SEPARABLECONVOLUTION_HXX
 
 #include <cmath>
+#include "kerneltraits.hxx"
 #include "utilities.hxx"
 #include "numerictraits.hxx"
 #include "imageiteratoradapter.hxx"
@@ -1399,6 +1400,10 @@ class Kernel1D
         /** the kernel's const accessor
         */
     typedef StandardConstAccessor<ARITHTYPE> ConstAccessor;
+
+        /** the kernel's tag (finite impulse response, 1D)
+         */
+    typedef detail::fir_kernel1d_tag vigra_kernel_category;
 
     struct InitProxy
     {
