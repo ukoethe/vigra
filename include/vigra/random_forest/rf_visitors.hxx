@@ -850,14 +850,15 @@ public:
 };
 
 /** Visitor that calculates the oob error of the ensemble
- *  This rate should be used to estimate the crossvalidation 
+ *
+ *  This rate serves as a quick estimate for the crossvalidation 
  *  error rate.
- *  Here each sample is put down those trees, for which this sample
- *  is OOB i.e. if sample #1 is  OOB for trees 1, 3 and 5 we calculate
+ *  Here, each sample is put down the trees for which this sample
+ *  is OOB, i.e., if sample #1 is  OOB for trees 1, 3 and 5, we calculate
  *  the output using the ensemble consisting only of trees 1 3 and 5. 
  *
- *  Using normal bagged sampling each sample is OOB for approx. 33% of trees
- *  The error rate obtained as such therefore corresponds to crossvalidation
+ *  Using normal bagged sampling each sample is OOB for approx. 33% of trees.
+ *  The error rate obtained as such therefore corresponds to a crossvalidation
  *  rate obtained using a ensemble containing 33% of the trees.
  */
 class OOB_Error : public VisitorBase
