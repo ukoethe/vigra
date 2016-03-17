@@ -125,8 +125,14 @@ Official VIGRA <b>version 1.11.0</b> (March 17, 2016):
 </p><ul>
 <li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-11-0/vigra-1.11.0-src.tar.gz">source tarball with documentation</a> (for all platforms, to be built with <a href="http://www.cmake.org/">cmake</a>, please read the <a href="http://ukoethe.github.io/vigra/doc-release/vigra/Installation.html">installation instructions</a>)
 </li>
-<li>Linux binaries are probably provided by your Linux distribution (and are readily created from the source by <tt>make package</tt>)
+<li>Linux 64-bit binaries:
+<ul>
+<li>binaries for the C++ library are probably provided by your Linux distribution (and are readily created from the source by <tt>make package</tt>)
 </li>
+<li><b>vigra Python bindings</b> for Python 3.5 can be downloaded via the <a href="https://www.continuum.io/">anaconda</a> package manager:<br/><br/>
+    <tt>conda install -c ukoethe vigra=1.11.0</tt>
+</li><br/>
+</ul>
 <li>Windows 64-bit binaries:
 <ul>
 <li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-11-0/vigra-1.11.0-win64-vc14.zip">binaries with sources and documentation</a> for Visual Studio 2015, including dependencies (jpeg, png, tiff, hdf5)
