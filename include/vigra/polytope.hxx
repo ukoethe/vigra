@@ -17,8 +17,12 @@ template <unsigned int N, class T>
 class Polytope
 {
   public:
+
     enum Dimension {dimension = N};
     enum node_enum {INVALID, FACET, VERTEX};
+
+    template <node_enum NodeType>
+    struct node_type_iterator;
 
     typedef T                                       coordinate_type;
     typedef typename NumericTraits<T>::RealPromote  real_type;
@@ -27,6 +31,12 @@ class Polytope
     typedef typename point_type::difference_type    difference_type;
     typedef typename lemon::ListDigraph             graph_type;
     typedef typename graph_type::Node               node_type;
+    typedef typename graph_type::Arc                arc_type;
+    typedef typename graph_type::NodeIt             node_iterator;
+    typedef typename graph_type::OutArcIt           out_arc_iterator;
+    typedef typename graph_type::InArcIt            in_arc_iterator;
+    typedef node_type_iterator<FACET>               facet_iterator;
+    typedef node_type_iterator<VERTEX>              vertex_iterator;
 
     Polytope()
     : graph_()
@@ -51,14 +61,11 @@ class Polytope
 
     virtual bool closed() const
     {
-        for (typename graph_type::NodeIt n(graph_); n != lemon::INVALID; ++n)
+        for (facet_iterator n(graph_, type_map_); n != lemon::INVALID; ++n)
         {
-            if (this->isFacet(n))
+            if (!(this->closed(n)))
             {
-                if (!(this->closed(n)))
-                {
-                    return false;
-                }
+                return false;
             }
         }
         return true;
@@ -91,14 +98,14 @@ class Polytope
         std::set<node_type> ret;
         if (type_map_[u] == FACET)
         {
-            for (graph_type::OutArcIt a(graph_, u); a != lemon::INVALID; ++a)
+            for (out_arc_iterator a(graph_, u); a != lemon::INVALID; ++a)
             {
                 ret.insert(graph_.target(a));
             }
         }
         else
         {
-            for (graph_type::InArcIt a(graph_, u); a != lemon::INVALID; ++a)
+            for (in_arc_iterator a(graph_, u); a != lemon::INVALID; ++a)
             {
                 ret.insert(graph_.source(a));
             }
@@ -106,39 +113,28 @@ class Polytope
         return ret;
     }
 
+    // TODO remove
     virtual ArrayVector<point_view_type> getVertices(const node_type u) const
     {
-        vigra_precondition(type_map_[u] == FACET,
-                           "Polytope::getVertices(): Node must be a facet");
+        vigra_precondition(
+                type_map_[u] == FACET,
+                "Polytope::getVertices(): Node must be a facet");
         ArrayVector<point_view_type> ret;
-        for (graph_type::OutArcIt a(graph_, u); a != lemon::INVALID; ++a)
+        for (out_arc_iterator a(graph_, u); a != lemon::INVALID; ++a)
         {
             ret.push_back(vec_map_[graph_.target(a)]);
         }
         return ret;
     }
 
-    virtual bool isFacet(const node_type u) const
-    {
-        return (type_map_[u] == FACET);
-    }
-
-    virtual bool isVertex(const node_type u) const
-    {
-        return (type_map_[u] == VERTEX);
-    }
-
     virtual ArrayVector<node_type> litFacets(const point_view_type & p) const
     {
         ArrayVector<node_type> ret;
-        for (graph_type::NodeIt n(graph_); n != lemon::INVALID; ++n)
+        for (facet_iterator n(graph_, type_map_); n != lemon::INVALID; ++n)
         {
-            if (type_map_[n] == FACET)
+            if (distance(n, p) > 0)
             {
-                if (distance(n, p) > 0)
-                {
-                    ret.push_back(n);
-                }
+                ret.push_back(n);
             }
         }
         return ret;
@@ -147,65 +143,63 @@ class Polytope
     virtual void tidyUp()
     {
         std::set<node_type> to_erase;
-        for (graph_type::NodeIt n(graph_); n != lemon::INVALID; ++n)
+        for (vertex_iterator v(graph_, type_map_); v != lemon::INVALID; ++v)
         {
-            if (type_map_[n] == VERTEX)
+            vigra_assert(
+                    type_map_[v] == VERTEX,
+                    "Polytope::tidyUp(): vertex not a vertex");
+            in_arc_iterator a(graph_, v);
+            if (a == lemon::INVALID)
             {
-                graph_type::InArcIt a(graph_, n);
-                if (a == lemon::INVALID)
-                {
-                    to_erase.insert(n);
-                }
+                to_erase.insert(v);
             }
         }
-        for (node_type n : to_erase)
+        for (node_type v : to_erase)
         {
-            graph_.erase(n);
+            graph_.erase(v);
         }
     }
 
     virtual real_type distance(const node_type u, const point_view_type & p) const
     {
-        vigra_precondition(type_map_[u] == FACET,
-                           "Polytope::distance(): Node must be a facet");
-        graph_type::OutArcIt a(graph_, u);
-        vigra_precondition(a != lemon::INVALID,
-                           "Polytope::distance(): Invalid facet");
+        vigra_precondition(
+                type_map_[u] == FACET,
+                "Polytope::distance(): Node must be a facet");
+        out_arc_iterator a(graph_, u);
+        vigra_precondition(
+                a != lemon::INVALID,
+                "Polytope::distance(): Invalid facet");
 
         return dot(p - vec_map_[graph_.target(a)], vec_map_[u]);
     }
 
   protected:
+
     virtual node_type findNeighbor(
             const node_type u,
             const difference_type index) const
     {
-        vigra_precondition(type_map_[u] == FACET,
-                           "Polytope::findNeighbor(): Node must be a facet");
-        vigra_precondition(index < dimension,
-                           "Polytope::findNeighbor(): Invalid index");
-        vigra_precondition(countOutArcs(graph_, u) == dimension,
-                           "Polytope::findNeighbor(): Bad facet");
-        graph_type::OutArcIt a(graph_, u);
+        vigra_precondition(
+                type_map_[u] == FACET,
+                "Polytope::findNeighbor(): Node must be a facet");
+        vigra_precondition(
+                index < dimension,
+                "Polytope::findNeighbor(): Invalid index");
+        vigra_precondition(
+                countOutArcs(graph_, u) == dimension,
+                "Polytope::findNeighbor(): Bad facet");
         std::set<node_type> candidates;
-        for (int i = 0; i < dimension - 1; ++i, ++a)
+        for (out_skip_iterator a(graph_, u, index); a != lemon::INVALID; ++a)
         {
-            if (i == index)
-            {
-                ++a;
-            }
-            vigra_assert(
-                    a != lemon::INVALID,
-                    "Polytope::findNeighbor(): Invalid arc");
             const node_type vertex = graph_.target(a);
-            if (i == 0)
+            if (a.index() == 0)
             {
                 candidates = getConnected(vertex);
             }
             else
             {
-                const auto con = getConnected(vertex);
                 std::set<node_type> to_erase;
+                const auto con = getConnected(vertex);
                 for (auto candidate : candidates)
                 {
                     if (con.count(candidate) == 0)
@@ -261,13 +255,8 @@ class Polytope
         {
             if ((this->findNeighbor(u, i)) == lemon::INVALID)
             {
-                typename graph_type::OutArcIt a(graph_, u);
-                for (int j = 0; j < dimension - 1; ++j, ++a)
+                for (out_skip_iterator a(graph_, u, i); a != lemon::INVALID; ++a)
                 {
-                    if (i == j)
-                    {
-                        ++a;
-                    }
                     vigra_assert(
                             ret.count(graph_.target(a)) == 0,
                             "Polytope::openEdge(): Same arc twice");
@@ -278,8 +267,94 @@ class Polytope
         }
         return ret;
     }
-    
+
   public:
+
+    template <node_enum NodeType>
+    struct node_type_iterator : public node_type
+    {
+        node_type_iterator()
+        {}
+
+        node_type_iterator(lemon::Invalid i)
+        : node_type(i)
+        {}
+
+        explicit node_type_iterator(
+                const graph_type & graph,
+                const typename graph_type::NodeMap<node_enum> & type_map)
+        : graph_(graph)
+        , type_map_(type_map)
+        {
+            graph_.first(static_cast<node_type &>(*this));
+            while (type_map_[*this] != NodeType)
+            {
+                graph_.next(*this);
+            }
+        }
+
+        node_type_iterator<NodeType> & operator++()
+        {
+            while (*this != lemon::INVALID)
+            {
+                graph_.next(*this);
+                if (type_map_[*this] == NodeType)
+                {
+                    return *this;
+                }
+            }
+            return *this;
+        }
+
+        const graph_type & graph_;
+        const typename graph_type::NodeMap<node_enum> & type_map_;
+    };
+
+    struct out_skip_iterator : public arc_type
+    {
+        out_skip_iterator()
+        {}
+
+        out_skip_iterator(lemon::Invalid i)
+        : arc_type(i)
+        {}
+
+        explicit out_skip_iterator(
+                const graph_type & graph,
+                const node_type & node,
+                const difference_type skip)
+        : graph_(graph)
+        , skip_(skip)
+        , index_(0)
+        {
+            graph_.firstOut(*this, node);
+            if (skip_ == 0)
+            {
+                graph_.nextOut(*this);
+            }
+        }
+
+        out_skip_iterator & operator++()
+        {
+            ++index_;
+            graph_.nextOut(*this);
+            if (index_ == skip_)
+            {
+                graph_.nextOut(*this);
+            }
+            return *this;
+        }
+
+        difference_type index() const
+        {
+            return index_;
+        }
+
+        const graph_type & graph_;
+        const difference_type skip_;
+        difference_type index_;
+    };
+
     graph_type graph_;
     typename graph_type::NodeMap<node_enum> type_map_;
     typename graph_type::NodeMap<point_type> vec_map_;
@@ -290,15 +365,22 @@ template <unsigned int N, class T>
 class StarPolytope : public Polytope<N, T>
 {
   public:
+
     typedef Polytope<N, T>                          base_type;
     typedef typename base_type::coordinate_type     coordinate_type;
     typedef typename base_type::real_type           real_type;
     typedef typename base_type::point_type          point_type;
     typedef typename base_type::point_view_type     point_view_type;
     typedef typename base_type::difference_type     difference_type;
-
     typedef typename base_type::graph_type          graph_type;
     typedef typename base_type::node_type           node_type;
+    typedef typename base_type::arc_type            arc_type;
+    typedef typename base_type::node_iterator       node_iterator;
+    typedef typename base_type::in_arc_iterator     in_arc_iterator;
+    typedef typename base_type::out_arc_iterator    out_arc_iterator;
+    typedef typename base_type::out_skip_iterator   out_skip_iterator;
+    typedef typename base_type::facet_iterator      facet_iterator;
+    typedef typename base_type::vertex_iterator     vertex_iterator;
 
     using base_type::dimension;
     using base_type::graph_;
@@ -373,7 +455,7 @@ class StarPolytope : public Polytope<N, T>
                 type_map_[u] == FACET,
                 "StarPolytope::assignNormal(): Node needs to be a facet node");
         MultiArray<2, real_type> mat(dimension, dimension);
-        typename graph_type::OutArcIt a(graph_, u);
+        out_arc_iterator a(graph_, u);
         point_view_type vertex = vec_map_[graph_.target(a)];
         ++a;
         for (int i = 0; a != lemon::INVALID; ++a, ++i)
@@ -475,14 +557,11 @@ class StarPolytope : public Polytope<N, T>
 
     virtual bool contains(const point_view_type & p) const
     {
-        for (typename graph_type::NodeIt n(graph_); n != lemon::INVALID; ++n)
+        for (facet_iterator n(graph_, type_map_); n != lemon::INVALID; ++n)
         {
-            if (this->isFacet(n))
+            if (contains(n, p))
             {
-                if (contains(n, p))
-                {
-                    return true;
-                }
+                return true;
             }
         }
         return false;
@@ -494,7 +573,7 @@ class StarPolytope : public Polytope<N, T>
                            "StarPolytope::nVolume(): Node needs do be a facet");
         MultiArray<2, coordinate_type> mat(dimension, dimension);
         real_type fac = 1;
-        typename graph_type::OutArcIt a(graph_, n);
+        out_arc_iterator a(graph_, n);
         for (int i = 0; i < dimension; ++i, ++a)
         {
             fac *= (i+1);
@@ -506,12 +585,9 @@ class StarPolytope : public Polytope<N, T>
     virtual real_type nVolume() const
     {
         real_type ret = 0;
-        for (typename graph_type::NodeIt n(graph_); n != lemon::INVALID; ++n)
+        for (facet_iterator n(graph_, type_map_); n != lemon::INVALID; ++n)
         {
-            if (this->isFacet(n))
-            {
-                ret += this->nVolume(n);
-            }
+            ret += this->nVolume(n);
         }
         return ret;
     }
@@ -522,7 +598,7 @@ class StarPolytope : public Polytope<N, T>
                            "StarPolytope::nVolume(): Node needs do be a facet");
         MultiArray<2, coordinate_type> mat(dimension, dimension);
         real_type fac = 1;
-        typename graph_type::OutArcIt a(graph_, n);
+        out_arc_iterator a(graph_, n);
         const point_view_type vec = vec_map_[graph_.target(a)];
         ++a;
         for (int i = 1; i < dimension; ++i, ++a)
@@ -537,17 +613,15 @@ class StarPolytope : public Polytope<N, T>
     virtual real_type nSurface() const
     {
         real_type ret = 0;
-        for (typename graph_type::NodeIt n(graph_); n != lemon::INVALID; ++n)
+        for (facet_iterator n(graph_, type_map_); n != lemon::INVALID; ++n)
         {
-            if (this->isFacet(n))
-            {
-                ret += this->nSurface(n);
-            }
+            ret += this->nSurface(n);
         }
         return ret;
     }
 
   protected:
+
     point_type center_;
 };
 
@@ -555,14 +629,22 @@ template <unsigned int N, class T>
 class ConvexPolytope : public StarPolytope<N, T>
 {
   public:
+
     typedef StarPolytope<N, T>                      base_type;
     typedef typename base_type::coordinate_type     coordinate_type;
     typedef typename base_type::real_type           real_type;
     typedef typename base_type::point_type          point_type;
     typedef typename base_type::point_view_type     point_view_type;
-
+    typedef typename base_type::difference_type     difference_type;
     typedef typename base_type::graph_type          graph_type;
     typedef typename base_type::node_type           node_type;
+    typedef typename base_type::arc_type            arc_type;
+    typedef typename base_type::node_iterator       node_iterator;
+    typedef typename base_type::in_arc_iterator     in_arc_iterator;
+    typedef typename base_type::out_arc_iterator    out_arc_iterator;
+    typedef typename base_type::out_skip_iterator   out_skip_iterator;
+    typedef typename base_type::facet_iterator      facet_iterator;
+    typedef typename base_type::vertex_iterator     vertex_iterator;
 
     using base_type::dimension;
     using base_type::graph_;
@@ -599,6 +681,7 @@ class ConvexPolytope : public StarPolytope<N, T>
     {}
 
   protected:
+
     virtual void closeFacet(
             const node_type & vertex,
             const node_type & facet)
@@ -642,6 +725,7 @@ class ConvexPolytope : public StarPolytope<N, T>
     }
 
   public:
+
     virtual void addExtremeVertex(const point_view_type & p)
     {
         vigra_precondition(
@@ -649,20 +733,23 @@ class ConvexPolytope : public StarPolytope<N, T>
                 "ConvexPolytope::addExtremeVertex(): Polytope needs to be closed");
         ArrayVector<node_type> lit_facets = this->litFacets(p);
         std::set<node_type> open_facets;
-        for (node_type facet : lit_facets)
+        for (node_type lit_facet : lit_facets)
         {
-            for (auto con : aligns_map_[facet])
+            for (auto con : aligns_map_[lit_facet])
             {
+                vigra_assert(
+                        type_map_[con] == FACET,
+                        "ConvexPolytope::addExtremeVertex(): facet not a facet");
                 open_facets.insert(con);
             }
-            open_facets.erase(facet);
-            this->eraseFacet(facet);
+            open_facets.erase(lit_facet);
+            this->eraseFacet(lit_facet);
         }
         this->tidyUp();
         node_type new_vertex = this->addVertex(p);
-        for (auto facet : open_facets)
+        for (auto open_facet : open_facets)
         {
-            this->closeFacet(new_vertex, facet);
+            this->closeFacet(new_vertex, open_facet);
         }
     }
 };
