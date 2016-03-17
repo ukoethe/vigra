@@ -416,6 +416,9 @@ class RandomForestOptions
     }
 
     /**\brief directly specify the number of samples per tree
+	 *
+	 * This value should not be higher than the total number of
+	 * samples if sampling without replacement has been specified.
      */
     RandomForestOptions & samples_per_tree(int in)
     {
