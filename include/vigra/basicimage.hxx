@@ -463,6 +463,8 @@ VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE)
 
 /** \brief Fundamental class template for images.
 
+    <b>deprecated</b>, use \ref vigra::MultiArray instead
+    
     A customized memory allocator can be specified as a templated argument
     and passed in the constructor.
 
