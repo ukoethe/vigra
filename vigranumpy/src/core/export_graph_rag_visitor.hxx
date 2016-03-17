@@ -162,7 +162,7 @@ public:
                     python::arg("out")=python::object()
                 )
             );
-            python::def("_ragEdgeFeaturesNew",
+            python::def("_ragEdgeStatistics",
                 registerConverters(
                     &pyRagEdgeFeaturesFromImplicit< float, float, ImplicitEdgeMap >
                 ),
@@ -689,11 +689,10 @@ public:
                 n_bins = std::max( n_bins_min, std::min(n_bins, n_bins_max) );
                 a.setHistogramOptions(HistogramOptions().setBinCount(n_bins));
                 
-                // copy values to multi array
-                MultiArray<1, double> data( Shape1(affEdges.size()) );
-                for(size_t i=0;i<affEdges.size();++i)
-                    data(i) = otfEdgeMap[affEdges[i]];
-                extractFeatures(data.begin(), data.end(), a);
+                // accumulate the values of this edge
+                for(unsigned int k=1; k <= a.passesRequired(); ++k)
+                    for(size_t i=0;i<affEdges.size();++i)
+                        a.updatePassN( otfEdgeMap[affEdges[i]], k );
                 
                 feat[0] = get<Mean>(a);
                 feat[1] = get<Sum>(a);
