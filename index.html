@@ -34,7 +34,7 @@ function showabstract( where, sender ){
     <tr>
     <td bgcolor="#dcc87c"></td>
     <td align="center" bgcolor="#e0d090" valign="top" width="100%">
-    <font face="Helvetica,Arial,sans-serif" size="3">The VIGRA Computer Vision Library<br>Version 1.10.0</font>
+    <font face="Helvetica,Arial,sans-serif" size="3">The VIGRA Computer Vision Library<br>Version 1.11.0</font>
     </td>
     </tr>
     <tr>
@@ -75,13 +75,11 @@ VIGRA was originally designed and implemented by <a href="http://hci.iwr.uni-hei
 </td>
 <td colspan="2" valign="top">
 <ul>
-<li><b><a href="http://ukoethe.github.io/vigra/doc/vigra/Tutorial.html">Tutorial</a></b>
-</li><li><b>C++ reference for <a href="http://ukoethe.github.io/vigra/doc-release/vigra/index.html">version 1.10.0</a></b>
-</li><li><b>C++ reference for <a href="http://ukoethe.github.io/vigra/doc/vigra/index.html">'master' on github</a></b>
-</li><li><b>vigranumpy Python reference for <a href="http://ukoethe.github.io/vigra/doc-release/vigranumpy/index.html">version 1.10.0</a></b>
-</li><li><b>vigranumpy Python reference for <a href="http://ukoethe.github.io/vigra/doc/vigranumpy/index.html">'master' on github</a></b>
+<li><b><a href="doc-release/vigra/Tutorial.html">Tutorial</a></b>
+</li><li><b>C++ reference for <a href="doc-release/vigra/index.html">version 1.11.0</a></b>
+</li><li><b>vigranumpy Python reference for <a href="doc-release/vigranumpy/index.html">version 1.11.0</a></b>
 </li></ul>
-You can look at some <a href="http://ukoethe.github.io/vigra/doc-release/vigra/ExampleList.html">example programs</a>. The most comprehensive description of VIGRA's design (albeit in German) is U. K&ouml;the's PhD thesis:
+You can look at some <a href="doc-release/vigra/ExampleList.html">example programs</a>. The most comprehensive description of VIGRA's design (albeit in German) is U. K&ouml;the's PhD thesis:
 
 <blockquote>
 <a href="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#PhD">Generische Programmierung f&uuml;r die Bildverarbeitung</a>
@@ -123,19 +121,22 @@ branch directly -- always create a new branch and issue a merge request.
 of GitHub. Please make ample use of the powerful features provided by 
 GitHub (including issue tracking and change discussion).
 <p>
-Official VIGRA <b>version 1.10.0</b> (November 18, 2013):
+Official VIGRA <b>version 1.11.0</b> (March 17, 2016):
 </p><ul>
-<li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-10-0/vigra-1.10.0-src-with-docu.tar.gz">sources with documentation</a> (for all platforms, to be built with <a href="http://www.cmake.org/">cmake</a>, please read the <a href="http://ukoethe.github.io/vigra/doc-release/vigra/Installation.html">installation instructions</a>)
+<li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-11-0/vigra-1.11.0-src.tar.gz">source tarball with documentation</a> (for all platforms, to be built with <a href="http://www.cmake.org/">cmake</a>, please read the <a href="http://ukoethe.github.io/vigra/doc-release/vigra/Installation.html">installation instructions</a>)
+</li>
+<li>Linux binaries are probably provided by your Linux distribution (and are readily created from the source by <tt>make package</tt>)
 </li>
 <li>Windows 64-bit binaries:
 <ul>
-<li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-10-0/vigra-1.10.0-win64.exe">includes and libraries</a> for Visual Studio 2012, with TIFF, JPEG, and PNG support statically linked into vigraimpex.dll, but HDF5 support disabled
+<li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-11-0/vigra-1.11.0-win64-vc14.zip">binaries with sources and documentation</a> for Visual Studio 2015, including dependencies (jpeg, png, tiff, hdf5)
 </li>
-<li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-10-0/vigranumpy-1.10.0.win-amd64.exe">vigranumpy</a> Python bindings for Python 2.7 and numpy 1.6.2 (compiled with Visual Studio 2012)
-</li>
+<li><b>vigra Python bindings</b> for Python 3.5 can be downloaded via the <a href="https://www.continuum.io/">anaconda</a> package manager:<br/><br/>
+    <tt>conda install -c ukoethe vigra=1.11.0</tt>
+</li><br/>
 </ul>
 </li>
-<li>Apple Mac OS X binaries:
+<li>Apple Mac OS X binaries (still version 1.10):
 <ul>
 <li><a href="http://www.macports.org/ports.php?by=name&amp;substr=vigra">MacPort</a> (VIGRA 1.10.0, maintained by Benjamin Seppke, see his <a href="#" onclick="showabstract('macport', this);return false;">usage notes</a>) <div id="macport" style="display:none"><br>This
  port brings the whole functionality of the new vigra 1.10.0 to 
@@ -177,34 +178,34 @@ features of the new MacPort:
 </div></li>
 </ul> <br>
 </li>
-<li>Linux binaries may be provided by your Linux distribution (and are readily created from the source by "make package")
-</li></ul>
+</ul>
 The current version is known to run with gcc 4 and later (UNIX, Linux, 
 MacOS, cygwin, alpha, including 64-bit compilation), clang (Linux, 
-MacOS), and Microsoft Visual Studio 2010 and above. VIGRA should run 
+MacOS), and Microsoft Visual Studio 2012 and above. VIGRA should run 
 with any compiler that conforms to the C++ standard. Please direct 
 questions and bug reports to the <a href="mailto:vigra@informatik.uni-hamburg.de">VIGRA Mailing List</a> (you must <a href="https://mailhost.informatik.uni-hamburg.de/mailman/listinfo/vigra">subscribe</a> before posting) or to <a href="mailto:ullrich.koethe@iwr.uni-heidelberg.de">ullrich.koethe@iwr.uni-heidelberg.de</a>. Please do also read the <b><a href="http://ukoethe.github.io/vigra/doc-release/vigra/Installation.html">installation instructions</a></b>. 
 <p>
 Older versions: 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra-1.9.0-src.tar.gz">vigra 1.9.0</a> (November 06, 2012), 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra-1.8.0-src.tar.gz">vigra 1.8.0</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra-1.7.1-src.tar.gz">vigra 1.7.1</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra-1.7.0-src.tar.gz">vigra 1.7.0</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.6.0.tar.gz">vigra 1.6.0</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.5.0.tar.gz">vigra 1.5.0</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.4.0.tar.gz">vigra 1.4.0</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.3.3.tar.gz">vigra 1.3.3</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.3.2.tar.gz">vigra 1.3.2</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.3.1.tar.gz">vigra 1.3.1</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.3.0.tar.gz">vigra 1.3.0</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.2.0.tar.gz">vigra 1.2.0</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.6.tar.gz">vigra 1.1.6</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.5.tar.gz">vigra 1.1.5</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.4.tar.gz">vigra 1.1.4</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.3.tar.gz">vigra 1.1.3</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.2.tar.gz">vigra 1.1.2</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.1.tar.gz">vigra 1.1.1</a>, 
-                <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.0.tar.gz">vigra 1.0</a>
+    <a href="https://github.com/ukoethe/vigra/releases/download/Version-1-10-0/vigra-1.10.0-src-with-docu.tar.gz">vigra 1.10.0</a> (Nov 18, 2013),
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra-1.9.0-src.tar.gz">vigra 1.9.0</a> (Nov 06, 2012), 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra-1.8.0-src.tar.gz">vigra 1.8.0</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra-1.7.1-src.tar.gz">vigra 1.7.1</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra-1.7.0-src.tar.gz">vigra 1.7.0</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.6.0.tar.gz">vigra 1.6.0</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.5.0.tar.gz">vigra 1.5.0</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.4.0.tar.gz">vigra 1.4.0</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.3.3.tar.gz">vigra 1.3.3</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.3.2.tar.gz">vigra 1.3.2</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.3.1.tar.gz">vigra 1.3.1</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.3.0.tar.gz">vigra 1.3.0</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.2.0.tar.gz">vigra 1.2.0</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.6.tar.gz">vigra 1.1.6</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.5.tar.gz">vigra 1.1.5</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.4.tar.gz">vigra 1.1.4</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.3.tar.gz">vigra 1.1.3</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.2.tar.gz">vigra 1.1.2</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.1.1.tar.gz">vigra 1.1.1</a>, 
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra-old-versions/vigra1.0.tar.gz">vigra 1.0</a>
 <br>&nbsp;
 </p></td></tr>
 <tr>
@@ -212,7 +213,7 @@ Older versions:
 <a name="license"><b>License:</b><br>&nbsp;</a>
 </td>
 <td colspan="2" valign="top">
-VIGRA is subject to a <a href="http://ukoethe.github.io/vigra/LICENSE.txt">license</a> which is identical to the MIT X11 License and thus compatible to the GPL. You may use VIGRA in commercial products. 
+VIGRA is subject to the <a href="http://ukoethe.github.io/vigra/LICENSE.txt">MIT license</a>. You may use VIGRA in commercial products. 
 </td></tr>
 <tr>
 <td bgcolor="#e8dcae" valign="top">
@@ -222,7 +223,7 @@ VIGRA is subject to a <a href="http://ukoethe.github.io/vigra/LICENSE.txt">licen
 A number of software packages enhance VIGRA's capabilities. You may want to install them as well:
 <ul>
 <li><a href="http://www2s.biglobe.ne.jp/%7Eniitsuma/STLLCV/">STL-like OpenCV wrapper</a> by Hirotaka Niitsuma: Interoperability between VIGRA, <a href="http://www.boost.org/libs/numeric/ublas/doc/">uBLAS</a> and the computer vision library <a href="http://sourceforge.net/projects/opencvlibrary/">OpenCV</a>
-</li><li><a href="http://kogs-www.informatik.uni-hamburg.de/%7Emeine/software/vigraqt/">VigraQt</a> by Hans Meine: Interoperability between VIGRA and the <a href="http://qt-project.org/">Qt</a> user interface framework
+</li><li><a href="https://github.com/hmeine/vigraqt">VigraQt</a> by Hans Meine: Interoperability between VIGRA and the <a href="http://qt-project.org/">Qt</a> user interface framework
 </li></ul>
 </td></tr>
 <tr><td bgcolor="#d4c070"></td><td colspan="2" height="1" bgcolor="#e0d090" width="100%"></td></tr>
@@ -230,7 +231,7 @@ A number of software packages enhance VIGRA's capabilities. You may want to inst
 <td bgcolor="#e8dcae" valign="top">
 <a name="features"><b>Features:</b></a><br>
 (Look also at the <br>
-<a href="http://ukoethe.github.io/vigra/doc-release/vigra/CreditsChangelog.html">changelog page</a> <br>
+<a href="doc-release/vigra/CreditsChangelog.html">changelog page</a> <br>
 for the newest additions.)
 </td>
 <td colspan="2" valign="top">
@@ -241,19 +242,14 @@ for the newest additions.)
         fixed-size vectors
     </li>
     <li>
-        multi-dimensional arrays for arbitrary high dimensions
+        multi-dimensional arrays for arbitrary high dimensions and arbitrary element types
+    </li>
+    <li>
+        chunked arrays for data bigger than RAM
     </li>
     <li>
         efficient grid graph class for graph-based image processing (arbitrary high dimensions)
 
-    </li>
-    <li>
-        pre-instantiated images with many different scalar and vector valued pixel types
-        (byte, short, int, float, double, complex, RGB, RGBA etc.)
-    </li>
-    <li>
-        2-dimensional image iterators, multi-dimensional iterators for 
-arbitrary high dimensions, adapters for various image and array subsets
     </li>
     <li>
         input/output of many image file formats: Windows BMP, GIF, JPEG, PNG, PNM, Sun Raster, 
@@ -261,7 +257,7 @@ arbitrary high dimensions, adapters for various image and array subsets
         Khoros VIFF, HDR (high dynamic range), Andor SIF, OpenEXR
     </li>
     <li>
-        input/output of images with transparency (alpha channel) into suitable file formats.
+        input/output of images with transparency (alpha channel) into suitable file formats
     </li>
     <li>
         comprehensive support for HDF5 (input/output of arrays in arbitrary dimensions)
@@ -275,18 +271,13 @@ arbitrary high dimensions, adapters for various image and array subsets
 <b>Image Processing:</b>
 <ul>
     <li>
-        STL-style image processing algorithms with functors (e.g. arithmetic and algebraic
-        operations, gamma correction, contrast adaptation, thresholding), arbitrary regions 
-        of interest using mask images
+        exrpession templates for easy array arithmetic
     </li>
     <li>
         image resizing using resampling, linear interpolation, spline interpolation etc.
     </li>
     <li>
-        geometric transformations: rotation, mirroring, arbitrary affine transformations
-    </li>
-    <li>
-        automated functor creation using expression templates
+        geometric transformations: registration, rotation, mirroring, arbitrary affine transformations
     </li>
     <li>
         color space conversions: RGB, sRGB, R'G'B', XYZ, L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV
@@ -306,11 +297,11 @@ arbitrary high dimensions, adapters for various image and array subsets
 <b>Filters:</b>
 <ul>
     <li>
-        2-dimensional and separable convolution, Gaussian filters and their derivatives, 
-        Laplacian of Gaussian, sharpening etc.
+        separable and FFT-based convolution in arbitrary dimensions, Gaussian filters and their derivatives, 
+        Laplacian of Gaussian, sharpening etc., non-separable convolution in 2D
     </li>
     <li>
-        separable convolution and FFT-based convolution for arbitrary dimensional data
+        multithreaded filter execution
     </li>
     <li>
         resampling convolution (input and output image have different size)
@@ -332,10 +323,10 @@ arbitrary high dimensions, adapters for various image and array subsets
         linear and non-linear tensor smoothing, eigenvalue calculation etc. (2D and 3D)
     </li>
     <li>
-        distance transform (Manhattan, Euclidean, Checker Board norms, 2D and 3D)
+        distance transform (Manhattan, Euclidean, Checker Board norms), vector distance transform, eccentricity transform in arbitrary dimensions, 2D skeletonization with automatic pruning
     </li>
     <li>
-        morphological filters and median  (2D and 3D)
+        morphological filters and median (2D and 3D)
     </li>
     <li>
         Loy/Zelinsky symmetry transform 
@@ -344,7 +335,7 @@ arbitrary high dimensions, adapters for various image and array subsets
         Gabor filters
     </li>
 </ul>
-<b>Segmentation:</b>
+<b>Image Analysis and Segmentation:</b>
 <ul>
     <li>
         edge detectors: Canny, zero crossings, Shen-Castan, boundary tensor
@@ -359,9 +350,6 @@ arbitrary high dimensions, adapters for various image and array subsets
     <li>
         superpixels: watersheds, SLIC superpixels (arbitrary dimensions)
     </li>
-</ul>
-<b>Image Analysis:</b>
-<ul>
     <li>
         connected components labeling (arbitrary dimensions)
     </li>
@@ -374,25 +362,8 @@ arbitrary high dimensions, adapters for various image and array subsets
     <li>
         powerful incremental computation of region and object statistics (arbitrary dimensions)
     </li>
-</ul>
-<b>Multi-Dimensional Image Processing and Analysis:</b>
-<ul>
     <li>
-        point-wise transformations, projections and expansions in arbitrary high dimensions 
-    </li>
-    <li>
-        regions statistics readily apply to higher dimensional data as well 
-    </li>
-    <li>
-        separable convolution and FFT-based convolution filters, 
-resizing, morphology, and Euclidean distance transform for arbitrary 
-dimensional arrays (not just 3D)
-    </li>
-    <li>
-        connected components labeling, seeded region growing, watershed algorithm for arbitrary dimensional data
-    </li>
-    <li>
-        SLIC superpixels for arbitrary dimensional data
+        sophisticated graph-based image analysis, e.g. agglomerative clustering
     </li>
 </ul>
 <b>Machine Learning:</b>
@@ -441,10 +412,10 @@ regression), quadratic programming, non-linear least squares (using the Levenber
 <b>Inter-language support:</b>
 <ul>
     <li>
-        Python bindings in both directions (use Python arrays in C++, call VIGRA functions from Python)
+        Python bindings in both directions (use Python arrays in C++, call VIGRA functions from Python), supports Python 2.7. and 3.5
     </li>
     <li>
-        Matlab bindings of some functions
+        Matlab bindings of some functions (currently unsupported)
     </li>
 </ul>
 </td>
@@ -460,7 +431,7 @@ University of Heidelberg, Germany</i>
 </p></td><td bgcolor="#e0d090">
 <p align="right">
 <i>
-VIGRA 1.10.0<br>November 18, 2013
+VIGRA 1.11.0<br>March 17, 2016
 </i>
 </p></td></tr>
 </tbody></table>
