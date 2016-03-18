@@ -35,6 +35,9 @@
 #include <vigra/unittest.hxx>
 #include <vigra/random_forest_new.hxx>
 #include <vigra/random.hxx>
+#ifdef HasHDF5
+    #include <vigra/random_forest_new_hdf5_impex.hxx>
+#endif
 
 using namespace vigra;
 
@@ -201,6 +204,41 @@ struct RandomForestTests
             should(var_imp.variable_importance_(1, i) > 5 * var_imp.variable_importance_(0, i));
         }
     }
+
+#ifdef HasHDF5
+    void test_import()
+    {
+        typedef float FeatureType;
+        typedef UInt32 LabelType;
+        typedef MultiArray<2, FeatureType> Features;
+        typedef MultiArray<1, LabelType> Labels;
+
+        // Load the dummy random forest. This RF was trained on 500
+        // 2-dimensional points in [0, 1]^2. All points with x<0.5
+        // and y<0.5 have class 0, points with x<0.5 and y>=0.5 have
+        // class 1, points with x>0.5 and y>=0.5 have class 2, and
+        // points with x>=0.5 and y<0.5 have class 3.
+        HDF5File hfile("data/rf.h5", HDF5File::ReadOnly);
+        auto rf = random_forest_import_HDF5<Features, Labels>(hfile);
+        
+        // Create some test data.
+        FeatureType test_x_data[] = {
+            0.2, 0.4, 0.6, 0.8,  0.2, 0.4, 0.6, 0.8,  0.2, 0.4, 0.6, 0.8,  0.2, 0.4, 0.6, 0.8,
+            0.2, 0.2, 0.2, 0.2,  0.4, 0.4, 0.4, 0.4,  0.6, 0.6, 0.6, 0.6,  0.8, 0.8, 0.8, 0.8
+        };
+        Features test_x(Shape2(16, 2), test_x_data);
+        LabelType test_y_data[] = {
+            0, 0, 3, 3,  0, 0, 3, 3,  1, 1, 2, 2,  1, 1, 2, 2
+        };
+        Labels test_y(Shape1(16), test_y_data);
+        Labels pred_y(Shape1(16));
+
+        // Use the RF to predict the data.
+        rf.predict(test_x, pred_y);
+        for (size_t i = 0; i < test_y.size(); ++i)
+            should(test_y(i) == pred_y(i));
+    }
+#endif
 };
 
 struct RandomForestTestSuite : public test_suite
@@ -213,6 +251,9 @@ struct RandomForestTestSuite : public test_suite
         add(testCase(&RandomForestTests::test_default_rf));
         add(testCase(&RandomForestTests::test_oob_visitor));
         add(testCase(&RandomForestTests::test_var_importance_visitor));
+#ifdef HasHDF5
+        add(testCase(&RandomForestTests::test_import));
+#endif
     }
 };
 

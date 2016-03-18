@@ -125,8 +125,8 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
                                .distinct_classes(distinct_labels);
 
     Graph gr;
-    typename RF::template NodeMap<SplitTest> split_tests;
-    typename RF::template NodeMap<AccInputType> leaf_responses;
+    typename RF::template NodeMap<SplitTest>::type split_tests;
+    typename RF::template NodeMap<AccInputType>::type leaf_responses;
 
     auto groups = h5ctx.ls();
     for (auto const & groupname : groups) {
