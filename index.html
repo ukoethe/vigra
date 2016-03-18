@@ -9,6 +9,13 @@ function showabstract( where, sender ){
 }
 </script>
 <link rel="shortcut icon" href="http://ukoethe.github.io/vigra/vigra-icon.ico">
+<style type="text/css">
+
+li:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+</style>
 </head>
 <body link="#0040b0" bgcolor="#f8f0e0" vlink="#a00040">
 <basefont face="Helvetica,Arial,sans-serif" size="3">
@@ -129,17 +136,33 @@ Official VIGRA <b>version 1.11.0</b> (March 17, 2016):
 <ul>
 <li>binaries for the C++ library are probably provided by your Linux distribution (and are readily created from the source by <tt>make package</tt>)
 </li>
-<li><b>vigra Python bindings</b> for Python 3.5 can be downloaded via the <a href="https://www.continuum.io/">anaconda</a> package manager:<br/><br/>
-    <tt>conda install -c ukoethe vigra=1.11.0</tt>
-</li><br/>
+<li>VIGRA <b>Python bindings</b> can be downloaded via the <a href="https://www.continuum.io/">anaconda</a> package manager:
+    <ul style="margin:10px"><li>
+    <tt>conda install -c ukoethe vigra=1.11.0</tt></li>
+    </ul>
+    Depending on the Python version in the active environment, conda will pick the correct VIGRA variant automatically. Packages are available for Python 2.7, 3.4, and 3.5. You can also create a new environment with a specific Python version (here: 3.4) by calling
+    <ul style="margin:10px"><li>
+    <tt>conda create -n vigra -c ukoethe python=3.4 vigra=1.11.0</tt><br/>
+    <tt>source activate vigra</tt>
+    </li>
+    </ul>
+</li>
 </ul>
 <li>Windows 64-bit binaries:
 <ul>
 <li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-11-0/vigra-1.11.0-win64-vc14.zip">binaries with sources and documentation</a> for Visual Studio 2015, including dependencies (jpeg, png, tiff, hdf5)
 </li>
-<li><b>vigra Python bindings</b> for Python 3.5 can be downloaded via the <a href="https://www.continuum.io/">anaconda</a> package manager:<br/><br/>
-    <tt>conda install -c ukoethe vigra=1.11.0</tt>
-</li><br/>
+<li>VIGRA <b>Python bindings</b> for Python 3.5 can be downloaded via the <a href="https://www.continuum.io/">anaconda</a> package manager. Set up and activate a Python 3.5 environment and call
+    <ul style="margin:10px"><li>
+    <tt>conda install -c ukoethe vigra=1.11.0</tt></li>
+    </ul>
+    If you need Python 2.7, anaconda's default packages are unfortunately unsuitable because they require an ancient compiler which is unable to compile VIGRA. However, you can create a new environment holding all dependencies (including Python 2.7) compiled with Visual Studio 2012 by calling
+    <ul style="margin:10px"><li>
+    <tt>conda create -n vigra -c ukoethe python=2.7.10.vc11 vigra=1.11.0.vc11</tt><br/>
+    <tt>activate vigra</tt>
+    </li>
+    </ul>
+</li>
 </ul>
 </li>
 <li>Apple Mac OS X binaries (still version 1.10):
