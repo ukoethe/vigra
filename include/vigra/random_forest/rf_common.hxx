@@ -452,8 +452,10 @@ class RandomForestOptions
      *
      * Use one of the built in mappings to calculate mtry from the number
      * of columns in the input feature data.
-     * \param in possible values: RF_LOG, RF_SQRT or RF_ALL
-     *           <br> default: RF_SQRT.
+     * \param in possible values:
+	 *  - RF_LOG (the number of features considered for each split is \f$ 1+\lfloor \log(n_f)/\log(2) \rfloor \f$ as in Breiman's original paper),
+	 *  - RF_SQRT (default, the number of features considered for each split is  \f$ \lfloor \sqrt{n_f} + 0.5 \rfloor \f$)
+	 *  - RF_ALL (all features are considered for each split)
      */
     RandomForestOptions & features_per_node(RF_OptionTag in)
     {
