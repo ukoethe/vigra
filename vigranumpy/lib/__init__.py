@@ -2309,7 +2309,6 @@ def _genGraphSegmentationFunctions():
         if nodeNumStop is None:
             nodeNumStop = max(graph.nodeNum//2,min(graph.nodeNum,2))
 
-
         if edgeLengths is None :
             #print("get edge length")
             edgeLengths = graphs.getEdgeLengths(graph)
