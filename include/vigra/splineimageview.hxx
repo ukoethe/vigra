@@ -881,31 +881,31 @@ class SplineImageView0Base
         return operator()(x, y);
     }
 
-    value_type dx(double x, double y) const
+    value_type dx(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dy(double x, double y) const
+    value_type dy(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxx(double x, double y) const
+    value_type dxx(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxy(double x, double y) const
+    value_type dxy(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dyy(double x, double y) const
+    value_type dyy(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dx3(double x, double y) const
+    value_type dx3(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dy3(double x, double y) const
+    value_type dy3(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxxy(double x, double y) const
+    value_type dxxy(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxyy(double x, double y) const
+    value_type dxyy(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
     value_type operator()(difference_type const & d) const
@@ -914,67 +914,67 @@ class SplineImageView0Base
     value_type operator()(difference_type const & d, unsigned int dx, unsigned int dy) const
         { return operator()(d[0], d[1], dx, dy); }
 
-    value_type dx(difference_type const & d) const
+    value_type dx(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dy(difference_type const & d) const
+    value_type dy(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxx(difference_type const & d) const
+    value_type dxx(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxy(difference_type const & d) const
+    value_type dxy(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dyy(difference_type const & d) const
+    value_type dyy(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dx3(difference_type const & d) const
+    value_type dx3(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dy3(difference_type const & d) const
+    value_type dy3(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxxy(difference_type const & d) const
+    value_type dxxy(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxyy(difference_type const & d) const
+    value_type dxyy(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    SquaredNormType g2(double x, double y) const
+    SquaredNormType g2(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2x(double x, double y) const
+    SquaredNormType g2x(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2y(double x, double y) const
+    SquaredNormType g2y(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2xx(double x, double y) const
+    SquaredNormType g2xx(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2xy(double x, double y) const
+    SquaredNormType g2xy(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2yy(double x, double y) const
+    SquaredNormType g2yy(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2(difference_type const & d) const
+    SquaredNormType g2(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2x(difference_type const & d) const
+    SquaredNormType g2x(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2y(difference_type const & d) const
+    SquaredNormType g2y(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2xx(difference_type const & d) const
+    SquaredNormType g2xx(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2xy(difference_type const & d) const
+    SquaredNormType g2xy(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2yy(difference_type const & d) const
+    SquaredNormType g2yy(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
     unsigned int width() const
@@ -1062,7 +1062,7 @@ class SplineImageView0
         /* when traverser and accessor types passed to the constructor are the same as the corresponding
            internal types, we need not copy the image (speed up)
         */
-    SplineImageView0(InternalTraverser is, InternalTraverser iend, InternalAccessor sa)
+    SplineImageView0(InternalTraverser is, InternalTraverser iend, InternalAccessor /*sa*/)
     : Base(iend.x - is.x, iend.y - is.y, is)
     {}
 
@@ -1070,7 +1070,7 @@ class SplineImageView0
     : Base(s.second.x - s.first.x, s.second.y - s.first.y, s.first)
     {}
 
-    SplineImageView0(InternalConstTraverser is, InternalConstTraverser iend, InternalConstAccessor sa)
+    SplineImageView0(InternalConstTraverser is, InternalConstTraverser iend, InternalConstAccessor /*sa*/)
     : Base(iend.x - is.x, iend.y - is.y, is)
     {}
 
@@ -1459,25 +1459,25 @@ class SplineImageView1Base
     value_type dy(double x, double y) const
         { return operator()(x, y, 0, 1); }
 
-    value_type dxx(double x, double y) const
+    value_type dxx(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
     value_type dxy(double x, double y) const
         { return operator()(x, y, 1, 1); }
 
-    value_type dyy(double x, double y) const
+    value_type dyy(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dx3(double x, double y) const
+    value_type dx3(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dy3(double x, double y) const
+    value_type dy3(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxxy(double x, double y) const
+    value_type dxxy(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxyy(double x, double y) const
+    value_type dxyy(double /*x*/, double /*y*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
     value_type operator()(difference_type const & d) const
@@ -1492,61 +1492,61 @@ class SplineImageView1Base
     value_type dy(difference_type const & d) const
         { return operator()(d[0], d[1], 0, 1); }
 
-    value_type dxx(difference_type const & d) const
+    value_type dxx(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
     value_type dxy(difference_type const & d) const
         { return operator()(d[0], d[1], 1, 1); }
 
-    value_type dyy(difference_type const & d) const
+    value_type dyy(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dx3(difference_type const & d) const
+    value_type dx3(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dy3(difference_type const & d) const
+    value_type dy3(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxxy(difference_type const & d) const
+    value_type dxxy(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type dxyy(difference_type const & d) const
+    value_type dxyy(difference_type const & /*d*/) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
     SquaredNormType g2(double x, double y) const
         { return squaredNorm(dx(x,y)) + squaredNorm(dy(x,y)); }
 
-    SquaredNormType g2x(double x, double y) const
+    SquaredNormType g2x(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2y(double x, double y) const
+    SquaredNormType g2y(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2xx(double x, double y) const
+    SquaredNormType g2xx(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2xy(double x, double y) const
+    SquaredNormType g2xy(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2yy(double x, double y) const
+    SquaredNormType g2yy(double /*x*/, double /*y*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
     SquaredNormType g2(difference_type const & d) const
         { return g2(d[0], d[1]); }
 
-    SquaredNormType g2x(difference_type const & d) const
+    SquaredNormType g2x(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2y(difference_type const & d) const
+    SquaredNormType g2y(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2xx(difference_type const & d) const
+    SquaredNormType g2xx(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2xy(difference_type const & d) const
+    SquaredNormType g2xy(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
-    SquaredNormType g2yy(difference_type const & d) const
+    SquaredNormType g2yy(difference_type const & /*d*/) const
         { return NumericTraits<SquaredNormType>::zero(); }
 
     unsigned int width() const
@@ -1699,7 +1699,7 @@ class SplineImageView1
         /* when traverser and accessor types passed to the constructor are the same as the corresponding
            internal types, we need not copy the image (speed up)
         */
-    SplineImageView1(InternalTraverser is, InternalTraverser iend, InternalAccessor sa)
+    SplineImageView1(InternalTraverser is, InternalTraverser iend, InternalAccessor /*sa*/)
     : Base(iend.x - is.x, iend.y - is.y, is)
     {}
 
@@ -1707,7 +1707,7 @@ class SplineImageView1
     : Base(s.second.x - s.first.x, s.second.y - s.first.y, s.first)
     {}
 
-    SplineImageView1(InternalConstTraverser is, InternalConstTraverser iend, InternalConstAccessor sa)
+    SplineImageView1(InternalConstTraverser is, InternalConstTraverser iend, InternalConstAccessor /*sa*/)
     : Base(iend.x - is.x, iend.y - is.y, is)
     {}
 

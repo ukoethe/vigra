@@ -149,7 +149,7 @@ struct CountingIteratorCompare<T, true>
 
 } // namespace detail
 
-/** \addtogroup MathFunctions
+/** \addtogroup RangesAndPoints
 */
 //@{
 

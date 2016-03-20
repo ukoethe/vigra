@@ -162,8 +162,7 @@ struct UnlabelWatersheds
 
 } // namespace detail
 
-/** \addtogroup SeededRegionGrowing Region Segmentation Algorithms
-    Region growing, watersheds, and voronoi tesselation
+/** \addtogroup Superpixels
 */
 //@{
 
@@ -174,11 +173,11 @@ struct UnlabelWatersheds
 /********************************************************/
 
 /** Choose between different types of Region Growing */
-enum SRGType { 
-    CompleteGrow = 0, 
-    KeepContours = 1, 
-    StopAtThreshold = 2, 
-    SRGWatershedLabel = -1 
+enum SRGType {
+    CompleteGrow = 0,
+    KeepContours = 1,
+    StopAtThreshold = 2,
+    SRGWatershedLabel = -1
 };
 
 /** \brief Region Segmentation by means of Seeded Region Growing.
@@ -197,15 +196,15 @@ enum SRGType {
     The seed image is a partly segmented image which contains uniquely
     labeled regions (the seeds) and unlabeled pixels (the candidates, label 0).
     The highest seed label found in the seed image is returned by the algorithm.
-    
+
     Seed regions can be as large as you wish and as small as one pixel. If
     there are no candidates, the algorithm will simply copy the seed image
     into the output image. Otherwise it will aggregate the candidates into
-    the existing regions so that a cost function is minimized. 
-    Candidates are taken from the neighborhood of the already assigned pixels, 
+    the existing regions so that a cost function is minimized.
+    Candidates are taken from the neighborhood of the already assigned pixels,
     where the type of neighborhood is determined by parameter <tt>neighborhood</tt>
-    which can take the values <tt>FourNeighborCode()</tt> (the default) 
-    or <tt>EightNeighborCode()</tt>. The algorithm basically works as follows 
+    which can take the values <tt>FourNeighborCode()</tt> (the default)
+    or <tt>EightNeighborCode()</tt>. The algorithm basically works as follows
     (illustrated for 4-neighborhood, but 8-neighborhood works in the same way):
 
     <ol>
@@ -229,11 +228,11 @@ enum SRGType {
     </ol>
 
     <tt>SRGType</tt> can take the following values:
-    
+
     <DL>
     <DT><tt>CompleteGrow</tt> <DD> produce a complete tesselation of the volume (default).
     <DT><tt>KeepContours</tt> <DD> keep a 1-voxel wide unlabeled contour between all regions.
-    <DT><tt>StopAtThreshold</tt> <DD> stop when the boundary indicator values exceed the 
+    <DT><tt>StopAtThreshold</tt> <DD> stop when the boundary indicator values exceed the
                              threshold given by parameter <tt>max_cost</tt>.
     <DT><tt>KeepContours | StopAtThreshold</tt> <DD> keep 1-voxel wide contour and stop at given <tt>max_cost</tt>.
     </DL>
@@ -259,9 +258,9 @@ enum SRGType {
     the original statistics.
 
     If a candidate could be merged into more than one regions with identical
-    cost, the algorithm will favour the nearest region. If <tt>StopAtThreshold</tt> is active, 
-    and the cost of the current candidate at any point in the algorithm exceeds the optional 
-    <tt>max_cost</tt> value (which defaults to <tt>NumericTraits<double>::max()</tt>), 
+    cost, the algorithm will favour the nearest region. If <tt>StopAtThreshold</tt> is active,
+    and the cost of the current candidate at any point in the algorithm exceeds the optional
+    <tt>max_cost</tt> value (which defaults to <tt>NumericTraits<double>::max()</tt>),
     region growing is aborted, and all voxels not yet assigned to a region remain unlabeled.
 
     In some cases, the cost only depends on the feature value of the current
@@ -284,7 +283,7 @@ enum SRGType {
                             MultiArrayView<2, TS, AS> const & seeds,
                             MultiArrayView<2, T2, S2>         labels,
                             RegionStatisticsArray &           stats,
-                            SRGType                           srgType = CompleteGrow, 
+                            SRGType                           srgType = CompleteGrow,
                             Neighborhood                      n = FourNeighborCode(),
                             double                            max_cost = NumericTraits<double>::max());
     }
@@ -298,7 +297,7 @@ enum SRGType {
                   class SeedImageIterator, class SeedAccessor,
                   class DestIterator, class DestAccessor,
                   class RegionStatisticsArray, class Neighborhood>
-        typename SeedAccessor::value_type 
+        typename SeedAccessor::value_type
         seededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                             SeedImageIterator seedsul, SeedAccessor aseeds,
                             DestIterator destul, DestAccessor ad,
@@ -350,7 +349,7 @@ enum SRGType {
     // init statistics functor
     ArrayOfRegionStatistics<SeedRgDirectValueFunctor<float> >  stats(max_region_label);
 
-    // find voronoi region of each point (the point image is overwritten with the 
+    // find voronoi region of each point (the point image is overwritten with the
     // voronoi region labels)
     seededRegionGrowing(dist, points, points, stats);
     \endcode
@@ -454,10 +453,10 @@ seededRegionGrowing(SrcIterator srcul,
 
     SeedRgPixelHeap pheap;
     int cneighbor, maxRegionLabel = 0;
-    
+
     typedef typename Neighborhood::Direction Direction;
     int directionCount = Neighborhood::DirectionCount;
-    
+
     Point2D pos(0,0);
     for(isy=srcul, iry=ir, pos.y=0; pos.y<h;
         ++pos.y, ++isy.y, ++iry.y)
@@ -491,7 +490,7 @@ seededRegionGrowing(SrcIterator srcul,
             }
         }
     }
-    
+
     // perform region growing
     while(pheap.size() != 0)
     {
@@ -549,7 +548,7 @@ seededRegionGrowing(SrcIterator srcul,
             }
         }
     }
-    
+
     // free temporary memory
     while(pheap.size() != 0)
     {
@@ -629,7 +628,7 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestIterator, DestAccessor> img4,
                     RegionStatisticsArray & stats,
-                    SRGType srgType, 
+                    SRGType srgType,
                     Neighborhood n,
                     double max_cost = NumericTraits<double>::max())
 {
@@ -681,7 +680,7 @@ seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
                     MultiArrayView<2, TS, AS> const & img3,
                     MultiArrayView<2, T2, S2> img4,
                     RegionStatisticsArray & stats,
-                    SRGType srgType, 
+                    SRGType srgType,
                     Neighborhood n,
                     double max_cost = NumericTraits<double>::max())
 {
@@ -739,7 +738,7 @@ seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-typename DestAccessor::value_type 
+typename DestAccessor::value_type
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
                         RegionStatisticsArray & stats,
@@ -752,7 +751,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
 
     vigra_precondition((srgType & KeepContours) == 0,
        "fastSeededRegionGrowing(): the turbo algorithm doesn't support 'KeepContours', sorry.");
-    
+
     int w = srclr.x - srcul.x;
     int h = srclr.y - srcul.y;
 
@@ -761,7 +760,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
 
     BucketQueue<Point2D, true> pqueue(bucket_count);
     LabelType maxRegionLabel = 0;
-    
+
     Point2D pos(0,0);
     for(isy=srcul, idy = destul, pos.y=0; pos.y<h; ++pos.y, ++isy.y, ++idy.y)
     {
@@ -775,7 +774,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
 
                 if(maxRegionLabel < label)
                     maxRegionLabel = label;
-                
+
                 AtImageBorder atBorder = isAtImageBorder(pos.x, pos.y, w, h);
                 if(atBorder == NotAtBorder)
                 {
@@ -793,7 +792,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                 }
                 else
                 {
-                    RestrictedNeighborhoodCirculator<DestIterator, Neighborhood> 
+                    RestrictedNeighborhoodCirculator<DestIterator, Neighborhood>
                                                             c(idx, atBorder), cend(c);
                     do
                     {
@@ -809,34 +808,34 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
             }
         }
     }
-    
+
     // perform region growing
     while(!pqueue.empty())
     {
         Point2D pos = pqueue.top();
         std::ptrdiff_t cost = pqueue.topPriority();
         pqueue.pop();
-        
+
         if((srgType & StopAtThreshold) != 0 && cost > max_cost)
             break;
 
         idx = destul + pos;
         isx = srcul + pos;
-        
+
         std::ptrdiff_t label = ad(idx);
 
         AtImageBorder atBorder = isAtImageBorder(pos.x, pos.y, w, h);
         if(atBorder == NotAtBorder)
         {
             NeighborhoodCirculator<DestIterator, Neighborhood> c(idx), cend(c);
-            
+
             do
             {
                 std::ptrdiff_t nlabel = ad(c);
                 if(nlabel == 0)
                 {
                     ad.set(label, idx, c.diff());
-                    std::ptrdiff_t priority = 
+                    std::ptrdiff_t priority =
                            std::max((std::ptrdiff_t)stats[label].cost(as(isx, c.diff())), cost);
                     pqueue.push(pos+c.diff(), priority);
                 }
@@ -845,7 +844,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
         }
         else
         {
-            RestrictedNeighborhoodCirculator<DestIterator, Neighborhood> 
+            RestrictedNeighborhoodCirculator<DestIterator, Neighborhood>
                                                     c(idx, atBorder), cend(c);
             do
             {
@@ -853,7 +852,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                 if(nlabel == 0)
                 {
                     ad.set(label, idx, c.diff());
-                    std::ptrdiff_t priority = 
+                    std::ptrdiff_t priority =
                            std::max((std::ptrdiff_t)stats[label].cost(as(isx, c.diff())), cost);
                     pqueue.push(pos+c.diff(), priority);
                 }
@@ -861,14 +860,14 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
             while(++c != cend);
         }
     }
-    
+
     return maxRegionLabel;
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-inline typename DestAccessor::value_type 
+inline typename DestAccessor::value_type
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
                         RegionStatisticsArray & stats,
@@ -883,7 +882,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray>
-inline typename DestAccessor::value_type 
+inline typename DestAccessor::value_type
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
                         RegionStatisticsArray & stats,
@@ -897,7 +896,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray>
-inline typename DestAccessor::value_type 
+inline typename DestAccessor::value_type
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
                         RegionStatisticsArray & stats)
@@ -910,11 +909,11 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-inline typename DestAccessor::value_type 
+inline typename DestAccessor::value_type
 fastSeededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
                         RegionStatisticsArray & stats,
-                        SRGType srgType, 
+                        SRGType srgType,
                         Neighborhood n,
                         double max_cost,
                         std::ptrdiff_t bucket_count = 256)
@@ -931,7 +930,7 @@ inline T2
 fastSeededRegionGrowing(MultiArrayView<2, T1, S1> const & src,
                         MultiArrayView<2, T2, S2> dest,
                         RegionStatisticsArray & stats,
-                        SRGType srgType, 
+                        SRGType srgType,
                         Neighborhood n,
                         double max_cost,
                         std::ptrdiff_t bucket_count = 256)

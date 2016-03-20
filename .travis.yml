@@ -1,16 +1,64 @@
-language: python
+matrix:
+  include:
+    - os: linux
+      sudo: false
+      language: python
+      python: "2.7"
+    - os: linux
+      sudo: false
+      language: python
+      python: "3.2"
+    - os: linux
+      sudo: false
+      language: python
+      python: "3.2"
+      env: WITH_BOOST_THREAD=1 CXXFLAGS="-pthread -std=c++0x"
+    - os: osx
+      osx_image: xcode7.3
+      language: generic
+      env: TRAVIS_PYTHON_VERSION="2" BREW_DEPS="cmake\nhdf5\nboost\nlibjpeg\nlibtiff\nlibpng\nfftw\nreadline\npython"
+    - os: osx
+      osx_image: xcode7.3
+      language: generic
+      env: TRAVIS_PYTHON_VERSION="3" BREW_DEPS="cmake\nhdf5\nboost\nlibjpeg\nlibtiff\nlibpng\nfftw\nreadline\npython3"
 
-python:
-  - "2.7"
+
+addons:
+  apt:
+    sources:
+      - boost-latest
+    packages:
+      - libhdf5-serial-dev
+      - libjpeg-dev
+      - libtiff4-dev
+      - libpng12-dev
+      - libfftw3-dev
+      - libatlas-base-dev
+      - cmake
+      - libboost-thread1.55-dev
+      - libboost-system1.55-dev
+      - libboost-date-time1.55-dev
+      - libboost-chrono1.55-dev
+      - libboost-python1.55-dev
 
 before_script:
-  - sudo apt-get update -qq
-  - sudo apt-get install --assume-yes libhdf5-serial-dev libboost-python-dev libjpeg-dev libtiff4-dev libpng12-dev libfftw3-dev cmake
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="/usr/local/bin:${PATH}"                                                ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                                                           ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew remove --force $(grep -v -F -x -f <(cat <(brew deps --skip-optional --union $(echo -e $BREW_DEPS)) <(echo -e $BREW_DEPS))  <(cat <(brew leaves) <(brew deps --skip-optional --union $(brew leaves)))); brew cleanup --force ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install $(echo -e $BREW_DEPS) || true                                          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then sudo ln -s /usr/local/bin/pip3 /usr/local/bin/pip ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then sudo ln -s /usr/local/bin/python3 /usr/local/bin/python ; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.2" ]]; then pip install --upgrade 'pip<8' 'setuptools<19'                                ; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" != "3.2" ]]; then pip install --upgrade pip setuptools                                         ; fi
   - pip install nose
   - pip install numpy
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install boost-python --with-python ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then curl -L -O https://bintray.com/artifact/download/casacore/homebrew-bottles/boost-python-1.60.0.el_capitan.bottle.1.tar.gz && brew install ./boost-python-1.60.0.el_capitan.bottle.1.tar.gz ; rm -f ./boost-python-1.60.0.el_capitan.bottle.1.tar.gz ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cleanup --force -s; sudo rm -rf $(brew --cache)                                     ; fi
 
 script:
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DVIGRANUMPY_LIBRARIES="/opt/python/${TRAVIS_PYTHON_VERSION}*/lib/libpython${TRAVIS_PYTHON_VERSION}.so;/usr/lib/libboost_python.so" ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX=$VIRTUAL_ENV -DAUTOBUILD_TESTS=1 -DAUTOEXEC_TESTS=0 -DWITH_BOOST_THREAD=$WITH_BOOST_THREAD -DBoost_DEBUG=1 -DPYTHON_VERSION=${TRAVIS_PYTHON_VERSION:0:3} ..
   - make
-  - ctest || ctest -V
+  - find . -name "*.o" | xargs rm -v
+  - ctest --output-on-failure

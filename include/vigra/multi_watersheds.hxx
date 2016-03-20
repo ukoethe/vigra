@@ -50,7 +50,7 @@
 
 namespace vigra {
 
-/** \addtogroup SeededRegionGrowing
+/** \addtogroup Superpixels
 */
 //@{
 namespace lemon_graph {
@@ -76,7 +76,7 @@ struct NeighborIndexFunctor
         return g.id(*n);
     }
 
-    static index_type invalidIndex(Graph const & g)
+    static index_type invalidIndex(Graph const &)
     {
         return std::numeric_limits<index_type>::max();
     }
@@ -91,7 +91,7 @@ struct NeighborIndexFunctor<GridGraph<N, DirectedTag> >
     typedef UInt16 index_type;
 
     template <class NodeIter, class ArcIter>
-    static index_type get(Graph const & g, NodeIter const &, ArcIter const & a)
+    static index_type get(Graph const &, NodeIter const &, ArcIter const & a)
     {
         return a.neighborIndex();
     }
@@ -101,7 +101,7 @@ struct NeighborIndexFunctor<GridGraph<N, DirectedTag> >
     {
         return g.oppositeIndex(a.neighborIndex());
     }
-    static index_type invalidIndex(Graph const & g)
+    static index_type invalidIndex(Graph const &)
     {
         return std::numeric_limits<index_type>::max();
     }
@@ -138,7 +138,7 @@ prepareWatersheds(Graph const & g,
 template <class Graph, class T1Map, class T2Map, class T3Map>
 typename T2Map::value_type
 unionFindWatersheds(Graph const & g,
-                    T1Map const & data,
+                    T1Map const &,
                     T2Map const & lowestNeighborIndex,
                     T3Map & labels)
 {
@@ -219,6 +219,10 @@ generateWatershedSeeds(Graph const & g,
     return labelGraphWithBackground(g, minima, seeds, MarkerType(0), std::equal_to<MarkerType>());
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
 
 template <class Graph, class T1Map, class T2Map>
 typename T2Map::value_type
@@ -322,6 +326,10 @@ seededWatersheds(Graph const & g,
 
     return maxRegionLabel;
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 } // namespace graph_detail
 

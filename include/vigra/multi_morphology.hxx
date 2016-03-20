@@ -124,8 +124,8 @@ struct MultiBinaryMorphologyImpl<bool, bool>
     template <class SrcIterator, class SrcShape, class SrcAccessor,
               class DestIterator, class DestAccessor>
     static void
-    exec( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-          DestIterator d, DestAccessor dest, double radius, bool dilation)
+    exec( SrcIterator /*s*/, SrcShape const & /*shape*/, SrcAccessor /*src*/,
+          DestIterator /*d*/, DestAccessor /*dest*/, double /*radius*/, bool /*dilation*/)
     {
         vigra_fail("multiBinaryMorphology(): Internal error (this function should never be called).");
     }

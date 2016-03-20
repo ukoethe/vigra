@@ -42,6 +42,7 @@
 #include <iostream>
 #include <iomanip>
 
+#include <vigra/metaprogramming.hxx>
 #include <vigra/multi_pointoperators.hxx>
 #include <vigra/timing.hxx>
 
@@ -146,7 +147,9 @@ class VisitorBase
                             Region        & rightChild,
                             Feature_t     & features,
                             Label_t       & labels)
-    {}
+    {
+        ignore_argument(tree,split,parent,leftChild,rightChild,features,labels);
+    }
     
     /** do something after each tree has been learned
      *
@@ -159,7 +162,9 @@ class VisitorBase
      */
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF & rf, PR & pr, SM & sm, ST & st, int index)
-    {}
+    {
+        ignore_argument(rf,pr,sm,st,index);
+    }
     
     /** do something after all trees have been learned
      *
@@ -169,7 +174,9 @@ class VisitorBase
      */
     template<class RF, class PR>
     void visit_at_end(RF const & rf, PR const & pr)
-    {}
+    {
+        ignore_argument(rf,pr);
+    }
     
     /** do something before learning starts 
      *
@@ -179,7 +186,9 @@ class VisitorBase
      */
     template<class RF, class PR>
     void visit_at_beginning(RF const & rf, PR const & pr)
-    {}
+    {
+        ignore_argument(rf,pr);
+    }
     /** do some thing while traversing tree after it has been learned 
      *  (external nodes)
      *
@@ -195,7 +204,9 @@ class VisitorBase
      */
     template<class TR, class IntT, class TopT,class Feat>
     void visit_external_node(TR & tr, IntT index, TopT node_t, Feat & features)
-    {}
+    {
+        ignore_argument(tr,index,node_t,features);
+    }
     
     /** do something when visiting a internal node after it has been learned
      *
@@ -793,7 +804,7 @@ public:
 
     /** does the basic calculation per tree*/
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF & rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF & rf, PR & pr,  SM & sm, ST &, int index)
     {
         //do the first time called.
         if(int(oobCount.size()) != rf.ext_param_.row_count_)
@@ -822,7 +833,7 @@ public:
     /** Does the normalisation
      */
     template<class RF, class PR>
-    void visit_at_end(RF & rf, PR & pr)
+    void visit_at_end(RF & rf, PR &)
     {
         // do some normalisation
         for(int l=0; l < static_cast<int>(rf.ext_param_.row_count_); ++l)
@@ -880,7 +891,7 @@ class OOB_Error : public VisitorBase
     //  value >=0  if sample was oob, 0 means fail 1, correct
 
     template<class RF, class PR>
-    void visit_at_beginning(RF & rf, PR & pr)
+    void visit_at_beginning(RF & rf, PR &)
     {
         class_count = rf.class_count();
         tmp_prob.reshape(Shp(1, class_count), 0); 
@@ -898,7 +909,7 @@ class OOB_Error : public VisitorBase
     }
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST &, int index)
     {
         // go through the samples
         int total_oob =0;
@@ -1083,7 +1094,7 @@ class CompleteOOBInfo : public VisitorBase
     //  value >=0  if sample was oob, 0 means fail 1, correct
 
     template<class RF, class PR>
-    void visit_at_beginning(RF & rf, PR & pr)
+    void visit_at_beginning(RF & rf, PR &)
     {
         class_count = rf.class_count();
         if(class_count == 2)
@@ -1104,7 +1115,7 @@ class CompleteOOBInfo : public VisitorBase
     }
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST &, int index)
     {
         // go through the samples
         int total_oob =0;
@@ -1451,7 +1462,7 @@ class RandomForestProgressVisitor : public VisitorBase {
     RandomForestProgressVisitor() : VisitorBase() {}
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index){
+    void visit_after_tree(RF& rf, PR &,  SM &, ST &, int index){
         if(index != rf.options().tree_count_-1) {
             std::cout << "\r[" << std::setw(10) << (index+1)/static_cast<double>(rf.options().tree_count_)*100 << "%]"
                       << " (" << index+1 << " of " << rf.options().tree_count_ << ") done" << std::flush;
@@ -1462,13 +1473,13 @@ class RandomForestProgressVisitor : public VisitorBase {
     }
     
     template<class RF, class PR>
-    void visit_at_end(RF const & rf, PR const & pr) {
+    void visit_at_end(RF const & rf, PR const &) {
         std::string a = TOCS;
         std::cout << "all " << rf.options().tree_count_ << " trees have been learned in " << a  << std::endl;
     }
     
     template<class RF, class PR>
-    void visit_at_beginning(RF const & rf, PR const & pr) {
+    void visit_at_beginning(RF const & rf, PR const &) {
         TIC;
         std::cout << "growing random forest, which will have " << rf.options().tree_count_ << " trees" << std::endl;
     }
@@ -1518,7 +1529,7 @@ class CorrelationVisitor : public VisitorBase
     ArrayVector<int>        numChoices;
     typedef BestGiniOfColumn<GiniCriterion> ColumnDecisionFunctor;
     BestGiniOfColumn<GiniCriterion>         bgfunc;
-    void save(std::string file, std::string prefix)
+    void save(std::string, std::string)
     {
         /*
         std::string tmp;
@@ -1560,7 +1571,7 @@ class CorrelationVisitor : public VisitorBase
         // look at all axes
     }
     template<class RF, class PR>
-    void visit_at_end(RF const & rf, PR const & pr)
+    void visit_at_end(RF const &, PR const &)
     {
         typedef MultiArrayShape<2>::type Shp;
         similarity.reshape(gini_missc.shape());
@@ -1602,11 +1613,11 @@ class CorrelationVisitor : public VisitorBase
     }
 
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
+    void visit_after_split( Tree          &, 
                             Split         & split,
                             Region        & parent,
-                            Region        & leftChild,
-                            Region        & rightChild,
+                            Region        &,
+                            Region        &,
                             Feature_t     & features,
                             Label_t       & labels)
     {

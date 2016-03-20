@@ -39,6 +39,11 @@
 #include <cstdlib>
 #include <vector>
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
+
 template <class Iterator1,class Iterator2>
 bool equivalentLabels(Iterator1 begin1, Iterator1 end1,
                       Iterator2 begin2, Iterator2 end2)
@@ -80,5 +85,10 @@ void fillRandom(Iterator begin, Iterator end, int maximum)
     for( ; begin != end; ++begin)
         *begin = rand() % maximum;
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+
 
 #endif // VIGRA_BLOCKWISE_ALGORITHMS_TEST_UTILS_HXX

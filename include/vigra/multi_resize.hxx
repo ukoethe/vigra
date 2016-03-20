@@ -51,7 +51,7 @@ template <class SrcIterator, class Shape, class SrcAccessor,
 void
 internalResizeMultiArrayOneDimension(
                       SrcIterator si, Shape const & sshape, SrcAccessor src,
-                      DestIterator di, Shape const & dshape, DestAccessor dest, 
+                      DestIterator di, Shape const & dshape, DestAccessor dest,
                       Kernel const & spline, unsigned int d)
 {
     enum { N = 1 + SrcIterator::level };
@@ -63,7 +63,7 @@ internalResizeMultiArrayOneDimension(
 
     SNavigator snav( si, sshape, d );
     DNavigator dnav( di, dshape, d );
-    
+
     int ssize = sshape[d];
     int dsize = dshape[d];
 
@@ -75,7 +75,7 @@ internalResizeMultiArrayOneDimension(
     Rational<int> offset(0);
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(ratio, offset);
     int period = lcm(ratio.numerator(), ratio.denominator());
-    
+
     ArrayVector<double> const & prefilterCoeffs = spline.prefilterCoefficients();
     ArrayVector<Kernel1D<double> > kernels(period);
     createResamplingKernels(spline, mapCoordinate, kernels);
@@ -84,7 +84,7 @@ internalResizeMultiArrayOneDimension(
     ArrayVector<TmpType> tmp( ssize );
     typename ArrayVector<TmpType>::iterator t = tmp.begin(), tend = tmp.end();
     typename AccessorTraits<TmpType>::default_accessor ta;
-    
+
     for( ; snav.hasMore(); snav++, dnav++ )
     {
         // first copy source to temp for maximum cache efficiency
@@ -103,7 +103,7 @@ internalResizeMultiArrayOneDimension(
 
 } // namespace detail
 
-/** \addtogroup GeometricTransformations Geometric Transformations
+/** \addtogroup GeometricTransformations
 */
 //@{
 
@@ -122,7 +122,7 @@ internalResizeMultiArrayOneDimension(
     \code
     namespace vigra {
         template <unsigned int N, class T1, class S1,
-                                  class T2, class S2, 
+                                  class T2, class S2,
                   class Kernel = BSpline<3, double> >
         void
         resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1> const & source,
@@ -225,21 +225,21 @@ internalResizeMultiArrayOneDimension(
 doxygen_overloaded_function(template <...> void resizeMultiArraySplineInterpolation)
 
 template <class SrcIterator, class Shape, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class Kernel>
 void
 resizeMultiArraySplineInterpolation(
                       SrcIterator si, Shape const & sshape, SrcAccessor src,
-                      DestIterator di, Shape const & dshape, DestAccessor dest, 
+                      DestIterator di, Shape const & dshape, DestAccessor dest,
                       Kernel const & spline)
 {
     enum { N = 1 + SrcIterator::level };
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
     typedef typename AccessorTraits<TmpType>::default_accessor TmpAccessor;
-        
+
     if(N==1)
     {
-        detail::internalResizeMultiArrayOneDimension(si, sshape, src, 
+        detail::internalResizeMultiArrayOneDimension(si, sshape, src,
                       di, dshape, dest, spline, 0);
     }
     else
@@ -249,20 +249,20 @@ resizeMultiArraySplineInterpolation(
         tmpShape[d] = dshape[d];
         MultiArray<N, TmpType> tmp(tmpShape);
         TmpAccessor ta;
-        
-        detail::internalResizeMultiArrayOneDimension(si, sshape, src, 
+
+        detail::internalResizeMultiArrayOneDimension(si, sshape, src,
                              tmp.traverser_begin(), tmpShape, ta, spline, d);
         d = 1;
         for(; d<N-1; ++d)
         {
             tmpShape[d] = dshape[d];
             MultiArray<N, TmpType> dtmp(tmpShape);
-            
-            detail::internalResizeMultiArrayOneDimension(tmp.traverser_begin(), tmp.shape(), ta, 
+
+            detail::internalResizeMultiArrayOneDimension(tmp.traverser_begin(), tmp.shape(), ta,
                                   dtmp.traverser_begin(), tmpShape, ta, spline, d);
             dtmp.swap(tmp);
         }
-        detail::internalResizeMultiArrayOneDimension(tmp.traverser_begin(), tmp.shape(), ta, 
+        detail::internalResizeMultiArrayOneDimension(tmp.traverser_begin(), tmp.shape(), ta,
                                         di, dshape, dest, spline, d);
     }
 }
@@ -278,7 +278,7 @@ resizeMultiArraySplineInterpolation(
 }
 
 template <class SrcIterator, class Shape, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class Kernel>
 inline void
 resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
@@ -300,7 +300,7 @@ resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
 }
 
 template <unsigned int N, class T1, class S1,
-                          class T2, class S2, 
+                          class T2, class S2,
           class Kernel>
 inline void
 resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1> const & source,

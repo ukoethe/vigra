@@ -90,7 +90,7 @@ struct visit_border_impl<0>
               class Shape, class Visitor>
     static void exec(const MultiArrayView<0, Data, S1>& u_data, MultiArrayView<0, Label, S2> u_labels,
                      const MultiArrayView<0, Data, S1>& v_data, MultiArrayView<0, Label, S2> v_labels,
-                     const Shape& block_difference, NeighborhoodType neighborhood, Visitor visitor)
+                     const Shape& block_difference, NeighborhoodType, Visitor visitor)
     {
         visitor(u_data(0), u_labels(0), v_data(0), v_labels(0), block_difference);
     }

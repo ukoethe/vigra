@@ -51,9 +51,9 @@ namespace vigra{
 
     template<class MAP>
     struct GraphMapTypeTraits{
-        typedef typename MAP::Value          Value;
-        typedef typename MAP::Reference      Reference;
-        typedef typename MAP::ConstReference ConstReference;
+        typedef typename MAP::value_type      Value;
+        typedef typename MAP::reference       Reference;
+        typedef typename MAP::const_reference ConstReference;
     };
 
     // generalizes the iterator begin end accessed
@@ -80,13 +80,13 @@ namespace vigra{
         }
 
 
-        static NodeIt nodesEnd(const Graph & g){ return NodeIt(lemon::INVALID);}
-        static EdgeIt edgesEnd(const Graph & g){ return EdgeIt(lemon::INVALID);}
-        static ArcIt  arcsEnd( const Graph & g){ return ArcIt( lemon::INVALID);}
-        static OutArcIt outArcEnd(const Graph & g,const Node & node){
+        static NodeIt nodesEnd(const Graph &){ return NodeIt(lemon::INVALID);}
+        static EdgeIt edgesEnd(const Graph &){ return EdgeIt(lemon::INVALID);}
+        static ArcIt  arcsEnd( const Graph &){ return ArcIt( lemon::INVALID);}
+        static OutArcIt outArcEnd(const Graph &,const Node &){
             return OutArcIt(lemon::INVALID);
         }
-        static IncEdgeIt incEdgeEnd(const Graph & g,const Node & node){
+        static IncEdgeIt incEdgeEnd(const Graph &,const Node &){
             return IncEdgeIt(lemon::INVALID);
         }
     };
@@ -120,7 +120,7 @@ namespace vigra{
         static OutArcIt outArcEnd(const Graph & g,const Node & node){
             return g.get_out_edge_end_iterator(node);
         }
-        static IncEdgeIt incEdgeEnd(const Graph & g,const Node & node){
+        static IncEdgeIt incEdgeEnd(const Graph &,const Node &){
             return IncEdgeIt(lemon::INVALID);
         }
     };
@@ -231,13 +231,13 @@ namespace vigra{
         typedef typename IntrinsicGraphShape<Graph>::IntrinsicArcMapShape  IntrinsicArcMapShape;
 
 
-        static Node intrinsicNodeCoordinate(const Graph & g,const Node & node){
+        static Node intrinsicNodeCoordinate(const Graph &,const Node & node){
             return node;
         }
-        static Edge intrinsicEdgeCoordinate(const Graph & g,const Edge & edge){
+        static Edge intrinsicEdgeCoordinate(const Graph &,const Edge & edge){
             return edge;
         }
-        static Arc  intrinsicArcCoordinate (const Graph & g,const Arc & arc){
+        static Arc  intrinsicArcCoordinate (const Graph &,const Arc & arc){
             return arc;
         }
 

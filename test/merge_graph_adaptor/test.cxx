@@ -774,6 +774,7 @@ struct AdjacencyListGraph2MergeGraphTest{
         Edge e13 = g.findEdge(n1,n3);
         Edge e24 = g.findEdge(n2,n4);
         Edge e34 = g.findEdge(n3,n4);
+        ignore_argument(e12,e13,e24,e34);
 
         // get incoming arcs
         {
@@ -845,6 +846,8 @@ struct AdjacencyListGraph2MergeGraphTest{
         Edge e13 = g.findEdge(n1,n3);
         Edge e24 = g.findEdge(n2,n4);
         Edge e34 = g.findEdge(n3,n4);
+        ignore_argument(e12,e13,e24,e34);
+
 
 
         {

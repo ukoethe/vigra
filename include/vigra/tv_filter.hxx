@@ -343,7 +343,6 @@ void getAnisotropy(MultiArrayView<2,double,stride1> data,MultiArrayView<2,double
                     double alpha_par, double beta_par, double sigma_par, double rho_par, double K_par){
 
   using namespace multi_math;
-  int width=data.shape(0),height=data.shape(1);
 
   MultiArray<2,double> smooth(data.shape()),tmp(data.shape());
   vigra::Kernel1D<double> gauss;

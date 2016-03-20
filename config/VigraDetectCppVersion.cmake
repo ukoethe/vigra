@@ -12,8 +12,8 @@ try_run(RUN_RESULT COMPILE_SUCCEEDED
 
     if(RUN_RESULT)
         message(FATAL_ERROR "Failed to detect c++ version with a simple test program!\n"
-			    "Test program compiled, but did not execute cleanly. Run output is shown below.\n"
- 			    "${VIGRA_CPP_VERSION}")
+                "Test program compiled, but did not execute cleanly. Run output is shown below.\n"
+                "${VIGRA_CPP_VERSION}")
     endif()
 
     message(STATUS "Detected C++ version: ${VIGRA_CPP_VERSION}")

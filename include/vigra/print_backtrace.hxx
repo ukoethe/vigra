@@ -53,13 +53,13 @@
        signal(SIGSEGV, &vigra_print_backtrace);  // catch the desired signal
        
        run_buggy_code();
-   }   
+   }
 */
 
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
-	
+    
 
 static char * program_name;
 

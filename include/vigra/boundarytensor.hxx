@@ -356,7 +356,7 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
 
 } // namespace detail
 
-/** \addtogroup CommonConvolutionFilters Common Filters
+/** \addtogroup ConvolutionFilters
 */
 //@{
 
@@ -679,9 +679,9 @@ boundaryTensor(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Boundary tensor variant.
 
-    This function implements a variant of the boundary tensor where the 
-    0th-order Riesz transform has been dropped, so that the tensor is no 
-    longer sensitive to blobs. See \ref boundaryTensor() for more detailed 
+    This function implements a variant of the boundary tensor where the
+    0th-order Riesz transform has been dropped, so that the tensor is no
+    longer sensitive to blobs. See \ref boundaryTensor() for more detailed
     documentation.
 
     <b> Declarations:</b>

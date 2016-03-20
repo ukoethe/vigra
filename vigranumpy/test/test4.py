@@ -1,4 +1,4 @@
-#######################################################################
+﻿#######################################################################
 #                                                                      
 #         Copyright 2009-2010 by Ullrich Koethe                        
 #                                                                      
@@ -33,16 +33,18 @@
 #                                                                      
 #######################################################################
 
+from __future__ import division, print_function
 import sys
-print >> sys.stderr, "\nexecuting test file", __file__
-execfile('set_paths.py')
+print("\nexecuting test file", __file__, file=sys.stderr)
+exec(compile(open('set_paths.py', "rb").read(), 'set_paths.py', 'exec'))
 
 
 from nose.tools import assert_equal, raises
-from vigra import numpy as np
-from vigra import numpy as numpy
+import numpy as np
+import numpy as numpy
 from vigra import graphs as vigraph
 from vigra import graphs,taggedView
+#from vigra.arraytypes import taggedView
 import vigra
 
 def testGridGraphSegmentationFelzenszwalbSegmentation():

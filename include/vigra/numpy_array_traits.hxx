@@ -57,7 +57,7 @@ struct ERROR_NumpyArrayValuetypeTraits_not_specialized_for_ { };
 template<class ValueType>
 struct NumpyArrayValuetypeTraits
 {
-    static bool isValuetypeCompatible(PyArrayObject const * obj)
+    static bool isValuetypeCompatible(PyArrayObject const *)
     {
         return ERROR_NumpyArrayValuetypeTraits_not_specialized_for_<ValueType>();
     }
@@ -549,7 +549,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             {
                 // rotate channel axis to last position
                 int channelIndex = permute[0];
-                for(int k=1; k<N; ++k)
+                for(unsigned k=1; k<N; ++k)
                     permute[k-1] = permute[k];
                 permute[N-1] = channelIndex;
             }
@@ -587,7 +587,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         {
             // if we have a channel axis, rotate it to last position
             int channelIndex = permute[0];
-            for(int k=1; k<N; ++k)
+            for(decltype(permute.size()) k=1; k<N; ++k)
                 permute[k-1] = permute[k];
             permute[N-1] = channelIndex;
         }

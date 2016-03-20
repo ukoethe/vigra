@@ -215,7 +215,7 @@ herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char* name,
 
 // callback function for listAttributes(), called via HDF5File::ls_H5Literate()
 extern "C"
-herr_t HDF5_listAttributes_inserter_callback(hid_t loc_id, const char* name,
+herr_t HDF5_listAttributes_inserter_callback(hid_t, const char* name,
                                              const H5A_info_t*, void* operator_data)
 {
     HDF5_ls_insert(operator_data, name);

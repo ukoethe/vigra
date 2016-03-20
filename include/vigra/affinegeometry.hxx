@@ -29,10 +29,10 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 #ifndef VIGRA_AFFINEGEOMETRY_HXX
 #define VIGRA_AFFINEGEOMETRY_HXX
 
@@ -46,7 +46,7 @@
 
 namespace vigra {
 
-/** \addtogroup GeometricTransformations Geometric Transformations
+/** \addtogroup GeometricTransformations
 */
 //@{
 
@@ -57,7 +57,7 @@ namespace vigra {
 /********************************************************/
 
 /** \brief Create homogeneous matrix representing a 2D translation.
- 
+
     For use with \ref affineWarpImage().
 */
 inline
@@ -70,7 +70,7 @@ linalg::TemporaryMatrix<double> translationMatrix2D(TinyVector<double, 2> const 
 }
 
 /** \brief Create homogeneous matrix representing a 2D uniform scaling about the coordinate origin.
- 
+
     For use with \ref affineWarpImage().
 */
 inline
@@ -83,7 +83,7 @@ linalg::TemporaryMatrix<double> scalingMatrix2D(double scalingFactor)
 }
 
 /** \brief Create homogeneous matrix representing a 2D non-uniform scaling about the coordinate origin.
- 
+
     For use with \ref affineWarpImage().
 */
 inline
@@ -96,7 +96,7 @@ linalg::TemporaryMatrix<double> scalingMatrix2D(double sx, double sy)
 }
 
 /** \brief Create homogeneous matrix representing a 2D shearing.
- 
+
     For use with \ref affineWarpImage().
 */
 inline
@@ -109,7 +109,7 @@ linalg::TemporaryMatrix<double> shearMatrix2D(double s01, double s10)
 }
 
 /** \brief Create homogeneous matrix representing a 2D rotation about the coordinate origin.
- 
+
     For use with \ref affineWarpImage(). Angle must be in radians.
 */
 inline
@@ -126,7 +126,7 @@ linalg::TemporaryMatrix<double> rotationMatrix2DRadians(double angle)
 }
 
 /** \brief Create homogeneous matrix representing a 2D rotation about the coordinate origin.
- 
+
     For use with \ref affineWarpImage(). Angle must be in degrees.
 */
 inline
@@ -136,7 +136,7 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle)
 }
 
 /** \brief Create homogeneous matrix representing a 2D rotation about the given point.
- 
+
     For use with \ref affineWarpImage(). Angle must be in radians.
 */
 inline
@@ -146,7 +146,7 @@ linalg::TemporaryMatrix<double> rotationMatrix2DRadians(double angle, TinyVector
 }
 
 /** \brief Create homogeneous matrix representing a 2D rotation about the given point.
- 
+
     For use with \ref affineWarpImage(). Angle must be in degrees.
 */
 inline
@@ -162,19 +162,19 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
 /********************************************************/
 
 // documentation is in basicgeometry.hxx
-template <int ORDER, class T, 
+template <int ORDER, class T,
           class DestIterator, class DestAccessor>
 void rotateImage(SplineImageView<ORDER, T> const & src,
-                 DestIterator id, DestAccessor dest, 
+                 DestIterator id, DestAccessor dest,
                  double angleInDegree, TinyVector<double, 2> const & center)
 {
     int w = src.width();
     int h = src.height();
-    
+
     double angle = angleInDegree/180.0;
     double c = cos_pi(angle); // avoid round-off errors for simple rotations
     double s = sin_pi(angle);
-    
+
     for(int y = 0; y < h; ++y, ++id.y)
     {
         typename DestIterator::row_iterator rd = id.rowIterator();
@@ -188,53 +188,53 @@ void rotateImage(SplineImageView<ORDER, T> const & src,
     }
 }
 
-template <int ORDER, class T, 
+template <int ORDER, class T,
           class DestIterator, class DestAccessor>
-inline void 
+inline void
 rotateImage(SplineImageView<ORDER, T> const & src,
-            pair<DestIterator, DestAccessor> dest, 
+            pair<DestIterator, DestAccessor> dest,
             double angleInDegree, TinyVector<double, 2> const & center)
 {
     rotateImage(src, dest.first, dest.second, angleInDegree, center);
 }
 
-template <int ORDER, class T, 
+template <int ORDER, class T,
           class DestIterator, class DestAccessor>
-inline void 
+inline void
 rotateImage(SplineImageView<ORDER, T> const & src,
-            DestIterator id, DestAccessor dest, 
+            DestIterator id, DestAccessor dest,
             double angleInDegree)
 {
     TinyVector<double, 2> center((src.width()-1.0) / 2.0, (src.height()-1.0) / 2.0);
     rotateImage(src, id, dest, angleInDegree, center);
 }
 
-template <int ORDER, class T, 
+template <int ORDER, class T,
           class DestIterator, class DestAccessor>
-inline void 
+inline void
 rotateImage(SplineImageView<ORDER, T> const & src,
-            pair<DestIterator, DestAccessor> dest, 
+            pair<DestIterator, DestAccessor> dest,
             double angleInDegree)
 {
     TinyVector<double, 2> center((src.width()-1.0) / 2.0, (src.height()-1.0) / 2.0);
     rotateImage(src, dest.first, dest.second, angleInDegree, center);
 }
 
-template <int ORDER, class T, 
+template <int ORDER, class T,
           class T2, class S2>
-inline void 
+inline void
 rotateImage(SplineImageView<ORDER, T> const & src,
-            MultiArrayView<2, T2, S2> dest, 
+            MultiArrayView<2, T2, S2> dest,
             double angleInDegree, TinyVector<double, 2> const & center)
 {
     rotateImage(src, destImage(dest), angleInDegree, center);
 }
 
-template <int ORDER, class T, 
+template <int ORDER, class T,
           class T2, class S2>
-inline void 
+inline void
 rotateImage(SplineImageView<ORDER, T> const & src,
-            MultiArrayView<2, T2, S2> dest, 
+            MultiArrayView<2, T2, S2> dest,
             double angleInDegree)
 {
     TinyVector<double, 2> center((src.width()-1.0) / 2.0, (src.height()-1.0) / 2.0);
@@ -250,78 +250,78 @@ rotateImage(SplineImageView<ORDER, T> const & src,
 /** \brief Warp an image according to an affine transformation.
 
     <b> Declarations:</b>
-    
+
     pass 2D array views:
     \code
     namespace vigra {
-        template <int ORDER, class T, 
+        template <int ORDER, class T,
                   class T2, class S2,
                   class C>
         void
         affineWarpImage(SplineImageView<ORDER, T> const & src,
-                        MultiArrayView<2, T2, S2> dest, 
+                        MultiArrayView<2, T2, S2> dest,
                         MultiArrayView<2, double, C> const & affineMatrix);
     }
     \endcode
-    
+
     \deprecatedAPI{affineWarpImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
-        template <int ORDER, class T, 
+        template <int ORDER, class T,
                 class DestIterator, class DestAccessor,
                 class C>
         void affineWarpImage(SplineImageView<ORDER, T> const & src,
-                            DestIterator dul, DestIterator dlr, DestAccessor dest, 
+                            DestIterator dul, DestIterator dlr, DestAccessor dest,
                             MultiArrayView<2, double, C> const & affineMatrix);
     }
     \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
-        template <int ORDER, class T, 
+        template <int ORDER, class T,
                 class DestIterator, class DestAccessor,
                 class C>
         void affineWarpImage(SplineImageView<ORDER, T> const & src,
-                            triple<DestIterator, DestIterator, DestAccessor> dest, 
+                            triple<DestIterator, DestIterator, DestAccessor> dest,
                             MultiArrayView<2, double, C> const & affineMatrix);
     }
     \endcode
     \deprecatedEnd
-    
+
     The algorithm applies the given \a affineMatrix to the <i>destination coordinates</i> and copies
-    the image value from the resulting source coordinates, using the given SplineImageView \a src for interpolation. 
+    the image value from the resulting source coordinates, using the given SplineImageView \a src for interpolation.
     If the resulting coordinate is outside the source image, nothing will be written at that destination point.
-    
+
     \code
         for all dest pixels:
             currentSrcCoordinate = affineMatrix * currentDestCoordinate;
             if src.isInside(currentSrcCoordinate):
                 dest[currentDestCoordinate] = src[currentSrcCoordinate]; // copy an interpolated value
     \endcode
-    
+
     The matrix represents a 2-dimensional affine transform by means of homogeneous coordinates,
     i.e. it must be a 3x3 matrix whose last row is (0,0,1).
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> \<vigra/affinegeometry.hxx\><br>
     Namespace: vigra
 
     \code
     MultiArray<2, float> src(width, height);
     SplineImageView<3, float> spline(src);
-    
+
     MultiArray<2, float> dest1(src.shape());
-    
-    // equivalent (up to round-off errors) to 
+
+    // equivalent (up to round-off errors) to
     //     rotateImage(spline, dest1, 45.0);
     TinyVector<double, 2> center((width-1.0)/2.0, (height-1.0)/2.0);
     affineWarpImage(spline, dest1, rotationMatrix2DDegrees(45.0, center));
-    
+
     MultiArray<2, float> dest2(2*width-1, 2*height-1);
-    
-    // equivalent (up to round-off errors) to 
+
+    // equivalent (up to round-off errors) to
     //     resizeImageSplineInterpolation(img, dest2);
     // note that scaleFactor = 0.5, because we must pass the transformation from destination to source
     affineWarpImage(spline, dest2, scalingMatrix2D(0.5));
@@ -331,17 +331,17 @@ rotateImage(SplineImageView<ORDER, T> const & src,
     \code
     FImage src(width, height);
     SplineImageView<3, Image::value_type> spline(srcImageRange(src));
-    
+
     FImage dest1(width, height);
-    
-    // equivalent (up to round-off errors) with 
+
+    // equivalent (up to round-off errors) with
     //     rotateImage(spline, destImage(dest1), 45.0);
     TinyVector<double, 2> center((width-1.0)/2.0, (height-1.0)/2.0);
     affineWarpImage(spline, destImageRange(dest1), rotationMatrix2DDegrees(45.0, center));
-    
+
     FImage dest2(2*width-1, 2*height-1);
-    
-    // equivalent (up to round-off errors) with 
+
+    // equivalent (up to round-off errors) with
     //     resizeImageSplineInterpolation(srcImageRange(img), destImageRange(dest2));
     // note that scaleFactor = 0.5, because we must pass the transformation from destination to source
     affineWarpImage(spline, destImageRange(dest2), scalingMatrix2D(0.5));
@@ -349,34 +349,34 @@ rotateImage(SplineImageView<ORDER, T> const & src,
     <b> Required Interface:</b>
     \code
     DestImageIterator dest_upperleft;
-    
+
     double x = ..., y = ...;
-    
+
     if (spline.isInside(x,y))
         dest_accessor.set(spline(x, y), dest_upperleft);
     \endcode
     \deprecatedEnd
-    
-    <b>See also:</b> Functions to specify affine transformation: \ref translationMatrix2D(), \ref scalingMatrix2D(), 
+
+    <b>See also:</b> Functions to specify affine transformation: \ref translationMatrix2D(), \ref scalingMatrix2D(),
                     \ref shearMatrix2D(), \ref rotationMatrix2DRadians(), \ref rotationMatrix2DDegrees()
 */
 doxygen_overloaded_function(template <...> void affineWarpImage)
 
-template <int ORDER, class T, 
+template <int ORDER, class T,
           class DestIterator, class DestAccessor,
           class C>
 void affineWarpImage(SplineImageView<ORDER, T> const & src,
-                     DestIterator dul, DestIterator dlr, DestAccessor dest, 
+                     DestIterator dul, DestIterator dlr, DestAccessor dest,
                      MultiArrayView<2, double, C> const & affineMatrix)
 {
-    vigra_precondition(rowCount(affineMatrix) == 3 && columnCount(affineMatrix) == 3 && 
+    vigra_precondition(rowCount(affineMatrix) == 3 && columnCount(affineMatrix) == 3 &&
                        affineMatrix(2,0) == 0.0 && affineMatrix(2,1) == 0.0 && affineMatrix(2,2) == 1.0,
         "affineWarpImage(): matrix doesn't represent an affine transformation with homogeneous 2D coordinates.");
-         
-    
+
+
     double w = dlr.x - dul.x;
     double h = dlr.y - dul.y;
-    
+
     for(double y = 0.0; y < h; ++y, ++dul.y)
     {
         typename DestIterator::row_iterator rd = dul.rowIterator();
@@ -390,23 +390,23 @@ void affineWarpImage(SplineImageView<ORDER, T> const & src,
     }
 }
 
-template <int ORDER, class T, 
+template <int ORDER, class T,
           class DestIterator, class DestAccessor,
           class C>
 inline void
 affineWarpImage(SplineImageView<ORDER, T> const & src,
-                triple<DestIterator, DestIterator, DestAccessor> dest, 
+                triple<DestIterator, DestIterator, DestAccessor> dest,
                 MultiArrayView<2, double, C> const & affineMatrix)
 {
     affineWarpImage(src, dest.first, dest.second, dest.third, affineMatrix);
 }
 
-template <int ORDER, class T, 
+template <int ORDER, class T,
           class T2, class S2,
           class C>
 inline void
 affineWarpImage(SplineImageView<ORDER, T> const & src,
-                MultiArrayView<2, T2, S2> dest, 
+                MultiArrayView<2, T2, S2> dest,
                 MultiArrayView<2, double, C> const & affineMatrix)
 {
     affineWarpImage(src, destImageRange(dest), affineMatrix);

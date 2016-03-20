@@ -997,7 +997,7 @@ class CorrectStatus
 {
 public:
     template<class Nde>
-    bool operator()(Nde & cur, int level, Nde parent, bool infm)
+    bool operator()(Nde & cur, int /*level*/, Nde parent, bool /*infm*/)
     {
         if(parent.hasData_)
             cur.status() = std::min(parent.status(), cur.status());
@@ -1045,7 +1045,7 @@ public:
     }
 
     template<class Nde>
-    bool operator()(Nde & cur, int level, Nde parent, bool infm)
+    bool operator()(Nde & cur, int /*level*/, Nde parent, bool /*infm*/)
     {
         graphviz << "node" << cur.index() << " [style=\"filled\"][label = \" #Feats: "<< cur.columns_size() << "\\n";
         graphviz << " status: " << cur.status() << "\\n";
@@ -1104,7 +1104,7 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
     /** Allocate enough memory 
      */
     template<class RF, class PR>
-    void visit_at_beginning(RF const & rf, PR const & pr)
+    void visit_at_beginning(RF const & rf, PR const & /*pr*/)
     {
         Int32 const  class_count = rf.ext_param_.class_count_;
         Int32 const  column_count = rf.ext_param_.column_count_+1;
@@ -1129,7 +1129,7 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
      * \sa FieldProxy
      */
     template<class RF, class PR, class SM, class ST>
-    void after_tree_ip_impl(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void after_tree_ip_impl(RF& rf, PR & pr,  SM & sm, ST & /*st*/, int index)
     {
         typedef MultiArrayShape<2>::type Shp_t;
         Int32                   column_count = rf.ext_param_.column_count_ +1;
@@ -1229,7 +1229,7 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
     /** Normalise variable importance after the number of trees is known.
      */
     template<class RF, class PR>
-    void visit_at_end(RF & rf, PR & pr)
+    void visit_at_end(RF & rf, PR & /*pr*/)
     {
         NormalizeStatus nrm(rf.tree_count());
         clustering.iterate(nrm);

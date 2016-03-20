@@ -55,7 +55,7 @@ struct SlicTest
 {
     typedef MultiArray<N, float>                  FArray;
     typedef MultiArray<N, RGBValue<float> >       FRGBArray;
-    typedef MultiArray<N, int>                    IArray;
+    typedef MultiArray<N, unsigned int>           IArray;
     typedef typename MultiArrayShape<N>::type     Shape;
 
     ImageImportInfo info;
@@ -66,7 +66,7 @@ struct SlicTest
         lennaImage(info.shape())
     {
         importImage(info, destImage(lennaImage));
-        transformMultiArray(srcMultiArrayRange(lennaImage), destMultiArray(lennaImage), RGBPrime2LabFunctor<float>());    
+        transformMultiArray(srcMultiArrayRange(lennaImage), destMultiArray(lennaImage), RGBPrime2LabFunctor<float>());
     }
 
     void test_seeding()

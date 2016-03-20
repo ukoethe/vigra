@@ -256,7 +256,7 @@ namespace vigra
     std::string
     CodecManager::getEncoderType( const std::string & filename,
                                   const std::string & fType,
-                                  const std::string & mode ) const
+                                  const std::string & ) const
     {
         std::string fileType = fType;
 

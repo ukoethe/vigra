@@ -51,11 +51,11 @@ labelsEdgeWeighted  = graphs.edgeWeightedWatersheds(rag, ragEdgeWeights, seeds)
 
 
 f = pylab.figure()
-ax0 = f.add_subplot(1, 2, 0)
+ax0 = f.add_subplot(1, 2, 1)
 rag.showNested(img, labelsNodeWeighted)
 ax0.set_title("node weighted")
 
-ax1 = f.add_subplot(1, 2, 1)
+ax1 = f.add_subplot(1, 2, 2)
 rag.showNested(img, labelsEdgeWeighted)
 ax1.set_title("edge weighted")
 pylab.show()
