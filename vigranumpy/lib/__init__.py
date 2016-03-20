@@ -1256,17 +1256,17 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     accumulated node features
             """
             if self.edgeNum == 0 :
-              raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")
+                raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")
             graph = self.baseGraph
             labels = self.baseGraphLabels
             ignoreLabel = self.ignoreLabel
             if acc == 'mean':
-              #print("get node size...")
-              weights = self.baseGraph.nodeSize()
-              #print("weights == ", weights)
+                #print("get node size...")
+                weights = self.baseGraph.nodeSize()
+                #print("weights == ", weights)
             else :
-              weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
-              weights[:]=1
+                weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
+                weights[:]=1
 
             return graphs._ragNodeFeatures(self,graph,
                                            labels,
