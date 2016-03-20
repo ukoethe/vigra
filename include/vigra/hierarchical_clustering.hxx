@@ -580,12 +580,7 @@ class EdgeWeightedUcm
             }
             const Node u = mergeGraph_.u(e);
             const Node v = mergeGraph_.v(e);
-<<<<<<< HEAD
-            
-=======
 
-            const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
->>>>>>> 80c2c2fa4dbdaaf73715e6d3cee0c21ed335c592
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 

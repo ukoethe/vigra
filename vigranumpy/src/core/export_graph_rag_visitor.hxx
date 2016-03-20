@@ -390,12 +390,15 @@ public:
         // numpy arrays => lemon maps
         UInt32NodeArrayMap labelsArrayMap(graph,labelsArray);
 
-        // allocate a new RagAffiliatedEdges
-        RagAffiliatedEdges * affiliatedEdges = new RagAffiliatedEdges(rag);
+        RagAffiliatedEdges * affiliatedEdges = NULL;
+        {
+            PyAllowThreads _pythread;
+            // allocate a new RagAffiliatedEdges
+            affiliatedEdges = new RagAffiliatedEdges(rag);
 
-        // call algorithm itself
-        makeRegionAdjacencyGraph(graph,labelsArrayMap,rag,*affiliatedEdges,ignoreLabel);
-
+            // call algorithm itself
+            makeRegionAdjacencyGraph(graph,labelsArrayMap,rag,*affiliatedEdges,ignoreLabel);
+        }
         return affiliatedEdges;
     }
 
