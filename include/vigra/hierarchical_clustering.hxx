@@ -580,7 +580,12 @@ class EdgeWeightedUcm
             }
             const Node u = mergeGraph_.u(e);
             const Node v = mergeGraph_.v(e);
+<<<<<<< HEAD
             
+=======
+
+            const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
+>>>>>>> 80c2c2fa4dbdaaf73715e6d3cee0c21ed335c592
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
@@ -708,9 +713,15 @@ class ClusteringOptions
         sizeImportance_ = val;
         return *this;
     }
+<<<<<<< HEAD
 
         /** Metric to be used when transforming node features into cluster distances.
 
+=======
+
+        /** Metric to be used when transforming node features into cluster distances.
+
+>>>>>>> 80c2c2fa4dbdaaf73715e6d3cee0c21ed335c592
             The cluster (= node) distance is the respective norm of the difference
             vector between the corresponding node feature vectors.
 
@@ -920,6 +931,7 @@ private:
         return timeStampIndexToMergeIndex_[timeStampToIndex(timestamp)];
     }
 
+
     ClusterOperator & clusterOperator_;
     Parameter          param_;
     MergeGraph & mergeGraph_;
@@ -935,7 +947,9 @@ private:
     MergeTreeEncoding mergeTreeEndcoding_;
 
 
+
 };
+
 
 /********************************************************/
 /*                                                      */

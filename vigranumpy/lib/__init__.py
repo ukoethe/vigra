@@ -156,6 +156,7 @@ class Timer:
         if self.verbose  :
             print("... took ", self.interval, "sec")
 
+
 # portable way to inject a metaclass (taken from six.py)
 def _with_metaclass(meta, *bases):
     """Create a base class with a metaclass."""
@@ -166,6 +167,8 @@ def _with_metaclass(meta, *bases):
         def __new__(cls, name, this_bases, d):
             return meta(name, bases, d)
     return type.__new__(metaclass, 'temporary_class', (), {})
+
+
 
 
 # import most frequently used functions
@@ -1815,8 +1818,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
         labels = readHDF5(filename,  dset+'/labels').squeeze()
         shape = labels.shape
         gridGraph = graphs.gridGraph(shape)
-        gridGraph = graphs.gridGraph(shape)
-        #print(gridGraph)
+
 
 
         #print("load graph serialization")
@@ -2411,8 +2413,7 @@ def _genGraphSegmentationFunctions():
             else :
                 raise RuntimeError("'%s' is not a supported distance type"%str(metric))
 
-            # call unsave c++ function and make it sav
-            #print "nodeLabels ",nodeLabels.shape, nodeLabels.dtype
+
             op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,nodeLabels,
                 float(beta),nd,float(wardness),float(gamma))
 
