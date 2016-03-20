@@ -708,15 +708,10 @@ class ClusteringOptions
         sizeImportance_ = val;
         return *this;
     }
-<<<<<<< HEAD
+
 
         /** Metric to be used when transforming node features into cluster distances.
 
-=======
-
-        /** Metric to be used when transforming node features into cluster distances.
-
->>>>>>> 80c2c2fa4dbdaaf73715e6d3cee0c21ed335c592
             The cluster (= node) distance is the respective norm of the difference
             vector between the corresponding node feature vectors.
 
