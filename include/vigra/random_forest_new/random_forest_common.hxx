@@ -757,6 +757,12 @@ public:
         return *this;
     }
 
+    ProblemSpecNew & num_classes(size_t n)
+    {
+        num_classes_ = n;
+        return *this;
+    }
+
     ProblemSpecNew & distinct_classes(std::vector<LabelType> v)
     {
         distinct_classes_ = v;
