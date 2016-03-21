@@ -1049,10 +1049,24 @@ class HDF5File
         Note that the HDF5File class is not copyable (the copy constructor is
         private to enforce this).
         */
-    HDF5File(std::string filePath, OpenMode mode, bool track_creation_times = false)
+    explicit HDF5File(std::string filePath, OpenMode mode = ReadOnly, bool track_creation_times = false)
         : track_time(track_creation_times ? 1 : 0)
     {
         open(filePath, mode);
+    }
+
+        /** \brief Open or create an HDF5File object.
+
+        Creates or opens HDF5 file with given filename.
+        The current group is set to "/".
+
+        Note that the HDF5File class is not copyable (the copy constructor is
+        private to enforce this).
+        */
+    explicit HDF5File(char const * filePath, OpenMode mode = ReadOnly, bool track_creation_times = false)
+        : track_time(track_creation_times ? 1 : 0)
+    {
+        open(std::string(filePath), mode);
     }
 
         /** \brief Initialize an HDF5File object from HDF5 file handle
