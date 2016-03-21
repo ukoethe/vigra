@@ -40,6 +40,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <stack>
 
 #include "config.hxx"
 #include "random_forest_new/random_forest.hxx"
@@ -237,6 +238,8 @@ void rf_export_HDF5(
         HDF5File & h5context,
         std::string const & pathname = ""
 ){
+    typedef typename RF::Node Node;
+
     std::string cwd;
     if (pathname.size()) {
         cwd = detail::get_cwd(h5context);
@@ -253,7 +256,7 @@ void rf_export_HDF5(
     h5context.write("column_count_", p.num_features_);
     h5context.write("row_count_", p.num_instances_);
     h5context.write("class_count_", p.num_classes_);
-    h5context.write("labels", p.distinct_classes_);
+    h5context.write("labels", p.distinct_classes_); // eventually one has to use a multi array here
     h5context.write("actual_mtry_", p.actual_mtry_);
     h5context.cd_up();
 
@@ -261,12 +264,67 @@ void rf_export_HDF5(
     detail::PaddedNumberString tree_number(rf.num_trees());
     for (size_t i = 0; i < rf.num_trees(); ++i)
     {
+        // Create the topology and parameters arrays.
+        std::vector<UInt32> topology;
+        std::vector<double> parameters;
+        topology.push_back(p.num_features_);
+        topology.push_back(p.num_classes_);
+
+        auto const & probs = rf.node_responses_;
+        auto const & splits = rf.split_tests_;
+        auto const & gr = rf.graph_;
+        auto const root = gr.getRoot(i);
+
+        // Write the tree nodes using a depth-first search.
+        // When a node is created, the indices of the child nodes are unknown.
+        // Therefore, they have to be updated once the child nodes are created.
+        // The stack holds the node and the topology-index that must be updated.
+        std::stack<std::pair<Node, int> > stack;
+        stack.emplace(root, -1);
+        while (!stack.empty())
+        {
+            auto const n = stack.top().first; // the node descriptor
+            auto const i = stack.top().second; // index from the parent node that must be updated
+            stack.pop();
+
+            // Update the index in the parent node.
+            if (i != -1)
+                topology[i] = topology.size();
+
+            if (gr.numChildren(n) == 0)
+            {
+                // The node is a leaf.
+                // Topology: leaf node tag, index of weight in parameters array.
+                // Parameters: node weight, class probabilities.
+                topology.push_back(rf_LeafNodeTag);
+                topology.push_back(parameters.size());
+                auto const & prob = probs.at(n);
+                auto const weight = std::accumulate(prob.begin(), prob.end(), 0.0);
+                parameters.push_back(weight);
+                parameters.insert(parameters.back(), prob.begin(), prob.end());
+            }
+            else
+            {
+                // The node is an inner node.
+                // Topology: threshold tag, index of weight in parameters array, index of left child, index of right child, split dimension.
+                // Parameters: node weight, split value.
+                topology.push_back(rf_i_ThresholdNode);
+                topology.push_back(parameters.size());
+                topology.push_back(-1); // index of left children (currently unknown, will be updated when the child node is taken from the stack)
+                topology.push_back(-1); // index of right children (see above)
+                topology.push_back(splits.at(n).dim_);
+                parameters.push_back(1.0); // inner nodes have the weight 1.
+                parameters.push_back(splits.at(n).val_);
+                
+                // Place the children on the stack.
+                stack.emplace(gr.getChild(n, 0), topology.size()-3);
+                stack.emplace(gr.getChild(n, 1), topology.size()-2);
+            }
+        }
+
         auto const name = rf_hdf5_tree + tree_number(i);
         h5context.cd_mk(name);
-
-        // TODO: write topology
-        // TODO: write parameters
-
+        // TODO: Write topology and parameters.
         h5context.cd_up();
     }
 
