@@ -41,6 +41,7 @@
 /*vigra*/
 #include "export_graph_visitor.hxx"
 #include "export_graph_rag_visitor.hxx"
+#include "export_graph_gridrag2d_visitor.hxx"
 #include "export_graph_algorithm_visitor.hxx"
 #include "export_graph_shortest_path_visitor.hxx"
 #include "export_graph_hierarchical_clustering_visitor.hxx"
@@ -95,13 +96,16 @@ namespace vigra{
         
         python::class_<Graph>(clsName.c_str(),python::init< ShapeType >())
         .def("__init__",python::make_constructor(&pyGridGraphFactory2d<DIM,boost::undirected_tag>))
-        .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
-        .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
-        .def(LemonGridGraphAlgorithmAddonVisitor<Graph>(clsName))
-        .def(LemonGraphShortestPathVisitor<Graph>(clsName))
-        .def(LemonGraphRagVisitor<Graph>(clsName))
-        .def(LemonGraphHierachicalClusteringVisitor<Graph>(clsName))
-        .def("coordinateToNode",pyCoordinateToNode2d<DIM,boost::undirected_tag>)
+        .def(LemonGraphGridRag2dVisitor<Graph>(clsName))
+        #if 1
+            .def(LemonUndirectedGraphCoreVisitor<Graph>(clsName))
+            .def(LemonGraphAlgorithmVisitor<Graph>(clsName))
+            .def(LemonGridGraphAlgorithmAddonVisitor<Graph>(clsName))
+            .def(LemonGraphShortestPathVisitor<Graph>(clsName))
+            .def(LemonGraphRagVisitor<Graph>(clsName))
+            .def(LemonGraphHierachicalClusteringVisitor<Graph>(clsName))
+            .def("coordinateToNode",pyCoordinateToNode2d<DIM,boost::undirected_tag>)
+        #endif
         ;
 
        

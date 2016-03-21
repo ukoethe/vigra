@@ -116,6 +116,16 @@ namespace vigra{
     }
 
 
+    template<unsigned int DIM, class T_IN, class T_OUT>
+    NumpyAnyArray pyBlockwiseStructureTensorEigenvalues(
+        const NumpyArray<DIM, T_IN> &  source,
+        const BlockwiseConvolutionOptions<DIM>  & opt,
+        NumpyArray<DIM, T_OUT>  dest
+    ){
+        dest.reshapeIfEmpty(source.taggedShape());
+        structureTensorEigenvaluesMultiArray(source, dest, opt);
+        return dest;
+    }
 
 
     template<unsigned int DIM, class T_IN>
@@ -161,6 +171,13 @@ namespace vigra{
             )
         );
         python::def("_hessianOfGaussianLastEigenvalue",registerConverters(&pyBlockwiseHessianOfGaussianLastEigenvalueMultiArray<DIM, T_IN, float>),
+            (
+                python::arg("source"),
+                python::arg("options"),
+                python::arg("out") = python::object()
+            )
+        );
+        python::def("_structureTensorEigenvalues",registerConverters(&pyBlockwiseStructureTensorEigenvalues<DIM, T_IN, vigra::TinyVector<float, DIM> >),
             (
                 python::arg("source"),
                 python::arg("options"),

@@ -326,6 +326,31 @@ namespace blockwise{
         ConvOpt  convOpt_;
     };
 
+    template<unsigned int DIM>
+    class StructureTensorEigenvaluesFunctor{
+    public:
+        typedef ConvolutionOptions<DIM> ConvOpt;
+        StructureTensorEigenvaluesFunctor(const ConvOpt & convOpt)
+        : convOpt_(convOpt){}
+        template<class S, class D>
+        void operator()(const S & s, D & d)const{
+            typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(d.shape());
+            vigra::structureTensorMultiArray(s, hessianOfGaussianRes, convOpt_);
+            vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, d);
+        }
+        template<class S, class D,class SHAPE>
+        void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){
+            typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
+            vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(roiEnd-roiBegin);
+            convOpt_.subarray(roiBegin, roiEnd);
+            vigra::structureTensorMultiArray(s, hessianOfGaussianRes, convOpt_);
+            vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, d);
+        }
+    private:
+        ConvOpt  convOpt_;
+    };
+
     template<unsigned int DIM, unsigned int EV>
     class HessianOfGaussianSelectedEigenvalueFunctor{
     public:
@@ -443,7 +468,7 @@ VIGRA_BLOCKWISE(HessianOfGaussianLastEigenvalueFunctor,  hessianOfGaussianLastEi
 VIGRA_BLOCKWISE(LaplacianOfGaussianFunctor,              laplacianOfGaussianMultiArray,              2, false );
 VIGRA_BLOCKWISE(GaussianGradientMagnitudeFunctor,        gaussianGradientMagnitudeMultiArray,        1, false );
 VIGRA_BLOCKWISE(StructureTensorFunctor,                  structureTensorMultiArray,                  1, true  );
-
+VIGRA_BLOCKWISE(StructureTensorEigenvaluesFunctor,       structureTensorEigenvaluesMultiArray,       1, false );
 #undef  VIGRA_BLOCKWISE
 
     // alternative name for backward compatibility

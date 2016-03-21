@@ -68,13 +68,16 @@ namespace vigra{
         const typename AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > & affiliatedEdges,
         NumpyArray<1,UInt32> out
     ){
+
         // reshape
         const size_t sSize = affiliatedEdgesSerializationSize(gridGraph, rag, affiliatedEdges);
         out.reshapeIfEmpty( typename NumpyArray<1,UInt32>::difference_type(sSize) );
 
-        // do serialization
-        serializeAffiliatedEdges(gridGraph, rag, affiliatedEdges, out.begin());
-
+        {
+            PyAllowThreads _pythread;
+            // do serialization
+            serializeAffiliatedEdges(gridGraph, rag, affiliatedEdges, out.begin());
+        }
         // return 
         return out;
 
@@ -93,7 +96,11 @@ namespace vigra{
         = new AdjacencyListGraph:: template EdgeMap< std::vector<  typename GridGraph<DIM, boost::undirected_tag >::Edge   > > () ; 
 
         // do serialization
-        deserializeAffiliatedEdges(gridGraph, rag, *affEdges_, serialization.begin(), serialization.end());
+        {
+            PyAllowThreads _pythread;
+            deserializeAffiliatedEdges(gridGraph, rag, *affEdges_, serialization.begin(), serialization.end());
+        }
+
 
         // return 
         return affEdges_;

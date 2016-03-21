@@ -183,7 +183,10 @@ except:
     pass
 
 from vigra.impex import readImage, readVolume
-
+try:
+    import h5py
+except:
+    pass
 def readHDF5(filenameOrGroup, pathInFile, order=None):
     '''Read an array from an HDF5 file.
 
@@ -1196,6 +1199,16 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             labels = self.labels
             return graphs._pyAccNodeSeeds(self, graph, labels, seeds, out)
 
+        def sortedLines(self):
+            assert isinstance(self.baseGraph, graphs.GridGraphUndirected2d)
+            labels = self.labels
+            return graphs._gridRagSortedLines(self, labels)
+
+        def curvatureFeatures(self, sortedLines):
+            assert isinstance(self.baseGraph, graphs.GridGraphUndirected2d)
+            graphs._gridRag2dCurvatureFeatures(self, sortedLines)
+
+
         def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
             """ accumulate edge features from base graphs edges features
 
@@ -1573,11 +1586,16 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 sAffEdges = graphs._serialzieGridGraphAffiliatedEdges(self.baseGraph, self, self.affiliatedEdges )
                 sLabels   = self.labels
 
-
-                writeHDF5(numpy.array([self.ignoreLabel]), filename, dset+'/ignore_label')
-                writeHDF5(sLabels, filename, dset+'/labels')
-                writeHDF5(sGraph, filename, dset+'/graph')
-                writeHDF5(sAffEdges, filename, dset+'/affiliated_edges')
+                f = h5py.File(filename, 'w')
+                f[dset+'/ignore_label'] = numpy.array([self.ignoreLabel])
+                f[dset+'/labels'] = sLabels
+                f[dset+'/graph'] = sGraph
+                f[dset+'/affiliated_edges'] = sAffEdges
+                f.close()
+                #writeHDF5(numpy.array([self.ignoreLabel]), filename, dset+'/ignore_label')
+                #writeHDF5(sLabels, filename, dset+'/labels')
+                #writeHDF5(sGraph, filename, dset+'/graph')
+                #writeHDF5(sAffEdges, filename, dset+'/affiliated_edges')
 
 
             else:
@@ -1813,16 +1831,17 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
     def loadGridRagHDF5(filename , dset):
 
+        f = h5py.File(filename,'r')
 
-        #print "load labels and make grid graph"
-        labels = readHDF5(filename,  dset+'/labels').squeeze()
+
+        labels = f[dset+'/labels'][:].squeeze()
         shape = labels.shape
         gridGraph = graphs.gridGraph(shape)
 
 
 
         #print("load graph serialization")
-        graphSerialization = readHDF5(filename, dset+'/graph')
+        graphSerialization = f[dset+'/graph'][:]
 
         #print("make empty grid rag")
         gridRag = GridRegionAdjacencyGraph()
@@ -1832,13 +1851,14 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
 
         #print("load affiliatedEdges")
-        affEdgeSerialization = readHDF5(filename, dset+'/affiliated_edges')
+        affEdgeSerialization = f[dset+'/affiliated_edges'][:]
+        #affEdgeSerialization = readHDF5(filename, dset+'/affiliated_edges')
 
         #print("deserialize")
         affiliatedEdges = graphs._deserialzieGridGraphAffiliatedEdges(gridGraph, gridRag, affEdgeSerialization)
 
-
-        ignoreLabel =  readHDF5(filename, dset+'/ignore_label')
+        ignoreLabel = f[dset+'/ignore_label'][:]
+        #ignoreLabel =  readHDF5(filename, dset+'/ignore_label')
 
         gridRag.affiliatedEdges = affiliatedEdges
         gridRag.labels          = labels
@@ -2650,12 +2670,18 @@ def _genBlockwiseFunctions():
     gaussianGradientMagnitude.__module__ = 'vigra.blockwise'
     blockwise.gaussianGradientMagnitude = gaussianGradientMagnitude
 
+    def structureTensorEigenvalues(image,options,out=None):
+        out = blockwise._structureTensorEigenvalues(image,options,out)
+        return out
+    structureTensorEigenvalues.__module__ = 'vigra.blockwise'
+    blockwise.structureTensorEigenvalues = structureTensorEigenvalues
 
     def hessianOfGaussianEigenvalues(image,options,out=None):
         out = blockwise._hessianOfGaussianEigenvalues(image,options,out)
         return out
     hessianOfGaussianEigenvalues.__module__ = 'vigra.blockwise'
     blockwise.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
+
 
     def hessianOfGaussianFirstEigenvalue(image,options,out=None):
         out = blockwise._hessianOfGaussianFirstEigenvalue(image,options,out)
