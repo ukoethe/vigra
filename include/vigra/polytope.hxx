@@ -461,7 +461,7 @@ class StarPolytope : public Polytope<N, T>
         ++a;
         for (int i = 0; a != lemon::INVALID; ++a, ++i)
         {
-            mat.template bind<0>(i) = vec_map_[graph_.target(a)] - vertex;
+            rowVector(mat, i) = vec_map_[graph_.target(a)] - vertex;
         }
         point_view_type normal = vec_map_[u];
         for (int i = 0; i < dimension; i++)
@@ -553,8 +553,8 @@ class StarPolytope : public Polytope<N, T>
                 {
                     ii++;
                 }
-                jp_mat.template bind<0>(i) = vertices[ii] - p;
-                jj_mat.template bind<0>(i) = vertices[ii] - vertices[j];
+                rowVector(jp_mat, i) = vertices[ii] - p;
+                rowVector(jj_mat, i) = vertices[ii] - vertices[j];
             }
             const coordinate_type jj_det = linalg::determinant(jj_mat);
             const coordinate_type jp_det = linalg::determinant(jp_mat);
@@ -589,7 +589,7 @@ class StarPolytope : public Polytope<N, T>
         for (int i = 0; i < dimension; ++i, ++a)
         {
             fac *= (i+1);
-            mat.template bind<0>(i) = vec_map_[graph_.target(a)] - center_;
+            rowVector(mat, i) = vec_map_[graph_.target(a)] - center_;
         }
         return abs(linalg::determinant(mat) / fac);
     }
@@ -616,9 +616,9 @@ class StarPolytope : public Polytope<N, T>
         for (int i = 1; i < dimension; ++i, ++a)
         {
             factor *= i;
-            mat.template bind<0>(i) = vec_map_[graph_.target(a)] - vec;
+            rowVector(mat, i) = vec_map_[graph_.target(a)] - vec;
         }
-        mat.template bind<0>(0) = vec_map_[n];
+        rowVector(mat, 0) = vec_map_[n];
         return abs(linalg::determinant(mat)) / factor;
     }
 
