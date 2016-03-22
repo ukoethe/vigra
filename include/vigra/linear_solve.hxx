@@ -93,6 +93,39 @@ T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
     return det;
 }
 
+template <class T, class C1>
+T determinantByMinors(MultiArrayView<2, T, C1> const & mat)
+{
+    MultiArrayIndex m = rowCount(mat);
+    MultiArrayIndex n = columnCount(mat);
+    vigra_precondition(
+            n == m,
+            "determinant(): square matrix required.");
+    if (m == 1)
+    {
+        return mat(0, 0);
+    }
+    else
+    {
+        Matrix<T> minor_mat(Shape2(m-1, n-1));
+        T det = NumericTraits<T>::zero();
+        for (MultiArrayIndex i = 0; i < m; i++)
+        {
+            for (MultiArrayIndex j = 0, jj = 0; j < (m - 1); j++, jj++)
+            {
+                if (j == i)
+                {
+                    jj++;
+                }
+                minor_mat.template bind<0>(j) = rowVector(mat, Shape2(jj, 1), m);
+            }
+            const T sign = 1 - 2 * (i % 2);
+            det += sign * mat(i, 0) * determinantByMinors(minor_mat);
+        }
+        return det;
+    }
+}
+
 // returns the new value of 'a' (when this Givens rotation is applied to 'a' and 'b')
 // the new value of 'b' is zero, of course
 template <class T>
@@ -801,12 +834,13 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
 
         \a method must be one of the following:
         <DL>
+        <DT>"default"<DD> Use "minor" for integral types and "LU" for any other.
         <DT>"Cholesky"<DD> Compute the solution by means of Cholesky decomposition. This
                            method is faster than "LU", but requires the matrix \a a 
                            to be symmetric positive definite. If this is 
                            not the case, a <tt>ContractViolation</tt> exception is thrown.
-                           
-        <DT>"LU"<DD> (default) Compute the solution by means of LU decomposition.
+        <DT>"LU"<DD> Compute the solution by means of LU decomposition.
+        <DT>"minor"<DD> Compute the solution by means of determinants of minors.
         </DL>
 
         <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
@@ -814,14 +848,18 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1>
-T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
+T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "default")
 {
     MultiArrayIndex n = columnCount(a);
     vigra_precondition(rowCount(a) == n,
                "determinant(): Square matrix required.");    
 
     method = tolower(method);
-    
+
+    if(method == "default")
+    {
+        method = NumericTraits<T>::isIntegral::value ? "minor" : "lu";
+    }
     if(n == 1)
         return a(0,0);
     if(n == 2)
@@ -829,6 +867,10 @@ T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
     if(method == "lu")
     {
         return detail::determinantByLUDecomposition(a);
+    }
+    else if(method == "minor")
+    {
+        return detail::determinantByMinors(a);
     }
     else if(method == "cholesky")
     {

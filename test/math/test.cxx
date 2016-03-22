@@ -2676,26 +2676,46 @@ struct LinalgTest
 
     void testDeterminant()
     {
-        double ds2[] = {1, 2, 2, 1};
-        double dns2[] = {1, 2, 3, 1};
-        Matrix ms2(Shape(2,2), ds2);
-        Matrix mns2(Shape(2,2), dns2);
-        double eps = 1e-12;
-        shouldEqualTolerance(determinant(ms2), -3.0, eps);
-        shouldEqualTolerance(determinant(mns2), -5.0, eps);
-        shouldEqualTolerance(logDeterminant(transpose(ms2)*ms2), std::log(9.0), eps);
-        shouldEqualTolerance(logDeterminant(transpose(mns2)*mns2), std::log(25.0), eps);
-
-        double ds3[] = {1, 2, 3, 2, 3, 1, 3, 1, 2};
-        double dns3[] = {1, 2, 3, 5, 3, 1, 3, 1, 2};
-        Matrix ms3(Shape(3,3), ds3);
-        Matrix mns3(Shape(3,3), dns3);
-        shouldEqualTolerance(determinant(ms3), -18.0, eps);
-        shouldEqualTolerance(determinant(mns3), -21.0, eps);
-        shouldEqualTolerance(determinant(transpose(ms3)*ms3, "Cholesky"), 324.0, eps);
-        shouldEqualTolerance(determinant(transpose(mns3)*mns3, "Cholesky"), 441.0, eps);
-        shouldEqualTolerance(logDeterminant(transpose(ms3)*ms3), std::log(324.0), eps);
-        shouldEqualTolerance(logDeterminant(transpose(mns3)*mns3), std::log(441.0), eps);
+        {
+            double eps = 1e-12;
+            double ds2[] = {1, 2, 2, 1};
+            double dns2[] = {1, 2, 3, 1};
+            Matrix ms2(Shape(2,2), ds2);
+            Matrix mns2(Shape(2,2), dns2);
+            shouldEqualTolerance(determinant(ms2), -3.0, eps);
+            shouldEqualTolerance(determinant(mns2), -5.0, eps);
+            shouldEqualTolerance(logDeterminant(transpose(ms2)*ms2), std::log(9.0), eps);
+            shouldEqualTolerance(logDeterminant(transpose(mns2)*mns2), std::log(25.0), eps);
+        }
+        {
+            double eps = 1e-12;
+            double ds3[] = {1, 2, 3, 2, 3, 1, 3, 1, 2};
+            double dns3[] = {1, 2, 3, 5, 3, 1, 3, 1, 2};
+            Matrix ms3(Shape(3,3), ds3);
+            Matrix mns3(Shape(3,3), dns3);
+            shouldEqualTolerance(determinant(ms3), -18.0, eps);
+            shouldEqualTolerance(determinant(mns3), -21.0, eps);
+            shouldEqualTolerance(determinant(transpose(ms3)*ms3, "Cholesky"), 324.0, eps);
+            shouldEqualTolerance(determinant(transpose(mns3)*mns3, "Cholesky"), 441.0, eps);
+            shouldEqualTolerance(logDeterminant(transpose(ms3)*ms3), std::log(324.0), eps);
+            shouldEqualTolerance(logDeterminant(transpose(mns3)*mns3), std::log(441.0), eps);
+        }
+        {
+            int ds2[] = {1, 2, 2, 1};
+            int dns2[] = {1, 2, 3, 1};
+            vigra::Matrix<int> ms2(Shape(2,2), ds2);
+            vigra::Matrix<int> mns2(Shape(2,2), dns2);
+            shouldEqual(determinant(ms2), -3.0);
+            shouldEqual(determinant(mns2), -5.0);
+        }
+        {
+            int ds3[] = {1, 2, 3, 2, 3, 1, 3, 1, 2};
+            int dns3[] = {1, 2, 3, 5, 3, 1, 3, 1, 2};
+            vigra::Matrix<int> ms3(Shape(3,3), ds3);
+            vigra::Matrix<int> mns3(Shape(3,3), dns3);
+            shouldEqual(determinant(ms3), -18);
+            shouldEqual(determinant(mns3), -21);
+        }
     }
 
     void testSVD()
