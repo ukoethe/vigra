@@ -94,16 +94,15 @@ T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
 }
 
 template <class T, class C1>
-T determinantByMinors(MultiArrayView<2, T, C1> const & mat)
+typename NumericTraits<T>::Promote
+determinantByMinors(MultiArrayView<2, T, C1> const & mat)
 {
+    typedef typename NumericTraits<T>::Promote PromoteType;
     MultiArrayIndex m = rowCount(mat);
     MultiArrayIndex n = columnCount(mat);
     vigra_precondition(
             n == m,
             "determinant(): square matrix required.");
-    vigra_precondition(
-            NumericTraits<T>::isSigned::value,
-            "determinant(): signed type required.");
     if (m == 1)
     {
         return mat(0, 0);
@@ -111,7 +110,7 @@ T determinantByMinors(MultiArrayView<2, T, C1> const & mat)
     else
     {
         Matrix<T> minor_mat(Shape2(m-1, n-1));
-        T det = NumericTraits<T>::zero();
+        PromoteType det = NumericTraits<PromoteType>::zero();
         for (MultiArrayIndex i = 0; i < m; i++)
         {
             for (MultiArrayIndex j = 0, jj = 0; j < (m - 1); j++, jj++)
@@ -122,7 +121,7 @@ T determinantByMinors(MultiArrayView<2, T, C1> const & mat)
                 }
                 rowVector(minor_mat, j) = rowVector(mat, Shape2(jj, 1), m);
             }
-            const T sign = 1 - 2 * (i % 2);
+            const PromoteType sign = 1 - 2 * (i % 2);
             det += sign * mat(i, 0) * determinantByMinors(minor_mat);
         }
         return det;
@@ -851,8 +850,10 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1>
-T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "default")
+typename NumericTraits<T>::Promote
+determinant(MultiArrayView<2, T, C1> const & a, std::string method = "default")
 {
+    typedef typename NumericTraits<T>::Promote PromoteType;
     MultiArrayIndex n = columnCount(a);
     vigra_precondition(rowCount(a) == n,
                "determinant(): Square matrix required.");    
@@ -877,10 +878,10 @@ T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "default"
     }
     else if(method == "cholesky")
     {
-        Matrix<T> L(a.shape());
+        Matrix<PromoteType> L(a.shape());
         vigra_precondition(choleskyDecomposition(a, L),
            "determinant(): Cholesky method requires symmetric positive definite matrix.");
-        T det = L(0,0);
+        PromoteType det = L(0,0);
         for(MultiArrayIndex k=1; k<n; ++k)
             det *= L(k,k);
         return sq(det);
@@ -889,7 +890,7 @@ T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "default"
     {
         vigra_precondition(false, "determinant(): Unknown solution method.");
     }
-    return T();
+    return PromoteType();
 }
 
     /** Compute the logarithm of the determinant of a symmetric positive definite matrix.
