@@ -42,6 +42,7 @@
 #include <map>
 #include <stack>
 #include <algorithm>
+#include <future>
 
 #include "multi_array.hxx"
 #include "sampling.hxx"
