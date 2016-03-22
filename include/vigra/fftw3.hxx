@@ -693,11 +693,11 @@ class FFTWAllocator
     {}
     
     template<class Other>
-    FFTWAllocator(const FFTWAllocator<Other>& right) throw()
+    FFTWAllocator(const FFTWAllocator<Other>& /*right*/) throw()
     {}
     
     template<class Other>
-    FFTWAllocator& operator=(const FFTWAllocator<Other>& right)
+    FFTWAllocator& operator=(const FFTWAllocator<Other>& /*right*/)
     {
         return *this;
     }
@@ -707,7 +707,7 @@ class FFTWAllocator
         return (pointer)fftw_malloc(count * sizeof(Ty));
     }
     
-    void deallocate(pointer ptr, size_type count)
+    void deallocate(pointer ptr, size_type /*count*/)
     {
         fftw_free(ptr);
     }
@@ -761,11 +761,11 @@ class allocator<vigra::FFTWComplex<Real> >
     {}
     
     template<class Other>
-    allocator(const allocator<Other>& right) throw()
+    allocator(const allocator<Other>& /*right*/) throw()
     {}
     
     template<class Other>
-    allocator& operator=(const allocator<Other>& right)
+    allocator& operator=(const allocator<Other>& /*right*/)
     {
         return *this;
     }
@@ -2400,7 +2400,7 @@ template <class FilterType, class DestImage>
 void applyFourierFilterFamilyImpl(
     FFTWComplexImage::const_traverser srcUpperLeft,
     FFTWComplexImage::const_traverser srcLowerRight,
-    FFTWComplexImage::ConstAccessor sa,
+    FFTWComplexImage::ConstAccessor /*sa*/,
     const ImageArray<FilterType> &filters,
     ImageArray<DestImage> &results)
 {

@@ -140,13 +140,6 @@
 #include "threading.hxx"
 #include "compression.hxx"
 
-// // FIXME: why is this needed when compiling the Python bindng,
-// //        but not when compiling test_multiarray_chunked?
-// #if defined(__GNUC__)
-// #  define memory_order_release memory_order_seq_cst
-// #  define memory_order_acquire memory_order_seq_cst
-// #endif
-
 #ifdef _WIN32
 # include "windows.h"
 #else
@@ -457,7 +450,7 @@ class ChunkedArrayBase
 
     bool isInside(shape_type const & p) const
     {
-        for(int d=0; d<N; ++d)
+        for(unsigned d=0; d<N; ++d)
             if(p[d] < 0 || p[d] >= shape_[d])
                 return false;
         return true;
@@ -1332,6 +1325,10 @@ class ChunkedArrayOptions
     CompressionMethod compression_method;
 };
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArray
+ */
+
 /** \brief Interface and base class for chunked arrays.
 
 Very big data arrays (possibly bigger than the available RAM) can
@@ -1838,6 +1835,7 @@ class ChunkedArray
         if(chunk)
         {
             long rc = chunk->chunk_state_.fetch_sub(1);
+            ignore_argument(rc);
           #ifdef VIGRA_CHECK_BOUNDS
             vigra_invariant(rc >= 0,
                             "ChunkedArray::unrefChunk(): chunk refcount got negative!");
@@ -2513,6 +2511,10 @@ createCoupledIterator(ChunkedArray<N, T> const & m)
                         P0(m.shape())));
 }
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayFull
+*/
+
 /** Implement ChunkedArray as an ordinary MultiArray with a single chunk.
 
     <b>\#include</b> \<vigra/multi_array_chunked.hxx\> <br/>
@@ -2544,7 +2546,7 @@ class ChunkedArrayFull
 
     static shape_type computeChunkShape(shape_type s)
     {
-        for(int k=0; k<N; ++k)
+        for(unsigned k=0; k<N; ++k)
             s[k] = ceilPower2(s[k]);
         return s;
     }
@@ -2621,7 +2623,7 @@ class ChunkedArrayFull
         return false; // never destroys the data
     }
 
-    virtual std::size_t dataBytes(Chunk * c) const
+    virtual std::size_t dataBytes(Chunk *) const
     {
         return prod(this->shape());
     }
@@ -2673,6 +2675,10 @@ class ChunkedArrayFull
     shape_type upper_bound_;
     Chunk chunk_;    // a dummy chunk to fulfill the API
 };
+
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayLazy
+*/
 
 /** Implement ChunkedArray as a collection of in-memory chunks.
 
@@ -2794,6 +2800,10 @@ class ChunkedArrayLazy
 
     Alloc alloc_;
 };
+
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayCompressed
+*/
 
 /** Implement ChunkedArray as a collection of potentially compressed
     in-memory chunks.
@@ -2986,6 +2996,10 @@ class ChunkedArrayCompressed
     CompressionMethod compression_method_;
 };
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayTmpFile
+*/
+
 /** Implement ChunkedArray as a collection of chunks that can be
     swapped out into a temporary file when asleep.
 
@@ -3122,6 +3136,7 @@ class ChunkedArrayTmpFile
     , file_size_()
     , file_capacity_()
     {
+        ignore_argument(path);
     #ifdef VIGRA_NO_SPARSE_FILE
         file_capacity_ = 4*prod(this->chunk_shape_)*sizeof(T);
     #else

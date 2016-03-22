@@ -51,7 +51,7 @@ namespace vigra {
 template <class ARITHTYPE>
 class Kernel2D;
 
-/** \addtogroup CommonConvolutionFilters
+/** \addtogroup ConvolutionFilters
 */
 //@{
 
@@ -855,11 +855,11 @@ public:
     {
         if(this != &k)
         {
-        kernel_ = k.kernel_;
+            kernel_ = k.kernel_;
             left_ = k.left_;
             right_ = k.right_;
             norm_ = k.norm_;
-        border_treatment_ = k.border_treatment_;
+            border_treatment_ = k.border_treatment_;
         }
         return *this;
     }
@@ -1147,6 +1147,34 @@ public:
     Kernel2D & initExplicitly(Diff2D const & upperleft, Diff2D const & lowerright)
     {
         return initExplicitly(Shape2(upperleft), Shape2(lowerright));
+    }
+
+        /** Init the kernel by providing a BasicImage with the kernel values.
+
+            The kernel's origin is placed at the center of the given image.
+            The norm is set to the sum of the image values.
+
+            <b> Preconditions:</b>
+
+            odd image width and height;
+        */
+    Kernel2D & initExplicitly(BasicImage<value_type> const & image)
+    {
+        vigra_precondition(image.width() % 2 != 0 && image.height() % 2 != 0,
+                           "Kernel2D::initExplicitly(): kernel sizes must be odd.");
+
+        left_  = Point2D((image.width() - 1) / -2, (image.height() - 1) / -2);
+        right_ = Point2D((image.width() - 1) /  2, (image.height() - 1) /  2);
+
+        norm_ = 0;
+        for (auto iter = image.begin(); iter != image.end(); ++iter)
+        {
+            norm_ += *iter;
+        }
+
+        kernel_ = image;
+
+        return *this;
     }
 
         /** Coordinates of the upper left corner of the kernel.

@@ -206,7 +206,7 @@ public:
 
     std::string clsName_;
     template <class classT>
-    void visit(classT& c) const
+    void visit(classT& /*c*/) const
     {   
         // - Dijkstra
         exportShortestPathAlgorithms();

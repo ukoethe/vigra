@@ -44,7 +44,7 @@
 
 namespace vigra {
 
-/** \addtogroup MultiIteratorGroup
+/** \addtogroup RangesAndPoints
 */
 //@{
 
@@ -55,7 +55,7 @@ namespace vigra {
 /********************************************************/
 
 template <class T>
-struct Singleband  // the resulting MultiArray has no explicit channel axis 
+struct Singleband  // the resulting MultiArray has no explicit channel axis
                    // (i.e. the number of channels is implicitly one)
 {
     typedef T value_type;
@@ -237,8 +237,30 @@ struct ResolveChunkedMemory<ChunkedMemory<T> >
 
 } // namespace detail
 
-    /** Traits class for the difference type of all MultiIterator, MultiArrayView, and
+    /** Metafucntion to obtain the difference type of all MultiIterator, MultiArrayView, and
         MultiArray variants.
+
+        <b>Usage:</b>
+
+        This metafunction is mainly used in functions weren the array dimension <tt>N</tt> is
+        provided as a templat parameter, and we need a shape object of the corresponding length.
+        Then, a typedef like this is typically placed at the beginning of the function:
+
+        \code
+        typedef typename MultiArrayShape<N>::type Shape;
+
+        Shape shape(1);  // all ones of dimension N
+        \endcode
+
+        The following typedefs are provided for convenience:
+
+        \code
+        typedef MultiArrayShape<1>::type Shape1;
+        typedef MultiArrayShape<2>::type Shape2;
+        typedef MultiArrayShape<3>::type Shape3;
+        typedef MultiArrayShape<4>::type Shape4;
+        typedef MultiArrayShape<5>::type Shape5;
+        \endcode
     */
 template <unsigned int N>
 class MultiArrayShape
@@ -250,11 +272,11 @@ class MultiArrayShape
     typedef TinyVector<MultiArrayIndex, N> type;
 };
 
-typedef MultiArrayShape<1>::type Shape1; ///< shape type for MultiArray<1, T>
-typedef MultiArrayShape<2>::type Shape2; ///< shape type for MultiArray<2, T>
-typedef MultiArrayShape<3>::type Shape3; ///< shape type for MultiArray<3, T>
-typedef MultiArrayShape<4>::type Shape4; ///< shape type for MultiArray<4, T>
-typedef MultiArrayShape<5>::type Shape5; ///< shape type for MultiArray<5, T>
+typedef MultiArrayShape<1>::type Shape1;
+typedef MultiArrayShape<2>::type Shape2;
+typedef MultiArrayShape<3>::type Shape3;
+typedef MultiArrayShape<4>::type Shape4;
+typedef MultiArrayShape<5>::type Shape5;
 
 namespace detail
 {
@@ -485,7 +507,7 @@ struct CoordinatesToOffest<UnstridedArrayTag>
 /*                                                      */
 /********************************************************/
 
-    /* transforms a coordinate object with negative indices into the corresponding 
+    /* transforms a coordinate object with negative indices into the corresponding
        'shape - abs(index)'.
     */
 template <int M>
@@ -519,10 +541,10 @@ struct RelativeToAbsoluteCoordinate<0>
 /*                                                      */
 /********************************************************/
 
-// a border type is a compact bit-wise encoding of the fact that a 
+// a border type is a compact bit-wise encoding of the fact that a
 // given coordinate is at the border of the ROI. Each border corresponds
 // to one bit in the encoding, e.g. the left, right, top, bottom borders
-// of a 2D image are represented by bits 0 to 3 respectively. 
+// of a 2D image are represented by bits 0 to 3 respectively.
 // If a bit is set, the point in question is at the corresponding border.
 // A code of all zeros therefore means that the point is in the interior
 // of the ROI
@@ -530,7 +552,7 @@ template <unsigned int N, unsigned int DIMENSION=N-1>
 struct BorderTypeImpl
 {
     typedef TinyVectorView<MultiArrayIndex, N> shape_type;
-    
+
     static unsigned int exec(shape_type const & point, shape_type const & shape)
     {
         unsigned int res = BorderTypeImpl<N, DIMENSION-1>::exec(point, shape);
@@ -547,7 +569,7 @@ struct BorderTypeImpl<N, 0>
 {
     typedef TinyVectorView<MultiArrayIndex, N> shape_type;
     static const unsigned int DIMENSION = 0;
-    
+
     static unsigned int exec(shape_type const & point, shape_type const & shape)
     {
         unsigned int res = 0;
@@ -566,15 +588,15 @@ struct BorderTypeImpl<N, 0>
 /********************************************************/
 
 // Create the offsets to all direct neighbors, starting from the given Level (=dimension)
-// and append them to the given array. The algorithm is designed so that the offsets are 
+// and append them to the given array. The algorithm is designed so that the offsets are
 // sorted by ascending strides. This has two important consequences:
 //  * The first half of the array contains the causal neighbors (negative strides),
 //    the second half the anti-causal ones (positive strides), where 'causal' refers
 //    to all scan-order predecessors of the center pixel, and 'anticausal' to its successors.
 //  * For any neighbor k, its opposite (=point-reflected) neighbor is located at index
 //    'N-1-k', where N is the total number of neighbors.
-// The function 'exists' returns an array of flags that contains 'true' when the corresponding 
-// neighbor is inside the ROI for the given borderType, 'false' otherwise. 
+// The function 'exists' returns an array of flags that contains 'true' when the corresponding
+// neighbor is inside the ROI for the given borderType, 'false' otherwise.
 template <unsigned int Level>
 struct MakeDirectArrayNeighborhood
 {
@@ -582,7 +604,7 @@ struct MakeDirectArrayNeighborhood
     static void offsets(Array & a)
     {
         typedef typename Array::value_type Shape;
-        
+
         Shape point;
         point[Level] = -1;
         a.push_back(point);
@@ -590,7 +612,7 @@ struct MakeDirectArrayNeighborhood
         point[Level] = 1;
         a.push_back(point);
     }
-    
+
     template <class Array>
     static void exists(Array & a, unsigned int borderType)
     {
@@ -607,14 +629,14 @@ struct MakeDirectArrayNeighborhood<0>
     static void offsets(Array & a)
     {
         typedef typename Array::value_type Shape;
-        
+
         Shape point;
         point[0] = -1;
         a.push_back(point);
         point[0] = 1;
         a.push_back(point);
     }
-    
+
     template <class Array>
     static void exists(Array & a, unsigned int borderType)
     {
@@ -637,13 +659,13 @@ struct MakeIndirectArrayNeighborhood
         point[Level] = 1;
         MakeIndirectArrayNeighborhood<Level-1>::offsets(a, point, false);
     }
-    
+
     template <class Array>
     static void exists(Array & a, unsigned int borderType, bool isCenter = true)
     {
         if((borderType & (1 << 2*Level)) == 0)
             MakeIndirectArrayNeighborhood<Level-1>::exists(a, borderType, false);
-        else 
+        else
             MakeIndirectArrayNeighborhood<Level-1>::markOutside(a);
 
         MakeIndirectArrayNeighborhood<Level-1>::exists(a, borderType, isCenter);
@@ -681,7 +703,7 @@ struct MakeIndirectArrayNeighborhood<0>
         point[0] = 1;
         a.push_back(point);
     }
-    
+
     template <class Array>
     static void exists(Array & a, unsigned int borderType, bool isCenter = true)
     {
@@ -696,7 +718,7 @@ struct MakeIndirectArrayNeighborhood<0>
     template <class Array>
     static void markOutside(Array & a)
     {
-        // Push 'false' three times, for each possible offset at level 0, whenever the point was 
+        // Push 'false' three times, for each possible offset at level 0, whenever the point was
         // outside the ROI in one of the higher levels.
         a.push_back(false);
         a.push_back(false);
@@ -704,19 +726,19 @@ struct MakeIndirectArrayNeighborhood<0>
     }
 };
 
-// Create the list of neighbor offsets for the given neighborhood type 
+// Create the list of neighbor offsets for the given neighborhood type
 // and dimension (the dimension is implicitly defined by the Shape type)
 // an return it in 'neighborOffsets'. Moreover, create a list of flags
 // for each BorderType that is 'true' when the corresponding neighbor exists
 // in this border situation and return the result in 'neighborExists'.
 template <class Shape>
 void
-makeArrayNeighborhood(ArrayVector<Shape> & neighborOffsets, 
+makeArrayNeighborhood(ArrayVector<Shape> & neighborOffsets,
                       ArrayVector<ArrayVector<bool> > & neighborExists,
                       NeighborhoodType neighborhoodType = DirectNeighborhood)
 {
     enum { N = Shape::static_size };
-    
+
     neighborOffsets.clear();
     if(neighborhoodType == DirectNeighborhood)
     {
@@ -727,7 +749,7 @@ makeArrayNeighborhood(ArrayVector<Shape> & neighborOffsets,
         Shape point; // represents the center
         MakeIndirectArrayNeighborhood<N-1>::offsets(neighborOffsets, point);
     }
-    
+
     unsigned int borderTypeCount = 1 << 2*N;
     neighborExists.resize(borderTypeCount);
 

@@ -66,7 +66,7 @@ namespace detail
     {
       public:
         template<class Iter>
-        static void exec(Iter begin, Iter  end)
+        static void exec(Iter /*begin*/, Iter /*end*/)
         {}
     };
 
@@ -147,11 +147,11 @@ class SplitBase
     **/
 
     template<class T, class C, class T2, class C2, class Region, class Random>
-    int findBestSplit(MultiArrayView<2, T, C> features,
-                      MultiArrayView<2, T2, C2> labels,
-                      Region region,
-                      ArrayVector<Region> childs,
-                      Random randint)
+    int findBestSplit(MultiArrayView<2, T, C> /*features*/,
+                      MultiArrayView<2, T2, C2> /*labels*/,
+                      Region /*region*/,
+                      ArrayVector<Region> /*childs*/,
+                      Random /*randint*/)
     {
 #ifndef __clang__   
         // FIXME: This compile-time checking trick does not work for clang.
@@ -547,7 +547,7 @@ class ImpurityLoss
     }
 
     template<class Iter, class Resp_t>
-    double init (Iter begin, Iter end, Resp_t resp)
+    double init (Iter /*begin*/, Iter /*end*/, Resp_t resp)
     {
         reset();
         std::copy(resp.begin(), resp.end(), counts_.begin());
@@ -645,7 +645,7 @@ class ImpurityLoss
 
         
         template<class Iter, class Resp_t>
-        double init (Iter begin, Iter end, Resp_t resp)
+        double init (Iter begin, Iter end, Resp_t /*resp*/)
         {
             reset();
             return this->increment(begin, end);
@@ -963,7 +963,7 @@ namespace detail
     struct Correction
     {
         template<class Region, class LabelT>
-        static void exec(Region & in, LabelT & labels)
+        static void exec(Region & /*in*/, LabelT & /*labels*/)
         {}
     };
     

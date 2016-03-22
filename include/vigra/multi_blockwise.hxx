@@ -198,7 +198,7 @@ namespace blockwise{
 
         parallel_foreach(options.getNumThreads(),
             beginIter, endIter,
-            [&](const int threadId, const BlockWithBorder bwb)
+            [&](const int /*threadId*/, const BlockWithBorder bwb)
             {
                 // get the input of the block as a view
                 vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin(),
@@ -250,7 +250,7 @@ namespace blockwise{
 
         parallel_foreach(options.getNumThreads(),
             beginIter, endIter,
-            [&](const int threadId, const BlockWithBorder bwb)
+            [&](const int /*threadId*/, const BlockWithBorder bwb)
             {
                 // get the input of the block as a view
                 vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin(),

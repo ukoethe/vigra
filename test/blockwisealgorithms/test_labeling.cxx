@@ -158,7 +158,7 @@ struct BlockwiseLabelingTest
         array_fives.push_back(Array5(Shape5(1)));
         array_fives.push_back(Array5(Shape5(2,2,3,4,3)));
         array_fives.push_back(Array5(Shape5(5,6,2,2,3)));
-        for(int i = 0; i != array_fives.size(); ++i)
+        for(decltype(array_fives.size()) i = 0; i != array_fives.size(); ++i)
         {
             fillRandom(array_fives[i].begin(), array_fives[i].end(), 3);
         }
@@ -169,7 +169,7 @@ struct BlockwiseLabelingTest
         array_twos.push_back(Array2(Shape2(4,4)));
         array_twos.push_back(Array2(Shape2(6,10)));
         array_twos.push_back(Array2(Shape2(19,25)));
-        for(int i = 0; i != array_twos.size(); ++i)
+        for(decltype(array_twos.size()) i = 0; i != array_twos.size(); ++i)
         {
             fillRandom(array_twos[i].begin(), array_twos[i].end(), 3);
         }
@@ -179,7 +179,7 @@ struct BlockwiseLabelingTest
         array_ones.push_back(Array1(Shape1(47)));
         array_ones.push_back(Array1(Shape1(81)));
         array_ones.push_back(Array1(Shape1(997)));
-        for(int i = 0; i != array_ones.size(); ++i)
+        for(decltype(array_ones.size()) i = 0; i != array_ones.size(); ++i)
         {
             fillRandom(array_ones[i].begin(), array_ones[i].end(), 3);
         }

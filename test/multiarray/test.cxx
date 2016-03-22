@@ -1193,7 +1193,7 @@ public:
         shouldEqual (countx, 30);
         shouldEqual (county, 15);
         shouldEqual (countz, 5);
-        shouldEqual (seqi, a3.end());
+        should (seqi == a3.end());
         
         // test direct navigation
         traverser3_t i3 = a3.traverser_begin();
@@ -1328,7 +1328,7 @@ public:
         shouldEqual (countx, 30);
         shouldEqual (county, 15);
         shouldEqual (countz, 5);
-        shouldEqual (seqi, a3.end());
+        should (seqi == a3.end());
         //
         //// test direct navigation
         //traverser3_t i3 = a3.traverser_begin();
@@ -1736,7 +1736,7 @@ struct ImageViewTest
     static typename Image::value_type data[];
 
     ImageViewTest()
-    : ma(TinyVector<int, 2>(3,3)),
+    : ma(Shape2(3,3)),
       img(makeBasicImageView(ma))
     {
         typename Image::Accessor acc = img.accessor();
@@ -1868,9 +1868,8 @@ struct ImageViewTest
     void testStridedImageView()
     {
         // create stride MultiArrayView
-        typename MA::difference_type
-            start(0,0), end(2,2);
-        MA roi = ma.subarray(start, end);
+        Shape2 start(0,0), end(2, 2);
+        typename MA::view_type roi = ma.subarray(start, end);
 
         // inspect both the MultiArrayView and the corresponding BasicImageView
         vigra::FindSum<typename Image::value_type> sum1, sum2;

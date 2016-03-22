@@ -96,7 +96,7 @@ transformLineIf(SrcIterator s,
 /** \brief Apply unary point transformation to each pixel.
 
     After the introduction of arithmetic and algebraic \ref MultiMathModule "array expressions",
-    this function is rarely needed. Moreover, \ref transformMultiArray() provides the 
+    this function is rarely needed. Moreover, \ref transformMultiArray() provides the
     same functionality for arbitrary dimensional arrays.
 
     The transformation given by the functor is applied to every source
@@ -155,7 +155,7 @@ transformLineIf(SrcIterator s,
     MultiArray<2, float>  src(100, 200),
                           dest(100, 200);
     ...
-    
+
     transformImage(src, dest, &std::sqrt );
     \endcode
 
@@ -186,7 +186,7 @@ transformLineIf(SrcIterator s,
 
     \endcode
     \deprecatedEnd
-    
+
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void transformImage)
@@ -243,7 +243,7 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
     (i.e., where the mask is non-zero).
 
     After the introduction of arithmetic and algebraic \ref MultiMathModule "array expressions",
-    this function is rarely needed. Moreover, \ref combineTwoMultiArrays() provides the 
+    this function is rarely needed. Moreover, \ref combineTwoMultiArrays() provides the
     same functionality for arbitrary dimensional arrays.
 
     The transformation given by the functor is applied to every source
@@ -311,12 +311,12 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
 
     \code
     #include <cmath>         // for sqrt()
-    
+
     MultiArray<2, unsigned char>  mask(100, 200),
     MultiArray<2, float>          src(100, 200),
                                   dest(100, 200);
     ... // fill src and mask
-    
+
     transformImageIf(src, mask, dest, &std::sqrt );
     \endcode
 
@@ -349,7 +349,7 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
 
     \endcode
     \deprecatedEnd
-    
+
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void transformImageIf)
@@ -431,11 +431,11 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
     \code
     namespace vigra {
         template <class T1, class S1,
-                  class T2, class S2, 
+                  class T2, class S2,
                   class Functor>
         void
         gradientBasedTransform(MultiArrayView<2, T1, S1> const & src,
-                               MultiArrayView<2, T2, S2> dest, 
+                               MultiArrayView<2, T2, S2> dest,
                                Functor const & grad);
     }
     \endcode
@@ -504,7 +504,7 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
 
     \endcode
     \deprecatedEnd
-    
+
     \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void gradientBasedTransform)
@@ -824,9 +824,9 @@ linearIntensityTransform(Multiplier scale)
     and <tt>offset = dest_min / scale - src_min</tt>. As a result,
     the pixel values <tt>src_max</tt>, <tt>src_min</tt> in the source image
     are mapped onto <tt>dest_max</tt>, <tt>dest_min</tt> respectively.
-    This works for scalar as well as vector pixel types. Instead of 
+    This works for scalar as well as vector pixel types. Instead of
     <tt>src_min</tt> and <tt>src_max</tt>, you may also pass a functor
-    \ref FindMinMax. 
+    \ref FindMinMax.
 
     <b> Declaration:</b>
 
@@ -939,6 +939,9 @@ linearRangeMapping(
 /********************************************************/
 
 /** \brief Threshold an image.
+
+    <b>Note:</b> Nowadays, it is probably easier to perform thresholding by means of
+    C++ 11 lambda functions or \ref MultiMathModule "array expressions".
 
     If a source pixel is above or equal the lower and below
     or equal the higher threshold (i.e. within the closed interval

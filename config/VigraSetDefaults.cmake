@@ -34,61 +34,69 @@ ENDIF()
 SET(WITH_HDF5 ${WITH_HDF5}
     CACHE BOOL "Build HDF5 import/export ?"
     FORCE)
-    
+
 OPTION(WITH_OPENEXR "Support for the OpenEXR graphics format" OFF)
 OPTION(WITH_LEMON "Support for the Lemon Graph library " OFF)
 OPTION(WITH_BOOST_GRAPH "Support for the BOOST Graph library " OFF)
 
 OPTION(WITH_BOOST_THREAD "Use boost::thread instead of std::thread" OFF)
 
-IF(NOT DEFINED WITH_VIGRANUMPY)
+OPTION(TEST_VIGRANUMPY "Consider lack of vigranumpy or failed vigranumpy test an error?" OFF)
+
+OPTION(SUPPRESS_3RD_PARTY_WARNINGS "Switch-off compiler warnings originating from dependencies?" ON)
+
+IF(TEST_VIGRANUMPY OR NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()
 SET(WITH_VIGRANUMPY ${WITH_VIGRANUMPY}
     CACHE BOOL "Build VIGRA Python bindings ?"
     FORCE)
-    
+
 IF(NOT DEFINED WITH_VALGRIND)
     SET(WITH_VALGRIND "OFF")
 ENDIF()
 SET(WITH_VALGRIND ${WITH_VALGRIND}
     CACHE BOOL "Perform valgrind memory testing upon 'make ctest' ?"
     FORCE)
-    
+
 IF(NOT DEFINED LIBDIR_SUFFIX)
     SET(LIBDIR_SUFFIX "")
 ENDIF()
 SET(LIBDIR_SUFFIX ${LIBDIR_SUFFIX}
-    CACHE STRING "Define suffix of lib directory name (empty string or 32 or 64)." 
+    CACHE STRING "Define suffix of lib directory name (empty string or 32 or 64)."
     FORCE)
-    
+
 IF(NOT DEFINED DEPENDENCY_SEARCH_PREFIX)
     SET(DEPENDENCY_SEARCH_PREFIX "")
-ENDIF()    
+ENDIF()
 SET(DEPENDENCY_SEARCH_PREFIX ${DEPENDENCY_SEARCH_PREFIX}
     CACHE PATH "Additional search prefixes (used by Find... macros)."
     FORCE)
 
 IF(NOT DEFINED AUTOEXEC_TESTS)
     SET(AUTOEXEC_TESTS "ON")
-ENDIF()    
+ENDIF()
 SET(AUTOEXEC_TESTS ${AUTOEXEC_TESTS}
     CACHE BOOL "Automatically execute each test after compilation ?"
     FORCE)
 
 IF(NOT DEFINED AUTOBUILD_TESTS)
     SET(AUTOBUILD_TESTS "OFF")
-ENDIF()    
+ENDIF()
 SET(AUTOBUILD_TESTS ${AUTOBUILD_TESTS}
     CACHE BOOL "Compile tests as part of target 'all' (resp. 'ALL_BUILD') ?"
     FORCE)
 
 IF(NOT DEFINED VIGRA_STATIC_LIB)
     SET(VIGRA_STATIC_LIB "OFF")
-ENDIF()    
+ENDIF()
 SET(VIGRA_STATIC_LIB ${VIGRA_STATIC_LIB}
     CACHE BOOL "Whether to build vigra as a static library ?"
     FORCE)
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    SET(CMAKE_COMPILER_IS_CLANGXX 1)
+endif()
 
 # This is only executed once on the first cmake run.
 IF(NOT VIGRA_DEFAULTS_INIT)
@@ -99,27 +107,23 @@ IF(NOT VIGRA_DEFAULTS_INIT)
             CACHE STRING "Choose the type of build, options are None Release Debug RelWithDebInfo MinSizeRel."
             FORCE)
     ENDIF ()
-    
+
     IF(NOT DEFINED VALGRIND_SUPPRESSION_FILE)
         SET(VALGRIND_SUPPRESSION_FILE ""
             CACHE FILEPATH "File containing valgrind error suppression rules."
             FORCE)
     ENDIF()
-    
+
     # initial compiler flags can be set here, this is only
     # executed once in the first configure run.
-    IF(CMAKE_COMPILER_IS_GNUCXX)
+    IF(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
         IF(NOT CMAKE_CXX_FLAGS)
-            if(NOT MINGW AND NOT MACOSX)
-                SET(CMAKE_CXX_FLAGS "-W -Wall -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-type-limits")
-            elseif(MACOSX)
-                SET(CMAKE_CXX_FLAGS "-W -Wall -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable")
-            endif()
+            SET(CMAKE_CXX_FLAGS "-W -Wall -Wextra")
         ENDIF()
         IF(NOT CMAKE_C_FLAGS)
             SET(CMAKE_C_FLAGS "-W -Wall -Wextra -pedantic -std=c99 -Wno-sign-compare")
         ENDIF()
-    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+    ENDIF()
 
     SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING
         "Flags used by the compiler during all build types."

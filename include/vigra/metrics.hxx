@@ -40,9 +40,15 @@
 
 #include <cmath>
 
-namespace vigra{
-namespace metrics{
+/** \addtogroup MathFunctions
+*/
+//@{
 
+
+namespace vigra{
+
+/// \brief Define functors for various common metrics.
+namespace metrics{
 
     template<class T>
     class ChiSquared{
@@ -54,18 +60,18 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
-        )const{   
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
+        )const{
             T res = 0.0;
             while(iterA!=endA){
                 const T aa=static_cast<T>(*iterA);
                 const T bb=static_cast<T>(*iterB);
                 const T sum  = aa + bb;
-                const T diff = aa - bb; 
+                const T diff = aa - bb;
                 if(sum> static_cast<T>(0.0000001))
                     res+=(diff*diff)/sum;
                 ++iterA;
@@ -85,17 +91,17 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
-        )const{   
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
+        )const{
             T res = 0.0;
             while(iterA!=endA){
                 const T aa=std::sqrt(static_cast<T>(*iterA));
                 const T bb=std::sqrt(static_cast<T>(*iterB));
-                const T diff = aa - bb; 
+                const T diff = aa - bb;
                 res+=diff*diff;
                 ++iterA;
                 ++iterB;
@@ -103,7 +109,7 @@ namespace metrics{
             return std::sqrt(res)/std::sqrt(2.0);
         }
     };
-    
+
     template<class T,unsigned int NORM,bool TAKE_ROOT=true>
     class PNorm{
     public:
@@ -114,11 +120,11 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
         )const{
             T res = static_cast<T>(0.0);
             while(iterA!=endA){
@@ -170,11 +176,11 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
         )const{
             T res = static_cast<T>(0.0);
             while(iterA!=endA){
@@ -200,11 +206,11 @@ namespace metrics{
         template<class A, class B>
         T operator()(const A & a,const B & b)const{
             return opImpl(a.begin(),a.end(),b.begin());
-        } 
+        }
     private:
         template<class ITER_A,class ITER_B>
         T opImpl(
-            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB 
+            ITER_A  iterA  ,ITER_A  endA   ,ITER_B  iterB
         )const{
             T res = static_cast<T>(0.0);
             while(iterA!=endA){
@@ -218,21 +224,37 @@ namespace metrics{
         }
     };
 
-    enum MetricType{
-        ChiSquaredMetric=0,
-        HellingerMetric=1,
-        SquaredNormMetric=2,
-        NormMetric=3,
-        ManhattanMetric=4,
-        SymetricKlMetric=5,
-        BhattacharyaMetric=6
+        /** \brief Tags to select a metric for vector distance computation.
+        */
+    enum MetricType
+    {
+        ChiSquaredMetric=0,     //!< chi-squared distance for histograms (sum of squared differences normalized by means)
+        HellingerMetric=1,      //!< Hellinger distance (Euclidean distance between the square-root vectors)
+        SquaredNormMetric=2,    //!< squared Euclidean distance
+        NormMetric=3,           //!< Euclidean distance (L2 norm)
+        L2Norm=NormMetric,      //!< Euclidean distance (L2 norm)
+        ManhattanMetric=4,      //!< Manhattan distance (L1 norm)
+        L1Norm=ManhattanMetric, //!< Manhattan distance (L1 norm)
+        SymetricKlMetric=5,     //!< symmetric Kullback-Leibler divergence
+        BhattacharyaMetric=6    //!< Bhattacharya distance (sum of elementwise geometric means)
     };
 
 
+       /** \brief Functor to compute a metric between two vectors.
+
+           The value type of the metric is given by template parameter <tt>T</tt>. Supported
+           metrics are defined in \ref vigra::metrics::MetricType. The functor's argument
+           must support <tt>begin()</tt> and <tt>end()</tt> to create an STL range.
+        */
     template<class T>
     class Metric{
     public:
 
+           /** \brief Construct functor for the given metric.
+
+               The value type of the metric is given by template parameter <tt>T</tt>. Supported
+               metrics are defined in \ref vigra::metrics::MetricType.
+            */
         Metric(const MetricType metricType = ManhattanMetric)
         : metricType_(metricType){
 
@@ -252,13 +274,13 @@ namespace metrics{
                 case 4:
                     return manhattan_(a,b);
                 case 5:
-                    return symetricKlDivergenz_(a,b); 
+                    return symetricKlDivergenz_(a,b);
                 case 6 :
-                    return bhattacharyaDistance_(a,b); 
+                    return bhattacharyaDistance_(a,b);
                 default :
                     return 0;
             }
-        } 
+        }
     private:
         MetricType metricType_;
         ChiSquared<T> chiSquared_;
@@ -273,5 +295,6 @@ namespace metrics{
 } // end namespace metric
 } // end namepsace vigra
 
+//@}
 
 #endif //VIGRA_METRIC_HXX

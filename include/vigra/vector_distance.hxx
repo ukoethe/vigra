@@ -1,7 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*    Copyright 2003-2013 by Thorben Kroeger, Kasim Terzic,             */
-/*        Christian-Dennis Rahn and Ullrich Koethe                      */
+/*    Copyright 2003-2015 by Philipp Schubert and Ullrich Koethe        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -50,7 +49,7 @@
 #include "functorexpression.hxx"
 #include "multi_distance.hxx"
 
-#undef VECTORIAL_DIST_DEBUG 
+#undef VECTORIAL_DIST_DEBUG
 
 namespace vigra
 {
@@ -64,7 +63,7 @@ struct VectorialDistParabolaStackEntry
     double left, center, right;
     Value apex_height;
     Vector point;
-    
+
     VectorialDistParabolaStackEntry(const Vector& vec, Value prev, double l, double c, double r)
     : left(l), center(c), right(r), apex_height(prev), point(vec)
     {}
@@ -85,12 +84,12 @@ std::ostream& operator<<(std::ostream&o, const VectorialDistParabolaStackEntry<V
 /********************************************************/
 
 template <class VEC, class ARRAY>
-inline double 
+inline double
 partialSquaredMagnitude(const VEC& vec, MultiArrayIndex dim, ARRAY const & pixel_pitch)
 {
     //computes the squared magnitude of vec
     //considering only the first dim dimensions
-    double sqMag = 0.0; 
+    double sqMag = 0.0;
     for(MultiArrayIndex i=0; i<=dim; ++i)
     {
         sqMag += sq(pixel_pitch[i]*vec[i]);
@@ -100,20 +99,20 @@ partialSquaredMagnitude(const VEC& vec, MultiArrayIndex dim, ARRAY const & pixel
 
 template <class SrcIterator,
           class Array>
-void 
+void
 vectorialDistParabola(MultiArrayIndex dimension,
                       SrcIterator is, SrcIterator iend,
                       Array const & pixel_pitch )
 {
     typedef typename SrcIterator::value_type SrcType;
     typedef VectorialDistParabolaStackEntry<SrcType, double> Influence;
-    
+
     double sigma = pixel_pitch[dimension],
            sigma2 = sq(sigma);
     double w = iend - is; //width of the scanline
-    
+
     SrcIterator id = is;
-   
+
     std::vector<Influence> _stack; //stack of influence parabolas
     double apex_height = partialSquaredMagnitude(*is, dimension, pixel_pitch);
     _stack.push_back(Influence(*is, apex_height, 0.0, 0.0, w));
@@ -125,7 +124,7 @@ vectorialDistParabola(MultiArrayIndex dimension,
         Influence & s = _stack.back();
         double diff = current - s.center;
         double intersection = current + (apex_height - s.apex_height - sq(sigma*diff)) / (2.0*sigma2 * diff);
-        
+
         if( intersection < s.left) // previous point has no influence
         {
             _stack.pop_back();
@@ -142,7 +141,7 @@ vectorialDistParabola(MultiArrayIndex dimension,
         ++is;
         ++current;
     }
-   
+
     // Now we have the stack indicating which rows are influenced by (and therefore
     // closest to) which row. We can go through the stack and calculate the
     // distance squared for each element of the column.
@@ -150,19 +149,19 @@ vectorialDistParabola(MultiArrayIndex dimension,
     for(current = 0.0; current < w; ++current, ++id)
     {
         while( current >= it->right)
-            ++it; 
-        
+            ++it;
+
         *id = it->point;
         (*id)[dimension] = it->center - current;
     }
 }
 
-template <class DestIterator, 
+template <class DestIterator,
           class LabelIterator,
           class Array1, class Array2>
-void 
+void
 boundaryVectorDistParabola(MultiArrayIndex dimension,
-                           DestIterator is, DestIterator iend, 
+                           DestIterator is, DestIterator iend,
                            LabelIterator ilabels,
                            Array1 const & pixel_pitch,
                            Array2 const & dmax,
@@ -197,7 +196,7 @@ boundaryVectorDistParabola(MultiArrayIndex dimension,
             Influence & s = _stack.back();
             double diff = (current - s.center)*pixel_pitch[dimension];
             double intersection = current + (apex_height - s.apex_height - sq(diff)) / (2.0 * diff);
-            
+
             if(intersection < s.left) // previous parabola has no influence
             {
                 _stack.pop_back();
@@ -214,26 +213,26 @@ boundaryVectorDistParabola(MultiArrayIndex dimension,
                 _stack.push_back(Influence(point, apex_height, intersection, current, w));
             if(current < w && current_label == *ilabels)
                 break; // finished present pixel, advance to next one
-                
+
             // label changed => finalize the current segment
             typename Stack::iterator it = _stack.begin();
             for(double c = begin; c < current; ++c, ++id)
             {
-                while(c >= it->right) 
-                    ++it; 
+                while(c >= it->right)
+                    ++it;
                 *id = it->point;
                 (*id)[dimension] = it->center - c;
             }
             if(current == w)
                 break;  // stop when this was the last segment
-                
+
             // initialize the new segment
             begin = current;
             current_label = *ilabels;
             point = *is;
             apex_height = partialSquaredMagnitude(point, dimension, pixel_pitch);
             Stack(1, Influence(DestType(0), 0.0, begin-1.0, begin-1.0, w)).swap(_stack);
-            // don't advance to next pixel here, because the present pixel must also 
+            // don't advance to next pixel here, because the present pixel must also
             // be analysed in the context of the new segment
         }
     }
@@ -242,9 +241,9 @@ boundaryVectorDistParabola(MultiArrayIndex dimension,
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
           class Array>
-void 
+void
 interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
-                                 MultiArrayView<N, T2, S2> dest, 
+                                 MultiArrayView<N, T2, S2> dest,
                                  Array const & pixelPitch)
 {
     typedef typename MultiArrayShape<N>::type  Shape;
@@ -252,7 +251,7 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
     typedef typename Graph::Node               Node;
     typedef typename Graph::NodeIt             graph_scanner;
     typedef typename Graph::OutArcIt           neighbor_iterator;
-    
+
     Graph g(labels.shape());
     for (graph_scanner node(g); node != lemon_graph::INVALID; ++node)
     {
@@ -288,7 +287,7 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
             min_diff = 0.5*(boundary + min_pos) - point;
             min_dist = squaredNorm(pixelPitch*min_diff);
         }
-        
+
         //from this pixel look for the vector which points to the nearest interpixel between two label
         for (neighbor_iterator arc(g, min_pos); arc != lemon_graph::INVALID; ++arc)
         {
@@ -309,12 +308,12 @@ interpixelBoundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
 
 } // namespace detail
 
-/** \addtogroup MultiArrayDistanceTransform
+/** \addtogroup DistanceTransform
 */
 //@{
 
 template<bool PRED>
-struct Error_output_pixel_type_must_be_TinyVector_of_appropriate_length 
+struct Error_output_pixel_type_must_be_TinyVector_of_appropriate_length
 : vigra::staticAssert::AssertBool<PRED> {};
 
 /********************************************************/
@@ -331,16 +330,16 @@ struct Error_output_pixel_type_must_be_TinyVector_of_appropriate_length
         namespace vigra {
             template <unsigned int N, class T1, class S1,
                       class T2, class S2, class Array>
-            void 
+            void
             separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
-                                    MultiArrayView<N, T2, S2> dest, 
+                                    MultiArrayView<N, T2, S2> dest,
                                     bool background,
                                     Array const & pixelPitch=TinyVector<double, N>(1));
         }
         \endcode
 
         This function works like \ref separableMultiDistance() (see there for details),
-        but returns in each pixel the <i>vector</i> to the nearest background pixel 
+        but returns in each pixel the <i>vector</i> to the nearest background pixel
         rather than the scalar distance. This enables much more powerful applications.
 
         <b> Usage:</b>
@@ -364,9 +363,9 @@ doxygen_overloaded_function(template <...> void separableVectorDistance)
 
 template <unsigned int N, class T1, class S1,
           class T2, class S2, class Array>
-void 
+void
 separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
-                        MultiArrayView<N, T2, S2> dest, 
+                        MultiArrayView<N, T2, S2> dest,
                         bool background,
                         Array const & pixelPitch)
 {
@@ -377,18 +376,18 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
     VIGRA_STATIC_ASSERT((Error_output_pixel_type_must_be_TinyVector_of_appropriate_length<N == T2::static_size>));
     vigra_precondition(source.shape() == dest.shape(),
         "separableVectorDistance(): shape mismatch between input and output.");
-    vigra_precondition(pixelPitch.size() == N, 
+    vigra_precondition(pixelPitch.size() == N,
         "separableVectorDistance(): pixelPitch has wrong length.");
-        
+
     T2 maxDist(2*sum(source.shape()*pixelPitch)), rzero;
     if(background == true)
         transformMultiArray( source, dest,
                                 ifThenElse( Arg1() == Param(0), Param(maxDist), Param(rzero) ));
     else
-        transformMultiArray( source, dest, 
+        transformMultiArray( source, dest,
                                 ifThenElse( Arg1() != Param(0), Param(maxDist), Param(rzero) ));
-    
-    for(int d = 0; d < N; ++d )
+
+    for(unsigned d = 0; d < N; ++d )
     {
         Navigator nav( dest.traverser_begin(), dest.shape(), d);
         for( ; nav.hasMore(); nav++ )
@@ -400,9 +399,9 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
 
 template <unsigned int N, class T1, class S1,
           class T2, class S2>
-inline void 
+inline void
 separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
-                        MultiArrayView<N, T2, S2> dest, 
+                        MultiArrayView<N, T2, S2> dest,
                         bool background=true)
 {
     TinyVector<double, N> pixelPitch(1.0);
@@ -410,7 +409,7 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
 }
 
 
-    /** \brief Compute the vector distance transform to the implicit boundaries of a 
+    /** \brief Compute the vector distance transform to the implicit boundaries of a
                multi-dimensional label array.
 
         <b> Declarations:</b>
@@ -430,7 +429,7 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
         \endcode
 
         This function works like \ref boundaryMultiDistance() (see there for details),
-        but returns in each pixel the <i>vector</i> to the nearest boundary pixel 
+        but returns in each pixel the <i>vector</i> to the nearest boundary pixel
         rather than the scalar distance. This enables much more powerful applications.
         Additionally, it support a <tt>pixelPitch</tt> parameter which allows to adjust
         the distance calculations for anisotropic grid resolution.
@@ -446,7 +445,7 @@ separableVectorDistance(MultiArrayView<N, T1, S1> const & source,
         MultiArray<3, Shape3> dest(shape);
         ...
 
-        // For each region, find the vectors to the nearest boundary pixel, including the 
+        // For each region, find the vectors to the nearest boundary pixel, including the
         // outer border of the array.
         boundaryVectorDistance(labels, dest, true);
         \endcode
@@ -468,15 +467,15 @@ boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
     VIGRA_STATIC_ASSERT((Error_output_pixel_type_must_be_TinyVector_of_appropriate_length<N == T2::static_size>));
     vigra_precondition(labels.shape() == dest.shape(),
         "boundaryVectorDistance(): shape mismatch between input and output.");
-    vigra_precondition(pixelPitch.size() == N, 
+    vigra_precondition(pixelPitch.size() == N,
         "boundaryVectorDistance(): pixelPitch has wrong length.");
-        
+
     using namespace vigra::functor;
-    
+
     if(boundary == InnerBoundary)
     {
         MultiArray<N, unsigned char> boundaries(labels.shape());
-        
+
         markRegionBoundaries(labels, boundaries, IndirectNeighborhood);
         if(array_border_is_active)
             initMultiArrayBorder(boundaries, 1, 1);
@@ -489,26 +488,26 @@ boundaryVectorDistance(MultiArrayView<N, T1, S1> const & labels,
             vigra_precondition(!NumericTraits<T2>::isIntegral::value,
                 "boundaryVectorDistance(..., InterpixelBoundary): output pixel type must be float or double.");
         }
-        
+
         typedef typename MultiArrayView<N, T1, S1>::const_traverser LabelIterator;
         typedef typename MultiArrayView<N, T2, S2>::traverser DestIterator;
         typedef MultiArrayNavigator<LabelIterator, N> LabelNavigator;
         typedef MultiArrayNavigator<DestIterator, N> DNavigator;
-        
+
         T2 maxDist(2*sum(labels.shape()*pixelPitch));
         dest = maxDist;
-        for( int d = 0; d < N; ++d )
+        for( unsigned d = 0; d < N; ++d )
         {
             LabelNavigator lnav( labels.traverser_begin(), labels.shape(), d );
             DNavigator dnav( dest.traverser_begin(), dest.shape(), d );
 
             for( ; dnav.hasMore(); dnav++, lnav++ )
             {
-                detail::boundaryVectorDistParabola(d, dnav.begin(), dnav.end(), lnav.begin(), 
+                detail::boundaryVectorDistParabola(d, dnav.begin(), dnav.end(), lnav.begin(),
                                                    pixelPitch, maxDist, array_border_is_active);
             }
         }
-        
+
         if(boundary == InterpixelBoundary)
         {
            detail::interpixelBoundaryVectorDistance(labels, dest, pixelPitch);

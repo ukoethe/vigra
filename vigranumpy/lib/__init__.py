@@ -1,4 +1,4 @@
-#######################################################################
+﻿#######################################################################
 #
 #         Copyright 2009-2010 by Ullrich Koethe
 #
@@ -33,12 +33,14 @@
 #
 #######################################################################
 
+from __future__ import division, print_function
 import sys, os, time, math
+
 from numbers import Number
 from multiprocessing import cpu_count
 try:
     import pylab
-except Exception, e:
+except Exception as e:
     pass
 
 
@@ -107,26 +109,35 @@ The following sub-modules group related functionality:
 * utilities  (priority queues)
 ''' % _vigra_doc_path
 
-from __version__ import version
-import vigranumpycore
-import arraytypes
-import impex
-import sampling
-import filters
-import analysis
-import learning
-import colors
-import noise
-import geometry
-import optimization
-import histogram
-import graphs
-import utilities
-import blockwise
+from .__version__ import version
+import vigra.vigranumpycore as vigranumpycore
+import vigra.arraytypes as arraytypes
+import vigra.impex as impex
+import vigra.sampling as sampling
+import vigra.filters as filters
+import vigra.analysis as analysis
+import vigra.learning as learning
+import vigra.colors as colors
+import vigra.noise as noise
+import vigra.geometry as geometry
+import vigra.optimization as optimization
+import vigra.histogram as histogram
+import vigra.graphs as graphs
+import vigra.utilities as utilities
+import vigra.blockwise as blockwise
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 
+try:
+    import vigra.fourier as fourier
+except Exception as e:
+    _fallbackModule('fourier',
+    '''
+    %s
 
+    Make sure that the fftw3 libraries are found during compilation and import.
+    They may be downloaded at http://www.fftw.org/.''' % str(e))
+    import fourier
 
 class Timer:
     def __init__(self, name, verbose=True):
@@ -135,7 +146,7 @@ class Timer:
 
     def __enter__(self):
         if self.verbose:
-            print self.name, "..."
+            print(self.name, "...")
         self.start = time.time()
         return self
 
@@ -143,38 +154,32 @@ class Timer:
         self.end = time.time()
         self.interval = self.end - self.start
         if self.verbose  :
-            print "... took ", self.interval, "sec"
+            print("... took ", self.interval, "sec")
 
+# portable way to inject a metaclass (taken from six.py)
+def _with_metaclass(meta, *bases):
+    """Create a base class with a metaclass."""
+    # This requires a bit of explanation: the basic idea is to make a dummy
+    # metaclass for one level of class instantiation that replaces itself with
+    # the actual metaclass.
+    class metaclass(meta):
+        def __new__(cls, name, this_bases, d):
+            return meta(name, bases, d)
+    return type.__new__(metaclass, 'temporary_class', (), {})
 
-
-
-
-
-
-try:
-    import fourier
-except Exception, e:
-    _fallbackModule('vigra.fourier',
-    '''
-    %s
-
-    Make sure that the fftw3 libraries are found during compilation and import.
-    They may be downloaded at http://www.fftw.org/.''' % str(e))
-    import fourier
 
 # import most frequently used functions
-from arraytypes import *
+from vigra.arraytypes import *
 standardArrayType = arraytypes.VigraArray
 defaultAxistags = arraytypes.VigraArray.defaultAxistags
 
-from vigranumpycore import ChunkedArrayFull, ChunkedArrayLazy, ChunkedArrayCompressed, ChunkedArrayTmpFile, Compression
+from vigra.vigranumpycore import ChunkedArrayFull, ChunkedArrayLazy, ChunkedArrayCompressed, ChunkedArrayTmpFile, Compression
 try:
-    from vigranumpycore import ChunkedArrayHDF5, HDF5Mode
+    from vigra.vigranumpycore import ChunkedArrayHDF5, HDF5Mode
 except:
     pass
 
-
-from impex import readImage, readVolume
+from vigra.impex import readImage, readVolume
 
 def readHDF5(filenameOrGroup, pathInFile, order=None):
     '''Read an array from an HDF5 file.
@@ -293,8 +298,8 @@ readHDF5.__module__ = 'vigra.impex'
 impex.writeHDF5 = writeHDF5
 writeHDF5.__module__ = 'vigra.impex'
 
-from filters import convolve, gaussianSmoothing
-from sampling import resize
+from .filters import convolve, gaussianSmoothing
+from .sampling import resize
 
 def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
     '''
@@ -306,14 +311,17 @@ def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
 
         'window_size' specifies the ratio between the filter scale and the size of
         the filter window. Use values around 2.0 to speed-up the computation for the
-        price of increased cut-off error, and values >= 4.0 for vary accurate results.
+        price of increased cut-off error, and values >= 4.0 for very accurate results.
         The window size is automatically determined for the default value 0.0.
+
+        For the first and second derivatives, you can also use :func:`gaussianGradient`
+        and :func:`hessianOfGaussian`.
     '''
     if hasattr(array, 'dropChannelAxis'):
         if array.dropChannelAxis().ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     else:
-        if array.ndim == len(orders):
+        if array.ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     try:
         len(sigma)
@@ -343,7 +351,7 @@ def searchfor(searchstring):
       contents = dir(_selfdict[attr])
       for cont in contents:
          if ( cont.upper().find(searchstring.upper()) ) >= 0:
-            print attr+"."+cont
+            print(attr+"."+cont)
 
 # FIXME: use axistags here
 def imshow(image,show=True, **kwargs):
@@ -413,7 +421,7 @@ def segShow(img,labels,edgeColor=(0,0,0),alpha=0.3,show=False,returnImg=False,r=
 
     labels = numpy.squeeze(labels)
     crackedEdges = analysis.regionImageToCrackEdgeImage(labels+1).squeeze()
-    #print "cracked shape",crackedEdges.shape
+    #print("cracked shape",crackedEdges.shape)
     whereEdge    =  numpy.where(crackedEdges==0)
     whereNoEdge  =  numpy.where(crackedEdges!=0)
     crackedEdges[whereEdge] = 1
@@ -511,7 +519,7 @@ def _genKernelFactories(name):
 %(newName)s.__doc__ = filters.%(name)s.%(oldName)s.__doc__
 filters.%(newName)s=%(newName)s
 ''' % {'oldName': oldName, 'newName': newName, 'name': name}
-        exec code
+        exec(code)
 
 _genKernelFactories('Kernel1D')
 _genKernelFactories('Kernel2D')
@@ -554,7 +562,7 @@ def _genWatershedsReoptimization():
         #  pylab.show()
 
 
-        seeds=analysis.segToSeeds(labels,long(shrinkN))
+        seeds=analysis.segToSeeds(labels,int(shrinkN))
 
         if visu :
           import matplotlib,numpy
@@ -628,32 +636,6 @@ _genTensorConvenienceFunctions()
 del _genTensorConvenienceFunctions
 
 
-
-
-
-# define tensor convenience functions
-def _genDistanceTransformFunctions():
-
-    def distanceTransform(array,background=True,norm=2,pixel_pitch=None, out=None):
-        if array.squeeze().ndim == 2:
-            return filters.distanceTransform2D(array,background=background,norm=norm,
-                                               pixel_pitch=pixel_pitch, out=out)
-        elif array.squeeze().ndim == 3:
-            return filters.distanceTransform3D(array.astype('float32'),background=background,norm=2)
-        else:
-            raise RuntimeError("distanceTransform is only implemented for 2D and 3D arrays")
-
-    distanceTransform.__module__ = 'vigra.filters'
-    filters.distanceTransform = distanceTransform
-
-
-
-_genDistanceTransformFunctions()
-del _genDistanceTransformFunctions
-
-
-
-
 # define feature convenience functions
 def _genFeaturConvenienceFunctions():
     def supportedFeatures(array):
@@ -662,7 +644,7 @@ def _genFeaturConvenienceFunctions():
            just the first two features in the list, use::
 
                 f = vigra.analysis.supportedFeatures(array)
-                print "Computing features:", f[:2]
+                print("Computing features:", f[:2])
                 r = vigra.analysis.extractFeatures(array, features=f[:2])
         '''
 
@@ -678,7 +660,7 @@ def _genFeaturConvenienceFunctions():
            list, use::
 
                 f = vigra.analysis.supportedRegionFeatures(array, labels)
-                print "Computing features:", f[:2]
+                print("Computing features:", f[:2])
                 r = vigra.analysis.extractRegionFeatures(array, labels, features=f[:2])
         '''
         return analysis.extractRegionFeatures(array, labels, None).supportedFeatures()
@@ -693,7 +675,7 @@ def _genFeaturConvenienceFunctions():
            list, use::
 
                 f = vigra.analysis.supportedConvexHullFeatures(labels)
-                print "Computing Convex Hull features:", f[:2]
+                print("Computing Convex Hull features:", f[:2])
                 r = vigra.analysis.extractConvexHullFeatures(labels, features=f[:2])
         '''
         try:
@@ -711,7 +693,7 @@ def _genFeaturConvenienceFunctions():
            list, use::
 
                 f = vigra.analysis.supportedSkeletonFeatures(labels)
-                print "Computing Skeleton features:", f[:2]
+                print("Computing Skeleton features:", f[:2])
                 r = vigra.analysis.extractSkeletonFeatures(labels, features=f[:2])
         '''
         try:
@@ -727,15 +709,23 @@ def _genFeaturConvenienceFunctions():
         return len(self.keys())
     def __iter__(self):
         return self.keys().__iter__()
-    def has_key(self, key):
+    def __contains__(self, key):
         try:
             return self.isActive(key)
         except:
             return False
-    def values(self):
-        return [self[k] for k in self.keys()]
-    def items(self):
-        return [(k, self[k]) for k in self.keys()]
+    def has_key(self, key):
+        self.__contains__(key)
+    if sys.version_info[0] < 3:
+        def values(self):
+            return [self[k] for k in self.keys()]
+        def items(self):
+            return [(k, self[k]) for k in self.keys()]
+    else:
+        def values(self):
+            return self.itervalues()
+        def items(self):
+            return self.iteritems()
     def iterkeys(self):
         return self.keys().__iter__()
     def itervalues(self):
@@ -745,7 +735,7 @@ def _genFeaturConvenienceFunctions():
         for k in self.keys():
             yield (k, self[k])
 
-    for k in ['__len__', '__iter__', 'has_key', 'values', 'items', 'iterkeys', 'itervalues', 'iteritems']:
+    for k in ['__len__', '__iter__', '__contains__', 'has_key', 'values', 'items', 'iterkeys', 'itervalues', 'iteritems']:
         setattr(analysis.FeatureAccumulator, k, eval(k))
         setattr(analysis.RegionFeatureAccumulator, k, eval(k))
 
@@ -795,14 +785,16 @@ def _genGridGraphConvenienceFunctions():
 
         metaCls = cls.__class__
 
-        class gridGraphInjector(object):
-            class __metaclass__(metaCls):
-                def __init__(self, name, bases, dict):
-                    for b in bases:
-                        if type(b) not in (self, type):
-                            for k,v in dict.items():
-                                setattr(b,k,v)
-                    return type.__init__(self, name, bases, dict)
+        class gridGraphInjectorMeta(metaCls):
+            def __init__(self, name, bases, dict):
+                for b in bases:
+                    if type(b) not in (self, type):
+                        for k,v in dict.items():
+                            setattr(b,k,v)
+                return type.__init__(self, name, bases, dict)
+
+        class gridGraphInjector(_with_metaclass(gridGraphInjectorMeta, object)):
+            pass
 
         ##inject some methods in the point foo
         class moreGridGraph(gridGraphInjector, cls):
@@ -1156,7 +1148,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
             """
             if(graph is not None and labels is not None):
-                super(RegionAdjacencyGraph,self).__init__(long(labels.max()+1),long(reserveEdges))
+                super(RegionAdjacencyGraph,self).__init__(int(labels.max()+1),int(reserveEdges))
 
                 if ignoreLabel is None and isDense is not None and isDense == True:
                     if ignoreLabel is None:
@@ -1222,7 +1214,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                     raise RuntimeError("self.edgeNum == 0  => cannot accumulate edge features")
                 if acc == 'mean':
                     weights = self.baseGraph.edgeLengths()
-                    #print "Weights",weights
+                    #print("Weights",weights)
                 else:
                     weights = graphs.graphMap(self.baseGraph,'edge',dtype=numpy.float32)
                     weights[:] = 1
@@ -1231,6 +1223,13 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 else:
                     return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
 
+        def accumulateEdgeStatistics(self, edgeFeatures, out=None):
+            if not isinstance(self, RegionAdjacencyGraph):
+                raise AttributeError("accumulateEdgeFeaturesNew not implemented for " + type(self))
+            graph = self.baseGraph
+            affiliatedEdges = self.affiliatedEdges
+            out = graphs._ragEdgeStatistics(self, graph, affiliatedEdges, edgeFeatures, out)
+            return out
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
             """ accumulate edge features from base graphs edges features
@@ -1251,9 +1250,9 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             labels = self.baseGraphLabels
             ignoreLabel = self.ignoreLabel
             if acc == 'mean':
-              #print "get node size..."
+              #print("get node size...")
               weights = self.baseGraph.nodeSize()
-              #print "weights == ", weights
+              #print("weights == ", weights)
             else :
               weights = graphs.graphMap(self.baseGraph,'node',dtype=numpy.float32)
               weights[:]=1
@@ -1279,7 +1278,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 ignoreLabel=self.ignoreLabel,
                 out=out
             )
-            #print "out",out.shape,out.dtype
+            #print("out",out.shape,out.dtype)
             return out
 
         def projectLabelsBack(self,steps,labels=None,_current=0):
@@ -1335,7 +1334,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
             affEdges = self.affiliatedEdges
             uvCoords = affEdges.getUVCoordinates(self.baseGraph, ei)
-            dim = uvCoords.shape[1]/2
+            dim = uvCoords.shape[1] // 2
             uCoords = uvCoords[:,0:dim]
             vCoords = uvCoords[:,dim:2*dim]
             return (uCoords,vCoords)
@@ -1502,7 +1501,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 ma = edgeFeatureShow.max()
                 cm = matplotlib.cm.ScalarMappable(cmap=cmap)
                 rgb = cm.to_rgba(edgeFeatureShow)[:,0:3]
-                print rgb.shape
+                print(rgb.shape)
 
                 if(ma > mi):
                     edgeFeatureShow -=mi
@@ -1526,7 +1525,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
                 imgOut[u[:,0],u[:,1],:] = showVal
                 imgOut[v[:,0],v[:,1],:] = showVal
-                #print u.shape
+                #print(u.shape)
             if returnImg:
                 return imgOut
             imshow(imgOut)
@@ -1594,7 +1593,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             self.edgeRag2dToRag = None
             self.edgeRagToRag2d = None
             if self.dim == 3:
-                self.zOffset = self.img.shape[2]/2
+                self.zOffset = self.img.shape[2]//2
 
             self.visuImg = numpy.array(img, dtype=numpy.float32)
             self.visuImg -= self.visuImg.min()
@@ -1697,7 +1696,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 self.edgeLabels2d = self.edgeLabels
 
             else:
-                print 'warning: bad dimension!'
+                print('warning: bad dimension!')
 
 
         def scroll(self, event):
@@ -1718,7 +1717,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             if self.press is None:
                 return
 
-            print event.xdata, event.ydata
+            print(event.xdata, event.ydata)
             self.handle_click(event)
 
         def on_release(self, event):
@@ -1726,7 +1725,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
         def onclick(self, event):
             self.press = event.xdata, event.ydata
-            print event.xdata, event.ydata
+            print(event.xdata, event.ydata)
             try:
                 self.handle_click(event)
             except:
@@ -1749,9 +1748,9 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             if event.xdata != None and event.ydata != None:
                 xRaw,yRaw = event.xdata,event.ydata
                 if xRaw >=0.0 and yRaw>=0.0 and xRaw<img.shape[0] and yRaw<img.shape[1]:
-                    x,y = long(math.floor(event.xdata)),long(math.floor(event.ydata))
+                    x,y = int(math.floor(event.xdata)),int(math.floor(event.ydata))
 
-                    #print "X,Y",x,y
+                    #print("X,Y",x,y)
                     l = labels[x,y]
                     others  = []
 
@@ -1765,8 +1764,8 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                                     yy >=0 and yy<shape[0]:
                                     otherLabel = labels[xx, yy]
                                     if l != otherLabel:
-                                        edge = rag.findEdge(long(l), long(otherLabel))
-                                    #print edge
+                                        edge = rag.findEdge(int(l), int(otherLabel))
+                                    #print(edge)
                                         others.append((xx,yy,edge))
                                         #break
                         #if other is not None:
@@ -1797,27 +1796,27 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
     def loadGridRagHDF5(filename , dset):
 
-        #print "load labels and make grid graph"
+        #print("load labels and make grid graph")
         labels = readHDF5(filename,  dset+'/labels')
         shape = labels.shape
         gridGraph = graphs.gridGraph(shape)
-        #print gridGraph
+        #print(gridGraph)
 
 
-        #print "load graph serialization"
+        #print("load graph serialization")
         graphSerialization = readHDF5(filename, dset+'/graph')
 
-        #print "make empty grid rag"
+        #print("make empty grid rag")
         gridRag = GridRegionAdjacencyGraph()
 
-        #print "deserialize"
+        #print("deserialize")
         gridRag.deserialize(graphSerialization)
 
 
-        #print "load affiliatedEdges"
+        #print("load affiliatedEdges")
         affEdgeSerialization = readHDF5(filename, dset+'/affiliated_edges')
 
-        #print "deserialize"
+        #print("deserialize")
         affiliatedEdges = graphs._deserialzieGridGraphAffiliatedEdges(gridGraph, gridRag, affEdgeSerialization)
 
 
@@ -2289,29 +2288,29 @@ def _genGraphSegmentationFunctions():
 
         assert edgeWeights is not None or nodeFeatures is not None
 
-        #print "prepare "
+        print("prepare ")
 
         if nodeNumStop is None:
-            nodeNumStop = max(graph.nodeNum/2,min(graph.nodeNum,2))
+            nodeNumStop = max(graph.nodeNum//2,min(graph.nodeNum,2))
 
 
         if edgeLengths is None :
-            #print "get edge length"
+            print("get edge length")
             edgeLengths = graphs.getEdgeLengths(graph)
 
 
         if nodeSizes is None:
-            #print "get node size"
+            print("get node size")
             nodeSizes = graphs.getNodeSizes(graph)
 
 
         if edgeWeights is None :
-            #print "get wegihts length"
+            print("get wegihts length")
             edgeWeights = graphs.graphMap(graph,'edge')
             edgeWeights[:]=0
 
         if nodeFeatures is None :
-            #print "get node feat"
+            print("get node feat")
             nodeFeatures = graphs.graphMap(graph,'node',addChannelDim=True)
             nodeFeatures[:]=0
 
@@ -2321,15 +2320,15 @@ def _genGraphSegmentationFunctions():
 
 
         #import sys
-        #print "graph refcout", sys.getrefcount(graph)
+        #print("graph refcout", sys.getrefcount(graph))
         mg = graphs.mergeGraph(graph)
-        #print "graph refcout", sys.getrefcount(graph)
+        #print("graph refcout", sys.getrefcount(graph))
         #mg = []
         #del mg
         #import gc
         #gc.collect()
 
-        #print "graph refcout", sys.getrefcount(graph)
+        #print("graph refcout", sys.getrefcount(graph))
         #sys.exit(0)
 
 
@@ -2398,7 +2397,7 @@ def _genGraphSegmentationFunctions():
                 raise RuntimeError("'%s' is not a supported distance type"%str(metric))
 
             # call unsave c++ function and make it sav
-            print "nodeLabels ",nodeLabels.shape, nodeLabels.dtype
+            print("nodeLabels ",nodeLabels.shape, nodeLabels.dtype)
             op = graphs.__minEdgeWeightNodeDistOperator(mergeGraph,edgeWeights,edgeLengths,nodeFeatures,nodeSizes,outWeight,nodeLabels,
                 float(beta),nd,float(wardness),float(gamma))
 
@@ -2429,7 +2428,7 @@ def _genGraphSegmentationFunctions():
 
     def hierarchicalClustering(clusterOperator,nodeNumStopCond,buildMergeTreeEncoding=True):
         # call unsave c++ function and make it save
-        hc = graphs.__hierarchicalClustering(clusterOperator,long(nodeNumStopCond),bool(buildMergeTreeEncoding))
+        hc = graphs.__hierarchicalClustering(clusterOperator,int(nodeNumStopCond),bool(buildMergeTreeEncoding))
         #hc.__dict__['__base_object__']=clusterOperator
         hc.__base_object__ = clusterOperator
         return hc
@@ -2468,6 +2467,7 @@ def _genHistogram():
     def gaussianRankOrder(image, minVal=None, maxVal=None,
                      bins=20, sigmas=None, ranks=[0.1,0.25,0.5,0.75,0.9],
                      out=None):
+        # FIXME: crashes on Python3
         image = numpy.require(image.squeeze(),dtype='float32')
         nDim = image.ndim
         if sigmas is None:
@@ -2485,9 +2485,9 @@ def _genHistogram():
         if maxVal is None :
             maxVal = image.max()
 
-        #print "image",image.shape,image.dtype
-        #print "ranks",ranks.shape,ranks.dtype
-        #print "sigmas",sigmas
+        #print("image",image.shape,image.dtype)
+        #print("ranks",ranks.shape,ranks.dtype)
+        #print("sigmas",sigmas)
         return histogram._gaussianRankOrder(image=image,
                                             minVal=float(minVal),
                                             maxVal=float(maxVal),
@@ -2667,10 +2667,10 @@ def loadBSDGt(filename):
         gt =  matContents['groundTruth'][0][gti][0]['Segmentation'][0]
         gt = numpy.swapaxes(gt,0,1)
         gt = gt.astype(numpy.uint32)
-        print gt.min(),gt.max()
+        print(gt.min(),gt.max())
         gts.append(gt[:,:,None])
     gtArray = numpy.concatenate(gts,axis=2)
-    print gtArray.shape
+    print(gtArray.shape)
     return gtArray
 
 

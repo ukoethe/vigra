@@ -215,7 +215,7 @@ namespace vigra{
 
     template<unsigned int DIM, class DTAG, class AFF_EDGES>
     size_t affiliatedEdgesSerializationSize(
-        const GridGraph<DIM,DTAG> & gridGraph,
+        const GridGraph<DIM,DTAG> &,
         const AdjacencyListGraph & rag,
         const AFF_EDGES & affEdges
     ){
@@ -234,7 +234,7 @@ namespace vigra{
 
     template<class OUT_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
     void serializeAffiliatedEdges(
-        const GridGraph<DIM,DTAG> & gridGraph,
+        const GridGraph<DIM,DTAG> &,
         const AdjacencyListGraph & rag,
         const AFF_EDGES & affEdges,
         OUT_ITER outIter
@@ -261,11 +261,11 @@ namespace vigra{
 
     template<class IN_ITER, unsigned int DIM, class DTAG, class AFF_EDGES>
     void deserializeAffiliatedEdges(
-        const GridGraph<DIM,DTAG> & gridGraph,
+        const GridGraph<DIM,DTAG> &,
         const AdjacencyListGraph & rag,
         AFF_EDGES & affEdges,
         IN_ITER begin,
-        IN_ITER end
+        IN_ITER
     ){
       
         typedef typename  AdjacencyListGraph::EdgeIt EdgeIt;
@@ -724,7 +724,6 @@ namespace vigra{
         for(NodeIt n(graph);n!=lemon::INVALID;++n){
             Node node(*n);
             if(seeds[node]==0){
-                int label = 0 ;
                 Node pred=predMap[node];
                 while(seeds[pred]==0){
                     pred=predMap[pred];
@@ -737,8 +736,8 @@ namespace vigra{
     namespace detail_watersheds_segmentation{
 
     struct RawPriorityFunctor{
-        template<class L, class T>
-        T operator()(const L label,const T  priority)const{
+        template<class LabelType, class T>
+        T operator()(const LabelType /*label*/,const T  priority)const{
             return priority;
         }
     };
@@ -887,6 +886,7 @@ namespace vigra{
     /// \param seeds : seed must be non empty!
     /// \param backgroundLabel : which label is background
     /// \param backgroundBias  : bias for background
+    /// \param noPriorBelow  : don't bias the background if edge indicator is below this value
     /// \param[out] labels : resulting  nodeLabeling (not necessarily dense)
     template<class GRAPH,class EDGE_WEIGHTS,class SEEDS,class LABELS>
     void carvingSegmentation(
@@ -980,7 +980,7 @@ namespace vigra{
                         nodeSizeAcc[newRepNode] = sizeRu+sizeRv;
                     }
                 }
-                if(nodeNum==nodeNumStopCond){
+                if(nodeNumStopCond >= 0 && nodeNum==static_cast<size_t>(nodeNumStopCond)){
                     break;
                 }
             }
@@ -988,7 +988,7 @@ namespace vigra{
                 break;
             }
             else{
-                if(nodeNum>nodeNumStopCond){
+                if(nodeNumStopCond >= 0 && nodeNum>static_cast<size_t>(nodeNumStopCond)){
                     k *= 1.2f;
                 }
                 else{
@@ -1201,7 +1201,7 @@ namespace vigra{
         const BASE_GRAPH_RAG_LABELS & baseGraphRagLabels,
         const BASE_GRAPH_GT         & baseGraphGt,
         RAG_GT                      & ragGt,
-        RAG_GT_QT                   & ragGtQt
+        RAG_GT_QT                   &
     ){
         typedef typename BASE_GRAPH::Node BaseGraphNode;
         typedef typename BASE_GRAPH::NodeIt BaseGraphNodeIt;
@@ -1260,7 +1260,7 @@ namespace vigra{
     /// \brief Find indices of points on the edges
     ///
     /// \param rag : Region adjacency graph of the labels array
-    /// \param g : Graph of labels array
+    /// \param graph : Graph of labels array
     /// \param affiliatedEdges : The affiliated edges of the region adjacency graph
     /// \param labelsArray : The label image
     /// \param node : The node (of the region adjacency graph), whose edges shall be found

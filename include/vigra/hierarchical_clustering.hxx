@@ -47,8 +47,13 @@
 /*vigra*/
 #include "priority_queue.hxx"
 #include "metrics.hxx"
+#include "merge_graph_adaptor.hxx"
 
 namespace vigra{
+
+/** \addtogroup GraphDataStructures
+*/
+//@{
 
 namespace cluster_operators{
 
@@ -254,8 +259,6 @@ class EdgeWeightedUcm
         const Node u = mergeGraph_.u(e);
         const Node v = mergeGraph_.v(e);
 
-        const size_t dU = mergeGraph_.degree(u);
-        const size_t dV = mergeGraph_.degree(u);
         const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
         const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
         const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
@@ -362,9 +365,9 @@ class EdgeWeightedUcm
             NODE_LABEL_MAP nodeLabelMap,
             const ValueType beta,
             const metrics::MetricType metricType,
-            const ValueType wardness=1.0,
-            const ValueType gamma = 10000000.0,
-            const ValueType sameLabelMultiplier = 0.8
+            const ValueType wardness=static_cast<ValueType>(1.0),
+            const ValueType gamma = static_cast<ValueType>(10000000.0),
+            const ValueType sameLabelMultiplier = static_cast<ValueType>(0.8)
         )
         :   mergeGraph_(mergeGraph),
             edgeIndicatorMap_(edgeIndicatorMap),
@@ -535,8 +538,6 @@ class EdgeWeightedUcm
             const Node u = mergeGraph_.u(e);
             const Node v = mergeGraph_.v(e);
 
-            const size_t dU = mergeGraph_.degree(u);
-            const size_t dV = mergeGraph_.degree(u);
             const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
@@ -586,212 +587,464 @@ class EdgeWeightedUcm
 
 } // end namespace cluster_operators
 
+/** \brief  Options object for hierarchical clustering.
 
+  <b>\#include</b> \<vigra/hierarchical_clustering.hxx\><br/>
+  Namespace: vigra
 
-    /// \brief  do hierarchical clustering with a given cluster operator
-    template< class CLUSTER_OPERATOR>
-    class HierarchicalClustering{
+  This class allows to set various parameters of \ref hierarchicalClustering().
+  See there for usage examples.
+*/
+class ClusteringOptions
+{
+  public:
 
-    public:
-        typedef CLUSTER_OPERATOR                        ClusterOperator;
-        typedef typename ClusterOperator::MergeGraph    MergeGraph;
-        typedef typename MergeGraph::Graph              Graph;
-        typedef typename Graph::Edge                    BaseGraphEdge;
-        typedef typename Graph::Node                    BaseGraphNode;
-        typedef typename MergeGraph::Edge               Edge;
-        typedef typename MergeGraph::Node               Node;
-        typedef typename CLUSTER_OPERATOR::WeightType   ValueType;
-        typedef typename MergeGraph::index_type         MergeGraphIndexType;
+    ClusteringOptions(
+        const size_t      nodeNumStopCond = 1,
+        const bool        buildMergeTree  = false,
+        const bool        verbose         = false)
+    : nodeNumStopCond_ (nodeNumStopCond)
+    , maxMergeWeight_(NumericTraits<double>::max())
+    , nodeFeatureImportance_(0.5)
+    , sizeImportance_(1.0)
+    , nodeFeatureMetric_(metrics::ManhattanMetric)
+    , buildMergeTreeEncoding_(buildMergeTree)
+    , verbose_(verbose)
+    {}
 
-        struct Parameter{
-            Parameter(
-                const size_t      nodeNumStopCond = 1,
-                const bool        buildMergeTree  = true,
-                const bool        verbose         = false
-            )
-            :   nodeNumStopCond_ (nodeNumStopCond),
-                buildMergeTreeEncoding_(buildMergeTree),
-                verbose_(verbose){
-            }
-            size_t nodeNumStopCond_;
-            bool   buildMergeTreeEncoding_;
-            bool   verbose_;
-        };
+        /** Stop merging when the number of clusters reaches this threshold.
 
-        struct MergeItem{
-            MergeItem(
-                const MergeGraphIndexType  a,
-                const MergeGraphIndexType  b,
-                const MergeGraphIndexType  r,
-                const ValueType            w
-            ):
-            a_(a),b_(b),r_(r),w_(w){
-            }
-            MergeGraphIndexType a_;
-            MergeGraphIndexType b_;
-            MergeGraphIndexType r_;
-            ValueType           w_;
-        };
+            Default: 1 (don't stop early)
+        */
+    ClusteringOptions & minRegionCount(size_t count)
+    {
+        nodeNumStopCond_ = count;
+        return *this;
+    }
 
-        typedef std::vector<MergeItem> MergeTreeEncoding;
+        /** Stop merging when the weight of the cheapest edge exceeds this threshold.
 
-        /// \brief construct HierarchicalClustering from clusterOperator and an optional parameter object
-        HierarchicalClustering(
-            ClusterOperator & clusterOperator,
-            const Parameter & parameter = Parameter()
-        )
-        :
-            clusterOperator_(clusterOperator),
-            param_(parameter),
-            mergeGraph_(clusterOperator_.mergeGraph()),
-            graph_(mergeGraph_.graph()),
-            timestamp_(graph_.maxNodeId()+1),
-            toTimeStamp_(),
-            timeStampIndexToMergeIndex_(),
-            mergeTreeEndcoding_()
-        {
-            if(param_.buildMergeTreeEncoding_){
-                // this can be be made smater since user can pass
-                // stoping condition based on nodeNum
-                mergeTreeEndcoding_.reserve(graph_.nodeNum()*2);
-                toTimeStamp_.resize(graph_.maxNodeId()+1);
-                timeStampIndexToMergeIndex_.resize(graph_.maxNodeId()+1);
-                for(MergeGraphIndexType nodeId=0;nodeId<=mergeGraph_.maxNodeId();++nodeId){
-                    toTimeStamp_[nodeId]=nodeId;
-                }
-            }
+            Default: infinity (don't stop early)
+        */
+    ClusteringOptions & maxMergeDistance(double val)
+    {
+        maxMergeWeight_ = val;
+        return *this;
+    }
 
+        /** Importance of node features relative to edge weights.
 
+            Must be between 0 and 1, with 0 meaning that node features
+            are ignored, and 1 meaning that edge weights are ignored.
 
+            Default: 0.5 (equal importance)
+        */
+    ClusteringOptions & nodeFeatureImportance(double val)
+    {
+        vigra_precondition(0.0 <= val && val <= 1.0,
+            "ClusteringOptions::nodePropertyImportance(val): 0 <= val <= 1 required.");
+        nodeFeatureImportance_ = val;
+        return *this;
+    }
+
+        /** Importance of node size.
+
+            Must be between 0 and 1, with 0 meaning that size is ignored,
+            and 1 meaning that the algorithm prefers to keep cluster sizes
+            balanced.
+
+            Default: 1.0 (prefer like-sized clusters)
+        */
+    ClusteringOptions & sizeImportance(double val)
+    {
+        vigra_precondition(0.0 <= val && val <= 1.0,
+            "ClusteringOptions::sizeImportance(val): 0 <= val <= 1 required.");
+        sizeImportance_ = val;
+        return *this;
+    }
+
+        /** Metric to be used when transforming node features into cluster distances.
+
+            The cluster (= node) distance is the respective norm of the difference
+            vector between the corresponding node feature vectors.
+
+            Default: metrics::ManhattanMetric (L1-norm of the feature difference)
+        */
+    ClusteringOptions & nodeFeatureMetric(metrics::MetricType metric)
+    {
+        nodeFeatureMetric_ = metric;
+        return *this;
+    }
+
+    ClusteringOptions & buildMergeTreeEncoding(bool val=true)
+    {
+        buildMergeTreeEncoding_ = val;
+        return *this;
+    }
+
+        /** Display progress information.
+
+            Default: false
+        */
+    ClusteringOptions & verbose(bool val=true)
+    {
+        verbose_ = val;
+        return *this;
+    }
+
+    size_t nodeNumStopCond_;
+    double maxMergeWeight_;
+    double nodeFeatureImportance_;
+    double sizeImportance_;
+    metrics::MetricType nodeFeatureMetric_;
+    bool   buildMergeTreeEncoding_;
+    bool   verbose_;
+};
+
+// \brief  do hierarchical clustering with a given cluster operator
+template< class CLUSTER_OPERATOR>
+class HierarchicalClusteringImpl
+{
+  public:
+    typedef CLUSTER_OPERATOR                        ClusterOperator;
+    typedef typename ClusterOperator::MergeGraph    MergeGraph;
+    typedef typename MergeGraph::Graph              Graph;
+    typedef typename Graph::Edge                    BaseGraphEdge;
+    typedef typename Graph::Node                    BaseGraphNode;
+    typedef typename MergeGraph::Edge               Edge;
+    typedef typename MergeGraph::Node               Node;
+    typedef typename CLUSTER_OPERATOR::WeightType   ValueType;
+    typedef typename MergeGraph::index_type         MergeGraphIndexType;
+
+    typedef ClusteringOptions Parameter;
+
+    struct MergeItem{
+        MergeItem(
+            const MergeGraphIndexType  a,
+            const MergeGraphIndexType  b,
+            const MergeGraphIndexType  r,
+            const ValueType            w
+        ):
+        a_(a),b_(b),r_(r),w_(w){
         }
-
-        /// \brief start the clustering
-        void cluster(){
-            if(param_.verbose_)
-                std::cout<<"\n";
-            while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0 && !clusterOperator_.done()){
-
-                const Edge edgeToRemove = clusterOperator_.contractionEdge();
-                if(param_.buildMergeTreeEncoding_){
-                    const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove));
-                    const MergeGraphIndexType vid = mergeGraph_.id(mergeGraph_.v(edgeToRemove));
-                    const ValueType w             = clusterOperator_.contractionWeight();
-                    // do the merge
-                    mergeGraph_.contractEdge( edgeToRemove);
-                    const MergeGraphIndexType aliveNodeId = mergeGraph_.hasNodeId(uid) ? uid : vid;
-                    const MergeGraphIndexType deadNodeId  = aliveNodeId==vid ? uid : vid;
-                    timeStampIndexToMergeIndex_[timeStampToIndex(timestamp_)]=mergeTreeEndcoding_.size();
-                    mergeTreeEndcoding_.push_back(MergeItem( toTimeStamp_[aliveNodeId],toTimeStamp_[deadNodeId],timestamp_,w));
-                    toTimeStamp_[aliveNodeId]=timestamp_;
-                    timestamp_+=1;
-                }
-                else{
-                    //std::cout<<"constract\n";
-                    // do the merge
-                    mergeGraph_.contractEdge( edgeToRemove );
-                }
-                if(param_.verbose_ && mergeGraph_.nodeNum()%1==0){
-                    std::cout<<"\rNodes: "<<std::setw(10)<<mergeGraph_.nodeNum()<<std::flush;
-                }
-
-            }
-            if(param_.verbose_)
-                std::cout<<"\n";
-        }
-
-        /// \brief get the encoding of the merge tree
-        const MergeTreeEncoding & mergeTreeEndcoding()const{
-            return mergeTreeEndcoding_;
-        }
-
-        template<class EDGE_MAP>
-        void ucmTransform(EDGE_MAP & edgeMap)const{
-            typedef typename Graph::EdgeIt  BaseGraphEdgeIt;
-
-            for(BaseGraphEdgeIt iter(graph()); iter!=lemon::INVALID; ++iter ){
-                const BaseGraphEdge edge=*iter;
-                edgeMap[edge] = edgeMap[mergeGraph().reprGraphEdge(edge)];
-            }
-        }
-
-        /// \brief get the node id's which are the leafes of a treeNodeId
-        template<class OUT_ITER>
-        size_t leafNodeIds(const MergeGraphIndexType treeNodeId, OUT_ITER begin)const{
-            if(treeNodeId<=graph_.maxNodeId()){
-                *begin=treeNodeId;
-                ++begin;
-                return 1;
-            }
-            else{
-                size_t leafNum=0;
-                std::queue<MergeGraphIndexType>     queue;
-                queue.push(treeNodeId);
-
-                while(!queue.empty()){
-
-                    const MergeGraphIndexType id = queue.front();
-                    queue.pop();
-                    const MergeGraphIndexType mergeIndex = timeStampToMergeIndex(id);
-                    const MergeGraphIndexType ab[]= { mergeTreeEndcoding_[mergeIndex].a_, mergeTreeEndcoding_[mergeIndex].b_};
-
-                    for(size_t i=0;i<2;++i){
-                        if(ab[i]<=graph_.maxNodeId()){
-                            *begin=ab[i];
-                            ++begin;
-                            ++leafNum;
-                        }
-                        else{
-                            queue.push(ab[i]);
-                        }
-                    }
-                }
-                return leafNum;
-            }
-        }
-
-        /// \brief get the graph the merge graph is based on
-        const Graph & graph()const{
-            return graph_;
-        }
-
-        /// \brief get the merge graph
-        const MergeGraph & mergeGraph()const{
-            return mergeGraph_;
-        }
-
-        /// \brief get the representative node id
-        const MergeGraphIndexType reprNodeId(const MergeGraphIndexType id)const{
-            return mergeGraph_.reprNodeId(id);
-        }
-    private:
-
-        MergeGraphIndexType timeStampToIndex(const MergeGraphIndexType timestamp)const{
-            return timestamp- graph_.maxNodeId();
-        }
-
-
-        MergeGraphIndexType timeStampToMergeIndex(const MergeGraphIndexType timestamp)const{
-            return timeStampIndexToMergeIndex_[timeStampToIndex(timestamp)];
-        }
-
-        ClusterOperator & clusterOperator_;
-        Parameter          param_;
-        MergeGraph & mergeGraph_;
-        const Graph  & graph_;
-        // parameter object
-
-
-        // timestamp
-        MergeGraphIndexType timestamp_;
-        std::vector<MergeGraphIndexType> toTimeStamp_;
-        std::vector<MergeGraphIndexType> timeStampIndexToMergeIndex_;
-        // data which can reconstruct the merge tree
-        MergeTreeEncoding mergeTreeEndcoding_;
-
-
+        MergeGraphIndexType a_;
+        MergeGraphIndexType b_;
+        MergeGraphIndexType r_;
+        ValueType           w_;
     };
 
+    typedef std::vector<MergeItem> MergeTreeEncoding;
 
+    /// \brief construct HierarchicalClusteringImpl from clusterOperator and an optional parameter object
+    HierarchicalClusteringImpl(
+        ClusterOperator & clusterOperator,
+        const Parameter & parameter = Parameter()
+    )
+    :
+        clusterOperator_(clusterOperator),
+        param_(parameter),
+        mergeGraph_(clusterOperator_.mergeGraph()),
+        graph_(mergeGraph_.graph()),
+        timestamp_(graph_.maxNodeId()+1),
+        toTimeStamp_(),
+        timeStampIndexToMergeIndex_(),
+        mergeTreeEndcoding_()
+    {
+        if(param_.buildMergeTreeEncoding_){
+            // this can be be made smater since user can pass
+            // stoping condition based on nodeNum
+            mergeTreeEndcoding_.reserve(graph_.nodeNum()*2);
+            toTimeStamp_.resize(graph_.maxNodeId()+1);
+            timeStampIndexToMergeIndex_.resize(graph_.maxNodeId()+1);
+            for(MergeGraphIndexType nodeId=0;nodeId<=mergeGraph_.maxNodeId();++nodeId){
+                toTimeStamp_[nodeId]=nodeId;
+            }
+        }
+
+
+
+    }
+
+    /// \brief start the clustering
+    void cluster(){
+        if(param_.verbose_)
+            std::cout<<"\n";
+        while(mergeGraph_.nodeNum()>param_.nodeNumStopCond_ && mergeGraph_.edgeNum()>0 && !clusterOperator_.done()){
+
+            const Edge edgeToRemove = clusterOperator_.contractionEdge();
+            if(param_.buildMergeTreeEncoding_){
+                const MergeGraphIndexType uid = mergeGraph_.id(mergeGraph_.u(edgeToRemove));
+                const MergeGraphIndexType vid = mergeGraph_.id(mergeGraph_.v(edgeToRemove));
+                const ValueType w             = clusterOperator_.contractionWeight();
+                // do the merge
+                mergeGraph_.contractEdge( edgeToRemove);
+                const MergeGraphIndexType aliveNodeId = mergeGraph_.hasNodeId(uid) ? uid : vid;
+                const MergeGraphIndexType deadNodeId  = aliveNodeId==vid ? uid : vid;
+                timeStampIndexToMergeIndex_[timeStampToIndex(timestamp_)]=mergeTreeEndcoding_.size();
+                mergeTreeEndcoding_.push_back(MergeItem( toTimeStamp_[aliveNodeId],toTimeStamp_[deadNodeId],timestamp_,w));
+                toTimeStamp_[aliveNodeId]=timestamp_;
+                timestamp_+=1;
+            }
+            else{
+                //std::cout<<"constract\n";
+                // do the merge
+                mergeGraph_.contractEdge( edgeToRemove );
+            }
+            if(param_.verbose_ && mergeGraph_.nodeNum()%1==0){
+                std::cout<<"\rNodes: "<<std::setw(10)<<mergeGraph_.nodeNum()<<std::flush;
+            }
+
+        }
+        if(param_.verbose_)
+            std::cout<<"\n";
+    }
+
+    /// \brief get the encoding of the merge tree
+    const MergeTreeEncoding & mergeTreeEndcoding()const{
+        return mergeTreeEndcoding_;
+    }
+
+    template<class EDGE_MAP>
+    void ucmTransform(EDGE_MAP & edgeMap)const{
+        typedef typename Graph::EdgeIt  BaseGraphEdgeIt;
+
+        for(BaseGraphEdgeIt iter(graph()); iter!=lemon::INVALID; ++iter ){
+            const BaseGraphEdge edge=*iter;
+            edgeMap[edge] = edgeMap[mergeGraph().reprGraphEdge(edge)];
+        }
+    }
+
+    /// \brief get the node id's which are the leafes of a treeNodeId
+    template<class OUT_ITER>
+    size_t leafNodeIds(const MergeGraphIndexType treeNodeId, OUT_ITER begin)const{
+        if(treeNodeId<=graph_.maxNodeId()){
+            *begin=treeNodeId;
+            ++begin;
+            return 1;
+        }
+        else{
+            size_t leafNum=0;
+            std::queue<MergeGraphIndexType>     queue;
+            queue.push(treeNodeId);
+
+            while(!queue.empty()){
+
+                const MergeGraphIndexType id = queue.front();
+                queue.pop();
+                const MergeGraphIndexType mergeIndex = timeStampToMergeIndex(id);
+                const MergeGraphIndexType ab[]= { mergeTreeEndcoding_[mergeIndex].a_, mergeTreeEndcoding_[mergeIndex].b_};
+
+                for(size_t i=0;i<2;++i){
+                    if(ab[i]<=graph_.maxNodeId()){
+                        *begin=ab[i];
+                        ++begin;
+                        ++leafNum;
+                    }
+                    else{
+                        queue.push(ab[i]);
+                    }
+                }
+            }
+            return leafNum;
+        }
+    }
+
+    /// \brief get the graph the merge graph is based on
+    const Graph & graph()const{
+        return graph_;
+    }
+
+    /// \brief get the merge graph
+    const MergeGraph & mergeGraph()const{
+        return mergeGraph_;
+    }
+
+    /// \brief get the representative node id
+    const MergeGraphIndexType reprNodeId(const MergeGraphIndexType id)const{
+        return mergeGraph_.reprNodeId(id);
+    }
+private:
+
+    MergeGraphIndexType timeStampToIndex(const MergeGraphIndexType timestamp)const{
+        return timestamp- graph_.maxNodeId();
+    }
+
+
+    MergeGraphIndexType timeStampToMergeIndex(const MergeGraphIndexType timestamp)const{
+        return timeStampIndexToMergeIndex_[timeStampToIndex(timestamp)];
+    }
+
+    ClusterOperator & clusterOperator_;
+    Parameter          param_;
+    MergeGraph & mergeGraph_;
+    const Graph  & graph_;
+    // parameter object
+
+
+    // timestamp
+    MergeGraphIndexType timestamp_;
+    std::vector<MergeGraphIndexType> toTimeStamp_;
+    std::vector<MergeGraphIndexType> timeStampIndexToMergeIndex_;
+    // data which can reconstruct the merge tree
+    MergeTreeEncoding mergeTreeEndcoding_;
+
+
+};
+
+/********************************************************/
+/*                                                      */
+/*                hierarchicalClustering                */
+/*                                                      */
+/********************************************************/
+
+/** \brief Reduce the number of nodes in a graph by iteratively contracting
+    the cheapest edge.
+
+    <b> Declarations:</b>
+
+    \code
+    namespace vigra {
+        template <class GRAPH,
+                  class EDGE_WEIGHT_MAP,  class EDGE_LENGTH_MAP,
+                  class NODE_FEATURE_MAP, class NOSE_SIZE_MAP,
+                  class NODE_LABEL_MAP>
+        void
+        hierarchicalClustering(GRAPH const & graph,
+                               EDGE_WEIGHT_MAP const & edgeWeights, EDGE_LENGTH_MAP const & edgeLengths,
+                               NODE_FEATURE_MAP const & nodeFeatures, NOSE_SIZE_MAP const & nodeSizes,
+                               NODE_LABEL_MAP & labelMap,
+                               ClusteringOptions options = ClusteringOptions());
+    }
+    \endcode
+
+    Hierarchical clustering is a simple and versatile image segmentation
+    algorithm that typically operates either directly on the pixels (e.g. on
+    a \ref vigra::GridGraph) or on a region adjacency graph over suitable
+    superpixels (e.g. on an \ref vigra::AdjacencyListGraph). The graph is
+    passed to the function in its first argument. After clustering is completed,
+    the parameter \a labelMap contains a mapping from original node IDs to
+    the ID of the cluster each node belongs to. Cluster IDs correspond to
+    the ID of an arbitrarily chosen representative node within each cluster,
+    i.e. they form a sparse subset of the original IDs.
+
+    Properties of the graph's edges and nodes are provided in the property maps
+    \a edgeWeights, \a edgeLengths, \a nodeFeatures, and \a nodeSizes. These maps
+    are indexed by edge or node ID and return the corresponding feature. Features
+    must by arithmetic scalars or, in case of node features, scalars or vectors
+    of scalars (precisely: objects that provide <tt>begin()</tt> and <tt>end()</tt>
+    to create an STL range). Edge weights are typically derived from an edge
+    indicator such as the gradient magnitude, and node features are either the
+    responses of a filter family (when clustering on the pixel grid), or region
+    statistics as computed by \ref FeatureAccumulators (when clustering on
+    superpixels).
+
+    In each step, the algorithm merges the two nodes \f$u\f$ and \f$v\f$ whose
+    cluster distance is smallest, where the cluster distance is defined as
+
+    \f[
+        d_{uv} = \left( (1-\beta) w_{uv} + \beta || f_u - f_v ||_M \right)
+                 \cdot \frac{2}{s_u^{-\omega} + s_v^{-\omega}}
+    \f]
+
+    with \f$ w_{uv} \f$ denoting the weight of edge \f$uv\f$, \f$f_u\f$ and \f$f_v\f$
+    being the node features (possibly vectors to be compared with metric \f$M\f$),
+    and \f$s_u\f$ and \f$s_v\f$ the corresponding node sizes. The metric is defined
+    in the option object by calling \ref vigra::ClusteringOptions::nodeFeatureMetric()
+    and must be selected from the tags defined in \ref vigra::metrics::MetricType.
+
+    The parameters \f$0 \le \beta \le 1\f$ and \f$0 \le \omega \le 1\f$ control the
+    relative influence of the inputs: With \f$\beta = 0\f$, the node features are
+    ignored, whereas with \f$\beta = 1\f$ the edge weights are ignored. Similarly,
+    with \f$\omega = 0\f$, the node size is ignored, whereas with \f$\omega = 1\f$,
+    cluster distances are scaled by the harmonic mean of the cluster sizes, making
+    the merging of small clusters more favorable. The parameters are defined in the
+    option object by calling \ref vigra::ClusteringOptions::nodeFeatureImportance() and
+    \ref vigra::ClusteringOptions::sizeImportance() respectively.
+
+    After each merging step, the features of the resulting cluster \f$z\f$ and the weights
+    of its outgoing edges are updated by mean of the corresponding properties of the original
+    clusters \f$u\f$ and \f$v\f$, weighted by the respective node sizes \f$s_z\f$ and
+    edge lengths \f$l_{zy}\f$:
+
+    \f{eqnarray*}{
+        s_z & = & s_u + s_v \\
+        f_z & = & \frac{s_u f_u + s_v f_v}{s_z} \\
+        l_{zy} & = & l_{uy} + l_{vy} \textrm{ for all nodes }y\textrm{ connected to }u\textrm{ or }v \\
+        w_{zy} & = & \frac{l_{uy} w_{uy} + l_{vy} w_{vy}}{l_{zy}}
+    \f}
+
+    Clustering normally stops when only one cluster remains. This default can be overridden
+    by the option object parameters \ref vigra::ClusteringOptions::minRegionCount()
+    and \ref vigra::ClusteringOptions::maxMergeDistance() to stop at a particular number of
+    clusters or a particular cluster distance respectively.
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/hierarchical_clustering.hxx\><br>
+    Namespace: vigra
+
+    A fully worked example can be found in <a href="graph_agglomerative_clustering_8cxx-example.html">graph_agglomerative_clustering.cxx</a>
+*/
+doxygen_overloaded_function(template <...> void hierarchicalClustering)
+
+template <class GRAPH,
+          class EDGE_WEIGHT_MAP,  class EDGE_LENGTH_MAP,
+          class NODE_FEATURE_MAP, class NOSE_SIZE_MAP,
+          class NODE_LABEL_MAP>
+void
+hierarchicalClustering(GRAPH const & graph,
+                       EDGE_WEIGHT_MAP const & edgeWeights, EDGE_LENGTH_MAP const & edgeLengths,
+                       NODE_FEATURE_MAP const & nodeFeatures, NOSE_SIZE_MAP const & nodeSizes,
+                       NODE_LABEL_MAP & labelMap,
+                       ClusteringOptions options = ClusteringOptions())
+{
+    typedef typename NODE_LABEL_MAP::Value LabelType;
+    typedef MergeGraphAdaptor<GRAPH> MergeGraph;
+    typedef typename GRAPH::template EdgeMap<float>     EdgeUltrametric;
+    typedef typename GRAPH::template NodeMap<LabelType> NodeSeeds;
+
+    MergeGraph mergeGraph(graph);
+
+    // create property maps to store the computed ultrametric and
+    // to provide optional cannot-link constraints;
+    // we don't use these options here and therefore leave the maps empty
+    EdgeUltrametric edgeUltrametric(graph);
+    NodeSeeds nodeSeeds(graph);
+
+    // create an operator that stores all property maps needed for
+    // hierarchical clustering and updates them after every merge step
+    typedef cluster_operators::EdgeWeightNodeFeatures<
+        MergeGraph,
+        EDGE_WEIGHT_MAP,
+        EDGE_LENGTH_MAP,
+        NODE_FEATURE_MAP,
+        NOSE_SIZE_MAP,
+        EdgeUltrametric,
+        NodeSeeds>
+    MergeOperator;
+
+    MergeOperator mergeOperator(mergeGraph,
+                                edgeWeights, edgeLengths,
+                                nodeFeatures, nodeSizes,
+                                edgeUltrametric, nodeSeeds,
+                                options.nodeFeatureImportance_,
+                                options.nodeFeatureMetric_,
+                                options.sizeImportance_,
+                                options.maxMergeWeight_);
+
+    typedef HierarchicalClusteringImpl<MergeOperator> Clustering;
+
+    Clustering clustering(mergeOperator, options);
+    clustering.cluster();
+
+    for(typename GRAPH::NodeIt node(graph); node != lemon::INVALID; ++node)
+    {
+        labelMap[*node] = mergeGraph.reprNodeId(graph.id(*node));
+    }
 }
+
+//@}
+
+} // namespace vigra
 
 #endif // VIGRA_HIERARCHICAL_CLUSTERING_HXX

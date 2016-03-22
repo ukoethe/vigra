@@ -227,7 +227,7 @@ struct ArrayVectorTest
         shouldEqualSequence(vector_.begin(), vector_.end(), data);
     }
 
-    void testBackInsertion_failedOnVC14()
+    void testBackInsertionUntilReallocation()
     {
         // regression test for bug appearing with VC14,
         // see https://github.com/ukoethe/vigra/issues/256
@@ -1156,10 +1156,9 @@ struct MetaprogrammingTest
         should(typeid(UnqualifiedType<const int*&>::type) == typeid(int));
     }
 
-#if 0
     struct FinallyTester
     {
-        mutable int & v_;
+        int & v_;
 
         FinallyTester(int & v)
             : v_(v)
@@ -1167,15 +1166,12 @@ struct MetaprogrammingTest
 
         void sq() const
         {
-            v_ = v_*v_;
+            const_cast<int &>(v_) = v_*v_;
         }
     };
-#endif
 
     void testFinally()
     {
-        std::cout << "testFinally() is disabled because many compilers do not yet support it." << std::endl;
-#if 0
         int v = 0;
         {
             FinallyTester finally_tester(v);
@@ -1197,7 +1193,6 @@ struct MetaprogrammingTest
         }
         catch(std::runtime_error &) {}
         shouldEqual(v, 2);
-#endif
     }
 };
 
@@ -1449,7 +1444,7 @@ struct AnyTest
         shouldEqual(a.get<int>(), 10);
         shouldEqual(b.get<int>(), 10);
 
-        b.release();
+        b.destroy();
         shouldNot(bool(b));
         should(b.empty());
 
@@ -1533,6 +1528,7 @@ struct UtilitiesTestSuite
 
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
+        add( testCase( &ArrayVectorTest::testBackInsertionUntilReallocation));
         add( testCase( &ArrayVectorTest::testAmbiguousConstructor));
         add( testCase( &BucketQueueTest::testDescending));
         add( testCase( &BucketQueueTest::testAscending));

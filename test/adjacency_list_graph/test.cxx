@@ -407,7 +407,7 @@ struct AdjacencyListGraphTest{
 
             
             std::vector<Edge> edgeVec(begin,invalid);
-            shouldEqual(4,edgeVec.size());
+            shouldEqual(4u,edgeVec.size());
             shouldEqual(0,g.id(edgeVec[0]));
             shouldEqual(1,g.id(edgeVec[1]));
             shouldEqual(2,g.id(edgeVec[2]));
@@ -419,7 +419,7 @@ struct AdjacencyListGraphTest{
 
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
-            shouldEqual(4,edgeVec.size());
+            shouldEqual(4u,edgeVec.size());
             shouldEqual(0,g.id(edgeVec[0]));
             shouldEqual(1,g.id(edgeVec[1]));
             shouldEqual(2,g.id(edgeVec[2]));
@@ -431,7 +431,7 @@ struct AdjacencyListGraphTest{
 
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
-            shouldEqual(3,edgeVec.size());
+            shouldEqual(3u,edgeVec.size());
             shouldEqual(1,g.id(edgeVec[0]));
             shouldEqual(2,g.id(edgeVec[1]));
             shouldEqual(3,g.id(edgeVec[2]));
@@ -446,7 +446,7 @@ struct AdjacencyListGraphTest{
 
             shouldEqual(std::distance(begin,end),1);
             std::vector<Edge> edgeVec(begin,end);
-            shouldEqual(1,edgeVec.size());
+            shouldEqual(1u,edgeVec.size());
             shouldEqual(1,g.id(edgeVec[0]));
         }
 
@@ -458,7 +458,7 @@ struct AdjacencyListGraphTest{
             should(end!=lemon::INVALID);
 
             std::vector<Edge> edgeVec(begin,end);
-            shouldEqual(2,edgeVec.size());
+            shouldEqual(2u,edgeVec.size());
             shouldEqual(1,g.id(edgeVec[0]));
             shouldEqual(2,g.id(edgeVec[1]));
         }
@@ -491,7 +491,7 @@ struct AdjacencyListGraphTest{
 
             
             std::vector<Edge> edgeVec(begin,invalid);
-            shouldEqual(4,edgeVec.size());
+            shouldEqual(4u,edgeVec.size());
             shouldEqual(0,g.id(edgeVec[0]));
             shouldEqual(1,g.id(edgeVec[1]));
             shouldEqual(2,g.id(edgeVec[2]));
@@ -503,7 +503,7 @@ struct AdjacencyListGraphTest{
 
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
-            shouldEqual(4,edgeVec.size());
+            shouldEqual(4u,edgeVec.size());
             shouldEqual(0,g.id(edgeVec[0]));
             shouldEqual(1,g.id(edgeVec[1]));
             shouldEqual(2,g.id(edgeVec[2]));
@@ -515,7 +515,7 @@ struct AdjacencyListGraphTest{
 
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
-            shouldEqual(3,edgeVec.size());
+            shouldEqual(3u,edgeVec.size());
             shouldEqual(1,g.id(edgeVec[0]));
             shouldEqual(2,g.id(edgeVec[1]));
             shouldEqual(3,g.id(edgeVec[2]));
@@ -530,7 +530,7 @@ struct AdjacencyListGraphTest{
 
             shouldEqual(std::distance(begin,end),1);
             std::vector<Edge> edgeVec(begin,end);
-            shouldEqual(1,edgeVec.size());
+            shouldEqual(1u,edgeVec.size());
             shouldEqual(1,g.id(edgeVec[0]));
         }
 
@@ -542,7 +542,7 @@ struct AdjacencyListGraphTest{
             should(end!=lemon::INVALID);
 
             std::vector<Edge> edgeVec(begin,end);
-            shouldEqual(2,edgeVec.size());
+            shouldEqual(2u,edgeVec.size());
             shouldEqual(1,g.id(edgeVec[0]));
             shouldEqual(2,g.id(edgeVec[1]));
         }
@@ -573,7 +573,7 @@ struct AdjacencyListGraphTest{
 
             should(begin!=lemon::INVALID);            
             std::vector<Node> nodeVec(begin,invalid);
-            shouldEqual(4,nodeVec.size());
+            shouldEqual(4u,nodeVec.size());
             shouldEqual(0,g.id(nodeVec[0]));
             shouldEqual(1,g.id(nodeVec[1]));
             shouldEqual(2,g.id(nodeVec[2]));
@@ -585,7 +585,7 @@ struct AdjacencyListGraphTest{
 
             NodeIt empty;
             std::vector<Node> nodeVec(begin,empty);
-            shouldEqual(4,nodeVec.size());
+            shouldEqual(4u,nodeVec.size());
             shouldEqual(0,g.id(nodeVec[0]));
             shouldEqual(1,g.id(nodeVec[1]));
             shouldEqual(2,g.id(nodeVec[2]));
@@ -597,7 +597,7 @@ struct AdjacencyListGraphTest{
 
             NodeIt empty;
             std::vector<Node> nodeVec(begin,empty);
-            shouldEqual(3,nodeVec.size());
+            shouldEqual(3u,nodeVec.size());
             shouldEqual(1,g.id(nodeVec[0]));
             shouldEqual(2,g.id(nodeVec[1]));
             shouldEqual(3,g.id(nodeVec[2]));
@@ -612,7 +612,7 @@ struct AdjacencyListGraphTest{
 
             shouldEqual(std::distance(begin,end),1);
             std::vector<Node> nodeVec(begin,end);
-            shouldEqual(1,nodeVec.size());
+            shouldEqual(1u,nodeVec.size());
             shouldEqual(1,g.id(nodeVec[0]));
         }
 
@@ -624,7 +624,7 @@ struct AdjacencyListGraphTest{
             should(end!=lemon::INVALID);
 
             std::vector<Node> nodeVec(begin,end);
-            shouldEqual(2,nodeVec.size());
+            shouldEqual(2u,nodeVec.size());
             shouldEqual(1,g.id(nodeVec[0]));
             shouldEqual(2,g.id(nodeVec[1]));
         }
@@ -661,7 +661,7 @@ struct AdjacencyListGraphTest{
 
             should(begin!=lemon::INVALID);            
             std::vector<Node> nodeVec(begin,invalid);
-            shouldEqual(4,nodeVec.size());
+            shouldEqual(4u,nodeVec.size());
             shouldEqual(1,g.id(nodeVec[0]));
             shouldEqual(2,g.id(nodeVec[1]));
             shouldEqual(3,g.id(nodeVec[2]));
@@ -673,7 +673,7 @@ struct AdjacencyListGraphTest{
 
             NodeIt empty;
             std::vector<Node> nodeVec(begin,empty);
-            shouldEqual(4,nodeVec.size());
+            shouldEqual(4u,nodeVec.size());
             shouldEqual(1,g.id(nodeVec[0]));
             shouldEqual(2,g.id(nodeVec[1]));
             shouldEqual(3,g.id(nodeVec[2]));
@@ -685,7 +685,7 @@ struct AdjacencyListGraphTest{
 
             NodeIt empty;
             std::vector<Node> nodeVec(begin,empty);
-            shouldEqual(3,nodeVec.size());
+            shouldEqual(3u,nodeVec.size());
             shouldEqual(2,g.id(nodeVec[0]));
             shouldEqual(3,g.id(nodeVec[1]));
             shouldEqual(4,g.id(nodeVec[2]));
@@ -700,7 +700,7 @@ struct AdjacencyListGraphTest{
 
             shouldEqual(std::distance(begin,end),1);
             std::vector<Node> nodeVec(begin,end);
-            shouldEqual(1,nodeVec.size());
+            shouldEqual(1u,nodeVec.size());
             shouldEqual(2,g.id(nodeVec[0]));
         }
 
@@ -712,7 +712,7 @@ struct AdjacencyListGraphTest{
             should(end!=lemon::INVALID);
 
             std::vector<Node> nodeVec(begin,end);
-            shouldEqual(2,nodeVec.size());
+            shouldEqual(2u,nodeVec.size());
             shouldEqual(2,g.id(nodeVec[0]));
             shouldEqual(3,g.id(nodeVec[1]));
         }
@@ -1031,7 +1031,7 @@ struct AdjacencyListGraphTest{
             should(begin!=lemon::INVALID);
             shouldEqual(std::distance(begin,invalid),8);            
             std::vector<Arc> arcVec(begin,invalid);
-            shouldEqual(8,arcVec.size());
+            shouldEqual(8u,arcVec.size());
             shouldEqual(0,g.id(arcVec[0]));
             shouldEqual(1,g.id(arcVec[1]));
             shouldEqual(2,g.id(arcVec[2]));
@@ -1047,7 +1047,7 @@ struct AdjacencyListGraphTest{
 
             ArcIt empty;
             std::vector<Arc> arcVec(begin,empty);
-            shouldEqual(8,arcVec.size());
+            shouldEqual(8u,arcVec.size());
             shouldEqual(0,g.id(arcVec[0]));
             shouldEqual(1,g.id(arcVec[1]));
             shouldEqual(2,g.id(arcVec[2]));
@@ -1063,7 +1063,7 @@ struct AdjacencyListGraphTest{
 
             ArcIt empty;
             std::vector<Arc> arcVec(begin,empty);
-            shouldEqual(7,arcVec.size());
+            shouldEqual(7u,arcVec.size());
             shouldEqual(1,g.id(arcVec[0]));
             shouldEqual(2,g.id(arcVec[1]));
             shouldEqual(3,g.id(arcVec[2]));
@@ -1082,7 +1082,7 @@ struct AdjacencyListGraphTest{
 
             shouldEqual(std::distance(begin,end),1);
             std::vector<Arc> arcVec(begin,end);
-            shouldEqual(1,arcVec.size());
+            shouldEqual(1u,arcVec.size());
             shouldEqual(1,g.id(arcVec[0]));
         }
 
@@ -1094,7 +1094,7 @@ struct AdjacencyListGraphTest{
             should(end!=lemon::INVALID);
 
             std::vector<Arc> arcVec(begin,end);
-            shouldEqual(2,arcVec.size());
+            shouldEqual(2u,arcVec.size());
             shouldEqual(1,g.id(arcVec[0]));
             shouldEqual(2,g.id(arcVec[1]));
         }
@@ -1203,7 +1203,7 @@ struct AdjacencyListGraphTest{
             shouldEqual(std::distance(a,b),2);
 
             std::set<Edge> eSet(a,b);
-            shouldEqual(eSet.size(),2);
+            shouldEqual(eSet.size(),2u);
             should(eSet.find(e13)!=eSet.end());
             should(eSet.find(e12)!=eSet.end());
             should(eSet.find(e34)==eSet.end());
@@ -1218,7 +1218,7 @@ struct AdjacencyListGraphTest{
             shouldEqual(std::distance(a,b),2);
 
             std::set<Edge> eSet(a,b);
-            shouldEqual(eSet.size(),2);
+            shouldEqual(eSet.size(),2u);
             should(eSet.find(e12)!=eSet.end());
             should(eSet.find(e24)!=eSet.end());
             should(eSet.find(e34)==eSet.end());
@@ -1233,7 +1233,7 @@ struct AdjacencyListGraphTest{
             shouldEqual(std::distance(a,b),2);
 
             std::set<Edge> eSet(a,b);
-            shouldEqual(eSet.size(),2);
+            shouldEqual(eSet.size(),2u);
             should(eSet.find(e13)!=eSet.end());
             should(eSet.find(e34)!=eSet.end());
             should(eSet.find(e12)==eSet.end());
@@ -1248,7 +1248,7 @@ struct AdjacencyListGraphTest{
             shouldEqual(std::distance(a,b),2);
 
             std::set<Edge> eSet(a,b);
-            shouldEqual(eSet.size(),2);
+            shouldEqual(eSet.size(),2u);
             should(eSet.find(e24)!=eSet.end());
             should(eSet.find(e34)!=eSet.end());
             should(eSet.find(e12)==eSet.end());
@@ -1282,10 +1282,10 @@ struct AdjacencyListGraphTest{
             should(a!=b);
             should(b==lemon::INVALID);
             should(a!=lemon::INVALID);
-            shouldEqual(std::distance(a,b),2);
+            shouldEqual(std::distance(a,b),2u);
 
             std::set<Edge> eSet(a,b);
-            shouldEqual(eSet.size(),2);
+            shouldEqual(eSet.size(),2u);
             should(eSet.find(e13)!=eSet.end());
             should(eSet.find(e12)!=eSet.end());
             should(eSet.find(e34)==eSet.end());
@@ -1300,7 +1300,7 @@ struct AdjacencyListGraphTest{
             shouldEqual(std::distance(a,b),2);
 
             std::set<Edge> eSet(a,b);
-            shouldEqual(eSet.size(),2);
+            shouldEqual(eSet.size(),2u);
             should(eSet.find(e12)!=eSet.end());
             should(eSet.find(e24)!=eSet.end());
             should(eSet.find(e34)==eSet.end());
@@ -1315,7 +1315,7 @@ struct AdjacencyListGraphTest{
             shouldEqual(std::distance(a,b),2);
 
             std::set<Edge> eSet(a,b);
-            shouldEqual(eSet.size(),2);
+            shouldEqual(eSet.size(),2u);
             should(eSet.find(e13)!=eSet.end());
             should(eSet.find(e34)!=eSet.end());
             should(eSet.find(e12)==eSet.end());
@@ -1330,7 +1330,7 @@ struct AdjacencyListGraphTest{
             shouldEqual(std::distance(a,b),2);
 
             std::set<Edge> eSet(a,b);
-            shouldEqual(eSet.size(),2);
+            shouldEqual(eSet.size(),2u);
             should(eSet.find(e24)!=eSet.end());
             should(eSet.find(e34)!=eSet.end());
             should(eSet.find(e12)==eSet.end());

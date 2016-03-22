@@ -1,0 +1,22 @@
+platform:
+    - x64
+
+environment:
+    matrix:
+        - PY_VERSION: "2.7"
+          VC_VERSION: "11"
+        - PY_VERSION: "3.5"
+          VC_VERSION: "14"
+
+build_script:
+    - if "%PY_VERSION%" == "2.7" set PATH=C:\\Miniconda-x64\\Scripts;%PATH%
+    - if "%PY_VERSION%" == "3.5" set PATH=C:\\Miniconda3-x64\\Scripts;%PATH%
+    - if "%PY_VERSION%" == "2.7" conda create -q --yes -n python -c ukoethe --override-channels visual-studio=%VC_VERSION%.0 python=%PY_VERSION% jpeg libpng libtiff hdf5 fftw boost numpy nose
+    - if "%PY_VERSION%" == "3.5" conda create -q --yes -n python python=%PY_VERSION% jpeg libpng libtiff hdf5 numpy nose
+    - activate python
+    - if "%PY_VERSION%" == "3.5" conda install -q --yes -c ukoethe --override-channels visual-studio=%VC_VERSION%.0 fftw boost
+    - cd %APPVEYOR_BUILD_FOLDER%
+    - mkdir build
+    - cd build
+    - cmake .. -G "Visual Studio %VC_VERSION% Win64" -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_ACTIVE_ENV%/Library"
+    - cmake --build . --target check --config Release

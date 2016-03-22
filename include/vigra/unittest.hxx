@@ -45,6 +45,7 @@
 #include <exception>          // for exception, bad_exception
 #include <stdexcept>
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <cfloat>
 #include <cmath>
@@ -147,11 +148,18 @@
 
 #define failTest VIGRA_ERROR
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
+
 namespace vigra {
 
 class test_suite;
 
 namespace detail {
+
+typedef std::pair<std::string, int> CheckpointType;
 
 struct errstream
 {
@@ -161,9 +169,9 @@ struct errstream
     errstream & operator<<(T t) { buf << t;  return *this; }
 };
 
-inline std::string & exception_checkpoint()
+inline CheckpointType & exception_checkpoint()
 {
-    static std::string test_checkpoint_;
+    static CheckpointType test_checkpoint_;
     return test_checkpoint_;
 }
 
@@ -172,9 +180,9 @@ inline void report_exception( detail::errstream & os,
                        const char * name, const char * info )
 {
     os << "Unexpected " << name << " " << info << "\n";
-    if(exception_checkpoint().size() > 0)
+    if(exception_checkpoint().first.size() > 0)
     {
-        os << "Last checkpoint: " << exception_checkpoint() << "\n";
+        os << "   (occured after line " << exception_checkpoint().second << " in file '" << exception_checkpoint().first << "')\n";
     }
 }
 
@@ -240,8 +248,6 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
 
 #elif defined(__unix)
 
-extern "C" {
-
 inline jmp_buf & unit_test_jump_buffer()
 {
     static jmp_buf unit_test_jump_buffer_;
@@ -252,8 +258,6 @@ static void unit_test_signal_handler(int sig)
 {
     longjmp(unit_test_jump_buffer(), sig);
 }
-
-} // extern "C"
 
 template< class Generator >  // Generator is function object returning int
 int catch_signals( Generator function_object, detail::errstream & err, int timeout)
@@ -451,17 +455,16 @@ struct unit_test_failed
 };
 
 inline void
-checkpoint_impl(const char * message, const char * file, int line)
+checkpoint_impl(const char * file, int line)
 {
-    detail::errstream buf;
-    buf << message << " (" << file <<":" << line << ")";
-    exception_checkpoint() = buf.str();
+    exception_checkpoint().first = file;
+    exception_checkpoint().second = line;
 }
 
 inline void
 should_impl(bool predicate, const char * message, const char * file, int line)
 {
-    checkpoint_impl(message, file, line);
+    checkpoint_impl(file, line);
     if(!predicate)
     {
         detail::errstream buf;
@@ -480,12 +483,13 @@ template <class Iter1, class Iter2>
 void 
 sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
 {
+    checkpoint_impl(file, line);
     for(int counter = 0; i1 != end1; ++i1, ++i2, ++counter)
     {
         if(*i1 != *i2)
         {
             detail::errstream buf;
-            buf << "Sequence items differ at index " << counter <<
+            buf << "Sequences differ at index " << counter <<
                    " ["<< *i1 << " != " << *i2 << "]";
             should_impl(false, buf.str().c_str(), file, line); 
         }
@@ -610,32 +614,44 @@ private:
 template <class T1, class T2, class T3>
 void
 tolerance_equal_impl(T1 left, T2 right, T3 epsilon, 
-                     const char * message, const char * file, int line, ScalarType)
+                     const char * message, const char * file, int line, ScalarType, std::ptrdiff_t index = -1)
 {
-    detail::errstream buf;
-    buf << message << " [" << left << " != " << right << "]";
-
+    checkpoint_impl(file, line);
     close_at_tolerance<T3> fcomparator( epsilon );
-    bool compare = fcomparator ( (T3)left , (T3)right );
-    should_impl(compare, buf.str().c_str(), file, line);
-
+    if (!fcomparator((T3)left, (T3)right))
+    {
+        detail::errstream buf;
+        if(index >= 0)
+            buf << "Sequences differ at index " << index;
+        buf << message << " [" << std::setprecision(17) << left << " != " << right << " at tolerance " << epsilon << "]";
+        should_impl(false, buf.str().c_str(), file, line);
+    }
 }
 
 template <class T1, class T2, class T3>
 void
 tolerance_equal_impl(T1 left, T2 right, T3 epsilon, 
-                     const char * message, const char * file, int line, VectorType)
+                     const char * message, const char * file, int line, VectorType, std::ptrdiff_t index = -1)
 {
-    detail::errstream buf;
-    buf << message << " [" << left << " != " << right << "]";
-
-    bool compare = true;
+    checkpoint_impl(file, line);
     for(unsigned int i=0; i<epsilon.size(); ++i)
     {
         close_at_tolerance<typename T3::value_type> fcomparator( epsilon[i] );
-        compare = compare && fcomparator ( left[i] , right[i] );
+        if (!fcomparator(left[i], right[i]))
+        {
+            detail::errstream buf;
+            if(index >= 0)
+            {
+                buf << "Sequences differ at index " << index << ", element " << i;
+            }
+            else
+            {
+                buf << "Vectors differ at element " << i;
+            }
+            buf << message << " [" << std::setprecision(17) << left << " != " << right << " at tolerance " << epsilon << "]";
+            should_impl(false, buf.str().c_str(), file, line);
+        }
     }
-    should_impl(compare, buf.str().c_str(), file, line);
 }
 
 template <class T1, class T2, class T3>
@@ -652,9 +668,7 @@ sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const c
 {
     for(int counter = 0; i1 != end1; ++i1, ++i2, ++counter)
     {
-        detail::errstream buf;
-        buf << "Sequence items differ at index " << counter;
-        tolerance_equal_impl(*i1, *i2, epsilon, buf.str().c_str(), file, line, typename FloatTraits<T>::ScalarOrVector()); 
+        tolerance_equal_impl(*i1, *i2, epsilon, "", file, line, typename FloatTraits<T>::ScalarOrVector(), counter); 
     }
 }
 
@@ -662,18 +676,26 @@ template <class Left, class Right>
 void
 equal_impl(Left left, Right right, const char * message, const char * file, int line)
 {
-    detail::errstream buf;
-    buf << message << " [" << left << " != " << right << "]";
-    should_impl(left == right, buf.str().c_str(), file, line);
+    checkpoint_impl(file, line);
+    if (left != right)
+    {
+        detail::errstream buf;
+        buf << message << " [" << left << " != " << right << "]";
+        should_impl(false, buf.str().c_str(), file, line);
+    }
 }
 
 template <class Left, class Right>
 void
 equal_impl(Left * left, Right * right, const char * message, const char * file, int line)
 {
-    detail::errstream buf;
-    buf << message << " [" << (void*)left << " != " << (void*)right << "]";
-    should_impl(left == right, buf.str().c_str(), file, line);
+    checkpoint_impl(file, line);
+    if (left != right)
+    {
+        detail::errstream buf;
+        buf << message << " [" << (void*)left << " != " << (void*)right << "]";
+        should_impl(false, buf.str().c_str(), file, line);
+    }
 }
 
 inline void
@@ -933,7 +955,7 @@ class class_test_case
 
     int init()
     {
-        exception_checkpoint() = "";
+        exception_checkpoint().first = "";
         report_ = "";
         int failed = 0;
 
@@ -1042,7 +1064,7 @@ class function_test_case
             return 0;
 
         report_ = "";
-        exception_checkpoint() = "";
+        exception_checkpoint().first = "";
 
         detail::errstream buf;
         buf << "\nFailure in " << name() << "\n";
@@ -1093,7 +1115,7 @@ class functor_test_case
             return 0;
 
         report_ = "";
-        exception_checkpoint() = "";
+        exception_checkpoint().first = "";
         
         detail::errstream buf;
         buf << "\nFailure in " << name() << "\n";
@@ -1177,6 +1199,10 @@ std::ostream & operator,(std::ostream & o,
     return (o << t);
 }
 
+#endif
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
 #endif
 
 

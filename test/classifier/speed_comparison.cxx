@@ -10,7 +10,7 @@ using namespace vigra;
 
 
 
-int main(int argc, char ** argv)
+int main(int /*argc*/, char ** /*argv*/)
 {
     typedef MultiArrayShape<2>::type Shp;
     MultiArray<2, double> features(Shp(1000, 50), 0.0);

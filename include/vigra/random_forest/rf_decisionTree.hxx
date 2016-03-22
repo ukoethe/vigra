@@ -41,6 +41,7 @@
 #include <numeric>
 #include "vigra/multi_array.hxx"
 #include "vigra/mathutil.hxx"
+#include "vigra/metaprogramming.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/sized_int.hxx"
 #include "vigra/matrix.hxx"
@@ -216,8 +217,7 @@ class DecisionTree
     template<class Visitor_t>
     void traverse_mem_order(Visitor_t visitor) const
     {
-        TreeInt index = 2;
-        Int32 ii = 0;
+        UInt32 index = 2;
         while(index < topology_.size())
         {
             if(isLeafNode(topology_[index]))
@@ -234,7 +234,7 @@ class DecisionTree
     }
 
     template<class Visitor_t>
-    void traverse_post_order(Visitor_t visitor,  TreeInt start = 2) const
+    void traverse_post_order(Visitor_t visitor,  TreeInt /*start*/ = 2) const
     {
         typedef TinyVector<double, 2> Entry; 
         std::vector<Entry > stack;
@@ -451,6 +451,7 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
         //copy the newly created node form the split functor to the
         //decision tree.
         NodeBase node(split.createNode(), topology_, parameters_ );
+        ignore_argument(node);
     }
     if(garbaged_child!=-1)
     {
