@@ -2717,18 +2717,18 @@ struct LinalgTest
             shouldEqual(determinant(mns3), -21);
         }
         {
-            unsigned int ds2[] = {1, 2, 2, 1};
-            unsigned int dns2[] = {1, 2, 3, 1};
-            vigra::Matrix<unsigned int> ms2(Shape(2,2), ds2);
-            vigra::Matrix<unsigned int> mns2(Shape(2,2), dns2);
+            unsigned short ds2[] = {1, 2, 2, 1};
+            unsigned short dns2[] = {1, 2, 3, 1};
+            vigra::Matrix<unsigned short> ms2(Shape(2,2), ds2);
+            vigra::Matrix<unsigned short> mns2(Shape(2,2), dns2);
             shouldEqual(determinant(ms2), -3);
             shouldEqual(determinant(mns2), -5);
         }
         {
-            unsigned int ds3[] = {1, 2, 3, 2, 3, 1, 3, 1, 2};
-            unsigned int dns3[] = {1, 2, 3, 5, 3, 1, 3, 1, 2};
-            vigra::Matrix<unsigned int> ms3(Shape(3,3), ds3);
-            vigra::Matrix<unsigned int> mns3(Shape(3,3), dns3);
+            unsigned short ds3[] = {1, 2, 3, 2, 3, 1, 3, 1, 2};
+            unsigned short dns3[] = {1, 2, 3, 5, 3, 1, 3, 1, 2};
+            vigra::Matrix<unsigned short> ms3(Shape(3,3), ds3);
+            vigra::Matrix<unsigned short> mns3(Shape(3,3), dns3);
             shouldEqual(determinant(ms3), -18);
             shouldEqual(determinant(mns3), -21);
         }

@@ -59,8 +59,10 @@ T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
 
     MultiArrayIndex m = rowCount(a), n = columnCount(a);
     vigra_precondition(n == m,
-       "determinant(): square matrix required.");
-       
+        "determinantByLUDecomposition(): square matrix required.");
+    vigra_precondition(NumericTraits<T>::isIntegral::value == false,
+        "determinantByLUDecomposition(): Input matrix must not be an integral type.");
+
     Matrix<T> LU(a);
     T det = 1.0;
 
@@ -102,7 +104,10 @@ determinantByMinors(MultiArrayView<2, T, C1> const & mat)
     MultiArrayIndex n = columnCount(mat);
     vigra_precondition(
             n == m,
-            "determinant(): square matrix required.");
+            "determinantByMinors(): square matrix required.");
+    vigra_precondition(
+            NumericTraits<PromoteType>::isSigned::value,
+            "determinantByMinors(): promote type must be signed.");
     if (m == 1)
     {
         return mat(0, 0);
@@ -955,6 +960,8 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
                            MultiArrayView<2, T, C2> &L)
 {
     MultiArrayIndex n = columnCount(A); 
+    vigra_precondition(NumericTraits<T>::isIntegral::value == false,
+                       "choleskyDecomposition(): Input matrix must not be an integral type.");
     vigra_precondition(rowCount(A) == n,
                        "choleskyDecomposition(): Input matrix must be square.");
     vigra_precondition(n == columnCount(L) && n == rowCount(L),
