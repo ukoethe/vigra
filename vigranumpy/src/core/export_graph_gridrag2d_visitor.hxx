@@ -24,7 +24,7 @@
 #include "vigra/threadpool.hxx"
 #include "vigra/grid_rag_2d_features.hxx"
 #include "vigra/accumulator.hxx"
-
+#include "vigra/splineimageview.hxx"
 namespace python = boost::python;
 
 namespace vigra{
@@ -130,27 +130,27 @@ public:
                 > > >()
         );
 
-        typedef OnTheFlyEdgeMap2<
-            Graph, typename PyNodeMapTraits<Graph,float>::Map,
-            MeanFunctor<float>, float
-        > ImplicitEdgeMap;
+        // typedef OnTheFlyEdgeMap2<
+        //     Graph, typename PyNodeMapTraits<Graph,float>::Map,
+        //     MeanFunctor<float>, float
+        // > ImplicitEdgeMap;
 
-        python::def("_ragEdgeStatistics",
-            registerConverters(
-                &pyRagEdgeFeaturesFromImplicit< float, float, ImplicitEdgeMap >
-            ),
-            (
-                python::arg("rag"),
-                python::arg("graph"),
-                python::arg("affiliatedEdges"),
-                python::arg("edgeFeatures"),
-                python::arg("out")=python::object()
-            )
-        );
 
         python::def("_gridRag2dCurvatureFeatures",
             registerConverters(
                 &pyCurvatureFeatures
+            ),
+            (
+                python::arg("rag"),
+                python::arg("sortedLines"),
+                python::arg("nThreads") = -1,
+                python::arg("out")=python::object()
+            )
+        );
+
+        python::def("_gridRag2dGeometricFeatures",
+            registerConverters(
+                &pyGeometricFeatures
             ),
             (
                 python::arg("rag"),
@@ -183,7 +183,7 @@ public:
         const int           nThreads,
         NumpyArray<RagEdgeMapDim+1, float> ragEdgeFeaturesArray
     ){
-        const size_t NFeatures = 12;
+        const size_t NFeatures = 14;
         // resize out
         typename MultiArray<RagEdgeMapDim+1,int>::difference_type outShape;
         for(size_t d=0;d<RagEdgeMapDim;++d){
@@ -202,83 +202,34 @@ public:
     }
 
 
-
-    
-    template<class T_PIXEL, class T, class OTF_EDGES>
-    static NumpyAnyArray pyRagEdgeFeaturesFromImplicit(
-        const RagGraph &           rag,
-        const Graph &              /*graph*/,
-        const RagAffiliatedEdges & affiliatedEdges,
-        const OTF_EDGES & otfEdgeMap,
-        NumpyArray<RagEdgeMapDim+1, T> ragEdgeFeaturesArray
+    static NumpyAnyArray pyGeometricFeatures(
+        const RagGraph      & rag,
+        const SortedLines   & sortedLines,
+        const int           nThreads,
+        NumpyArray<RagEdgeMapDim+1, float> ragEdgeFeaturesArray
     ){
-        
-        // preconditions
-        vigra_precondition(rag.edgeNum()>=1,"rag.edgeNum()>=1 is violated");
-
-        using namespace vigra::acc;
-
-        const size_t NFeatures = 12;
-
+        const size_t NFeatures = 5;
         // resize out
         typename MultiArray<RagEdgeMapDim+1,int>::difference_type outShape;
         for(size_t d=0;d<RagEdgeMapDim;++d){
             outShape[d]=IntrinsicGraphShape<RagGraph>::intrinsicEdgeMapShape(rag)[d];
         }
         outShape[RagEdgeMapDim]= NFeatures;
-
         ragEdgeFeaturesArray.reshapeIfEmpty(outShape);
 
-        // define histogram for quantiles
-        typedef StandardQuantiles<AutoRangeHistogram<0> > Quantiles;
-        size_t n_bins_min = 2;
-        size_t n_bins_max = 64;
+        {
+            PyAllowThreads _pythread;
+            geometricFeatures(sortedLines,nThreads, ragEdgeFeaturesArray);
+        }
 
-        //in parallel with threadpool
-        // -1 = use all cores
-        parallel_foreach( -1, rag.edgeNum(),
-            [&](size_t /*thread_id*/, int id) 
-            {
-                auto feat = ragEdgeFeaturesArray.bindInner(id);
-                // init the accumulator chain with the appropriate statistics
-                AccumulatorChain<double,
-                    Select<Mean, Sum, Minimum, Maximum, Variance, Skewness, Kurtosis, Quantiles> > a;
-                const std::vector<Edge> & affEdges = affiliatedEdges[id];
-                
-                // set n_bins = ceil( n_values**1./2.5 ) , clipped to [2,64]
-                // turned out to be suitable empirically 
-                // see https://github.com/consti123/quantile_tests
-                size_t n_bins = std::pow( affiliatedEdges.size(), 1. / 2.5); 
-                n_bins = std::max( n_bins_min, std::min(n_bins, n_bins_max) );
-                a.setHistogramOptions(HistogramOptions().setBinCount(n_bins));
-                
-                // accumulate the values of this edge
-                for(unsigned int k=1; k <= a.passesRequired(); ++k)
-                    for(size_t i=0;i<affEdges.size();++i)
-                        a.updatePassN( otfEdgeMap[affEdges[i]], k );
-                
-                feat[0] = get<Mean>(a);
-                feat[1] = get<Sum>(a);
-                feat[2] = get<Minimum>(a);
-                feat[3] = get<Maximum>(a);
-                feat[4] = get<Variance>(a);
-                feat[5] = get<Skewness>(a);
-                feat[6] = get<Kurtosis>(a);
-                // get quantiles, keep only the ones we care for
-                TinyVector<double, 7> quant = get<Quantiles>(a);
-                // we keep: 0.1, 0.25, 05 (median), 0.75 and 0.9 quantile
-                feat[7] = quant[1];
-                feat[8] = quant[2];
-                feat[9] = quant[3];
-                feat[10] = quant[4];
-                feat[11] = quant[5];
-            }
-        );
-        
+
         return ragEdgeFeaturesArray;
-
     }
 
+
+    
+
+ 
 
   
 private:

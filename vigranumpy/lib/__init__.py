@@ -360,7 +360,7 @@ def searchfor(searchstring):
             print(attr+"."+cont)
 
 # FIXME: use axistags here
-def imshow(image,show=True, **kwargs):
+def imshow(image,show=True,title=None, **kwargs):
     '''Display a scalar or RGB image by means of matplotlib.
        If the image does not have one or three channels, an exception is raised.
        The image will be automatically scaled to the range 0...255 when its dtype
@@ -396,6 +396,8 @@ def imshow(image,show=True, **kwargs):
             image = colors.linearRangeMapping(image, newRange=(0.0, 255.0), out=out)
         plot = matplotlib.pyplot.imshow(image.view(numpy.ndarray), **kwargs)
         if show:
+            if title is not None:
+                matplotlib.pylab.title(title)
             matplotlib.pylab.show()
         return plot
     else:
@@ -1206,7 +1208,11 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
 
         def curvatureFeatures(self, sortedLines):
             assert isinstance(self.baseGraph, graphs.GridGraphUndirected2d)
-            graphs._gridRag2dCurvatureFeatures(self, sortedLines)
+            return graphs._gridRag2dCurvatureFeatures(self, sortedLines)
+
+        def geometricFeatures(self, sortedLines):
+            assert isinstance(self.baseGraph, graphs.GridGraphUndirected2d)
+            return graphs._gridRag2dGeometricFeatures(self, sortedLines)
 
 
         def accumulateEdgeFeatures(self,edgeFeatures,acc='mean',out=None):
@@ -1515,7 +1521,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
             return segShow(img,numpy.squeeze(pLabels),edgeColor=edgeColor,alpha=alpha,returnImg=returnImg)
 
 
-        def showEdgeFeature(self, img, edgeFeature, cmap='jet', returnImg=False, labelMode=False):
+        def showEdgeFeature(self, img, edgeFeature, cmap='jet', returnImg=False, labelMode=False, title=None):
             import matplotlib
             assert graphs.isGridGraph(self.baseGraph)
             imgOut = img.copy().squeeze()
@@ -1558,7 +1564,7 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 #print(u.shape)
             if returnImg:
                 return imgOut
-            imshow(imgOut)
+            imshow(imgOut, title=title)
 
 
 

@@ -697,13 +697,18 @@ public:
                     for(size_t i=0;i<affEdges.size();++i)
                         a.updatePassN( otfEdgeMap[affEdges[i]], k );
                 
+
+                auto fixVals = [](float val, float replace){
+                    return std::isinf(val) || std::isnan(val) ? val : replace;
+                };
+
                 feat[0] = get<Mean>(a);
                 feat[1] = get<Sum>(a);
                 feat[2] = get<Minimum>(a);
                 feat[3] = get<Maximum>(a);
-                feat[4] = get<Variance>(a);
-                feat[5] = get<Skewness>(a);
-                feat[6] = get<Kurtosis>(a);
+                feat[4] = fixVals(get<Variance>(a),0);
+                feat[5] = fixVals(get<Skewness>(a),0);
+                feat[6] = fixVals(get<Kurtosis>(a),0);
                 // get quantiles, keep only the ones we care for
                 TinyVector<double, 7> quant = get<Quantiles>(a);
                 // we keep: 0.1, 0.25, 05 (median), 0.75 and 0.9 quantile

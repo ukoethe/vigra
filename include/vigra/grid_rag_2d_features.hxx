@@ -214,11 +214,79 @@ private:
 
 
 
+inline void geometricFeatures(
+    const SortedLines & sl, 
+    const int nThreads,
+    MultiArrayView<2, float> & out
+){
+
+
+
+    typedef SortedLines::Coord Coord;
+    // typedef TinyVector<long double, 2> FCoord;
+
+
+    
+    const auto & graph = sl.graph();
+
+    parallel_foreach( nThreads, graph.edgeNum(),
+    [&](size_t /*thread_id*/, int id){
+
+        
+
+        double accLineElements = 0 ;
+
+        const size_t nStepSettings = 6;
+        const size_t steps[6] = {1,4,8,15,20,30};
+        float  accVals[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+
+        for(const auto lineIndex : sl.edgeToLines(id)){
+            const auto & line  = sl.line(lineIndex);
+
+            std::vector<Coord>  vline(line.begin(), line.end());
+            std::vector<Coord>  sline;
+            accLineElements += vline.size();
+
+            for(size_t s=0; s<nStepSettings; ++s){
+                sline.resize(0);
+                sline.push_back(vline.front());
+                for(size_t i=1; i<vline.size()-1; i+=steps[s]){
+                    sline.push_back(vline[i]);
+                }
+                if(vline.size()>=2){
+                   sline.push_back(vline.back());
+                }
+                
+                // compute length
+                auto l =0.0;
+                if( vline.size() == 1){
+                    l = 1.0;
+                }
+                else{
+                    for(size_t i=0; i<sline.size()-1; ++i){
+                        l += norm(sline[i]-sline[i+1]);
+                    }
+                }
+                accVals[s] = l;
+            }
+        }
+        auto feat = out.bindInner(id);
+        for(size_t s=0; s<nStepSettings-1; ++s){
+            feat[s] = (accVals[0]  - accVals[s+1])/accLineElements;
+        }
+    });
+
+}
+
 inline void curvature(
     const SortedLines & sl, 
     const int nThreads,
-    MultiArrayView<2, float> out
+    MultiArrayView<2, float> & out
 ){
+
+
+
     typedef SortedLines::Coord Coord;
     typedef TinyVector<long double, 2> FCoord;
 
@@ -226,7 +294,7 @@ inline void curvature(
 
     typedef StandardQuantiles<AutoRangeHistogram<0> > Quantiles;
     typedef AccumulatorChain<double,
-    Select<Mean, Sum, Minimum, Maximum, Variance, Skewness, Kurtosis, Quantiles> > Acc;
+    Select<Mean, Variance, Quantiles> > Acc;
 
     
     const auto & graph = sl.graph();
@@ -254,73 +322,125 @@ inline void curvature(
              1.0/90.0
         };   
 
-        const size_t paddingSize = 3;
-        for(const auto lineIndex : sl.edgeToLines(id)){
-            const auto & line  = sl.line(lineIndex);
 
-            std::vector<Coord> paddedLineVec;
-            paddedLineVec.reserve(line.size()+2*paddingSize);
 
-            std::vector<FCoord> dxLine(line.size());
-            std::vector<FCoord> dxxLine(line.size());
-            std::vector<long double> rLine(line.size());
+        Acc accR;
+        Acc accDxx;
+        const size_t n_bins = 200;
+        //n_bins = std::max( 2, std::min(int(n_bins), 64) );
+        accDxx.setHistogramOptions(HistogramOptions().setBinCount(n_bins));
+        accR.setHistogramOptions(HistogramOptions().setBinCount(n_bins));
 
-            // padded line
-            for(size_t i=0; i<paddingSize; ++i)
-                paddedLineVec.push_back(line.front());
-            for(const auto & coord : line)
-                paddedLineVec.push_back(coord);
-            for(size_t i=0; i<paddingSize; ++i)
-                paddedLineVec.push_back(line.back());
+        for(unsigned int k=1; k <= accR.passesRequired(); ++k){
 
-            for(size_t i=0; i<line.size(); ++i){
-                auto vecI = i + paddingSize;
-                const Coord & c = paddedLineVec[i+paddingSize];
-                
-                FCoord valDX(0.0), valDXX(0.0);
-                for(size_t s=0; s<7; ++s){
-                    FCoord otherVal  = paddedLineVec[ vecI + s-3];
-                    //otherVal *= stencilDXX[s];
-                    valDXX += otherVal*FCoord(stencilDXX[s]);
-                    valDX  += otherVal*FCoord(stencilDX[s]);
+            const size_t paddingSize = 3;
+            for(const auto lineIndex : sl.edgeToLines(id)){
+                const auto & line  = sl.line(lineIndex);
+
+                std::vector<Coord> paddedLineVec;
+                paddedLineVec.reserve(line.size()+2*paddingSize);
+
+                std::vector<FCoord> dxLine(line.size());
+                std::vector<FCoord> dxxLine(line.size());
+                std::vector<long double> rLine(line.size());
+
+                // padded line
+                for(size_t i=0; i<paddingSize; ++i)
+                    paddedLineVec.push_back(line.front());
+                for(const auto & coord : line)
+                    paddedLineVec.push_back(coord);
+                for(size_t i=0; i<paddingSize; ++i)
+                    paddedLineVec.push_back(line.back());
+
+
+                // pre-smoothing
+
+                for(size_t i=1; i<paddedLineVec.size()-1; ++i){
+                    auto val  =  paddedLineVec[i]*2;
+                    auto valL =  paddedLineVec[i-1]; 
+                    auto valR =  paddedLineVec[i+1]; 
+                    paddedLineVec[i] = val + valL + valR;
+                    paddedLineVec[i] /= 4.0;
                 }
-                dxLine[i] = valDX;
-                dxxLine[i] = valDXX;
+                for(size_t i=1; i<paddedLineVec.size()-1; ++i){
+                    auto val  =  paddedLineVec[i]*2;
+                    auto valL =  paddedLineVec[i-1]; 
+                    auto valR =  paddedLineVec[i+1]; 
+                    paddedLineVec[i] = val + valL + valR;
+                    paddedLineVec[i] /= 4.0;
+                }
 
-                auto va = std::pow(vigra::norm(valDX),3);
-                auto vb = vigra::squaredNorm(valDX);
-                auto vc = vigra::squaredNorm(valDXX);
-                auto vd = vigra::sum(valDX*valDXX);
-                auto r  = va/std::sqrt(std::max(vb*vc-vd*vd, std::numeric_limits<long double>::epsilon() * 40.0 ));
-                rLine[i] = r;
-            }
-            //if(id==10){
-            //    std::cout<<"\n";
-            //    for(size_t i=0; i<line.size(); ++i){
-            //        std::cout<<"l  "<<paddedLineVec[i+3]<<"\n";
-            //        std::cout<<"dxx"<<dxLine[i]<<"\n";
-            //        std::cout<<"dxx"<<dxxLine[i]<<"\n";
-            //        std::cout<<"r  "<<1.0/rLine[i]<<"\n";
-            //    }
-            //}
+                for(size_t i=0; i<line.size(); ++i){
+                    auto vecI = i + paddingSize;
+                    const Coord & c = paddedLineVec[i+paddingSize];
+                    
+                    FCoord valDX(0.0), valDXX(0.0);
+                    for(size_t s=0; s<7; ++s){
+                        FCoord otherVal  = paddedLineVec[ vecI + s-3];
+                        //otherVal *= stencilDXX[s];
+                        valDXX += otherVal*FCoord(stencilDXX[s]);
+                        valDX  += otherVal*FCoord(stencilDX[s]);
+                    }
+                    dxLine[i] = valDX;
+                    dxxLine[i] = valDXX;
 
-            Acc accR;
-            Acc accDxx;
+                    auto va = std::pow(vigra::norm(valDX),3);
+                    auto vb = vigra::squaredNorm(valDX);
+                    auto vc = vigra::squaredNorm(valDXX);
+                    auto vd = vigra::sum(valDX*valDXX);
+                    auto r  = va/std::sqrt(std::max(vb*vc-vd*vd, std::numeric_limits<long double>::epsilon() * 1000.0 ));
+                    
 
-            size_t n_bins = std::pow( line.size(), 1. / 2.5); 
-            n_bins = std::max( 2, std::min(int(n_bins), 64) );
-            accDxx.setHistogramOptions(HistogramOptions().setBinCount(n_bins));
-            accR.setHistogramOptions(HistogramOptions().setBinCount(n_bins));
 
-            for(unsigned int k=1; k <= accR.passesRequired(); ++k){
+                    auto vva = std::pow(std::pow(valDX[0],2) + std::pow(valDX[1],2),1.5);
+                    auto vvb = valDX[0]*valDXX[1] - valDX[1]*valDXX[0]; 
+                    auto vvr = std::abs(vva/vvb);
+
+                    if(std::isnan(r)){
+                        r = 0.0;
+                    }
+                    if(vvr>100.0){
+                        vvr = 100.0;
+                    }
+                    rLine[i] = vvr;
+                }
+
                 for(size_t i=0;i<line.size();++i){
-                    accR.updatePassN( 1.0/rLine[i], k);
-                    accR.updatePassN( norm(rLine[i]), k);
+                    accR.updatePassN( 1.0 - std::exp( -0.01*std::abs(rLine[i])) , k);
+                    accDxx.updatePassN( norm(dxxLine[i]), k);
                 }
+                
             }
         }
-
         
+        auto feat = out.bindInner(id);
+        {
+            feat[0] = get<Mean>(accDxx);
+            feat[1] = get<Variance>(accDxx);
+
+            // get quantiles, keep only the ones we care for
+            TinyVector<double, 7> quant = get<Quantiles>(accDxx);
+            // we keep: 0.1, 0.25, 05 (median), 0.75 and 0.9 quantile
+            feat[2] = quant[1];
+            feat[3] = quant[2];
+            feat[4] = quant[3];
+            feat[5] = quant[4];
+            feat[6] = quant[5];
+        }
+        {
+            feat[7] = get<Mean>(accR);
+            feat[8] = get<Variance>(accR);
+
+            // get quantiles, keep only the ones we care for
+            TinyVector<double, 7> quant = get<Quantiles>(accR);
+            // we keep: 0.1, 0.25, 05 (median), 0.75 and 0.9 quantile
+            feat[9] = quant[1];
+            feat[10] = quant[2];
+            feat[11] = quant[3];
+            feat[12] = quant[4];
+            feat[13] = quant[5];
+        }
+
 
     });
 
