@@ -9,7 +9,6 @@
 #include <vigra/impex.hxx>
 #include <vigra/accumulator.hxx>
 #include <vigra/multi_blocking.hxx>
-#include <vigra/for_each_coord.hxx>
 #include "vigra/threadpool.hxx"
 
 namespace vigra{
@@ -100,7 +99,9 @@ private:
         Edges edges;
 
         // fill the coord map
-        ForEachCoord<2>::forEachCoord(shape, [&](const Coord & coord){
+        for(coord[1] = 0; coord[1]< shape[1]; ++coord[1])
+        for(coord[0] = 0; coord[0]< shape[1]; ++coord[0]){
+
             for(size_t d=0; d<2; ++d){
                 const auto lu = labels[coord];
                 Coord coordV = coord;
@@ -112,7 +113,7 @@ private:
                     }
                 }
             }
-        });
+        }
 
 
         for(auto & kv : edges){
@@ -362,17 +363,10 @@ inline void curvature(
                     paddedLineVec[i] = val + valL + valR;
                     paddedLineVec[i] /= 4.0;
                 }
-                for(size_t i=1; i<paddedLineVec.size()-1; ++i){
-                    auto val  =  paddedLineVec[i]*2;
-                    auto valL =  paddedLineVec[i-1]; 
-                    auto valR =  paddedLineVec[i+1]; 
-                    paddedLineVec[i] = val + valL + valR;
-                    paddedLineVec[i] /= 4.0;
-                }
-
+               
                 for(size_t i=0; i<line.size(); ++i){
                     auto vecI = i + paddingSize;
-                    const Coord & c = paddedLineVec[i+paddingSize];
+                    //const Coord & c = paddedLineVec[i+paddingSize];
                     
                     FCoord valDX(0.0), valDXX(0.0);
                     for(size_t s=0; s<7; ++s){
@@ -395,6 +389,10 @@ inline void curvature(
                     auto vva = std::pow(std::pow(valDX[0],2) + std::pow(valDX[1],2),1.5);
                     auto vvb = valDX[0]*valDXX[1] - valDX[1]*valDXX[0]; 
                     auto vvr = std::abs(vva/vvb);
+
+                    if(!std::isfinite(vvr)){
+                        vvr = 100.0;
+                    }
 
                     if(std::isnan(r)){
                         r = 0.0;

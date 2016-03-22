@@ -674,6 +674,7 @@ public:
         size_t n_bins_min = 2;
         size_t n_bins_max = 64;
 
+
         //in parallel with threadpool
         // -1 = use all cores
         parallel_foreach( -1, rag.edgeNum(),
@@ -699,7 +700,7 @@ public:
                 
 
                 auto fixVals = [](float val, float replace){
-                    return std::isinf(val) || std::isnan(val) ? val : replace;
+                    return std::isfinite(val) ?  val : replace;
                 };
 
                 feat[0] = get<Mean>(a);
@@ -712,11 +713,18 @@ public:
                 // get quantiles, keep only the ones we care for
                 TinyVector<double, 7> quant = get<Quantiles>(a);
                 // we keep: 0.1, 0.25, 05 (median), 0.75 and 0.9 quantile
-                feat[7] = quant[1];
-                feat[8] = quant[2];
-                feat[9] = quant[3];
-                feat[10] = quant[4];
-                feat[11] = quant[5];
+                feat[7] =   fixVals(quant[1],feat[0]);
+                feat[8] =   fixVals(quant[2],feat[0]);
+                feat[9] =   fixVals(quant[3],feat[0]);
+                feat[10] =  fixVals(quant[4],feat[0]);
+                feat[11] =  fixVals(quant[5],feat[0]);
+
+                for(size_t i=0; i<12; ++i){
+                    if(!std::isfinite(feat[i])){
+                        std::cout<<"outch "<<i<<"\n";
+                        throw std::runtime_error("fuck u");
+                    }
+                }
             }
         );
         
