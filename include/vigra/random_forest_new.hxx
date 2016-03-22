@@ -373,7 +373,8 @@ random_forest_impl(
     ProblemSpecNew<LabelType> pspec;
     pspec.num_instances(features.shape()[0])
          .num_features(features.shape()[1])
-         .actual_mtry(options.get_features_per_node(features.shape()[1]));
+         .actual_mtry(options.get_features_per_node(features.shape()[1]))
+         .actual_msample(labels.size());
 
     // Check the number of trees.
     size_t const tree_count = options.tree_count_;
@@ -456,6 +457,7 @@ random_forest_impl(
 
     // Merge the trees together.
     RF rf(trees[0]);
+    rf.options_ = options;
     for (size_t i = 1; i < trees.size(); ++i)
     {
         rf.merge(trees[i]);

@@ -154,6 +154,9 @@ public:
     /// \brief The specifications.
     ProblemSpecNew<LabelType> problem_spec_;
 
+    /// \brief The options that were used for training.
+    RandomForestNewOptions options_;
+
 private:
 
     /// \brief Compute the leaf ids of the instances in [from, to).
@@ -196,6 +199,8 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::merge(
 ){
     vigra_precondition(problem_spec_ == other.problem_spec_,
                        "RandomForest::merge(): You cannot merge with different problem specs.");
+
+    // FIXME: Eventually compare the options and only fix if the forests are compatible.
 
     size_t const offset = num_nodes();
     graph_.merge(other.graph_);
@@ -291,7 +296,7 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids(
 ) const {
     vigra_precondition(features.shape()[0] == ids.shape()[0],
                        "RandomForest::leaf_ids(): Shape mismatch between features and probabilities.");
-    vigra_precondition(features.shape()[1] == problem_spec_.num_features_,
+    vigra_precondition((size_t)features.shape()[1] == problem_spec_.num_features_,
                        "RandomForest::leaf_ids(): Number of features in prediction differs from training.");
     vigra_precondition(ids.shape()[1] == graph_.numRoots(),
                        "RandomForest::leaf_ids(): Leaf array has wrong shape.");

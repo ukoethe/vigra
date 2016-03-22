@@ -53,6 +53,7 @@ namespace vigra
 
 // needs to be in sync with random_forest_hdf5_impex for backwards compatibility
 static const char *const rf_hdf5_ext_param     = "_ext_param";
+static const char *const rf_hdf5_options       = "_options";
 static const char *const rf_hdf5_topology      = "topology";
 static const char *const rf_hdf5_parameters    = "parameters";
 static const char *const rf_hdf5_tree          = "Tree_";
@@ -116,7 +117,9 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
     size_t num_instances;
     size_t num_features;
     size_t num_classes;
+    size_t msample;
     MultiArray<1, LabelType> distinct_labels_marray;
+    MultiArray<1, double> class_weights_marray;
 
     h5ctx.cd(rf_hdf5_ext_param);
     h5ctx.read("column_count_", num_features);
@@ -124,16 +127,27 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
     h5ctx.read("class_count_", num_classes);
     h5ctx.readAndResize("labels", distinct_labels_marray);
     h5ctx.read("actual_mtry_", mtry);
+    h5ctx.read("actual_msample_", msample);
+    h5ctx.readAndResize("class_weights_", class_weights_marray);
+    h5ctx.cd_up();
+
+    h5ctx.cd(rf_hdf5_options);
+
     h5ctx.cd_up();
 
     std::vector<LabelType> const distinct_labels(distinct_labels_marray.begin(), distinct_labels_marray.end());
+    std::vector<double> const class_weights(class_weights_marray.begin(), class_weights_marray.end());
 
     auto const pspec = ProblemSpecNew<LabelType>()
                                .num_features(num_features)
                                .num_instances(num_instances)
                                .num_classes(num_classes)
                                .distinct_classes(distinct_labels)
-                               .actual_mtry(mtry);
+                               .actual_mtry(mtry)
+                               .actual_msample(msample);
+
+    auto const options = RandomForestNewOptions()
+                               .class_weights(class_weights);
 
     Graph gr;
     typename RF::template NodeMap<SplitTest>::type split_tests;
@@ -203,7 +217,9 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
         h5ctx.cd(cwd);
     }
 
-    return RF(gr, split_tests, leaf_responses, pspec);
+    RF rf(gr, split_tests, leaf_responses, pspec);
+    rf.options_ = options;
+    return rf;
 }
 
 namespace detail
@@ -252,15 +268,20 @@ void random_forest_export_HDF5(
                              rf_hdf5_version);
 
 
-    // Save external parameters.
     auto const & p = rf.problem_spec_;
+    auto const & opts = rf.options_;
     MultiArray<1, LabelType> distinct_classes(Shape1(p.distinct_classes_.size()), p.distinct_classes_.data());
+    MultiArray<1, double> class_weights(Shape1(opts.class_weights_.size()), opts.class_weights_.data());
+
+    // Save external parameters.
     h5context.cd_mk(rf_hdf5_ext_param);
     h5context.write("column_count_", p.num_features_);
     h5context.write("row_count_", p.num_instances_);
     h5context.write("class_count_", p.num_classes_);
-    h5context.write("labels", distinct_classes); // eventually one has to use a multi array here
     h5context.write("actual_mtry_", p.actual_mtry_);
+    h5context.write("actual_msample_", p.actual_msample_);
+    h5context.write("labels", distinct_classes);
+    h5context.write("class_weights_", class_weights);
     h5context.cd_up();
 
     // Save the trees.

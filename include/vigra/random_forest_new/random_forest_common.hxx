@@ -742,7 +742,8 @@ public:
         num_instances_(0),
         num_classes_(0),
         distinct_classes_(),
-        actual_mtry_(0)
+        actual_mtry_(0),
+        actual_msample_(0)
     {}
 
     ProblemSpecNew & num_features(size_t n)
@@ -776,6 +777,12 @@ public:
         return *this;
     }
 
+    ProblemSpecNew & actual_msample(size_t m)
+    {
+        actual_msample_ = m;
+        return *this;
+    }
+
     bool operator==(ProblemSpecNew const & other) const
     {
         #define COMPARE(field) if (field != other.field) return false;
@@ -784,6 +791,7 @@ public:
         COMPARE(num_classes_);
         COMPARE(distinct_classes_);
         COMPARE(actual_mtry_);
+        COMPARE(actual_msample_);
         #undef COMPARE
         return true;
     }
@@ -793,6 +801,7 @@ public:
     size_t num_classes_;
     std::vector<LabelType> distinct_classes_;
     size_t actual_mtry_;
+    size_t actual_msample_;
 
 };
 
