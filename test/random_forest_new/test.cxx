@@ -238,6 +238,22 @@ struct RandomForestTests
         for (size_t i = 0; i < test_y.size(); ++i)
             should(test_y(i) == pred_y(i));
     }
+
+    void test_export()
+    {
+        typedef float FeatureType;
+        typedef UInt32 LabelType;
+        typedef MultiArray<2, FeatureType> Features;
+        typedef MultiArray<1, LabelType> Labels;
+
+        // Load the dummy random forest.
+        HDF5File infile("data/rf.h5", HDF5File::ReadOnly);
+        auto rf = random_forest_import_HDF5<Features, Labels>(infile);
+
+        // Save the dummy random forest.
+        HDF5File outfile("data/rf_out.h5", HDF5File::New);
+        random_forest_export_HDF5(rf, outfile);
+    }
 #endif
 };
 
@@ -253,6 +269,7 @@ struct RandomForestTestSuite : public test_suite
         add(testCase(&RandomForestTests::test_var_importance_visitor));
 #ifdef HasHDF5
         add(testCase(&RandomForestTests::test_import));
+        add(testCase(&RandomForestTests::test_export));
 #endif
     }
 };

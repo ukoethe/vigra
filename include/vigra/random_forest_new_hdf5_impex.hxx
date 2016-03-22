@@ -233,11 +233,12 @@ namespace detail
 }
 
 template <typename RF>
-void rf_export_HDF5(
+void random_forest_export_HDF5(
         RF const & rf,
         HDF5File & h5context,
         std::string const & pathname = ""
 ){
+    typedef typename RF::LabelType LabelType;
     typedef typename RF::Node Node;
 
     std::string cwd;
@@ -250,13 +251,15 @@ void rf_export_HDF5(
     h5context.writeAttribute(rf_hdf5_version_group, rf_hdf5_version_tag,
                              rf_hdf5_version);
 
+
     // Save external parameters.
     auto const & p = rf.problem_spec_;
+    MultiArray<1, LabelType> distinct_classes(Shape1(p.distinct_classes_.size()), p.distinct_classes_.data());
     h5context.cd_mk(rf_hdf5_ext_param);
     h5context.write("column_count_", p.num_features_);
     h5context.write("row_count_", p.num_instances_);
     h5context.write("class_count_", p.num_classes_);
-    h5context.write("labels", p.distinct_classes_); // eventually one has to use a multi array here
+    h5context.write("labels", distinct_classes); // eventually one has to use a multi array here
     h5context.write("actual_mtry_", p.actual_mtry_);
     h5context.cd_up();
 
@@ -301,7 +304,7 @@ void rf_export_HDF5(
                 auto const & prob = probs.at(n);
                 auto const weight = std::accumulate(prob.begin(), prob.end(), 0.0);
                 parameters.push_back(weight);
-                parameters.insert(parameters.back(), prob.begin(), prob.end());
+                parameters.insert(parameters.end(), prob.begin(), prob.end());
             }
             else
             {
@@ -322,9 +325,14 @@ void rf_export_HDF5(
             }
         }
 
+        // Convert the vectors to multi arrays.
+        MultiArray<1, UInt32> topo(Shape1(topology.size()), topology.data());
+        MultiArray<1, double> para(Shape1(parameters.size()), parameters.data());
+
         auto const name = rf_hdf5_tree + tree_number(i);
         h5context.cd_mk(name);
-        // TODO: Write topology and parameters.
+        h5context.write(rf_hdf5_topology, topo);
+        h5context.write(rf_hdf5_parameters, para);
         h5context.cd_up();
     }
 
