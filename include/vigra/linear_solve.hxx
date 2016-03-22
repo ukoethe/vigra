@@ -104,7 +104,10 @@ determinantByMinors(MultiArrayView<2, T, C1> const & mat)
     MultiArrayIndex n = columnCount(mat);
     vigra_precondition(
             n == m,
-            "determinant(): square matrix required.");
+            "determinantByMinors(): square matrix required.");
+    vigra_precondition(
+            NumericTraits<PromoteType>::isSigned::value,
+            "determinantByMinors(): promote type must be signed.");
     if (m == 1)
     {
         return mat(0, 0);
@@ -880,10 +883,10 @@ determinant(MultiArrayView<2, T, C1> const & a, std::string method = "default")
     }
     else if(method == "cholesky")
     {
-        Matrix<PromoteType> L(a.shape());
+        Matrix<T> L(a.shape());
         vigra_precondition(choleskyDecomposition(a, L),
            "determinant(): Cholesky method requires symmetric positive definite matrix.");
-        PromoteType det = L(0,0);
+        T det = L(0,0);
         for(MultiArrayIndex k=1; k<n; ++k)
             det *= L(k,k);
         return sq(det);
