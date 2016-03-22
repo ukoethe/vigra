@@ -10,6 +10,7 @@
 #include "array_vector.hxx"
 #include "linear_algebra.hxx"
 #include "numerictraits.hxx"
+#include "permutation.hxx"
 
 namespace vigra {
 
@@ -454,7 +455,7 @@ class StarPolytope : public Polytope<N, T>
         vigra_precondition(
                 type_map_[u] == FACET,
                 "StarPolytope::assignNormal(): Node needs to be a facet node");
-        MultiArray<2, real_type> mat(dimension, dimension);
+        MultiArray<2, real_type> mat(dimension-1, dimension);
         out_arc_iterator a(graph_, u);
         point_view_type vertex = vec_map_[graph_.target(a)];
         ++a;
@@ -462,14 +463,25 @@ class StarPolytope : public Polytope<N, T>
         {
             mat.template bind<0>(i) = vec_map_[graph_.target(a)] - vertex;
         }
-        mat.template bind<0>(dimension - 1) = vertex - center_;
-        linalg::inverse(mat, mat);
         point_view_type normal = vec_map_[u];
-        std::copy(
-                mat.template bind<1>(dimension - 1).begin(),
-                mat.template bind<1>(dimension - 1).end(),
-                normal.begin());
-        normal /= norm(normal);
+        for (int i = 0; i < dimension; i++)
+        {
+            normal[i] = 0;
+        }
+        for (auto permutation : permutations_)
+        {
+            coordinate_type val = 1;
+            for (int i = 0; i < dimension - 1; i++)
+            {
+                val *= mat(i, permutation[i]);
+            }
+            val *= permutation.sign();
+            normal[permutation[dimension - 1]] += val;
+        }
+        if (dot(normal, vertex - center_) < 0)
+        {
+            normal *= -1;
+        }
     }
 
     virtual node_type addFacet(const node_type & a, const node_type & b)
@@ -597,17 +609,17 @@ class StarPolytope : public Polytope<N, T>
         vigra_precondition(type_map_[n] == FACET,
                            "StarPolytope::nVolume(): Node needs do be a facet");
         MultiArray<2, coordinate_type> mat(dimension, dimension);
-        real_type fac = 1;
+        real_type factor = vec_map_[n].magnitude();
         out_arc_iterator a(graph_, n);
         const point_view_type vec = vec_map_[graph_.target(a)];
         ++a;
         for (int i = 1; i < dimension; ++i, ++a)
         {
-            fac *= i;
+            factor *= i;
             mat.template bind<0>(i) = vec_map_[graph_.target(a)] - vec;
         }
         mat.template bind<0>(0) = vec_map_[n];
-        return abs(linalg::determinant(mat)) / fac;
+        return abs(linalg::determinant(mat)) / factor;
     }
 
     virtual real_type nSurface() const
@@ -622,6 +634,7 @@ class StarPolytope : public Polytope<N, T>
 
   protected:
 
+    PlainChangesPermutations<N> permutations_;
     point_type center_;
 };
 
@@ -725,6 +738,30 @@ class ConvexPolytope : public StarPolytope<N, T>
     }
 
   public:
+
+    virtual bool contains(const node_type & n, const point_view_type & p) const
+    {
+        vigra_precondition(
+                type_map_[n] == FACET,
+                "ConvexPolytope::contains(): Node needs do be a facet");
+        const out_arc_iterator a(graph_, n);
+        const point_view_type vertex = vec_map_[graph_.target(a)];
+        const point_view_type normal = vec_map_[n];
+        const real_type scalar = dot(p - vertex, normal);
+        return (scalar < std::numeric_limits<T>::epsilon() * 2);
+    }
+
+    virtual bool contains(const point_view_type & p) const
+    {
+        for (facet_iterator n(graph_, type_map_); n != lemon::INVALID; ++n)
+        {
+            if (!contains(n, p))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     virtual void addExtremeVertex(const point_view_type & p)
     {
