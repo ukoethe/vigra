@@ -42,10 +42,10 @@
 #include <map>
 #include <stack>
 #include <algorithm>
-#include <future>
 
 #include "multi_array.hxx"
 #include "sampling.hxx"
+#include "threading.hxx"
 #include "threadpool.hxx"
 #include "random_forest_new/random_forest.hxx"
 #include "random_forest_new/random_forest_common.hxx"
@@ -182,7 +182,7 @@ void random_forest_single_tree(
                                          SamplerOptions().withReplacement().stratified(options.use_stratification_),
                                          &randengine);
         sampler.sample();
-        for (size_t i = 0; i < sampler.sampleSize(); ++i)
+        for (int i = 0; i < sampler.sampleSize(); ++i)
         {
             int const index = sampler[i];
             ++instance_weights[index];
@@ -404,12 +404,12 @@ random_forest_impl(
         t.problem_spec_ = pspec;
 
     // Find the correct number of threads.
-    size_t n_threads = options.n_threads_;
-    if (n_threads == -1)
+    size_t n_threads = 1;
+    if (options.n_threads_ >= 1)
+        n_threads = options.n_threads_;
+    else if (options.n_threads_ == -1)
         n_threads = std::thread::hardware_concurrency();
-    if (n_threads < 1)
-        n_threads = 1;
-
+        
     // Use the global random engine to create seeds for the random engines that run in the threads.
     UniformIntRandomFunctor<RANDENGINE> rand_functor(randengine);
     std::set<UInt32> seeds;
@@ -440,7 +440,7 @@ random_forest_impl(
 
     // Train the trees.
     ThreadPool pool((size_t)n_threads);
-    std::vector<std::future<void> > futures;
+    std::vector<threading::future<void> > futures;
     for (size_t i = 0; i < tree_count; ++i)
     {
         futures.emplace_back(
