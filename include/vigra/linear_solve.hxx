@@ -101,6 +101,9 @@ T determinantByMinors(MultiArrayView<2, T, C1> const & mat)
     vigra_precondition(
             n == m,
             "determinant(): square matrix required.");
+    vigra_precondition(
+            NumericTraits<T>::isSigned::value,
+            "determinant(): signed type required.");
     if (m == 1)
     {
         return mat(0, 0);
@@ -117,7 +120,7 @@ T determinantByMinors(MultiArrayView<2, T, C1> const & mat)
                 {
                     jj++;
                 }
-                minor_mat.template bind<0>(j) = rowVector(mat, Shape2(jj, 1), m);
+                rowVector(minor_mat, j) = rowVector(mat, Shape2(jj, 1), m);
             }
             const T sign = 1 - 2 * (i % 2);
             det += sign * mat(i, 0) * determinantByMinors(minor_mat);
