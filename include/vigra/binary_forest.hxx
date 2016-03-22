@@ -168,7 +168,8 @@ inline BinaryForest::Arc BinaryForest::addArc(
 inline bool BinaryForest::valid(
     Node const & node
 ) const {
-    return node.id() >= 0 && node.id() < nodes_.size();
+    // NOTE: The conversion to size_t is valid since we first check for >= 0.
+    return node.id() >= 0 && (size_t)node.id() < nodes_.size();
 }
 
 inline bool BinaryForest::valid(

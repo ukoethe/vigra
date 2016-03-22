@@ -567,7 +567,7 @@ public:
         if (k.id() < 0)
             throw std::out_of_range("PropertyMap::insert(): Key must not be negative.");
 
-        if (k.id() >= map_.size())
+        if ((size_t)k.id() >= map_.size())
             map_.resize(k.id()+1, value_type(default_key_, mapped_type()));
 
         auto & elt = map_[k.id()];

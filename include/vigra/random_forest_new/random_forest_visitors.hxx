@@ -255,7 +255,7 @@ class VariableImportance : public RFVisitorBase
 {
 public:
 
-    VariableImportance(int repetition_count = 10)
+    VariableImportance(size_t repetition_count = 10)
         :
         repetition_count_(repetition_count)
     {}
@@ -451,7 +451,7 @@ public:
     /**
      * how often the permutation takes place
      */
-    int repetition_count_;
+    size_t repetition_count_;
 
 private:
 

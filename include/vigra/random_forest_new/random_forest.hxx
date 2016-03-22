@@ -218,12 +218,12 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
 ) const {
     vigra_precondition(features.shape()[0] == labels.shape()[0],
                        "RandomForest::predict(): Shape mismatch between features and labels.");
-    vigra_precondition(features.shape()[1] == problem_spec_.num_features_,
+    vigra_precondition((size_t)features.shape()[1] == problem_spec_.num_features_,
                        "RandomForest::predict(): Number of features in prediction differs from training.");
 
     MultiArray<2, double> probs(Shape2(features.shape()[0], problem_spec_.num_classes_));
     double const average_split_counts = predict_proba(features, probs, n_threads, tree_indices);
-    for (size_t i = 0; i < features.shape()[0]; ++i)
+    for (size_t i = 0; i < (size_t)features.shape()[0]; ++i)
     {
         auto const sub_probs = probs.template bind<0>(i);
         auto it = std::max_element(sub_probs.begin(), sub_probs.end());
@@ -243,9 +243,9 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_proba(
 ) const {
     vigra_precondition(features.shape()[0] == probs.shape()[0],
                        "RandomForest::predict_proba(): Shape mismatch between features and probabilities.");
-    vigra_precondition(features.shape()[1] == problem_spec_.num_features_,
+    vigra_precondition((size_t)features.shape()[1] == problem_spec_.num_features_,
                        "RandomForest::predict_proba(): Number of features in prediction differs from training.");
-    vigra_precondition(probs.shape()[1] == problem_spec_.num_classes_,
+    vigra_precondition((size_t)probs.shape()[1] == problem_spec_.num_classes_,
                        "RandomForest::predict_proba(): Number of labels in probabilities differs from training.");
 
     // Check the tree indices.
@@ -268,7 +268,7 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_proba(
 
     // Compute the probabilities.
     ACC acc;
-    for (size_t i = 0; i < features.shape()[0]; ++i)
+    for (size_t i = 0; i < (size_t)features.shape()[0]; ++i)
     {
         std::vector<AccInputType> tree_results;
         for (auto k : tree_indices)

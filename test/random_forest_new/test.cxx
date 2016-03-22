@@ -235,7 +235,7 @@ struct RandomForestTests
 
         // Use the RF to predict the data.
         rf.predict(test_x, pred_y);
-        for (size_t i = 0; i < test_y.size(); ++i)
+        for (size_t i = 0; i < (size_t)test_y.size(); ++i)
             should(test_y(i) == pred_y(i));
     }
 

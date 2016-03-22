@@ -613,7 +613,7 @@ public:
     /**
      * @brief If resample_count is greater than zero, the split in each node is computed using only resample_count data points.
      */
-    RandomForestNewOptions & resample_count(int n)
+    RandomForestNewOptions & resample_count(size_t n)
     {
         resample_count_ = n;
         bootstrap_sampling_ = false;
@@ -718,7 +718,7 @@ public:
     int features_per_node_;
     RandomForestOptionTags features_per_node_switch_;
     bool bootstrap_sampling_;
-    int resample_count_;
+    size_t resample_count_;
     RandomForestOptionTags split_;
     size_t max_depth_;
     double node_complexity_tau_;
