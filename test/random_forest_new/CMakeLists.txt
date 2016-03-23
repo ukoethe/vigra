@@ -12,3 +12,5 @@ else()
     MESSAGE(STATUS "** WARNING: No threading implementation found.")
     MESSAGE(STATUS "**          test_random_forest_new will not be executed on this platform.")
 endif()
+
+add_subdirectory(data)
