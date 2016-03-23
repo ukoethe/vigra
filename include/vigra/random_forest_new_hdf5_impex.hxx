@@ -113,27 +113,45 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
         vigra_precondition(version <= rf_hdf5_version, "random_forest_import_HDF5(): unexpected file format version.");
     }
 
-    size_t mtry;
+    // Read ext params.
+    size_t actual_mtry;
     size_t num_instances;
     size_t num_features;
     size_t num_classes;
     size_t msample;
+    int is_weighted_int;
     MultiArray<1, LabelType> distinct_labels_marray;
     MultiArray<1, double> class_weights_marray;
 
     h5ctx.cd(rf_hdf5_ext_param);
-    h5ctx.read("column_count_", num_features);
-    h5ctx.read("row_count_", num_instances);
-    h5ctx.read("class_count_", num_classes);
-    h5ctx.readAndResize("labels", distinct_labels_marray);
-    h5ctx.read("actual_mtry_", mtry);
     h5ctx.read("actual_msample_", msample);
+    h5ctx.read("actual_mtry_", actual_mtry);
+    h5ctx.read("class_count_", num_classes);
     h5ctx.readAndResize("class_weights_", class_weights_marray);
+    h5ctx.read("column_count_", num_features);
+    h5ctx.read("is_weighted_", is_weighted_int);
+    h5ctx.readAndResize("labels", distinct_labels_marray);
+    h5ctx.read("row_count_", num_instances);
     h5ctx.cd_up();
 
+    bool is_weighted = is_weighted_int == 1 ? true : false;
+
+    // Read options.
+    size_t min_num_instances;
+    int mtry;
+    int mtry_switch_int;
+    int bootstrap_sampling_int;
+    int tree_count;
     h5ctx.cd(rf_hdf5_options);
-
+    h5ctx.read("min_split_node_size_", min_num_instances);
+    h5ctx.read("mtry_", mtry);
+    h5ctx.read("mtry_switch_", mtry_switch_int);
+    h5ctx.read("sample_with_replacement_", bootstrap_sampling_int);
+    h5ctx.read("tree_count_", tree_count);
     h5ctx.cd_up();
+
+    RandomForestOptionTags mtry_switch = (RandomForestOptionTags)mtry_switch_int;
+    bool bootstrap_sampling = bootstrap_sampling_int == 1 ? true : false;
 
     std::vector<LabelType> const distinct_labels(distinct_labels_marray.begin(), distinct_labels_marray.end());
     std::vector<double> const class_weights(class_weights_marray.begin(), class_weights_marray.end());
@@ -143,11 +161,17 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
                                .num_instances(num_instances)
                                .num_classes(num_classes)
                                .distinct_classes(distinct_labels)
-                               .actual_mtry(mtry)
+                               .actual_mtry(actual_mtry)
                                .actual_msample(msample);
 
-    auto const options = RandomForestNewOptions()
-                               .class_weights(class_weights);
+    auto options = RandomForestNewOptions()
+                            .min_num_instances(min_num_instances)
+                            .bootstrap_sampling(bootstrap_sampling)
+                            .tree_count(tree_count);
+    options.features_per_node_switch_ = mtry_switch;
+    options.features_per_node_ = mtry;
+    if (is_weighted)
+        options.class_weights(class_weights);
 
     Graph gr;
     typename RF::template NodeMap<SplitTest>::type split_tests;
@@ -271,7 +295,14 @@ void random_forest_export_HDF5(
     auto const & p = rf.problem_spec_;
     auto const & opts = rf.options_;
     MultiArray<1, LabelType> distinct_classes(Shape1(p.distinct_classes_.size()), p.distinct_classes_.data());
-    MultiArray<1, double> class_weights(Shape1(opts.class_weights_.size()), opts.class_weights_.data());
+    MultiArray<1, double> class_weights(Shape1(p.num_classes_), 1.0);
+    int is_weighted = 0;
+    if (opts.class_weights_.size() > 0)
+    {
+        is_weighted = 1;
+        for (size_t i = 0; i < opts.class_weights_.size(); ++i)
+            class_weights(i) = opts.class_weights_[i];
+    }
 
     // Save external parameters.
     h5context.cd_mk(rf_hdf5_ext_param);
@@ -281,7 +312,29 @@ void random_forest_export_HDF5(
     h5context.write("actual_mtry_", p.actual_mtry_);
     h5context.write("actual_msample_", p.actual_msample_);
     h5context.write("labels", distinct_classes);
+    h5context.write("is_weighted_", is_weighted);
     h5context.write("class_weights_", class_weights);
+    h5context.write("precision_", 0.0);
+    h5context.write("problem_type_", 1.0);
+    h5context.write("response_size_", 1.0);
+    h5context.write("used_", 1.0);
+    h5context.cd_up();
+
+    // Save the options.
+    h5context.cd_mk(rf_hdf5_options);
+    h5context.write("min_split_node_size_", opts.min_num_instances_);
+    h5context.write("mtry_", opts.features_per_node_);
+    h5context.write("mtry_func_", 0.0);
+    h5context.write("mtry_switch_", opts.features_per_node_switch_);
+    h5context.write("predict_weighted_", 0.0);
+    h5context.write("prepare_online_learning_", 0.0);
+    h5context.write("sample_with_replacement_", opts.bootstrap_sampling_ ? 1 : 0);
+    h5context.write("stratification_method_", 3.0);
+    h5context.write("training_set_calc_switch_", 1.0);
+    h5context.write("training_set_func_", 0.0);
+    h5context.write("training_set_proportion_", 1.0);
+    h5context.write("training_set_size_", 0.0);
+    h5context.write("tree_count_", opts.tree_count_);
     h5context.cd_up();
 
     // Save the trees.

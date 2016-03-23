@@ -101,6 +101,7 @@ struct RFMapUpdater<ArgMaxAcc>
 
 
 
+/// Loop over the split dimensions and compute the score of all considered splits.
 template <typename FEATURES, typename LABELS, typename SAMPLER, typename SCORER>
 void split_score(
         FEATURES const & features,
