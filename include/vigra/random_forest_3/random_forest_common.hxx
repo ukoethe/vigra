@@ -32,8 +32,8 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-#ifndef VIGRA_RF_RANDOM_FOREST_COMMON_HXX
-#define VIGRA_RF_RANDOM_FOREST_COMMON_HXX
+#ifndef VIGRA_RF3_COMMON_HXX
+#define VIGRA_RF3_COMMON_HXX
 
 #include <iterator>
 #include <type_traits>
@@ -44,6 +44,8 @@
 #include "../mathutil.hxx"
 
 namespace vigra
+{
+namespace rf3
 {
 
 
@@ -203,6 +205,8 @@ public:
 namespace detail
 {
 
+    /// Abstract scorer that iterates over all split candidates, uses FUNCTOR to compute a score, 
+    /// and saves the split with the minimum (maximum) score.
     template <bool MINIMIZE, typename FUNCTOR>
     class GeneralScorer
     {
@@ -266,17 +270,18 @@ namespace detail
             }
         }
 
-        bool split_found_;
-        double best_split_;
-        size_t best_dim_;
-        double best_score_;
+        bool split_found_; // whether a split was found at all
+        double best_split_; // the threshold of the best split
+        size_t best_dim_; // the dimension of the best split
+        double best_score_; // the score of the best split
 
     private:
 
-        std::vector<double> const priors_;
-        double const n_total_;
+        std::vector<double> const priors_; // the weighted number of datapoints per class
+        double const n_total_; // the weighted number of datapoints
     };
 
+    /// Functor that computes the gini score.
     class GiniScoreFunctor
     {
     public:
@@ -323,6 +328,7 @@ namespace detail
         }
     };
 
+    /// Functor that computes the entropy score.
     class EntropyScoreFunctor
     {
     public:
@@ -351,6 +357,7 @@ namespace detail
         }
     };
 
+    // Functor that computes the kolmogorov-smirnov score.
     class KSDScoreFunctor
     {
     public:
@@ -403,6 +410,7 @@ typedef detail::GeneralScorer<false, detail::KSDScoreFunctor> KSDScorer;
 
 
 
+/// This struct holds the depth and the weighted number of datapoints per class of a single node.
 template <typename ARR>
 struct RFNodeDescription
 {
@@ -418,6 +426,7 @@ public:
 
 
 
+/// Return true if the given node is pure.
 template <typename LABELS, typename ITER>
 bool is_pure(LABELS const & labels, RFNodeDescription<ITER> const & desc)
 {
@@ -437,6 +446,7 @@ bool is_pure(LABELS const & labels, RFNodeDescription<ITER> const & desc)
 
 
 
+/// The purity stop criterion.
 class PurityStop
 {
 public:
@@ -449,6 +459,7 @@ public:
 
 
 
+/// The depth stop criterion.
 class DepthStop
 {
 public:
@@ -469,6 +480,7 @@ public:
 
 
 
+/// The number of datapoints stop criterion.
 class NumInstancesStop
 {
 public:
@@ -490,6 +502,7 @@ public:
 
 
 
+/// The node complexity stop criterion.
 class NodeComplexityStop
 {
 public:
@@ -545,11 +558,11 @@ enum RandomForestOptionTags
 
 
 
-class RandomForestNewOptions
+class RandomForestOptions
 {
 public:
 
-    RandomForestNewOptions()
+    RandomForestOptions()
         :
         tree_count_(256),
         features_per_node_(0),
@@ -568,7 +581,7 @@ public:
     /**
      * @brief The number of trees.
      */
-    RandomForestNewOptions & tree_count(int p_tree_count)
+    RandomForestOptions & tree_count(int p_tree_count)
     {
         tree_count_ = p_tree_count;
         return *this;
@@ -579,7 +592,7 @@ public:
      * 
      * @param p_features_per_node the number of features
      */
-    RandomForestNewOptions & features_per_node(int p_features_per_node)
+    RandomForestOptions & features_per_node(int p_features_per_node)
     {
         features_per_node_switch_ = RF_CONST;
         features_per_node_ = p_features_per_node;
@@ -591,12 +604,12 @@ public:
      * 
      * @param p_features_per_node_switch possible values: RF_SQRT, RF_LOG, RF_ALL
      */
-    RandomForestNewOptions & features_per_node(RandomForestOptionTags p_features_per_node_switch)
+    RandomForestOptions & features_per_node(RandomForestOptionTags p_features_per_node_switch)
     {
         vigra_precondition(p_features_per_node_switch == RF_SQRT ||
                            p_features_per_node_switch == RF_LOG ||
                            p_features_per_node_switch == RF_ALL,
-                           "RandomForestNewOptions::features_per_node(): Input must be RF_SQRT, RF_LOG or RF_ALL.");
+                           "RandomForestOptions::features_per_node(): Input must be RF_SQRT, RF_LOG or RF_ALL.");
         features_per_node_switch_ = p_features_per_node_switch;
         return *this;
     }
@@ -604,7 +617,7 @@ public:
     /**
      * @brief Use bootstrap sampling.
      */
-    RandomForestNewOptions & bootstrap_sampling(bool b)
+    RandomForestOptions & bootstrap_sampling(bool b)
     {
         bootstrap_sampling_ = b;
         return *this;
@@ -613,7 +626,7 @@ public:
     /**
      * @brief If resample_count is greater than zero, the split in each node is computed using only resample_count data points.
      */
-    RandomForestNewOptions & resample_count(size_t n)
+    RandomForestOptions & resample_count(size_t n)
     {
         resample_count_ = n;
         bootstrap_sampling_ = false;
@@ -625,12 +638,12 @@ public:
      * 
      * @param p_split possible values: RF_GINI, RF_ENTROPY, RF_KSD
      */
-    RandomForestNewOptions & split(RandomForestOptionTags p_split)
+    RandomForestOptions & split(RandomForestOptionTags p_split)
     {
         vigra_precondition(p_split == RF_GINI ||
                            p_split == RF_ENTROPY ||
                            p_split == RF_KSD,
-                           "RandomForestNewOptions::split(): Input must be RF_GINI, RF_ENTROPY or RF_KSD.");
+                           "RandomForestOptions::split(): Input must be RF_GINI, RF_ENTROPY or RF_KSD.");
         split_ = p_split;
         return *this;
     }
@@ -638,7 +651,7 @@ public:
     /**
      * @brief Do not split a node if its depth is greater or equal to max_depth.
      */
-    RandomForestNewOptions & max_depth(size_t d)
+    RandomForestOptions & max_depth(size_t d)
     {
         max_depth_ = d;
         return *this;
@@ -647,7 +660,7 @@ public:
     /**
      * @brief Value of the node complexity termination criterion.
      */
-    RandomForestNewOptions & node_complexity_tau(double tau)
+    RandomForestOptions & node_complexity_tau(double tau)
     {
         node_complexity_tau_ = tau;
         return *this;
@@ -656,7 +669,7 @@ public:
     /**
      * @brief Do not split a node if it contains less than min_num_instances data points.
      */
-    RandomForestNewOptions & min_num_instances(size_t n)
+    RandomForestOptions & min_num_instances(size_t n)
     {
         min_num_instances_ = n;
         return *this;
@@ -665,7 +678,7 @@ public:
     /**
      * @brief Use stratification when creating the bootstrap samples.
      */
-    RandomForestNewOptions & use_stratification(bool b)
+    RandomForestOptions & use_stratification(bool b)
     {
         use_stratification_ = b;
         return *this;
@@ -674,7 +687,7 @@ public:
     /**
      * @brief The number of threads that are used in training. -1 means use number of cores.
      */
-    RandomForestNewOptions & n_threads(int n)
+    RandomForestOptions & n_threads(int n)
     {
         n_threads_ = n;
         return *this;
@@ -689,7 +702,7 @@ public:
      * The ordering of the classes is 3, 5, 8, so class 3 will get weight 0.2, class 5 will get weight 0.3
      * and class 8 will get weight 0.4.
      */
-    RandomForestNewOptions & class_weights(std::vector<double> v)
+    RandomForestOptions & class_weights(std::vector<double> v)
     {
         class_weights_ = v;
         return *this;
@@ -710,7 +723,7 @@ public:
             return features_per_node_;
         else if (features_per_node_switch_ == RF_ALL)
             return total;
-        vigra_fail("RandomForestNewOptions::get_features_per_node(): Unknown switch.");
+        vigra_fail("RandomForestOptions::get_features_per_node(): Unknown switch.");
         return 0;
     }
 
@@ -732,11 +745,11 @@ public:
 
 
 template <typename LabelType>
-class ProblemSpecNew
+class ProblemSpec
 {
 public:
 
-    ProblemSpecNew()
+    ProblemSpec()
         :
         num_features_(0),
         num_instances_(0),
@@ -746,44 +759,44 @@ public:
         actual_msample_(0)
     {}
 
-    ProblemSpecNew & num_features(size_t n)
+    ProblemSpec & num_features(size_t n)
     {
         num_features_ = n;
         return *this;
     }
 
-    ProblemSpecNew & num_instances(size_t n)
+    ProblemSpec & num_instances(size_t n)
     {
         num_instances_ = n;
         return *this;
     }
 
-    ProblemSpecNew & num_classes(size_t n)
+    ProblemSpec & num_classes(size_t n)
     {
         num_classes_ = n;
         return *this;
     }
 
-    ProblemSpecNew & distinct_classes(std::vector<LabelType> v)
+    ProblemSpec & distinct_classes(std::vector<LabelType> v)
     {
         distinct_classes_ = v;
         num_classes_ = v.size();
         return *this;
     }
 
-    ProblemSpecNew & actual_mtry(size_t m)
+    ProblemSpec & actual_mtry(size_t m)
     {
         actual_mtry_ = m;
         return *this;
     }
 
-    ProblemSpecNew & actual_msample(size_t m)
+    ProblemSpec & actual_msample(size_t m)
     {
         actual_msample_ = m;
         return *this;
     }
 
-    bool operator==(ProblemSpecNew const & other) const
+    bool operator==(ProblemSpec const & other) const
     {
         #define COMPARE(field) if (field != other.field) return false;
         COMPARE(num_features_);
@@ -807,6 +820,7 @@ public:
 
 
 
+} // namespace rf3
 } // namespace vigra
 
 #endif

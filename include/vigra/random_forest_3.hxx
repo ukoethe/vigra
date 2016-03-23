@@ -32,8 +32,8 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-#ifndef VIGRA_RANDOM_FOREST_NEW_HXX
-#define VIGRA_RANDOM_FOREST_NEW_HXX
+#ifndef VIGRA_RF3_HXX
+#define VIGRA_RF3_HXX
 
 
 
@@ -47,13 +47,15 @@
 #include "sampling.hxx"
 #include "threading.hxx"
 #include "threadpool.hxx"
-#include "random_forest_new/random_forest.hxx"
-#include "random_forest_new/random_forest_common.hxx"
-#include "random_forest_new/random_forest_visitors.hxx"
+#include "random_forest_3/random_forest.hxx"
+#include "random_forest_3/random_forest_common.hxx"
+#include "random_forest_3/random_forest_visitors.hxx"
 
 
 
 namespace vigra
+{
+namespace rf3
 {
 
 
@@ -72,7 +74,6 @@ struct DefaultRF
 namespace detail
 {
 
-
 // In random forest training, you can store different items in the leaves,
 // depending on the accumulator. Typically, you want to store the class
 // distributions, but the ArgMaxAcc does not need this. The RFMapUpdater is
@@ -87,6 +88,8 @@ struct RFMapUpdater
         a = b;
     }
 };
+
+
 
 template <>
 struct RFMapUpdater<ArgMaxAcc>
@@ -144,7 +147,7 @@ template <typename RF, typename SCORER, typename VISITOR, typename STOP, typenam
 void random_forest_single_tree(
         typename RF::Features const & features,
         typename RF::Labels const & labels,
-        RandomForestNewOptions const & options,
+        RandomForestOptions const & options,
         VISITOR & visitor,
         STOP stop,
         RF & tree,
@@ -360,7 +363,7 @@ typename DefaultRF<FEATURES, LABELS>::type
 random_forest_impl(
         FEATURES const & features,
         LABELS const & labels,
-        RandomForestNewOptions const & options,
+        RandomForestOptions const & options,
         VISITOR visitor,
         STOP const & stop,
         RANDENGINE & randengine
@@ -371,7 +374,7 @@ random_forest_impl(
     typedef typename Labels::value_type LabelType;
     typedef typename DefaultRF<FEATURES, LABELS>::type RF;
 
-    ProblemSpecNew<LabelType> pspec;
+    ProblemSpec<LabelType> pspec;
     pspec.num_instances(features.shape()[0])
          .num_features(features.shape()[1])
          .actual_mtry(options.get_features_per_node(features.shape()[1]))
@@ -478,7 +481,7 @@ typename DefaultRF<FEATURES, LABELS>::type
 random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
-        RandomForestNewOptions const & options,
+        RandomForestOptions const & options,
         VISITOR visitor,
         RANDENGINE & randengine
 ){
@@ -504,7 +507,7 @@ typename DefaultRF<FEATURES, LABELS>::type
 random_forest(
         FEATURES const & features,
         LABELS const & labels,
-        RandomForestNewOptions const & options,
+        RandomForestOptions const & options,
         VISITOR visitor,
         RANDENGINE & randengine
 ){
@@ -523,7 +526,7 @@ typename DefaultRF<FEATURES, LABELS>::type
 random_forest(
         FEATURES const & features,
         LABELS const & labels,
-        RandomForestNewOptions const & options,
+        RandomForestOptions const & options,
         VISITOR visitor
 ){
     auto randengine = MersenneTwister::global();
@@ -535,7 +538,7 @@ typename DefaultRF<FEATURES, LABELS>::type
 random_forest(
         FEATURES const & features,
         LABELS const & labels,
-        RandomForestNewOptions const & options
+        RandomForestOptions const & options
 ){
     RFStopVisiting stop;
     return random_forest(features, labels, options, stop);
@@ -547,11 +550,12 @@ random_forest(
         FEATURES const & features,
         LABELS const & labels
 ){
-    return random_forest(features, labels, RandomForestNewOptions());
+    return random_forest(features, labels, RandomForestOptions());
 }
 
 
 
+} // namespace rf3
 } // namespace vigra
 
 #endif

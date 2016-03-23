@@ -34,8 +34,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef VIGRA_NEW_RANDOM_FOREST_IMPEX_HDF5_HXX
-#define VIGRA_NEW_RANDOM_FOREST_IMPEX_HDF5_HXX
+#ifndef VIGRA_RF3_IMPEX_HDF5_HXX
+#define VIGRA_RF3_IMPEX_HDF5_HXX
 
 #include <string>
 #include <sstream>
@@ -43,12 +43,14 @@
 #include <stack>
 
 #include "config.hxx"
-#include "random_forest_new/random_forest.hxx"
-#include "random_forest_new/random_forest_common.hxx"
-#include "random_forest_new/random_forest_visitors.hxx"
+#include "random_forest_3/random_forest.hxx"
+#include "random_forest_3/random_forest_common.hxx"
+#include "random_forest_3/random_forest_visitors.hxx"
 #include "hdf5impex.hxx"
 
 namespace vigra 
+{
+namespace rf3
 {
 
 // needs to be in sync with random_forest_hdf5_impex for backwards compatibility
@@ -156,7 +158,7 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
     std::vector<LabelType> const distinct_labels(distinct_labels_marray.begin(), distinct_labels_marray.end());
     std::vector<double> const class_weights(class_weights_marray.begin(), class_weights_marray.end());
 
-    auto const pspec = ProblemSpecNew<LabelType>()
+    auto const pspec = ProblemSpec<LabelType>()
                                .num_features(num_features)
                                .num_instances(num_instances)
                                .num_classes(num_classes)
@@ -164,7 +166,7 @@ random_forest_import_HDF5(HDF5File & h5ctx, std::string const & pathname = "")
                                .actual_mtry(actual_mtry)
                                .actual_msample(msample);
 
-    auto options = RandomForestNewOptions()
+    auto options = RandomForestOptions()
                             .min_num_instances(min_num_instances)
                             .bootstrap_sampling(bootstrap_sampling)
                             .tree_count(tree_count);
@@ -415,6 +417,8 @@ void random_forest_export_HDF5(
 }
 
 
+
+} // namespace rf3
 } // namespace vigra
 
 #endif // VIGRA_NEW_RANDOM_FOREST_IMPEX_HDF5_HXX

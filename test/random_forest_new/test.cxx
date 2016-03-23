@@ -33,13 +33,14 @@
 /*                                                                      */
 /************************************************************************/
 #include <vigra/unittest.hxx>
-#include <vigra/random_forest_new.hxx>
+#include <vigra/random_forest_3.hxx>
 #include <vigra/random.hxx>
 #ifdef HasHDF5
-    #include <vigra/random_forest_new_hdf5_impex.hxx>
+    #include <vigra/random_forest_3_hdf5_impex.hxx>
 #endif
 
 using namespace vigra;
+using namespace vigra::rf3;
 
 struct RandomForestTests
 {
@@ -84,7 +85,7 @@ struct RandomForestTests
         distinct_labels.push_back(1);
         distinct_labels.push_back(-7);
         distinct_labels.push_back(3);
-        auto const pspec = ProblemSpecNew<int>().num_features(2).distinct_classes(distinct_labels);
+        auto const pspec = ProblemSpec<int>().num_features(2).distinct_classes(distinct_labels);
         RF rf = RF(gr, split_tests, leaf_responses, pspec);
 
         // Check if the given points are predicted correctly.
@@ -125,7 +126,7 @@ struct RandomForestTests
         splits.push_back(RF_KSD);
         for (auto split : splits)
         {
-            RandomForestNewOptions const options = RandomForestNewOptions()
+            RandomForestOptions const options = RandomForestOptions()
                                                        .tree_count(1)
                                                        .bootstrap_sampling(false)
                                                        .split(split)
@@ -159,7 +160,7 @@ struct RandomForestTests
             }
         }
 
-        RandomForestNewOptions const options = RandomForestNewOptions()
+        RandomForestOptions const options = RandomForestOptions()
                                                    .tree_count(10)
                                                    .bootstrap_sampling(true)
                                                    .n_threads(1);
@@ -190,7 +191,7 @@ struct RandomForestTests
             }
         }
 
-        RandomForestNewOptions const options = RandomForestNewOptions()
+        RandomForestOptions const options = RandomForestOptions()
                                                    .tree_count(10)
                                                    .bootstrap_sampling(true)
                                                    .n_threads(1);

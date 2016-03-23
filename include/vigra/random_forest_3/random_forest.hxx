@@ -32,8 +32,8 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-#ifndef VIGRA_RF_RANDOM_FOREST_HXX
-#define VIGRA_RF_RANDOM_FOREST_HXX
+#ifndef VIGRA_RF3_RANDOM_FOREST_HXX
+#define VIGRA_RF3_RANDOM_FOREST_HXX
 
 #include <type_traits>
 #include <thread>
@@ -46,6 +46,8 @@
 
 
 namespace vigra
+{
+namespace rf3
 {
 
 
@@ -87,7 +89,7 @@ public:
         Graph const & graph,
         typename NodeMap<SplitTests>::type const & split_tests,
         typename NodeMap<AccInputType>::type const & node_responses,
-        ProblemSpecNew<LabelType> const & problem_spec
+        ProblemSpec<LabelType> const & problem_spec
     );
 
     /// \brief Grow this forest by incorporating the other.
@@ -152,10 +154,10 @@ public:
     typename NodeMap<AccInputType>::type node_responses_;
 
     /// \brief The specifications.
-    ProblemSpecNew<LabelType> problem_spec_;
+    ProblemSpec<LabelType> problem_spec_;
 
     /// \brief The options that were used for training.
-    RandomForestNewOptions options_;
+    RandomForestOptions options_;
 
 private:
 
@@ -185,7 +187,7 @@ RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::RandomForest(
     Graph const & graph,
     typename NodeMap<SplitTests>::type const & split_tests,
     typename NodeMap<AccInputType>::type const & node_responses,
-    ProblemSpecNew<LabelType> const & problem_spec
+    ProblemSpec<LabelType> const & problem_spec
 )   :
     graph_(graph),
     split_tests_(split_tests),
@@ -375,6 +377,7 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids_impl(
 
 
 
+} // namespace rf3
 } // namespace vigra
 
 #endif

@@ -32,8 +32,8 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-#ifndef VIGRA_RANDOM_FOREST_VISITORS_HXX
-#define VIGRA_RANDOM_FOREST_VISITORS_HXX
+#ifndef VIGRA_RF3_VISITORS_HXX
+#define VIGRA_RF3_VISITORS_HXX
 
 #include <vector>
 #include <memory>
@@ -42,6 +42,8 @@
 
 
 namespace vigra
+{
+namespace rf3
 {
 
 /**
@@ -847,10 +849,7 @@ create_visitor(A & a, B & b, C & c, D & d, E & e, F & f, G & g, H & h, I & i,
 
 
 
-
-
-
-
+} // namespace rf3
 } // namespace vigra
 
 #endif
