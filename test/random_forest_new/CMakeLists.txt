@@ -1,10 +1,14 @@
-if(HDF5_FOUND)
-    INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
-    ADD_DEFINITIONS(${HDF5_CPPFLAGS} -DHasHDF5)
-    VIGRA_ADD_TEST(test_random_forest_new test.cxx LIBRARIES vigraimpex ${HDF5_LIBRARIES})
+VIGRA_CONFIGURE_THREADING()
+
+if(THREADING_FOUND)
+    if(HDF5_FOUND)
+        INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
+        ADD_DEFINITIONS(${HDF5_CPPFLAGS} -DHasHDF5)
+        VIGRA_ADD_TEST(test_random_forest_new test.cxx LIBRARIES ${THREADING_LIBRARIES} vigraimpex ${HDF5_LIBRARIES})
+    else()
+        VIGRA_ADD_TEST(test_random_forest_new test.cxx)
+    endif()
 else()
-    VIGRA_ADD_TEST(test_random_forest_new test.cxx)
+    MESSAGE(STATUS "** WARNING: No threading implementation found.")
+    MESSAGE(STATUS "**          test_random_forest_new will not be executed on this platform.")
 endif()
-
-add_subdirectory(data)
-
