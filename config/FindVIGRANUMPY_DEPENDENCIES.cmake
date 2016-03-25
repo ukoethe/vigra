@@ -120,6 +120,7 @@ IF(PYTHONINTERP_FOUND)
 
         FIND_LIBRARY(Boost_PYTHON_LIBRARY
                      NAMES ${BOOST_PYTHON_NAMES}
+                     NAMES_PER_DIR
                      HINTS "${Boost_LIBRARY_DIR}"
                      DOC "boost_python libraries")
     ENDIF()
