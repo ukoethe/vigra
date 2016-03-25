@@ -316,9 +316,10 @@ struct IntStarPolytopeTest
     typedef TinyVector<int, 3> Vector3;
     typedef StarPolytope<2, int> Polytope2;
     typedef StarPolytope<3, int> Polytope3;
+    typedef NumericTraits<int>::RealPromote RealPromote;
 
     IntStarPolytopeTest()
-    : eps_(0)
+    : eps_(std::numeric_limits<RealPromote>::epsilon() * 2)
     {}
 
     void testContains2D()
@@ -342,16 +343,6 @@ struct IntStarPolytopeTest
         shouldEqual(poly.contains(Vector2( 0,  0)), true);
         shouldEqual(poly.contains(Vector2( 4,  0)), true);
         shouldEqual(poly.contains(Vector2( 0,  2)), true);
-    }
-
-    void testDeterminant()
-    {
-        MultiArray<2, int> mat(3, 3);
-        mat(0, 0) = 0; mat(0, 1) = 6; mat(0, 2) = -6;
-        mat(1, 0) = 6; mat(1, 1) = 0; mat(1, 2) = -6;
-        mat(2, 0) = 1; mat(2, 1) = 1; mat(2, 2) = -5;
-        int det = linalg::detail::determinantByMinors(mat);
-        shouldEqual(det, 108);
     }
 
     void testContains3D()
@@ -385,106 +376,108 @@ struct IntStarPolytopeTest
         shouldEqual(poly.contains(Vector3( 0,  0,  6)), true);
     }
 
-    // void testNVolume2D()
-    // {
-    //     {
-    //         Polytope2 poly(
-    //                 Vector2(0.  , 0.  ),
-    //                 Vector2(1.  , 0.  ),
-    //                 Vector2(0.  , 1.  ),
-    //                 Vector2(0.25, 0.25));
-    //         shouldEqual(abs(poly.nVolume() - .5) < eps_, true);
-    //     }
-    //     {
-    //         Polytope2 poly(
-    //                 Vector2(0.5 , 0.5 ),
-    //                 Vector2(0.5 , 1.  ),
-    //                 Vector2(1.  , 0.5 ),
-    //                 Vector2(0.6 , 0.6 ));
-    //         shouldEqual(abs(poly.nVolume() - .125) < eps_, true);
-    //     }
-    // }
+    void testNVolume2D()
+    {
+        {
+            Polytope2 poly(
+                    Vector2( 0,  0),
+                    Vector2( 3,  0),
+                    Vector2( 0,  3),
+                    Vector2( 1,  1));
+            RealPromote n_volume = poly.nVolume();
+            shouldEqualTolerance(n_volume, 4.5, eps_);
+        }
+        {
+            Polytope2 poly(
+                    Vector2( 1,  1),
+                    Vector2( 4,  1),
+                    Vector2( 1,  4),
+                    Vector2( 2,  2));
+            shouldEqualTolerance(poly.nVolume(),  4.5, eps_);
+        }
+    }
 
-    // void testNVolume3D()
-    // {
-    //     {
-    //         Polytope3 poly(
-    //                 Vector3(0.  , 0.  , 0.  ),
-    //                 Vector3(1.  , 0.  , 0.  ),
-    //                 Vector3(0.  , 1.  , 0.  ),
-    //                 Vector3(0.  , 0.  , 1.  ),
-    //                 Vector3(0.25, 0.25, 0.25));
-    //         shouldEqual(abs(poly.nVolume() - 1./6.) < eps_, true);
-    //     }
-    //     {
-    //         Polytope3 poly(
-    //                 Vector3(0.5 , 0.5 , 0.5 ),
-    //                 Vector3(1.  , 0.5 , 0.5 ),
-    //                 Vector3(0.5 , 1.  , 0.5 ),
-    //                 Vector3(0.5 , 0.5 , 1.  ),
-    //                 Vector3(0.6 , 0.6 , 0.6 ));
-    //         shouldEqual(abs(poly.nVolume() - 1./(6.*8.)) < eps_, true);
-    //     }
-    // }
+    void testNVolume3D()
+    {
+        {
+            Polytope3 poly(
+                    Vector3(0,  0,  0),
+                    Vector3(6,  0,  0),
+                    Vector3(0,  6,  0),
+                    Vector3(0,  0,  6),
+                    Vector3(1,  1,  1));
+            shouldEqualTolerance(poly.nVolume(), 36., eps_);
+        }
+        {
+            Polytope3 poly(
+                    Vector3(1,  1,  1),
+                    Vector3(7,  1,  1),
+                    Vector3(1,  7,  1),
+                    Vector3(1,  1,  7),
+                    Vector3(2,  2,  2));
+            shouldEqualTolerance(poly.nVolume(), 36., eps_);
+        }
+    }
 
-    // void testNSurface2D()
-    // {
-    //     Polytope2 poly(
-    //             Vector2(0.  , 0.  ),
-    //             Vector2(1.  , 0.  ),
-    //             Vector2(0.  , 1.  ),
-    //             Vector2(0.25, 0.25));
-    //     shouldEqual(abs(poly.nSurface() - (2. + sqrt(2.))) < eps_, true);
-    // }
+    void testNSurface2D()
+    {
+        Polytope2 poly(
+                Vector2(0,  0),
+                Vector2(3,  0),
+                Vector2(0,  3),
+                Vector2(1,  1));
+        const RealPromote surf = 2 * 3 + 3 * sqrt(2);
+        shouldEqualTolerance(poly.nSurface(), surf, eps_);
+    }
 
-    // void testNSurface3D()
-    // {
-    //     Polytope3 poly(
-    //             Vector3(0.  , 0.  , 0.  ),
-    //             Vector3(1.  , 0.  , 0.  ),
-    //             Vector3(0.  , 1.  , 0.  ),
-    //             Vector3(0.  , 0.  , 1.  ),
-    //             Vector3(0.25, 0.25, 0.25));
-    //     const double surf = (3. + sqrt(3.)) / 2.;
-    //     shouldEqual(abs(poly.nSurface() - surf) < eps_, true);
-    // }
+    void testNSurface3D()
+    {
+        Polytope3 poly(
+                Vector3(0,  0,  0),
+                Vector3(6,  0,  0),
+                Vector3(0,  6,  0),
+                Vector3(0,  0,  6),
+                Vector3(1,  1,  1));
+        const RealPromote surf = 6 * 6 * (3. + sqrt(3.)) / 2.;
+        shouldEqualTolerance(poly.nSurface(), surf, eps_);
+    }
 
-    // void testClosed2D()
-    // {
-    //     Polytope2 poly_closed(
-    //             Vector2(0.  , 0.  ),
-    //             Vector2(1.  , 0.  ),
-    //             Vector2(0.  , 1.  ),
-    //             Vector2(0.25, 0.25));
-    //     shouldEqual(poly_closed.closed(), true);
+    void testClosed2D()
+    {
+        Polytope2 poly_closed(
+                Vector2(0,  0),
+                Vector2(3,  0),
+                Vector2(0,  3),
+                Vector2(1,  1));
+        shouldEqual(poly_closed.closed(), true);
 
-    //     Polytope2 poly_open(Vector2(0.25, 0.25));
-    //     Polytope2::node_type n1 =  poly_open.addVertex(Vector2(0, 0));
-    //     Polytope2::node_type n2 =  poly_open.addVertex(Vector2(1, 0));
-    //     Polytope2::node_type n3 =  poly_open.addVertex(Vector2(0, 1));
-    //     Polytope2::node_type f1 = poly_open.addFacet(n1, n2);
-    //     Polytope2::node_type f2 = poly_open.addFacet(n1, n3);
-    //     shouldEqual(poly_open.closed(), false);
-    //     shouldEqual(poly_open.closed(f1), false);
-    //     shouldEqual(poly_open.closed(f2), false);
-    // }
+        Polytope2 poly_open(Vector2(1,  1));
+        Polytope2::node_type n1 =  poly_open.addVertex(Vector2(0, 0));
+        Polytope2::node_type n2 =  poly_open.addVertex(Vector2(3, 0));
+        Polytope2::node_type n3 =  poly_open.addVertex(Vector2(0, 3));
+        Polytope2::node_type f1 = poly_open.addFacet(n1, n2);
+        Polytope2::node_type f2 = poly_open.addFacet(n1, n3);
+        shouldEqual(poly_open.closed(), false);
+        shouldEqual(poly_open.closed(f1), false);
+        shouldEqual(poly_open.closed(f2), false);
+    }
 
-    // void testClosed3D()
-    // {
-    //     Polytope3 poly(Vector3(0.1, 0.1, 0.1));
-    //     Polytope3::node_type n1 =  poly.addVertex(Vector3(0, 0, 0));
-    //     Polytope3::node_type n2 =  poly.addVertex(Vector3(1, 0, 0));
-    //     Polytope3::node_type n3 =  poly.addVertex(Vector3(0, 1, 0));
-    //     Polytope3::node_type n4 =  poly.addVertex(Vector3(0, 0, 1));
-    //     Polytope3::node_type f1 = poly.addFacet(n2, n3, n4);
-    //     shouldEqual(poly.closed(), false);
-    //     Polytope3::node_type f2 = poly.addFacet(n1, n3, n4);
-    //     shouldEqual(poly.closed(), false);
-    //     Polytope3::node_type f3 = poly.addFacet(n1, n2, n4);
-    //     shouldEqual(poly.closed(), false);
-    //     Polytope3::node_type f4 = poly.addFacet(n1, n2, n3);
-    //     shouldEqual(poly.closed(), true);
-    // }
+    void testClosed3D()
+    {
+        Polytope3 poly(Vector3(1, 1, 1));
+        Polytope3::node_type n1 =  poly.addVertex(Vector3(0, 0, 0));
+        Polytope3::node_type n2 =  poly.addVertex(Vector3(6, 0, 0));
+        Polytope3::node_type n3 =  poly.addVertex(Vector3(0, 6, 0));
+        Polytope3::node_type n4 =  poly.addVertex(Vector3(0, 0, 6));
+        Polytope3::node_type f1 = poly.addFacet(n2, n3, n4);
+        shouldEqual(poly.closed(), false);
+        Polytope3::node_type f2 = poly.addFacet(n1, n3, n4);
+        shouldEqual(poly.closed(), false);
+        Polytope3::node_type f3 = poly.addFacet(n1, n2, n4);
+        shouldEqual(poly.closed(), false);
+        Polytope3::node_type f4 = poly.addFacet(n1, n2, n3);
+        shouldEqual(poly.closed(), true);
+    }
 
     // void testLitFacets2D()
     // {
@@ -619,7 +612,7 @@ struct IntStarPolytopeTest
     //     }
     // }
 
-    int eps_;
+    RealPromote eps_;
 };
 
 struct FloatConvexPolytopeTest
@@ -658,6 +651,47 @@ struct FloatConvexPolytopeTest
         const double sur_err = (2*M_PI - poly.nSurface()) / (2.*M_PI);
         shouldEqual(sur_err < eps, true);
         shouldEqual(sur_err > 0, true);
+        const double vol_err = (M_PI - poly.nVolume()) / (M_PI);
+        shouldEqual(vol_err < eps, true);
+        shouldEqual(vol_err > 0, true);
+        for (int n = 0; n < 100; n++)
+        {
+            Vector2 vec(
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+            if (abs(vec.magnitude() - 1) > eps)
+            {
+                shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
+            }
+        }
+    }
+    
+    void testAddNonExtremeVertex2D()
+    {
+        const int N = 1000;
+        const double eps = 1. / sqrt(N);
+        Polytope2 poly(
+                Vector2( 1.,  0.),
+                Vector2(-1.,  0.),
+                Vector2( 0.,  1.));
+        poly.addExtremeVertex(Vector2(0., -1.));
+        shouldEqual(abs(poly.nVolume() - 2.) < eps_, true);
+        shouldEqual(abs(poly.nSurface() - 4. * sqrt(2.)) < eps, true);
+        for (int n = 0; n < N; n++)
+        {
+            Vector2 vec(
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+            if (vec.magnitude() <= 1.)
+            {
+                poly.addExtremeVertex(vec);
+            }
+            shouldEqual(poly.closed(), true);
+        }
+        const double sur_err = (2*M_PI - poly.nSurface()) / (2.*M_PI);
+        shouldEqual(sur_err < eps, true);
+        shouldEqual(sur_err > 0, true);
+        std::cout << "Volume is " << poly.nVolume() << std::endl;
         const double vol_err = (M_PI - poly.nVolume()) / (M_PI);
         shouldEqual(vol_err < eps, true);
         shouldEqual(vol_err > 0, true);
@@ -731,10 +765,16 @@ struct PolytopeTestSuite : public vigra::test_suite
         add(testCase(&FloatStarPolytopeTest::testNVolume2D));
         add(testCase(&FloatStarPolytopeTest::testNVolume3D));
         add(testCase(&FloatConvexPolytopeTest::testAddExtremeVertex2D));
+        add(testCase(&FloatConvexPolytopeTest::testAddNonExtremeVertex2D));
         add(testCase(&FloatConvexPolytopeTest::testAddExtremeVertex3D));
+        add(testCase(&IntStarPolytopeTest::testClosed2D));
+        add(testCase(&IntStarPolytopeTest::testClosed3D));
         add(testCase(&IntStarPolytopeTest::testContains2D));
         add(testCase(&IntStarPolytopeTest::testContains3D));
-        add(testCase(&IntStarPolytopeTest::testDeterminant));
+        add(testCase(&IntStarPolytopeTest::testNSurface2D));
+        add(testCase(&IntStarPolytopeTest::testNSurface3D));
+        add(testCase(&IntStarPolytopeTest::testNVolume2D));
+        add(testCase(&IntStarPolytopeTest::testNVolume3D));
     }
 };
 
