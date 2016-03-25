@@ -701,13 +701,13 @@ class ConvexPolytope : public StarPolytope<N, T>
     {
         vigra_precondition(
                 type_map_[vertex] == VERTEX,
-                "StarPolytope::closeFacet(): Vertex needs to be a vertex node");
+                "ConvexPolytope::closeFacet(): Vertex needs to be a vertex node");
         vigra_precondition(
                 type_map_[facet] == FACET,
-                "StarPolytope::closeFacet(): Facet needs to be a facet node");
+                "ConvexPolytope::closeFacet(): Facet needs to be a facet node");
         vigra_assert(
                 (this->getConnected(facet)).count(vertex) == 0,
-                "StarPolytope::closeFacet(): Cannot close facet with vertex");
+                "ConvexPolytope::closeFacet(): Cannot close facet with vertex");
 
         while (!(this->closed(facet)))
         {
@@ -769,24 +769,27 @@ class ConvexPolytope : public StarPolytope<N, T>
                 this->closed(),
                 "ConvexPolytope::addExtremeVertex(): Polytope needs to be closed");
         ArrayVector<node_type> lit_facets = this->litFacets(p);
-        std::set<node_type> open_facets;
-        for (node_type lit_facet : lit_facets)
+        if (lit_facets.size() > 0)
         {
-            for (auto con : aligns_map_[lit_facet])
+            std::set<node_type> open_facets;
+            for (node_type lit_facet : lit_facets)
             {
-                vigra_assert(
-                        type_map_[con] == FACET,
-                        "ConvexPolytope::addExtremeVertex(): facet not a facet");
-                open_facets.insert(con);
+                for (auto con : aligns_map_[lit_facet])
+                {
+                    vigra_assert(
+                            type_map_[con] == FACET,
+                            "ConvexPolytope::addExtremeVertex(): facet not a facet");
+                    open_facets.insert(con);
+                }
+                open_facets.erase(lit_facet);
+                this->eraseFacet(lit_facet);
             }
-            open_facets.erase(lit_facet);
-            this->eraseFacet(lit_facet);
-        }
-        this->tidyUp();
-        node_type new_vertex = this->addVertex(p);
-        for (auto open_facet : open_facets)
-        {
-            this->closeFacet(new_vertex, open_facet);
+            this->tidyUp();
+            node_type new_vertex = this->addVertex(p);
+            for (auto open_facet : open_facets)
+            {
+                this->closeFacet(new_vertex, open_facet);
+            }
         }
     }
 };

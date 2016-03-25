@@ -666,47 +666,6 @@ struct FloatConvexPolytopeTest
         }
     }
     
-    void testAddNonExtremeVertex2D()
-    {
-        const int N = 1000;
-        const double eps = 1. / sqrt(N);
-        Polytope2 poly(
-                Vector2( 1.,  0.),
-                Vector2(-1.,  0.),
-                Vector2( 0.,  1.));
-        poly.addExtremeVertex(Vector2(0., -1.));
-        shouldEqual(abs(poly.nVolume() - 2.) < eps_, true);
-        shouldEqual(abs(poly.nSurface() - 4. * sqrt(2.)) < eps, true);
-        for (int n = 0; n < N; n++)
-        {
-            Vector2 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
-            if (vec.magnitude() <= 1.)
-            {
-                poly.addExtremeVertex(vec);
-            }
-            shouldEqual(poly.closed(), true);
-        }
-        const double sur_err = (2*M_PI - poly.nSurface()) / (2.*M_PI);
-        shouldEqual(sur_err < eps, true);
-        shouldEqual(sur_err > 0, true);
-        std::cout << "Volume is " << poly.nVolume() << std::endl;
-        const double vol_err = (M_PI - poly.nVolume()) / (M_PI);
-        shouldEqual(vol_err < eps, true);
-        shouldEqual(vol_err > 0, true);
-        for (int n = 0; n < 100; n++)
-        {
-            Vector2 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
-            if (abs(vec.magnitude() - 1) > eps)
-            {
-                shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
-            }
-        }
-    }
-
     void testAddExtremeVertex3D()
     {
         const int N = 100;
@@ -746,6 +705,86 @@ struct FloatConvexPolytopeTest
         }
     }
 
+    void testAddNonExtremeVertex2D()
+    {
+        const int N = 1000;
+        const double eps = 4. / sqrt(N);
+        Polytope2 poly(
+                Vector2( 1.,  0.),
+                Vector2(-1.,  0.),
+                Vector2( 0.,  1.));
+        poly.addExtremeVertex(Vector2(0., -1.));
+        shouldEqual(abs(poly.nVolume() - 2.) < eps_, true);
+        shouldEqual(abs(poly.nSurface() - 4. * sqrt(2.)) < eps, true);
+        for (int n = 0; n < N; n++)
+        {
+            Vector2 vec(
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+            if (vec.magnitude() <= 1.)
+            {
+                poly.addExtremeVertex(vec);
+                shouldEqual(poly.closed(), true);
+            }
+        }
+        const double sur_err = (2*M_PI - poly.nSurface()) / (2.*M_PI);
+        shouldEqual(sur_err < eps, true);
+        shouldEqual(sur_err > 0, true);
+        const double vol_err = (M_PI - poly.nVolume()) / (M_PI);
+        shouldEqual(vol_err < eps, true);
+        shouldEqual(vol_err > 0, true);
+        for (int n = 0; n < 100; n++)
+        {
+            Vector2 vec(
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+            if (abs(vec.magnitude() - 1) > eps)
+            {
+                shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
+            }
+        }
+    }
+
+    void testAddNonExtremeVertex3D()
+    {
+        const int N = 1000;
+        const double eps = 9. / sqrt(N);
+        Polytope3 poly(
+                Vector3( 1.,  0.,  0.),
+                Vector3(-1.,  0.,  0.),
+                Vector3( 0.,  1.,  0.),
+                Vector3( 0.,  0.,  1.));
+        for (int n = 0; n < N; n++)
+        {
+            Vector3 vec(
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+            if (vec.magnitude() <= 1.)
+            {
+                poly.addExtremeVertex(vec);
+                shouldEqual(poly.closed(), true);
+            }
+        }
+        const double sur_err = (4.*M_PI - poly.nSurface()) / (4.*M_PI);
+        shouldEqual(sur_err < eps, true);
+        shouldEqual(sur_err > 0, true);
+        const double vol_err = (4./3.*M_PI - poly.nVolume()) / (4./3.*M_PI);
+        shouldEqual(vol_err < eps, true);
+        shouldEqual(vol_err > 0, true);
+        for (int n = 0; n < 100; n++)
+        {
+            Vector3 vec(
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
+                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
+            if (abs(vec.magnitude() - 1) > eps)
+            {
+                shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
+            }
+        }
+    }
+
     double eps_;
 };
 
@@ -765,8 +804,9 @@ struct PolytopeTestSuite : public vigra::test_suite
         add(testCase(&FloatStarPolytopeTest::testNVolume2D));
         add(testCase(&FloatStarPolytopeTest::testNVolume3D));
         add(testCase(&FloatConvexPolytopeTest::testAddExtremeVertex2D));
-        add(testCase(&FloatConvexPolytopeTest::testAddNonExtremeVertex2D));
         add(testCase(&FloatConvexPolytopeTest::testAddExtremeVertex3D));
+        add(testCase(&FloatConvexPolytopeTest::testAddNonExtremeVertex2D));
+        add(testCase(&FloatConvexPolytopeTest::testAddNonExtremeVertex3D));
         add(testCase(&IntStarPolytopeTest::testClosed2D));
         add(testCase(&IntStarPolytopeTest::testClosed3D));
         add(testCase(&IntStarPolytopeTest::testContains2D));
