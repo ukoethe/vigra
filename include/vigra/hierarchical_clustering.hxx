@@ -417,8 +417,8 @@ class EdgeWeightedUcm
             const BaseGraphEdge aa=EdgeHelper::itemToGraphItem(mergeGraph_,a);
             const BaseGraphEdge bb=EdgeHelper::itemToGraphItem(mergeGraph_,b);
             if(!isLifted_.empty()){
-                auto isLiftedA =  isLifted_[mergeGraph_.graph().id(aa)];
-                auto isLiftedB =  isLifted_[mergeGraph_.graph().id(bb)];
+                const bool isLiftedA =  isLifted_[mergeGraph_.graph().id(aa)];
+                const bool isLiftedB =  isLifted_[mergeGraph_.graph().id(bb)];
                 if(isLiftedA && isLiftedB){
                     pq_.deleteItem(b.id());
                     done = true;
