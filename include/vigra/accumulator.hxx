@@ -6266,7 +6266,7 @@ class RegionEccentricity
 class ConvexHull
 {
   public:
-    typedef Select<> Dependencies;
+    typedef Select<RegionCenter> Dependencies;
 
     static std::string name()
     {
@@ -6277,7 +6277,7 @@ class ConvexHull
     struct Impl
     : public BASE
     {
-        static const unsigned int workInPass = 1;
+        static const unsigned int workInPass = 2;
         static const unsigned int dimensions = T::dimensions;
 
         typedef ConvexPolytope<dimensions, double>      polytope_type;
@@ -6288,37 +6288,42 @@ class ConvexHull
         typedef typename coord_handle_type::value_type  coord_type;
 
         polytope_type                                   convex_hull_;
-        unsigned int                                    step_;
+        bool                                            initialized_;
 
         Impl()
         : convex_hull_()
-        , step_(0)
+        , initialized_(false)
         {}
 
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
+            if (not initialized_)
+            {
+                initialize();
+            }
             point_type vec;
             std::copy(t.point().begin(), t.point().end(), vec.begin());
-            if (step_ < dimensions + 1)
-            {
-                convex_hull_.addVertex(vec);
-                if (step_ == dimensions)
-                {
-                    convex_hull_.close();
-                }
-            }
-            else
-            {
-                convex_hull_.addExtremeVertex(vec);
-            }
-            step_ ++;
+            convex_hull_.addExtremeVertex(vec);
         }
 
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t, double)
         {
             update(t);
+        }
+
+        void initialize()
+        {
+            convex_hull_.addVertex(getDependency<RegionCenter>(*this));
+            for (int dim = 0; dim < dimensions; dim++)
+            {
+                coord_type vec;
+                vec[dim] = .5;
+                convex_hull_.addVertex(
+                        vec + getDependency<RegionCenter>(*this));
+            }
+            initialized_ = true;
         }
 
         void operator+=(Impl const &)
@@ -6354,7 +6359,7 @@ class ConvexHullFeatures
     struct Impl
     : public BASE
     {
-        static const unsigned int workInPass = 2;
+        static const unsigned int workInPass = 3;
         static const unsigned int dimensions = T::dimensions;
 
         typedef ConvexPolytope<dimensions, double>      polytope_type;
