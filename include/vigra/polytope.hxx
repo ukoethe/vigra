@@ -3,6 +3,7 @@
 
 #include <set>
 #include <lemon/list_graph.h>
+#include <lemon/maps.h>
 
 #include "config.hxx"
 #include "error.hxx"
@@ -45,6 +46,23 @@ class Polytope
     , vec_map_(graph_)
     , aligns_map_(graph_)
     {}
+
+    Polytope(const Polytope<N, T> & other)
+    : graph_()
+    , type_map_(graph_)
+    , vec_map_(graph_)
+    , aligns_map_(graph_)
+    {
+        *this = other;
+    }
+
+    virtual void operator=(const Polytope<N, T> & other)
+    {
+        lemon::digraphCopy(other.graph_, graph_);
+        lemon::mapCopy(other.graph_, other.type_map_, type_map_);
+        lemon::mapCopy(other.graph_, other.vec_map_, vec_map_);
+        lemon::mapCopy(other.graph_, other.aligns_map_, aligns_map_);
+    }
 
     virtual bool contains(const point_view_type & p) const = 0;
 
@@ -606,8 +624,9 @@ class StarPolytope : public Polytope<N, T>
 
     virtual real_type nSurface(const node_type & n) const
     {
-        vigra_precondition(type_map_[n] == FACET,
-                           "StarPolytope::nVolume(): Node needs do be a facet");
+        vigra_precondition(
+                type_map_[n] == FACET,
+                "StarPolytope::nVolume(): Node needs do be a facet");
         MultiArray<2, coordinate_type> mat(dimension, dimension);
         real_type factor = vec_map_[n].magnitude();
         out_arc_iterator a(graph_, n);
