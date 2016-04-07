@@ -351,10 +351,6 @@ class Polytope
         node_type_iterator()
         {}
 
-        node_type_iterator(lemon::Invalid i)
-        : node_type(i)
-        {}
-
         explicit node_type_iterator(
                 const graph_type & graph,
                 const typename graph_type::NodeMap<node_enum> & type_map)
@@ -381,6 +377,16 @@ class Polytope
             return *this;
         }
 
+        bool operator==(lemon::Invalid i) const
+        {
+            return (static_cast<node_type>(*this) == i);
+        }
+
+        bool operator!=(lemon::Invalid i) const
+        {
+            return (static_cast<node_type>(*this) != i);
+        }
+
         const graph_type & graph_;
         const typename graph_type::NodeMap<node_enum> & type_map_;
     };
@@ -388,10 +394,6 @@ class Polytope
     struct out_skip_iterator : public arc_type
     {
         out_skip_iterator()
-        {}
-
-        out_skip_iterator(lemon::Invalid i)
-        : arc_type(i)
         {}
 
         explicit out_skip_iterator(
@@ -418,6 +420,16 @@ class Polytope
                 graph_.nextOut(*this);
             }
             return *this;
+        }
+
+        bool operator==(lemon::Invalid i) const
+        {
+            return (static_cast<arc_type>(*this) == i);
+        }
+
+        bool operator!=(lemon::Invalid i) const
+        {
+            return (static_cast<arc_type>(*this) != i);
         }
 
         difference_type index() const
