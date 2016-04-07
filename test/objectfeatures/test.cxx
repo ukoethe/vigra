@@ -1491,9 +1491,10 @@ struct AccumulatorTest
         }
     }
 
-    void testConvexHullFeatures()
+    void testConvexHullFeatures2D()
     {
         using namespace vigra::acc;
+        std::string prefix("testConvexHullFeatures2D(): ");
 
         int size = 6;
         MultiArray<2, int> mask(vigra::Shape2(size, size));
@@ -1508,46 +1509,151 @@ struct AccumulatorTest
         mask(4, 1) = 1;
         mask(4, 3) = 1;
 
-        //for(auto i = mask.begin(); i != mask.end(); ++i)
-        //{
-        //    std::cerr << (*i ? "*" : " ");
-        //    if(i.point()[0] == mask.shape(0)-1)
-        //        std::cerr << "\n";
-        //}
-
-        AccumulatorChainArray<CoupledArrays<2, int>, 
-                              Select<LabelArg<1>, ConvexHull> > chf;
+        AccumulatorChainArray<
+                CoupledArrays<2, int>, 
+                Select<LabelArg<1>, ConvexHullFeatures> > chf;
         chf.ignoreLabel(0);
         extractFeatures(mask, chf);
 
-        shouldEqual(getAccumulator<ConvexHull>(chf, 1).inputArea(), 8.5);
-        shouldEqualTolerance(getAccumulator<ConvexHull>(chf, 1).inputPerimeter(), 8.0 + 6.0*M_SQRT2, 1e-15);
+        getAccumulator<ConvexHullFeatures>(chf, 1).finalize();
 
-        typedef TinyVector<double, 2> P;
-        P ref[] = { P(1.0, 0.5), P(0.5, 1.0), P(0.5, 3.0), P(1.0, 3.5), P(4.0, 3.5), 
-                    P(4.5, 3.0), P(4.5, 1.0), P(4.0, 0.5),  P(1.0, 0.5) };
-        shouldEqual(get<ConvexHull>(chf, 1).hull().size(), 9);
-        shouldEqualSequence(ref, ref+9, get<ConvexHull>(chf, 1).hull().begin());
-        shouldEqual(get<ConvexHull>(chf, 1).hullArea(), 11.5);
-        shouldEqualTolerance(get<ConvexHull>(chf, 1).hullPerimeter(), 10.0 + 2.0*M_SQRT2, 1e-15);
+        {
+            TinyVector<double, 2> ref(2.5 - 1./18., 2.);
+            shouldEqualSequenceTolerance(
+                    get<ConvexHullFeatures>(chf, 1).inputCenter().begin(),
+                    get<ConvexHullFeatures>(chf, 1).inputCenter().end(),
+                    ref.begin(),
+                    (std::numeric_limits<double>::epsilon() * 2));
+        }
+        {
+            TinyVector<double, 2> ref(2.5, 2.);
+            shouldEqualSequenceTolerance(
+                    get<ConvexHullFeatures>(chf, 1).hullCenter().begin(),
+                    get<ConvexHullFeatures>(chf, 1).hullCenter().end(),
+                    ref.begin(),
+                    (std::numeric_limits<double>::epsilon() * 2));
+        }
+        shouldEqual(get<ConvexHullFeatures>(chf, 1).inputVolume(), 9);
+        shouldEqual(get<ConvexHullFeatures>(chf, 1).hullVolume(), 12);
+        {
+            TinyVector<double, 2> ref(8. / 3., 2.);
+            shouldEqualSequenceTolerance(
+                    get<ConvexHullFeatures>(chf, 1).defectCenter().begin(),
+                    get<ConvexHullFeatures>(chf, 1).defectCenter().end(),
+                    ref.begin(),
+                    (std::numeric_limits<double>::epsilon() * 2));
+        }
+        shouldEqual(get<ConvexHullFeatures>(chf, 1).defectCount(), 2);
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectVolumeMean(),
+                1.5,
+                (std::numeric_limits<double>::epsilon() * 2));
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectVolumeVariance(),
+                0.5,
+                (std::numeric_limits<double>::epsilon() * 2));
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectVolumeSkewness(),
+                0.0,
+                (std::numeric_limits<double>::epsilon() * 2));
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectVolumeKurtosis(),
+                0.0,
+                (std::numeric_limits<double>::epsilon() * 2));
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectDisplacementMean(),
+                ((2.5 - 1./18. - 1.) + 2*(3.5 - 2.5 + 1./18.))/3.,
+                (std::numeric_limits<double>::epsilon() * 2));
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).convexity(),
+                9. / 12.,
+                (std::numeric_limits<double>::epsilon() * 2));
+    }
 
-        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexity(), 8.5 / 11.5, 1e-15);
-        shouldEqualTolerance(get<ConvexHull>(chf, 1).rugosity(),  1.2850586602653933, 1e-15);
+    void testConvexHullFeatures3D()
+    {
+        using namespace vigra::acc;
+        std::string prefix("testConvexHullFeatures3D(): ");
 
-        shouldEqual(get<ConvexHull>(chf, 1).convexityDefectCount(), 2);
-        shouldEqual(get<ConvexHull>(chf, 1).defectAreaList().size(), 2);
-        shouldEqual(get<ConvexHull>(chf, 1).defectAreaList()[0], 2);
-        shouldEqual(get<ConvexHull>(chf, 1).defectAreaList()[1], 1);
+        int size = 5;
+        MultiArray<3, int> mask(vigra::Shape3(size, size, size), 0);
+        for (int i = 0; i < 9; i++)
+        {
+            mask(i / 3 + 1, i % 3 + 1, 1) = 1;
+            mask(i / 3 + 1, i % 3 + 1, 3) = 1;
+        }
+        mask(3, 1, 2) = 1; mask(3, 2, 2) = 1;
+        mask(1, 3, 2) = 1; mask(2, 3, 2) = 1;
 
-        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaMean(), 1.5, 1e-15);
-        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaVariance(), 0.5, 1e-15);
-        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaSkewness(), 0.0, 1e-15);
-        shouldEqualTolerance(get<ConvexHull>(chf, 1).convexityDefectAreaKurtosis(), 0.0, 1e-15);
-        shouldEqualTolerance(get<ConvexHull>(chf, 1).meanDefectDisplacement(), 1.185185185185185, 1e-15);
+        // z = 0   | z = 1   | z = 2   | z = 3
+        // --------+---------+---------+--------
+        // 0 0 0 0 | 0 0 0 0 | 0 0 0 0 | 0 0 0 0
+        // 0 0 0 0 | 0 x x x | 0 0 0 x | 0 x x x
+        // 0 0 0 0 | 0 x x x | 0 0 0 x | 0 x x x
+        // 0 0 0 0 | 0 x x x | 0 x x 0 | 0 x x x
 
-        shouldEqualTolerance(P(2.4444444444444444, 2.0), get<ConvexHull>(chf, 1).inputCenter(), P(1e-15));
-        shouldEqualTolerance(P(2.5, 2.0), get<ConvexHull>(chf, 1).hullCenter(), P(1e-15));
-        shouldEqualTolerance(P(2.6666666666666667, 2.0), get<ConvexHull>(chf, 1).convexityDefectCenter(), P(1e-15));
+        AccumulatorChainArray<
+                CoupledArrays<3, int>,
+                Select<LabelArg<1>, ConvexHullFeatures> > chf;
+        chf.ignoreLabel(0);
+        extractFeatures(mask, chf);
+
+        getAccumulator<ConvexHullFeatures>(chf, 1).finalize();
+        {
+            // x and y coordinate: (7*1 + 7*2 + 8*3) / 22 = 45 / 22
+            TinyVector<double, 3> ref(45. / 22., 45. / 22., 2.);
+            shouldEqualSequenceTolerance(
+                    get<ConvexHullFeatures>(chf, 1).inputCenter().begin(),
+                    get<ConvexHullFeatures>(chf, 1).inputCenter().end(),
+                    ref.begin(),
+                    (std::numeric_limits<double>::epsilon() * 2));
+        }
+        {
+            TinyVector<double, 3> ref(2., 2., 2.);
+            shouldEqualSequenceTolerance(
+                    get<ConvexHullFeatures>(chf, 1).hullCenter().begin(),
+                    get<ConvexHullFeatures>(chf, 1).hullCenter().end(),
+                    ref.begin(),
+                    (std::numeric_limits<double>::epsilon() * 2));
+        }
+        shouldEqual(get<ConvexHullFeatures>(chf, 1).inputVolume(), 22);
+        shouldEqual(get<ConvexHullFeatures>(chf, 1).hullVolume(), 27);
+        {
+            // x and y coordinate: (2*1 + 2*2 + 1*3) / 5 = 9 / 5
+            TinyVector<double, 3> ref(9. / 5., 9. / 5., 2.);
+            shouldEqualSequenceTolerance(
+                    get<ConvexHullFeatures>(chf, 1).defectCenter().begin(),
+                    get<ConvexHullFeatures>(chf, 1).defectCenter().end(),
+                    ref.begin(),
+                    (std::numeric_limits<double>::epsilon() * 2));
+        }
+        shouldEqual(get<ConvexHullFeatures>(chf, 1).defectCount(), 2);
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectVolumeMean(),
+                2.5,
+                (std::numeric_limits<double>::epsilon() * 2));
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectVolumeVariance(),
+                9. / 2.,
+                (std::numeric_limits<double>::epsilon() * 2));
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectVolumeSkewness(),
+                0.0,
+                (std::numeric_limits<double>::epsilon() * 2));
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectVolumeKurtosis(),
+                0.0,
+                (std::numeric_limits<double>::epsilon() * 2));
+        // (sqrt(2) * 4 * (45 / 22 - 3 / 2) + sqrt(2) * 1 * (3 - 45 / 22)) / 5
+        // = sqrt(2) / 5 * (90 / 11 - 3 - 45 / 22)
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).defectDisplacementMean(),
+                sqrt(2.) / 5. * (90. / 11. - 3. - 45. / 22.),
+                (std::numeric_limits<double>::epsilon() * 2));
+        shouldEqualTolerance(
+                get<ConvexHullFeatures>(chf, 1).convexity(),
+                22. / 27.,
+                (std::numeric_limits<double>::epsilon() * 2));
     }
 };
 
@@ -1565,7 +1671,8 @@ struct FeaturesTestSuite : public vigra::test_suite
         add(testCase(&AccumulatorTest::testHistogram));
         add(testCase(&AccumulatorTest::testRegionAccumulators));
         add(testCase(&AccumulatorTest::testIndexSpecifiers));
-        add(testCase(&AccumulatorTest::testConvexHullFeatures));
+        add(testCase(&AccumulatorTest::testConvexHullFeatures2D));
+        add(testCase(&AccumulatorTest::testConvexHullFeatures3D));
     }
 };
 
