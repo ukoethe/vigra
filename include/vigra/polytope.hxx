@@ -610,6 +610,50 @@ class StarPolytope : public Polytope<N, T>
         return ret;
     }
 
+    virtual void close()
+    {
+        vigra_precondition(
+                lemon::countNodes(graph_) == dimension + 1,
+                "StarPolytope::close(): Can only close for dim+1 vertices");
+        // Set center of polytope
+        {
+            vertex_iterator v(graph_, type_map_);
+            center_ = vec_map_[v];
+            for (; v != lemon::INVALID; ++v)
+            {
+                center_ += vec_map_[v];
+            }
+            center_ /= static_cast<real_type>(dimension + 1);
+        }
+        // Create facets
+        for (int i = 0; i < dimension + 1; i++)
+        {
+            node_type facet = graph_.addNode();
+            type_map_[facet] = FACET;
+            vertex_iterator v(graph_, type_map_);
+            for (int j = 0; j < dimension; ++j, ++v)
+            {
+                if (i == j)
+                {
+                    ++v;
+                }
+                graph_.addArc(facet, v);
+            }
+            vigra_assert(
+                    lemon::countOutArcs(graph_, facet) == dimension,
+                    "StarPolytope::close(): Invalid facet created");
+            this->assignNormal(facet);
+            this->assignNeighbors(facet);
+            for (auto neighbor : aligns_map_[facet])
+            {
+                vigra_assert(
+                        type_map_[neighbor] == FACET,
+                        "StarPolytope::close(): Node must be facet");
+                this->assignNeighbors(neighbor);
+            }
+        }
+    }
+
     virtual bool contains(const node_type & n, const point_view_type & p) const
     {
         vigra_precondition(
