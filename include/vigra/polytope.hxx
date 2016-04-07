@@ -192,6 +192,62 @@ class Polytope
         return dot(p - vec_map_[graph_.target(a)], vec_map_[u]);
     }
 
+    virtual unsigned int fill(
+            MultiArrayView<N, unsigned int> & array,
+            const unsigned int label,
+            const point_view_type offset,
+            const point_view_type scale) const
+    {
+        typedef MultiArrayView<N, unsigned int> array_type;
+
+        unsigned int ret = 0;
+        typename array_type::iterator it = array.begin();
+        for (it = array.begin(); it != array.end(); it++)
+        {
+            const typename array_type::difference_type coord = it.get<0>();
+            point_type vec;
+            for (int i = 0; i < vec.size(); i++)
+            {
+                vec[i] = coord[i]*scale[i] + offset[i];
+            }
+            if (this->contains(vec))
+            {
+                ret++;
+                *it = label;
+            }
+        }
+        return ret;
+    }
+
+    virtual unsigned int fill(
+            MultiArrayView<N, unsigned int> & array,
+            const unsigned int label,
+            const point_view_type offset) const
+    {
+        vigra_precondition(
+                closed(),
+                "Polytope::fill(): Polytope not closed.");
+        typedef MultiArrayView<N, unsigned int> array_type;
+
+        unsigned int ret = 0;
+        typename array_type::iterator it = array.begin();
+        for (it = array.begin(); it != array.end(); it++)
+        {
+            const typename array_type::difference_type coord = it.get<0>();
+            point_type vec;
+            for (int i = 0; i < vec.size(); i++)
+            {
+                vec[i] = coord[i] + offset[i];
+            }
+            if (this->contains(vec))
+            {
+                ret++;
+                *it = label;
+            }
+        }
+        return ret;
+    }
+
   protected:
 
     virtual node_type findNeighbor(

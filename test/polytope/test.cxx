@@ -174,6 +174,30 @@ struct FloatStarPolytopeTest
         shouldEqual(poly.closed(), true);
     }
 
+    void testFill2D()
+    {
+        Polytope2 poly(
+                Vector2(0.  , 0.  ),
+                Vector2(1.  , 0.  ),
+                Vector2(0.  , 1.  ),
+                Vector2(0.25, 0.25));
+        MultiArray<2, unsigned int> label_image(vigra::Shape2(5, 5));
+        for (auto it = label_image.begin(); it != label_image.end(); it++)
+        {
+            *it = 0;
+        }
+        unsigned int ref[25] = {
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 1, 1, 1,
+                0, 0, 1, 1, 0,
+                0, 0, 1, 0, 0};
+        Vector2 offset(-1., -1.);
+        Vector2 scale(0.5, 0.5);
+        poly.fill(label_image, 1, offset, scale);
+        shouldEqualSequence(label_image.begin(), label_image.end(), ref);
+    }
+
     void testLitFacets2D()
     {
         Polytope2 poly(Vector2(0.25, 0.25));
@@ -796,6 +820,7 @@ struct PolytopeTestSuite : public vigra::test_suite
         add(testCase(&FloatStarPolytopeTest::testClosed3D));
         add(testCase(&FloatStarPolytopeTest::testContains2D));
         add(testCase(&FloatStarPolytopeTest::testContains3D));
+        add(testCase(&FloatStarPolytopeTest::testFill2D));
         add(testCase(&FloatStarPolytopeTest::testFindNeighbor2D));
         add(testCase(&FloatStarPolytopeTest::testFindNeighbor3D));
         add(testCase(&FloatStarPolytopeTest::testLitFacets2D));
