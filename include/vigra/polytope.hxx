@@ -631,7 +631,7 @@ class StarPolytope : public Polytope<N, T>
         {
             vertex_iterator v(graph_, type_map_);
             center_ = vec_map_[v];
-            for (; v != lemon::INVALID; ++v)
+            for (++v; v != lemon::INVALID; ++v)
             {
                 center_ += vec_map_[v];
             }
