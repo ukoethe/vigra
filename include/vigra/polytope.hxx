@@ -288,7 +288,7 @@ class Polytope
         , type_map_(type_map)
         {
             graph_.first(static_cast<node_type &>(*this));
-            while (type_map_[*this] != NodeType)
+            while (*this != lemon::INVALID and type_map_[*this] != NodeType)
             {
                 graph_.next(*this);
             }
