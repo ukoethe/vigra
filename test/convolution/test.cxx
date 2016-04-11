@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2004 by Ullrich Koethe                     */
+/*       Copyright 2004-2016 by Sven Peter and Ullrich Koethe           */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -45,6 +45,7 @@
 #include "vigra/resampling_convolution.hxx"
 #include "vigra/imagecontainer.hxx"
 #include "vigra/tv_filter.hxx"
+#include "vigra/multi_pyramid.hxx"
 #include "tv_test_data.hxx"
 
 using namespace vigra;
@@ -2285,7 +2286,9 @@ struct ResamplingConvolutionTest
 struct ImagePyramidTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArray<2, double> MultiImage;
     Image img;
+    MultiArray<2, double> multiimg;
     int w, h;
 
     ImagePyramidTest()
@@ -2295,6 +2298,9 @@ struct ImagePyramidTest
         h = ginfo.height();
         img.resize(w, h);
         importImage(ginfo, destImage(img));
+
+        multiimg.reshape(Shape2(w, h));
+        importImage(ginfo, multiimg);
     }
 
     void testPyramidConstruction()
@@ -2306,6 +2312,64 @@ struct ImagePyramidTest
         shouldEqual(pyramid[0].size(), Size2D(128, 120));
         shouldEqual(pyramid[1].size(), Size2D(64, 60));
         shouldEqual(pyramid[2].size(), Size2D(32, 30));
+    }
+
+    void testMultiPyramidConstruction()
+    {
+        vigra::MultiArrayPyramid<MultiImage> pyramid(-2, 2, multiimg);
+
+        shouldEqual(pyramid[-2].shape(), Shape2(509, 477));
+        shouldEqual(pyramid[-1].shape(), Shape2(255, 239));
+        shouldEqual(pyramid[0].shape(), Shape2(128, 120));
+        shouldEqual(pyramid[1].shape(), Shape2(64, 60));
+        shouldEqual(pyramid[2].shape(), Shape2(32, 30));
+    }
+
+    void testMultiBurtReduceExpand()
+    {
+        vigra::MultiArrayPyramid<MultiImage> pyramid(-2, 3, multiimg), laplacian(-2,3, multiimg);
+
+        multiPyramidExpandBurtFilter(pyramid, 0, -2);
+        multiPyramidReduceBurtFilter(pyramid, 0,  3);
+
+        multiPyramidReduceBurtLaplacian(laplacian, 0, 3);
+
+        char buf[100];
+
+        for(int i=-2; i<=2; ++i)
+        {
+            if(i==0)
+                continue;
+
+            std::sprintf(buf, "lenna_level%d.xv", i);
+            ImageImportInfo info(buf);
+            shouldEqual(info.shape(), pyramid[i].shape());
+
+            MultiImage ref(info.shape());
+            importImage(info, ref);
+            shouldEqualSequenceTolerance(ref.begin(), ref.end(), pyramid[i].begin(), 1e-12);
+        }
+
+        for(int i=0; i<=2; ++i)
+        {
+            std::sprintf(buf, "lenna_levellap%d.xv", i);
+            ImageImportInfo info(buf);
+            shouldEqual(info.shape(), laplacian[i].shape());
+
+            MultiImage ref(info.shape());
+            importImage(info, ref);
+            for(int k=0; k<info.width()*info.height(); ++k)
+                shouldEqualTolerance(ref.data()[k]-laplacian[i].data()[k], 0.0, 1e-12);
+        }
+
+        shouldEqualSequenceTolerance(pyramid[3].begin(), pyramid[3].end(), laplacian[3].begin(), 1e-14);
+
+        multiPyramidExpandBurtLaplacian(laplacian, 3, -2);
+
+        for(int i=3; i>=-2; --i)
+        {
+            shouldEqualSequenceTolerance(pyramid[i].begin(), pyramid[i].end(), laplacian[i].begin(), 1e-14);
+        }
     }
 
     void testBurtReduceExpand()
@@ -2454,6 +2518,7 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::borderCopyTest));
 
 #if 1
+
         add( testCase( &ConvolutionTest::initExplicitlyTest));
 
         add( testCase( &ConvolutionTest::simpleSharpeningTest));
@@ -2512,6 +2577,8 @@ struct ConvolutionTestSuite
 
         add( testCase( &ImagePyramidTest::testPyramidConstruction));
         add( testCase( &ImagePyramidTest::testBurtReduceExpand));
+        add( testCase( &ImagePyramidTest::testMultiPyramidConstruction));
+        add( testCase( &ImagePyramidTest::testMultiBurtReduceExpand));
 
         add( testCase( &TotalVariationTest::testTotalVariation));
         add( testCase( &TotalVariationTest::testWeightedTotalVariation));
