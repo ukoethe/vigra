@@ -72,7 +72,7 @@ class Polytope
 
     virtual bool closed(const node_type n) const
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[n] == FACET,
                 "Polytope::closed(): Node needs do be a facet");
         return (aligns_map_[n].size() == dimension);
@@ -102,7 +102,7 @@ class Polytope
 
     virtual void eraseFacet(const node_type u)
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[u] == FACET,
                 "Polytope::eraseFacet(): Node needs to be a facet");
         for (auto neighbor : aligns_map_[u])
@@ -135,7 +135,7 @@ class Polytope
     // TODO remove
     virtual ArrayVector<point_view_type> getVertices(const node_type u) const
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[u] == FACET,
                 "Polytope::getVertices(): Node must be a facet");
         ArrayVector<point_view_type> ret;
@@ -181,11 +181,11 @@ class Polytope
 
     virtual real_type distance(const node_type u, const point_view_type & p) const
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[u] == FACET,
                 "Polytope::distance(): Node must be a facet");
         out_arc_iterator a(graph_, u);
-        vigra_precondition(
+        vigra_assert(
                 a != lemon::INVALID,
                 "Polytope::distance(): Invalid facet");
 
@@ -224,7 +224,7 @@ class Polytope
             const unsigned int label,
             const point_view_type offset) const
     {
-        vigra_precondition(
+        vigra_assert(
                 closed(),
                 "Polytope::fill(): Polytope not closed.");
         typedef MultiArrayView<N, unsigned int> array_type;
@@ -254,13 +254,13 @@ class Polytope
             const node_type u,
             const difference_type index) const
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[u] == FACET,
                 "Polytope::findNeighbor(): Node must be a facet");
-        vigra_precondition(
+        vigra_assert(
                 index < dimension,
                 "Polytope::findNeighbor(): Invalid index");
-        vigra_precondition(
+        vigra_assert(
                 countOutArcs(graph_, u) == dimension,
                 "Polytope::findNeighbor(): Bad facet");
         std::set<node_type> candidates;
@@ -304,7 +304,7 @@ class Polytope
 
     void assignNeighbors(const node_type u)
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[u] == FACET,
                 "Polytope::assignNeighbors(): Node must be facet");
         for (int i = 0; i < dimension; i++)
@@ -319,7 +319,7 @@ class Polytope
 
     std::set<node_type> openEdge(const node_type u)
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[u] == FACET,
                 "Polytope::openEdge(): Node must be facet");
         vigra_assert(
@@ -538,7 +538,7 @@ class StarPolytope : public Polytope<N, T>
 
     virtual void assignNormal(const node_type & u)
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[u] == FACET,
                 "StarPolytope::assignNormal(): Node needs to be a facet node");
         MultiArray<2, real_type> mat(dimension-1, dimension);
@@ -668,7 +668,7 @@ class StarPolytope : public Polytope<N, T>
 
     virtual bool contains(const node_type & n, const point_view_type & p) const
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[n] == FACET,
                 "StarPolytope::contains(): Node needs do be a facet");
         ArrayVector<point_view_type> vertices = this->getVertices(n);
@@ -711,8 +711,9 @@ class StarPolytope : public Polytope<N, T>
 
     virtual real_type nVolume(const node_type & n) const
     {
-        vigra_precondition(type_map_[n] == FACET,
-                           "StarPolytope::nVolume(): Node needs do be a facet");
+        vigra_assert(
+                type_map_[n] == FACET,
+                "StarPolytope::nVolume(): Node needs do be a facet");
         MultiArray<2, coordinate_type> mat(dimension, dimension);
         real_type fac = 1;
         out_arc_iterator a(graph_, n);
@@ -736,7 +737,7 @@ class StarPolytope : public Polytope<N, T>
 
     virtual real_type nSurface(const node_type & n) const
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[n] == FACET,
                 "StarPolytope::nVolume(): Node needs do be a facet");
         MultiArray<2, coordinate_type> mat(dimension, dimension);
@@ -830,10 +831,10 @@ class ConvexPolytope : public StarPolytope<N, T>
             const node_type & vertex,
             const node_type & facet)
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[vertex] == VERTEX,
                 "ConvexPolytope::closeFacet(): Vertex needs to be a vertex node");
-        vigra_precondition(
+        vigra_assert(
                 type_map_[facet] == FACET,
                 "ConvexPolytope::closeFacet(): Facet needs to be a facet node");
         vigra_assert(
@@ -872,7 +873,7 @@ class ConvexPolytope : public StarPolytope<N, T>
 
     virtual bool contains(const node_type & n, const point_view_type & p) const
     {
-        vigra_precondition(
+        vigra_assert(
                 type_map_[n] == FACET,
                 "ConvexPolytope::contains(): Node needs do be a facet");
         const out_arc_iterator a(graph_, n);
@@ -896,7 +897,7 @@ class ConvexPolytope : public StarPolytope<N, T>
 
     virtual void addExtremeVertex(const point_view_type & p)
     {
-        vigra_precondition(
+        vigra_assert(
                 this->closed(),
                 "ConvexPolytope::addExtremeVertex(): Polytope needs to be closed");
         ArrayVector<node_type> lit_facets = this->litFacets(p);
