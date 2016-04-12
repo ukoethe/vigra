@@ -10,6 +10,15 @@
 namespace vigra
 {
 
+template <class Iterable, class T>
+unsigned int count(const Iterable & vec, const T & value)
+{
+    return std::count(
+            vec.begin(),
+            vec.end(),
+            value);
+}
+
 struct FloatStarPolytopeTest
 {
     typedef TinyVector<double, 2> Vector2;
@@ -221,15 +230,15 @@ struct FloatStarPolytopeTest
         shouldEqual(lit_e1.size(), 1);
         shouldEqual(lit_e2.size(), 1);
         shouldEqual(lit_e3.size(), 1);
-        shouldEqual(std::count(lit_v1.begin(), lit_v1.end(), f2), 1);
-        shouldEqual(std::count(lit_v1.begin(), lit_v1.end(), f3), 1);
-        shouldEqual(std::count(lit_v2.begin(), lit_v2.end(), f1), 1);
-        shouldEqual(std::count(lit_v2.begin(), lit_v2.end(), f3), 1);
-        shouldEqual(std::count(lit_v3.begin(), lit_v3.end(), f1), 1);
-        shouldEqual(std::count(lit_v3.begin(), lit_v3.end(), f2), 1);
-        shouldEqual(std::count(lit_e1.begin(), lit_e1.end(), f1), 1);
-        shouldEqual(std::count(lit_e2.begin(), lit_e2.end(), f2), 1);
-        shouldEqual(std::count(lit_e3.begin(), lit_e3.end(), f3), 1);
+        shouldEqual(count(lit_v1, f2), 1);
+        shouldEqual(count(lit_v1, f3), 1);
+        shouldEqual(count(lit_v2, f1), 1);
+        shouldEqual(count(lit_v2, f3), 1);
+        shouldEqual(count(lit_v3, f1), 1);
+        shouldEqual(count(lit_v3, f2), 1);
+        shouldEqual(count(lit_e1, f1), 1);
+        shouldEqual(count(lit_e2, f2), 1);
+        shouldEqual(count(lit_e3, f3), 1);
     }
 
     void testFindNeighbor2D()
@@ -241,31 +250,28 @@ struct FloatStarPolytopeTest
         Polytope2::node_type f1 = poly.addFacet(n2, n3);
         {
             auto aligns1 = poly.aligns_map_[f1];
-            shouldEqual(aligns1.size(), 0);
+            shouldEqual(count(aligns1, lemon::INVALID), 2);
         }
         Polytope2::node_type f2 = poly.addFacet(n1, n3);
         {
             auto aligns1 = poly.aligns_map_[f1];
             auto aligns2 = poly.aligns_map_[f2];
-            shouldEqual(aligns1.size(), 1);
-            shouldEqual(aligns1.count(f2), 1);
-            shouldEqual(aligns2.size(), 1);
-            shouldEqual(aligns2.count(f1), 1);
+            shouldEqual(count(aligns1, f2), 1);
+            shouldEqual(count(aligns1, lemon::INVALID), 1);
+            shouldEqual(count(aligns2, f1), 1);
+            shouldEqual(count(aligns2, lemon::INVALID), 1);
         }
         Polytope2::node_type f3 = poly.addFacet(n1, n2);
         {
             auto aligns1 = poly.aligns_map_[f1];
             auto aligns2 = poly.aligns_map_[f2];
             auto aligns3 = poly.aligns_map_[f3];
-            shouldEqual(aligns1.size(), 2);
-            shouldEqual(aligns1.count(f2), 1);
-            shouldEqual(aligns1.count(f3), 1);
-            shouldEqual(aligns2.size(), 2);
-            shouldEqual(aligns2.count(f1), 1);
-            shouldEqual(aligns2.count(f3), 1);
-            shouldEqual(aligns3.size(), 2);
-            shouldEqual(aligns3.count(f2), 1);
-            shouldEqual(aligns3.count(f1), 1);
+            shouldEqual(count(aligns1, f2), 1);
+            shouldEqual(count(aligns1, f3), 1);
+            shouldEqual(count(aligns2, f1), 1);
+            shouldEqual(count(aligns2, f3), 1);
+            shouldEqual(count(aligns3, f2), 1);
+            shouldEqual(count(aligns3, f1), 1);
         }
     }
 
@@ -279,16 +285,16 @@ struct FloatStarPolytopeTest
         Polytope3::node_type f1 = poly.addFacet(n2, n3, n4);
         {
             auto aligns1 = poly.aligns_map_[f1];
-            shouldEqual(aligns1.size(), 0);
+            shouldEqual(count(aligns1, lemon::INVALID), 3);
         }
         Polytope3::node_type f2 = poly.addFacet(n1, n3, n4);
         {
             auto aligns1 = poly.aligns_map_[f1];
             auto aligns2 = poly.aligns_map_[f2];
-            shouldEqual(aligns1.size(), 1);
-            shouldEqual(aligns1.count(f2), 1);
-            shouldEqual(aligns2.size(), 1);
-            shouldEqual(aligns2.count(f1), 1);
+            shouldEqual(count(aligns1, f2), 1);
+            shouldEqual(count(aligns1, lemon::INVALID), 2);
+            shouldEqual(count(aligns2, f1), 1);
+            shouldEqual(count(aligns2, lemon::INVALID), 2);
         }
         Polytope3::node_type f3 = poly.addFacet(n1, n2, n4);
         {
@@ -296,15 +302,15 @@ struct FloatStarPolytopeTest
             auto aligns2 = poly.aligns_map_[f2];
             auto aligns3 = poly.aligns_map_[f3];
 
-            shouldEqual(aligns1.size(), 2);
-            shouldEqual(aligns1.count(f2), 1);
-            shouldEqual(aligns1.count(f3), 1);
-            shouldEqual(aligns2.size(), 2);
-            shouldEqual(aligns2.count(f1), 1);
-            shouldEqual(aligns2.count(f3), 1);
-            shouldEqual(aligns3.size(), 2);
-            shouldEqual(aligns3.count(f1), 1);
-            shouldEqual(aligns3.count(f2), 1);
+            shouldEqual(count(aligns1, f2), 1);
+            shouldEqual(count(aligns1, f3), 1);
+            shouldEqual(count(aligns1, lemon::INVALID), 1);
+            shouldEqual(count(aligns2, f1), 1);
+            shouldEqual(count(aligns2, f3), 1);
+            shouldEqual(count(aligns2, lemon::INVALID), 1);
+            shouldEqual(count(aligns3, f1), 1);
+            shouldEqual(count(aligns3, f2), 1);
+            shouldEqual(count(aligns3, lemon::INVALID), 1);
         }
         Polytope3::node_type f4 = poly.addFacet(n1, n2, n3);
         {
@@ -312,22 +318,18 @@ struct FloatStarPolytopeTest
             auto aligns2 = poly.aligns_map_[f2];
             auto aligns3 = poly.aligns_map_[f3];
             auto aligns4 = poly.aligns_map_[f4];
-            shouldEqual(aligns1.size(), 3);
-            shouldEqual(aligns1.count(f2), 1);
-            shouldEqual(aligns1.count(f3), 1);
-            shouldEqual(aligns1.count(f4), 1);
-            shouldEqual(aligns2.size(), 3);
-            shouldEqual(aligns2.count(f1), 1);
-            shouldEqual(aligns2.count(f3), 1);
-            shouldEqual(aligns2.count(f4), 1);
-            shouldEqual(aligns3.size(), 3);
-            shouldEqual(aligns3.count(f1), 1);
-            shouldEqual(aligns3.count(f2), 1);
-            shouldEqual(aligns3.count(f4), 1);
-            shouldEqual(aligns4.size(), 3);
-            shouldEqual(aligns4.count(f1), 1);
-            shouldEqual(aligns4.count(f2), 1);
-            shouldEqual(aligns4.count(f3), 1);
+            shouldEqual(count(aligns1, f2), 1);
+            shouldEqual(count(aligns1, f3), 1);
+            shouldEqual(count(aligns1, f4), 1);
+            shouldEqual(count(aligns2, f1), 1);
+            shouldEqual(count(aligns2, f3), 1);
+            shouldEqual(count(aligns2, f4), 1);
+            shouldEqual(count(aligns3, f1), 1);
+            shouldEqual(count(aligns3, f2), 1);
+            shouldEqual(count(aligns3, f4), 1);
+            shouldEqual(count(aligns4, f1), 1);
+            shouldEqual(count(aligns4, f2), 1);
+            shouldEqual(count(aligns4, f3), 1);
         }
     }
 

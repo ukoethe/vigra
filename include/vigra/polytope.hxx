@@ -75,7 +75,10 @@ class Polytope
         vigra_assert(
                 type_map_[n] == FACET,
                 "Polytope::closed(): Node needs do be a facet");
-        return (aligns_map_[n].size() == dimension);
+        return std::find(
+                aligns_map_[n].begin(),
+                aligns_map_[n].end(),
+                lemon::INVALID) == aligns_map_[n].end();
     }
 
     virtual bool closed() const
@@ -96,7 +99,10 @@ class Polytope
         node_type ret = graph_.addNode();
         type_map_[ret] = VERTEX;
         vec_map_[ret] = p;
-        aligns_map_[ret] = std::set<node_type>();
+        for (int i = 0; i < N; i++)
+        {
+            aligns_map_[ret][i] = lemon::INVALID;
+        }
         return ret;
     }
 
@@ -107,7 +113,17 @@ class Polytope
                 "Polytope::eraseFacet(): Node needs to be a facet");
         for (auto neighbor : aligns_map_[u])
         {
-            aligns_map_[neighbor].erase(u);
+            if (neighbor != lemon::INVALID)
+            {
+                auto it = std::find(
+                        aligns_map_[neighbor].begin(),
+                        aligns_map_[neighbor].end(),
+                        u);
+                vigra_assert(
+                        it != aligns_map_[neighbor].end(),
+                        "Polytope::eraseFacet(): Inconsistent aligns map");
+                *it = lemon::INVALID;
+            }
         }
         graph_.erase(u);
     }
@@ -250,6 +266,26 @@ class Polytope
 
   protected:
 
+    virtual bool isConnected(
+            const node_type vertex,
+            const node_type facet) const
+    {
+        vigra_assert(
+                type_map_[vertex] == VERTEX,
+                "Polytope::isConnected(): First node must be a vertex");
+        vigra_assert(
+                type_map_[facet] == FACET,
+                "Polytope::isConnected(): Second node must be a facet");
+        for (out_arc_iterator a(graph_, facet); a != lemon::INVALID; ++a)
+        {
+            if (graph_.target(a) == vertex)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     virtual node_type findNeighbor(
             const node_type u,
             const difference_type index) const
@@ -263,43 +299,24 @@ class Polytope
         vigra_assert(
                 countOutArcs(graph_, u) == dimension,
                 "Polytope::findNeighbor(): Bad facet");
-        std::set<node_type> candidates;
-        for (out_skip_iterator a(graph_, u, index); a != lemon::INVALID; ++a)
+        out_skip_iterator a(graph_, u, index);
+        const node_type first_vertex = graph_.target(a);
+        for (node_type candidate : getConnected(first_vertex))
         {
-            const node_type vertex = graph_.target(a);
-            if (a.index() == 0)
+            if (candidate != u)
             {
-                candidates = getConnected(vertex);
-            }
-            else
-            {
-                std::set<node_type> to_erase;
-                const auto con = getConnected(vertex);
-                for (auto candidate : candidates)
+                out_skip_iterator b(a);
+                do
                 {
-                    if (con.count(candidate) == 0)
+                    ++b;
+                    if (b == lemon::INVALID)
                     {
-                        to_erase.insert(candidate);
+                        return candidate;
                     }
-                }
-                for (auto candidate : to_erase)
-                {
-                    candidates.erase(candidate);
-                }
+                } while (isConnected(graph_.target(b), candidate));
             }
         }
-        candidates.erase(u);
-        if (candidates.size() != 1)
-        {
-            vigra_assert(
-                    candidates.size() == 0,
-                    "Polytope::findNeighbor(): Too many aligned facets");
-            return lemon::INVALID;
-        }
-        else
-        {
-            return *(candidates.begin());
-        }
+        return lemon::INVALID;
     }
 
     void assignNeighbors(const node_type u)
@@ -309,15 +326,25 @@ class Polytope
                 "Polytope::assignNeighbors(): Node must be facet");
         for (int i = 0; i < dimension; i++)
         {
-            node_type neighbor = this->findNeighbor(u, i);
-            if (neighbor != lemon::INVALID)
+            aligns_map_[u][i] = this->findNeighbor(u, i);
+        }
+    }
+
+    void updateInvalidNeighbors(const node_type u)
+    {
+        vigra_assert(
+                type_map_[u] == FACET,
+                "Polytope::assignNeighbors(): Node must be facet");
+        for (int i = 0; i < dimension; i++)
+        {
+            if (aligns_map_[u][i] == lemon::INVALID)
             {
-                aligns_map_[u].insert(neighbor);
+                aligns_map_[u][i] = this->findNeighbor(u, i);
             }
         }
     }
 
-    std::set<node_type> openEdge(const node_type u)
+    ArrayVector<node_type> openEdge(const node_type u)
     {
         vigra_assert(
                 type_map_[u] == FACET,
@@ -325,17 +352,14 @@ class Polytope
         vigra_assert(
                 lemon::countOutArcs(graph_, u) == dimension,
                 "Polytope::openEdge(): Got invalid facet");
-        std::set<node_type> ret;
+        ArrayVector<node_type> ret;
         for (int i = 0; i < dimension; i++)
         {
-            if ((this->findNeighbor(u, i)) == lemon::INVALID)
+            if (aligns_map_[u][i] == lemon::INVALID)
             {
                 for (out_skip_iterator a(graph_, u, i); a != lemon::INVALID; ++a)
                 {
-                    vigra_assert(
-                            ret.count(graph_.target(a)) == 0,
-                            "Polytope::openEdge(): Same arc twice");
-                    ret.insert(graph_.target(a));
+                    ret.push_back(graph_.target(a));
                 }
                 return ret;
             }
@@ -445,7 +469,7 @@ class Polytope
     graph_type graph_;
     typename graph_type::NodeMap<node_enum> type_map_;
     typename graph_type::NodeMap<point_type> vec_map_;
-    typename graph_type::NodeMap<std::set<node_type> > aligns_map_;
+    typename graph_type::NodeMap<TinyVector<node_type, N> > aligns_map_;
 };
 
 template <unsigned int N, class T>
@@ -586,10 +610,13 @@ class StarPolytope : public Polytope<N, T>
         this->assignNeighbors(ret);
         for (auto facet : aligns_map_[ret])
         {
-            vigra_assert(
-                    type_map_[facet] == FACET,
-                    "StarPolytope::addFacet(): Node must be facet");
-            this->assignNeighbors(facet);
+            if (facet != lemon::INVALID)
+            {
+                vigra_assert(
+                        type_map_[facet] == FACET,
+                        "StarPolytope::addFacet(): Node must be facet");
+                this->updateInvalidNeighbors(facet);
+            }
         }
         return ret;
     }
@@ -614,10 +641,13 @@ class StarPolytope : public Polytope<N, T>
         this->assignNeighbors(ret);
         for (auto facet : aligns_map_[ret])
         {
-            vigra_assert(
-                    type_map_[facet] == FACET,
-                    "StarPolytope::addFacet(): Node must be facet");
-            this->assignNeighbors(facet);
+            if (facet != lemon::INVALID)
+            {
+                vigra_assert(
+                        type_map_[facet] == FACET,
+                        "StarPolytope::addFacet(): Node must be facet");
+                this->updateInvalidNeighbors(facet);
+            }
         }
         return ret;
     }
@@ -658,10 +688,13 @@ class StarPolytope : public Polytope<N, T>
             this->assignNeighbors(facet);
             for (auto neighbor : aligns_map_[facet])
             {
-                vigra_assert(
-                        type_map_[neighbor] == FACET,
-                        "StarPolytope::close(): Node must be facet");
-                this->assignNeighbors(neighbor);
+                if (neighbor != lemon::INVALID)
+                {
+                    vigra_assert(
+                            type_map_[neighbor] == FACET,
+                            "StarPolytope::close(): Node must be facet");
+                    this->updateInvalidNeighbors(neighbor);
+                }
             }
         }
     }
@@ -843,7 +876,7 @@ class ConvexPolytope : public StarPolytope<N, T>
 
         while (!(this->closed(facet)))
         {
-            std::set<node_type> vertices = this->openEdge(facet);
+            ArrayVector<node_type> vertices = this->openEdge(facet);
             vigra_assert(
                     vertices.size() == (dimension - 1),
                     "StarPolytope::closeFacet(): Invalid facet");
@@ -861,10 +894,13 @@ class ConvexPolytope : public StarPolytope<N, T>
             this->assignNeighbors(new_facet);
             for (auto neighbor : aligns_map_[new_facet])
             {
-                vigra_assert(
-                        type_map_[facet] == FACET,
-                        "StarPolytope::addFacet(): Node must be facet");
-                this->assignNeighbors(neighbor);
+                if (neighbor != lemon::INVALID)
+                {
+                    vigra_assert(
+                            type_map_[facet] == FACET,
+                            "StarPolytope::addFacet(): Node must be facet");
+                    this->updateInvalidNeighbors(neighbor);
+                }
             }
         }
     }
@@ -908,10 +944,14 @@ class ConvexPolytope : public StarPolytope<N, T>
             {
                 for (auto con : aligns_map_[lit_facet])
                 {
-                    vigra_assert(
-                            type_map_[con] == FACET,
-                            "ConvexPolytope::addExtremeVertex(): facet not a facet");
-                    open_facets.insert(con);
+                    if (con != lemon::INVALID)
+                    {
+                        vigra_assert(
+                                type_map_[con] == FACET,
+                                "ConvexPolytope::addExtremeVertex(): "
+                                "facet not a facet");
+                        open_facets.insert(con);
+                    }
                 }
                 open_facets.erase(lit_facet);
                 this->eraseFacet(lit_facet);
