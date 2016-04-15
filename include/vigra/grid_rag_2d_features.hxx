@@ -20,7 +20,7 @@ class SortedLines{
 
 public:
     typedef AdjacencyListGraph Graph;
-    typedef typename Graph::Edge Edge;
+    typedef Graph::Edge Edge;
     typedef TinyVector<MultiArrayIndex, 2> Coord;
     typedef std::list<Coord> CoordList;
 
@@ -390,11 +390,11 @@ inline void curvature(
                     auto vvb = valDX[0]*valDXX[1] - valDX[1]*valDXX[0]; 
                     auto vvr = std::abs(vva/vvb);
 
-                    if(!std::isfinite(vvr)){
+                    if(!isfinite(vvr)){
                         vvr = 100.0;
                     }
 
-                    if(std::isnan(r)){
+                    if(isnan(r)){
                         r = 0.0;
                     }
                     if(vvr>100.0){

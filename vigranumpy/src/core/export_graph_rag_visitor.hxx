@@ -700,7 +700,7 @@ public:
                 
 
                 auto fixVals = [](float val, float replace){
-                    return std::isfinite(val) ?  val : replace;
+                    return isfinite(val) ?  val : replace;
                 };
 
                 feat[0] = get<Mean>(a);
@@ -720,7 +720,7 @@ public:
                 feat[11] =  fixVals(quant[5],feat[0]);
 
                 for(size_t i=0; i<12; ++i){
-                    if(!std::isfinite(feat[i])){
+                    if(!isfinite(feat[i])){
                         std::cout<<"outch "<<i<<"\n";
                         throw std::runtime_error("fuck u");
                     }
