@@ -6448,6 +6448,15 @@ class ConvexHullFeatures
 
         void finalize()
         {
+            if (not finalized_)
+            {
+                dofinalize();
+                finalized_ = true;
+            }
+        }
+
+        void dofinalize()
+        {
             vigra_precondition(
                     initialized_,
                     "ConvexHullFeatures::finalize(): "
@@ -6508,8 +6517,6 @@ class ConvexHullFeatures
                     defect_volume_kurtosis_ = get<UnbiasedKurtosis>(volumes_acc);
                 }
             }
-            // Set finalized flag
-            finalized_ = true;
         }
 
         void operator+=(Impl const &)
