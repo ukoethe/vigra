@@ -571,7 +571,8 @@ class StarPolytope : public Polytope<N, T>
         ++a;
         for (int i = 0; a != lemon::INVALID; ++a, ++i)
         {
-            rowVector(mat, i) = vec_map_[graph_.target(a)] - vertex;
+            const point_type vec = vec_map_[graph_.target(a)] - vertex;
+            std::copy(vec.begin(), vec.end(), rowVector(mat, i).begin());
         }
         point_view_type normal = vec_map_[u];
         for (int i = 0; i < dimension; i++)
@@ -716,8 +717,14 @@ class StarPolytope : public Polytope<N, T>
                 {
                     ii++;
                 }
-                rowVector(jp_mat, i) = vertices[ii] - p;
-                rowVector(jj_mat, i) = vertices[ii] - vertices[j];
+                {
+                const point_type vec = vertices[ii] - p;
+                std::copy(vec.begin(), vec.end(), rowVector(jp_mat, i).begin());
+                }
+                {
+                const point_type vec = vertices[ii] - vertices[j];
+                std::copy(vec.begin(), vec.end(), rowVector(jj_mat, i).begin());
+                }
             }
             const coordinate_type jj_det = linalg::determinant(jj_mat);
             const coordinate_type jp_det = linalg::determinant(jp_mat);
@@ -753,7 +760,8 @@ class StarPolytope : public Polytope<N, T>
         for (int i = 0; i < dimension; ++i, ++a)
         {
             fac *= (i+1);
-            rowVector(mat, i) = vec_map_[graph_.target(a)] - center_;
+            const point_type vec = vec_map_[graph_.target(a)] - center_;
+            std::copy(vec.begin(), vec.end(), rowVector(mat, i).begin());
         }
         return abs(linalg::determinant(mat) / fac);
     }
@@ -781,9 +789,11 @@ class StarPolytope : public Polytope<N, T>
         for (int i = 1; i < dimension; ++i, ++a)
         {
             factor *= i;
-            rowVector(mat, i) = vec_map_[graph_.target(a)] - vec;
+            const point_type tmp = vec_map_[graph_.target(a)] - vec;
+            std::copy(tmp.begin(), tmp.end(), rowVector(mat, i).begin());
         }
-        rowVector(mat, 0) = vec_map_[n];
+        const point_type tmp = vec_map_[n];
+        std::copy(tmp.begin(), tmp.end(), rowVector(mat, 0).begin());
         return abs(linalg::determinant(mat)) / factor;
     }
 

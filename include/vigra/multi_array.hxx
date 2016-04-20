@@ -950,20 +950,6 @@ public:
         return *this;
     }
 
-
-        /** Assignmet of anything iterable. Fails with
-            <tt>PreconditionViolation</tt> execption if size() is not equal to
-            <tt>Iterable::end() - Iterable::begin()<tt>
-        */
-    template<class Iterable>
-    MultiArrayView & operator=(Iterable const & rhs)
-    {
-        vigra_precondition(rhs.end() - rhs.begin() == size(),
-                           "MultiArrayView::operator=(): Sizes must match");
-        std::copy(rhs.begin(), rhs.end(), this->begin());
-        return *this;
-    }
-
         /** Add-assignment of an array expression. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
          */
