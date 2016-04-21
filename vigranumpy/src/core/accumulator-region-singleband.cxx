@@ -56,19 +56,19 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
 {
     using namespace vigra::acc;
 
-    #define VIGRA_CONVEX_HULL_FEATURE_INPUT_VOLUME "Input Volume"
-    #define VIGRA_CONVEX_HULL_FEATURE_HULL_VOLUME "Hull Volume"
+    #define VIGRA_CONVEX_HULL_FEATURE_INPUT_VOLUME "InputVolume"
+    #define VIGRA_CONVEX_HULL_FEATURE_HULL_VOLUME "HullVolume"
     #define VIGRA_CONVEX_HULL_FEATURE_CONVEXITY "Convexity"
-    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_VOLUME_MEAN "Defect Volume Mean"
-    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_VOLUME_VARIANCE "Defect Volume Variance"
-    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_VOLUME_SKEWNESS "Defect Volume Skewness"
-    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_VOLUME_KURTOSIS "Defect Volume Kurtosis"
-    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_COUNT "Defect Count"
-    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_DISPLACEMENT_MEAN "Defect Displacement Mean"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_VOLUME_MEAN "DefectVolumeMean"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_VOLUME_VARIANCE "DefectVolumeVariance"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_VOLUME_SKEWNESS "DefectVolumeSkewness"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_VOLUME_KURTOSIS "DefectVolumeKurtosis"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_COUNT "DefectCount"
+    #define VIGRA_CONVEX_HULL_FEATURE_DEFECT_DISPLACEMENT_MEAN "DefectDisplacementMean"
 
-    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_INPUT_CENTER "Input Center"
-    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_HULL_CENTER "Hull Center"
-    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_DEFECT_CENTER "Defect Center"
+    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_INPUT_CENTER "InputCenter"
+    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_HULL_CENTER "HullCenter"
+    #define VIGRA_CONVEX_HULL_VECTOR_FEATURE_DEFECT_CENTER "DefectCenter"
 
     if(list_features_only)
     {
