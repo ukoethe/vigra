@@ -11,7 +11,7 @@ environment:
 build_script:
     - if "%PY_VERSION%" == "2.7" set PATH=C:\\Miniconda-x64\\Scripts;%PATH%
     - if "%PY_VERSION%" == "3.5" set PATH=C:\\Miniconda3-x64\\Scripts;%PATH%
-    - if "%PY_VERSION%" == "2.7" conda create -q --yes -n python -c ukoethe --override-channels visual-studio=%VC_VERSION%.0 python=%PY_VERSION% jpeg libpng libtiff hdf5 fftw boost numpy nose
+    - if "%PY_VERSION%" == "2.7" conda create -q --yes -n python -c ukoethe --override-channels visual-studio=%VC_VERSION%.0 python=%PY_VERSION% jpeg libpng libtiff hdf5=1.8.15.1 fftw boost numpy nose
     - if "%PY_VERSION%" == "3.5" conda create -q --yes -n python python=%PY_VERSION% jpeg libpng libtiff hdf5=1.8.15.1 numpy nose
     - activate python
     - if "%PY_VERSION%" == "3.5" conda install -q --yes -c ukoethe --override-channels visual-studio=%VC_VERSION%.0 fftw boost
