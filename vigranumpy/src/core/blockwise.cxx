@@ -271,6 +271,8 @@ namespace vigra{
 
 
 
+    void defineChunkedFunctionsImpl();
+
 }
 using namespace vigra;
 using namespace boost::python;
@@ -293,8 +295,10 @@ BOOST_PYTHON_MODULE_INIT(blockwise)
     defineBlockwiseConvolutionOptions<2>("BlockwiseConvolutionOptions2D");
     defineBlockwiseConvolutionOptions<3>("BlockwiseConvolutionOptions3D");
     defineBlockwiseConvolutionOptions<4>("BlockwiseConvolutionOptions4D");
-    defineBlockwiseConvolutionOptions<5>("BlockwiseConvolutionOptions4D");
+    defineBlockwiseConvolutionOptions<5>("BlockwiseConvolutionOptions5D");
 
     defineBlockwiseFilters<2, float>();
     defineBlockwiseFilters<3, float>();
+
+    defineChunkedFunctionsImpl();
 }
