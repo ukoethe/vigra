@@ -77,7 +77,7 @@ namespace detail {
             return new ChunkedArrayTmpFile<N,T2>(source.shape(), source.chunkShape(), opt);
         }
         else if (backend.find("ChunkedArrayCompressed") != std::string::npos) {
-            const ChunkedArrayCompressed<N,T2> & sourceComp = dynamic_cast<const ChunkedArrayCompressed<N,T2> &>(source);
+            const ChunkedArrayCompressed<N,T1> & sourceComp = dynamic_cast<const ChunkedArrayCompressed<N,T1> &>(source);
             opt.compression(sourceComp.compression_method_);
             return new ChunkedArrayCompressed<N,T2>(sourceComp.shape(), sourceComp.chunkShape(), opt);
         }
@@ -160,7 +160,7 @@ void defineChunkedFiltersImpl()
     PY_VIGRA_BINDINGS("_hessianOfGaussianFirstEigenvalue",  pyHessianOfGaussianFirstEigenvalue, T_IN, T_OUT)
     PY_VIGRA_BINDINGS("_hessianOfGaussianLastEigenvalue",   pyHessianOfGaussianLastEigenvalue, T_IN, T_OUT)
     PY_VIGRA_BINDINGS("_laplacianOfGaussian",               pyLaplacianOfGaussian, T_IN, T_OUT)
-    PY_VIGRA_BINDINGS("_symmtericGradient",                 pySymmetricGradient, T_IN, out_type)
+    PY_VIGRA_BINDINGS("_symmetricGradient",                 pySymmetricGradient, T_IN, out_type)
     PY_VIGRA_BINDINGS("_structureTensor",                   pyStructureTensor, T_IN, out_type_2)
 }
 
@@ -185,7 +185,7 @@ python::tuple pyUnionFindWatersheds(
 template<unsigned int N, class Data, class Label>
 void defineChunkedWatershedsImpl()
 {
-    python::def("unionFindwatersheds", &pyUnionFindWatersheds<N,Data,Label>,
+    python::def("_unionFindWatersheds", &pyUnionFindWatersheds<N,Data,Label>,
         (
             python::arg("data"),
             python::arg("options"),
@@ -213,7 +213,7 @@ python::tuple pyLabelArray(
 template<unsigned int N, class Data, class Label>
 void defineChunkedLabelImpl()
 {
-    python::def("labelArray", &pyLabelArray<N,Data,Label>,
+    python::def("_labelArray", &pyLabelArray<N,Data,Label>,
         (
             python::arg("data"),
             python::arg("options"),

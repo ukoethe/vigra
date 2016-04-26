@@ -2634,6 +2634,17 @@ def _genBlockwiseFunctions():
     gaussianGradientMagnitude.__module__ = 'vigra.blockwise'
     blockwise.gaussianGradientMagnitude = gaussianGradientMagnitude
 
+    def gaussianDivergence(image, options, out=None):
+        out = blockwise._gaussianDivergence(image, options, out)
+        return out
+    gaussianDivergence.__module__ = 'vigra.blockwise'
+    blockwise.gaussianDivergence = gaussianDivergence
+
+    def hessianOfGaussian(image, options, out=None):
+        out = blockwise._hessianOfGaussian(image, options, out)
+        return out
+    hessianOfGaussian.__module__ = 'vigra.blockwise'
+    blockwise.hessianOfGaussian = hessianOfGaussian
 
     def hessianOfGaussianEigenvalues(image,options,out=None):
         out = blockwise._hessianOfGaussianEigenvalues(image,options,out)
@@ -2653,9 +2664,40 @@ def _genBlockwiseFunctions():
     hessianOfGaussianLastEigenvalue.__module__ = 'vigra.blockwise'
     blockwise.hessianOfGaussianLastEigenvalue = hessianOfGaussianLastEigenvalue
 
+    def laplacianOfGaussian(image,options,out=None):
+        out = blockwise._laplacianOfGaussian(image,options,out)
+        return out
+    laplacianOfGaussian.__module__ = 'vigra.blockwise'
+    blockwise.laplacianOfGaussian = laplacianOfGaussian
+
+    def symmetricGradient(image, options,out=None):
+        out = blockwise._symmetricGradient(image, options, out)
+        return out
+    symmetricGradient.__module__ = 'vigra.blockwise'
+    blockwise.symmetricGradient = symmetricGradient
+
+    def structureTensor(image, options, out = None):
+        out = blockwise._structureTensor(image, options, out)
+        return out
+    structureTensor.__module__ = 'vigra.blockwise'
+    blockwise.structureTensor = structureTensor
+
+    def unionFindWatersheds(data, options, labels=None):
+        out = blockwise._unionFindWatersheds(data, options, labels)
+        return out
+    unionFindWatersheds.__module__ = 'vigra.blockwise'
+    blockwise.unionFindWatersheds = unionFindWatersheds
+
+    def labelArray(data, options, labels=None):
+        out = blockwise._labelArray(data, options, labels)
+        return out
+    labelArray.__module__ = 'vigra.blockwise'
+    blockwise.labelArray = labelArray
+
 
 _genBlockwiseFunctions()
 del _genBlockwiseFunctions
+
 
 
 def loadBSDGt(filename):
