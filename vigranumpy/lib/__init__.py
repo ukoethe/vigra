@@ -2618,79 +2618,157 @@ def _genBlockwiseFunctions():
 
     def gaussianSmooth(image,options,out=None):
         out = blockwise._gaussianSmooth(image,options,out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     gaussianSmooth.__module__ = 'vigra.blockwise'
     blockwise.gaussianSmooth = gaussianSmooth
 
     def gaussianGradient(image,options,out=None):
         out = blockwise._gaussianGradient(image,options,out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     gaussianGradient.__module__ = 'vigra.blockwise'
     blockwise.gaussianGradient = gaussianGradient
 
     def gaussianGradientMagnitude(image,options,out=None):
         out = blockwise._gaussianGradientMagnitude(image,options,out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     gaussianGradientMagnitude.__module__ = 'vigra.blockwise'
     blockwise.gaussianGradientMagnitude = gaussianGradientMagnitude
 
     def gaussianDivergence(image, options, out=None):
         out = blockwise._gaussianDivergence(image, options, out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     gaussianDivergence.__module__ = 'vigra.blockwise'
     blockwise.gaussianDivergence = gaussianDivergence
 
     def hessianOfGaussian(image, options, out=None):
         out = blockwise._hessianOfGaussian(image, options, out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     hessianOfGaussian.__module__ = 'vigra.blockwise'
     blockwise.hessianOfGaussian = hessianOfGaussian
 
     def hessianOfGaussianEigenvalues(image,options,out=None):
         out = blockwise._hessianOfGaussianEigenvalues(image,options,out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     hessianOfGaussianEigenvalues.__module__ = 'vigra.blockwise'
     blockwise.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
 
     def hessianOfGaussianFirstEigenvalue(image,options,out=None):
         out = blockwise._hessianOfGaussianFirstEigenvalue(image,options,out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     hessianOfGaussianFirstEigenvalue.__module__ = 'vigra.blockwise'
     blockwise.hessianOfGaussianFirstEigenvalue = hessianOfGaussianFirstEigenvalue
 
     def hessianOfGaussianLastEigenvalue(image,options,out=None):
         out = blockwise._hessianOfGaussianLastEigenvalue(image,options,out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     hessianOfGaussianLastEigenvalue.__module__ = 'vigra.blockwise'
     blockwise.hessianOfGaussianLastEigenvalue = hessianOfGaussianLastEigenvalue
 
     def laplacianOfGaussian(image,options,out=None):
         out = blockwise._laplacianOfGaussian(image,options,out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     laplacianOfGaussian.__module__ = 'vigra.blockwise'
     blockwise.laplacianOfGaussian = laplacianOfGaussian
 
     def symmetricGradient(image, options,out=None):
         out = blockwise._symmetricGradient(image, options, out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     symmetricGradient.__module__ = 'vigra.blockwise'
     blockwise.symmetricGradient = symmetricGradient
 
     def structureTensor(image, options, out = None):
         out = blockwise._structureTensor(image, options, out)
-        return out
+        try :
+            if out.axistags == None:
+                out.axistags = image.axistags
+            return out
+        except AttributeError:
+            return out
+
     structureTensor.__module__ = 'vigra.blockwise'
     blockwise.structureTensor = structureTensor
 
     def unionFindWatersheds(data, options, labels=None):
-        out = blockwise._unionFindWatersheds(data, options, labels)
-        return out
+        labels = blockwise._unionFindWatersheds(data, options, labels)
+        try :
+            if labels[1].axistags == None:
+                labels[1].axistags = image.axistags
+            return labels
+        except AttributeError:
+            return labels
+
     unionFindWatersheds.__module__ = 'vigra.blockwise'
     blockwise.unionFindWatersheds = unionFindWatersheds
 
     def labelArray(data, options, labels=None):
-        out = blockwise._labelArray(data, options, labels)
-        return out
+        labels = blockwise._labelArray(data, options, labels)
+        try :
+            if labels[1].axistags == None:
+                labels[1].axistags = image.axistags
+            return labels
+        except AttributeError:
+            return labels
+
     labelArray.__module__ = 'vigra.blockwise'
     blockwise.labelArray = labelArray
 

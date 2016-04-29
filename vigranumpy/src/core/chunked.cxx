@@ -13,38 +13,8 @@
 
 namespace python = boost::python;
 
+
 namespace vigra {
-
-
-void defineNeighborhoodTypeImpl()
-{
-    python::enum_<NeighborhoodType>("NeighborhoodType")
-    .value("DirectNeighborhood", DirectNeighborhood)
-    .value("IndirectNeighborhood", IndirectNeighborhood)
-    .export_values()
-    ;
-}
-
-
-template<unsigned int N>
-class pyBlockwiseLabelOptions : public BlockwiseLabelOptions {};
-
-
-template<unsigned int N>
-void defineBlockwiseLabelOptionsImpl(const std::string & name)
-{
-    typedef pyBlockwiseLabelOptions<N> Opt;
-
-    python::class_<Opt>(name.c_str(), python::init<>())
-    .add_property("blockShape", &Opt::readBlockShape, &Opt::setBlockShape)
-    .add_property("numThreads", &Opt::getNumThreads, &Opt::setNumThreads)
-    .add_property("backgroundValue", &Opt:: template getBackgroundValue<double>,
-            python::make_function(&Opt:: template ignoreBackgroundValue<double>, python::return_internal_reference<>()))
-    .add_property("neighbourhood", &Opt::getNeighborhood,
-            python::make_function(&Opt::neighborhood, python::return_internal_reference<>()))
-    .def("hasBackgroundValue", &Opt::hasBackgroundValue)
-    ;
-}
 
 
 namespace detail {
@@ -61,25 +31,26 @@ namespace detail {
     }
 
     template<unsigned int N, class T1, class T2>
-    ChunkedArray<N,T2>* makeBackend(const ChunkedArray<N,T1> & source)
+    python::object makeChunkedArray(const ChunkedArray<N,T1> & source)
     {
         std::string backend = source.backend();
         ChunkedArrayOptions opt;
         opt.cacheMax(source.cacheMaxSize());
+        ChunkedArray<N,T2> * out = nullptr;
 
         if (backend == "ChunkedArrayFull") {
-            return new ChunkedArrayFull<N,T2>(source.shape(), opt);
+            out = new ChunkedArrayFull<N,T2>(source.shape(), opt);
         }
         else if (backend == "ChunkedArrayLazy") {
-            return new ChunkedArrayLazy<N,T2>(source.shape(), source.chunkShape(), opt);
+            out = new ChunkedArrayLazy<N,T2>(source.shape(), source.chunkShape(), opt);
         }
         else if (backend == "ChunkedArrayTmpFile") {
-            return new ChunkedArrayTmpFile<N,T2>(source.shape(), source.chunkShape(), opt);
+            out = new ChunkedArrayTmpFile<N,T2>(source.shape(), source.chunkShape(), opt);
         }
         else if (backend.find("ChunkedArrayCompressed") != std::string::npos) {
             const ChunkedArrayCompressed<N,T1> & sourceComp = dynamic_cast<const ChunkedArrayCompressed<N,T1> &>(source);
             opt.compression(sourceComp.compression_method_);
-            return new ChunkedArrayCompressed<N,T2>(sourceComp.shape(), sourceComp.chunkShape(), opt);
+            out = new ChunkedArrayCompressed<N,T2>(sourceComp.shape(), sourceComp.chunkShape(), opt);
         }
         else if (backend.find("ChunkedArrayHDF5") != std::string::npos) {
             vigra_precondition(false, "'output' parameter is mandatory for ChunkedArrayHDF5");
@@ -88,32 +59,21 @@ namespace detail {
             vigra_fail("Unable to derive backend from 'input' parameter");
         }
 
-        return NULL;
+        return makeOwningHolder(out);
     }
 
-} // END NAMESPACE DETAIL
+} // END NAMESPACE detail
 
-
-template<unsigned int N, class T1, class T2>
-python::object makeChunkedArray(python::object in)
-{
-    const ChunkedArray<N, T1> & source = python::extract<const ChunkedArray<N,T1>&>(in)();
-    python::object out = detail::makeOwningHolder(detail::makeBackend<N,T1,T2>(source));
-//set axistags
-    return out;
-}
 
 
 #define PY_VIGRA_FILTERS(FUNCTOR, FUNCTION)                                                 \
 template<unsigned int N, class T1, class T2>                                                \
 python::object FUNCTOR(                                                                     \
-        python::object in,                                                                  \
+        const ChunkedArray<N,T1> & source,                                                  \
         const BlockwiseConvolutionOptions<N> & opt,                                         \
         python::object out                                                                  \
 ){                                                                                          \
-    if (out == python::object()) out = makeChunkedArray<N,T1,T2>(in);                       \
-\
-    const ChunkedArray<N,T1> & source = python::extract<const ChunkedArray<N,T1>&>(in)();   \
+    if (out == python::object()) out = detail::makeChunkedArray<N,T1,T2>(source);           \
     ChunkedArray<N,T2> & dest = python::extract<ChunkedArray<N,T2>&>(out)();                \
     FUNCTION(source, dest, opt);                                                            \
 \
@@ -167,15 +127,14 @@ void defineChunkedFiltersImpl()
 #undef PY_VIGRA_BINDINGS
 
 
+
 template<unsigned int N, class T1, class T2>
 python::tuple pyUnionFindWatersheds(
-        python::object in,
-        const pyBlockwiseLabelOptions<N> & opt,
+        const ChunkedArray<N,T1> & source,
+        const BlockwiseLabelOptions & opt,
         python::object out
 ){
-    if (out == python::object()) out = makeChunkedArray<N,T1,T2>(in);
-
-    const ChunkedArray<N,T1> & source = python::extract<const ChunkedArray<N,T1>&>(in)();
+    if (out == python::object()) out = detail::makeChunkedArray<N,T1,T2>(source);
     ChunkedArray<N,T2> & dest = python::extract<ChunkedArray<N,T2>&>(out)();
     auto res = unionFindWatershedsBlockwise(source, dest, opt);
 
@@ -197,13 +156,11 @@ void defineChunkedWatershedsImpl()
 
 template<unsigned int N, class T1, class T2>
 python::tuple pyLabelArray(
-        python::object in,
-        const pyBlockwiseLabelOptions<N> & opt,
+        const ChunkedArray<N,T1> & source,
+        const BlockwiseLabelOptions & opt,
         python::object out
 ){
-    if (out == python::object()) out = makeChunkedArray<N,T1,T2>(in);
-
-    const ChunkedArray<N,T1> & source = python::extract<const ChunkedArray<N,T1>&>(in)();
+    if (out == python::object()) out = detail::makeChunkedArray<N,T1,T2>(source);
     ChunkedArray<N,T2> & dest = python::extract<ChunkedArray<N,T2>&>(out)();
     auto res = labelMultiArrayBlockwise(source, dest, opt);
 
@@ -223,13 +180,9 @@ void defineChunkedLabelImpl()
 }
 
 
-void defineChunkedFunctionsImpl()
+
+void defineChunkedFunctions()
 {
-    defineNeighborhoodTypeImpl();
-
-    defineBlockwiseLabelOptionsImpl<2>("BlockwiseLabelOptions2D");
-    defineBlockwiseLabelOptionsImpl<3>("BlockwiseLabelOptions3D");
-
     defineChunkedFiltersImpl<2,npy_float32,npy_float32>();
     defineChunkedFiltersImpl<3,npy_float32,npy_float32>();
 
