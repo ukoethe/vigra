@@ -183,14 +183,14 @@ void defineChunkedLabelImpl()
 
 void defineChunkedFunctions()
 {
-    defineChunkedFiltersImpl<2,npy_float32,npy_float32>();
-    defineChunkedFiltersImpl<3,npy_float32,npy_float32>();
+    defineChunkedFiltersImpl<2, npy_float32, npy_float32>();
+    defineChunkedFiltersImpl<3, npy_float32, npy_float32>();
 
-    defineChunkedWatershedsImpl<2,npy_uint32,npy_uint32>();
-    defineChunkedWatershedsImpl<3,npy_uint32,npy_uint32>();
+    defineChunkedWatershedsImpl<2, npy_uint32, npy_uint32>();
+    defineChunkedWatershedsImpl<3, npy_uint32, npy_uint32>();
 
-    defineChunkedLabelImpl<2,npy_uint32,npy_uint32>();
-    defineChunkedLabelImpl<3,npy_uint32,npy_uint32>();
+    defineChunkedLabelImpl<2, npy_uint32, npy_uint32>();
+    defineChunkedLabelImpl<3, npy_uint32, npy_uint32>();
 }
 
 
