@@ -58,7 +58,7 @@ NumpyAnyArray FUNCTOR(                              \
     const BlockwiseConvolutionOptions<DIM>  & opt,  \
     NumpyArray<DIM, T_OUT> dest                     \
 ){                                                  \
-    dest.reshapeIfEmpty(source.Shape());            \
+    dest.reshapeIfEmpty(source.shape());            \
     FUNCTION(source, dest, opt);                    \
     return dest;                                    \
 }
