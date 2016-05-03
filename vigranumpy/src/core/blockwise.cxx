@@ -317,6 +317,8 @@ BOOST_PYTHON_MODULE_INIT(blockwise)
     defineBlockwiseFilters<2, npy_float32, npy_float32>();
     defineBlockwiseFilters<3, npy_float32, npy_float32>();
 
+    defineUnionFindWatershedsImpl<2, npy_uint8, npy_uint32>();
+    defineUnionFindWatershedsImpl<3, npy_uint8, npy_uint32>();
     defineUnionFindWatershedsImpl<2, npy_uint32, npy_uint32>();
     defineUnionFindWatershedsImpl<3, npy_uint32, npy_uint32>();
 
