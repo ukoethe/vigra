@@ -412,8 +412,8 @@ BOOST_PYTHON_MODULE_INIT(blockwise)
     defineUnionFindWatershedsImpl<2, npy_uint32, npy_uint32>();
     defineUnionFindWatershedsImpl<3, npy_uint32, npy_uint32>();
 
-    defineLabelArrayImpl<2, npy_uint32, npy_uint32>();
-    defineLabelArrayImpl<3, npy_uint32, npy_uint32>();
+    defineLabelArrayImpl<2, npy_uint8, npy_uint32>();
+    defineLabelArrayImpl<3, npy_uint8, npy_uint32>();
     defineLabelArrayImpl<2, npy_uint32, npy_uint32>();
     defineLabelArrayImpl<3, npy_uint32, npy_uint32>();
 }
