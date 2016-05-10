@@ -368,8 +368,8 @@ void defineBlockwiseLabelOptions()
     python::class_<Opt>("BlockwiseLabelOptions", python::init<>())
     .add_property("blockShape", &Opt::readBlockShape, &Opt::setBlockShape)
     .add_property("numThreads", &Opt::getNumThreads, &Opt::setNumThreads)
-    .add_property("backgroundValue", &Opt:: template getBackgroundValue<double>,
-            python::make_function(&Opt:: template ignoreBackgroundValue<double>, python::return_internal_reference<>()))
+    .add_property("backgroundValue", &Opt::getBackgroundValue<double>,
+            python::make_function(&Opt::ignoreBackgroundValue<double>, python::return_internal_reference<>()))
     .add_property("neighborhood", &Opt::getNeighborhood,
             python::make_function(&Opt::neighborhood, python::return_internal_reference<>()))
     .def("hasBackgroundValue", &Opt::hasBackgroundValue)
