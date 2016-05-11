@@ -32,7 +32,7 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-// DUMMY CHANGE
+
 
 #ifndef VIGRA_MULTI_BLOCKWISE_HXX
 #define VIGRA_MULTI_BLOCKWISE_HXX
