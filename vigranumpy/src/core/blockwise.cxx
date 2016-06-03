@@ -38,7 +38,6 @@
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-
 #include <vigra/multi_blocking.hxx>
 #include <vigra/multi_blockwise.hxx>
 #include <vigra/tinyvector.hxx>
@@ -52,35 +51,128 @@ namespace python = boost::python;
 namespace vigra{
 
 
-#define VIGRA_NUMPY_FILTERS(FUNCTOR, FUNCTION)      \
-template<unsigned int DIM, class T_IN, class T_OUT> \
-NumpyAnyArray FUNCTOR(                              \
-    const NumpyArray<DIM, T_IN> &  source,          \
-    const BlockwiseConvolutionOptions<DIM>  & opt,  \
-    NumpyArray<DIM, T_OUT> dest                     \
-){                                                  \
-    dest.reshapeIfEmpty(source.shape());            \
-    FUNCTION(source, dest, opt);                    \
-    return dest;                                    \
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyGaussianSmooth(
+    const NumpyArray<DIM, T_IN> &  source,
+    const BlockwiseConvolutionOptions<DIM>  & opt,
+    NumpyArray<DIM, T_OUT> dest
+){
+    dest.reshapeIfEmpty(source.taggedShape());
+    gaussianSmoothMultiArray(source, dest, opt);
+    return dest;
 }
 
-VIGRA_NUMPY_FILTERS(pyGaussianSmooth,                     gaussianSmoothMultiArray)
-VIGRA_NUMPY_FILTERS(pyGaussianGradient,                   gaussianGradientMultiArray)
-VIGRA_NUMPY_FILTERS(pyGaussianGradientMagnitude,          gaussianGradientMagnitudeMultiArray)
-VIGRA_NUMPY_FILTERS(pyGaussianDivergence,                 gaussianDivergenceMultiArray)
-VIGRA_NUMPY_FILTERS(pyHessianOfGaussian,                  hessianOfGaussianMultiArray)
-VIGRA_NUMPY_FILTERS(pyHessianOfGaussianEigenvalues,       hessianOfGaussianEigenvaluesMultiArray)
-VIGRA_NUMPY_FILTERS(pyHessianOfGaussianFirstEigenvalue,   hessianOfGaussianFirstEigenvalueMultiArray)
-VIGRA_NUMPY_FILTERS(pyHessianOfGaussianLastEigenvalue,    hessianOfGaussianLastEigenvalueMultiArray)
-VIGRA_NUMPY_FILTERS(pyLaplacianOfGaussian,                laplacianOfGaussianMultiArray)
-VIGRA_NUMPY_FILTERS(pySymmetricGradient,                  symmetricGradientMultiArray)
-VIGRA_NUMPY_FILTERS(pyStructureTensor,                    structureTensorMultiArray)
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyHessianOfGaussianFirstEigenvalue(
+    const NumpyArray<DIM, T_IN> &  source,
+    const BlockwiseConvolutionOptions<DIM>  & opt,
+    NumpyArray<DIM, T_OUT> dest
+){
+    dest.reshapeIfEmpty(source.taggedShape());
+    hessianOfGaussianFirstEigenvalueMultiArray(source, dest, opt);
+    return dest;
+}
 
-#undef VIGRA_NUMPY_FILTERS
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyGaussianGradientMagnitude(
+    const NumpyArray<DIM, T_IN> &  source,
+    const BlockwiseConvolutionOptions<DIM>  & opt,
+    NumpyArray<DIM, T_OUT> dest
+){
+    dest.reshapeIfEmpty(source.taggedShape());
+    gaussianGradientMagnitudeMultiArray(source, dest, opt);
+    return dest;
+}
 
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyHessianOfGaussianLastEigenvalue(
+    const NumpyArray<DIM, T_IN> &  source,
+    const BlockwiseConvolutionOptions<DIM>  & opt,
+    NumpyArray<DIM, T_OUT> dest
+){
+    dest.reshapeIfEmpty(source.taggedShape());
+    hessianOfGaussianLastEigenvalueMultiArray(source, dest, opt);
+    return dest;
+}
 
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyLaplacianOfGaussian(
+    const NumpyArray<DIM, T_IN> &  source,
+    const BlockwiseConvolutionOptions<DIM>  & opt,
+    NumpyArray<DIM, T_OUT> dest
+){
+    dest.reshapeIfEmpty(source.taggedShape());
+    laplacianOfGaussianMultiArray(source, dest, opt);
+    return dest;
+}
 
-#define VIGRA_NUMPY_FILTER_BINDINGS(NAME_STR, FUNCTOR, T_IN, T_OUT) \
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyGaussianDivergence(
+    const NumpyArray<DIM, TinyVector<T_IN, DIM> > & source,
+    const BlockwiseConvolutionOptions<DIM> & opt,
+    NumpyArray<DIM, T_OUT> dest
+){
+    dest.reshapeIfEmpty(source.taggedShape().setChannelCount(0));
+    gaussianDivergenceMultiArray(source, dest, opt);
+    return dest;
+}
+
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyGaussianGradient(
+    const NumpyArray<DIM, T_IN> & source,
+    const BlockwiseConvolutionOptions<DIM> & opt,
+    NumpyArray<DIM, TinyVector<T_OUT, DIM> > dest
+){
+    dest.reshapeIfEmpty(source.taggedShape().setChannelCount(DIM));
+    gaussianGradientMultiArray(source, dest, opt);
+    return dest;
+}
+
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyHessianOfGaussian(
+    const NumpyArray<DIM, T_IN> & source,
+    const BlockwiseConvolutionOptions<DIM> & opt,
+    NumpyArray<DIM, TinyVector<T_OUT, DIM*(DIM+1)/2> > dest
+){
+    dest.reshapeIfEmpty(source.taggedShape().setChannelCount(DIM*(DIM+1)/2));
+    hessianOfGaussianMultiArray(source, dest, opt);
+    return dest;
+}
+
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyHessianOfGaussianEigenvalues(
+    const NumpyArray<DIM, T_IN> & source,
+    const BlockwiseConvolutionOptions<DIM> & opt,
+    NumpyArray<DIM, TinyVector<T_OUT, DIM> > dest
+){
+    dest.reshapeIfEmpty(source.taggedShape().setChannelCount(DIM));
+    hessianOfGaussianEigenvaluesMultiArray(source, dest, opt);
+    return dest;
+}
+
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pyStructureTensor(
+    const NumpyArray<DIM, T_IN> & source,
+    const BlockwiseConvolutionOptions<DIM> & opt,
+    NumpyArray<DIM, TinyVector<T_OUT, DIM*(DIM+1)/2> > dest
+){
+    dest.reshapeIfEmpty(source.taggedShape().setChannelCount(DIM*(DIM+1)/2));
+    structureTensorMultiArray(source, dest, opt);
+    return dest;
+}
+
+template<unsigned int DIM, class T_IN, class T_OUT>
+NumpyAnyArray pySymmetricGradient(
+    const NumpyArray<DIM, T_IN> & source,
+    const BlockwiseConvolutionOptions<DIM> & opt,
+    NumpyArray<DIM, TinyVector<T_OUT, DIM> > dest
+){
+    dest.reshapeIfEmpty(source.taggedShape().setChannelCount(DIM));
+    symmetricGradientMultiArray(source, dest, opt);
+    return dest;
+}
+
+#define VIGRA_NUMPY_FILTER_BINDINGS(NAME_STR, FUNCTOR)              \
 python::def(NAME_STR, registerConverters(&FUNCTOR<N,T_IN,T_OUT>),   \
     (                                                               \
         python::arg("source"),                                      \
@@ -91,21 +183,17 @@ python::def(NAME_STR, registerConverters(&FUNCTOR<N,T_IN,T_OUT>),   \
 
 template<unsigned int N, class T_IN, class T_OUT>
 void defineBlockwiseFilters(){
-    typedef TinyVector<T_IN,N> in_type;
-    typedef TinyVector<T_OUT,N> out_type;
-    typedef TinyVector<T_OUT,N*(N+1)/2> out_type_2;
-
-    VIGRA_NUMPY_FILTER_BINDINGS("_gaussianSmooth",                  pyGaussianSmooth,                   T_IN,    T_OUT)
-    VIGRA_NUMPY_FILTER_BINDINGS("_gaussianGradient",                pyGaussianGradient,                 T_IN,    out_type)
-    VIGRA_NUMPY_FILTER_BINDINGS("_gaussianGradientMagnitude",       pyGaussianGradientMagnitude,        T_IN,    T_OUT)
-    VIGRA_NUMPY_FILTER_BINDINGS("_gaussianDivergence",              pyGaussianDivergence,               in_type, T_OUT)
-    VIGRA_NUMPY_FILTER_BINDINGS("_hessianOfGaussian",               pyHessianOfGaussian,                T_IN,    out_type_2)
-    VIGRA_NUMPY_FILTER_BINDINGS("_hessianOfGaussianEigenvalues",    pyHessianOfGaussianEigenvalues,     T_IN,    out_type)
-    VIGRA_NUMPY_FILTER_BINDINGS("_hessianOfGaussianFirstEigenvalue",pyHessianOfGaussianFirstEigenvalue, T_IN,    T_OUT)
-    VIGRA_NUMPY_FILTER_BINDINGS("_hessianOfGaussianLastEigenvalue", pyHessianOfGaussianLastEigenvalue,  T_IN,    T_OUT)
-    VIGRA_NUMPY_FILTER_BINDINGS("_laplacianOfGaussian",             pyLaplacianOfGaussian,              T_IN,    T_OUT)
-    VIGRA_NUMPY_FILTER_BINDINGS("_symmetricGradient",               pySymmetricGradient,                T_IN,    out_type)
-    VIGRA_NUMPY_FILTER_BINDINGS("_structureTensor",                 pyStructureTensor,                  T_IN,    out_type_2)
+    VIGRA_NUMPY_FILTER_BINDINGS("_gaussianSmooth",                  pyGaussianSmooth)
+    VIGRA_NUMPY_FILTER_BINDINGS("_gaussianGradient",                pyGaussianGradient)
+    VIGRA_NUMPY_FILTER_BINDINGS("_gaussianGradientMagnitude",       pyGaussianGradientMagnitude)
+    VIGRA_NUMPY_FILTER_BINDINGS("_gaussianDivergence",              pyGaussianDivergence)
+    VIGRA_NUMPY_FILTER_BINDINGS("_hessianOfGaussian",               pyHessianOfGaussian)
+    VIGRA_NUMPY_FILTER_BINDINGS("_hessianOfGaussianEigenvalues",    pyHessianOfGaussianEigenvalues)
+    VIGRA_NUMPY_FILTER_BINDINGS("_hessianOfGaussianFirstEigenvalue",pyHessianOfGaussianFirstEigenvalue)
+    VIGRA_NUMPY_FILTER_BINDINGS("_hessianOfGaussianLastEigenvalue", pyHessianOfGaussianLastEigenvalue)
+    VIGRA_NUMPY_FILTER_BINDINGS("_laplacianOfGaussian",             pyLaplacianOfGaussian)
+    VIGRA_NUMPY_FILTER_BINDINGS("_symmetricGradient",               pySymmetricGradient)
+    VIGRA_NUMPY_FILTER_BINDINGS("_structureTensor",                 pyStructureTensor)
 }
 
 #undef VIGRA_NUMPY_FILTER_BINDINGS
@@ -118,7 +206,7 @@ python::tuple pyUnionFindWatersheds(
     const BlockwiseLabelOptions & opt,
     NumpyArray<N, T_OUT> labels
 ){
-    labels.reshapeIfEmpty(data.shape());
+    labels.reshapeIfEmpty(data.taggedShape());
     auto res = unionFindWatershedsBlockwise(data, labels, opt);
     return python::make_tuple(labels, res);
 }
@@ -143,7 +231,7 @@ python::tuple pyLabelArray(
     const BlockwiseLabelOptions & opt,
     NumpyArray<N, T_OUT> labels
 ){
-    labels.reshapeIfEmpty(data.shape());
+    labels.reshapeIfEmpty(data.taggedShape());
     auto res = labelMultiArrayBlockwise(data, labels, opt);
     return python::make_tuple(labels, res);
 }
@@ -280,16 +368,16 @@ void defineBlockwiseLabelOptions()
     python::class_<Opt>("BlockwiseLabelOptions", python::init<>())
     .add_property("blockShape", &Opt::readBlockShape, &Opt::setBlockShape)
     .add_property("numThreads", &Opt::getNumThreads, &Opt::setNumThreads)
-    .add_property("backgroundValue", &Opt:: template getBackgroundValue<double>,
-            python::make_function(&Opt:: template ignoreBackgroundValue<double>, python::return_internal_reference<>()))
-    .add_property("neighbourhood", &Opt::getNeighborhood,
+    .add_property("backgroundValue", &Opt::getBackgroundValue<double>,
+            python::make_function(&Opt::ignoreBackgroundValue<double>, python::return_internal_reference<>()))
+    .add_property("neighborhood", &Opt::getNeighborhood,
             python::make_function(&Opt::neighborhood, python::return_internal_reference<>()))
     .def("hasBackgroundValue", &Opt::hasBackgroundValue)
     ;
 }
 
 
-// import from chunked.cxx
+//import from chunked.cxx
 void defineChunkedFunctions();
 
 }
@@ -321,8 +409,14 @@ BOOST_PYTHON_MODULE_INIT(blockwise)
 
     defineBlockwiseFilters<2, npy_float32, npy_float32>();
     defineBlockwiseFilters<3, npy_float32, npy_float32>();
+
+    defineUnionFindWatershedsImpl<2, npy_uint8, npy_uint32>();
+    defineUnionFindWatershedsImpl<3, npy_uint8, npy_uint32>();
     defineUnionFindWatershedsImpl<2, npy_uint32, npy_uint32>();
     defineUnionFindWatershedsImpl<3, npy_uint32, npy_uint32>();
+
+    defineLabelArrayImpl<2, npy_uint8, npy_uint32>();
+    defineLabelArrayImpl<3, npy_uint8, npy_uint32>();
     defineLabelArrayImpl<2, npy_uint32, npy_uint32>();
     defineLabelArrayImpl<3, npy_uint32, npy_uint32>();
 

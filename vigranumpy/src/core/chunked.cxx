@@ -53,7 +53,7 @@ namespace detail {
             out = new ChunkedArrayCompressed<N,T2>(sourceComp.shape(), sourceComp.chunkShape(), opt);
         }
         else if (backend.find("ChunkedArrayHDF5") != std::string::npos) {
-            vigra_precondition(false, "'output' parameter is mandatory for ChunkedArrayHDF5");
+            vigra_precondition(false, "The 'out' parameter is mandatory for ChunkedArrayHDF5");
         }
         else {
             vigra_fail("Unable to derive backend from 'input' parameter");
