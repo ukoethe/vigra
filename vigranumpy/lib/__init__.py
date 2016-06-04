@@ -2617,18 +2617,15 @@ def _genBlockwiseFunctions():
     blockwise.convOpts = convolutionOptions
 
 
-    def labelOptions(blockShape, neighborhood="direct", backgroundValue=None, numThreads=cpu_count()):
+    def labelOptions(blockShape, neighborhood="direct", backgroundValue = None,\
+                     backgroundType= numpy.float32, numThreads=cpu_count()):
         options = blockwise.BlockwiseLabelOptions()
         options.blockShape = blockShape
-        options.backgroundValue = backgroundValue
+        options.neighborhood = neighborhood
         options.numThreads = numThreads
 
-        if neighborhood == "direct":
-            options.neighborhood = blockwise.NeighborhoodType.DirectNeighborhood
-        elif neighborhood == "indirect":
-            options.neighborhood = blockwise.NeighborhoodType.IndirectNeighborhood
-        else:
-            raise RuntimeError("neighborhood must be either 'direct' or 'indirect'")
+        if backgroundValue is not None:
+            options.ignoreBackgroundValue(backgroundValue, backgroundType);
 
         return options
 

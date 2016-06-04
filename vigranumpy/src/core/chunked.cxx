@@ -17,6 +17,9 @@ namespace python = boost::python;
 namespace vigra {
 
 
+struct pyBlockwiseLabelOptions : public BlockwiseLabelOptions {};
+
+
 namespace detail {
 
     template<class T>
@@ -131,7 +134,7 @@ void defineChunkedFiltersImpl()
 template<unsigned int N, class T1, class T2>
 python::tuple pyUnionFindWatersheds(
         const ChunkedArray<N,T1> & source,
-        const BlockwiseLabelOptions & opt,
+        const pyBlockwiseLabelOptions & opt,
         python::object out
 ){
     if (out == python::object()) out = detail::makeChunkedArray<N,T1,T2>(source);
@@ -157,7 +160,7 @@ void defineChunkedWatershedsImpl()
 template<unsigned int N, class T1, class T2>
 python::tuple pyLabelArray(
         const ChunkedArray<N,T1> & source,
-        const BlockwiseLabelOptions & opt,
+        const pyBlockwiseLabelOptions & opt,
         python::object out
 ){
     if (out == python::object()) out = detail::makeChunkedArray<N,T1,T2>(source);
