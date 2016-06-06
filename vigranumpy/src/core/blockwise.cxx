@@ -165,6 +165,24 @@ int numpyScalarTypeNumber(python::object obj)
     return typeNum;
 }
 
+/*
+int pythonScalarTypeNumber(python::object obj)
+{
+    python::extract<unsigned int> intObj(obj);
+    python::extract<float> floatObj(obj);
+
+    if (intObj.check())
+    {
+        return NPY_UINT32;
+    }
+    if (floatObj.check())
+    {
+        return NPY_FLOAT32;
+    }
+
+    return NPY_NOTYPE;
+}
+*/
 
 struct  pyBlockwiseLabelOptions : public BlockwiseLabelOptions
 {
@@ -190,9 +208,9 @@ std::string pyGetNeighborhood(const pyBlockwiseLabelOptions& self)
 }
 
 
-void pySetBackgroundValue(pyBlockwiseLabelOptions & self, python::object val, python::object type)
+void pySetBackgroundValue(pyBlockwiseLabelOptions & self, python::object val, python::object dtype)
 {
-    self.typeNum = numpyScalarTypeNumber(type);
+    self.typeNum = numpyScalarTypeNumber(dtype);
 
     switch (self.typeNum) {
         case NPY_UINT8:

@@ -298,6 +298,7 @@ construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
                            python::object dtype, double fill_value,
                            python::object axistags)
 {
+    /*
     if (PyTuple_Check(dtype.ptr()) && (PyTuple_Size(dtype.ptr()) == 2))
     {
         PyObject* type = PyTuple_GetItem(dtype.ptr(), 0);
@@ -308,6 +309,10 @@ construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
         {
             switch(numpyScalarTypeNumber(type))
             {
+              case: NPY_UINT8:
+                return ptr_to_python(construct_ChunkedArrayFullImpl<TinyVector<npy_uint8,N> >(shape, fill_value), axistags);
+              case: NPY_UINT32:
+                return ptr_to_python(construct_ChunkedArrayFullImpl<TinyVector<npy_uint32,N> >(shape, fill_value), axistags);
               case NPY_FLOAT32:
                 return ptr_to_python(construct_ChunkedArrayFullImpl<TinyVector<npy_float32,N> >(shape, fill_value), axistags);
               default:
@@ -318,6 +323,10 @@ construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
         {
             switch(numpyScalarTypeNumber(type))
             {
+              case NPY_UINT8:
+                return ptr_to_python(construct_ChunkedArrayFullImpl<TinyVector<npy_uint32,N*(N+1)/2> >(shape, fill_value), axistags);
+              case NPY_UINT32:
+                return ptr_to_python(construct_ChunkedArrayFullImpl<TinyVector<npy_uint32,N*(N+1)/2> >(shape, fill_value), axistags);
               case NPY_FLOAT32:
                 return ptr_to_python(construct_ChunkedArrayFullImpl<TinyVector<npy_float32,N*(N+1)/2> >(shape, fill_value), axistags);
               default:
@@ -327,7 +336,7 @@ construct_ChunkedArrayFull(TinyVector<MultiArrayIndex, N> const & shape,
 
         vigra_precondition(false, "ChunkedArrayFull(): unsupported data shape");
     }
-
+    */
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
@@ -360,6 +369,8 @@ construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
                            double fill_value,
                            python::object axistags)
 {
+
+    /*
     if (PyTuple_Check(dtype.ptr()) && (PyTuple_Size(dtype.ptr()) == 2))
     {
         PyObject* type = PyTuple_GetItem(dtype.ptr(), 0);
@@ -370,6 +381,10 @@ construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
         {
             switch(numpyScalarTypeNumber(type))
             {
+              case NPY_UINT8:
+                return ptr_to_python(construct_ChunkedArrayLazyImpl<TinyVector<npy_uint8,N> >(shape, chunk_shape, fill_value), axistags);
+              case NPY_UINT32:
+                return ptr_to_python(construct_ChunkedArrayLazyImpl<TinyVector<npy_uint32,N> >(shape, chunk_shape, fill_value), axistags);
               case NPY_FLOAT32:
                 return ptr_to_python(construct_ChunkedArrayLazyImpl<TinyVector<npy_float32,N> >(shape, chunk_shape, fill_value), axistags);
               default:
@@ -380,6 +395,10 @@ construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
         {
             switch(numpyScalarTypeNumber(type))
             {
+              case NPY_UINT8:
+                return ptr_to_python(construct_ChunkedArrayLazyImpl<TinyVector<npy_uint8,N*(N+1)/2> >(shape, chunk_shape, fill_value), axistags);
+              case NPY_UINT32:
+                return ptr_to_python(construct_ChunkedArrayLazyImpl<TinyVector<npy_uint32,N*(N+1)/2> >(shape, chunk_shape, fill_value), axistags);
               case NPY_FLOAT32:
                 return ptr_to_python(construct_ChunkedArrayLazyImpl<TinyVector<npy_float32,N*(N+1)/2> >(shape, chunk_shape, fill_value), axistags);
               default:
@@ -389,7 +408,7 @@ construct_ChunkedArrayLazy(TinyVector<MultiArrayIndex, N> const & shape,
 
         vigra_precondition(false, "ChunkedArrayLazy(): unsupported data shape");
     }
-
+    */
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
@@ -426,6 +445,7 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
                                  double fill_value,
                                  python::object axistags)
 {
+    /*
     if (PyTuple_Check(dtype.ptr()) && (PyTuple_Size(dtype.ptr()) == 2))
     {
         PyObject* type = PyTuple_GetItem(dtype.ptr(), 0);
@@ -436,6 +456,12 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
         {
             switch(numpyScalarTypeNumber(type))
             {
+              case NPY_UINT8:
+                return ptr_to_python(construct_ChunkedArrayCompressedImpl<TinyVector<npy_uint8,N> >(
+                                     shape, method, chunk_shape, cache_max, fill_value), axistags);
+              case NPY_UINT32:
+                return ptr_to_python(construct_ChunkedArrayCompressedImpl<TinyVector<npy_uint32,N> >(
+                                     shape, method, chunk_shape, cache_max, fill_value), axistags);
               case NPY_FLOAT32:
                 return ptr_to_python(construct_ChunkedArrayCompressedImpl<TinyVector<npy_float32,N> >(
                                      shape, method, chunk_shape, cache_max, fill_value), axistags);
@@ -447,6 +473,12 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
         {
             switch(numpyScalarTypeNumber(type))
             {
+              case NPY_UINT8:
+                return ptr_to_python(construct_ChunkedArrayCompressedImpl<TinyVector<npy_uint8,N*(N+1)/2> >(
+                                     shape, method, chunk_shape, cache_max, fill_value), axistags);
+              case NPY_UINT32:
+                return ptr_to_python(construct_ChunkedArrayCompressedImpl<TinyVector<npy_uint32,N*(N+1)/2> >(
+                                     shape, method, chunk_shape, cache_max, fill_value), axistags);
               case NPY_FLOAT32:
                 return ptr_to_python(construct_ChunkedArrayCompressedImpl<TinyVector<npy_float32,N*(N+1)/2> >(
                                      shape, method, chunk_shape, cache_max, fill_value), axistags);
@@ -457,7 +489,7 @@ construct_ChunkedArrayCompressed(TinyVector<MultiArrayIndex, N> const & shape,
 
         vigra_precondition(false, "ChunkedArrayCompressed(): unsupported data shape");
     }
-
+    */
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
@@ -497,6 +529,7 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
                               double fill_value,
                               python::object axistags)
 {
+    /*
     if (PyTuple_Check(dtype.ptr()) && (PyTuple_Size(dtype.ptr()) == 2))
     {
         PyObject* type = PyTuple_GetItem(dtype.ptr(), 0);
@@ -507,6 +540,12 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
         {
             switch(numpyScalarTypeNumber(type))
             {
+              case NPY_UINT8:
+                return ptr_to_python(construct_ChunkedArrayTmpFileImpl<TinyVector<npy_uint8,N> >(
+                                     shape, chunk_shape, cache_max, path, fill_value), axistags);
+              case NPY_UINT32:
+                return ptr_to_python(construct_ChunkedArrayTmpFileImpl<TinyVector<npy_uint32,N> >(
+                                     shape, chunk_shape, cache_max, path, fill_value), axistags);
               case NPY_FLOAT32:
                 return ptr_to_python(construct_ChunkedArrayTmpFileImpl<TinyVector<npy_float32,N> >(
                                      shape, chunk_shape, cache_max, path, fill_value), axistags);
@@ -518,6 +557,12 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
         {
             switch(numpyScalarTypeNumber(type))
             {
+              case NPY_UINT8:
+                return ptr_to_python(construct_ChunkedArrayTmpFileImpl<TinyVector<npy_uint8,N*(N+1)/2> >(
+                                     shape, chunk_shape, cache_max, path, fill_value), axistags);
+              case NPY_UINT32:
+                return ptr_to_python(construct_ChunkedArrayTmpFileImpl<TinyVector<npy_uint32,N*(N+1)/2> >(
+                                     shape, chunk_shape, cache_max, path, fill_value), axistags);
               case NPY_FLOAT32:
                 return ptr_to_python(construct_ChunkedArrayTmpFileImpl<TinyVector<npy_float32,N*(N+1)/2> >(
                                      shape, chunk_shape, cache_max, path, fill_value), axistags);
@@ -528,7 +573,7 @@ construct_ChunkedArrayTmpFile(TinyVector<MultiArrayIndex, N> const & shape,
 
         vigra_precondition(false, "ChunkedArrayTmpFile(): unsupported data shape");
     }
-
+    */
     switch(numpyScalarTypeNumber(dtype))
     {
       case NPY_UINT8:
