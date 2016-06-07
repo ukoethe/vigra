@@ -186,7 +186,8 @@ int pythonScalarTypeNumber(python::object obj)
 
 struct  pyBlockwiseLabelOptions : public BlockwiseLabelOptions
 {
-    int typeNum = NPY_NOTYPE;
+    pyBlockwiseLabelOptions() : BlockwiseLabelOptions(), typeNum(NPY_NOTYPE) {}
+    int typeNum;
 };
 
 void pySetNeighborhood(pyBlockwiseLabelOptions& self, std::string str)
