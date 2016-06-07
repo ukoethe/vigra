@@ -1066,12 +1066,12 @@ void defineChunkedArray()
     defineChunkedArrayImpl<3, npy_float32>();
     defineChunkedArrayImpl<4, npy_float32>();
     defineChunkedArrayImpl<5, npy_float32>();
-
+/*
     defineChunkedArrayImpl<2, TinyVector<npy_float32,2> >();
     defineChunkedArrayImpl<2, TinyVector<npy_float32,3> >();
     defineChunkedArrayImpl<3, TinyVector<npy_float32,3> >();
     defineChunkedArrayImpl<3, TinyVector<npy_float32,6> >();
-
+*/
     defineChunkedArrayFactories<2>();
     defineChunkedArrayFactories<3>();
     defineChunkedArrayFactories<4>();

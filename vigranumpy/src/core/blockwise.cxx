@@ -44,230 +44,12 @@
 #include <vigra/tinyvector.hxx>
 #include <vigra/blockwise_labeling.hxx>
 #include <vigra/blockwise_watersheds.hxx>
-#include <boost/python.hpp>
 
 
 namespace python = boost::python;
 
 
 namespace vigra{
-
-
-template<class  MB>
-NumpyAnyArray intersectingBlocks(
-    const MB & mb,
-    const typename MB::Shape begin,
-    const typename MB::Shape end,
-    NumpyArray<1, UInt32> out
-){
-    std::vector<UInt32> outVec = mb.intersectingBlocks(begin,end);
-    out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(outVec.size()));
-    std::copy(outVec.begin(),outVec.end(), out.begin());
-    return out;
-}
-
-template<class  MB>
-python::tuple getBlock(
-    const MB & mb,
-    const UInt32 blockIndex
-){
-    const auto iter = mb.blockBegin();
-    const auto & block = iter[blockIndex];
-    auto tl = block.begin();
-    auto br = block.end();
-    return python::make_tuple(tl,br);
-}
-
-
-template<class  MB>
-python::tuple getBlock2(
-    const MB & mb,
-    const typename  MB::BlockDesc desc
-){
-    const auto block = mb.blockDescToBlock(desc);
-    auto tl = block.begin();
-    auto br = block.end();
-    return python::make_tuple(tl,br);
-}
-
-template<class BLOCK>
-typename BLOCK::Vector
-blockBegin(const BLOCK & b){
-    return b.begin();
-}
-template<class BLOCK>
-typename BLOCK::Vector
-blockEnd(const BLOCK & b){
-    return b.end();
-}
-
-template<class BLOCK>
-typename BLOCK::Vector
-blockShape(const BLOCK & b){
-    return b.size();
-}
-
-
-template<unsigned int DIM>
-void defineMultiBlocking(const std::string & clsName){
-
-    typedef MultiBlocking<DIM> Blocking;
-    typedef typename Blocking::Shape Shape;
-    typedef typename Blocking::Block Block;
-
-    python::class_<Blocking>(clsName.c_str(), python::init<const Shape &, const Shape &>())
-        .def("intersectingBlocks",registerConverters(&intersectingBlocks<Blocking>),
-            (
-                python::arg("begin"),
-                python::arg("end"),
-                python::arg("out") = python::object()
-            )
-        )
-        .def("__len__", &Blocking::numBlocks)
-        .def("__getitem__", &getBlock<Blocking>)
-        .def("__getitem__", &getBlock2<Blocking>)
-    ;
-
-    const std::string blockName = clsName + std::string("Block");
-
-    python::class_<Block>(blockName.c_str())
-        .add_property("begin",&blockBegin<Block>)
-        .add_property("end",  &blockEnd<Block>)
-        .add_property("shape",&blockShape<Block>)
-    ;
-}
-
-
-
-template<unsigned int DIM>
-void defineBlockwiseConvolutionOptions(const std::string & clsName){
-
-    typedef BlockwiseConvolutionOptions<DIM> Opt;
-    python::class_<Opt>(clsName.c_str(), python::init<>())
-    .add_property("stdDev", &Opt::getStdDev, &Opt::setStdDev)
-    //.add_property("scale", &Opt::getScale, &Opt::setScale)
-    .add_property("innerScale", &Opt::getInnerScale,  &Opt::setInnerScale)
-    .add_property("outerScale", &Opt::getOuterScale,  &Opt::setOuterScale)
-    .add_property("blockShape", &Opt::readBlockShape, &Opt::setBlockShape)
-    .add_property("numThreads", &Opt::getNumThreads,  &Opt::setNumThreads)
-    ;
-}
-
-
-
-int numpyScalarTypeNumber(python::object obj)
-{
-    PyArray_Descr* dtype;
-    if(!PyArray_DescrConverter(obj.ptr(), &dtype))
-        return NPY_NOTYPE;
-    int typeNum = dtype->type_num;
-    Py_DECREF(dtype);
-    return typeNum;
-}
-
-/*
-int pythonScalarTypeNumber(python::object obj)
-{
-    python::extract<unsigned int> intObj(obj);
-    python::extract<float> floatObj(obj);
-
-    if (intObj.check())
-    {
-        return NPY_UINT32;
-    }
-    if (floatObj.check())
-    {
-        return NPY_FLOAT32;
-    }
-
-    return NPY_NOTYPE;
-}
-*/
-
-struct  pyBlockwiseLabelOptions : public BlockwiseLabelOptions
-{
-    pyBlockwiseLabelOptions() : BlockwiseLabelOptions(), typeNum(NPY_NOTYPE) {}
-    int typeNum;
-};
-
-void pySetNeighborhood(pyBlockwiseLabelOptions& self, std::string str)
-{
-    if (str == "direct")
-        self.neighborhood(NeighborhoodType::DirectNeighborhood);
-    else if (str == "indirect")
-        self.neighborhood(NeighborhoodType::IndirectNeighborhood);
-    else
-        vigra_precondition(false, "Neighborhood must be either 'direct' or 'indirect'.");
-}
-
-
-std::string pyGetNeighborhood(const pyBlockwiseLabelOptions& self)
-{
-    if (self.getNeighborhood() == NeighborhoodType::DirectNeighborhood)
-        return "direct";
-    return "indirect";
-}
-
-
-void pySetBackgroundValue(pyBlockwiseLabelOptions & self, python::object val, python::object dtype)
-{
-    self.typeNum = numpyScalarTypeNumber(dtype);
-
-    switch (self.typeNum) {
-        case NPY_UINT8:
-            self.ignoreBackgroundValue<npy_uint8>(python::extract<npy_uint8>(val));
-            break;
-        case NPY_UINT32:
-            self.ignoreBackgroundValue<npy_uint32>(python::extract<npy_uint32>(val));
-            break;
-        case NPY_FLOAT32:
-            self.ignoreBackgroundValue<npy_float32>(python::extract<npy_float32>(val));
-            break;
-        default:
-            vigra_fail("Invalid Background type, must be numpy.uint8, numpy.uint32 or numpy.float32");
-    }
-}
-
-
-python::object pyGetBackgroundValue(const pyBlockwiseLabelOptions & self)
-{
-    python::object bVal = python::object();
-
-    switch(self.typeNum) {
-        case NPY_UINT8:
-            bVal =  python::object(self.getBackgroundValue<npy_uint8>());
-            break;
-        case NPY_UINT32:
-            bVal = python::object(self.getBackgroundValue<npy_uint32>());
-            break;
-        case NPY_FLOAT32:
-            bVal = python::object(self.getBackgroundValue<npy_float32>());
-            break;
-        case NPY_NOTYPE:
-            vigra_precondition(false, "Background value requested, but never set.");
-            break;
-        default:
-            vigra_fail("CRITICAL ERROR: Datatype identifier corrupted.");
-    }
-
-    return bVal;
-}
-
-
-void defineBlockwiseLabelOptions()
-{
-    typedef pyBlockwiseLabelOptions Opt;
-
-    python::class_<Opt>("BlockwiseLabelOptions", python::init<>())
-    .add_property("blockShape", &Opt::readBlockShape, &Opt::setBlockShape)
-    .add_property("numThreads", &Opt::getNumThreads, &Opt::setNumThreads)
-    .add_property("neighborhood", &pyGetNeighborhood, &pySetNeighborhood)
-    .def("ignoreBackgroundValue", &pySetBackgroundValue)
-    .def("getBackgroundValue", &pyGetBackgroundValue)
-    .def("hasBackgroundValue", &Opt::hasBackgroundValue)
-    ;
-}
-
 
 
 template<unsigned int DIM, class T_IN, class T_OUT>
@@ -422,7 +204,7 @@ void defineBlockwiseFilters(){
 template<unsigned int N, class T_IN, class T_OUT>
 python::tuple pyUnionFindWatersheds(
     const NumpyArray<N, T_IN> & data,
-    const pyBlockwiseLabelOptions & opt,
+    const BlockwiseLabelOptions & opt,
     NumpyArray<N, T_OUT> labels
 ){
     labels.reshapeIfEmpty(data.taggedShape());
@@ -447,7 +229,7 @@ void defineUnionFindWatershedsImpl()
 template<unsigned int N, class T_IN, class T_OUT>
 python::tuple pyLabelArray(
     const NumpyArray<N, T_IN> & data,
-    const pyBlockwiseLabelOptions & opt,
+    const BlockwiseLabelOptions & opt,
     NumpyArray<N, T_OUT> labels
 ){
     labels.reshapeIfEmpty(data.taggedShape());
@@ -468,8 +250,145 @@ void defineLabelArrayImpl()
 }
 
 
+
+template<class  MB>
+NumpyAnyArray intersectingBlocks(
+    const MB & mb,
+    const typename MB::Shape begin,
+    const typename MB::Shape end,
+    NumpyArray<1, UInt32> out
+){
+    std::vector<UInt32> outVec = mb.intersectingBlocks(begin,end);
+    out.reshapeIfEmpty(typename NumpyArray<1,UInt32>::difference_type(outVec.size()));
+    std::copy(outVec.begin(),outVec.end(), out.begin());
+    return out;
+}
+
+template<class  MB>
+python::tuple getBlock(
+    const MB & mb,
+    const UInt32 blockIndex
+){
+    const auto iter = mb.blockBegin();
+    const auto & block = iter[blockIndex];
+    auto tl = block.begin();
+    auto br = block.end();
+    return python::make_tuple(tl,br);
+}
+
+
+template<class  MB>
+python::tuple getBlock2(
+    const MB & mb,
+    const typename  MB::BlockDesc desc
+){
+    const auto block = mb.blockDescToBlock(desc);
+    auto tl = block.begin();
+    auto br = block.end();
+    return python::make_tuple(tl,br);
+}
+
+template<class BLOCK>
+typename BLOCK::Vector
+blockBegin(const BLOCK & b){
+    return b.begin();
+}
+template<class BLOCK>
+typename BLOCK::Vector
+blockEnd(const BLOCK & b){
+    return b.end();
+}
+
+template<class BLOCK>
+typename BLOCK::Vector
+blockShape(const BLOCK & b){
+    return b.size();
+}
+
+
+template<unsigned int DIM>
+void defineMultiBlocking(const std::string & clsName){
+
+    typedef MultiBlocking<DIM> Blocking;
+    typedef typename Blocking::Shape Shape;
+    typedef typename Blocking::Block Block;
+
+    python::class_<Blocking>(clsName.c_str(), python::init<const Shape &, const Shape &>())
+        .def("intersectingBlocks",registerConverters(&intersectingBlocks<Blocking>),
+            (
+                python::arg("begin"),
+                python::arg("end"),
+                python::arg("out") = python::object()
+            )
+        )
+        .def("__len__", &Blocking::numBlocks)
+        .def("__getitem__", &getBlock<Blocking>)
+        .def("__getitem__", &getBlock2<Blocking>)
+    ;
+
+    const std::string blockName = clsName + std::string("Block");
+
+    python::class_<Block>(blockName.c_str())
+        .add_property("begin",&blockBegin<Block>)
+        .add_property("end",  &blockEnd<Block>)
+        .add_property("shape",&blockShape<Block>)
+    ;
+}
+
+
+
+template<unsigned int DIM>
+void defineBlockwiseConvolutionOptions(const std::string & clsName){
+
+    typedef BlockwiseConvolutionOptions<DIM> Opt;
+    python::class_<Opt>(clsName.c_str(), python::init<>())
+    .add_property("stdDev", &Opt::getStdDev, &Opt::setStdDev)
+    //.add_property("scale", &Opt::getScale, &Opt::setScale)
+    .add_property("innerScale", &Opt::getInnerScale,  &Opt::setInnerScale)
+    .add_property("outerScale", &Opt::getOuterScale,  &Opt::setOuterScale)
+    .add_property("blockShape", &Opt::readBlockShape, &Opt::setBlockShape)
+    .add_property("numThreads", &Opt::getNumThreads,  &Opt::setNumThreads)
+    ;
+}
+
+
+void pySetNeighborhood(BlockwiseLabelOptions& self, std::string str)
+{
+    if (str == "direct")
+        self.neighborhood(NeighborhoodType::DirectNeighborhood);
+    else if (str == "indirect")
+        self.neighborhood(NeighborhoodType::IndirectNeighborhood);
+    else
+        vigra_precondition(false, "Neighborhood must be either 'direct' or 'indirect'.");
+}
+
+
+std::string pyGetNeighborhood(const BlockwiseLabelOptions& self)
+{
+    if (self.getNeighborhood() == NeighborhoodType::DirectNeighborhood)
+        return "direct";
+    return "indirect";
+}
+
+
+void defineBlockwiseLabelOptions()
+{
+    typedef BlockwiseLabelOptions Opt;
+
+    python::class_<Opt>("BlockwiseLabelOptions", python::init<>())
+    .add_property("blockShape", &Opt::readBlockShape, &Opt::setBlockShape)
+    .add_property("numThreads", &Opt::getNumThreads, &Opt::setNumThreads)
+    .add_property("backgroundValue", &Opt::getBackgroundValue<double>,
+            python::make_function(&Opt::ignoreBackgroundValue<double>, python::return_internal_reference<>()))
+    .add_property("neighborhood", &pyGetNeighborhood, &pySetNeighborhood)
+    .def("hasBackgroundValue", &Opt::hasBackgroundValue)
+    ;
+}
+
+
 //import from chunked.cxx
 void defineChunkedFunctions();
+
 
 }
 using namespace vigra;
@@ -504,11 +423,17 @@ BOOST_PYTHON_MODULE_INIT(blockwise)
     defineUnionFindWatershedsImpl<3, npy_uint8, npy_uint32>();
     defineUnionFindWatershedsImpl<2, npy_uint32, npy_uint32>();
     defineUnionFindWatershedsImpl<3, npy_uint32, npy_uint32>();
+    defineUnionFindWatershedsImpl<2, npy_float32, npy_uint32>();
+    defineUnionFindWatershedsImpl<3, npy_float32, npy_uint32>();
+
 
     defineLabelArrayImpl<2, npy_uint8, npy_uint32>();
     defineLabelArrayImpl<3, npy_uint8, npy_uint32>();
     defineLabelArrayImpl<2, npy_uint32, npy_uint32>();
     defineLabelArrayImpl<3, npy_uint32, npy_uint32>();
+    defineLabelArrayImpl<2, npy_float32, npy_uint32>();
+    defineLabelArrayImpl<3, npy_float32, npy_uint32>();
+
 
     defineChunkedFunctions();
 }

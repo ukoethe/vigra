@@ -2617,15 +2617,14 @@ def _genBlockwiseFunctions():
     blockwise.convOpts = convolutionOptions
 
 
-    def labelOptions(blockShape, neighborhood="direct", backgroundValue = None,\
-                     backgroundType= numpy.float32, numThreads=cpu_count()):
+    def labelOptions(blockShape, neighborhood="direct", backgroundValue=None, numThreads=cpu_count()):
         options = blockwise.BlockwiseLabelOptions()
         options.blockShape = blockShape
         options.neighborhood = neighborhood
         options.numThreads = numThreads
 
         if backgroundValue is not None:
-            options.ignoreBackgroundValue(backgroundValue, backgroundType);
+            options.backgroundValue = backgroundValue
 
         return options
 

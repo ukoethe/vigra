@@ -17,9 +17,6 @@ namespace python = boost::python;
 namespace vigra {
 
 
-struct pyBlockwiseLabelOptions : public BlockwiseLabelOptions {};
-
-
 namespace detail {
 
     template<class T>
@@ -134,7 +131,7 @@ void defineChunkedFiltersImpl()
 template<unsigned int N, class T1, class T2>
 python::tuple pyUnionFindWatersheds(
         const ChunkedArray<N,T1> & source,
-        const pyBlockwiseLabelOptions & opt,
+        const BlockwiseLabelOptions & opt,
         python::object out
 ){
     if (out == python::object()) out = detail::makeChunkedArray<N,T1,T2>(source);
@@ -160,7 +157,7 @@ void defineChunkedWatershedsImpl()
 template<unsigned int N, class T1, class T2>
 python::tuple pyLabelArray(
         const ChunkedArray<N,T1> & source,
-        const pyBlockwiseLabelOptions & opt,
+        const BlockwiseLabelOptions & opt,
         python::object out
 ){
     if (out == python::object()) out = detail::makeChunkedArray<N,T1,T2>(source);
@@ -189,11 +186,20 @@ void defineChunkedFunctions()
     defineChunkedFiltersImpl<2, npy_float32, npy_float32>();
     defineChunkedFiltersImpl<3, npy_float32, npy_float32>();
 
+    defineChunkedWatershedsImpl<2, npy_uint8, npy_uint32>();
+    defineChunkedWatershedsImpl<3, npy_uint8, npy_uint32>();
     defineChunkedWatershedsImpl<2, npy_uint32, npy_uint32>();
     defineChunkedWatershedsImpl<3, npy_uint32, npy_uint32>();
+    defineChunkedWatershedsImpl<2, npy_float32, npy_uint32>();
+    defineChunkedWatershedsImpl<3, npy_float32, npy_uint32>();
 
+
+    defineChunkedLabelImpl<2, npy_uint8, npy_uint32>();
+    defineChunkedLabelImpl<3, npy_uint8, npy_uint32>();
     defineChunkedLabelImpl<2, npy_uint32, npy_uint32>();
     defineChunkedLabelImpl<3, npy_uint32, npy_uint32>();
+    defineChunkedLabelImpl<2, npy_float32, npy_uint32>();
+    defineChunkedLabelImpl<3, npy_float32, npy_uint32>();
 }
 
 
