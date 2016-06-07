@@ -110,14 +110,14 @@ python::def(PY_NAME, &FUNCTOR<N,T_IN,T_OUT>,             \
 template<unsigned int N, class T_IN, class T_OUT>
 void defineChunkedFiltersImpl()
 {
-    typedef TinyVector<T_IN,N> in_type;
+//    typedef TinyVector<T_IN,N> in_type;
 //    typedef TinyVector<T_OUT,N> out_type;
 //    typedef TinyVector<T_OUT,N*(N+1)/2> out_type_2;
 
     PY_VIGRA_BINDINGS("_gaussianSmooth",                    pyGaussianSmooth, T_IN, T_OUT)
 //    PY_VIGRA_BINDINGS("_gaussianGradient",                  pyGaussianGradient, T_IN, out_type)
     PY_VIGRA_BINDINGS("_gaussianGradientMagnitude",         pyGaussianGradientMagnitude, T_IN, T_OUT)
-    PY_VIGRA_BINDINGS("_gaussianDivergence",                pyGaussianDivergence, in_type, T_OUT)
+//    PY_VIGRA_BINDINGS("_gaussianDivergence",                pyGaussianDivergence, in_type, T_OUT)
 //    PY_VIGRA_BINDINGS("_hessianOfGaussian",                 pyHessianOfGaussian, T_IN, out_type_2)
 //    PY_VIGRA_BINDINGS("_hessianOfGaussianEigenvalues",      pyHessianOfGaussianEigenvalues, T_IN, out_type)
     PY_VIGRA_BINDINGS("_hessianOfGaussianFirstEigenvalue",  pyHessianOfGaussianFirstEigenvalue, T_IN, T_OUT)
