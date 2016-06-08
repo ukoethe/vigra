@@ -36,7 +36,6 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyblockwise_PyArray_API
 //#define NO_IMPORT_ARRAY
 
-#include <string>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/multi_blocking.hxx>
