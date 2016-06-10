@@ -45,8 +45,6 @@
 #define H5Dopen_vers 2
 #define H5Dcreate_vers 2
 #define H5Acreate_vers 2
-#define H5Eset_auto_vers 2
-#define H5Eget_auto_vers 2
 
 #include <hdf5.h>
 
@@ -2422,35 +2420,30 @@ class HDF5File
             groupName = groupName + '/';
         }
 
-        // We determine if the group exists by checking the return value of H5Gopen.
-        // To do so, we must temporarily disable error reporting.
-        // Alternatively, we could use H5LTfind_dataset(), but this is much slower.
-
-        // Save current error handling.
-        H5E_auto2_t  error_handler_ori;
-        void *error_data_ori;
-        H5Eget_auto(H5E_DEFAULT, &error_handler_ori, &error_data_ori);
-
-        // Turn off error handling and register function to restore it upon return.
-        H5Eset_auto(H5E_DEFAULT, NULL, NULL);
-        VIGRA_FINALLY(
-            H5Eset_auto(H5E_DEFAULT, error_handler_ori, error_data_ori));
-
-        // Open or create subgroups one by one
+        // open or create subgroups one by one
         std::string::size_type begin = 0, end = groupName.find('/');
         while (end != std::string::npos)
         {
             std::string group(groupName.begin()+begin, groupName.begin()+end);
-
             hid_t prevParent = parent;
-            parent = H5Gopen(prevParent, group.c_str(), H5P_DEFAULT);
-            if(parent < 0 && create) // group doesn't exist, but we are supposed to create it
-                parent = H5Gcreate(prevParent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+            if(H5LTfind_dataset(parent, group.c_str()) == 0)
+            {
+                if(create)
+                    parent = H5Gcreate(prevParent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                else
+                    parent = -1;
+            }
+            else
+            {
+                parent = H5Gopen(prevParent, group.c_str(), H5P_DEFAULT);
+            }
             H5Gclose(prevParent);
 
             if(parent < 0)
-                break;
-
+            {
+                return parent;
+            }
             begin = end + 1;
             end = groupName.find('/', begin);
         }
