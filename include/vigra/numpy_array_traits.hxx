@@ -674,7 +674,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         if(majorIndex >= N+1)
         {
             npy_intp smallest = NumericTraits<npy_intp>::max();
-            for(int k=0; k<N+1; ++k)
+            for(unsigned int k=0; k<N+1; ++k)
             {
                 if(k == channelIndex)
                     continue;
