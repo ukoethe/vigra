@@ -368,7 +368,7 @@ template<class T>
 void pythonGray2QImage_ARGB32Premultiplied(
     const NumpyArray<2, Singleband<T> >& image,
     NumpyArray<3, Multiband<npy_uint8> > qimageView,
-    NumpyArray<1, T> normalize = boost::python::object()
+    NumpyArray<1, float> normalize = boost::python::object()
 )
 {
     vigra_precondition(image.isUnstrided() || image.transpose().isUnstrided(),
@@ -439,7 +439,7 @@ void pythonAlphaModulated2QImage_ARGB32Premultiplied(
     const NumpyArray<2, Singleband<T> >& image,
     NumpyArray<3, Multiband<npy_uint8> > qimageView,
     NumpyArray<1, float> tintColor,
-    NumpyArray<1, T> normalize
+    NumpyArray<1, float> normalize
 )
 {
     vigra_precondition(image.isUnstrided() || image.transpose().isUnstrided(),
