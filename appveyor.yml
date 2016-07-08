@@ -5,8 +5,8 @@ environment:
     matrix:
         - PY_VERSION: "2.7"
           VC_VERSION: "11"
-        - PY_VERSION: "3.5"
-          VC_VERSION: "14"
+        # - PY_VERSION: "3.5"
+          # VC_VERSION: "14"
 
 build_script:
     - if "%PY_VERSION%" == "2.7" set PATH=C:\\Miniconda-x64\\Scripts;%PATH%
