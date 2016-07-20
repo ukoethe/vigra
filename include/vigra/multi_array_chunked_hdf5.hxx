@@ -226,7 +226,8 @@ class ChunkedArrayHDF5
                      HDF5File::OpenMode mode = HDF5File::ReadOnly,
                      ChunkedArrayOptions const & options = ChunkedArrayOptions(),
                      Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape_type(), shape_type(), options),
+    // FIXME not checking for power of 2 chunk shapes yet, these will trigger some precondition error
+    : ChunkedArray<N, T>(shape_type(), shape_type(file.getChunkShape(dataset).begin()), options),
       file_(file),
       dataset_name_(dataset),
       dataset_(),
