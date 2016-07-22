@@ -396,7 +396,6 @@ class ChunkedArrayBase
     , chunk_shape_()
     {}
 
-    // TODO with ceilPower2, we could check catch chunk shapes that are not power of 2 here 
     ChunkedArrayBase(shape_type const & shape, shape_type const & chunk_shape)
     : shape_(shape)
     , chunk_shape_(prod(chunk_shape) > 0 ? chunk_shape : detail::ChunkShape<N, T>::defaultShape())
