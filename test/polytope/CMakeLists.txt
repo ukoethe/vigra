@@ -1,3 +1,6 @@
-# VIGRA_ADD_TEST(convex_hull_benchmark convex_hull_benchmark.cxx LIBRARIES vigraimpex emon)
-VIGRA_ADD_TEST(test_polytope test.cxx LIBRARIES emon)
+IF(WITH_LEMON)
+    VIGRA_ADD_TEST(test_polytope test.cxx LIBRARIES ${LEMON_LIBRARY})
+    INCLUDE_DIRECTORIES(${LEMON_INCLUDE_DIR})
+    SET_TARGET_PROPERTIES(test_polytope PROPERTIES COMPILE_FLAGS "-DWITH_LEMON")
+ENDIF(WITH_LEMON)
 

@@ -37,16 +37,32 @@ VIGRA_ADD_NUMPY_MODULE(filters SOURCES
     ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
 
-VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
-    segmentation.cxx
-    edgedetection.cxx
-    interestpoints.cxx
-    accumulator.cxx
-    accumulator-region-singleband.cxx
-    accumulator-region-multiband.cxx
-  LIBRARIES
-    ${VIGRANUMPY_THREAD_LIBRARIES}
-  VIGRANUMPY)
+IF(WITH_LEMON)
+    VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
+        segmentation.cxx
+        edgedetection.cxx
+        interestpoints.cxx
+        accumulator.cxx
+        accumulator-region-singleband.cxx
+        accumulator-region-multiband.cxx
+      LIBRARIES
+        ${VIGRANUMPY_THREAD_LIBRARIES}
+        ${LEMON_LIBRARY}
+      VIGRANUMPY)
+    INCLUDE_DIRECTORIES(${LEMON_INCLUDE_DIR})
+    SET_TARGET_PROPERTIES(vigranumpy_analysis PROPERTIES COMPILE_FLAGS "-DWITH_LEMON")
+ELSE(WITH_LEMON)
+    VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
+        segmentation.cxx
+        edgedetection.cxx
+        interestpoints.cxx
+        accumulator.cxx
+        accumulator-region-singleband.cxx
+        accumulator-region-multiband.cxx
+      LIBRARIES
+        ${VIGRANUMPY_THREAD_LIBRARIES}
+      VIGRANUMPY)
+ENDIF(WITH_LEMON)
 
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES
     random_forest_old.cxx

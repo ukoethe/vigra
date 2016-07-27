@@ -1,6 +1,10 @@
 #ifndef VIGRA_POLYTOPE_HXX
 #define VIGRA_POLYTOPE_HXX
 
+#ifndef WITH_LEMON
+    #error "Should only be included with flag \"WITH_LEMON\""
+#endif
+
 #include <set>
 #include <lemon/list_graph.h>
 #include <lemon/maps.h>

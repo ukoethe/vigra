@@ -53,7 +53,9 @@
 #include "eigensystem.hxx"
 #include "histogram.hxx"
 #include "polygon.hxx"
-#include "polytope.hxx"
+#ifdef WITH_LEMON
+    #include "polytope.hxx"
+#endif
 #include "functorexpression.hxx"
 #include "labelimage.hxx"
 #include "multi_labeling.hxx"
@@ -6258,6 +6260,9 @@ class RegionEccentricity
     };
 };
 
+// Compile only if lemon is available
+#ifdef WITH_LEMON
+
 /** \brief Compute the convex hull of a region.
 
     AccumulatorChain must be used with CoupledIterator in order to have access
@@ -6584,6 +6589,7 @@ class ConvexHullFeatures
         }
     };
 };
+#endif // WITH_LEMON
 
 }} // namespace vigra::acc
 

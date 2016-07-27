@@ -48,6 +48,8 @@ namespace vigra
 #define STR(s) #s
 #define XSTR(s) s
 
+#ifdef WITH_LEMON
+
 template <unsigned int N, class T>
 python::object
 extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
@@ -168,6 +170,8 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
     return res;
 }
 
+#endif // WITH_LEMON
+
 template <unsigned int N, class T>
 python::object
 pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T> > const & labels,
@@ -273,6 +277,7 @@ void defineSinglebandRegionAccumulators()
     definePythonAccumulatorArraySingleband<2, float, ScalarRegionAccumulators>();
     definePythonAccumulatorArraySingleband<3, float, ScalarRegionAccumulators>();
     
+#ifdef WITH_LEMON
     def("extract2DConvexHullFeatures", 
         registerConverters(&extractConvexHullFeatures<2, npy_uint32>),
         (   arg("labels"),
@@ -334,6 +339,7 @@ void defineSinglebandRegionAccumulators()
         "   - InputCenter : center of the input region\n\n"
         "   - HullCenter : center of the convex hull\n\n"
         "   - DefectCenter : center of the defects\n\n");
+#endif // WITH_LEMON
 
     def("extractSkeletonFeatures", 
          registerConverters(&pyExtractSkeletonFeatures<2, npy_uint32>),
