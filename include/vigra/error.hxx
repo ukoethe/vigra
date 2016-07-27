@@ -204,8 +204,6 @@ class InvariantViolation : public ContractViolation
     {}
 };
 
-#ifndef NDEBUG
-
 inline
 void throw_invariant_error(bool predicate, char const * message, char const * file, int line)
 {
@@ -266,69 +264,18 @@ void throw_runtime_error(std::string message, char const * file, int line)
 
 #define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
 
-#define vigra_assert(PREDICATE, MESSAGE) vigra_precondition(PREDICATE, MESSAGE)
+// Compile assertions only in debug mode
+#ifdef NDEBUG
+    #define vigra_assert(PREDICATE, MESSAGE)
+#else
+    #define vigra_assert(PREDICATE, MESSAGE) vigra_precondition(PREDICATE, MESSAGE)
+#endif
 
 #define vigra_postcondition(PREDICATE, MESSAGE) vigra::throw_postcondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
 
 #define vigra_invariant(PREDICATE, MESSAGE) vigra::throw_invariant_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
             
 #define vigra_fail(MESSAGE) vigra::throw_runtime_error(MESSAGE, __FILE__, __LINE__)
-
-#else // NDEBUG
-
-inline
-void throw_invariant_error(bool predicate, char const * message)
-{
-    if(!predicate)
-       throw vigra::InvariantViolation(message); 
-}
-
-inline
-void throw_precondition_error(bool predicate, char const * message)
-{
-    if(!predicate)
-       throw vigra::PreconditionViolation(message); 
-}
-
-inline
-void throw_postcondition_error(bool predicate, char const * message)
-{
-    if(!predicate)
-       throw vigra::PostconditionViolation(message); 
-}
-
-inline
-void throw_invariant_error(bool predicate, std::string message)
-{
-    if(!predicate)
-       throw vigra::InvariantViolation(message.c_str()); 
-}
-
-inline
-void throw_precondition_error(bool predicate, std::string message)
-{
-    if(!predicate)
-       throw vigra::PreconditionViolation(message.c_str()); 
-}
-
-inline
-void throw_postcondition_error(bool predicate, std::string message)
-{
-    if(!predicate)
-       throw vigra::PostconditionViolation(message.c_str()); 
-}
-
-#define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE)
-
-#define vigra_assert(PREDICATE, MESSAGE)
-
-#define vigra_postcondition(PREDICATE, MESSAGE) vigra::throw_postcondition_error((PREDICATE), MESSAGE)
-
-#define vigra_invariant(PREDICATE, MESSAGE) vigra::throw_invariant_error((PREDICATE), MESSAGE)
-            
-#define vigra_fail(MESSAGE) throw std::runtime_error(MESSAGE)
-
-#endif // NDEBUG
 
 } // namespace vigra
 
