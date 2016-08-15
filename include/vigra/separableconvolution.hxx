@@ -2400,7 +2400,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     // first calculate required kernel sizes
     int radius;
     if(windowRatio == 0.0)
-        radius = (int)(3.0 * std_dev + 0.5 * order + 0.5);
+        radius = (int)((3.0  + 0.5 * order) * std_dev + 0.5);
     else
         radius = (int)(windowRatio * std_dev + 0.5);
     if(radius == 0)
