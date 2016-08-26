@@ -77,16 +77,16 @@ template <>
 class Permutation<1> : public TinyVector<unsigned int, 1>
 {
   public:
-    typedef TinyVector<unsigned int, 1>         base_type;
-    typedef typename base_type::size_type       size_type;
-    typedef typename base_type::value_type      value_type;
-    typedef typename base_type::iterator        iterator;
-    typedef typename base_type::const_iterator  const_iterator;
-    typedef typename base_type::reference       reference;
-    typedef typename base_type::const_reference const_reference;
-    typedef typename base_type::pointer         pointer;
-    typedef typename base_type::const_pointer   const_pointer;
-    typedef int                                 integral_type;
+    typedef TinyVector<unsigned int, 1> base_type;
+    typedef base_type::size_type        size_type;
+    typedef base_type::value_type       value_type;
+    typedef base_type::iterator         iterator;
+    typedef base_type::const_iterator   const_iterator;
+    typedef base_type::reference        reference;
+    typedef base_type::const_reference  const_reference;
+    typedef base_type::pointer          pointer;
+    typedef base_type::const_pointer    const_pointer;
+    typedef int                         integral_type;
 
     Permutation() : base_type()
     {
@@ -131,14 +131,14 @@ class PlainChangesPermutations : public ArrayVector<Permutation<N> >
         {
             if (permutation.sign() == -1)
             {
-                for (int n = 0; n < N; n++)
+                for (unsigned int n = 0; n < N; n++)
                 {
                     this->push_back(Permutation<N>(permutation, n));
                 }
             }
             else
             {
-                for (int n = N; n > 0; n--)
+                for (unsigned int n = N; n > 0; n--)
                 {
                     this->push_back(Permutation<N>(permutation, n - 1));
                 }
