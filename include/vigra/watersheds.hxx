@@ -887,7 +887,7 @@ class WatershedOptions
             be preferred in region growing. This is most easily achieved
             by adjusting the assignment cost for that region as <tt>factor*cost</tt>,
             with a factor slightly below 1.  (Accordingly, factors above 1 would
-			correspond to a discouragement of the bias label.)
+            correspond to a discouragement of the bias label.)
 
             Default: don't bias any region.
         */
