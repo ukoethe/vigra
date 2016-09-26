@@ -152,14 +152,14 @@ class PlainChangesPermutations<1> : public ArrayVector<Permutation<1> >
 {
   public:
     typedef ArrayVector<Permutation<1> >        base_type;
-    typedef typename base_type::size_type       size_type;
-    typedef typename base_type::value_type      value_type;
-    typedef typename base_type::iterator        iterator;
-    typedef typename base_type::const_iterator  const_iterator;
-    typedef typename base_type::reference       reference;
-    typedef typename base_type::const_reference const_reference;
-    typedef typename base_type::pointer         pointer;
-    typedef typename base_type::const_pointer   const_pointer;
+    typedef base_type::size_type       size_type;
+    typedef base_type::value_type      value_type;
+    typedef base_type::iterator        iterator;
+    typedef base_type::const_iterator  const_iterator;
+    typedef base_type::reference       reference;
+    typedef base_type::const_reference const_reference;
+    typedef base_type::pointer         pointer;
+    typedef base_type::const_pointer   const_pointer;
 
     PlainChangesPermutations() : base_type()
     {
