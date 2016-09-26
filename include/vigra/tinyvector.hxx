@@ -2337,6 +2337,30 @@ TinyVector<V, SIZE> clip(TinyVector<V, SIZE> const & t,
     }
     return res;
 }
+ 
+    /** \brief Round up values to the nearest power of 2.
+    Implemented only for UInt32
+    */
+template<int SIZE>
+inline TinyVector<UInt32,SIZE> ceilPower2(vigra::TinyVector<UInt32,SIZE> const & t)
+{
+    TinyVector<UInt32,SIZE> res(SkipInitialization);
+    for( size_t k = 0; k < SIZE; k++) 
+        res[k] = ceilPower2(t[k]);
+    return res;
+}
+ 
+    /** \brief Round down values to the nearest power of 2.
+    Implemented only for UInt32
+    */
+template<int SIZE>
+inline TinyVector<UInt32,SIZE> floorPower2(vigra::TinyVector<UInt32,SIZE> const & t)
+{
+    TinyVector<UInt32, SIZE> res(SkipInitialization);
+    for( size_t k = 0; k < SIZE; k++) 
+        res[k] = floorPower2(t[k]);
+    return res;
+}
 
 template<class V,int SIZE>
 inline

@@ -1405,13 +1405,51 @@ class HDF5File
 
         errorMessage = "HDF5File::getDatasetShape(): Unable to access dataspace.";
         HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle), &H5Sclose, errorMessage.c_str());
-
         //get dimension information
         ArrayVector<hsize_t>::size_type dimensions = H5Sget_simple_extent_ndims(dataspaceHandle);
 
         ArrayVector<hsize_t> shape(dimensions);
         ArrayVector<hsize_t> maxdims(dimensions);
         H5Sget_simple_extent_dims(dataspaceHandle, shape.data(), maxdims.data());
+
+        // invert the dimensions to guarantee VIGRA-compatible order.
+        std::reverse(shape.begin(), shape.end());
+        return shape;
+    }
+        
+        /** \brief Get the shape of chunks along each dimension of a certain dataset.
+
+           Normally, this function is called after determining the dimension of the
+            dataset using \ref getDatasetDimensions().
+            If the first character is a "/", the path will be interpreted as absolute path,
+            otherwise it will be interpreted as path relative to the current group.
+
+            Note that the memory order between VIGRA and HDF5 files differs: VIGRA uses
+            Fortran-order, while HDF5 uses C-order. This function therefore reverses the axis
+            order relative to the file contents. That is, when the axes in the file are
+            ordered as 'z', 'y', 'x', this function will return the shape in the order
+            'x', 'y', 'z'.
+        */
+    ArrayVector<hsize_t> getChunkShape(std::string datasetName) const
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        //Open dataset and dataspace
+        std::string errorMessage = "HDF5File::getChunkShape(): Unable to open dataset '" + datasetName + "'.";
+        HDF5Handle datasetHandle = HDF5Handle(getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
+
+        errorMessage = "HDF5File::getChunkShape(): Unable to access dataspace.";
+        HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle), &H5Sclose, errorMessage.c_str());
+        HDF5Handle properties(H5Dget_create_plist(datasetHandle),
+                             &H5Pclose, "HDF5File::read(): failed to get property list");
+
+
+        //get dimension information
+        ArrayVector<hsize_t>::size_type dimensions = H5Sget_simple_extent_ndims(dataspaceHandle);
+
+        ArrayVector<hsize_t> shape(dimensions);
+        H5Pget_chunk(properties, dimensions, shape.data());
 
         // invert the dimensions to guarantee VIGRA-compatible order.
         std::reverse(shape.begin(), shape.end());
