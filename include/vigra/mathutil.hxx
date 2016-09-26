@@ -272,6 +272,15 @@ inline long long roundi(double t)
                 : (long long)(t - 0.5);
 }
 
+    /** \brief Determine whether x is a power of 2
+        Bit twiddle from https://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
+    */
+inline bool isPower2(UInt32 x)
+{
+    return x && !(x & (x - 1));
+}
+
+
     /** \brief Round up to the nearest power of 2.
 
         Efficient algorithm for finding the smallest power of 2 which is not smaller than \a x
@@ -294,6 +303,7 @@ inline UInt32 ceilPower2(UInt32 x)
     x = x | (x >>16);
     return x + 1;
 }
+
 
     /** \brief Round down to the nearest power of 2.
 
