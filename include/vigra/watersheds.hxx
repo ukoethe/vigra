@@ -886,7 +886,8 @@ class WatershedOptions
             In certain applications, one region (typically the background) should
             be preferred in region growing. This is most easily achieved
             by adjusting the assignment cost for that region as <tt>factor*cost</tt>,
-            with a factor slightly below 1.
+            with a factor slightly below 1.  (Accordingly, factors above 1 would
+            correspond to a discouragement of the bias label.)
 
             Default: don't bias any region.
         */
