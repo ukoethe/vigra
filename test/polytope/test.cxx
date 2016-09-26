@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <algorithm>
+#include <cmath>
 #include <vigra/unittest.hxx>
 #include <vigra/multi_array.hxx>
 #include <vigra/polytope.hxx>
@@ -655,39 +656,38 @@ struct FloatConvexPolytopeTest
     void testAddExtremeVertex2D()
     {
         const int N = 100;
-        const double eps = 1. / sqrt(N);
         Polytope2 poly(
                 Vector2( 1.,  0.),
                 Vector2(-1.,  0.),
                 Vector2( 0.,  1.));
-        poly.addExtremeVertex(Vector2(0., -1.));
-        shouldEqual(abs(poly.nVolume() - 2.) < eps_, true);
-        shouldEqual(abs(poly.nSurface() - 4. * sqrt(2.)) < eps, true);
+        poly.addExtremeVertex(Vector2( 0., -1.));
+        shouldEqualTolerance(poly.nVolume(), 2., eps_);
+        shouldEqualTolerance(poly.nSurface(), 4. * std::sqrt(2.), eps_);
         for (int n = 0; n < N; n++)
         {
             Vector2 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
-            vec /= vec.magnitude();
-            shouldEqual(poly.contains(vec), false);
-            shouldEqual(poly.litFacets(vec).size(), 1);
+                    std::cos(2*M_PI*n/N),
+                    std::sin(2*M_PI*n/N));
+            shouldEqualTolerance(vec.magnitude(), 1., eps_);
             poly.addExtremeVertex(vec);
             shouldEqual(poly.closed(), true);
         }
-        const double sur_err = (2*M_PI - poly.nSurface()) / (2.*M_PI);
-        shouldEqual(sur_err < eps, true);
-        shouldEqual(sur_err > 0, true);
-        const double vol_err = (M_PI - poly.nVolume()) / (M_PI);
-        shouldEqual(vol_err < eps, true);
-        shouldEqual(vol_err > 0, true);
+        const double sur_tgt = 2.*N*std::sin(M_PI / N);
+        shouldEqualTolerance(poly.nSurface(), sur_tgt, eps_);
+        const double vol_tgt = 1.*N*std::sin(M_PI / N) * std::cos(M_PI / N);
+        shouldEqualTolerance(poly.nVolume(), vol_tgt, eps_);
         for (int n = 0; n < 100; n++)
         {
             Vector2 vec(
                     (2*rand() - 1)/static_cast<double>(RAND_MAX),
                     (2*rand() - 1)/static_cast<double>(RAND_MAX));
-            if (abs(vec.magnitude() - 1) > eps)
+            if (vec.magnitude() > 1)
             {
-                shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
+                shouldEqual(poly.contains(vec), false);
+            }
+            else if (vec.magnitude() < std::cos(M_PI / N))
+            {
+                shouldEqual(poly.contains(vec), true);
             }
         }
     }
@@ -695,41 +695,45 @@ struct FloatConvexPolytopeTest
     void testAddExtremeVertex3D()
     {
         const int N = 100;
-        const double eps = 3. / sqrt(N);
         Polytope3 poly(
-                Vector3( 1.,  0.,  0.),
-                Vector3(-1.,  0.,  0.),
-                Vector3( 0.,  1.,  0.),
-                Vector3( 0.,  0.,  1.));
+                Vector3( 1.,  0.,  1.),
+                Vector3(-1.,  0.,  1.),
+                Vector3( 0.,  1.,  1.),
+                Vector3( 0.,  0.,  0.));
         for (int n = 0; n < N; n++)
         {
             Vector3 vec(
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
-            vec /= vec.magnitude();
-            shouldEqual(poly.contains(vec), false);
+                    std::cos(2*M_PI*n/N),
+                    std::sin(2*M_PI*n/N),
+                    1.);
             poly.addExtremeVertex(vec);
             shouldEqual(poly.closed(), true);
         }
-        const double sur_err = (4.*M_PI - poly.nSurface()) / (4.*M_PI);
-        shouldEqual(sur_err < eps, true);
-        shouldEqual(sur_err > 0, true);
-        const double vol_err = (4./3.*M_PI - poly.nVolume()) / (4./3.*M_PI);
-        shouldEqual(vol_err < eps, true);
-        shouldEqual(vol_err > 0, true);
+        const double sur_tgt = N * std::sin(M_PI / N) * (
+                std::cos(M_PI / N) +  std::sqrt(
+                        std::cos(M_PI / N) * std::cos(M_PI / N) + 1.));
+        shouldEqualTolerance(poly.nSurface(), sur_tgt, eps_ * N);
+        const double vol_tgt = N * std::sin(M_PI / N) * std::cos(M_PI / N) / 3.;
+        shouldEqualTolerance(poly.nVolume(), vol_tgt, eps_ * N);
         for (int n = 0; n < 100; n++)
         {
             Vector3 vec(
                     (2*rand() - 1)/static_cast<double>(RAND_MAX),
                     (2*rand() - 1)/static_cast<double>(RAND_MAX),
-                    (2*rand() - 1)/static_cast<double>(RAND_MAX));
-            if (abs(vec.magnitude() - 1) > eps)
+                    rand()/static_cast<double>(RAND_MAX));
+            double dist = std::sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+            if (dist > vec[2])
             {
-                shouldEqual(poly.contains(vec), vec.magnitude() < 1.);
+                shouldEqual(poly.contains(vec), false);
+            }
+            else if (dist < (vec[2] * std::cos(M_PI / N)))
+            {
+                shouldEqual(poly.contains(vec), true);
             }
         }
     }
+
+    /* Should also be replaced by a deterministic version
 
     void testAddNonExtremeVertex2D()
     {
@@ -810,6 +814,7 @@ struct FloatConvexPolytopeTest
             }
         }
     }
+    */
 
     double eps_;
 };
@@ -832,8 +837,10 @@ struct PolytopeTestSuite : public vigra::test_suite
         add(testCase(&FloatStarPolytopeTest::testNVolume3D));
         add(testCase(&FloatConvexPolytopeTest::testAddExtremeVertex2D));
         add(testCase(&FloatConvexPolytopeTest::testAddExtremeVertex3D));
+        /*
         add(testCase(&FloatConvexPolytopeTest::testAddNonExtremeVertex2D));
         add(testCase(&FloatConvexPolytopeTest::testAddNonExtremeVertex3D));
+        */
         add(testCase(&IntStarPolytopeTest::testClosed2D));
         add(testCase(&IntStarPolytopeTest::testClosed3D));
         add(testCase(&IntStarPolytopeTest::testContains2D));
