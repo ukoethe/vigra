@@ -226,7 +226,7 @@ class Polytope
         {
             const typename array_type::difference_type coord = it.get<0>();
             point_type vec;
-            for (int i = 0; i < vec.size(); i++)
+            for (unsigned int i = 0; i < vec.size(); i++)
             {
                 vec[i] = coord[i]*scale[i] + offset[i];
             }
@@ -255,7 +255,7 @@ class Polytope
         {
             const typename array_type::difference_type coord = it.get<0>();
             point_type vec;
-            for (int i = 0; i < vec.size(); i++)
+            for (unsigned int i = 0; i < vec.size(); i++)
             {
                 vec[i] = coord[i] + offset[i];
             }
@@ -386,7 +386,7 @@ class Polytope
         , type_map_(type_map)
         {
             graph_.first(static_cast<node_type &>(*this));
-            while (*this != lemon::INVALID and type_map_[*this] != NodeType)
+            while (*this != lemon::INVALID && type_map_[*this] != NodeType)
             {
                 graph_.next(*this);
             }
@@ -733,7 +733,7 @@ class StarPolytope : public Polytope<N, T>
             const coordinate_type jj_det = linalg::determinant(jj_mat);
             const coordinate_type jp_det = linalg::determinant(jp_mat);
             const coordinate_type eps = std::numeric_limits<T>::epsilon() * 2;
-            if (((jj_det > 0) xor (jp_det > 0)) and abs(jp_det) > eps)
+            if (((jj_det > 0) != (jp_det > 0)) && abs(jp_det) > eps)
             {
                 return false;
             }

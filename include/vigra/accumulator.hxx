@@ -6303,12 +6303,11 @@ class ConvexHull
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
-            if (not initialized_)
+            if (!initialized_)
             {
                 initialize();
             }
-            point_type vec;
-            std::copy(t.point().begin(), t.point().end(), vec.begin());
+            point_type vec(t.point().begin());
             convex_hull_.addExtremeVertex(vec);
         }
 
@@ -6411,7 +6410,7 @@ class ConvexHullFeatures
                     finalized_ == false,
                     "ConvexHullFeatures::update(): "
                     "Finalize must not be called before update");
-            if (not initialized_)
+            if (!initialized_)
             {
                 initialize();
             }
@@ -6453,7 +6452,7 @@ class ConvexHullFeatures
 
         void finalize()
         {
-            if (not finalized_)
+            if (!finalized_)
             {
                 dofinalize();
                 finalized_ = true;

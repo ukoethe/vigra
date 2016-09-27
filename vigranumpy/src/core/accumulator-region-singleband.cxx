@@ -115,7 +115,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
     // finalize the calculations
     for (int k = 0; k < size; ++k)
     {
-        if (k != ignored_label and get<Count>(acc, k) != 0)
+        if (k != ignored_label && get<Count>(acc, k) != 0)
         {
             getAccumulator<ConvexHullFeatures>(acc, k).finalize();
         }

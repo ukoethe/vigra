@@ -678,7 +678,7 @@ struct FloatConvexPolytopeTest
         shouldEqual(sur_err < eps, true);
         shouldEqual(sur_err > 0, true);
         const double vol_err = (M_PI - poly.nVolume()) / (M_PI);
-        shouldEqual(vol_err < eps, true);
+        shouldEqualTolerance(vol_err, 0, eps);
         shouldEqual(vol_err > 0, true);
         for (int n = 0; n < 100; n++)
         {
@@ -713,10 +713,10 @@ struct FloatConvexPolytopeTest
             shouldEqual(poly.closed(), true);
         }
         const double sur_err = (4.*M_PI - poly.nSurface()) / (4.*M_PI);
-        shouldEqual(sur_err < eps, true);
+        shouldEqualTolerance(sur_err, 0, eps);
         shouldEqual(sur_err > 0, true);
         const double vol_err = (4./3.*M_PI - poly.nVolume()) / (4./3.*M_PI);
-        shouldEqual(vol_err < eps, true);
+        shouldEqualTolerance(vol_err, 0, eps);
         shouldEqual(vol_err > 0, true);
         for (int n = 0; n < 100; n++)
         {
@@ -757,7 +757,7 @@ struct FloatConvexPolytopeTest
         shouldEqual(sur_err < eps, true);
         shouldEqual(sur_err > 0, true);
         const double vol_err = (M_PI - poly.nVolume()) / (M_PI);
-        shouldEqual(vol_err < eps, true);
+        shouldEqualTolerance(vol_err, 0, eps);
         shouldEqual(vol_err > 0, true);
         for (int n = 0; n < 100; n++)
         {
@@ -793,10 +793,10 @@ struct FloatConvexPolytopeTest
             }
         }
         const double sur_err = (4.*M_PI - poly.nSurface()) / (4.*M_PI);
-        shouldEqual(sur_err < eps, true);
+        shouldEqualTolerance(sur_err, 0, eps);
         shouldEqual(sur_err > 0, true);
         const double vol_err = (4./3.*M_PI - poly.nVolume()) / (4./3.*M_PI);
-        shouldEqual(vol_err < eps, true);
+        shouldEqualTolerance(vol_err, 0, eps);
         shouldEqual(vol_err > 0, true);
         for (int n = 0; n < 100; n++)
         {
