@@ -611,7 +611,16 @@ def _genTensorConvenienceFunctions():
         hessian = filters.hessianOfGaussian(image, scale,
                                             sigma_d=sigma_d, step_size=step_size,
                                             window_size=window_size, roi=roi)
-        return filters.tensorEigenvalues(hessian, out=out)
+        if out is None:
+            return filters.tensorEigenvalues(hessian)
+
+        try:
+            return filters.tensorEigenvalues(hessian, out=out)
+        except ValueError:
+            pass
+        # retry without 'out', since its strides might not match
+        out[...] = filters.tensorEigenvalues(hessian)
+        return out
 
     hessianOfGaussianEigenvalues.__module__ = 'vigra.filters'
     filters.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
@@ -627,7 +636,16 @@ def _genTensorConvenienceFunctions():
         st = filters.structureTensor(image, innerScale, outerScale,
                                      sigma_d=sigma_d, step_size=step_size,
                                      window_size=window_size, roi=roi)
-        return filters.tensorEigenvalues(st, out=out)
+        if out is None:
+            return filters.tensorEigenvalues(st)
+
+        try:
+            return filters.tensorEigenvalues(st, out=out)
+        except ValueError:
+            pass
+        # retry without 'out', since its strides might not match
+        out[...] = filters.tensorEigenvalues(st)
+        return out
 
     structureTensorEigenvalues.__module__ = 'vigra.filters'
     filters.structureTensorEigenvalues = structureTensorEigenvalues

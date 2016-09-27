@@ -90,13 +90,12 @@ NumpyArrayConverter<NumpyArray<N, T, Stride> >::NumpyArrayConverter()
 
     converter::registration const * reg = converter::registry::query(type_id<ArrayType>());
 
-    // register the to_python_converter only once
-    // FIXME: I'm not sure if this is correct.
+    // register the converters only once
     if(!reg || !reg->rvalue_chain)
     {
         to_python_converter<ArrayType, NumpyArrayConverter>();
+        converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
     }
-    converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
 }
 
 template <unsigned int N, class T, class Stride>
@@ -810,7 +809,7 @@ inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::
                                void>::type
 def(char const*, Functor const &)
 {
-    static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value, 
+    static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value,
                   "def(): use multidef() to export multiple overloads.");
 }
 

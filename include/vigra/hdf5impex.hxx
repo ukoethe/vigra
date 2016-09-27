@@ -129,24 +129,43 @@ inline bool isHDF5(char const * filename)
     */
 class HDF5DisableErrorOutput
 {
-    H5E_auto2_t old_func_;
+    H5E_auto1_t old_func1_;
+    H5E_auto2_t old_func2_;
     void *old_client_data_;
+    int error_handler_version_;
 
     HDF5DisableErrorOutput(HDF5DisableErrorOutput const &);
     HDF5DisableErrorOutput & operator=(HDF5DisableErrorOutput const &);
 
   public:
     HDF5DisableErrorOutput()
-    : old_func_(0)
+    : old_func1_(0)
+    , old_func2_(0)
     , old_client_data_(0)
+    , error_handler_version_(-1)
     {
-        H5Eget_auto2(H5E_DEFAULT, &old_func_, &old_client_data_);
-        H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
+        if(H5Eget_auto2(H5E_DEFAULT, &old_func2_, &old_client_data_) >= 0)
+        {
+            // prefer new-style error handling
+            H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
+            error_handler_version_ = 2;
+        }
+        else if(H5Eget_auto1(&old_func1_, &old_client_data_) >= 0)
+        {
+            // fall back to old-style if another module (e.g. h5py)
+            // prevents us from using new-style (i.e. H5Eget_auto2()
+            // returned a negative error code)
+            H5Eset_auto1(NULL, NULL);
+            error_handler_version_ = 1;
+        }
     }
 
     ~HDF5DisableErrorOutput()
     {
-        H5Eset_auto2(H5E_DEFAULT, old_func_, old_client_data_);
+        if(error_handler_version_ == 1)
+            H5Eset_auto1(old_func1_, old_client_data_);
+        else if(error_handler_version_ == 2)
+            H5Eset_auto2(H5E_DEFAULT, old_func2_, old_client_data_);
     }
 };
 
@@ -1152,7 +1171,7 @@ class HDF5File
 
     bool isOpen() const
     {
-        return fileHandle_ != 0;
+        return fileHandle_ != (hid_t)0;
     }
 
     bool isReadOnly() const
@@ -1386,13 +1405,51 @@ class HDF5File
 
         errorMessage = "HDF5File::getDatasetShape(): Unable to access dataspace.";
         HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle), &H5Sclose, errorMessage.c_str());
-
         //get dimension information
         ArrayVector<hsize_t>::size_type dimensions = H5Sget_simple_extent_ndims(dataspaceHandle);
 
         ArrayVector<hsize_t> shape(dimensions);
         ArrayVector<hsize_t> maxdims(dimensions);
         H5Sget_simple_extent_dims(dataspaceHandle, shape.data(), maxdims.data());
+
+        // invert the dimensions to guarantee VIGRA-compatible order.
+        std::reverse(shape.begin(), shape.end());
+        return shape;
+    }
+        
+        /** \brief Get the shape of chunks along each dimension of a certain dataset.
+
+           Normally, this function is called after determining the dimension of the
+            dataset using \ref getDatasetDimensions().
+            If the first character is a "/", the path will be interpreted as absolute path,
+            otherwise it will be interpreted as path relative to the current group.
+
+            Note that the memory order between VIGRA and HDF5 files differs: VIGRA uses
+            Fortran-order, while HDF5 uses C-order. This function therefore reverses the axis
+            order relative to the file contents. That is, when the axes in the file are
+            ordered as 'z', 'y', 'x', this function will return the shape in the order
+            'x', 'y', 'z'.
+        */
+    ArrayVector<hsize_t> getChunkShape(std::string datasetName) const
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        //Open dataset and dataspace
+        std::string errorMessage = "HDF5File::getChunkShape(): Unable to open dataset '" + datasetName + "'.";
+        HDF5Handle datasetHandle = HDF5Handle(getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
+
+        errorMessage = "HDF5File::getChunkShape(): Unable to access dataspace.";
+        HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle), &H5Sclose, errorMessage.c_str());
+        HDF5Handle properties(H5Dget_create_plist(datasetHandle),
+                             &H5Pclose, "HDF5File::read(): failed to get property list");
+
+
+        //get dimension information
+        ArrayVector<hsize_t>::size_type dimensions = H5Sget_simple_extent_ndims(dataspaceHandle);
+
+        ArrayVector<hsize_t> shape(dimensions);
+        H5Pget_chunk(properties, dimensions, shape.data());
 
         // invert the dimensions to guarantee VIGRA-compatible order.
         std::reverse(shape.begin(), shape.end());
@@ -2425,16 +2482,7 @@ class HDF5File
         // We determine if the group exists by checking the return value of H5Gopen.
         // To do so, we must temporarily disable error reporting.
         // Alternatively, we could use H5LTfind_dataset(), but this is much slower.
-
-        // Save current error handling.
-        H5E_auto2_t  error_handler_ori;
-        void *error_data_ori;
-        H5Eget_auto(H5E_DEFAULT, &error_handler_ori, &error_data_ori);
-
-        // Turn off error handling and register function to restore it upon return.
-        H5Eset_auto(H5E_DEFAULT, NULL, NULL);
-        VIGRA_FINALLY(
-            H5Eset_auto(H5E_DEFAULT, error_handler_ori, error_data_ori));
+        HDF5DisableErrorOutput disable_error;
 
         // Open or create subgroups one by one
         std::string::size_type begin = 0, end = groupName.find('/');
