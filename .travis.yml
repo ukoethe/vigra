@@ -43,6 +43,7 @@ addons:
 
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="/usr/local/bin:${PATH}"                                                ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update || brew update                                                           ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science                                                           ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew remove --force $(grep -v -F -x -f <(cat <(brew deps --skip-optional --union $(echo -e $BREW_DEPS)) <(echo -e $BREW_DEPS))  <(cat <(brew leaves) <(brew deps --skip-optional --union $(brew leaves)))); brew cleanup --force ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install $(echo -e $BREW_DEPS) || true                                          ; fi
@@ -53,7 +54,7 @@ before_script:
   - pip install nose
   - pip install numpy
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 2 ]]; then brew install boost-python --with-python ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then curl -L -O https://bintray.com/artifact/download/casacore/homebrew-bottles/boost-python-1.60.0.el_capitan.bottle.1.tar.gz && brew install ./boost-python-1.60.0.el_capitan.bottle.1.tar.gz ; rm -f ./boost-python-1.60.0.el_capitan.bottle.1.tar.gz ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ ${TRAVIS_PYTHON_VERSION:0:1} -eq 3 ]]; then curl -L -O https://bintray.com/artifact/download/casacore/homebrew-bottles/boost-python-1.61.0.el_capitan.bottle.1.tar.gz && brew install ./boost-python-1.61.0.el_capitan.bottle.1.tar.gz ; rm -f ./boost-python-1.61.0.el_capitan.bottle.1.tar.gz ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cleanup --force -s; sudo rm -rf $(brew --cache)                                     ; fi
 
 script:
