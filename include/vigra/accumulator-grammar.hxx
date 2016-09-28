@@ -102,7 +102,10 @@ class RegionPerimeter;                         // compute the perimeter of a 2D 
 class RegionCircularity;                       // compare perimeter of a 2D region with a circle of same area
 class RegionEccentricity;                      // ecentricity of a 2D region from major and minor axis
 
-class ConvexHull;                              // base class for convex hull features
+#ifdef WITH_LEMON
+class ConvexHull;                              // base class for convex hull computation
+class ConvexHullFeatures;                      // base class for convex hull features
+#endif
 
 /* 
 Quantiles other than minimum and maximum require more thought:
@@ -489,7 +492,10 @@ VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<Whiten>, Whiten)
 
     // ignore all modifiers of RegionContour and related features
 VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionContour>, RegionContour)
+#ifdef WITH_LEMON
 VIGRA_REDUCE_MODFIER(template <class> class A, A<ConvexHull>, ConvexHull)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<ConvexHullFeatures>, ConvexHullFeatures)
+#endif // WITH_LEMON
 VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionPerimeter>, RegionPerimeter)
 VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionCircularity>, RegionCircularity)
 VIGRA_REDUCE_MODFIER(template <class> class A, A<RegionEccentricity>, RegionEccentricity)
