@@ -45,10 +45,13 @@
 
 namespace vigra
 {
+
 namespace rf3
 {
 
-
+/** \addtogroup MachineLearning
+**/
+//@{
 
 template <typename T>
 struct LessEqualSplitTest
@@ -143,7 +146,7 @@ public:
 // struct LargestSumAcc
 // {
 // public:
-//     typedef std::vector<size_t> input_type; 
+//     typedef std::vector<size_t> input_type;
 //     template <typename ITER>
 //     size_t operator()(ITER begin, ITER end)
 //     {
@@ -205,9 +208,9 @@ public:
 namespace detail
 {
 
-    /// Abstract scorer that iterates over all split candidates, uses FUNCTOR to compute a score, 
-    /// and saves the split with the minimum (maximum) score.
-    template <bool MINIMIZE, typename FUNCTOR>
+    /// Abstract scorer that iterates over all split candidates, uses FUNCTOR to compute a score,
+    /// and saves the split with the minimum score.
+    template <typename FUNCTOR>
     class GeneralScorer
     {
     public:
@@ -219,7 +222,7 @@ namespace detail
             split_found_(false),
             best_split_(0),
             best_dim_(0),
-            best_score_(MINIMIZE ? std::numeric_limits<double>::max() : std::numeric_limits<double>::lowest()),
+            best_score_(std::numeric_limits<double>::max()),
             priors_(priors),
             n_total_(std::accumulate(priors.begin(), priors.end(), 0.0))
         {}
@@ -260,7 +263,7 @@ namespace detail
                 // Update the score.
                 split_found_ = true;
                 double const s = score(priors_, counts, n_total_, n_left);
-                bool const better_score = MINIMIZE ? s < best_score_ : s > best_score_;
+                bool const better_score = s < best_score_;
                 if (better_score)
                 {
                     best_score_ = s;
@@ -281,136 +284,143 @@ namespace detail
         double const n_total_; // the weighted number of datapoints
     };
 
-    /// Functor that computes the gini score.
-    class GiniScoreFunctor
-    {
-    public:
-        double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
-        {
-            double const n_right = n_total - n_left;
-            double gini_left = 1.0;
-            double gini_right = 1.0;
-            for (size_t i = 0; i < counts.size(); ++i)
-            {
-                double const p_left = counts[i] / n_left;
-                double const p_right = (priors[i] - counts[i]) / n_right;
-                gini_left -= (p_left*p_left);
-                gini_right -= (p_right*p_right);
-            }
-            return n_left*gini_left + n_right*gini_right;
-        }
-
-        template <typename LABELS, typename WEIGHTS, typename ITER>
-        static double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end)
-        {
-            // Count the occurences.
-            std::vector<double> counts;
-            double total = 0.0;
-            for (auto it = begin; it != end; ++it)
-            {
-                auto const d = *it;
-                auto const lbl = labels[d];
-                if (counts.size() <= lbl)
-                {
-                    counts.resize(lbl+1, 0.0);
-                }
-                counts[lbl] += weights[d];
-                total += weights[d];
-            }
-
-            // Compute the gini.
-            double gini = total;
-            for (auto x : counts)
-            {
-                gini -= x*x/total;
-            }
-            return gini;
-        }
-    };
-
-    /// Functor that computes the entropy score.
-    class EntropyScoreFunctor
-    {
-    public:
-        double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
-        {
-            double const n_right = n_total - n_left;
-            double ig = 0;
-            for (size_t i = 0; i < counts.size(); ++i)
-            {
-                double c = counts[i];
-                if (c != 0)
-                    ig -= c * std::log(c / n_left);
-
-                c = priors[i] - c;
-                if (c != 0)
-                    ig -= c * std::log(c / n_right);
-            }
-            return ig;
-        }
-
-        template <typename LABELS, typename WEIGHTS, typename ITER>
-        double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
-        {
-            vigra_fail("EntropyScoreFunctor::region_score(): Not implemented yet.");
-            return 0.0; // FIXME
-        }
-    };
-
-    // Functor that computes the kolmogorov-smirnov score.
-    class KSDScoreFunctor
-    {
-    public:
-        double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
-        {
-            double const eps = 1e-10;
-            double nnz = 0;
-            std::vector<double> norm_counts(counts.size(), 0.0);
-            for (size_t i = 0; i < counts.size(); ++i)
-            {
-                if (priors[i] > eps)
-                {
-                    norm_counts[i] = counts[i] / priors[i];
-                    ++nnz;
-                }
-            }
-            if (nnz < eps)
-                return 0.0;
-
-            // NOTE to future self:
-            // In std::accumulate, it makes a huge difference whether you use 0 or 0.0 as init. Think about that before making changes.
-            double const mean = std::accumulate(norm_counts.begin(), norm_counts.end(), 0.0) / nnz;
-
-            // Compute the sum of the squared distances.
-            double ksd = 0.0;
-            for (size_t i = 0; i < norm_counts.size(); ++i)
-            {
-                if (priors[i] != 0)
-                {
-                    double const v = (mean-norm_counts[i]);
-                    ksd += v*v;
-                }
-            }
-            return ksd;
-        }
-
-        template <typename LABELS, typename WEIGHTS, typename ITER>
-        double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
-        {
-            vigra_fail("KSDScoreFunctor::region_score(): Region score not available for the Kolmogorov-Smirnov split.");
-            return 0.0;
-        }
-    };
-
 } // namespace detail
 
-typedef detail::GeneralScorer<true, detail::GiniScoreFunctor> GiniScorer;
-typedef detail::GeneralScorer<true, detail::EntropyScoreFunctor> EntropyScorer;
-typedef detail::GeneralScorer<false, detail::KSDScoreFunctor> KSDScorer;
+/// \brief Functor that computes the gini score.
+///
+/// This functor is typically selected indirectly by passing the value <tt>RF_GINI</tt>
+/// to vigra::rf3::RandomForestOptions::split().
+class GiniScore
+{
+public:
+    double operator()(std::vector<double> const & priors,
+                      std::vector<double> const & counts, double n_total, double n_left) const
+    {
+        double const n_right = n_total - n_left;
+        double gini_left = 1.0;
+        double gini_right = 1.0;
+        for (size_t i = 0; i < counts.size(); ++i)
+        {
+            double const p_left = counts[i] / n_left;
+            double const p_right = (priors[i] - counts[i]) / n_right;
+            gini_left -= (p_left*p_left);
+            gini_right -= (p_right*p_right);
+        }
+        return n_left*gini_left + n_right*gini_right;
+    }
 
+        // needed for Gini-based variable importance calculation
+    template <typename LABELS, typename WEIGHTS, typename ITER>
+    static double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end)
+    {
+        // Count the occurences.
+        std::vector<double> counts;
+        double total = 0.0;
+        for (auto it = begin; it != end; ++it)
+        {
+            auto const d = *it;
+            auto const lbl = labels[d];
+            if (counts.size() <= lbl)
+            {
+                counts.resize(lbl+1, 0.0);
+            }
+            counts[lbl] += weights[d];
+            total += weights[d];
+        }
 
+        // Compute the gini.
+        double gini = total;
+        for (auto x : counts)
+        {
+            gini -= x*x/total;
+        }
+        return gini;
+    }
+};
 
-/// This struct holds the depth and the weighted number of datapoints per class of a single node.
+/// \brief Functor that computes the entropy score.
+///
+/// This functor is typically selected indirectly by passing the value <tt>RF_ENTROPY</tt>
+/// to vigra::rf3::RandomForestOptions::split().
+class EntropyScore
+{
+public:
+    double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
+    {
+        double const n_right = n_total - n_left;
+        double ig = 0;
+        for (size_t i = 0; i < counts.size(); ++i)
+        {
+            double c = counts[i];
+            if (c != 0)
+                ig -= c * std::log(c / n_left);
+
+            c = priors[i] - c;
+            if (c != 0)
+                ig -= c * std::log(c / n_right);
+        }
+        return ig;
+    }
+
+    template <typename LABELS, typename WEIGHTS, typename ITER>
+    double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
+    {
+        vigra_fail("EntropyScore::region_score(): Not implemented yet.");
+        return 0.0; // FIXME
+    }
+};
+
+/// \brief Functor that computes the Kolmogorov-Smirnov score.
+///
+/// Actually, it reutrns the negated KSD score, because we want to minimize.
+///
+/// This functor is typically selected indirectly by passing the value <tt>RF_KSD</tt>
+/// to vigra::rf3::RandomForestOptions::split().
+class KolmogorovSmirnovScore
+{
+public:
+    double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
+    {
+        double const eps = 1e-10;
+        double nnz = 0;
+        std::vector<double> norm_counts(counts.size(), 0.0);
+        for (size_t i = 0; i < counts.size(); ++i)
+        {
+            if (priors[i] > eps)
+            {
+                norm_counts[i] = counts[i] / priors[i];
+                ++nnz;
+            }
+        }
+        if (nnz < eps)
+            return 0.0;
+
+        // NOTE to future self:
+        // In std::accumulate, it makes a huge difference whether you use 0 or 0.0 as init. Think about that before making changes.
+        double const mean = std::accumulate(norm_counts.begin(), norm_counts.end(), 0.0) / nnz;
+
+        // Compute the sum of the squared distances.
+        double ksd = 0.0;
+        for (size_t i = 0; i < norm_counts.size(); ++i)
+        {
+            if (priors[i] != 0)
+            {
+                double const v = (mean-norm_counts[i]);
+                ksd += v*v;
+            }
+        }
+        return -ksd;
+    }
+
+    template <typename LABELS, typename WEIGHTS, typename ITER>
+    double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
+    {
+        vigra_fail("KolmogorovSmirnovScore::region_score(): Region score not available for the Kolmogorov-Smirnov split.");
+        return 0.0;
+    }
+};
+
+// This struct holds the depth and the weighted number of datapoints per class of a single node.
 template <typename ARR>
 struct RFNodeDescription
 {
@@ -426,7 +436,7 @@ public:
 
 
 
-/// Return true if the given node is pure.
+// Return true if the given node is pure.
 template <typename LABELS, typename ITER>
 bool is_pure(LABELS const & labels, RFNodeDescription<ITER> const & desc)
 {
@@ -444,9 +454,9 @@ bool is_pure(LABELS const & labels, RFNodeDescription<ITER> const & desc)
     return true;
 }
 
-
-
-/// The purity stop criterion.
+/// @brief Random forest 'node purity' stop criterion.
+///
+/// Stop splitting a node when it contains only instanes of a single class.
 class PurityStop
 {
 public:
@@ -457,16 +467,18 @@ public:
     }
 };
 
-
-
-/// The depth stop criterion.
+/// @brief Random forest 'maximum depth' stop criterion.
+///
+/// Stop splitting a node when the its depth reaches a given value or when it is pure.
 class DepthStop
 {
 public:
+    /// @brief Constructor: terminate tree construction at \a max_depth.
     DepthStop(size_t max_depth)
         :
         max_depth_(max_depth)
     {}
+
     template <typename LABELS, typename ITER>
     bool operator()(LABELS const & labels, RFNodeDescription<ITER> const & desc) const
     {
@@ -478,16 +490,18 @@ public:
     size_t max_depth_;
 };
 
-
-
-/// The number of datapoints stop criterion.
+/// @brief Random forest 'number of datapoints' stop criterion.
+///
+/// Stop splitting a node when it contains too few instances or when it is pure.
 class NumInstancesStop
 {
 public:
+    /// @brief Constructor: terminate tree construction when node contains less than \a min_n instances.
     NumInstancesStop(size_t min_n)
         :
         min_n_(min_n)
     {}
+
     template <typename LABELS, typename ARR>
     bool operator()(LABELS const & labels, RFNodeDescription<ARR> const & desc) const
     {
@@ -500,12 +514,14 @@ public:
     size_t min_n_;
 };
 
-
-
-/// The node complexity stop criterion.
+/// @brief Random forest 'node complexity' stop criterion.
+///
+/// Stop splitting a node when it allows for too few different data arrangements.
+/// This includes purity, which offers only a sinlge data arrangement.
 class NodeComplexityStop
 {
 public:
+    /// @brief Constructor: stop when fewer than <tt>1/tau</tt> label arrangements are possible.
     NodeComplexityStop(double tau = 0.001)
         :
         logtau_(std::log(tau))
@@ -543,8 +559,6 @@ public:
     double logtau_;
 };
 
-
-
 enum RandomForestOptionTags
 {
     RF_SQRT,
@@ -557,14 +571,18 @@ enum RandomForestOptionTags
 };
 
 
+/** \brief  Options class for \ref vigra::rf3::RandomForest version 3.
 
+  <b>\#include</b> \<vigra/random_forest_3.hxx\><br/>
+  Namespace: vigra::rf3
+*/
 class RandomForestOptions
 {
 public:
 
     RandomForestOptions()
         :
-        tree_count_(256),
+        tree_count_(255),
         features_per_node_(0),
         features_per_node_switch_(RF_SQRT),
         bootstrap_sampling_(true),
@@ -580,6 +598,8 @@ public:
 
     /**
      * @brief The number of trees.
+     *
+     * Default: 255
      */
     RandomForestOptions & tree_count(int p_tree_count)
     {
@@ -589,8 +609,10 @@ public:
 
     /**
      * @brief The number of features that are considered when computing the split.
-     * 
+     *
      * @param p_features_per_node the number of features
+     *
+     * Default: use sqrt of the total number of features.
      */
     RandomForestOptions & features_per_node(int p_features_per_node)
     {
@@ -601,8 +623,13 @@ public:
 
     /**
      * @brief The number of features that are considered when computing the split.
-     * 
-     * @param p_features_per_node_switch possible values: RF_SQRT, RF_LOG, RF_ALL
+     *
+     * @param p_features_per_node_switch possible values: <br/>
+                    <tt>vigra::rf3::RF_SQRT</tt> (use square root of total number of features, recommended for classification), <br/>
+                    <tt>vigra::rf3::RF_LOG</tt> (use logarithm of total number of features, recommended for regression), <br/>
+                    <tt>vigra::rf3::RF_ALL</tt> (use all features).
+     *
+     * Default: <tt>vigra::rf3::RF_SQRT</tt>
      */
     RandomForestOptions & features_per_node(RandomForestOptionTags p_features_per_node_switch)
     {
@@ -616,6 +643,8 @@ public:
 
     /**
      * @brief Use bootstrap sampling.
+     *
+     * Default: true
      */
     RandomForestOptions & bootstrap_sampling(bool b)
     {
@@ -625,6 +654,8 @@ public:
 
     /**
      * @brief If resample_count is greater than zero, the split in each node is computed using only resample_count data points.
+     *
+     * Default: \a n = 0 (don't resample in every node)
      */
     RandomForestOptions & resample_count(size_t n)
     {
@@ -635,8 +666,13 @@ public:
 
     /**
      * @brief The split criterion.
-     * 
-     * @param p_split possible values: RF_GINI, RF_ENTROPY, RF_KSD
+     *
+     * @param p_split possible values: <br/>
+                  <tt>vigra::rf3::RF_GINI</tt> (use Gini criterion, \ref vigra::rf3::GiniScorer), <br/>
+                  <tt>vigra::rf3::RF_ENTROPY</tt> (use entropy criterion, \ref vigra::rf3::EntropyScorer),  <br/>
+                  <tt>vigra::rf3::RF_KSD</tt> (use Kolmogorov-Smirnov criterion, \ref vigra::rf3::KSDScorer).
+     *
+     * Default: <tt>vigra::rf3::RF_GINI</tt>
      */
     RandomForestOptions & split(RandomForestOptionTags p_split)
     {
@@ -650,6 +686,8 @@ public:
 
     /**
      * @brief Do not split a node if its depth is greater or equal to max_depth.
+     *
+     * Default: \a d = 0 (don't use depth as a termination criterion)
      */
     RandomForestOptions & max_depth(size_t d)
     {
@@ -659,6 +697,8 @@ public:
 
     /**
      * @brief Value of the node complexity termination criterion.
+     *
+     * Default: \a tau = -1 (don't use complexity as a termination criterion)
      */
     RandomForestOptions & node_complexity_tau(double tau)
     {
@@ -668,6 +708,8 @@ public:
 
     /**
      * @brief Do not split a node if it contains less than min_num_instances data points.
+     *
+     * Default: \a n = 1 (don't use instance count as a termination criterion)
      */
     RandomForestOptions & min_num_instances(size_t n)
     {
@@ -677,6 +719,11 @@ public:
 
     /**
      * @brief Use stratification when creating the bootstrap samples.
+     *
+     * That is, preserve the proportion between the number of class instances exactly
+     * rather than on average.
+     *
+     * Default: false
      */
     RandomForestOptions & use_stratification(bool b)
     {
@@ -685,7 +732,11 @@ public:
     }
 
     /**
-     * @brief The number of threads that are used in training. -1 means use number of cores.
+     * @brief The number of threads that are used in training.
+     *
+     * \a n = -1 means use number of cores, \a n = 0 means single-threaded training.
+     *
+     * Default: \a n = -1 (use as many threads as there are cores in the machine).
      */
     RandomForestOptions & n_threads(int n)
     {
@@ -702,7 +753,7 @@ public:
      * The ordering of the classes is 3, 5, 8, so class 3 will get weight 0.2, class 5 will get weight 0.3
      * and class 8 will get weight 0.4.
      */
-    RandomForestOptions & class_weights(std::vector<double> v)
+    RandomForestOptions & class_weights(std::vector<double> const & v)
     {
         class_weights_ = v;
         return *this;
@@ -710,8 +761,10 @@ public:
 
     /**
      * @brief Get the actual number of features per node.
-     * 
+     *
      * @param total the total number of features
+     *
+     * This function is normally only called internally before training is started.
      */
     size_t get_features_per_node(size_t total) const
     {
@@ -818,9 +871,10 @@ public:
 
 };
 
-
+//@}
 
 } // namespace rf3
+
 } // namespace vigra
 
 #endif

@@ -47,12 +47,24 @@
 
 namespace vigra
 {
+
 namespace rf3
 {
 
+/********************************************************/
+/*                                                      */
+/*                    rf3::RandomForest                 */
+/*                                                      */
+/********************************************************/
 
+/** \brief Random forest version 3.
 
-template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACCTYPE>
+    vigra::rf3::RandomForest is typicall constructed via the factory function \ref vigra::rf3::random_forest().
+*/
+template <typename FEATURES,
+          typename LABELS,
+          typename SPLITTESTS = LessEqualSplitTest<typename FEATURES::value_type>,
+          typename ACCTYPE = ArgMaxVectorAcc<double>>
 class RandomForest
 {
 public:
@@ -98,7 +110,7 @@ public:
     );
 
     /// \brief Predict the given data and return the average number of split comparisons.
-    /// \note labels should have the shape (features.shape()[0],).
+    /// \note labels must be a 1-D array with size <tt>features.shape(0)</tt>.
     double predict(
         FEATURES const & features,
         LABELS & labels,
@@ -107,9 +119,9 @@ public:
     ) const;
 
     /// \brief Predict the probabilities of the given data and return the average number of split comparisons.
-    /// \note probs should have the shape (features.shape()[0], num_trees).
+    /// \note probs should have the shape (features.shape()[0], num_classes).
     template <typename PROBS>
-    double predict_proba(
+    double predict_probs(
         FEATURES const & features,
         PROBS & probs,
         int n_threads = -1,
@@ -229,7 +241,7 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
                        "RandomForest::predict(): Number of features in prediction differs from training.");
 
     MultiArray<2, double> probs(Shape2(features.shape()[0], problem_spec_.num_classes_));
-    double const average_split_counts = predict_proba(features, probs, n_threads, tree_indices);
+    double const average_split_counts = predict_probs(features, probs, n_threads, tree_indices);
     for (size_t i = 0; i < (size_t)features.shape()[0]; ++i)
     {
         auto const sub_probs = probs.template bind<0>(i);
@@ -242,24 +254,24 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
 
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
 template <typename PROBS>
-double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_proba(
+double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probs(
     FEATURES const & features,
     PROBS & probs,
     int n_threads,
     std::vector<size_t> tree_indices
 ) const {
     vigra_precondition(features.shape()[0] == probs.shape()[0],
-                       "RandomForest::predict_proba(): Shape mismatch between features and probabilities.");
+                       "RandomForest::predict_probs(): Shape mismatch between features and probabilities.");
     vigra_precondition((size_t)features.shape()[1] == problem_spec_.num_features_,
-                       "RandomForest::predict_proba(): Number of features in prediction differs from training.");
+                       "RandomForest::predict_probs(): Number of features in prediction differs from training.");
     vigra_precondition((size_t)probs.shape()[1] == problem_spec_.num_classes_,
-                       "RandomForest::predict_proba(): Number of labels in probabilities differs from training.");
+                       "RandomForest::predict_probs(): Number of labels in probabilities differs from training.");
 
     // Check the tree indices.
     std::sort(tree_indices.begin(), tree_indices.end());
     tree_indices.erase(std::unique(tree_indices.begin(), tree_indices.end()), tree_indices.end());
     for (auto i : tree_indices)
-        vigra_precondition(i < graph_.numRoots(), "RandomForest::predict_proba(): Tree index out of range.");
+        vigra_precondition(i < graph_.numRoots(), "RandomForest::predict_probs(): Tree index out of range.");
 
     // By default, actual_tree_indices is empty. In that case we want to use all trees.
     if (tree_indices.size() == 0)
@@ -351,7 +363,7 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::leaf_ids_impl(
                        "RandomForest::leaf_ids_impl(): Shape mismatch between features and labels.");
     vigra_precondition(features.shape()[1] == problem_spec_.num_features_,
                        "RandomForest::leaf_ids_impl(): Number of Features in prediction differs from training.");
-    vigra_precondition(from >= 0 && from <= to && to <= features.shape()[0],
+    vigra_precondition(from >= 0 && from <= to && to <= (size_t)features.shape()[0],
                        "RandomForest::leaf_ids_impl(): Indices out of range.");
     vigra_precondition(ids.shape()[1] == graph_.numRoots(),
                        "RandomForest::leaf_ids_impl(): Leaf array has wrong shape.");

@@ -358,7 +358,7 @@ void random_forest_export_HDF5(
         // When a node is created, the indices of the child nodes are unknown.
         // Therefore, they have to be updated once the child nodes are created.
         // The stack holds the node and the topology-index that must be updated.
-        std::stack<std::pair<Node, int> > stack;
+        std::stack<std::pair<Node, std::ptrdiff_t> > stack;
         stack.emplace(root, -1);
         while (!stack.empty())
         {

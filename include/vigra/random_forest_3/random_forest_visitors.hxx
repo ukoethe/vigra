@@ -222,7 +222,7 @@ public:
         typedef typename std::remove_const<LABELS>::type Labels;
         Labels pred(Shape1(1));
         oob_err_ = 0.0;
-        for (size_t i = 0; i < num_instances; ++i)
+        for (size_t i = 0; i < (size_t)num_instances; ++i)
         {
             // Get the indices of the trees where the data points is out of bag.
             std::vector<size_t> tree_indices;
@@ -348,7 +348,7 @@ public:
         MultiArray<1, double> oob_right(Shape1(rf.num_classes()+1), 0.0);
         Labels pred(( Shape1(num_oobs) )); // extra parantheses due to "most vexing parse"
         rf.predict(feats, pred, 1);
-        for (size_t i = 0; i < labs.size(); ++i)
+        for (size_t i = 0; i < (size_t)labs.size(); ++i)
         {
             if (labs(i) == pred(i))
             {
@@ -359,7 +359,7 @@ public:
 
         // Get out-of-bag success rate after permuting the j'th dimension.
         UniformIntRandomFunctor<MersenneTwister> randint;
-        for (size_t j = 0; j < num_features; ++j)
+        for (size_t j = 0; j < (size_t)num_features; ++j)
         {
             MultiArray<1, FeatureType> backup(( Shape1(num_oobs) ));
             backup = feats.template bind<1>(j);
@@ -373,7 +373,7 @@ public:
 
                 // Get the out-of-bag success rate after permuting.
                 rf.predict(feats, pred, 1);
-                for (size_t i = 0; i < labs.size(); ++i)
+                for (size_t i = 0; i < (size_t)labs.size(); ++i)
                 {
                     if (labs(i) == pred(i))
                     {
@@ -480,7 +480,7 @@ private:
         features_out.reshape(Shape2(num_oobs, num_features));
         labels_out.reshape(Shape1(num_oobs));
         size_t current = 0;
-        for (size_t i = 0; i < num_instances; ++i)
+        for (size_t i = 0; i < (size_t)num_instances; ++i)
         {
             if (!is_in_bag_[i])
             {

@@ -35,8 +35,6 @@
 #ifndef VIGRA_RF3_HXX
 #define VIGRA_RF3_HXX
 
-
-
 #include <vector>
 #include <set>
 #include <map>
@@ -51,14 +49,21 @@
 #include "random_forest_3/random_forest_common.hxx"
 #include "random_forest_3/random_forest_visitors.hxx"
 
-
-
 namespace vigra
 {
+
+/** \addtogroup MachineLearning
+**/
+//@{
+
+/**  \brief Random forest version 3.
+
+    This namespace contains VIGRA's 3rd version of the random forest classification/regression algorithm.
+    This version is much easier to customize than previous versions because it consequently separates
+    algorithms from the forest representation, following the design of the LEMON graph library.
+*/
 namespace rf3
 {
-
-
 
 template <typename FEATURES, typename LABELS>
 struct DefaultRF
@@ -68,8 +73,6 @@ struct DefaultRF
                          LessEqualSplitTest<typename FEATURES::value_type>,
                          ArgMaxVectorAcc<double> > type;
 };
-
-
 
 namespace detail
 {
@@ -159,7 +162,7 @@ void random_forest_single_tree(
     typedef typename RF::Node Node;
     typedef typename RF::ACC ACC;
     typedef typename ACC::input_type ACCInputType;
-    
+
     static_assert(std::is_same<SplitTests, typename RF::SplitTests>::value,
                   "random_forest_single_tree(): Wrong Random Forest class.");
 
@@ -244,7 +247,7 @@ void random_forest_single_tree(
         for (auto it = begin; it != end; ++it)
             if (instance_weights[*it] > 1e-10)
                 used_instances.push_back(*it);
- 
+
         // Find the best split.
         dim_sampler.sample();
         SCORER score(priors);
@@ -359,7 +362,7 @@ template <typename FEATURES,
           typename SCORER,
           typename STOP,
           typename RANDENGINE>
-typename DefaultRF<FEATURES, LABELS>::type
+RandomForest<FEATURES, LABELS>
 random_forest_impl(
         FEATURES const & features,
         LABELS const & labels,
@@ -372,7 +375,7 @@ random_forest_impl(
     typedef LABELS Labels;
     // typedef typename Features::value_type FeatureType;
     typedef typename Labels::value_type LabelType;
-    typedef typename DefaultRF<FEATURES, LABELS>::type RF;
+    typedef RandomForest<FEATURES, LABELS> RF;
 
     ProblemSpec<LabelType> pspec;
     pspec.num_instances(features.shape()[0])
@@ -395,7 +398,7 @@ random_forest_impl(
         label_map[distinct_labels[i]] = i;
     }
     MultiArray<1, size_t> transformed_labels(Shape1(labels.size()));
-    for (size_t i = 0; i < labels.size(); ++i)
+    for (size_t i = 0; i < (size_t)labels.size(); ++i)
     {
         transformed_labels(i) = label_map[labels(i)];
     }
@@ -414,7 +417,7 @@ random_forest_impl(
         n_threads = options.n_threads_;
     else if (options.n_threads_ == -1)
         n_threads = std::thread::hardware_concurrency();
-        
+
     // Use the global random engine to create seeds for the random engines that run in the threads.
     UniformIntRandomFunctor<RANDENGINE> rand_functor(randengine);
     std::set<UInt32> seeds;
@@ -477,7 +480,8 @@ random_forest_impl(
 
 /// \brief Get the stop criterion from the option object and pass it as template argument.
 template <typename FEATURES, typename LABELS, typename VISITOR, typename SCORER, typename RANDENGINE>
-typename DefaultRF<FEATURES, LABELS>::type
+inline
+RandomForest<FEATURES, LABELS>
 random_forest_impl0(
         FEATURES const & features,
         LABELS const & labels,
@@ -495,15 +499,84 @@ random_forest_impl0(
         return random_forest_impl<FEATURES, LABELS, VISITOR, SCORER, PurityStop, RANDENGINE>(features, labels, options, visitor, PurityStop(), randengine);
 }
 
-
-
 } // namespace detail
 
+/********************************************************/
+/*                                                      */
+/*                     random_forest                    */
+/*                                                      */
+/********************************************************/
 
+/** \brief Train a \ref vigra::rf3::RandomForest classifier.
 
-/// \brief Get the scorer from the option object and pass it as template argument.
+    This factory function constructs a \ref vigra::rf3::RandomForest classifier and trains
+    it for the given features and labels. They must be given as a matrix with shape
+    <tt>num_instances x num_features</tt> and an array with length <tt>num_instances</tt> respectively.
+    Most training options (such as number of trees in the forest, termination and split criteria,
+    and number of threads for parallel training) are specified via an option object of type \ref vigra::rf3::RandomForestOptions. Optional visitors are typically used to compute the
+    out-of-bag error of the classifier (use \ref vigra::rf3::OOBError) and estimate variable importance
+    on the basis of the Gini gain (use \ref vigra::rf3::VariableImportance). You can also provide
+    a specific random number generator instance, which is especially useful when you want to
+    enforce deterministic algorithm behavior during debugging.
+
+    <b> Declaration:</b>
+
+    \code
+    namespace vigra { namespace rf3 {
+        template <typename FEATURES,
+                  typename LABELS,
+                  typename VISITOR = vigra::rf3::RFStopVisiting,
+                  typename RANDENGINE = vigra::MersenneTwister>
+        vigra::rf3::RandomForest<FEATURES, LABELS>
+        random_forest(
+                FEATURES const & features,
+                LABELS const & labels,
+                vigra::rf3::RandomForestOptions const & options = vigra::rf3::RandomForestOptions(),
+                VISITOR visitor = vigra::rf3::RFStopVisiting(),
+                RANDENGINE & randengine = vigra::MersenneTwister::global()
+        );
+    }}
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/random_forest_3.hxx\><br>
+    Namespace: vigra::rf3
+
+    \code
+    using namespace vigra;
+
+    int num_instances = ...;
+    int num_features  = ...;
+    MultiArray<2, double> train_features(Shape2(num_instances, num_features));
+    MultiArray<1, int>    train_labels(Shape1(num_instances));
+    ... // fill training data matrices
+
+    rf3::OOBError oob; // visitor to compute the out-of-bag error
+    auto rf = random_forest(train_features, train_labels,
+                            rf3::RandomForestOptions().tree_count(100)
+                                                      .features_per_node(rf3::RF_SQRT)
+                                                      .n_threads(4)
+                            rf3::create_visitor(oob));
+
+    std::cout << "Random forest training finished with out-of-bag error " << oob.oob_err_ << "\n";
+
+    int num_test_instances = ...;
+    MultiArray<2, double> test_features(Shape2(num_test_instances, num_features));
+    MultiArray<1, int>    test_labels(Shape1(num_test_instances));
+    ... // fill feature matrix for test data
+
+    rf.predict(test_features, test_labels);
+
+    for(int i=0; i<num_test_instances; ++i)
+        std::cerr << "Prediction for test instance " << i << ": " << test_labels(i) << "\n";
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void random_forest)
+
 template <typename FEATURES, typename LABELS, typename VISITOR, typename RANDENGINE>
-typename DefaultRF<FEATURES, LABELS>::type
+inline
+RandomForest<FEATURES, LABELS>
 random_forest(
         FEATURES const & features,
         LABELS const & labels,
@@ -511,6 +584,9 @@ random_forest(
         VISITOR visitor,
         RANDENGINE & randengine
 ){
+    typedef detail::GeneralScorer<GiniScore> GiniScorer;
+    typedef detail::GeneralScorer<EntropyScore> EntropyScorer;
+    typedef detail::GeneralScorer<KolmogorovSmirnovScore> KSDScorer;
     if (options.split_ == RF_GINI)
         return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, GiniScorer, RANDENGINE>(features, labels, options, visitor, randengine);
     else if (options.split_ == RF_ENTROPY)
@@ -518,11 +594,12 @@ random_forest(
     else if (options.split_ == RF_KSD)
         return detail::random_forest_impl0<FEATURES, LABELS, VISITOR, KSDScorer, RANDENGINE>(features, labels, options, visitor, randengine);
     else
-        throw std::runtime_error("random_forest(): Unknown split.");
+        throw std::runtime_error("random_forest(): Unknown split criterion.");
 }
 
 template <typename FEATURES, typename LABELS, typename VISITOR>
-typename DefaultRF<FEATURES, LABELS>::type
+inline
+RandomForest<FEATURES, LABELS>
 random_forest(
         FEATURES const & features,
         LABELS const & labels,
@@ -534,7 +611,8 @@ random_forest(
 }
 
 template <typename FEATURES, typename LABELS>
-typename DefaultRF<FEATURES, LABELS>::type
+inline
+RandomForest<FEATURES, LABELS>
 random_forest(
         FEATURES const & features,
         LABELS const & labels,
@@ -545,7 +623,8 @@ random_forest(
 }
 
 template <typename FEATURES, typename LABELS>
-typename DefaultRF<FEATURES, LABELS>::type
+inline
+RandomForest<FEATURES, LABELS>
 random_forest(
         FEATURES const & features,
         LABELS const & labels
@@ -553,9 +632,10 @@ random_forest(
     return random_forest(features, labels, RandomForestOptions());
 }
 
-
-
 } // namespace rf3
+
+//@}
+
 } // namespace vigra
 
 #endif

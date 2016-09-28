@@ -224,8 +224,8 @@ struct RandomForestTests
         
         // Create some test data.
         FeatureType test_x_data[] = {
-            0.2, 0.4, 0.6, 0.8,  0.2, 0.4, 0.6, 0.8,  0.2, 0.4, 0.6, 0.8,  0.2, 0.4, 0.6, 0.8,
-            0.2, 0.2, 0.2, 0.2,  0.4, 0.4, 0.4, 0.4,  0.6, 0.6, 0.6, 0.6,  0.8, 0.8, 0.8, 0.8
+            0.2f, 0.4f, 0.6f, 0.8f,  0.2f, 0.4f, 0.6f, 0.8f,  0.2f, 0.4f, 0.6f, 0.8f,  0.2f, 0.4f, 0.6f, 0.8f,
+            0.2f, 0.2f, 0.2f, 0.2f,  0.4f, 0.4f, 0.4f, 0.4f,  0.6f, 0.6f, 0.6f, 0.6f,  0.8f, 0.8f, 0.8f, 0.8f
         };
         Features test_x(Shape2(16, 2), test_x_data);
         LabelType test_y_data[] = {
