@@ -40,12 +40,8 @@
 
 #include "iteratorfacade.hxx"
 
-
-
 namespace vigra
 {
-
-
 
 namespace detail
 {
@@ -70,9 +66,18 @@ namespace detail
 }
 
 
+/********************************************************/
+/*                                                      */
+/*                     FilterIterator                   */
+/*                                                      */
+/********************************************************/
 
 /**
- * @brief This iterator creates a view of another iterator and skips elements that do not fulfill a given predicate.
+ * @brief This iterator creates a view of another iterator and skips elements that
+ *        do not fulfill a given predicate.
+ *
+ * The iterator is compatible to an STL forward iterator as defined in the C++ standard.
+ *
  * @note The equality comparison only checks, whether the iterators point to the same place. The predicate is not checked.
  */
 template <typename PREDICATE, typename ITER>
@@ -94,6 +99,8 @@ public:
     typedef typename Parent::reference reference;
     typedef reference const const_reference;
 
+    /// Construct a filter iterator with the given predicate for
+    /// a base iterator range \a iter to \a end.
     FilterIterator(Predicate pred, Iter iter, Iter end = Iter())
         :
         pred_(pred),

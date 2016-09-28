@@ -36,55 +36,103 @@
 #define VIGRA_BINARY_FOREST_HXX
 
 #include <vector>
-
 #include "graphs.hxx"
-
-
 
 namespace vigra
 {
 
+/** \addtogroup GraphDataStructures
+*/
+//@{
 
+/********************************************************/
+/*                                                      */
+/*                      BinaryForest                    */
+/*                                                      */
+/********************************************************/
 
 /**
- * @brief BinaryForest is binary directed acyclic graph, meaning a graph that consists of multiple binary trees.
- * 
- * @note If there is an arc from node u to node v, then the arc id is 2*id(u) if v is the left child and 2*id(u)+1 if v is the right child.
+ * @brief BinaryForest stores a collection of rooted binary trees.
+ *
+ * Each connected component of the BinaryForest is thus a tree, and all edges are
+ * directed away from the root node of the corresponding tree.
+ *
+ * @note If there is an arc from node <tt>u</tt> to node <tt>v</tt>, then the
+ * arc ID is <tt>2*id(u)</tt> when <tt>v</tt> is the left child and <tt>2*id(u)+1</tt>
+ * when <tt>v</tt> is the right child.
  */
 class BinaryForest
 {
 public:
 
     typedef Int64 index_type;
+    /// Node descriptor type of the present graph.
     typedef detail::NodeDescriptor<index_type> Node;
+    /// Arc descriptor type of the present graph.
     typedef detail::ArcDescriptor<index_type> Arc;
 
+    /// @brief Create an empty forest.
     BinaryForest();
 
+    /// @brief Add a new node (its node ID will be selected automatically).
     Node addNode();
+    /// @brief Add a new arc from node \a u to node \a v.
+    /// The arc ID is <tt>2*id(u)</tt> if \a v is the left child of \a u, <tt>2*id(u)+1</tt> otherwise.
     Arc addArc(Node const & u, Node const & v);
+    /// @brief Check if \a node exists.
     bool valid(Node const & node) const;
+    /// @brief Check if \a arc exists.
     bool valid(Arc const & arc) const;
+    /// @brief Find start node of \a arc.
     Node source(Arc const & arc) const;
+    /// @brief Find end node of \a arc.
     Node target(Arc const & arc) const;
+    /// @brief Get ID for node descriptor \a node.
     index_type id(Node const & node) const;
+    /// @brief Get ID for arc descriptor \a arc.
     index_type id(Arc const & arc) const;
+    /// @brief Get node descriptor for \a id.
     Node nodeFromId(index_type const & id) const;
+    /// @brief Get arc descriptor for \a id.
     Arc arcFromId(index_type const & id) const;
+    /// @brief Return the highest existing node ID.
     index_type maxNodeId() const;
+    /// @brief Return the highest possible arc ID (equivalent to <tt>2*maxNodeId() + 1</tt>).
     index_type maxArcId() const;
+    /// @brief Return the number of nodes (equivalent to <tt>maxNodeId()+1</tt>).
     size_t numNodes() const;
+    /// @brief Return the number of arcs.
+    ///        Always less than <tt>maxArcId()</tt> because not all arcs actually exist.
     size_t numArcs() const;
+    /// @brief Return the number of incoming edges of \a node.
+    ///        <tt>0</tt> for a root node, <tt>1</tt> otherwise.
     size_t inDegree(Node const & node) const;
+    /// @brief Return the number of outgoing edges of \a node.
+    ///        <tt>0</tt> for a leaf node, <tt>1</tt> or <tt>2</tt> otherwise.
     size_t outDegree(Node const & node) const;
+    /// @brief Return the number of parents of \a node (equivalent to <tt>inDegree()</tt>).
     size_t numParents(Node const & node) const;
+    /// @brief Return the number of children of \a node (equivalent to <tt>outDegree()</tt>).
     size_t numChildren(Node const & node) const;
+    /// @brief Return the number of trees in the forest.
     size_t numRoots() const;
+    /// @brief Create node cescriptor for ID \a i, or <tt>lemon::INVALID</tt> if
+    ///        \a i is not a valid ID.
     Node getNode(size_t i) const;
+    /// @brief Get the parent node descriptor of \a node, or <tt>lemon::INVALID</tt>
+    ///        if \a node is a root or \a i is non-zero.
     Node getParent(Node const & node, size_t i = 0) const;
+    /// @brief Get child number \a i of \a node.
+    ///        Returns the left child if <tt>i=0</tt>, the right child if <tt>i=1</tt>,
+    ///        and <tt>lemon::INVALID</tt> for other values of \a i or when the respective
+    ///        is undefined.
     Node getChild(Node const & node, size_t i = 0) const;
+    /// @brief Get the root node descriptor of tree \a i in the forest, or
+    ///        <tt>lemon::INVALID</tt> if \a i is invalid.
     Node getRoot(size_t i = 0) const;
-    void merge(BinaryForest const & other);
+    /// @brief Merge two forests and increase the IDs of \a other to avoid ID clashes.
+    ///        The function returns the offset that has been added to these IDs.
+    size_t merge(BinaryForest const & other);
 
 private:
 
@@ -110,7 +158,7 @@ private:
 
 
 inline BinaryForest::BinaryForest()
-    : 
+    :
     nodes_(),
     root_nodes_(),
     num_arcs_(0)
@@ -328,7 +376,7 @@ inline BinaryForest::Node BinaryForest::getRoot(
         return Node(root_nodes_[i]);
 }
 
-inline void BinaryForest::merge(
+inline size_t BinaryForest::merge(
     BinaryForest const & other
 ){
     num_arcs_ += other.num_arcs_;
@@ -351,12 +399,11 @@ inline void BinaryForest::merge(
     {
         root_nodes_[i] += offset;
     }
+    return offset;
 }
 
-
+//@}
 
 } // namespace vigra
-
-
 
 #endif
