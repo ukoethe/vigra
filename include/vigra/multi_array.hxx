@@ -471,12 +471,60 @@ swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 
 /********************************************************/
 /*                                                      */
-/*                     MultiArrayView                   */
+/*       namespace multi_math forward declarations      */
 /*                                                      */
 /********************************************************/
 
-// forward declarations
+/** \brief Arithmetic and algebraic functions for multi-dimensional arrays.
 
+    \defgroup MultiMathModule vigra::multi_math
+
+    Namespace <tt>vigra::multi_math</tt> holds VIGRA's support for efficient arithmetic and algebraic functions on multi-dimensional arrays (that is, \ref MultiArrayView and its subclasses). All <tt>multi_math</tt> functions operate element-wise. If you need matrix multiplication, use \ref LinearAlgebraModule instead.
+
+    In order to avoid overload ambiguities, multi-array arithmetic must be explicitly activated by
+    \code
+    using namespace vigra::multi_math;
+    \endcode
+    (this should not be done globally, but only in the scope where the functionality is actually used).
+
+    You can then use the standard operators in the expected way:
+    \code
+    MultiArray<2, float> i(Shape2(100, 100)), j(Shape2(100, 100));
+
+    MultiArray<2, float> h  = i + 4.0 * j;
+                         h += (i.transpose() - j) / 2.0;
+    \endcode
+    etc. (supported operators are <tt>+ - * / ! ~ % && || == != &lt; &lt;= &gt; &gt;= &lt;&lt; &gt;&gt; & | ^ = += -= *= /=</tt>, with both scalar and array arguments).
+
+    Algebraic functions are available as well:
+    \code
+    h  = exp(-(sq(i) + sq(j)));
+    h *= atan2(-i, j);
+    \endcode
+    The following functions are implemented: <tt>abs, erf, even, odd, sign, signi, round, roundi, sqrt, sqrti, sq,
+    norm, squaredNorm, gamma, loggamma, exp, log, log10, sin, sin_pi, cos, cos_pi, asin, acos, tan, atan,
+    floor, ceil, conj, real, imag, arg, atan2, pow, fmod, min, max</tt>,
+    provided the array's element type supports the respective function.
+
+    Supported element types currently include the built-in numeric types, \ref TinyVector, \ref RGBValue,
+    <tt>std::complex</tt>, and \ref FFTWComplex.
+
+    In addition, <tt>multi_math</tt> supports a number of functions that reduce arrays to scalars:
+    \code
+    double s = sum<double>(i);  // compute the sum of the elements, using 'double' as accumulator type
+    double p = product<double>(abs(i));  // compute the product of the elements' absolute values
+
+    bool a = any(i < 0.0);  // check if any element of i is negative
+    bool b = all(i > 0.0);  // check if all elements of i are positive
+    \endcode
+
+    Expressions are expanded so that no temporary arrays have to be created. To optimize cache locality,
+    loops are executed in the stride ordering of the left-hand-side array.
+
+    <b>\#include</b> \<vigra/multi_math.hxx\>
+
+    Namespace: vigra::multi_math
+*/
 namespace multi_math {
 
 template <class T>
@@ -609,6 +657,12 @@ struct NormTraits<MultiArray<N, T, A> >
     typedef typename BaseType::SquaredNormType                   SquaredNormType;
     typedef typename BaseType::NormType                          NormType;
 };
+
+/********************************************************/
+/*                                                      */
+/*                     MultiArrayView                   */
+/*                                                      */
+/********************************************************/
 
 /** \brief Base class for, and view to, \ref vigra::MultiArray.
 

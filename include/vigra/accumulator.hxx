@@ -373,7 +373,9 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
 */
 
 
-/** This namespace contains the accumulator classes, fundamental statistics and modifiers. See \ref FeatureAccumulators for examples of usage.
+/** \brief Efficient computation of object statistics.
+
+    This namespace contains the accumulator classes, fundamental statistics and modifiers. See \ref FeatureAccumulators for examples of usage.
 */
 namespace acc {
 
