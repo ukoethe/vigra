@@ -44,70 +44,23 @@
 
 namespace vigra {
 
-/** \defgroup MultiMathModule vigra::multi_math
-
-    Namespace <tt>vigra::multi_math</tt> holds VIGRA's support for efficient arithmetic and algebraic functions on multi-dimensional arrays (that is, \ref MultiArrayView and its subclasses). All <tt>multi_math</tt> functions operate element-wise. If you need matrix multiplication, use \ref LinearAlgebraModule instead.
-    
-    In order to avoid overload ambiguities, multi-array arithmetic must be explicitly activated by
-    \code
-    using namespace vigra::multi_math;
-    \endcode
-    (this should not be done globally, but only in the scope where the functionality is actually used).
-    
-    You can then use the standard operators in the expected way:
-    \code
-    MultiArray<2, float> i(Shape2(100, 100)), j(Shape2(100, 100));
-    
-    MultiArray<2, float> h  = i + 4.0 * j;
-                         h += (i.transpose() - j) / 2.0;
-    \endcode
-    etc. (supported operators are <tt>+ - * / ! ~ % && || == != &lt; &lt;= &gt; &gt;= &lt;&lt; &gt;&gt; & | ^ = += -= *= /=</tt>, with both scalar and array arguments). 
-    
-    Algebraic functions are available as well:
-    \code
-    h  = exp(-(sq(i) + sq(j)));
-    h *= atan2(-i, j);
-    \endcode
-    The following functions are implemented: <tt>abs, erf, even, odd, sign, signi, round, roundi, sqrt, sqrti, sq, 
-    norm, squaredNorm, gamma, loggamma, exp, log, log10, sin, sin_pi, cos, cos_pi, asin, acos, tan, atan, 
-    floor, ceil, conj, real, imag, arg, atan2, pow, fmod, min, max</tt>, 
-    provided the array's element type supports the respective function.
-    
-    Supported element types currently include the built-in numeric types, \ref TinyVector, \ref RGBValue, 
-    <tt>std::complex</tt>, and \ref FFTWComplex.
-
-    In addition, <tt>multi_math</tt> supports a number of functions that reduce arrays to scalars:
-    \code
-    double s = sum<double>(i);  // compute the sum of the elements, using 'double' as accumulator type
-    double p = product<double>(abs(i));  // compute the product of the elements' absolute values
-    
-    bool a = any(i < 0.0);  // check if any element of i is negative
-    bool b = all(i > 0.0);  // check if all elements of i are positive
-    \endcode
-    
-    Expressions are expanded so that no temporary arrays have to be created. To optimize cache locality,
-    loops are executed in the stride ordering of the left-hand-side array.
-    
-    <b>\#include</b> \<vigra/multi_math.hxx\>
-
-    Namespace: vigra::multi_math
-*/
+// namespace documentation is in multi_array.hxx
 namespace multi_math {
 
 template <class ARG>
 struct MultiMathOperand
 {
     typedef typename ARG::result_type result_type;
-    
+
     static const int ndim = ARG::ndim;
-    
+
     MultiMathOperand(ARG const & a)
     : arg_(a)
     {}
-        
+
     // Check if all arrays involved in the expression have compatible shapes
     // (including transparent expansion of singleton axes).
-    // 's' is the shape of the LHS array. If 's' is zero (i.e. the LHS is 
+    // 's' is the shape of the LHS array. If 's' is zero (i.e. the LHS is
     // not yet initialized), it is set to the maximal RHS shape.
     //
     template <class SHAPE>
@@ -115,45 +68,45 @@ struct MultiMathOperand
     {
         return arg_.checkShape(s);
     }
-    
+
     // increment the pointer of all RHS arrays along the given 'axis'
     void inc(unsigned int axis) const
     {
         arg_.inc(axis);
     }
-    
+
     // reset the pointer of all RHS arrays along the given 'axis'
     void reset(unsigned int axis) const
     {
         arg_.reset(axis);
     }
-    
+
     // get the value of the expression at the current pointer location
     result_type operator*() const
     {
         return *arg_;
     }
-    
+
     // get the value of the expression at an offset of the current pointer location
     template <class SHAPE>
     result_type operator[](SHAPE const & s) const
     {
         return arg_[s];
     }
-    
+
     ARG arg_;
 };
 
 template <unsigned int N, class T, class C>
 struct MultiMathOperand<MultiArrayView<N, T, C> >
 {
-    typedef MultiMathOperand AllowOverload;    
+    typedef MultiMathOperand AllowOverload;
     typedef typename MultiArrayShape<N>::type Shape;
 
     typedef T result_type;
-    
+
     static const int ndim = (int)N;
-    
+
     MultiMathOperand(MultiArrayView<N, T, C> const & a)
     : p_(a.data()),
       shape_(a.shape()),
@@ -164,7 +117,7 @@ struct MultiMathOperand<MultiArrayView<N, T, C> >
             if(shape_[k] == 1)
                 strides_[k] = 0;
     }
-    
+
     bool checkShape(Shape & s) const
     {
         // support:
@@ -187,27 +140,27 @@ struct MultiMathOperand<MultiArrayView<N, T, C> >
         }
         return true;
     }
-    
+
     T const & operator[](Shape const & s) const
     {
         return p_[dot(s, strides_)];
     }
-    
+
     void inc(unsigned int axis) const
     {
         p_ += strides_[axis];
     }
-    
+
     void reset(unsigned int axis) const
     {
         p_ -= shape_[axis]*strides_[axis];
     }
-    
+
     result_type operator*() const
     {
         return *p_;
     }
-    
+
     mutable T const * p_;
     Shape shape_, strides_;
 };
@@ -217,7 +170,7 @@ struct MultiMathOperand<MultiArray<N, T, A> >
 : public MultiMathOperand<MultiArrayView<N, T, UnstridedArrayTag> >
 {
     typedef MultiMathOperand AllowOverload;
-    
+
     MultiMathOperand(MultiArray<N, T, A> const & a)
     : MultiMathOperand<MultiArrayView<N, T, UnstridedArrayTag> >(a)
     {}
@@ -228,36 +181,36 @@ struct MultiMathScalarOperand
 {
     typedef MultiMathOperand<T> AllowOverload;
     typedef T result_type;
-    
+
     static const int ndim = 0;
-    
+
     MultiMathScalarOperand(T const & v)
     : v_(v)
     {}
-    
+
     template <class SHAPE>
     bool checkShape(SHAPE const &) const
     {
         return true;
     }
-    
+
     template <class SHAPE>
     T const & operator[](SHAPE const &) const
     {
         return v_;
     }
-    
+
     void inc(unsigned int /* axis */) const
     {}
-    
+
     void reset(unsigned int /* axis */) const
     {}
-    
+
     T const & operator*() const
     {
         return v_;
     }
-    
+
     T v_;
 };
 
@@ -304,41 +257,41 @@ template <class O, class F>
 struct MultiMathUnaryOperator
 {
     typedef typename F::template Result<typename O::result_type>::type result_type;
-    
+
     static const int ndim = O::ndim;
-                                    
+
     MultiMathUnaryOperator(O const & o)
     : o_(o)
     {}
-    
+
     template <class SHAPE>
     bool checkShape(SHAPE & s) const
     {
         return o_.checkShape(s);
     }
-    
+
     //
     void inc(unsigned int axis) const
     {
         o_.inc(axis);
     }
-    
+
     void reset(unsigned int axis) const
     {
         o_.reset(axis);
     }
-    
+
     template <class POINT>
     result_type operator[](POINT const & p) const
     {
         return f_(o_[p]);
     }
-    
+
     result_type operator*() const
     {
         return f_(*o_);
     }
-    
+
     O o_;
     F f_;
 };
@@ -417,7 +370,7 @@ VIGRA_MULTIMATH_UNARY_OPERATOR(Roundi, vigra::roundi, roundi, int)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Sqrti, vigra::sqrti, sqrti, T)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Sq, vigra::sq, sq, typename NumericTraits<T>::Promote)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Norm, vigra::norm, norm, typename NormTraits<T>::NormType)
-VIGRA_MULTIMATH_UNARY_OPERATOR(SquaredNorm, vigra::squaredNorm, squaredNorm, 
+VIGRA_MULTIMATH_UNARY_OPERATOR(SquaredNorm, vigra::squaredNorm, squaredNorm,
                                typename NormTraits<T>::SquaredNormType)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Sin_pi, vigra::sin_pi, sin_pi, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Cos_pi, vigra::cos_pi, cos_pi, VIGRA_REALPROMOTE)
@@ -457,43 +410,43 @@ struct MultiMathBinaryOperator
 {
     typedef typename F::template Result<typename O1::result_type,
                                          typename O2::result_type>::type result_type;
-                                    
+
     static const int ndim = O1::ndim > O2::ndim ? O1::ndim : O2::ndim;
-    
+
     MultiMathBinaryOperator(O1 const & o1, O2 const & o2)
     : o1_(o1),
       o2_(o2)
     {}
-    
+
     template <class SHAPE>
     bool checkShape(SHAPE & s) const
     {
         return o1_.checkShape(s) && o2_.checkShape(s);
     }
-    
+
     template <class POINT>
     result_type operator[](POINT const & p) const
     {
         return f_(o1_[p], o2_[p]);
     }
-    
+
     void inc(unsigned int axis) const
     {
         o1_.inc(axis);
         o2_.inc(axis);
     }
-    
+
     void reset(unsigned int axis) const
     {
         o1_.reset(axis);
         o2_.reset(axis);
     }
-    
+
     result_type operator*() const
     {
         return f_(*o1_, *o2_);
     }
-    
+
     O1 o1_;
     O2 o2_;
     F f_;
@@ -502,7 +455,7 @@ struct MultiMathBinaryOperator
 
 // In the sequel, the nested type 'MultiMathOperand<T>::AllowOverload'
 // ensures that template functions only participate in overload
-// resolution when this type is defined, i.e. when T is a number 
+// resolution when this type is defined, i.e. when T is a number
 // or array type. It thus prevents 'ambiguous overload' errors.
 //
 #define VIGRA_MULTIMATH_BINARY_OPERATOR(NAME, FCT, OPNAME, SEP, RESTYPE) \
@@ -676,7 +629,7 @@ namespace math_detail {
 
 // We pass 'strideOrder' to the recursion in order to make sure
 // that the inner loop iterates over the output's major axis.
-// Of course, this does not help when the RHS arrays are ordered 
+// Of course, this does not help when the RHS arrays are ordered
 // differently -- maybe it is better to find the most common order
 // among all arguments (both RHS and LHS)?
 //
@@ -684,9 +637,9 @@ template <unsigned int N, class Assign>
 struct MultiMathExec
 {
     enum { LEVEL = N-1 };
-    
+
     template <class T, class Shape, class Expression>
-    static void exec(T * data, Shape const & shape, Shape const & strides, 
+    static void exec(T * data, Shape const & shape, Shape const & strides,
                      Shape const & strideOrder, Expression const & e)
     {
         MultiArrayIndex axis = strideOrder[LEVEL];
@@ -703,9 +656,9 @@ template <class Assign>
 struct MultiMathExec<1, Assign>
 {
     enum { LEVEL = 0 };
-    
+
     template <class T, class Shape, class Expression>
-    static void exec(T * data, Shape const & shape, Shape const & strides, 
+    static void exec(T * data, Shape const & shape, Shape const & strides,
                      Shape const & strideOrder, Expression const & e)
     {
         MultiArrayIndex axis = strideOrder[LEVEL];
@@ -767,7 +720,7 @@ template <unsigned int N, class Assign>
 struct MultiMathReduce
 {
     enum { LEVEL = N-1 };
-    
+
     template <class T, class Shape, class Expression>
     static void exec(T & t, Shape const & shape, Expression const & e)
     {
@@ -783,7 +736,7 @@ template <class Assign>
 struct MultiMathReduce<1, Assign>
 {
     enum { LEVEL = 0 };
-    
+
     template <class T, class Shape, class Expression>
     static void exec(T & t, Shape const & shape, Expression const & e)
     {
@@ -818,8 +771,8 @@ struct MultiMathReduceAny
 
 template <class U, class T>
 U
-sum(MultiMathOperand<T> const & v, U res = NumericTraits<U>::zero()) 
-{ 
+sum(MultiMathOperand<T> const & v, U res = NumericTraits<U>::zero())
+{
     static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
@@ -829,15 +782,15 @@ sum(MultiMathOperand<T> const & v, U res = NumericTraits<U>::zero())
 
 template <class U, unsigned int N, class T, class S>
 U
-sum(MultiArrayView<N, T, S> const & v, U res = NumericTraits<U>::zero()) 
-{ 
+sum(MultiArrayView<N, T, S> const & v, U res = NumericTraits<U>::zero())
+{
     return v.template sum<U>() + res;
 }
 
 template <class U, class T>
 U
-product(MultiMathOperand<T> const & v, U res = NumericTraits<U>::one()) 
-{ 
+product(MultiMathOperand<T> const & v, U res = NumericTraits<U>::one())
+{
     static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
@@ -847,15 +800,15 @@ product(MultiMathOperand<T> const & v, U res = NumericTraits<U>::one())
 
 template <class U, unsigned int N, class T, class S>
 U
-product(MultiArrayView<N, T, S> const & v, U res = NumericTraits<U>::one()) 
-{ 
+product(MultiArrayView<N, T, S> const & v, U res = NumericTraits<U>::one())
+{
     return v.template product<U>() * res;
 }
 
 template <class T>
 bool
-all(MultiMathOperand<T> const & v) 
-{ 
+all(MultiMathOperand<T> const & v)
+{
     static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
@@ -866,8 +819,8 @@ all(MultiMathOperand<T> const & v)
 
 template <class T>
 bool
-any(MultiMathOperand<T> const & v) 
-{ 
+any(MultiMathOperand<T> const & v)
+{
     static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);

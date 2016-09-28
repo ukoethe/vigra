@@ -519,7 +519,7 @@ class RandomForestOptions
 };
 
 
-/** \brief problem types
+/* \brief problem types
  */
 enum Problem_t{REGRESSION, CLASSIFICATION, CHECKLATER};
 

@@ -1,0 +1,1 @@
+VIGRA_COPY_TEST_DATA(rf.h5)

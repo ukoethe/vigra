@@ -46,6 +46,7 @@
 #include <string>
 #include <sstream>
 #include <cctype>
+#include <tuple>
 
 /*! \file */
 
@@ -216,5 +217,105 @@ ostream & operator<<(ostream & s, std::pair<T1, T2> const & p)
 }
 
 }
+
+namespace vigra
+{
+namespace detail
+{
+    template <typename TPL, size_t N, typename FUNCTOR>
+    struct for_each_in_tuple_impl
+    {
+        typedef for_each_in_tuple_impl<TPL, N-1, FUNCTOR> ForEachRecursion;
+        
+        void operator()(TPL && t, FUNCTOR && f) const
+        {
+            ForEachRecursion()(std::forward<TPL>(t), std::forward<FUNCTOR>(f));
+            f(std::get<N-1>(std::forward<TPL>(t)));
+        }
+    };
+    
+    template <typename TPL, typename FUNCTOR>
+    struct for_each_in_tuple_impl<TPL, 0, FUNCTOR>
+    {
+        void operator()(TPL && t, FUNCTOR && f) const
+        {}
+    };
+} // namespace detail
+
+/**
+ * The for_each_in_tuple function calls the functor f on all elements of the tuple t.
+ * For each element type in the tuple, the functor must have an appropriate overload of operator().
+ * 
+ * Example:
+ * \code
+ * #include <iostream>
+ * #include <tuple>
+ * #include <vigra/utilities.hxx>
+ * 
+ * struct print
+ * {
+ *     template <typename T>
+ *     void operator()(T const & t) const
+ *     {
+ *         std::cout << t << std::endl;
+ *     }
+ * };
+ * 
+ * struct add_one
+ * {
+ *     template <typename T>
+ *     void operator()(T & t) const
+ *     {
+ *         t += 1;
+ *     }
+ * };
+ * 
+ * int main()
+ * {
+ *     std::tuple<int, double, size_t> tpl(-5, 0.4, 10);
+ *     vigra::for_each_in_tuple(tpl, add_one());
+ *     vigra::for_each_in_tuple(tpl, print());
+ * }
+ * \endcode
+ */
+template <typename TPL, typename FUNCTOR>
+void for_each_in_tuple(TPL && t, FUNCTOR && f)
+{
+    typedef typename std::decay<TPL>::type UNQUALIFIED_TPL;
+    typedef detail::for_each_in_tuple_impl<TPL, std::tuple_size<UNQUALIFIED_TPL>::value, FUNCTOR> ForEachImpl;
+    
+    ForEachImpl()(std::forward<TPL>(t), std::forward<FUNCTOR>(f));
+}
+
+} // namespace vigra
+
+/** \page Utilities Utilities
+    Basic helper functionality needed throughout.
+
+    <UL style="list-style-image:url(documents/bullet.gif)">
+    <LI> \ref vigra::ArrayVector
+         <BR>&nbsp;&nbsp;&nbsp;<em>replacement for std::vector (always uses consecutive memory)</em>
+    <LI> \ref vigra::Any
+         <BR>&nbsp;&nbsp;&nbsp;<em>typesafe storage of arbitrary values</em>
+    <LI> \ref vigra::BucketQueue and \ref vigra::MappedBucketQueue
+         <BR>&nbsp;&nbsp;&nbsp;<em>efficient priority queues for integer priorities</em>
+    <LI> \ref RangesAndPoints
+         <BR>&nbsp;&nbsp;&nbsp;<em>2-D and N-D positions, extents, and boxes</em>
+    <LI> \ref PixelNeighborhood
+         <BR>&nbsp;&nbsp;&nbsp;<em>4- and 8-neighborhood definitions and circulators</em>
+    <LI> \ref VoxelNeighborhood
+         <BR>&nbsp;&nbsp;&nbsp;<em>6- and 26-neighborhood definitions and circulators</em>
+    <LI> \ref vigra::IteratorAdaptor
+         <BR>&nbsp;&nbsp;&nbsp;<em>Quickly create STL-compatible 1D iterator adaptors</em>
+    <LI> \ref TupleTypes
+         <BR>&nbsp;&nbsp;&nbsp;<em>pair, triple, tuple4, tuple5</em>
+    <LI> \ref MathConstants
+         <BR>&nbsp;&nbsp;&nbsp;<em>M_PI, M_SQRT2</em>
+    <LI> \ref TimingMacros
+         <BR>&nbsp;&nbsp;&nbsp;<em>Macros for taking execution speed measurements</em>
+    <LI> \ref VIGRA_FINALLY
+         <BR>&nbsp;&nbsp;&nbsp;<em>Emulation of the 'finally' keyword from Python</em>
+    </UL>
+*/
 
 #endif // VIGRA_BASICS_HXX
