@@ -733,8 +733,6 @@ struct FloatConvexPolytopeTest
         }
     }
 
-    /* Should also be replaced by a deterministic version
-
     void testAddNonExtremeVertex2D()
     {
         const int N = 1000;
@@ -814,7 +812,6 @@ struct FloatConvexPolytopeTest
             }
         }
     }
-    */
 
     double eps_;
 };
