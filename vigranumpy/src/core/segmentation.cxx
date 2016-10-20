@@ -57,6 +57,7 @@
 #include <cmath>
 #include <unordered_set>
 #include <unordered_map>
+#include <algorithm>
 
 #include <boost/python/stl_iterator.hpp>
 
@@ -1152,7 +1153,7 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
 */
 template <class VoxelType, unsigned int NDIM>
 NumpyAnyArray
-pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src)
+pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src, bool sort=true)
 {
     std::unordered_set<VoxelType> labelset;
     auto f = [&labelset](VoxelType px) { labelset.insert(px); };
@@ -1161,6 +1162,11 @@ pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src)
     NumpyArray<1, VoxelType> result;
     result.reshape( Shape1(labelset.size()) );
     std::copy( labelset.begin(), labelset.end(), result.begin() );
+
+    if (sort)
+    {
+        std::sort( result.begin(), result.end() );
+    }
     return result;
 }
 
@@ -1590,11 +1596,11 @@ void defineSegmentation()
         "\n");
 
     multidef("unique",
-        pyUnique<1,5,npy_uint8, npy_uint32, npy_uint64>(),
-        (arg("arr")),
+        pyUnique<1,5,npy_uint8, npy_uint32, npy_uint64, npy_int64>(),
+        (arg("arr"), arg("sort")=true),
         "Find unique values in the given label array.\n"
-        "Result is not sorted.\n"
-        "Faster then numpy.unique().\n");
+        "If ``sort`` is True, then the output is sorted.\n"
+        "Much faster then ``numpy.unique()``.\n");
 
     //-- 3D relabelConsecutive
     def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint32, npy_uint32>),

@@ -83,8 +83,8 @@ def test_applyMapping():
 
 def _impl_test_unique(dtype):
     a = numpy.array([2,3,5,7,11,13,17,19,23,29] + [2,3,5,7,11,13,17,19,23,29], dtype=dtype)
-    u = vigra.analysis.unique(a)
-    assert set(u) == set([2,3,5,7,11,13,17,19,23,29])
+    u = vigra.analysis.unique(a, sort=True)
+    assert (u == [2,3,5,7,11,13,17,19,23,29]).all()
 
 def test_unique():
     _impl_test_unique(numpy.uint8)
