@@ -126,5 +126,25 @@ def test_relabelConsecutive():
     _impl_relabelConsecutive(numpy.uint32)
     _impl_relabelConsecutive(numpy.uint64)
 
+def test_relabelConsecutive_keep_zeros():
+    a = numpy.arange(1,10, dtype=numpy.uint8)
+    a[1::2] = 0 # replace even numbers with zeros
+
+    # Check keep_zeros=True
+    consecutive, maxlabel, mapping = vigra.analysis.relabelConsecutive(a, start_label=100, keep_zeros=True)
+    assert (consecutive[1::2] == 0).all(), \
+        "Zeros were not left untouched!"
+    assert set(consecutive[0::2]) == set(range(100,100+len(consecutive[0::2]))), \
+        "Non-zero items were not correctly consecutivized!"
+    assert maxlabel == consecutive.max()
+    assert (vigra.analysis.applyMapping(a, mapping) == consecutive).all()
+
+    # Check keep_zeros=False
+    consecutive, maxlabel, mapping = vigra.analysis.relabelConsecutive(a, start_label=100, keep_zeros=False)
+    assert (numpy.unique(consecutive) == numpy.arange(100, 100+1+len(a[::2]))).all(), \
+        "relabeled array does not have consecutive labels: {}".format(consecutive)
+    assert maxlabel == consecutive.max()
+    assert (vigra.analysis.applyMapping(a, mapping) == consecutive).all()
+
 def ok_():
     print(".", file=sys.stderr)
