@@ -9,6 +9,8 @@ environment:
           # VC_VERSION: "14"
 
 build_script:
+    - shorten_path.bat > path.txt
+    - set /p PATH=<path.txt
     - if "%PY_VERSION%" == "2.7" set PATH=C:\\Miniconda-x64\\Scripts;%PATH%
     - if "%PY_VERSION%" == "3.5" set PATH=C:\\Miniconda3-x64\\Scripts;%PATH%
     - if "%PY_VERSION%" == "2.7" conda create -q --yes -n python -c ukoethe --override-channels visual-studio=%VC_VERSION%.0 python=%PY_VERSION% jpeg libpng libtiff hdf5 fftw boost numpy nose
