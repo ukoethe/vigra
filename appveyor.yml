@@ -9,6 +9,12 @@ environment:
           # VC_VERSION: "14"
 
 build_script:
+    # This is a small script that takes the PATH variable and transforms its entries
+    # into their short-path (DOS-like) counterparts. The new path is written into the file path.txt,
+    # from which it is then loaded. This allows to shorten the overall length of the PATH variable,
+    # thus avoiding an issue with conda. See also:
+    # https://github.com/conda/conda/issues/1923
+    # It might be that this will be solved in future conda versions.
     - shorten_path.bat > path.txt
     - set /p PATH=<path.txt
     - if "%PY_VERSION%" == "2.7" set PATH=C:\\Miniconda-x64\\Scripts;%PATH%
