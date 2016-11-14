@@ -1,8 +1,8 @@
 @echo off
 
 SET MyPath=%PATH%
-echo %MyPath%
-echo --
+rem echo %MyPath%
+rem echo --
 
 setlocal EnableDelayedExpansion
 
@@ -12,9 +12,9 @@ FOR %%a IN (%TempPath%) DO (
     IF exist %%~sa (
         SET "var=!var!;%%~sa"
     ) ELSE (
-        echo %%a does not exist
+        rem echo %%a does not exist
     )
 )
 
-echo --
+rem echo --
 echo !var:~1!
