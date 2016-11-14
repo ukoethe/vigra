@@ -1,26 +1,26 @@
 matrix:
   include:
-    # - os: linux
-    #   sudo: false
-    #   language: python
-    #   python: "2.7"
-    # - os: linux
-    #   sudo: false
-    #   language: python
-    #   python: "3.2"
-    # - os: linux
-    #   sudo: false
-    #   language: python
-    #   python: "3.2"
-    #   env: WITH_BOOST_THREAD=1 CXXFLAGS="-pthread -std=c++0x"
-    # - os: osx
-    #   osx_image: xcode7.3
-    #   language: generic
-    #   env: TRAVIS_PYTHON_VERSION="2" BREW_DEPS="cmake\nhdf5\nboost\nlibjpeg\nlibtiff\nlibpng\nfftw\nreadline\npython"
-    # - os: osx
-    #   osx_image: xcode7.3
-    #   language: generic
-    #   env: TRAVIS_PYTHON_VERSION="3" BREW_DEPS="cmake\nhdf5\nboost\nlibjpeg\nlibtiff\nlibpng\nfftw\nreadline\npython3"
+    - os: linux
+      sudo: false
+      language: python
+      python: "2.7"
+    - os: linux
+      sudo: false
+      language: python
+      python: "3.2"
+    - os: linux
+      sudo: false
+      language: python
+      python: "3.2"
+      env: WITH_BOOST_THREAD=1 CXXFLAGS="-pthread -std=c++0x"
+    - os: osx
+      osx_image: xcode7.3
+      language: generic
+      env: TRAVIS_PYTHON_VERSION="2" BREW_DEPS="cmake\nhdf5\nboost\nlibjpeg\nlibtiff\nlibpng\nfftw\nreadline\npython"
+    - os: osx
+      osx_image: xcode7.3
+      language: generic
+      env: TRAVIS_PYTHON_VERSION="3" BREW_DEPS="cmake\nhdf5\nboost\nlibjpeg\nlibtiff\nlibpng\nfftw\nreadline\npython3"
 
 
 addons:
