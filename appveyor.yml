@@ -20,3 +20,6 @@ build_script:
     - cd build
     - cmake .. -G "Visual Studio %VC_VERSION% Win64" -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_ACTIVE_ENV%/Library"
     - cmake --build . --target check --config Release
+
+on_finish:
+- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
