@@ -1,0 +1,10 @@
+VIGRA_CONFIGURE_THREADING()
+
+if(NOT THREADING_FOUND)
+    MESSAGE(STATUS "** WARNING: No threading implementation found.")
+    MESSAGE(STATUS "**          Chunked tests will be skipped.")
+else()
+    VIGRA_ADD_TEST(test_chunked_roi.hxx LIBRARIES vigraimpex ${THREADING_LIBRARIES})
+    VIGRA_ADD_TEST(test_chunked_view.hxx LIBRARIES vigraimpex ${THREADING_LIBRARIES})
+    VIGRA_ADD_TEST(test_chunked_convolution.hxx LIBRARIES vigraimpex ${THREADING_LIBRARIES})
+endif()

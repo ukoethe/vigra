@@ -4,7 +4,7 @@ INCLUDE(VigraAddTest)
 
 ADD_SUBDIRECTORY(adjacency_list_graph)
 ADD_SUBDIRECTORY(blockwisealgorithms)
-ADD_SUBDIRECTORY(chunkedconvolution)
+ADD_SUBDIRECTORY(chunked)
 ADD_SUBDIRECTORY(classifier)
 ADD_SUBDIRECTORY(colorspaces)
 ADD_SUBDIRECTORY(convolution)

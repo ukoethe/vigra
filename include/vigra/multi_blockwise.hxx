@@ -51,88 +51,30 @@ namespace vigra{
 
         Attaches blockshape to ParallelOptions.
     */
+template<unsigned int N>
 class BlockwiseOptions
 : public ParallelOptions
 {
 public:
-    typedef ArrayVector<MultiArrayIndex> Shape;
+    typedef TinyVector<MultiArrayIndex,N> Shape;
 
     BlockwiseOptions()
     :   ParallelOptions()
-    ,   blockShape_()
+    ,   blockShape_(detail::ChunkShape<N>::defaultShape())
     {}
 
-        /** Retrieve block shape as a std::vector.
-
-            If the returned vector is empty, a default block shape should be used.
-            If the returned vector has length 1, square blocks of size
-            <tt>getBlockShape()[0]</tt> should be used.
-        */
     Shape const & getBlockShape() const
     {
         return blockShape_;
     }
 
-        // for Python bindings
-    Shape readBlockShape() const
-    {
-        return blockShape_;
-    }
-
-        /** Retrieve block shape as a fixed-size vector.
-
-            Default shape specifications are appropriately expanded.
-            An exception is raised if the stored shape's length is
-            incompatible with dimension <tt>N</tt>.
-        */
-    template <int N>
-    TinyVector<MultiArrayIndex, N> getBlockShapeN() const
-    {
-        if(blockShape_.size() > 1)
-        {
-            vigra_precondition(blockShape_.size() == (size_t)N,
-                "BlockwiseOptions::getBlockShapeN(): dimension mismatch between N and stored block shape.");
-            return TinyVector<MultiArrayIndex, N>(blockShape_.data());
-        }
-        else if(blockShape_.size() == 1)
-        {
-            return TinyVector<MultiArrayIndex, N>(blockShape_[0]);
-        }
-        else
-        {
-            return detail::ChunkShape<N>::defaultShape();
-        }
-    }
-
-        /** Specify block shape as a std::vector of appropriate length.
-            If <tt>blockShape.size() == 0</tt>, the default shape is used.
-            If <tt>blockShape.size() == 1</tt>, square blocks of size
-            <tt>blockShape[0]</tt> are used.
-
-            Default: Use square blocks with side length <tt>VIGRA_DEFAULT_BLOCK_SHAPE</tt>.
-        */
     BlockwiseOptions & blockShape(const Shape & blockShape){
         blockShape_ = blockShape;
         return *this;
     }
 
-        // for Python bindings
-    void setBlockShape(const Shape & blockShape){
-        blockShape_ = blockShape;
-    }
-
-        /** Specify block shape by a fixed-size shape object.
-        */
-    template <class T, int N>
-    BlockwiseOptions & blockShape(const TinyVector<T, N> & blockShape){
-        Shape(blockShape.begin(), blockShape.end()).swap(blockShape_);
-        return *this;
-    }
-
-        /** Specify square block shape by its side length.
-        */
     BlockwiseOptions & blockShape(MultiArrayIndex blockShape){
-        Shape(1, blockShape).swap(blockShape_);
+        blockShape_ = Shape(blockShape);
         return *this;
     }
 
@@ -151,18 +93,94 @@ private:
     Shape blockShape_;
 };
 
-    /** Option class for blockwise convolution algorithms.
 
-        Simply derives from \ref vigra::BlockwiseOptions and
-        \ref vigra::ConvolutionOptions to join their capabilities.
-    */
+struct GlobalBlockwiseOptions
+{
+    static BlockwiseOptions<1> options_1D;
+    static BlockwiseOptions<2> options_2D;
+    static BlockwiseOptions<3> options_3D;
+    static BlockwiseOptions<4> options_4D;
+    static BlockwiseOptions<5> options_5D;
+
+    static void setOptions(int dim, int numThreads)
+    {
+        switch (dim)
+        {
+            case 1: options_1D.numThreads(numThreads); break;
+            case 2: options_2D.numThreads(numThreads); break;
+            case 3: options_3D.numThreads(numThreads); break;
+            case 4: options_4D.numThreads(numThreads); break;
+            case 5: options_5D.numThreads(numThreads); break;
+            default: vigra_precondition(false,
+                    "GlobalBlockwiseOptions::setOptions(): dim must be 1, 2, 3, 4 or 5.");
+        }
+    }
+
+    template <unsigned int M>
+    static void setOptions(int dim, TinyVector<MultiArrayIndex, M> const & blockShape)
+    {
+        switch (dim)
+        {
+            case 1: options_1D.blockShape(blockShape); break;
+            case 2: options_2D.blockShape(blockShape); break;
+            case 3: options_3D.blockShape(blockShape); break;
+            case 4: options_4D.blockShape(blockShape); break;
+            case 5: options_5D.blockShape(blockShape); break;
+            default: vigra_precondition(false,
+                    "GlobalBlockwiseOptions::setOptions(): dim must be 1, 2, 3, 4 or 5.");
+        }
+    }
+
+    template <unsigned int M>
+    static void setOptions(int dim, TinyVector<MultiArrayIndex, M> const & blockShape, int numThreads)
+    {
+        switch (dim)
+        {
+            case 1: options_1D.blockShape(blockShape); options_1D.numThreads(numThreads); break;
+            case 2: options_2D.blockShape(blockShape); options_2D.numThreads(numThreads); break;
+            case 3: options_3D.blockShape(blockShape); options_3D.numThreads(numThreads); break;
+            case 4: options_4D.blockShape(blockShape); options_4D.numThreads(numThreads); break;
+            case 5: options_5D.blockShape(blockShape); options_5D.numThreads(numThreads); break;
+            default: vigra_precondition(false,
+                     "GlobalBlockwiseOptions::setOptions(): dim must be 1, 2, 3, 4 or 5.");
+        }
+    }
+
+    template <unsigned int M>
+    static BlockwiseOptions<M> getOptions()
+    {
+        switch (M)
+        {
+            case 1: return options_1D;
+            case 2: return options_2D;
+            case 3: return options_3D;
+            case 4: return options_4D;
+            case 5: return options_5D;
+            default: vigra_precondition(false,
+                     "GlobalBlockwiseOptions::getOptions<M>(): M must be 1, 2, 3, 4 or 5.");
+        }
+    }
+};
+
+BlockwiseOptions<1> GlobalBlockwiseOptions::options_1D = BlockwiseOptions<1>();
+BlockwiseOptions<2> GlobalBlockwiseOptions::options_2D = BlockwiseOptions<2>();
+BlockwiseOptions<3> GlobalBlockwiseOptions::options_3D = BlockwiseOptions<3>();
+BlockwiseOptions<4> GlobalBlockwiseOptions::options_4D = BlockwiseOptions<4>();
+BlockwiseOptions<5> GlobalBlockwiseOptions::options_5D = BlockwiseOptions<5>();
+
+
+/** Option class for blockwise convolution algorithms.
+
+    Simply derives from \ref vigra::BlockwiseOptions and
+    \ref vigra::ConvolutionOptions to join their capabilities.
+*/
 template<unsigned int N>
 class BlockwiseConvolutionOptions
-:   public  BlockwiseOptions
+:   public  BlockwiseOptions<N>
 ,   public  ConvolutionOptions<N>{
 public:
     BlockwiseConvolutionOptions()
-    :   BlockwiseOptions(),
+    :   BlockwiseOptions<N>(),
         ConvolutionOptions<N>()
     {}
 };
@@ -429,7 +447,7 @@ void FUNCTION( \
     const Shape border = blockwise::getBorder(options, ORDER, USES_OUTER_SCALE); \
     BlockwiseConvolutionOptions<N> subOptions(options); \
     subOptions.subarray(Shape(0), Shape(0));  \
-    const Blocking blocking(source.shape(), options.template getBlockShapeN<N>()); \
+    const Blocking blocking(source.shape(), options.getBlockShape()); \
     blockwise::FUNCTOR<N> f(subOptions); \
     blockwise::blockwiseCaller(source, dest, f, blocking, border, options); \
 }

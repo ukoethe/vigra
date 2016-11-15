@@ -50,17 +50,18 @@ namespace chunked_blockwise {
 /**
     Helper function to create blockwise parallel filters for chunked arrays.
 */
-template <unsigned int N, class T1, class T2, class FUNC, class C>
+template <unsigned int N1, unsigned int N2, unsigned int M, class T1,
+         class T2, class TAG1, class TAG2, class FUNC, class C>
 void chunkedBlockwiseCaller(
-        const ChunkedArray<N,T1> & source,
-        ChunkedArray<N,T2> & dest,
+        const ChunkedArray<N1,T1,TAG1> & source,
+        ChunkedArray<N2,T2,TAG2> & dest,
         FUNC & func,
-        const MultiBlocking<N,C> & blocking,
-        const typename MultiBlocking<N,C>::Shape & borderWidth,
-        const BlockwiseConvolutionOptions<N> & opt
+        const MultiBlocking<M,C> & blocking,
+        const typename MultiBlocking<M,C>::Shape & borderWidth,
+        const BlockwiseConvolutionOptions<M> & opt
 )
 {
-    typedef typename MultiBlocking<N,C>::BlockWithBorder BlockWithBorder;
+    typedef typename MultiBlocking<M,C>::BlockWithBorder BlockWithBorder;
 
     auto begin = blocking.blockWithBorderBegin(borderWidth);
     auto end = blocking.blockWithBorderEnd(borderWidth);
@@ -69,11 +70,11 @@ void chunkedBlockwiseCaller(
         [&](const int /*threadId*/, const BlockWithBorder bwb)
         {
             // copy input of the block into a new allocated array
-            MultiArray<N,T1> tmp(bwb.border().end() - bwb.border().begin());
+            MultiArray<M,T1> tmp(bwb.border().end() - bwb.border().begin());
             source.checkoutSubarray(bwb.border().begin(), tmp);
 
             // get the output as new allocated array
-            MultiArray<N,T2> tmpOut(bwb.core().end() - bwb.core().begin());
+            MultiArray<M,T2> tmpOut(bwb.core().end() - bwb.core().begin());
 
             func(tmp, tmpOut, bwb.localCore().begin(), bwb.localCore().end());
 
@@ -82,6 +83,7 @@ void chunkedBlockwiseCaller(
         },
         blocking.numBlocks()
     );
+
 }
 
 } // END NAMESPACE chunked_blockwise
@@ -91,28 +93,35 @@ void chunkedBlockwiseCaller(
     NOTE: Even if the MultiArrayView version may work in place
     the ChunkedArray overload does not.
 */
-#define VIGRA_CHUNKED_BLOCKWISE(FUNCTOR, FUNCTION, ORDER, USES_OUTER_SCALE)                 \
-template <unsigned int N, class T1, class T2>                                               \
-void FUNCTION(                                                                              \
-        const ChunkedArray<N,T1> & source,                                                  \
-        ChunkedArray<N,T2> & dest,                                                          \
-        BlockwiseConvolutionOptions<N> const & opt                                          \
-)                                                                                           \
-{                                                                                           \
-    typedef MultiBlocking<N, MultiArrayIndex> Blocking;                                     \
-    typedef typename Blocking::Shape Shape;                                                 \
+#define VIGRA_CHUNKED_BLOCKWISE(FUNCTOR, FUNCTION, ORDER, USES_OUTER_SCALE)                                 \
+template <unsigned int N1, unsigned int N2, unsigned int M, class T1, class T2, class TAG1, class TAG2>     \
+typename std::enable_if<(N1 >= M && N2 >= M), void>::type FUNCTION(                                         \
+        const ChunkedArray<N1,T1,TAG1> & source,                                                            \
+        ChunkedArray<N2,T2,TAG2> & dest,                                                                    \
+        const BlockwiseConvolutionOptions<M> & opt                                                          \
+)                                                                                                           \
+{                                                                                                           \
+    typedef MultiBlocking<M, MultiArrayIndex> Blocking;                                                     \
+    typedef typename Blocking::Shape Shape;                                                                 \
 \
-    CompareChunkedArrays<N,T1,T2>(source, dest);                                            \
+    CompareChunkedArrays<N1,N2,T1,T2,TAG1,TAG2>(source, dest);                                              \
+    vigra_precondition(source.template minimalShape<M>() == dest.template minimalShape<M>(),                \
+            "The source shape must be equal to the destination shape");                                     \
+    vigra_precondition(allGreaterEqual(source.template minimalShape<M>(), opt.getBlockShape()),\
+            "The source shape must be equal or greater than the block shape.");                             \
+    vigra_precondition(allGreaterEqual(dest.template minimalShape<M>(), opt.getBlockShape()),  \
+            "The source shape must be equal or greater than the block shape.");                             \
 \
-    const Shape border = blockwise::getBorder(opt, ORDER, USES_OUTER_SCALE);                \
-    const Blocking blocking(source.shape(), opt.template getBlockShapeN<N>());              \
+    const Shape border = blockwise::getBorder(opt, ORDER, USES_OUTER_SCALE);                                \
+    const Blocking blocking(source.template minimalShape<M>(), opt.getBlockShape());           \
 \
-    BlockwiseConvolutionOptions<N> subOpt(opt);                                             \
-    subOpt.subarray(Shape(0), Shape(0));                                                    \
+    BlockwiseConvolutionOptions<M> subOpt(opt);                                                             \
+    subOpt.subarray(Shape(0), Shape(0));                                                                    \
 \
-    blockwise::FUNCTOR<N> func(subOpt);                                                     \
-    chunked_blockwise::chunkedBlockwiseCaller(source, dest, func, blocking, border, opt);   \
+    blockwise::FUNCTOR<M> func(subOpt);                                                                     \
+    chunked_blockwise::chunkedBlockwiseCaller(source, dest, func, blocking, border, opt);                   \
 }
+
 
 // Reuse the blockwise functors from \<vigra/multi_blockwise.hxx\>
 VIGRA_CHUNKED_BLOCKWISE(GaussianSmoothFunctor,                   gaussianSmoothMultiArray,                   0, false);
@@ -131,11 +140,11 @@ VIGRA_CHUNKED_BLOCKWISE(StructureTensorFunctor,                  structureTensor
 
 
 // Alternative name for backward compatibility.
-template <unsigned int N, class T1, class T2>
+template <unsigned int N1, unsigned int N2, unsigned int M, class T1, class T2, class TAG1, class TAG2>
 inline void gaussianGradientMagnitude(
-        ChunkedArray<N,T1> const & source,
-        ChunkedArray<N,T2> & dest,
-        BlockwiseConvolutionOptions<N> const & opt
+        ChunkedArray<N1,T1,TAG1> const & source,
+        ChunkedArray<N2,T2,TAG2> & dest,
+        BlockwiseConvolutionOptions<M> const & opt
 )
 {
     gaussianGradientMagnitudeMultiArray(source, dest, opt);
