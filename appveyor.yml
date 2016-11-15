@@ -15,7 +15,7 @@ build_script:
     # thus avoiding an issue with conda. See also:
     # https://github.com/conda/conda/issues/1923
     # It might be that this will be solved in future conda versions.
-    - shorten_path.bat > path.txt
+    - config\\shorten_path.bat > path.txt
     - set /p PATH=<path.txt
     - if "%PY_VERSION%" == "2.7" set PATH=C:\\Miniconda-x64\\Scripts;%PATH%
     - if "%PY_VERSION%" == "3.5" set PATH=C:\\Miniconda3-x64\\Scripts;%PATH%
