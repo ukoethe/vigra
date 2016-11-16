@@ -1117,29 +1117,35 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
         labelmap[extract<SrcVoxelType>(key)] = extract<DestVoxelType>(value);
     }
 
-    {
-        PyAllowThreads _pythread;
+    // Enforce const capture in the lambda below.
+    labelmap_t const & _labelmap = labelmap;
 
-        if (allow_incomplete_mapping)
-        {
-            transformMultiArray(src, res,
-                [&labelmap](SrcVoxelType px) -> DestVoxelType {
-                    typename labelmap_t::const_iterator iter = labelmap.find(px);
-                    if (iter == labelmap.end())
-                    {
-                        // Key is missing. Return the original value.
-                        return static_cast<DestVoxelType>(px);
-                    }
+    {
+        std::unique_ptr<PyAllowThreads> pythread_ptr(new PyAllowThreads);
+
+        transformMultiArray(src, res,
+            [&_labelmap, allow_incomplete_mapping, &pythread_ptr](SrcVoxelType px) -> DestVoxelType {
+                typename labelmap_t::const_iterator iter = _labelmap.find(px);
+
+                if (iter != _labelmap.end())
+                {
                     return iter->second;
-                });
-        }
-        else
-        {
-            transformMultiArray(src, res,
-                [&labelmap](SrcVoxelType px) -> DestVoxelType {
-                    return labelmap.at(px);
-                });
-        }
+                }
+
+                if (allow_incomplete_mapping)
+                {
+                    // Key is missing. Return the original value.
+                    return static_cast<DestVoxelType>(px);
+                }
+
+                // Reclaim the GIL before setting the error string.
+                pythread_ptr.reset();
+
+                std::ostringstream err_msg;
+                err_msg << "Key not found in mapping: " << +px;
+                PyErr_SetString( PyExc_KeyError, err_msg.str().c_str() );
+                python::throw_error_already_set();
+            });
     }
 
     return res;

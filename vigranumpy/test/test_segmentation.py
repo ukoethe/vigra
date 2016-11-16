@@ -71,7 +71,7 @@ def _impl_test_applyMapping(dtype):
     
     try:
         remapped = vigra.analysis.applyMapping(original, mapping, allow_incomplete_mapping=False)
-    except IndexError:
+    except KeyError:
         pass
     else:
         assert False, "Expected to get an exception due to the incomplete mapping!"
