@@ -41,6 +41,7 @@ def _impl_test_applyMapping(dtype):
 
     # Not in-place
     remapped = vigra.analysis.applyMapping(original, mapping)
+    assert remapped.dtype == original.dtype, "Default output dtype did not match input dtype!"
     assert (remapped == original+100).all()
 
     # in-place
@@ -97,6 +98,8 @@ def _impl_relabelConsecutive(dtype):
     a[-1] = numpy.arange(start,start+100, dtype=dtype) # Make sure every number is used
     a[:] *= 3
     consecutive, maxlabel, mapping = vigra.analysis.relabelConsecutive(a, start)
+
+    assert consecutive.dtype == consecutive.dtype, "Default output dtype did not match input dtype!"
     assert maxlabel == consecutive.max()
     assert (vigra.analysis.applyMapping(a, mapping) == consecutive).all()
 
