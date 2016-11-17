@@ -57,6 +57,7 @@
 #include <cmath>
 #include <unordered_set>
 #include <unordered_map>
+#include <algorithm>
 
 #include <boost/python/stl_iterator.hpp>
 
@@ -1116,29 +1117,35 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
         labelmap[extract<SrcVoxelType>(key)] = extract<DestVoxelType>(value);
     }
 
-    {
-        PyAllowThreads _pythread;
+    // Enforce const capture in the lambda below.
+    labelmap_t const & _labelmap = labelmap;
 
-        if (allow_incomplete_mapping)
-        {
-            transformMultiArray(src, res,
-                [&labelmap](SrcVoxelType px) -> DestVoxelType {
-                    typename labelmap_t::const_iterator iter = labelmap.find(px);
-                    if (iter == labelmap.end())
-                    {
-                        // Key is missing. Return the original value.
-                        return static_cast<DestVoxelType>(px);
-                    }
+    {
+        std::unique_ptr<PyAllowThreads> pythread_ptr(new PyAllowThreads);
+
+        transformMultiArray(src, res,
+            [&_labelmap, allow_incomplete_mapping, &pythread_ptr](SrcVoxelType px) -> DestVoxelType {
+                typename labelmap_t::const_iterator iter = _labelmap.find(px);
+
+                if (iter != _labelmap.end())
+                {
                     return iter->second;
-                });
-        }
-        else
-        {
-            transformMultiArray(src, res,
-                [&labelmap](SrcVoxelType px) -> DestVoxelType {
-                    return labelmap.at(px);
-                });
-        }
+                }
+
+                if (allow_incomplete_mapping)
+                {
+                    // Key is missing. Return the original value.
+                    return static_cast<DestVoxelType>(px);
+                }
+
+                // Reclaim the GIL before setting the error string.
+                pythread_ptr.reset();
+
+                std::ostringstream err_msg;
+                err_msg << "Key not found in mapping: " << +px;
+                PyErr_SetString( PyExc_KeyError, err_msg.str().c_str() );
+                python::throw_error_already_set();
+            });
     }
 
     return res;
@@ -1152,7 +1159,7 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
 */
 template <class VoxelType, unsigned int NDIM>
 NumpyAnyArray
-pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src)
+pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src, bool sort=true)
 {
     std::unordered_set<VoxelType> labelset;
     auto f = [&labelset](VoxelType px) { labelset.insert(px); };
@@ -1161,6 +1168,11 @@ pythonUnique(NumpyArray<NDIM, Singleband<VoxelType> > src)
     NumpyArray<1, VoxelType> result;
     result.reshape( Shape1(labelset.size()) );
     std::copy( labelset.begin(), labelset.end(), result.begin() );
+
+    if (sort)
+    {
+        std::sort( result.begin(), result.end() );
+    }
     return result;
 }
 
@@ -1174,13 +1186,23 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR_NDIM(pyUnique, pythonUnique)
 template <unsigned int NDIM, class SrcVoxelType, class DestVoxelType>
 boost::python::tuple
 pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
-                         DestVoxelType start_label = 0,
+                         DestVoxelType start_label = 1,
+                         bool keep_zeros = true,
                          NumpyArray<NDIM, Singleband<DestVoxelType> > res = NumpyArray<NDIM, Singleband<SrcVoxelType> >())
 {
     using namespace boost::python;
     res.reshapeIfEmpty(src.taggedShape(), "relabelConsecutive(): Output array has wrong shape.");
 
     std::unordered_map<SrcVoxelType, DestVoxelType> labelmap;
+    if (keep_zeros)
+    {
+        vigra_precondition(!keep_zeros || start_label > 0,
+            "relabelConsecutive(): start_label must be non-zero if using keep_zeros=True");
+
+        // pre-initialize the mapping to keep zeros unchanged
+        labelmap[0] = 0;
+    }
+
     {
         PyAllowThreads _pythread;
 
@@ -1193,7 +1215,7 @@ pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
                 }
                 // We haven't seen this label yet.
                 // Create a new entry in the hash table.
-                DestVoxelType newlabel = labelmap.size() + start_label;
+                DestVoxelType newlabel = labelmap.size() - int(keep_zeros) + start_label;
                 labelmap[px] = newlabel;
                 return newlabel;
             });
@@ -1206,7 +1228,7 @@ pythonRelabelConsecutive(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
         labelmap_dict[old_new_pair.first] = old_new_pair.second;
     }
 
-    DestVoxelType max_label = labelmap.size() - 1 + start_label;
+    DestVoxelType max_label = labelmap.size() - int(keep_zeros) - 1 + start_label;
     return make_tuple(res, max_label, labelmap_dict);
 }
 
@@ -1590,15 +1612,15 @@ void defineSegmentation()
         "\n");
 
     multidef("unique",
-        pyUnique<1,5,npy_uint8, npy_uint32, npy_uint64>(),
-        (arg("arr")),
+        pyUnique<1,5,npy_uint8, npy_uint32, npy_uint64, npy_int64>(),
+        (arg("arr"), arg("sort")=true),
         "Find unique values in the given label array.\n"
-        "Result is not sorted.\n"
-        "Faster then numpy.unique().\n");
+        "If ``sort`` is True, then the output is sorted.\n"
+        "Much faster then ``numpy.unique()``.\n");
 
     //-- 3D relabelConsecutive
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint32, npy_uint32>),
-        (arg("labels"), arg("start_label")=0, arg("out")=python::object()),
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint64, npy_uint32>),
+        (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()),
         "Relabel the given label image to have consecutive label values.\n"
         "Note: The relative order between label values will not necessarily be preserved.\n"
         "\n"
@@ -1606,6 +1628,7 @@ void defineSegmentation()
         "----------\n"
         "labels: ndarray\n"
         "start_label: The lowest label of the output array.\n"
+        "keep_zeros: Don't relabel zero-valued items.\n"
         "out: ndarray to hold the data. If None, it will be allocated for you.\n"
         "     A combination of uint64 labels and uint32 'out' is permitted.\n"
         "\n"
@@ -1614,26 +1637,27 @@ void defineSegmentation()
         "``mapping`` is a dict showing how the old labels were converted to the new label values.\n"
         "\n"
         "Note: As with other vigra functions, you should provide accurate axistags for optimal performance.\n");
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint64, npy_uint64>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint8, npy_uint8>),   (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint64, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint64, npy_uint64>), (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint32, npy_uint32>), (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<3, npy_uint8, npy_uint8>),   (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
 
     //-- 2D relabelConsecutive
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint32, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint64, npy_uint64>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint8, npy_uint8>),   (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint64, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint64, npy_uint32>), (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint64, npy_uint64>), (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint32, npy_uint32>), (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<2, npy_uint8, npy_uint8>),   (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
 
     //-- 1D relabelConsecutive
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint32, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint64, npy_uint64>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint8, npy_uint8>),   (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
-    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint64, npy_uint32>), (arg("labels"), arg("start_label")=0, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint64, npy_uint32>), (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint64, npy_uint64>), (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint32, npy_uint32>), (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
+    def("relabelConsecutive", registerConverters(&pythonRelabelConsecutive<1, npy_uint8, npy_uint8>),   (arg("labels"), arg("start_label")=1, arg("keep_zeros")=true, arg("out")=python::object()));
+
 
     // Lots of overloads here to allow mapping between arrays of different dtypes.
     // -- 3D
-    // 8 <--> 8, 32 <--> 32, 64 <--> 64
-    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint32, npy_uint32>),
+    // 64 --> 32
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint32>),
         (arg("labels"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()),
         "Map all values in `labels` to new values using the given mapping (a dict).\n"
         "Useful for maps with large values, for which a numpy index array would need too much RAM.\n"
@@ -1651,8 +1675,6 @@ void defineSegmentation()
         "     The dtype of ``out`` is allowed to be smaller (or bigger) than the dtype of ``labels``.\n"
         "\n"
         "Note: As with other vigra functions, you should provide accurate axistags for optimal performance.\n");
-    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
-    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
 
     // 8 <--> 32
     def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
@@ -1660,18 +1682,19 @@ void defineSegmentation()
 
     // 32 <--> 64
     def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint32, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
-    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    //def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
 
     // 8 <--> 64
     def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
     def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
 
-    // -- 2D
+    // Cases for same input/output dtypes must come last, so they are chosen by default!
     // 8 <--> 8, 32 <--> 32, 64 <--> 64
-    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint32, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
-    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
-    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint32, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<3, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
 
+    // -- 2D
     // 8 <--> 32
     def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
     def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint32, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
@@ -1684,11 +1707,13 @@ void defineSegmentation()
     def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
     def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint64, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
 
-    // -- 1D
+    // Cases for same input/output dtypes must come last, so they are chosen by default!
     // 8 <--> 8, 32 <--> 32, 64 <--> 64
-    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint32, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
-    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
-    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint32, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<2, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+
+    // -- 1D
 
     // 8 <--> 32
     def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
@@ -1702,6 +1727,11 @@ void defineSegmentation()
     def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
     def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint64, npy_uint8>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
 
+    // Cases for same input/output dtypes must come last, so they are chosen by default!
+    // 8 <--> 8, 32 <--> 32, 64 <--> 64
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint32, npy_uint32>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint64, npy_uint64>), (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
+    def("applyMapping", registerConverters(&pythonApplyMapping<1, npy_uint8, npy_uint8>),   (arg("src"), arg("mapping"), arg("allow_incomplete_mapping")=false, arg("out")=python::object()));
 }
 
 void defineEdgedetection();
