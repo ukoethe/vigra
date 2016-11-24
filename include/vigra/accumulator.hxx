@@ -6269,6 +6269,8 @@ class RegionEccentricity
 
     AccumulatorChain must be used with CoupledIterator in order to have access
     to pixel coordinates.
+
+    The result type is the ConvexPolytop class.
  */
 class ConvexHull
 {
@@ -6349,8 +6351,31 @@ class ConvexHull
 /** \brief Compute object features related to the convex hull.
 
     AccumulatorChain must be used with CoupledIterator in order to have access
-    to pixel coordinates.
- */
+    to pixel coordinates. The convex hull features are only available when
+    `WITH_LEMON` is set.
+
+    Minimal example how to calculate the features:
+    \code
+    // "labels" is the array with the region labels
+    MultiArrayView<2, int> labels = ...;
+
+    // Set up the accumulator chain and ignore the zero label
+    AccumulatorChainArray<
+            CoupledArrays<2, int>,
+            Select<LabelArg<1>, ConvexHullFeatures> > chain;
+    chain.ignoreLabel(0);
+
+    // Extract the features
+    extractFeatures(labels, chain);
+
+    // Finalize the calculation for label 1
+    getAccumulator<ConvexHullFeatures>(chain, 1).finalize();
+
+    // Get the features
+    ... = getAccumulator<ConvexHullFeatures>(chain, 1).inputCenter();
+    \endcode
+
+*/
 class ConvexHullFeatures
 {
   public:
@@ -6361,6 +6386,8 @@ class ConvexHullFeatures
         return std::string("ConvexHullFeatures");
     }
 
+    /** \brief Result type of the covex hull feature calculation
+    */
     template <class T, class BASE>
     struct Impl
     : public BASE
@@ -6452,6 +6479,11 @@ class ConvexHullFeatures
             initialized_ = true;
         }
 
+        /* \brief Finalize the calculation of the convex hull features.
+
+            Finalize must be called in order to trigger the calculation of
+            the convexity defect features.
+        */
         void finalize()
         {
             if (!finalized_)
@@ -6541,50 +6573,78 @@ class ConvexHullFeatures
             return *this;
         }
 
+        /** \brief Center of the input region.
+        */
         const point_type & inputCenter() const {
             return getDependency<RegionCenter>(*this);
         }
 
+        /** \brief Center of the convex hull of the input region.
+        */
         const point_type & hullCenter() const {
             return hull_center_;
         }
 
+        /** \brief Volume of the input region.
+        */
         int inputVolume() const {
             return getDependency<Count>(*this);
         }
 
+        /** \brief Volume of the convex hull of the input region.
+        */
         int hullVolume() const {
             return hull_volume_;
         }
 
+        /** \brief Weighted center of mass of the convexity defects.
+        */
         const point_type & defectCenter() const {
             return defect_center_;
         }
 
+        /** \brief Average volume of the convexity defects.
+        */
         double defectVolumeMean() const {
             return defect_volume_mean_;
         }
 
+        /** \brief Variance of the volumes of the convexity defects.
+        */
         double defectVolumeVariance() const {
             return defect_volume_variance_;
         }
 
+        /** \brief Skewness of the volumes of the convexity defects.
+        */
         double defectVolumeSkewness() const {
             return defect_volume_skewness_;
         }
 
+        /** \brief Kurtosis of the volumes of the convexity defects.
+        */
         double defectVolumeKurtosis() const {
             return defect_volume_kurtosis_;
         }
 
+        /** \brief Number of convexity defects.
+        */
         int defectCount() const {
             return defect_count_;
         }
 
+        /** \brief Average displacement of the convexity defects from the input
+            region center weighted by their size.
+        */
         double defectDisplacementMean() const {
             return defect_displacement_mean_;
         }
 
+        /** \brief Convexity of the input region
+
+            The convexity is the ratio of the input volume to the convex hull
+            volume: \f[c = \frac{V_\mathrm{input}}{V_\mathrm{hull}}\f]
+        */
         double convexity() const {
             return static_cast<double>(inputVolume()) / hullVolume();
         }

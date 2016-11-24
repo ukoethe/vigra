@@ -19,6 +19,11 @@
 
 namespace vigra {
 
+/** \brief Represent an n-dimensional polytope.
+
+ \tparam N Dimension the polytope.
+ \tparam T Type of the vector components of the polytope vertices.
+*/
 template <unsigned int N, class T>
 class Polytope
 {
@@ -44,6 +49,8 @@ class Polytope
     typedef node_type_iterator<FACET>               facet_iterator;
     typedef node_type_iterator<VERTEX>              vertex_iterator;
 
+    /** Default constructor creates an empty polytope class.
+    */
     Polytope()
     : graph_()
     , type_map_(graph_)
@@ -51,6 +58,8 @@ class Polytope
     , aligns_map_(graph_)
     {}
 
+    /** Copy constructor.
+    */
     Polytope(const Polytope<N, T> & other)
     : graph_()
     , type_map_(graph_)
@@ -60,6 +69,8 @@ class Polytope
         *this = other;
     }
 
+    /** Copy from another polytope.
+    */
     virtual void operator=(const Polytope<N, T> & other)
     {
         lemon::digraphCopy(other.graph_, graph_);
@@ -74,6 +85,8 @@ class Polytope
 
     virtual real_type nSurface() const = 0;
 
+    /** Check if the facet aligns with other facets at each of its ridges.
+    */
     virtual bool closed(const node_type n) const
     {
         vigra_assert(
@@ -85,6 +98,8 @@ class Polytope
                 lemon::INVALID) == aligns_map_[n].end();
     }
 
+    /** Check if the polytope has a closed surface
+    */
     virtual bool closed() const
     {
         for (facet_iterator n(graph_, type_map_); n != lemon::INVALID; ++n)
@@ -98,6 +113,8 @@ class Polytope
     }
 
 
+    /** Add a vertex to the polytope.
+    */
     virtual node_type addVertex(const point_view_type & p)
     {
         node_type ret = graph_.addNode();
@@ -110,6 +127,8 @@ class Polytope
         return ret;
     }
 
+    /** Erase a facet.
+    */
     virtual void eraseFacet(const node_type u)
     {
         vigra_assert(
@@ -132,6 +151,11 @@ class Polytope
         graph_.erase(u);
     }
 
+    /** Get the connected elements in the graph that represents the polytope.
+        If a facet node is inserted, all of its vertices will be returned, if
+        a vertex node is inserted, all facets having this vertex will be
+        returned.
+    */
     virtual std::set<node_type> getConnected(const node_type u) const
     {
         std::set<node_type> ret;
@@ -166,6 +190,9 @@ class Polytope
         return ret;
     }
 
+    /** Get all facets whose normal has a positive scalar product with the
+        vector to the given vertex.
+    */
     virtual ArrayVector<node_type> litFacets(const point_view_type & p) const
     {
         ArrayVector<node_type> ret;
@@ -179,6 +206,8 @@ class Polytope
         return ret;
     }
 
+    /** Remove all vertices that are not part of the polytope mesh.
+    */
     virtual void tidyUp()
     {
         std::set<node_type> to_erase;
@@ -199,6 +228,7 @@ class Polytope
         }
     }
 
+    /** Get the distance between a facet and a vertex */
     virtual real_type distance(const node_type u, const point_view_type & p) const
     {
         vigra_assert(
@@ -212,6 +242,8 @@ class Polytope
         return dot(p - vec_map_[graph_.target(a)], vec_map_[u]);
     }
 
+    /** Label all elements in the array which are inside the polytope.
+    */
     virtual unsigned int fill(
             MultiArrayView<N, unsigned int> & array,
             const unsigned int label,
@@ -239,6 +271,8 @@ class Polytope
         return ret;
     }
 
+    /** Label all elements in the array which are inside the polytope.
+    */
     virtual unsigned int fill(
             MultiArrayView<N, unsigned int> & array,
             const unsigned int label,
@@ -476,6 +510,9 @@ class Polytope
     typename graph_type::NodeMap<TinyVector<node_type, N> > aligns_map_;
 };
 
+/** \brief Specialization of the polytope to polytopes which forms a star
+    domain.
+*/
 template <unsigned int N, class T>
 class StarPolytope : public Polytope<N, T>
 {
@@ -508,16 +545,23 @@ class StarPolytope : public Polytope<N, T>
 
   public:
 
+    /** Constructor creates an empty StarPolytope with its center a the orign.
+    */
     StarPolytope()
     : base_type()
     , center_(point_type())
     {}
 
+    /** Copy constructor.
+    */
     StarPolytope(const point_view_type & center)
     : base_type()
     , center_(center)
     {}
 
+    /** Constructor for the 2-dimensional case taking three vertices and the
+        center.
+    */
     StarPolytope(
             const point_view_type & a,
             const point_view_type & b,
@@ -537,6 +581,9 @@ class StarPolytope : public Polytope<N, T>
         this->addFacet(na, nb);
     }
 
+    /** Constructor for the 3-dimensional case taking four vertices and the
+        center.
+    */
     StarPolytope(
             const point_view_type & a,
             const point_view_type & b,
@@ -559,7 +606,9 @@ class StarPolytope : public Polytope<N, T>
         this->addFacet(na, nb, nc);
     }
 
-    virtual point_type getCenter() const 
+    /** Get the center of the star domain.
+    */
+    virtual point_type getCenter() const
     {
         return center_;
     }
@@ -599,6 +648,8 @@ class StarPolytope : public Polytope<N, T>
         }
     }
 
+    /** Add a facet to a 2-dimensional polytope.
+    */
     virtual node_type addFacet(const node_type & a, const node_type & b)
     {
         vigra_precondition(
@@ -626,6 +677,8 @@ class StarPolytope : public Polytope<N, T>
         return ret;
     }
 
+    /** Add a facet to a 3-dimensional polytope.
+    */
     virtual node_type addFacet(
             const node_type & a,
             const node_type & b,
@@ -741,6 +794,8 @@ class StarPolytope : public Polytope<N, T>
         return true;
     }
 
+    /** Check if a point is inside the polytope.
+    */
     virtual bool contains(const point_view_type & p) const
     {
         for (facet_iterator n(graph_, type_map_); n != lemon::INVALID; ++n)
@@ -770,6 +825,8 @@ class StarPolytope : public Polytope<N, T>
         return abs(linalg::determinant(mat) / fac);
     }
 
+    /** Calculate the volume of the polytope.
+    */
     virtual real_type nVolume() const
     {
         real_type ret = 0;
@@ -801,6 +858,8 @@ class StarPolytope : public Polytope<N, T>
         return abs(linalg::determinant(mat)) / factor;
     }
 
+    /** Calculate the surface of the polytope.
+    */
     virtual real_type nSurface() const
     {
         real_type ret = 0;
@@ -817,6 +876,8 @@ class StarPolytope : public Polytope<N, T>
     point_type center_;
 };
 
+/** Specialization of the StarPolytope to polytopes which have a convex domain.
+*/
 template <unsigned int N, class T>
 class ConvexPolytope : public StarPolytope<N, T>
 {
@@ -945,6 +1006,9 @@ class ConvexPolytope : public StarPolytope<N, T>
         return true;
     }
 
+    /** Expand the polytope to the given point if it's outside of the current
+        polytope, such that the new polytope is still convex.
+    */
     virtual void addExtremeVertex(const point_view_type & p)
     {
         vigra_assert(
