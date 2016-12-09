@@ -687,19 +687,22 @@ def _genFeaturConvenienceFunctions():
     analysis.supportedRegionFeatures = supportedRegionFeatures
 
     def supportedConvexHullFeatures(labels):
-        '''Return a list of Convex Hull feature names that are available for the given 2D label array.
-           These Convex Hull feature names are the valid inputs to a call of
-           :func:`extractConvexHullFeatures`. E.g., to compute just the first two features in the
+        '''Return a list of Convex Hull feature names that are available for the given label array.
+           These Convex Hull feature names are the valid inputs to a call with
+           :func:`extract2DConvexHullFeatures` or `extract3DConvexHullFeatures`. E.g., to compute just the first two features in the
            list, use::
 
                 f = vigra.analysis.supportedConvexHullFeatures(labels)
                 print("Computing Convex Hull features:", f[:2])
-                r = vigra.analysis.extractConvexHullFeatures(labels, features=f[:2])
+                r = vigra.analysis.extract2DConvexHullFeatures(labels, features=f[:2])
         '''
         try:
-            return analysis.extractConvexHullFeatures(labels, list_features_only=True)
+            return analysis.extract2DConvexHullFeatures(labels, list_features_only=True)
         except:
-            return []
+            try:
+                return analysis.extract3DConvexHullFeatures(labels, list_features_only=True)
+            except:
+                return []
 
     supportedConvexHullFeatures.__module__ = 'vigra.analysis'
     analysis.supportedConvexHullFeatures = supportedConvexHullFeatures
