@@ -99,7 +99,7 @@ def _impl_relabelConsecutive(dtype):
     a[:] *= 3
     consecutive, maxlabel, mapping = vigra.analysis.relabelConsecutive(a, start)
 
-    assert consecutive.dtype == consecutive.dtype, "Default output dtype did not match input dtype!"
+    assert consecutive.dtype == a.dtype, "Default output dtype did not match input dtype!"
     assert maxlabel == consecutive.max()
     assert (vigra.analysis.applyMapping(a, mapping) == consecutive).all()
 
