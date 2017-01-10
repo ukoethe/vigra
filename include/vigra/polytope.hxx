@@ -256,7 +256,7 @@ class Polytope
         typename array_type::iterator it = array.begin();
         for (it = array.begin(); it != array.end(); it++)
         {
-            const typename array_type::difference_type coord = it.get<0>();
+            const typename array_type::difference_type coord = it.template get<0>();
             point_type vec;
             for (unsigned int i = 0; i < vec.size(); i++)
             {
@@ -287,7 +287,7 @@ class Polytope
         typename array_type::iterator it = array.begin();
         for (it = array.begin(); it != array.end(); it++)
         {
-            const typename array_type::difference_type coord = it.get<0>();
+            const typename array_type::difference_type coord = it.template get<0>();
             point_type vec;
             for (unsigned int i = 0; i < vec.size(); i++)
             {

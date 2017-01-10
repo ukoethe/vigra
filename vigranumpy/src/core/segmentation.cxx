@@ -1145,6 +1145,8 @@ pythonApplyMapping(NumpyArray<NDIM, Singleband<SrcVoxelType> > src,
                 err_msg << "Key not found in mapping: " << +px;
                 PyErr_SetString( PyExc_KeyError, err_msg.str().c_str() );
                 python::throw_error_already_set();
+
+                return 0; // unreachable line
             });
     }
 
