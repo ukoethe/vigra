@@ -60,7 +60,7 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
                                 &H5Sclose, "HDF5ImportInfo(): could not access dataset dataspace.");
     m_dimensions = H5Sget_simple_extent_ndims(dataspace_handle);
     //m_dimensions = dset.getSpace().getSimpleExtentNdims();
-    
+
     //why?
     //vigra_precondition( m_dimensions>=2, "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!" );
 
@@ -76,7 +76,7 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
         else if(datasize == 8)
             m_pixeltype = "DOUBLE";
     }
-    else if(dataclass == H5T_INTEGER)   
+    else if(dataclass == H5T_INTEGER)
     {
         if(datasign == H5T_SGN_NONE)
         {
@@ -151,34 +151,39 @@ const char * HDF5ImportInfo::getPixelType() const
     return m_pixeltype.c_str();
 }
 
-MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const 
-{ 
-    return MultiArrayIndex(m_dims[dim]); 
+ArrayVector<hsize_t> const & HDF5ImportInfo::shape() const
+{
+    return m_dims;
 }
 
-MultiArrayIndex HDF5ImportInfo::numDimensions() const 
-{ 
-    return MultiArrayIndex(m_dimensions); 
+MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const
+{
+    return MultiArrayIndex(m_dims[dim]);
 }
 
-const std::string & HDF5ImportInfo::getPathInFile() const 
-{ 
-    return m_path; 
+MultiArrayIndex HDF5ImportInfo::numDimensions() const
+{
+    return MultiArrayIndex(m_dimensions);
 }
 
-const std::string & HDF5ImportInfo::getFilePath() const 
-{ 
-    return m_filename; 
+const std::string & HDF5ImportInfo::getPathInFile() const
+{
+    return m_path;
 }
 
-hid_t HDF5ImportInfo::getH5FileHandle() const 
-{ 
-    return m_file_handle; 
+const std::string & HDF5ImportInfo::getFilePath() const
+{
+    return m_filename;
 }
 
-hid_t HDF5ImportInfo::getDatasetHandle() const 
-{ 
-    return m_dataset_handle; 
+hid_t HDF5ImportInfo::getH5FileHandle() const
+{
+    return m_file_handle;
+}
+
+hid_t HDF5ImportInfo::getDatasetHandle() const
+{
+    return m_dataset_handle;
 }
 
 H5O_type_t HDF5_get_type(hid_t loc_id, const char* name)

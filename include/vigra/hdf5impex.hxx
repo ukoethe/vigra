@@ -728,10 +728,7 @@ class HDF5ImportInfo
             ordered as 'z', 'y', 'x', this function will return the shape in the order
             'x', 'y', 'z'.
          */
-    VIGRA_EXPORT ArrayVector<hsize_t> const & shape() const
-    {
-        return m_dims;
-    }
+    VIGRA_EXPORT ArrayVector<hsize_t> const & shape() const;
 
         /** Get the shape (length) of the dataset along dimension \a dim.
 
@@ -1416,7 +1413,7 @@ class HDF5File
         std::reverse(shape.begin(), shape.end());
         return shape;
     }
-        
+
         /** \brief Get the shape of chunks along each dimension of a certain dataset.
 
            Normally, this function is called after determining the dimension of the
