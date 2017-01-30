@@ -149,7 +149,7 @@ void split_score(
 template <typename RF, typename SCORER, typename VISITOR, typename STOP, typename RANDENGINE>
 void random_forest_single_tree(
         typename RF::Features const & features,
-        typename RF::Labels const & labels,
+        MultiArray<1, size_t>  const & labels,
         RandomForestOptions const & options,
         VISITOR & visitor,
         STOP stop,
@@ -397,6 +397,7 @@ random_forest_impl(
     {
         label_map[distinct_labels[i]] = i;
     }
+    
     MultiArray<1, size_t> transformed_labels(Shape1(labels.size()));
     for (size_t i = 0; i < (size_t)labels.size(); ++i)
     {

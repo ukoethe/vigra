@@ -62,10 +62,13 @@ public:
         dim_(dim),
         val_(val)
     {}
-    size_t operator()(MultiArrayView<1, T> const & features) const
+    
+    template<typename FEATURES>
+    size_t operator()(FEATURES const & features) const
     {
         return features(dim_) <= val_ ? 0 : 1;
     }
+    
     size_t dim_;
     T val_;
 };

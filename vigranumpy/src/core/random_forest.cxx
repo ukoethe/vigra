@@ -168,7 +168,7 @@ template<class LabelType, class FeatureType>
 double
 pythonLearnRandomForest(RandomForest<LabelType> & rf, 
                         NumpyArray<2,FeatureType> trainData, 
-                        NumpyArray<2,LabelType> trainLabels,
+                        NumpyArray<2,LabelType> trainLabels, // FIXME why are the labels 2d ?!
                         UInt32 randomSeed=0,
                         int maxdepth=-1,
                         int minsize=0)

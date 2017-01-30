@@ -6,6 +6,7 @@ VIGRA Computer Vision Library
 
                 Copyright 1998-2013 by Ullrich Koethe
 
+
     This file is part of the VIGRA computer vision library.
     You may use, modify, and distribute this software according
     to the terms stated in the LICENSE.txt file included in
