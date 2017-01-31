@@ -282,7 +282,6 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities(
     vigra_precondition((size_t)probs.shape()[1] == problem_spec_.num_classes_,
                        "RandomForest::predict_probabilities(): Number of labels in probabilities differs from training.");
     
-    size_t const num_classes = problem_spec_.num_classes_;
     size_t const num_instances = features.shape()[0];
     
     if (n_threads == -1)
@@ -293,7 +292,7 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities(
     parallel_foreach(
         n_threads,
         num_instances,
-        [&features,&probs,this](size_t thread_id, size_t i) {
+        [&features,&probs,this](size_t, size_t i) {
             this->predict_probabilities_impl(features, probs, i);
         }
     );
@@ -310,7 +309,7 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl
     auto num_roots = graph_.numRoots();
 
     auto const sub_features = features.template bind<0>(i);
-    for (auto k = 0; k < num_roots; ++k)
+    for (size_t k = 0; k < num_roots; ++k)
     {
         Node node = graph_.getRoot(k);
         while (graph_.outDegree(node) > 0)
@@ -319,11 +318,11 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl
             node = graph_.getChild(node, child_index);
         }
         const auto & class_vec = node_responses_.at(node);
-        for(auto cc = 0; cc < class_vec.size(); ++cc)
+        for(size_t cc = 0; cc < class_vec.size(); ++cc)
             probs(i,cc) += class_vec[cc];
     }
     
-    for(auto c = 0; c < problem_spec_.num_classes_; ++c) {
+    for(size_t c = 0; c < problem_spec_.num_classes_; ++c) {
         probs(i,c) /= num_roots; 
     }
 }

@@ -86,7 +86,7 @@ public:
      * @param rf the trained random forest
      */
     template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
-    void visit_after_training(VISITORS & v, RF & rf, FEATURES & features, LABELS & labels)
+    void visit_after_training(VISITORS &, RF &, FEATURES &, LABELS &)
     {}
 
     /**
@@ -95,17 +95,17 @@ public:
      * @param weights the actual instance weights (after bootstrap sampling and class weights)
      */
     template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_before_tree(TREE & tree, FEATURES & features, LABELS & labels, WEIGHTS & weights)
+    void visit_before_tree(TREE &, FEATURES &, LABELS &, WEIGHTS &)
     {}
 
     /**
      * @brief Do something after a tree has been learned.
      */
     template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_after_tree(RF & rf,
-                          FEATURES & features,
-                          LABELS & labels,
-                          WEIGHTS & weights)
+    void visit_after_tree(RF &,
+                          FEATURES &,
+                          LABELS &,
+                          WEIGHTS &)
     {}
 
     /**
@@ -117,14 +117,14 @@ public:
               typename WEIGHTS,
               typename SCORER,
               typename ITER>
-    void visit_after_split(TREE & tree,
-                           FEATURES & features,
-                           LABELS & labels,
-                           WEIGHTS & weights,
-                           SCORER & scorer,
-                           ITER begin,
-                           ITER split,
-                           ITER end)
+    void visit_after_split(TREE &,
+                           FEATURES &,
+                           LABELS &,
+                           WEIGHTS &,
+                           SCORER &,
+                           ITER,
+                           ITER,
+                           ITER)
     {}
 
     /**

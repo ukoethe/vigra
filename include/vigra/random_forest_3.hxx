@@ -123,7 +123,7 @@ void split_score(
     auto sorted_indices = std::vector<size_t>(feats.size()); // storage for the index sort result
     auto tosort_instances = std::vector<size_t>(feats.size()); // storage for the sorted instances
 
-    for (size_t i = 0; i < dim_sampler.sampleSize(); ++i)
+    for (int i = 0; i < dim_sampler.sampleSize(); ++i)
     {
         size_t const d = dim_sampler[i];
 
@@ -166,8 +166,9 @@ void random_forest_single_tree(
     static_assert(std::is_same<SplitTests, typename RF::SplitTests>::value,
                   "random_forest_single_tree(): Wrong Random Forest class.");
 
-    auto const num_instances = features.shape()[0];
-    auto const num_features = features.shape()[1];
+    // the api is seriously broke...
+    int const num_instances = features.shape()[0];
+    size_t const num_features = features.shape()[1];
     auto const & spec = tree.problem_spec_;
 
     vigra_precondition(num_instances == labels.size(),
