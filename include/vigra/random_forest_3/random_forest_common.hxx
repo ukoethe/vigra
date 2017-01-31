@@ -366,7 +366,7 @@ public:
     }
 
     template <typename LABELS, typename WEIGHTS, typename ITER>
-    double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
+    double region_score(LABELS const & /*labels*/, WEIGHTS const & /*weights*/, ITER /*begin*/, ITER /*end*/) const
     {
         vigra_fail("EntropyScore::region_score(): Not implemented yet.");
         return 0.0; // FIXME
@@ -416,7 +416,7 @@ public:
     }
 
     template <typename LABELS, typename WEIGHTS, typename ITER>
-    double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
+    double region_score(LABELS const & /*labels*/, WEIGHTS const & /*weights*/, ITER /*begin*/, ITER /*end*/) const
     {
         vigra_fail("KolmogorovSmirnovScore::region_score(): Region score not available for the Kolmogorov-Smirnov split.");
         return 0.0;
