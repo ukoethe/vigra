@@ -63,7 +63,7 @@ typedef float FeatureType;
 typedef uint32_t LabelType;
 typedef NumpyArray<2,FeatureType> FeatureArrayType;
 typedef NumpyArray<1,LabelType> LabelArrayType; // FIXME TODO dunno if this needs to be 1 or 2d
-typedef typename DefaultRF<FeatureArrayType,LabelArrayType>::type RandomForestType;
+typedef DefaultRF<FeatureArrayType,LabelArrayType>::type RandomForestType;
 
 // random forest constructor
 RandomForestType *

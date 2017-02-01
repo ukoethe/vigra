@@ -334,7 +334,6 @@ public:
         typedef typename std::remove_const<LABELS>::type Labels;
         
         typedef typename Features::value_type FeatureType;
-        typedef typename Labels::value_type LabelType;
 
         auto const num_features = features.shape()[1];
 
