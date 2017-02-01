@@ -120,7 +120,6 @@ pythonConstructRandomForest3(
     return rf;
 }
 
-
 // prediction
 NumpyAnyArray 
 pythonPredictProbabilities(const RandomForestType & rf,

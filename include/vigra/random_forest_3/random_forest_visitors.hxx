@@ -39,6 +39,7 @@
 #include <memory>
 #include "../multi_array.hxx"
 #include "../multi_shape.hxx"
+#include <typeinfo>
 
 
 namespace vigra
@@ -324,15 +325,16 @@ public:
      */
     template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
     void visit_after_tree(RF & rf,
-                          FEATURES & features,
-                          LABELS & labels,
+                          const FEATURES & features,
+                          const LABELS & labels,
                           WEIGHTS & /*weights*/)
     {
         // Non-const types of features and labels.
         typedef typename std::remove_const<FEATURES>::type Features;
         typedef typename std::remove_const<LABELS>::type Labels;
-
+        
         typedef typename Features::value_type FeatureType;
+        typedef typename Labels::value_type LabelType;
 
         auto const num_features = features.shape()[1];
 
@@ -346,8 +348,7 @@ public:
 
         // Compute (standard and class-wise) out-of-bag success rate with the original sample.
         MultiArray<1, double> oob_right(Shape1(rf.num_classes()+1), 0.0);
-        Labels pred = Labels( Shape1(num_oobs) ); // extra parantheses due to "most vexing parse"
-        // FIXME this causes a compiler error (says that pred is an rvalue)
+        vigra::MultiArray<1,int> pred( (Shape1(num_oobs)) );
         rf.predict(feats, pred, 1);
         for (size_t i = 0; i < (size_t)labs.size(); ++i)
         {

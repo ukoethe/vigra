@@ -328,6 +328,7 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl
     // instantiate the accumulation function and the vector to store the tree node results
     ACC acc;
     std::vector<AccInputType> tree_results;
+    tree_results.reserve(tree_indices.size());
     auto const sub_features = features.template bind<0>(i);
     
     // loop over the trees
@@ -339,7 +340,7 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl
             size_t const child_index = split_tests_.at(node)(sub_features);
             node = graph_.getChild(node, child_index);
         }
-        tree_results.push_back(node_responses_.at(node));
+        tree_results.emplace_back(node_responses_.at(node));
     }
 
     // write the tree results into the probabilities
