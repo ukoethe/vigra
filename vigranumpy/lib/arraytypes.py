@@ -782,7 +782,7 @@ class VigraArray(numpy.ndarray):
                 clip = False
             if m == M:
                 return res
-            f = 255.0 // (M - m)
+            f = 255.0 / (M - m)
             img = f * (img - m)
             if clip:
                 img = numpy.minimum(255.0, numpy.maximum(0.0, img))
