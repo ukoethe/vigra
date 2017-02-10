@@ -62,10 +62,13 @@ public:
         dim_(dim),
         val_(val)
     {}
-    size_t operator()(MultiArrayView<1, T> const & features) const
+    
+    template<typename FEATURES>
+    size_t operator()(FEATURES const & features) const
     {
         return features(dim_) <= val_ ? 0 : 1;
     }
+    
     size_t dim_;
     T val_;
 };
@@ -363,7 +366,7 @@ public:
     }
 
     template <typename LABELS, typename WEIGHTS, typename ITER>
-    double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
+    double region_score(LABELS const & /*labels*/, WEIGHTS const & /*weights*/, ITER /*begin*/, ITER /*end*/) const
     {
         vigra_fail("EntropyScore::region_score(): Not implemented yet.");
         return 0.0; // FIXME
@@ -379,7 +382,7 @@ public:
 class KolmogorovSmirnovScore
 {
 public:
-    double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double n_total, double n_left) const
+    double operator()(std::vector<double> const & priors, std::vector<double> const & counts, double /*n_total*/, double /*n_left*/) const // Fix unused parameter warning, but leave in to not break compatibility with overall API
     {
         double const eps = 1e-10;
         double nnz = 0;
@@ -413,7 +416,7 @@ public:
     }
 
     template <typename LABELS, typename WEIGHTS, typename ITER>
-    double region_score(LABELS const & labels, WEIGHTS const & weights, ITER begin, ITER end) const
+    double region_score(LABELS const & /*labels*/, WEIGHTS const & /*weights*/, ITER /*begin*/, ITER /*end*/) const
     {
         vigra_fail("KolmogorovSmirnovScore::region_score(): Region score not available for the Kolmogorov-Smirnov split.");
         return 0.0;
@@ -438,7 +441,7 @@ public:
 
 // Return true if the given node is pure.
 template <typename LABELS, typename ITER>
-bool is_pure(LABELS const & labels, RFNodeDescription<ITER> const & desc)
+bool is_pure(LABELS const & /*labels*/, RFNodeDescription<ITER> const & desc)
 {
     bool found = false;
     for (auto n : desc.priors_)
@@ -530,7 +533,7 @@ public:
     }
 
     template <typename LABELS, typename ARR>
-    bool operator()(LABELS const & labels, RFNodeDescription<ARR> const & desc)
+    bool operator()(LABELS const & /*labels*/, RFNodeDescription<ARR> const & desc) // Fix unused parameter, but leave in for API compatability
     {
         typedef typename ARR::value_type value_type;
 

@@ -111,21 +111,21 @@ public:
 
     /// \brief Predict the given data and return the average number of split comparisons.
     /// \note labels must be a 1-D array with size <tt>features.shape(0)</tt>.
-    double predict(
+    void predict(
         FEATURES const & features,
         LABELS & labels,
         int n_threads = -1,
-        std::vector<size_t> const & tree_indices = std::vector<size_t>()
+        const std::vector<size_t> & tree_indices = std::vector<size_t>()
     ) const;
 
     /// \brief Predict the probabilities of the given data and return the average number of split comparisons.
     /// \note probs should have the shape (features.shape()[0], num_classes).
     template <typename PROBS>
-    double predict_probs(
+    void predict_probabilities(
         FEATURES const & features,
         PROBS & probs,
         int n_threads = -1,
-        std::vector<size_t> tree_indices = std::vector<size_t>()
+        const std::vector<size_t> & tree_indices = std::vector<size_t>()
     ) const;
 
     /// \brief For each data point in features, compute the corresponding leaf ids and return the average number of split comparisons.
@@ -135,7 +135,7 @@ public:
         FEATURES const & features,
         IDS & ids,
         int n_threads = -1,
-        std::vector<size_t> tree_indices = std::vector<size_t>()
+        const std::vector<size_t> tree_indices = std::vector<size_t>()
     ) const;
 
     /// \brief Return the number of nodes.
@@ -154,6 +154,12 @@ public:
     size_t num_classes() const
     {
         return problem_spec_.num_classes_;
+    }
+    
+    /// \brief Return the number of classes.
+    size_t num_features() const
+    {
+        return problem_spec_.num_features_;
     }
 
     /// \brief The graph structure.
@@ -182,6 +188,13 @@ private:
         size_t to,
         INDICES const & tree_indices
     ) const;
+
+    template<typename PROBS>
+    void predict_probabilities_impl(
+        FEATURES const & features,
+        PROBS & probs,
+        const size_t i,
+        const std::vector<size_t> & tree_indices) const;
 
 };
 
@@ -228,12 +241,14 @@ void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::merge(
     }
 }
 
+// FIXME TODO we don't support the selection of tree indices any more in predict_probabilities, might be a good idea
+// to re-enable this.
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
-double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
+void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
     FEATURES const & features,
     LABELS & labels,
     int n_threads,
-    std::vector<size_t> const & tree_indices
+    const std::vector<size_t> & tree_indices
 ) const {
     vigra_precondition(features.shape()[0] == labels.shape()[0],
                        "RandomForest::predict(): Shape mismatch between features and labels.");
@@ -241,7 +256,7 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
                        "RandomForest::predict(): Number of features in prediction differs from training.");
 
     MultiArray<2, double> probs(Shape2(features.shape()[0], problem_spec_.num_classes_));
-    double const average_split_counts = predict_probs(features, probs, n_threads, tree_indices);
+    predict_probabilities(features, probs, n_threads, tree_indices);
     for (size_t i = 0; i < (size_t)features.shape()[0]; ++i)
     {
         auto const sub_probs = probs.template bind<0>(i);
@@ -249,55 +264,88 @@ double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict(
         size_t const label = std::distance(sub_probs.begin(), it);
         labels(i) = problem_spec_.distinct_classes_[label];
     }
-    return average_split_counts;
+}
+
+
+// FIXME TODO we don't support the selection of tree indices any more in predict_probabilities, might be a good idea
+// to re-enable this.
+template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
+template <typename PROBS>
+void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities(
+    FEATURES const & features,
+    PROBS & probs,
+    int n_threads,
+    const std::vector<size_t> & tree_indices
+) const {
+    vigra_precondition(features.shape()[0] == probs.shape()[0],
+                       "RandomForest::predict_probabilities(): Shape mismatch between features and probabilities.");
+    vigra_precondition((size_t)features.shape()[1] == problem_spec_.num_features_,
+                       "RandomForest::predict_probabilities(): Number of features in prediction differs from training.");
+    vigra_precondition((size_t)probs.shape()[1] == problem_spec_.num_classes_,
+                       "RandomForest::predict_probabilities(): Number of labels in probabilities differs from training.");
+
+    // By default, actual_tree_indices is empty. In that case we want to use all trees. 
+    // We need to make a copy. I really don't know how the old code did compile...
+    std::vector<size_t> tree_indices_cpy(tree_indices);
+    if (tree_indices_cpy.size() == 0)
+    {
+        tree_indices_cpy.resize(graph_.numRoots());
+        std::iota(tree_indices_cpy.begin(), tree_indices_cpy.end(), 0);
+    }
+    else {
+        // Check the tree indices.
+        std::sort(tree_indices_cpy.begin(), tree_indices_cpy.end());
+        tree_indices_cpy.erase(std::unique(tree_indices_cpy.begin(), tree_indices_cpy.end()), tree_indices_cpy.end());
+        for (auto i : tree_indices_cpy)
+            vigra_precondition(i < graph_.numRoots(), "RandomForest::leaf_ids(): Tree index out of range.");
+    }
+    
+    size_t const num_instances = features.shape()[0];
+    
+    if (n_threads == -1)
+        n_threads = std::thread::hardware_concurrency();
+    if (n_threads < 1)
+        n_threads = 1;
+    
+    parallel_foreach(
+        n_threads,
+        num_instances,
+        [&features,&probs,&tree_indices_cpy,this](size_t, size_t i) {
+            this->predict_probabilities_impl(features, probs, i, tree_indices_cpy);
+        }
+    );
 }
 
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>
 template <typename PROBS>
-double RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probs(
+void RandomForest<FEATURES, LABELS, SPLITTESTS, ACC>::predict_probabilities_impl(
     FEATURES const & features,
     PROBS & probs,
-    int n_threads,
-    std::vector<size_t> tree_indices
+    const size_t i,
+    const std::vector<size_t> & tree_indices
 ) const {
-    vigra_precondition(features.shape()[0] == probs.shape()[0],
-                       "RandomForest::predict_probs(): Shape mismatch between features and probabilities.");
-    vigra_precondition((size_t)features.shape()[1] == problem_spec_.num_features_,
-                       "RandomForest::predict_probs(): Number of features in prediction differs from training.");
-    vigra_precondition((size_t)probs.shape()[1] == problem_spec_.num_classes_,
-                       "RandomForest::predict_probs(): Number of labels in probabilities differs from training.");
 
-    // Check the tree indices.
-    std::sort(tree_indices.begin(), tree_indices.end());
-    tree_indices.erase(std::unique(tree_indices.begin(), tree_indices.end()), tree_indices.end());
-    for (auto i : tree_indices)
-        vigra_precondition(i < graph_.numRoots(), "RandomForest::predict_probs(): Tree index out of range.");
-
-    // By default, actual_tree_indices is empty. In that case we want to use all trees.
-    if (tree_indices.size() == 0)
-    {
-        tree_indices.resize(graph_.numRoots());
-        std::iota(tree_indices.begin(), tree_indices.end(), 0);
-    }
-
-    // Get the leaf ids.
-    size_t const num_roots = graph_.numRoots();
-    MultiArray<2, size_t> ids(Shape2(features.shape()[0], num_roots));
-    double const average_split_counts = leaf_ids(features, ids, n_threads, tree_indices);
-
-    // Compute the probabilities.
+    // instantiate the accumulation function and the vector to store the tree node results
     ACC acc;
-    for (size_t i = 0; i < (size_t)features.shape()[0]; ++i)
+    std::vector<AccInputType> tree_results;
+    tree_results.reserve(tree_indices.size());
+    auto const sub_features = features.template bind<0>(i);
+    
+    // loop over the trees
+    for (auto k : tree_indices)
     {
-        std::vector<AccInputType> tree_results;
-        for (auto k : tree_indices)
+        Node node = graph_.getRoot(k);
+        while (graph_.outDegree(node) > 0)
         {
-            tree_results.push_back(node_responses_.at(Node(ids(i, k))));
+            size_t const child_index = split_tests_.at(node)(sub_features);
+            node = graph_.getChild(node, child_index);
         }
-        auto sub_probs = probs.template bind<0>(i);
-        acc(tree_results.begin(), tree_results.end(), sub_probs.begin());
+        tree_results.emplace_back(node_responses_.at(node));
     }
-    return average_split_counts;
+
+    // write the tree results into the probabilities
+    auto sub_probs = probs.template bind<0>(i);
+    acc(tree_results.begin(), tree_results.end(), sub_probs.begin());    
 }
 
 template <typename FEATURES, typename LABELS, typename SPLITTESTS, typename ACC>

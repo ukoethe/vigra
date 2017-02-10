@@ -168,7 +168,7 @@ struct RandomForestTests
         auto rf = random_forest(train_x, train_y, options, create_visitor(oob));
         should(oob.oob_err_ > 0.02 && oob.oob_err_ < 0.04); // FIXME: Use a statistical approach here.
     }
-
+    
     void test_var_importance_visitor()
     {
         // Create a (noisy) grid with datapoints and split the classes according to an oblique line.

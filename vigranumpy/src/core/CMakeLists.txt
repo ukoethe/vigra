@@ -67,9 +67,10 @@ ENDIF(WITH_LEMON)
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES
     random_forest_old.cxx
     random_forest.cxx
+    random_forest_3.cxx
     learning.cxx
   LIBRARIES
-    ${VIGRANUMPY_IMPEX_LIBRARIES}
+    ${VIGRANUMPY_IMPEX_LIBRARIES} ${VIGRANUMPY_THREAD_LIBRARIES}
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(colors SOURCES

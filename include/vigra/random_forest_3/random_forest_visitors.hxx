@@ -39,6 +39,7 @@
 #include <memory>
 #include "../multi_array.hxx"
 #include "../multi_shape.hxx"
+#include <typeinfo>
 
 
 namespace vigra
@@ -86,7 +87,7 @@ public:
      * @param rf the trained random forest
      */
     template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
-    void visit_after_training(VISITORS & v, RF & rf, FEATURES & features, LABELS & labels)
+    void visit_after_training(VISITORS &, RF &, const FEATURES &, const LABELS &)
     {}
 
     /**
@@ -95,17 +96,17 @@ public:
      * @param weights the actual instance weights (after bootstrap sampling and class weights)
      */
     template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_before_tree(TREE & tree, FEATURES & features, LABELS & labels, WEIGHTS & weights)
+    void visit_before_tree(TREE &, FEATURES &, LABELS &, WEIGHTS &)
     {}
 
     /**
      * @brief Do something after a tree has been learned.
      */
     template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
-    void visit_after_tree(RF & rf,
-                          FEATURES & features,
-                          LABELS & labels,
-                          WEIGHTS & weights)
+    void visit_after_tree(RF &,
+                          FEATURES &,
+                          LABELS &,
+                          WEIGHTS &)
     {}
 
     /**
@@ -117,14 +118,14 @@ public:
               typename WEIGHTS,
               typename SCORER,
               typename ITER>
-    void visit_after_split(TREE & tree,
-                           FEATURES & features,
-                           LABELS & labels,
-                           WEIGHTS & weights,
-                           SCORER & scorer,
-                           ITER begin,
-                           ITER split,
-                           ITER end)
+    void visit_after_split(TREE &,
+                           FEATURES &,
+                           LABELS &,
+                           WEIGHTS &,
+                           SCORER &,
+                           ITER,
+                           ITER,
+                           ITER)
     {}
 
     /**
@@ -177,9 +178,9 @@ public:
      */
     template <typename TREE, typename FEATURES, typename LABELS, typename WEIGHTS>
     void visit_before_tree(
-            TREE & tree,
-            FEATURES & features,
-            LABELS & labels,
+            TREE & /*tree*/,
+            FEATURES & /*features*/,
+            LABELS & /*labels*/,
             WEIGHTS & weights
     ){
         double const EPS = 1e-20;
@@ -207,13 +208,13 @@ public:
     void visit_after_training(
             VISITORS & visitors,
             RF & rf,
-            FEATURES & features,
-            LABELS & labels
+            const FEATURES & features,
+            const LABELS & labels
     ){
         // Check the input sizes.
         vigra_precondition(rf.num_trees() > 0, "OOBError::visit_after_training(): Number of trees must be greater than zero after training.");
         vigra_precondition(visitors.size() == rf.num_trees(), "OOBError::visit_after_training(): Number of visitors must be equal to number of trees.");
-        auto const num_instances = features.shape()[0];
+        size_t const num_instances = features.shape()[0];
         auto const num_features = features.shape()[1];
         for (auto vptr : visitors)
             vigra_precondition(vptr->is_in_bag_.size() == num_instances, "OOBError::visit_after_training(): Some visitors have the wrong number of data points.");
@@ -269,7 +270,7 @@ public:
     void visit_before_tree(
             TREE & tree,
             FEATURES & features,
-            LABELS & labels,
+            LABELS & /*labels*/,
             WEIGHTS & weights
     ){
         // Resize the variable importance array.
@@ -304,12 +305,12 @@ public:
               typename SCORER,
               typename ITER>
     void visit_after_split(TREE & tree,
-                           FEATURES & features,
+                           FEATURES & /*features*/,
                            LABELS & labels,
                            WEIGHTS & weights,
                            SCORER & scorer,
                            ITER begin,
-                           ITER split,
+                           ITER /*split*/,
                            ITER end)
     {
         // Update the impurity decrease.
@@ -324,14 +325,14 @@ public:
      */
     template <typename RF, typename FEATURES, typename LABELS, typename WEIGHTS>
     void visit_after_tree(RF & rf,
-                          FEATURES & features,
-                          LABELS & labels,
-                          WEIGHTS & weights)
+                          const FEATURES & features,
+                          const LABELS & labels,
+                          WEIGHTS & /*weights*/)
     {
         // Non-const types of features and labels.
         typedef typename std::remove_const<FEATURES>::type Features;
         typedef typename std::remove_const<LABELS>::type Labels;
-
+        
         typedef typename Features::value_type FeatureType;
 
         auto const num_features = features.shape()[1];
@@ -346,7 +347,7 @@ public:
 
         // Compute (standard and class-wise) out-of-bag success rate with the original sample.
         MultiArray<1, double> oob_right(Shape1(rf.num_classes()+1), 0.0);
-        Labels pred(( Shape1(num_oobs) )); // extra parantheses due to "most vexing parse"
+        vigra::MultiArray<1,int> pred( (Shape1(num_oobs)) );
         rf.predict(feats, pred, 1);
         for (size_t i = 0; i < (size_t)labs.size(); ++i)
         {
@@ -402,8 +403,8 @@ public:
     void visit_after_training(
             VISITORS & visitors,
             RF & rf,
-            FEATURES & features,
-            LABELS & labels
+            const FEATURES & features,
+            const LABELS & /*labels*/
     ){
         vigra_precondition(rf.num_trees() > 0, "VariableImportance::visit_after_training(): Number of trees must be greater than zero after training.");
         vigra_precondition(visitors.size() == rf.num_trees(), "VariableImportance::visit_after_training(): Number of visitors must be equal to number of trees.");
@@ -557,7 +558,7 @@ public:
     }
 
     template <typename VISITORS, typename RF, typename FEATURES, typename LABELS>
-    void visit_after_training(VISITORS & v, RF & rf, FEATURES & features, LABELS & labels)
+    void visit_after_training(VISITORS & v, RF & rf, const FEATURES & features, const LABELS & labels)
     {
         typedef typename VISITORS::value_type VisitorNodeType;
         typedef typename VisitorNodeType::Visitor VisitorType;
