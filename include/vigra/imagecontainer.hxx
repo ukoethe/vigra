@@ -763,7 +763,7 @@ public:
         /** swap contents of this array with the contents of other
             (STL-Container interface)
          */
-    void swap(const ImagePyramid<ImageType, Alloc> &other)
+    void swap(ImagePyramid<ImageType, Alloc> &other)
     {
         images_.swap(other.images_);
         std::swap(lowestLevel_, other.lowestLevel_);
