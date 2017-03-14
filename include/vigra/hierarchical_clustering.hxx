@@ -283,7 +283,6 @@ class EdgeWeightedUcm
     vigra::ChangeablePriorityQueue< ValueType > pq_;
     ValueType wardness_;;
 };
-
     /// \brief  This Cluster Operator is a MONSTER.
     /// It can really do a lot.
     ///
@@ -381,7 +380,9 @@ class EdgeWeightedUcm
             wardness_(wardness),
             gamma_(gamma),
             sameLabelMultiplier_(sameLabelMultiplier),
-            metric_(metricType)
+            metric_(metricType),
+            useStopWeight_(false),
+            stopWeight_()
         {
             typedef typename MergeGraph::MergeNodeCallBackType MergeNodeCallBackType;
             typedef typename MergeGraph::MergeEdgeCallBackType MergeEdgeCallBackType;
@@ -412,20 +413,32 @@ class EdgeWeightedUcm
         /// \brief will be called via callbacks from mergegraph
         void mergeEdges(const Edge & a,const Edge & b){
             // update features / weigts etc
+            bool done = false;
             const BaseGraphEdge aa=EdgeHelper::itemToGraphItem(mergeGraph_,a);
             const BaseGraphEdge bb=EdgeHelper::itemToGraphItem(mergeGraph_,b);
-            EdgeIndicatorReference va=edgeIndicatorMap_[aa];
-            EdgeIndicatorReference vb=edgeIndicatorMap_[bb];
-            va*=edgeSizeMap_[aa];
-            vb*=edgeSizeMap_[bb];
-
-
-            va+=vb;
-            edgeSizeMap_[aa]+=edgeSizeMap_[bb];
-            va/=(edgeSizeMap_[aa]);
-            vb/=edgeSizeMap_[bb];
-            // delete b from pq
-            pq_.deleteItem(b.id());
+            if(!isLifted_.empty()){
+                const bool isLiftedA =  isLifted_[mergeGraph_.graph().id(aa)];
+                const bool isLiftedB =  isLifted_[mergeGraph_.graph().id(bb)];
+                if(isLiftedA && isLiftedB){
+                    pq_.deleteItem(b.id());
+                    done = true;
+                }
+                isLifted_[mergeGraph_.graph().id(aa)] = isLiftedA && isLiftedB;
+            }
+            if(!done){
+                
+                EdgeIndicatorReference va=edgeIndicatorMap_[aa];
+                EdgeIndicatorReference vb=edgeIndicatorMap_[bb];
+                va*=edgeSizeMap_[aa];
+                vb*=edgeSizeMap_[bb];
+                
+                va+=vb;
+                edgeSizeMap_[aa]+=edgeSizeMap_[bb];
+                va/=(edgeSizeMap_[aa]);
+                vb/=edgeSizeMap_[bb];
+                // delete b from pq
+                pq_.deleteItem(b.id());
+            }
         }
 
         /// \brief will be called via callbacks from mergegraph
@@ -500,6 +513,11 @@ class EdgeWeightedUcm
                 pq_.deleteItem(minLabel);
                 minLabel = pq_.top();
             }
+            //std::cout<<"mg e"<<mergeGraph_.edgeNum()<<" mg n"<<mergeGraph_.nodeNum()<<" cw"<< this->contractionWeight()<<"\n";
+            if(!isLifted_.empty()){
+                if(isLifted_[minLabel])
+                    throw std::runtime_error("use lifted edges only if you are DerThorsten or know what you are doing\n");
+            }
             return Edge(minLabel);
         }
 
@@ -521,24 +539,48 @@ class EdgeWeightedUcm
         }
 
         bool done(){
-
             index_type minLabel = pq_.top();
             while(mergeGraph_.hasEdgeId(minLabel)==false){
                 pq_.deleteItem(minLabel);
                 minLabel = pq_.top();
             }
             const ValueType p =  pq_.topPriority();
-
+            if(useStopWeight_){
+                if(p >= stopWeight_){
+                    return true;
+                }
+            }
             return p>= gamma_;
         }
+        template<class ITER>
+        void setLiftedEdges(ITER idsBegin, ITER idsEnd){
+            if(isLifted_.size()<std::size_t(mergeGraph_.graph().maxEdgeId()+1)){
+                isLifted_.resize(mergeGraph_.graph().maxEdgeId()+1,false);
+                std::fill(isLifted_.begin(), isLifted_.end(), false);
+            }
+            while(idsBegin!=idsEnd){
+                isLifted_[*idsBegin] = true;
 
+                const ValueType currentWeight = this->getEdgeWeight(Edge(*idsBegin));
+                pq_.push(*idsBegin,currentWeight);
+                minWeightEdgeMap_[mergeGraph_.graph().edgeFromId(*idsBegin)]=currentWeight;
+                ++idsBegin;
+            }
+        }
+        void enableStopWeight(const ValueType stopWeight){
+            useStopWeight_ = true;
+            stopWeight_ = stopWeight;
+        }
     private:
         ValueType getEdgeWeight(const Edge & e){
-
+            const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
+            if(!isLifted_.empty() && isLifted_[mergeGraph_.graph().id(ee)]){
+                //std::cout<<"found lifted edge\n";
+                return 10000000.0;// std::numeric_limits<ValueType>::infinity();
+            }
             const Node u = mergeGraph_.u(e);
             const Node v = mergeGraph_.v(e);
 
-            const BaseGraphEdge ee=EdgeHelper::itemToGraphItem(mergeGraph_,e);
             const BaseGraphNode uu=NodeHelper::itemToGraphItem(mergeGraph_,u);
             const BaseGraphNode vv=NodeHelper::itemToGraphItem(mergeGraph_,v);
 
@@ -581,6 +623,10 @@ class EdgeWeightedUcm
         ValueType gamma_;
         ValueType sameLabelMultiplier_;
         metrics::Metric<float> metric_;
+
+        std::vector<bool> isLifted_;
+        bool useStopWeight_;
+        ValueType stopWeight_;
     };
 
 
@@ -662,6 +708,7 @@ class ClusteringOptions
         sizeImportance_ = val;
         return *this;
     }
+
 
         /** Metric to be used when transforming node features into cluster distances.
 
@@ -874,6 +921,7 @@ private:
         return timeStampIndexToMergeIndex_[timeStampToIndex(timestamp)];
     }
 
+
     ClusterOperator & clusterOperator_;
     Parameter          param_;
     MergeGraph & mergeGraph_;
@@ -889,7 +937,9 @@ private:
     MergeTreeEncoding mergeTreeEndcoding_;
 
 
+
 };
+
 
 /********************************************************/
 /*                                                      */
