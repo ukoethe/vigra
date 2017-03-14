@@ -552,6 +552,7 @@ class EdgeWeightedUcm
             }
             return p>= gamma_;
         }
+
         template<class ITER>
         void setLiftedEdges(ITER idsBegin, ITER idsEnd){
             if(isLifted_.size()<std::size_t(mergeGraph_.graph().maxEdgeId()+1)){
@@ -567,6 +568,7 @@ class EdgeWeightedUcm
                 ++idsBegin;
             }
         }
+
         void enableStopWeight(const ValueType stopWeight){
             useStopWeight_ = true;
             stopWeight_ = stopWeight;
