@@ -165,7 +165,7 @@ void pythonExportHDF5(const RandomForestType & rf,
         const std::string & filename,
         const std::string & pathname)
 {
-    HDF5File h5ctx(filename, HDF5File::New );
+    HDF5File h5ctx(filename, HDF5File::ReadWrite );
     random_forest_export_HDF5(rf, h5ctx, pathname);
 }
 #endif // HasHDF5
