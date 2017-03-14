@@ -564,7 +564,10 @@ pythonEccentricityTransform(const NumpyArray<N, T> & image,
 {
     res.reshapeIfEmpty(image.taggedShape(),
                        "eccentricityTransform(): Output array has wrong shape.");
-    eccentricityTransformOnLabels(image, res);
+    {
+        PyAllowThreads _pythread;
+        eccentricityTransformOnLabels(image, res);
+    }
     return res;
 }
 
@@ -576,7 +579,10 @@ pythonEccentricityCenters(const NumpyArray<N, T> & image)
 {
     typedef typename MultiArrayShape<N>::type Point;
     ArrayVector<Point> centers;
-    eccentricityCenters(image, centers);
+    {
+        PyAllowThreads _pythread;
+        eccentricityCenters(image, centers);
+    }
 
     python::list centerlist = python::list();
     for (decltype(centers.size()) i=0; i<centers.size(); ++i) {
@@ -596,7 +602,10 @@ pythonEccentricityTransformWithCenters(const NumpyArray<N, T> & image,
     res.reshapeIfEmpty(image.taggedShape(),
                        "eccentricityTransformWithCenters(): Output array has wrong shape.");
     ArrayVector<Point> centers;
-    eccentricityTransformOnLabels(image, res, centers);
+    {
+        PyAllowThreads _pythread;
+        eccentricityTransformOnLabels(image, res, centers);
+    }
 
     python::list centerlist = python::list();
     for (decltype(centers.size()) i=0; i<centers.size(); ++i) {
