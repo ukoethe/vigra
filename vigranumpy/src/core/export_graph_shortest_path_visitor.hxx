@@ -212,7 +212,7 @@ public:
         exportShortestPathAlgorithms();
     }
 
-        static ShortestPathDijkstraType * pyShortestPathDijkstraTypeFactory(const Graph & g){
+    static ShortestPathDijkstraType * pyShortestPathDijkstraTypeFactory(const Graph & g){
         return new ShortestPathDijkstraType(g);
     }
 
@@ -268,7 +268,10 @@ public:
         // comput length of the path
         const size_t length = pathLength(Node(source),Node(target),predMap);
         nodeIdPath.reshapeIfEmpty(typename NumpyArray<1,Singleband<UInt32> >::difference_type(length));
-        pathIds(sp.graph(),source,target,predMap,nodeIdPath);
+        {
+            PyAllowThreads _pythread;
+            pathIds(sp.graph(),source,target,predMap,nodeIdPath);
+        }
         return nodeIdPath;
         
     }
@@ -283,7 +286,10 @@ public:
         // comput length of the path
         const size_t length = pathLength(Node(source),Node(target),predMap);
         nodeCoordinates.reshapeIfEmpty(typename NumpyArray<1,Singleband<UInt32> >::difference_type(length));
-        pathCoordinates(sp.graph(),source,target,predMap,nodeCoordinates);
+        {
+            PyAllowThreads _pythread;
+            pathCoordinates(sp.graph(),source,target,predMap,nodeCoordinates);
+        }
         return nodeCoordinates;
     }
 
@@ -293,11 +299,13 @@ public:
         PyNode source,
         PyNode target
     ){
-        // numpy arrays => lemon maps
-        FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
-
-        // run algorithm itself
-        sp.run(edgeWeightsArrayMap,source,target);
+        {
+            PyAllowThreads _pythread;
+            // numpy arrays => lemon maps
+            FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
+            // run algorithm itself
+            sp.run(edgeWeightsArrayMap,source,target);
+        }
     }
 
     static void runShortestPathNoTarget(
@@ -305,15 +313,17 @@ public:
         FloatEdgeArray edgeWeightsArray,
         PyNode source
     ){
-        // numpy arrays => lemon maps
-        FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
-
-        // run algorithm itself
-        sp.run(edgeWeightsArrayMap,source);
+        {
+            PyAllowThreads _pythread;
+            // numpy arrays => lemon maps
+            FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
+            // run algorithm itself
+            sp.run(edgeWeightsArrayMap,source);
+        }
     }
 
 
-        static void runShortestPathImplicit(
+    static void runShortestPathImplicit(
         ShortestPathDijkstraType & sp,
         const ImplicitEdgeMap & edgeWeights,
         PyNode source,
@@ -322,8 +332,11 @@ public:
         // numpy arrays => lemon maps
         //FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
 
-        // run algorithm itself
-        sp.run(edgeWeights,source,target);
+        {
+            PyAllowThreads _pythread;
+            // run algorithm itself
+            sp.run(edgeWeights,source,target);
+        }
     }
 
     static void runShortestPathNoTargetImplicit(
@@ -335,7 +348,10 @@ public:
         //FloatEdgeArrayMap edgeWeightsArrayMap(sp.graph(),edgeWeightsArray);
 
         // run algorithm itself
-        sp.run(edgeWeights,source);
+        {
+            PyAllowThreads _pythread;
+            sp.run(edgeWeights,source);
+        }
     }
 
 };
