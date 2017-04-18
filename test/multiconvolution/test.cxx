@@ -60,6 +60,7 @@
 #include "vigra/multi_resize.hxx"
 #include "vigra/separableconvolution.hxx"
 #include "vigra/bordertreatment.hxx"
+#include "vigra/recursive_multi_convolution.hxx"
 
 using namespace vigra;
 using namespace vigra::functor;
@@ -370,7 +371,7 @@ struct MultiArraySeparableConvolutionTest
         if( ! useGaussian )
             symmetricGradientMultiArray(src, grad);
         else
-            gaussianGradientMultiArray(src, grad, sigma );
+            gaussianGradientMultiArray(src, grad, sigma, ConvolutionOptions<3>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
 
         Image3x3::value_type v;
         v[0] = 1; v[1] = 1; v[2] = 1;
@@ -407,13 +408,13 @@ struct MultiArraySeparableConvolutionTest
         makeRandom(src);
         
         gaussianGradientMagnitude(src, rmgrad, 1.0);
-        gaussianGradientMultiArray(src, grad, 1.0 );
+        gaussianGradientMultiArray(src, grad, 1.0, ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
         transformMultiArray(grad, mgrad, norm(Arg1()));
 
         shouldEqualSequence(mgrad.data(), mgrad.data()+size, rmgrad.data());
 
         rmgrad.init(0);
-        gaussianGradientMagnitude(src, rmgrad, 1.0);
+        gaussianGradientMagnitude(src, rmgrad, 1.0, ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
         shouldEqualSequence(mgrad.data(), mgrad.data()+size, rmgrad.data());
 
         MultiArray<2, TinyVector<double, 3> > rgb(shape);
@@ -424,16 +425,16 @@ struct MultiArraySeparableConvolutionTest
         mgrad.init(0);
         gaussianGradientMagnitude(srcImageRange(rgb), destImage(mgrad), 1.0);
         rmgrad.init(0);
-        gaussianGradientMagnitude(rgb, rmgrad, 1.0);
+        gaussianGradientMagnitude(rgb, rmgrad, 1.0, ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
         shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-14);
 
         rmgrad.init(0);
-        gaussianGradientMagnitude<2>(expanded, rmgrad, 1.0);
+        gaussianGradientMagnitude<2>(expanded, rmgrad, 1.0, ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
         shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-14);
 
         MultiArray<3, Multiband<double> > spectral(Shape3(shape[0], shape[1], 10));
         MultiArrayView<3, Multiband<double> > spectral_expanded(spectral);
-        gaussianGradientMagnitude<2>(spectral_expanded, rmgrad, 1.0);
+        gaussianGradientMagnitude<2>(spectral_expanded, rmgrad, 1.0, ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
     }
 
     void test_laplacian()
@@ -447,12 +448,12 @@ struct MultiArraySeparableConvolutionTest
         makeRandom(src);
         
         laplacianOfGaussian(srcImageRange(src), destImage(rlaplacian), 2.0);
-        laplacianOfGaussianMultiArray(srcMultiArrayRange(src), destMultiArray(laplacian), 2.0 );
+        laplacianOfGaussianMultiArray(srcMultiArrayRange(src), destMultiArray(laplacian), 2.0, ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
 
         shouldEqualSequenceTolerance(laplacian.data(), laplacian.data()+size, rlaplacian.data(), 1e-12);
 
         laplacian = 0;
-        laplacianOfGaussianMultiArray(src, laplacian, 2.0 );
+        laplacianOfGaussianMultiArray(src, laplacian, 2.0,ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
         shouldEqualSequenceTolerance(laplacian.data(), laplacian.data()+size, rlaplacian.data(), 1e-12);
     }
 
@@ -466,10 +467,10 @@ struct MultiArraySeparableConvolutionTest
         MultiArray<2, double> laplacian(src.shape()), divergence(src.shape());
         MultiArray<2, TinyVector<double, 2> > grad(src.shape());
 
-        laplacianOfGaussianMultiArray(src, laplacian, 2.0, ConvolutionOptions<2>().filterWindowSize(5));
+        laplacianOfGaussianMultiArray(src, laplacian, 2.0, ConvolutionOptions<2>().filterWindowSize(5).setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
 
-        gaussianGradientMultiArray(src, grad, sqrt(2.0), ConvolutionOptions<2>().filterWindowSize(5));
-        gaussianDivergenceMultiArray(grad, divergence, sqrt(2.0), ConvolutionOptions<2>().filterWindowSize(5));
+        gaussianGradientMultiArray(src, grad, sqrt(2.0), ConvolutionOptions<2>().filterWindowSize(5).setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
+        gaussianDivergenceMultiArray(grad, divergence, sqrt(2.0), ConvolutionOptions<2>().filterWindowSize(5).setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
 
         divergence -= laplacian;
         MultiArrayView <2, double> center(divergence.subarray(Shape2(10,10), Shape2(-10,-10)));
@@ -495,7 +496,7 @@ struct MultiArraySeparableConvolutionTest
                                 destImage(rhessian, BandAccessor(1)), 
                                 destImage(rhessian, BandAccessor(2)), 
                                 2.0);
-        hessianOfGaussianMultiArray(srcMultiArrayRange(src), destMultiArray(hessian), 2.0 );
+        hessianOfGaussianMultiArray(srcMultiArrayRange(src), destMultiArray(hessian), 2.0, ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
 
         TinyVector<double, 3> epsilon(1e-12, 1e-12, 1e-12);
         shouldEqualSequenceTolerance(hessian.data(), hessian.data()+size, rhessian.data(), epsilon);
@@ -521,12 +522,12 @@ struct MultiArraySeparableConvolutionTest
                         destImage(rst, BandAccessor(1)), 
                         destImage(rst, BandAccessor(2)), 
                         1.5, 3.0);
-        structureTensorMultiArray(srcMultiArrayRange(src), destMultiArray(st), 1.5, 3.0 );
+        structureTensorMultiArray(srcMultiArrayRange(src), destMultiArray(st), 1.5, 3.0, ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
 
         TinyVector<double, 3> epsilon(1e-12, 1e-12, 1e-12);
         shouldEqualSequenceTolerance(st.data(), st.data()+size, rst.data(), epsilon);
 
-        structureTensorMultiArray(src, st1, 1.5, 3.0 );
+        structureTensorMultiArray(src, st1, 1.5, 3.0, ConvolutionOptions<2>().setKernelApproximation(MULTI_CONVOLUTION_KERNEL_FIR));
         shouldEqualSequenceTolerance(st1.data(), st1.data()+size, rst.data(), epsilon);
     }
 
@@ -767,7 +768,8 @@ struct t_func
     virtual double operator()(array_2d & image, const options_2d & opt) const = 0;
     virtual double operator()(array_2d & image,
                               const double sigma_d[2],
-                              const double step_size[2]) const
+                              const double step_size[2],
+                              const MultiConvolutionKernel kernel_approx) const
     {
         // test various ways to create option setter functions.
         options_2d opt;
@@ -777,17 +779,18 @@ struct t_func
         vstep.push_back(step_size[1]);
         opt.resolutionStdDev(sigma_d).stepSize((const double *const)step_size);
         opt.resolutionStdDev(sigma_d).stepSize(vstep);
+        opt.setKernelApproximation(kernel_approx);
 
         return operator()(image, opt);
     }
-    virtual double operator()(array_2d & test_image, double im_scale) const
+    virtual double operator()(array_2d & test_image, double im_scale, MultiConvolutionKernel kernel_approx) const
     {
         double w[2] = { 1.0 / im_scale, 1 };
-        return operator()(test_image, zeros, w);
+        return operator()(test_image, zeros, w, kernel_approx);
     }
-    virtual double operator()(array_2d & image) const
+    virtual double operator()(array_2d & image, MultiConvolutionKernel kernel_approx) const
     {
-        return operator()(image, 1);
+        return operator()(image, 1, kernel_approx);
     }
     virtual std::string name() const = 0;
     virtual void log(logger & log_write) const
@@ -1037,7 +1040,8 @@ void test_upscaled(void (*resize)(const array_2d &, array_2d &),
                    const array_2d & test_image,
                    const t_func & test_f,
                    double im_scale, const cmp_data & cmp,
-                   logger & log_write, logger & log_name)
+                   logger & log_write, logger & log_name,
+                   MultiConvolutionKernel kernel_approx)
 {
 
     log_name("upscaled test");
@@ -1048,12 +1052,12 @@ void test_upscaled(void (*resize)(const array_2d &, array_2d &),
     (*resize)(test_image, x_scaled_image);
 
     write_out(x_scaled_image, "test_any_scaled.png", cmp);
-    double sigma = test_f(x_scaled_image, im_scale);
+    double sigma = test_f(x_scaled_image, im_scale, kernel_approx);
 
     write_out(x_scaled_image, "test_any_scaled_new_f.png", cmp);
 
     array_2d x1_image_b(test_image);
-    test_f(x1_image_b);
+    test_f(x1_image_b, kernel_approx);
     write_out(x1_image_b, "test_any_old_f.png", cmp);
 
     // compare with resampled image
@@ -1069,7 +1073,8 @@ void test_downscaled(void (*resize)(const array_2d &, array_2d &),
                      const array_2d & m2_image_old,
                      const t_func & test_f,
                      double im_scale, const cmp_data & cmp,
-                     logger & log_write, logger & log_name)
+                     logger & log_write, logger & log_name,
+                     MultiConvolutionKernel kernel_approx)
 {
     const double y_scale = 3;
     const double x_scale = im_scale * y_scale;
@@ -1099,12 +1104,12 @@ void test_downscaled(void (*resize)(const array_2d &, array_2d &),
 
     const double step_size[2] = { x_scale, y_scale };
 
-    double sigma = test_f(downscaled_image, sigmas, step_size);
+    double sigma = test_f(downscaled_image, sigmas, step_size, kernel_approx);
 
     write_out(downscaled_image, "test_downscaled_new_f.png", cmp);
 
     array_2d x1_image_b(test_image);
-    test_f(x1_image_b);
+    test_f(x1_image_b, kernel_approx);
 
     write_out(x1_image_b, "test_any_old_f.png", cmp);
 
@@ -1125,17 +1130,18 @@ void test_any(void (*resize)(const array_2d &, array_2d &),
               const cmp_data & cmp,
               logger & log_write,
               logger & log_name,
-              int test_type)
+              int test_type,
+              MultiConvolutionKernel kernel_approx)
 {
     if (test_type == 0)
     {
         test_upscaled(resize, size_info, test_image, test_f, im_scale,
-                      cmp, log_write, log_name);
+                      cmp, log_write, log_name, kernel_approx);
     }
     else if (test_type == 1)
     {
         test_downscaled(resize, size_info, test_image, test_f, im_scale,
-                        cmp, log_write, log_name);
+                        cmp, log_write, log_name, kernel_approx);
     }
 }
 
@@ -1159,6 +1165,7 @@ struct args
 std::string perform_test(int argc, test_data & argv,
                          const vigra::ImageImportInfo & import_info,
                          const array_2d & test_image,
+                         MultiConvolutionKernel kernel_approx,
                          bool run_test = true)
 {
     logger log_name(!run_test);
@@ -1193,19 +1200,19 @@ std::string perform_test(int argc, test_data & argv,
     {
         log_name("resizing without interpolation");
         test_any(&resize_0, import_info, test_image, *test, im_scale,
-                    cmp, log_write, log_name, test_type);
+                    cmp, log_write, log_name, test_type, kernel_approx);
     }
     else if (intp_type == 3)
     {
         log_name("resizing with spline3");
         test_any(&resize_n<3>, import_info, test_image, *test, im_scale,
-                    cmp, log_write, log_name, test_type);
+                    cmp, log_write, log_name, test_type, kernel_approx);
     }
     else if (intp_type == 5)
     {
         log_name("resizing with spline5");
         test_any(&resize_n<5>, import_info, test_image, *test, im_scale,
-                    cmp, log_write, log_name, test_type);
+                    cmp, log_write, log_name, test_type, kernel_approx);
     }
     if (log_name)
         return log_name.str();
@@ -1219,20 +1226,21 @@ struct scaled_test : public vigra::detail::test_functor<scaled_test>
     test_data & argv;
     const vigra::ImageImportInfo & import_info;
     const array_2d & test_image;
+    MultiConvolutionKernel kernel_approx_;
 
     scaled_test(test_data & a,  const vigra::ImageImportInfo & ii,
-                                                             const array_2d & t)
-        : argv(a), import_info(ii), test_image(t) {}
+                                                             const array_2d & t, MultiConvolutionKernel kernel_approx)
+        : argv(a), import_info(ii), test_image(t), kernel_approx_(kernel_approx) {}
     void operator()()
     {
         // std::cout << perform_test(argc, argv, import_info, test_image)
         // << "\n";
-        perform_test(argc, argv, import_info, test_image);
+        perform_test(argc, argv, import_info, test_image, kernel_approx_);
     }
     std::string str()
     {
         return "MultiArraySeparableConvolutionScaledTestSuite ["
-               + perform_test(argc, argv, import_info, test_image, false) + "]";
+               + perform_test(argc, argv, import_info, test_image, kernel_approx_, false) + "]";
     }
 };
 const int scaled_test::argc = sizeof(test_data) / sizeof(double);
@@ -1279,8 +1287,8 @@ struct MultiArraySeparableConvolutionScaledTestSuite : public vigra::test_suite
     vigra::ImageImportInfo import_info;
     array_2d               test_image;
 
-    MultiArraySeparableConvolutionScaledTestSuite()
-        : vigra::test_suite("MultiArraySeparableConvolutionScaledTestSuite"),
+    MultiArraySeparableConvolutionScaledTestSuite(MultiConvolutionKernel kernel_approx, const char *suit_name = "MultiArraySeparableConvolutionScaledTestSuite")
+        : vigra::test_suite(suit_name),
           import_info("oi_single.gif"),
           test_image(shape_2d(import_info.width(), import_info.height()))
         {
@@ -1289,7 +1297,7 @@ struct MultiArraySeparableConvolutionScaledTestSuite : public vigra::test_suite
             for (test_data* p = tests; (*p)[0]; ++p)
             {
                 scaled_test* test
-                                 = new scaled_test(*p, import_info, test_image);
+                                 = new scaled_test(*p, import_info, test_image, kernel_approx);
                 add(vigra::create_test_case(*test, test->str().c_str()));
             }
         }
@@ -1297,17 +1305,198 @@ struct MultiArraySeparableConvolutionScaledTestSuite : public vigra::test_suite
 
 //--------------------------------------------------------
 
+
+template <typename ConvolutionKernel>
+struct MultiArraySeparableRecursiveConvolutionTest
+{
+
+    typedef float PixelType;
+
+    typedef TinyVector<PixelType,3> VectorPixelType;
+    typedef MultiArray<3, VectorPixelType> Image3x3;
+
+    typedef MultiArray<3,PixelType> Image3D;
+    typedef Image3D::difference_type Size3;
+
+    typedef BasicImage<PixelType> Image2D;
+    typedef Image2D::difference_type Size2;
+
+
+    // - - - - - - - - - - - - - - - - - - - - - - - -
+
+    template<class Image>
+    void makeRandom( Image &image )
+    {
+        typedef typename Image::value_type T;
+
+        int size = image.size();
+        for( int k = 0; k < size; ++k ) 
+        {
+            typedef typename NumericTraits<typename Image::value_type>::isIntegral isIntegral;
+            if(isIntegral::value)
+                image[k] = (T)randomMT19937().uniformInt(256);
+            else
+                image[k] = (T)randomMT19937().uniform();
+        }
+    }
+
+    void testBorder(BorderTreatmentMode border_treatment)
+    {
+        ConvolutionKernel kernel;
+        kernel.initGaussian(10.0);
+        MultiArray<1, double> src(100), src_copy(100 + kernel.right() - kernel.left()), res(100), res_copy(100 + kernel.right() - kernel.left());
+
+        makeRandom(src);
+
+        vigra::detail::copyLineWithBorderTreatment(src.traverser_begin(), src.traverser_end(), StandardValueAccessor<double>(),
+            src_copy.traverser_begin(), StandardValueAccessor<double>(), 0, 100, kernel.left(), kernel.right(), border_treatment);
+
+        kernel.setBorderTreatment(border_treatment);
+        separableConvolveMultiArray(srcMultiArrayRange(src), destMultiArray(res), kernel);
+
+        kernel.setBorderTreatment(BORDER_TREATMENT_ZEROPAD);
+        separableConvolveMultiArray(srcMultiArrayRange(src_copy), destMultiArray(res_copy), kernel);
+
+        shouldEqualSequence(res.begin(), res.end(), res_copy.begin() - kernel.left());
+    }
+
+    void testBorder(void)
+    {
+        testBorder(BORDER_TREATMENT_ZEROPAD);
+        testBorder(BORDER_TREATMENT_REPEAT);
+        testBorder(BORDER_TREATMENT_REFLECT);
+        testBorder(BORDER_TREATMENT_WRAP);
+    }
+
+    void testScaling(void)
+    {
+        MultiArray<1, double> src(100), res(100), res_scaled(100);
+        makeRandom(src);
+
+        ConvolutionKernel kernel;
+
+        kernel.initGaussian(5.0);
+        separableConvolveMultiArray(srcMultiArrayRange(src), destMultiArray(res), kernel);
+
+        kernel.scale(0.5);
+        separableConvolveMultiArray(srcMultiArrayRange(src), destMultiArray(res_scaled), kernel);
+
+        for (unsigned int i = 0; i < 100; ++i)
+            res_scaled(i) *= 2;
+
+        shouldEqualSequence(res.begin(), res.end(), res_scaled.begin());
+    }
+
+    void testGaussian(unsigned int order, double sigma) {
+        ConvolutionKernel kernel_iir;
+        Kernel1D<double> kernel_fir;
+        MultiArray<1, double> src(100), res_iir(100), res_fir(100);
+
+        for (unsigned int i = 0; i < 100; ++i) {
+            src[i] = res_iir[i] = res_fir[i] = 0.0;
+        }
+
+        src[50] = 1.0;
+
+        kernel_iir.initGaussianDerivative(sigma, order);
+        kernel_fir.initGaussianDerivative(sigma, order, 1.0, 9);
+
+        separableConvolveMultiArray(srcMultiArrayRange(src), destMultiArray(res_iir), kernel_iir);
+        separableConvolveMultiArray(srcMultiArrayRange(src), destMultiArray(res_fir), kernel_fir);
+
+        double diff;
+        double tol = 1e-12;
+
+        if (kernel_iir.order == 2)
+            tol = 3e-3;
+        else if(kernel_iir.order == 3)
+            tol = 1e-3;
+        else if(kernel_iir.order == 4)
+            tol = 1e-4;
+
+        for (unsigned int i = 0; i < 100; ++i) {
+            diff = abs(res_fir[i] - res_iir[i]);
+            if (diff > tol) {
+                std::ostringstream msg;
+                msg << "Assertion failed: Sequence items differ at index " << i << " abs(" << res_iir[i] << " - " << res_fir[i] << ") = " << diff << " > " << tol;
+                vigra_fail(msg.str());
+            }
+        }
+    }
+
+    void testSmoothing(void) {
+        testGaussian(0, 5.0);
+        testGaussian(0, 10.0);
+    }
+
+    void test1stDeriv(void) {
+        testGaussian(1, 5.0);
+        testGaussian(1, 10.0);
+    }
+
+    void test2ndDeriv(void) {
+        testGaussian(2, 5.0);
+        testGaussian(2, 10.0);       
+    }
+
+    MultiArraySeparableRecursiveConvolutionTest()
+    {
+    }
+};
+
+
+template <typename ConvolutionKernel>
+struct MultiArraySeparableRecursiveConvolutionTestSuite
+: public vigra::test_suite
+{
+    MultiArraySeparableRecursiveConvolutionTestSuite(const char *name = "MultiArraySeparableRecursiveConvolutionTestSuite")
+        : vigra::test_suite(name)
+        {
+                add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::testBorder ) );
+                add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::testScaling ) );
+                add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::testSmoothing ) );
+                add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::test1stDeriv ) );
+                add( testCase( &MultiArraySeparableRecursiveConvolutionTest<ConvolutionKernel>::test2ndDeriv ) );
+    }
+}; // struct MultiArraySeparableRecursiveConvolutionTestSuite
+
+//--------------------------------------------------------
+
+
 int main(int argc, char ** argv)
 {
-    // run the multi-array separable convolution test suite
-    MultiArraySeparableConvolutionTestSuite test1;
-    int failed = test1.run(vigra::testsToBeExecuted(argc, argv));
-    std::cout << test1.report() << std::endl;
+    int failed = 0;
 
-    // run the multi-array separable scaled-convolution test suite
-    MultiArraySeparableConvolutionScaledTestSuite test2;
-    failed += test2.run(vigra::testsToBeExecuted(argc, argv));
-    std::cout << test2.report() << std::endl;
+    // run the multi-array separable convolution test suite
+    MultiArraySeparableConvolutionTestSuite test_mascts;
+    failed += test_mascts.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_mascts.report() << std::endl;
+
+    // run the multi-array separable scaled-convolution test suite for FIR filters
+    MultiArraySeparableConvolutionScaledTestSuite test_mascsts_fir(MULTI_CONVOLUTION_KERNEL_FIR);
+    failed += test_mascsts_fir.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_mascsts_fir.report() << std::endl;
+
+    // run the multi-array separable scaled-convolution test suite for Deriche IIR filters
+    MultiArraySeparableConvolutionScaledTestSuite test_mascsts_iir_deriche(MULTI_CONVOLUTION_KERNEL_IIR_DERICHE, "MultiArraySeparableConvolutionScaledTestSuiteRecursiveDeriche");
+    failed += test_mascsts_iir_deriche.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_mascsts_iir_deriche.report() << std::endl;
+
+    // run the multi-array separable recursive scaled-convolution test suite for Deriche filters
+    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<2, false, false, false, double>> test_masrcts_deriche2nd("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche2ndOrder");
+    failed += test_masrcts_deriche2nd.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_masrcts_deriche2nd.report() << std::endl;
+
+    // run the multi-array separable recursive scaled-convolution test suite for Deriche filters
+    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<3, false, false, false, double>> test_masrcts_deriche3rd("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche3rdOrder");
+    failed += test_masrcts_deriche3rd.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_masrcts_deriche3rd.report() << std::endl;
+
+    // run the multi-array separable recursive scaled-convolution test suite for Deriche filters
+    MultiArraySeparableRecursiveConvolutionTestSuite<RecursiveConvolutionKernel<4, false, false, false, double>> test_masrcts_deriche4th("MultiArraySeparableRecursiveConvolutionTestSuiteDeriche4thOrder");
+    failed += test_masrcts_deriche4th.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test_masrcts_deriche4th.report() << std::endl;
+
 
     return (failed != 0);
 }
