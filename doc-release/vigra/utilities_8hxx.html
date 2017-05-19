@@ -69,6 +69,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <code>#include &lt;string&gt;</code><br/>
 <code>#include &lt;sstream&gt;</code><br/>
 <code>#include &lt;cctype&gt;</code><br/>
+<code>#include &lt;tuple&gt;</code><br/>
 </div>
 <p><a href="utilities_8hxx_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -87,6 +88,9 @@ Functions</h2></td></tr>
 <tr class="memitem:abefdd44c2db13a2b64f36c82d3647b82"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:abefdd44c2db13a2b64f36c82d3647b82"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacevigra.html#abefdd44c2db13a2b64f36c82d3647b82">asString</a> (T t)(...)</td></tr>
 <tr class="separator:abefdd44c2db13a2b64f36c82d3647b82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf3e07d1dabc99fb5c57b912f751d858"><td class="memTemplParams" colspan="2">template&lt;typename TPL , typename FUNCTOR &gt; </td></tr>
+<tr class="memitem:aaf3e07d1dabc99fb5c57b912f751d858"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacevigra.html#aaf3e07d1dabc99fb5c57b912f751d858">for_each_in_tuple</a> (TPL &amp;&amp;t, FUNCTOR &amp;&amp;f)</td></tr>
+<tr class="separator:aaf3e07d1dabc99fb5c57b912f751d858"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e4131b7743b5801ce7122df2c63a9ba"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacevigra.html#a9e4131b7743b5801ce7122df2c63a9ba">normalizeString</a> (std::string const &amp;s)</td></tr>
 <tr class="separator:a9e4131b7743b5801ce7122df2c63a9ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad49e6891f1cd7d62bda19b2d3099f04d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacevigra.html#ad49e6891f1cd7d62bda19b2d3099f04d">tolower</a> (std::string s)</td></tr>
@@ -163,7 +167,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

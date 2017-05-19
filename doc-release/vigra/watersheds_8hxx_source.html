@@ -948,615 +948,616 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;<span class="comment">            In certain applications, one region (typically the background) should</span></div>
 <div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;<span class="comment">            be preferred in region growing. This is most easily achieved</span></div>
 <div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;<span class="comment">            by adjusting the assignment cost for that region as &lt;tt&gt;factor*cost&lt;/tt&gt;,</span></div>
-<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;<span class="comment">            with a factor slightly below 1.</span></div>
-<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;<span class="comment">            Default: don&#39;t bias any region.</span></div>
-<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00893"></a><span class="lineno"><a class="line" href="classvigra_1_1WatershedOptions.html#ac9fe756b8b6c338008262062b81c6374">  893</a></span>&#160;    <a class="code" href="classvigra_1_1WatershedOptions.html">WatershedOptions</a> &amp; <a class="code" href="classvigra_1_1WatershedOptions.html#ac9fe756b8b6c338008262062b81c6374">biasLabel</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> label, <span class="keywordtype">double</span> factor)</div>
-<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;    {</div>
-<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;        biased_label = label;</div>
-<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;        bias = factor;</div>
-<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;    }</div>
-<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;<span class="comment">        /** \brief Specify the algorithm to be used.</span></div>
-<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;<span class="comment">            Possible values are &lt;tt&gt;WatershedOptions::RegionGrowing&lt;/tt&gt; and</span></div>
-<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;<span class="comment">            &lt;tt&gt;WatershedOptions::UnionFind&lt;/tt&gt;. The latter algorithm is fastest</span></div>
-<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;<span class="comment">            but doesn&#39;t support seeds and any of the other options.</span></div>
-<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;<span class="comment">            Default: RegionGrowing.</span></div>
-<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00908"></a><span class="lineno"><a class="line" href="classvigra_1_1WatershedOptions.html#a214eafb1649237d6332faea43930c3ac">  908</a></span>&#160;    <a class="code" href="classvigra_1_1WatershedOptions.html">WatershedOptions</a> &amp; <a class="code" href="classvigra_1_1WatershedOptions.html#a214eafb1649237d6332faea43930c3ac">useMethod</a>(Method method)</div>
-<div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160;    {</div>
-<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;        this-&gt;method = method;</div>
-<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;    }</div>
-<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;<span class="comment">        /** \brief Use region-growing watershed.</span></div>
-<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;<span class="comment">            Use this method when you want to specify seeds explicitly (seeded watersheds)</span></div>
-<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;<span class="comment">            or use any of the other options.</span></div>
-<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;<span class="comment">            Default: true.</span></div>
-<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00921"></a><span class="lineno"><a class="line" href="classvigra_1_1WatershedOptions.html#ad08e96e7593dbb405041976f5d64ca5d">  921</a></span>&#160;    <a class="code" href="classvigra_1_1WatershedOptions.html">WatershedOptions</a> &amp; <a class="code" href="classvigra_1_1WatershedOptions.html#ad08e96e7593dbb405041976f5d64ca5d">regionGrowing</a>()</div>
-<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160;    {</div>
-<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;        method = RegionGrowing;</div>
-<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;    }</div>
-<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;<span class="comment">        /** \brief Use union-find watershed.</span></div>
-<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;<span class="comment">            This is the fasted method, but it doesn&#39;t support seeds and any of the other</span></div>
-<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;<span class="comment">            options (they will be silently ignored).</span></div>
-<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;<span class="comment">            Default: false.</span></div>
-<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00934"></a><span class="lineno"><a class="line" href="classvigra_1_1WatershedOptions.html#acbe3e1d95098e09c53f8948f5fdef55f">  934</a></span>&#160;    <a class="code" href="classvigra_1_1WatershedOptions.html">WatershedOptions</a> &amp; <a class="code" href="classvigra_1_1WatershedOptions.html#acbe3e1d95098e09c53f8948f5fdef55f">unionFind</a>()</div>
-<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;    {</div>
-<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;        method = UnionFind;</div>
-<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;    }</div>
-<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;};</div>
-<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;</div>
-<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;<span class="keyword">namespace </span>detail {</div>
-<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;</div>
-<div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> CostType, <span class="keyword">class</span> LabelType&gt;</div>
-<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;<span class="keyword">class </span>WatershedStatistics</div>
-<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;{</div>
-<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;</div>
-<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;    <span class="keyword">typedef</span> SeedRgDirectValueFunctor&lt;CostType&gt; value_type;</div>
-<div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;    <span class="keyword">typedef</span> value_type &amp; reference;</div>
-<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;    <span class="keyword">typedef</span> value_type <span class="keyword">const</span> &amp; const_reference;</div>
-<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;</div>
-<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;    <span class="keyword">typedef</span> CostType  first_argument_type;</div>
-<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;    <span class="keyword">typedef</span> LabelType second_argument_type;</div>
-<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160;    <span class="keyword">typedef</span> LabelType argument_type;</div>
-<div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;</div>
-<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;    WatershedStatistics()</div>
-<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;    {}</div>
-<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;</div>
-<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;    <span class="keywordtype">void</span> resize(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)</div>
-<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;    {}</div>
-<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;</div>
-<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;    <span class="keywordtype">void</span> reset()</div>
-<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;    {}</div>
-<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;<span class="comment">        /** update regions statistics (do nothing in the watershed algorithm)</span></div>
-<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T1, <span class="keyword">class</span> T2&gt;</div>
-<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;    <span class="keywordtype">void</span> operator()(first_argument_type <span class="keyword">const</span> &amp;, second_argument_type <span class="keyword">const</span> &amp;)</div>
-<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;    {}</div>
-<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;<span class="comment">        /** ask for maximal index (label) allowed</span></div>
-<div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;    LabelType maxRegionLabel()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> size() - 1; }</div>
-<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;<span class="comment">        /** ask for array size (i.e. maxRegionLabel() + 1)</span></div>
-<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;    LabelType size()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> NumericTraits&lt;LabelType&gt;::max(); }</div>
-<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;<span class="comment">        /** read the statistics functor for a region via its label</span></div>
-<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;    const_reference operator[](argument_type)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> stats; }</div>
-<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;<span class="comment">        /** access the statistics functor for a region via its label</span></div>
-<div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;    reference operator[](argument_type)</div>
-<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;        { <span class="keywordflow">return</span> stats; }</div>
-<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;</div>
-<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;    value_type stats;</div>
-<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;};</div>
-<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;</div>
-<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> Value&gt;</div>
-<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;<span class="keyword">class </span>SeedRgBiasedValueFunctor</div>
-<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;{</div>
-<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    <span class="keywordtype">double</span> bias;</div>
-<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;</div>
-<div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;        <span class="comment">/* the functor&#39;s argument type</span></div>
-<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;    <span class="keyword">typedef</span> Value argument_type;</div>
-<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;</div>
-<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;        <span class="comment">/* the functor&#39;s result type (unused, only necessary for</span></div>
-<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;<span class="comment">            use of SeedRgDirectValueFunctor in \ref vigra::ArrayOfRegionStatistics</span></div>
-<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;    <span class="keyword">typedef</span> Value result_type;</div>
-<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;</div>
-<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;        <span class="comment">/* the return type of the cost() function</span></div>
-<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;    <span class="keyword">typedef</span> Value cost_type;</div>
-<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;</div>
-<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;    SeedRgBiasedValueFunctor(<span class="keywordtype">double</span> b = 1.0)</div>
-<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;    : bias(b)</div>
-<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;    {}</div>
-<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;</div>
-<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;        <span class="comment">/* Do nothing (since we need not update region statistics).</span></div>
-<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;    <span class="keywordtype">void</span> operator()(argument_type <span class="keyword">const</span> &amp;)<span class="keyword"> const </span>{}</div>
-<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;</div>
-<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;        <span class="comment">/* Return scaled argument</span></div>
-<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;    cost_type cost(argument_type <span class="keyword">const</span> &amp; v)<span class="keyword"> const</span></div>
-<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;        <span class="keywordflow">return</span> cost_type(bias*v);</div>
-<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;    }</div>
-<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;};</div>
-<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;</div>
-<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> CostType, <span class="keyword">class</span> LabelType&gt;</div>
-<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;<span class="keyword">class </span>BiasedWatershedStatistics</div>
-<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;{</div>
-<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;</div>
-<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;    <span class="keyword">typedef</span> SeedRgBiasedValueFunctor&lt;CostType&gt; value_type;</div>
-<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;    <span class="keyword">typedef</span> value_type &amp; reference;</div>
-<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;    <span class="keyword">typedef</span> value_type <span class="keyword">const</span> &amp; const_reference;</div>
-<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;</div>
-<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;    <span class="keyword">typedef</span> CostType  first_argument_type;</div>
-<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;    <span class="keyword">typedef</span> LabelType second_argument_type;</div>
-<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;    <span class="keyword">typedef</span> LabelType argument_type;</div>
-<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;</div>
-<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;    BiasedWatershedStatistics(LabelType biasedLabel, <span class="keywordtype">double</span> bias)</div>
-<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;    : biased_label(biasedLabel),</div>
-<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;      biased_stats(bias)</div>
-<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;    {}</div>
-<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;</div>
-<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;    <span class="keywordtype">void</span> resize(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)</div>
-<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;    {}</div>
-<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;</div>
-<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;    <span class="keywordtype">void</span> reset()</div>
-<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;    {}</div>
-<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;<span class="comment">        /** update regions statistics (do nothing in the watershed algorithm)</span></div>
-<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T1, <span class="keyword">class</span> T2&gt;</div>
-<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;    <span class="keywordtype">void</span> operator()(first_argument_type <span class="keyword">const</span> &amp;, second_argument_type <span class="keyword">const</span> &amp;)</div>
-<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;    {}</div>
-<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;<span class="comment">        /** ask for maximal index (label) allowed</span></div>
-<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;    LabelType maxRegionLabel()<span class="keyword"> const</span></div>
-<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> size() - 1; }</div>
-<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;<span class="comment">        /** ask for array size (i.e. maxRegionLabel() + 1)</span></div>
-<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;    LabelType size()<span class="keyword"> const</span></div>
-<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> NumericTraits&lt;LabelType&gt;::max(); }</div>
-<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;<span class="comment">        /** read the statistics functor for a region via its label</span></div>
-<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;    const_reference operator[](argument_type label)<span class="keyword"> const</span></div>
-<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;        <span class="keywordflow">return</span> (label == biased_label)</div>
-<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;                    ? biased_stats</div>
-<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;                    : stats;</div>
-<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;    }</div>
-<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;<span class="comment">        /** access the statistics functor for a region via its label</span></div>
-<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;    reference operator[](argument_type label)</div>
-<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;    {</div>
-<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;        <span class="keywordflow">return</span> (label == biased_label)</div>
-<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;                    ? biased_stats</div>
-<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;                    : stats;</div>
-<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;    }</div>
-<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;</div>
-<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;    LabelType biased_label;</div>
-<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;    value_type stats, biased_stats;</div>
-<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;};</div>
-<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;</div>
-<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;} <span class="comment">// namespace detail</span></div>
-<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;<span class="comment">/** \brief Region segmentation by means of a flooding-based watershed algorithm.</span></div>
-<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;<span class="comment">    Note: This function is largely obsolete, \ref watershedsMultiArray() should be</span></div>
-<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;<span class="comment">    preferred unless top speed is required.</span></div>
-<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;<span class="comment">    This function implements variants of the watershed algorithm</span></div>
-<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;<span class="comment">    described in</span></div>
-<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;<span class="comment">    L. Vincent and P. Soille: &lt;em&gt;&quot;Watersheds in digital spaces: An efficient algorithm</span></div>
-<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;<span class="comment">    based on immersion simulations&quot;&lt;/em&gt;, IEEE Trans. Patt. Analysis Mach. Intell. 13(6):583-598, 1991</span></div>
-<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;<span class="comment">    The source image is a boundary indicator such as the gaussianGradientMagnitude()</span></div>
-<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;<span class="comment">    or the trace of the \ref boundaryTensor(), and the destination is a label image</span></div>
-<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;<span class="comment">    designating membership of each point in one of the regions. Plateaus in the boundary</span></div>
-<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;<span class="comment">    indicator (i.e. regions of constant gray value) are handled via a Euclidean distance</span></div>
-<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;<span class="comment">    transform by default.</span></div>
-<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;<span class="comment">    By default, the destination image is assumed to hold seeds for a seeded watershed</span></div>
-<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;<span class="comment">    transform. Seeds may, for example, be created by means of generateWatershedSeeds().</span></div>
-<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;<span class="comment">    Note that the seeds will be overridden with the final watershed segmentation.</span></div>
-<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;<span class="comment">    Alternatively, you may provide \ref SeedOptions in order to instruct</span></div>
-<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;<span class="comment">    watershedsRegionGrowing() to generate its own seeds (it will call generateWatershedSeeds()</span></div>
-<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;<span class="comment">    internally). In that case, the destination image should be zero-initialized.</span></div>
-<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;<span class="comment">    You can specify the neighborhood system to be used by passing \ref FourNeighborCode</span></div>
-<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;<span class="comment">    or \ref EightNeighborCode (default).</span></div>
-<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;<span class="comment">    Further options to be specified via \ref WatershedOptions are:</span></div>
-<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;<span class="comment">    &lt;ul&gt;</span></div>
-<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;<span class="comment">    &lt;li&gt; Whether to keep a 1-pixel-wide contour (with label 0) between regions or</span></div>
-<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;<span class="comment">         perform complete grow (i.e. all pixels are assigned to a region).</span></div>
-<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;<span class="comment">    &lt;li&gt; Whether to stop growing when the boundaryness exceeds a threshold (remaining</span></div>
-<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;<span class="comment">         pixels keep label 0).</span></div>
-<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;<span class="comment">    &lt;li&gt; Whether to use a faster, but less powerful algorithm (&quot;turbo algorithm&quot;). It</span></div>
-<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;<span class="comment">         is faster because it orders pixels by means of a \ref BucketQueue (therefore,</span></div>
-<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;<span class="comment">         the boundary indicator must contain integers in the range</span></div>
-<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;<span class="comment">         &lt;tt&gt;[0, ..., bucket_count-1]&lt;/tt&gt;, where &lt;tt&gt;bucket_count&lt;/tt&gt; is specified in</span></div>
-<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;<span class="comment">         the options object), it only supports complete growing (no contour between regions</span></div>
-<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;<span class="comment">         is possible), and it handles plateaus in a simplistic way. It also saves some</span></div>
-<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;<span class="comment">         memory because it allocates less temporary storage.</span></div>
-<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;<span class="comment">    &lt;li&gt; Whether one region (label) is to be preferred or discouraged by biasing its cost</span></div>
-<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;<span class="comment">         with a given factor (smaller than 1 for preference, larger than 1 for discouragement).</span></div>
-<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;<span class="comment">    &lt;/ul&gt;</span></div>
-<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;<span class="comment">    Note that VIGRA provides an alternative implementation of the watershed transform via</span></div>
-<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;<span class="comment">    \ref watershedsUnionFind().</span></div>
-<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;<span class="comment">    &lt;b&gt; Declarations:&lt;/b&gt;</span></div>
-<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;<span class="comment">    pass 2D array views:</span></div>
-<div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160;<span class="comment">    \code</span></div>
-<div class="line"><a name="l01146"></a><span class="lineno"> 1146</span>&#160;<span class="comment">    namespace vigra {</span></div>
-<div class="line"><a name="l01147"></a><span class="lineno"> 1147</span>&#160;<span class="comment">        template &lt;class T1, class S1,</span></div>
-<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;<span class="comment">                  class T2, class S2,</span></div>
-<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;<span class="comment">                  class Neighborhood = EightNeighborCode&gt;</span></div>
-<div class="line"><a name="l01150"></a><span class="lineno"> 1150</span>&#160;<span class="comment">        unsigned int</span></div>
-<div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160;<span class="comment">        watershedsRegionGrowing(MultiArrayView&lt;2, T1, S1&gt; const &amp; src,</span></div>
-<div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160;<span class="comment">                                MultiArrayView&lt;2, T2, S2&gt; dest,</span></div>
-<div class="line"><a name="l01153"></a><span class="lineno"> 1153</span>&#160;<span class="comment">                                Neighborhood neighborhood = EightNeighborCode(),</span></div>
-<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
-<div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01156"></a><span class="lineno"> 1156</span>&#160;<span class="comment">        template &lt;class T1, class S1,</span></div>
-<div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;<span class="comment">                  class T2, class S2&gt;</span></div>
-<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;<span class="comment">        unsigned int</span></div>
-<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;<span class="comment">        watershedsRegionGrowing(MultiArrayView&lt;2, T1, S1&gt; const &amp; src,</span></div>
-<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;<span class="comment">                                MultiArrayView&lt;2, T2, S2&gt; dest,</span></div>
-<div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
-<div class="line"><a name="l01162"></a><span class="lineno"> 1162</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01163"></a><span class="lineno"> 1163</span>&#160;<span class="comment">    \endcode</span></div>
-<div class="line"><a name="l01164"></a><span class="lineno"> 1164</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01165"></a><span class="lineno"> 1165</span>&#160;<span class="comment">    \deprecatedAPI{watershedsRegionGrowing}</span></div>
-<div class="line"><a name="l01166"></a><span class="lineno"> 1166</span>&#160;<span class="comment">    pass \ref ImageIterators and \ref DataAccessors :</span></div>
-<div class="line"><a name="l01167"></a><span class="lineno"> 1167</span>&#160;<span class="comment">    \code</span></div>
-<div class="line"><a name="l01168"></a><span class="lineno"> 1168</span>&#160;<span class="comment">    namespace vigra {</span></div>
-<div class="line"><a name="l01169"></a><span class="lineno"> 1169</span>&#160;<span class="comment">        template &lt;class SrcIterator, class SrcAccessor,</span></div>
-<div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160;<span class="comment">                  class DestIterator, class DestAccessor,</span></div>
-<div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160;<span class="comment">                  class Neighborhood = EightNeighborCode&gt;</span></div>
-<div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160;<span class="comment">        unsigned int</span></div>
-<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;<span class="comment">        watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,</span></div>
-<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160;<span class="comment">                                DestIterator upperleftd, DestAccessor da,</span></div>
-<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;<span class="comment">                                Neighborhood neighborhood = EightNeighborCode(),</span></div>
-<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
-<div class="line"><a name="l01177"></a><span class="lineno"> 1177</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;<span class="comment">        template &lt;class SrcIterator, class SrcAccessor,</span></div>
-<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;<span class="comment">                  class DestIterator, class DestAccessor&gt;</span></div>
-<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;<span class="comment">        unsigned int</span></div>
-<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;<span class="comment">        watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,</span></div>
-<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;<span class="comment">                                DestIterator upperleftd, DestAccessor da,</span></div>
-<div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
-<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;<span class="comment">    \endcode</span></div>
-<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;<span class="comment">    use argument objects in conjunction with \ref ArgumentObjectFactories :</span></div>
-<div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;<span class="comment">    \code</span></div>
-<div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;<span class="comment">    namespace vigra {</span></div>
-<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;<span class="comment">        template &lt;class SrcIterator, class SrcAccessor,</span></div>
-<div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;<span class="comment">                  class DestIterator, class DestAccessor,</span></div>
-<div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;<span class="comment">                  class Neighborhood = EightNeighborCode&gt;</span></div>
-<div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;<span class="comment">        unsigned int</span></div>
-<div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160;<span class="comment">        watershedsRegionGrowing(triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; src,</span></div>
-<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160;<span class="comment">                                pair&lt;DestIterator, DestAccessor&gt; dest,</span></div>
-<div class="line"><a name="l01195"></a><span class="lineno"> 1195</span>&#160;<span class="comment">                                Neighborhood neighborhood = EightNeighborCode(),</span></div>
-<div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
-<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;<span class="comment">        template &lt;class SrcIterator, class SrcAccessor,</span></div>
-<div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160;<span class="comment">                  class DestIterator, class DestAccessor&gt;</span></div>
-<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;<span class="comment">        unsigned int</span></div>
-<div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;<span class="comment">        watershedsRegionGrowing(triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; src,</span></div>
-<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;<span class="comment">                                pair&lt;DestIterator, DestAccessor&gt; dest,</span></div>
-<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
-<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;<span class="comment">    \endcode</span></div>
-<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;<span class="comment">    \deprecatedEnd</span></div>
-<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;<span class="comment">    &lt;b&gt; Usage:&lt;/b&gt;</span></div>
-<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;<span class="comment">    &lt;b&gt;\#include&lt;/b&gt; &lt;vigra/watersheds.hxx&gt;&lt;br&gt;</span></div>
-<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;<span class="comment">    Namespace: vigra</span></div>
-<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;<span class="comment">    Example: watersheds of the gradient magnitude.</span></div>
-<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160;<span class="comment">    \code</span></div>
-<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;<span class="comment">    MultiArray&lt;2, float&gt; src(w, h);</span></div>
-<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;<span class="comment">    ... // read input data</span></div>
-<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160;<span class="comment">    // compute gradient magnitude at scale 1.0 as a boundary indicator</span></div>
-<div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160;<span class="comment">    MultiArray&lt;2, float&gt; gradMag(w, h);</span></div>
-<div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160;<span class="comment">    gaussianGradientMagnitude(src, gradMag, 1.0);</span></div>
-<div class="line"><a name="l01222"></a><span class="lineno"> 1222</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160;<span class="comment">    // example 1</span></div>
-<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;<span class="comment">    {</span></div>
-<div class="line"><a name="l01225"></a><span class="lineno"> 1225</span>&#160;<span class="comment">        // the pixel type of the destination image must be large enough to hold</span></div>
-<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160;<span class="comment">        // numbers up to &#39;max_region_label&#39; to prevent overflow</span></div>
-<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;<span class="comment">        MultiArray&lt;2, unsigned int&gt; labeling(w, h);</span></div>
-<div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;<span class="comment">        // call watershed algorithm for 4-neighborhood, leave a 1-pixel boundary between regions,</span></div>
-<div class="line"><a name="l01230"></a><span class="lineno"> 1230</span>&#160;<span class="comment">        // and autogenerate seeds from all gradient minima where the magnitude is below 2.0</span></div>
-<div class="line"><a name="l01231"></a><span class="lineno"> 1231</span>&#160;<span class="comment">        unsigned int max_region_label =</span></div>
-<div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;<span class="comment">              watershedsRegionGrowing(gradMag, labeling,</span></div>
-<div class="line"><a name="l01233"></a><span class="lineno"> 1233</span>&#160;<span class="comment">                                      FourNeighborCode(),</span></div>
-<div class="line"><a name="l01234"></a><span class="lineno"> 1234</span>&#160;<span class="comment">                                      WatershedOptions().keepContours()</span></div>
-<div class="line"><a name="l01235"></a><span class="lineno"> 1235</span>&#160;<span class="comment">                                           .seedOptions(SeedOptions().minima().threshold(2.0)));</span></div>
-<div class="line"><a name="l01236"></a><span class="lineno"> 1236</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01237"></a><span class="lineno"> 1237</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01238"></a><span class="lineno"> 1238</span>&#160;<span class="comment">    // example 2</span></div>
-<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160;<span class="comment">    {</span></div>
-<div class="line"><a name="l01240"></a><span class="lineno"> 1240</span>&#160;<span class="comment">        MultiArray&lt;2, unsigned int&gt; labeling(w, h);</span></div>
-<div class="line"><a name="l01241"></a><span class="lineno"> 1241</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01242"></a><span class="lineno"> 1242</span>&#160;<span class="comment">        // compute seeds beforehand (use connected components of all pixels</span></div>
-<div class="line"><a name="l01243"></a><span class="lineno"> 1243</span>&#160;<span class="comment">        // where the gradient  is below 4.0)</span></div>
-<div class="line"><a name="l01244"></a><span class="lineno"> 1244</span>&#160;<span class="comment">        unsigned int max_region_label =</span></div>
-<div class="line"><a name="l01245"></a><span class="lineno"> 1245</span>&#160;<span class="comment">              generateWatershedSeeds(gradMag, labeling,</span></div>
-<div class="line"><a name="l01246"></a><span class="lineno"> 1246</span>&#160;<span class="comment">                                     SeedOptions().levelSets(4.0));</span></div>
-<div class="line"><a name="l01247"></a><span class="lineno"> 1247</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01248"></a><span class="lineno"> 1248</span>&#160;<span class="comment">        // quantize the gradient image to 256 gray levels</span></div>
-<div class="line"><a name="l01249"></a><span class="lineno"> 1249</span>&#160;<span class="comment">        MultiArray&lt;2, unsigned char&gt; gradMag256(w, h);</span></div>
-<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160;<span class="comment">        FindMinMax&lt;float&gt; minmax;</span></div>
-<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160;<span class="comment">        inspectImage(gradMag, minmax); // find original range</span></div>
-<div class="line"><a name="l01252"></a><span class="lineno"> 1252</span>&#160;<span class="comment">        transformImage(gradMag, gradMag256,</span></div>
-<div class="line"><a name="l01253"></a><span class="lineno"> 1253</span>&#160;<span class="comment">                       linearRangeMapping(minmax, 0, 255));</span></div>
-<div class="line"><a name="l01254"></a><span class="lineno"> 1254</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01255"></a><span class="lineno"> 1255</span>&#160;<span class="comment">        // call the turbo algorithm with 256 bins, using 8-neighborhood</span></div>
-<div class="line"><a name="l01256"></a><span class="lineno"> 1256</span>&#160;<span class="comment">        watershedsRegionGrowing(gradMag256, labeling,</span></div>
-<div class="line"><a name="l01257"></a><span class="lineno"> 1257</span>&#160;<span class="comment">                                WatershedOptions().turboAlgorithm(256));</span></div>
-<div class="line"><a name="l01258"></a><span class="lineno"> 1258</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01259"></a><span class="lineno"> 1259</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01260"></a><span class="lineno"> 1260</span>&#160;<span class="comment">    // example 3</span></div>
-<div class="line"><a name="l01261"></a><span class="lineno"> 1261</span>&#160;<span class="comment">    {</span></div>
-<div class="line"><a name="l01262"></a><span class="lineno"> 1262</span>&#160;<span class="comment">       MultiArray&lt;2, unsigned int&gt; labeling(w, h);</span></div>
-<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;<span class="comment">        .. // get seeds from somewhere, e.g. an interactive labeling program,</span></div>
-<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;<span class="comment">           // make sure that label 1 corresponds to the background</span></div>
-<div class="line"><a name="l01266"></a><span class="lineno"> 1266</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01267"></a><span class="lineno"> 1267</span>&#160;<span class="comment">        // bias the watershed algorithm so that the background is preferred</span></div>
-<div class="line"><a name="l01268"></a><span class="lineno"> 1268</span>&#160;<span class="comment">        // by reducing the cost for label 1 to 90%</span></div>
-<div class="line"><a name="l01269"></a><span class="lineno"> 1269</span>&#160;<span class="comment">        watershedsRegionGrowing(gradMag, labeling,</span></div>
-<div class="line"><a name="l01270"></a><span class="lineno"> 1270</span>&#160;<span class="comment">                                WatershedOptions().biasLabel(1, 0.9));</span></div>
-<div class="line"><a name="l01271"></a><span class="lineno"> 1271</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01272"></a><span class="lineno"> 1272</span>&#160;<span class="comment">    \endcode</span></div>
-<div class="line"><a name="l01273"></a><span class="lineno"> 1273</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01274"></a><span class="lineno"> 1274</span>&#160;<span class="comment">    \deprecatedUsage{watershedsRegionGrowing}</span></div>
-<div class="line"><a name="l01275"></a><span class="lineno"> 1275</span>&#160;<span class="comment">    \code</span></div>
-<div class="line"><a name="l01276"></a><span class="lineno"> 1276</span>&#160;<span class="comment">    vigra::BImage src(w, h);</span></div>
-<div class="line"><a name="l01277"></a><span class="lineno"> 1277</span>&#160;<span class="comment">    ... // read input data</span></div>
-<div class="line"><a name="l01278"></a><span class="lineno"> 1278</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01279"></a><span class="lineno"> 1279</span>&#160;<span class="comment">    // compute gradient magnitude at scale 1.0 as a boundary indicator</span></div>
-<div class="line"><a name="l01280"></a><span class="lineno"> 1280</span>&#160;<span class="comment">    vigra::FImage gradMag(w, h);</span></div>
-<div class="line"><a name="l01281"></a><span class="lineno"> 1281</span>&#160;<span class="comment">    gaussianGradientMagnitude(srcImageRange(src), destImage(gradMag), 1.0);</span></div>
-<div class="line"><a name="l01282"></a><span class="lineno"> 1282</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01283"></a><span class="lineno"> 1283</span>&#160;<span class="comment">    // example 1</span></div>
-<div class="line"><a name="l01284"></a><span class="lineno"> 1284</span>&#160;<span class="comment">    {</span></div>
-<div class="line"><a name="l01285"></a><span class="lineno"> 1285</span>&#160;<span class="comment">        // the pixel type of the destination image must be large enough to hold</span></div>
-<div class="line"><a name="l01286"></a><span class="lineno"> 1286</span>&#160;<span class="comment">        // numbers up to &#39;max_region_label&#39; to prevent overflow</span></div>
-<div class="line"><a name="l01287"></a><span class="lineno"> 1287</span>&#160;<span class="comment">        vigra::IImage labeling(w, h);</span></div>
-<div class="line"><a name="l01288"></a><span class="lineno"> 1288</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01289"></a><span class="lineno"> 1289</span>&#160;<span class="comment">        // call watershed algorithm for 4-neighborhood, leave a 1-pixel boundary between regions,</span></div>
-<div class="line"><a name="l01290"></a><span class="lineno"> 1290</span>&#160;<span class="comment">        // and autogenerate seeds from all gradient minima where the magnitude is below 2.0</span></div>
-<div class="line"><a name="l01291"></a><span class="lineno"> 1291</span>&#160;<span class="comment">        unsigned int max_region_label =</span></div>
-<div class="line"><a name="l01292"></a><span class="lineno"> 1292</span>&#160;<span class="comment">              watershedsRegionGrowing(srcImageRange(gradMag), destImage(labeling),</span></div>
-<div class="line"><a name="l01293"></a><span class="lineno"> 1293</span>&#160;<span class="comment">                                      FourNeighborCode(),</span></div>
-<div class="line"><a name="l01294"></a><span class="lineno"> 1294</span>&#160;<span class="comment">                                      WatershedOptions().keepContours()</span></div>
-<div class="line"><a name="l01295"></a><span class="lineno"> 1295</span>&#160;<span class="comment">                                           .seedOptions(SeedOptions().minima().threshold(2.0)));</span></div>
-<div class="line"><a name="l01296"></a><span class="lineno"> 1296</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01297"></a><span class="lineno"> 1297</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01298"></a><span class="lineno"> 1298</span>&#160;<span class="comment">    // example 2</span></div>
-<div class="line"><a name="l01299"></a><span class="lineno"> 1299</span>&#160;<span class="comment">    {</span></div>
-<div class="line"><a name="l01300"></a><span class="lineno"> 1300</span>&#160;<span class="comment">        vigra::IImage labeling(w, h);</span></div>
-<div class="line"><a name="l01301"></a><span class="lineno"> 1301</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01302"></a><span class="lineno"> 1302</span>&#160;<span class="comment">        // compute seeds beforehand (use connected components of all pixels</span></div>
-<div class="line"><a name="l01303"></a><span class="lineno"> 1303</span>&#160;<span class="comment">        // where the gradient  is below 4.0)</span></div>
-<div class="line"><a name="l01304"></a><span class="lineno"> 1304</span>&#160;<span class="comment">        unsigned int max_region_label =</span></div>
-<div class="line"><a name="l01305"></a><span class="lineno"> 1305</span>&#160;<span class="comment">              generateWatershedSeeds(srcImageRange(gradMag), destImage(labeling),</span></div>
-<div class="line"><a name="l01306"></a><span class="lineno"> 1306</span>&#160;<span class="comment">                                     SeedOptions().levelSets(4.0));</span></div>
-<div class="line"><a name="l01307"></a><span class="lineno"> 1307</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01308"></a><span class="lineno"> 1308</span>&#160;<span class="comment">        // quantize the gradient image to 256 gray levels</span></div>
-<div class="line"><a name="l01309"></a><span class="lineno"> 1309</span>&#160;<span class="comment">        vigra::BImage gradMag256(w, h);</span></div>
-<div class="line"><a name="l01310"></a><span class="lineno"> 1310</span>&#160;<span class="comment">        vigra::FindMinMax&lt;float&gt; minmax;</span></div>
-<div class="line"><a name="l01311"></a><span class="lineno"> 1311</span>&#160;<span class="comment">        inspectImage(srcImageRange(gradMag), minmax); // find original range</span></div>
-<div class="line"><a name="l01312"></a><span class="lineno"> 1312</span>&#160;<span class="comment">        transformImage(srcImageRange(gradMag), destImage(gradMag256),</span></div>
-<div class="line"><a name="l01313"></a><span class="lineno"> 1313</span>&#160;<span class="comment">                       linearRangeMapping(minmax, 0, 255));</span></div>
-<div class="line"><a name="l01314"></a><span class="lineno"> 1314</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01315"></a><span class="lineno"> 1315</span>&#160;<span class="comment">        // call the turbo algorithm with 256 bins, using 8-neighborhood</span></div>
-<div class="line"><a name="l01316"></a><span class="lineno"> 1316</span>&#160;<span class="comment">        watershedsRegionGrowing(srcImageRange(gradMag256), destImage(labeling),</span></div>
-<div class="line"><a name="l01317"></a><span class="lineno"> 1317</span>&#160;<span class="comment">                                WatershedOptions().turboAlgorithm(256));</span></div>
-<div class="line"><a name="l01318"></a><span class="lineno"> 1318</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01319"></a><span class="lineno"> 1319</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01320"></a><span class="lineno"> 1320</span>&#160;<span class="comment">    // example 3</span></div>
-<div class="line"><a name="l01321"></a><span class="lineno"> 1321</span>&#160;<span class="comment">    {</span></div>
-<div class="line"><a name="l01322"></a><span class="lineno"> 1322</span>&#160;<span class="comment">        vigra::IImage labeling(w, h);</span></div>
-<div class="line"><a name="l01323"></a><span class="lineno"> 1323</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01324"></a><span class="lineno"> 1324</span>&#160;<span class="comment">        .. // get seeds from somewhere, e.g. an interactive labeling program,</span></div>
-<div class="line"><a name="l01325"></a><span class="lineno"> 1325</span>&#160;<span class="comment">           // make sure that label 1 corresponds to the background</span></div>
-<div class="line"><a name="l01326"></a><span class="lineno"> 1326</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01327"></a><span class="lineno"> 1327</span>&#160;<span class="comment">        // bias the watershed algorithm so that the background is preferred</span></div>
-<div class="line"><a name="l01328"></a><span class="lineno"> 1328</span>&#160;<span class="comment">        // by reducing the cost for label 1 to 90%</span></div>
-<div class="line"><a name="l01329"></a><span class="lineno"> 1329</span>&#160;<span class="comment">        watershedsRegionGrowing(srcImageRange(gradMag), destImage(labeling),</span></div>
-<div class="line"><a name="l01330"></a><span class="lineno"> 1330</span>&#160;<span class="comment">                                WatershedOptions().biasLabel(1, 0.9));</span></div>
-<div class="line"><a name="l01331"></a><span class="lineno"> 1331</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l01332"></a><span class="lineno"> 1332</span>&#160;<span class="comment">    \endcode</span></div>
-<div class="line"><a name="l01333"></a><span class="lineno"> 1333</span>&#160;<span class="comment">    &lt;b&gt; Required Interface:&lt;/b&gt;</span></div>
-<div class="line"><a name="l01334"></a><span class="lineno"> 1334</span>&#160;<span class="comment">    \code</span></div>
-<div class="line"><a name="l01335"></a><span class="lineno"> 1335</span>&#160;<span class="comment">    SrcIterator src_upperleft, src_lowerright;</span></div>
-<div class="line"><a name="l01336"></a><span class="lineno"> 1336</span>&#160;<span class="comment">    DestIterator dest_upperleft;</span></div>
-<div class="line"><a name="l01337"></a><span class="lineno"> 1337</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01338"></a><span class="lineno"> 1338</span>&#160;<span class="comment">    SrcAccessor src_accessor;</span></div>
-<div class="line"><a name="l01339"></a><span class="lineno"> 1339</span>&#160;<span class="comment">    DestAccessor dest_accessor;</span></div>
-<div class="line"><a name="l01340"></a><span class="lineno"> 1340</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01341"></a><span class="lineno"> 1341</span>&#160;<span class="comment">    // compare src values</span></div>
-<div class="line"><a name="l01342"></a><span class="lineno"> 1342</span>&#160;<span class="comment">    src_accessor(src_upperleft) &lt;= src_accessor(src_upperleft)</span></div>
-<div class="line"><a name="l01343"></a><span class="lineno"> 1343</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01344"></a><span class="lineno"> 1344</span>&#160;<span class="comment">    // set result</span></div>
-<div class="line"><a name="l01345"></a><span class="lineno"> 1345</span>&#160;<span class="comment">    int label;</span></div>
-<div class="line"><a name="l01346"></a><span class="lineno"> 1346</span>&#160;<span class="comment">    dest_accessor.set(label, dest_upperleft);</span></div>
-<div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;<span class="comment">    \endcode</span></div>
-<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;<span class="comment">    \deprecatedEnd</span></div>
-<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;<a class="code" href="namespacevigra.html#a91a381da56852b04506489d288a11829">doxygen_overloaded_function</a>(template &lt;...&gt; <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>)</div>
-<div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160;</div>
-<div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>SrcIterator, <span class="keyword">class </span>SrcAccessor,</div>
-<div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160;          <span class="keyword">class </span>DestIterator, <span class="keyword">class </span>DestAccessor,</div>
-<div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160;          <span class="keyword">class </span>Neighborhood&gt;</div>
-<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
-<div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,</div>
-<div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;                        DestIterator upperleftd, DestAccessor da,</div>
-<div class="line"><a name="l01358"></a><span class="lineno"> 1358</span>&#160;                        Neighborhood neighborhood,</div>
-<div class="line"><a name="l01359"></a><span class="lineno"> 1359</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
-<div class="line"><a name="l01360"></a><span class="lineno"> 1360</span>&#160;{</div>
-<div class="line"><a name="l01361"></a><span class="lineno"> 1361</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> SrcAccessor::value_type ValueType;</div>
-<div class="line"><a name="l01362"></a><span class="lineno"> 1362</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> DestAccessor::value_type LabelType;</div>
-<div class="line"><a name="l01363"></a><span class="lineno"> 1363</span>&#160;</div>
-<div class="line"><a name="l01364"></a><span class="lineno"> 1364</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> max_region_label = 0;</div>
-<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160;</div>
-<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;    <span class="keywordflow">if</span>(options.seed_options.mini != SeedOptions::Unspecified)</div>
-<div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;    {</div>
-<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;        <span class="comment">// we are supposed to compute seeds</span></div>
-<div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;        max_region_label =</div>
-<div class="line"><a name="l01370"></a><span class="lineno"> 1370</span>&#160;            generateWatershedSeeds(srcIterRange(upperlefts, lowerrights, sa),</div>
-<div class="line"><a name="l01371"></a><span class="lineno"> 1371</span>&#160;                                   destIter(upperleftd, da),</div>
-<div class="line"><a name="l01372"></a><span class="lineno"> 1372</span>&#160;                                   neighborhood, options.seed_options);</div>
-<div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160;    }</div>
-<div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160;</div>
-<div class="line"><a name="l01375"></a><span class="lineno"> 1375</span>&#160;    <span class="keywordflow">if</span>(options.biased_label != 0)</div>
-<div class="line"><a name="l01376"></a><span class="lineno"> 1376</span>&#160;    {</div>
-<div class="line"><a name="l01377"></a><span class="lineno"> 1377</span>&#160;        <span class="comment">// create a statistics functor for biased region growing</span></div>
-<div class="line"><a name="l01378"></a><span class="lineno"> 1378</span>&#160;        detail::BiasedWatershedStatistics&lt;ValueType, LabelType&gt;</div>
-<div class="line"><a name="l01379"></a><span class="lineno"> 1379</span>&#160;                                 regionstats(options.biased_label, options.bias);</div>
-<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160;</div>
-<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160;        <span class="comment">// perform region growing, starting from the seeds computed above</span></div>
-<div class="line"><a name="l01382"></a><span class="lineno"> 1382</span>&#160;        <span class="keywordflow">if</span>(options.bucket_count == 0)</div>
-<div class="line"><a name="l01383"></a><span class="lineno"> 1383</span>&#160;        {</div>
-<div class="line"><a name="l01384"></a><span class="lineno"> 1384</span>&#160;            max_region_label =</div>
-<div class="line"><a name="l01385"></a><span class="lineno"> 1385</span>&#160;            <a class="code" href="group__Superpixels.html#ga7b54436edf7b15b9628d17a22917b4b1">seededRegionGrowing</a>(srcIterRange(upperlefts, lowerrights, sa),</div>
-<div class="line"><a name="l01386"></a><span class="lineno"> 1386</span>&#160;                                srcIter(upperleftd, da),</div>
-<div class="line"><a name="l01387"></a><span class="lineno"> 1387</span>&#160;                                destIter(upperleftd, da),</div>
-<div class="line"><a name="l01388"></a><span class="lineno"> 1388</span>&#160;                                regionstats, options.terminate, neighborhood, options.max_cost);</div>
-<div class="line"><a name="l01389"></a><span class="lineno"> 1389</span>&#160;        }</div>
-<div class="line"><a name="l01390"></a><span class="lineno"> 1390</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l01391"></a><span class="lineno"> 1391</span>&#160;        {</div>
-<div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;            max_region_label =</div>
-<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;            fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),</div>
-<div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160;                                    destIter(upperleftd, da),</div>
-<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;                                    regionstats, options.terminate,</div>
-<div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160;                                    neighborhood, options.max_cost, options.bucket_count);</div>
-<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160;        }</div>
-<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160;    }</div>
-<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;    {</div>
-<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160;        <span class="comment">// create a statistics functor for region growing</span></div>
-<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;        detail::WatershedStatistics&lt;ValueType, LabelType&gt; regionstats;</div>
-<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160;</div>
-<div class="line"><a name="l01404"></a><span class="lineno"> 1404</span>&#160;        <span class="comment">// perform region growing, starting from the seeds computed above</span></div>
-<div class="line"><a name="l01405"></a><span class="lineno"> 1405</span>&#160;        <span class="keywordflow">if</span>(options.bucket_count == 0)</div>
-<div class="line"><a name="l01406"></a><span class="lineno"> 1406</span>&#160;        {</div>
-<div class="line"><a name="l01407"></a><span class="lineno"> 1407</span>&#160;            max_region_label =</div>
-<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160;            <a class="code" href="group__Superpixels.html#ga7b54436edf7b15b9628d17a22917b4b1">seededRegionGrowing</a>(srcIterRange(upperlefts, lowerrights, sa),</div>
-<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;                                srcIter(upperleftd, da),</div>
-<div class="line"><a name="l01410"></a><span class="lineno"> 1410</span>&#160;                                destIter(upperleftd, da),</div>
-<div class="line"><a name="l01411"></a><span class="lineno"> 1411</span>&#160;                                regionstats, options.terminate, neighborhood, options.max_cost);</div>
-<div class="line"><a name="l01412"></a><span class="lineno"> 1412</span>&#160;        }</div>
-<div class="line"><a name="l01413"></a><span class="lineno"> 1413</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l01414"></a><span class="lineno"> 1414</span>&#160;        {</div>
-<div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160;            max_region_label =</div>
-<div class="line"><a name="l01416"></a><span class="lineno"> 1416</span>&#160;            fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),</div>
-<div class="line"><a name="l01417"></a><span class="lineno"> 1417</span>&#160;                                    destIter(upperleftd, da),</div>
-<div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160;                                    regionstats, options.terminate,</div>
-<div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160;                                    neighborhood, options.max_cost, options.bucket_count);</div>
-<div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160;        }</div>
-<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160;    }</div>
-<div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160;</div>
-<div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160;    <span class="keywordflow">return</span> max_region_label;</div>
-<div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;}</div>
-<div class="line"><a name="l01425"></a><span class="lineno"> 1425</span>&#160;</div>
-<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>SrcIterator, <span class="keyword">class </span>SrcAccessor,</div>
-<div class="line"><a name="l01427"></a><span class="lineno"> 1427</span>&#160;          <span class="keyword">class </span>DestIterator, <span class="keyword">class </span>DestAccessor&gt;</div>
-<div class="line"><a name="l01428"></a><span class="lineno"> 1428</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
-<div class="line"><a name="l01429"></a><span class="lineno"> 1429</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,</div>
-<div class="line"><a name="l01430"></a><span class="lineno"> 1430</span>&#160;                        DestIterator upperleftd, DestAccessor da,</div>
-<div class="line"><a name="l01431"></a><span class="lineno"> 1431</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
-<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;{</div>
-<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(upperlefts, lowerrights, sa, upperleftd,  da,</div>
-<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;                                   <a class="code" href="group__PixelNeighborhood.html#ga04897760f5b7969c9811a3c258f5981d">EightNeighborCode</a>(), options);</div>
-<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160;}</div>
-<div class="line"><a name="l01436"></a><span class="lineno"> 1436</span>&#160;</div>
-<div class="line"><a name="l01437"></a><span class="lineno"> 1437</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>SrcIterator, <span class="keyword">class </span>SrcAccessor,</div>
-<div class="line"><a name="l01438"></a><span class="lineno"> 1438</span>&#160;          <span class="keyword">class </span>DestIterator, <span class="keyword">class </span>DestAccessor,</div>
-<div class="line"><a name="l01439"></a><span class="lineno"> 1439</span>&#160;          <span class="keyword">class </span>Neighborhood&gt;</div>
-<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
-<div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; src,</div>
-<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;                        pair&lt;DestIterator, DestAccessor&gt; dest,</div>
-<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160;                        Neighborhood neighborhood,</div>
-<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
-<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160;{</div>
-<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(src.first, src.second, src.third,</div>
-<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;                                   dest.first, dest.second,</div>
-<div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160;                                   neighborhood, options);</div>
-<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;}</div>
-<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;</div>
-<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>SrcIterator, <span class="keyword">class </span>SrcAccessor,</div>
-<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;          <span class="keyword">class </span>DestIterator, <span class="keyword">class </span>DestAccessor&gt;</div>
-<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
-<div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; src,</div>
-<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;                        pair&lt;DestIterator, DestAccessor&gt; dest,</div>
-<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
-<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;{</div>
-<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(src.first, src.second, src.third,</div>
-<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;                                   dest.first, dest.second,</div>
-<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160;                                   <a class="code" href="group__PixelNeighborhood.html#ga04897760f5b7969c9811a3c258f5981d">EightNeighborCode</a>(), options);</div>
-<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160;}</div>
-<div class="line"><a name="l01462"></a><span class="lineno"> 1462</span>&#160;</div>
-<div class="line"><a name="l01463"></a><span class="lineno"> 1463</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>T1, <span class="keyword">class </span>S1,</div>
-<div class="line"><a name="l01464"></a><span class="lineno"> 1464</span>&#160;          <span class="keyword">class </span>T2, <span class="keyword">class </span>S2,</div>
-<div class="line"><a name="l01465"></a><span class="lineno"> 1465</span>&#160;          <span class="keyword">class </span>Neighborhood&gt;</div>
-<div class="line"><a name="l01466"></a><span class="lineno"> 1466</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
-<div class="line"><a name="l01467"></a><span class="lineno"> 1467</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(MultiArrayView&lt;2, T1, S1&gt; <span class="keyword">const</span> &amp; src,</div>
-<div class="line"><a name="l01468"></a><span class="lineno"> 1468</span>&#160;                        MultiArrayView&lt;2, T2, S2&gt; dest,</div>
-<div class="line"><a name="l01469"></a><span class="lineno"> 1469</span>&#160;                        Neighborhood neighborhood,</div>
-<div class="line"><a name="l01470"></a><span class="lineno"> 1470</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
-<div class="line"><a name="l01471"></a><span class="lineno"> 1471</span>&#160;{</div>
-<div class="line"><a name="l01472"></a><span class="lineno"> 1472</span>&#160;    vigra_precondition(src.shape() == dest.shape(),</div>
-<div class="line"><a name="l01473"></a><span class="lineno"> 1473</span>&#160;        <span class="stringliteral">&quot;watershedsRegionGrowing(): shape mismatch between input and output.&quot;</span>);</div>
-<div class="line"><a name="l01474"></a><span class="lineno"> 1474</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(srcImageRange(src),</div>
-<div class="line"><a name="l01475"></a><span class="lineno"> 1475</span>&#160;                                   destImage(dest),</div>
-<div class="line"><a name="l01476"></a><span class="lineno"> 1476</span>&#160;                                   neighborhood, options);</div>
-<div class="line"><a name="l01477"></a><span class="lineno"> 1477</span>&#160;}</div>
-<div class="line"><a name="l01478"></a><span class="lineno"> 1478</span>&#160;</div>
-<div class="line"><a name="l01479"></a><span class="lineno"> 1479</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>T1, <span class="keyword">class </span>S1,</div>
-<div class="line"><a name="l01480"></a><span class="lineno"> 1480</span>&#160;          <span class="keyword">class </span>T2, <span class="keyword">class </span>S2&gt;</div>
-<div class="line"><a name="l01481"></a><span class="lineno"> 1481</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
-<div class="line"><a name="l01482"></a><span class="lineno"> 1482</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(MultiArrayView&lt;2, T1, S1&gt; <span class="keyword">const</span> &amp; src,</div>
-<div class="line"><a name="l01483"></a><span class="lineno"> 1483</span>&#160;                        MultiArrayView&lt;2, T2, S2&gt; dest,</div>
-<div class="line"><a name="l01484"></a><span class="lineno"> 1484</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
-<div class="line"><a name="l01485"></a><span class="lineno"> 1485</span>&#160;{</div>
-<div class="line"><a name="l01486"></a><span class="lineno"> 1486</span>&#160;    vigra_precondition(src.shape() == dest.shape(),</div>
-<div class="line"><a name="l01487"></a><span class="lineno"> 1487</span>&#160;        <span class="stringliteral">&quot;watershedsRegionGrowing(): shape mismatch between input and output.&quot;</span>);</div>
-<div class="line"><a name="l01488"></a><span class="lineno"> 1488</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(srcImageRange(src),</div>
-<div class="line"><a name="l01489"></a><span class="lineno"> 1489</span>&#160;                                   destImage(dest),</div>
-<div class="line"><a name="l01490"></a><span class="lineno"> 1490</span>&#160;                                   <a class="code" href="group__PixelNeighborhood.html#ga04897760f5b7969c9811a3c258f5981d">EightNeighborCode</a>(), options);</div>
-<div class="line"><a name="l01491"></a><span class="lineno"> 1491</span>&#160;}</div>
-<div class="line"><a name="l01492"></a><span class="lineno"> 1492</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01493"></a><span class="lineno"> 1493</span>&#160;<span class="comment">//@}</span></div>
-<div class="line"><a name="l01494"></a><span class="lineno"> 1494</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l01495"></a><span class="lineno"> 1495</span>&#160;} <span class="comment">// namespace vigra</span></div>
-<div class="line"><a name="l01496"></a><span class="lineno"> 1496</span>&#160;</div>
-<div class="line"><a name="l01497"></a><span class="lineno"> 1497</span>&#160;<span class="preprocessor">#endif // VIGRA_WATERSHEDS_HXX</span></div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;<span class="comment">            with a factor slightly below 1.  (Accordingly, factors above 1 would</span></div>
+<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;<span class="comment">            correspond to a discouragement of the bias label.)</span></div>
+<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;<span class="comment">            Default: don&#39;t bias any region.</span></div>
+<div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00894"></a><span class="lineno"><a class="line" href="classvigra_1_1WatershedOptions.html#ac9fe756b8b6c338008262062b81c6374">  894</a></span>&#160;    <a class="code" href="classvigra_1_1WatershedOptions.html">WatershedOptions</a> &amp; <a class="code" href="classvigra_1_1WatershedOptions.html#ac9fe756b8b6c338008262062b81c6374">biasLabel</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> label, <span class="keywordtype">double</span> factor)</div>
+<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;    {</div>
+<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;        biased_label = label;</div>
+<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;        bias = factor;</div>
+<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;    }</div>
+<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;<span class="comment">        /** \brief Specify the algorithm to be used.</span></div>
+<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;<span class="comment">            Possible values are &lt;tt&gt;WatershedOptions::RegionGrowing&lt;/tt&gt; and</span></div>
+<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;<span class="comment">            &lt;tt&gt;WatershedOptions::UnionFind&lt;/tt&gt;. The latter algorithm is fastest</span></div>
+<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;<span class="comment">            but doesn&#39;t support seeds and any of the other options.</span></div>
+<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;<span class="comment">            Default: RegionGrowing.</span></div>
+<div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00909"></a><span class="lineno"><a class="line" href="classvigra_1_1WatershedOptions.html#a214eafb1649237d6332faea43930c3ac">  909</a></span>&#160;    <a class="code" href="classvigra_1_1WatershedOptions.html">WatershedOptions</a> &amp; <a class="code" href="classvigra_1_1WatershedOptions.html#a214eafb1649237d6332faea43930c3ac">useMethod</a>(Method method)</div>
+<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;    {</div>
+<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;        this-&gt;method = method;</div>
+<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;    }</div>
+<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;<span class="comment">        /** \brief Use region-growing watershed.</span></div>
+<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;<span class="comment">            Use this method when you want to specify seeds explicitly (seeded watersheds)</span></div>
+<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;<span class="comment">            or use any of the other options.</span></div>
+<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160;<span class="comment">            Default: true.</span></div>
+<div class="line"><a name="l00921"></a><span class="lineno">  921</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00922"></a><span class="lineno"><a class="line" href="classvigra_1_1WatershedOptions.html#ad08e96e7593dbb405041976f5d64ca5d">  922</a></span>&#160;    <a class="code" href="classvigra_1_1WatershedOptions.html">WatershedOptions</a> &amp; <a class="code" href="classvigra_1_1WatershedOptions.html#ad08e96e7593dbb405041976f5d64ca5d">regionGrowing</a>()</div>
+<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;    {</div>
+<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;        method = RegionGrowing;</div>
+<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;    }</div>
+<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;<span class="comment">        /** \brief Use union-find watershed.</span></div>
+<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;<span class="comment">            This is the fasted method, but it doesn&#39;t support seeds and any of the other</span></div>
+<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;<span class="comment">            options (they will be silently ignored).</span></div>
+<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;<span class="comment">            Default: false.</span></div>
+<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00935"></a><span class="lineno"><a class="line" href="classvigra_1_1WatershedOptions.html#acbe3e1d95098e09c53f8948f5fdef55f">  935</a></span>&#160;    <a class="code" href="classvigra_1_1WatershedOptions.html">WatershedOptions</a> &amp; <a class="code" href="classvigra_1_1WatershedOptions.html#acbe3e1d95098e09c53f8948f5fdef55f">unionFind</a>()</div>
+<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;    {</div>
+<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;        method = UnionFind;</div>
+<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;    }</div>
+<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;};</div>
+<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;</div>
+<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;<span class="keyword">namespace </span>detail {</div>
+<div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;</div>
+<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> CostType, <span class="keyword">class</span> LabelType&gt;</div>
+<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;<span class="keyword">class </span>WatershedStatistics</div>
+<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;{</div>
+<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;</div>
+<div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;    <span class="keyword">typedef</span> SeedRgDirectValueFunctor&lt;CostType&gt; value_type;</div>
+<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;    <span class="keyword">typedef</span> value_type &amp; reference;</div>
+<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;    <span class="keyword">typedef</span> value_type <span class="keyword">const</span> &amp; const_reference;</div>
+<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;</div>
+<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;    <span class="keyword">typedef</span> CostType  first_argument_type;</div>
+<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160;    <span class="keyword">typedef</span> LabelType second_argument_type;</div>
+<div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;    <span class="keyword">typedef</span> LabelType argument_type;</div>
+<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;</div>
+<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;    WatershedStatistics()</div>
+<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;    {}</div>
+<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;</div>
+<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;    <span class="keywordtype">void</span> resize(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)</div>
+<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;    {}</div>
+<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;</div>
+<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;    <span class="keywordtype">void</span> reset()</div>
+<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;    {}</div>
+<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160;<span class="comment">        /** update regions statistics (do nothing in the watershed algorithm)</span></div>
+<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T1, <span class="keyword">class</span> T2&gt;</div>
+<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;    <span class="keywordtype">void</span> operator()(first_argument_type <span class="keyword">const</span> &amp;, second_argument_type <span class="keyword">const</span> &amp;)</div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;    {}</div>
+<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;<span class="comment">        /** ask for maximal index (label) allowed</span></div>
+<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;    LabelType maxRegionLabel()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> size() - 1; }</div>
+<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;<span class="comment">        /** ask for array size (i.e. maxRegionLabel() + 1)</span></div>
+<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;    LabelType size()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> NumericTraits&lt;LabelType&gt;::max(); }</div>
+<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;<span class="comment">        /** read the statistics functor for a region via its label</span></div>
+<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;    const_reference operator[](argument_type)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> stats; }</div>
+<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160;<span class="comment">        /** access the statistics functor for a region via its label</span></div>
+<div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;    reference operator[](argument_type)</div>
+<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;        { <span class="keywordflow">return</span> stats; }</div>
+<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;</div>
+<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;    value_type stats;</div>
+<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;};</div>
+<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;</div>
+<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> Value&gt;</div>
+<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;<span class="keyword">class </span>SeedRgBiasedValueFunctor</div>
+<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;{</div>
+<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;    <span class="keywordtype">double</span> bias;</div>
+<div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;</div>
+<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;        <span class="comment">/* the functor&#39;s argument type</span></div>
+<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;    <span class="keyword">typedef</span> Value argument_type;</div>
+<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;</div>
+<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;        <span class="comment">/* the functor&#39;s result type (unused, only necessary for</span></div>
+<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;<span class="comment">            use of SeedRgDirectValueFunctor in \ref vigra::ArrayOfRegionStatistics</span></div>
+<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    <span class="keyword">typedef</span> Value result_type;</div>
+<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;</div>
+<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;        <span class="comment">/* the return type of the cost() function</span></div>
+<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;    <span class="keyword">typedef</span> Value cost_type;</div>
+<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;</div>
+<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;    SeedRgBiasedValueFunctor(<span class="keywordtype">double</span> b = 1.0)</div>
+<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;    : bias(b)</div>
+<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;    {}</div>
+<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;</div>
+<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;        <span class="comment">/* Do nothing (since we need not update region statistics).</span></div>
+<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;    <span class="keywordtype">void</span> operator()(argument_type <span class="keyword">const</span> &amp;)<span class="keyword"> const </span>{}</div>
+<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;</div>
+<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;        <span class="comment">/* Return scaled argument</span></div>
+<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;    cost_type cost(argument_type <span class="keyword">const</span> &amp; v)<span class="keyword"> const</span></div>
+<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;        <span class="keywordflow">return</span> cost_type(bias*v);</div>
+<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;    }</div>
+<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;};</div>
+<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;</div>
+<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> CostType, <span class="keyword">class</span> LabelType&gt;</div>
+<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;<span class="keyword">class </span>BiasedWatershedStatistics</div>
+<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;{</div>
+<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;</div>
+<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;    <span class="keyword">typedef</span> SeedRgBiasedValueFunctor&lt;CostType&gt; value_type;</div>
+<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;    <span class="keyword">typedef</span> value_type &amp; reference;</div>
+<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;    <span class="keyword">typedef</span> value_type <span class="keyword">const</span> &amp; const_reference;</div>
+<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;</div>
+<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;    <span class="keyword">typedef</span> CostType  first_argument_type;</div>
+<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;    <span class="keyword">typedef</span> LabelType second_argument_type;</div>
+<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;    <span class="keyword">typedef</span> LabelType argument_type;</div>
+<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;</div>
+<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;    BiasedWatershedStatistics(LabelType biasedLabel, <span class="keywordtype">double</span> bias)</div>
+<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;    : biased_label(biasedLabel),</div>
+<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;      biased_stats(bias)</div>
+<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;    {}</div>
+<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;</div>
+<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;    <span class="keywordtype">void</span> resize(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)</div>
+<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;    {}</div>
+<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;</div>
+<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;    <span class="keywordtype">void</span> reset()</div>
+<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;    {}</div>
+<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;<span class="comment">        /** update regions statistics (do nothing in the watershed algorithm)</span></div>
+<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T1, <span class="keyword">class</span> T2&gt;</div>
+<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;    <span class="keywordtype">void</span> operator()(first_argument_type <span class="keyword">const</span> &amp;, second_argument_type <span class="keyword">const</span> &amp;)</div>
+<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;    {}</div>
+<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;<span class="comment">        /** ask for maximal index (label) allowed</span></div>
+<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;    LabelType maxRegionLabel()<span class="keyword"> const</span></div>
+<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> size() - 1; }</div>
+<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;<span class="comment">        /** ask for array size (i.e. maxRegionLabel() + 1)</span></div>
+<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;    LabelType size()<span class="keyword"> const</span></div>
+<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;<span class="keyword">        </span>{ <span class="keywordflow">return</span> NumericTraits&lt;LabelType&gt;::max(); }</div>
+<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;<span class="comment">        /** read the statistics functor for a region via its label</span></div>
+<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;    const_reference operator[](argument_type label)<span class="keyword"> const</span></div>
+<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;        <span class="keywordflow">return</span> (label == biased_label)</div>
+<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;                    ? biased_stats</div>
+<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;                    : stats;</div>
+<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;    }</div>
+<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;<span class="comment">        /** access the statistics functor for a region via its label</span></div>
+<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;    reference operator[](argument_type label)</div>
+<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;    {</div>
+<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;        <span class="keywordflow">return</span> (label == biased_label)</div>
+<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;                    ? biased_stats</div>
+<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;                    : stats;</div>
+<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;    }</div>
+<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;</div>
+<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;    LabelType biased_label;</div>
+<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;    value_type stats, biased_stats;</div>
+<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;};</div>
+<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;</div>
+<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;} <span class="comment">// namespace detail</span></div>
+<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;<span class="comment">/** \brief Region segmentation by means of a flooding-based watershed algorithm.</span></div>
+<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;<span class="comment">    Note: This function is largely obsolete, \ref watershedsMultiArray() should be</span></div>
+<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;<span class="comment">    preferred unless top speed is required.</span></div>
+<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;<span class="comment">    This function implements variants of the watershed algorithm</span></div>
+<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;<span class="comment">    described in</span></div>
+<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;<span class="comment">    L. Vincent and P. Soille: &lt;em&gt;&quot;Watersheds in digital spaces: An efficient algorithm</span></div>
+<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;<span class="comment">    based on immersion simulations&quot;&lt;/em&gt;, IEEE Trans. Patt. Analysis Mach. Intell. 13(6):583-598, 1991</span></div>
+<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;<span class="comment">    The source image is a boundary indicator such as the gaussianGradientMagnitude()</span></div>
+<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;<span class="comment">    or the trace of the \ref boundaryTensor(), and the destination is a label image</span></div>
+<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;<span class="comment">    designating membership of each point in one of the regions. Plateaus in the boundary</span></div>
+<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;<span class="comment">    indicator (i.e. regions of constant gray value) are handled via a Euclidean distance</span></div>
+<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;<span class="comment">    transform by default.</span></div>
+<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;<span class="comment">    By default, the destination image is assumed to hold seeds for a seeded watershed</span></div>
+<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;<span class="comment">    transform. Seeds may, for example, be created by means of generateWatershedSeeds().</span></div>
+<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;<span class="comment">    Note that the seeds will be overridden with the final watershed segmentation.</span></div>
+<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;<span class="comment">    Alternatively, you may provide \ref SeedOptions in order to instruct</span></div>
+<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;<span class="comment">    watershedsRegionGrowing() to generate its own seeds (it will call generateWatershedSeeds()</span></div>
+<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;<span class="comment">    internally). In that case, the destination image should be zero-initialized.</span></div>
+<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;<span class="comment">    You can specify the neighborhood system to be used by passing \ref FourNeighborCode</span></div>
+<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;<span class="comment">    or \ref EightNeighborCode (default).</span></div>
+<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;<span class="comment">    Further options to be specified via \ref WatershedOptions are:</span></div>
+<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;<span class="comment">    &lt;ul&gt;</span></div>
+<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;<span class="comment">    &lt;li&gt; Whether to keep a 1-pixel-wide contour (with label 0) between regions or</span></div>
+<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;<span class="comment">         perform complete grow (i.e. all pixels are assigned to a region).</span></div>
+<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;<span class="comment">    &lt;li&gt; Whether to stop growing when the boundaryness exceeds a threshold (remaining</span></div>
+<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;<span class="comment">         pixels keep label 0).</span></div>
+<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;<span class="comment">    &lt;li&gt; Whether to use a faster, but less powerful algorithm (&quot;turbo algorithm&quot;). It</span></div>
+<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;<span class="comment">         is faster because it orders pixels by means of a \ref BucketQueue (therefore,</span></div>
+<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;<span class="comment">         the boundary indicator must contain integers in the range</span></div>
+<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;<span class="comment">         &lt;tt&gt;[0, ..., bucket_count-1]&lt;/tt&gt;, where &lt;tt&gt;bucket_count&lt;/tt&gt; is specified in</span></div>
+<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;<span class="comment">         the options object), it only supports complete growing (no contour between regions</span></div>
+<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;<span class="comment">         is possible), and it handles plateaus in a simplistic way. It also saves some</span></div>
+<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;<span class="comment">         memory because it allocates less temporary storage.</span></div>
+<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;<span class="comment">    &lt;li&gt; Whether one region (label) is to be preferred or discouraged by biasing its cost</span></div>
+<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;<span class="comment">         with a given factor (smaller than 1 for preference, larger than 1 for discouragement).</span></div>
+<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;<span class="comment">    &lt;/ul&gt;</span></div>
+<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;<span class="comment">    Note that VIGRA provides an alternative implementation of the watershed transform via</span></div>
+<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;<span class="comment">    \ref watershedsUnionFind().</span></div>
+<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160;<span class="comment">    &lt;b&gt; Declarations:&lt;/b&gt;</span></div>
+<div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160;<span class="comment">    pass 2D array views:</span></div>
+<div class="line"><a name="l01146"></a><span class="lineno"> 1146</span>&#160;<span class="comment">    \code</span></div>
+<div class="line"><a name="l01147"></a><span class="lineno"> 1147</span>&#160;<span class="comment">    namespace vigra {</span></div>
+<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;<span class="comment">        template &lt;class T1, class S1,</span></div>
+<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;<span class="comment">                  class T2, class S2,</span></div>
+<div class="line"><a name="l01150"></a><span class="lineno"> 1150</span>&#160;<span class="comment">                  class Neighborhood = EightNeighborCode&gt;</span></div>
+<div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160;<span class="comment">        unsigned int</span></div>
+<div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160;<span class="comment">        watershedsRegionGrowing(MultiArrayView&lt;2, T1, S1&gt; const &amp; src,</span></div>
+<div class="line"><a name="l01153"></a><span class="lineno"> 1153</span>&#160;<span class="comment">                                MultiArrayView&lt;2, T2, S2&gt; dest,</span></div>
+<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;<span class="comment">                                Neighborhood neighborhood = EightNeighborCode(),</span></div>
+<div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
+<div class="line"><a name="l01156"></a><span class="lineno"> 1156</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;<span class="comment">        template &lt;class T1, class S1,</span></div>
+<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;<span class="comment">                  class T2, class S2&gt;</span></div>
+<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;<span class="comment">        unsigned int</span></div>
+<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;<span class="comment">        watershedsRegionGrowing(MultiArrayView&lt;2, T1, S1&gt; const &amp; src,</span></div>
+<div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160;<span class="comment">                                MultiArrayView&lt;2, T2, S2&gt; dest,</span></div>
+<div class="line"><a name="l01162"></a><span class="lineno"> 1162</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
+<div class="line"><a name="l01163"></a><span class="lineno"> 1163</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01164"></a><span class="lineno"> 1164</span>&#160;<span class="comment">    \endcode</span></div>
+<div class="line"><a name="l01165"></a><span class="lineno"> 1165</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01166"></a><span class="lineno"> 1166</span>&#160;<span class="comment">    \deprecatedAPI{watershedsRegionGrowing}</span></div>
+<div class="line"><a name="l01167"></a><span class="lineno"> 1167</span>&#160;<span class="comment">    pass \ref ImageIterators and \ref DataAccessors :</span></div>
+<div class="line"><a name="l01168"></a><span class="lineno"> 1168</span>&#160;<span class="comment">    \code</span></div>
+<div class="line"><a name="l01169"></a><span class="lineno"> 1169</span>&#160;<span class="comment">    namespace vigra {</span></div>
+<div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160;<span class="comment">        template &lt;class SrcIterator, class SrcAccessor,</span></div>
+<div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160;<span class="comment">                  class DestIterator, class DestAccessor,</span></div>
+<div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160;<span class="comment">                  class Neighborhood = EightNeighborCode&gt;</span></div>
+<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;<span class="comment">        unsigned int</span></div>
+<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160;<span class="comment">        watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,</span></div>
+<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;<span class="comment">                                DestIterator upperleftd, DestAccessor da,</span></div>
+<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;<span class="comment">                                Neighborhood neighborhood = EightNeighborCode(),</span></div>
+<div class="line"><a name="l01177"></a><span class="lineno"> 1177</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
+<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;<span class="comment">        template &lt;class SrcIterator, class SrcAccessor,</span></div>
+<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;<span class="comment">                  class DestIterator, class DestAccessor&gt;</span></div>
+<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;<span class="comment">        unsigned int</span></div>
+<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;<span class="comment">        watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,</span></div>
+<div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;<span class="comment">                                DestIterator upperleftd, DestAccessor da,</span></div>
+<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
+<div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;<span class="comment">    \endcode</span></div>
+<div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;<span class="comment">    use argument objects in conjunction with \ref ArgumentObjectFactories :</span></div>
+<div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;<span class="comment">    \code</span></div>
+<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;<span class="comment">    namespace vigra {</span></div>
+<div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;<span class="comment">        template &lt;class SrcIterator, class SrcAccessor,</span></div>
+<div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;<span class="comment">                  class DestIterator, class DestAccessor,</span></div>
+<div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;<span class="comment">                  class Neighborhood = EightNeighborCode&gt;</span></div>
+<div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160;<span class="comment">        unsigned int</span></div>
+<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160;<span class="comment">        watershedsRegionGrowing(triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; src,</span></div>
+<div class="line"><a name="l01195"></a><span class="lineno"> 1195</span>&#160;<span class="comment">                                pair&lt;DestIterator, DestAccessor&gt; dest,</span></div>
+<div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160;<span class="comment">                                Neighborhood neighborhood = EightNeighborCode(),</span></div>
+<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
+<div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160;<span class="comment">        template &lt;class SrcIterator, class SrcAccessor,</span></div>
+<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;<span class="comment">                  class DestIterator, class DestAccessor&gt;</span></div>
+<div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;<span class="comment">        unsigned int</span></div>
+<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;<span class="comment">        watershedsRegionGrowing(triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; src,</span></div>
+<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;<span class="comment">                                pair&lt;DestIterator, DestAccessor&gt; dest,</span></div>
+<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;<span class="comment">                                WatershedOptions const &amp; options = WatershedOptions());</span></div>
+<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;<span class="comment">    \endcode</span></div>
+<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;<span class="comment">    \deprecatedEnd</span></div>
+<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;<span class="comment">    &lt;b&gt; Usage:&lt;/b&gt;</span></div>
+<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;<span class="comment">    &lt;b&gt;\#include&lt;/b&gt; &lt;vigra/watersheds.hxx&gt;&lt;br&gt;</span></div>
+<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;<span class="comment">    Namespace: vigra</span></div>
+<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;<span class="comment">    Example: watersheds of the gradient magnitude.</span></div>
+<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;<span class="comment">    \code</span></div>
+<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;<span class="comment">    MultiArray&lt;2, float&gt; src(w, h);</span></div>
+<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;<span class="comment">    ... // read input data</span></div>
+<div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160;<span class="comment">    // compute gradient magnitude at scale 1.0 as a boundary indicator</span></div>
+<div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160;<span class="comment">    MultiArray&lt;2, float&gt; gradMag(w, h);</span></div>
+<div class="line"><a name="l01222"></a><span class="lineno"> 1222</span>&#160;<span class="comment">    gaussianGradientMagnitude(src, gradMag, 1.0);</span></div>
+<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;<span class="comment">    // example 1</span></div>
+<div class="line"><a name="l01225"></a><span class="lineno"> 1225</span>&#160;<span class="comment">    {</span></div>
+<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160;<span class="comment">        // the pixel type of the destination image must be large enough to hold</span></div>
+<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;<span class="comment">        // numbers up to &#39;max_region_label&#39; to prevent overflow</span></div>
+<div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;<span class="comment">        MultiArray&lt;2, unsigned int&gt; labeling(w, h);</span></div>
+<div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01230"></a><span class="lineno"> 1230</span>&#160;<span class="comment">        // call watershed algorithm for 4-neighborhood, leave a 1-pixel boundary between regions,</span></div>
+<div class="line"><a name="l01231"></a><span class="lineno"> 1231</span>&#160;<span class="comment">        // and autogenerate seeds from all gradient minima where the magnitude is below 2.0</span></div>
+<div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;<span class="comment">        unsigned int max_region_label =</span></div>
+<div class="line"><a name="l01233"></a><span class="lineno"> 1233</span>&#160;<span class="comment">              watershedsRegionGrowing(gradMag, labeling,</span></div>
+<div class="line"><a name="l01234"></a><span class="lineno"> 1234</span>&#160;<span class="comment">                                      FourNeighborCode(),</span></div>
+<div class="line"><a name="l01235"></a><span class="lineno"> 1235</span>&#160;<span class="comment">                                      WatershedOptions().keepContours()</span></div>
+<div class="line"><a name="l01236"></a><span class="lineno"> 1236</span>&#160;<span class="comment">                                           .seedOptions(SeedOptions().minima().threshold(2.0)));</span></div>
+<div class="line"><a name="l01237"></a><span class="lineno"> 1237</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01238"></a><span class="lineno"> 1238</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160;<span class="comment">    // example 2</span></div>
+<div class="line"><a name="l01240"></a><span class="lineno"> 1240</span>&#160;<span class="comment">    {</span></div>
+<div class="line"><a name="l01241"></a><span class="lineno"> 1241</span>&#160;<span class="comment">        MultiArray&lt;2, unsigned int&gt; labeling(w, h);</span></div>
+<div class="line"><a name="l01242"></a><span class="lineno"> 1242</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01243"></a><span class="lineno"> 1243</span>&#160;<span class="comment">        // compute seeds beforehand (use connected components of all pixels</span></div>
+<div class="line"><a name="l01244"></a><span class="lineno"> 1244</span>&#160;<span class="comment">        // where the gradient  is below 4.0)</span></div>
+<div class="line"><a name="l01245"></a><span class="lineno"> 1245</span>&#160;<span class="comment">        unsigned int max_region_label =</span></div>
+<div class="line"><a name="l01246"></a><span class="lineno"> 1246</span>&#160;<span class="comment">              generateWatershedSeeds(gradMag, labeling,</span></div>
+<div class="line"><a name="l01247"></a><span class="lineno"> 1247</span>&#160;<span class="comment">                                     SeedOptions().levelSets(4.0));</span></div>
+<div class="line"><a name="l01248"></a><span class="lineno"> 1248</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01249"></a><span class="lineno"> 1249</span>&#160;<span class="comment">        // quantize the gradient image to 256 gray levels</span></div>
+<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160;<span class="comment">        MultiArray&lt;2, unsigned char&gt; gradMag256(w, h);</span></div>
+<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160;<span class="comment">        FindMinMax&lt;float&gt; minmax;</span></div>
+<div class="line"><a name="l01252"></a><span class="lineno"> 1252</span>&#160;<span class="comment">        inspectImage(gradMag, minmax); // find original range</span></div>
+<div class="line"><a name="l01253"></a><span class="lineno"> 1253</span>&#160;<span class="comment">        transformImage(gradMag, gradMag256,</span></div>
+<div class="line"><a name="l01254"></a><span class="lineno"> 1254</span>&#160;<span class="comment">                       linearRangeMapping(minmax, 0, 255));</span></div>
+<div class="line"><a name="l01255"></a><span class="lineno"> 1255</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01256"></a><span class="lineno"> 1256</span>&#160;<span class="comment">        // call the turbo algorithm with 256 bins, using 8-neighborhood</span></div>
+<div class="line"><a name="l01257"></a><span class="lineno"> 1257</span>&#160;<span class="comment">        watershedsRegionGrowing(gradMag256, labeling,</span></div>
+<div class="line"><a name="l01258"></a><span class="lineno"> 1258</span>&#160;<span class="comment">                                WatershedOptions().turboAlgorithm(256));</span></div>
+<div class="line"><a name="l01259"></a><span class="lineno"> 1259</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01260"></a><span class="lineno"> 1260</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01261"></a><span class="lineno"> 1261</span>&#160;<span class="comment">    // example 3</span></div>
+<div class="line"><a name="l01262"></a><span class="lineno"> 1262</span>&#160;<span class="comment">    {</span></div>
+<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;<span class="comment">       MultiArray&lt;2, unsigned int&gt; labeling(w, h);</span></div>
+<div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;<span class="comment">        .. // get seeds from somewhere, e.g. an interactive labeling program,</span></div>
+<div class="line"><a name="l01266"></a><span class="lineno"> 1266</span>&#160;<span class="comment">           // make sure that label 1 corresponds to the background</span></div>
+<div class="line"><a name="l01267"></a><span class="lineno"> 1267</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01268"></a><span class="lineno"> 1268</span>&#160;<span class="comment">        // bias the watershed algorithm so that the background is preferred</span></div>
+<div class="line"><a name="l01269"></a><span class="lineno"> 1269</span>&#160;<span class="comment">        // by reducing the cost for label 1 to 90%</span></div>
+<div class="line"><a name="l01270"></a><span class="lineno"> 1270</span>&#160;<span class="comment">        watershedsRegionGrowing(gradMag, labeling,</span></div>
+<div class="line"><a name="l01271"></a><span class="lineno"> 1271</span>&#160;<span class="comment">                                WatershedOptions().biasLabel(1, 0.9));</span></div>
+<div class="line"><a name="l01272"></a><span class="lineno"> 1272</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01273"></a><span class="lineno"> 1273</span>&#160;<span class="comment">    \endcode</span></div>
+<div class="line"><a name="l01274"></a><span class="lineno"> 1274</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01275"></a><span class="lineno"> 1275</span>&#160;<span class="comment">    \deprecatedUsage{watershedsRegionGrowing}</span></div>
+<div class="line"><a name="l01276"></a><span class="lineno"> 1276</span>&#160;<span class="comment">    \code</span></div>
+<div class="line"><a name="l01277"></a><span class="lineno"> 1277</span>&#160;<span class="comment">    vigra::BImage src(w, h);</span></div>
+<div class="line"><a name="l01278"></a><span class="lineno"> 1278</span>&#160;<span class="comment">    ... // read input data</span></div>
+<div class="line"><a name="l01279"></a><span class="lineno"> 1279</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01280"></a><span class="lineno"> 1280</span>&#160;<span class="comment">    // compute gradient magnitude at scale 1.0 as a boundary indicator</span></div>
+<div class="line"><a name="l01281"></a><span class="lineno"> 1281</span>&#160;<span class="comment">    vigra::FImage gradMag(w, h);</span></div>
+<div class="line"><a name="l01282"></a><span class="lineno"> 1282</span>&#160;<span class="comment">    gaussianGradientMagnitude(srcImageRange(src), destImage(gradMag), 1.0);</span></div>
+<div class="line"><a name="l01283"></a><span class="lineno"> 1283</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01284"></a><span class="lineno"> 1284</span>&#160;<span class="comment">    // example 1</span></div>
+<div class="line"><a name="l01285"></a><span class="lineno"> 1285</span>&#160;<span class="comment">    {</span></div>
+<div class="line"><a name="l01286"></a><span class="lineno"> 1286</span>&#160;<span class="comment">        // the pixel type of the destination image must be large enough to hold</span></div>
+<div class="line"><a name="l01287"></a><span class="lineno"> 1287</span>&#160;<span class="comment">        // numbers up to &#39;max_region_label&#39; to prevent overflow</span></div>
+<div class="line"><a name="l01288"></a><span class="lineno"> 1288</span>&#160;<span class="comment">        vigra::IImage labeling(w, h);</span></div>
+<div class="line"><a name="l01289"></a><span class="lineno"> 1289</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01290"></a><span class="lineno"> 1290</span>&#160;<span class="comment">        // call watershed algorithm for 4-neighborhood, leave a 1-pixel boundary between regions,</span></div>
+<div class="line"><a name="l01291"></a><span class="lineno"> 1291</span>&#160;<span class="comment">        // and autogenerate seeds from all gradient minima where the magnitude is below 2.0</span></div>
+<div class="line"><a name="l01292"></a><span class="lineno"> 1292</span>&#160;<span class="comment">        unsigned int max_region_label =</span></div>
+<div class="line"><a name="l01293"></a><span class="lineno"> 1293</span>&#160;<span class="comment">              watershedsRegionGrowing(srcImageRange(gradMag), destImage(labeling),</span></div>
+<div class="line"><a name="l01294"></a><span class="lineno"> 1294</span>&#160;<span class="comment">                                      FourNeighborCode(),</span></div>
+<div class="line"><a name="l01295"></a><span class="lineno"> 1295</span>&#160;<span class="comment">                                      WatershedOptions().keepContours()</span></div>
+<div class="line"><a name="l01296"></a><span class="lineno"> 1296</span>&#160;<span class="comment">                                           .seedOptions(SeedOptions().minima().threshold(2.0)));</span></div>
+<div class="line"><a name="l01297"></a><span class="lineno"> 1297</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01298"></a><span class="lineno"> 1298</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01299"></a><span class="lineno"> 1299</span>&#160;<span class="comment">    // example 2</span></div>
+<div class="line"><a name="l01300"></a><span class="lineno"> 1300</span>&#160;<span class="comment">    {</span></div>
+<div class="line"><a name="l01301"></a><span class="lineno"> 1301</span>&#160;<span class="comment">        vigra::IImage labeling(w, h);</span></div>
+<div class="line"><a name="l01302"></a><span class="lineno"> 1302</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01303"></a><span class="lineno"> 1303</span>&#160;<span class="comment">        // compute seeds beforehand (use connected components of all pixels</span></div>
+<div class="line"><a name="l01304"></a><span class="lineno"> 1304</span>&#160;<span class="comment">        // where the gradient  is below 4.0)</span></div>
+<div class="line"><a name="l01305"></a><span class="lineno"> 1305</span>&#160;<span class="comment">        unsigned int max_region_label =</span></div>
+<div class="line"><a name="l01306"></a><span class="lineno"> 1306</span>&#160;<span class="comment">              generateWatershedSeeds(srcImageRange(gradMag), destImage(labeling),</span></div>
+<div class="line"><a name="l01307"></a><span class="lineno"> 1307</span>&#160;<span class="comment">                                     SeedOptions().levelSets(4.0));</span></div>
+<div class="line"><a name="l01308"></a><span class="lineno"> 1308</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01309"></a><span class="lineno"> 1309</span>&#160;<span class="comment">        // quantize the gradient image to 256 gray levels</span></div>
+<div class="line"><a name="l01310"></a><span class="lineno"> 1310</span>&#160;<span class="comment">        vigra::BImage gradMag256(w, h);</span></div>
+<div class="line"><a name="l01311"></a><span class="lineno"> 1311</span>&#160;<span class="comment">        vigra::FindMinMax&lt;float&gt; minmax;</span></div>
+<div class="line"><a name="l01312"></a><span class="lineno"> 1312</span>&#160;<span class="comment">        inspectImage(srcImageRange(gradMag), minmax); // find original range</span></div>
+<div class="line"><a name="l01313"></a><span class="lineno"> 1313</span>&#160;<span class="comment">        transformImage(srcImageRange(gradMag), destImage(gradMag256),</span></div>
+<div class="line"><a name="l01314"></a><span class="lineno"> 1314</span>&#160;<span class="comment">                       linearRangeMapping(minmax, 0, 255));</span></div>
+<div class="line"><a name="l01315"></a><span class="lineno"> 1315</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01316"></a><span class="lineno"> 1316</span>&#160;<span class="comment">        // call the turbo algorithm with 256 bins, using 8-neighborhood</span></div>
+<div class="line"><a name="l01317"></a><span class="lineno"> 1317</span>&#160;<span class="comment">        watershedsRegionGrowing(srcImageRange(gradMag256), destImage(labeling),</span></div>
+<div class="line"><a name="l01318"></a><span class="lineno"> 1318</span>&#160;<span class="comment">                                WatershedOptions().turboAlgorithm(256));</span></div>
+<div class="line"><a name="l01319"></a><span class="lineno"> 1319</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01320"></a><span class="lineno"> 1320</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01321"></a><span class="lineno"> 1321</span>&#160;<span class="comment">    // example 3</span></div>
+<div class="line"><a name="l01322"></a><span class="lineno"> 1322</span>&#160;<span class="comment">    {</span></div>
+<div class="line"><a name="l01323"></a><span class="lineno"> 1323</span>&#160;<span class="comment">        vigra::IImage labeling(w, h);</span></div>
+<div class="line"><a name="l01324"></a><span class="lineno"> 1324</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01325"></a><span class="lineno"> 1325</span>&#160;<span class="comment">        .. // get seeds from somewhere, e.g. an interactive labeling program,</span></div>
+<div class="line"><a name="l01326"></a><span class="lineno"> 1326</span>&#160;<span class="comment">           // make sure that label 1 corresponds to the background</span></div>
+<div class="line"><a name="l01327"></a><span class="lineno"> 1327</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01328"></a><span class="lineno"> 1328</span>&#160;<span class="comment">        // bias the watershed algorithm so that the background is preferred</span></div>
+<div class="line"><a name="l01329"></a><span class="lineno"> 1329</span>&#160;<span class="comment">        // by reducing the cost for label 1 to 90%</span></div>
+<div class="line"><a name="l01330"></a><span class="lineno"> 1330</span>&#160;<span class="comment">        watershedsRegionGrowing(srcImageRange(gradMag), destImage(labeling),</span></div>
+<div class="line"><a name="l01331"></a><span class="lineno"> 1331</span>&#160;<span class="comment">                                WatershedOptions().biasLabel(1, 0.9));</span></div>
+<div class="line"><a name="l01332"></a><span class="lineno"> 1332</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l01333"></a><span class="lineno"> 1333</span>&#160;<span class="comment">    \endcode</span></div>
+<div class="line"><a name="l01334"></a><span class="lineno"> 1334</span>&#160;<span class="comment">    &lt;b&gt; Required Interface:&lt;/b&gt;</span></div>
+<div class="line"><a name="l01335"></a><span class="lineno"> 1335</span>&#160;<span class="comment">    \code</span></div>
+<div class="line"><a name="l01336"></a><span class="lineno"> 1336</span>&#160;<span class="comment">    SrcIterator src_upperleft, src_lowerright;</span></div>
+<div class="line"><a name="l01337"></a><span class="lineno"> 1337</span>&#160;<span class="comment">    DestIterator dest_upperleft;</span></div>
+<div class="line"><a name="l01338"></a><span class="lineno"> 1338</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01339"></a><span class="lineno"> 1339</span>&#160;<span class="comment">    SrcAccessor src_accessor;</span></div>
+<div class="line"><a name="l01340"></a><span class="lineno"> 1340</span>&#160;<span class="comment">    DestAccessor dest_accessor;</span></div>
+<div class="line"><a name="l01341"></a><span class="lineno"> 1341</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01342"></a><span class="lineno"> 1342</span>&#160;<span class="comment">    // compare src values</span></div>
+<div class="line"><a name="l01343"></a><span class="lineno"> 1343</span>&#160;<span class="comment">    src_accessor(src_upperleft) &lt;= src_accessor(src_upperleft)</span></div>
+<div class="line"><a name="l01344"></a><span class="lineno"> 1344</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01345"></a><span class="lineno"> 1345</span>&#160;<span class="comment">    // set result</span></div>
+<div class="line"><a name="l01346"></a><span class="lineno"> 1346</span>&#160;<span class="comment">    int label;</span></div>
+<div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;<span class="comment">    dest_accessor.set(label, dest_upperleft);</span></div>
+<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;<span class="comment">    \endcode</span></div>
+<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;<span class="comment">    \deprecatedEnd</span></div>
+<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160;<a class="code" href="namespacevigra.html#a91a381da56852b04506489d288a11829">doxygen_overloaded_function</a>(template &lt;...&gt; <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>)</div>
+<div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;</div>
+<div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>SrcIterator, <span class="keyword">class </span>SrcAccessor,</div>
+<div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160;          <span class="keyword">class </span>DestIterator, <span class="keyword">class </span>DestAccessor,</div>
+<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160;          <span class="keyword">class </span>Neighborhood&gt;</div>
+<div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
+<div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,</div>
+<div class="line"><a name="l01358"></a><span class="lineno"> 1358</span>&#160;                        DestIterator upperleftd, DestAccessor da,</div>
+<div class="line"><a name="l01359"></a><span class="lineno"> 1359</span>&#160;                        Neighborhood neighborhood,</div>
+<div class="line"><a name="l01360"></a><span class="lineno"> 1360</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
+<div class="line"><a name="l01361"></a><span class="lineno"> 1361</span>&#160;{</div>
+<div class="line"><a name="l01362"></a><span class="lineno"> 1362</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> SrcAccessor::value_type ValueType;</div>
+<div class="line"><a name="l01363"></a><span class="lineno"> 1363</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> DestAccessor::value_type LabelType;</div>
+<div class="line"><a name="l01364"></a><span class="lineno"> 1364</span>&#160;</div>
+<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> max_region_label = 0;</div>
+<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;</div>
+<div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;    <span class="keywordflow">if</span>(options.seed_options.mini != SeedOptions::Unspecified)</div>
+<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;    {</div>
+<div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;        <span class="comment">// we are supposed to compute seeds</span></div>
+<div class="line"><a name="l01370"></a><span class="lineno"> 1370</span>&#160;        max_region_label =</div>
+<div class="line"><a name="l01371"></a><span class="lineno"> 1371</span>&#160;            generateWatershedSeeds(srcIterRange(upperlefts, lowerrights, sa),</div>
+<div class="line"><a name="l01372"></a><span class="lineno"> 1372</span>&#160;                                   destIter(upperleftd, da),</div>
+<div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160;                                   neighborhood, options.seed_options);</div>
+<div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160;    }</div>
+<div class="line"><a name="l01375"></a><span class="lineno"> 1375</span>&#160;</div>
+<div class="line"><a name="l01376"></a><span class="lineno"> 1376</span>&#160;    <span class="keywordflow">if</span>(options.biased_label != 0)</div>
+<div class="line"><a name="l01377"></a><span class="lineno"> 1377</span>&#160;    {</div>
+<div class="line"><a name="l01378"></a><span class="lineno"> 1378</span>&#160;        <span class="comment">// create a statistics functor for biased region growing</span></div>
+<div class="line"><a name="l01379"></a><span class="lineno"> 1379</span>&#160;        detail::BiasedWatershedStatistics&lt;ValueType, LabelType&gt;</div>
+<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160;                                 regionstats(options.biased_label, options.bias);</div>
+<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160;</div>
+<div class="line"><a name="l01382"></a><span class="lineno"> 1382</span>&#160;        <span class="comment">// perform region growing, starting from the seeds computed above</span></div>
+<div class="line"><a name="l01383"></a><span class="lineno"> 1383</span>&#160;        <span class="keywordflow">if</span>(options.bucket_count == 0)</div>
+<div class="line"><a name="l01384"></a><span class="lineno"> 1384</span>&#160;        {</div>
+<div class="line"><a name="l01385"></a><span class="lineno"> 1385</span>&#160;            max_region_label =</div>
+<div class="line"><a name="l01386"></a><span class="lineno"> 1386</span>&#160;            <a class="code" href="group__Superpixels.html#ga7b54436edf7b15b9628d17a22917b4b1">seededRegionGrowing</a>(srcIterRange(upperlefts, lowerrights, sa),</div>
+<div class="line"><a name="l01387"></a><span class="lineno"> 1387</span>&#160;                                srcIter(upperleftd, da),</div>
+<div class="line"><a name="l01388"></a><span class="lineno"> 1388</span>&#160;                                destIter(upperleftd, da),</div>
+<div class="line"><a name="l01389"></a><span class="lineno"> 1389</span>&#160;                                regionstats, options.terminate, neighborhood, options.max_cost);</div>
+<div class="line"><a name="l01390"></a><span class="lineno"> 1390</span>&#160;        }</div>
+<div class="line"><a name="l01391"></a><span class="lineno"> 1391</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;        {</div>
+<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;            max_region_label =</div>
+<div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160;            fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),</div>
+<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;                                    destIter(upperleftd, da),</div>
+<div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160;                                    regionstats, options.terminate,</div>
+<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160;                                    neighborhood, options.max_cost, options.bucket_count);</div>
+<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160;        }</div>
+<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;    }</div>
+<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160;    {</div>
+<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;        <span class="comment">// create a statistics functor for region growing</span></div>
+<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160;        detail::WatershedStatistics&lt;ValueType, LabelType&gt; regionstats;</div>
+<div class="line"><a name="l01404"></a><span class="lineno"> 1404</span>&#160;</div>
+<div class="line"><a name="l01405"></a><span class="lineno"> 1405</span>&#160;        <span class="comment">// perform region growing, starting from the seeds computed above</span></div>
+<div class="line"><a name="l01406"></a><span class="lineno"> 1406</span>&#160;        <span class="keywordflow">if</span>(options.bucket_count == 0)</div>
+<div class="line"><a name="l01407"></a><span class="lineno"> 1407</span>&#160;        {</div>
+<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160;            max_region_label =</div>
+<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;            <a class="code" href="group__Superpixels.html#ga7b54436edf7b15b9628d17a22917b4b1">seededRegionGrowing</a>(srcIterRange(upperlefts, lowerrights, sa),</div>
+<div class="line"><a name="l01410"></a><span class="lineno"> 1410</span>&#160;                                srcIter(upperleftd, da),</div>
+<div class="line"><a name="l01411"></a><span class="lineno"> 1411</span>&#160;                                destIter(upperleftd, da),</div>
+<div class="line"><a name="l01412"></a><span class="lineno"> 1412</span>&#160;                                regionstats, options.terminate, neighborhood, options.max_cost);</div>
+<div class="line"><a name="l01413"></a><span class="lineno"> 1413</span>&#160;        }</div>
+<div class="line"><a name="l01414"></a><span class="lineno"> 1414</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160;        {</div>
+<div class="line"><a name="l01416"></a><span class="lineno"> 1416</span>&#160;            max_region_label =</div>
+<div class="line"><a name="l01417"></a><span class="lineno"> 1417</span>&#160;            fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),</div>
+<div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160;                                    destIter(upperleftd, da),</div>
+<div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160;                                    regionstats, options.terminate,</div>
+<div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160;                                    neighborhood, options.max_cost, options.bucket_count);</div>
+<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160;        }</div>
+<div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160;    }</div>
+<div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160;</div>
+<div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;    <span class="keywordflow">return</span> max_region_label;</div>
+<div class="line"><a name="l01425"></a><span class="lineno"> 1425</span>&#160;}</div>
+<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;</div>
+<div class="line"><a name="l01427"></a><span class="lineno"> 1427</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>SrcIterator, <span class="keyword">class </span>SrcAccessor,</div>
+<div class="line"><a name="l01428"></a><span class="lineno"> 1428</span>&#160;          <span class="keyword">class </span>DestIterator, <span class="keyword">class </span>DestAccessor&gt;</div>
+<div class="line"><a name="l01429"></a><span class="lineno"> 1429</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
+<div class="line"><a name="l01430"></a><span class="lineno"> 1430</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,</div>
+<div class="line"><a name="l01431"></a><span class="lineno"> 1431</span>&#160;                        DestIterator upperleftd, DestAccessor da,</div>
+<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
+<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160;{</div>
+<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(upperlefts, lowerrights, sa, upperleftd,  da,</div>
+<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160;                                   <a class="code" href="group__PixelNeighborhood.html#ga04897760f5b7969c9811a3c258f5981d">EightNeighborCode</a>(), options);</div>
+<div class="line"><a name="l01436"></a><span class="lineno"> 1436</span>&#160;}</div>
+<div class="line"><a name="l01437"></a><span class="lineno"> 1437</span>&#160;</div>
+<div class="line"><a name="l01438"></a><span class="lineno"> 1438</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>SrcIterator, <span class="keyword">class </span>SrcAccessor,</div>
+<div class="line"><a name="l01439"></a><span class="lineno"> 1439</span>&#160;          <span class="keyword">class </span>DestIterator, <span class="keyword">class </span>DestAccessor,</div>
+<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;          <span class="keyword">class </span>Neighborhood&gt;</div>
+<div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
+<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; src,</div>
+<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160;                        pair&lt;DestIterator, DestAccessor&gt; dest,</div>
+<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;                        Neighborhood neighborhood,</div>
+<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
+<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;{</div>
+<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(src.first, src.second, src.third,</div>
+<div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160;                                   dest.first, dest.second,</div>
+<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;                                   neighborhood, options);</div>
+<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;}</div>
+<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160;</div>
+<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>SrcIterator, <span class="keyword">class </span>SrcAccessor,</div>
+<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;          <span class="keyword">class </span>DestIterator, <span class="keyword">class </span>DestAccessor&gt;</div>
+<div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
+<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; src,</div>
+<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;                        pair&lt;DestIterator, DestAccessor&gt; dest,</div>
+<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
+<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;{</div>
+<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(src.first, src.second, src.third,</div>
+<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160;                                   dest.first, dest.second,</div>
+<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160;                                   <a class="code" href="group__PixelNeighborhood.html#ga04897760f5b7969c9811a3c258f5981d">EightNeighborCode</a>(), options);</div>
+<div class="line"><a name="l01462"></a><span class="lineno"> 1462</span>&#160;}</div>
+<div class="line"><a name="l01463"></a><span class="lineno"> 1463</span>&#160;</div>
+<div class="line"><a name="l01464"></a><span class="lineno"> 1464</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>T1, <span class="keyword">class </span>S1,</div>
+<div class="line"><a name="l01465"></a><span class="lineno"> 1465</span>&#160;          <span class="keyword">class </span>T2, <span class="keyword">class </span>S2,</div>
+<div class="line"><a name="l01466"></a><span class="lineno"> 1466</span>&#160;          <span class="keyword">class </span>Neighborhood&gt;</div>
+<div class="line"><a name="l01467"></a><span class="lineno"> 1467</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
+<div class="line"><a name="l01468"></a><span class="lineno"> 1468</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(MultiArrayView&lt;2, T1, S1&gt; <span class="keyword">const</span> &amp; src,</div>
+<div class="line"><a name="l01469"></a><span class="lineno"> 1469</span>&#160;                        MultiArrayView&lt;2, T2, S2&gt; dest,</div>
+<div class="line"><a name="l01470"></a><span class="lineno"> 1470</span>&#160;                        Neighborhood neighborhood,</div>
+<div class="line"><a name="l01471"></a><span class="lineno"> 1471</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
+<div class="line"><a name="l01472"></a><span class="lineno"> 1472</span>&#160;{</div>
+<div class="line"><a name="l01473"></a><span class="lineno"> 1473</span>&#160;    vigra_precondition(src.shape() == dest.shape(),</div>
+<div class="line"><a name="l01474"></a><span class="lineno"> 1474</span>&#160;        <span class="stringliteral">&quot;watershedsRegionGrowing(): shape mismatch between input and output.&quot;</span>);</div>
+<div class="line"><a name="l01475"></a><span class="lineno"> 1475</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(srcImageRange(src),</div>
+<div class="line"><a name="l01476"></a><span class="lineno"> 1476</span>&#160;                                   destImage(dest),</div>
+<div class="line"><a name="l01477"></a><span class="lineno"> 1477</span>&#160;                                   neighborhood, options);</div>
+<div class="line"><a name="l01478"></a><span class="lineno"> 1478</span>&#160;}</div>
+<div class="line"><a name="l01479"></a><span class="lineno"> 1479</span>&#160;</div>
+<div class="line"><a name="l01480"></a><span class="lineno"> 1480</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>T1, <span class="keyword">class </span>S1,</div>
+<div class="line"><a name="l01481"></a><span class="lineno"> 1481</span>&#160;          <span class="keyword">class </span>T2, <span class="keyword">class </span>S2&gt;</div>
+<div class="line"><a name="l01482"></a><span class="lineno"> 1482</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
+<div class="line"><a name="l01483"></a><span class="lineno"> 1483</span>&#160;<a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(MultiArrayView&lt;2, T1, S1&gt; <span class="keyword">const</span> &amp; src,</div>
+<div class="line"><a name="l01484"></a><span class="lineno"> 1484</span>&#160;                        MultiArrayView&lt;2, T2, S2&gt; dest,</div>
+<div class="line"><a name="l01485"></a><span class="lineno"> 1485</span>&#160;                        WatershedOptions <span class="keyword">const</span> &amp; options = WatershedOptions())</div>
+<div class="line"><a name="l01486"></a><span class="lineno"> 1486</span>&#160;{</div>
+<div class="line"><a name="l01487"></a><span class="lineno"> 1487</span>&#160;    vigra_precondition(src.shape() == dest.shape(),</div>
+<div class="line"><a name="l01488"></a><span class="lineno"> 1488</span>&#160;        <span class="stringliteral">&quot;watershedsRegionGrowing(): shape mismatch between input and output.&quot;</span>);</div>
+<div class="line"><a name="l01489"></a><span class="lineno"> 1489</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__Superpixels.html#gadc7ca5f4008adfaeeb33875bd378bc9d">watershedsRegionGrowing</a>(srcImageRange(src),</div>
+<div class="line"><a name="l01490"></a><span class="lineno"> 1490</span>&#160;                                   destImage(dest),</div>
+<div class="line"><a name="l01491"></a><span class="lineno"> 1491</span>&#160;                                   <a class="code" href="group__PixelNeighborhood.html#ga04897760f5b7969c9811a3c258f5981d">EightNeighborCode</a>(), options);</div>
+<div class="line"><a name="l01492"></a><span class="lineno"> 1492</span>&#160;}</div>
+<div class="line"><a name="l01493"></a><span class="lineno"> 1493</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01494"></a><span class="lineno"> 1494</span>&#160;<span class="comment">//@}</span></div>
+<div class="line"><a name="l01495"></a><span class="lineno"> 1495</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l01496"></a><span class="lineno"> 1496</span>&#160;} <span class="comment">// namespace vigra</span></div>
+<div class="line"><a name="l01497"></a><span class="lineno"> 1497</span>&#160;</div>
+<div class="line"><a name="l01498"></a><span class="lineno"> 1498</span>&#160;<span class="preprocessor">#endif // VIGRA_WATERSHEDS_HXX</span></div>
 <div class="ttc" id="classvigra_1_1SeedOptions_html_a6d34ad801c71fffe3a4621876221f337"><div class="ttname"><a href="classvigra_1_1SeedOptions.html#a6d34ad801c71fffe3a4621876221f337">vigra::SeedOptions::threshold</a></div><div class="ttdeci">SeedOptions &amp; threshold(double threshold)</div><div class="ttdef"><b>Definition:</b> watersheds.hxx:395</div></div>
 <div class="ttc" id="classvigra_1_1WatershedOptions_html_a6c5afa9207f4fcc825e650d67cd1ada4"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#a6c5afa9207f4fcc825e650d67cd1ada4">vigra::WatershedOptions::completeGrow</a></div><div class="ttdeci">WatershedOptions &amp; completeGrow()</div><div class="ttdoc">Perform complete grow. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:810</div></div>
 <div class="ttc" id="group__Superpixels_html_ga01b5439c31bc7008fe4b8b280dd12bf2"><div class="ttname"><a href="group__Superpixels.html#ga01b5439c31bc7008fe4b8b280dd12bf2">vigra::SRGType</a></div><div class="ttdeci">SRGType</div><div class="ttdef"><b>Definition:</b> seededregiongrowing.hxx:176</div></div>
@@ -1564,14 +1565,14 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="ttc" id="classvigra_1_1SeedOptions_html_a342f82e8742831e7951b6aa9084ba7ae"><div class="ttname"><a href="classvigra_1_1SeedOptions.html#a342f82e8742831e7951b6aa9084ba7ae">vigra::SeedOptions::minima</a></div><div class="ttdeci">SeedOptions &amp; minima()</div><div class="ttdef"><b>Definition:</b> watersheds.hxx:350</div></div>
 <div class="ttc" id="group__Superpixels_html_ga798e1da19d24c46a3762057b1708e8b3"><div class="ttname"><a href="group__Superpixels.html#ga798e1da19d24c46a3762057b1708e8b3">vigra::watershedsUnionFind</a></div><div class="ttdeci">unsigned int watershedsUnionFind(...)</div><div class="ttdoc">Region segmentation by means of the union-find watershed algorithm. </div></div>
 <div class="ttc" id="classvigra_1_1WatershedOptions_html_ab24da95531f2e025e299ebee757b67c1"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#ab24da95531f2e025e299ebee757b67c1">vigra::WatershedOptions::WatershedOptions</a></div><div class="ttdeci">WatershedOptions()</div><div class="ttdoc">Create options object with default settings. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:793</div></div>
-<div class="ttc" id="classvigra_1_1WatershedOptions_html_ad08e96e7593dbb405041976f5d64ca5d"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#ad08e96e7593dbb405041976f5d64ca5d">vigra::WatershedOptions::regionGrowing</a></div><div class="ttdeci">WatershedOptions &amp; regionGrowing()</div><div class="ttdoc">Use region-growing watershed. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:921</div></div>
+<div class="ttc" id="classvigra_1_1WatershedOptions_html_ad08e96e7593dbb405041976f5d64ca5d"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#ad08e96e7593dbb405041976f5d64ca5d">vigra::WatershedOptions::regionGrowing</a></div><div class="ttdeci">WatershedOptions &amp; regionGrowing()</div><div class="ttdoc">Use region-growing watershed. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:922</div></div>
 <div class="ttc" id="group__TransformAlgo_html_gababa545b60bb7db13076648f83c6b314"><div class="ttname"><a href="group__TransformAlgo.html#gababa545b60bb7db13076648f83c6b314">vigra::transformImage</a></div><div class="ttdeci">void transformImage(...)</div><div class="ttdoc">Apply unary point transformation to each pixel. </div></div>
-<div class="ttc" id="classvigra_1_1WatershedOptions_html_acbe3e1d95098e09c53f8948f5fdef55f"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#acbe3e1d95098e09c53f8948f5fdef55f">vigra::WatershedOptions::unionFind</a></div><div class="ttdeci">WatershedOptions &amp; unionFind()</div><div class="ttdoc">Use union-find watershed. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:934</div></div>
+<div class="ttc" id="classvigra_1_1WatershedOptions_html_acbe3e1d95098e09c53f8948f5fdef55f"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#acbe3e1d95098e09c53f8948f5fdef55f">vigra::WatershedOptions::unionFind</a></div><div class="ttdeci">WatershedOptions &amp; unionFind()</div><div class="ttdoc">Use union-find watershed. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:935</div></div>
 <div class="ttc" id="classvigra_1_1SeedOptions_html_ac66957cc316120670c535c79783ec20d"><div class="ttname"><a href="classvigra_1_1SeedOptions.html#ac66957cc316120670c535c79783ec20d">vigra::SeedOptions::levelSets</a></div><div class="ttdeci">SeedOptions &amp; levelSets(double threshold)</div><div class="ttdef"><b>Definition:</b> watersheds.hxx:382</div></div>
 <div class="ttc" id="group__LocalMinMax_html_ga527dfba5468e97ca7f1d676d34bc7162"><div class="ttname"><a href="group__LocalMinMax.html#ga527dfba5468e97ca7f1d676d34bc7162">vigra::localMinima</a></div><div class="ttdeci">void localMinima(...)</div><div class="ttdoc">Find local minima in an image or multi-dimensional array. </div></div>
 <div class="ttc" id="group__PixelNeighborhood_html_ga745167948a746ad025601aff865383ef"><div class="ttname"><a href="group__PixelNeighborhood.html#ga745167948a746ad025601aff865383ef">vigra::AtImageBorder</a></div><div class="ttdeci">AtImageBorder</div><div class="ttdoc">Encode whether a point is near the image border. </div><div class="ttdef"><b>Definition:</b> pixelneighborhood.hxx:68</div></div>
 <div class="ttc" id="group__PixelNeighborhood_html_gafb116a5d0d69abccd640856eb742f639"><div class="ttname"><a href="group__PixelNeighborhood.html#gafb116a5d0d69abccd640856eb742f639">vigra::isAtImageBorder</a></div><div class="ttdeci">AtImageBorder isAtImageBorder(int x, int y, int width, int height)</div><div class="ttdoc">Find out whether a point is at the image border. </div><div class="ttdef"><b>Definition:</b> pixelneighborhood.hxx:111</div></div>
-<div class="ttc" id="classvigra_1_1WatershedOptions_html_a214eafb1649237d6332faea43930c3ac"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#a214eafb1649237d6332faea43930c3ac">vigra::WatershedOptions::useMethod</a></div><div class="ttdeci">WatershedOptions &amp; useMethod(Method method)</div><div class="ttdoc">Specify the algorithm to be used. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:908</div></div>
+<div class="ttc" id="classvigra_1_1WatershedOptions_html_a214eafb1649237d6332faea43930c3ac"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#a214eafb1649237d6332faea43930c3ac">vigra::WatershedOptions::useMethod</a></div><div class="ttdeci">WatershedOptions &amp; useMethod(Method method)</div><div class="ttdoc">Specify the algorithm to be used. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:909</div></div>
 <div class="ttc" id="classvigra_1_1WatershedOptions_html_a15555597c38612854638c1fc2482a027"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#a15555597c38612854638c1fc2482a027">vigra::WatershedOptions::seedOptions</a></div><div class="ttdeci">WatershedOptions &amp; seedOptions(SeedOptions const &amp;s)</div><div class="ttdoc">Specify seed options. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:878</div></div>
 <div class="ttc" id="group__Labeling_html_gad8d7c944ead026988c0a3bcadd8076b6"><div class="ttname"><a href="group__Labeling.html#gad8d7c944ead026988c0a3bcadd8076b6">vigra::labelImageWithBackground</a></div><div class="ttdeci">unsigned int labelImageWithBackground(...)</div><div class="ttdoc">Find the connected components of a segmented image, excluding the background from labeling...</div></div>
 <div class="ttc" id="group__StandardImageTypes_html_gaf7e342087f23fa1b4651510fbe2fde90"><div class="ttname"><a href="group__StandardImageTypes.html#gaf7e342087f23fa1b4651510fbe2fde90">vigra::BImage</a></div><div class="ttdeci">BasicImage&lt; UInt8 &gt; BImage</div><div class="ttdef"><b>Definition:</b> stdimage.hxx:62</div></div>
@@ -1583,7 +1584,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="ttc" id="classvigra_1_1WatershedOptions_html_afc3826d26d06ab1d557e549aff83f41e"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#afc3826d26d06ab1d557e549aff83f41e">vigra::WatershedOptions::srgType</a></div><div class="ttdeci">WatershedOptions &amp; srgType(SRGType type)</div><div class="ttdoc">Set SRGType explicitly. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:832</div></div>
 <div class="ttc" id="namespacevigra_html_a91a381da56852b04506489d288a11829"><div class="ttname"><a href="namespacevigra.html#a91a381da56852b04506489d288a11829">vigra::doxygen_overloaded_function</a></div><div class="ttdeci">doxygen_overloaded_function(template&lt;...&gt; void separableConvolveBlockwise) template&lt; unsigned int N</div><div class="ttdoc">Separated convolution on ChunkedArrays. </div></div>
 <div class="ttc" id="group__Superpixels_html_ga7b54436edf7b15b9628d17a22917b4b1"><div class="ttname"><a href="group__Superpixels.html#ga7b54436edf7b15b9628d17a22917b4b1">vigra::seededRegionGrowing</a></div><div class="ttdeci">void seededRegionGrowing(...)</div><div class="ttdoc">Region Segmentation by means of Seeded Region Growing. </div></div>
-<div class="ttc" id="classvigra_1_1WatershedOptions_html_ac9fe756b8b6c338008262062b81c6374"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#ac9fe756b8b6c338008262062b81c6374">vigra::WatershedOptions::biasLabel</a></div><div class="ttdeci">WatershedOptions &amp; biasLabel(unsigned int label, double factor)</div><div class="ttdoc">Bias the cost of the specified region by the given factor. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:893</div></div>
+<div class="ttc" id="classvigra_1_1WatershedOptions_html_ac9fe756b8b6c338008262062b81c6374"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#ac9fe756b8b6c338008262062b81c6374">vigra::WatershedOptions::biasLabel</a></div><div class="ttdeci">WatershedOptions &amp; biasLabel(unsigned int label, double factor)</div><div class="ttdoc">Bias the cost of the specified region by the given factor. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:894</div></div>
 <div class="ttc" id="classvigra_1_1WatershedOptions_html_a628860a202d1874eb78e0b8faf97d838"><div class="ttname"><a href="classvigra_1_1WatershedOptions.html#a628860a202d1874eb78e0b8faf97d838">vigra::WatershedOptions::stopAtThreshold</a></div><div class="ttdeci">WatershedOptions &amp; stopAtThreshold(double threshold)</div><div class="ttdoc">Stop region growing when the boundaryness exceeds the threshold. </div><div class="ttdef"><b>Definition:</b> watersheds.hxx:844</div></div>
 <div class="ttc" id="classvigra_1_1SeedOptions_html_a19dcb30792f17450293427c89f0f875f"><div class="ttname"><a href="classvigra_1_1SeedOptions.html#a19dcb30792f17450293427c89f0f875f">vigra::SeedOptions::levelSets</a></div><div class="ttdeci">SeedOptions &amp; levelSets()</div><div class="ttdef"><b>Definition:</b> watersheds.hxx:371</div></div>
 <div class="ttc" id="group__PixelNeighborhood_html_ga58cb45fb133eb7c1d63fd14f65b8320f"><div class="ttname"><a href="group__PixelNeighborhood.html#ga58cb45fb133eb7c1d63fd14f65b8320f">vigra::FourNeighborCode</a></div><div class="ttdeci">FourNeighborhood::NeighborCode FourNeighborCode</div><div class="ttdef"><b>Definition:</b> pixelneighborhood.hxx:379</div></div>
@@ -1609,7 +1610,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

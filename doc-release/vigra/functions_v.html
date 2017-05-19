@@ -61,8 +61,9 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 , <a class="el" href="classvigra_1_1GridGraph.html#a714fad7e4012c93bf63d73337723f1c4">GridGraph&lt; N, DirectedTag &gt;</a>
 , <a class="el" href="classvigra_1_1Quaternion.html#a2d60487cd02fee4de2bb8f4706d62c23">Quaternion&lt; ValueType &gt;</a>
 </li>
-<li>valid
-: <a class="el" href="classvigra_1_1FindBoundingRectangle.html#a28e3c179a86f337095088b3ca02a2b2a">FindBoundingRectangle</a>
+<li>valid()
+: <a class="el" href="group__GraphDataStructures.html#ga4c3d344748456d4ecc8354cf9962408f">BinaryForest</a>
+, <a class="el" href="classvigra_1_1FindBoundingRectangle.html#a28e3c179a86f337095088b3ca02a2b2a">FindBoundingRectangle</a>
 </li>
 <li>validMinMax()
 : <a class="el" href="classvigra_1_1HistogramOptions.html#ac9f440c50fa9b1c4bd5c0bd515da7ba3">HistogramOptions</a>
@@ -169,7 +170,8 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 , <a class="el" href="classvigra_1_1YPrimeUV2RGBPrimeFunctor.html#a818a92fdb6cfee7cd1a828c5b5d625ee">YPrimeUV2RGBPrimeFunctor&lt; T &gt;</a>
 </li>
 <li>variable_importance_
-: <a class="el" href="group__MachineLearning.html#gac4b8c6cd30f9b3de278e373528e092aa">VariableImportanceVisitor</a>
+: <a class="el" href="classvigra_1_1rf3_1_1VariableImportance.html#ac4b8c6cd30f9b3de278e373528e092aa">VariableImportance</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VariableImportanceVisitor.html#ac4b8c6cd30f9b3de278e373528e092aa">VariableImportanceVisitor</a>
 </li>
 <li>variables
 : <a class="el" href="classvigra_1_1rf_1_1algorithms_1_1ClusterImportanceVisitor.html#a4bd3b75835e08f4472bd0e3082f2debf">ClusterImportanceVisitor</a>
@@ -211,41 +213,58 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 , <a class="el" href="classvigra_1_1NumpyArray.html#a851962ebf3f9c7e4647851effd663452">NumpyArray&lt; N, T, Stride &gt;</a>
 </li>
 <li>visit_after_split()
-: <a class="el" href="group__MachineLearning.html#ga3ee59304d549a6562e7be29e65ec5698">VariableImportanceVisitor</a>
-, <a class="el" href="group__MachineLearning.html#ga32301fb47981050340e6a927d78a2a77">VisitorBase</a>
+: <a class="el" href="classvigra_1_1rf3_1_1RFVisitorBase.html#ad74dc51e6011050c6728d701057f273e">RFVisitorBase</a>
+, <a class="el" href="classvigra_1_1rf3_1_1VariableImportance.html#a1749baf33c5a4bc8c396d9fcf3784a18">VariableImportance</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VariableImportanceVisitor.html#a3ee59304d549a6562e7be29e65ec5698">VariableImportanceVisitor</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a32301fb47981050340e6a927d78a2a77">VisitorBase</a>
+</li>
+<li>visit_after_training()
+: <a class="el" href="classvigra_1_1rf3_1_1OOBError.html#adac3c2ae09366e454eadeb12ce1137bb">OOBError</a>
+, <a class="el" href="classvigra_1_1rf3_1_1RFVisitorBase.html#af5df38f12ea23c3ae9dc42d992cc1790">RFVisitorBase</a>
+, <a class="el" href="classvigra_1_1rf3_1_1VariableImportance.html#abb73ac8891b7d941790af37ee96b53c7">VariableImportance</a>
 </li>
 <li>visit_after_tree()
-: <a class="el" href="classvigra_1_1rf_1_1algorithms_1_1ClusterImportanceVisitor.html#a7118d9515b477dfdb5e9899e118a5d76">ClusterImportanceVisitor</a>
-, <a class="el" href="group__MachineLearning.html#ga81978178c1bdd44f9a4ae87b8c1347ed">OnlineLearnVisitor</a>
-, <a class="el" href="group__MachineLearning.html#ga1cc1228d3f8c0079094b39c607295678">OOB_PerTreeError</a>
-, <a class="el" href="group__MachineLearning.html#ga7118d9515b477dfdb5e9899e118a5d76">VariableImportanceVisitor</a>
-, <a class="el" href="group__MachineLearning.html#ga7118d9515b477dfdb5e9899e118a5d76">VisitorBase</a>
+: <a class="el" href="classvigra_1_1rf3_1_1RFVisitorBase.html#aa83a35e48f16860197d4d83157b3be82">RFVisitorBase</a>
+, <a class="el" href="classvigra_1_1rf3_1_1VariableImportance.html#a60747dcaf106571e3ac63a770cacf692">VariableImportance</a>
+, <a class="el" href="classvigra_1_1rf_1_1algorithms_1_1ClusterImportanceVisitor.html#a7118d9515b477dfdb5e9899e118a5d76">ClusterImportanceVisitor</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor.html#a81978178c1bdd44f9a4ae87b8c1347ed">OnlineLearnVisitor</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1OOB__PerTreeError.html#a1cc1228d3f8c0079094b39c607295678">OOB_PerTreeError</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VariableImportanceVisitor.html#a7118d9515b477dfdb5e9899e118a5d76">VariableImportanceVisitor</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a7118d9515b477dfdb5e9899e118a5d76">VisitorBase</a>
 </li>
 <li>visit_at_beginning()
 : <a class="el" href="classvigra_1_1rf_1_1algorithms_1_1ClusterImportanceVisitor.html#aea222da7fe30021eb555e0efd0ffd029">ClusterImportanceVisitor</a>
-, <a class="el" href="group__MachineLearning.html#ga85d7d116c63a23cbad129a1c514b7f60">OnlineLearnVisitor</a>
-, <a class="el" href="group__MachineLearning.html#ga0bb047133b5a592d0ade412044bd1495">VisitorBase</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor.html#a85d7d116c63a23cbad129a1c514b7f60">OnlineLearnVisitor</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a0bb047133b5a592d0ade412044bd1495">VisitorBase</a>
 </li>
 <li>visit_at_end()
 : <a class="el" href="classvigra_1_1rf_1_1algorithms_1_1ClusterImportanceVisitor.html#a695bc52a06b48edb20a5c8f1fbc20374">ClusterImportanceVisitor</a>
-, <a class="el" href="group__MachineLearning.html#ga8680ab265a8c9c57f39c75bd51a186e7">CompleteOOBInfo</a>
-, <a class="el" href="group__MachineLearning.html#ga8680ab265a8c9c57f39c75bd51a186e7">OOB_Error</a>
-, <a class="el" href="group__MachineLearning.html#ga695bc52a06b48edb20a5c8f1fbc20374">OOB_PerTreeError</a>
-, <a class="el" href="group__MachineLearning.html#ga695bc52a06b48edb20a5c8f1fbc20374">VariableImportanceVisitor</a>
-, <a class="el" href="group__MachineLearning.html#gab8c2515ae9343881cc5999fc61821fdc">VisitorBase</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1CompleteOOBInfo.html#a8680ab265a8c9c57f39c75bd51a186e7">CompleteOOBInfo</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1OOB__Error.html#a8680ab265a8c9c57f39c75bd51a186e7">OOB_Error</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1OOB__PerTreeError.html#a695bc52a06b48edb20a5c8f1fbc20374">OOB_PerTreeError</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VariableImportanceVisitor.html#a695bc52a06b48edb20a5c8f1fbc20374">VariableImportanceVisitor</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#ab8c2515ae9343881cc5999fc61821fdc">VisitorBase</a>
+</li>
+<li>visit_before_training()
+: <a class="el" href="classvigra_1_1rf3_1_1RFVisitorBase.html#a4c87afd382a1549abf8616bb599326f8">RFVisitorBase</a>
+</li>
+<li>visit_before_tree()
+: <a class="el" href="classvigra_1_1rf3_1_1OOBError.html#a5eb5125f218c2b8710a0ddb8d0bae8c4">OOBError</a>
+, <a class="el" href="classvigra_1_1rf3_1_1RFVisitorBase.html#a742237f2a6a86ba284ef7b27c863696c">RFVisitorBase</a>
+, <a class="el" href="classvigra_1_1rf3_1_1VariableImportance.html#a76efec6d4bd36a17f10a1c00c9c24040">VariableImportance</a>
 </li>
 <li>visit_external_node()
-: <a class="el" href="group__MachineLearning.html#ga29d5e6cebbbae7f0a170f82ed7a98fc3">VisitorBase</a>
+: <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a29d5e6cebbbae7f0a170f82ed7a98fc3">VisitorBase</a>
 </li>
 <li>visit_internal_node()
-: <a class="el" href="group__MachineLearning.html#ga0be1525336a154f011efa8f86e56db7c">OnlineLearnVisitor</a>
-, <a class="el" href="group__MachineLearning.html#ga3fbf7f85dbe71eb235a6e071da54f459">VisitorBase</a>
+: <a class="el" href="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor.html#a0be1525336a154f011efa8f86e56db7c">OnlineLearnVisitor</a>
+, <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a3fbf7f85dbe71eb235a6e071da54f459">VisitorBase</a>
 </li>
 <li>volume()
 : <a class="el" href="classvigra_1_1Box.html#aefd8c9ee173950456851737d2a403b42">Box&lt; VALUETYPE, DIMENSION &gt;</a>
 </li>
 <li>VolumeExportInfo()
-: <a class="el" href="classvigra_1_1VolumeExportInfo.html#a4994417c82b4bdc5d3edcdef10788dd4">VolumeExportInfo</a>
+: <a class="el" href="classvigra_1_1VolumeExportInfo.html#aa341799ffb56250a8bbcd4862cbfc966">VolumeExportInfo</a>
 </li>
 <li>VolumeImportInfo()
 : <a class="el" href="classvigra_1_1VolumeImportInfo.html#a8353973b10a631cf1f10125877a77501">VolumeImportInfo</a>
@@ -271,7 +290,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

@@ -124,6 +124,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a class="el" href="classvigra_1_1HDF5Handle.html">HDF5Handle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1HDF5File.html#acf7b737011e3931bce3b52c53551fb2d">getAttributeHandle</a> (std::string dataset_name, std::string attribute_name) const </td></tr>
 <tr class="memdesc:acf7b737011e3931bce3b52c53551fb2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Obtain the HDF5 handle of a attribute. <br/></td></tr>
 <tr class="separator:acf7b737011e3931bce3b52c53551fb2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f7cfa8f43421e4231332475213b0c66"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1ArrayVector.html">ArrayVector</a>&lt; hsize_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1HDF5File.html#a6f7cfa8f43421e4231332475213b0c66">getChunkShape</a> (std::string datasetName) const </td></tr>
+<tr class="memdesc:a6f7cfa8f43421e4231332475213b0c66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the shape of chunks along each dimension of a certain dataset.  <a href="#a6f7cfa8f43421e4231332475213b0c66">More...</a><br/></td></tr>
+<tr class="separator:a6f7cfa8f43421e4231332475213b0c66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1145b2b59dd09ff795d135ac8d1e839e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1145b2b59dd09ff795d135ac8d1e839e"></a>
 hssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1HDF5File.html#a1145b2b59dd09ff795d135ac8d1e839e">getDatasetDimensions</a> (std::string datasetName) const </td></tr>
 <tr class="memdesc:a1145b2b59dd09ff795d135ac8d1e839e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of dimensions of a certain dataset If the first character is a "/", the path will be interpreted as absolute path, otherwise it will be interpreted as path relative to the current group. <br/></td></tr>
@@ -151,9 +154,12 @@ hssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <tr class="memitem:aeec20ba571c6ae78179560470f3e54c5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1HDF5File.html#aeec20ba571c6ae78179560470f3e54c5">HDF5File</a> (bool track_creation_times)</td></tr>
 <tr class="memdesc:aeec20ba571c6ae78179560470f3e54c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with time tagging of datasets enabled.  <a href="#aeec20ba571c6ae78179560470f3e54c5">More...</a><br/></td></tr>
 <tr class="separator:aeec20ba571c6ae78179560470f3e54c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab54646e43b57d6b5fc1327a829858215"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1HDF5File.html#ab54646e43b57d6b5fc1327a829858215">HDF5File</a> (std::string filePath, <a class="el" href="classvigra_1_1HDF5File.html#a3a70f8b621474c9885f80fe709e2dca2">OpenMode</a> mode, bool track_creation_times=false)</td></tr>
-<tr class="memdesc:ab54646e43b57d6b5fc1327a829858215"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open or create an <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object.  <a href="#ab54646e43b57d6b5fc1327a829858215">More...</a><br/></td></tr>
-<tr class="separator:ab54646e43b57d6b5fc1327a829858215"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f8bbaebbefc6b0352e8283144d62a89"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1HDF5File.html#a7f8bbaebbefc6b0352e8283144d62a89">HDF5File</a> (std::string filePath, <a class="el" href="classvigra_1_1HDF5File.html#a3a70f8b621474c9885f80fe709e2dca2">OpenMode</a> mode=ReadOnly, bool track_creation_times=false)</td></tr>
+<tr class="memdesc:a7f8bbaebbefc6b0352e8283144d62a89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open or create an <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object.  <a href="#a7f8bbaebbefc6b0352e8283144d62a89">More...</a><br/></td></tr>
+<tr class="separator:a7f8bbaebbefc6b0352e8283144d62a89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94dda6f5137540f541fc88b72a52e86c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1HDF5File.html#a94dda6f5137540f541fc88b72a52e86c">HDF5File</a> (char const *filePath, <a class="el" href="classvigra_1_1HDF5File.html#a3a70f8b621474c9885f80fe709e2dca2">OpenMode</a> mode=ReadOnly, bool track_creation_times=false)</td></tr>
+<tr class="memdesc:a94dda6f5137540f541fc88b72a52e86c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open or create an <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object.  <a href="#a94dda6f5137540f541fc88b72a52e86c">More...</a><br/></td></tr>
+<tr class="separator:a94dda6f5137540f541fc88b72a52e86c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f0eec293efeb6e88359e5d3732a1ed5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1HDF5File.html#a9f0eec293efeb6e88359e5d3732a1ed5">HDF5File</a> (<a class="el" href="classvigra_1_1HDF5HandleShared.html">HDF5HandleShared</a> const &amp;fileHandle, const std::string &amp;pathname=&quot;&quot;, bool read_only=false)</td></tr>
 <tr class="memdesc:a9f0eec293efeb6e88359e5d3732a1ed5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize an <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object from HDF5 file handle.  <a href="#a9f0eec293efeb6e88359e5d3732a1ed5">More...</a><br/></td></tr>
 <tr class="separator:a9f0eec293efeb6e88359e5d3732a1ed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -340,9 +346,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a class="anchor" id="ab54646e43b57d6b5fc1327a829858215"></a>
+<a class="anchor" id="a7f8bbaebbefc6b0352e8283144d62a89"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classvigra_1_1HDF5File.html">HDF5File</a> </td>
@@ -354,7 +363,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classvigra_1_1HDF5File.html#a3a70f8b621474c9885f80fe709e2dca2">OpenMode</a>&#160;</td>
-          <td class="paramname"><em>mode</em>, </td>
+          <td class="paramname"><em>mode</em> = <code>ReadOnly</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -368,11 +377,58 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Open or create an <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object. </p>
-<p>Creates or opens HDF5 file with given filename. The current group is set to "/".</p>
-<p>Note that the <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> class is not copyable (the copy constructor is private to enforce this). </p>
+<p>Creates or opens HDF5 file with given filename. The current group is set to "/". By default, the files is opened in read-only mode. </p>
+
+</div>
+</div>
+<a class="anchor" id="a94dda6f5137540f541fc88b72a52e86c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvigra_1_1HDF5File.html">HDF5File</a> </td>
+          <td>(</td>
+          <td class="paramtype">char const *&#160;</td>
+          <td class="paramname"><em>filePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classvigra_1_1HDF5File.html#a3a70f8b621474c9885f80fe709e2dca2">OpenMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>ReadOnly</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>track_creation_times</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Open or create an <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object. </p>
+<p>Creates or opens HDF5 file with given filename. The current group is set to "/". By default, the files is opened in read-only mode. </p>
 
 </div>
 </div>
@@ -417,7 +473,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>Initialize an <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object from HDF5 file handle. </p>
 <p>Initializes an <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object corresponding to the HDF5 file opened elsewhere. If <em>fileHandle</em> is constructed with a <code>NULL</code> destructor, ownership is not transferred to the new <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object, and you must ensure that the file is not closed while the new <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object is in use. Otherwise, ownership will be shared.</p>
 <p>The current group is set to the specified <em>pathname</em>. If <em>read_only</em> is 'true', you cannot create new datasets or overwrite data.</p>
-<dl class="section warning"><dt>Warning</dt><dd>In case the underlying HDF5 library used by Vigra is not exactly the same library used to open the file with the given id, this method will lead to crashes. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>When VIRA is linked against a different HDF5 library than the one used to open the file with the given id, this method will lead to crashes. </dd></dl>
 
 </div>
 </div>
@@ -456,7 +512,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 
 <p>Assign a <a class="el" href="classvigra_1_1HDF5File.html" title="Access to HDF5 files. ">HDF5File</a> object. </p>
-<p>Calls <a class="el" href="classvigra_1_1HDF5File.html#a5ae591df94fc66ccb85cbb6565368bca" title="Close the current file. ">close()</a> on the present file and The new object will refer to the same file and group as <em>other</em>. </p>
+<p>Calls <a class="el" href="classvigra_1_1HDF5File.html#a5ae591df94fc66ccb85cbb6565368bca" title="Close the current file. ">close()</a> on the present file and refers to the same file and group as <em>other</em> afterwards. </p>
 
 </div>
 </div>
@@ -501,6 +557,26 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 
 <p>Get the shape of each dimension of a certain dataset. </p>
+<p>Normally, this function is called after determining the dimension of the dataset using <a class="el" href="classvigra_1_1HDF5File.html#a1145b2b59dd09ff795d135ac8d1e839e">getDatasetDimensions()</a>. If the first character is a "/", the path will be interpreted as absolute path, otherwise it will be interpreted as path relative to the current group.</p>
+<p>Note that the memory order between VIGRA and HDF5 files differs: VIGRA uses Fortran-order, while HDF5 uses C-order. This function therefore reverses the axis order relative to the file contents. That is, when the axes in the file are ordered as 'z', 'y', 'x', this function will return the shape in the order 'x', 'y', 'z'. </p>
+
+</div>
+</div>
+<a class="anchor" id="a6f7cfa8f43421e4231332475213b0c66"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvigra_1_1ArrayVector.html">ArrayVector</a>&lt;hsize_t&gt; getChunkShape </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>datasetName</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the shape of chunks along each dimension of a certain dataset. </p>
 <p>Normally, this function is called after determining the dimension of the dataset using <a class="el" href="classvigra_1_1HDF5File.html#a1145b2b59dd09ff795d135ac8d1e839e">getDatasetDimensions()</a>. If the first character is a "/", the path will be interpreted as absolute path, otherwise it will be interpreted as path relative to the current group.</p>
 <p>Note that the memory order between VIGRA and HDF5 files differs: VIGRA uses Fortran-order, while HDF5 uses C-order. This function therefore reverses the axis order relative to the file contents. That is, when the axes in the file are ordered as 'z', 'y', 'x', this function will return the shape in the order 'x', 'y', 'z'. </p>
 
@@ -903,7 +979,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

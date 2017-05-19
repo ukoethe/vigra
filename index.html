@@ -41,7 +41,7 @@ li:not(:last-child) {
     <tr>
     <td bgcolor="#dcc87c"></td>
     <td align="center" bgcolor="#e0d090" valign="top" width="100%">
-    <font face="Helvetica,Arial,sans-serif" size="3">The VIGRA Computer Vision Library<br>Version 1.11.0</font>
+    <font face="Helvetica,Arial,sans-serif" size="3">The VIGRA Computer Vision Library<br>Version 1.11.1</font>
     </td>
     </tr>
     <tr>
@@ -83,8 +83,8 @@ VIGRA was originally designed and implemented by <a href="http://hci.iwr.uni-hei
 <td colspan="2" valign="top">
 <ul>
 <li><b><a href="doc-release/vigra/Tutorial.html">Tutorial</a></b>
-</li><li><b>C++ reference for <a href="doc-release/vigra/index.html">version 1.11.0</a></b>
-</li><li><b>vigranumpy Python reference for <a href="doc-release/vigranumpy/index.html">version 1.11.0</a></b>
+</li><li><b>C++ reference for <a href="doc-release/vigra/index.html">version 1.11.1</a></b>
+</li><li><b>vigranumpy Python reference for <a href="doc-release/vigranumpy/index.html">version 1.11.1</a></b>
 </li></ul>
 You can look at some <a href="doc-release/vigra/ExampleList.html">example programs</a>. The most comprehensive description of VIGRA's design (albeit in German) is U. K&ouml;the's PhD thesis:
 
@@ -128,9 +128,9 @@ branch directly -- always create a new branch and issue a merge request.
 of GitHub. Please make ample use of the powerful features provided by 
 GitHub (including issue tracking and change discussion).
 <p>
-Official VIGRA <b>version 1.11.0</b> (March 17, 2016):
+Official VIGRA <b>version 1.11.1</b> (March 19, 2017):
 </p><ul>
-<li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-11-0/vigra-1.11.0-src.tar.gz">source tarball with documentation</a> (for all platforms, to be built with <a href="http://www.cmake.org/">cmake</a>, please read the <a href="http://ukoethe.github.io/vigra/doc-release/vigra/Installation.html">installation instructions</a>)
+<li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-11-1/vigra-1.11.1-src.tar.gz">source tarball with documentation</a> (for all platforms, to be built with <a href="http://www.cmake.org/">cmake</a>, please read the <a href="http://ukoethe.github.io/vigra/doc-release/vigra/Installation.html">installation instructions</a>)
 </li>
 <li>Linux 64-bit binaries:
 <ul>
@@ -138,11 +138,11 @@ Official VIGRA <b>version 1.11.0</b> (March 17, 2016):
 </li>
 <li>VIGRA <b>Python bindings</b> can be downloaded via the <a href="https://www.continuum.io/">anaconda</a> package manager:
     <ul style="margin:10px"><li>
-    <tt>conda install -c ukoethe vigra=1.11.0</tt></li>
+    <tt>conda install -c ukoethe vigra=1.11.1</tt></li>
     </ul>
     Depending on the Python version in the active environment, conda will pick the correct VIGRA variant automatically. Packages are available for Python 2.7, 3.4, and 3.5. You can also create a new environment with a specific Python version (here: 3.4) by calling
     <ul style="margin:10px"><li>
-    <tt>conda create -n vigra -c ukoethe python=3.4 vigra=1.11.0</tt><br/>
+    <tt>conda create -n vigra -c ukoethe python=3.4 vigra=1.11.1</tt><br/>
     <tt>source activate vigra</tt>
     </li>
     </ul>
@@ -150,15 +150,15 @@ Official VIGRA <b>version 1.11.0</b> (March 17, 2016):
 </ul>
 <li>Windows 64-bit binaries:
 <ul>
-<li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-11-0/vigra-1.11.0-win64-vc14.zip">binaries with sources and documentation</a> for Visual Studio 2015, including dependencies (jpeg, png, tiff, hdf5)
+<li><a href="https://github.com/ukoethe/vigra/releases/download/Version-1-11-1/vigra-1.11.1-win64-vc14.zip">binaries with sources and documentation</a> for Visual Studio 2015, including dependencies (jpeg, png, tiff, hdf5)
 </li>
 <li>VIGRA <b>Python bindings</b> for Python 3.5 can be downloaded via the <a href="https://www.continuum.io/">anaconda</a> package manager. Set up and activate a Python 3.5 environment and call
     <ul style="margin:10px"><li>
-    <tt>conda install -c ukoethe vigra=1.11.0</tt></li>
+    <tt>conda install -c ukoethe vigra=1.11.1</tt></li>
     </ul>
     If you need Python 2.7, anaconda's default packages are unfortunately unsuitable because they require an ancient compiler which is unable to compile VIGRA. However, you can create a new environment holding all dependencies (including Python 2.7) compiled with Visual Studio 2012 by calling
     <ul style="margin:10px"><li>
-    <tt>conda create -n vigra -c ukoethe python=2.7.10.vc11 vigra=1.11.0.vc11</tt><br/>
+    <tt>conda create -n vigra -c ukoethe python=2.7.10.vc11 vigra=1.11.1.vc11</tt><br/>
     <tt>activate vigra</tt>
     </li>
     </ul>
@@ -167,8 +167,8 @@ Official VIGRA <b>version 1.11.0</b> (March 17, 2016):
 </li>
 <li>Apple Mac OS X binaries
 <ul>
-<li><a href="http://www.macports.org/ports.php?by=name&amp;substr=vigra">MacPort</a> (VIGRA 1.11.0 and 1.10.0, maintained by Benjamin Seppke, see his <a href="#" onclick="showabstract('macport', this);return false;">usage notes</a>) 
-<div id="macport" style="display:none"><br>This port brings the whole functionality of vigra 1.11.0 to the Mac. If you already have macports installed, please perform "port selfupdate" followed by "port install vigra" to get the new port, or "port upgrade outdated" to update from an older version (you may also want to call "port uninstall inactive " to clean-up afterwards). Here are the features of the MacPort:
+<li><a href="http://www.macports.org/ports.php?by=name&amp;substr=vigra">MacPort</a> (VIGRA 1.11.1 and 1.10.0, maintained by Benjamin Seppke, see his <a href="#" onclick="showabstract('macport', this);return false;">usage notes</a>) 
+<div id="macport" style="display:none"><br>This port brings the whole functionality of vigra 1.11.1 to the Mac. If you already have macports installed, please perform "port selfupdate" followed by "port install vigra" to get the new port, or "port upgrade outdated" to update from an older version (you may also want to call "port uninstall inactive " to clean-up afterwards). Here are the features of the MacPort:
 <ul>
  <li> Supported by default:
  <dl>
@@ -457,7 +457,7 @@ University of Heidelberg, Germany</i>
 </p></td><td bgcolor="#e0d090">
 <p align="right">
 <i>
-VIGRA 1.11.0<br>March 17, 2016
+VIGRA 1.11.1<br>March 19, 2017
 </i>
 </p></td></tr>
 </tbody></table>

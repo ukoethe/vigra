@@ -336,19 +336,19 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;<span class="preprocessor">    public: \</span></div>
 <div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="preprocessor">        typedef ConvolutionOptions&lt;DIM&gt; ConvOpt; \</span></div>
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;<span class="preprocessor">        FUNCTOR_NAME(const ConvOpt &amp; convOpt) \</span></div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="preprocessor">        : convOpt_(convOpt){} \</span></div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="preprocessor">        : sharedOpt_(convOpt){} \</span></div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;<span class="preprocessor">        template&lt;class S, class D&gt; \</span></div>
 <div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;<span class="preprocessor">        void operator()(const S &amp; s, D &amp; d)const{ \</span></div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="preprocessor">            FUNCTION_NAME(s, d, convOpt_); \</span></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="preprocessor">            FUNCTION_NAME(s, d, sharedOpt_); \</span></div>
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="preprocessor">        } \</span></div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;<span class="preprocessor">        template&lt;class S, class D,class SHAPE&gt; \</span></div>
 <div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="preprocessor">        void operator()(const S &amp; s, D &amp; d, const SHAPE &amp; roiBegin, const SHAPE &amp; roiEnd){ \</span></div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="preprocessor">            ConvOpt convOpt(convOpt_); \</span></div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="preprocessor">            convOpt.subarray(roiBegin, roiEnd); \</span></div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="preprocessor">            FUNCTION_NAME(s, d, convOpt); \</span></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="preprocessor">            ConvOpt localOpt(sharedOpt_); \</span></div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="preprocessor">            localOpt.subarray(roiBegin, roiEnd); \</span></div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="preprocessor">            FUNCTION_NAME(s, d, localOpt); \</span></div>
 <div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="preprocessor">        } \</span></div>
 <div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="preprocessor">    private: \</span></div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="preprocessor">        ConvOpt  convOpt_; \</span></div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="preprocessor">        ConvOpt  sharedOpt_; \</span></div>
 <div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="preprocessor">    };</span></div>
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;</div>
@@ -368,168 +368,170 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        <span class="keyword">typedef</span> ConvolutionOptions&lt;DIM&gt; ConvOpt;</div>
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        HessianOfGaussianEigenvaluesFunctor(<span class="keyword">const</span> ConvOpt &amp; convOpt)</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        : convOpt_(convOpt){}</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        : sharedOpt_(convOpt){}</div>
 <div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> S, <span class="keyword">class</span> D&gt;</div>
 <div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        <span class="keywordtype">void</span> operator()(<span class="keyword">const</span> S &amp; s, D &amp; d)<span class="keyword">const</span>{</div>
 <div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> vigra::NumericTraits&lt;typename S::value_type&gt;::RealPromote RealType;</div>
 <div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray</a>&lt;DIM, TinyVector&lt;RealType, int(DIM*(DIM+1)/2)&gt; &gt;  hessianOfGaussianRes(d.shape());</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;            <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">vigra::hessianOfGaussianMultiArray</a>(s, hessianOfGaussianRes, convOpt_);</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;            <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">vigra::hessianOfGaussianMultiArray</a>(s, hessianOfGaussianRes, sharedOpt_);</div>
 <div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;            <a class="code" href="group__MultiPointoperators.html#gacc06f88a0cd7dcdb73f0c4af5b0e0312">vigra::tensorEigenvaluesMultiArray</a>(hessianOfGaussianRes, d);</div>
 <div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        }</div>
 <div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> S, <span class="keyword">class</span> D,<span class="keyword">class</span> SHAPE&gt;</div>
 <div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="keywordtype">void</span> operator()(<span class="keyword">const</span> S &amp; s, D &amp; d, <span class="keyword">const</span> SHAPE &amp; roiBegin, <span class="keyword">const</span> SHAPE &amp; roiEnd){</div>
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> vigra::NumericTraits&lt;typename S::value_type&gt;::RealPromote RealType;</div>
 <div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray</a>&lt;DIM, TinyVector&lt;RealType, int(DIM*(DIM+1)/2)&gt; &gt;  hessianOfGaussianRes(roiEnd-roiBegin);</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            convOpt_.subarray(roiBegin, roiEnd);</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">vigra::hessianOfGaussianMultiArray</a>(s, hessianOfGaussianRes, convOpt_);</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;            <a class="code" href="group__MultiPointoperators.html#gacc06f88a0cd7dcdb73f0c4af5b0e0312">vigra::tensorEigenvaluesMultiArray</a>(hessianOfGaussianRes, d);</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        }</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;        ConvOpt  convOpt_;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    };</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    <span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> DIM, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> EV&gt;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    <span class="keyword">class </span>HessianOfGaussianSelectedEigenvalueFunctor{</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        <span class="keyword">typedef</span> ConvolutionOptions&lt;DIM&gt; ConvOpt;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        HessianOfGaussianSelectedEigenvalueFunctor(<span class="keyword">const</span> ConvOpt &amp; convOpt)</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        : convOpt_(convOpt){}</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> S, <span class="keyword">class</span> D&gt;</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;        <span class="keywordtype">void</span> operator()(<span class="keyword">const</span> S &amp; s, D &amp; d)<span class="keyword">const</span>{</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> vigra::NumericTraits&lt;typename S::value_type&gt;::RealPromote RealType;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;            <span class="comment">// compute the hessian of gaussian and extract eigenvalue</span></div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray</a>&lt;DIM, TinyVector&lt;RealType, int(DIM*(DIM+1)/2)&gt; &gt;  hessianOfGaussianRes(s.shape());</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">vigra::hessianOfGaussianMultiArray</a>(s, hessianOfGaussianRes, convOpt_);</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray&lt;DIM, TinyVector&lt;RealType, DIM &gt;</a> &gt;  allEigenvalues(s.shape());</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;            <a class="code" href="group__MultiPointoperators.html#gacc06f88a0cd7dcdb73f0c4af5b0e0312">vigra::tensorEigenvaluesMultiArray</a>(hessianOfGaussianRes, allEigenvalues);</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;            d = allEigenvalues.bindElementChannel(EV);</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        }</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> S, <span class="keyword">class</span> D,<span class="keyword">class</span> SHAPE&gt;</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        <span class="keywordtype">void</span> operator()(<span class="keyword">const</span> S &amp; s, D &amp; d, <span class="keyword">const</span> SHAPE &amp; roiBegin, <span class="keyword">const</span> SHAPE &amp; roiEnd){</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> vigra::NumericTraits&lt;typename S::value_type&gt;::RealPromote RealType;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;            <span class="comment">// compute the hessian of gaussian and extract eigenvalue</span></div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray</a>&lt;DIM, TinyVector&lt;RealType, int(DIM*(DIM+1)/2)&gt; &gt;  hessianOfGaussianRes(roiEnd-roiBegin);</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;            convOpt_.subarray(roiBegin, roiEnd);</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">vigra::hessianOfGaussianMultiArray</a>(s, hessianOfGaussianRes, convOpt_);</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray&lt;DIM, TinyVector&lt;RealType, DIM &gt;</a> &gt;  allEigenvalues(roiEnd-roiBegin);</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            <a class="code" href="group__MultiPointoperators.html#gacc06f88a0cd7dcdb73f0c4af5b0e0312">vigra::tensorEigenvaluesMultiArray</a>(hessianOfGaussianRes, allEigenvalues);</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            d = allEigenvalues.bindElementChannel(EV);</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        }</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        ConvOpt  convOpt_;</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    };</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    <span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> DIM&gt;</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    <span class="keyword">class </span>HessianOfGaussianFirstEigenvalueFunctor</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    : <span class="keyword">public</span> HessianOfGaussianSelectedEigenvalueFunctor&lt;DIM, 0&gt;{</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        <span class="keyword">typedef</span> ConvolutionOptions&lt;DIM&gt; ConvOpt;</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        HessianOfGaussianFirstEigenvalueFunctor(<span class="keyword">const</span> ConvOpt &amp; convOpt)</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        : HessianOfGaussianSelectedEigenvalueFunctor&lt;DIM, 0&gt;(convOpt){}</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    };</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    <span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> DIM&gt;</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    <span class="keyword">class </span>HessianOfGaussianLastEigenvalueFunctor</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    : <span class="keyword">public</span> HessianOfGaussianSelectedEigenvalueFunctor&lt;DIM, DIM-1&gt;{</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        <span class="keyword">typedef</span> ConvolutionOptions&lt;DIM&gt; ConvOpt;</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        HessianOfGaussianLastEigenvalueFunctor(<span class="keyword">const</span> ConvOpt &amp; convOpt)</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        : HessianOfGaussianSelectedEigenvalueFunctor&lt;DIM, DIM-1&gt;(convOpt){}</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    };</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            ConvOpt localOpt(sharedOpt_);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            localOpt.subarray(roiBegin, roiEnd);</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;            <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">vigra::hessianOfGaussianMultiArray</a>(s, hessianOfGaussianRes, localOpt);</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;            <a class="code" href="group__MultiPointoperators.html#gacc06f88a0cd7dcdb73f0c4af5b0e0312">vigra::tensorEigenvaluesMultiArray</a>(hessianOfGaussianRes, d);</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        }</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        ConvOpt  sharedOpt_;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    };</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    <span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> DIM, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> EV&gt;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="keyword">class </span>HessianOfGaussianSelectedEigenvalueFunctor{</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        <span class="keyword">typedef</span> ConvolutionOptions&lt;DIM&gt; ConvOpt;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        HessianOfGaussianSelectedEigenvalueFunctor(<span class="keyword">const</span> ConvOpt &amp; convOpt)</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        : sharedOpt_(convOpt){}</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> S, <span class="keyword">class</span> D&gt;</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;        <span class="keywordtype">void</span> operator()(<span class="keyword">const</span> S &amp; s, D &amp; d)<span class="keyword">const</span>{</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> vigra::NumericTraits&lt;typename S::value_type&gt;::RealPromote RealType;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;            <span class="comment">// compute the hessian of gaussian and extract eigenvalue</span></div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray</a>&lt;DIM, TinyVector&lt;RealType, int(DIM*(DIM+1)/2)&gt; &gt;  hessianOfGaussianRes(s.shape());</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;            <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">vigra::hessianOfGaussianMultiArray</a>(s, hessianOfGaussianRes, sharedOpt_);</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray&lt;DIM, TinyVector&lt;RealType, DIM &gt;</a> &gt;  allEigenvalues(s.shape());</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;            <a class="code" href="group__MultiPointoperators.html#gacc06f88a0cd7dcdb73f0c4af5b0e0312">vigra::tensorEigenvaluesMultiArray</a>(hessianOfGaussianRes, allEigenvalues);</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;            d = allEigenvalues.bindElementChannel(EV);</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        }</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> S, <span class="keyword">class</span> D,<span class="keyword">class</span> SHAPE&gt;</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        <span class="keywordtype">void</span> operator()(<span class="keyword">const</span> S &amp; s, D &amp; d, <span class="keyword">const</span> SHAPE &amp; roiBegin, <span class="keyword">const</span> SHAPE &amp; roiEnd){</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> vigra::NumericTraits&lt;typename S::value_type&gt;::RealPromote RealType;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;            <span class="comment">// compute the hessian of gaussian and extract eigenvalue</span></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray</a>&lt;DIM, TinyVector&lt;RealType, int(DIM*(DIM+1)/2)&gt; &gt;  hessianOfGaussianRes(roiEnd-roiBegin);</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            ConvOpt localOpt(sharedOpt_);</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;            localOpt.subarray(roiBegin, roiEnd);</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">vigra::hessianOfGaussianMultiArray</a>(s, hessianOfGaussianRes, localOpt);</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;            <a class="code" href="classvigra_1_1MultiArray.html">vigra::MultiArray&lt;DIM, TinyVector&lt;RealType, DIM &gt;</a> &gt;  allEigenvalues(roiEnd-roiBegin);</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <a class="code" href="group__MultiPointoperators.html#gacc06f88a0cd7dcdb73f0c4af5b0e0312">vigra::tensorEigenvaluesMultiArray</a>(hessianOfGaussianRes, allEigenvalues);</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;            d = allEigenvalues.bindElementChannel(EV);</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        }</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        ConvOpt  sharedOpt_;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    };</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> DIM&gt;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <span class="keyword">class </span>HessianOfGaussianFirstEigenvalueFunctor</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    : <span class="keyword">public</span> HessianOfGaussianSelectedEigenvalueFunctor&lt;DIM, 0&gt;{</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        <span class="keyword">typedef</span> ConvolutionOptions&lt;DIM&gt; ConvOpt;</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;        HessianOfGaussianFirstEigenvalueFunctor(<span class="keyword">const</span> ConvOpt &amp; convOpt)</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;        : HessianOfGaussianSelectedEigenvalueFunctor&lt;DIM, 0&gt;(convOpt){}</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    };</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    <span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> DIM&gt;</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <span class="keyword">class </span>HessianOfGaussianLastEigenvalueFunctor</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    : <span class="keyword">public</span> HessianOfGaussianSelectedEigenvalueFunctor&lt;DIM, DIM-1&gt;{</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        <span class="keyword">typedef</span> ConvolutionOptions&lt;DIM&gt; ConvOpt;</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        HessianOfGaussianLastEigenvalueFunctor(<span class="keyword">const</span> ConvOpt &amp; convOpt)</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        : HessianOfGaussianSelectedEigenvalueFunctor&lt;DIM, DIM-1&gt;(convOpt){}</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    };</div>
 <div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;</div>
 <div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;</div>
 <div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="comment">    /// \warning this functions is deprecated</span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="comment">    /// and should not be used from end users</span></div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="comment"></span>    <span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N&gt;</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    <a class="code" href="classvigra_1_1TinyVector.html">vigra::TinyVector&lt; vigra::MultiArrayIndex, N &gt;</a> getBorder(</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        <span class="keyword">const</span> BlockwiseConvolutionOptions&lt;N&gt; &amp; opt,</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">size_t</span> order,</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">bool</span> usesOuterScale = <span class="keyword">false</span></div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;    ){</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;        <a class="code" href="classvigra_1_1TinyVector.html">vigra::TinyVector&lt; vigra::MultiArrayIndex, N &gt;</a> res(vigra::SkipInitialization);</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        <span class="keywordflow">if</span>(opt.getFilterWindowSize()&lt;=0.00001){</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> d=0; d&lt;N; ++d){</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                <span class="keywordtype">double</span> stdDev =  opt.getStdDev()[d];</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                <span class="keywordflow">if</span>(usesOuterScale)</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                    stdDev += opt.getOuterScale()[d];</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                res[d] = <span class="keyword">static_cast&lt;</span><a class="code" href="group__MultiIteratorGroup.html#gac436173a0374e960a463a9186496ab70">MultiArrayIndex</a><span class="keyword">&gt;</span>(3.0 * stdDev  + 0.5*<span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(order)+0.5);</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;            }</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        }</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;        <span class="keywordflow">else</span>{</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;            <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;blockwise filters do not allow a user defined FilterWindowSize&quot;</span>);</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;        }</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        <span class="keywordflow">return</span> res;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    }</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;} <span class="comment">// end namespace blockwise</span></div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="comment">    /// \warning this functions is deprecated</span></div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="comment">    /// and should not be used from end users</span></div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="comment"></span>    <span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N&gt;</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    <a class="code" href="classvigra_1_1TinyVector.html">vigra::TinyVector&lt; vigra::MultiArrayIndex, N &gt;</a> getBorder(</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        <span class="keyword">const</span> BlockwiseConvolutionOptions&lt;N&gt; &amp; opt,</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">size_t</span> order,</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">bool</span> usesOuterScale = <span class="keyword">false</span></div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    ){</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        <a class="code" href="classvigra_1_1TinyVector.html">vigra::TinyVector&lt; vigra::MultiArrayIndex, N &gt;</a> res(vigra::SkipInitialization);</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;        <span class="keywordflow">if</span>(opt.getFilterWindowSize()&lt;=0.00001){</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> d=0; d&lt;N; ++d){</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                <span class="keywordtype">double</span> stdDev =  opt.getStdDev()[d];</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                <span class="keywordflow">if</span>(usesOuterScale)</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                    stdDev += opt.getOuterScale()[d];</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                res[d] = <span class="keyword">static_cast&lt;</span><a class="code" href="group__MultiIteratorGroup.html#gac436173a0374e960a463a9186496ab70">MultiArrayIndex</a><span class="keyword">&gt;</span>(3.0 * stdDev  + 0.5*<span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(order)+0.5);</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;            }</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        }</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;        <span class="keywordflow">else</span>{</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;            <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;blockwise filters do not allow a user defined FilterWindowSize&quot;</span>);</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;        }</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;        <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    }</div>
 <div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="preprocessor">#define VIGRA_BLOCKWISE(FUNCTOR, FUNCTION, ORDER, USES_OUTER_SCALE) \</span></div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="preprocessor">template &lt;unsigned int N, class T1, class S1, class T2, class S2&gt; \</span></div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="preprocessor">void FUNCTION( \</span></div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="preprocessor">    MultiArrayView&lt;N, T1, S1&gt; const &amp; source, \</span></div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor">    MultiArrayView&lt;N, T2, S2&gt; dest, \</span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="preprocessor">    BlockwiseConvolutionOptions&lt;N&gt; const &amp; options \</span></div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="preprocessor">) \</span></div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="preprocessor">{  \</span></div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="preprocessor">    typedef  MultiBlocking&lt;N, vigra::MultiArrayIndex&gt; Blocking; \</span></div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="preprocessor">    typedef typename Blocking::Shape Shape; \</span></div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="preprocessor">    const Shape border = blockwise::getBorder(options, ORDER, USES_OUTER_SCALE); \</span></div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="preprocessor">    BlockwiseConvolutionOptions&lt;N&gt; subOptions(options); \</span></div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="preprocessor">    subOptions.subarray(Shape(0), Shape(0));  \</span></div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="preprocessor">    const Blocking blocking(source.shape(), options.template getBlockShapeN&lt;N&gt;()); \</span></div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="preprocessor">    blockwise::FUNCTOR&lt;N&gt; f(subOptions); \</span></div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="preprocessor">    blockwise::blockwiseCaller(source, dest, f, blocking, border, options); \</span></div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="preprocessor">}</span></div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;VIGRA_BLOCKWISE(GaussianSmoothFunctor,                   <a class="code" href="group__ConvolutionFilters.html#ga11d81ef630205d44b8517c464217207d">gaussianSmoothMultiArray</a>,                   0, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;VIGRA_BLOCKWISE(GaussianGradientFunctor,                 <a class="code" href="group__ConvolutionFilters.html#ga4d5e9021732f13248ca3a0fe1b7c0552">gaussianGradientMultiArray</a>,                 1, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;VIGRA_BLOCKWISE(SymmetricGradientFunctor,                <a class="code" href="group__ConvolutionFilters.html#ga99cfc937dc06355aaf71b551a7c31faa">symmetricGradientMultiArray</a>,                1, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;VIGRA_BLOCKWISE(GaussianDivergenceFunctor,               <a class="code" href="group__ConvolutionFilters.html#ga63e603a8303c5af14dd8e709a63141fe">gaussianDivergenceMultiArray</a>,               1, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;VIGRA_BLOCKWISE(HessianOfGaussianFunctor,                <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">hessianOfGaussianMultiArray</a>,                2, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;VIGRA_BLOCKWISE(HessianOfGaussianEigenvaluesFunctor,     hessianOfGaussianEigenvaluesMultiArray,     2, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;VIGRA_BLOCKWISE(HessianOfGaussianFirstEigenvalueFunctor, hessianOfGaussianFirstEigenvalueMultiArray, 2, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;VIGRA_BLOCKWISE(HessianOfGaussianLastEigenvalueFunctor,  hessianOfGaussianLastEigenvalueMultiArray,  2, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;VIGRA_BLOCKWISE(LaplacianOfGaussianFunctor,              <a class="code" href="group__ConvolutionFilters.html#gac165234c3bca25d3162cac15ceb2b970">laplacianOfGaussianMultiArray</a>,              2, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;VIGRA_BLOCKWISE(GaussianGradientMagnitudeFunctor,        gaussianGradientMagnitudeMultiArray,        1, <span class="keyword">false</span> );</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;VIGRA_BLOCKWISE(StructureTensorFunctor,                  <a class="code" href="group__ConvolutionFilters.html#ga6be0fb8e178b6b589e2441cc4ae0f54d">structureTensorMultiArray</a>,                  1, <span class="keyword">true</span>  );</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;<span class="preprocessor">#undef  VIGRA_BLOCKWISE</span></div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;    <span class="comment">// alternative name for backward compatibility</span></div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N, <span class="keyword">class</span> T1, <span class="keyword">class</span> S1, <span class="keyword">class</span> T2, <span class="keyword">class</span> S2&gt;</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span></div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;<a class="code" href="group__ConvolutionFilters.html#gab80e356fa487f97d718ed815a3cf4855">gaussianGradientMagnitude</a>(</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    MultiArrayView&lt;N, T1, S1&gt; <span class="keyword">const</span> &amp; source,</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    MultiArrayView&lt;N, T2, S2&gt; dest,</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    BlockwiseConvolutionOptions&lt;N&gt; <span class="keyword">const</span> &amp; options)</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;{</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    gaussianGradientMagnitudeMultiArray(source, dest, options);</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;}</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;} <span class="comment">// end namespace vigra</span></div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;} <span class="comment">// end namespace blockwise</span></div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="preprocessor">#define VIGRA_BLOCKWISE(FUNCTOR, FUNCTION, ORDER, USES_OUTER_SCALE) \</span></div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="preprocessor">template &lt;unsigned int N, class T1, class S1, class T2, class S2&gt; \</span></div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor">void FUNCTION( \</span></div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="preprocessor">    MultiArrayView&lt;N, T1, S1&gt; const &amp; source, \</span></div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="preprocessor">    MultiArrayView&lt;N, T2, S2&gt; dest, \</span></div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="preprocessor">    BlockwiseConvolutionOptions&lt;N&gt; const &amp; options \</span></div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="preprocessor">) \</span></div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="preprocessor">{  \</span></div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="preprocessor">    typedef  MultiBlocking&lt;N, vigra::MultiArrayIndex&gt; Blocking; \</span></div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="preprocessor">    typedef typename Blocking::Shape Shape; \</span></div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="preprocessor">    const Shape border = blockwise::getBorder(options, ORDER, USES_OUTER_SCALE); \</span></div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="preprocessor">    BlockwiseConvolutionOptions&lt;N&gt; subOptions(options); \</span></div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="preprocessor">    subOptions.subarray(Shape(0), Shape(0));  \</span></div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="preprocessor">    const Blocking blocking(source.shape(), options.template getBlockShapeN&lt;N&gt;()); \</span></div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="preprocessor">    blockwise::FUNCTOR&lt;N&gt; f(subOptions); \</span></div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;<span class="preprocessor">    blockwise::blockwiseCaller(source, dest, f, blocking, border, options); \</span></div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;<span class="preprocessor">}</span></div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;VIGRA_BLOCKWISE(GaussianSmoothFunctor,                   <a class="code" href="group__ConvolutionFilters.html#ga11d81ef630205d44b8517c464217207d">gaussianSmoothMultiArray</a>,                   0, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;VIGRA_BLOCKWISE(GaussianGradientFunctor,                 <a class="code" href="group__ConvolutionFilters.html#ga4d5e9021732f13248ca3a0fe1b7c0552">gaussianGradientMultiArray</a>,                 1, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;VIGRA_BLOCKWISE(SymmetricGradientFunctor,                <a class="code" href="group__ConvolutionFilters.html#ga99cfc937dc06355aaf71b551a7c31faa">symmetricGradientMultiArray</a>,                1, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;VIGRA_BLOCKWISE(GaussianDivergenceFunctor,               <a class="code" href="group__ConvolutionFilters.html#ga63e603a8303c5af14dd8e709a63141fe">gaussianDivergenceMultiArray</a>,               1, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;VIGRA_BLOCKWISE(HessianOfGaussianFunctor,                <a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">hessianOfGaussianMultiArray</a>,                2, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;VIGRA_BLOCKWISE(HessianOfGaussianEigenvaluesFunctor,     hessianOfGaussianEigenvaluesMultiArray,     2, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;VIGRA_BLOCKWISE(HessianOfGaussianFirstEigenvalueFunctor, hessianOfGaussianFirstEigenvalueMultiArray, 2, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;VIGRA_BLOCKWISE(HessianOfGaussianLastEigenvalueFunctor,  hessianOfGaussianLastEigenvalueMultiArray,  2, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;VIGRA_BLOCKWISE(LaplacianOfGaussianFunctor,              <a class="code" href="group__ConvolutionFilters.html#gac165234c3bca25d3162cac15ceb2b970">laplacianOfGaussianMultiArray</a>,              2, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;VIGRA_BLOCKWISE(GaussianGradientMagnitudeFunctor,        gaussianGradientMagnitudeMultiArray,        1, <span class="keyword">false</span> );</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;VIGRA_BLOCKWISE(StructureTensorFunctor,                  <a class="code" href="group__ConvolutionFilters.html#ga6be0fb8e178b6b589e2441cc4ae0f54d">structureTensorMultiArray</a>,                  1, <span class="keyword">true</span>  );</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;<span class="preprocessor">#undef  VIGRA_BLOCKWISE</span></div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    <span class="comment">// alternative name for backward compatibility</span></div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N, <span class="keyword">class</span> T1, <span class="keyword">class</span> S1, <span class="keyword">class</span> T2, <span class="keyword">class</span> S2&gt;</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span></div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;<a class="code" href="group__ConvolutionFilters.html#gab80e356fa487f97d718ed815a3cf4855">gaussianGradientMagnitude</a>(</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    MultiArrayView&lt;N, T1, S1&gt; <span class="keyword">const</span> &amp; source,</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;    MultiArrayView&lt;N, T2, S2&gt; dest,</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    BlockwiseConvolutionOptions&lt;N&gt; <span class="keyword">const</span> &amp; options)</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;{</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    gaussianGradientMagnitudeMultiArray(source, dest, options);</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;}</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;</div>
 <div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;<span class="preprocessor">#endif // VIGRA_MULTI_BLOCKWISE_HXX</span></div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;} <span class="comment">// end namespace vigra</span></div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;<span class="preprocessor">#endif // VIGRA_MULTI_BLOCKWISE_HXX</span></div>
 <div class="ttc" id="group__ConvolutionFilters_html_ga99cfc937dc06355aaf71b551a7c31faa"><div class="ttname"><a href="group__ConvolutionFilters.html#ga99cfc937dc06355aaf71b551a7c31faa">vigra::symmetricGradientMultiArray</a></div><div class="ttdeci">void symmetricGradientMultiArray(...)</div><div class="ttdoc">Calculate gradient of a multi-dimensional arrays using symmetric difference filters. </div></div>
 <div class="ttc" id="classvigra_1_1MultiBlocking_html_a61b48056aa568069bf3f20ac94aac673"><div class="ttname"><a href="classvigra_1_1MultiBlocking.html#a61b48056aa568069bf3f20ac94aac673">vigra::MultiBlocking::numBlocks</a></div><div class="ttdeci">size_t numBlocks() const </div><div class="ttdoc">total number of blocks </div><div class="ttdef"><b>Definition:</b> multi_blocking.hxx:225</div></div>
-<div class="ttc" id="classvigra_1_1MultiArrayView_html_a53c8f0d5c70f10f31fbc246cbe524e32"><div class="ttname"><a href="classvigra_1_1MultiArrayView.html#a53c8f0d5c70f10f31fbc246cbe524e32">vigra::MultiArrayView::shape</a></div><div class="ttdeci">const difference_type &amp; shape() const </div><div class="ttdef"><b>Definition:</b> multi_array.hxx:1594</div></div>
+<div class="ttc" id="classvigra_1_1MultiArrayView_html_a53c8f0d5c70f10f31fbc246cbe524e32"><div class="ttname"><a href="classvigra_1_1MultiArrayView.html#a53c8f0d5c70f10f31fbc246cbe524e32">vigra::MultiArrayView::shape</a></div><div class="ttdeci">const difference_type &amp; shape() const </div><div class="ttdef"><b>Definition:</b> multi_array.hxx:1648</div></div>
 <div class="ttc" id="group__ConvolutionFilters_html_ga63e603a8303c5af14dd8e709a63141fe"><div class="ttname"><a href="group__ConvolutionFilters.html#ga63e603a8303c5af14dd8e709a63141fe">vigra::gaussianDivergenceMultiArray</a></div><div class="ttdeci">void gaussianDivergenceMultiArray(...)</div><div class="ttdoc">Calculate the divergence of a vector field using Gaussian derivative filters. </div></div>
 <div class="ttc" id="classvigra_1_1ParallelOptions_html_a4625008f2a76bb12bb3a298c07d5140f"><div class="ttname"><a href="classvigra_1_1ParallelOptions.html#a4625008f2a76bb12bb3a298c07d5140f">vigra::ParallelOptions::getNumThreads</a></div><div class="ttdeci">int getNumThreads() const </div><div class="ttdoc">Get desired number of threads. </div><div class="ttdef"><b>Definition:</b> threadpool.hxx:85</div></div>
-<div class="ttc" id="classvigra_1_1MultiArrayView_html_ad69bd11391be1a1dba5c8202259664f8"><div class="ttname"><a href="classvigra_1_1MultiArrayView.html#ad69bd11391be1a1dba5c8202259664f8">vigra::MultiArrayView::begin</a></div><div class="ttdeci">iterator begin()</div><div class="ttdef"><b>Definition:</b> multi_array.hxx:1867</div></div>
-<div class="ttc" id="classvigra_1_1MultiArray_html"><div class="ttname"><a href="classvigra_1_1MultiArray.html">vigra::MultiArray</a></div><div class="ttdoc">Main MultiArray class containing the memory management. </div><div class="ttdef"><b>Definition:</b> multi_array.hxx:2420</div></div>
+<div class="ttc" id="classvigra_1_1MultiArrayView_html_ad69bd11391be1a1dba5c8202259664f8"><div class="ttname"><a href="classvigra_1_1MultiArrayView.html#ad69bd11391be1a1dba5c8202259664f8">vigra::MultiArrayView::begin</a></div><div class="ttdeci">iterator begin()</div><div class="ttdef"><b>Definition:</b> multi_array.hxx:1921</div></div>
+<div class="ttc" id="classvigra_1_1MultiArray_html"><div class="ttname"><a href="classvigra_1_1MultiArray.html">vigra::MultiArray</a></div><div class="ttdoc">Main MultiArray class containing the memory management. </div><div class="ttdef"><b>Definition:</b> multi_array.hxx:2474</div></div>
 <div class="ttc" id="classvigra_1_1TinyVectorBase_html_acad38d52497a975bfb6f2f6acd76631f"><div class="ttname"><a href="classvigra_1_1TinyVectorBase.html#acad38d52497a975bfb6f2f6acd76631f">vigra::TinyVectorBase::end</a></div><div class="ttdeci">iterator end()</div><div class="ttdef"><b>Definition:</b> tinyvector.hxx:864</div></div>
 <div class="ttc" id="classvigra_1_1ParallelOptions_html_a6d5768de67682f8c77ed887055ce9b7d"><div class="ttname"><a href="classvigra_1_1ParallelOptions.html#a6d5768de67682f8c77ed887055ce9b7d">vigra::ParallelOptions::numThreads</a></div><div class="ttdeci">ParallelOptions &amp; numThreads(const int n)</div><div class="ttdoc">Set the number of threads or one of the constants Auto, Nice and NoThreads. </div><div class="ttdef"><b>Definition:</b> threadpool.hxx:111</div></div>
 <div class="ttc" id="group__MultiIteratorGroup_html_gac436173a0374e960a463a9186496ab70"><div class="ttname"><a href="group__MultiIteratorGroup.html#gac436173a0374e960a463a9186496ab70">vigra::MultiArrayIndex</a></div><div class="ttdeci">std::ptrdiff_t MultiArrayIndex</div><div class="ttdef"><b>Definition:</b> multi_fwd.hxx:60</div></div>
@@ -550,11 +552,11 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="ttc" id="classvigra_1_1BlockwiseOptions_html_a2f5d6f025efe24b99499bfa6effb9686"><div class="ttname"><a href="classvigra_1_1BlockwiseOptions.html#a2f5d6f025efe24b99499bfa6effb9686">vigra::BlockwiseOptions::getBlockShape</a></div><div class="ttdeci">Shape const &amp; getBlockShape() const </div><div class="ttdef"><b>Definition:</b> multi_blockwise.hxx:71</div></div>
 <div class="ttc" id="classvigra_1_1BlockwiseOptions_html_a1412809c2d717e28a248578fcced298e"><div class="ttname"><a href="classvigra_1_1BlockwiseOptions.html#a1412809c2d717e28a248578fcced298e">vigra::BlockwiseOptions::blockShape</a></div><div class="ttdeci">BlockwiseOptions &amp; blockShape(const TinyVector&lt; T, N &gt; &amp;blockShape)</div><div class="ttdef"><b>Definition:</b> multi_blockwise.hxx:127</div></div>
 <div class="ttc" id="classvigra_1_1BlockwiseConvolutionOptions_html"><div class="ttname"><a href="classvigra_1_1BlockwiseConvolutionOptions.html">vigra::BlockwiseConvolutionOptions</a></div><div class="ttdef"><b>Definition:</b> multi_blockwise.hxx:160</div></div>
-<div class="ttc" id="classvigra_1_1MultiArrayView_html"><div class="ttname"><a href="classvigra_1_1MultiArrayView.html">vigra::MultiArrayView</a></div><div class="ttdoc">Base class for, and view to, vigra::MultiArray. </div><div class="ttdef"><b>Definition:</b> multi_array.hxx:650</div></div>
+<div class="ttc" id="classvigra_1_1MultiArrayView_html"><div class="ttname"><a href="classvigra_1_1MultiArrayView.html">vigra::MultiArrayView</a></div><div class="ttdoc">Base class for, and view to, vigra::MultiArray. </div><div class="ttdef"><b>Definition:</b> multi_array.hxx:704</div></div>
 <div class="ttc" id="classvigra_1_1ArrayVectorView_html_a794bbc6c3888bcfe88fb961f527c3563"><div class="ttname"><a href="classvigra_1_1ArrayVectorView.html#a794bbc6c3888bcfe88fb961f527c3563">vigra::ArrayVectorView::data</a></div><div class="ttdeci">const_pointer data() const </div><div class="ttdef"><b>Definition:</b> array_vector.hxx:209</div></div>
 <div class="ttc" id="classvigra_1_1ArrayVectorView_html_a503ab01f6c0142145d3434f6924714e7"><div class="ttname"><a href="classvigra_1_1ArrayVectorView.html#a503ab01f6c0142145d3434f6924714e7">vigra::ArrayVectorView::size</a></div><div class="ttdeci">size_type size() const </div><div class="ttdef"><b>Definition:</b> array_vector.hxx:358</div></div>
 <div class="ttc" id="group__ConvolutionFilters_html_ga11d81ef630205d44b8517c464217207d"><div class="ttname"><a href="group__ConvolutionFilters.html#ga11d81ef630205d44b8517c464217207d">vigra::gaussianSmoothMultiArray</a></div><div class="ttdeci">void gaussianSmoothMultiArray(...)</div><div class="ttdoc">Isotropic Gaussian smoothing of a multi-dimensional arrays. </div></div>
-<div class="ttc" id="classvigra_1_1MultiArrayView_html_abb3555678c0445e914b6ec174778fe4e"><div class="ttname"><a href="classvigra_1_1MultiArrayView.html#abb3555678c0445e914b6ec174778fe4e">vigra::MultiArrayView::subarray</a></div><div class="ttdeci">MultiArrayView subarray(difference_type p, difference_type q) const </div><div class="ttdef"><b>Definition:</b> multi_array.hxx:1474</div></div>
+<div class="ttc" id="classvigra_1_1MultiArrayView_html_abb3555678c0445e914b6ec174778fe4e"><div class="ttname"><a href="classvigra_1_1MultiArrayView.html#abb3555678c0445e914b6ec174778fe4e">vigra::MultiArrayView::subarray</a></div><div class="ttdeci">MultiArrayView subarray(difference_type p, difference_type q) const </div><div class="ttdef"><b>Definition:</b> multi_array.hxx:1528</div></div>
 <div class="ttc" id="group__ConvolutionFilters_html_gae419814e55fb3191a87e7b75f505d4da"><div class="ttname"><a href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">vigra::hessianOfGaussianMultiArray</a></div><div class="ttdeci">void hessianOfGaussianMultiArray(...)</div><div class="ttdoc">Calculate Hessian matrix of a N-dimensional arrays using Gaussian derivative filters. </div></div>
 <div class="ttc" id="group__MultiPointoperators_html_gacc06f88a0cd7dcdb73f0c4af5b0e0312"><div class="ttname"><a href="group__MultiPointoperators.html#gacc06f88a0cd7dcdb73f0c4af5b0e0312">vigra::tensorEigenvaluesMultiArray</a></div><div class="ttdeci">void tensorEigenvaluesMultiArray(...)</div><div class="ttdoc">Calculate the tensor eigenvalues for every element of a N-D tensor array. </div></div>
 <div class="ttc" id="classvigra_1_1BlockwiseOptions_html_a4d7f3d92e9680d53189f3c34c95b9f96"><div class="ttname"><a href="classvigra_1_1BlockwiseOptions.html#a4d7f3d92e9680d53189f3c34c95b9f96">vigra::BlockwiseOptions::blockShape</a></div><div class="ttdeci">BlockwiseOptions &amp; blockShape(const Shape &amp;blockShape)</div><div class="ttdef"><b>Definition:</b> multi_blockwise.hxx:114</div></div>
@@ -576,7 +578,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

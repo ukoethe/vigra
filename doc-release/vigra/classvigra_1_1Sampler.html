@@ -83,8 +83,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a75e82a037131304c9f3844a08b9fa616"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6046319769ed4b411a27f8cfa0d76907"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1Sampler.html#a40ba4794cdd5dd316be26e9ccaa2703c">IndexType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1Sampler.html#a6046319769ed4b411a27f8cfa0d76907">operator[]</a> (int k) const </td></tr>
 <tr class="separator:a6046319769ed4b411a27f8cfa0d76907"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga50a2ce599e896bfb535e70a42003ed23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga50a2ce599e896bfb535e70a42003ed23">sample</a> ()</td></tr>
-<tr class="separator:ga50a2ce599e896bfb535e70a42003ed23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50a2ce599e896bfb535e70a42003ed23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1Sampler.html#a50a2ce599e896bfb535e70a42003ed23">sample</a> ()</td></tr>
+<tr class="separator:a50a2ce599e896bfb535e70a42003ed23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4dd6492d26201473904728117859a544"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1Sampler.html#a346dae786f30c2688fedc39918397460">IndexArrayViewType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1Sampler.html#a4dd6492d26201473904728117859a544">sampledIndices</a> () const </td></tr>
 <tr class="separator:a4dd6492d26201473904728117859a544"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6b32c66f656c5282454714cd68ac1b2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1Sampler.html#ae6b32c66f656c5282454714cd68ac1b2">Sampler</a> (<a class="el" href="group__FixedSizeInt.html#gad055e2244a667a1a5a5c1ee4397c07f9">UInt32</a> <a class="el" href="classvigra_1_1Sampler.html#a111bc7cfb9998a225c4338e207fe25de">totalCount</a>, <a class="el" href="classvigra_1_1SamplerOptions.html">SamplerOptions</a> const &amp;opt=<a class="el" href="classvigra_1_1SamplerOptions.html">SamplerOptions</a>(), Random const *rnd=0)</td></tr>
@@ -110,7 +110,7 @@ Public Member Functions</h2></td></tr>
 class vigra::Sampler&lt; Random &gt;</h3>
 
 <p>Create random samples from a sequence of indices. </p>
-<p>Selecting data items at random is a basic task of machine learning, for example in boostrapping, <a class="el" href="classvigra_1_1RandomForest.html">RandomForest</a> training, and cross validation. This class implements various ways to select random samples via their indices. Indices are assumed to be consecutive in the range <code>0 &lt;= index &lt; total_sample_count</code>.</p>
+<p>Selecting data items at random is a basic task of machine learning, for example in boostrapping, <a class="el" href="classvigra_1_1RandomForest.html" title="Random forest version 2 (see also vigra::rf3::RandomForest for version 3) ">RandomForest</a> training, and cross validation. This class implements various ways to select random samples via their indices. Indices are assumed to be consecutive in the range <code>0 &lt;= index &lt; total_sample_count</code>.</p>
 <p>The class always contains a current sample which can be accessed by the index operator or by the function <a class="el" href="classvigra_1_1Sampler.html#a4dd6492d26201473904728117859a544">sampledIndices()</a>. The indices that are not in the current sample (out-of-bag indices) can be accessed via the function <a class="el" href="classvigra_1_1Sampler.html#a75e82a037131304c9f3844a08b9fa616">oobIndices()</a>.</p>
 <p>The sampling method (with/without replacement, stratified or not) and the number of samples to draw are determined by the option object <a class="el" href="classvigra_1_1SamplerOptions.html" title="Options object for the Sampler class. ">SamplerOptions</a>.</p>
 <p><b>Usage:</b></p>
@@ -118,7 +118,7 @@ class vigra::Sampler&lt; Random &gt;</h3>
  Namespace: vigra</p>
 <p>Create a <a class="el" href="classvigra_1_1Sampler.html" title="Create random samples from a sequence of indices. ">Sampler</a> with default options, i.e. sample as many indices as there are data elements, with replacement. On average, the sample will contain <code>0.63*totalCount</code> distinct indices.</p>
 <div class="fragment"><div class="line"><span class="keywordtype">int</span> <a class="code" href="classvigra_1_1Sampler.html#a111bc7cfb9998a225c4338e207fe25de">totalCount</a> = 10000;   <span class="comment">// total number of data elements</span></div>
-<div class="line"><span class="keywordtype">int</span> numberOfSamples = 20; <span class="comment">// repeat experiment 20 times </span></div>
+<div class="line"><span class="keywordtype">int</span> numberOfSamples = 20; <span class="comment">// repeat experiment 20 times</span></div>
 <div class="line">Sampler&lt;&gt; sampler(totalCount);</div>
 <div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">int</span> k=0; k&lt;numberOfSamples; ++k)</div>
 <div class="line">{</div>
@@ -140,9 +140,9 @@ class vigra::Sampler&lt; Random &gt;</h3>
 <div class="line">    strata[i] = 1;</div>
 <div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=stratumSize1; i&lt;stratumSize2; ++i)</div>
 <div class="line">    strata[i] = 2;</div>
-<div class="line">    </div>
+<div class="line"></div>
 <div class="line"><span class="keywordtype">int</span> <a class="code" href="classvigra_1_1Sampler.html#a5662e24a3f111a63d910484acdb6453e">sampleSize</a> = 200; <span class="comment">// i.e. sample 100 elements from each of the two strata</span></div>
-<div class="line"><span class="keywordtype">int</span> numberOfSamples = 20; <span class="comment">// repeat experiment 20 times </span></div>
+<div class="line"><span class="keywordtype">int</span> numberOfSamples = 20; <span class="comment">// repeat experiment 20 times</span></div>
 <div class="line">Sampler&lt;&gt; stratifiedSampler(strata.begin(), strata.end(),</div>
 <div class="line">                 SamplerOptions().withoutReplacement().stratified().sampleSize(sampleSize));</div>
 <div class="line"><span class="comment">// create first sample</span></div>
@@ -217,7 +217,7 @@ class vigra::Sampler&lt; Random &gt;</h3>
       </table>
 </div><div class="memdoc">
 <p>Create a sampler for <em>totalCount</em> data objects.</p>
-<p>In each invocation of <code><a class="el" href="group__MachineLearning.html#ga50a2ce599e896bfb535e70a42003ed23">sample()</a></code> below, it will sample indices according to the options passed. If no options are given, <code>totalCount</code> indices will be drawn with replacement. </p>
+<p>In each invocation of <code><a class="el" href="classvigra_1_1Sampler.html#a50a2ce599e896bfb535e70a42003ed23">sample()</a></code> below, it will sample indices according to the options passed. If no options are given, <code>totalCount</code> indices will be drawn with replacement. </p>
 
 </div>
 </div>
@@ -276,6 +276,22 @@ class vigra::Sampler&lt; Random &gt;</h3>
       </table>
 </div><div class="memdoc">
 <p>Return the k-th index in the current sample. </p>
+
+</div>
+</div>
+<a class="anchor" id="a50a2ce599e896bfb535e70a42003ed23"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sample </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create a new sample. </p>
 
 </div>
 </div>
@@ -427,7 +443,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

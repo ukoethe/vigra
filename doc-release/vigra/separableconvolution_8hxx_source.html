@@ -2462,7 +2462,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l02400"></a><span class="lineno"> 2400</span>&#160;    <span class="comment">// first calculate required kernel sizes</span></div>
 <div class="line"><a name="l02401"></a><span class="lineno"> 2401</span>&#160;    <span class="keywordtype">int</span> radius;</div>
 <div class="line"><a name="l02402"></a><span class="lineno"> 2402</span>&#160;    <span class="keywordflow">if</span>(windowRatio == 0.0)</div>
-<div class="line"><a name="l02403"></a><span class="lineno"> 2403</span>&#160;        radius = (int)(3.0 * std_dev + 0.5 * order + 0.5);</div>
+<div class="line"><a name="l02403"></a><span class="lineno"> 2403</span>&#160;        radius = (int)((3.0  + 0.5 * order) * std_dev + 0.5);</div>
 <div class="line"><a name="l02404"></a><span class="lineno"> 2404</span>&#160;    <span class="keywordflow">else</span></div>
 <div class="line"><a name="l02405"></a><span class="lineno"> 2405</span>&#160;        radius = (int)(windowRatio * std_dev + 0.5);</div>
 <div class="line"><a name="l02406"></a><span class="lineno"> 2406</span>&#160;    <span class="keywordflow">if</span>(radius == 0)</div>
@@ -2730,7 +2730,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

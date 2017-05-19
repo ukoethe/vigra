@@ -507,7 +507,7 @@ Functions</h2></td></tr>
 </div><!-- fragment --> </div><p><b> Required Interface:</b></p>
 <p>In standard and expand mode, the functor must be a model of UnaryFunction (i.e. support one-argument function call which accepts values of type <code>T1</code> and a return value that is convertible into <code>T2</code>.</p>
 <p>In reduce mode, it must be a model of UnaryAnalyser (i.e. support function call with one argument and no return value <code>functor(arg)</code>) and Initializer (i.e. support function call with no argument, but return value <code>res = functor()</code>). Internally, such functors are recognized by the meta functions <code>FunctorTraits&lt;FUNCTOR&gt;::isUnaryAnalyser</code> and <code>FunctorTraits&lt;FUNCTOR&gt;::isInitializer</code> which must both yield <code>VigraTrueType</code>. Make sure that your functor correctly defines <code><a class="el" href="classvigra_1_1FunctorTraits.html" title="Export associated information for a functor. ">FunctorTraits</a></code> because otherwise reduce mode will not work. This is most easily achieved by deriving the functor from <code>UnaryReduceFunctorTag</code> (see <a class="el" href="classvigra_1_1FunctorTraits.html">vigra::FunctorTraits</a>). In addition, the functor must be copy constructible in order to start each reduction with a fresh functor.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__TransformFunctor.html">Functors to Transform Images</a>, <a class="el" href="group__MultiMathModule.html">vigra::multi_math</a>, <a class="el" href="FunctorExpressions.html">Functor Expressions</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__TransformFunctor.html">Functors to Transform Images</a>, <a class="el" href="group__MultiMathModule.html" title="Arithmetic and algebraic functions for multi-dimensional arrays. ">vigra::multi_math</a>, <a class="el" href="FunctorExpressions.html">Functor Expressions</a> </dd></dl>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="graph_agglomerative_clustering_8cxx-example.html#a6">graph_agglomerative_clustering.cxx</a>.</dd>
 </dl>
 </div>
@@ -650,7 +650,7 @@ Functions</h2></td></tr>
 </div><!-- fragment --> </div><p><b> Required Interface:</b></p>
 <p>In standard and expand mode, the functor must be a model of BinaryFunction (i.e. support function call with two arguments and a return value which is convertible into <code>T2</code>: <code>T2 res = functor(arg1, arg2)</code>):</p>
 <p>In reduce mode, it must be a model of BinaryAnalyser (i.e. support function call with two arguments and no return value <code>functor(arg1, arg2)</code>) and Initializer (i.e. support function call with no argument, but return value <code>res = functor()</code>). Internally, such functors are recognized by the meta functions <code>FunctorTraits&lt;FUNCTOR&gt;::isBinaryAnalyser</code> and <code>FunctorTraits&lt;FUNCTOR&gt;::isInitializer</code> which must both yield <code>VigraTrueType</code>. Make sure that your functor correctly defines <code><a class="el" href="classvigra_1_1FunctorTraits.html" title="Export associated information for a functor. ">FunctorTraits</a></code> because otherwise reduce mode will not work. This is most easily achieved by deriving the functor from <code>BinaryReduceFunctorTag</code> (see <a class="el" href="classvigra_1_1FunctorTraits.html">vigra::FunctorTraits</a>). In addition, the functor must be copy constructible in order to start each reduction with a fresh functor.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__TransformFunctor.html">Functors to Transform Images</a>, <a class="el" href="group__MultiMathModule.html">vigra::multi_math</a>, <a class="el" href="FunctorExpressions.html">Functor Expressions</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__TransformFunctor.html">Functors to Transform Images</a>, <a class="el" href="group__MultiMathModule.html" title="Arithmetic and algebraic functions for multi-dimensional arrays. ">vigra::multi_math</a>, <a class="el" href="FunctorExpressions.html">Functor Expressions</a> </dd></dl>
 
 </div>
 </div>
@@ -744,7 +744,7 @@ Functions</h2></td></tr>
 <div class="line">            srcMultiArray(src3), </div>
 <div class="line">            destMultiArray(dest),  </div>
 <div class="line">            SomeThreeArgumentFunctor());</div>
-</div><!-- fragment --> </div><dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__TransformFunctor.html">Functors to Transform Images</a>, <a class="el" href="group__MultiMathModule.html">vigra::multi_math</a>, <a class="el" href="FunctorExpressions.html">Functor Expressions</a> </dd></dl>
+</div><!-- fragment --> </div><dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__TransformFunctor.html">Functors to Transform Images</a>, <a class="el" href="group__MultiMathModule.html" title="Arithmetic and algebraic functions for multi-dimensional arrays. ">vigra::multi_math</a>, <a class="el" href="FunctorExpressions.html">Functor Expressions</a> </dd></dl>
 
 </div>
 </div>
@@ -1113,10 +1113,10 @@ Functions</h2></td></tr>
  Namespace: vigra</p>
 <div class="fragment"><div class="line">MultiArray&lt;3, float&gt;                  vol(shape);</div>
 <div class="line">MultiArray&lt;3, TinyVector&lt;float, 6&gt; &gt;  hessian(shape);</div>
-<div class="line">MultiArray&lt;3, float&gt;                  <a class="code" href="group__MatrixAlgebra.html#ga15edf238753abafb705497c01e38112c">determinant</a>(shape);</div>
+<div class="line">MultiArray&lt;3, float&gt;                  <a class="code" href="group__MatrixAlgebra.html#gad797f68659e74b21c204d1eb99d98efa">determinant</a>(shape);</div>
 <div class="line"></div>
 <div class="line"><a class="code" href="group__ConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">hessianOfGaussianMultiArray</a>(vol, hessian, 2.0);</div>
-<div class="line"><a class="code" href="group__MultiPointoperators.html#ga50a97001588cdbec053d23d1d99079eb">tensorDeterminantMultiArray</a>(hessian, <a class="code" href="group__MatrixAlgebra.html#ga15edf238753abafb705497c01e38112c">determinant</a>);</div>
+<div class="line"><a class="code" href="group__MultiPointoperators.html#ga50a97001588cdbec053d23d1d99079eb">tensorDeterminantMultiArray</a>(hessian, <a class="code" href="group__MatrixAlgebra.html#gad797f68659e74b21c204d1eb99d98efa">determinant</a>);</div>
 </div><!-- fragment --><p><b> Preconditions:</b></p>
 <p><code>N == 2</code> or <code>N == 3</code> </p>
 
@@ -1139,7 +1139,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

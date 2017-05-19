@@ -165,3 +165,6 @@
 \form#164:$s_z$
 \form#165:$l_{zy}$
 \form#166:\begin{eqnarray*} s_z & = & s_u + s_v \\ f_z & = & \frac{s_u f_u + s_v f_v}{s_z} \\ l_{zy} & = & l_{uy} + l_{vy} \textrm{ for all nodes }y\textrm{ connected to }u\textrm{ or }v \\ w_{zy} & = & \frac{l_{uy} w_{uy} + l_{vy} w_{vy}}{l_{zy}} \end{eqnarray*}
+\form#167:\[c = \frac{V_\mathrm{input}}{V_\mathrm{hull}}\]
+\form#168:$ 1+\lfloor \log(n_f)/\log(2) \rfloor $
+\form#169:$ \lfloor \sqrt{n_f} + 0.5 \rfloor $

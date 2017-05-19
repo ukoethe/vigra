@@ -248,7 +248,7 @@ Functions</h2></td></tr>
 <p>When <em>b</em> is a matrix with <code>k</code> columns, <em>x</em> must also have <code>k</code> columns, which will contain the solutions for the corresponding columns of <em>b</em>. Note that all matrices must already have the correct shape.</p>
 <p>This function is just another name for <a class="el" href="group__MatrixAlgebra.html#ga889fc66edb20976e31a9212a073e411f">linearSolve()</a>, perhaps leading to more readable code when <em>A</em> is a rectangular matrix. It returns <code>false</code> when the rank of <em>A</em> is less than <code>n</code>. See <a class="el" href="group__MatrixAlgebra.html#ga889fc66edb20976e31a9212a073e411f">linearSolve()</a> for more documentation.</p>
 <p><b>#include</b> &lt;<a class="el" href="regression_8hxx_source.html">vigra/regression.hxx</a>&gt;<br/>
- Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html">vigra::linalg</a> </p>
+ Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html" title="Linear algebra functions. ">vigra::linalg</a> </p>
 
 </div>
 </div>
@@ -306,7 +306,7 @@ Functions</h2></td></tr>
 <p>When <em>b</em> is a matrix with <code>k</code> columns, <em>x</em> must also have <code>k</code> columns, which will contain the solutions for the corresponding columns of <em>b</em>. Note that all matrices must already have the correct shape.</p>
 <p>The function returns <code>false</code> when the rank of the weighted matrix <em>A</em> is less than <code>n</code>.</p>
 <p><b>#include</b> &lt;<a class="el" href="regression_8hxx_source.html">vigra/regression.hxx</a>&gt;<br/>
- Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html">vigra::linalg</a> </p>
+ Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html" title="Linear algebra functions. ">vigra::linalg</a> </p>
 
 </div>
 </div>
@@ -354,7 +354,7 @@ Functions</h2></td></tr>
 <p>When <em>b</em> is a matrix with <code>k</code> columns, <em>x</em> must also have <code>k</code> columns, which will contain the solutions for the corresponding columns of <em>b</em>. Note that all matrices must already have the correct shape.</p>
 <p>The function returns <code>false</code> if the rank of <em>A</em> is less than <code>n</code> and <code>lambda == 0.0</code>.</p>
 <p><b>#include</b> &lt;<a class="el" href="regression_8hxx_source.html">vigra/regression.hxx</a>&gt;<br/>
- Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html">vigra::linalg</a> </p>
+ Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html" title="Linear algebra functions. ">vigra::linalg</a> </p>
 
 </div>
 </div>
@@ -412,7 +412,7 @@ Functions</h2></td></tr>
 <p>When <em>b</em> is a matrix with <code>k</code> columns, <em>x</em> must also have <code>k</code> columns, which will contain the solutions for the corresponding columns of <em>b</em>. Note that all matrices must already have the correct shape.</p>
 <p>The function returns <code>false</code> if the rank of <em>A</em> is less than <code>n</code> and <code>lambda == 0.0</code>.</p>
 <p><b>#include</b> &lt;<a class="el" href="regression_8hxx_source.html">vigra/regression.hxx</a>&gt;<br/>
- Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html">vigra::linalg</a> </p>
+ Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html" title="Linear algebra functions. ">vigra::linalg</a> </p>
 
 </div>
 </div>
@@ -455,7 +455,7 @@ Functions</h2></td></tr>
 <p>This executes <a class="el" href="group__Optimization.html#ga647810e9f3f2ff2e401f410b4855c58a">ridgeRegression()</a> for a sequence of regularization parameters. This is implemented so that the <a class="el" href="group__MatrixAlgebra.html#gaf20e05edcc344f32d96fdaf5a6b3b972">singularValueDecomposition()</a> has to be executed only once. <em>lambda</em> must be an array conforming to the <code>std::vector</code> interface, i.e. must support <code>lambda.size()</code> and <code>lambda[k]</code>. The columns of the matrix <em>x</em> will contain the solutions for the corresponding lambda, so the number of columns of the matrix <em>x</em> must be equal to <code>lambda.size()</code>, and <em>b</em> must be a columns vector, i.e. cannot contain several right hand sides at once.</p>
 <p>The function returns <code>false</code> when the matrix <em>A</em> is rank deficient. If this happens, and one of the lambdas is zero, the corresponding column of <em>x</em> will be skipped.</p>
 <p><b>#include</b> &lt;<a class="el" href="regression_8hxx_source.html">vigra/regression.hxx</a>&gt;<br/>
- Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html">vigra::linalg</a> </p>
+ Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html" title="Linear algebra functions. ">vigra::linalg</a> </p>
 
 </div>
 </div>
@@ -474,7 +474,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Least Angle Regression.</p>
 <p><b>#include</b> &lt;<a class="el" href="regression_8hxx_source.html">vigra/regression.hxx</a>&gt;<br/>
- Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html">vigra::linalg</a></p>
+ Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html" title="Linear algebra functions. ">vigra::linalg</a></p>
 <p><b> Declarations:</b></p>
 <div class="fragment"><div class="line"><span class="keyword">namespace </span>vigra {</div>
 <div class="line">   <span class="keyword">namespace </span>linalg {</div>
@@ -592,7 +592,7 @@ Functions</h2></td></tr>
 </p>
 <p>Both <em>b</em> and <em>x</em> must be column vectors (i.e. matrices with <code>1</code> column). Note that all matrices must already have the correct shape. The solution is computed by means of <a class="el" href="group__Optimization.html#gab47cd570de4c39a53b4da2d830d4568c">leastAngleRegression()</a> with non-negativity constraint.</p>
 <p><b>#include</b> &lt;<a class="el" href="regression_8hxx_source.html">vigra/regression.hxx</a>&gt;<br/>
- Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html">vigra::linalg</a></p>
+ Namespaces: vigra and <a class="el" href="namespacevigra_1_1linalg.html" title="Linear algebra functions. ">vigra::linalg</a></p>
 <p><b> Declarations:</b></p>
 <div class="fragment"><div class="line"><span class="keyword">namespace </span>vigra {</div>
 <div class="line">    <span class="keyword">namespace </span>linalg {</div>
@@ -721,7 +721,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

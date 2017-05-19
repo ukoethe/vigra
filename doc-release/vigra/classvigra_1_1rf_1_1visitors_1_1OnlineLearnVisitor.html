@@ -58,7 +58,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <td align=left>
 <A HREF ="#_details" ><IMG BORDER=0 ALT="details" title="Detailed Description" SRC="documents/pfeilGross.gif"></A>
 </td>
-<td width="100%">OnlineLearnVisitor Class Reference<div class="ingroups"><a class="el" href="group__MachineLearning.html">Machine Learning</a></div>
+<td width="100%">OnlineLearnVisitor Class Reference
 </td>
 <td align=right><a href="http://hci.iwr.uni-heidelberg.de/vigra/"><IMG border=0 ALT="VIGRA" SRC="documents/vigra.gif" title="VIGRA Homepage"></a></td></tr>
 </table><p>
@@ -77,42 +77,172 @@ Inheritance diagram for OnlineLearnVisitor:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ga41140e76b75f3909084ce8c6a4f4ce3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga41140e76b75f3909084ce8c6a4f4ce3f">reset_tree</a> (int tree_id)</td></tr>
-<tr class="separator:ga41140e76b75f3909084ce8c6a4f4ce3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga81978178c1bdd44f9a4ae87b8c1347ed"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR , class SM , class ST &gt; </td></tr>
-<tr class="memitem:ga81978178c1bdd44f9a4ae87b8c1347ed"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga81978178c1bdd44f9a4ae87b8c1347ed">visit_after_tree</a> (RF &amp;, PR &amp;, SM &amp;, ST &amp;, int)</td></tr>
-<tr class="separator:ga81978178c1bdd44f9a4ae87b8c1347ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga85d7d116c63a23cbad129a1c514b7f60"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR &gt; </td></tr>
-<tr class="memitem:ga85d7d116c63a23cbad129a1c514b7f60"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga85d7d116c63a23cbad129a1c514b7f60">visit_at_beginning</a> (RF &amp;rf, const PR &amp;)</td></tr>
-<tr class="separator:ga85d7d116c63a23cbad129a1c514b7f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0be1525336a154f011efa8f86e56db7c"><td class="memTemplParams" colspan="2">template&lt;class TR , class IntT , class TopT , class Feat &gt; </td></tr>
-<tr class="memitem:ga0be1525336a154f011efa8f86e56db7c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga0be1525336a154f011efa8f86e56db7c">visit_internal_node</a> (TR &amp;tr, IntT index, TopT node_t, Feat &amp;features)</td></tr>
-<tr class="separator:ga0be1525336a154f011efa8f86e56db7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41140e76b75f3909084ce8c6a4f4ce3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor.html#a41140e76b75f3909084ce8c6a4f4ce3f">reset_tree</a> (int tree_id)</td></tr>
+<tr class="separator:a41140e76b75f3909084ce8c6a4f4ce3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81978178c1bdd44f9a4ae87b8c1347ed"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR , class SM , class ST &gt; </td></tr>
+<tr class="memitem:a81978178c1bdd44f9a4ae87b8c1347ed"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor.html#a81978178c1bdd44f9a4ae87b8c1347ed">visit_after_tree</a> (RF &amp;, PR &amp;, SM &amp;, ST &amp;, int)</td></tr>
+<tr class="separator:a81978178c1bdd44f9a4ae87b8c1347ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85d7d116c63a23cbad129a1c514b7f60"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR &gt; </td></tr>
+<tr class="memitem:a85d7d116c63a23cbad129a1c514b7f60"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor.html#a85d7d116c63a23cbad129a1c514b7f60">visit_at_beginning</a> (RF &amp;rf, const PR &amp;)</td></tr>
+<tr class="separator:a85d7d116c63a23cbad129a1c514b7f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0be1525336a154f011efa8f86e56db7c"><td class="memTemplParams" colspan="2">template&lt;class TR , class IntT , class TopT , class Feat &gt; </td></tr>
+<tr class="memitem:a0be1525336a154f011efa8f86e56db7c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor.html#a0be1525336a154f011efa8f86e56db7c">visit_internal_node</a> (TR &amp;tr, IntT index, TopT node_t, Feat &amp;features)</td></tr>
+<tr class="separator:a0be1525336a154f011efa8f86e56db7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html">VisitorBase</a></td></tr>
-<tr class="memitem:gad23fdebbe022fdb6fee05ddede523bdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#gad23fdebbe022fdb6fee05ddede523bdc">return_val</a> ()</td></tr>
-<tr class="separator:gad23fdebbe022fdb6fee05ddede523bdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga32301fb47981050340e6a927d78a2a77 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class Tree , class Split , class Region , class Feature_t , class Label_t &gt; </td></tr>
-<tr class="memitem:ga32301fb47981050340e6a927d78a2a77 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga32301fb47981050340e6a927d78a2a77">visit_after_split</a> (Tree &amp;tree, Split &amp;split, Region &amp;parent, Region &amp;leftChild, Region &amp;rightChild, Feature_t &amp;features, Label_t &amp;labels)</td></tr>
-<tr class="separator:ga32301fb47981050340e6a927d78a2a77 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7118d9515b477dfdb5e9899e118a5d76 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR , class SM , class ST &gt; </td></tr>
-<tr class="memitem:ga7118d9515b477dfdb5e9899e118a5d76 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga7118d9515b477dfdb5e9899e118a5d76">visit_after_tree</a> (RF &amp;rf, PR &amp;pr, SM &amp;sm, ST &amp;st, int index)</td></tr>
-<tr class="separator:ga7118d9515b477dfdb5e9899e118a5d76 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0bb047133b5a592d0ade412044bd1495 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR &gt; </td></tr>
-<tr class="memitem:ga0bb047133b5a592d0ade412044bd1495 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga0bb047133b5a592d0ade412044bd1495">visit_at_beginning</a> (RF const &amp;rf, PR const &amp;pr)</td></tr>
-<tr class="separator:ga0bb047133b5a592d0ade412044bd1495 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab8c2515ae9343881cc5999fc61821fdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR &gt; </td></tr>
-<tr class="memitem:gab8c2515ae9343881cc5999fc61821fdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#gab8c2515ae9343881cc5999fc61821fdc">visit_at_end</a> (RF const &amp;rf, PR const &amp;pr)</td></tr>
-<tr class="separator:gab8c2515ae9343881cc5999fc61821fdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga29d5e6cebbbae7f0a170f82ed7a98fc3 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class TR , class IntT , class TopT , class Feat &gt; </td></tr>
-<tr class="memitem:ga29d5e6cebbbae7f0a170f82ed7a98fc3 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga29d5e6cebbbae7f0a170f82ed7a98fc3">visit_external_node</a> (TR &amp;tr, IntT index, TopT node_t, Feat &amp;features)</td></tr>
-<tr class="separator:ga29d5e6cebbbae7f0a170f82ed7a98fc3 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3fbf7f85dbe71eb235a6e071da54f459 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class TR , class IntT , class TopT , class Feat &gt; </td></tr>
-<tr class="memitem:ga3fbf7f85dbe71eb235a6e071da54f459 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__MachineLearning.html#ga3fbf7f85dbe71eb235a6e071da54f459">visit_internal_node</a> (TR &amp;, IntT, TopT, Feat &amp;)</td></tr>
-<tr class="separator:ga3fbf7f85dbe71eb235a6e071da54f459 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad23fdebbe022fdb6fee05ddede523bdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#ad23fdebbe022fdb6fee05ddede523bdc">return_val</a> ()</td></tr>
+<tr class="separator:ad23fdebbe022fdb6fee05ddede523bdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32301fb47981050340e6a927d78a2a77 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class Tree , class Split , class Region , class Feature_t , class Label_t &gt; </td></tr>
+<tr class="memitem:a32301fb47981050340e6a927d78a2a77 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a32301fb47981050340e6a927d78a2a77">visit_after_split</a> (Tree &amp;tree, Split &amp;split, Region &amp;parent, Region &amp;leftChild, Region &amp;rightChild, Feature_t &amp;features, Label_t &amp;labels)</td></tr>
+<tr class="separator:a32301fb47981050340e6a927d78a2a77 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7118d9515b477dfdb5e9899e118a5d76 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR , class SM , class ST &gt; </td></tr>
+<tr class="memitem:a7118d9515b477dfdb5e9899e118a5d76 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a7118d9515b477dfdb5e9899e118a5d76">visit_after_tree</a> (RF &amp;rf, PR &amp;pr, SM &amp;sm, ST &amp;st, int index)</td></tr>
+<tr class="separator:a7118d9515b477dfdb5e9899e118a5d76 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bb047133b5a592d0ade412044bd1495 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR &gt; </td></tr>
+<tr class="memitem:a0bb047133b5a592d0ade412044bd1495 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a0bb047133b5a592d0ade412044bd1495">visit_at_beginning</a> (RF const &amp;rf, PR const &amp;pr)</td></tr>
+<tr class="separator:a0bb047133b5a592d0ade412044bd1495 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8c2515ae9343881cc5999fc61821fdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class RF , class PR &gt; </td></tr>
+<tr class="memitem:ab8c2515ae9343881cc5999fc61821fdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#ab8c2515ae9343881cc5999fc61821fdc">visit_at_end</a> (RF const &amp;rf, PR const &amp;pr)</td></tr>
+<tr class="separator:ab8c2515ae9343881cc5999fc61821fdc inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29d5e6cebbbae7f0a170f82ed7a98fc3 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class TR , class IntT , class TopT , class Feat &gt; </td></tr>
+<tr class="memitem:a29d5e6cebbbae7f0a170f82ed7a98fc3 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a29d5e6cebbbae7f0a170f82ed7a98fc3">visit_external_node</a> (TR &amp;tr, IntT index, TopT node_t, Feat &amp;features)</td></tr>
+<tr class="separator:a29d5e6cebbbae7f0a170f82ed7a98fc3 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fbf7f85dbe71eb235a6e071da54f459 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplParams" colspan="2">template&lt;class TR , class IntT , class TopT , class Feat &gt; </td></tr>
+<tr class="memitem:a3fbf7f85dbe71eb235a6e071da54f459 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1rf_1_1visitors_1_1VisitorBase.html#a3fbf7f85dbe71eb235a6e071da54f459">visit_internal_node</a> (TR &amp;, IntT, TopT, Feat &amp;)</td></tr>
+<tr class="separator:a3fbf7f85dbe71eb235a6e071da54f459 inherit pub_methods_classvigra_1_1rf_1_1visitors_1_1VisitorBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="_details" id="details"></a><h2 class="details_section">Detailed Description</h2>
 <div class="textblock"><p>Visitor to gain information, later needed for online learning. </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a85d7d116c63a23cbad129a1c514b7f60"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void visit_at_beginning </td>
+          <td>(</td>
+          <td class="paramtype">RF &amp;&#160;</td>
+          <td class="paramname"><em>rf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const PR &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Initialize, set the number of trees </p>
+
+</div>
+</div>
+<a class="anchor" id="a41140e76b75f3909084ce8c6a4f4ce3f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void reset_tree </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tree_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reset a tree </p>
+
+</div>
+</div>
+<a class="anchor" id="a81978178c1bdd44f9a4ae87b8c1347ed"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void visit_after_tree </td>
+          <td>(</td>
+          <td class="paramtype">RF &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PR &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SM &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ST &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>simply increase the tree count </p>
+
+</div>
+</div>
+<a class="anchor" id="a0be1525336a154f011efa8f86e56db7c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void visit_internal_node </td>
+          <td>(</td>
+          <td class="paramtype">TR &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IntT&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TopT&#160;</td>
+          <td class="paramname"><em>node_t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Feat &amp;&#160;</td>
+          <td class="paramname"><em>features</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>do something when visiting a internal node during getToLeaf</p>
+<p>remember as last node id, for finding the parent of the last external node also: adjust class counts and borders </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>vigra/random_forest/<a class="el" href="rf__visitors_8hxx_source.html">rf_visitors.hxx</a></li>
 </ul>
 </div><!-- contents -->
@@ -132,7 +262,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

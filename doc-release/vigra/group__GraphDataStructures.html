@@ -69,6 +69,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1AdjacencyListGraph.html">AdjacencyListGraph</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">undirected adjacency list graph in the LEMON API  <a href="classvigra_1_1AdjacencyListGraph.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1BinaryForest.html">BinaryForest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classvigra_1_1BinaryForest.html" title="BinaryForest stores a collection of rooted binary trees. ">BinaryForest</a> stores a collection of rooted binary trees.  <a href="classvigra_1_1BinaryForest.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1ClusteringOptions.html">ClusteringOptions</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Options object for hierarchical clustering.  <a href="classvigra_1_1ClusteringOptions.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -81,6 +84,22 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga0e9d9113b29e570e2395339b51c6b037"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga0e9d9113b29e570e2395339b51c6b037"></a>
+Arc&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga0e9d9113b29e570e2395339b51c6b037">addArc</a> (Node const &amp;u, Node const &amp;v)</td></tr>
+<tr class="memdesc:ga0e9d9113b29e570e2395339b51c6b037"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new arc from node <em>u</em> to node <em>v</em>. The arc ID is <code>2*id(u)</code> if <em>v</em> is the left child of <em>u</em>, <code>2*id(u)+1</code> otherwise. <br/></td></tr>
+<tr class="separator:ga0e9d9113b29e570e2395339b51c6b037"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9987a230a6155e90fc55f23dec0203f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga9987a230a6155e90fc55f23dec0203f0"></a>
+Node&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga9987a230a6155e90fc55f23dec0203f0">addNode</a> ()</td></tr>
+<tr class="memdesc:ga9987a230a6155e90fc55f23dec0203f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new node (its node ID will be selected automatically). <br/></td></tr>
+<tr class="separator:ga9987a230a6155e90fc55f23dec0203f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5a80eac08cb55526b1d90ac9efb7d8f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga5a80eac08cb55526b1d90ac9efb7d8f2"></a>
+Arc&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga5a80eac08cb55526b1d90ac9efb7d8f2">arcFromId</a> (index_type const &amp;id) const </td></tr>
+<tr class="memdesc:ga5a80eac08cb55526b1d90ac9efb7d8f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get arc descriptor for <em>id</em>. <br/></td></tr>
+<tr class="separator:ga5a80eac08cb55526b1d90ac9efb7d8f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0ad1a97397e4aa8ca193401c6bfb1b1f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga0ad1a97397e4aa8ca193401c6bfb1b1f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga0ad1a97397e4aa8ca193401c6bfb1b1f">BinaryForest</a> ()</td></tr>
+<tr class="memdesc:ga0ad1a97397e4aa8ca193401c6bfb1b1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an empty forest. <br/></td></tr>
+<tr class="separator:ga0ad1a97397e4aa8ca193401c6bfb1b1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab83f15062e3840121e29048e28a61b7e"><td class="memTemplParams" colspan="2">template&lt;class GRAPH , class EDGE_WEIGHTS , class SEEDS , class LABELS &gt; </td></tr>
 <tr class="memitem:gab83f15062e3840121e29048e28a61b7e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gab83f15062e3840121e29048e28a61b7e">carvingSegmentation</a> (const GRAPH &amp;g, const EDGE_WEIGHTS &amp;edgeWeights, const SEEDS &amp;seeds, const typename LABELS::Value backgroundLabel, const typename EDGE_WEIGHTS::Value backgroundBias, const typename EDGE_WEIGHTS::Value noPriorBelow, LABELS &amp;labels)</td></tr>
 <tr class="memdesc:gab83f15062e3840121e29048e28a61b7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">edge weighted watersheds Segmentataion  <a href="#gab83f15062e3840121e29048e28a61b7e">More...</a><br/></td></tr>
@@ -125,6 +144,22 @@ template&lt;class G , class A , class T &gt; </td></tr>
 <tr class="memitem:ga219158b1d271342c96ad37d96a0f8997"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga219158b1d271342c96ad37d96a0f8997">fillNodeMap</a> (const G &amp;g, A &amp;a, const T &amp;value)</td></tr>
 <tr class="memdesc:ga219158b1d271342c96ad37d96a0f8997"><td class="mdescLeft">&#160;</td><td class="mdescRight">fill a lemon node map <br/></td></tr>
 <tr class="separator:ga219158b1d271342c96ad37d96a0f8997"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabe5aa97793b5ecc1c5f86254abf65113"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gabe5aa97793b5ecc1c5f86254abf65113"></a>
+Node&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gabe5aa97793b5ecc1c5f86254abf65113">getChild</a> (Node const &amp;node, size_t i=0) const </td></tr>
+<tr class="memdesc:gabe5aa97793b5ecc1c5f86254abf65113"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get child number <em>i</em> of <em>node</em>. Returns the left child if <code>i=0</code>, the right child if <code>i=1</code>, and <code>lemon::INVALID</code> for other values of <em>i</em> or when the respective is undefined. <br/></td></tr>
+<tr class="separator:gabe5aa97793b5ecc1c5f86254abf65113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2bef6b1dcb8786a01e679084e5d92a12"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga2bef6b1dcb8786a01e679084e5d92a12"></a>
+Node&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga2bef6b1dcb8786a01e679084e5d92a12">getNode</a> (size_t i) const </td></tr>
+<tr class="memdesc:ga2bef6b1dcb8786a01e679084e5d92a12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create node cescriptor for ID <em>i</em>, or <code>lemon::INVALID</code> if <em>i</em> is not a valid ID. <br/></td></tr>
+<tr class="separator:ga2bef6b1dcb8786a01e679084e5d92a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab535952560b92420ebc9d8ad4f0ca574"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gab535952560b92420ebc9d8ad4f0ca574"></a>
+Node&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gab535952560b92420ebc9d8ad4f0ca574">getParent</a> (Node const &amp;node, size_t i=0) const </td></tr>
+<tr class="memdesc:gab535952560b92420ebc9d8ad4f0ca574"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the parent node descriptor of <em>node</em>, or <code>lemon::INVALID</code> if <em>node</em> is a root or <em>i</em> is non-zero. <br/></td></tr>
+<tr class="separator:gab535952560b92420ebc9d8ad4f0ca574"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa849e9cb4b40c1fdd09644aba91c724c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa849e9cb4b40c1fdd09644aba91c724c"></a>
+Node&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gaa849e9cb4b40c1fdd09644aba91c724c">getRoot</a> (size_t i=0) const </td></tr>
+<tr class="memdesc:gaa849e9cb4b40c1fdd09644aba91c724c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the root node descriptor of tree <em>i</em> in the forest, or <code>lemon::INVALID</code> if <em>i</em> is invalid. <br/></td></tr>
+<tr class="separator:gaa849e9cb4b40c1fdd09644aba91c724c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae576b3bc3a6baeb6518cca788035d9d3"><td class="memTemplParams" colspan="2">template&lt;class GRAPH , class NODE_FEATURES_IN , class EDGE_INDICATOR , class NODE_FEATURES_OUT &gt; </td></tr>
 <tr class="memitem:gae576b3bc3a6baeb6518cca788035d9d3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gae576b3bc3a6baeb6518cca788035d9d3">graphSmoothing</a> (const GRAPH &amp;g, const NODE_FEATURES_IN &amp;nodeFeaturesIn, const EDGE_INDICATOR &amp;edgeIndicator, const float lambda, const float edgeThreshold, const float scale, NODE_FEATURES_OUT &amp;nodeFeaturesOut)</td></tr>
 <tr class="memdesc:gae576b3bc3a6baeb6518cca788035d9d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">smooth node features of a graph  <a href="#gae576b3bc3a6baeb6518cca788035d9d3">More...</a><br/></td></tr>
@@ -133,10 +168,62 @@ template&lt;class G , class A , class T &gt; </td></tr>
 <tr class="memitem:gafbaa28685756ee5d69b17c7a31f8b8fb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gafbaa28685756ee5d69b17c7a31f8b8fb">hierarchicalClustering</a> (...)</td></tr>
 <tr class="memdesc:gafbaa28685756ee5d69b17c7a31f8b8fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reduce the number of nodes in a graph by iteratively contracting the cheapest edge.  <a href="#gafbaa28685756ee5d69b17c7a31f8b8fb">More...</a><br/></td></tr>
 <tr class="separator:gafbaa28685756ee5d69b17c7a31f8b8fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf2f9e3ff165c2946c49bf4ff09e0677e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf2f9e3ff165c2946c49bf4ff09e0677e"></a>
+index_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gaf2f9e3ff165c2946c49bf4ff09e0677e">id</a> (Node const &amp;node) const </td></tr>
+<tr class="memdesc:gaf2f9e3ff165c2946c49bf4ff09e0677e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get ID for node descriptor <em>node</em>. <br/></td></tr>
+<tr class="separator:gaf2f9e3ff165c2946c49bf4ff09e0677e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9335c48d136f6822d949b2115a3ea717"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga9335c48d136f6822d949b2115a3ea717"></a>
+index_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga9335c48d136f6822d949b2115a3ea717">id</a> (Arc const &amp;arc) const </td></tr>
+<tr class="memdesc:ga9335c48d136f6822d949b2115a3ea717"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get ID for arc descriptor <em>arc</em>. <br/></td></tr>
+<tr class="separator:ga9335c48d136f6822d949b2115a3ea717"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa696f39a0aad68629f7e2e7674a60d55"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa696f39a0aad68629f7e2e7674a60d55"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gaa696f39a0aad68629f7e2e7674a60d55">inDegree</a> (Node const &amp;node) const </td></tr>
+<tr class="memdesc:gaa696f39a0aad68629f7e2e7674a60d55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of incoming edges of <em>node</em>. <code>0</code> for a root node, <code>1</code> otherwise. <br/></td></tr>
+<tr class="separator:gaa696f39a0aad68629f7e2e7674a60d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac2e4a082419162804528250e835f0b0f"><td class="memTemplParams" colspan="2">template&lt;class GRAPH_IN , class GRAPH_IN_NODE_LABEL_MAP &gt; </td></tr>
 <tr class="memitem:gac2e4a082419162804528250e835f0b0f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gac2e4a082419162804528250e835f0b0f">makeRegionAdjacencyGraph</a> (GRAPH_IN graphIn, GRAPH_IN_NODE_LABEL_MAP labels, AdjacencyListGraph &amp;rag, typename AdjacencyListGraph::template EdgeMap&lt; std::vector&lt; typename GRAPH_IN::Edge &gt; &gt; &amp;affiliatedEdges, const Int64 ignoreLabel=-1)</td></tr>
 <tr class="memdesc:gac2e4a082419162804528250e835f0b0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">make a region adjacency graph from a graph and labels w.r.t. that graph  <a href="#gac2e4a082419162804528250e835f0b0f">More...</a><br/></td></tr>
 <tr class="separator:gac2e4a082419162804528250e835f0b0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1a70f17e3297169076a96fb3482d455d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1a70f17e3297169076a96fb3482d455d"></a>
+index_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga1a70f17e3297169076a96fb3482d455d">maxArcId</a> () const </td></tr>
+<tr class="memdesc:ga1a70f17e3297169076a96fb3482d455d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the highest possible arc ID (equivalent to <code>2*maxNodeId() + 1</code>). <br/></td></tr>
+<tr class="separator:ga1a70f17e3297169076a96fb3482d455d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa72e95d300708e73e992c8dda8ac8e9b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa72e95d300708e73e992c8dda8ac8e9b"></a>
+index_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gaa72e95d300708e73e992c8dda8ac8e9b">maxNodeId</a> () const </td></tr>
+<tr class="memdesc:gaa72e95d300708e73e992c8dda8ac8e9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the highest existing node ID. <br/></td></tr>
+<tr class="separator:gaa72e95d300708e73e992c8dda8ac8e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf61a3005f991dde97d45aff37764f9ff"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf61a3005f991dde97d45aff37764f9ff"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gaf61a3005f991dde97d45aff37764f9ff">merge</a> (BinaryForest const &amp;other)</td></tr>
+<tr class="memdesc:gaf61a3005f991dde97d45aff37764f9ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merge two forests and increase the IDs of <em>other</em> to avoid ID clashes. The function returns the offset that has been added to these IDs. <br/></td></tr>
+<tr class="separator:gaf61a3005f991dde97d45aff37764f9ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga289fced77f5ddfe05e8f22265b36ff0a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga289fced77f5ddfe05e8f22265b36ff0a"></a>
+Node&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga289fced77f5ddfe05e8f22265b36ff0a">nodeFromId</a> (index_type const &amp;id) const </td></tr>
+<tr class="memdesc:ga289fced77f5ddfe05e8f22265b36ff0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get node descriptor for <em>id</em>. <br/></td></tr>
+<tr class="separator:ga289fced77f5ddfe05e8f22265b36ff0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7ec48c0ca1ab9969107a25b6f1aa5a75"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga7ec48c0ca1ab9969107a25b6f1aa5a75"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga7ec48c0ca1ab9969107a25b6f1aa5a75">numArcs</a> () const </td></tr>
+<tr class="memdesc:ga7ec48c0ca1ab9969107a25b6f1aa5a75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of arcs. Always less than <code><a class="el" href="group__GraphDataStructures.html#ga1a70f17e3297169076a96fb3482d455d" title="Return the highest possible arc ID (equivalent to 2*maxNodeId() + 1). ">maxArcId()</a></code> because not all arcs actually exist. <br/></td></tr>
+<tr class="separator:ga7ec48c0ca1ab9969107a25b6f1aa5a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6f34b5c0a2f75e2913c6cc233931ce64"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6f34b5c0a2f75e2913c6cc233931ce64"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga6f34b5c0a2f75e2913c6cc233931ce64">numChildren</a> (Node const &amp;node) const </td></tr>
+<tr class="memdesc:ga6f34b5c0a2f75e2913c6cc233931ce64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of children of <em>node</em> (equivalent to <code><a class="el" href="group__GraphDataStructures.html#ga23e1f1d21d76c23ecdccb8d712c7a212" title="Return the number of outgoing edges of node. 0 for a leaf node, 1 or 2 otherwise. ...">outDegree()</a></code>). <br/></td></tr>
+<tr class="separator:ga6f34b5c0a2f75e2913c6cc233931ce64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3f6faf35474e0e5457885e2b7dc0ebc5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga3f6faf35474e0e5457885e2b7dc0ebc5"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga3f6faf35474e0e5457885e2b7dc0ebc5">numNodes</a> () const </td></tr>
+<tr class="memdesc:ga3f6faf35474e0e5457885e2b7dc0ebc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of nodes (equivalent to <code><a class="el" href="group__GraphDataStructures.html#gaa72e95d300708e73e992c8dda8ac8e9b" title="Return the highest existing node ID. ">maxNodeId()</a>+1</code>). <br/></td></tr>
+<tr class="separator:ga3f6faf35474e0e5457885e2b7dc0ebc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5fa22a080ca182b625a3f446a681eea1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga5fa22a080ca182b625a3f446a681eea1"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga5fa22a080ca182b625a3f446a681eea1">numParents</a> (Node const &amp;node) const </td></tr>
+<tr class="memdesc:ga5fa22a080ca182b625a3f446a681eea1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of parents of <em>node</em> (equivalent to <code><a class="el" href="group__GraphDataStructures.html#gaa696f39a0aad68629f7e2e7674a60d55" title="Return the number of incoming edges of node. 0 for a root node, 1 otherwise. ">inDegree()</a></code>). <br/></td></tr>
+<tr class="separator:ga5fa22a080ca182b625a3f446a681eea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga834a1f118c619060851ec8d6519c4201"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga834a1f118c619060851ec8d6519c4201"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga834a1f118c619060851ec8d6519c4201">numRoots</a> () const </td></tr>
+<tr class="memdesc:ga834a1f118c619060851ec8d6519c4201"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of trees in the forest. <br/></td></tr>
+<tr class="separator:ga834a1f118c619060851ec8d6519c4201"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga23e1f1d21d76c23ecdccb8d712c7a212"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga23e1f1d21d76c23ecdccb8d712c7a212"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga23e1f1d21d76c23ecdccb8d712c7a212">outDegree</a> (Node const &amp;node) const </td></tr>
+<tr class="memdesc:ga23e1f1d21d76c23ecdccb8d712c7a212"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of outgoing edges of <em>node</em>. <code>0</code> for a leaf node, <code>1</code> or <code>2</code> otherwise. <br/></td></tr>
+<tr class="separator:ga23e1f1d21d76c23ecdccb8d712c7a212"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga74f4759ba0a1c275eebe78b9eefc0e09"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga74f4759ba0a1c275eebe78b9eefc0e09"></a>
 template&lt;class NODE , class PREDECESSORS &gt; </td></tr>
 <tr class="memitem:ga74f4759ba0a1c275eebe78b9eefc0e09"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga74f4759ba0a1c275eebe78b9eefc0e09">pathLength</a> (const NODE source, const NODE target, const PREDECESSORS &amp;predecessors)</td></tr>
@@ -158,6 +245,22 @@ template&lt;class GRAPH , class WEIGHTS , class PREDECESSORS , class DISTANCE , 
 <tr class="memitem:gae55d4b94f1300b962ac7e9b4dfd75575"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gae55d4b94f1300b962ac7e9b4dfd75575">shortestPathAStar</a> (const GRAPH &amp;graph, const typename GRAPH::Node &amp;source, const typename GRAPH::Node &amp;target, const WEIGHTS &amp;weights, PREDECESSORS &amp;predecessors, DISTANCE &amp;distance, const HEURSTIC &amp;heuristic)</td></tr>
 <tr class="memdesc:gae55d4b94f1300b962ac7e9b4dfd75575"><td class="mdescLeft">&#160;</td><td class="mdescRight">Astar Shortest path search. <br/></td></tr>
 <tr class="separator:gae55d4b94f1300b962ac7e9b4dfd75575"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabfef0e211a2b3a4ec460596bebb9a5d6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gabfef0e211a2b3a4ec460596bebb9a5d6"></a>
+Node&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gabfef0e211a2b3a4ec460596bebb9a5d6">source</a> (Arc const &amp;arc) const </td></tr>
+<tr class="memdesc:gabfef0e211a2b3a4ec460596bebb9a5d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find start node of <em>arc</em>. <br/></td></tr>
+<tr class="separator:gabfef0e211a2b3a4ec460596bebb9a5d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafeb5c8e50e768e47740f636c76f15fc6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gafeb5c8e50e768e47740f636c76f15fc6"></a>
+Node&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gafeb5c8e50e768e47740f636c76f15fc6">target</a> (Arc const &amp;arc) const </td></tr>
+<tr class="memdesc:gafeb5c8e50e768e47740f636c76f15fc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find end node of <em>arc</em>. <br/></td></tr>
+<tr class="separator:gafeb5c8e50e768e47740f636c76f15fc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4c3d344748456d4ecc8354cf9962408f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4c3d344748456d4ecc8354cf9962408f"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#ga4c3d344748456d4ecc8354cf9962408f">valid</a> (Node const &amp;node) const </td></tr>
+<tr class="memdesc:ga4c3d344748456d4ecc8354cf9962408f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if <em>node</em> exists. <br/></td></tr>
+<tr class="separator:ga4c3d344748456d4ecc8354cf9962408f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf424e78bba00e3cbad6fb7cfac9a4255"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf424e78bba00e3cbad6fb7cfac9a4255"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__GraphDataStructures.html#gaf424e78bba00e3cbad6fb7cfac9a4255">valid</a> (Arc const &amp;arc) const </td></tr>
+<tr class="memdesc:gaf424e78bba00e3cbad6fb7cfac9a4255"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if <em>arc</em> exists. <br/></td></tr>
+<tr class="separator:gaf424e78bba00e3cbad6fb7cfac9a4255"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="_details" id="details"></a><h2 class="details_section">Detailed Description</h2>
 <p>Graph algorithms and the underlying graph data structures (e.g. <a class="el" href="classvigra_1_1GridGraph.html" title="Define a grid graph in arbitrary dimensions. ">GridGraph</a> and <a class="el" href="classvigra_1_1AdjacencyListGraph.html" title="undirected adjacency list graph in the LEMON API ">AdjacencyListGraph</a>) implementing the APIs of the <a href="http://www.boost.org/doc/libs/release/libs/graph/">boost::graph</a> and <a href="http://lemon.cs.elte.hu/">LEMON</a> libraries.</p>
@@ -876,7 +979,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

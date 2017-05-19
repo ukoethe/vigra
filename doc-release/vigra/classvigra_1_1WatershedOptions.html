@@ -272,7 +272,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Bias the cost of the specified region by the given factor. </p>
-<p>In certain applications, one region (typically the background) should be preferred in region growing. This is most easily achieved by adjusting the assignment cost for that region as <code>factor*cost</code>, with a factor slightly below 1.</p>
+<p>In certain applications, one region (typically the background) should be preferred in region growing. This is most easily achieved by adjusting the assignment cost for that region as <code>factor*cost</code>, with a factor slightly below 1. (Accordingly, factors above 1 would correspond to a discouragement of the bias label.)</p>
 <p>Default: don't bias any region. </p>
 
 </div>
@@ -355,7 +355,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

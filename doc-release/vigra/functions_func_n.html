@@ -56,6 +56,9 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 &#160;
 
 <h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
+<li>n_threads()
+: <a class="el" href="classvigra_1_1rf3_1_1RandomForestOptions.html#a8b2e0ae9d8d62c75ba372129cb09be3b">RandomForestOptions</a>
+</li>
 <li>ndim()
 : <a class="el" href="classvigra_1_1NumpyAnyArray.html#ab0c2b5386194068f8801a5af758f7a30">NumpyAnyArray</a>
 </li>
@@ -83,8 +86,14 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <li>nnlasso()
 : <a class="el" href="classvigra_1_1linalg_1_1LeastAngleRegressionOptions.html#a7d732a5ef3bc9181382b0b0e491d3221">LeastAngleRegressionOptions</a>
 </li>
+<li>node_complexity_tau()
+: <a class="el" href="classvigra_1_1rf3_1_1RandomForestOptions.html#a9c90cd4c6cf5424f9b0ba1fa52a98d7a">RandomForestOptions</a>
+</li>
 <li>NodeBase()
 : <a class="el" href="classvigra_1_1NodeBase.html#ab0d2335945496a120d668b209f14140c">NodeBase</a>
+</li>
+<li>NodeComplexityStop()
+: <a class="el" href="classvigra_1_1rf3_1_1NodeComplexityStop.html#a2e45c49a066f908d3cd5eb096e03a75e">NodeComplexityStop</a>
 </li>
 <li>nodeFeatureImportance()
 : <a class="el" href="classvigra_1_1ClusteringOptions.html#abb103f1c2f82aff0cc36a48d07611225">ClusteringOptions</a>
@@ -94,10 +103,11 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 </li>
 <li>nodeFromId()
 : <a class="el" href="classvigra_1_1AdjacencyListGraph.html#ab59aaf0ac7e322d103d260ec965bea1f">AdjacencyListGraph</a>
+, <a class="el" href="group__GraphDataStructures.html#ga289fced77f5ddfe05e8f22265b36ff0a">BinaryForest</a>
 , <a class="el" href="classvigra_1_1GridGraph.html#a5532d49784adaf5b8086f8b3855a2fda">GridGraph&lt; N, DirectedTag &gt;</a>
 </li>
 <li>NodeMap()
-: <a class="el" href="classvigra_1_1GridGraph_1_1NodeMap.html#ac817cfbd14c00d98f0e6ef9b4e44ddc7">GridGraph&lt; N, DirectedTag &gt;::NodeMap&lt; T &gt;</a>
+: <a class="el" href="classvigra_1_1GridGraph_1_1NodeMap.html#a71de87ca684c767af2c37588713a6892">GridGraph&lt; N, DirectedTag &gt;::NodeMap&lt; T &gt;</a>
 </li>
 <li>nodeNum()
 : <a class="el" href="classvigra_1_1AdjacencyListGraph.html#a5869f0227e0b800fdb3143cf6034f98a">AdjacencyListGraph</a>
@@ -126,7 +136,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 </li>
 <li>normalize()
 : <a class="el" href="classvigra_1_1Kernel1D.html#a7f10c82d42dacf3b4c9b691fb0840e35">Kernel1D&lt; ARITHTYPE &gt;</a>
-, <a class="el" href="classvigra_1_1Kernel2D.html#acd0de676568888d848beb97dcc53ae47">Kernel2D&lt; ARITHTYPE &gt;</a>
+, <a class="el" href="classvigra_1_1Kernel2D.html#aabb9f9c24fd174d83422aec09dd52402">Kernel2D&lt; ARITHTYPE &gt;</a>
 , <a class="el" href="classvigra_1_1PolynomialView.html#acd0de676568888d848beb97dcc53ae47">PolynomialView&lt; T &gt;</a>
 </li>
 <li>normalizedComponentWeights()
@@ -136,7 +146,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 : <a class="el" href="classvigra_1_1rf_1_1algorithms_1_1NormalizeStatus.html#a331fcdc15ef4477eeef0319d0f6760b5">NormalizeStatus</a>
 </li>
 <li>NormalRandomFunctor()
-: <a class="el" href="classvigra_1_1NormalRandomFunctor.html#a0153cf8c6e6d7b0aac8f98613fdefc94">NormalRandomFunctor&lt; Engine &gt;</a>
+: <a class="el" href="classvigra_1_1NormalRandomFunctor.html#a87dcb039e81a7f16f7863a0209404fb5">NormalRandomFunctor&lt; Engine &gt;</a>
 </li>
 <li>north()
 : <a class="el" href="classvigra_1_1EightNeighborhood_1_1NeighborCode.html#a7ab4654cf1aa2af7249a4ef01aa3e47a">NeighborCode</a>
@@ -150,20 +160,41 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 : <a class="el" href="classvigra_1_1EightNeighborhood_1_1NeighborCode.html#a2539ce8ef39604d6e7c612a39574ec5f">NeighborCode</a>
 , <a class="el" href="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D.html#ab292290a1af93a8af333fe07b93d48f7">NeighborCode3D</a>
 </li>
+<li>nSurface()
+: <a class="el" href="classvigra_1_1StarPolytope.html#a36e2feb64cd7dcc9d99d02449be0573f">StarPolytope&lt; N, T &gt;</a>
+</li>
 <li>nThreads()
 : <a class="el" href="classvigra_1_1ThreadPool.html#a05ea0e90c15fd4b0cf1686d334aa056d">ThreadPool</a>
+</li>
+<li>num_classes()
+: <a class="el" href="classvigra_1_1rf3_1_1RandomForest.html#a8464e3f4df09a705db53876690b20b67">RandomForest&lt; FEATURES, LABELS, SPLITTESTS, ACCTYPE &gt;</a>
 </li>
 <li>num_edges()
 : <a class="el" href="classvigra_1_1GridGraph.html#addb50350796dac7ede505dee3404a75e">GridGraph&lt; N, DirectedTag &gt;</a>
 </li>
+<li>num_features()
+: <a class="el" href="classvigra_1_1rf3_1_1RandomForest.html#a600e4c054feec4d98d665beed3eb0aec">RandomForest&lt; FEATURES, LABELS, SPLITTESTS, ACCTYPE &gt;</a>
+</li>
+<li>num_nodes()
+: <a class="el" href="classvigra_1_1rf3_1_1RandomForest.html#a7619ea708c552f119c4c1b9f35af8522">RandomForest&lt; FEATURES, LABELS, SPLITTESTS, ACCTYPE &gt;</a>
+</li>
+<li>num_trees()
+: <a class="el" href="classvigra_1_1rf3_1_1RandomForest.html#af291a20540a5c2d147cad84f607146b6">RandomForest&lt; FEATURES, LABELS, SPLITTESTS, ACCTYPE &gt;</a>
+</li>
 <li>num_vertices()
 : <a class="el" href="classvigra_1_1GridGraph.html#abfa5152e9387940b26cbe790e303ad0c">GridGraph&lt; N, DirectedTag &gt;</a>
+</li>
+<li>numArcs()
+: <a class="el" href="group__GraphDataStructures.html#ga7ec48c0ca1ab9969107a25b6f1aa5a75">BinaryForest</a>
 </li>
 <li>numBands()
 : <a class="el" href="classvigra_1_1ImageImportInfo.html#a62ce27eb9300cb7ad1ad4fbc32ad6db8">ImageImportInfo</a>
 </li>
 <li>numBlocks()
 : <a class="el" href="classvigra_1_1MultiBlocking.html#a61b48056aa568069bf3f20ac94aac673">MultiBlocking&lt; DIM, C &gt;</a>
+</li>
+<li>numChildren()
+: <a class="el" href="group__GraphDataStructures.html#ga6f34b5c0a2f75e2913c6cc233931ce64">BinaryForest</a>
 </li>
 <li>numDimensions()
 : <a class="el" href="classvigra_1_1HDF5ImportInfo.html#a9d9a0fea1dafecfb3169daacb20a3df1">HDF5ImportInfo</a>
@@ -178,14 +209,29 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <li>numImages()
 : <a class="el" href="classvigra_1_1ImageImportInfo.html#ae1d8eda7a7945fcec6c9724346f636d9">ImageImportInfo</a>
 </li>
+<li>NumInstancesStop()
+: <a class="el" href="classvigra_1_1rf3_1_1NumInstancesStop.html#afcebfcf8a5f3ed104bab29474120fb15">NumInstancesStop</a>
+</li>
+<li>numNodes()
+: <a class="el" href="group__GraphDataStructures.html#ga3f6faf35474e0e5457885e2b7dc0ebc5">BinaryForest</a>
+</li>
+<li>numParents()
+: <a class="el" href="group__GraphDataStructures.html#ga5fa22a080ca182b625a3f446a681eea1">BinaryForest</a>
+</li>
 <li>NumpyAnyArray()
 : <a class="el" href="classvigra_1_1NumpyAnyArray.html#acb3ad6e964a2a05b04eb33cc0cfd6267">NumpyAnyArray</a>
 </li>
 <li>NumpyArray()
-: <a class="el" href="classvigra_1_1NumpyArray.html#a48399310d2778a96429661ce8aa9ad3c">NumpyArray&lt; N, T, Stride &gt;</a>
+: <a class="el" href="classvigra_1_1NumpyArray.html#aae3ebfb83214d0615b2ad080dda32d77">NumpyArray&lt; N, T, Stride &gt;</a>
+</li>
+<li>numRoots()
+: <a class="el" href="group__GraphDataStructures.html#ga834a1f118c619060851ec8d6519c4201">BinaryForest</a>
 </li>
 <li>numThreads()
 : <a class="el" href="classvigra_1_1ParallelOptions.html#a6d5768de67682f8c77ed887055ce9b7d">ParallelOptions</a>
+</li>
+<li>nVolume()
+: <a class="el" href="classvigra_1_1StarPolytope.html#a0823bad30de5709579f167c63faebca4">StarPolytope&lt; N, T &gt;</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -205,7 +251,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

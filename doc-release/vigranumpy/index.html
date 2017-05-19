@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Vigranumpy Reference &mdash; vigranumpy 1.11.0 documentation</title>
+    <title>Vigranumpy Reference &mdash; vigranumpy 1.11.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.11.0',
+        VERSION:     '1.11.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/vigra-icon.ico"/>
-    <link rel="top" title="vigranumpy 1.11.0 documentation" href="#" /> 
+    <link rel="top" title="vigranumpy 1.11.1 documentation" href="#" /> 
   </head>
   <body>
     <div class="related">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="#">vigranumpy 1.11.0 documentation</a> &raquo;</li> 
+        <li><a href="#">vigranumpy 1.11.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -4480,8 +4480,16 @@ for the input data.</div></blockquote>
 <dl class="function">
 <dt id="vigra.analysis.cannyEdgeImage">
 <tt class="descclassname">vigra.analysis.</tt><tt class="descname">cannyEdgeImage</tt><big>(</big><em>(object)image</em>, <em>(float)scale</em>, <em>(float)threshold</em>, <em>(int)edgeMarker</em><span class="optional">[</span>, <em>(object)out=None</em><span class="optional">]</span><big>)</big> &rarr; object :<a class="headerlink" href="#vigra.analysis.cannyEdgeImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Detect and mark edges in an edge image using Canny&#8217;s algorithm.</p>
+<dd><blockquote>
+<div><p>Detect and mark edges in an edge image using Canny&#8217;s algorithm.</p>
 <p>For details see <a class="reference external" href="../../doc/vigra/group__EdgeDetection.html#ga729ddcc1323a9c0fd31c52812f08adb6">cannyEdgeImage</a> in the vigra C++ documentation.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>cannyEdgeImage( (object)image, (float)scale, (float)threshold, (int)edgeMarker [, (object)out=None]) -&gt; object :</dt>
+<dd><p class="first">Detect and mark edges in an edge image using Canny&#8217;s algorithm.</p>
+<p class="last">For details see <a class="reference external" href="../../doc/vigra/group__EdgeDetection.html#ga729ddcc1323a9c0fd31c52812f08adb6">cannyEdgeImage</a> in the vigra C++ documentation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -4598,65 +4606,6 @@ cannyEdgelList3x3(image, scale, threshold) -&gt; list
 <tt class="descclassname">vigra.analysis.</tt><tt class="descname">extendedLocalMinima3D</tt><big>(</big><em>(object)volume</em><span class="optional">[</span>, <em>(int)marker=1</em><span class="optional">[</span>, <em>(int)neighborhood=6</em><span class="optional">[</span>, <em>(object)out=None</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; object :<a class="headerlink" href="#vigra.analysis.extendedLocalMinima3D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find local minima and minimal plateaus in a volume and mark them with the given &#8216;marker&#8217;. Parameter &#8216;neighborhood&#8217; specifies the pixel neighborhood to be used and can be 6(default) or 26 .</p>
 <p>For details see <a class="reference external" href="../../doc/vigra/group__LocalMinMax.html#gad1280b5f8335ebdadbb45a1b8cf8e8f5">extendedLocalMinima3D</a> in the vigra C++ documentation.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="vigra.analysis.extractConvexHullFeatures">
-<tt class="descclassname">vigra.analysis.</tt><tt class="descname">extractConvexHullFeatures</tt><big>(</big><em>(object)labels</em><span class="optional">[</span>, <em>(object)ignoreLabel=None</em><span class="optional">[</span>, <em>(bool)list_features_only=False</em><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; object :<a class="headerlink" href="#vigra.analysis.extractConvexHullFeatures" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract convex hull features for each region of a labeled 2D image
-(with dtype=numpy.uint32) and return a dictionary holding the
-resulting feature arrays. Argument &#8216;ignoreLabel&#8217; can be used to specify
-an optional background label that is to be skipped. Note that the
-convex hull itself and its features are computed from the interpixel
-contour around each region. In the following, &#8216;convexity defects&#8217;
-are defined as the connected components of the set difference
-between the convex hull and the original region.</p>
-<p>The result dictionary holds the following keys:</p>
-<blockquote>
-<div><ul>
-<li><p class="first">&#8216;InputCount&#8217;:  the number of pixels in the original region</p>
-</li>
-<li><p class="first">&#8216;InputPerimeter&#8217;:  the perimeter of the original interpixel contour</p>
-</li>
-<li><p class="first">&#8216;InputArea&#8217;:  the areay enclosed by the original interpixel contour</p>
-</li>
-<li><p class="first">&#8216;InputCenter&#8217;:  the centroid of the original interpixel contour polygon</p>
-</li>
-<li><p class="first">&#8216;Perimeter&#8217;:  the perimeter of the convex hull polygon</p>
-</li>
-<li><p class="first">&#8216;Area&#8217;:  the area enclosed by the convex hull polygon</p>
-</li>
-<li><p class="first">&#8216;Center&#8217;:  the centroid of the convex hull polygon</p>
-</li>
-<li><p class="first">&#8216;Rugosity&#8217;:  ratio between original perimeter and hull perimeter (&gt;= 1)</p>
-</li>
-<li><p class="first">&#8216;Convexity&#8217;:  the ratio between hull area and original area (&lt;= 1)</p>
-</li>
-<li><p class="first">&#8216;DefectCount&#8217;:  the number of convexity defects</p>
-</li>
-<li><p class="first">&#8216;DefectCenter&#8217;:  the combined centroid of the defects</p>
-</li>
-<li><dl class="first docutils">
-<dt>&#8216;MeanDefectDisplacement&#8217;:  mean distance between the centroids of the</dt>
-<dd><p class="first last">original object and the centroids of the defects,
-weighted by defect area</p>
-</dd>
-</dl>
-</li>
-<li><p class="first">&#8216;DefectAreaList&#8217;:  the area of the three largest convexity defects</p>
-</li>
-<li><p class="first">&#8216;DefectAreaMean&#8217;:  mean of the convexity defect areas</p>
-</li>
-<li><p class="first">&#8216;DefectAreaVariance&#8217;:  variance of the convexity defect areas</p>
-</li>
-<li><p class="first">&#8216;DefectAreaSkewness&#8217;:  skewness of the convexity defect areas</p>
-</li>
-<li><p class="first">&#8216;DefectAreaKurtosis&#8217;:  kurtosis of the convexity defect areas</p>
-</li>
-<li><p class="first">&#8216;Polygon&#8217;:  the convex hull polygon</p>
-</li>
-</ul>
-</div></blockquote>
 </dd></dl>
 
 <dl class="function">
@@ -4989,12 +4938,13 @@ If &#8216;allowPlateaus&#8217; is set to &#8216;True&#8217; regions of constant 
 
 <dl class="function">
 <dt id="vigra.analysis.relabelConsecutive">
-<tt class="descclassname">vigra.analysis.</tt><tt class="descname">relabelConsecutive</tt><big>(</big><em>(object)labels</em><span class="optional">[</span>, <em>(int)start_label=0</em><span class="optional">[</span>, <em>(object)out=None</em><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; tuple :<a class="headerlink" href="#vigra.analysis.relabelConsecutive" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">vigra.analysis.</tt><tt class="descname">relabelConsecutive</tt><big>(</big><em>(object)labels</em><span class="optional">[</span>, <em>(int)start_label=1</em><span class="optional">[</span>, <em>(bool)keep_zeros=True</em><span class="optional">[</span>, <em>(object)out=None</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; tuple :<a class="headerlink" href="#vigra.analysis.relabelConsecutive" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Relabel the given label image to have consecutive label values.
 Note: The relative order between label values will not necessarily be preserved.</p>
 <p>labels: ndarray
 start_label: The lowest label of the output array.
+keep_zeros: Don&#8217;t relabel zero-valued items.
 out: ndarray to hold the data. If None, it will be allocated for you.</p>
 <blockquote>
 <div>A combination of uint64 labels and uint32 &#8216;out&#8217; is permitted.</div></blockquote>
@@ -5003,17 +4953,17 @@ out: ndarray to hold the data. If None, it will be allocated for you.</p>
 <tt class="docutils literal"><span class="pre">mapping</span></tt> is a dict showing how the old labels were converted to the new label values.</p>
 <p>Note: As with other vigra functions, you should provide accurate axistags for optimal performance.</p>
 </div></blockquote>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
-<p>relabelConsecutive( (object)labels [, (int)start_label=0 [, (object)out=None]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
+<p>relabelConsecutive( (object)labels [, (int)start_label=1 [, (bool)keep_zeros=True [, (object)out=None]]]) -&gt; tuple</p>
 </dd></dl>
 
 <dl class="function">
@@ -5087,13 +5037,13 @@ than a quarter of the average superpixel size.</dd>
 <dl class="function">
 <dt id="vigra.analysis.supportedConvexHullFeatures">
 <tt class="descclassname">vigra.analysis.</tt><tt class="descname">supportedConvexHullFeatures</tt><big>(</big><em>labels</em><big>)</big><a class="headerlink" href="#vigra.analysis.supportedConvexHullFeatures" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list of Convex Hull feature names that are available for the given 2D label array.
-These Convex Hull feature names are the valid inputs to a call of
-<a class="reference internal" href="#vigra.analysis.extractConvexHullFeatures" title="vigra.analysis.extractConvexHullFeatures"><tt class="xref py py-func docutils literal"><span class="pre">extractConvexHullFeatures()</span></tt></a>. E.g., to compute just the first two features in the
+<dd><p>Return a list of Convex Hull feature names that are available for the given label array.
+These Convex Hull feature names are the valid inputs to a call with
+<tt class="xref py py-func docutils literal"><span class="pre">extract2DConvexHullFeatures()</span></tt> or <cite>extract3DConvexHullFeatures</cite>. E.g., to compute just the first two features in the
 list, use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">f</span> <span class="o">=</span> <span class="n">vigra</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">supportedConvexHullFeatures</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="s">&quot;Computing Convex Hull features:&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">vigra</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">extractConvexHullFeatures</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">f</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">vigra</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">extract2DConvexHullFeatures</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">f</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -5146,10 +5096,10 @@ list, use:</p>
 
 <dl class="function">
 <dt id="vigra.analysis.unique">
-<tt class="descclassname">vigra.analysis.</tt><tt class="descname">unique</tt><big>(</big><em>(object)arr</em><big>)</big> &rarr; object :<a class="headerlink" href="#vigra.analysis.unique" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">vigra.analysis.</tt><tt class="descname">unique</tt><big>(</big><em>(object)arr</em><span class="optional">[</span>, <em>(bool)sort=True</em><span class="optional">]</span><big>)</big> &rarr; object :<a class="headerlink" href="#vigra.analysis.unique" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find unique values in the given label array.
-Result is not sorted.
-Faster then numpy.unique().</p>
+If <tt class="docutils literal"><span class="pre">sort</span></tt> is True, then the output is sorted.
+Much faster then <tt class="docutils literal"><span class="pre">numpy.unique()</span></tt>.</p>
 </dd></dl>
 
 <dl class="function">
@@ -5466,7 +5416,7 @@ If empty (default), the labels are automatically determined
 from the training data. A non-empty list is useful when some
 labels lack training examples.</dd>
 </dl>
-<p>See <a class="reference external" href="../../doc/vigra/classvigra_1_1RandomForest.html">RandomForest</a> and <a class="reference external" href="../../doc/vigra/classvigra_1_1RandomForestOptions.html">RandomForestOptions</a> in the C++ documentation for the meaning of the other parameters.</p>
+<p>See <a href="#id105"><span class="problematic" id="id106">RandomForest_</span></a> and <a href="#id107"><span class="problematic" id="id108">RandomForestOptions_</span></a> in the C++ documentation for the meaning of the other parameters.</p>
 </div></blockquote>
 <dl class="method">
 <dt id="vigra.learning.RandomForest.featureCount">
@@ -5552,7 +5502,7 @@ under the internal path &#8216;pathInFile&#8217;.</dd>
 
 </dd></dl>
 
-<p>For more information, refer to <a class="reference external" href="../../doc/vigra/classvigra_1_1RandomForest.html">RandomForest</a> in the C++ documentation.</p>
+<p>For more information, refer to <a href="#id109"><span class="problematic" id="id110">RandomForest_</span></a> in the C++ documentation.</p>
 <dl class="class">
 <dt id="vigra.learning.RandomForestOld">
 <em class="property">class </em><tt class="descclassname">vigra.learning.</tt><tt class="descname">RandomForestOld</tt><big>(</big><em>(object)arg1</em>, <em>(object)trainData</em>, <em>(object)trainLabels</em><span class="optional">[</span>, <em>(int)treeCount=255</em><span class="optional">[</span>, <em>(int)mtry=0</em><span class="optional">[</span>, <em>(int)min_split_node_size=1</em><span class="optional">[</span>, <em>(int)training_set_size=0</em><span class="optional">[</span>, <em>(float)training_set_proportions=1.0</em><span class="optional">[</span>, <em>(bool)sample_with_replacement=True</em><span class="optional">[</span>, <em>(bool)sample_classes_individually=False</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#vigra.learning.RandomForestOld" title="Permalink to this definition">¶</a></dt>
@@ -5564,7 +5514,7 @@ under the internal path &#8216;pathInFile&#8217;.</dd>
 </pre></div>
 </div>
 <p>Construct and train a RandomForest using &#8216;trainData&#8217; and &#8216;trainLabels&#8217;. &#8216;treeCount&#8217; controls the number of trees that are created.</p>
-<p>See <a class="reference external" href="../../doc/vigra/classvigra_1_1RandomForest.html">RandomForest</a> and <a class="reference external" href="../../doc/vigra/classvigra_1_1RandomForestOptions.html">RandomForestOptions</a> in the C++ documentation for the meaning of the other parameters.</p>
+<p>See <a href="#id111"><span class="problematic" id="id112">RandomForest_</span></a> and <a href="#id113"><span class="problematic" id="id114">RandomForestOptions_</span></a> in the C++ documentation for the meaning of the other parameters.</p>
 <dl class="method">
 <dt id="vigra.learning.RandomForestOld.featureCount">
 <tt class="descname">featureCount</tt><big>(</big><em>(RandomForestOld)arg1</em><big>)</big> &rarr; int :<a class="headerlink" href="#vigra.learning.RandomForestOld.featureCount" title="Permalink to this definition">¶</a></dt>
@@ -7986,7 +7936,7 @@ def(&quot;my_function&quot;, vigra::registerConverters(&amp;my_function),
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="#">vigranumpy 1.11.0 documentation</a> &raquo;</li> 
+        <li><a href="#">vigranumpy 1.11.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

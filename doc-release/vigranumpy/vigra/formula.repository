@@ -139,3 +139,32 @@
 \form#138:\[ f(x ; a, s, b) = a \exp\left(-\frac{x^2}{2 s^2}\right) + b \]
 \form#139:$(x_i, y_i)$
 \form#140:$\sum_i \left(y_i - f(x_i; a,s,b)\right)^2$
+\form#141:\[ \min_{\theta} \sum_{\mathbf{x}} \left(I(\mathbf{x}, t) - I(\mathbf{x} - \mathbf{u}_{\theta}(\mathbf{x}), t-1)\right)^2 \]
+\form#142:$\mathbf{x}$
+\form#143:$\mathbf{u}_{\theta}(\mathbf{x})$
+\form#144:$\theta$
+\form#145:$I\mathbf{u}_{\theta}(\mathbf{x}), t-1)$
+\form#146:$I(\mathbf{x} - \mathbf{u}_{\theta}(\mathbf{x}), t-1)$
+\form#147:$u$
+\form#148:$v$
+\form#149:\[ d_{uv} = \left( (1-\beta) w_{uv} + \beta || f_u - f_v ||_M \right) \cdot \frac{2}{s_u^{-\omega} + s_v^{-\omega}} \]
+\form#150:$ w_{uv} $
+\form#151:$uv$
+\form#152:$f_u$
+\form#153:$f_v$
+\form#154:$M$
+\form#155:$s_u$
+\form#156:$s_v$
+\form#157:$0 \le \beta \le 1$
+\form#158:$0 \le \omega \le 1$
+\form#159:$\beta = 0$
+\form#160:$\beta = 1$
+\form#161:$\omega = 0$
+\form#162:$\omega = 1$
+\form#163:$z$
+\form#164:$s_z$
+\form#165:$l_{zy}$
+\form#166:\begin{eqnarray*} s_z & = & s_u + s_v \\ f_z & = & \frac{s_u f_u + s_v f_v}{s_z} \\ l_{zy} & = & l_{uy} + l_{vy} \textrm{ for all nodes }y\textrm{ connected to }u\textrm{ or }v \\ w_{zy} & = & \frac{l_{uy} w_{uy} + l_{vy} w_{vy}}{l_{zy}} \end{eqnarray*}
+\form#167:\[c = \frac{V_\mathrm{input}}{V_\mathrm{hull}}\]
+\form#168:$ 1+\lfloor \log(n_f)/\log(2) \rfloor $
+\form#169:$ \lfloor \sqrt{n_f} + 0.5 \rfloor $

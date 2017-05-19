@@ -60,7 +60,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <td align=right><a href="http://hci.iwr.uni-heidelberg.de/vigra/"><IMG border=0 ALT="VIGRA" SRC="documents/vigra.gif" title="VIGRA Homepage"></a></td></tr>
 </table><p>
 
-<p>The namespace <code><a class="el" href="namespacevigra_1_1acc.html">vigra::acc</a></code> provides the function <a class="el" href="namespacevigra_1_1acc.html#a5640bdd147f40fbd9424594ea7a2515c">vigra::acc::extractFeatures()</a> along with associated statistics functors and accumulator classes. Together, they provide a framework for efficient compution of a wide variety of statistical features, both globally for an entire image, and locally for each region defined by a label array. Many different statistics can be composed out of a small number of fundamental statistics and suitable modifiers. The user simply selects the desired statistics by means of their <em>tags</em> (see below), and a template meta-program automatically generates an efficient functor that computes exactly those statistics.</p>
+<p>The namespace <code><a class="el" href="namespacevigra_1_1acc.html" title="Efficient computation of object statistics. ">vigra::acc</a></code> provides the function <a class="el" href="namespacevigra_1_1acc.html#a5640bdd147f40fbd9424594ea7a2515c">vigra::acc::extractFeatures()</a> along with associated statistics functors and accumulator classes. Together, they provide a framework for efficient compution of a wide variety of statistical features, both globally for an entire image, and locally for each region defined by a label array. Many different statistics can be composed out of a small number of fundamental statistics and suitable modifiers. The user simply selects the desired statistics by means of their <em>tags</em> (see below), and a template meta-program automatically generates an efficient functor that computes exactly those statistics.</p>
 <p>The function <a class="el" href="namespacevigra_1_1acc.html#a5640bdd147f40fbd9424594ea7a2515c">extractFeatures()</a> scans the data in as few passes as the selected statstics permit (usually one or two passes are sufficient). Statistics are computed by accurate incremental algorithms, whose internal state is maintained by accumulator objects. The state is updated by passing data to the accumulator one sample at a time. Accumulators are grouped within an accumulator chain. Dependencies between accumulators in the accumulator chain are automatically resolved and missing dependencies are inserted. For example, to compute the mean, you also need to count the number of samples. This allows accumulators to offload some of their computations on other accumulators, making the algorithms more efficient. Each accumulator only sees data in the appropriate pass through the data, called its "working pass".</p>
 <p><b>#include</b> &lt;<a class="el" href="accumulator_8hxx_source.html">vigra/accumulator.hxx</a>&gt;</p>
 <p><b>Basic statistics:</b></p>
@@ -105,7 +105,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 </table>
 </li>
 </ul>
-<p>Aliases for many important features are implemented (mainly as <code>typedef FullName Alias</code>). The alias names are equivalent to full names. Below are some examples for supported alias names. A full list of all available statistics and alias names can be found in the namespace reference <code><a class="el" href="namespacevigra_1_1acc.html">vigra::acc</a></code>. These examples also show how to compose statistics from the fundamental statistics and modifiers:</p>
+<p>Aliases for many important features are implemented (mainly as <code>typedef FullName Alias</code>). The alias names are equivalent to full names. Below are some examples for supported alias names. A full list of all available statistics and alias names can be found in the namespace reference <code><a class="el" href="namespacevigra_1_1acc.html" title="Efficient computation of object statistics. ">vigra::acc</a></code>. These examples also show how to compose statistics from the fundamental statistics and modifiers:</p>
 <table  border="0">
 <tr>
 <th>Alias </th><th>Full Name  </th></tr>
@@ -353,7 +353,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>

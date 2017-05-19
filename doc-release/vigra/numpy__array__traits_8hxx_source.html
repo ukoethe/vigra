@@ -100,7 +100,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#ifndef NPY_NO_DEPRECATED_API</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor"></span><span class="preprocessor"># define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif </span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &quot;numerictraits.hxx&quot;</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &quot;multi_array.hxx&quot;</span></div>
@@ -266,8 +266,8 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    {</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="keywordflow">return</span> isShapeCompatible(obj) &amp;&amp; isValuetypeCompatible(obj);</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    }</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    </div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="comment">// Construct a tagged shape from a &#39;shape - axistags&#39; pair (called in </span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="comment">// Construct a tagged shape from a &#39;shape - axistags&#39; pair (called in</span></div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="comment">// NumpyArray::taggedShape()).</span></div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="keyword">static</span> TaggedShape taggedShape(TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; shape, PyAxisTags axistags)</div>
@@ -296,7 +296,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        vigra_precondition(tagged_shape.size() == N,</div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;                  <span class="stringliteral">&quot;reshapeIfEmpty(): tagged_shape has wrong size.&quot;</span>);</div>
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    }</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    </div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;</div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <span class="comment">// This function is used to synchronize the axis re-ordering of &#39;data&#39;</span></div>
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="comment">// with that of &#39;array&#39;. For example, when we want to apply Gaussian smoothing</span></div>
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    <span class="comment">// with a different scale for each axis, &#39;data&#39; would contains those scales,</span></div>
@@ -307,9 +307,9 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    {</div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        vigra_precondition((<span class="keywordtype">int</span>)data.size() == N,</div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            <span class="stringliteral">&quot;NumpyArray::permuteLikewise(): size mismatch.&quot;</span>);</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        </div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        ArrayVector&lt;npy_intp&gt; permute;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>, </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>,</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;                                       AxisInfo::AllAxes, <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        <span class="keywordflow">if</span>(permute.size() != 0)</div>
@@ -317,13 +317,13 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            <a class="code" href="group__MathFunctions.html#ga8686fee88c6f46f3e19a76f00826dc10">applyPermutation</a>(permute.begin(), permute.end(), data.begin(), res.begin());</div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        }</div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    }</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    </div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    <span class="comment">// This function is called in NumpyArray::setupArrayView() to determine the</span></div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    <span class="comment">// desired axis re-ordering.</span></div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> permutationToSetupOrder(python_ptr array, ArrayVector&lt;U&gt; &amp; permute)</div>
 <div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    {</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>, </div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>,</div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;                                       AxisInfo::AllAxes, <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        <span class="keywordflow">if</span>(permute.size() == 0)</div>
@@ -342,7 +342,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;                                                T *data, TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; stride)</div>
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    {</div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        TinyVector&lt;npy_intp, N&gt; npyStride(stride * <span class="keyword">sizeof</span>(T));</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;        <span class="keywordflow">return</span> constructNumpyArrayFromData(shape, npyStride.begin(), </div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;        <span class="keywordflow">return</span> constructNumpyArrayFromData(shape, npyStride.begin(),</div>
 <div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                                                    ValuetypeTraits::typeCode, data);</div>
 <div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    }</div>
 <div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;};</div>
@@ -363,7 +363,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        <span class="keywordtype">long</span> channelIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;channelIndex&quot;</span>, ndim);</div>
 <div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        <span class="keywordtype">long</span> majorIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;innerNonchannelIndex&quot;</span>, ndim);</div>
 <div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        npy_intp * strides = PyArray_STRIDES(array);</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        </div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;</div>
 <div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        <span class="keywordflow">if</span>(channelIndex &lt; ndim)</div>
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        {</div>
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;            <span class="comment">// When we have a channel axis, it will become the innermost dimension</span></div>
@@ -375,7 +375,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;            <span class="comment">// axis will be the innermost dimension</span></div>
 <div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;            <span class="keywordflow">return</span> (ndim == N &amp;&amp; strides[majorIndex] == <span class="keyword">sizeof</span>(T));</div>
 <div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        }</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <span class="keywordflow">else</span> </div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        {</div>
 <div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;            <span class="comment">// When we have no axistags, the first axis will be the innermost dimension</span></div>
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;            <span class="keywordflow">return</span> (ndim == N &amp;&amp; strides[0] == <span class="keyword">sizeof</span>(T));</div>
@@ -402,12 +402,12 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;        PyObject * obj = (PyObject *)array;</div>
 <div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        <span class="keywordtype">int</span> ndim = PyArray_NDIM(array);</div>
 <div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        <span class="keywordtype">long</span> channelIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;channelIndex&quot;</span>, ndim);</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        </div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        <span class="comment">// If we have no channel axis (because either we don&#39;t have axistags, </span></div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        <span class="comment">// If we have no channel axis (because either we don&#39;t have axistags,</span></div>
 <div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        <span class="comment">// or the tags do not contain a channel axis), ndim must match.</span></div>
 <div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        <span class="keywordflow">if</span>(channelIndex == ndim)</div>
 <div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;            <span class="keywordflow">return</span> ndim == N;</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            </div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;</div>
 <div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        <span class="comment">// Otherwise, the channel axis must be a singleton axis that we can drop.</span></div>
 <div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        <span class="keywordflow">return</span> ndim == N+1 &amp;&amp; PyArray_DIM(array, channelIndex) == 1;</div>
 <div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    }</div>
@@ -426,7 +426,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
 <div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keyword">static</span> TaggedShape taggedShape(TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; shape, std::string <span class="keyword">const</span> &amp; order = <span class="stringliteral">&quot;&quot;</span>)</div>
 <div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    {</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        <span class="keywordflow">return</span> TaggedShape(shape, </div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        <span class="keywordflow">return</span> TaggedShape(shape,</div>
 <div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                  PyAxisTags(detail::defaultAxistags(shape.size()+1, order))).setChannelCount(1);</div>
 <div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    }</div>
 <div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;</div>
@@ -445,15 +445,15 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;                     <span class="stringliteral">&quot;reshapeIfEmpty(): tagged_shape has wrong size.&quot;</span>);</div>
 <div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        }</div>
 <div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    }</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    </div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;</div>
 <div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> ARRAY&gt;</div>
 <div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> permuteLikewise(python_ptr array, ARRAY <span class="keyword">const</span> &amp; data, ARRAY &amp; res)</div>
 <div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    {</div>
 <div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        vigra_precondition((<span class="keywordtype">int</span>)data.size() == N,</div>
 <div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;            <span class="stringliteral">&quot;NumpyArray::permuteLikewise(): size mismatch.&quot;</span>);</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        </div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;</div>
 <div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        ArrayVector&lt;npy_intp&gt; permute;</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>, </div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>,</div>
 <div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                                       AxisInfo::NonChannel, <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;</div>
 <div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        <span class="keywordflow">if</span>(permute.size() == 0)</div>
@@ -461,14 +461,14 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;            permute.resize(N);</div>
 <div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;            <a class="code" href="group__MathFunctions.html#gad4ed6110df5e4258d0a4541bcf85c762">linearSequence</a>(permute.begin(), permute.end());</div>
 <div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        }</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        </div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;</div>
 <div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;        <a class="code" href="group__MathFunctions.html#ga8686fee88c6f46f3e19a76f00826dc10">applyPermutation</a>(permute.begin(), permute.end(), data.begin(), res.begin());</div>
 <div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    }</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    </div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;</div>
 <div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
 <div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> permutationToSetupOrder(python_ptr array, ArrayVector&lt;U&gt; &amp; permute)</div>
 <div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    {</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>, </div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>,</div>
 <div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                                       AxisInfo::AllAxes, <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;        <span class="keywordflow">if</span>(permute.size() == 0)</div>
 <div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        {</div>
@@ -499,19 +499,19 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;        <span class="keywordtype">long</span> channelIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;channelIndex&quot;</span>, ndim);</div>
 <div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;        <span class="keywordtype">long</span> majorIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;innerNonchannelIndex&quot;</span>, ndim);</div>
 <div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;        npy_intp * strides = PyArray_STRIDES(array);</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;        </div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;</div>
 <div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;        <span class="comment">// If we have no axistags, ndim must match, and axis 0 must be unstrided.</span></div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;        <span class="keywordflow">if</span>(majorIndex == ndim) </div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;        <span class="keywordflow">if</span>(majorIndex == ndim)</div>
 <div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;            <span class="keywordflow">return</span> N == ndim &amp;&amp; strides[0] == <span class="keyword">sizeof</span>(T);</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;            </div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;        <span class="comment">// If we have axistags, but no channel axis, ndim must match, </span></div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;        <span class="comment">// If we have axistags, but no channel axis, ndim must match,</span></div>
 <div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;        <span class="comment">// and the major non-channel axis must be unstrided.</span></div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;        <span class="keywordflow">if</span>(channelIndex == ndim) </div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;        <span class="keywordflow">if</span>(channelIndex == ndim)</div>
 <div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;            <span class="keywordflow">return</span> N == ndim &amp;&amp; strides[majorIndex] == <span class="keyword">sizeof</span>(T);</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;            </div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;</div>
 <div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;        <span class="comment">// Otherwise, the channel axis must be a singleton axis that we can drop,</span></div>
 <div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;        <span class="comment">// and the major non-channel axis must be unstrided.</span></div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        <span class="keywordflow">return</span> ndim == N+1 &amp;&amp; PyArray_DIM(array, channelIndex) == 1 &amp;&amp; </div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        <span class="keywordflow">return</span> ndim == N+1 &amp;&amp; PyArray_DIM(array, channelIndex) == 1 &amp;&amp;</div>
 <div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                strides[majorIndex] == <span class="keyword">sizeof</span>(T);</div>
 <div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    }</div>
 <div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;</div>
@@ -536,7 +536,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;        <span class="keywordtype">int</span> ndim = PyArray_NDIM(array);</div>
 <div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;        <span class="keywordtype">long</span> channelIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;channelIndex&quot;</span>, ndim);</div>
 <div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;        <span class="keywordtype">long</span> majorIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;innerNonchannelIndex&quot;</span>, ndim);</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;        </div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;</div>
 <div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;        <span class="keywordflow">if</span>(channelIndex &lt; ndim)</div>
 <div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        {</div>
 <div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;            <span class="comment">// When we have a channel axis, ndim must match.</span></div>
@@ -568,7 +568,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
 <div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;    <span class="keyword">static</span> TaggedShape taggedShape(TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; shape, std::string <span class="keyword">const</span> &amp; order = <span class="stringliteral">&quot;&quot;</span>)</div>
 <div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;    {</div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;        <span class="keywordflow">return</span> TaggedShape(shape, </div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;        <span class="keywordflow">return</span> TaggedShape(shape,</div>
 <div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;                    PyAxisTags(detail::defaultAxistags(shape.size(), order))).setChannelIndexLast();</div>
 <div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;    }</div>
 <div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;</div>
@@ -593,13 +593,13 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> permuteLikewise(python_ptr array, ARRAY <span class="keyword">const</span> &amp; data, ARRAY &amp; res)</div>
 <div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;    {</div>
 <div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;        ArrayVector&lt;npy_intp&gt; permute;</div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;        </div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;</div>
 <div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;        <span class="keywordflow">if</span>((<span class="keywordtype">int</span>)data.size() == N)</div>
 <div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;        {</div>
 <div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;            vigra_precondition(PyArray_NDIM((PyArrayObject*)array.get()) == N,</div>
 <div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;                <span class="stringliteral">&quot;NumpyArray::permuteLikewise(): input array has no channel axis.&quot;</span>);</div>
 <div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;            detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>, </div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;            detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>,</div>
 <div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;                                           AxisInfo::AllAxes, <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;</div>
 <div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;            <span class="keywordflow">if</span>(permute.size() == 0)</div>
@@ -621,7 +621,7 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;            vigra_precondition((<span class="keywordtype">int</span>)data.size() == N-1,</div>
 <div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;                <span class="stringliteral">&quot;NumpyArray::permuteLikewise(): size mismatch.&quot;</span>);</div>
 <div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;</div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;            detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>, </div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;            detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>,</div>
 <div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;                                           AxisInfo::NonChannel, <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;</div>
 <div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;            <span class="keywordflow">if</span>(permute.size() == 0)</div>
@@ -630,14 +630,14 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;                <a class="code" href="group__MathFunctions.html#gad4ed6110df5e4258d0a4541bcf85c762">linearSequence</a>(permute.begin(), permute.end());</div>
 <div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;            }</div>
 <div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;        }</div>
-<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;        </div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;</div>
 <div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;        <a class="code" href="group__MathFunctions.html#ga8686fee88c6f46f3e19a76f00826dc10">applyPermutation</a>(permute.begin(), permute.end(), data.begin(), res.begin());</div>
 <div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;    }</div>
-<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;    </div>
+<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;</div>
 <div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
 <div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> permutationToSetupOrder(python_ptr array, ArrayVector&lt;U&gt; &amp; permute)</div>
 <div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;    {</div>
-<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>, </div>
+<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>,</div>
 <div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;                                       AxisInfo::AllAxes, <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;</div>
 <div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;        <span class="keywordflow">if</span>(permute.size() == 0)</div>
@@ -722,184 +722,203 @@ var runOnLoad=function(c,o,d,e){function x(){for(e=1;c.length;)c.shift()()}o[d]?
 <div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isShapeCompatible(PyArrayObject * array) <span class="comment">/* array must not be NULL */</span></div>
 <div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;    {</div>
 <div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;        PyObject * obj = (PyObject *)array;</div>
-<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;        </div>
+<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;</div>
 <div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;         <span class="comment">// We need an extra channel axis.</span></div>
 <div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;         <span class="keywordflow">if</span>(PyArray_NDIM(array) != N+1)</div>
 <div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;            </div>
+<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;</div>
 <div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;        <span class="comment">// When there are no axistags, we assume that the last axis represents the channels.</span></div>
 <div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;        <span class="keywordtype">long</span> channelIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;channelIndex&quot;</span>, N);</div>
 <div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;        npy_intp * strides = PyArray_STRIDES(array);</div>
-<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;        </div>
-<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;        <span class="keywordflow">return</span> PyArray_DIM(array, channelIndex) == M &amp;&amp; strides[channelIndex] == <span class="keyword">sizeof</span>(T);</div>
-<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;    }</div>
-<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;</div>
-<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isPropertyCompatible(PyArrayObject * obj) <span class="comment">/* obj must not be NULL */</span></div>
-<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;    {</div>
-<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;        <span class="keywordflow">return</span> isShapeCompatible(obj) &amp;&amp; ValuetypeTraits::isValuetypeCompatible(obj);</div>
-<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;    }</div>
-<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;</div>
-<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
-<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;    <span class="keyword">static</span> TaggedShape taggedShape(TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; shape, PyAxisTags axistags)</div>
-<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;    {</div>
-<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;        <span class="keywordflow">return</span> TaggedShape(shape, axistags).setChannelCount(M);</div>
-<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;    }</div>
-<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;</div>
-<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
-<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;    <span class="keyword">static</span> TaggedShape taggedShape(TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; shape, std::string <span class="keyword">const</span> &amp; order = <span class="stringliteral">&quot;&quot;</span>)</div>
-<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;    {</div>
-<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;        <span class="keywordflow">return</span> TaggedShape(shape, </div>
-<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;                     PyAxisTags(detail::defaultAxistags(shape.size()+1, order))).setChannelCount(M);</div>
-<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;    }</div>
-<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;</div>
-<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> finalizeTaggedShape(TaggedShape &amp; tagged_shape)</div>
-<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;    {</div>
-<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;        tagged_shape.setChannelCount(M);</div>
-<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;        vigra_precondition(tagged_shape.size() == N+1,</div>
-<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;              <span class="stringliteral">&quot;reshapeIfEmpty(): tagged_shape has wrong size.&quot;</span>);</div>
-<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;    }</div>
-<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;</div>
-<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> ARRAY&gt;</div>
-<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> permuteLikewise(python_ptr array, ARRAY <span class="keyword">const</span> &amp; data, ARRAY &amp; res)</div>
-<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;    {</div>
-<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;        vigra_precondition((<span class="keywordtype">int</span>)data.size() == N,</div>
-<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;            <span class="stringliteral">&quot;NumpyArray::permuteLikewise(): size mismatch.&quot;</span>);</div>
-<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;        </div>
-<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;        ArrayVector&lt;npy_intp&gt; permute;</div>
-<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>, </div>
-<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;                                       AxisInfo::NonChannel, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;</div>
-<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;        <span class="keywordflow">if</span>(permute.size() == 0)</div>
-<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;        {</div>
-<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;            permute.resize(N);</div>
-<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;            <a class="code" href="group__MathFunctions.html#gad4ed6110df5e4258d0a4541bcf85c762">linearSequence</a>(permute.begin(), permute.end());</div>
-<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;        }</div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;        </div>
-<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;        <a class="code" href="group__MathFunctions.html#ga8686fee88c6f46f3e19a76f00826dc10">applyPermutation</a>(permute.begin(), permute.end(), data.begin(), res.begin());</div>
+<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;</div>
+<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;        <span class="comment">// find the non-channel axis with smallest stride</span></div>
+<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;        <span class="keywordtype">long</span> majorIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;innerNonchannelIndex&quot;</span>, N+1);</div>
+<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;        <span class="keywordflow">if</span>(majorIndex &gt;= N+1)</div>
+<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;        {</div>
+<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;            npy_intp smallest = NumericTraits&lt;npy_intp&gt;::max();</div>
+<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> k=0; k&lt;N+1; ++k)</div>
+<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;            {</div>
+<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;                <span class="keywordflow">if</span>(k == channelIndex)</div>
+<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;                    <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;                <span class="keywordflow">if</span>(strides[k] &lt; smallest)</div>
+<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;                {</div>
+<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;                    smallest = strides[k];</div>
+<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;                    majorIndex = k;</div>
+<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;                }</div>
+<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;            }</div>
+<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;        }</div>
+<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;</div>
+<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;        <span class="keywordflow">return</span> PyArray_DIM(array, channelIndex) == M &amp;&amp;</div>
+<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;               strides[channelIndex] == <span class="keyword">sizeof</span>(T) &amp;&amp;</div>
+<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;               strides[majorIndex] % (M*<span class="keyword">sizeof</span>(T)) == 0;</div>
+<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;    }</div>
+<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;</div>
+<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isPropertyCompatible(PyArrayObject * obj) <span class="comment">/* obj must not be NULL */</span></div>
+<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;    {</div>
+<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;        <span class="keywordflow">return</span> isShapeCompatible(obj) &amp;&amp; ValuetypeTraits::isValuetypeCompatible(obj);</div>
+<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;    }</div>
+<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;</div>
+<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
+<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;    <span class="keyword">static</span> TaggedShape taggedShape(TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; shape, PyAxisTags axistags)</div>
+<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;    {</div>
+<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;        <span class="keywordflow">return</span> TaggedShape(shape, axistags).setChannelCount(M);</div>
+<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;    }</div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;</div>
+<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
+<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;    <span class="keyword">static</span> TaggedShape taggedShape(TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; shape, std::string <span class="keyword">const</span> &amp; order = <span class="stringliteral">&quot;&quot;</span>)</div>
+<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;    {</div>
+<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;        <span class="keywordflow">return</span> TaggedShape(shape,</div>
+<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;                     PyAxisTags(detail::defaultAxistags(shape.size()+1, order))).setChannelCount(M);</div>
+<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;    }</div>
+<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;</div>
+<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> finalizeTaggedShape(TaggedShape &amp; tagged_shape)</div>
+<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;    {</div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;        tagged_shape.setChannelCount(M);</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;        vigra_precondition(tagged_shape.size() == N+1,</div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;              <span class="stringliteral">&quot;reshapeIfEmpty(): tagged_shape has wrong size.&quot;</span>);</div>
 <div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;    }</div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;    </div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
-<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> permutationToSetupOrder(python_ptr array, ArrayVector&lt;U&gt; &amp; permute)</div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;</div>
+<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> ARRAY&gt;</div>
+<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> permuteLikewise(python_ptr array, ARRAY <span class="keyword">const</span> &amp; data, ARRAY &amp; res)</div>
 <div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;    {</div>
-<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>, </div>
-<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;                                       AxisInfo::AllAxes, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;        <span class="keywordflow">if</span>(permute.size() == 0)</div>
-<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;        {</div>
-<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;            permute.resize(N);</div>
-<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;            <a class="code" href="group__MathFunctions.html#gad4ed6110df5e4258d0a4541bcf85c762">linearSequence</a>(permute.begin(), permute.end());</div>
-<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;        }</div>
-<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(permute.size() == N+1)</div>
+<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;        vigra_precondition((<span class="keywordtype">int</span>)data.size() == N,</div>
+<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;            <span class="stringliteral">&quot;NumpyArray::permuteLikewise(): size mismatch.&quot;</span>);</div>
+<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;</div>
+<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;        ArrayVector&lt;npy_intp&gt; permute;</div>
+<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>,</div>
+<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;                                       AxisInfo::NonChannel, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;</div>
+<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;        <span class="keywordflow">if</span>(permute.size() == 0)</div>
 <div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;        {</div>
-<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;            permute.erase(permute.begin());</div>
-<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;        }</div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;    }</div>
-<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;    </div>
-<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
-<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;    <span class="keyword">static</span> python_ptr unsafeConstructorFromData(TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; shape,</div>
-<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;                                                value_type *data, TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; stride)</div>
-<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;    {</div>
-<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;        TinyVector&lt;npy_intp, N+1&gt; npyShape;</div>
-<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;        std::copy(shape.begin(), shape.end(), npyShape.begin());</div>
-<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;        npyShape[N] = M;</div>
-<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;</div>
-<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;        TinyVector&lt;npy_intp, N+1&gt; npyStride;</div>
-<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;        std::transform(</div>
-<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;            stride.begin(), stride.end(), npyStride.begin(),</div>
-<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;            std::bind2nd(std::multiplies&lt;npy_intp&gt;(), <span class="keyword">sizeof</span>(value_type)));</div>
-<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;        npyStride[N] = <span class="keyword">sizeof</span>(T);</div>
-<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;</div>
-<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;        <span class="keywordflow">return</span> constructNumpyArrayFromData(npyShape, npyStride.begin(), </div>
-<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;                                                    ValuetypeTraits::typeCode, data);</div>
-<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;    }</div>
-<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;};</div>
+<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;            permute.resize(N);</div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;            <a class="code" href="group__MathFunctions.html#gad4ed6110df5e4258d0a4541bcf85c762">linearSequence</a>(permute.begin(), permute.end());</div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;        }</div>
+<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;</div>
+<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;        <a class="code" href="group__MathFunctions.html#ga8686fee88c6f46f3e19a76f00826dc10">applyPermutation</a>(permute.begin(), permute.end(), data.begin(), res.begin());</div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;    }</div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;</div>
+<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
+<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> permutationToSetupOrder(python_ptr array, ArrayVector&lt;U&gt; &amp; permute)</div>
+<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;    {</div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;        detail::getAxisPermutationImpl(permute, array, <span class="stringliteral">&quot;permutationToNormalOrder&quot;</span>,</div>
+<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;                                       AxisInfo::AllAxes, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;        <span class="keywordflow">if</span>(permute.size() == 0)</div>
+<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;        {</div>
+<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;            permute.resize(N);</div>
+<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;            <a class="code" href="group__MathFunctions.html#gad4ed6110df5e4258d0a4541bcf85c762">linearSequence</a>(permute.begin(), permute.end());</div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;        }</div>
+<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(permute.size() == N+1)</div>
+<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;        {</div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;            permute.erase(permute.begin());</div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;        }</div>
+<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;    }</div>
 <div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;</div>
-<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;<span class="comment">/********************************************************/</span></div>
-<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;</div>
-<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;<span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N, <span class="keywordtype">int</span> M, <span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;<span class="keyword">struct </span>NumpyArrayTraits&lt;N, TinyVector&lt;T, M&gt;, UnstridedArrayTag&gt;</div>
-<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;: <span class="keyword">public</span> NumpyArrayTraits&lt;N, TinyVector&lt;T, M&gt;, StridedArrayTag&gt;</div>
-<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;{</div>
-<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;    <span class="keyword">typedef</span> NumpyArrayTraits&lt;N, TinyVector&lt;T, M&gt;, StridedArrayTag&gt; BaseType;</div>
-<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> BaseType::value_type value_type;</div>
-<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> BaseType::ValuetypeTraits ValuetypeTraits;</div>
-<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;</div>
-<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isShapeCompatible(PyArrayObject * array) <span class="comment">/* obj must not be NULL */</span></div>
-<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;    {</div>
-<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;        PyObject * obj = (PyObject *)array;</div>
-<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;        <span class="keywordtype">int</span> ndim = PyArray_NDIM(array);</div>
-<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;        </div>
-<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;         <span class="comment">// We need an extra channel axis. </span></div>
-<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;        <span class="keywordflow">if</span>(ndim != N+1)</div>
-<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;            </div>
-<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;        <span class="keywordtype">long</span> channelIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;channelIndex&quot;</span>, ndim);</div>
-<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;        <span class="keywordtype">long</span> majorIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;innerNonchannelIndex&quot;</span>, ndim);</div>
-<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;        npy_intp * strides = PyArray_STRIDES(array);</div>
-<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;        </div>
-<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;        <span class="keywordflow">if</span>(majorIndex &lt; ndim)</div>
-<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;        {</div>
-<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;            <span class="comment">// We have axistags, but no channel axis =&gt; cannot be a TinyVector image</span></div>
-<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;            <span class="keywordflow">if</span>(channelIndex == ndim)</div>
-<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;                </div>
-<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;            <span class="comment">// We have an explicit channel axis =&gt; shapes and strides must match</span></div>
-<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;            <span class="keywordflow">return</span> PyArray_DIM(array, channelIndex) == M &amp;&amp; </div>
-<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;                   strides[channelIndex] == <span class="keyword">sizeof</span>(T) &amp;&amp;</div>
-<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;                   strides[majorIndex] == <span class="keyword">sizeof</span>(TinyVector&lt;T, M&gt;);</div>
-<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;            </div>
-<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;            </div>
-<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;        }</div>
-<div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;        {</div>
-<div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;            <span class="comment">// we have no axistags =&gt; we assume that the channel axis is last</span></div>
-<div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160;            <span class="keywordflow">return</span> PyArray_DIM(array, N) == M &amp;&amp; </div>
-<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;                   strides[N] == <span class="keyword">sizeof</span>(T) &amp;&amp;</div>
-<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;                   strides[0] == <span class="keyword">sizeof</span>(TinyVector&lt;T, M&gt;);</div>
-<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;        }</div>
-<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;    }</div>
-<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;</div>
-<div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isPropertyCompatible(PyArrayObject * obj) <span class="comment">/* obj must not be NULL */</span></div>
-<div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;    {</div>
-<div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;        <span class="keywordflow">return</span> isShapeCompatible(obj) &amp;&amp; BaseType::isValuetypeCompatible(obj);</div>
-<div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;    }</div>
-<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;};</div>
-<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;</div>
-<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;<span class="comment">/********************************************************/</span></div>
+<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> U&gt;</div>
+<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;    <span class="keyword">static</span> python_ptr unsafeConstructorFromData(TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; shape,</div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;                                                value_type *data, TinyVector&lt;U, N&gt; <span class="keyword">const</span> &amp; stride)</div>
+<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;    {</div>
+<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;        TinyVector&lt;npy_intp, N+1&gt; npyShape;</div>
+<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;        std::copy(shape.begin(), shape.end(), npyShape.begin());</div>
+<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;        npyShape[N] = M;</div>
+<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;</div>
+<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;        TinyVector&lt;npy_intp, N+1&gt; npyStride;</div>
+<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;        std::transform(</div>
+<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;            stride.begin(), stride.end(), npyStride.begin(),</div>
+<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;            std::bind2nd(std::multiplies&lt;npy_intp&gt;(), <span class="keyword">sizeof</span>(value_type)));</div>
+<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;        npyStride[N] = <span class="keyword">sizeof</span>(T);</div>
+<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;</div>
+<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;        <span class="keywordflow">return</span> constructNumpyArrayFromData(npyShape, npyStride.begin(),</div>
+<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;                                                    ValuetypeTraits::typeCode, data);</div>
+<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;    }</div>
+<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;};</div>
+<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;</div>
+<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;<span class="comment">/********************************************************/</span></div>
+<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;</div>
+<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;<span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N, <span class="keywordtype">int</span> M, <span class="keyword">class</span> T&gt;</div>
+<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;<span class="keyword">struct </span>NumpyArrayTraits&lt;N, TinyVector&lt;T, M&gt;, UnstridedArrayTag&gt;</div>
+<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;: <span class="keyword">public</span> NumpyArrayTraits&lt;N, TinyVector&lt;T, M&gt;, StridedArrayTag&gt;</div>
+<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;{</div>
+<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;    <span class="keyword">typedef</span> NumpyArrayTraits&lt;N, TinyVector&lt;T, M&gt;, StridedArrayTag&gt; BaseType;</div>
+<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> BaseType::value_type value_type;</div>
+<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> BaseType::ValuetypeTraits ValuetypeTraits;</div>
+<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;</div>
+<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isShapeCompatible(PyArrayObject * array) <span class="comment">/* obj must not be NULL */</span></div>
+<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;    {</div>
+<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;        PyObject * obj = (PyObject *)array;</div>
+<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;        <span class="keywordtype">int</span> ndim = PyArray_NDIM(array);</div>
+<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;</div>
+<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;         <span class="comment">// We need an extra channel axis.</span></div>
+<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;        <span class="keywordflow">if</span>(ndim != N+1)</div>
+<div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;</div>
+<div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;        <span class="keywordtype">long</span> channelIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;channelIndex&quot;</span>, ndim);</div>
+<div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160;        <span class="keywordtype">long</span> majorIndex = pythonGetAttr(obj, <span class="stringliteral">&quot;innerNonchannelIndex&quot;</span>, ndim);</div>
+<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;        npy_intp * strides = PyArray_STRIDES(array);</div>
+<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;</div>
+<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;        <span class="keywordflow">if</span>(majorIndex &lt; ndim)</div>
+<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;        {</div>
+<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;            <span class="comment">// We have axistags, but no channel axis =&gt; cannot be a TinyVector image</span></div>
+<div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;            <span class="keywordflow">if</span>(channelIndex == ndim)</div>
+<div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;</div>
+<div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;            <span class="comment">// We have an explicit channel axis =&gt; shapes and strides must match</span></div>
+<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;            <span class="keywordflow">return</span> PyArray_DIM(array, channelIndex) == M &amp;&amp;</div>
+<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;                   strides[channelIndex] == <span class="keyword">sizeof</span>(T) &amp;&amp;</div>
+<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;                   strides[majorIndex] == <span class="keyword">sizeof</span>(TinyVector&lt;T, M&gt;);</div>
 <div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;</div>
-<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;<span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N, <span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;<span class="keyword">struct </span>NumpyArrayTraits&lt;N, RGBValue&lt;T&gt;, StridedArrayTag&gt;</div>
-<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;: <span class="keyword">public</span> NumpyArrayTraits&lt;N, TinyVector&lt;T, 3&gt;, StridedArrayTag&gt;</div>
-<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;{</div>
-<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;    <span class="keyword">typedef</span> T dtype;</div>
-<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;    <span class="keyword">typedef</span> RGBValue&lt;T&gt; value_type;</div>
-<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;    <span class="keyword">typedef</span> NumpyArrayValuetypeTraits&lt;T&gt; ValuetypeTraits;</div>
-<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;};</div>
-<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;</div>
-<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;<span class="comment">/********************************************************/</span></div>
+<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;</div>
+<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;        }</div>
+<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;        {</div>
+<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;            <span class="comment">// we have no axistags =&gt; we assume that the channel axis is last</span></div>
+<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;            <span class="keywordflow">return</span> PyArray_DIM(array, N) == M &amp;&amp;</div>
+<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;                   strides[N] == <span class="keyword">sizeof</span>(T) &amp;&amp;</div>
+<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;                   strides[0] == <span class="keyword">sizeof</span>(TinyVector&lt;T, M&gt;);</div>
+<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;        }</div>
+<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;    }</div>
 <div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;</div>
-<div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;<span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N, <span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;<span class="keyword">struct </span>NumpyArrayTraits&lt;N, RGBValue&lt;T&gt;, UnstridedArrayTag&gt;</div>
-<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;: <span class="keyword">public</span> NumpyArrayTraits&lt;N, RGBValue&lt;T&gt;, StridedArrayTag&gt;</div>
-<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;{</div>
-<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;    <span class="keyword">typedef</span> NumpyArrayTraits&lt;N, TinyVector&lt;T, 3&gt;, UnstridedArrayTag&gt; UnstridedTraits;</div>
-<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;    <span class="keyword">typedef</span> NumpyArrayTraits&lt;N, RGBValue&lt;T&gt;, StridedArrayTag&gt; BaseType;</div>
-<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> BaseType::value_type value_type;</div>
-<div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> BaseType::ValuetypeTraits ValuetypeTraits;</div>
-<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;</div>
-<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isShapeCompatible(PyArrayObject * obj) <span class="comment">/* obj must not be NULL */</span></div>
-<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;    {</div>
-<div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;        <span class="keywordflow">return</span> UnstridedTraits::isShapeCompatible(obj);</div>
-<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;    }</div>
-<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;</div>
-<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isPropertyCompatible(PyArrayObject * obj) <span class="comment">/* obj must not be NULL */</span></div>
-<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;    {</div>
-<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;        <span class="keywordflow">return</span> UnstridedTraits::isPropertyCompatible(obj);</div>
-<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;    }</div>
-<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;};</div>
-<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;</div>
-<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;} <span class="comment">// namespace vigra</span></div>
-<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;</div>
-<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;<span class="preprocessor">#endif // VIGRA_NUMPY_ARRAY_TRAITS_HXX</span></div>
+<div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isPropertyCompatible(PyArrayObject * obj) <span class="comment">/* obj must not be NULL */</span></div>
+<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;    {</div>
+<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;        <span class="keywordflow">return</span> isShapeCompatible(obj) &amp;&amp; BaseType::isValuetypeCompatible(obj);</div>
+<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;    }</div>
+<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;};</div>
+<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;</div>
+<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;<span class="comment">/********************************************************/</span></div>
+<div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160;</div>
+<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;<span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N, <span class="keyword">class</span> T&gt;</div>
+<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;<span class="keyword">struct </span>NumpyArrayTraits&lt;N, RGBValue&lt;T&gt;, StridedArrayTag&gt;</div>
+<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;: <span class="keyword">public</span> NumpyArrayTraits&lt;N, TinyVector&lt;T, 3&gt;, StridedArrayTag&gt;</div>
+<div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;{</div>
+<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;    <span class="keyword">typedef</span> T dtype;</div>
+<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;    <span class="keyword">typedef</span> RGBValue&lt;T&gt; value_type;</div>
+<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;    <span class="keyword">typedef</span> NumpyArrayValuetypeTraits&lt;T&gt; ValuetypeTraits;</div>
+<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;};</div>
+<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;</div>
+<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;<span class="comment">/********************************************************/</span></div>
+<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;</div>
+<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;<span class="keyword">template</span>&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> N, <span class="keyword">class</span> T&gt;</div>
+<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;<span class="keyword">struct </span>NumpyArrayTraits&lt;N, RGBValue&lt;T&gt;, UnstridedArrayTag&gt;</div>
+<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;: <span class="keyword">public</span> NumpyArrayTraits&lt;N, RGBValue&lt;T&gt;, StridedArrayTag&gt;</div>
+<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;{</div>
+<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;    <span class="keyword">typedef</span> NumpyArrayTraits&lt;N, TinyVector&lt;T, 3&gt;, UnstridedArrayTag&gt; UnstridedTraits;</div>
+<div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;    <span class="keyword">typedef</span> NumpyArrayTraits&lt;N, RGBValue&lt;T&gt;, StridedArrayTag&gt; BaseType;</div>
+<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> BaseType::value_type value_type;</div>
+<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> BaseType::ValuetypeTraits ValuetypeTraits;</div>
+<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;</div>
+<div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isShapeCompatible(PyArrayObject * obj) <span class="comment">/* obj must not be NULL */</span></div>
+<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;    {</div>
+<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;        <span class="keywordflow">return</span> UnstridedTraits::isShapeCompatible(obj);</div>
+<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;    }</div>
+<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;</div>
+<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> isPropertyCompatible(PyArrayObject * obj) <span class="comment">/* obj must not be NULL */</span></div>
+<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;    {</div>
+<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;        <span class="keywordflow">return</span> UnstridedTraits::isPropertyCompatible(obj);</div>
+<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;    }</div>
+<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;};</div>
+<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;</div>
+<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;} <span class="comment">// namespace vigra</span></div>
+<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;</div>
+<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;<span class="preprocessor">#endif // VIGRA_NUMPY_ARRAY_TRAITS_HXX</span></div>
 <div class="ttc" id="group__MathFunctions_html_ga8686fee88c6f46f3e19a76f00826dc10"><div class="ttname"><a href="group__MathFunctions.html#ga8686fee88c6f46f3e19a76f00826dc10">vigra::applyPermutation</a></div><div class="ttdeci">void applyPermutation(IndexIterator index_first, IndexIterator index_last, InIterator in, OutIterator out)</div><div class="ttdoc">Sort an array according to the given index permutation. </div><div class="ttdef"><b>Definition:</b> algorithm.hxx:456</div></div>
 <div class="ttc" id="group__MathFunctions_html_gad4ed6110df5e4258d0a4541bcf85c762"><div class="ttname"><a href="group__MathFunctions.html#gad4ed6110df5e4258d0a4541bcf85c762">vigra::linearSequence</a></div><div class="ttdeci">void linearSequence(Iterator first, Iterator last, Value start, Value step)</div><div class="ttdoc">Fill an array with a sequence of numbers. </div><div class="ttdef"><b>Definition:</b> algorithm.hxx:208</div></div>
 </div><!-- fragment --></div><!-- contents -->
@@ -919,7 +938,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.11.0 (Thu Mar 17 2016)
+vigra 1.11.1 (Fri May 19 2017)
 </i>
 </tr>
 </table>
