@@ -44,6 +44,14 @@ namespace python = boost::python;
 namespace vigra
 {
 
+// workaround for compiler bug in VS 2015 (compiler fails to match the template
+// function get_pointer() at line 20 of boost/get_pointer.hpp)
+namespace acc
+{
+	inline PythonRegionFeatureAccumulator const volatile *
+    get_pointer(PythonRegionFeatureAccumulator const volatile * p) { return p; }
+}
+
 // Helper functions for stringification of macro string constants
 #define STR(s) #s
 #define XSTR(s) s
@@ -95,7 +103,7 @@ extractConvexHullFeatures(NumpyArray<N, Singleband<T> > const & labels,
     TinyVector<npy_intp, N> permutation = labels.template permuteLikewise<N>();
 
     AccumulatorChainArray<
-            CoupledArrays<N, T>, 
+            CoupledArrays<N, T>,
             Select<ConvexHullFeatures, DataArg<1>, LabelArg<1> > > acc;
 
     MultiArrayIndex ignored_label = -1;
@@ -212,14 +220,14 @@ pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T> > const & labels,
 
     {
         PyAllowThreads _pythread;
-        
-        extractSkeletonFeatures(labels, features, 
+
+        extractSkeletonFeatures(labels, features,
                                 SkeletonOptions().pruneSalienceRelative(pruning_threshold));
     }
-    
+
     int size = features.size();
     python::dict res;
-    
+
     #define VIGRA_SKELETON_FEATURE(TYPE, NAME, ATTRIBUTE) \
     { \
         NumpyArray<1, TYPE> array((Shape1(size))); \
@@ -229,16 +237,16 @@ pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T> > const & labels,
         } \
         res[XSTR(NAME)] = array; \
     }
-    
+
     VIGRA_SKELETON_FEATURE(double, VIGRA_SKELETON_FEATURE_DIAMETER, diameter)
     VIGRA_SKELETON_FEATURE(double, VIGRA_SKELETON_FEATURE_EUCLIDEAN_DIAMETER, euclidean_diameter)
     VIGRA_SKELETON_FEATURE(double, VIGRA_SKELETON_FEATURE_TOTAL_LENGTH, total_length)
     VIGRA_SKELETON_FEATURE(double, VIGRA_SKELETON_FEATURE_AVERAGE_LENGTH, average_length)
     VIGRA_SKELETON_FEATURE(npy_uint32, VIGRA_SKELETON_FEATURE_BRANCH_COUNT, branch_count)
     VIGRA_SKELETON_FEATURE(npy_uint32,VIGRA_SKELETON_FEATURE_HOLE_COUNT, hole_count)
-    
+
     #undef VIGRA_SKELETON_FEATURE
-        
+
     #define VIGRA_SKELETON_VECTOR_FEATURE(NAME, ATTRIBUTE) \
     { \
         NumpyArray<2, double> array(Shape2(size, N)); \
@@ -249,11 +257,11 @@ pyExtractSkeletonFeatures(NumpyArray<N, Singleband<T> > const & labels,
         } \
         res[XSTR(NAME)] = array; \
     }
-    
+
     VIGRA_SKELETON_VECTOR_FEATURE(VIGRA_SKELETON_VECTOR_FEATURE_CENTER, center)
     VIGRA_SKELETON_VECTOR_FEATURE(VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_1, terminal1)
     VIGRA_SKELETON_VECTOR_FEATURE(VIGRA_SKELETON_VECTOR_FEATURE_TERMINAL_2, terminal2)
-    
+
     #undef VIGRA_SKELETON_VECTOR_FEATURE
 
     return res;
@@ -265,20 +273,20 @@ void defineSinglebandRegionAccumulators()
     using namespace vigra::acc;
 
     docstring_options doc_options(true, true, false);
-    typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
+    typedef Select<Count, Mean, Variance, Skewness, Kurtosis,
                    Minimum, Maximum, StandardQuantiles<GlobalRangeHistogram<0> >,
                    RegionCenter, RegionRadii, RegionAxes,
                    Weighted<RegionCenter>, Weighted<RegionRadii>, Weighted<RegionAxes>,
-                   Select<Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight>, 
-                          Principal<Coord<Skewness> >, Principal<Coord<Kurtosis> >, 
+                   Select<Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight>,
+                          Principal<Coord<Skewness> >, Principal<Coord<Kurtosis> >,
                           Principal<Weighted<Coord<Skewness> > >, Principal<Weighted<Coord<Kurtosis> > > >,
                    DataArg<1>, WeightArg<1>, LabelArg<2>
                    > ScalarRegionAccumulators;
     definePythonAccumulatorArraySingleband<2, float, ScalarRegionAccumulators>();
     definePythonAccumulatorArraySingleband<3, float, ScalarRegionAccumulators>();
-    
+
 #ifdef WITH_LEMON
-    def("extract2DConvexHullFeatures", 
+    def("extract2DConvexHullFeatures",
         registerConverters(&extractConvexHullFeatures<2, npy_uint32>),
         (   arg("labels"),
             arg("ignoreLabel")=python::object(),
@@ -309,7 +317,7 @@ void defineSinglebandRegionAccumulators()
         "   - HullCenter : center of the convex hull\n\n"
         "   - DefectCenter : center of the defects\n\n");
 
-    def("extract3DConvexHullFeatures", 
+    def("extract3DConvexHullFeatures",
         registerConverters(&extractConvexHullFeatures<3, npy_uint32>),
         (   arg("labels"),
             arg("ignoreLabel")=python::object(),
@@ -341,7 +349,7 @@ void defineSinglebandRegionAccumulators()
         "   - DefectCenter : center of the defects\n\n");
 #endif // WITH_LEMON
 
-    def("extractSkeletonFeatures", 
+    def("extractSkeletonFeatures",
          registerConverters(&pyExtractSkeletonFeatures<2, npy_uint32>),
          (arg("labels"),
           arg("pruning_threshold")=0.2,
