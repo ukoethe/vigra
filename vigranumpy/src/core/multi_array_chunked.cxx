@@ -54,6 +54,97 @@ namespace python = boost::python;
 
 namespace vigra {
 
+// workaround for compiler bug in VS 2015 (compiler fails to match the template
+// function get_pointer() at line 20 of boost/get_pointer.hpp)
+inline ChunkedArrayHDF5<1, float, class std::allocator<float> > const volatile *
+get_pointer(ChunkedArrayHDF5<1, float, class std::allocator<float> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<1, unsigned long, class std::allocator<unsigned long> > const volatile *
+get_pointer(ChunkedArrayHDF5<1, unsigned long, class std::allocator<unsigned long> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<1, unsigned char, class std::allocator<unsigned char> > const volatile *
+get_pointer(ChunkedArrayHDF5<1, unsigned char, class std::allocator<unsigned char> > const volatile * p) { return p; }
+
+
+inline ChunkedArrayHDF5<2, float, class std::allocator<float> > const volatile *
+get_pointer(ChunkedArrayHDF5<2, float, class std::allocator<float> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<2, unsigned char, class std::allocator<unsigned char> > const volatile *
+get_pointer(ChunkedArrayHDF5<2, unsigned char, class std::allocator<unsigned char> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<2, unsigned long, class std::allocator<unsigned long> > const volatile *
+get_pointer(ChunkedArrayHDF5<2, unsigned long, class std::allocator<unsigned long> > const volatile * p) { return p; }
+
+
+inline ChunkedArrayHDF5<3, float, class std::allocator<float> > const volatile *
+get_pointer(ChunkedArrayHDF5<3, float, class std::allocator<float> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<3, unsigned char, class std::allocator<unsigned char> > const volatile *
+get_pointer(ChunkedArrayHDF5<3, unsigned char, class std::allocator<unsigned char> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<3, unsigned long, class std::allocator<unsigned long> > const volatile *
+get_pointer(ChunkedArrayHDF5<3, unsigned long, class std::allocator<unsigned long> > const volatile * p) { return p; }
+
+
+inline ChunkedArrayHDF5<4, float, class std::allocator<float> > const volatile *
+get_pointer(ChunkedArrayHDF5<4, float, class std::allocator<float> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<4, unsigned char, class std::allocator<unsigned char> > const volatile *
+get_pointer(ChunkedArrayHDF5<4, unsigned char, class std::allocator<unsigned char> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<4, unsigned long, class std::allocator<unsigned long> > const volatile *
+get_pointer(ChunkedArrayHDF5<4, unsigned long, class std::allocator<unsigned long> > const volatile * p) { return p; }
+
+
+inline ChunkedArrayHDF5<5, float, class std::allocator<float> > const volatile *
+get_pointer(ChunkedArrayHDF5<5, float, class std::allocator<float> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<5, unsigned char, class std::allocator<unsigned char> > const volatile *
+get_pointer(ChunkedArrayHDF5<5, unsigned char, class std::allocator<unsigned char> > const volatile * p) { return p; }
+
+inline ChunkedArrayHDF5<5, unsigned long, class std::allocator<unsigned long> > const volatile *
+get_pointer(ChunkedArrayHDF5<5, unsigned long, class std::allocator<unsigned long> > const volatile * p) { return p; }
+
+
+inline ChunkedArray<2, float> const volatile *
+get_pointer(ChunkedArray<2, float> const volatile * p) { return p; }
+
+inline ChunkedArray<2, unsigned long> const volatile *
+get_pointer(ChunkedArray<2, unsigned long> const volatile * p) { return p; }
+
+inline ChunkedArray<2, unsigned char> const volatile *
+get_pointer(ChunkedArray<2, unsigned char> const volatile * p) { return p; }
+
+
+inline ChunkedArray<3, float> const volatile *
+get_pointer(ChunkedArray<3, float> const volatile * p) { return p; }
+
+inline ChunkedArray<3, unsigned long> const volatile *
+get_pointer(ChunkedArray<3, unsigned long> const volatile * p) { return p; }
+
+inline ChunkedArray<3, unsigned char> const volatile *
+get_pointer(ChunkedArray<3, unsigned char> const volatile * p) { return p; }
+
+
+inline ChunkedArray<4, float> const volatile *
+get_pointer(ChunkedArray<4, float> const volatile * p) { return p; }
+
+inline ChunkedArray<4, unsigned long> const volatile *
+get_pointer(ChunkedArray<4, unsigned long> const volatile * p) { return p; }
+
+inline ChunkedArray<4, unsigned char> const volatile *
+get_pointer(ChunkedArray<4, unsigned char> const volatile * p) { return p; }
+
+
+inline ChunkedArray<5, float> const volatile *
+get_pointer(ChunkedArray<5, float> const volatile * p) { return p; }
+
+inline ChunkedArray<5, unsigned long> const volatile *
+get_pointer(ChunkedArray<5, unsigned long> const volatile * p) { return p; }
+
+inline ChunkedArray<5, unsigned char> const volatile *
+get_pointer(ChunkedArray<5, unsigned char> const volatile * p) { return p; }
+
 template <unsigned int N, class T>
 TinyVector<MultiArrayIndex, N>
 ChunkedArray_shape(ChunkedArray<N, T> const & array)

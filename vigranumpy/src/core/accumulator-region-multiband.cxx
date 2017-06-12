@@ -43,14 +43,22 @@ namespace python = boost::python;
 namespace vigra
 {
 
+// workaround for compiler bug in VS 2015 (compiler fails to match the template
+// function get_pointer() at line 20 of boost/get_pointer.hpp)
+namespace acc
+{
+	inline PythonRegionFeatureAccumulator const volatile *
+    get_pointer(PythonRegionFeatureAccumulator const volatile * p) { return p; }
+}
+
 void defineMultibandRegionAccumulators()
 {
     using namespace python;
     using namespace vigra::acc;
 
     docstring_options doc_options(true, true, false);
-    
-    typedef Select<Count, Mean, Variance, Skewness, Kurtosis, Covariance, 
+
+    typedef Select<Count, Mean, Variance, Skewness, Kurtosis, Covariance,
                    Principal<Variance>, Principal<Skewness>, Principal<Kurtosis>,
                    Principal<CoordinateSystem>,
                    Minimum, Maximum, Principal<Minimum>, Principal<Maximum>,
@@ -61,7 +69,7 @@ void defineMultibandRegionAccumulators()
 
     definePythonAccumulatorArrayMultiband<3, float, VectorRegionAccumulators>();
     definePythonAccumulatorArrayMultiband<4, float, VectorRegionAccumulators>();
-    
+
     definePythonAccumulatorArray<2, TinyVector<float, 3>, VectorRegionAccumulators>();
     definePythonAccumulatorArray<3, TinyVector<float, 3>, VectorRegionAccumulators>();
 }
