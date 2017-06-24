@@ -134,7 +134,7 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
         get_filename_component(PYTHON_PATH ${PYTHON_EXECUTABLE} PATH)
         get_filename_component(PYTHON_EXE  ${PYTHON_EXECUTABLE} NAME)
         SET(EXTRA_PATH  "${PYTHON_PATH}${PATHSEP}${EXTRA_PATH}")
-        SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXE} -c \"import nose; nose.main()\" . %CONFIGURATION%")
+        SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXE} -c \"import nose; nose.main()\" .")
         SET(VIGRA_TEST_SCRIPT     "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.bat")
         CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.bat.in
                        ${VIGRA_TEST_SCRIPT}
