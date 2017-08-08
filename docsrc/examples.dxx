@@ -169,5 +169,5 @@
 /** \example total_variation.cxx
        Smooth an image with Total Variation (TV) regularization (standard ROF model, anisotropic, second order)<br>
        Usage: <TT>example_total_variation</TT> reads a given parameter file (see tv.par, aniso_tv.par, secondo_oder_tv.par 
-       in the examples subfolder) and performes a smoothing with TV regularization with the parameters given in this file.
+       in the examples subfolder) and performs a smoothing with TV regularization with the parameters given in this file.
 */
