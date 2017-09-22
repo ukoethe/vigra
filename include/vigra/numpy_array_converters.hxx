@@ -90,13 +90,12 @@ NumpyArrayConverter<NumpyArray<N, T, Stride> >::NumpyArrayConverter()
 
     converter::registration const * reg = converter::registry::query(type_id<ArrayType>());
 
-    // register the to_python_converter only once
-    // FIXME: I'm not sure if this is correct.
+    // register the converters only once
     if(!reg || !reg->rvalue_chain)
     {
         to_python_converter<ArrayType, NumpyArrayConverter>();
+        converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
     }
-    converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
 }
 
 template <unsigned int N, class T, class Stride>
@@ -808,16 +807,16 @@ multidef(char const* python_name, Functor const & f, Args const& args, const cha
 template <class Functor>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
-def(char const* python_name, Functor const & f)
+def(char const*, Functor const &)
 {
-    static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value, 
+    static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value,
                   "def(): use multidef() to export multiple overloads.");
 }
 
 template <class Functor, class Args>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
-def(char const* python_name, Functor const & f, Args const& args)
+def(char const*, Functor const &, Args const& )
 {
     static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value,
                   "def(): use multidef() to export multiple overloads.");
@@ -826,7 +825,7 @@ def(char const* python_name, Functor const & f, Args const& args)
 template <class Functor>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
-def(char const* python_name, Functor const & f, const char * help)
+def(char const*, Functor const &, const char *)
 {
     static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value,
                   "def(): use multidef() to export multiple overloads.");
@@ -835,7 +834,7 @@ def(char const* python_name, Functor const & f, const char * help)
 template <class Functor, class Args>
 inline typename std::enable_if<std::is_base_of<PythonMultidefFunctor, Functor>::value,
                                void>::type
-def(char const* python_name, Functor const & f, Args const& args, const char * help)
+def(char const*, Functor const &, Args const&, const char *)
 {
     static_assert(!std::is_base_of<PythonMultidefFunctor, Functor>::value,
                   "def(): use multidef() to export multiple overloads.");

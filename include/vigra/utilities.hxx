@@ -46,6 +46,7 @@
 #include <string>
 #include <sstream>
 #include <cctype>
+#include <tuple>
 
 /*! \file */
 
@@ -156,9 +157,9 @@ struct FinallyImpl
     /** Emulate the 'finally' keyword as known from Python and other languages.
 
         This macro improves upon the famous
-        <a href="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">Resource Acquisition Is Initialization</a> idiom, where a resource (e.g. heap memory or a mutex) is automatically free'ed when program execution leaves the current scope. Normally, this is implemented by calling a suitable function in the destructor of a dedicated helper class (e.g. <tt>std::unique_ptr</tt> or <tt>std::lock_guard<std::mutex></tt>).
+        <a href="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">Resource Acquisition Is Initialization</a> idiom, where a resource (e.g. heap memory or a mutex) is automatically free'ed when program execution leaves the current scope. This is normally achieved by placing a call which  releases the resource into the destructor of a dedicated helper class (e.g. <tt>std::unique_ptr</tt> or <tt>std::lock_guard<std::mutex></tt>).
 
-        Traditionally, a separate helper class has to be implemented for each kind of resource to be handled. In contrast, the macro <tt>VIGRA_FINALLY</tt> creates such a class on the fly by means of an embedded lambda expression.
+        Traditionally, a separate helper class is needed for every type of resource to be handled. In contrast, the macro <tt>VIGRA_FINALLY</tt> creates such a class on the fly by means of an embedded lambda expression.
 
         <b>Usage:</b>
 
@@ -201,7 +202,7 @@ struct FinallyImpl
         assert(i == 5);               // 'finally' code was executed in reversed order at end-of-scope
         \endcode
 
-        This idea was popularized by Marko Tintor in "<a href="http://blog.memsql.com/c-error-handling-with-auto/">The Auto Macro: A Clean Approach to C++ Error Handling</a>".
+        This idea was popularized by Marko Tintor in <a href="http://blog.memsql.com/c-error-handling-with-auto/">The Auto Macro: A Clean Approach to C++ Error Handling</a>.
     */
 #define VIGRA_FINALLY(destructor) \
     VIGRA_FINALLY_IMPL(destructor, __COUNTER__)
@@ -216,6 +217,77 @@ ostream & operator<<(ostream & s, std::pair<T1, T2> const & p)
 }
 
 }
+
+namespace vigra
+{
+namespace detail
+{
+    template <typename TPL, size_t N, typename FUNCTOR>
+    struct for_each_in_tuple_impl
+    {
+        typedef for_each_in_tuple_impl<TPL, N-1, FUNCTOR> ForEachRecursion;
+        
+        void operator()(TPL && t, FUNCTOR && f) const
+        {
+            ForEachRecursion()(std::forward<TPL>(t), std::forward<FUNCTOR>(f));
+            f(std::get<N-1>(std::forward<TPL>(t)));
+        }
+    };
+    
+    template <typename TPL, typename FUNCTOR>
+    struct for_each_in_tuple_impl<TPL, 0, FUNCTOR>
+    {
+        void operator()(TPL && t, FUNCTOR && f) const
+        {}
+    };
+} // namespace detail
+
+/**
+ * The for_each_in_tuple function calls the functor f on all elements of the tuple t.
+ * For each element type in the tuple, the functor must have an appropriate overload of operator().
+ * 
+ * Example:
+ * \code
+ * #include <iostream>
+ * #include <tuple>
+ * #include <vigra/utilities.hxx>
+ * 
+ * struct print
+ * {
+ *     template <typename T>
+ *     void operator()(T const & t) const
+ *     {
+ *         std::cout << t << std::endl;
+ *     }
+ * };
+ * 
+ * struct add_one
+ * {
+ *     template <typename T>
+ *     void operator()(T & t) const
+ *     {
+ *         t += 1;
+ *     }
+ * };
+ * 
+ * int main()
+ * {
+ *     std::tuple<int, double, size_t> tpl(-5, 0.4, 10);
+ *     vigra::for_each_in_tuple(tpl, add_one());
+ *     vigra::for_each_in_tuple(tpl, print());
+ * }
+ * \endcode
+ */
+template <typename TPL, typename FUNCTOR>
+void for_each_in_tuple(TPL && t, FUNCTOR && f)
+{
+    typedef typename std::decay<TPL>::type UNQUALIFIED_TPL;
+    typedef detail::for_each_in_tuple_impl<TPL, std::tuple_size<UNQUALIFIED_TPL>::value, FUNCTOR> ForEachImpl;
+    
+    ForEachImpl()(std::forward<TPL>(t), std::forward<FUNCTOR>(f));
+}
+
+} // namespace vigra
 
 /** \page Utilities Utilities
     Basic helper functionality needed throughout.

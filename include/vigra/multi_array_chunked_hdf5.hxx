@@ -55,6 +55,10 @@ namespace vigra {
 */
 //@{
 
+/** \weakgroup ParallelProcessing
+    \sa ChunkedArrayHDF5
+*/
+
 /** Implement ChunkedArray as a chunked dataset in an HDF5 file.
 
     <b>\#include</b> \<vigra/multi_array_chunked_hdf5.hxx\> <br/>
@@ -222,7 +226,9 @@ class ChunkedArrayHDF5
                      HDF5File::OpenMode mode = HDF5File::ReadOnly,
                      ChunkedArrayOptions const & options = ChunkedArrayOptions(),
                      Alloc const & alloc = Alloc())
-    : ChunkedArray<N, T>(shape_type(), shape_type(), options),
+    : ChunkedArray<N, T>(shape_type(),
+            ceilPower2<N>(shape_type(file.getChunkShape(dataset).begin())),
+            options),
       file_(file),
       dataset_name_(dataset),
       dataset_(),
@@ -230,6 +236,21 @@ class ChunkedArrayHDF5
       alloc_(alloc)
     {
         init(mode);
+    }
+
+
+    // copy constructor
+    ChunkedArrayHDF5(const ChunkedArrayHDF5 & src)
+    : ChunkedArray<N, T>(src),
+    file_(src.file_),
+    dataset_name_(src.dataset_name_),
+    compression_(src.compression_),
+    alloc_(src.alloc_)
+    {
+        if( file_.isReadOnly() )
+            init(HDF5File::ReadOnly);
+        else
+            init(HDF5File::ReadWrite);
     }
 
     void init(HDF5File::OpenMode mode)
@@ -264,12 +285,12 @@ class ChunkedArrayHDF5
             // H5Pset_chunk_cache (dapl, rdcc_nslots, rdcc_nbytes, rdcc_w0);
             // Chunk cache size (rdcc_nbytes) should be large
             // enough to hold all the chunks in a selection
-            // • If this is not possible, it may be best to disable chunk
+            // * If this is not possible, it may be best to disable chunk
             // caching altogether (set rdcc_nbytes to 0)
-            // • rdcc_slots should be a prime number that is at
+            // * rdcc_slots should be a prime number that is at
             // least 10 to 100 times the number of chunks that can fit
             // into rdcc_nbytes
-            // • rdcc_w0 should be set to 1 if chunks that have been
+            // * rdcc_w0 should be set to 1 if chunks that have been
             // fully read/written will never be read/written again
             //
             // the above may be WRONG in general - it may only apply if the
@@ -301,7 +322,7 @@ class ChunkedArrayHDF5
             {
                 vigra_precondition(fileShape.size() == N+1,
                     "ChunkedArrayHDF5(file, dataset): dataset has wrong dimension.");
-                vigra_precondition(fileShape[0] == TypeTraits::numberOfBands(),
+                vigra_precondition(fileShape[0] == static_cast<unsigned>(TypeTraits::numberOfBands()),
                     "ChunkedArrayHDF5(file, dataset): dataset has wrong number of bands.");
                 shape_type shape(fileShape.begin()+1);
                 if(this->size() > 0)

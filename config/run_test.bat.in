@@ -5,7 +5,11 @@ if [%1] NEQ [] (
     set CONFIGURATION=Release
 )
 
-echo Testing configuration '%CONFIGURATION%'
+if "%CONFIGURATION%" EQU "." (
+    echo Testing configuration '@CMAKE_BUILD_TYPE@'
+) else (
+    echo Testing configuration '%CONFIGURATION%'
+)
 
 set PATH=@EXTRA_PATH@%PATH%
 

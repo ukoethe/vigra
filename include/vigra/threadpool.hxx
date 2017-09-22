@@ -48,7 +48,7 @@
 namespace vigra
 {
 
-/** \addtogroup ParallelProcessing Functions and classes for parallel processing.
+/** \addtogroup ParallelProcessing
 */
 
 //@{
@@ -382,6 +382,9 @@ ThreadPool::enqueue(F&& f)
 /********************************************************/
 
 // nItems must be either zero or std::distance(iter, end).
+// NOTE: the redundancy of nItems and iter,end here is due to the fact that, for forward iterators,
+// computing the distance from iterators is costly, and, for input iterators, we might not know in advance
+// how many items there are  (e.g., stream iterators).
 template<class ITER, class F>
 inline void parallel_foreach_impl(
     ThreadPool & pool,
@@ -483,7 +486,7 @@ inline void parallel_foreach_impl(
     F && f,
     std::input_iterator_tag
 ){
-    size_t num_items = 0;
+    std::ptrdiff_t num_items = 0;
     std::vector<threading::future<void> > futures;
     for (; iter != end; ++iter)
     {
@@ -511,7 +514,7 @@ inline void parallel_foreach_single_thread(
     F && f,
     const std::ptrdiff_t nItems = 0
 ){
-    size_t n = 0;
+    std::ptrdiff_t n = 0;
     for (; begin != end; ++begin)
     {
         f(0, *begin);
@@ -521,26 +524,6 @@ inline void parallel_foreach_single_thread(
 }
 
 /** \brief Apply a functor to all items in a range in parallel.
-
-    Create a thread pool (or use an existing one) to apply the functor \arg f
-    to all items in the range <tt>[begin, end)</tt> in parallel. \arg f must
-    be callable with two arguments of type <tt>size_t</tt> and <tt>T</tt>, where
-    the first argument is the thread index (starting at 0) and T is convertible
-    from the iterator's <tt>reference_type</tt> (i.e. the result of <tt>*begin</tt>).
-
-    If the iterators are forward iterators (<tt>std::forward_iterator_tag</tt>), you
-    can provide the optional argument <tt>nItems</tt> to avoid the a
-    <tt>std::distance(begin, end)</tt> call to compute the range's length.
-
-    Parameter <tt>nThreads</tt> controls the number of threads. <tt>parallel_foreach</tt>
-    will split the work into about three times as many parallel tasks.
-    If <tt>nThreads = ParallelOptions::Auto</tt>, the number of threads is set to
-    the machine default (<tt>std::thread::hardware_concurrency()</tt>).
-
-    If <tt>nThreads = 0</tt>, the function will not use threads,
-    but will call the functor sequentially. This can also be enforced by setting the
-    preprocessor flag <tt>VIGRA_SINGLE_THREADED</tt>, ignoring the value of
-    <tt>nThreads</tt> (useful for debugging).
 
     <b> Declarations:</b>
 
@@ -575,6 +558,26 @@ inline void parallel_foreach_single_thread(
                               F && f);
     }
     \endcode
+
+    Create a thread pool (or use an existing one) to apply the functor \arg f
+    to all items in the range <tt>[begin, end)</tt> in parallel. \arg f must
+    be callable with two arguments of type <tt>size_t</tt> and <tt>T</tt>, where
+    the first argument is the thread index (starting at 0) and T is convertible
+    from the iterator's <tt>reference_type</tt> (i.e. the result of <tt>*begin</tt>).
+
+    If the iterators are forward iterators (<tt>std::forward_iterator_tag</tt>), you
+    can provide the optional argument <tt>nItems</tt> to avoid the a
+    <tt>std::distance(begin, end)</tt> call to compute the range's length.
+
+    Parameter <tt>nThreads</tt> controls the number of threads. <tt>parallel_foreach</tt>
+    will split the work into about three times as many parallel tasks.
+    If <tt>nThreads = ParallelOptions::Auto</tt>, the number of threads is set to
+    the machine default (<tt>std::thread::hardware_concurrency()</tt>).
+
+    If <tt>nThreads = 0</tt>, the function will not use threads,
+    but will call the functor sequentially. This can also be enforced by setting the
+    preprocessor flag <tt>VIGRA_SINGLE_THREADED</tt>, ignoring the value of
+    <tt>nThreads</tt> (useful for debugging).
 
     <b>Usage:</b>
 

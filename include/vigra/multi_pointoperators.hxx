@@ -615,7 +615,7 @@ inline void
 copyMultiArray(MultiArrayView<N, T1, S1> const & source,
                MultiArrayView<N, T2, S2> dest)
 {
-    for(int k=0; k<N; ++k)
+    for(unsigned k=0; k<N; ++k)
         vigra_precondition(source.shape(k) == dest.shape(k) || source.shape(k) == 1 || 1 == dest.shape(k),
             "copyMultiArray(): shape mismatch between input and output.");
     if(source.shape() == dest.shape())

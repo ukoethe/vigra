@@ -20,7 +20,7 @@
       <li> Gunnar Kedenburg
       (<a href="mailto:gunnar@haquebright.de">gunnar@haquebright.de</a>)
       completely rewrote the image import/export library and implemented
-      much of the \ref vigra::MultiArray functionality.
+      the initial version of the \ref vigra::MultiArray functionality.
 
       <li> Yevgen Reznichenko
       (<a href="mailto:rezniche@kogs.informatik.uni-hamburg.de">rezniche@kogs.informatik.uni-hamburg.de</a>)
@@ -28,7 +28,7 @@
 
       <li> Christian Dennis Rahn
       (<a href="mailto:rahn@informatik.uni-hamburg.de">rahn@informatik.uni-hamburg.de</a>)
-      implemented much of the \ref MultiArrayConvolutionFilters.
+      implemented initial versions of multi-dimensional convolution filters.
 
       <li> Kasim Terzic, Florian Heinrich and Benjamin Seppke
       implemented image analysis functionality for 3- and higher-dimensional data.
@@ -65,11 +65,29 @@
 
       <li> Benjamin Seppke contributed various \ref Registration "image registration" algorithms.
 
+      <li> John Kirkham figured out how to configure Travis to run tests for Python3 and on OS X.
+
+      <li> Philip Schill implemented version 3 of the Random Forest.
+
+      <li> David St&ouml;ckel contributed the 3D convex hull functionality.
+
       <li> Numerous people reported and fixed bugs and made suggestions.
 </ul>
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.11.0 to 1.11.1</b>
+
+<ul>
+      <li> Added 3D convex hull computation and features (David St&ouml;ckel).
+
+      <li> Added Random Forest version 3, inspired by LEMON's graph API, to simplify customization of RF variants (Philip Schill).
+
+      <li> Improved hierarchical clustering (Cpnstantin Pape).
+
+      <li> Minor improvements and bug fixes in the code and documentation.
+</ul>
 
 <b> Changes from Version 1.10.0 to 1.11.0</b>
 
@@ -88,7 +106,7 @@ Many thanks to all!
 
       <li> Added many \ref Registration "image registration" functions.
 
-      <li> Extended the collection of \ref MultiArrayDistanceTransform "multi-dimensional distance transform" algorithms by vectorial DT, boundary DT, and eccentricity transform.
+      <li> Extended the collection of \ref DistanceTransform "multi-dimensional distance transform" algorithms by vectorial DT, boundary DT, and eccentricity transform.
 
       <li> Added \ref skeletonizeImage(), nonLocalMean(), multi-dimensional integral images.
 
@@ -192,7 +210,7 @@ Many thanks to all!
 
       <li> Added \ref vigra::StridedScanOrderIterator and corresponding \ref vigra::MultiArrayView::begin().
 
-      <li> Extended \ref vigra::MultiArrayView. Added \ref vigra::Shape1 ... \ref vigra::Shape5 convenience typedefs.
+      <li> Extended \ref vigra::MultiArrayView. Added vigra::Shape1 ... vigra::Shape5 convenience typedefs.
 
       <li> Implemented \ref MultiMathModule (arithmetic and algebraic functions for multi-dimensional arrays).
 
@@ -290,7 +308,7 @@ Many thanks to all!
 <ul>
       <li> Added functions for arrays of arbitrary dimensions:
       <ul>
-          <li> \ref MultiArrayDistanceTransform "Euclidean distance transform"
+          <li> \ref DistanceTransform "Euclidean distance transform"
           <li> \ref MultiArrayMorphology "separable morphology"
           <li> \ref resizeMultiArraySplineInterpolation()
       </ul>
@@ -467,8 +485,8 @@ Many thanks to all!
 <b> Changes from Version 1.2.0 to 1.3.0</b>
 
 <ul>
-      <li> Added algorithms for \ref MultiDimensionalArrays :
-           \ref MultiPointoperators and \ref MultiArrayConvolutionFilters
+      <li> Added algorithms for multi-dimensional arrays: see
+           \ref MultiPointoperators and \ref ConvolutionFilters
            and the \link vigra::MultiArrayNavigator navigator utility\endlink.
 
       <li> Extended \ref convolveImage() (non-separable convolution)
@@ -543,7 +561,7 @@ Many thanks to all!
           "metaprogramming.hxx", "tuple.hxx". "utilities.hxx" now includes
           these other files.
 
-      <li> Added \ref MultiDimensionalArrays and \ref VolumeImpex
+      <li> Added multi-dimensional arrays and \ref VolumeImpex
 
       <li> Redesigned \ref vigra::TinyVector, added \ref vigra::TinyVectorView
 </ul>
@@ -589,7 +607,7 @@ Many thanks to all!
       <li> Added \ref FourierTransform "Fourier transform" support,
            and \ref vigra::FFTWComplex "FFTWComplex" complex number type.
 
-      <li> Added convolution convenience functions (see \ref CommonConvolutionFilters).
+      <li> Added convolution convenience functions (see \ref ConvolutionFilters).
 
       <li> Added \ref vigra::IteratorAdaptor template for quick and
            easy generation of iterator adaptors.

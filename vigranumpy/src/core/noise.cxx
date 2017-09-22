@@ -69,7 +69,7 @@ pythonNoiseVarianceEstimation(NumpyArray<2, Singleband<PixelType> > image,
                               double averagingQuantile=0.8,
                               double noiseEstimationQuantile=1.5, 
                               double noiseVarianceInitialGuess=10.0,
-                              NumpyArray<3, Multiband<PixelType> > res=python::object())
+                              NumpyArray<3, Multiband<PixelType> > /*res*/=python::object())
 {
     NoiseNormalizationOptions noiseNormalizationOptions;
     noiseNormalizationOptions
@@ -99,7 +99,7 @@ pythonNoiseVarianceClustering(NumpyArray<2, Singleband<PixelType> > image,
                               double averagingQuantile=0.8,
                               double noiseEstimationQuantile=1.5, 
                               double noiseVarianceInitialGuess=10.0,
-                              NumpyArray<3, Multiband<PixelType> > res=python::object())
+                              NumpyArray<3, Multiband<PixelType> > /*res*/=python::object())
 {
     NoiseNormalizationOptions noiseNormalizationOptions;
     noiseNormalizationOptions

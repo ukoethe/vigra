@@ -215,7 +215,7 @@ VIGRA_ANY_OF_CONVERTIBLE(long double)
         assert(a.cast<double>() == 20.0);
 
         // delete the stored value
-        a.release();
+        a.destroy();
         assert(a.empty());
         assert(a == false);
 
@@ -275,9 +275,9 @@ class Any
 
         /** Delete the contained object (make this 'Any' object empty).
         */
-    void release()
+    void destroy()
     {
-        handle_.release();
+        handle_.reset((detail::AnyHandle*)0);
     }
 
         /** Exchange the value of this object with other's.

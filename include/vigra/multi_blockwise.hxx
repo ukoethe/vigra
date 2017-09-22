@@ -198,7 +198,7 @@ namespace blockwise{
 
         parallel_foreach(options.getNumThreads(),
             beginIter, endIter,
-            [&](const int threadId, const BlockWithBorder bwb)
+            [&](const int /*threadId*/, const BlockWithBorder bwb)
             {
                 // get the input of the block as a view
                 vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin(),
@@ -250,7 +250,7 @@ namespace blockwise{
 
         parallel_foreach(options.getNumThreads(),
             beginIter, endIter,
-            [&](const int threadId, const BlockWithBorder bwb)
+            [&](const int /*threadId*/, const BlockWithBorder bwb)
             {
                 // get the input of the block as a view
                 vigra::MultiArrayView<DIM, T_IN, ST_IN> sourceSub = source.subarray(bwb.border().begin(),
@@ -274,19 +274,19 @@ namespace blockwise{
     public: \
         typedef ConvolutionOptions<DIM> ConvOpt; \
         FUNCTOR_NAME(const ConvOpt & convOpt) \
-        : convOpt_(convOpt){} \
+        : sharedOpt_(convOpt){} \
         template<class S, class D> \
         void operator()(const S & s, D & d)const{ \
-            FUNCTION_NAME(s, d, convOpt_); \
+            FUNCTION_NAME(s, d, sharedOpt_); \
         } \
         template<class S, class D,class SHAPE> \
         void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){ \
-            ConvOpt convOpt(convOpt_); \
-            convOpt.subarray(roiBegin, roiEnd); \
-            FUNCTION_NAME(s, d, convOpt); \
+            ConvOpt localOpt(sharedOpt_); \
+            localOpt.subarray(roiBegin, roiEnd); \
+            FUNCTION_NAME(s, d, localOpt); \
         } \
     private: \
-        ConvOpt  convOpt_; \
+        ConvOpt  sharedOpt_; \
     };
 
 
@@ -306,24 +306,25 @@ namespace blockwise{
     public:
         typedef ConvolutionOptions<DIM> ConvOpt;
         HessianOfGaussianEigenvaluesFunctor(const ConvOpt & convOpt)
-        : convOpt_(convOpt){}
+        : sharedOpt_(convOpt){}
         template<class S, class D>
         void operator()(const S & s, D & d)const{
             typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
             vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(d.shape());
-            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_);
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, sharedOpt_);
             vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, d);
         }
         template<class S, class D,class SHAPE>
         void operator()(const S & s, D & d, const SHAPE & roiBegin, const SHAPE & roiEnd){
             typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
             vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(roiEnd-roiBegin);
-            convOpt_.subarray(roiBegin, roiEnd);
-            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_);
+            ConvOpt localOpt(sharedOpt_);
+            localOpt.subarray(roiBegin, roiEnd);
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, localOpt);
             vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, d);
         }
     private:
-        ConvOpt  convOpt_;
+        ConvOpt  sharedOpt_;
     };
 
     template<unsigned int DIM, unsigned int EV>
@@ -331,14 +332,14 @@ namespace blockwise{
     public:
         typedef ConvolutionOptions<DIM> ConvOpt;
         HessianOfGaussianSelectedEigenvalueFunctor(const ConvOpt & convOpt)
-        : convOpt_(convOpt){}
+        : sharedOpt_(convOpt){}
         template<class S, class D>
         void operator()(const S & s, D & d)const{
             typedef typename vigra::NumericTraits<typename S::value_type>::RealPromote RealType;
 
             // compute the hessian of gaussian and extract eigenvalue
             vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(s.shape());
-            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_);
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, sharedOpt_);
 
             vigra::MultiArray<DIM, TinyVector<RealType, DIM > >  allEigenvalues(s.shape());
             vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, allEigenvalues);
@@ -352,8 +353,9 @@ namespace blockwise{
 
             // compute the hessian of gaussian and extract eigenvalue
             vigra::MultiArray<DIM, TinyVector<RealType, int(DIM*(DIM+1)/2)> >  hessianOfGaussianRes(roiEnd-roiBegin);
-            convOpt_.subarray(roiBegin, roiEnd);
-            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, convOpt_);
+            ConvOpt localOpt(sharedOpt_);
+            localOpt.subarray(roiBegin, roiEnd);
+            vigra::hessianOfGaussianMultiArray(s, hessianOfGaussianRes, localOpt);
 
             vigra::MultiArray<DIM, TinyVector<RealType, DIM > >  allEigenvalues(roiEnd-roiBegin);
             vigra::tensorEigenvaluesMultiArray(hessianOfGaussianRes, allEigenvalues);
@@ -361,7 +363,7 @@ namespace blockwise{
             d = allEigenvalues.bindElementChannel(EV);
         }
     private:
-        ConvOpt  convOpt_;
+        ConvOpt  sharedOpt_;
     };
 
 

@@ -161,7 +161,7 @@ void uncompress(char const * source, std::size_t srcSize,
       case LZ4:
       {
         int sourceLen = ::LZ4_decompress_fast(source, dest, destSize);
-        vigra_postcondition(sourceLen == srcSize, "uncompress(): lz4 decompression failed.");
+        vigra_postcondition(sourceLen >= 0 && static_cast<unsigned>(sourceLen) == srcSize, "uncompress(): lz4 decompression failed.");
         break;
       }
       

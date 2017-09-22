@@ -6,13 +6,14 @@ VIGRA Computer Vision Library
 
                 Copyright 1998-2013 by Ullrich Koethe
 
+
     This file is part of the VIGRA computer vision library.
     You may use, modify, and distribute this software according
     to the terms stated in the LICENSE.txt file included in
     the VIGRA distribution.
 
     The VIGRA Website is
-        http://hci.iwr.uni-heidelberg.de/vigra/                       
+        http://ukoethe.github.io/vigra/                      
     Please direct questions, bug reports, and contributions to        
         ullrich.koethe@iwr.uni-heidelberg.de    or                    
         vigra@informatik.uni-hamburg.de                               
@@ -32,21 +33,20 @@ If the documentation has not yet been generated (e.g. when you build from a deve
 snapshot), you find these instructions in
   $VIGRA_PATH/docsrc/installation.dxx
 or online at
-  http://hci.iwr.uni-heidelberg.de/vigra/doc/vigra/Installation.html
+  http://ukoethe.github.io/vigra/doc-release/vigra/Installation.html
 
 Documentation
 -------------
 
 If you downloaded an official release, the documentation can be found in `$VIGRA_PATH/doc/vigra/`, the start file 
-is `$VIGRA_PATH/doc/vigra/index.html`.
+is `$VIGRA_PATH/doc/vigra/index.html` or online at http://ukoethe.github.io/vigra/#documentation.
 
-When you use the development version from github, you can generate documentation by `make doc`. Up-to-date 
-online documentation for the 'master' branch is regularly pushed to http://ukoethe.github.io/vigra/doc/vigra/
+When you use the development version from github, you can generate documentation by `make doc`.
 
 Download
 --------
 
-VIGRA can be downloaded at http://hci.iwr.uni-heidelberg.de/vigra/#download The official development 
+VIGRA can be downloaded at http://ukoethe.github.io/vigra/#download. The official development 
 repository is at https://github.com/ukoethe/vigra
 
 What is VIGRA

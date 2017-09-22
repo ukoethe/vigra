@@ -169,27 +169,31 @@ def taggedView(array, axistags='', force=False, order=None, noChannels=False):
     ``taggedView()`` depends on whether ``array`` already has axistags or not.
 
     1. If ``array`` has no axistags or ``force=True`` (i.e. existing axistags
+       shall be ignored) and neither the ``axistags`` nor the ``order`` parameters
+       are given, the function acts as if ``order="C"`` was specified (case 2 below).
+
+    2. If ``array`` has no axistags or ``force=True`` (i.e. existing axistags
        shall be ignored) and the ``order`` parameter is given, the function
        constructs appropriate axistags via :meth:`~vigra.VigraArray.defaultAxistags`::
 
        >>> view = array.view(VigraArray)
        >>> view.axistags = VigraArray.defaultAxistags(view.ndim, order, noChannels)
 
-    2. If ``array`` has no axistags (or ``force=True``) and the ``axistags`` parameter
+    3. If ``array`` has no axistags (or ``force=True``) and the ``axistags`` parameter
        is given, the function transforms this specification into an object of type
        :class:`~vigra.AxisTags` and attaches the result to the view::
 
        >>> view = array.view(VigraArray)
        >>> view.axistags = makeAxistags(axistags)
 
-    3. If ``array`` has axistags (and ``force=False``) and the ``order`` parameter is
+    4. If ``array`` has axistags (and ``force=False``) and the ``order`` parameter is
        given, the function transposes the array into the desired order::
 
        >>> view = array.transposeToOrder(order)
        >>> if noChannels:
        ...     view = view.dropChannelAxis()
 
-    4. If ``array`` has axistags (and ``force=False``) and the ``axistags`` parameter
+    5. If ``array`` has axistags (and ``force=False``) and the ``axistags`` parameter
        is given, the function calls :meth:`~vigra.VigraArray.withAxes` to transforms
        the present axistags into the desired ones::
 
@@ -209,6 +213,8 @@ def taggedView(array, axistags='', force=False, order=None, noChannels=False):
             array = array.withAxes(axistags)
     else:
         if not axistags:
+            if not order:
+                order = 'C'
             axistags = VigraArray.defaultAxistags(array.ndim, order, noChannels)
         else:
             axistags = makeAxistags(axistags)
@@ -776,7 +782,7 @@ class VigraArray(numpy.ndarray):
                 clip = False
             if m == M:
                 return res
-            f = 255.0 // (M - m)
+            f = 255.0 / (M - m)
             img = f * (img - m)
             if clip:
                 img = numpy.minimum(255.0, numpy.maximum(0.0, img))

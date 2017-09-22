@@ -53,8 +53,12 @@
 #include "eigensystem.hxx"
 #include "histogram.hxx"
 #include "polygon.hxx"
+#ifdef WITH_LEMON
+    #include "polytope.hxx"
+#endif
 #include "functorexpression.hxx"
 #include "labelimage.hxx"
+#include "multi_labeling.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -373,7 +377,9 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
 */
 
 
-/** This namespace contains the accumulator classes, fundamental statistics and modifiers. See \ref FeatureAccumulators for examples of usage.
+/** \brief Efficient computation of object statistics.
+
+    This namespace contains the accumulator classes, fundamental statistics and modifiers. See \ref FeatureAccumulators for examples of usage.
 */
 namespace acc {
 
@@ -710,7 +716,7 @@ template <>
 struct CollectAccumulatorNames<void>
 {
     template <class BackInsertable>
-    static void exec(BackInsertable & a, bool skipInternals=true)
+    static void exec(BackInsertable &, bool /* skipInternals */ = true)
     {}
 };
 
@@ -740,7 +746,7 @@ template <>
 struct ApplyVisitorToTag<void>
 {
     template <class Accu, class Visitor>
-    static bool exec(Accu & a, std::string const & tag, Visitor const & v)
+    static bool exec(Accu &, std::string const &, Visitor const &)
     {
         return false;
     }
@@ -776,7 +782,7 @@ template <class TAG>
 struct SetHistogramBincount
 {
     template <class Accu>
-    static void exec(Accu & a, HistogramOptions const & options)
+    static void exec(Accu &, HistogramOptions const &)
     {}
 };
 
@@ -794,7 +800,7 @@ template <class TAG>
 struct ApplyHistogramOptions
 {
     template <class Accu>
-    static void exec(Accu & a, HistogramOptions const & options)
+    static void exec(Accu &, HistogramOptions const &)
     {}
 };
 
@@ -802,7 +808,7 @@ template <class TAG>
 struct ApplyHistogramOptions<StandardQuantiles<TAG> >
 {
     template <class Accu>
-    static void exec(Accu & a, HistogramOptions const & options)
+    static void exec(Accu &, HistogramOptions const &)
     {}
 };
 
@@ -991,11 +997,11 @@ template <class A, unsigned CurrentPass, bool allowRuntimeActivation, unsigned W
 struct DecoratorImpl
 {
     template <class T>
-    static void exec(A & a, T const & t)
+    static void exec(A &, T const &)
     {}
 
     template <class T>
-    static void exec(A & a, T const & t, double weight)
+    static void exec(A &, T const &, double)
     {}
 };
 
@@ -2327,7 +2333,7 @@ class StandAloneDataFreeAccumulatorChain
 
     template<class IGNORED_DATA>
     void
-    updatePassN(const IGNORED_DATA & ignoreData,
+    updatePassN(const IGNORED_DATA &,
                 const CoordType & coord,
                 unsigned int p)
     {
@@ -3638,20 +3644,20 @@ class Central
 
         static const unsigned int workInPass = 2;
 
-        void operator+=(Impl const & o)
+        void operator+=(Impl const &)
         {
             vigra_precondition(false,
                 "Central<...>::operator+=(): not supported.");
         }
 
         template <class T>
-        void update(T const & t)
+        void update(T const &)
         {
             ImplType::update(getDependency<Centralize>(*this));
         }
 
         template <class T>
-        void update(T const & t, double weight)
+        void update(T const &, double weight)
         {
             ImplType::update(getDependency<Centralize>(*this), weight);
         }
@@ -3790,20 +3796,20 @@ class Principal
 
         static const unsigned int workInPass = 2;
 
-        void operator+=(Impl const & o)
+        void operator+=(Impl const &)
         {
             vigra_precondition(false,
                 "Principal<...>::operator+=(): not supported.");
         }
 
         template <class T>
-        void update(T const & t)
+        void update(T const &)
         {
             ImplType::update(getDependency<PrincipalProjection>(*this));
         }
 
         template <class T>
-        void update(T const & t, double weight)
+        void update(T const &, double weight)
         {
             ImplType::update(getDependency<PrincipalProjection>(*this), weight);
         }
@@ -3937,12 +3943,12 @@ class PowerSum<0>
     struct Impl
     : public SumBaseImpl<BASE, T, double, double>
     {
-        void update(T const & t)
+        void update(T const &)
         {
             ++this->value_;
         }
 
-        void update(T const & t, double weight)
+        void update(T const &, double weight)
         {
             this->value_ += weight;
         }
@@ -4356,13 +4362,13 @@ class Central<PowerSum<3> >
             }
         }
 
-        void update(U const & t)
+        void update(U const &)
         {
             using namespace vigra::multi_math;
             this->value_ += pow(getDependency<Centralize>(*this), 3);
         }
 
-        void update(U const & t, double weight)
+        void update(U const &, double weight)
         {
             using namespace vigra::multi_math;
             this->value_ += weight*pow(getDependency<Centralize>(*this), 3);
@@ -4417,13 +4423,13 @@ class Central<PowerSum<4> >
             }
         }
 
-        void update(U const & t)
+        void update(U const &)
         {
             using namespace vigra::multi_math;
             this->value_ += pow(getDependency<Centralize>(*this), 4);
         }
 
-        void update(U const & t, double weight)
+        void update(U const &, double weight)
         {
             using namespace vigra::multi_math;
             this->value_ += weight*pow(getDependency<Centralize>(*this), 4);
@@ -5326,7 +5332,7 @@ class FirstSeen
                 value_ = t;
         }
 
-        void update(U const & t, double weight)
+        void update(U const & t, double)
         {
             update(t);
         }
@@ -5425,7 +5431,7 @@ class ArgMinWeight
             }
         }
 
-        void update(U const & t)
+        void update(U const &)
         {
             vigra_precondition(false, "ArgMinWeight::update() needs weights.");
         }
@@ -5500,7 +5506,7 @@ class ArgMaxWeight
             }
         }
 
-        void update(U const & t)
+        void update(U const &)
         {
             vigra_precondition(false, "ArgMaxWeight::update() needs weights.");
         }
@@ -5815,7 +5821,7 @@ class IntegerHistogram
                 ++this->value_[index];
         }
 
-        void update(int index, double weight)
+        void update(int, double)
         {
             // cannot compute quantile from weighted integer histograms,
             // so force people to use UserRangeHistogram or AutoRangeHistogram
@@ -6138,12 +6144,12 @@ class RegionContour
         }
 
         template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t, double weight)
+        void update(CoupledHandle<U, NEXT> const & t, double)
         {
             update(t);
         }
 
-        void operator+=(Impl const & o)
+        void operator+=(Impl const &)
         {
             vigra_precondition(false,
                 "RegionContour::operator+=(): RegionContour cannot be merged.");
@@ -6256,331 +6262,395 @@ class RegionEccentricity
     };
 };
 
-template <int N>
-struct feature_ConvexHull_can_only_be_computed_for_2D_arrays
-: vigra::staticAssert::AssertBool<N==2>
-{};
+// Compile only if lemon is available
+#ifdef WITH_LEMON
 
-/** \brief Compute the contour of a 2D region.
+/** \brief Compute the convex hull of a region.
 
-    AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
+    AccumulatorChain must be used with CoupledIterator in order to have access
+    to pixel coordinates.
+
+    The result type is the ConvexPolytop class.
  */
 class ConvexHull
 {
   public:
-    typedef Select<BoundingBox, RegionContour, RegionCenter> Dependencies;
+    typedef Select<RegionCenter> Dependencies;
 
     static std::string name()
     {
         return std::string("ConvexHull");
-        // static const std::string n = std::string("ConvexHull");
-        // return n;
     }
 
     template <class T, class BASE>
     struct Impl
     : public BASE
     {
-        static const unsigned int            workInPass = 2;
+        static const unsigned int workInPass = 2;
+        static const unsigned int dimensions = T::dimensions;
 
-        typedef HandleArgSelector<T, LabelArgTag, BASE>               LabelHandle;
-        typedef TinyVector<double, 2>                                 point_type;
-        typedef Polygon<point_type>                                   polygon_type;
-        typedef Impl                                                  value_type;
-        typedef value_type const &                                    result_type;
+        typedef ConvexPolytope<dimensions, double>      polytope_type;
+        typedef polytope_type                           value_type;
+        typedef value_type const &                      result_type;
+        typedef TinyVector<double, dimensions>          point_type;
+        typedef HandleArgSelector<T, CoordArgTag, BASE> coord_handle_type;
+        typedef typename coord_handle_type::value_type  coord_type;
 
-        polygon_type convex_hull_;
-        point_type input_center_, convex_hull_center_, defect_center_;
-        double convexity_, rugosity_, mean_defect_displacement_,
-               defect_area_mean_, defect_area_variance_, defect_area_skewness_, defect_area_kurtosis_;
-        int convexity_defect_count_;
-        ArrayVector<MultiArrayIndex> convexity_defect_area_;
-        bool features_computed_;
+        polytope_type                                   convex_hull_;
+        bool                                            initialized_;
 
         Impl()
         : convex_hull_()
-        , input_center_()
-        , convex_hull_center_()
-        , defect_center_()
-        , convexity_()
-        , rugosity_()
-        , mean_defect_displacement_()
-        , defect_area_mean_()
-        , defect_area_variance_()
-        , defect_area_skewness_()
-        , defect_area_kurtosis_()
-        , convexity_defect_count_()
-        , convexity_defect_area_()
-        , features_computed_(false)
+        , initialized_(false)
         {}
 
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
-            VIGRA_STATIC_ASSERT((feature_ConvexHull_can_only_be_computed_for_2D_arrays<
-                                  CoupledHandle<U, NEXT>::dimensions>));
-            if(!features_computed_)
+            if (!initialized_)
             {
-                using namespace functor;
-                Shape2 start = getDependency<Coord<Minimum> >(*this),
-                       stop  = getDependency<Coord<Maximum> >(*this) + Shape2(1);
-                point_type offset(start);
-                input_center_ = getDependency<RegionCenter>(*this);
-                MultiArrayIndex label = LabelHandle::getValue(t);
-
-                convex_hull_.clear();
-                convexHull(getDependency<RegionContour>(*this), convex_hull_);
-                convex_hull_center_ = centroid(convex_hull_);
-
-                convexity_ = getDependency<RegionContour>(*this).area() / convex_hull_.area();
-                rugosity_ = getDependency<RegionContour>(*this).length() / convex_hull_.length();
-
-                MultiArray<2, UInt8> convex_hull_difference(stop-start);
-                fillPolygon(convex_hull_ - offset, convex_hull_difference, 1);
-                combineTwoMultiArrays(convex_hull_difference,
-                                      LabelHandle::getHandle(t).arrayView().subarray(start, stop),
-                                      convex_hull_difference,
-                                      ifThenElse(Arg2() == Param(label), Param(0), Arg1()));
-
-                MultiArray<2, UInt32> convexity_defects(stop-start);
-                convexity_defect_count_ =
-                   labelImageWithBackground(convex_hull_difference, convexity_defects, false, 0);
-
-                if (convexity_defect_count_ != 0)
-                {
-                    AccumulatorChainArray<CoupledArrays<2, UInt32>,
-                                          Select<LabelArg<1>, Count, RegionCenter> > convexity_defects_stats;
-                    convexity_defects_stats.ignoreLabel(0);
-                    extractFeatures(convexity_defects, convexity_defects_stats);
-
-                    double total_defect_area = 0.0;
-                    mean_defect_displacement_ = 0.0;
-                    defect_center_ = point_type();
-                    for (int k = 1; k <= convexity_defect_count_; ++k)
-                    {
-                        double area = get<Count>(convexity_defects_stats, k);
-                        point_type center = get<RegionCenter>(convexity_defects_stats, k) + offset;
-
-                        convexity_defect_area_.push_back(area);
-                        total_defect_area += area;
-                        defect_center_ += area*center;
-                        mean_defect_displacement_ += area*norm(input_center_ - center);
-                    }
-                    sort(convexity_defect_area_.begin(), convexity_defect_area_.end(),
-                         std::greater<MultiArrayIndex>());
-                    mean_defect_displacement_ /= total_defect_area;
-                    defect_center_ /= total_defect_area;
-
-                    AccumulatorChain<MultiArrayIndex,
-                                     Select<Mean, UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis> > defect_area_stats;
-                    extractFeatures(convexity_defect_area_.begin(),
-                                    convexity_defect_area_.end(), defect_area_stats);
-
-                    defect_area_mean_ = convexity_defect_count_ > 0
-                        ? get<Mean>(defect_area_stats)
-                        : 0.0;
-                    defect_area_variance_ = convexity_defect_count_ > 1
-                        ? get<UnbiasedVariance>(defect_area_stats)
-                        : 0.0;
-                    defect_area_skewness_ = convexity_defect_count_ > 2
-                        ? get<UnbiasedSkewness>(defect_area_stats)
-                        : 0.0;
-                    defect_area_kurtosis_ = convexity_defect_count_ > 3
-                        ? get<UnbiasedKurtosis>(defect_area_stats)
-                        : 0.0;
-                }
-                /**********************************************/
-                features_computed_ = true;
+                initialize();
             }
+            point_type vec(t.point().begin());
+            convex_hull_.addExtremeVertex(vec);
         }
 
         template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t, double weight)
+        void update(CoupledHandle<U, NEXT> const & t, double)
         {
             update(t);
         }
 
-        void operator+=(Impl const & o)
+        void initialize()
         {
-            vigra_precondition(false,
-                "ConvexHull::operator+=(): ConvexHull features cannot be merged.");
+            convex_hull_.addVertex(getDependency<RegionCenter>(*this));
+            for (int dim = 0; dim < dimensions; dim++)
+            {
+                coord_type vec;
+                vec[dim] = .5;
+                convex_hull_.addVertex(
+                        vec + getDependency<RegionCenter>(*this));
+            }
+            initialized_ = true;
+        }
+
+        void operator+=(Impl const &)
+        {
+            vigra_precondition(
+                    false,
+                    "ConvexHull::operator+=(): ConvexHull features cannot be merged.");
         }
 
         result_type operator()() const
         {
-            return *this;
-        }
-
-        /*
-         * Returns the convex hull polygon.
-         */
-        polygon_type const & hull() const
-        {
             return convex_hull_;
-        }
-
-        /*
-         * Returns the area enclosed by the input polygon.
-         */
-        double inputArea() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return getDependency<RegionContour>(*this).area();
-        }
-
-        /*
-         * Returns the area enclosed by the convex hull polygon.
-         */
-        double hullArea() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return convex_hull_.area();
-        }
-
-        /*
-         * Returns the perimeter of the input polygon.
-         */
-        double inputPerimeter() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return getDependency<RegionContour>(*this).length();
-        }
-
-        /*
-         * Returns the perimeter of the convex hull polygon.
-         */
-        double hullPerimeter() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return convex_hull_.length();
-        }
-
-        /*
-         * Center of the original region.
-         */
-        point_type const & inputCenter() const
-        {
-            return input_center_;
-        }
-
-        /*
-         * Center of the region enclosed by the convex hull.
-         */
-        point_type const & hullCenter() const
-        {
-            return convex_hull_center_;
-        }
-
-        /*
-         * Center of difference between the convex hull and the original region.
-         */
-        point_type const & convexityDefectCenter() const
-        {
-            return defect_center_;
-        }
-
-        /*
-         * Returns the ratio between the input area and the convex hull area.
-         * This is always <tt><= 1</tt>, and the smaller the value is,
-         * the less convex is the input polygon.
-         */
-        double convexity() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return convexity_;
-        }
-
-        /*
-         * Returns the ratio between the input perimeter and the convex perimeter.
-         * This is always <tt>>= 1</tt>, and the higher the value is, the less
-         * convex is the input polygon.
-         */
-        double rugosity() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return rugosity_;
-        }
-
-        /*
-         * Returns the number of convexity defects (i.e. number of connected components
-         * of the difference between convex hull and input region).
-         */
-        int convexityDefectCount() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return convexity_defect_count_;
-        }
-
-        /*
-         * Returns the mean area of the convexity defects.
-         */
-        double convexityDefectAreaMean() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return defect_area_mean_;
-        }
-
-        /*
-         * Returns the variance of the convexity defect areas.
-         */
-        double convexityDefectAreaVariance() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return defect_area_variance_;
-        }
-
-        /*
-         * Returns the skewness of the convexity defect areas.
-         */
-        double convexityDefectAreaSkewness() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return defect_area_skewness_;
-        }
-
-        /*
-         * Returns the kurtosis of the convexity defect areas.
-         */
-        double convexityDefectAreaKurtosis() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return defect_area_kurtosis_;
-        }
-
-        /*
-         * Returns the mean distance between the defect areas and the center of
-         * the input region, weighted by the area of each defect region.
-         */
-        double meanDefectDisplacement() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return mean_defect_displacement_;
-        }
-
-        /*
-         * Returns the areas of the convexity defect regions (ordered descending).
-         */
-        ArrayVector<MultiArrayIndex> const & defectAreaList() const
-        {
-            vigra_precondition(features_computed_,
-                    "ConvexHull: features must be calculated first.");
-            return convexity_defect_area_;
         }
     };
 };
 
+/** \brief Compute object features related to the convex hull.
+
+    AccumulatorChain must be used with CoupledIterator in order to have access
+    to pixel coordinates. The convex hull features are only available when
+    `WITH_LEMON` is set.
+
+    Minimal example how to calculate the features:
+    \code
+    // "labels" is the array with the region labels
+    MultiArrayView<2, int> labels = ...;
+
+    // Set up the accumulator chain and ignore the zero label
+    AccumulatorChainArray<
+            CoupledArrays<2, int>,
+            Select<LabelArg<1>, ConvexHullFeatures> > chain;
+    chain.ignoreLabel(0);
+
+    // Extract the features
+    extractFeatures(labels, chain);
+
+    // Finalize the calculation for label 1
+    getAccumulator<ConvexHullFeatures>(chain, 1).finalize();
+
+    // Get the features
+    ... = getAccumulator<ConvexHullFeatures>(chain, 1).inputCenter();
+    \endcode
+
+*/
+class ConvexHullFeatures
+{
+  public:
+    typedef Select<BoundingBox, RegionCenter, Count, ConvexHull> Dependencies;
+
+    static std::string name()
+    {
+        return std::string("ConvexHullFeatures");
+    }
+
+    /** \brief Result type of the covex hull feature calculation
+    */
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        static const unsigned int workInPass = 3;
+        static const unsigned int dimensions = T::dimensions;
+
+        typedef ConvexPolytope<dimensions, double>      polytope_type;
+        typedef Impl<T, BASE>                           value_type;
+        typedef value_type const &                      result_type;
+        typedef TinyVector<double, dimensions>          point_type;
+        typedef HandleArgSelector<T, CoordArgTag, BASE> coord_handle_type;
+        typedef typename coord_handle_type::value_type  coord_type;
+
+        typedef MultiArray<dimensions, unsigned int> array_type;
+
+        array_type label_array_;
+        point_type hull_center_;
+        int hull_volume_;
+        point_type defect_center_;
+        double defect_displacement_mean_;
+        double defect_volume_mean_;
+        double defect_volume_variance_;
+        double defect_volume_skewness_;
+        double defect_volume_kurtosis_;
+        int defect_count_;
+        bool initialized_;
+        bool finalized_;
+        int num_values_;
+
+        Impl()
+        : hull_center_()
+        , hull_volume_()
+        , defect_center_()
+        , defect_volume_mean_()
+        , defect_volume_variance_()
+        , defect_volume_skewness_()
+        , defect_volume_kurtosis_()
+        , defect_count_()
+        , initialized_(false)
+        , finalized_(false)
+        , num_values_(0)
+        {}
+
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            vigra_precondition(
+                    finalized_ == false,
+                    "ConvexHullFeatures::update(): "
+                    "Finalize must not be called before update");
+            if (!initialized_)
+            {
+                initialize();
+            }
+            const coord_type & coord_min = getDependency<Coord<Minimum> >(*this);
+            // Update label array
+            label_array_[coord_handle_type::getValue(t) - coord_min] = 0;
+        }
+
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t, double)
+        {
+            update(t);
+        }
+
+        void initialize()
+        {
+            // Get hull and bounding box
+            const polytope_type & hull = getDependency<ConvexHull>(*this);
+            const coord_type & coord_min = getDependency<Coord<Minimum> >(*this);
+            coord_type coord_max = getDependency<Coord<Maximum> >(*this);
+            coord_max += coord_type(1);
+            // Get offset
+            point_type offset;
+            std::copy(coord_min.begin(), coord_min.end(), offset.begin());
+            // Create the label array
+            label_array_.reshape(coord_max - coord_min, 0);
+            hull.fill(label_array_, 1, offset);
+            // Extract convex hull features
+            AccumulatorChainArray<
+                    CoupledArrays<dimensions, unsigned int>,
+                    Select<LabelArg<1>, Count, RegionCenter> > hull_acc;
+            hull_acc.ignoreLabel(0);
+            extractFeatures(label_array_, hull_acc);
+            hull_center_ = get<RegionCenter>(hull_acc, 1) + coord_min;
+            hull_volume_ = get<Count>(hull_acc, 1);
+            // Set initialized flag
+            initialized_ = true;
+        }
+
+        /* \brief Finalize the calculation of the convex hull features.
+
+            Finalize must be called in order to trigger the calculation of
+            the convexity defect features.
+        */
+        void finalize()
+        {
+            if (!finalized_)
+            {
+                dofinalize();
+                finalized_ = true;
+            }
+        }
+
+        void dofinalize()
+        {
+            vigra_precondition(
+                    initialized_,
+                    "ConvexHullFeatures::finalize(): "
+                    "Feature computation was not initialized.");
+            const coord_type & coord_min = getDependency<Coord<Minimum> >(*this);
+            // Calculate defect center
+            AccumulatorChainArray<
+                    CoupledArrays<dimensions, unsigned int>,
+                    Select<LabelArg<1>, RegionCenter, Count> > defect_acc;
+            extractFeatures(label_array_, defect_acc);
+            defect_center_ = get<RegionCenter>(defect_acc, 1) + coord_min;
+            // Calculate defect stats
+            array_type defects_array(label_array_.shape());
+            defect_count_ = labelMultiArrayWithBackground(
+                    label_array_,
+                    defects_array);
+            defect_volume_mean_ = 0.0;
+            defect_volume_variance_ = 0.0;
+            defect_volume_skewness_ = 0.0;
+            defect_volume_kurtosis_ = 0.0;
+            if (defect_count_ != 0)
+            {
+                AccumulatorChainArray<
+                        CoupledArrays<dimensions, unsigned int>,
+                        Select<LabelArg<1>, Count, RegionCenter> > defects_acc;
+                extractFeatures(defects_array, defects_acc);
+                ArrayVector<double> defect_volumes;
+                point_type center = getDependency<RegionCenter>(*this)
+                        -getDependency<Coord<Minimum> >(*this);
+                for (int k = 1; k <= defect_count_; k++)
+                {
+                    defect_volumes.push_back(get<Count>(defects_acc, k));
+                    defect_displacement_mean_ += get<Count>(defects_acc, k)
+                            * norm(get<RegionCenter>(defects_acc, k) - center);
+                }
+                defect_displacement_mean_ /= get<Count>(defect_acc, 1);
+                AccumulatorChain<
+                        MultiArrayIndex,
+                        Select< Mean,
+                                UnbiasedVariance,
+                                UnbiasedSkewness,
+                                UnbiasedKurtosis> > volumes_acc;
+                extractFeatures(
+                        defect_volumes.begin(),
+                        defect_volumes.end(),
+                        volumes_acc);
+                defect_volume_mean_ = get<Mean>(volumes_acc);
+                if (defect_count_ > 1)
+                {
+                    defect_volume_variance_ = get<UnbiasedVariance>(volumes_acc);
+                }
+                if (defect_count_ > 2)
+                {
+                    defect_volume_skewness_ = get<UnbiasedSkewness>(volumes_acc);
+                }
+                if (defect_count_ > 3)
+                {
+                    defect_volume_kurtosis_ = get<UnbiasedKurtosis>(volumes_acc);
+                }
+            }
+        }
+
+        void operator+=(Impl const &)
+        {
+            vigra_precondition(
+                    false,
+                    "ConvexHullFeatures::operator+=(): features cannot be merged.");
+        }
+
+        result_type operator()() const
+        {
+            vigra_precondition(
+                    finalized_,
+                    "ConvexHullFeatures::operator(): "
+                    "Finalize must be called before operator()");
+            return *this;
+        }
+
+        /** \brief Center of the input region.
+        */
+        const point_type & inputCenter() const {
+            return getDependency<RegionCenter>(*this);
+        }
+
+        /** \brief Center of the convex hull of the input region.
+        */
+        const point_type & hullCenter() const {
+            return hull_center_;
+        }
+
+        /** \brief Volume of the input region.
+        */
+        int inputVolume() const {
+            return getDependency<Count>(*this);
+        }
+
+        /** \brief Volume of the convex hull of the input region.
+        */
+        int hullVolume() const {
+            return hull_volume_;
+        }
+
+        /** \brief Weighted center of mass of the convexity defects.
+        */
+        const point_type & defectCenter() const {
+            return defect_center_;
+        }
+
+        /** \brief Average volume of the convexity defects.
+        */
+        double defectVolumeMean() const {
+            return defect_volume_mean_;
+        }
+
+        /** \brief Variance of the volumes of the convexity defects.
+        */
+        double defectVolumeVariance() const {
+            return defect_volume_variance_;
+        }
+
+        /** \brief Skewness of the volumes of the convexity defects.
+        */
+        double defectVolumeSkewness() const {
+            return defect_volume_skewness_;
+        }
+
+        /** \brief Kurtosis of the volumes of the convexity defects.
+        */
+        double defectVolumeKurtosis() const {
+            return defect_volume_kurtosis_;
+        }
+
+        /** \brief Number of convexity defects.
+        */
+        int defectCount() const {
+            return defect_count_;
+        }
+
+        /** \brief Average displacement of the convexity defects from the input
+            region center weighted by their size.
+        */
+        double defectDisplacementMean() const {
+            return defect_displacement_mean_;
+        }
+
+        /** \brief Convexity of the input region
+
+            The convexity is the ratio of the input volume to the convex hull
+            volume: \f[c = \frac{V_\mathrm{input}}{V_\mathrm{hull}}\f]
+        */
+        double convexity() const {
+            return static_cast<double>(inputVolume()) / hullVolume();
+        }
+    };
+};
+#endif // WITH_LEMON
 
 }} // namespace vigra::acc
 

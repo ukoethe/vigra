@@ -73,7 +73,7 @@ namespace vigra{
             typedef typename G::index_type index_type;
 
         public:
-            ItemIter(const lemon::Invalid & iv = lemon::INVALID)
+            ItemIter(const lemon::Invalid & /*iv*/ = lemon::INVALID)
             :   graph_(NULL),
                 id_(-1),
                 item_(lemon::INVALID)
@@ -143,7 +143,7 @@ namespace vigra{
             typedef typename  Graph::Arc Arc;
             typedef typename  Graph::Edge Edge;
             typedef typename  Graph::EdgeIt EdgeIt;
-            ArcIt(const lemon::Invalid invalid = lemon::INVALID )
+            ArcIt(const lemon::Invalid /*invalid*/ = lemon::INVALID )
             :   graph_(NULL),
                 pos_(),
                 inFirstHalf_(false),
@@ -574,7 +574,7 @@ namespace vigra{
         }
 
         template<class ITER>
-        void deserialize(ITER begin, ITER end){
+        void deserialize(ITER begin, ITER){
 
 
             nodeNum_ = *begin; ++begin;
@@ -688,7 +688,7 @@ namespace vigra{
 
     inline AdjacencyListGraph::Node 
     AdjacencyListGraph::addNode(const AdjacencyListGraph::index_type id){
-        if(id == nodes_.size()){
+        if((std::size_t)id == nodes_.size()){
             nodes_.push_back(NodeStorage(id));
             ++nodeNum_;
             return Node(id);

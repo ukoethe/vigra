@@ -180,7 +180,7 @@ void
 localMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa, 
               DestIterator dul, DestAccessor da,
               DestValue marker,
-              Neighborhood neighborhood,
+              Neighborhood,
               typename SrcAccessor::value_type threshold,
               Compare compare,
               bool allowExtremaAtBorder = false)
@@ -349,7 +349,7 @@ extendedLocalMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
                       DestValue marker,
                       Neighborhood neighbourhood,
                       Compare compare,
-                      Equal equal,
+                      Equal,
                       typename SrcAccessor::value_type threshold,
                       bool allowExtremaAtBorder = false)
 {

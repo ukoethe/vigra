@@ -194,7 +194,7 @@ class NeighborCode3D
         static unsigned int b[];
         static unsigned int c[];
         static Direction bd[43][6];
-        static Direction bc[43][3];
+        static Direction bc[43][4];
         static Diff3D d[];
         static Diff3D rd[][6];
     };
@@ -416,50 +416,50 @@ Direction NeighborCode3D::StaticData<DUMMY>::bd[43][6] = {
                };
                
 template <int DUMMY>
-Direction NeighborCode3D::StaticData<DUMMY>::bc[43][3] = {
-            { InFront, North, West},                    // 0 - NotAtBorder
-            { InFront, North, West},                    // 1 - AtRightBorder
-            { InFront, North, Error},                   // 2 - AtLeftBorder
-            { Error, Error, Error},
-            { InFront, West, Error},                    // 4 - AtTopBorder
-            { InFront, West, Error},                    // 5 - AtTopRightBorder
-            { InFront, Error,Error},                    // 6 - AtTopLeftBorder
-            { Error, Error, Error},
-            { InFront, North, West},                    // 8 - AtBottomBorder
-            { InFront, North, West},                    // 9 - AtBottomRightBorder
-            { InFront, North, Error},                   //10- AtBottomLeftBorder
-            { Error, Error, Error},
-            { Error, Error, Error},
-            { Error, Error, Error},
-            { Error, Error, Error},
-            { Error, Error, Error},
-            { North, West, Error},                      //16 - AtFrontBorder
-            { North, West, Error},                      //17 - AtFrontRightBorder
-            { North, Error, Error},                     //18 - AtFrontLeftBorder
-            { Error, Error, Error},
-            { West, Error, Error},                      //20 - AtTopFrontBorder
-            { West, Error, Error},                      //21 - AtTopRightFrontBorder
-            { Error, Error,  Error},                    //22 - AtTopLeftFrontBorder
-            { Error, Error, Error},
-            { North, West, Error},                      //24 - AtBottomFrontBorder
-            { North, West, Error},                      //25 - AtBottomRightFrontBorder
-            { North, Error, Error},                     //26 - AtBottomLeftFrontBorder
-            { Error, Error, Error},
-            { Error, Error, Error},
-            { Error, Error, Error},
-            { Error, Error, Error},
-            { Error, Error, Error},
-            { InFront, North, West},                    //32 - AtRearBorder
-            { InFront, North, West},                    //33 - AtRearRightBorder
-            { InFront, North, Error},                   //34 - AtRearLeftBorder
-            { Error, Error, Error},
-            { InFront, West, Error},                    //36 - AtTopRearBorder
-            { InFront, West, Error},                    //37 - AtTopRightRearBorder
-            { InFront, Error, Error},                   //38 - AtTopLeftRearBorder
-            { Error, Error, Error},
-            { InFront, North, West},                    //40 - AtBottomRearBorder
-            { InFront, North, West},                    //41 - AtBottomRightRearBorder
-            { InFront, North, Error}                    //42 - AtBottomLeftRearBorder
+Direction NeighborCode3D::StaticData<DUMMY>::bc[43][4] = {
+            { InFront, North, West, Error},                    // 0 - NotAtBorder
+            { InFront, North, West, Error},                    // 1 - AtRightBorder
+            { InFront, North, Error, Error},                   // 2 - AtLeftBorder
+            { Error, Error, Error, Error},
+            { InFront, West, Error, Error},                    // 4 - AtTopBorder
+            { InFront, West, Error, Error},                    // 5 - AtTopRightBorder
+            { InFront, Error,Error, Error},                    // 6 - AtTopLeftBorder
+            { Error, Error, Error, Error},
+            { InFront, North, West, Error},                    // 8 - AtBottomBorder
+            { InFront, North, West, Error},                    // 9 - AtBottomRightBorder
+            { InFront, North, Error, Error},                   //10- AtBottomLeftBorder
+            { Error, Error, Error, Error},
+            { Error, Error, Error, Error},
+            { Error, Error, Error, Error},
+            { Error, Error, Error, Error},
+            { Error, Error, Error, Error},
+            { North, West, Error, Error},                      //16 - AtFrontBorder
+            { North, West, Error, Error},                      //17 - AtFrontRightBorder
+            { North, Error, Error, Error},                     //18 - AtFrontLeftBorder
+            { Error, Error, Error, Error},
+            { West, Error, Error, Error},                      //20 - AtTopFrontBorder
+            { West, Error, Error, Error},                      //21 - AtTopRightFrontBorder
+            { Error, Error,  Error, Error},                    //22 - AtTopLeftFrontBorder
+            { Error, Error, Error, Error},
+            { North, West, Error, Error},                      //24 - AtBottomFrontBorder
+            { North, West, Error, Error},                      //25 - AtBottomRightFrontBorder
+            { North, Error, Error, Error},                     //26 - AtBottomLeftFrontBorder
+            { Error, Error, Error, Error},
+            { Error, Error, Error, Error},
+            { Error, Error, Error, Error},
+            { Error, Error, Error, Error},
+            { Error, Error, Error, Error},
+            { InFront, North, West, Error},                    //32 - AtRearBorder
+            { InFront, North, West, Error},                    //33 - AtRearRightBorder
+            { InFront, North, Error, Error},                   //34 - AtRearLeftBorder
+            { Error, Error, Error, Error},
+            { InFront, West, Error, Error},                    //36 - AtTopRearBorder
+            { InFront, West, Error, Error},                    //37 - AtTopRightRearBorder
+            { InFront, Error, Error, Error},                   //38 - AtTopLeftRearBorder
+            { Error, Error, Error, Error},
+            { InFront, North, West, Error},                    //40 - AtBottomRearBorder
+            { InFront, North, West, Error},                    //41 - AtBottomRightRearBorder
+            { InFront, North, Error, Error}                    //42 - AtBottomLeftRearBorder
         };
                
 template <int DUMMY>

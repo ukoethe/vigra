@@ -18,7 +18,7 @@
 /*    Software is furnished to do so, subject to the following          */
 /*    conditions:                                                       */
 /*                                                                      */
-/*    The above copyrigfht notice and this permission notice shall be    */
+/*    The above copyright notice and this permission notice shall be    */
 /*    included in all copies or substantial portions of the             */
 /*    Software.                                                         */
 /*                                                                      */
@@ -168,7 +168,7 @@ template<class LabelType, class FeatureType>
 double
 pythonLearnRandomForest(RandomForest<LabelType> & rf, 
                         NumpyArray<2,FeatureType> trainData, 
-                        NumpyArray<2,LabelType> trainLabels,
+                        NumpyArray<2,LabelType> trainLabels, // FIXME why are the labels 2d ?!
                         UInt32 randomSeed=0,
                         int maxdepth=-1,
                         int minsize=0)

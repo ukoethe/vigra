@@ -5,14 +5,22 @@ environment:
     matrix:
         - PY_VERSION: "2.7"
           VC_VERSION: "11"
-        - PY_VERSION: "3.5"
-          VC_VERSION: "14"
+        # - PY_VERSION: "3.5"
+          # VC_VERSION: "14"
 
 build_script:
+    # This is a small script that takes the PATH variable and transforms its entries
+    # into their short-path (DOS-like) counterparts. The new path is written into the file path.txt,
+    # from which it is then loaded. This allows to shorten the overall length of the PATH variable,
+    # thus avoiding an issue with conda. See also:
+    # https://github.com/conda/conda/issues/1923
+    # It might be that this will be solved in future conda versions.
+    - config\\shorten_path.bat > path.txt
+    - set /p PATH=<path.txt
     - if "%PY_VERSION%" == "2.7" set PATH=C:\\Miniconda-x64\\Scripts;%PATH%
     - if "%PY_VERSION%" == "3.5" set PATH=C:\\Miniconda3-x64\\Scripts;%PATH%
     - if "%PY_VERSION%" == "2.7" conda create -q --yes -n python -c ukoethe --override-channels visual-studio=%VC_VERSION%.0 python=%PY_VERSION% jpeg libpng libtiff hdf5 fftw boost numpy nose
-    - if "%PY_VERSION%" == "3.5" conda create -q --yes -n python python=%PY_VERSION% jpeg libpng libtiff hdf5 numpy nose
+    - if "%PY_VERSION%" == "3.5" conda create -q --yes -n python python=%PY_VERSION% jpeg libpng libtiff hdf5=1.8.15.1 numpy nose
     - activate python
     - if "%PY_VERSION%" == "3.5" conda install -q --yes -c ukoethe --override-channels visual-studio=%VC_VERSION%.0 fftw boost
     - cd %APPVEYOR_BUILD_FOLDER%
@@ -20,3 +28,6 @@ build_script:
     - cd build
     - cmake .. -G "Visual Studio %VC_VERSION% Win64" -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_ACTIVE_ENV%/Library"
     - cmake --build . --target check --config Release
+
+#on_finish:
+#- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

@@ -72,10 +72,10 @@ python_ptr defaultAxistags(int ndim, std::string order = "")
     if(order == "")
         order = defaultOrder();
     python_ptr arraytype = getArrayTypeObject();
-	python_ptr func(pythonFromData("defaultAxistags"));
-	python_ptr d(pythonFromData(ndim));
-	python_ptr o(pythonFromData(order));
-	python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), o.get(), NULL),
+    python_ptr func(pythonFromData("defaultAxistags"));
+    python_ptr d(pythonFromData(ndim));
+    python_ptr o(pythonFromData(order));
+    python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), o.get(), NULL),
                         python_ptr::keep_count);
     if(axistags)
         return axistags;
@@ -87,9 +87,9 @@ inline
 python_ptr emptyAxistags(int ndim)
 {
     python_ptr arraytype = getArrayTypeObject();
-	python_ptr func(pythonFromData("_empty_axistags"));
-	python_ptr d(pythonFromData(ndim));
-	python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), NULL),
+    python_ptr func(pythonFromData("_empty_axistags"));
+    python_ptr d(pythonFromData(ndim));
+    python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), NULL),
                         python_ptr::keep_count);
     if(axistags)
         return axistags;
@@ -103,9 +103,9 @@ getAxisPermutationImpl(ArrayVector<npy_intp> & permute,
                        python_ptr object, const char * name,
                        AxisInfo::AxisType type, bool ignoreErrors)
 {
-	python_ptr func(pythonFromData(name));
-	python_ptr t(pythonFromData((long)type));
-	python_ptr permutation(PyObject_CallMethodObjArgs(object, func.get(), t.get(), NULL),
+    python_ptr func(pythonFromData(name));
+    python_ptr t(pythonFromData((long)type));
+    python_ptr permutation(PyObject_CallMethodObjArgs(object, func.get(), t.get(), NULL),
                            python_ptr::keep_count);
     if(!permutation && ignoreErrors)
     {
@@ -128,11 +128,11 @@ getAxisPermutationImpl(ArrayVector<npy_intp> & permute,
     {
         python_ptr i(PySequence_GetItem(permutation, k), python_ptr::keep_count);
 #if PY_MAJOR_VERSION < 3
-		if(!PyInt_Check(i))
+        if(!PyInt_Check(i))
 #else
-		if (!PyLong_Check(i))
+        if (!PyLong_Check(i))
 #endif
-		{
+        {
             if(ignoreErrors)
                 return;
             std::string message = std::string(name) + "() did not return a sequence of int.";
@@ -140,11 +140,11 @@ getAxisPermutationImpl(ArrayVector<npy_intp> & permute,
             pythonToCppException(false);
         }
 #if PY_MAJOR_VERSION < 3
-		res[k] = PyInt_AsLong(i);
+        res[k] = PyInt_AsLong(i);
 #else
-		res[k] = PyLong_AsLong(i);
+        res[k] = PyLong_AsLong(i);
 #endif
-	}
+    }
     res.swap(permute);
 }
 
@@ -194,8 +194,8 @@ class PyAxisTags
 
         if(createCopy)
         {
-			python_ptr func(pythonFromData("__copy__"));
-			axistags = python_ptr(PyObject_CallMethodObjArgs(tags, func.get(), NULL),
+            python_ptr func(pythonFromData("__copy__"));
+            axistags = python_ptr(PyObject_CallMethodObjArgs(tags, func.get(), NULL),
                                   python_ptr::keep_count);
         }
         else
@@ -210,8 +210,8 @@ class PyAxisTags
             return;
         if(createCopy)
         {
-			python_ptr func(pythonFromData("__copy__"));
-			axistags = python_ptr(PyObject_CallMethodObjArgs(other.axistags, func.get(), NULL),
+            python_ptr func(pythonFromData("__copy__"));
+            axistags = python_ptr(PyObject_CallMethodObjArgs(other.axistags, func.get(), NULL),
                                   python_ptr::keep_count);
         }
         else
@@ -264,9 +264,9 @@ class PyAxisTags
     {
         if(!axistags)
             return;
-		python_ptr d(pythonFromData(description));
-		python_ptr func(pythonFromData("setChannelDescription"));
-		python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), d.get(), NULL),
+        python_ptr d(pythonFromData(description));
+        python_ptr func(pythonFromData("setChannelDescription"));
+        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), d.get(), NULL),
                        python_ptr::keep_count);
         pythonToCppException(res);
     }
@@ -275,9 +275,9 @@ class PyAxisTags
     {
         if(!axistags)
             return 0.0;
-		python_ptr func(pythonFromData("resolution"));
-		python_ptr i(pythonFromData(index));
-		python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), NULL),
+        python_ptr func(pythonFromData("resolution"));
+        python_ptr i(pythonFromData(index));
+        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), NULL),
                        python_ptr::keep_count);
         pythonToCppException(res);
         if(!PyFloat_Check(res))
@@ -292,9 +292,9 @@ class PyAxisTags
     {
         if(!axistags)
             return;
-		python_ptr func(pythonFromData("setResolution"));
-		python_ptr i(pythonFromData(index));
-		python_ptr r(PyFloat_FromDouble(resolution), python_ptr::keep_count);
+        python_ptr func(pythonFromData("setResolution"));
+        python_ptr i(pythonFromData(index));
+        python_ptr r(PyFloat_FromDouble(resolution), python_ptr::keep_count);
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), r.get(), NULL),
                        python_ptr::keep_count);
         pythonToCppException(res);
@@ -304,9 +304,9 @@ class PyAxisTags
     {
         if(!axistags)
             return;
-		python_ptr func(pythonFromData("scaleResolution"));
-		python_ptr i(pythonFromData(index));
-		python_ptr f(PyFloat_FromDouble(factor), python_ptr::keep_count);
+        python_ptr func(pythonFromData("scaleResolution"));
+        python_ptr i(pythonFromData(index));
+        python_ptr f(PyFloat_FromDouble(factor), python_ptr::keep_count);
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), f.get(), NULL),
                        python_ptr::keep_count);
         pythonToCppException(res);
@@ -317,11 +317,11 @@ class PyAxisTags
         if(!axistags)
             return;
         python_ptr func(sign == 1
-							? pythonFromData("toFrequencyDomain")
-							: pythonFromData("fromFrequencyDomain"));
+                            ? pythonFromData("toFrequencyDomain")
+                            : pythonFromData("fromFrequencyDomain"));
         python_ptr i(pythonFromData(index));
         python_ptr s(pythonFromData(size));
-		python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), s.get(), NULL),
+        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), s.get(), NULL),
                        python_ptr::keep_count);
         pythonToCppException(res);
     }
@@ -372,7 +372,7 @@ class PyAxisTags
             return;
         python_ptr func(pythonFromData("dropChannelAxis"));
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL),
-					   python_ptr::keep_count);
+                       python_ptr::keep_count);
         pythonToCppException(res);
     }
 

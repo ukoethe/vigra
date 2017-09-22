@@ -1,4 +1,4 @@
-SET(TARGETS 
+SET(TARGETS
     convert
     subimage
     invert
@@ -23,3 +23,5 @@ FOREACH(TARGET ${TARGETS})
     ADD_DEPENDENCIES(examples example_${TARGET})
     TARGET_LINK_LIBRARIES(example_${TARGET} vigraimpex)
 ENDFOREACH(TARGET)
+
+ADD_SUBDIRECTORY(tutorial)

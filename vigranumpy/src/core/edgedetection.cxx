@@ -39,6 +39,8 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/edgedetection.hxx>
+#include <vigra/multi_convolution.hxx>
+#include <vigra/tensorutilities.hxx>
 
 namespace python = boost::python;
 
@@ -70,7 +72,7 @@ void Edgel__setitem__(Edgel & e, unsigned int i, double v)
         e.y = Edgel::value_type(v);
 }
 
-unsigned int Edgel__len__(Edgel const & e)
+unsigned int Edgel__len__(Edgel const &)
 {
     return 2;
 }
@@ -178,6 +180,40 @@ pythonCannyEdgeImage(NumpyArray<2, Singleband<SrcPixelType> > image,
         PyAllowThreads _pythread;
         cannyEdgeImage(srcImageRange(image), destImage(res),
                        scale, threshold, edgeMarker);
+    }
+
+    return res;
+}
+
+template < class SrcPixelType, typename DestPixelType >
+NumpyAnyArray
+pythonCannyEdgeImageColor(NumpyArray<2, RGBValue<SrcPixelType> > image,
+                          double scale, double threshold, DestPixelType edgeMarker,
+                          NumpyArray<2, Singleband<DestPixelType> > res = python::object())
+{
+    std::string description("Canny edges, scale=");
+    description += asString(scale) + ", threshold=" + asString(threshold);
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description),
+            "cannyEdgeImage(): Output array has wrong shape.");
+
+    {
+        PyAllowThreads _pythread;
+        MultiArray<2, TinyVector<float, 2>> gradient(image.shape());
+        MultiArray<2, TinyVector<float, 3>> tmp(image.shape()),
+                                            gradient_tensor(image.shape());
+        for(int k=0; k<3; ++k)
+        {
+            gaussianGradientMultiArray(image.bindElementChannel(k), gradient, scale);
+            vectorToTensor(gradient, tmp);
+            gradient_tensor += tmp;
+        }
+        tensorEigenRepresentation(gradient_tensor, tmp);
+        transformMultiArray(tmp, gradient, [](TinyVector<float, 3> const & v) {
+            return TinyVector<float, 2>(std::cos(v[2])*sqrt(v[0]), std::sin(v[2])*sqrt(v[0]));
+        });
+        cannyEdgeImageFromGradWithThinning(gradient, res,
+                                           threshold, edgeMarker, false);
     }
 
     return res;
@@ -397,6 +433,12 @@ void defineEdgedetection()
 
     def("cannyEdgeImage",
         registerConverters(&pythonCannyEdgeImage<float, UInt8>),
+        (arg("image"), arg("scale"), arg("threshold"), arg("edgeMarker"),arg("out")=python::object()),
+        "Detect and mark edges in an edge image using Canny's algorithm.\n\n"
+        "For details see cannyEdgeImage_ in the vigra C++ documentation.\n");
+
+    def("cannyEdgeImage",
+        registerConverters(&pythonCannyEdgeImageColor<float, UInt8>),
         (arg("image"), arg("scale"), arg("threshold"), arg("edgeMarker"),arg("out")=python::object()),
         "Detect and mark edges in an edge image using Canny's algorithm.\n\n"
         "For details see cannyEdgeImage_ in the vigra C++ documentation.\n");

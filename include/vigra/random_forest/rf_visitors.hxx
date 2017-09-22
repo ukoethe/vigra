@@ -42,6 +42,7 @@
 #include <iostream>
 #include <iomanip>
 
+#include <vigra/metaprogramming.hxx>
 #include <vigra/multi_pointoperators.hxx>
 #include <vigra/timing.hxx>
 
@@ -49,38 +50,37 @@ namespace vigra
 {
 namespace rf
 {
-/** \addtogroup MachineLearning Machine Learning
-**/
-//@{
+/** \brief Visitors to extract information during training of \ref vigra::RandomForest version 2.
 
-/**
-    This namespace contains all classes and methods related to extracting information during 
-    learning of the random forest. All Visitors share the same interface defined in 
-    visitors::VisitorBase. The member methods are invoked at certain points of the main code in 
+    \ingroup MachineLearning
+
+    This namespace contains all classes and methods related to extracting information during
+    learning of the random forest. All Visitors share the same interface defined in
+    visitors::VisitorBase. The member methods are invoked at certain points of the main code in
     the order they were supplied.
-    
-    For the Random Forest the  Visitor concept is implemented as a statically linked list 
-    (Using templates). Each Visitor object is encapsulated in a detail::VisitorNode object. The 
+
+    For the Random Forest the  Visitor concept is implemented as a statically linked list
+    (Using templates). Each Visitor object is encapsulated in a detail::VisitorNode object. The
     VisitorNode object calls the Next Visitor after one of its visit() methods have terminated.
-    
+
     To simplify usage create_visitor() factory methods are supplied.
     Use the create_visitor() method to supply visitor objects to the RandomForest::learn() method.
     It is possible to supply more than one visitor. They will then be invoked in serial order.
 
     The calculated information are stored as public data members of the class. - see documentation
     of the individual visitors
-    
-    While creating a new visitor the new class should therefore publicly inherit from this class 
+
+    While creating a new visitor the new class should therefore publicly inherit from this class
     (i.e.: see visitors::OOB_Error).
 
     \code
 
       typedef xxx feature_t \\ replace xxx with whichever type
-      typedef yyy label_t   \\ meme chose. 
+      typedef yyy label_t   \\ meme chose.
       MultiArrayView<2, feature_t> f = get_some_features();
       MultiArrayView<2, label_t>   l = get_some_labels();
       RandomForest<> rf()
-    
+
       //calculate OOB Error
       visitors::OOB_Error oob_v;
       //calculate Variable Importance
@@ -88,20 +88,20 @@ namespace rf
 
       double oob_error = rf.learn(f, l, visitors::create_visitor(oob_v, varimp_v);
       //the data can be found in the attributes of oob_v and varimp_v now
-      
+
     \endcode
 */
 namespace visitors
 {
-    
-    
-/** Base Class from which all Visitors derive. Can be used as a template to create new 
+
+
+/** Base Class from which all Visitors derive. Can be used as a template to create new
  * Visitors.
  */
 class VisitorBase
 {
     public:
-    bool active_;   
+    bool active_;
     bool is_active()
     {
         return active_;
@@ -124,7 +124,7 @@ class VisitorBase
     {
         active_ = true;
     }
-    
+
     /** do something after the the Split has decided how to process the Region
      * (Stack entry)
      *
@@ -139,15 +139,17 @@ class VisitorBase
      * \sa RF_Traits::StackEntry_t
      */
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
+    void visit_after_split( Tree          & tree,
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
                             Region        & rightChild,
                             Feature_t     & features,
                             Label_t       & labels)
-    {}
-    
+    {
+        ignore_argument(tree,split,parent,leftChild,rightChild,features,labels);
+    }
+
     /** do something after each tree has been learned
      *
      * \param rf        reference to the random forest object that called this
@@ -159,8 +161,10 @@ class VisitorBase
      */
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF & rf, PR & pr, SM & sm, ST & st, int index)
-    {}
-    
+    {
+        ignore_argument(rf,pr,sm,st,index);
+    }
+
     /** do something after all trees have been learned
      *
      * \param rf        reference to the random forest object that called this
@@ -169,9 +173,11 @@ class VisitorBase
      */
     template<class RF, class PR>
     void visit_at_end(RF const & rf, PR const & pr)
-    {}
-    
-    /** do something before learning starts 
+    {
+        ignore_argument(rf,pr);
+    }
+
+    /** do something before learning starts
      *
      * \param rf        reference to the random forest object that called this
      *                  visitor
@@ -179,8 +185,10 @@ class VisitorBase
      */
     template<class RF, class PR>
     void visit_at_beginning(RF const & rf, PR const & pr)
-    {}
-    /** do some thing while traversing tree after it has been learned 
+    {
+        ignore_argument(rf,pr);
+    }
+    /** do some thing while traversing tree after it has been learned
      *  (external nodes)
      *
      * \param tr        reference to the tree object that called this visitor
@@ -189,14 +197,16 @@ class VisitorBase
      * \param features  feature matrix
      * \sa  NodeTags;
      *
-     * you can create the node by using a switch on node_tag and using the 
-     * corresponding Node objects. Or - if you do not care about the type 
+     * you can create the node by using a switch on node_tag and using the
+     * corresponding Node objects. Or - if you do not care about the type
      * use the NodeBase class.
      */
     template<class TR, class IntT, class TopT,class Feat>
     void visit_external_node(TR & tr, IntT index, TopT node_t, Feat & features)
-    {}
-    
+    {
+        ignore_argument(tr,index,node_t,features);
+    }
+
     /** do something when visiting a internal node after it has been learned
      *
      * \sa visit_external_node
@@ -205,11 +215,11 @@ class VisitorBase
     void visit_internal_node(TR & /* tr */, IntT /* index */, TopT /* node_t */, Feat & /* features */)
     {}
 
-    /** return a double value.  The value of the first 
+    /** return a double value.  The value of the first
      * visitor encountered that has a return value is returned with the
      * RandomForest::learn() method - or -1.0 if no return value visitor
-     * existed. This functionality basically only exists so that the 
-     * OOB - visitor can return the oob error rate like in the old version 
+     * existed. This functionality basically only exists so that the
+     * OOB - visitor can return the oob error rate like in the old version
      * of the random forest.
      */
     double return_val()
@@ -244,22 +254,22 @@ template <class Visitor, class Next = StopVisiting>
 class VisitorNode
 {
     public:
-    
+
     StopVisiting    stop_;
     Next            next_;
-    Visitor &       visitor_;   
-    VisitorNode(Visitor & visitor, Next & next) 
-    : 
+    Visitor &       visitor_;
+    VisitorNode(Visitor & visitor, Next & next)
+    :
         next_(next), visitor_(visitor)
     {}
 
-    VisitorNode(Visitor &  visitor) 
-    : 
+    VisitorNode(Visitor &  visitor)
+    :
         next_(stop_), visitor_(visitor)
     {}
 
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
+    void visit_after_split( Tree          & tree,
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
@@ -268,7 +278,7 @@ class VisitorNode
                             Label_t       & labels)
     {
         if(visitor_.is_active())
-            visitor_.visit_after_split(tree, split, 
+            visitor_.visit_after_split(tree, split,
                                        parent, leftChild, rightChild,
                                        features, labels);
         next_.visit_after_split(tree, split, parent, leftChild, rightChild,
@@ -297,7 +307,7 @@ class VisitorNode
             visitor_.visit_at_end(rf, pr);
         next_.visit_at_end(rf, pr);
     }
-    
+
     template<class TR, class IntT, class TopT,class Feat>
     void visit_external_node(TR & tr, IntT & index, TopT & node_t,Feat & features)
     {
@@ -372,7 +382,7 @@ create_visitor(A & a, B & b, C & c)
 /** factory method to to be used with RandomForest::learn()
  */
 template<class A, class B, class C, class D>
-detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C,
     detail::VisitorNode<D> > > >
 create_visitor(A & a, B & b, C & c, D & d)
 {
@@ -391,9 +401,9 @@ create_visitor(A & a, B & b, C & c, D & d)
 /** factory method to to be used with RandomForest::learn()
  */
 template<class A, class B, class C, class D, class E>
-detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C,
     detail::VisitorNode<D, detail::VisitorNode<E> > > > >
-create_visitor(A & a, B & b, C & c, 
+create_visitor(A & a, B & b, C & c,
                D & d, E & e)
 {
    typedef detail::VisitorNode<E> _4_t;
@@ -414,9 +424,9 @@ create_visitor(A & a, B & b, C & c,
  */
 template<class A, class B, class C, class D, class E,
          class F>
-detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C,
     detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F> > > > > >
-create_visitor(A & a, B & b, C & c, 
+create_visitor(A & a, B & b, C & c,
                D & d, E & e, F & f)
 {
    typedef detail::VisitorNode<F> _5_t;
@@ -439,10 +449,10 @@ create_visitor(A & a, B & b, C & c,
  */
 template<class A, class B, class C, class D, class E,
          class F, class G>
-detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
-    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F, 
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C,
+    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F,
     detail::VisitorNode<G> > > > > > >
-create_visitor(A & a, B & b, C & c, 
+create_visitor(A & a, B & b, C & c,
                D & d, E & e, F & f, G & g)
 {
    typedef detail::VisitorNode<G> _6_t;
@@ -467,11 +477,11 @@ create_visitor(A & a, B & b, C & c,
  */
 template<class A, class B, class C, class D, class E,
          class F, class G, class H>
-detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
-    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F, 
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C,
+    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F,
     detail::VisitorNode<G, detail::VisitorNode<H> > > > > > > >
-create_visitor(A & a, B & b, C & c, 
-               D & d, E & e, F & f, 
+create_visitor(A & a, B & b, C & c,
+               D & d, E & e, F & f,
                G & g, H & h)
 {
    typedef detail::VisitorNode<H> _7_t;
@@ -498,11 +508,11 @@ create_visitor(A & a, B & b, C & c,
  */
 template<class A, class B, class C, class D, class E,
          class F, class G, class H, class I>
-detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
-    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F, 
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C,
+    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F,
     detail::VisitorNode<G, detail::VisitorNode<H, detail::VisitorNode<I> > > > > > > > >
-create_visitor(A & a, B & b, C & c, 
-               D & d, E & e, F & f, 
+create_visitor(A & a, B & b, C & c,
+               D & d, E & e, F & f,
                G & g, H & h, I & i)
 {
    typedef detail::VisitorNode<I> _8_t;
@@ -530,12 +540,12 @@ create_visitor(A & a, B & b, C & c,
  */
 template<class A, class B, class C, class D, class E,
          class F, class G, class H, class I, class J>
-detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
-    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F, 
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C,
+    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F,
     detail::VisitorNode<G, detail::VisitorNode<H, detail::VisitorNode<I,
     detail::VisitorNode<J> > > > > > > > > >
-create_visitor(A & a, B & b, C & c, 
-               D & d, E & e, F & f, 
+create_visitor(A & a, B & b, C & c,
+               D & d, E & e, F & f,
                G & g, H & h, I & i,
                J & j)
 {
@@ -637,9 +647,9 @@ public:
     {
         tree_id++;
     }
-    
+
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
+    void visit_after_split( Tree          & tree,
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
@@ -749,7 +759,7 @@ public:
             }
         }
     /** do something when visiting a extern node during getToLeaf
-     * 
+     *
      * Store the new index!
      */
 };
@@ -760,13 +770,13 @@ public:
 
 
 /** Visitor that calculates the oob error of each individual randomized
- * decision tree. 
+ * decision tree.
  *
  * After training a tree, all those samples that are OOB for this particular tree
- * are put down the tree and the error estimated. 
- * the per tree oob error is the average of the individual error estimates. 
+ * are put down the tree and the error estimated.
+ * the per tree oob error is the average of the individual error estimates.
  * (oobError = average error of one randomized tree)
- * Note: This is Not the OOB - Error estimate suggested by Breiman (See OOB_Error 
+ * Note: This is Not the OOB - Error estimate suggested by Breiman (See OOB_Error
  * visitor)
  */
 class OOB_PerTreeError:public VisitorBase
@@ -793,7 +803,7 @@ public:
 
     /** does the basic calculation per tree*/
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF & rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF & rf, PR & pr,  SM & sm, ST &, int index)
     {
         //do the first time called.
         if(int(oobCount.size()) != rf.ext_param_.row_count_)
@@ -809,7 +819,7 @@ public:
             {
                 ++oobCount[l];
                 if(     rf.tree(index)
-                            .predictLabel(rowVector(pr.features(), l)) 
+                            .predictLabel(rowVector(pr.features(), l))
                     !=  pr.response()(l,0))
                 {
                     ++oobErrorCount[l];
@@ -822,7 +832,7 @@ public:
     /** Does the normalisation
      */
     template<class RF, class PR>
-    void visit_at_end(RF & rf, PR & pr)
+    void visit_at_end(RF & rf, PR &)
     {
         // do some normalisation
         for(int l=0; l < static_cast<int>(rf.ext_param_.row_count_); ++l)
@@ -832,21 +842,22 @@ public:
                 oobError += double(oobErrorCount[l]) / oobCount[l];
                 ++totalOobCount;
             }
-        } 
+        }
         oobError/=totalOobCount;
     }
-    
+
 };
 
 /** Visitor that calculates the oob error of the ensemble
- *  This rate should be used to estimate the crossvalidation 
- *  error rate.
- *  Here each sample is put down those trees, for which this sample
- *  is OOB i.e. if sample #1 is  OOB for trees 1, 3 and 5 we calculate
- *  the output using the ensemble consisting only of trees 1 3 and 5. 
  *
- *  Using normal bagged sampling each sample is OOB for approx. 33% of trees
- *  The error rate obtained as such therefore corresponds to crossvalidation
+ *  This rate serves as a quick estimate for the crossvalidation
+ *  error rate.
+ *  Here, each sample is put down the trees for which this sample
+ *  is OOB, i.e., if sample #1 is  OOB for trees 1, 3 and 5, we calculate
+ *  the output using the ensemble consisting only of trees 1 3 and 5.
+ *
+ *  Using normal bagged sampling each sample is OOB for approx. 33% of trees.
+ *  The error rate obtained as such therefore corresponds to a crossvalidation
  *  rate obtained using a ensemble containing 33% of the trees.
  */
 class OOB_Error : public VisitorBase
@@ -857,13 +868,13 @@ class OOB_Error : public VisitorBase
     MultiArray<2,double> tmp_prob;
     public:
 
-    MultiArray<2, double>       prob_oob; 
+    MultiArray<2, double>       prob_oob;
     /** Ensemble oob error rate
      */
     double                      oob_breiman;
 
     MultiArray<2, double>       oobCount;
-    ArrayVector< int>           indices; 
+    ArrayVector< int>           indices;
     OOB_Error() : VisitorBase(), oob_breiman(0.0) {}
 #ifdef HasHDF5
     void save(std::string filen, std::string pathn)
@@ -871,7 +882,7 @@ class OOB_Error : public VisitorBase
         if(*(pathn.end()-1) != '/')
             pathn += "/";
         const char* filename = filen.c_str();
-        MultiArray<2, double> temp(Shp(1,1), 0.0); 
+        MultiArray<2, double> temp(Shp(1,1), 0.0);
         temp[0] = oob_breiman;
         writeHDF5(filename, (pathn + "breiman_error").c_str(), temp);
     }
@@ -880,10 +891,10 @@ class OOB_Error : public VisitorBase
     //  value >=0  if sample was oob, 0 means fail 1, correct
 
     template<class RF, class PR>
-    void visit_at_beginning(RF & rf, PR & pr)
+    void visit_at_beginning(RF & rf, PR &)
     {
         class_count = rf.class_count();
-        tmp_prob.reshape(Shp(1, class_count), 0); 
+        tmp_prob.reshape(Shp(1, class_count), 0);
         prob_oob.reshape(Shp(rf.ext_param().row_count_,class_count), 0);
         is_weighted = rf.options().predict_weighted_;
         indices.resize(rf.ext_param().row_count_);
@@ -898,13 +909,13 @@ class OOB_Error : public VisitorBase
     }
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST &, int index)
     {
         // go through the samples
         int total_oob =0;
         // FIXME: magic number 10000: invoke special treatment when when msample << sample_count
         //                            (i.e. the OOB sample ist very large)
-        //                     40000: use at most 40000 OOB samples per class for OOB error estimate 
+        //                     40000: use at most 40000 OOB samples per class for OOB error estimate
         if(rf.ext_param_.actual_msample_ < pr.features().shape(0) - 10000)
         {
             ArrayVector<int> oob_indices;
@@ -924,13 +935,13 @@ class OOB_Error : public VisitorBase
                 ++oobCount[oob_indices[ll]];
 
                 // update number of oob samples in this tree.
-                ++total_oob; 
+                ++total_oob;
                 // get the predicted votes ---> tmp_prob;
                 int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),oob_indices[ll]));
-                Node<e_ConstProbNode> node ( rf.tree(index).topology_, 
+                Node<e_ConstProbNode> node ( rf.tree(index).topology_,
                                                     rf.tree(index).parameters_,
                                                     pos);
-                tmp_prob.init(0); 
+                tmp_prob.init(0);
                 for(int ii = 0; ii < class_count; ++ii)
                 {
                     tmp_prob[ii] = node.prob_begin()[ii];
@@ -941,7 +952,7 @@ class OOB_Error : public VisitorBase
                         tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
                 }
                 rowVector(prob_oob, oob_indices[ll]) += tmp_prob;
-                
+
             }
         }else
         {
@@ -954,13 +965,13 @@ class OOB_Error : public VisitorBase
                     ++oobCount[ll];
 
                     // update number of oob samples in this tree.
-                    ++total_oob; 
+                    ++total_oob;
                     // get the predicted votes ---> tmp_prob;
                     int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),ll));
-                    Node<e_ConstProbNode> node ( rf.tree(index).topology_, 
+                    Node<e_ConstProbNode> node ( rf.tree(index).topology_,
                                                         rf.tree(index).parameters_,
                                                         pos);
-                    tmp_prob.init(0); 
+                    tmp_prob.init(0);
                     for(int ii = 0; ii < class_count; ++ii)
                     {
                         tmp_prob[ii] = node.prob_begin()[ii];
@@ -974,7 +985,7 @@ class OOB_Error : public VisitorBase
                 }
             }
         }
-        // go through the ib samples; 
+        // go through the ib samples;
     }
 
     /** Normalise variable importance after the number of trees is known.
@@ -994,7 +1005,7 @@ class OOB_Error : public VisitorBase
                 ++totalOobCount;
             }
         }
-        oob_breiman = double(breimanstyle)/totalOobCount; 
+        oob_breiman = double(breimanstyle)/totalOobCount;
     }
 };
 
@@ -1018,8 +1029,8 @@ class CompleteOOBInfo : public VisitorBase
     /**Standard deviation of oob_per_tree
      */
     double                      oob_std;
-    
-    MultiArray<2, double>       prob_oob; 
+
+    MultiArray<2, double>       prob_oob;
     /** Ensemble OOB error
      *
      * \sa OOB_Error
@@ -1037,11 +1048,11 @@ class CompleteOOBInfo : public VisitorBase
      * error rate with increasing number of trees
      */
     MultiArray<2, double>       breiman_per_tree;
-    /** 4 dimensional array containing the development of confusion matrices 
+    /** 4 dimensional array containing the development of confusion matrices
      * with number of trees - can be used to estimate ROC curves etc.
      *
-     * oobroc_per_tree(ii,jj,kk,ll) 
-     * corresponds true label = ii 
+     * oobroc_per_tree(ii,jj,kk,ll)
+     * corresponds true label = ii
      * predicted label = jj
      * confusion matrix after ll trees
      *
@@ -1054,7 +1065,7 @@ class CompleteOOBInfo : public VisitorBase
      * kk = 0. Threshold on probability set by argMax of the probability array.
      */
     MultiArray<4, double>       oobroc_per_tree;
-    
+
     CompleteOOBInfo() : VisitorBase(), oob_mean(0), oob_std(0), oob_per_tree2(0)  {}
 
 #ifdef HasHDF5
@@ -1065,7 +1076,7 @@ class CompleteOOBInfo : public VisitorBase
         if(*(pathn.end()-1) != '/')
             pathn += "/";
         const char* filename = filen.c_str();
-        MultiArray<2, double> temp(Shp(1,1), 0.0); 
+        MultiArray<2, double> temp(Shp(1,1), 0.0);
         writeHDF5(filename, (pathn + "oob_per_tree").c_str(), oob_per_tree);
         writeHDF5(filename, (pathn + "oobroc_per_tree").c_str(), oobroc_per_tree);
         writeHDF5(filename, (pathn + "breiman_per_tree").c_str(), breiman_per_tree);
@@ -1083,14 +1094,14 @@ class CompleteOOBInfo : public VisitorBase
     //  value >=0  if sample was oob, 0 means fail 1, correct
 
     template<class RF, class PR>
-    void visit_at_beginning(RF & rf, PR & pr)
+    void visit_at_beginning(RF & rf, PR &)
     {
         class_count = rf.class_count();
         if(class_count == 2)
             oobroc_per_tree.reshape(MultiArrayShape<4>::type(2,2,rf.tree_count(), rf.tree_count()));
         else
             oobroc_per_tree.reshape(MultiArrayShape<4>::type(rf.class_count(),rf.class_count(),1, rf.tree_count()));
-        tmp_prob.reshape(Shp(1, class_count), 0); 
+        tmp_prob.reshape(Shp(1, class_count), 0);
         prob_oob.reshape(Shp(rf.ext_param().row_count_,class_count), 0);
         is_weighted = rf.options().predict_weighted_;
         oob_per_tree.reshape(Shp(1, rf.tree_count()), 0);
@@ -1104,7 +1115,7 @@ class CompleteOOBInfo : public VisitorBase
     }
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST &, int index)
     {
         // go through the samples
         int total_oob =0;
@@ -1118,13 +1129,13 @@ class CompleteOOBInfo : public VisitorBase
                 ++oobCount[ll];
 
                 // update number of oob samples in this tree.
-                ++total_oob; 
+                ++total_oob;
                 // get the predicted votes ---> tmp_prob;
                 int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),ll));
-                Node<e_ConstProbNode> node ( rf.tree(index).topology_, 
+                Node<e_ConstProbNode> node ( rf.tree(index).topology_,
                                                     rf.tree(index).parameters_,
                                                     pos);
-                tmp_prob.init(0); 
+                tmp_prob.init(0);
                 for(int ii = 0; ii < class_count; ++ii)
                 {
                     tmp_prob[ii] = node.prob_begin()[ii];
@@ -1135,8 +1146,8 @@ class CompleteOOBInfo : public VisitorBase
                         tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
                 }
                 rowVector(prob_oob, ll) += tmp_prob;
-                int label = argMax(tmp_prob); 
-                
+                int label = argMax(tmp_prob);
+
                 if(label != pr.response()(ll, 0))
                 {
                     // update number of wrong oob samples in this tree.
@@ -1165,7 +1176,7 @@ class CompleteOOBInfo : public VisitorBase
             oobroc_per_tree.bindOuter(index)/=totalOobCount;
         if(oobroc_per_tree.shape(2) > 1)
         {
-            MultiArrayView<3, double> current_roc 
+            MultiArrayView<3, double> current_roc
                     = oobroc_per_tree.bindOuter(index);
             for(int gg = 0; gg < current_roc.shape(2); ++gg)
             {
@@ -1174,8 +1185,8 @@ class CompleteOOBInfo : public VisitorBase
                     if(oobCount[ll])
                     {
                         int pred = prob_oob(ll, 1) > (double(gg)/double(current_roc.shape(2)))?
-                                        1 : 0; 
-                        current_roc(pr.response()(ll, 0), pred, gg)+= 1; 
+                                        1 : 0;
+                        current_roc(pr.response()(ll, 0), pred, gg)+= 1;
                     }
                 }
                 current_roc.bindOuter(gg)/= totalOobCount;
@@ -1183,7 +1194,7 @@ class CompleteOOBInfo : public VisitorBase
         }
         breiman_per_tree[index] = double(breimanstyle)/double(totalOobCount);
         oob_per_tree[index] = double(wrong_oob)/double(total_oob);
-        // go through the ib samples; 
+        // go through the ib samples;
     }
 
     /** Normalise variable importance after the number of trees is known.
@@ -1192,7 +1203,7 @@ class CompleteOOBInfo : public VisitorBase
     void visit_at_end(RF & rf, PR & pr)
     {
         // ullis original metric and breiman style stuff
-        oob_per_tree2 = 0; 
+        oob_per_tree2 = 0;
         int totalOobCount =0;
         int breimanstyle = 0;
         for(int ll=0; ll < static_cast<int>(rf.ext_param_.row_count_); ++ll)
@@ -1205,8 +1216,8 @@ class CompleteOOBInfo : public VisitorBase
                 ++totalOobCount;
             }
         }
-        oob_per_tree2 /= totalOobCount; 
-        oob_breiman = double(breimanstyle)/totalOobCount; 
+        oob_per_tree2 /= totalOobCount;
+        oob_breiman = double(breimanstyle)/totalOobCount;
         // mean error of each tree
         MultiArrayView<2, double> mean(Shp(1,1), &oob_mean);
         MultiArrayView<2, double> stdDev(Shp(1,1), &oob_std);
@@ -1223,10 +1234,10 @@ class VariableImportanceVisitor : public VisitorBase
     /** This Array has the same entries as the R - random forest variable
      *  importance.
      *  Matrix is   featureCount by (classCount +2)
-     *  variable_importance_(ii,jj) is the variable importance measure of 
+     *  variable_importance_(ii,jj) is the variable importance measure of
      *  the ii-th variable according to:
      *  jj = 0 - (classCount-1)
-     *      classwise permutation importance 
+     *      classwise permutation importance
      *  jj = rowCount(variable_importance_) -2
      *      permutation importance
      *  jj = rowCount(variable_importance_) -1
@@ -1238,11 +1249,11 @@ class VariableImportanceVisitor : public VisitorBase
      *  The ii-th column is permuted rep_cnt times.
      *
      *  class wise permutation importance:
-     *  same as permutation importance. We only look at those OOB samples whose 
+     *  same as permutation importance. We only look at those OOB samples whose
      *  response corresponds to class jj.
      *
      *  gini decrease importance:
-     *  row ii corresponds to the sum of all gini decreases induced by variable ii 
+     *  row ii corresponds to the sum of all gini decreases induced by variable ii
      *  in each node of the random forest.
      */
     MultiArray<2, double>       variable_importance_;
@@ -1253,27 +1264,27 @@ class VariableImportanceVisitor : public VisitorBase
     void save(std::string filename, std::string prefix)
     {
         prefix = "variable_importance_" + prefix;
-        writeHDF5(filename.c_str(), 
-                        prefix.c_str(), 
+        writeHDF5(filename.c_str(),
+                        prefix.c_str(),
                         variable_importance_);
     }
 #endif
 
     /* Constructor
-     * \param rep_cnt (defautl: 10) how often should 
+     * \param rep_cnt (defautl: 10) how often should
      * the permutation take place. Set to 1 to make calculation faster (but
      * possibly more instable)
      */
-    VariableImportanceVisitor(int rep_cnt = 10) 
+    VariableImportanceVisitor(int rep_cnt = 10)
     :   repetition_count_(rep_cnt)
 
     {}
 
     /** calculates impurity decrease based variable importance after every
-     * split.  
+     * split.
      */
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
+    void visit_after_split( Tree          & tree,
                             Split         & split,
                             Region        & /* parent */,
                             Region        & /* leftChild */,
@@ -1282,29 +1293,29 @@ class VariableImportanceVisitor : public VisitorBase
                             Label_t       & /* labels */)
     {
         //resize to right size when called the first time
-        
+
         Int32 const  class_count = tree.ext_param_.class_count_;
         Int32 const  column_count = tree.ext_param_.column_count_;
         if(variable_importance_.size() == 0)
         {
-            
+
             variable_importance_
-                .reshape(MultiArrayShape<2>::type(column_count, 
+                .reshape(MultiArrayShape<2>::type(column_count,
                                                  class_count+2));
         }
 
         if(split.createNode().typeID() == i_ThresholdNode)
         {
             Node<i_ThresholdNode> node(split.createNode());
-            variable_importance_(node.column(),class_count+1) 
+            variable_importance_(node.column(),class_count+1)
                 += split.region_gini_ - split.minGini();
         }
     }
 
-    /**compute permutation based var imp. 
+    /**compute permutation based var imp.
      * (Only an Array of size oob_sample_count x 1 is created.
      *  - apposed to oob_sample_count x feature_count in the other method.
-     * 
+     *
      * \sa FieldProxy
      */
     template<class RF, class PR, class SM, class ST>
@@ -1312,14 +1323,14 @@ class VariableImportanceVisitor : public VisitorBase
     {
         typedef MultiArrayShape<2>::type Shp_t;
         Int32                   column_count = rf.ext_param_.column_count_;
-        Int32                   class_count  = rf.ext_param_.class_count_;  
-        
+        Int32                   class_count  = rf.ext_param_.class_count_;
+
         /* This solution saves memory uptake but not multithreading
          * compatible
          */
-        // remove the const cast on the features (yep , I know what I am 
+        // remove the const cast on the features (yep , I know what I am
         // doing here.) data is not destroyed.
-        //typename PR::Feature_t & features 
+        //typename PR::Feature_t & features
         //    = const_cast<typename PR::Feature_t &>(pr.features());
 
         typedef typename PR::FeatureWithMemory_t FeatureArray;
@@ -1327,7 +1338,7 @@ class VariableImportanceVisitor : public VisitorBase
 
         FeatureArray features = pr.features();
 
-        //find the oob indices of current tree. 
+        //find the oob indices of current tree.
         ArrayVector<Int32>      oob_indices;
         ArrayVector<Int32>::iterator
                                 iter;
@@ -1335,33 +1346,33 @@ class VariableImportanceVisitor : public VisitorBase
             if(!sm.is_used()[ii])
                 oob_indices.push_back(ii);
 
-        //create space to back up a column      
+        //create space to back up a column
         ArrayVector<FeatureValue>     backup_column;
 
         // Random foo
 #ifdef CLASSIFIER_TEST
         RandomMT19937           random(1);
-#else 
+#else
         RandomMT19937           random(RandomSeed);
 #endif
-        UniformIntRandomFunctor<RandomMT19937>  
+        UniformIntRandomFunctor<RandomMT19937>
                                 randint(random);
 
 
         //make some space for the results
         MultiArray<2, double>
-                    oob_right(Shp_t(1, class_count + 1)); 
+                    oob_right(Shp_t(1, class_count + 1));
         MultiArray<2, double>
-                    perm_oob_right (Shp_t(1, class_count + 1)); 
-            
-        
+                    perm_oob_right (Shp_t(1, class_count + 1));
+
+
         // get the oob success rate with the original samples
-        for(iter = oob_indices.begin(); 
-            iter != oob_indices.end(); 
+        for(iter = oob_indices.begin();
+            iter != oob_indices.end();
             ++iter)
         {
             if(rf.tree(index)
-                    .predictLabel(rowVector(features, *iter)) 
+                    .predictLabel(rowVector(features, *iter))
                 ==  pr.response()(*iter, 0))
             {
                 //per class
@@ -1373,32 +1384,32 @@ class VariableImportanceVisitor : public VisitorBase
         //get the oob rate after permuting the ii'th dimension.
         for(int ii = 0; ii < column_count; ++ii)
         {
-            perm_oob_right.init(0.0); 
+            perm_oob_right.init(0.0);
             //make backup of original column
             backup_column.clear();
-            for(iter = oob_indices.begin(); 
-                iter != oob_indices.end(); 
+            for(iter = oob_indices.begin();
+                iter != oob_indices.end();
                 ++iter)
             {
                 backup_column.push_back(features(*iter,ii));
             }
-            
+
             //get the oob rate after permuting the ii'th dimension.
             for(int rr = 0; rr < repetition_count_; ++rr)
-            {               
-                //permute dimension. 
+            {
+                //permute dimension.
                 int n = oob_indices.size();
                 for(int jj = n-1; jj >= 1; --jj)
-                    std::swap(features(oob_indices[jj], ii), 
+                    std::swap(features(oob_indices[jj], ii),
                               features(oob_indices[randint(jj+1)], ii));
 
                 //get the oob success rate after permuting
-                for(iter = oob_indices.begin(); 
-                    iter != oob_indices.end(); 
+                for(iter = oob_indices.begin();
+                    iter != oob_indices.end();
                     ++iter)
                 {
                     if(rf.tree(index)
-                            .predictLabel(rowVector(features, *iter)) 
+                            .predictLabel(rowVector(features, *iter))
                         ==  pr.response()(*iter, 0))
                     {
                         //per class
@@ -1408,15 +1419,15 @@ class VariableImportanceVisitor : public VisitorBase
                     }
                 }
             }
-            
-            
+
+
             //normalise and add to the variable_importance array.
             perm_oob_right  /=  repetition_count_;
             perm_oob_right -=oob_right;
             perm_oob_right *= -1;
             perm_oob_right      /=  oob_indices.size();
             variable_importance_
-                .subarray(Shp_t(ii,0), 
+                .subarray(Shp_t(ii,0),
                           Shp_t(ii+1,class_count+1)) += perm_oob_right;
             //copy back permuted dimension
             for(int jj = 0; jj < int(oob_indices.size()); ++jj)
@@ -1424,10 +1435,10 @@ class VariableImportanceVisitor : public VisitorBase
         }
     }
 
-    /** calculate permutation based impurity after every tree has been 
+    /** calculate permutation based impurity after every tree has been
      * learned  default behaviour is that this happens out of place.
-     * If you have very big data sets and want to avoid copying of data 
-     * set the in_place_ flag to true. 
+     * If you have very big data sets and want to avoid copying of data
+     * set the in_place_ flag to true.
      */
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
@@ -1451,7 +1462,7 @@ class RandomForestProgressVisitor : public VisitorBase {
     RandomForestProgressVisitor() : VisitorBase() {}
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index){
+    void visit_after_tree(RF& rf, PR &,  SM &, ST &, int index){
         if(index != rf.options().tree_count_-1) {
             std::cout << "\r[" << std::setw(10) << (index+1)/static_cast<double>(rf.options().tree_count_)*100 << "%]"
                       << " (" << index+1 << " of " << rf.options().tree_count_ << ") done" << std::flush;
@@ -1460,19 +1471,19 @@ class RandomForestProgressVisitor : public VisitorBase {
             std::cout << "\r[" << std::setw(10) << 100.0 << "%]" << std::endl;
         }
     }
-    
+
     template<class RF, class PR>
-    void visit_at_end(RF const & rf, PR const & pr) {
+    void visit_at_end(RF const & rf, PR const &) {
         std::string a = TOCS;
         std::cout << "all " << rf.options().tree_count_ << " trees have been learned in " << a  << std::endl;
     }
-    
+
     template<class RF, class PR>
-    void visit_at_beginning(RF const & rf, PR const & pr) {
+    void visit_at_beginning(RF const & rf, PR const &) {
         TIC;
         std::cout << "growing random forest, which will have " << rf.options().tree_count_ << " trees" << std::endl;
     }
-    
+
     private:
     USETICTOC;
 };
@@ -1486,10 +1497,10 @@ class CorrelationVisitor : public VisitorBase
     public:
     /** gini_missc(ii, jj) describes how well variable jj can describe a partition
      * created on variable ii(when variable ii was chosen)
-     */ 
+     */
     MultiArray<2, double>   gini_missc;
     MultiArray<2, int>      tmp_labels;
-    /** additional noise features. 
+    /** additional noise features.
      */
     MultiArray<2, double>   noise;
     MultiArray<2, double>   noise_l;
@@ -1499,26 +1510,26 @@ class CorrelationVisitor : public VisitorBase
     MultiArray<2, double>   corr_l;
 
     /** Similarity Matrix
-     * 
+     *
      * (numberOfFeatures + 1) by (number Of Features + 1) Matrix
-     * gini_missc 
+     * gini_missc
      *  - row normalized by the number of times the column was chosen
      *  - mean of corr_noise subtracted
-     *  - and symmetrised. 
-     *          
+     *  - and symmetrised.
+     *
      */
     MultiArray<2, double>   similarity;
     /** Distance Matrix 1-similarity
      */
     MultiArray<2, double>   distance;
     ArrayVector<int>        tmp_cc;
-    
+
     /** How often was variable ii chosen
      */
     ArrayVector<int>        numChoices;
     typedef BestGiniOfColumn<GiniCriterion> ColumnDecisionFunctor;
     BestGiniOfColumn<GiniCriterion>         bgfunc;
-    void save(std::string file, std::string prefix)
+    void save(std::string, std::string)
     {
         /*
         std::string tmp;
@@ -1554,20 +1565,20 @@ class CorrelationVisitor : public VisitorBase
             noise_l[ii] = random.uniform53()  > 0.5;
         }
         bgfunc = ColumnDecisionFunctor( rf.ext_param_);
-        tmp_labels.reshape(pr.response().shape()); 
+        tmp_labels.reshape(pr.response().shape());
         tmp_cc.resize(2);
         numChoices.resize(n+1);
         // look at all axes
     }
     template<class RF, class PR>
-    void visit_at_end(RF const & rf, PR const & pr)
+    void visit_at_end(RF const &, PR const &)
     {
         typedef MultiArrayShape<2>::type Shp;
         similarity.reshape(gini_missc.shape());
         similarity = gini_missc;;
         MultiArray<2, double> mean_noise(Shp(corr_noise.shape(0), 1));
         rowStatistics(corr_noise, mean_noise);
-        mean_noise/= MultiArrayView<2, int>(mean_noise.shape(), numChoices.data());        
+        mean_noise/= MultiArrayView<2, int>(mean_noise.shape(), numChoices.data());
         int rC = similarity.shape(0);
         for(int jj = 0; jj < rC-1; ++jj)
         {
@@ -1582,132 +1593,132 @@ class CorrelationVisitor : public VisitorBase
         similarity = abs(similarity);
         FindMinMax<double> minmax;
         inspectMultiArray(srcMultiArrayRange(similarity), minmax);
-        
+
         for(int jj = 0; jj < rC; ++jj)
             similarity(jj, jj) = minmax.max;
-        
-        similarity.subarray(Shp(0,0), Shp(rC-1, rC-1)) 
+
+        similarity.subarray(Shp(0,0), Shp(rC-1, rC-1))
             += similarity.subarray(Shp(0,0), Shp(rC-1, rC-1)).transpose();
-        similarity.subarray(Shp(0,0), Shp(rC-1, rC-1))/= 2;  
+        similarity.subarray(Shp(0,0), Shp(rC-1, rC-1))/= 2;
         columnVector(similarity, rC-1) = rowVector(similarity, rC-1).transpose();
         for(int jj = 0; jj < rC; ++jj)
             similarity(jj, jj) = 0;
-        
+
         FindMinMax<double> minmax2;
         inspectMultiArray(srcMultiArrayRange(similarity), minmax2);
         for(int jj = 0; jj < rC; ++jj)
             similarity(jj, jj) = minmax2.max;
         distance.reshape(gini_missc.shape(), minmax2.max);
-        distance -= similarity; 
+        distance -= similarity;
     }
 
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree          & tree, 
+    void visit_after_split( Tree          &,
                             Split         & split,
                             Region        & parent,
-                            Region        & leftChild,
-                            Region        & rightChild,
+                            Region        &,
+                            Region        &,
                             Feature_t     & features,
                             Label_t       & labels)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
             double wgini;
-            tmp_cc.init(0); 
+            tmp_cc.init(0);
             for(int ii = 0; ii < parent.size(); ++ii)
             {
-                tmp_labels[parent[ii]] 
+                tmp_labels[parent[ii]]
                     = (features(parent[ii], split.bestSplitColumn()) < split.bestSplitThreshold());
                 ++tmp_cc[tmp_labels[parent[ii]]];
             }
-            double region_gini = bgfunc.loss_of_region(tmp_labels, 
+            double region_gini = bgfunc.loss_of_region(tmp_labels,
                                                        parent.begin(),
                                                        parent.end(),
                                                        tmp_cc);
 
-            int n = split.bestSplitColumn(); 
+            int n = split.bestSplitColumn();
             ++numChoices[n];
             ++(*(numChoices.end()-1));
             //this functor does all the work
             for(int k = 0; k < features.shape(1); ++k)
             {
                 bgfunc(columnVector(features, k),
-                       tmp_labels, 
-                       parent.begin(), parent.end(), 
+                       tmp_labels,
+                       parent.begin(), parent.end(),
                        tmp_cc);
                 wgini = (region_gini - bgfunc.min_gini_);
-                gini_missc(n, k) 
+                gini_missc(n, k)
                     += wgini;
             }
             for(int k = 0; k < 10; ++k)
             {
                 bgfunc(columnVector(noise, k),
-                       tmp_labels, 
-                       parent.begin(), parent.end(), 
+                       tmp_labels,
+                       parent.begin(), parent.end(),
                        tmp_cc);
                 wgini = (region_gini - bgfunc.min_gini_);
-                corr_noise(n, k) 
+                corr_noise(n, k)
                     += wgini;
             }
-            
+
             for(int k = 0; k < 10; ++k)
             {
                 bgfunc(columnVector(noise_l, k),
-                       tmp_labels, 
-                       parent.begin(), parent.end(), 
+                       tmp_labels,
+                       parent.begin(), parent.end(),
                        tmp_cc);
                 wgini = (region_gini - bgfunc.min_gini_);
-                corr_l(n, k) 
+                corr_l(n, k)
                     += wgini;
             }
             bgfunc(labels, tmp_labels, parent.begin(), parent.end(),tmp_cc);
             wgini = (region_gini - bgfunc.min_gini_);
-            gini_missc(n, columnCount(gini_missc)-1) 
+            gini_missc(n, columnCount(gini_missc)-1)
                 += wgini;
-            
+
             region_gini = split.region_gini_;
-#if 1 
+#if 1
             Node<i_ThresholdNode> node(split.createNode());
-            gini_missc(rowCount(gini_missc)-1, 
-                                  node.column()) 
+            gini_missc(rowCount(gini_missc)-1,
+                                  node.column())
                  +=split.region_gini_ - split.minGini();
 #endif
             for(int k = 0; k < 10; ++k)
             {
                 split.bgfunc(columnVector(noise, k),
-                             labels, 
-                             parent.begin(), parent.end(), 
+                             labels,
+                             parent.begin(), parent.end(),
                              parent.classCounts());
-                corr_noise(rowCount(gini_missc)-1, 
-                           k) 
+                corr_noise(rowCount(gini_missc)-1,
+                           k)
                      += wgini;
             }
 #if 0
             for(int k = 0; k < tree.ext_param_.actual_mtry_; ++k)
             {
                 wgini = region_gini - split.min_gini_[k];
-                
-                gini_missc(rowCount(gini_missc)-1, 
-                                      split.splitColumns[k]) 
+
+                gini_missc(rowCount(gini_missc)-1,
+                                      split.splitColumns[k])
                      += wgini;
             }
-            
+
             for(int k=tree.ext_param_.actual_mtry_; k<features.shape(1); ++k)
             {
                 split.bgfunc(columnVector(features, split.splitColumns[k]),
-                             labels, 
-                             parent.begin(), parent.end(), 
+                             labels,
+                             parent.begin(), parent.end(),
                              parent.classCounts());
                 wgini = region_gini - split.bgfunc.min_gini_;
-                gini_missc(rowCount(gini_missc)-1, 
+                gini_missc(rowCount(gini_missc)-1,
                                       split.splitColumns[k]) += wgini;
             }
 #endif
             // remember to partition the data according to the best.
-                gini_missc(rowCount(gini_missc)-1, 
-                           columnCount(gini_missc)-1) 
+                gini_missc(rowCount(gini_missc)-1,
+                           columnCount(gini_missc)-1)
                      += region_gini;
-                SortSamplesByDimensions<Feature_t> 
+                SortSamplesByDimensions<Feature_t>
                 sorter(features, split.bestSplitColumn(), split.bestSplitThreshold());
             std::partition(parent.begin(), parent.end(), sorter);
         }
@@ -1719,5 +1730,4 @@ class CorrelationVisitor : public VisitorBase
 } // namespace rf
 } // namespace vigra
 
-//@}
 #endif // RF_VISITORS_HXX

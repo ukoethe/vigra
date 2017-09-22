@@ -235,15 +235,15 @@ inline python_ptr pythonFromData(bool t)
 inline python_ptr pythonFromData(char const * str)
 {
 #if PY_MAJOR_VERSION < 3
-	return python_ptr(PyString_FromString(str), python_ptr::new_nonzero_reference);
+    return python_ptr(PyString_FromString(str), python_ptr::new_nonzero_reference);
 #else
-	return python_ptr(PyUnicode_FromString(str), python_ptr::new_nonzero_reference);
+    return python_ptr(PyUnicode_FromString(str), python_ptr::new_nonzero_reference);
 #endif
 }
 
 inline python_ptr pythonFromData(std::string const & str)
 {
-	return pythonFromData(str.c_str());
+    return pythonFromData(str.c_str());
 }
 
 #define VIGRA_PYTHON_FROM_DATA(type, fct, cast_type) \
@@ -339,7 +339,7 @@ inline std::string dataFromPython(PyObject * data, const char * defaultVal)
     return data && PyString_Check(data)
         ? std::string(PyString_AsString(data))
 #else
-	python_ptr ascii(PyUnicode_AsASCIIString(data), python_ptr::keep_count);
+    python_ptr ascii(PyUnicode_AsASCIIString(data), python_ptr::keep_count);
     return data && PyBytes_Check(ascii)
         ? std::string(PyBytes_AsString(ascii))
 #endif
@@ -352,9 +352,9 @@ inline std::string dataFromPython(PyObject * data, std::string const & defaultVa
     return data && PyString_Check(data)
         ? std::string(PyString_AsString(data))
 #else
-	python_ptr ascii(PyUnicode_AsASCIIString(data), python_ptr::keep_count);
-	return data && PyBytes_Check(ascii)
-		? std::string(PyBytes_AsString(ascii))
+    python_ptr ascii(PyUnicode_AsASCIIString(data), python_ptr::keep_count);
+    return data && PyBytes_Check(ascii)
+        ? std::string(PyBytes_AsString(ascii))
 #endif
         : defaultVal;
 }

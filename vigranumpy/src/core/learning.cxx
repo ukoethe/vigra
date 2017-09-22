@@ -133,6 +133,10 @@ void defineUnsupervised()
 void defineRandomForest();
 void defineRandomForestOld();
 
+namespace rf3 {
+void exportRandomForest3();
+}
+
 } // namespace vigra
 
 
@@ -145,6 +149,7 @@ BOOST_PYTHON_MODULE_INIT(learning)
     defineUnsupervised();
     defineRandomForest();
     defineRandomForestOld();
+    rf3::exportRandomForest3();
 }
 
 

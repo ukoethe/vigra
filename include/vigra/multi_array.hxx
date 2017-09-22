@@ -124,13 +124,13 @@ struct MultiIteratorChooser <StridedArrayTag>
     {
         typedef StridedMultiIterator <N, T, REFERENCE, POINTER> type;
     };
-    
+
     template <unsigned int N, class T, class REFERENCE, class POINTER>
     struct Iterator
     {
         typedef StridedScanOrderIterator <N, T, REFERENCE, POINTER> type;
     };
-    
+
     template <class Iter, class View>
     static Iter constructIterator(View * v)
     {
@@ -157,13 +157,13 @@ struct MultiIteratorChooser <UnstridedArrayTag>
     {
         typedef MultiIterator <N, T, REFERENCE, POINTER> type;
     };
-    
+
     template <unsigned int N, class T, class REFERENCE, class POINTER>
     struct Iterator
     {
         typedef POINTER type;
     };
-    
+
     template <class Iter, class View>
     static Iter constructIterator(View * v)
     {
@@ -471,12 +471,60 @@ swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 
 /********************************************************/
 /*                                                      */
-/*                     MultiArrayView                   */
+/*       namespace multi_math forward declarations      */
 /*                                                      */
 /********************************************************/
 
-// forward declarations
+/** \brief Arithmetic and algebraic functions for multi-dimensional arrays.
 
+    \defgroup MultiMathModule vigra::multi_math
+
+    Namespace <tt>vigra::multi_math</tt> holds VIGRA's support for efficient arithmetic and algebraic functions on multi-dimensional arrays (that is, \ref MultiArrayView and its subclasses). All <tt>multi_math</tt> functions operate element-wise. If you need matrix multiplication, use \ref LinearAlgebraModule instead.
+
+    In order to avoid overload ambiguities, multi-array arithmetic must be explicitly activated by
+    \code
+    using namespace vigra::multi_math;
+    \endcode
+    (this should not be done globally, but only in the scope where the functionality is actually used).
+
+    You can then use the standard operators in the expected way:
+    \code
+    MultiArray<2, float> i(Shape2(100, 100)), j(Shape2(100, 100));
+
+    MultiArray<2, float> h  = i + 4.0 * j;
+                         h += (i.transpose() - j) / 2.0;
+    \endcode
+    etc. (supported operators are <tt>+ - * / ! ~ % && || == != &lt; &lt;= &gt; &gt;= &lt;&lt; &gt;&gt; & | ^ = += -= *= /=</tt>, with both scalar and array arguments).
+
+    Algebraic functions are available as well:
+    \code
+    h  = exp(-(sq(i) + sq(j)));
+    h *= atan2(-i, j);
+    \endcode
+    The following functions are implemented: <tt>abs, erf, even, odd, sign, signi, round, roundi, sqrt, sqrti, sq,
+    norm, squaredNorm, gamma, loggamma, exp, log, log10, sin, sin_pi, cos, cos_pi, asin, acos, tan, atan,
+    floor, ceil, conj, real, imag, arg, atan2, pow, fmod, min, max</tt>,
+    provided the array's element type supports the respective function.
+
+    Supported element types currently include the built-in numeric types, \ref TinyVector, \ref RGBValue,
+    <tt>std::complex</tt>, and \ref FFTWComplex.
+
+    In addition, <tt>multi_math</tt> supports a number of functions that reduce arrays to scalars:
+    \code
+    double s = sum<double>(i);  // compute the sum of the elements, using 'double' as accumulator type
+    double p = product<double>(abs(i));  // compute the product of the elements' absolute values
+
+    bool a = any(i < 0.0);  // check if any element of i is negative
+    bool b = all(i > 0.0);  // check if all elements of i are positive
+    \endcode
+
+    Expressions are expanded so that no temporary arrays have to be created. To optimize cache locality,
+    loops are executed in the stride ordering of the left-hand-side array.
+
+    <b>\#include</b> \<vigra/multi_math.hxx\>
+
+    Namespace: vigra::multi_math
+*/
 namespace multi_math {
 
 template <class T>
@@ -610,20 +658,26 @@ struct NormTraits<MultiArray<N, T, A> >
     typedef typename BaseType::NormType                          NormType;
 };
 
+/********************************************************/
+/*                                                      */
+/*                     MultiArrayView                   */
+/*                                                      */
+/********************************************************/
+
 /** \brief Base class for, and view to, \ref vigra::MultiArray.
 
 This class implements the interface of both MultiArray and
 MultiArrayView.  By default, MultiArrayViews are tagged as
-strided (using <tt>StridedArrayTag</tt> as third template parameter). 
+strided (using <tt>StridedArrayTag</tt> as third template parameter).
 This means that the array elements need not be consecutive in memory,
 making the view flexible to represent all kinds of subarrays and slices.
-In certain cases (which have become rare due to improvements of 
-optimizer and processor technology), an array may be tagged with 
+In certain cases (which have become rare due to improvements of
+optimizer and processor technology), an array may be tagged with
 <tt>UnstridedArrayTag</tt> which indicates that the first array dimension
 is guaranteed to be unstrided, i.e. has consecutive elements in memory.
 
 In addition to the member functions described here, <tt>MultiArrayView</tt>
-and its subclasses support arithmetic and algebraic functions via the 
+and its subclasses support arithmetic and algebraic functions via the
 module \ref MultiMathModule.
 
 If you want to apply an algorithm requiring an image to a
@@ -637,12 +691,10 @@ The template parameter are as follows
 
     T: the type of the array elements
 
-    C: a tag determining whether the array's inner dimension is strided
-       or not. An array is unstrided if the array elements occupy consecutive
-       memory location, strided if there is an offset in between (e.g.
-       when a view is created that skips every other array element).
-       The compiler can generate faster code for unstrided arrays.
-       Possible values: StridedArrayTag (default), UnstridedArrayTag
+    C: a tag determining if the array's inner dimension is strided
+       (the tag can be used to specialize algorithms for different memory
+       layouts, see \ref MultiArrayTags for details). Users normally need
+       not care about this parameter.
 \endcode
 
 <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
@@ -728,7 +780,7 @@ public:
     {
         return m_stride[0] <= 1;
     }
-    
+
     bool checkInnerStride(StridedArrayTag) const
     {
         return true;
@@ -779,7 +831,7 @@ public:
     {}
 
         /** construct from another array view.
-            Throws a precondition error if this array has UnstridedArrayTag, but the 
+            Throws a precondition error if this array has UnstridedArrayTag, but the
             innermost dimension of \a other is strided.
          */
     template <class Stride>
@@ -815,7 +867,7 @@ public:
         vigra_precondition(checkInnerStride(StrideTag()),
             "MultiArrayView<..., UnstridedArrayTag>::MultiArrayView(): First dimension of given array is not unstrided.");
     }
-    
+
         /** Construct from an old-style BasicImage.
          */
     template <class ALLOC>
@@ -824,7 +876,7 @@ public:
       m_stride (detail::defaultStride<actual_dimension>(m_shape)),
       m_ptr (const_cast<pointer>(image.data()))
     {}
-    
+
         /** Conversion to a strided view.
          */
     operator MultiArrayView<N, T, StridedArrayTag>() const
@@ -832,13 +884,13 @@ public:
         return MultiArrayView<N, T, StridedArrayTag>(m_shape, m_stride, m_ptr);
     }
 
-	/** Reset this <tt>MultiArrayView</tt> to an invalid state (as after default construction).
-		Can e.g. be used prior to assignment to make a view object point to new data.
+        /** Reset this <tt>MultiArrayView</tt> to an invalid state (as after default construction).
+                Can e.g. be used prior to assignment to make a view object point to new data.
          */
     void reset() {
-	m_shape = diff_zero_t(0);
-	m_stride = diff_zero_t(0);
-	m_ptr = 0;
+        m_shape = diff_zero_t(0);
+        m_stride = diff_zero_t(0);
+        m_ptr = 0;
     }
 
 
@@ -847,7 +899,7 @@ public:
             <ul>
             <li> When this <tt>MultiArrayView</tt> does not point to valid data
                  (e.g. after default construction), it becomes a new view of \a rhs.
-            <li> Otherwise, when the shapes of the two arrays match, the contents 
+            <li> Otherwise, when the shapes of the two arrays match, the contents
                  (i.e. the elements) of \a rhs are copied.
             <li> Otherwise, a <tt>PreconditionViolation</tt> exception is thrown.
             </ul>
@@ -867,7 +919,7 @@ public:
     }
 
         /** Assignment of a differently typed MultiArrayView. It copies the elements
-            of\a rhs or fails with <tt>PreconditionViolation</tt> exception when 
+            of\a rhs or fails with <tt>PreconditionViolation</tt> exception when
             the shapes do not match.
          */
     template<class U, class C1>
@@ -1020,11 +1072,11 @@ public:
             Mostly useful to support standard indexing for 1-dimensional multi-arrays,
             but works for any N. Use scanOrderIndexToCoordinate() and
             coordinateToScanOrderIndex() for conversion between indices and coordinates.
-            
+
             <b>Note:</b> This function should not be used in the inner loop, because the
             conversion of the scan order index into a memory address is expensive
             (it must take into account that memory may not be consecutive for subarrays
-            and/or strided arrays). Always prefer operator() if possible.            
+            and/or strided arrays). Always prefer operator() if possible.
          */
     reference operator[](difference_type_1 d)
     {
@@ -1036,11 +1088,11 @@ public:
             Mostly useful to support standard indexing for 1-dimensional multi-arrays,
             but works for any N. Use scanOrderIndexToCoordinate() and
             coordinateToScanOrderIndex() for conversion between indices and coordinates.
-             
+
             <b>Note:</b> This function should not be used in the inner loop, because the
             conversion of the scan order index into a memory address is expensive
             (it must take into account that memory may not be consecutive for subarrays
-            and/or strided arrays). Always prefer operator() if possible.            
+            and/or strided arrays). Always prefer operator() if possible.
         */
     const_reference operator[](difference_type_1 d) const
     {
@@ -1177,22 +1229,22 @@ public:
     }
 
         /** Swap the pointers, shaes and strides between two array views.
-        
+
             This function must be used with care. Never swap a MultiArray
             (which owns data) with a MultiArrayView:
             \code
                 MultiArray<2, int> a(3,2), b(3,2);
                 MultiArrayView<2, int> va(a);
-                
+
                 va.swap(b);   // danger!
             \endcode
             Now, <tt>a</tt> and <tt>b</tt> refer to the same memory. This may lead
-            to a crash in their destructor, and in any case leaks <tt>b</tt>'s original 
+            to a crash in their destructor, and in any case leaks <tt>b</tt>'s original
             memory. Only use swap() on copied MultiArrayViews:
             \code
                 MultiArray<2, int> a(3,2), b(3,2);
                 MultiArrayView<2, int> va(a), vb(b);
-                
+
                 va.swap(vb);   // OK
             \endcode
          */
@@ -1224,11 +1276,11 @@ public:
     {
         swapDataImpl(rhs);
     }
-    
-        /** check whether the array is unstrided (i.e. has consecutive memory) up 
+
+        /** check whether the array is unstrided (i.e. has consecutive memory) up
             to the given dimension.
 
-            \a dimension can range from 0 ... N-1. If a certain dimension is unstrided, 
+            \a dimension can range from 0 ... N-1. If a certain dimension is unstrided,
             all lower dimensions are also unstrided.
         */
     bool isUnstrided(unsigned int dimension = N-1) const
@@ -1343,23 +1395,23 @@ public:
          */
     MultiArrayView <N-1, T, StridedArrayTag>
     bindAt (difference_type_1 m, difference_type_1 d) const;
-    
+
         /** Create a view to channel 'i' of a vector-like value type. Possible value types
-            (of the original array) are: \ref TinyVector, \ref RGBValue, \ref FFTWComplex, 
+            (of the original array) are: \ref TinyVector, \ref RGBValue, \ref FFTWComplex,
             and <tt>std::complex</tt>. The list can be extended to any type whose memory
-            layout is equivalent to a fixed-size C array, by specializing 
+            layout is equivalent to a fixed-size C array, by specializing
             <tt>ExpandElementResult</tt>.
 
             <b>Usage:</b>
             \code
                 MultiArray<2, RGBValue<float> > rgb_image(Shape2(w, h));
-                
+
                 MultiArrayView<2, float, StridedArrayTag> red   = rgb_image.bindElementChannel(0);
                 MultiArrayView<2, float, StridedArrayTag> green = rgb_image.bindElementChannel(1);
                 MultiArrayView<2, float, StridedArrayTag> blue  = rgb_image.bindElementChannel(2);
             \endcode
         */
-    MultiArrayView <N, typename ExpandElementResult<T>::type, StridedArrayTag> 
+    MultiArrayView <N, typename ExpandElementResult<T>::type, StridedArrayTag>
     bindElementChannel(difference_type_1 i) const
     {
         vigra_precondition(0 <= i && i < ExpandElementResult<T>::size,
@@ -1367,27 +1419,27 @@ public:
         return expandElements(0).bindInner(i);
     }
 
-        /** Create a view where a vector-like element type is expanded into a new 
+        /** Create a view where a vector-like element type is expanded into a new
             array dimension. The new dimension is inserted at index position 'd',
             which must be between 0 and N inclusive.
-            
-            Possible value types of the original array are: \ref TinyVector, \ref RGBValue, 
-            \ref FFTWComplex, <tt>std::complex</tt>, and the built-in number types (in this 
-            case, <tt>expandElements</tt> is equivalent to <tt>insertSingletonDimension</tt>). 
+
+            Possible value types of the original array are: \ref TinyVector, \ref RGBValue,
+            \ref FFTWComplex, <tt>std::complex</tt>, and the built-in number types (in this
+            case, <tt>expandElements</tt> is equivalent to <tt>insertSingletonDimension</tt>).
             The list of supported types can be extended to any type whose memory
-            layout is equivalent to a fixed-size C array, by specializing 
+            layout is equivalent to a fixed-size C array, by specializing
             <tt>ExpandElementResult</tt>.
 
             <b>Usage:</b>
             \code
                 MultiArray<2, RGBValue<float> > rgb_image(Shape2(w, h));
-                
+
                 MultiArrayView<3, float, StridedArrayTag> multiband_image = rgb_image.expandElements(2);
             \endcode
         */
-    MultiArrayView <N+1, typename ExpandElementResult<T>::type, StridedArrayTag> 
+    MultiArrayView <N+1, typename ExpandElementResult<T>::type, StridedArrayTag>
     expandElements(difference_type_1 d) const;
-    
+
         /** Add a singleton dimension (dimension of length 1).
 
             Singleton dimensions don't change the size of the data, but introduce
@@ -1419,13 +1471,13 @@ public:
          */
     MultiArrayView <N+1, T, StrideTag>
     insertSingletonDimension (difference_type_1 i) const;
-    
+
         /** create a multiband view for this array.
 
             The type <tt>MultiArrayView<N, Multiband<T> ></tt> tells VIGRA
             algorithms which recognize the <tt>Multiband</tt> modifier to
-            interpret the outermost (last) dimension as a channel dimension. 
-            In effect, these algorithms will treat the data as a set of 
+            interpret the outermost (last) dimension as a channel dimension.
+            In effect, these algorithms will treat the data as a set of
             (N-1)-dimensional arrays instead of a single N-dimensional array.
         */
     MultiArrayView<N, Multiband<value_type>, StrideTag> multiband() const
@@ -1434,7 +1486,7 @@ public:
     }
 
         /** Create a view to the diagonal elements of the array.
-        
+
             This produces a 1D array view whose size equals the size
             of the shortest dimension of the original array.
 
@@ -1451,12 +1503,12 @@ public:
         */
     MultiArrayView<1, T, StridedArrayTag> diagonal() const
     {
-        return MultiArrayView<1, T, StridedArrayTag>(Shape1(vigra::min(m_shape)), 
+        return MultiArrayView<1, T, StridedArrayTag>(Shape1(vigra::min(m_shape)),
                                                      Shape1(vigra::sum(m_stride)), m_ptr);
     }
 
         /** create a rectangular subarray that spans between the
-            points p and q, where p is in the subarray, q not. 
+            points p and q, where p is in the subarray, q not.
             If an element of p or q is negative, it is subtracted
             from the correspongng shape.
 
@@ -1468,7 +1520,7 @@ public:
 
             // get a subarray set is smaller by one element at all sides
             MultiArrayView <3, double> subarray  = array3.subarray(Shape(1,1,1), Shape(39, 29, 19));
-            
+
             // specifying the end point with a vector of '-1' is equivalent
             MultiArrayView <3, double> subarray2 = array3.subarray(Shape(1,1,1), Shape(-1, -1, -1));
             \endcode
@@ -1521,9 +1573,9 @@ public:
 
         /** Permute the dimensions of the array.
             The function exchanges the orer of the array's axes without copying the data.
-            Argument\a permutation specifies the desired order such that 
+            Argument\a permutation specifies the desired order such that
             <tt>permutation[k] = j</tt> means that axis <tt>j</tt> in the original array
-            becomes axis <tt>k</tt> in the transposed array. 
+            becomes axis <tt>k</tt> in the transposed array.
 
             <b>Usage:</b><br>
             \code
@@ -1551,24 +1603,24 @@ public:
         */
     MultiArrayView <N, T, StridedArrayTag>
     permuteStridesAscending() const;
-    
+
         /** Permute the dimensions of the array so that the strides are in descending order.
             Determines the appropriate permutation and then calls permuteDimensions().
         */
     MultiArrayView <N, T, StridedArrayTag>
     permuteStridesDescending() const;
-    
+
         /** Compute the ordering of the strides in this array.
-            The result is describes the current permutation of the axes relative 
+            The result is describes the current permutation of the axes relative
             to the standard ascending stride order.
         */
     difference_type strideOrdering() const
     {
         return strideOrdering(m_stride);
     }
-    
+
         /** Compute the ordering of the given strides.
-            The result is describes the current permutation of the axes relative 
+            The result is describes the current permutation of the axes relative
             to the standard ascending stride order.
         */
     static difference_type strideOrdering(difference_type strides);
@@ -1686,7 +1738,7 @@ public:
     {
         bool res = true;
         detail::reduceOverMultiArray(traverser_begin(), shape(),
-                                     res, 
+                                     res,
                                      detail::AllTrueReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
         return res;
@@ -1699,29 +1751,29 @@ public:
     {
         bool res = false;
         detail::reduceOverMultiArray(traverser_begin(), shape(),
-                                     res, 
+                                     res,
                                      detail::AnyTrueReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
         return res;
     }
 
-        /** Find the minimum and maximum element in this array. 
-            See \ref FeatureAccumulators for a general feature 
+        /** Find the minimum and maximum element in this array.
+            See \ref FeatureAccumulators for a general feature
             extraction framework.
          */
     void minmax(T * minimum, T * maximum) const
     {
         std::pair<T, T> res(NumericTraits<T>::max(), NumericTraits<T>::min());
         detail::reduceOverMultiArray(traverser_begin(), shape(),
-                                     res, 
+                                     res,
                                      detail::MinmaxReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
         *minimum = res.first;
         *maximum = res.second;
     }
 
-        /** Compute the mean and variance of the values in this array. 
-            See \ref FeatureAccumulators for a general feature 
+        /** Compute the mean and variance of the values in this array.
+            See \ref FeatureAccumulators for a general feature
             extraction framework.
          */
     template <class U>
@@ -1731,7 +1783,7 @@ public:
         R zero = R();
         triple<double, R, R> res(0.0, zero, zero);
         detail::reduceOverMultiArray(traverser_begin(), shape(),
-                                     res, 
+                                     res,
                                      detail::MeanVarianceReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
         *mean     = res.second;
@@ -1743,7 +1795,7 @@ public:
             You must provide the type of the result by an explicit template parameter:
             \code
             MultiArray<2, UInt8> A(width, height);
-            
+
             double sum = A.sum<double>();
             \endcode
          */
@@ -1752,16 +1804,16 @@ public:
     {
         U res = NumericTraits<U>::zero();
         detail::reduceOverMultiArray(traverser_begin(), shape(),
-                                     res, 
+                                     res,
                                      detail::SumReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
         return res;
     }
 
         /** Compute the sum of the array elements over selected axes.
-        
+
             \arg sums must have the same shape as this array, except for the
-            axes along which the sum is to be accumulated. These axes must be 
+            axes along which the sum is to be accumulated. These axes must be
             singletons. Note that you must include <tt>multi_pointoperators.hxx</tt>
             for this function to work.
 
@@ -1769,14 +1821,14 @@ public:
             \code
             #include <vigra/multi_array.hxx>
             #include <vigra/multi_pointoperators.hxx>
-            
+
             MultiArray<2, double> A(Shape2(rows, cols));
             ... // fill A
-            
+
             // make the first axis a singleton to sum over the first index
             MultiArray<2, double> rowSums(Shape2(1, cols));
             A.sum(rowSums);
-            
+
             // this is equivalent to
             transformMultiArray(srcMultiArrayRange(A),
                                 destMultiArrayRange(rowSums),
@@ -1796,7 +1848,7 @@ public:
             You must provide the type of the result by an explicit template parameter:
             \code
             MultiArray<2, UInt8> A(width, height);
-            
+
             double prod = A.product<double>();
             \endcode
          */
@@ -1805,7 +1857,7 @@ public:
     {
         U res = NumericTraits<U>::one();
         detail::reduceOverMultiArray(traverser_begin(), shape(),
-                                     res, 
+                                     res,
                                      detail::ProdReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
         return res;
@@ -1813,13 +1865,13 @@ public:
 
         /** Compute the squared Euclidean norm of the array (sum of squares of the array elements).
          */
-    typename NormTraits<MultiArrayView>::SquaredNormType 
+    typename NormTraits<MultiArrayView>::SquaredNormType
     squaredNorm() const
     {
         typedef typename NormTraits<MultiArrayView>::SquaredNormType SquaredNormType;
         SquaredNormType res = NumericTraits<SquaredNormType>::zero();
         detail::reduceOverMultiArray(traverser_begin(), shape(),
-                                     res, 
+                                     res,
                                      detail::SquaredL2NormReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
         return res;
@@ -1838,7 +1890,7 @@ public:
             Parameter \a useSquaredNorm has no effect when \a type != 2. Defaults: compute L2 norm as square root of
             <tt>squaredNorm()</tt>.
          */
-    typename NormTraits<MultiArrayView>::NormType 
+    typename NormTraits<MultiArrayView>::NormType
     norm(int type = 2, bool useSquaredNorm = true) const;
 
         /** return the pointer to the image data
@@ -1847,7 +1899,7 @@ public:
     {
         return m_ptr;
     }
-    
+
     pointer & unsafePtr()
     {
         return m_ptr;
@@ -1961,7 +2013,7 @@ MultiArrayView <N, T, Stride1>::assignImpl(MultiArrayView<N, T, Stride2> const &
     {
         vigra_precondition(rhs.checkInnerStride(Stride1()),
             "MultiArrayView<..., UnstridedArrayTag>::operator=(MultiArrayView const &): cannot create unstrided view from strided array.");
-                           
+
         m_shape  = rhs.shape();
         m_stride = rhs.stride();
         m_ptr    = rhs.data();
@@ -2080,7 +2132,7 @@ MultiArrayView <N, T, StrideTag>::permuteDimensions (const difference_type &s) c
 }
 
 template <unsigned int N, class T, class StrideTag>
-typename MultiArrayView <N, T, StrideTag>::difference_type 
+typename MultiArrayView <N, T, StrideTag>::difference_type
 MultiArrayView <N, T, StrideTag>::strideOrdering(difference_type stride)
 {
     difference_type permutation;
@@ -2274,25 +2326,25 @@ MultiArrayView <N, T, StrideTag>::expandElements(difference_type_1 d) const
 {
     vigra_precondition(0 <= d && d <= static_cast <difference_type_1> (N),
           "MultiArrayView<N, ...>::expandElements(d): 0 <= 'd' <= N required.");
-    
+
     int elementSize = ExpandElementResult<T>::size;
     typename MultiArrayShape<N+1>::type newShape, newStrides;
     for(int k=0; k<d; ++k)
     {
         newShape[k] = m_shape[k];
         newStrides[k] = m_stride[k]*elementSize;
-    }   
-    
+    }
+
     newShape[d] = elementSize;
     newStrides[d] = 1;
-    
-    for(int k=d; k<N; ++k)
+
+    for(unsigned k=d; k<N; ++k)
     {
         newShape[k+1] = m_shape[k];
         newStrides[k+1] = m_stride[k]*elementSize;
-    }   
-    
-    typedef typename ExpandElementResult<T>::type U;     
+    }
+
+    typedef typename ExpandElementResult<T>::type U;
     return MultiArrayView<N+1, U, StridedArrayTag>(
                     newShape, newStrides, reinterpret_cast<U*>(m_ptr));
 }
@@ -2326,8 +2378,8 @@ MultiArrayView <N, T, StrideTag>::norm(int type, bool useSquaredNorm) const
       case 0:
       {
         NormType res = NumericTraits<NormType>::zero();
-        detail::reduceOverMultiArray(traverser_begin(), shape(), 
-                                     res, 
+        detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     res,
                                      detail::MaxNormReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
         return res;
@@ -2335,8 +2387,8 @@ MultiArrayView <N, T, StrideTag>::norm(int type, bool useSquaredNorm) const
       case 1:
       {
         NormType res = NumericTraits<NormType>::zero();
-        detail::reduceOverMultiArray(traverser_begin(), shape(), 
-                                     res, 
+        detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     res,
                                      detail::L1NormReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
         return res;
@@ -2350,15 +2402,15 @@ MultiArrayView <N, T, StrideTag>::norm(int type, bool useSquaredNorm) const
         else
         {
             NormType normMax = NumericTraits<NormType>::zero();
-            detail::reduceOverMultiArray(traverser_begin(), shape(), 
-                                        normMax, 
+            detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                        normMax,
                                         detail::MaxNormReduceFunctor(),
                                         MetaInt<actual_dimension-1>());
             if(normMax == NumericTraits<NormType>::zero())
                 return normMax;
             NormType res  = NumericTraits<NormType>::zero();
-            detail::reduceOverMultiArray(traverser_begin(), shape(), 
-                                         res, 
+            detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                         res,
                                          detail::WeightedL2NormReduceFunctor<NormType>(1.0/normMax),
                                          MetaInt<actual_dimension-1>());
             return sqrt(res)*normMax;
@@ -2419,8 +2471,8 @@ The template parameters are as follows
 Namespace: vigra
 */
 template <unsigned int N, class T, class A /* default already declared above */>
-class MultiArray 
-: public MultiArrayView <N, typename vigra::detail::ResolveMultiband<T>::type, 
+class MultiArray
+: public MultiArrayView <N, typename vigra::detail::ResolveMultiband<T>::type,
                             typename vigra::detail::ResolveMultiband<T>::Stride>
 {
   public:
@@ -2428,9 +2480,9 @@ class MultiArray
 
         /** the view type associated with this array.
          */
-    typedef MultiArrayView <N, typename vigra::detail::ResolveMultiband<T>::type, 
+    typedef MultiArrayView <N, typename vigra::detail::ResolveMultiband<T>::type,
                                typename vigra::detail::ResolveMultiband<T>::Stride> view_type;
-    
+
     using view_type::actual_dimension;
 
         /** the allocator type used to allocate the memory
@@ -2547,7 +2599,7 @@ public:
     {}
 
         /** construct with given length
-        
+
             Use only for 1-dimensional arrays (<tt>N==1</tt>).
          */
     explicit MultiArray (difference_type_1 length,
@@ -2555,7 +2607,7 @@ public:
 
 
         /** construct with given width and height
-        
+
             Use only for 2-dimensional arrays (<tt>N==2</tt>).
          */
     MultiArray (difference_type_1 width, difference_type_1 height,
@@ -2571,7 +2623,7 @@ public:
     MultiArray (const difference_type &shape, const_reference init,
                 allocator_type const & alloc = allocator_type());
 
-        /** construct from shape and initialize with a linear sequence in scan order 
+        /** construct from shape and initialize with a linear sequence in scan order
             (i.e. first pixel gets value 0, second on gets value 1 and so on).
          */
     MultiArray (const difference_type &shape, MultiArrayInitializationTag init,
@@ -2643,7 +2695,7 @@ public:
 
         /** Add-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
-            If the left array has no data (hasData() is false), this function is 
+            If the left array has no data (hasData() is false), this function is
             equivalent to a normal assignment (i.e. an empty
             array is interpreted as a zero-array of appropriate size).
          */
@@ -2659,7 +2711,7 @@ public:
 
         /** Subtract-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
-            If the left array has no data (hasData() is false), this function is 
+            If the left array has no data (hasData() is false), this function is
             equivalent to an assignment of the negated rhs (i.e. an empty
             array is interpreted as a zero-array of appropriate size).
          */
@@ -2674,7 +2726,7 @@ public:
 
         /** Multiply-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
-            If the left array has no data (hasData() is false), this function is 
+            If the left array has no data (hasData() is false), this function is
             equivalent to reshape(rhs.shape()) with zero initialisation (i.e. an empty
             array is interpreted as a zero-array of appropriate size).
          */
@@ -2690,7 +2742,7 @@ public:
 
         /** Divide-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
-            If the left array has no data (hasData() is false), this function is 
+            If the left array has no data (hasData() is false), this function is
             equivalent to reshape(rhs.shape()) with zero initialisation (i.e. an empty
             array is interpreted as a zero-array of appropriate size).
          */
@@ -2859,7 +2911,7 @@ public:
     {
         return m_alloc;
     }
-    
+
     static difference_type defaultStride(difference_type const & shape)
     {
         return vigra::detail::ResolveMultiband<T>::defaultStride(shape);
@@ -3408,9 +3460,9 @@ maskImage(MultiArrayView<2, PixelType, UnstridedArrayTag> const & img)
 /********************************************************/
 
 /** \addtogroup MultiArrayToImage Create BasicImageView from MultiArrayViews
-  
+
     Some convenience functions for wrapping a \ref vigra::MultiArrayView's
-    data in a \ref vigra::BasicImageView. 
+    data in a \ref vigra::BasicImageView.
 */
 //@{
 /** Create a \ref vigra::BasicImageView from an unstrided 2-dimensional
@@ -3423,8 +3475,8 @@ template <class T, class Stride>
 BasicImageView <T>
 makeBasicImageView (MultiArrayView <2, T, Stride> const &array)
 {
-    vigra_precondition(array.isUnstrided(),
-       "makeBasicImageView(array): array must be unstrided (i.e. array.isUnstrided() == true).");
+    vigra_precondition(array.isUnstrided(0),
+       "makeBasicImageView(array): array must be unstrided along x (i.e. array.isUnstrided(0) == true).");
     return BasicImageView <T> (array.data (), array.shape (0),
                                array.shape (1), array.stride(1));
 }
@@ -3459,7 +3511,7 @@ template <class T, class Stride>
 BasicImageView <RGBValue<T> >
 makeRGBImageView (MultiArrayView<3, T, Stride> const &array)
 {
-    vigra_precondition(array.shape (0) == 3, 
+    vigra_precondition(array.shape (0) == 3,
        "makeRGBImageView(): array.shape(0) must be 3.");
     vigra_precondition(array.isUnstrided(),
        "makeRGBImageView(array): array must be unstrided (i.e. array.isUnstrided() == true).");

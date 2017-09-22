@@ -1707,6 +1707,11 @@ MAKE_FUNCTOR_BINARY_OPERATOR(bitXor, ^)
 
 /************************************************************/
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
+
 MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(equals, ==)
 MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(differs, !=)
 MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(less, <)
@@ -1715,6 +1720,10 @@ MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(greater, >)
 MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(greaterEqual, >=)
 MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(and, &&)
 MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(or, ||)
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 #undef MAKE_FUNCTOR_BINARY_OPERATOR_BOOL
 

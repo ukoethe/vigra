@@ -507,6 +507,7 @@ void estimateGlobalTranslation(SrcIterator    s_ul, SrcIterator  s_lr, SrcAccess
                                double & correlation_coefficent,
                                Diff2D border = Diff2D(0,0))
 {
+    ignore_argument(d_lr);
     typename SrcIterator::difference_type s_shape = s_lr - s_ul;
 
     //determine matrix by using 5 quater-matches and a maximum likelihood decision:

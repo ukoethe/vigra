@@ -86,7 +86,10 @@ projectiveMatrix2DFromCorrespondingPoints(SrcPointIterator s, SrcPointIterator s
 
     }
 
-    vigra_assert(linearSolve(A, b, res),
+    bool solvable = linearSolve(A, b, res);
+    // silence unused variable warning in release mode
+    static_cast<void>(solvable);
+    vigra_assert(solvable,
                 "projectiveMatrix2DFromCorrespondingPoints(): singular solution matrix.");
 
     linalg::TemporaryMatrix<double> projectiveMat(3,3);

@@ -311,14 +311,17 @@ def gaussianDerivative(array, sigma, orders, out=None, window_size=0.0):
 
         'window_size' specifies the ratio between the filter scale and the size of
         the filter window. Use values around 2.0 to speed-up the computation for the
-        price of increased cut-off error, and values >= 4.0 for vary accurate results.
+        price of increased cut-off error, and values >= 4.0 for very accurate results.
         The window size is automatically determined for the default value 0.0.
+
+        For the first and second derivatives, you can also use :func:`gaussianGradient`
+        and :func:`hessianOfGaussian`.
     '''
     if hasattr(array, 'dropChannelAxis'):
         if array.dropChannelAxis().ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     else:
-        if array.ndim == len(orders):
+        if array.ndim != len(orders):
             raise RuntimeError("gaussianDerivative(): len(orders) doesn't match array dimension.")
     try:
         len(sigma)
@@ -608,7 +611,16 @@ def _genTensorConvenienceFunctions():
         hessian = filters.hessianOfGaussian(image, scale,
                                             sigma_d=sigma_d, step_size=step_size,
                                             window_size=window_size, roi=roi)
-        return filters.tensorEigenvalues(hessian, out=out)
+        if out is None:
+            return filters.tensorEigenvalues(hessian)
+
+        try:
+            return filters.tensorEigenvalues(hessian, out=out)
+        except ValueError:
+            pass
+        # retry without 'out', since its strides might not match
+        out[...] = filters.tensorEigenvalues(hessian)
+        return out
 
     hessianOfGaussianEigenvalues.__module__ = 'vigra.filters'
     filters.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
@@ -624,39 +636,22 @@ def _genTensorConvenienceFunctions():
         st = filters.structureTensor(image, innerScale, outerScale,
                                      sigma_d=sigma_d, step_size=step_size,
                                      window_size=window_size, roi=roi)
-        return filters.tensorEigenvalues(st, out=out)
+        if out is None:
+            return filters.tensorEigenvalues(st)
+
+        try:
+            return filters.tensorEigenvalues(st, out=out)
+        except ValueError:
+            pass
+        # retry without 'out', since its strides might not match
+        out[...] = filters.tensorEigenvalues(st)
+        return out
 
     structureTensorEigenvalues.__module__ = 'vigra.filters'
     filters.structureTensorEigenvalues = structureTensorEigenvalues
 
 _genTensorConvenienceFunctions()
 del _genTensorConvenienceFunctions
-
-
-
-
-
-# define tensor convenience functions
-def _genDistanceTransformFunctions():
-
-    def distanceTransform(array,background=True,norm=2,pixel_pitch=None, out=None):
-        if array.squeeze().ndim == 2:
-            return filters.distanceTransform2D(array,background=background,norm=norm,
-                                               pixel_pitch=pixel_pitch, out=out)
-        elif array.squeeze().ndim == 3:
-            return filters.distanceTransform3D(array.astype('float32'),background=background,norm=2)
-        else:
-            raise RuntimeError("distanceTransform is only implemented for 2D and 3D arrays")
-
-    distanceTransform.__module__ = 'vigra.filters'
-    filters.distanceTransform = distanceTransform
-
-
-
-_genDistanceTransformFunctions()
-del _genDistanceTransformFunctions
-
-
 
 
 # define feature convenience functions
@@ -692,19 +687,22 @@ def _genFeaturConvenienceFunctions():
     analysis.supportedRegionFeatures = supportedRegionFeatures
 
     def supportedConvexHullFeatures(labels):
-        '''Return a list of Convex Hull feature names that are available for the given 2D label array.
-           These Convex Hull feature names are the valid inputs to a call of
-           :func:`extractConvexHullFeatures`. E.g., to compute just the first two features in the
+        '''Return a list of Convex Hull feature names that are available for the given label array.
+           These Convex Hull feature names are the valid inputs to a call with
+           :func:`extract2DConvexHullFeatures` or `extract3DConvexHullFeatures`. E.g., to compute just the first two features in the
            list, use::
 
                 f = vigra.analysis.supportedConvexHullFeatures(labels)
                 print("Computing Convex Hull features:", f[:2])
-                r = vigra.analysis.extractConvexHullFeatures(labels, features=f[:2])
+                r = vigra.analysis.extract2DConvexHullFeatures(labels, features=f[:2])
         '''
         try:
-            return analysis.extractConvexHullFeatures(labels, list_features_only=True)
+            return analysis.extract2DConvexHullFeatures(labels, list_features_only=True)
         except:
-            return []
+            try:
+                return analysis.extract3DConvexHullFeatures(labels, list_features_only=True)
+            except:
+                return []
 
     supportedConvexHullFeatures.__module__ = 'vigra.analysis'
     analysis.supportedConvexHullFeatures = supportedConvexHullFeatures
@@ -1246,6 +1244,13 @@ def _genRegionAdjacencyGraphConvenienceFunctions():
                 else:
                     return graphs._ragEdgeFeatures(self,graph,affiliatedEdges,edgeFeatures,weights,acc,out)
 
+        def accumulateEdgeStatistics(self, edgeFeatures, out=None):
+            if not isinstance(self, RegionAdjacencyGraph):
+                raise AttributeError("accumulateEdgeFeaturesNew not implemented for " + type(self))
+            graph = self.baseGraph
+            affiliatedEdges = self.affiliatedEdges
+            out = graphs._ragEdgeStatistics(self, graph, affiliatedEdges, edgeFeatures, out)
+            return out
 
         def accumulateNodeFeatures(self,nodeFeatures,acc='mean',out=None):
             """ accumulate edge features from base graphs edges features

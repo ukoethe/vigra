@@ -134,20 +134,23 @@ struct WrapDoubleIteratorTriple
              vigra_precondition(false, function_name + msg);
         }
     }
-    double sigma_scaled(const char *const function_name = "unknown function ") const
+    double sigma_scaled(const char *const function_name = "unknown function ",
+                        bool allow_zero = false) const
     {
         sigma_precondition(sigma_eff(), function_name);
         sigma_precondition(sigma_d(), function_name);
         double sigma_squared = sq(sigma_eff()) - sq(sigma_d());
-        if (sigma_squared > 0.0)
+        if (sigma_squared > 0.0 || (allow_zero && sigma_squared == 0.0))
         {
             return std::sqrt(sigma_squared) / step_size();
         }
         else
         {
-             std::string msg = "(): Scale would be imaginary or zero.";
-             vigra_precondition(false, function_name + msg);
-             return 0;
+            std::string msg = "(): Scale would be imaginary";
+            if(!allow_zero)
+                msg += " or zero";
+            vigra_precondition(false, function_name + msg + ".");
+            return 0;
         }
     }
 };
@@ -679,12 +682,7 @@ scaleKernel(K & kernel, double a)
 
 } // namespace detail
 
-/** \addtogroup MultiArrayConvolutionFilters Convolution filters for multi-dimensional arrays.
-
-    These functions realize a separable convolution on an arbitrary dimensional
-    array that is specified by iterators (compatible to \ref MultiIteratorPage)
-    and shape objects. It can therefore be applied to a wide range of data structures
-    (\ref vigra::MultiArrayView, \ref vigra::MultiArray etc.).
+/** \addtogroup ConvolutionFilters
 */
 //@{
 
@@ -1166,6 +1164,10 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa gaussianSmoothMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+
 /** \brief Isotropic Gaussian smoothing of a multi-dimensional arrays.
 
     This function computes an isotropic convolution of the given N-dimensional
@@ -1209,7 +1211,7 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
                                  MultiArrayView<N, T2, S2> dest,
                                  ConvolutionOptions<N> opt);
 
-        // as above, but execute algorirhm in parallel
+        // as above, but execute algorithm in parallel
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
         void
@@ -1308,7 +1310,8 @@ gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src
     ArrayVector<Kernel1D<double> > kernels(N);
 
     for (int dim = 0; dim < N; ++dim, ++params)
-        kernels[dim].initGaussian(params.sigma_scaled(function_name), 1.0, opt.window_ratio);
+        kernels[dim].initGaussian(params.sigma_scaled(function_name, true),
+                                  1.0, opt.window_ratio);
 
     separableConvolveMultiArray(s, shape, src, d, dest, kernels.begin(), opt.from_point, opt.to_point);
 }
@@ -1388,6 +1391,10 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa gaussianGradientMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+
 /** \brief Calculate Gaussian gradient of a multi-dimensional arrays.
 
     This function computes the Gaussian gradient of the given N-dimensional
@@ -1419,7 +1426,7 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
                   class T2, class S2>
         void
         gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
-                                   MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                                   MultiArrayView<N, TinyVector<T2, int(N)>, S2> dest,
                                    double sigma,
                                    ConvolutionOptions<N> opt = ConvolutionOptions<N>());
 
@@ -1428,7 +1435,7 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
                                   class T2, class S2>
         void
         gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
-                                   MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                                   MultiArrayView<N, TinyVector<T2, int(N)>, S2> dest,
                                    ConvolutionOptions<N> opt);
 
         // likewise, but execute algorithm in parallel
@@ -1436,7 +1443,7 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
                                   class T2, class S2>
         void
         gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
-                                   MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                                   MultiArrayView<N, TinyVector<T2, int(N)>, S2> dest,
                                    BlockwiseConvolutionOptions<N> opt);
     }
     \endcode
@@ -1583,7 +1590,7 @@ template <unsigned int N, class T1, class S1,
                           class T2, class S2>
 inline void
 gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
-                           MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                           MultiArrayView<N, TinyVector<T2, int(N)>, S2> dest,
                            ConvolutionOptions<N> opt )
 {
     if(opt.to_point != typename MultiArrayShape<N>::type())
@@ -1607,7 +1614,7 @@ template <unsigned int N, class T1, class S1,
           class T2, class S2>
 inline void
 gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
-                           MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                           MultiArrayView<N, TinyVector<T2, int(N)>, S2> dest,
                            double sigma,
                            ConvolutionOptions<N> opt = ConvolutionOptions<N>())
 {
@@ -1646,7 +1653,7 @@ gaussianGradientMagnitudeImpl(MultiArrayView<N+1, T1, S1> const & src,
     dest.init(0.0);
 
     typedef typename NumericTraits<T1>::RealPromote TmpType;
-    MultiArray<N, TinyVector<TmpType, N> > grad(dest.shape());
+    MultiArray<N, TinyVector<TmpType, int(N)> > grad(dest.shape());
 
     using namespace multi_math;
 
@@ -1730,6 +1737,10 @@ gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<T1>, S1> const & src,
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa symmetricGradientMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+
 /** \brief Calculate gradient of a multi-dimensional arrays using symmetric difference filters.
 
     This function computes the gradient of the given N-dimensional
@@ -1760,7 +1771,7 @@ gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<T1>, S1> const & src,
                                   class T2, class S2>
         void
         symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
-                                    MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                                    MultiArrayView<N, TinyVector<T2, int(N)>, S2> dest,
                                     ConvolutionOptions<N> opt = ConvolutionOptions<N>());
 
         // execute algorithm in parallel
@@ -1768,7 +1779,7 @@ gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<T1>, S1> const & src,
                                   class T2, class S2>
         void
         symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
-                                    MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                                    MultiArrayView<N, TinyVector<T2, int(N)>, S2> dest,
                                     BlockwiseConvolutionOptions<N> opt);
     }
     \endcode
@@ -1884,7 +1895,7 @@ template <unsigned int N, class T1, class S1,
                           class T2, class S2>
 inline void
 symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
-                            MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                            MultiArrayView<N, TinyVector<T2, int(N)>, S2> dest,
                             ConvolutionOptions<N> opt = ConvolutionOptions<N>())
 {
     if(opt.to_point != typename MultiArrayShape<N>::type())
@@ -1909,6 +1920,10 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
 /*            laplacianOfGaussianMultiArray             */
 /*                                                      */
 /********************************************************/
+
+/** \weakgroup ParallelProcessing
+    \sa laplacianOfGaussianMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
 
 /** \brief Calculate Laplacian of a N-dimensional arrays using Gaussian derivative filters.
 
@@ -2149,6 +2164,10 @@ laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
 /*                                                      */
 /********************************************************/
 
+/** \weakgroup ParallelProcessing
+    \sa gaussianDivergenceMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+
 /** \brief Calculate the divergence of a vector field using Gaussian derivative filters.
 
     This function computes the divergence of the given N-dimensional vector field
@@ -2195,14 +2214,14 @@ laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
         void
-        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, int(N)>, S1> const & vectorField,
                                      MultiArrayView<N, T2, S2> divergence,
                                      ConvolutionOptions<N> const & opt);
 
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
         void
-        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, int(N)>, S1> const & vectorField,
                                      MultiArrayView<N, T2, S2> divergence,
                                      double sigma,
                                      ConvolutionOptions<N> opt = ConvolutionOptions<N>());
@@ -2212,7 +2231,7 @@ laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
         void
-        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, int(N)>, S1> const & vectorField,
                                      MultiArrayView<N, T2, S2> divergence,
                                      BlockwiseConvolutionOptions<N> const & opt);
     }
@@ -2305,7 +2324,7 @@ gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
 template <unsigned int N, class T1, class S1,
                           class T2, class S2>
 inline void
-gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, int(N)>, S1> const & vectorField,
                              MultiArrayView<N, T2, S2> divergence,
                              ConvolutionOptions<N> const & opt)
 {
@@ -2319,7 +2338,7 @@ gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & ve
 template <unsigned int N, class T1, class S1,
                           class T2, class S2>
 inline void
-gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, int(N)>, S1> const & vectorField,
                              MultiArrayView<N, T2, S2> divergence,
                              double sigma,
                              ConvolutionOptions<N> opt = ConvolutionOptions<N>())
@@ -2332,6 +2351,10 @@ gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & ve
 /*              hessianOfGaussianMultiArray             */
 /*                                                      */
 /********************************************************/
+
+/** \weakgroup ParallelProcessing
+    \sa hessianOfGaussianMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
 
 /** \brief Calculate Hessian matrix of a N-dimensional arrays using Gaussian derivative filters.
 
@@ -2603,7 +2626,11 @@ struct StructurTensorFunctor
 /*                                                      */
 /********************************************************/
 
-/** \brief Calculate th structure tensor of a multi-dimensional arrays.
+/** \weakgroup ParallelProcessing
+    \sa structureTensorMultiArray <B>(...,</B> BlockwiseConvolutionOptions<B>)</B>
+ */
+
+/** \brief Calculate the structure tensor of a multi-dimensional arrays.
 
     This function computes the gradient (outer product) tensor for each element
     of the given N-dimensional array with first-derivative-of-Gaussian filters at

@@ -55,6 +55,45 @@ namespace vigra {
 
 namespace matlab {
 
+/*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*
+ * This is used for better readability of the test cases            .
+ * Nothing to be done here.
+ *+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int cantorPair(int x, int y){
+        return (int)(((x+y)*(x+y+1))/2+y);
+}
+
+int cantorPair(int x, int y, int z){
+        return cantorPair(cantorPair(x,y),z);
+}
+
+template <int x, int y>
+struct cP{
+    enum { value = (int)(((x+y)*(x+y+1))/2+y)};
+};
+
+template <int x, int y, int z>
+struct cP3{
+    enum { value = cP<cP<x, y>::value, z>::value};
+};
+
+template <class T>
+inline bool is_in_range(T in, T min, T max)
+{
+    return (in >= min && in <= max);
+}
+template<class T>
+inline bool is_in_range(T in, std::string min, T max)
+{
+    return(in <= max);
+}
+
+template<class T>
+inline bool is_in_range(T in, T min, std::string max)
+{
+    return (in >= min);
+}
+
 template <class T>
 struct ValueType;
 
@@ -1082,47 +1121,6 @@ class OutputArray
 Rahuls code starts here
 ************************************/
 using namespace vigra;
-
-
-/*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*
- * This is used for better readability of the test cases            .
- * Nothing to be done here.
- *+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-int cantorPair(int x, int y){
-        return (int)(((x+y)*(x+y+1))/2+y);
-}
-
-int cantorPair(int x, int y, int z){
-        return cantorPair(cantorPair(x,y),z);
-}
-
-template <int x, int y>
-struct cP{
-    enum { value = (int)(((x+y)*(x+y+1))/2+y)};
-};
-
-template <int x, int y, int z>
-struct cP3{
-    enum { value = cP<cP<x, y>::value, z>::value};
-};
-
-template <class T>
-inline bool is_in_range(T in, T min, T max)
-{
-    return (in >= min && in <= max);
-}
-template<class T>
-inline bool is_in_range(T in, std::string min, T max)
-{
-    return(in <= max);
-}
-
-template<class T>
-inline bool is_in_range(T in, T min, std::string max)
-{
-    return (in >= min);
-}
-
 
 
 //Wrapper classes to STL-Map for use as a sparse array.
