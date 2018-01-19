@@ -153,11 +153,7 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
     # variable CMAKE_CFG_INTDIR contains a dot '.' for a Windows nmake build, or
     #                           '$(OutDir)' for a VisualStudio build (OutDir will be
     #                           set by VS at build time)
-    IF(NOT CMAKE_CFG_INTDIR STREQUAL ".")
-        SET(VIGRA_CONFIGURATION ${CMAKE_CFG_INTDIR})
-    ELSE()
-        SET(VIGRA_CONFIGURATION)
-    ENDIF()
+    SET(VIGRA_CONFIGURATION ${CMAKE_CFG_INTDIR})
 
     IF(AUTOEXEC_TESTS)
         add_custom_command(
