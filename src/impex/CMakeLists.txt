@@ -67,9 +67,12 @@ ADD_LIBRARY(vigraimpex ${LIBTYPE}
 set(SOVERSION 11)  # increment this after changing the vigraimpex library
 IF(MACOSX)
     SET_TARGET_PROPERTIES(vigraimpex PROPERTIES VERSION ${SOVERSION}.${vigra_version}
-                         SOVERSION ${SOVERSION} INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
+                          SOVERSION ${SOVERSION} INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}"
+                          CXX_STANDARD 11)
 ELSE()
-    SET_TARGET_PROPERTIES(vigraimpex PROPERTIES VERSION ${SOVERSION}.${vigra_version} SOVERSION ${SOVERSION})
+    SET_TARGET_PROPERTIES(vigraimpex PROPERTIES VERSION ${SOVERSION}.${vigra_version}
+                          SOVERSION ${SOVERSION}
+                          CXX_STANDARD 11)
 ENDIF()
 
 IF(JPEG_FOUND)
