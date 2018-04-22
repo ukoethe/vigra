@@ -54,6 +54,7 @@
 
 
 
+#include <iostream>
 #include "vigra/sifImport.hxx"
 #include "vigra/utilities.hxx"
 #include "byteorder.hxx"
@@ -142,7 +143,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
         std::string str;
         getline(siffile, str);
 #ifdef DEBUG
-        std::std::cout << str << std::std::endl;
+        std::cout << str << std::endl;
 #endif
         if(i==0) {
             vigra_precondition(str=="Andor Technology Multi-Channel File", "The file is not a valid sif File.");
