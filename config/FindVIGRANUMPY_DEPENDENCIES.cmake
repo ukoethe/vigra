@@ -80,7 +80,7 @@ IF(PYTHONINTERP_FOUND)
     IF(PYTHON_LIBRARIES)
         MESSAGE(STATUS "Found Python library: ${PYTHON_LIBRARIES}")
     ELSE()
-        MESSAGE(STATUS "Could NOT find Python library")
+        MESSAGE(STATUS "Could NOT find Python library (looking for version ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR})")
     ENDIF()
 
     ######################################################################
@@ -115,6 +115,8 @@ IF(PYTHONINTERP_FOUND)
                 boost_python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}
                 # Mac with Python 3
                 boost_python${PYTHON_VERSION_MAJOR}
+                # conda-forge on all platforms
+                boost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
                 # default
                 boost_python)
 
@@ -128,7 +130,7 @@ IF(PYTHONINTERP_FOUND)
     if(Boost_PYTHON_LIBRARY)
         MESSAGE(STATUS "Found boost_python library: ${Boost_PYTHON_LIBRARY}")
     else()
-        MESSAGE(STATUS "Could NOT find boost_python library")
+        MESSAGE(STATUS "Could NOT find boost_python library (looking for version ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR})")
     endif()
 
     ######################################################################
@@ -173,7 +175,7 @@ IF(PYTHONINTERP_FOUND)
     SET(PYTHON_NUMPY_INCLUDE_DIR ${PYTHON_NUMPY_INCLUDE_DIR}
         CACHE PATH "Path to numpy include files" FORCE)
     IF(PYTHON_NUMPY_INCLUDE_DIR)
-        MESSAGE(STATUS "Searching for Python numpy: ok")
+        MESSAGE(STATUS "Found numpy include directory: ${PYTHON_NUMPY_INCLUDE_DIR}")
     ELSE()
         MESSAGE(STATUS "Could NOT find Python numpy ('import numpy.distutils.misc_util' failed)")
     ENDIF()
@@ -188,7 +190,7 @@ IF(PYTHONINTERP_FOUND)
                       RESULT_VARIABLE PYTHON_NOSETESTS_NOT_FOUND)
 
     IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
-        MESSAGE(STATUS "Searching for Python nosetests: ok")
+        MESSAGE(STATUS "Found Python nosetests: ok")
     ELSE()
         MESSAGE(STATUS "Could NOT find Python nosetests ('import nose' failed)")
     ENDIF()
@@ -203,7 +205,7 @@ IF(PYTHONINTERP_FOUND)
     IF(NOT PYTHON_SPHINX)
         MESSAGE(STATUS "Could NOT find sphinx documentation generator")
     ELSE()
-        MESSAGE(STATUS "Searching for sphinx documentation generator: ok")
+        MESSAGE(STATUS "Found sphinx documentation generator: ${PYTHON_SPHINX}")
     ENDIF()
 
     ######################################################################
@@ -226,9 +228,9 @@ IF(PYTHONINTERP_FOUND)
                          Boost_PYTHON_LIBRARY PYTHON_NUMPY_INCLUDE_DIR VIGRANUMPY_INSTALL_DIR)
 
     IF(NOT VIGRANUMPY_INCLUDE_DIRS OR VIGRANUMPY_INCLUDE_DIRS MATCHES "-NOTFOUND")
-        #note that the numpy include dir is set _before_ the python include dir, such that
-        #installing a more recent version of numpy on top of an existing python installation
-        #works (otherwise, numpy includes are picked up from ${PYTHON_INCLUDE_PATH}/numpy )
+        # note that the numpy include dir is set _before_ the python include dir, such that
+        # installing a more recent version of numpy on top of an existing python installation
+        # works (otherwise, numpy includes are picked up from ${PYTHON_INCLUDE_PATH}/numpy )
         SET(VIGRANUMPY_INCLUDE_DIRS ${PYTHON_NUMPY_INCLUDE_DIR} ${PYTHON_INCLUDE_PATH} ${Boost_INCLUDE_DIR})
     ENDIF()
     SET(VIGRANUMPY_INCLUDE_DIRS ${VIGRANUMPY_INCLUDE_DIRS}
