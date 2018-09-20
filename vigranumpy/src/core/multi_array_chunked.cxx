@@ -54,6 +54,7 @@ namespace python = boost::python;
 
 namespace vigra {
 
+#ifdef HasHDF5
 // workaround for compiler bug in VS 2015 (compiler fails to match the template
 // function get_pointer() at line 20 of boost/get_pointer.hpp)
 inline ChunkedArrayHDF5<1, float, class std::allocator<float> > const volatile *
@@ -104,7 +105,7 @@ get_pointer(ChunkedArrayHDF5<5, unsigned char, class std::allocator<unsigned cha
 
 inline ChunkedArrayHDF5<5, unsigned long, class std::allocator<unsigned long> > const volatile *
 get_pointer(ChunkedArrayHDF5<5, unsigned long, class std::allocator<unsigned long> > const volatile * p) { return p; }
-
+#endif // HasHDF5
 
 inline ChunkedArray<2, float> const volatile *
 get_pointer(ChunkedArray<2, float> const volatile * p) { return p; }
