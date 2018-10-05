@@ -45,6 +45,7 @@
 #include "overlapped_blocks.hxx"
 
 #include <limits>
+#include <type_traits>
 
 namespace vigra
 {
@@ -56,10 +57,10 @@ namespace vigra
 namespace blockwise_watersheds_detail
 {
 
-template <class DataArray, class DirectionsBlocksIterator>
-void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
+template <unsigned int M, class DataArray, class DirectionsBlocksIterator>
+void prepareBlockwiseWatersheds(const OverlapsN<M, DataArray>& overlaps,
                                 DirectionsBlocksIterator directions_blocks_begin,
-                                BlockwiseLabelOptions const & options)
+                                BlockwiseLabelOptions<M> const & options)
 {
     static const unsigned int N = DataArray::actual_dimension;
     ignore_argument(N);
@@ -77,7 +78,7 @@ void prepareBlockwiseWatersheds(const Overlaps<DataArray>& overlaps,
         [&](const int /*threadId*/, const Coordinate  iterVal){
 
             DirectionsBlock directions_block = directions_blocks_begin[iterVal];
-            OverlappingBlock<DataArray> data_block = overlaps[iterVal];
+            OverlappingBlockN<M, DataArray> data_block = overlaps[iterVal];
 
             typedef GridGraph<DataArray::actual_dimension, undirected_tag> Graph;
             typedef typename Graph::NodeIt GraphScanner;
@@ -201,7 +202,7 @@ template <unsigned int N, class Data, class S1,
                           class Label, class S2>
 Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
                                    MultiArrayView<N, Label, S2> labels,
-                                   BlockwiseLabelOptions const & options = BlockwiseLabelOptions())
+                                   BlockwiseLabelOptions<N> const & options = BlockwiseLabelOptions<N>())
 {
     using namespace blockwise_watersheds_detail;
 
@@ -210,50 +211,53 @@ Label unionFindWatershedsBlockwise(MultiArrayView<N, Data, S1> data,
     vigra_precondition(shape == labels.shape(), "shapes of data and labels do not match");
 
     MultiArray<N, unsigned short> directions(shape);
-    Shape block_shape = options.getBlockShapeN<N>();
+    Shape block_shape = options.getBlockShape();
 
     MultiArray<N, MultiArrayView<N, unsigned short> > directions_blocks = blockify(directions, block_shape);
 
-    Overlaps<MultiArrayView<N, Data, S1> > overlaps(data, block_shape, Shape(1), Shape(1));
+    OverlapsN<N, MultiArrayView<N, Data, S1> > overlaps(data, block_shape, Shape(1), Shape(1));
     prepareBlockwiseWatersheds(overlaps, directions_blocks.begin(), options);
     GridGraph<N, undirected_tag> graph(data.shape(), options.getNeighborhood());
     UnionFindWatershedsEquality<N> equal = {&graph};
     return labelMultiArrayBlockwise(directions, labels, options, equal);
 }
 
-template <unsigned int N, class Data, class Label>
-Label unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
-                                   ChunkedArray<N, Label>& labels,
-                                   BlockwiseLabelOptions const & options,
-                                   ChunkedArray<N, unsigned short>& directions)
+template <unsigned int N1, unsigned int N2, unsigned int N3, unsigned int M,
+          class Data, class Label, class TAG1, class TAG2>
+typename std::enable_if<(N1 >= M && N2 >= M && N3 >= M), Label>::type unionFindWatershedsBlockwise(
+                                const ChunkedArray<N1, Data, TAG1>& data,
+                                ChunkedArray<N2, Label, TAG2>& labels,
+                                BlockwiseLabelOptions<M> const & options,
+                                ChunkedArray<N3, unsigned short, Chunked::ARRAY>& directions)
 {
     using namespace blockwise_watersheds_detail;
 
-    typedef typename ChunkedArray<N, Data>::shape_type Shape;
-    Shape shape = data.shape();
-    vigra_precondition(shape == labels.shape() && shape == directions.shape(),
-        "unionFindWatershedsBlockwise(): shapes of data and labels do not match");
-    Shape chunk_shape = data.chunkShape();
-    vigra_precondition(chunk_shape == labels.chunkShape() && chunk_shape == directions.chunkShape(),
-        "unionFindWatershedsBlockwise(): chunk shapes do not match");
+    typedef TinyVector<MultiArrayIndex, M> Shape;
 
-    Overlaps<ChunkedArray<N, Data> > overlaps(data, data.chunkShape(), Shape(1), Shape(1));
+    Shape shape = data.template minimalShape<M>();
+    vigra_precondition(shape == labels.template minimalShape<M>() && shape == directions.template minimalShape<M>(),
+        "unionFindWatershedsBlockwise(): shapes of data and labels do not match");
+    Shape chunk_shape = data.template minimalChunkShape<M>();
+    vigra_precondition(chunk_shape == labels.template minimalChunkShape<M>()
+        && chunk_shape == directions.template minimalChunkShape<M>(),
+        "unionFindWatershedsBlockwise(): chunk shapes do not match");
+//FIXME
+    OverlapsN<M, ChunkedArray<N1, Data, TAG1> > overlaps(data, data.template minimalChunkShape<M>(), Shape(1), Shape(1));
 
     prepareBlockwiseWatersheds(overlaps, directions.chunk_begin(Shape(0), shape), options);
 
-    GridGraph<N, undirected_tag> graph(shape, options.getNeighborhood());
-    UnionFindWatershedsEquality<N> equal = {&graph};
+    GridGraph<M, undirected_tag> graph(shape, options.getNeighborhood());
+    UnionFindWatershedsEquality<M> equal = {&graph};
     return labelMultiArrayBlockwise(directions, labels, options, equal);
 }
 
-template <unsigned int N, class Data,
-                          class Label>
+template <unsigned int N1, unsigned int N2, unsigned int M, class Data, class Label, class TAG1, class TAG2>
 inline Label
-unionFindWatershedsBlockwise(const ChunkedArray<N, Data>& data,
-                                   ChunkedArray<N, Label>& labels,
-                                   BlockwiseLabelOptions const & options = BlockwiseLabelOptions())
+unionFindWatershedsBlockwise(const ChunkedArray<N1, Data, TAG1>& data,
+                                   ChunkedArray<N2, Label, TAG2>& labels,
+                                   BlockwiseLabelOptions<M> const & options = BlockwiseLabelOptions<M>())
 {
-    ChunkedArrayLazy<N, unsigned short> directions(data.shape(), data.chunkShape());
+    ChunkedArrayLazy<M, unsigned short> directions(data.template minimalShape<M>(), data.template minimalChunkShape<M>());
     return unionFindWatershedsBlockwise(data, labels, options, directions);
 }
 

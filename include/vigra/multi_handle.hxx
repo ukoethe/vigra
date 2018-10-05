@@ -585,7 +585,7 @@ template <unsigned int N, class T>
 class IteratorChunkHandle
 {
   public:
-    typedef ChunkedArray<N, T>             array_type;
+    typedef ChunkedArray<N, T, Chunked::ARRAY>             array_type;
     typedef typename MultiArrayShape<N>::type  shape_type;
 
     IteratorChunkHandle()
@@ -666,7 +666,10 @@ public:
       array_(other.array_)
     {
         if(array_)
-            pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+        {
+            auto p = point();
+            pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
+        }
     }
 
     CoupledHandle(array_type const & array, NEXT const & next)
@@ -676,7 +679,10 @@ public:
       array_(const_cast<array_type*>(&array))
     {
         if(array_)
-            pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+        {
+            auto p = point();
+            pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
+        }
     }
 
     ~CoupledHandle()
@@ -698,7 +704,8 @@ public:
             array_ = other.array_;
             if(array_)
             {
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+                auto p = point();
+                pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
             }
             else
             {
@@ -720,7 +727,8 @@ public:
         if(point()[dim] == upper_bound_[dim])
         {
             // if(point()[dim] < shape()[dim])
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+                auto p = point();
+                pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
         }
     }
 
@@ -731,7 +739,8 @@ public:
         if(point()[dim] < upper_bound_[dim] - array_->chunk_shape_[dim])
         {
             // if(point()[dim] >= 0)
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+                auto p = point();
+                pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
         }
     }
 
@@ -739,13 +748,17 @@ public:
     {
         base_type::addDim(dim, d);
         if(point()[dim] < shape()[dim] && point()[dim] >= 0)
-            pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+        {
+            auto p = point();
+            pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
+        }
     }
 
     inline void add(shape_type const & d)
     {
         base_type::add(d);
-        pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+        auto p = point();
+        pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
     }
 
     template<int DIMENSION>
@@ -761,7 +774,10 @@ public:
                 // (it makes a difference of a factor of 2!)
                 vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
             else
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+            {
+                auto p = point();
+                pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
+            }
         }
     }
 
@@ -778,7 +794,10 @@ public:
                 // (it makes a difference of a factor of 2!)
                 vigra_invariant(false, "CoupledHandle<ChunkedMemory<T>>: internal error.");
             else
-                pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+            {
+                auto p = point();
+                pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
+            }
         }
     }
 
@@ -798,7 +817,8 @@ public:
     {
         base_type::restrictToSubarray(start, end);
         this->offset_ += start;
-        pointer_ = array_->chunkForIterator(point(), strides_, upper_bound_, this);
+        auto p = point();
+        pointer_ = array_->chunkForIterator(p, strides_, upper_bound_, this);
     }
 
     // ptr access

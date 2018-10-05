@@ -129,6 +129,14 @@ struct UnstridedArrayTag {};
 */
 struct ChunkedArrayTag {};
 
+namespace Chunked
+{
+    struct ARRAY {};
+    struct ROI {};
+    struct VIEW {};
+    struct HIER_KOENNTE_IHRE_WERBUNG_STEHEN{};
+}
+
 /********************************************************/
 /*                                                      */
 /*                      TypeTraits                      */

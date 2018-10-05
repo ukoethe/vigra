@@ -103,7 +103,7 @@ Shape blocksShape(const Shape& global_shape, const Shape& block_shape)
 } // namespace overlapped_blocks_detail
 
 template <class Shape>
-inline bool 
+inline bool
 within(const Shape& coordinates, const std::pair<Shape, Shape>& bounds)
 {
     return allLessEqual(bounds.first, coordinates) && allLess(coordinates, bounds.second);
@@ -160,8 +160,8 @@ public:
     }
 };
 
-template <unsigned int N, class T>
-struct OverlappingBlock<ChunkedArray<N, T> >
+template <unsigned int N, class T, class TAG>
+struct OverlappingBlock<ChunkedArray<N, T, TAG> >
 {
     typedef typename MultiArrayShape<N>::type Shape;
 
@@ -169,11 +169,11 @@ struct OverlappingBlock<ChunkedArray<N, T> >
     std::pair<Shape, Shape> inner_bounds;
 };
 
-template <unsigned int N, class T>
-class Overlaps<ChunkedArray<N, T> >
+template <unsigned int N, class T, class TAG>
+class Overlaps<ChunkedArray<N, T, TAG> >
 {
 private:
-    typedef ChunkedArray<N, T> Array;
+    typedef ChunkedArray<N, T, TAG> Array;
     typedef typename MultiArrayShape<N>::type Shape;
 
     const Array& array;
@@ -207,6 +207,158 @@ public:
         return blocksShape(array.shape(), block_shape);
     }
 };
+
+
+
+template <unsigned int M, class ArrayType>
+struct OverlappingBlockN;
+
+template <unsigned int M, class ArrayType>
+class OverlapsN;
+
+template <unsigned int N, class T, class S>
+struct OverlappingBlockN<N, MultiArrayView<N, T, S> >
+{
+    typedef typename MultiArrayView<N, T, S>::difference_type Shape;
+
+    MultiArrayView<N, T, S> block;
+    std::pair<Shape, Shape> inner_bounds;
+};
+
+template <unsigned int N, class T, class TAG>
+struct OverlappingBlockN<N, ChunkedArray<N, T, TAG> >
+{
+    typedef typename MultiArrayShape<N>::type Shape;
+
+    MultiArray<N, T> block;
+    std::pair<Shape, Shape> inner_bounds;
+};
+
+
+template <unsigned int N, class T, class S>
+class OverlapsN<N, MultiArrayView<N, T, S> >
+{
+private:
+    typedef MultiArrayView<N, T, S> View;
+    typedef typename View::difference_type Shape;
+
+    View view;
+    Shape block_shape;
+    Shape overlap_before;
+    Shape overlap_after;
+public:
+    OverlapsN(View view, const Shape& block_shape, const Shape& overlap_before, const Shape& overlap_after)
+    : view(view),
+      block_shape(block_shape),
+      overlap_before(overlap_before),
+      overlap_after(overlap_after)
+    {}
+    OverlappingBlockN<N, View> operator[](const Shape& coordinates) const
+    {
+        using namespace overlapped_blocks_detail;
+        std::pair<Shape, Shape> block_bounds = blockBoundsAt(coordinates, view.shape(), block_shape);
+        std::pair<Shape, Shape> overlap_bounds = overlapBoundsAt(block_bounds, view.shape(), overlap_before, overlap_after);
+
+        OverlappingBlockN<N, View> result;
+        result.block = view.subarray(overlap_bounds.first, overlap_bounds.second);
+        result.inner_bounds = std::make_pair(block_bounds.first - overlap_bounds.first, block_bounds.second - overlap_bounds.first);
+        return result;
+    }
+    Shape shape() const
+    {
+        using namespace overlapped_blocks_detail;
+        return blocksShape(view.shape(), block_shape);
+    }
+};
+
+template <unsigned int N, class T, class TAG>
+class OverlapsN<N, ChunkedArray<N, T, TAG> >
+{
+private:
+    typedef ChunkedArray<N, T, TAG> Array;
+    typedef typename MultiArrayShape<N>::type Shape;
+
+    const Array& array;
+    Shape block_shape;
+    Shape overlap_before;
+    Shape overlap_after;
+public:
+    OverlapsN(const Array& array, const Shape& block_shape, const Shape& overlap_before, const Shape& overlap_after)
+    : array(array),
+      block_shape(block_shape),
+      overlap_before(overlap_before),
+      overlap_after(overlap_after)
+    {}
+
+    OverlappingBlockN<N, Array> operator[](const Shape& coordinates) const
+    {
+        using namespace overlapped_blocks_detail;
+        std::pair<Shape, Shape> block_bounds = blockBoundsAt(coordinates, array.shape(), block_shape);
+        std::pair<Shape, Shape> overlap_bounds = overlapBoundsAt(block_bounds, array.shape(), overlap_before, overlap_after);
+
+        OverlappingBlockN<N, Array> result;
+        result.block.reshape(overlap_bounds.second - overlap_bounds.first);
+        array.checkoutSubarray(overlap_bounds.first, result.block);
+        result.inner_bounds = std::make_pair(block_bounds.first - overlap_bounds.first, block_bounds.second - overlap_bounds.first);
+
+        return result;
+    }
+    Shape shape() const
+    {
+        using namespace overlapped_blocks_detail;
+        return blocksShape(array.shape(), block_shape);
+    }
+};
+
+
+template <unsigned int M, unsigned int N, class T, class TAG>
+struct OverlappingBlockN<M, ChunkedArray<N, T, TAG> >
+{
+    typedef typename MultiArrayShape<M>::type Shape;
+
+    MultiArray<M, T> block;
+    std::pair<Shape, Shape> inner_bounds;
+};
+
+template <unsigned int M, unsigned int N, class T, class TAG>
+class OverlapsN<M, ChunkedArray<N, T, TAG> >
+{
+private:
+    typedef ChunkedArray<N, T, TAG> Array;
+    typedef typename MultiArrayShape<M>::type Shape;
+
+    const Array& array;
+    Shape block_shape;
+    Shape overlap_before;
+    Shape overlap_after;
+public:
+    OverlapsN(const Array& array, const Shape& block_shape, const Shape& overlap_before, const Shape& overlap_after)
+    : array(array),
+      block_shape(block_shape),
+      overlap_before(overlap_before),
+      overlap_after(overlap_after)
+    {}
+
+    OverlappingBlockN<M, Array> operator[](const Shape& coordinates) const
+    {
+        using namespace overlapped_blocks_detail;
+        std::pair<Shape, Shape> block_bounds = blockBoundsAt(coordinates, array.template minimalShape<M>(), block_shape);
+        std::pair<Shape, Shape> overlap_bounds = overlapBoundsAt(block_bounds, array.template minimalShape<M>(), overlap_before, overlap_after);
+
+        OverlappingBlockN<M, Array> result;
+        result.block.reshape(overlap_bounds.second - overlap_bounds.first);
+        array.checkoutSubarray(overlap_bounds.first, result.block);
+        result.inner_bounds = std::make_pair(block_bounds.first - overlap_bounds.first, block_bounds.second - overlap_bounds.first);
+
+        return result;
+    }
+    Shape shape() const
+    {
+        using namespace overlapped_blocks_detail;
+        return blocksShape(array.template minimalShape<M>(), block_shape);
+    }
+};
+
 
 } // namespace vigra
 

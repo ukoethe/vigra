@@ -1,6 +1,7 @@
 /************************************************************************/
 /*                                                                      */
-/*     Copyright 2013-2014 by Martin Bidlingmaier and Ullrich Koethe    */
+/*    Copyright 2013-2014 by Martin Bidlingmaier, Ullrich Koethe        */
+/*                                                and Kevin Kiefer      */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -37,6 +38,7 @@
 #define VIGRA_BLOCKWISE_LABELING_HXX
 
 #include <algorithm>
+#include <type_traits>
 
 #include "threadpool.hxx"
 #include "counting_iterator.hxx"
@@ -52,7 +54,6 @@
 
 namespace vigra
 {
-
 /** \addtogroup Labeling
 */
 //@{
@@ -63,44 +64,45 @@ namespace vigra
         and \ref vigra::BlockwiseOptions. See there for
         detailed documentation.
     */
+template <unsigned int N>
 class BlockwiseLabelOptions
 : public LabelOptions
-, public BlockwiseOptions
+, public BlockwiseOptions<N>
 {
 public:
-    typedef BlockwiseOptions::Shape Shape;
+    typedef typename BlockwiseOptions<N>::Shape Shape;
 
     // reimplement setter functions to allow chaining
 
     template <class T>
-    BlockwiseLabelOptions& ignoreBackgroundValue(const T& value)
+    BlockwiseLabelOptions<N>& ignoreBackgroundValue(const T& value)
     {
         LabelOptions::ignoreBackgroundValue(value);
         return *this;
     }
 
-    BlockwiseLabelOptions & neighborhood(NeighborhoodType n)
+    BlockwiseLabelOptions<N> & neighborhood(NeighborhoodType n)
     {
         LabelOptions::neighborhood(n);
         return *this;
     }
 
-    BlockwiseLabelOptions & blockShape(const Shape & shape)
+    BlockwiseLabelOptions<N> & blockShape(const Shape & shape)
     {
-        BlockwiseOptions::blockShape(shape);
+        BlockwiseOptions<N>::blockShape(shape);
         return *this;
     }
 
-    template <class T, int N>
-    BlockwiseLabelOptions & blockShape(const TinyVector<T, N> & shape)
+    template <class T>
+    BlockwiseLabelOptions<N> & blockShape(const TinyVector<T, N> & shape)
     {
-        BlockwiseOptions::blockShape(shape);
+        BlockwiseOptions<N>::blockShape(shape);
         return *this;
     }
 
-    BlockwiseLabelOptions & numThreads(const int n)
+    BlockwiseLabelOptions<N> & numThreads(const int n)
     {
-        BlockwiseOptions::numThreads(n);
+        BlockwiseOptions<N>::numThreads(n);
         return *this;
     }
 };
@@ -134,11 +136,11 @@ struct BlockwiseLabelingResult
 };
 
 template <class DataBlocksIterator, class LabelBlocksIterator,
-          class Equal, class Mapping>
+          class Equal, class Mapping, unsigned int N>
 typename BlockwiseLabelingResult<LabelBlocksIterator>::type
 blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_blocks_end,
                   LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
-                  BlockwiseLabelOptions const & options,
+                  BlockwiseLabelOptions<N> const & options,
                   Equal equal,
                   Mapping& mapping)
 {
@@ -278,6 +280,175 @@ blockwiseLabeling(DataBlocksIterator data_blocks_begin, DataBlocksIterator data_
 }
 
 
+// Version for ChunkedArrays. Uses the commit/checkout API internally
+template <unsigned int M, unsigned int N1, unsigned int N2,
+          class Data, class Label, class TAG1, class TAG2, class Equal, class Mapping>
+Label chunkedBlockwiseLabeling(const ChunkedArray<N1,Data,TAG1> & data,
+                               ChunkedArray<N2,Label,TAG2> & labels,
+                               const MultiBlocking<M, MultiArrayIndex> & blocking,
+                               const BlockwiseLabelOptions<M> & options,
+                               Equal equal,
+                               Mapping& mapping)
+{
+    typedef TinyVector<MultiArrayIndex,M> Shape;
+    typedef MultiBlocking<M, MultiArrayIndex> Blocking;
+    typedef typename Blocking::BlockIter BlockIter;
+
+    Shape blocks_shape = data.template minimalShape<M>() / options.getBlockShape();
+    Shape reminder = data.template minimalShape<M>() % options.getBlockShape();
+    for (unsigned i = 0; i < M; ++i)
+        if (reminder[i] != 0)
+            blocks_shape[i] += 1;
+
+    MultiArray<M, Label> label_offsets(blocks_shape);
+    bool has_background = options.hasBackgroundValue();
+
+    // mapping stage: label each block and save number of labels assigned in blocks before the current block in label_offsets
+    Label unmerged_label_number;
+    {
+        BlockIter data_blocks_it = blocking.blockBegin();
+        BlockIter label_blocks_it = blocking.blockBegin();
+        typename MultiArray<M, Label>::iterator offsets_it = label_offsets.begin();
+
+        Label current_offset = 0;
+        auto d = std::distance(blocking.blockBegin(), blocking.blockEnd());
+        std::vector<Label> nSeg(d);
+
+        parallel_foreach(options.getNumThreads(), d,
+            [&](const int /*threadId*/, const uint64_t i){
+                auto block = blocking.blockBegin()[i];
+
+                MultiArray<M,Data> data_cache(block.size());
+                MultiArray<M,Label> label_cache(block.size());
+
+                data.checkoutSubarray(block.begin(), data_cache);
+
+                Label resVal = labelMultiArray(data_cache, label_cache, options, equal);
+
+                labels.commitSubarray(block.begin(), label_cache);
+
+                if(has_background) // FIXME: reversed condition?
+                    ++resVal;
+                nSeg[i] = resVal;
+            }
+        );
+
+        for(int i=0; i<d;++i){
+            offsets_it[i] = current_offset;
+            current_offset+=nSeg[i];
+        }
+
+
+        unmerged_label_number = current_offset;
+        if(!has_background)
+            ++unmerged_label_number;
+    }
+
+    // reduce stage: merge adjacent labels if the region overlaps
+    UnionFindArray<Label> global_unions(unmerged_label_number);
+    if(has_background)
+    {
+        // merge all labels that refer to background
+        for(typename MultiArray<M, Label>::iterator offsets_it = label_offsets.begin();
+                offsets_it != label_offsets.end();
+                ++offsets_it)
+        {
+            global_unions.makeUnion(0, *offsets_it);
+        }
+    }
+
+
+    typedef GridGraph<M, undirected_tag> Graph;
+    typedef typename Graph::edge_iterator EdgeIterator;
+    Graph blocks_graph(blocks_shape, options.getNeighborhood());
+    for(EdgeIterator it = blocks_graph.get_edge_iterator(); it != blocks_graph.get_edge_end_iterator(); ++it)
+    {
+        Shape u = blocks_graph.u(*it);
+        Shape v = blocks_graph.v(*it);
+        Shape difference = v - u;
+
+        BorderVisitor<Equal, Label> border_visitor;
+        border_visitor.u_label_offset = label_offsets[u];
+        border_visitor.v_label_offset = label_offsets[v];
+        border_visitor.global_unions = &global_unions;
+        border_visitor.equal = &equal;
+
+        auto block_u = blocking.blockDescToBlock(u);
+        auto block_v = blocking.blockDescToBlock(v);
+
+        MultiArray<M,Data> data_cache_u(block_u.size());
+        MultiArray<M,Data> data_cache_v(block_v.size());
+
+        MultiArray<M,Label> label_cache_u(block_u.size());
+        MultiArray<M,Label> label_cache_v(block_v.size());
+
+        data.checkoutSubarray(block_u.begin(), data_cache_u);
+        data.checkoutSubarray(block_v.begin(), data_cache_v);
+
+        labels.checkoutSubarray(block_u.begin(), label_cache_u);
+        labels.checkoutSubarray(block_v.begin(), label_cache_v);
+
+        visitBorder(data_cache_u, label_cache_u,
+                    data_cache_v, label_cache_v,
+                    difference, options.getNeighborhood(), border_visitor);
+
+        labels.commitSubarray(block_u.begin(), label_cache_u);
+        labels.commitSubarray(block_v.begin(), label_cache_v);
+    }
+
+    // fill mapping (local labels) -> (global labels)
+    Label last_label = global_unions.makeContiguous();
+    {
+        typename MultiArray<M, Label>::iterator offsets_it = label_offsets.begin();
+        Label offset = *offsets_it;
+        ++offsets_it;
+        typename Mapping::iterator mapping_it = mapping.begin();
+        for( ; offsets_it != label_offsets.end(); ++offsets_it, ++mapping_it)
+        {
+            mapping_it->clear();
+            Label next_offset = *offsets_it;
+            if(has_background)
+            {
+                for(Label current_label = offset; current_label != next_offset; ++current_label)
+                {
+                    mapping_it->push_back(global_unions.findLabel(current_label));
+                }
+            }
+            else
+            {
+                mapping_it->push_back(0); // local labels start at 1
+                for(Label current_label = offset + 1; current_label != next_offset + 1; ++current_label)
+                {
+                    mapping_it->push_back(global_unions.findLabel(current_label));
+                }
+            }
+
+            offset = next_offset;
+        }
+        // last block:
+        // instead of next_offset, use last_label+1
+        mapping_it->clear();
+        if(has_background)
+        {
+            for(Label current_label = offset; current_label != unmerged_label_number; ++current_label)
+            {
+                mapping_it->push_back(global_unions.findLabel(current_label));
+            }
+        }
+        else
+        {
+            mapping_it->push_back(0);
+            for(Label current_label = offset + 1; current_label != unmerged_label_number; ++current_label)
+            {
+                mapping_it->push_back(global_unions.findLabel(current_label));
+            }
+        }
+    }
+
+    return last_label;
+}
+
+
 template <class LabelBlocksIterator, class MappingIterator>
 void toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator label_blocks_end,
                     MappingIterator mapping_begin, MappingIterator mapping_end)
@@ -295,6 +466,32 @@ void toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator 
         }
     }
 }
+
+
+template <unsigned int M, unsigned int N, class Label, class TAG, class MappingIterator>
+void chunkedToGlobalLabels(ChunkedArray<N,Label,TAG> & labels,
+                           const MultiBlocking<M, MultiArrayIndex> & blocking,
+                           MappingIterator mapping_begin,
+                           MappingIterator mapping_end)
+{
+    for(auto blockIt = blocking.blockBegin(); blockIt != blocking.blockEnd(); ++blockIt, ++mapping_begin)
+    {
+        vigra_assert(mapping_begin != mapping_end, "");
+
+        auto block = *blockIt;
+        MultiArray<M,Label> label_cache(block.size());
+        labels.checkoutSubarray(block.begin(), label_cache);
+
+        for(auto labels_it = label_cache.begin(); labels_it != label_cache.end(); ++labels_it)
+        {
+            vigra_assert(*labels_it < mapping_begin->size(), "");
+            *labels_it = (*mapping_begin)[*labels_it];
+        }
+
+        labels.commitSubarray(block.begin(), label_cache);
+    }
+}
+
 
 } // namespace blockwise_labeling_detail
 
@@ -402,14 +599,14 @@ template <unsigned int N, class Data, class S1,
           class Equal, class S3>
 Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
                                MultiArrayView<N, Label, S2> labels,
-                               const BlockwiseLabelOptions& options,
+                               const BlockwiseLabelOptions<N>& options,
                                Equal equal,
                                MultiArrayView<N, std::vector<Label>, S3>& mapping)
 {
     using namespace blockwise_labeling_detail;
 
     typedef typename MultiArrayShape<N>::type Shape;
-    Shape block_shape(options.getBlockShapeN<N>());
+    Shape block_shape(options.getBlockShape());
 
     MultiArray<N, MultiArrayView<N, Data, S1> > data_blocks = blockify(data, block_shape);
     MultiArray<N, MultiArrayView<N, Label, S2> > label_blocks = blockify(labels, block_shape);
@@ -423,13 +620,13 @@ template <unsigned int N, class Data, class S1,
           class Equal>
 Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
                                MultiArrayView<N, Label, S2> labels,
-                               const BlockwiseLabelOptions& options,
+                               const BlockwiseLabelOptions<N>& options,
                                Equal equal)
 {
     using namespace blockwise_labeling_detail;
 
     typedef typename MultiArrayShape<N>::type Shape;
-    Shape block_shape(options.getBlockShapeN<N>());
+    Shape block_shape(options.getBlockShape());
 
     MultiArray<N, MultiArrayView<N, Data, S1> > data_blocks = blockify(data, block_shape);
     MultiArray<N, MultiArrayView<N, Label, S2> > label_blocks = blockify(labels, block_shape);
@@ -447,56 +644,74 @@ template <unsigned int N, class Data, class S1,
                           class Label, class S2>
 Label labelMultiArrayBlockwise(const MultiArrayView<N, Data, S1>& data,
                                MultiArrayView<N, Label, S2> labels,
-                               const BlockwiseLabelOptions& options = BlockwiseLabelOptions())
+                               const BlockwiseLabelOptions<N>& options = BlockwiseLabelOptions<N>())
 {
     return labelMultiArrayBlockwise(data, labels, options, std::equal_to<Data>());
 }
 
 
-template <unsigned int N, class Data, class Label, class Equal, class S3>
-Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
-                               ChunkedArray<N, Label>& labels,
-                               const BlockwiseLabelOptions& options,
-                               Equal equal,
-                               MultiArrayView<N, std::vector<Label>, S3> mapping)
+
+template <unsigned int M, unsigned int N1, unsigned int N2, class Data, class Label, class Equal, class S3, class TAG1, class TAG2>
+typename std::enable_if<(N1 > M && N2 > M), Label>::type labelMultiArrayBlockwise(
+        const ChunkedArray<N1, Data, TAG1>& data,
+        ChunkedArray<N2, Label, TAG2>& labels,
+        const BlockwiseLabelOptions<M>& options,
+        Equal equal,
+        MultiArrayView<M, std::vector<Label>, S3> mapping)
 {
     using namespace blockwise_labeling_detail;
 
-    vigra_precondition(options.getBlockShape().size() == 0,
-        "labelMultiArrayBlockwise(ChunkedArray, ...): custom block shapes not supported "
-        "(always uses the array's chunk shape).");
+    typedef MultiBlocking<M, MultiArrayIndex> Blocking;
 
-    typedef typename ChunkedArray<N, Data>::shape_type Shape;
+    vigra_precondition(data.template minimalShape<M>() == labels.template minimalShape<M>(),
+            "Zhe data shape must be equal to the destination shape.");
+    vigra_precondition(allGreaterEqual(data.template minimalShape<M>(), options.getBlockShape()),
+            "The data shape must be equal or greater then the block shape.");
 
-    typedef typename ChunkedArray<N, Data>::chunk_const_iterator DataChunkIterator;
-    typedef typename ChunkedArray<N, Label>::chunk_iterator LabelChunkIterator;
+    const Blocking blocking(data.template minimalShape<M>(), options.getBlockShape());
 
-    DataChunkIterator data_chunks_begin = data.chunk_begin(Shape(0), data.shape());
-    LabelChunkIterator label_chunks_begin = labels.chunk_begin(Shape(0), labels.shape());
-
-    return blockwiseLabeling(data_chunks_begin, data_chunks_begin.getEndIterator(),
-                             label_chunks_begin, label_chunks_begin.getEndIterator(),
-                             options, equal, mapping);
+    return chunkedBlockwiseLabeling(data, labels, blocking, options, equal, mapping);
 }
 
-template <unsigned int N, class Data, class Label, class Equal>
-Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
-                               ChunkedArray<N, Label>& labels,
-                               const BlockwiseLabelOptions& options,
-                               Equal equal)
+
+template <unsigned int M, unsigned int N1, unsigned int N2, class Data, class Label, class Equal, class TAG1, class TAG2>
+typename std::enable_if<(N1 >= M && N2 >= M), Label>::type labelMultiArrayBlockwise(
+        const ChunkedArray<N1, Data, TAG1>& data,
+        ChunkedArray<N2, Label, TAG2>& labels,
+        const BlockwiseLabelOptions<M>& options,
+        Equal equal)
 {
     using namespace blockwise_labeling_detail;
-    MultiArray<N, std::vector<Label> > mapping(data.chunkArrayShape());
-    Label result = labelMultiArrayBlockwise(data, labels, options, equal, mapping);
-    typedef typename ChunkedArray<N, Data>::shape_type Shape;
-    toGlobalLabels(labels.chunk_begin(Shape(0), data.shape()), labels.chunk_end(Shape(0), data.shape()), mapping.begin(), mapping.end());
+
+    typedef TinyVector<MultiArrayIndex, M> Shape;
+    typedef MultiBlocking<M, MultiArrayIndex> Blocking;
+
+    vigra_precondition(data.template minimalShape<M>() == labels.template minimalShape<M>(),
+            "The data shape must be equal to the destination shape.");
+    vigra_precondition(allGreaterEqual(data.template minimalShape<M>(), options.getBlockShape()),
+            "The data shape must be equal or greater then the block shape.");
+
+    const Blocking blocking(data.template minimalShape<M>(), options.getBlockShape());
+
+    Shape blockArrayShape = data.template minimalShape<M>() / options.getBlockShape();
+    Shape reminder = data.template minimalShape<M>() % options.getBlockShape();
+    for (unsigned i = 0; i < M; ++i)
+        if (reminder[i] != 0)
+            blockArrayShape[i] += 1;
+
+    MultiArray<M, std::vector<Label> > mapping(blockArrayShape);
+    Label result = chunkedBlockwiseLabeling(data, labels, blocking, options, equal, mapping);
+
+    chunkedToGlobalLabels(labels, blocking, mapping.begin(), mapping.end());
     return result;
 }
 
-template <unsigned int N, class Data, class Label>
-Label labelMultiArrayBlockwise(const ChunkedArray<N, Data>& data,
-                               ChunkedArray<N, Label>& labels,
-                               const BlockwiseLabelOptions& options = BlockwiseLabelOptions())
+
+template <unsigned int M, unsigned int N1, unsigned int N2, class Data, class Label, class TAG1, class TAG2>
+typename std::enable_if<(N1 >= M && N2 >= M), Label>::type inline labelMultiArrayBlockwise(
+        const ChunkedArray<N1, Data, TAG1>& data,
+        ChunkedArray<N2, Label, TAG2>& labels,
+        const BlockwiseLabelOptions<M>& options)
 {
     return labelMultiArrayBlockwise(data, labels, options, std::equal_to<Data>());
 }
