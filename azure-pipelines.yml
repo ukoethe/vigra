@@ -32,7 +32,7 @@ jobs:
           mkdir build || exit 1
           cd build || exit 1
           echo "Will start the cmake configuration" || exit 1
-          CC=gcc-7 CXX=g++-7 cmake .. -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX="$CONDA_PREFIX" -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" || exit 1
+          cmake .. -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX="$CONDA_PREFIX" -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" || exit 1
           echo "Will start the cmake based build" || exit 1
           cmake --build . --target check --config Release || exit 1
           echo "Completed script successfully" || exit 1
