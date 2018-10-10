@@ -39,7 +39,6 @@ import sys
 import copy
 import numpy
 from . import ufunc
-# import vigra.ufunc as ufunc
 import collections
 import vigra.vigranumpycore as vigranumpycore
 
