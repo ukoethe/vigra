@@ -115,6 +115,8 @@ IF(PYTHONINTERP_FOUND)
                 boost_python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}
                 # Mac with Python 3
                 boost_python${PYTHON_VERSION_MAJOR}
+                # conda-forge
+                boost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
                 # default
                 boost_python)
 

@@ -110,21 +110,21 @@ The following sub-modules group related functionality:
 ''' % _vigra_doc_path
 
 from .__version__ import version
-import vigra.vigranumpycore as vigranumpycore
-import vigra.arraytypes as arraytypes
-import vigra.impex as impex
-import vigra.sampling as sampling
-import vigra.filters as filters
-import vigra.analysis as analysis
-import vigra.learning as learning
-import vigra.colors as colors
-import vigra.noise as noise
-import vigra.geometry as geometry
-import vigra.optimization as optimization
-import vigra.histogram as histogram
-import vigra.graphs as graphs
-import vigra.utilities as utilities
-import vigra.blockwise as blockwise
+from . import vigranumpycore
+from . import arraytypes
+from . import impex
+from . import sampling
+from . import filters
+from . import analysis
+from . import learning
+from . import colors
+from . import noise
+from . import geometry
+from . import optimization
+from . import histogram
+from . import graphs
+from . import utilities
+from . import blockwise
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 

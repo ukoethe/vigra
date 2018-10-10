@@ -31,7 +31,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -52,7 +52,7 @@
 #include "vigra/config.hxx"
 #include "vigra/error.hxx"
 
-#ifdef VIGRA_NO_WORKING_STRINGSTREAM 
+#ifdef VIGRA_NO_WORKING_STRINGSTREAM
 #include <strstream>
 #define VIGRA_SSTREAM std::strstream
 #define VIGRA_SSTREAM_STR(s) ((s << char()), std::string(s.str()))
@@ -344,7 +344,7 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
 #else  /* VIGRA_CANT_CATCH_SIGNALS */
 
 template< class Generator >  // Generator is function object returning int
-int catch_signals( Generator function_object, detail::errstream & err , int)
+int catch_signals( Generator function_object, detail::errstream & , int)
 {
      return function_object();
 }
@@ -418,7 +418,7 @@ int catch_exceptions( Generator function_object, detail::errstream & err, int ti
       { detail::report_exception( err, "exception: std::exception:", ex.what() ); }
 
     catch ( ... )
-      { 
+      {
         detail::report_exception( err, "unknown exception", "" );
         throw;
       }
@@ -469,8 +469,8 @@ should_impl(bool predicate, const char * message, const char * file, int line)
     {
         detail::errstream buf;
         buf << message << " (" << file <<":" << line << ")";
-        throw unit_test_failed(buf.str()); 
-    } 
+        throw unit_test_failed(buf.str());
+    }
 }
 
 inline void
@@ -480,7 +480,7 @@ should_impl(bool predicate, std::string const & message, const char * file, int 
 }
 
 template <class Iter1, class Iter2>
-void 
+void
 sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
 {
     checkpoint_impl(file, line);
@@ -491,7 +491,7 @@ sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
             detail::errstream buf;
             buf << "Sequences differ at index " << counter <<
                    " ["<< *i1 << " != " << *i2 << "]";
-            should_impl(false, buf.str().c_str(), file, line); 
+            should_impl(false, buf.str().c_str(), file, line);
         }
     }
 }
@@ -564,7 +564,7 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
         *   0 mit 0 zu Vergleichen bereitet keine Probleme.
         *   Ausweg: evl. eine extra Behandlung der F = 0 ???
         */
-    return  ((f2 < 1) && (f1 > (f2 *    FloatTraits<FPT>::max()))) ? 
+    return  ((f2 < 1) && (f1 > (f2 *    FloatTraits<FPT>::max()))) ?
             FloatTraits<FPT>::max() :
             ((((f2 > 1) && (f1 < (f2 * FloatTraits<FPT>::smallestPositive())))
               || (f1 == 0)) ? 0 : f1/f2 );
@@ -613,7 +613,7 @@ private:
 
 template <class T1, class T2, class T3>
 void
-tolerance_equal_impl(T1 left, T2 right, T3 epsilon, 
+tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
                      const char * message, const char * file, int line, ScalarType, std::ptrdiff_t index = -1)
 {
     checkpoint_impl(file, line);
@@ -630,7 +630,7 @@ tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
 
 template <class T1, class T2, class T3>
 void
-tolerance_equal_impl(T1 left, T2 right, T3 epsilon, 
+tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
                      const char * message, const char * file, int line, VectorType, std::ptrdiff_t index = -1)
 {
     checkpoint_impl(file, line);
@@ -658,17 +658,17 @@ template <class T1, class T2, class T3>
 void
 tolerance_equal_impl(T1 left, T2 right, T3 epsilon, const char * message, const char * file, int line)
 {
-    tolerance_equal_impl(left, right, epsilon, 
+    tolerance_equal_impl(left, right, epsilon,
                          message, file, line, typename FloatTraits<T3>::ScalarOrVector());
 }
 
 template <class Iter1, class Iter2, class T>
-void 
+void
 sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const char * file, int line)
 {
     for(int counter = 0; i1 != end1; ++i1, ++i2, ++counter)
     {
-        tolerance_equal_impl(*i1, *i2, epsilon, "", file, line, typename FloatTraits<T>::ScalarOrVector(), counter); 
+        tolerance_equal_impl(*i1, *i2, epsilon, "", file, line, typename FloatTraits<T>::ScalarOrVector(), counter);
     }
 }
 
@@ -740,7 +740,7 @@ class test_case
 
     virtual char const * name() { return name_.c_str(); }
     virtual int size() const { return 1; }
-    
+
     virtual int numberOfTestsToRun(std::vector<std::string> const & testsToBeRun) const
     {
         if(testsToBeRun.empty()) // empty list => run all tests
@@ -772,7 +772,7 @@ class test_suite
 {
   public:
     using detail::test_case::run;
-    
+
     test_suite(char const * name = "TopLevel")
     : detail::test_case(name),
       size_(0)
@@ -790,12 +790,12 @@ class test_suite
         testcases_.push_back(t);
         size_ += t->size();
     }
-    
+
     virtual int run(std::vector<std::string> const & testsToBeRun)
     {
         int size = numberOfTestsToRun(testsToBeRun);
-        
-        std::vector<std::string> testsToBeRunRecursive = 
+
+        std::vector<std::string> testsToBeRunRecursive =
                    size < this->size()
                        ? testsToBeRun                 // run selectively
                        : std::vector<std::string>();  // run all
@@ -838,7 +838,7 @@ class test_suite
 
         return failed;
     }
-    
+
     virtual int numberOfTestsToRun(std::vector<std::string> const & testsToBeRun) const
     {
         if(detail::test_case::numberOfTestsToRun(testsToBeRun) > 0)
@@ -936,7 +936,7 @@ class class_test_case
 {
   public:
     using test_case::run;
-    
+
     class_test_case(void (TESTCASE::*fct)(), char const * name)
     : test_case(name),
       fct_(fct),
@@ -1087,28 +1087,28 @@ struct test_functor
 {
     virtual ~test_functor() {}
     virtual void operator()() = 0;
-    
-    FCT clone() const 
+
+    FCT clone() const
         { return FCT(static_cast<FCT const &>(*this)); }
 };
-    
+
 template <class FCT>
 class functor_test_case
 : public test_case
 {
   public:
     using test_case::run;
-    
+
     functor_test_case(FCT const & fct, char const * name)
     : test_case(name),
       fct_(fct)
     {}
-    
+
     virtual void do_run()
     {
         fct_();
     }
-    
+
     virtual int run(std::vector<std::string> const & testsToBeRun)
     {
         if(numberOfTestsToRun(testsToBeRun) == 0)
@@ -1116,10 +1116,10 @@ class functor_test_case
 
         report_ = "";
         exception_checkpoint().first = "";
-        
+
         detail::errstream buf;
         buf << "\nFailure in " << name() << "\n";
-        
+
         int failed = catch_exceptions(
             detail::test_case_run_functor(buf, this), buf, timeout);
         if(failed)
@@ -1129,10 +1129,10 @@ class functor_test_case
 
         return failed;
     }
-    
+
     FCT fct_;
 };
-    
+
 } // namespace detail
 
 template <class TESTCASE>
@@ -1153,8 +1153,8 @@ create_test_case(void (*fct)(), char const * name)
 }
 
 template <class FCT>
-inline 
-detail::test_case * 
+inline
+detail::test_case *
 create_test_case(detail::test_functor<FCT> const & fct, char const * name)
 {
     if(*name == '&') ++name;
@@ -1177,7 +1177,7 @@ std::basic_ostream<E,T> & operator,(std::basic_ostream<E,T> & o, V const & t)
 
 template <class E, class T>
 inline
-std::basic_ostream<E,T> & operator,(std::basic_ostream<E,T> & o, 
+std::basic_ostream<E,T> & operator,(std::basic_ostream<E,T> & o,
               std::basic_ostream<E,T> & (*t)(std::basic_ostream<E,T> &))
 {
     return (o << t);
@@ -1193,7 +1193,7 @@ std::ostream & operator,(std::ostream & o, V const & t)
 }
 
 inline
-std::ostream & operator,(std::ostream & o, 
+std::ostream & operator,(std::ostream & o,
               std::ostream & (*t)(std::ostream &))
 {
     return (o << t);
