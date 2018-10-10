@@ -57,7 +57,9 @@ jobs:
           echo "Will activate the conda environment" || exit 1
           source $CONDA/bin/activate $AGENT_WORKFOLDER/envs/vigra || exit 1
           echo "Will start the conda install of prerequisites" || exit 1
-          conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
+          conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 boost boost-cpp numpy nose || exit 1
+          # disable fftw for now (internal compiler error)
+          # conda install --quiet --yes --mkdir --channel conda-forge fftw || exit 1
           mkdir build || exit 1
           cd build || exit 1
           echo "Will start the cmake configuration" || exit 1
