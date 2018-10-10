@@ -1155,14 +1155,13 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
-          class T>
+          class T, class SHAPE>
 inline void
 convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
                                MultiArrayView<N, T2, S2> dest,
                                unsigned int dim,
                                Kernel1D<T> const & kernel,
-                               typename MultiArrayShape<N>::type start = typename MultiArrayShape<N>::type(),
-                               typename MultiArrayShape<N>::type stop = typename MultiArrayShape<N>::type())
+                               SHAPE start, SHAPE stop)
 {
     if(stop != typename MultiArrayShape<N>::type())
     {
@@ -1178,6 +1177,19 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
     }
     convolveMultiArrayOneDimension(srcMultiArrayRange(source),
                                    destMultiArray(dest), dim, kernel, start, stop);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2,
+          class T>
+inline void
+convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
+                               MultiArrayView<N, T2, S2> dest,
+                               unsigned int dim,
+                               Kernel1D<T> const & kernel)
+{
+    typedef typename MultiArrayShape<N>::type SHAPE;
+    convolveMultiArrayOneDimension(source, dest, dim, kernel, SHAPE(), SHAPE());
 }
 
 /********************************************************/
