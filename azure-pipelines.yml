@@ -68,6 +68,48 @@ jobs:
   #         echo "Will start the cmake based build" || exit 1
   #         cmake --build . --target check --config Release || exit 1
   #         echo "Completed script successfully" || exit 1
+  # - job: Windows
+  #   pool:
+  #     vmImage: 'vs2017-win2016'
+  #   strategy:
+  #     maxParallel: 2
+  #     matrix:
+  #       py36:
+  #         PY_VERSION: 3.6
+  #       # py27:
+  #       #   PY_VERSION: 2.7
+  #   steps:
+  #       # NOTE: On Windows, calling conda activate from the script fails. After calling
+  #       # 'activate %AGENT_WORKFOLDER%\envs\vigra' the pipeline would end prematurely
+  #       # without error message. Therefore we need to use the conda that comes with Azure.
+  #       # So the following setup steps work on Linux and MacOS, but as of 2018.09 do *not*
+  #       # work on Windows:
+  #       #  echo "Will create the conda environment" || exit 1
+  #       #  conda create --quiet --yes --mkdir --prefix %AGENT_WORKFOLDER%\envs\vigra --channel conda-forge python=$(PY_VERSION) || exit 1
+  #       #  echo "Will activate the conda environment" || exit 1
+  #       #  activate %AGENT_WORKFOLDER%\envs\vigra || exit 1
+  #     - task: CondaEnvironment@1
+  #       inputs:
+  #         createCustomEnvironment: true
+  #         environmentName: 'vigra'
+  #         packageSpecs: 'python=$(PY_VERSION)'
+  #         updateConda: true
+  #     - script: |
+  #         call activate vigra || exit 1
+  #         echo "Will start the conda install of prerequisites" || exit 1
+  #         conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
+  #         rem disable some packages for now
+  #         rem  conda install --quiet --yes --mkdir --channel conda-forge fftw boost boost-cpp numpy nose || exit 1
+  #         rem set PATH explicitly, because 'activate' terminates the pipeline
+  #         rem set PATH=%CONDA_PREFIX%;%CONDA_PREFIX%\Scripts;%CONDA_PREFIX%\Library\bin;%PATH%
+  #         mkdir build || exit 1
+  #         cd build || exit 1
+  #         echo "Will start the cmake configuration" || exit 1
+  #         rem cmake .. -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" -DCMAKE_GENERATOR_PLATFORM="x64" || exit 1
+  #         cmake .. -DTEST_VIGRANUMPY=0 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" -DCMAKE_GENERATOR_PLATFORM="x64" || exit 1
+  #         echo "Will start the cmake based build" || exit 1
+  #         cmake --build . --target check --config Release || exit 1
+  #         echo "Completed script successfully" || exit 1
   - job: Windows
     pool:
       vmImage: 'vs2017-win2016'
@@ -90,14 +132,14 @@ jobs:
         #  activate %AGENT_WORKFOLDER%\envs\vigra || exit 1
       - task: CondaEnvironment@1
         inputs:
-          createCustomEnvironment: true
-          environmentName: 'vigra'
-          packageSpecs: 'python=$(PY_VERSION)'
-          updateConda: true
+          updateConda: false
       - script: |
-          call activate vigra || exit 1
+          echo "Will create the conda environment" || exit 1
+          conda create --quiet --yes --mkdir --prefix %AGENT_WORKFOLDER%\envs\vigra --channel conda-forge python=$(PY_VERSION) || exit 1
+          echo "Will activate the conda environment" || exit 1
+          call activate %AGENT_WORKFOLDER%\envs\vigra || exit 1
           echo "Will start the conda install of prerequisites" || exit 1
-          conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
+          conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 fftw || exit 1
           rem disable some packages for now
           rem  conda install --quiet --yes --mkdir --channel conda-forge fftw boost boost-cpp numpy nose || exit 1
           rem set PATH explicitly, because 'activate' terminates the pipeline
@@ -108,5 +150,5 @@ jobs:
           rem cmake .. -DTEST_VIGRANUMPY=1 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" -DCMAKE_GENERATOR_PLATFORM="x64" || exit 1
           cmake .. -DTEST_VIGRANUMPY=0 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" -DCMAKE_GENERATOR_PLATFORM="x64" || exit 1
           echo "Will start the cmake based build" || exit 1
-          cmake --build . --target check --config Release || exit 1
+          cmake --build . --target check_cpp --config Release || exit 1
           echo "Completed script successfully" || exit 1
