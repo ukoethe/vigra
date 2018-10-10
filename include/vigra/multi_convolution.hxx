@@ -943,15 +943,14 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
-          class KernelIterator>
+          class KernelIterator, class SHAPE>
 inline void
 separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest,
                             KernelIterator kit,
-                            typename MultiArrayShape<N>::type start = typename MultiArrayShape<N>::type(),
-                            typename MultiArrayShape<N>::type stop = typename MultiArrayShape<N>::type())
+                            SHAPE start, SHAPE stop)
 {
-    if(stop != typename MultiArrayShape<N>::type())
+    if(stop != SHAPE())
     {
         detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), start);
         detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), stop);
@@ -969,12 +968,24 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
 
 template <unsigned int N, class T1, class S1,
                           class T2, class S2,
-          class T, class Shape>
+          class KernelIterator>
+inline void
+separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest,
+                            KernelIterator kit)
+{
+    typedef typename MultiArrayShape<N>::type SHAPE;
+    separableConvolveMultiArray(source, dest, kit, SHAPE(), SHAPE());
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2,
+          class T, class SHAPE>
 inline void
 separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest,
                             Kernel1D<T> const & kernel,
-                            Shape const & start, Shape const & stop)
+                            SHAPE const & start, SHAPE const & stop)
 {
     ArrayVector<Kernel1D<T> > kernels(N, kernel);
     separableConvolveMultiArray(source, dest, kernels.begin(), start, stop);
@@ -988,8 +999,8 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest,
                             Kernel1D<T> const & kernel)
 {
-    using Shape = typename MultiArrayShape<N>::type;
-    separableConvolveMultiArray(source, dest, kernel, Shape(), Shape());
+    typedef typename MultiArrayShape<N>::type SHAPE;
+    separableConvolveMultiArray(source, dest, kernel, SHAPE(), SHAPE());
 }
 
 /********************************************************/
