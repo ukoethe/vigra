@@ -99,6 +99,8 @@ jobs:
           conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 || exit 1
           rem disable some packages for now
           rem  conda install --quiet --yes --mkdir --channel conda-forge fftw boost boost-cpp numpy nose || exit 1
+          rem set PATH explicitly, because 'activate' terminates the pipeline
+          set PATH=%PATH%;%CONDA_PREFIX%\Library\bin;%CONDA_PREFIX%\bin
           mkdir build || exit 1
           cd build || exit 1
           echo "Will start the cmake configuration" || exit 1
