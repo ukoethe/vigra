@@ -37,6 +37,7 @@
 #define VIGRA_BLOCKWISE_LABELING_HXX
 
 #include <algorithm>
+#include <tuple>  // std::ignore
 
 #include "threadpool.hxx"
 #include "counting_iterator.hxx"
@@ -286,6 +287,7 @@ void toGlobalLabels(LabelBlocksIterator label_blocks_begin, LabelBlocksIterator 
     for( ; label_blocks_begin != label_blocks_end; ++label_blocks_begin, ++mapping_begin)
     {
         vigra_assert(mapping_begin != mapping_end, "");
+        std::ignore = mapping_end;
         for(typename LabelBlock::iterator labels_it = label_blocks_begin->begin();
             labels_it != label_blocks_begin->end();
             ++labels_it)
