@@ -11,8 +11,8 @@ jobs:
       matrix:
         py36:
           PY_VERSION: 3.6
-        py27:
-          PY_VERSION: 2.7
+        # py27:
+        #   PY_VERSION: 2.7
     steps:
         # NOTE: On Linux, there is no write permission in the miniconda installation,
         # and the CondaEnvironment@1 does not honor a prefix. Therefore we can *not*
@@ -44,8 +44,8 @@ jobs:
       matrix:
         py36:
           PY_VERSION: 3.6
-        py27:
-          PY_VERSION: 2.7
+        # py27:
+        #   PY_VERSION: 2.7
     steps:
       # This build is practially identical to the Linux build above.
       - task: CondaEnvironment@1
@@ -75,8 +75,8 @@ jobs:
       matrix:
         py36:
           PY_VERSION: 3.6
-        py27:
-          PY_VERSION: 2.7
+        # py27:
+        #   PY_VERSION: 2.7
     steps:
         # NOTE: On Windows, calling conda activate from the script fails. After calling
         # 'activate %AGENT_WORKFOLDER%\envs\vigra' the pipeline would end prematurely
