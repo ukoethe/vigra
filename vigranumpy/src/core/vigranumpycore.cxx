@@ -79,9 +79,9 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 {
 	if (_import_array() < 0)
 		pythonToCppException(0);
-	registerNumpyArrayConverters();
+	// registerNumpyArrayConverters();
     defineAxisTags();
-    defineChunkedArray();
-    
+    // defineChunkedArray();
+
     def("checksum", &pychecksum, args("data"));
 }
