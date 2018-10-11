@@ -142,9 +142,6 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
     for(int i=0;i<headerlen+spool+1;i++) {
         std::string str;
         getline(siffile, str);
-#ifdef DEBUG
-        std::cout << str << std::endl;
-#endif
         if(i==0) {
             vigra_precondition(str=="Andor Technology Multi-Channel File", "The file is not a valid sif File.");
         }

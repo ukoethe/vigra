@@ -766,7 +766,7 @@ struct SkeletonTest
             //TOC;
             //exportImage(skel, "raw_skeleton.tif");
             importImage("raw_skeleton.xv", desired);
-            should(skel == desired);
+            shouldEqualSequenceTolerance(skel.begin(), skel.end(), desired.begin(), 1e-12);
         }
         {
             MultiArray<2, float> skel(data.shape());
@@ -774,21 +774,21 @@ struct SkeletonTest
                         SkeletonOptions().returnLength());
             //exportImage(skel, "skeleton_length.tif");
             importImage("skeleton_length.xv", desired);
-            should(skel == desired);
+            shouldEqualSequenceTolerance(skel.begin(), skel.end(), desired.begin(), 1e-12);
         }
         {
             skeletonizeImage(data, skel,
                         SkeletonOptions().pruneLength(100.0));
             //exportImage(skel, "skeleton_length_greater_100.tif");
             importImage("skeleton_length_greater_100.xv", desired);
-            should(skel == desired);
+            shouldEqualSequenceTolerance(skel.begin(), skel.end(), desired.begin(), 1e-12);
         }
         {
             skeletonizeImage(data, skel,
                         SkeletonOptions().pruneLengthRelative(0.5));
             //exportImage(skel, "skeleton_length_greater_50_percent.tif");
             importImage("skeleton_length_greater_50_percent.xv", desired);
-            should(skel == desired);
+            shouldEqualSequenceTolerance(skel.begin(), skel.end(), desired.begin(), 1e-12);
         }
         {
             MultiArray<2, float> skel(data.shape());
@@ -796,35 +796,35 @@ struct SkeletonTest
                         SkeletonOptions().returnSalience());
             //exportImage(skel, "skeleton_salience.tif");
             importImage("skeleton_salience.xv", desired);
-            should(skel == desired);
+            shouldEqualSequenceTolerance(skel.begin(), skel.end(), desired.begin(), 1e-12);
         }
         {
             skeletonizeImage(data, skel,
                         SkeletonOptions().pruneSalience(10.0));
             //exportImage(skel, "skeleton_salience_greater_10.tif");
             importImage("skeleton_salience_greater_10.xv", desired);
-            should(skel == desired);
+            shouldEqualSequenceTolerance(skel.begin(), skel.end(), desired.begin(), 1e-12);
         }
         {
             skeletonizeImage(data, skel,
                         SkeletonOptions().pruneSalienceRelative(0.6));
             //exportImage(skel, "skeleton_salience_greater_60_percent.tif");
             importImage("skeleton_salience_greater_60_percent.xv", desired);
-            should(skel == desired);
+            shouldEqualSequenceTolerance(skel.begin(), skel.end(), desired.begin(), 1e-12);
         }
         {
             skeletonizeImage(data, skel,
                         SkeletonOptions().pruneTopology());
             //exportImage(skel, "skeleton_topology.tif");
             importImage("skeleton_topology.xv", desired);
-            should(skel == desired);
+            shouldEqualSequenceTolerance(skel.begin(), skel.end(), desired.begin(), 1e-12);
         }
         {
             skeletonizeImage(data, skel,
                         SkeletonOptions().pruneTopology(false));
             //exportImage(skel, "skeleton_topology_without_center.tif");
             importImage("skeleton_topology_without_center.xv", desired);
-            should(skel == desired);
+            shouldEqualSequenceTolerance(skel.begin(), skel.end(), desired.begin(), 1e-12);
         }
     }
 
@@ -838,10 +838,10 @@ struct SkeletonTest
             extractSkeletonFeatures(data, features);
             int label=255;
             shouldEqual(features[label].center, Shape2(255, 255));
-            shouldEqualTolerance(features[label].diameter, 545.4823227814104, 1e-15);
-            shouldEqualTolerance(features[label].euclidean_diameter, 501.86551983574248, 1e-15);
-            shouldEqualTolerance(features[label].total_length, 1650.0012254892786, 1e-15);
-            shouldEqualTolerance(features[label].average_length, 268.45282570696946, 1e-15);
+            shouldEqualTolerance(features[label].diameter, 545.4823227814104, 1e-12);
+            shouldEqualTolerance(features[label].euclidean_diameter, 501.86551983574248, 1e-12);
+            shouldEqualTolerance(features[label].total_length, 1650.0012254892786, 1e-12);
+            shouldEqualTolerance(features[label].average_length, 268.45282570696946, 1e-12);
             shouldEqual(features[label].branch_count, 6);
             shouldEqual(features[label].hole_count, 1);
             shouldEqual(features[label].terminal1, Shape2(133, 472));

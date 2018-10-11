@@ -410,11 +410,11 @@ struct MultiArraySeparableConvolutionTest
         gaussianGradientMultiArray(src, grad, 1.0 );
         transformMultiArray(grad, mgrad, norm(Arg1()));
 
-        shouldEqualSequence(mgrad.data(), mgrad.data()+size, rmgrad.data());
+        shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-12);
 
         rmgrad.init(0);
         gaussianGradientMagnitude(src, rmgrad, 1.0);
-        shouldEqualSequence(mgrad.data(), mgrad.data()+size, rmgrad.data());
+        shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-12);
 
         MultiArray<2, TinyVector<double, 3> > rgb(shape);
         MultiArrayView<3, Multiband<double> > expanded(rgb.expandElements(2));
@@ -425,11 +425,11 @@ struct MultiArraySeparableConvolutionTest
         gaussianGradientMagnitude(srcImageRange(rgb), destImage(mgrad), 1.0);
         rmgrad.init(0);
         gaussianGradientMagnitude(rgb, rmgrad, 1.0);
-        shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-14);
+        shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-12);
 
         rmgrad.init(0);
         gaussianGradientMagnitude<2>(expanded, rmgrad, 1.0);
-        shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-14);
+        shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-12);
 
         MultiArray<3, Multiband<double> > spectral(Shape3(shape[0], shape[1], 10));
         MultiArrayView<3, Multiband<double> > spectral_expanded(spectral);
@@ -1256,7 +1256,7 @@ test_data tests[] =
     { 4,   3,  0,  0, 31,  2,   0,  0.012,  0 },
     { 4,   3,  0,  0, 32,  2,   0,  0.004,  0 },
     { 4,   3,  0,  0, 33,  2,   0,  0.001,  0 },
-    { 15,  3,  0,  0, 0,   0,   1,  0,  0.012 },
+    { 15,  3,  0,  0, 0,   0,   1,  0,  0.020 },
     { 15,  3,  5,  0, 0,   0,   1,  0,  0.012 },
     { 15,  2,  5,  0, 1,   0,   1,  0.005,  0 },
     { 15,  2,  5,  0, 2,   0,   1,  0.003,  0 },
@@ -1264,9 +1264,9 @@ test_data tests[] =
     { 15,  3,  0,  0, 21,  0,   1,  0.045,  0 },
     { 15,  3,  0,  0, 22,  0,   1,  0.023,  0 },
     { 15,  3,  0,  0, 23,  0,   1,  0.024,  0 },
-    { 15,  3,  0,  0, 31,  1.1, 1,  0.025,  0 },
+    { 15,  3,  0,  0, 31,  1.1, 1,  0.035,  0 },
     { 15,  3,  0,  0, 32,  1.1, 1,  0.035,  0 },
-    { 15,  3,  0,  0, 33,  1.1, 1,  0.006,  0 },
+    { 15,  3,  0,  0, 33,  1.1, 1,  0.050,  0 },
     { 0,   0,  0,  0,  0,  0,   0,  0,      0 }
 };
 

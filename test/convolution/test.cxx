@@ -1004,7 +1004,7 @@ struct ConvolutionTest
 
         recursiveGaussianFilterX(View(lenna), View(tmp1), scale);
         recursiveGaussianFilterY(View(tmp1), View(tmp2), scale);
-        should(View(recursive) == View(tmp2));
+        shouldEqualSequenceTolerance(recursive.begin(), recursive.end(), tmp2.begin(), 1e-12);
     }
 
     void optimalSmoothing3Test()
