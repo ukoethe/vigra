@@ -122,6 +122,8 @@ jobs:
         #   PY_VERSION: 2.7
     steps:
       - script: |
-          echo %VSINSTALLDIR%
+          echo "going to VS directory"
           cd "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise"
-          dir vcvars64.bat /S /B
+          echo %CD%
+          dir *.bat /S /B
+          echo "%VSINSTALLDIR%"
