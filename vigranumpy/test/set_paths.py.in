@@ -46,3 +46,6 @@ vigranumpytest_dir = re.sub('/Release$', outdir, r'$<TARGET_FILE_DIR:vigranumpyt
 os.environ['PATH'] = os.pathsep.join([vigraimpex_dir.replace('/', os.sep), os.environ['PATH']])
 sys.path.insert(0, r'@VIGRANUMPY_TMP_PATH@')
 sys.path.insert(0, vigranumpytest_dir.replace('/', os.sep))
+
+print("############################# PATH:\n", os.environ['PATH'])
+print("############################# sys.path:\n", sys.path)

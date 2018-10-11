@@ -100,6 +100,8 @@ jobs:
           copy ..\..\src\impex\Release\vigraimpex.dll .
           dir
           cd ..\test
+          type set_paths.py
+          python set_paths.py
           copy Release\vigranumpytest.pyd .
           dir
           nosetests . || python -vc "import nose; nose.main()"
