@@ -88,8 +88,7 @@ jobs:
           echo "Will activate the conda environment" || exit 1
           call activate %AGENT_WORKFOLDER%\envs\vigra || exit 1
           echo "Will start the conda install of prerequisites" || exit 1
-          rem conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
-          conda install --quiet --yes --mkdir --channel conda-forge numpy nose || exit 1
+          conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
           mkdir build || exit 1
           cd build || exit 1
           echo "Will start the cmake configuration" || exit 1
