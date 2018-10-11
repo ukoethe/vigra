@@ -110,7 +110,7 @@ jobs:
           echo "Will start vigranumpy tests with autoexec"
           cmake --build . --target check_python --config Release
           echo "Completed script successfully" || exit 1
-  - job: Windows nmake
+  - job: nmake
     pool:
       vmImage: 'vs2017-win2016'
     strategy:
