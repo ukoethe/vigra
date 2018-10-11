@@ -35,8 +35,12 @@
 
 import sys, os, re
 
-if len(sys.argv) == 3:
+if len(sys.argv) > 1:
+    print("using configuration '%s'." % sys.argv[-1], file=sys.stderr)
     outdir = '/' + sys.argv[-1]
+elif hasattr(sys, 'test_conf'):
+    print("using configuration '%s'." % sys.test_conf, file=sys.stderr)
+    outdir = '/' + sys.test_conf
 else:
     outdir = ''
 
