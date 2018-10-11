@@ -2,7 +2,7 @@
 # Jobs are made of one or more steps plus some job-specific data. Steps can be
 # tasks, scripts, or references to external templates.
 
-# jobs:
+jobs:
 #   - job: Linux
 #     pool:
 #       vmImage: 'ubuntu-16.04'
