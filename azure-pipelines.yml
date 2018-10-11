@@ -131,3 +131,5 @@ jobs:
           where cl
           echo "%PATH%"
           cl /help
+          echo "looking for ctest"
+          where ctest
