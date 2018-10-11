@@ -121,9 +121,12 @@ jobs:
         # py27:
         #   PY_VERSION: 2.7
     steps:
+      - task: CondaEnvironment@1
+        inputs:
+          updateConda: false
       - script: |
-          echo "going to VS directory"
-          cd "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise"
-          echo %CD%
-          dir *.bat /S /B
-          echo "%VSINSTALLDIR%"
+          echo "running vcvars64.bat"
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          echo "done"
+          where cl
+
