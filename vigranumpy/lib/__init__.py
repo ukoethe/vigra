@@ -113,18 +113,31 @@ from .__version__ import version
 from . import vigranumpycore
 from . import arraytypes
 from . import impex
-# from . import sampling
-# from . import filters
-# from . import analysis
-# from . import learning
-# from . import colors
-# from . import noise
-# from . import geometry
-# from . import optimization
-# from . import histogram
-# from . import graphs
-# from . import utilities
-# from . import blockwise
+print("imported impex", file=sys.stderr)
+from . import sampling
+print("imported sampling", file=sys.stderr)
+from . import filters
+print("imported filters", file=sys.stderr)
+from . import analysis
+print("imported analysis", file=sys.stderr)
+from . import learning
+print("imported learning", file=sys.stderr)
+from . import colors
+print("imported colors", file=sys.stderr)
+from . import noise
+print("imported noise", file=sys.stderr)
+from . import geometry
+print("imported geometry", file=sys.stderr)
+from . import optimization
+print("imported optimization", file=sys.stderr)
+from . import histogram
+print("imported histogram", file=sys.stderr)
+from . import graphs
+print("imported graphs", file=sys.stderr)
+from . import utilities
+print("imported utilities", file=sys.stderr)
+from . import blockwise
+print("imported blockwise", file=sys.stderr)
 
 # sampling.ImagePyramid = arraytypes.ImagePyramid
 
