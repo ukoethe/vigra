@@ -97,8 +97,12 @@ jobs:
           cmake --build . --target check --config Release || exit 1
           python -c "import sys; print(sys.version)"
           echo "python worked"
-          cd vigranumpy/test
+          cd vigranumpy\vigra
+          python -c "import vigranumpycore" || python -vc "import vigranumpycore"
+          copy ..\..\src\impex\Release\vigraimpex.dll .
+          python -c "import vigranumpycore" || python -vc "import vigranumpycore"
+          dir
+          cd ..\test
           dir
           nosetests . || python -vc "import nose; nose.main()"
-
           echo "Completed script successfully" || exit 1
