@@ -99,5 +99,5 @@ jobs:
           echo "python worked"
           cd vigranumpy/vigra
           dir
-          python -vc "import vigranumpycore"
+          python -vc "import vigranumpycore; print(dir(vigranumpycore))"
           echo "Completed script successfully" || exit 1

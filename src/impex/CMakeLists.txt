@@ -42,26 +42,26 @@ ENDIF ()
 
 
 ADD_LIBRARY(vigraimpex ${LIBTYPE}
-    # bmp.cxx
-    # byteorder.cxx
+    bmp.cxx
+    byteorder.cxx
     codecmanager.cxx
     compression.cxx
-    # exr.cxx
-    # gif.cxx
-    # hdr.cxx
-    # hdf5impex.cxx
-    # hdf5_rf_impex.cxx
-    # iccjpeg.c
-    # imageinfo.cxx
-    # jpeg.cxx
-    # lz4.c
-    # png.cxx
-    # pnm.cxx
-    # rgbe.c
-    # sifImport.cxx
-    # sun.cxx
-    # tiff.cxx
-    # viff.cxx
+    exr.cxx
+    gif.cxx
+    hdr.cxx
+    hdf5impex.cxx
+    hdf5_rf_impex.cxx
+    iccjpeg.c
+    imageinfo.cxx
+    jpeg.cxx
+    lz4.c
+    png.cxx
+    pnm.cxx
+    rgbe.c
+    sifImport.cxx
+    sun.cxx
+    tiff.cxx
+    viff.cxx
     void_vector.cxx)
 
 set(SOVERSION 11)  # increment this after changing the vigraimpex library
