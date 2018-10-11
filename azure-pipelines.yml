@@ -125,6 +125,7 @@ jobs:
         inputs:
           updateConda: false
       - script: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           echo "Will create the conda environment" || exit 1
           conda create --quiet --yes --mkdir --prefix %AGENT_WORKFOLDER%\envs\vigra --channel conda-forge python=$(PY_VERSION) || exit 1
           echo "Will activate the conda environment" || exit 1
