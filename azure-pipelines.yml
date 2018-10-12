@@ -112,7 +112,7 @@ jobs:
   #         echo "Completed script successfully" || exit 1
   - job: nmake
     pool:
-      vmImage: 'vs2017-win2016'
+      vmImage: 'vs2015-win2012r2'
     strategy:
       maxParallel: 2
       matrix:
@@ -125,8 +125,8 @@ jobs:
         inputs:
           updateConda: false
       - script: |
-          echo "running vcvars64.bat"
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          echo "running vcvarsall.bat"
+          call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
           echo "done"
           where cl
           echo "%PATH%"
