@@ -137,7 +137,7 @@ jobs:
           cd build || exit 1
           echo "Starting cmake configuration" || exit 1
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" || exit 1
-          cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=1 ^
+          cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 ^
                 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" || exit 1
           echo "Compiling" || exit 1
           rem nmake check || exit 1
