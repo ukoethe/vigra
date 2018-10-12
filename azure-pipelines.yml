@@ -130,6 +130,8 @@ jobs:
           cl /help
           echo "looking for ctest"
           where ctest
+          echo "looking for python"
+          where python
           echo "installing conda"
           pip install conda
           conda --help
