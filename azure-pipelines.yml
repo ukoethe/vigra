@@ -15,27 +15,25 @@ jobs:
         #   PY_VERSION: 2.7
     steps:
       - script: |
-          echo "running vcvarsall.bat"
+          echo running vcvarsall.bat
           call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
-          echo "done"
+          echo done
           where cl
           echo "%PATH%"
           cl /help
-          echo "looking for ctest"
+          echo looking for ctest
           where ctest
-          echo "looking for python"
+          echo looking for python
           where python
-          echo "downloading pip"
-          echo file(DOWNLOAD "https://bootstrap.pypa.io/get-pip.py" "./get-pip.py") > download-pip.cmake
-          type download-pip.cmake
-          cmake -P download-pip.cmake
-          dir
-          python get-pip.py
+          echo downloading conda
+          git clone https://github.com/conda/conda
+          cd conda
+          git checkout 4.5.11
+          echo installing conda
+          python setup.py install
+          cd ..
+          echo trying conda
           dir C:\Python27
           dir C:\Python27\Scripts
-          dir C:\Python27\Tools
-          dir C:\Python27\Tools\Scripts
           set PATH=%PATH%;C:\Python27\Scripts
-          echo "installing conda"
-          pip install conda
           conda --help
