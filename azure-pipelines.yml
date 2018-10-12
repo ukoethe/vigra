@@ -33,7 +33,4 @@ jobs:
           python setup.py install
           cd ..
           echo trying conda
-          dir C:\Python27
-          dir C:\Python27\Scripts
-          set PATH=%PATH%;C:\Python27\Scripts
-          conda --help
+          python -c "import sys; from conda.cli import main; sys.exit(main())" --help
