@@ -25,12 +25,15 @@ jobs:
           where ctest
           echo looking for python
           where python
+          dir c:\Python*
+          echo calling c:\Python36\python
+          c:\Python36\python --version
           echo downloading conda
           git clone https://github.com/conda/conda
           cd conda
           git checkout 4.5.11
           echo installing conda
-          python setup.py install
+          c:\Python36\python setup.py install
           cd ..
           echo trying conda
-          python -c "import sys; from conda.cli import main; sys.exit(main())" --help
+          c:\Python36\python -c "import sys; from conda.cli import main; sys.exit(main())" --help
