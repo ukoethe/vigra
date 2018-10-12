@@ -121,9 +121,6 @@ jobs:
         # py27:
         #   PY_VERSION: 2.7
     steps:
-      - task: CondaEnvironment@1
-        inputs:
-          updateConda: false
       - script: |
           echo "running vcvarsall.bat"
           call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
@@ -133,3 +130,6 @@ jobs:
           cl /help
           echo "looking for ctest"
           where ctest
+          echo "installing conda"
+          pip install conda
+          conda --help
