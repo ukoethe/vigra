@@ -25,10 +25,17 @@ jobs:
           where ctest
           echo "looking for python"
           where python
+          echo "downloading pip"
+          echo file(DOWNLOAD "https://bootstrap.pypa.io/get-pip.py" "./get-pip.py") > download-pip.cmake
+          type download-pip.cmake
+          cmake -P download-pip.cmake
+          dir
+          python get-pip.py
           dir C:\Python27
+          dir C:\Python27\Scripts
           dir C:\Python27\Tools
           dir C:\Python27\Tools\Scripts
-          set PATH=%PATH%;C:\Python27\Tools\Scripts
+          set PATH=%PATH%;C:\Python27\Scripts
           echo "installing conda"
           pip install conda
           conda --help
