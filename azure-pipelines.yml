@@ -68,48 +68,48 @@ jobs:
   #         echo "Will start make based build" || exit 1
   #         make check || exit 1
   #         echo "Completed script successfully" || exit 1
-  - job: Windows
-    pool:
-      vmImage: 'vs2017-win2016'
-    strategy:
-      maxParallel: 2
-      matrix:
-        py36:
-          PY_VERSION: 3.6
-        # py27:
-        #   PY_VERSION: 2.7
-    steps:
-      - task: CondaEnvironment@1
-        inputs:
-          updateConda: false
-      - script: |
-          echo "Will create the conda environment" || exit 1
-          conda create --quiet --yes --mkdir --prefix %AGENT_WORKFOLDER%\envs\vigra --channel conda-forge python=$(PY_VERSION) || exit 1
-          echo "Will activate the conda environment" || exit 1
-          call activate %AGENT_WORKFOLDER%\envs\vigra || exit 1
-          echo "Will start the conda install of prerequisites" || exit 1
-          conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
-          mkdir build || exit 1
-          cd build || exit 1
-          echo "Will start the cmake configuration" || exit 1
-          cmake .. -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" -DCMAKE_GENERATOR_PLATFORM="x64" || exit 1
-          echo "Will start the cmake based build" || exit 1
-          cmake --build . --target check --config Release || exit 1
-          echo "Will start vigranumpy tests" || exit 1
-          cd vigranumpy\test
-          dir
-          type set_paths.py
-          call run_vigranumpytest.bat Release
-          cd ..\..
-          echo "Will start all tests"
-          rem cmake --build . --target RUN_TESTS --config Release || exit 1
-          cmake --build . --target RUN_TESTS --config Release
-          echo "Will start C++ tests with autoexec"
-          cmake . -DAUTOEXEC_TESTS=1
-          cmake --build . --target check_cpp --config Release
-          echo "Will start vigranumpy tests with autoexec"
-          cmake --build . --target check_python --config Release
-          echo "Completed script successfully" || exit 1
+  # - job: Windows
+  #   pool:
+  #     vmImage: 'vs2017-win2016'
+  #   strategy:
+  #     maxParallel: 2
+  #     matrix:
+  #       py36:
+  #         PY_VERSION: 3.6
+  #       # py27:
+  #       #   PY_VERSION: 2.7
+  #   steps:
+  #     - task: CondaEnvironment@1
+  #       inputs:
+  #         updateConda: false
+  #     - script: |
+  #         echo "Will create the conda environment" || exit 1
+  #         conda create --quiet --yes --mkdir --prefix %AGENT_WORKFOLDER%\envs\vigra --channel conda-forge python=$(PY_VERSION) || exit 1
+  #         echo "Will activate the conda environment" || exit 1
+  #         call activate %AGENT_WORKFOLDER%\envs\vigra || exit 1
+  #         echo "Will start the conda install of prerequisites" || exit 1
+  #         conda install --quiet --yes --mkdir --channel conda-forge jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
+  #         mkdir build || exit 1
+  #         cd build || exit 1
+  #         echo "Will start the cmake configuration" || exit 1
+  #         cmake .. -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" -DCMAKE_GENERATOR_PLATFORM="x64" || exit 1
+  #         echo "Will start the cmake based build" || exit 1
+  #         cmake --build . --target check --config Release || exit 1
+  #         echo "Will start vigranumpy tests" || exit 1
+  #         cd vigranumpy\test
+  #         dir
+  #         type set_paths.py
+  #         call run_vigranumpytest.bat Release
+  #         cd ..\..
+  #         echo "Will start all tests"
+  #         rem cmake --build . --target RUN_TESTS --config Release || exit 1
+  #         cmake --build . --target RUN_TESTS --config Release
+  #         echo "Will start C++ tests with autoexec"
+  #         cmake . -DAUTOEXEC_TESTS=1
+  #         cmake --build . --target check_cpp --config Release
+  #         echo "Will start vigranumpy tests with autoexec"
+  #         cmake --build . --target check_python --config Release
+  #         echo "Completed script successfully" || exit 1
   - job: nmake
     pool:
       vmImage: 'vs2017-win2016'
@@ -125,22 +125,47 @@ jobs:
         inputs:
           updateConda: false
       - script: |
-          echo "Will create the conda environment" || exit 1
+          echo "Creating conda environment" || exit 1
           conda create --quiet --yes --mkdir --prefix %AGENT_WORKFOLDER%\envs\vigra --channel conda-forge ^
                 python=$(PY_VERSION) || exit 1
-          echo "Will activate the conda environment" || exit 1
+          echo "Activating conda environment" || exit 1
           call activate %AGENT_WORKFOLDER%\envs\vigra || exit 1
-          echo "Will start the conda install of prerequisites" || exit 1
+          echo "Installing prerequisites" || exit 1
           conda install --quiet --yes --mkdir --channel conda-forge ^
                 jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
           mkdir build || exit 1
           cd build || exit 1
-          echo "Will start the cmake configuration" || exit 1
+          echo "Starting cmake configuration" || exit 1
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" || exit 1
           cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=1 ^
                 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" || exit 1
-          echo "Will start nmake based build" || exit 1
-          nmake check || exit 1
-          echo "Will start ctest" || exit 1
+          echo "Compiling" || exit 1
+          rem nmake check || exit 1
+          nmake check_python || exit 1
+          echo "################## checking import vigra"
+          python -c "import vigra" || python -vc "import vigra"
+          cd vigranumpy\test
+          echo "################## nosetests test_arraytypes"
+          nosetests test_arraytypes.py
+          echo "################## nosetests test_impex"
+          nosetests test_impex.py
+          echo "################## nosetests test1"
+          nosetests test1.py
+          echo "################## nosetests test2"
+          nosetests test2.py
+          echo "################## nosetests test3"
+          nosetests test3.py
+          echo "################## nosetests test4"
+          nosetests test4.py
+          echo "################## nosetests test_color"
+          nosetests test_color.py
+          echo "################## nosetests test_segmentation"
+          nosetests test_segmentation.py
+          echo "################## nosetests test_multidef"
+          nosetests test_multidef.py
+          echo "################## nosetests test_rf"
+          nosetests test_rf.py
+          cd ..\..
+          echo "Running ctest" || exit 1
           ctest || exit 1
           echo "Completed script successfully" || exit 1
