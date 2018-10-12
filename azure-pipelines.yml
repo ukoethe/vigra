@@ -133,7 +133,8 @@ jobs:
           echo "looking for python"
           where python
           dir C:\Python27
-          set PATH=%PATH%;C:\Python27\Scripts
+          dir C:\Python27\Tools
+          set PATH=%PATH%;C:\Python27\Tools
           echo "installing conda"
           pip install conda
           conda --help
