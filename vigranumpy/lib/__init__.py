@@ -215,7 +215,7 @@ def readHDF5(filenameOrGroup, pathInFile, order=None):
        Requirements: the 'h5py' module must be installed.
     '''
     import h5py
-    if isinstance(filenameOrGroup, h5py.highlevel.Group):
+    if isinstance(filenameOrGroup, h5py.Group):
         file = None
         group = filenameOrGroup
     else:
@@ -223,7 +223,7 @@ def readHDF5(filenameOrGroup, pathInFile, order=None):
         group = file['/']
     try:
         dataset = group[pathInFile]
-        if not isinstance(dataset, h5py.highlevel.Dataset):
+        if not isinstance(dataset, h5py.Dataset):
             raise IOError("readHDF5(): '%s' is not a dataset" % pathInFile)
         data = dataset.value
         axistags = dataset.attrs.get('axistags', None)
@@ -273,7 +273,7 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None, chunks=None):
        Requirements: the 'h5py' module must be installed.
     '''
     import h5py
-    if isinstance(filenameOrGroup, h5py.highlevel.Group):
+    if isinstance(filenameOrGroup, h5py.Group):
         file = None
         group = filenameOrGroup
     else:
@@ -287,13 +287,13 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None, chunks=None):
             g = group.get(groupname, default=None)
             if g is None:
                 group = group.create_group(groupname)
-            elif not isinstance(g, h5py.highlevel.Group):
+            elif not isinstance(g, h5py.Group):
                 raise IOError("writeHDF5(): invalid path '%s'" % pathInFile)
             else:
                 group = g
         dataset = group.get(levels[-1], default=None)
         if dataset is not None:
-            if isinstance(dataset, h5py.highlevel.Dataset):
+            if isinstance(dataset, h5py.Dataset):
                 del group[levels[-1]]
             else:
                 raise IOError("writeHDF5(): cannot replace '%s' because it is not a dataset" % pathInFile)
