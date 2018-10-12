@@ -3,14 +3,14 @@ INCLUDE_DIRECTORIES(${SUPPRESS_WARNINGS} ${VIGRANUMPY_INCLUDE_DIRS})
 SET(TEST_SCRIPTS
     test_arraytypes.py
     test_impex.py
-    test1.py
-    test2.py
-    test3.py
-    test4.py
-    test_color.py
-    test_segmentation.py
-    test_multidef.py
-    test_rf.py
+    # test1.py
+    # test2.py
+    # test3.py
+    # test4.py
+    # test_color.py
+    # test_segmentation.py
+    # test_multidef.py
+    # test_rf.py
     )
 
 # setup the file 'testsuccess.cxx' which will become out-of-date when the

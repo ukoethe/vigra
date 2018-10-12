@@ -147,32 +147,6 @@ jobs:
           echo Compiling || exit 1
           rem nmake check || exit 1
           nmake check_python || exit 1
-          echo "################## checking import vigra"
-          set PATH=%PATH%;%CD%\src\impex
-          cd vigranumpy
-          python -c "import vigra" || python -vc "import vigra"
-          cd test
-          echo "################## nosetests test_arraytypes"
-          nosetests -v test_arraytypes.py
-          echo "################## nosetests test_impex"
-          nosetests -v test_impex.py
-          echo "################## nosetests test1"
-          nosetests -v test1.py
-          echo "################## nosetests test2"
-          nosetests -v test2.py
-          echo "################## nosetests test3"
-          nosetests -v test3.py
-          echo "################## nosetests test4"
-          nosetests -v test4.py
-          echo "################## nosetests test_color"
-          nosetests -v test_color.py
-          echo "################## nosetests test_segmentation"
-          nosetests -v test_segmentation.py
-          echo "################## nosetests test_multidef"
-          nosetests -v test_multidef.py
-          echo "################## nosetests test_rf"
-          nosetests -v test_rf.py
-          cd ..\..
           echo Running ctest || exit 1
           ctest -VV -R vigranumpytest || exit 1
           echo "Completed script successfully" || exit 1
