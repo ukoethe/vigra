@@ -132,6 +132,8 @@ jobs:
           where ctest
           echo "looking for python"
           where python
+          dir C:\Python27
+          set PATH=%PATH%;C:\Python27\Scripts
           echo "installing conda"
           pip install conda
           conda --help
