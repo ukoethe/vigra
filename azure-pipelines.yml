@@ -23,18 +23,23 @@ jobs:
 #         inputs:
 #           updateConda: false
 #       - script: |
-#           echo "Will create the conda environment" || exit 1
-#           conda create --quiet --yes --mkdir --prefix $AGENT_WORKFOLDER/envs/vigra --channel conda-forge/label/gcc7 python=$(PY_VERSION) || exit 1
-#           echo "Will activate the conda environment" || exit 1
+#           echo "Creating conda environment" || exit 1
+#           conda create --quiet --yes --mkdir --prefix $AGENT_WORKFOLDER/envs/vigra --channel conda-forge/label/gcc7 \
+#                 python=$(PY_VERSION) || exit 1
+#           echo "Activating conda environment" || exit 1
 #           source $CONDA/bin/activate $AGENT_WORKFOLDER/envs/vigra || exit 1
-#           echo "Will start the conda install of prerequisites" || exit 1
-#           conda install --quiet --yes --mkdir --channel conda-forge/label/gcc7 jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
+#           echo "Installing prerequisites" || exit 1
+#           conda install --quiet --yes --mkdir --channel conda-forge/label/gcc7 \
+#                 jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
 #           mkdir build || exit 1
 #           cd build || exit 1
-#           echo "Will start the cmake configuration" || exit 1
-#           cmake .. -DTEST_VIGRANUMPY=1 -DCMAKE_BUILD_TYPE=Release -DDEPENDENCY_SEARCH_PREFIX="$CONDA_PREFIX" -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" || exit 1
-#           echo "Will start the make based build" || exit 1
+#           echo "Starting cmake configuration" || exit 1
+#           cmake .. -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 \
+#                 -DDEPENDENCY_SEARCH_PREFIX="$CONDA_PREFIX" -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" || exit 1
+#           echo "Compiling" || exit 1
 #           make check || exit 1
+#           echo "Running ctest" || exit 1
+#           ctest -V || exit 1
 #           echo "Completed script successfully" || exit 1
   # - job: macOS
   #   pool:
@@ -110,7 +115,7 @@ jobs:
   #         echo "Will start vigranumpy tests with autoexec"
   #         cmake --build . --target check_python --config Release
   #         echo "Completed script successfully" || exit 1
-  - job: nmake
+  - job: Windows_vs2017
     pool:
       vmImage: 'vs2017-win2016'
     strategy:
@@ -143,6 +148,67 @@ jobs:
           rem nmake check || exit 1
           nmake check_python || exit 1
           echo "################## checking import vigra"
+          cd vigranumpy
+          python -c "import vigra" || python -vc "import vigra"
+          cd test
+          echo "################## nosetests test_arraytypes"
+          nosetests -v test_arraytypes.py
+          echo "################## nosetests test_impex"
+          nosetests -v test_impex.py
+          echo "################## nosetests test1"
+          nosetests -v test1.py
+          echo "################## nosetests test2"
+          nosetests -v test2.py
+          echo "################## nosetests test3"
+          nosetests -v test3.py
+          echo "################## nosetests test4"
+          nosetests -v test4.py
+          echo "################## nosetests test_color"
+          nosetests -v test_color.py
+          echo "################## nosetests test_segmentation"
+          nosetests -v test_segmentation.py
+          echo "################## nosetests test_multidef"
+          nosetests -v test_multidef.py
+          echo "################## nosetests test_rf"
+          nosetests -v test_rf.py
+          cd ..\..
+          echo Running ctest || exit 1
+          ctest -VV -R vigranumpytest || exit 1
+          echo "Completed script successfully" || exit 1
+  - job: Windows_vs2015
+    pool:
+      vmImage: 'vs2015-win2012r2'
+    strategy:
+      maxParallel: 2
+      matrix:
+        py36:
+          PY_VERSION: 3.6
+        # py27:
+        #   PY_VERSION: 2.7
+    steps:
+      # - task: CondaEnvironment@1
+      #   inputs:
+      #     updateConda: false
+      - script: |
+          echo Creating conda environment || exit 1
+          conda create --quiet --yes --mkdir --prefix %AGENT_WORKFOLDER%\envs\vigra --channel conda-forge ^
+                python=$(PY_VERSION) || exit 1
+          echo Activating conda environment || exit 1
+          call activate %AGENT_WORKFOLDER%\envs\vigra || exit 1
+          echo Installing prerequisites || exit 1
+          conda install --quiet --yes --mkdir --channel conda-forge ^
+                jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy nose || exit 1
+          mkdir build || exit 1
+          cd build || exit 1
+          echo Starting cmake configuration || exit 1
+          call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 || exit 1
+          cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 ^
+                -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" || exit 1
+          echo Compiling || exit 1
+          rem nmake check || exit 1
+          nmake check_python || exit 1
+          echo "################## checking import vigra"
+          set PATH=%PATH%;%CD%\src\impex
           cd vigranumpy
           python -c "import vigra" || python -vc "import vigra"
           cd test
