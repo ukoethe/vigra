@@ -150,9 +150,7 @@ jobs:
           cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 ^
                 -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" || exit 1
           echo Compiling || exit 1
-          rem nmake check || exit 1
-          nmake check_python || exit 1
+          nmake check || exit 1
           echo Running ctest || exit 1
-          ctest -VV -R vigranumpytest || exit 1
-          rem ctest -V || exit 1
+          ctest -V || exit 1
           echo Completed script successfully || exit 1
