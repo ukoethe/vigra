@@ -25,14 +25,11 @@ jobs:
           where ctest
           echo looking for python
           where python
-          echo looking for choco
-          where choco
-          choco install miniconda
-          echo looking for conda
-          where conda
-          rem echo file(DOWNLOAD "https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe" "./setup-miniconda.exe") > download-miniconda.cmake
-          rem type download-miniconda.cmake
-          rem cmake -P download-miniconda.cmake
-          rem dir
-          rem .\setup-miniconda.exe /InstallationType=JustMe /AddToPath=1
-
+          echo printing PATH
+          echo %PATH%
+          echo lising installed programs
+          c:
+          cd "\Program Files"
+          dir
+          cd "\Program Files (x86)"
+          dir
