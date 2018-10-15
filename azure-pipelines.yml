@@ -3,38 +3,6 @@
 # tasks, scripts, or references to external templates.
 
 jobs:
-  - job: vs2015
-    pool:
-      vmImage: 'vs2015-win2012r2'
-    strategy:
-      maxParallel: 2
-      matrix:
-        py36:
-          PY_VERSION: 3.6
-        # py27:
-        #   PY_VERSION: 2.7
-    steps:
-      - script: |
-          echo running vcvarsall.bat
-          call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
-          echo done
-          where cl
-          echo "%PATH%"
-          cl /help
-          echo looking for ctest
-          where ctest
-          echo looking for python
-          where python
-          echo printing PATH
-          echo %PATH%
-          echo lising installed programs
-          c:
-          cd "\"
-          dir
-          cd "\Program Files"
-          dir
-          cd "\Program Files (x86)"
-          dir
   - job: vs2017
     pool:
       vmImage: 'vs2017-win2016'
@@ -43,6 +11,7 @@ jobs:
       matrix:
         py36:
           PY_VERSION: 3.6
+          VS_VERSION: 2015
         # py27:
         #   PY_VERSION: 2.7
     steps:
@@ -61,9 +30,20 @@ jobs:
           dir
           cd "\Program Files (x86)"
           dir
-          echo running vcvarsall.bat
-          call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
-          echo done
+          echo variables: "%PY_VESRION%" "%VS_VERSION%" 
+          echo variables 2: $(PY_VESRION) $(VS_VERSION)
+          IF "%VS_VERSION%"=="2015" (
+              echo Activating Visual Studio 2015 [64bit]
+              call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 || exit 1
+          ) ELSE (
+              IF "%VS_VERSION%"=="2017" (
+                  echo Activating Visual Studio 2017 [64bit]
+                  call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" || exit 1
+              ) ELSE (
+                  echo Visual Studio version not specified or unsupported
+                  exit 1
+              )
+          )
           where cl
           echo "%PATH%"
           cl /help
