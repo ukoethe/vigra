@@ -3,7 +3,7 @@
 # tasks, scripts, or references to external templates.
 
 jobs:
-  - job: nmake
+  - job: vs2015
     pool:
       vmImage: 'vs2015-win2012r2'
     strategy:
@@ -29,7 +29,41 @@ jobs:
           echo %PATH%
           echo lising installed programs
           c:
+          cd "\"
+          dir
           cd "\Program Files"
           dir
           cd "\Program Files (x86)"
           dir
+  - job: vs2017
+    pool:
+      vmImage: 'vs2017-win2016'
+    strategy:
+      maxParallel: 2
+      matrix:
+        py36:
+          PY_VERSION: 3.6
+        # py27:
+        #   PY_VERSION: 2.7
+    steps:
+      - script: |
+          echo looking for ctest
+          where ctest
+          echo looking for python
+          where python
+          echo printing PATH
+          echo %PATH%
+          echo lising installed programs
+          c:
+          cd "\"
+          dir
+          cd "\Program Files"
+          dir
+          cd "\Program Files (x86)"
+          dir
+          echo running vcvarsall.bat
+          call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
+          echo done
+          where cl
+          echo "%PATH%"
+          cl /help
