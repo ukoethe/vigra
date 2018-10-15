@@ -36,6 +36,8 @@
 from __future__ import division, print_function
 import sys, os, time, math
 
+if not hasattr(sys, 'lcount'): sys.lcount = -1
+
 from numbers import Number
 from multiprocessing import cpu_count
 try:
