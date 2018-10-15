@@ -147,6 +147,14 @@ jobs:
           echo Compiling || exit 1
           rem nmake check || exit 1
           nmake check_python || exit 1
+          echo trying "import vigra"
+          set PATH=%PATH%;%CD%\src\impex
+          cd vigranumpy
+          for /l %%x in (1, 1, 8) do (
+              echo trying checkpoint %%x
+              python -c "import sys; sys.lcount=%%x; import vigra; print(dir(vigra))"
+          )
+          cd ..
           echo Running ctest || exit 1
           ctest -VV -R vigranumpytest || exit 1
           echo "Completed script successfully" || exit 1
