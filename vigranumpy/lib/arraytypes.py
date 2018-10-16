@@ -38,7 +38,7 @@ from functools import reduce
 import sys
 import copy
 import numpy
-import vigra.ufunc as ufunc
+from . import ufunc
 import collections
 import vigra.vigranumpycore as vigranumpycore
 

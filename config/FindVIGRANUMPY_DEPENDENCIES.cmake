@@ -80,7 +80,7 @@ IF(PYTHONINTERP_FOUND)
     IF(PYTHON_LIBRARIES)
         MESSAGE(STATUS "Found Python library: ${PYTHON_LIBRARIES}")
     ELSE()
-        MESSAGE(STATUS "Could NOT find Python library")
+        MESSAGE(STATUS "Could NOT find Python library (looking for version ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR})")
     ENDIF()
 
     ######################################################################
@@ -115,6 +115,8 @@ IF(PYTHONINTERP_FOUND)
                 boost_python-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}
                 # Mac with Python 3
                 boost_python${PYTHON_VERSION_MAJOR}
+                # conda-forge
+                boost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
                 # default
                 boost_python)
 
@@ -128,7 +130,7 @@ IF(PYTHONINTERP_FOUND)
     if(Boost_PYTHON_LIBRARY)
         MESSAGE(STATUS "Found boost_python library: ${Boost_PYTHON_LIBRARY}")
     else()
-        MESSAGE(STATUS "Could NOT find boost_python library")
+        MESSAGE(STATUS "Could NOT find boost_python library (looking for version ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR})")
     endif()
 
     ######################################################################

@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -66,7 +66,7 @@ class FunctorTraitsBase
 {
   public:
     typedef T type;
-    
+
     typedef typename IsDerivedFrom<T, InitializerTag>::result isInitializer;
 
     typedef typename IsDerivedFrom<T, UnaryFunctorTag>::result isUnaryFunctor;
@@ -92,13 +92,13 @@ class FunctorTraitsBase
     struct FunctorTraits
     {
         typedef T type;
-        
+
         typedef ... isInitializer;
 
         typedef ... isUnaryFunctor;
         typedef ... isBinaryFunctor;
         typedef ... isTernaryFunctor;
-        
+
         typedef ... isUnaryAnalyser;
         typedef ... isBinaryAnalyser;
         typedef ... isTernaryAnalyser;
@@ -107,9 +107,9 @@ class FunctorTraitsBase
 
     where the dots are either <tt>VigraTrueType</tt> or <tt>VigraFalseType</tt>
     depending on whether the functor supports the respective functionality or not.
-    Note that these traits are automatically defined correctly when your functor is derived 
-    from the appropriate functor tag classes: 
-    
+    Note that these traits are automatically defined correctly when your functor is derived
+    from the appropriate functor tag classes:
+
     \code
     struct InitializerTag {};
     struct UnaryFunctorTag {};
@@ -121,12 +121,12 @@ class FunctorTraitsBase
     struct UnaryReduceFunctorTag : public InitializerTag, public UnaryAnalyserTag {};
     struct BinaryReduceFunctorTag : public InitializerTag, public BinaryAnalyserTag {};
     \endcode
-    
+
     If a functor <tt>f</tt> is a model of these categories, it supports the following
     calls (<tt>v</tt> is a variable such that the result type of the functor
     calls can be converted into <tt>v</tt>'s type, and <tt>a1, a2, a3</tt> are
     variables convertible into the functor's argument types):
-    
+
     <DL>
     <DT><b>Initializer</b>
         <DD> <tt>v = f()</tt> (used with initImageWithFunctor())
@@ -143,9 +143,9 @@ class FunctorTraitsBase
     <DT><b>TernaryAnalyser</b>
         <DD> <tt>f(a1, a2, a3)</tt> (return type <tt>void</tt>)
     </DL>
-    
+
     It should be noted that the functor's argument and result types are not contained
-    in the traits class: Since the function calls are often member template functions in 
+    in the traits class: Since the function calls are often member template functions in
     VIGRA, many functors do not have fixed argument types. Neither are the result
     types fixed in this case because they are computed (via a template meta-program)
     from the argument types.
@@ -195,8 +195,6 @@ VIGRA_DEFINE_STL_FUNCTOR(std::binary_negate, VigraFalseType, VigraTrueType)
 VIGRA_DEFINE_STL_FUNCTOR(std::negate, VigraTrueType, VigraFalseType)
 VIGRA_DEFINE_STL_FUNCTOR(std::logical_not, VigraTrueType, VigraFalseType)
 VIGRA_DEFINE_STL_FUNCTOR(std::unary_negate, VigraTrueType, VigraFalseType)
-VIGRA_DEFINE_STL_FUNCTOR(std::binder1st, VigraTrueType, VigraFalseType)
-VIGRA_DEFINE_STL_FUNCTOR(std::binder2nd, VigraTrueType, VigraFalseType)
 #undef VIGRA_DEFINE_STL_FUNCTOR
 
 template <class R>
@@ -204,7 +202,7 @@ class FunctorTraits<R (*)()>
 {
   public:
     typedef R (*type)();
-    
+
     typedef VigraTrueType  isInitializer;
     typedef VigraFalseType isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
@@ -219,7 +217,7 @@ class FunctorTraits<R (*)(T)>
 {
   public:
     typedef R (*type)(T);
-    
+
     typedef VigraFalseType isInitializer;
     typedef VigraTrueType  isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
@@ -234,7 +232,7 @@ class FunctorTraits<R (*)(T1, T2)>
 {
   public:
     typedef R (*type)(T1, T2);
-    
+
     typedef VigraFalseType isInitializer;
     typedef VigraFalseType isUnaryFunctor;
     typedef VigraTrueType  isBinaryFunctor;
@@ -249,7 +247,7 @@ class FunctorTraits<R (*)(T1, T2, T3)>
 {
   public:
     typedef R (*type)(T1, T2, T3);
-    
+
     typedef VigraFalseType isInitializer;
     typedef VigraFalseType isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
