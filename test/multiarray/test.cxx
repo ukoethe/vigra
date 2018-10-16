@@ -49,6 +49,7 @@
 #include "vigra/random.hxx"
 #include "vigra/timing.hxx"
 //#include "marray.hxx"
+#include <typeinfo>
 
 using namespace vigra;
 using namespace vigra::functor;
@@ -237,6 +238,39 @@ public:
         shouldEqual (varray1.shape(), Shape(3,3,5));
         shouldEqual (varray2.data(), array.data());
         shouldEqual (varray1.data(), &array3(0,1,0));
+    }
+    void test_shape1 ()
+    {
+        // Test: Construct a 1D array in different ways and compare their type. lvMA4's type is function
+        int width = 15;
+        auto lvSh1 = Shape1(width);
+        auto rvSh1 = Shape1(15);
+        auto lvMA1 = MultiArray<1,double>(lvSh1);
+        auto rvMA1 = MultiArray<1,double>(rvSh1);
+        auto lvMA2 = MultiArray<1,double>(Shape1(width));
+        auto rvMA2 = MultiArray<1,double>(Shape1(15));
+        MultiArray<1, double> lvMA3 = MultiArray<1,double>(Shape1(width));
+        MultiArray<1, double> rvMA3 = MultiArray<1,double>(Shape1(15));
+        MultiArray<1, double> lvMA4(Shape1(width));
+        MultiArray<1, double> rvMA4(Shape1(15));
+        MultiArray<1, double> lvMA5(lvSh1);
+        MultiArray<1, double> rvMA5(rvSh1);
+        std::cout << "lvSh1 t: " << typeid(lvSh1).name() << '\n'
+        << "rvSh1 t: " << typeid(rvSh1).name() << '\n';
+        std::cout << "lvMA1 t: " << typeid(lvMA1).name() << '\n'
+        << "rvMA1 t: " << typeid(rvMA1).name() << '\n';
+        std::cout << "lvMA2 t: " << typeid(lvMA2).name() << '\n'
+        << "rvMA2 t: " << typeid(rvMA2).name() << '\n';
+        std::cout << "lvMA3 t: " << typeid(lvMA3).name() << '\n'
+        << "rvMA3 t: " << typeid(rvMA3).name() << '\n';
+        std::cout << "lvMA4 t: " << typeid(lvMA4).name() << '\n'
+        << "rvMA4 t: " << typeid(rvMA4).name() << '\n';
+        std::cout << "lvMA4 t: " << typeid(lvMA5).name() << '\n'
+        << "rvMA4 t: " << typeid(rvMA5).name() << '\n';
+
+        shouldEqual(typeid(lvMA1).name(),typeid(rvMA4).name());
+        shouldEqual(typeid(lvMA1).name(),typeid(lvMA4).name());
+
     }
         
     // stridearray tests
@@ -3094,6 +3128,7 @@ struct MultiArrayDataTestSuite
             add( testCase( &MultiArrayDataTest<T>::testHasData ) );
             add( testCase( &MultiArrayDataTest<T>::testEquality ) );
             add( testCase( &MultiArrayDataTest<T>::test_subarray ) );
+            add( testCase( &MultiArrayDataTest<T>::test_shape1 ) );
             add( testCase( &MultiArrayDataTest<T>::test_stridearray ) );
             add( testCase( &MultiArrayDataTest<T>::test_bindOuter ) );
             add( testCase( &MultiArrayDataTest<T>::test_bindInner ) );
