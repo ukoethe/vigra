@@ -55,6 +55,7 @@
 #endif
 
 #ifdef __APPLE__
+  #include <pthread.h>
   #include <unistd.h>               // for getpid()
   #include <sys/syscall.h>          // SYS_thread_selfid
   #include <AvailabilityMacros.h>   // to check if we are on MacOS 10.6 or later
@@ -89,37 +90,37 @@ void seed(Iterator init, UInt32 key_length, RandomState<EngineTag> & engine)
     int k = static_cast<int>(std::max(N, key_length));
     UInt32 i = 1, j = 0;
     Iterator data = init;
-    for (; k; --k) 
+    for (; k; --k)
     {
         engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) * 1664525U))
                            + *data + j; /* non linear */
         ++i; ++j; ++data;
-        
-        if (i >= N) 
-        { 
-            engine.state_[0] = engine.state_[N-1]; 
-            i=1; 
+
+        if (i >= N)
+        {
+            engine.state_[0] = engine.state_[N-1];
+            i=1;
         }
         if (j>=key_length)
-        { 
+        {
             j=0;
             data = init;
         }
     }
 
-    for (k=N-1; k; --k) 
+    for (k=N-1; k; --k)
     {
         engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) * 1566083941U))
                            - i; /* non linear */
         ++i;
-        if (i>=N) 
-        { 
-            engine.state_[0] = engine.state_[N-1]; 
-            i=1; 
+        if (i>=N)
+        {
+            engine.state_[0] = engine.state_[N-1];
+            i=1;
         }
     }
 
-    engine.state_[0] = 0x80000000U; /* MSB is 1; assuring non-zero initial array */ 
+    engine.state_[0] = 0x80000000U; /* MSB is 1; assuring non-zero initial array */
 }
 
 template <RandomEngineTag EngineTag>
@@ -127,16 +128,16 @@ void seed(RandomSeedTag, RandomState<EngineTag> & engine)
 {
     static UInt32 globalCount = 0;
     ArrayVector<UInt32> seedData;
-    
+
     seedData.push_back(static_cast<UInt32>(time(0)));
     seedData.push_back(static_cast<UInt32>(clock()));
     seedData.push_back(++globalCount);
-    
+
     std::size_t ptr((char*)&engine - (char*)0);
     seedData.push_back(static_cast<UInt32>((ptr & 0xffffffff)));
     static const UInt32 shift = sizeof(ptr) > 4 ? 32 : 16;
     seedData.push_back(static_cast<UInt32>((ptr >> shift)));
-    
+
 #ifdef _MSC_VER
     seedData.push_back(static_cast<UInt32>(GetCurrentProcessId()));
     seedData.push_back(static_cast<UInt32>(GetCurrentThreadId()));
@@ -151,9 +152,15 @@ void seed(RandomSeedTag, RandomState<EngineTag> & engine)
 
 #ifdef __APPLE__
     seedData.push_back(static_cast<UInt32>(getpid()));
-  #if defined(SYS_thread_selfid) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6)
+  #if __MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_12
+    uint64_t tid64;
+    pthread_threadid_np(NULL, &tid64);
+    seedData.push_back(static_cast<UInt32>(tid64));
+  #elif defined(SYS_thread_selfid) && (__MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6)
     // SYS_thread_selfid was introduced in MacOS 10.6
     seedData.push_back(static_cast<UInt32>(syscall(SYS_thread_selfid)));
+  #elif defined(SYS_gettid)
+    seedData.push_back(static_cast<UInt32>(syscall(SYS_gettid)));
   #endif
 #endif
 
@@ -165,38 +172,38 @@ template<>
 struct RandomState<TT800>
 {
     static const UInt32 N = 25, M = 7;
-    
+
     mutable UInt32 state_[N];
     mutable UInt32 current_;
-                   
+
     RandomState()
     : current_(0)
     {
-        UInt32 seeds[N] = { 
+        UInt32 seeds[N] = {
             0x95f24dab, 0x0b685215, 0xe76ccae7, 0xaf3ec239, 0x715fad23,
             0x24a590ad, 0x69e4b5ef, 0xbf456141, 0x96bc1b7b, 0xa7bdf825,
             0xc1de75b7, 0x8858a9c9, 0x2da87693, 0xb657f9dd, 0xffdc8a9f,
             0x8121da71, 0x8b823ecb, 0x885d05f5, 0x4e20cd47, 0x5a9ad5d9,
             0x512c0c03, 0xea857ccd, 0x4cc1d30f, 0x8891a8a1, 0xa6b7aadb
         };
-         
+
         for(UInt32 i=0; i<N; ++i)
             state_[i] = seeds[i];
     }
 
-  protected:  
+  protected:
 
     UInt32 get() const
     {
         if(current_ == N)
             generateNumbers<void>();
-            
+
         UInt32 y = state_[current_++];
-        y ^= (y << 7) & 0x2b5b2500; 
-        y ^= (y << 15) & 0xdb8b0000; 
+        y ^= (y << 7) & 0x2b5b2500;
+        y ^= (y << 15) & 0xdb8b0000;
         return y ^ (y >> 16);
     }
-    
+
     template <class DUMMY>
     void generateNumbers() const;
 
@@ -209,7 +216,7 @@ struct RandomState<TT800>
     {
         seed(theSeed, *this);
     }
-    
+
     template<class Iterator>
     void seedImpl(Iterator init, UInt32 length)
     {
@@ -226,7 +233,7 @@ void RandomState<TT800>::generateNumbers() const
     {
         state_[i] = state_[i+M] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
     }
-    for (UInt32 i=N-M; i<N; ++i) 
+    for (UInt32 i=N-M; i<N; ++i)
     {
         state_[i] = state_[i+(M-N)] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
     }
@@ -238,34 +245,34 @@ template<>
 struct RandomState<MT19937>
 {
     static const UInt32 N = 624, M = 397;
-    
+
     mutable UInt32 state_[N];
     mutable UInt32 current_;
-                   
+
     RandomState()
     : current_(0)
     {
         seed(19650218U, *this);
     }
 
-  protected:  
+  protected:
 
     UInt32 get() const
     {
         if(current_ == N)
             generateNumbers<void>();
-            
+
         UInt32 x = state_[current_++];
         x ^= (x >> 11);
         x ^= (x << 7) & 0x9D2C5680U;
         x ^= (x << 15) & 0xEFC60000U;
         return x ^ (x >> 18);
     }
-    
+
     template <class DUMMY>
     void generateNumbers() const;
 
-    static UInt32 twiddle(UInt32 u, UInt32 v) 
+    static UInt32 twiddle(UInt32 u, UInt32 v)
     {
         return (((u & 0x80000000U) | (v & 0x7FFFFFFFU)) >> 1)
                 ^ ((v & 1U) ? 0x9908B0DFU : 0x0U);
@@ -282,7 +289,7 @@ struct RandomState<MT19937>
         seed(theSeed, *this);
         generateNumbers<void>();
     }
-    
+
     template<class Iterator>
     void seedImpl(Iterator init, UInt32 length)
     {
@@ -324,11 +331,11 @@ void RandomState<MT19937>::generateNumbers() const
     <li> <tt>RandomMT19937</tt>: The state-of-the-art <a href="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne Twister</a> with a state length of 2<sup>19937</sup> and very high statistical quality.
     <li> <tt>RandomTT800</tt>: (default) The Tempered Twister, a simpler predecessor of the Mersenne Twister with period length 2<sup>800</sup>.
     </ul>
-    
-    Both generators have been designed by <a href="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/eindex.html">Makoto Matsumoto</a>. 
-    
+
+    Both generators have been designed by <a href="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/eindex.html">Makoto Matsumoto</a>.
+
     <b>Traits defined:</b>
-    
+
     \verbatim FunctorTraits<RandomNumberGenerator<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
@@ -338,24 +345,24 @@ class RandomNumberGenerator
 {
     mutable double normalCached_;
     mutable bool normalCachedValid_;
-    
+
   public:
-  
+
         /** Create a new random generator object with standard seed.
-            
-            Due to standard seeding, the random numbers generated will always be the same. 
+
+            Due to standard seeding, the random numbers generated will always be the same.
             This is useful for debugging.
         */
     RandomNumberGenerator()
     : normalCached_(0.0),
       normalCachedValid_(false)
     {}
-  
+
         /** Create a new random generator object with a random seed.
-        
+
             The seed is obtained from the machines current <tt>clock()</tt> and <tt>time()</tt>
             values.
-        
+
             <b>Usage:</b>
             \code
             RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
@@ -367,13 +374,13 @@ class RandomNumberGenerator
     {
         this->seedImpl(RandomSeed);
     }
-  
+
         /** Create a new random generator object from the given seed.
-            
+
             The same seed will always produce identical random sequences.
             If \a ignoreSeed is <tt>true</tt>, the given seed is ignored,
-            and the generator is seeded randomly (as if it was constructed 
-            with <tt>RandomNumberGenerator<>(RandomSeed)</tt>). This allows 
+            and the generator is seeded randomly (as if it was constructed
+            with <tt>RandomNumberGenerator<>(RandomSeed)</tt>). This allows
             you to switch between random and deterministic seeding at
             run-time.
         */
@@ -388,8 +395,8 @@ class RandomNumberGenerator
     }
 
         /** Create a new random generator object from the given seed sequence.
-            
-            Longer seed sequences lead to better initialization in the sense that the generator's 
+
+            Longer seed sequences lead to better initialization in the sense that the generator's
             state space is covered much better than is possible with 32-bit seeds alone.
         */
     template<class Iterator>
@@ -400,12 +407,12 @@ class RandomNumberGenerator
         this->seedImpl(init, length);
     }
 
-  
+
         /** Re-initialize the random generator object with a random seed.
-        
+
             The seed is obtained from the machines current <tt>clock()</tt> and <tt>time()</tt>
             values.
-        
+
             <b>Usage:</b>
             \code
             RandomNumberGenerator<> rnd = ...;
@@ -420,11 +427,11 @@ class RandomNumberGenerator
     }
 
         /** Re-initialize the random generator object from the given seed.
-            
+
             The same seed will always produce identical random sequences.
             If \a ignoreSeed is <tt>true</tt>, the given seed is ignored,
             and the generator is seeded randomly (as if <tt>seed(RandomSeed)</tt>
-            was called). This allows you to switch between random and deterministic 
+            was called). This allows you to switch between random and deterministic
             seeding at run-time.
         */
     void seed(UInt32 theSeed, bool ignoreSeed=false)
@@ -437,8 +444,8 @@ class RandomNumberGenerator
     }
 
         /** Re-initialize the random generator object from the given seed sequence.
-            
-            Longer seed sequences lead to better initialization in the sense that the generator's 
+
+            Longer seed sequences lead to better initialization in the sense that the generator's
             state space is covered much better than is possible with 32-bit seeds alone.
         */
     template<class Iterator>
@@ -449,8 +456,8 @@ class RandomNumberGenerator
     }
 
         /** Return a uniformly distributed integer random number in [0, 2<sup>32</sup>).
-            
-            That is, 0 &lt;= i &lt; 2<sup>32</sup>. 
+
+            That is, 0 &lt;= i &lt; 2<sup>32</sup>.
         */
     UInt32 operator()() const
     {
@@ -458,8 +465,8 @@ class RandomNumberGenerator
     }
 
         /** Return a uniformly distributed integer random number in [0, 2<sup>32</sup>).
-            
-            That is, 0 &lt;= i &lt; 2<sup>32</sup>. 
+
+            That is, 0 &lt;= i &lt; 2<sup>32</sup>.
         */
     UInt32 uniformInt() const
     {
@@ -486,8 +493,8 @@ class RandomNumberGenerator
 #endif /* #if 0 */
 
         /** Return a uniformly distributed integer random number in [0, <tt>beyond</tt>).
-            
-            That is, 0 &lt;= i &lt; <tt>beyond</tt>. 
+
+            That is, 0 &lt;= i &lt; <tt>beyond</tt>.
         */
     UInt32 uniformInt(UInt32 beyond) const
     {
@@ -506,22 +513,22 @@ class RandomNumberGenerator
             res = this->get();
         return res % beyond;
     }
-    
+
         /** Return a uniformly distributed double-precision random number in [0.0, 1.0).
-            
-            That is, 0.0 &lt;= i &lt; 1.0. All 53-bit bits of the mantissa are random (two 32-bit integers are used to 
+
+            That is, 0.0 &lt;= i &lt; 1.0. All 53-bit bits of the mantissa are random (two 32-bit integers are used to
             create this number).
         */
     double uniform53() const
     {
         // make full use of the entire 53-bit mantissa of a double, by Isaku Wada
-        return ( (this->get() >> 5) * 67108864.0 + (this->get() >> 6)) * (1.0/9007199254740992.0); 
+        return ( (this->get() >> 5) * 67108864.0 + (this->get() >> 6)) * (1.0/9007199254740992.0);
     }
-    
+
         /** Return a uniformly distributed double-precision random number in [0.0, 1.0].
-            
-            That is, 0.0 &lt;= i &lt;= 1.0. This number is computed by <tt>uniformInt()</tt> / (2<sup>32</sup> - 1), 
-            so it has effectively only 32 random bits. 
+
+            That is, 0.0 &lt;= i &lt;= 1.0. This number is computed by <tt>uniformInt()</tt> / (2<sup>32</sup> - 1),
+            so it has effectively only 32 random bits.
         */
     double uniform() const
     {
@@ -529,37 +536,37 @@ class RandomNumberGenerator
     }
 
         /** Return a uniformly distributed double-precision random number in [lower, upper].
-           
-            That is, <tt>lower</tt> &lt;= i &lt;= <tt>upper</tt>. This number is computed 
-            from <tt>uniform()</tt>, so it has effectively only 32 random bits. 
+
+            That is, <tt>lower</tt> &lt;= i &lt;= <tt>upper</tt>. This number is computed
+            from <tt>uniform()</tt>, so it has effectively only 32 random bits.
         */
     double uniform(double lower, double upper) const
     {
         vigra_precondition(lower < upper,
-          "RandomNumberGenerator::uniform(): lower bound must be smaller than upper bound."); 
+          "RandomNumberGenerator::uniform(): lower bound must be smaller than upper bound.");
         return uniform() * (upper-lower) + lower;
     }
 
         /** Return a standard normal variate (Gaussian) random number.
-           
-            Mean is zero, standard deviation is 1.0. It uses the polar form of the 
+
+            Mean is zero, standard deviation is 1.0. It uses the polar form of the
             Box-Muller transform.
         */
     double normal() const;
-    
+
         /** Return a normal variate (Gaussian) random number with the given mean and standard deviation.
-           
+
             It uses the polar form of the Box-Muller transform.
         */
     double normal(double mean, double stddev) const
     {
         vigra_precondition(stddev > 0.0,
-          "RandomNumberGenerator::normal(): standard deviation must be positive."); 
+          "RandomNumberGenerator::normal(): standard deviation must be positive.");
         return normal()*stddev + mean;
     }
-    
+
         /** Access the global (program-wide) instance of the present random number generator.
-        
+
             Normally, you will create a local generator by one of the constructor calls. But sometimes
             it is useful to have all program parts access the same generator.
         */
@@ -574,7 +581,7 @@ class RandomNumberGenerator
                      ? 1
                      : 2*(2147483648U / ceilPower2(range));
     }
-    
+
     static RandomNumberGenerator global_;
 };
 
@@ -593,14 +600,14 @@ double RandomNumberGenerator<Engine>::normal() const
     else
     {
         double x1, x2, w;
-        do 
+        do
         {
              x1 = uniform(-1.0, 1.0);
              x2 = uniform(-1.0, 1.0);
              w = x1 * x1 + x2 * x2;
-        } 
+        }
         while ( w > 1.0 || w == 0.0);
-        
+
         w = std::sqrt( -2.0 * std::log( w )  / w );
 
         normalCached_ = x2 * w;
@@ -612,11 +619,11 @@ double RandomNumberGenerator<Engine>::normal() const
 
     /** Shorthand for the TT800 random number generator class.
     */
-typedef RandomNumberGenerator<detail::RandomState<detail::TT800> >  RandomTT800; 
+typedef RandomNumberGenerator<detail::RandomState<detail::TT800> >  RandomTT800;
 
     /** Shorthand for the TT800 random number generator class (same as RandomTT800).
     */
-typedef RandomNumberGenerator<detail::RandomState<detail::TT800> >  TemperedTwister; 
+typedef RandomNumberGenerator<detail::RandomState<detail::TT800> >  TemperedTwister;
 
     /** Shorthand for the MT19937 random number generator class.
     */
@@ -639,13 +646,13 @@ class FunctorTraits<RandomNumberGenerator<Engine> >
 {
   public:
     typedef RandomNumberGenerator<Engine> type;
-    
+
     typedef VigraTrueType  isInitializer;
-    
+
     typedef VigraFalseType isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
     typedef VigraFalseType isTernaryFunctor;
-    
+
     typedef VigraFalseType isUnaryAnalyser;
     typedef VigraFalseType isBinaryAnalyser;
     typedef VigraFalseType isTernaryAnalyser;
@@ -656,10 +663,10 @@ class FunctorTraits<RandomNumberGenerator<Engine> >
 
     This functor encapsulates the appropriate functions of the given random number
     <tt>Engine</tt> (usually <tt>RandomTT800</tt> or <tt>RandomMT19937</tt>)
-    in an STL-compatible interface. 
-    
+    in an STL-compatible interface.
+
     <b>Traits defined:</b>
-    
+
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
     and
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isUnaryFunctor \endverbatim
@@ -673,13 +680,13 @@ class UniformIntRandomFunctor
     bool useLowBits_;
 
   public:
-  
+
     typedef UInt32 argument_type; ///< STL required functor argument type
     typedef UInt32 result_type; ///< STL required functor result type
 
-        /** Create functor for uniform random integers in the range [0, 2<sup>32</sup>) 
+        /** Create functor for uniform random integers in the range [0, 2<sup>32</sup>)
             using the given engine.
-            
+
             That is, the generated numbers satisfy 0 &lt;= i &lt; 2<sup>32</sup>.
         */
     explicit UniformIntRandomFunctor(Engine const & generator = Engine::global() )
@@ -687,28 +694,28 @@ class UniformIntRandomFunctor
       generator_(generator),
       useLowBits_(true)
     {}
-    
+
         /** Create functor for uniform random integers in the range [<tt>lower</tt>, <tt>upper</tt>]
             using the given engine.
-            
+
             That is, the generated numbers satisfy <tt>lower</tt> &lt;= i &lt;= <tt>upper</tt>.
             \a useLowBits should be set to <tt>false</tt> when the engine generates
             random numbers whose low bits are significantly less random than the high
             bits. This does not apply to <tt>RandomTT800</tt> and <tt>RandomMT19937</tt>,
             but is necessary for simpler linear congruential generators.
         */
-    UniformIntRandomFunctor(UInt32 lower, UInt32 upper, 
+    UniformIntRandomFunctor(UInt32 lower, UInt32 upper,
                             Engine const & generator = Engine::global(),
                             bool useLowBits = true)
-    : lower_(lower), difference_(upper-lower), 
+    : lower_(lower), difference_(upper-lower),
       factor_(Engine::factorForUniformInt(difference_ + 1)),
       generator_(generator),
       useLowBits_(useLowBits)
     {
         vigra_precondition(lower < upper,
-          "UniformIntRandomFunctor(): lower bound must be smaller than upper bound."); 
+          "UniformIntRandomFunctor(): lower bound must be smaller than upper bound.");
     }
-    
+
         /** Return a random number as specified in the constructor.
         */
     UInt32 operator()() const
@@ -730,9 +737,9 @@ class UniformIntRandomFunctor
     }
 
         /** Return a uniformly distributed integer random number in the range [0, <tt>beyond</tt>).
-        
-            That is, 0 &lt;= i &lt; <tt>beyond</tt>. This is a required interface for 
-            <tt>std::random_shuffle</tt>. It ignores the limits specified 
+
+            That is, 0 &lt;= i &lt; <tt>beyond</tt>. This is a required interface for
+            <tt>std::random_shuffle</tt>. It ignores the limits specified
             in the constructor and the flag <tt>useLowBits</tt>.
         */
     UInt32 operator()(UInt32 beyond) const
@@ -749,13 +756,13 @@ class FunctorTraits<UniformIntRandomFunctor<Engine> >
 {
   public:
     typedef UniformIntRandomFunctor<Engine> type;
-    
+
     typedef VigraTrueType  isInitializer;
-    
+
     typedef VigraTrueType  isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
     typedef VigraFalseType isTernaryFunctor;
-    
+
     typedef VigraFalseType isUnaryAnalyser;
     typedef VigraFalseType isBinaryAnalyser;
     typedef VigraFalseType isTernaryAnalyser;
@@ -765,10 +772,10 @@ class FunctorTraits<UniformIntRandomFunctor<Engine> >
 
     This functor encapsulates the function <tt>uniform()</tt> of the given random number
     <tt>Engine</tt> (usually <tt>RandomTT800</tt> or <tt>RandomMT19937</tt>)
-    in an STL-compatible interface. 
-    
+    in an STL-compatible interface.
+
     <b>Traits defined:</b>
-    
+
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
@@ -779,12 +786,12 @@ class UniformRandomFunctor
     Engine const & generator_;
 
   public:
-  
+
     typedef double result_type; ///< STL required functor result type
 
-        /** Create functor for uniform random double-precision numbers in the range [0.0, 1.0] 
+        /** Create functor for uniform random double-precision numbers in the range [0.0, 1.0]
             using the given engine.
-            
+
             That is, the generated numbers satisfy 0.0 &lt;= i &lt;= 1.0.
         */
     UniformRandomFunctor(Engine const & generator = Engine::global())
@@ -795,19 +802,19 @@ class UniformRandomFunctor
 
         /** Create functor for uniform random double-precision numbers in the range [<tt>lower</tt>, <tt>upper</tt>]
             using the given engine.
-            
+
             That is, the generated numbers satisfy <tt>lower</tt> &lt;= i &lt;= <tt>upper</tt>.
         */
-    UniformRandomFunctor(double lower, double upper, 
+    UniformRandomFunctor(double lower, double upper,
                          Engine & generator = Engine::global())
     : offset_(lower),
       scale_(upper - lower),
       generator_(generator)
     {
         vigra_precondition(lower < upper,
-          "UniformRandomFunctor(): lower bound must be smaller than upper bound."); 
+          "UniformRandomFunctor(): lower bound must be smaller than upper bound.");
     }
-    
+
         /** Return a random number as specified in the constructor.
         */
     double operator()() const
@@ -821,13 +828,13 @@ class FunctorTraits<UniformRandomFunctor<Engine> >
 {
   public:
     typedef UniformRandomFunctor<Engine> type;
-    
+
     typedef VigraTrueType  isInitializer;
-    
+
     typedef VigraFalseType isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
     typedef VigraFalseType isTernaryFunctor;
-    
+
     typedef VigraFalseType isUnaryAnalyser;
     typedef VigraFalseType isBinaryAnalyser;
     typedef VigraFalseType isTernaryAnalyser;
@@ -837,10 +844,10 @@ class FunctorTraits<UniformRandomFunctor<Engine> >
 
     This functor encapsulates the function <tt>normal()</tt> of the given random number
     <tt>Engine</tt> (usually <tt>RandomTT800</tt> or <tt>RandomMT19937</tt>)
-    in an STL-compatible interface. 
-    
+    in an STL-compatible interface.
+
     <b>Traits defined:</b>
-    
+
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
@@ -851,12 +858,12 @@ class NormalRandomFunctor
     Engine const & generator_;
 
   public:
-  
+
     typedef double result_type; ///< STL required functor result type
 
-        /** Create functor for standard normal random numbers 
+        /** Create functor for standard normal random numbers
             using the given engine.
-            
+
             That is, mean is 0.0 and standard deviation is 1.0.
         */
     NormalRandomFunctor(Engine const & generator = Engine::global())
@@ -868,16 +875,16 @@ class NormalRandomFunctor
         /** Create functor for normal random numbers with given mean and standard deviation
             using the given engine.
         */
-    NormalRandomFunctor(double mean, double stddev, 
+    NormalRandomFunctor(double mean, double stddev,
                         Engine & generator = Engine::global())
     : mean_(mean),
       stddev_(stddev),
       generator_(generator)
     {
         vigra_precondition(stddev > 0.0,
-          "NormalRandomFunctor(): standard deviation must be positive."); 
+          "NormalRandomFunctor(): standard deviation must be positive.");
     }
-    
+
         /** Return a random number as specified in the constructor.
         */
     double operator()() const
@@ -892,13 +899,13 @@ class FunctorTraits<NormalRandomFunctor<Engine> >
 {
   public:
     typedef UniformRandomFunctor<Engine>  type;
-    
+
     typedef VigraTrueType  isInitializer;
-    
+
     typedef VigraFalseType isUnaryFunctor;
     typedef VigraFalseType isBinaryFunctor;
     typedef VigraFalseType isTernaryFunctor;
-    
+
     typedef VigraFalseType isUnaryAnalyser;
     typedef VigraFalseType isBinaryAnalyser;
     typedef VigraFalseType isTernaryAnalyser;
@@ -906,6 +913,6 @@ class FunctorTraits<NormalRandomFunctor<Engine> >
 
 //@}
 
-} // namespace vigra 
+} // namespace vigra
 
 #endif // VIGRA_RANDOM_HXX

@@ -82,6 +82,6 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 	registerNumpyArrayConverters();
     defineAxisTags();
     defineChunkedArray();
-    
+
     def("checksum", &pychecksum, args("data"));
 }
