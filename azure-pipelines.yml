@@ -3,47 +3,26 @@
 # tasks, scripts, or references to external templates.
 
 jobs:
-  - job: vs2017
+  - job: Linux
     pool:
-      vmImage: 'vs2017-win2016'
+      vmImage: 'ubuntu-16.04'
     strategy:
       maxParallel: 2
       matrix:
         py36:
           PY_VERSION: 3.6
-          VS_VERSION: 2015
         # py27:
         #   PY_VERSION: 2.7
     steps:
+        # NOTE: On Linux, there is no write permission in the miniconda installation,
+        # and the CondaEnvironment@1 does not honor a prefix. Therefore we can *not*
+        # use the conda that comes with Azure as we do on Windows. This is also
+        # documented in the following issue: https://github.com/Microsoft/vsts-tasks/issues/8299
+        # Therefore we need to create our own conda environment from scratch.
       - script: |
-          echo looking for ctest
-          where ctest
-          echo looking for python
-          where python
-          echo printing PATH
-          echo %PATH%
-          echo lising installed programs
-          c:
-          cd "\"
-          dir
-          cd "\Program Files"
-          dir
-          cd "\Program Files (x86)"
-          dir
-          echo variables: "%PY_VESRION%" "%VS_VERSION%" 
-          echo variables 2: $(PY_VESRION) $(VS_VERSION)
-          IF "%VS_VERSION%"=="2015" (
-              echo Activating Visual Studio 2015 [64bit]
-              call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 || exit 1
-          ) ELSE (
-              IF "%VS_VERSION%"=="2017" (
-                  echo Activating Visual Studio 2017 [64bit]
-                  call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" || exit 1
-              ) ELSE (
-                  echo Visual Studio version not specified or unsupported
-                  exit 1
-              )
-          )
-          where cl
-          echo "%PATH%"
-          cl /help
+          echo "Installing gcc-7" || exit 1
+          sudo apt-get --assume-yes install gcc-7 g++-7
+          echo "locating gcc-7"
+          which gcc-7
+          which g++-7
+          echo "done"
