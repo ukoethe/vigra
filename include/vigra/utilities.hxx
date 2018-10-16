@@ -226,18 +226,18 @@ namespace detail
     struct for_each_in_tuple_impl
     {
         typedef for_each_in_tuple_impl<TPL, N-1, FUNCTOR> ForEachRecursion;
-        
+
         void operator()(TPL && t, FUNCTOR && f) const
         {
             ForEachRecursion()(std::forward<TPL>(t), std::forward<FUNCTOR>(f));
             f(std::get<N-1>(std::forward<TPL>(t)));
         }
     };
-    
+
     template <typename TPL, typename FUNCTOR>
     struct for_each_in_tuple_impl<TPL, 0, FUNCTOR>
     {
-        void operator()(TPL && t, FUNCTOR && f) const
+        void operator()(TPL &&, FUNCTOR &&) const
         {}
     };
 } // namespace detail
@@ -245,13 +245,13 @@ namespace detail
 /**
  * The for_each_in_tuple function calls the functor f on all elements of the tuple t.
  * For each element type in the tuple, the functor must have an appropriate overload of operator().
- * 
+ *
  * Example:
  * \code
  * #include <iostream>
  * #include <tuple>
  * #include <vigra/utilities.hxx>
- * 
+ *
  * struct print
  * {
  *     template <typename T>
@@ -260,7 +260,7 @@ namespace detail
  *         std::cout << t << std::endl;
  *     }
  * };
- * 
+ *
  * struct add_one
  * {
  *     template <typename T>
@@ -269,7 +269,7 @@ namespace detail
  *         t += 1;
  *     }
  * };
- * 
+ *
  * int main()
  * {
  *     std::tuple<int, double, size_t> tpl(-5, 0.4, 10);
@@ -283,7 +283,7 @@ void for_each_in_tuple(TPL && t, FUNCTOR && f)
 {
     typedef typename std::decay<TPL>::type UNQUALIFIED_TPL;
     typedef detail::for_each_in_tuple_impl<TPL, std::tuple_size<UNQUALIFIED_TPL>::value, FUNCTOR> ForEachImpl;
-    
+
     ForEachImpl()(std::forward<TPL>(t), std::forward<FUNCTOR>(f));
 }
 

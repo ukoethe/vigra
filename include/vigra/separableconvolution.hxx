@@ -1409,10 +1409,10 @@ class Kernel1D
         {}
 
         ~InitProxy()
-#ifndef _MSC_VER
-            throw(PreconditionViolation)
-#elif _MSC_VER >= 1900
+#if _MSC_VER >= 1900 || __cplusplus >= 201103L
             noexcept(false)
+#else
+            throw(PreconditionViolation)
 #endif
         {
             vigra_precondition(count_ == 1 || count_ == sum_,

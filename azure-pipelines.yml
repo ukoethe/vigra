@@ -1,0 +1,31 @@
+# Pipelines are made of one or more jobs and may include resources and variables.
+# Jobs are made of one or more steps plus some job-specific data. Steps can be
+# tasks, scripts, or references to external templates.
+
+jobs:
+  - job: Linux
+    pool:
+      vmImage: 'ubuntu-16.04'
+    strategy:
+      maxParallel: 2
+      matrix:
+        py36:
+          PY_VERSION: 3.6
+        # py27:
+        #   PY_VERSION: 2.7
+    steps:
+        # NOTE: On Linux, there is no write permission in the miniconda installation,
+        # and the CondaEnvironment@1 does not honor a prefix. Therefore we can *not*
+        # use the conda that comes with Azure as we do on Windows. This is also
+        # documented in the following issue: https://github.com/Microsoft/vsts-tasks/issues/8299
+        # Therefore we need to create our own conda environment from scratch.
+      - script: |
+          echo "updating package database"
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          echo "Installing gcc-7" || exit 1
+          sudo apt-get --assume-yes install gcc-7 g++-7
+          echo "locating gcc-7"
+          which gcc-7
+          which g++-7
+          echo "done"
