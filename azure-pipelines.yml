@@ -1,0 +1,166 @@
+# Pipelines are made of one or more jobs and may include resources and variables.
+# Jobs are made of one or more steps plus some job-specific data. Steps can be
+# tasks, scripts, or references to external templates.
+
+jobs:
+  - job: Linux
+    pool:
+      vmImage: 'ubuntu-16.04'
+    strategy:
+      maxParallel: 2
+      matrix:
+        py36:
+          PY_VERSION: 3.6
+        py27:
+          PY_VERSION: 2.7
+    steps:
+        # NOTE: On Linux, there is no write permission in the miniconda installation,
+        # and the CondaEnvironment@1 does not honor a prefix. Therefore we can *not*
+        # use the conda that comes with Azure as we do on Windows. This is also
+        # documented in the following issue: https://github.com/Microsoft/vsts-tasks/issues/8299
+        # Therefore we need to create our own conda environment from scratch.
+      - task: CondaEnvironment@1
+        inputs:
+          updateConda: false
+      - script: |
+          echo "Installing gcc-7" || exit 1
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test || exit 1
+          sudo apt-get update || exit 1
+          sudo apt-get --assume-yes install gcc-7 g++-7 || exit 1
+          echo "Creating conda environment for Python $(PY_VERSION)" || exit 1
+          conda create --quiet --yes --mkdir --prefix $AGENT_WORKFOLDER/envs/vigra --channel conda-forge/label/gcc7 \
+                python=$(PY_VERSION) || exit 1
+          echo "Activating conda environment" || exit 1
+          source $CONDA/bin/activate $AGENT_WORKFOLDER/envs/vigra || exit 1
+          echo "Installing prerequisites" || exit 1
+          conda install --quiet --yes --mkdir --channel conda-forge/label/gcc7 \
+                jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy h5py nose || exit 1
+          mkdir build || exit 1
+          cd build || exit 1
+          echo "Starting cmake configuration" || exit 1
+          CC=gcc-7 CXX=g++-7 cmake .. -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 \
+                -DDEPENDENCY_SEARCH_PREFIX="$CONDA_PREFIX" -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" || exit 1
+          echo "Compiling" || exit 1
+          make check || exit 1
+          echo "Running ctest" || exit 1
+          ctest -V || exit 1
+          echo "Completed script successfully" || exit 1
+  - job: macOS
+    pool:
+      vmImage: 'xcode9-macos10.13'
+    strategy:
+      maxParallel: 2
+      matrix:
+        py36:
+          PY_VERSION: 3.6
+        py27:
+          PY_VERSION: 2.7
+    steps:
+      # This build is practially identical to the Linux build above. One ugly part
+      # is the selection of the XCode version. The documentation suggests to either
+      # use an "XCode task" or to manually set the XCode version using "xcode-select".
+      # I could not get the XCode task to run without an XCode project first, so I
+      # chose to use xcode-select. This works well, but requires to manually specify
+      # the exact version below.
+      # /Applications/Xcode.app/Contents/Developer
+      # /Applications/Xcode_10.app/Contents/Developer
+      # /Applications/Xcode_10.1.app/Contents/Developer
+      # /Applications/Xcode_10.1_beta_2.app/Contents/Developer
+      # /Applications/Xcode_10_beta.app/Contents/Developer
+      # /Applications/Xcode_8.app/Contents/Developer
+      # /Applications/Xcode_8.1.app/Contents/Developer
+      # /Applications/Xcode_8.2.1.app/Contents/Developer
+      # /Applications/Xcode_8.2.app/Contents/Developer
+      # /Applications/Xcode_8.3.1.app/Contents/Developer
+      # /Applications/Xcode_8.3.2.app/Contents/Developer
+      # /Applications/Xcode_8.3.3.app/Contents/Developer
+      # /Applications/Xcode_9.app/Contents/Developer
+      # /Applications/Xcode_9.0.1.app/Contents/Developer
+      # /Applications/Xcode_9.1.app/Contents/Developer
+      # /Applications/Xcode_9.2.app/Contents/Developer
+      # /Applications/Xcode_9.3.1.app/Contents/Developer
+      # /Applications/Xcode_9.3.app/Contents/Developer
+      # /Applications/Xcode_9.3_beta.app/Contents/Developer
+      # /Applications/Xcode_9.4-beta.app/Contents/Developer
+      # /Applications/Xcode_9.4.1.app/Contents/Developer
+      # /Applications/Xcode_9.4.app/Contents/Developer
+      # /Applications/Xcode_9.4_beta.app/Contents/Developer
+      # /Applications/Xcode_9.4_beta_2.app/Contents/Developer
+      - task: CondaEnvironment@1
+        inputs:
+          updateConda: false
+      - script: |
+          echo "Listing availbale XCode versions:" || exit 1
+          ls -lad /Applications/Xcode_*.app/Contents/Developer || exit 1
+          echo "Selecting XCode version 10.1" || exit 1
+          sudo xcode-select -s /Applications/Xcode_10.1.app/Contents/Developer || exit 1
+          echo "Creating conda environment for Python $(PY_VERSION)" || exit 1
+          conda create --quiet --yes --mkdir --prefix $AGENT_WORKFOLDER/envs/vigra --channel conda-forge \
+                python=$(PY_VERSION) || exit 1
+          echo "Activating conda environment" || exit 1
+          source $CONDA/bin/activate $AGENT_WORKFOLDER/envs/vigra || exit 1
+          echo "Installing prerequisites" || exit 1
+          conda install --quiet --yes --mkdir --channel conda-forge/label/gcc7 \
+                jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy h5py nose || exit 1
+          mkdir build || exit 1
+          cd build || exit 1
+          echo "Starting cmake configuration" || exit 1
+          cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 \
+                -DDEPENDENCY_SEARCH_PREFIX="$CONDA_PREFIX" -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" || exit 1
+          echo "Compiling" || exit 1
+          make check || exit 1
+          echo "Running ctest" || exit 1
+          ctest -V || exit 1
+          echo "Completed script successfully" || exit 1
+  - job: Windows
+    pool:
+      vmImage: 'vs2017-win2016'
+    strategy:
+      maxParallel: 2
+      matrix:
+        py36:
+          PY_VERSION: 3.6
+          VS_VERSION: 2015
+        # py27:
+        #   PY_VERSION: 2.7
+    steps:
+      # installed compilers:
+      # "c:\Program Files (x86)\Microsoft Visual Studio\2017"
+      # "c:\Program Files (x86)\Microsoft Visual Studio 10.0"
+      # "c:\Program Files (x86)\Microsoft Visual Studio 11.0"
+      # "c:\Program Files (x86)\Microsoft Visual Studio 12.0"
+      # "c:\Program Files (x86)\Microsoft Visual Studio 14.0"
+      - task: CondaEnvironment@1
+        inputs:
+          updateConda: false
+      - script: |
+          IF "%VS_VERSION%"=="2015" (
+              echo Activating Visual Studio 2015 [64bit]
+              call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 || exit 1
+          ) ELSE (
+              IF "%VS_VERSION%"=="2017" (
+                  echo Activating Visual Studio 2017 [64bit]
+                  call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" || exit 1
+              ) ELSE (
+                  echo Visual Studio version not specified or unsupported
+                  exit 1
+              )
+          )
+          echo Creating conda environment for Python $(PY_VERSION) || exit 1
+          conda create --quiet --yes --mkdir --prefix %AGENT_WORKFOLDER%\envs\vigra --channel conda-forge ^
+                python=$(PY_VERSION) || exit 1
+          echo Activating conda environment || exit 1
+          call activate %AGENT_WORKFOLDER%\envs\vigra || exit 1
+          echo Installing prerequisites || exit 1
+          conda install --quiet --yes --mkdir --channel conda-forge ^
+                jpeg libpng libtiff hdf5 fftw boost boost-cpp numpy h5py nose || exit 1
+          echo Starting cmake configuration || exit 1
+          mkdir build || exit 1
+          cd build || exit 1
+          cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DTEST_VIGRANUMPY=1 -DAUTOEXEC_TESTS=0 ^
+                -DDEPENDENCY_SEARCH_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" || exit 1
+          echo Compiling || exit 1
+          nmake check || exit 1
+          echo Running ctest || exit 1
+          ctest -V || exit 1
+          echo Completed script successfully || exit 1
