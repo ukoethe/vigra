@@ -1378,7 +1378,7 @@ namespace vigra{
             EDGEMAP & edgeWeights,
             bool euclidean=false)
     {
-        using namespace vigra::functor;
+        vigra::functor;
         edgeWeightsFromNodeWeights(g, nodeWeights, edgeWeights, euclidean, Param(0.5)*(Arg1()+Arg2()));
     }
     
