@@ -134,7 +134,7 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
     #include <vigra/multi_array.hxx>
     #include <vigra/impex.hxx>
     #include <vigra/accumulator.hxx>
-    using namespace vigra::acc;
+    vigra::acc;
     typedef double DataType;
     int size = 1000;
     vigra::MultiArray<2, DataType> data(vigra::Shape2(size, size));
@@ -185,7 +185,7 @@ This works likewise for label images which are needed for region statistics (see
 
 Pixel coordinates are always at index 0. To collect statistics, you simply pass all arrays to the <tt>extractFeatures()</tt> function:
     \code
-    using namespace vigra::acc;
+    vigra::acc;
     vigra::MultiArray<3, double> data(...), weights(...);
 
     AccumulatorChain<CoupledArrays<3, double, double>, // two 3D arrays for data and weights
@@ -201,7 +201,7 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
 
     This even works for a single array, which is useful if you want to combine values with coordinates. For example, to find the location of the minimum element in an array, you interpret the data as weights and select the <tt>Coord<ArgMinWeight></tt> statistic (note that the version of <tt>extractFeatures()</tt> below only works in conjunction with <tt>CoupledArrays</tt>, despite the fact that there is only one array involved):
     \code
-    using namespace vigra::acc;
+    vigra::acc;
     vigra::MultiArray<3, double> data(...);
 
     AccumulatorChain<CoupledArrays<3, double>,
@@ -216,7 +216,7 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
     To compute <b>region statistics</b>, you use \ref acc::AccumulatorChainArray. Regions are defined by means of a label array whose elements specify the region ID of the corresponding point. Therefore, you will always need at least two arrays here, which are again best specified using the <tt>CoupledArrays</tt> helper:
 
     \code
-    using namespace vigra::acc;
+    vigra::acc;
     vigra::MultiArray<3, double> data(...);
     vigra::MultiArray<3, int> labels(...);
 
@@ -239,7 +239,7 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
     In some application it will be known only at run-time which statistics have to be computed. An Accumulator with <b>run-time activation</b> is provided by the \ref acc::DynamicAccumulatorChain class. One specifies a set of statistics at compile-time and from this set one can activate the needed statistics at run-time:
 
     \code
-    using namespace vigra::acc;
+    vigra::acc;
     vigra::MultiArray<2, double> data(...);
     DynamicAccumulatorChain<double,
         Select<Mean, Minimum, Maximum, Variance, StdDev> > a; // at compile-time
@@ -256,7 +256,7 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
     <b>Accumulator merging</b> (e.g. for parallelization or hierarchical segmentation) is possible for many accumulators:
 
     \code
-    using namespace vigra::acc;
+     vigra::acc;
     vigra::MultiArray<2, double> data(...);
     AccumulatorChain<double, Select<Mean, Variance, Skewness> > a, a1, a2;
 
@@ -269,7 +269,7 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
     Not all statistics can be merged (e.g. Principal<A> usually cannot, except for some important specializations). A statistic can be merged if the "+=" operator is supported (see the documentation of that particular statistic). If the accumulator chain only requires one pass to collect the data, it is also possible to just apply the extractFeatures() function repeatedly:
 
     \code
-    using namespace vigra::acc;
+    vigra::acc;
     vigra::MultiArray<2, double> data(...);
     AccumulatorChain<double, Select<Mean, Variance> > a;
 
@@ -280,8 +280,8 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
     More care is needed to merge coordinate-based statistics. By default, all coordinate statistics are computed in the local coordinate system of the current region of interest. That is, the upper left corner of the ROI has the coordinate (0, 0) by default. This behavior is not desirable when you want to merge coordinate statistics from different ROIs: then, all accumulators should use the same coordinate system, usually the global system of the entire dataset. This can be achieved by the <tt>setCoordinateOffset()</tt> function. The following code demonstrates this for the <tt>RegionCenter</tt> statistic:
 
     \code
-    using namespace vigra;
-    using namespace vigra::acc;
+    vigra;
+   vigra::acc;
 
     MultiArray<2, double> data(width, height);
     MultiArray<2, int>    labels(width, height);
@@ -342,7 +342,7 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
 
     \anchor acc_hist_options Usage:
     \code
-    using namespace vigra::acc;
+    vigra::acc;
     typedef double DataType;
     vigra::MultiArray<2, DataType> data(...);
 
@@ -3596,7 +3596,7 @@ class Centralize
 
         void update(U const & t) const
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             value_ = t - getDependency<Mean>(*this);
         }
 
@@ -4010,13 +4010,13 @@ class PowerSum
     {
         void update(U const & t)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             this->value_ += pow(t, (int)N);
         }
 
         void update(U const & t, double weight)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             this->value_ += weight*pow(t, (int)N);
         }
     };
@@ -4041,13 +4041,13 @@ class AbsPowerSum<1>
     {
         void update(U const & t)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             this->value_ += abs(t);
         }
 
         void update(U const & t, double weight)
         {
-            using namespace vigra::multi_math;
+             vigra::multi_math;
             this->value_ += weight*abs(t);
         }
     };
@@ -4076,13 +4076,13 @@ class AbsPowerSum
     {
         void update(U const & t)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             this->value_ += pow(abs(t), (int)N);
         }
 
         void update(U const & t, double weight)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             this->value_ += weight*pow(abs(t), (int)N);
         }
     };
@@ -4285,7 +4285,7 @@ class Central<PowerSum<2> >
     {
         void operator+=(Impl const & o)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             double n1 = getDependency<Count>(*this), n2 = getDependency<Count>(o);
             if(n1 == 0.0)
             {
@@ -4302,7 +4302,7 @@ class Central<PowerSum<2> >
             double n = getDependency<Count>(*this);
             if(n > 1.0)
             {
-                using namespace vigra::multi_math;
+                vigra::multi_math;
                 this->value_ += n / (n - 1.0) * sq(getDependency<Mean>(*this) - t);
             }
         }
@@ -4312,7 +4312,7 @@ class Central<PowerSum<2> >
             double n = getDependency<Count>(*this);
             if(n > weight)
             {
-                using namespace vigra::multi_math;
+                vigra::multi_math;
                 this->value_ += n / (n - weight) * sq(getDependency<Mean>(*this) - t);
             }
         }
@@ -4346,7 +4346,7 @@ class Central<PowerSum<3> >
         {
             typedef Central<PowerSum<2> > Sum2Tag;
 
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             double n1 = getDependency<Count>(*this), n2 = getDependency<Count>(o);
             if(n1 == 0.0)
             {
@@ -4364,13 +4364,13 @@ class Central<PowerSum<3> >
 
         void update(U const &)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             this->value_ += pow(getDependency<Centralize>(*this), 3);
         }
 
         void update(U const &, double weight)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             this->value_ += weight*pow(getDependency<Centralize>(*this), 3);
         }
     };
@@ -4403,7 +4403,7 @@ class Central<PowerSum<4> >
             typedef Central<PowerSum<2> > Sum2Tag;
             typedef Central<PowerSum<3> > Sum3Tag;
 
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             double n1 = getDependency<Count>(*this), n2 = getDependency<Count>(o);
             if(n1 == 0.0)
             {
@@ -4425,13 +4425,13 @@ class Central<PowerSum<4> >
 
         void update(U const &)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             this->value_ += pow(getDependency<Centralize>(*this), 4);
         }
 
         void update(U const &, double weight)
         {
-            using namespace vigra::multi_math;
+            vigra::multi_math;
             this->value_ += weight*pow(getDependency<Centralize>(*this), 4);
         }
     };
@@ -4698,7 +4698,7 @@ class FlatScatterMatrix
             }
             else if(n2 != 0.0)
             {
-                using namespace vigra::multi_math;
+                vigra::multi_math;
                 diff_ = getDependency<Mean>(*this) - getDependency<Mean>(o);
                 acc_detail::updateFlatScatterMatrix(value_, diff_, n1 * n2 / (n1 + n2));
                 value_ += o.value_;
@@ -4726,7 +4726,7 @@ class FlatScatterMatrix
             double n = getDependency<Count>(*this);
             if(n > weight)
             {
-                using namespace vigra::multi_math;
+                vigra::multi_math;
                 diff_ = getDependency<Mean>(*this) - t;
                 acc_detail::updateFlatScatterMatrix(value_, diff_, n * weight / (n - weight));
             }
