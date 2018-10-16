@@ -20,6 +20,8 @@ jobs:
         # documented in the following issue: https://github.com/Microsoft/vsts-tasks/issues/8299
         # Therefore we need to create our own conda environment from scratch.
       - script: |
+          echo "updating package database"
+          sudo apt-get update
           echo "Installing gcc-7" || exit 1
           sudo apt-get --assume-yes install gcc-7 g++-7
           echo "locating gcc-7"
