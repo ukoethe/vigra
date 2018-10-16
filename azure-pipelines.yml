@@ -21,6 +21,7 @@ jobs:
         # Therefore we need to create our own conda environment from scratch.
       - script: |
           echo "updating package database"
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt-get update
           echo "Installing gcc-7" || exit 1
           sudo apt-get --assume-yes install gcc-7 g++-7
