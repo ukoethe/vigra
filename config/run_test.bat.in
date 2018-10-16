@@ -2,7 +2,7 @@
 if [%1] NEQ [] (
     set CONFIGURATION=%1
 ) else (
-    set CONFIGURATION=Release
+    set CONFIGURATION=.
 )
 
 if "%CONFIGURATION%" EQU "." (
