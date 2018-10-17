@@ -105,11 +105,6 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
     #          (so that binaries which are already installed are ignored)
     #          This is not necessary on Linux, because the correct path
     #          is hard-coded into the module by means of 'rpath'
-    cmake_policy(PUSH)
-    if(POLICY CMP0026)
-        # allow 'GET_TARGET_PROPERTY(... LOCATION)'
-        cmake_policy(SET CMP0026 OLD)
-    endif()
     set(EXTRA_PATH "")
     IF(MSVC)
         SET(PATHSEP ";")
@@ -118,17 +113,13 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
     ENDIF()
     FOREACH(lib ${LIBRARIES})
         if(TARGET ${lib})
-            GET_TARGET_PROPERTY(p ${lib} LOCATION)
-            if(p)
-                GET_FILENAME_COMPONENT(p ${p} PATH)
-                VIGRA_NATIVE_PATH(p ${p})
-                SET(EXTRA_PATH  "${p}${PATHSEP}${EXTRA_PATH}")
-            endif()
+            SET(EXTRA_PATH  "$<TARGET_FILE_DIR:${lib}>${PATHSEP}${EXTRA_PATH}")
         endif()
     ENDFOREACH(lib)
-    cmake_policy(POP)
 
     # Setup the test execution script
+    # two-stage file configuration is necessary because certain target
+    # properties are only known at generation time (policy CMP0026)
     VIGRA_NATIVE_PATH(VIGRA_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
     IF(MSVC OR MINGW)
         get_filename_component(PYTHON_PATH ${PYTHON_EXECUTABLE} PATH)
@@ -137,15 +128,19 @@ IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
         SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXE} -c \"import nose; nose.main()\" . %CONFIGURATION%")
         SET(VIGRA_TEST_SCRIPT     "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.bat")
         CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.bat.in
-                       ${VIGRA_TEST_SCRIPT}
+                       ${VIGRA_TEST_SCRIPT}.in
                        @ONLY)
+        file(GENERATE OUTPUT "${VIGRA_TEST_SCRIPT}"
+                      INPUT  "${VIGRA_TEST_SCRIPT}.in")
     ELSE()
         SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXECUTABLE} -c \"import nose; nose.main()\" .")
         SET(VIGRA_TEST_SCRIPT     "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.sh")
         CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
-                       ${VIGRA_TEST_SCRIPT}
+                       ${VIGRA_TEST_SCRIPT}.in
                        @ONLY)
-        EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_TEST_SCRIPT} OUTPUT_QUIET ERROR_QUIET)
+        EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_TEST_SCRIPT}.in OUTPUT_QUIET ERROR_QUIET)
+        file(GENERATE OUTPUT "${VIGRA_TEST_SCRIPT}"
+                      INPUT  "${VIGRA_TEST_SCRIPT}.in")
     ENDIF()
 
     # register the test execution command
