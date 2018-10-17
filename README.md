@@ -1,8 +1,7 @@
 VIGRA Computer Vision Library
 =============================
 
-[![Travis CI Status](https://travis-ci.org/ukoethe/vigra.svg?branch=master)](https://travis-ci.org/ukoethe/vigra)
-[![AppVeyor Status](https://ci.appveyor.com/api/projects/status/github/ukoethe/vigra?branch=master&svg=true)](https://ci.appveyor.com/project/ukoethe/vigra/branch/master)
+[![Build Status](https://dev.azure.com/ullrichkoethe/vigra/_apis/build/status/ukoethe.vigra)](https://dev.azure.com/ullrichkoethe/vigra/_build/latest?definitionId=1)
 
                 Copyright 1998-2013 by Ullrich Koethe
 
@@ -13,10 +12,10 @@ VIGRA Computer Vision Library
     the VIGRA distribution.
 
     The VIGRA Website is
-        http://ukoethe.github.io/vigra/                      
-    Please direct questions, bug reports, and contributions to        
-        ullrich.koethe@iwr.uni-heidelberg.de    or                    
-        vigra@informatik.uni-hamburg.de                               
+        http://ukoethe.github.io/vigra/
+    Please direct questions, bug reports, and contributions to
+        ullrich.koethe@iwr.uni-heidelberg.de    or
+        vigra@informatik.uni-hamburg.de
 
 
     THIS SOFTWARE IS PROVIDED AS IS AND WITHOUT ANY EXPRESS OR
@@ -27,9 +26,9 @@ VIGRA Computer Vision Library
 Installation
 ------------
 
-Installation instructions can be found in the file 
+Installation instructions can be found in the file
   $VIGRA_PATH/doc/vigra/Installation.html
-If the documentation has not yet been generated (e.g. when you build from a development 
+If the documentation has not yet been generated (e.g. when you build from a development
 snapshot), you find these instructions in
   $VIGRA_PATH/docsrc/installation.dxx
 or online at
@@ -38,7 +37,7 @@ or online at
 Documentation
 -------------
 
-If you downloaded an official release, the documentation can be found in `$VIGRA_PATH/doc/vigra/`, the start file 
+If you downloaded an official release, the documentation can be found in `$VIGRA_PATH/doc/vigra/`, the start file
 is `$VIGRA_PATH/doc/vigra/index.html` or online at http://ukoethe.github.io/vigra/#documentation.
 
 When you use the development version from github, you can generate documentation by `make doc`.
@@ -46,7 +45,7 @@ When you use the development version from github, you can generate documentation
 Download
 --------
 
-VIGRA can be downloaded at http://ukoethe.github.io/vigra/#download. The official development 
+VIGRA can be downloaded at http://ukoethe.github.io/vigra/#download. The official development
 repository is at https://github.com/ukoethe/vigra
 
 What is VIGRA

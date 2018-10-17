@@ -1,36 +1,36 @@
 ﻿#######################################################################
-#                                                                      
-#         Copyright 2009-2010 by Ullrich Koethe                        
-#                                                                      
-#    This file is part of the VIGRA computer vision library.           
-#    The VIGRA Website is                                              
-#        http://hci.iwr.uni-heidelberg.de/vigra/                       
-#    Please direct questions, bug reports, and contributions to        
-#        ullrich.koethe@iwr.uni-heidelberg.de    or                    
-#        vigra@informatik.uni-hamburg.de                               
-#                                                                      
-#    Permission is hereby granted, free of charge, to any person       
-#    obtaining a copy of this software and associated documentation    
-#    files (the "Software"), to deal in the Software without           
-#    restriction, including without limitation the rights to use,      
-#    copy, modify, merge, publish, distribute, sublicense, and/or      
-#    sell copies of the Software, and to permit persons to whom the    
-#    Software is furnished to do so, subject to the following          
-#    conditions:                                                       
-#                                                                      
-#    The above copyright notice and this permission notice shall be    
-#    included in all copies or substantial portions of the             
-#    Software.                                                         
-#                                                                      
-#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    
-#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   
-#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          
-#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       
-#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      
-#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      
-#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     
-#    OTHER DEALINGS IN THE SOFTWARE.                                   
-#                                                                      
+#
+#         Copyright 2009-2010 by Ullrich Koethe
+#
+#    This file is part of the VIGRA computer vision library.
+#    The VIGRA Website is
+#        http://hci.iwr.uni-heidelberg.de/vigra/
+#    Please direct questions, bug reports, and contributions to
+#        ullrich.koethe@iwr.uni-heidelberg.de    or
+#        vigra@informatik.uni-hamburg.de
+#
+#    Permission is hereby granted, free of charge, to any person
+#    obtaining a copy of this software and associated documentation
+#    files (the "Software"), to deal in the Software without
+#    restriction, including without limitation the rights to use,
+#    copy, modify, merge, publish, distribute, sublicense, and/or
+#    sell copies of the Software, and to permit persons to whom the
+#    Software is furnished to do so, subject to the following
+#    conditions:
+#
+#    The above copyright notice and this permission notice shall be
+#    included in all copies or substantial portions of the
+#    Software.
+#
+#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND
+#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+#    OTHER DEALINGS IN THE SOFTWARE.
+#
 #######################################################################
 
 from __future__ import division, print_function
@@ -46,15 +46,15 @@ import vigra.arraytypes as at
 
 #in the hope, that functions are tested in C++, we basicly test return types
 
-image=at.RGBImage(np.random.rand(10,10,3)*255,dtype=np.float32, 
+image=at.RGBImage(np.random.rand(10,10,3)*255,dtype=np.float32,
                   axistags=at.VigraArray.defaultAxistags(3, 'V'))
-image2=at.RGBImage(np.random.rand(20,20,3)*255,dtype=np.uint8, 
+image2=at.RGBImage(np.random.rand(20,20,3)*255,dtype=np.uint8,
                   axistags=at.VigraArray.defaultAxistags(3, 'V'))
-scalar_image=at.ScalarImage(np.random.rand(10,10)*255,dtype=np.float32, 
+scalar_image=at.ScalarImage(np.random.rand(10,10)*255,dtype=np.float32,
                   axistags=at.AxisTags(at.AxisInfo.x, at.AxisInfo.y))
-volume256=at.Volume(np.random.rand(8,9,10)*255,dtype=np.uint8, 
+volume256=at.Volume(np.random.rand(8,9,10)*255,dtype=np.uint8,
                   axistags=at.AxisTags(at.AxisInfo.x, at.AxisInfo.y, at.AxisInfo.z))
-volumeFloat=at.Volume(np.random.rand(3,4,5,6)*100,dtype=np.float32, 
+volumeFloat=at.Volume(np.random.rand(3,4,5,6)*100,dtype=np.float32,
                   axistags=at.VigraArray.defaultAxistags(4, 'C'))
 
 def checkEqualData(i1,i2):
@@ -98,9 +98,9 @@ def test_writeAndReadImageHDF5():
     try:
         import h5py
     except:
-        print("Warning: 'import h5py' failed, not executing HDF5 import/export tests")
+        print("Warning: 'import h5py' failed, not executing HDF5 import/export tests", file=sys.stderr)
         return
-    
+
     # positive tests
     # write and read image
     im.writeHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
@@ -126,13 +126,13 @@ def test_writeAndReadImageHDF5():
     # write and read scalar image
     scalar_image_imp[1,1] = 100000
     checkUnequalData(scalar_image,scalar_image_imp)
-    
+
 def test_writeAndReadVolumeHDF5():
     try:
         import h5py
     except:
         return
-    
+
     # positive tests
     # write and read volume
     im.writeHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
