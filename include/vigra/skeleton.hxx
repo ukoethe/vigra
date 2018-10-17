@@ -43,6 +43,7 @@
 #include "iteratorfacade.hxx"
 #include "pixelneighborhood.hxx"
 #include "graph_algorithms.hxx"
+#include "polygon.hxx"
 
 namespace vigra
 {

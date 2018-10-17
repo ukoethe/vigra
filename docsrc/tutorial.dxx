@@ -91,9 +91,9 @@
 
     \ref vigra::MultiArray is the most fundamental data structure in VIGRA. It holds a rectangular block of values in arbitrary many dimensions. Most VIGRA functions operate on top of MultiArray or the associated class MultiArrayView (see \ref MultiArrayViewBasics).
 
-    A 2D image can be interpreted as a matrix, i.e. a 2-dimensional array, where each element holds the information of a specific pixel. Internally, the data are stored in a single 1-dimensional piece of memory, and MultiArray encapsulates the entire mapping between our familiar 2-dimensional notation and the raw memory. Pixels in an image are identified by a coordinate pair (x,y), where indexing starts at 0. That is, the pixels in a 800x600 image are indexed by <tt>x = 0,...,799 and y = 0,...,599</tt>. The principle analoguously extends to higher dimensions.
+    A 2D image can be interpreted as a matrix, i.e. a 2-dimensional array, where each element holds the information of a specific pixel. Internally, the data are stored in a single 1-dimensional piece of memory, and MultiArray encapsulates the entire mapping between our familiar 2-dimensional notation and the raw memory. Pixels in an image are identified by a coordinate pair (x,y), where indexing starts at 0. That is, the pixels in a 800x600 image are indexed by <tt>x = 0,...,799 and y = 0,...,599</tt>. The principle analogously extends to higher dimensions.
 
-    The structure of a multidimensional array is given by its <tt>shape</tt> vector, and the length of the shape vector is the array's <i>dimension</i>. The dimension must be fixed as a template parameter at compule time, while the shape is passed to the array's constructor. The second important template parameter is the pixel's <tt>value_type</tt>, as you know it form <tt>std::vector</tt>.
+    The structure of a multidimensional array is given by its <tt>shape</tt> vector, and the length of the shape vector is the array's <i>dimension</i>. The dimension must be fixed as a template parameter at compile time, while the shape is passed to the array's constructor. The second important template parameter is the pixel's <tt>value_type</tt>, as you know it form <tt>std::vector</tt>.
 
     To represent the data of a gray scale image, we just need to store one value per pixel, so we
     choose a 2-dimensional array, where each element has the <tt> unsigned char </tt> type
@@ -188,7 +188,7 @@
     3rd column of a 8x4-matrix (initialized with 5) to 7.
 
     \code
-    // instantiate shape object (zero intialized by default)
+    // instantiate shape object (zero initialized by default)
     Shape2 p;
     // bind x=2
     p[0] = 2;
@@ -249,7 +249,7 @@
         *i += *j;
 	\endcode
 
-	This is convenient because the actual high-dimensional shapes of the arrays are of no significance for point-wise operations as long as the shapes match. Be careful: the arrays themselves have no way of checking this condition. So thefollowing code using two transposed shapes is perfectly valid C++, but has probably not the intended effect:
+	This is convenient because the actual high-dimensional shapes of the arrays are of no significance for point-wise operations as long as the shapes match. Be careful: the arrays themselves have no way of checking this condition. So the following code using two transposed shapes is perfectly valid C++, but has probably not the intended effect:
 
 	\code
     MultiArray<2, int> matrix3(Shape2(3,2)),
@@ -327,7 +327,7 @@
 
     This method creates a rectangular subarray of your array between the points p and q, where p (the starting point of the subregion) is included, q (the ending point) is not. <tt>subarray</tt> does not change the dimension of the array (this is the task of the various <tt>bind</tt>-methods).
 
-    To give an example, we create a 4x4 array that consitst of a checkerboard with 2x2 squares:
+    To give an example, we create a 4x4 array that consists of a checkerboard with 2x2 squares:
 
     \code
     MultiArray<2, float> array_4x4(Shape2(4,4));  // zero (black) initialized
@@ -397,7 +397,7 @@
     MultiArray<1, int> array1d = array2d.bind<0>(2);
     \endcode
 
-    The array <tt>array1d</tt> contains the elements the 3rd column of <tt>array2d</tt>. This bahavior nicely illustrates the difference between a copy and a view: <tt>array1d</tt> contains a copy of the 3rd column, whereas the <tt>bind</tt> function only creates a new view to the existing data in <tt>array2d</tt>.
+    The array <tt>array1d</tt> contains the elements the 3rd column of <tt>array2d</tt>. This behavior nicely illustrates the difference between a copy and a view: <tt>array1d</tt> contains a copy of the 3rd column, whereas the <tt>bind</tt> function only creates a new view to the existing data in <tt>array2d</tt>.
 
     At this point we have to distinguish between the classes <tt> MultiArray </tt> and
     <tt> MultiArrayView </tt>. MultiArray inherits from MultiArrayView and contains the
@@ -430,7 +430,7 @@
 
     Moving on to image processing we'll give an example how you can flip an image by using
     bind. We read a gray scale image into a 2-dimensional array called <tt> imageArray </tt>.
-    Then we initalize a new array <tt> newImageArray </tt> of the same dimension and size
+    Then we initialize a new array <tt> newImageArray </tt> of the same dimension and size
     and set the first row of <tt> newImageArray </tt> to the values of the last row of
     <tt> imageArray </tt>, the second row to the values of the second last row and so on.
     Hence, we flip the image top to bottom.
@@ -485,7 +485,7 @@
 
     \subsection MultiArray_vector_elements expandElements(k) and bindElementChannel(i)
 
-    When the array elements are vectors (i.e. \ref vigra::TinyVector or \ref vigra::RGBValue), we can expand these elements into an addtional array dimension:
+    When the array elements are vectors (i.e. \ref vigra::TinyVector or \ref vigra::RGBValue), we can expand these elements into an additional array dimension:
     \code
     MultiArray<2, TinyVector<int, 3> > vector_array(20, 10);
     std::cout << vector_array.shape() << "\n";  // prints "(20, 10)"
@@ -703,7 +703,7 @@
       color image: no  (number of channels: 1)
     \endverbatim
 
-    To process the image, we must load the actual image data into an array such as the one described in \ref MultiArrayBasics. To do so, we create a <tt>vigra::MultiArray</tt> with the appropriate shape and then call \ref vigra::importImage(). This function needs an <tt> ImageImportInfo </tt> object specifying the image to be loaded and a MultiArrayView object of apropriate size to copy the image data in. The code looks like this:
+    To process the image, we must load the actual image data into an array such as the one described in \ref MultiArrayBasics. To do so, we create a <tt>vigra::MultiArray</tt> with the appropriate shape and then call \ref vigra::importImage(). This function needs an <tt> ImageImportInfo </tt> object specifying the image to be loaded and a MultiArrayView object of appropriate size to copy the image data in. The code looks like this:
 
     \dontinclude imageIO_tutorial.cxx
     \skip read image
@@ -750,7 +750,7 @@
     \ref MultiArrayBasics. Images with alpha channel are supported by \ref importImageAlpha() and \ref exportImageAlpha().
 
     Note that image processing often requires more complicated calculations than in these examples.
-    In this case, it is better to import and convert the data into a <tt>float</tt> array (i.e. <tt>vigra::MultiArray<2, float></tt>) instead of the simple <tt>unsigned char</tt> type in order to minimize rounding errors. When a file is imported into such an array, the conversion is automatically performed by the importImage() function. When an array is to be exported, the handling of <tt>float</tt> depends on the file format: If the file format supports float (currently: TIFF and VIFF), the data are written verbatim (unless this is explicitly overridden, see below). Otherwise, the data are mapped to <tt>unsigned char</tt> via a linear transform of the orginal range, followed by rounding (use \ref vigra::linearRangeMapping() to override this behavior by an explicit user-defined mapping).
+    In this case, it is better to import and convert the data into a <tt>float</tt> array (i.e. <tt>vigra::MultiArray<2, float></tt>) instead of the simple <tt>unsigned char</tt> type in order to minimize rounding errors. When a file is imported into such an array, the conversion is automatically performed by the importImage() function. When an array is to be exported, the handling of <tt>float</tt> depends on the file format: If the file format supports float (currently: TIFF and VIFF), the data are written verbatim (unless this is explicitly overridden, see below). Otherwise, the data are mapped to <tt>unsigned char</tt> via a linear transform of the original range, followed by rounding (use \ref vigra::linearRangeMapping() to override this behavior by an explicit user-defined mapping).
 
     The <tt>ImageExportInfo</tt> class provides a number of additional methods to <b>customize data export</b>, including:
 
@@ -799,17 +799,17 @@
 
 /** \page MultiArrayArithmeticTutorial Mathematics with Multi-Dimensional Arrays
 
-    VIGRA supports various way to perform mathematical operations (arithmetic and algebraic functions, linear alebra) on arrays. Most of these functions operate element-wise.
+    VIGRA supports various way to perform mathematical operations (arithmetic and algebraic functions, linear algebra) on arrays. Most of these functions operate element-wise.
 
     <ul style="list-style-image:url(documents/diamond.gif)">
     <li> \ref MultiMathModule "Array Expressions"
         <BR>The \ref MultiMathModule "vigra::multi_math" module overloads the usual arithmetic operators and algebraic functions for array arguments, similar to Matlab and numpy. This leads to very efficient and readable code.
     <li> \ref LinearAlgebraModule "Linear Algebra"
-        <BR>The \ref LinearAlgebraModule "vigra::linalg" module implements linear algebra for 2-dimensional arrays. The main difference to multi_math (besides a different internal implementation) is that the multiplication operator realizes matrix multiplication here. In addition, this modul implements linear system solvers, eigenvalue decomposition, and other standard matrix algorithms.
+        <BR>The \ref LinearAlgebraModule "vigra::linalg" module implements linear algebra for 2-dimensional arrays. The main difference to multi_math (besides a different internal implementation) is that the multiplication operator realizes matrix multiplication here. In addition, this module implements linear system solvers, eigenvalue decomposition, and other standard matrix algorithms.
     <li> \ref MultiPointoperators "STL-style transformation algorithms"
         <BR>VIGRA also provides functions like <tt>transformMultiArray()</tt> that generalize the corresponding STL functions to multiple dimensions. The functors needed for these functions are most easily created with the \ref FunctorExpressions module, VIGRA's "lambda library". This approach offers more flexibility than the array expressions above.
     <li> \ref FeatureAccumulators
-        <BR>The \ref FeatureAccumulators "vigra::acc" module provides powerful and efficient methods to compute statistics accross entire arrays or arbitrary subparts of them.
+        <BR>The \ref FeatureAccumulators "vigra::acc" module provides powerful and efficient methods to compute statistics across entire arrays or arbitrary subparts of them.
     </ul>
 */
 
@@ -891,7 +891,7 @@
     }
     \endcode
 
-    These simple tricks already get you a long way in the advanced use of VIGRA. You will notice, that many existing VIGRA functions are not implemented in temrs of \ref vigra::MultiArrayView, but in terms of \ref ImageIterators "image iterators" and \ref MultiIteratorGroup "hierarchical iterators". However, these iterators are more difficult to use, so the MultiArrayView approach is recommended for new code.
+    These simple tricks already get you a long way in the advanced use of VIGRA. You will notice, that many existing VIGRA functions are not implemented in terms of \ref vigra::MultiArrayView, but in terms of \ref ImageIterators "image iterators" and \ref MultiIteratorGroup "hierarchical iterators". However, these iterators are more difficult to use, so the MultiArrayView approach is recommended for new code.
 */
 
 /** \page PythonBindingsTutorial VIGRA Python Bindings
@@ -930,7 +930,7 @@
     >>> vigra.filters.gaussianSmoothing(inputImage, 1.5, out=resultImage)
     \endcode
 
-    This is, for example, useful when the same result image should be reused in several calls of the same function to avoid the repeated creation of new result arrays. Another possible use is the application of a function to only a rectangular region-of-interest: When the full result array is already allocated, you can pass a view of the approriate subarray to the <tt>out</tt> parameter in order to fill just the desired ROI.
+    This is, for example, useful when the same result image should be reused in several calls of the same function to avoid the repeated creation of new result arrays. Another possible use is the application of a function to only a rectangular region-of-interest: When the full result array is already allocated, you can pass a view of the appropriate subarray to the <tt>out</tt> parameter in order to fill just the desired ROI.
 
     When a C++ function provides options, they are exposed on the Python side as keyword arguments:
 
@@ -938,7 +938,7 @@
     >>> labeling, max_label = vigra.analysis.watersheds(inputImage, seeds=seedImage, method='UnionFind')
     \endcode
 
-    In general, the correspondence between a Python function and its C++ counterpart is straightforward, and the Python documentation frequently refers to the C++ documentation for details. However, there is a crucial difference: the default axis interpretation is different in VIGRA's <tt>MultiArray</tt> (which interpretes axes as x, y, z, so called 'Fortran' order) and in numpy's <tt>ndarray</tt> (which interpretes them as z, y, x, so called 'C'-order). To help you deal with this difficulty, vigranumpy provides a subclass <a href="../vigranumpy/index.html#axistags-and-the-vigraarray-data-structure">VigraArray</a> of <tt>ndarray</tt> and the concept of <a href="../vigranumpy/index.html#more-on-the-motivation-and-use-of-axistags">axistags</a>. Please take the time to read this material in order to avoid surprises.
+    In general, the correspondence between a Python function and its C++ counterpart is straightforward, and the Python documentation frequently refers to the C++ documentation for details. However, there is a crucial difference: the default axis interpretation is different in VIGRA's <tt>MultiArray</tt> (which interprets axes as x, y, z, so called 'Fortran' order) and in numpy's <tt>ndarray</tt> (which interprets them as z, y, x, so called 'C'-order). To help you deal with this difficulty, vigranumpy provides a subclass <a href="../vigranumpy/index.html#axistags-and-the-vigraarray-data-structure">VigraArray</a> of <tt>ndarray</tt> and the concept of <a href="../vigranumpy/index.html#more-on-the-motivation-and-use-of-axistags">axistags</a>. Please take the time to read this material in order to avoid surprises.
 
     The full <a href="../vigranumpy/index.html">vigranumpy reference</a> is available via HTML or can be obtained directly at the Python prompt by the <tt>help()</tt> command:
 

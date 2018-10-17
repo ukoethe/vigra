@@ -222,7 +222,7 @@ Many thanks to all!
            support for the SIF format.
 
       <li> <b>vigranumpy</b>: added <a href="../vigranumpy/index.html#axistags-and-the-vigraarray-data-structure">axistags </a>
-           and completly re-implemented VigraArray and the conversion between
+           and completely re-implemented VigraArray and the conversion between
            Python and C++ arrays in terms of axistags.
 
       <li> Minor improvements and bug fixes in the code and documentation.
@@ -318,7 +318,7 @@ Many thanks to all!
 
       <li> Added \ref RandomNumberGeneration
 
-      <li> Added \ref affineWarpImage() and  and factory functions for
+      <li> Added \ref affineWarpImage() and factory functions for
            affine transformation matrices
 
       <li> Added linear algebra functionality: \ref choleskyDecomposition(), \ref singularValueDecomposition(),
