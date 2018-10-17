@@ -303,7 +303,7 @@
 
 /** \addtogroup DistanceTransform Distance Transform
 
-    The functions in this group perfrom Euclidean distance transforms in arbitrary dimensions,
+    The functions in this group perform Euclidean distance transforms in arbitrary dimensions,
     as well Manhattan and chessboard distance transforms in 2D (this can easily be extended to nD
     if need arises). In addition, a number of related transforms such as vector distance transforms,
     eccentricity transforms, and 2D skeleton computations are offered.

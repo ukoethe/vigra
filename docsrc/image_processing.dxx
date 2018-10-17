@@ -66,7 +66,7 @@
     \section ImageInversion Inverting an Image
 
     Inverting an (gray scale) image is quite easy. We just need to subtract every pixel's
-    value from white (255). This simple task doesn't need an explicit function call at all, but is best solved with a arithmetic expression implemented in namespace \ref MultiMathModule. To avoid possible overload ambiguities,
+    value from white (255). This simple task doesn't need an explicit function call at all, but is best solved with an arithmetic expression implemented in namespace \ref MultiMathModule. To avoid possible overload ambiguities,
     you must explicitly activate array arithmetic via the command <tt>using namespace vigra::multi_math</tt> before use. To invert <tt>imageArray</tt> and overwrite its original contents, you write:
 
     \code
@@ -144,7 +144,7 @@
     There are many different ways to smooth an image. Before we use VIGRA's methods, we
     want to write a smoothing code of our own. The idea is to choose each pixel in turn and
     replace it with the mean of itself and the pixels in 5x5 window around it.
-    To calculate the mean in a window, we can just devide the sum of the pixel values
+    To calculate the mean in a window, we can just divide the sum of the pixel values
     within the corresponding subarray by their number. MultiArrayView provides two useful
     methods for doing this: <tt>sum</tt> and <tt>size</tt>.
     In our code we iterate over every pixel, construct the surrounding 5x5 window via
@@ -245,9 +245,9 @@
     When filtering is implemented with 2-dimensional windows as in the previous section,
     we need as many multiplications per pixel as there are coefficients in the filter.
     Fortunately, many important filters (including averaging and Gaussian smoothing)
-    have the property of beeing <i>separable</i>, which allows a much more efficient
+    have the property of being <i>separable</i>, which allows a much more efficient
     implementation in terms  of 1-dimensional windows. A 2-dimensional filter is
-    separable if its coefficients \f$f_{ij}\f$ can be expressend as an outer product
+    separable if its coefficients \f$f_{ij}\f$ can be expressed as an outer product
     of two 1-dimensional filters \f$h_i\f$ and \f$c_j\f$:
 
     \f[
@@ -320,7 +320,7 @@
     gaussianSmoothMultiArray(inputArray, resultArray, 1.5);
     \endcode
 
-    More information about VIGRA's multi-dimensional convolution funcions can be found in
+    More information about VIGRA's multi-dimensional convolution functions can be found in
     the reference manual under \ref ConvolutionFilters.
 
     \subsection ParallelConvolveTutorial Parallel Execution of Gaussian Filters
