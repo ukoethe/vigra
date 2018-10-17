@@ -60,12 +60,6 @@ FUNCTION(VIGRA_ADD_TEST target)
     endif()
 
     # add dependencies to the PATH
-    cmake_policy(PUSH)
-    if(POLICY CMP0026)
-        # allow 'GET_TARGET_PROPERTY(... LOCATION)'
-        cmake_policy(SET CMP0026 OLD)
-    endif()
-
     set(EXTRA_PATH "")
     IF(MSVC)
         SET(PATHSEP ";")
@@ -74,30 +68,30 @@ FUNCTION(VIGRA_ADD_TEST target)
     ENDIF()
     FOREACH(lib ${LIBRARIES})
         if(TARGET ${lib})
-            GET_TARGET_PROPERTY(p ${lib} LOCATION)
-            if(p)
-                GET_FILENAME_COMPONENT(p ${p} PATH)
-                VIGRA_NATIVE_PATH(p ${p})
-                SET(EXTRA_PATH  "${p}${PATHSEP}${EXTRA_PATH}")
-            endif()
+            SET(EXTRA_PATH  "$<TARGET_FILE_DIR:${lib}>${PATHSEP}${EXTRA_PATH}")
         endif()
     ENDFOREACH(lib)
-    cmake_policy(POP)
 
     # set up a script to run the test
+    # two-stage file configuration is necessary because certain target
+    # properties are only known at generation time (policy CMP0026)
     IF(MSVC)
         SET(VIGRA_TEST_EXECUTABLE "%CONFIGURATION%\\${target}.exe")
         SET(VIGRA_TEST_SCRIPT     "run_${target}.bat")
         CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/config/run_test.bat.in"
-                       "${CMAKE_CURRENT_BINARY_DIR}/${VIGRA_TEST_SCRIPT}"
+                       "${CMAKE_CURRENT_BINARY_DIR}/${VIGRA_TEST_SCRIPT}.in"
                        @ONLY)
+        file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${VIGRA_TEST_SCRIPT}"
+                      INPUT  "${CMAKE_CURRENT_BINARY_DIR}/${VIGRA_TEST_SCRIPT}.in")
     ELSE()
         SET(VIGRA_TEST_EXECUTABLE "./${target}")
         SET(VIGRA_TEST_SCRIPT     "${CMAKE_CURRENT_BINARY_DIR}/run_${target}.sh")
         CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/config/run_test.sh.in"
-                       "${VIGRA_TEST_SCRIPT}"
+                       "${VIGRA_TEST_SCRIPT}.in"
                        @ONLY)
-        EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_TEST_SCRIPT} OUTPUT_QUIET ERROR_QUIET)
+        EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_TEST_SCRIPT}.in OUTPUT_QUIET ERROR_QUIET)
+        file(GENERATE OUTPUT "${VIGRA_TEST_SCRIPT}"
+                      INPUT  "${VIGRA_TEST_SCRIPT}.in")
     ENDIF()
 
     # register the test execution command
