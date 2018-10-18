@@ -838,10 +838,10 @@ struct SkeletonTest
             extractSkeletonFeatures(data, features);
             int label=255;
             shouldEqual(features[label].center, Shape2(255, 255));
-            shouldEqualTolerance(features[label].diameter, 545.4823227814104, 1e-12);
-            shouldEqualTolerance(features[label].euclidean_diameter, 501.86551983574248, 1e-12);
-            shouldEqualTolerance(features[label].total_length, 1650.0012254892786, 1e-12);
-            shouldEqualTolerance(features[label].average_length, 268.45282570696946, 1e-12);
+            shouldEqualTolerance(features[label].diameter, 545.4823227814104, 1e-15);
+            shouldEqualTolerance(features[label].euclidean_diameter, 501.86551983574248, 1e-15);
+            shouldEqualTolerance(features[label].total_length, 1650.0012254892786, 1e-15);
+            shouldEqualTolerance(features[label].average_length, 268.45282570696946, 1e-15);
             shouldEqual(features[label].branch_count, 6);
             shouldEqual(features[label].hole_count, 1);
             shouldEqual(features[label].terminal1, Shape2(133, 472));
