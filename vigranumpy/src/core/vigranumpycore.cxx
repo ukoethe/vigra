@@ -61,7 +61,7 @@ UInt32 pychecksum(python::str const & s)
 	return checksum(data, size);
 #else
 	Py_ssize_t size = 0;
-	char * data = PyUnicode_AsUTF8AndSize(s.ptr(), &size);
+	const char * data = PyUnicode_AsUTF8AndSize(s.ptr(), &size);
 	return checksum(data, size);
 #endif
 }
